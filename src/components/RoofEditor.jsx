@@ -1,7 +1,7 @@
 // FILE: src/components/RoofEditor.jsx
 import { useState, useEffect, useRef, useMemo } from "react";
 import RoofPolygonDrawer from "./RoofPolygonDrawer";
-import Building3DViewer from "./Building3dViewer";
+import Building3DViewer from "./Building3DViewer";
 import Toolbar from "./Toolbar";
 import ReportModal from "./ReportModal";
 import { fetchRoofAndSolarData, fetchSolarDataLayers } from "../services/solarService";
@@ -10,6 +10,7 @@ import { computeSceneScale, metersToWorld } from "../utils/scaleUtils";
 
 const STEPS = { LOADING: "loading", DRAW: "draw", VIEW3D: "view3d" };
 const DEFAULT_HEIGHT = 6;
+const MAX_HISTORY = 50; // cap undo stack depth per section
 
 const DEFAULT_SECTION = (id, label = "Main Building") => ({
   id, label,
@@ -38,6 +39,9 @@ export default function RoofEditor({ location, onBack }) {
 
   const [showReport, setShowReport] = useState(false);
   const [structureSnapshot, setStructureSnapshot] = useState(null);
+
+  // NEW: undo history for roof polygon (nodes/faces) edits, kept per section id
+  const [history, setHistory] = useState({}); // { [sectionId]: [{nodes, faces}, ...] }
 
   const { mpu, mpp } = useMemo(() => computeSceneScale(location?.lat ?? 28.6), [location?.lat]);
 
@@ -79,16 +83,53 @@ export default function RoofEditor({ location, onBack }) {
 
   const updateActiveSection = (patch) => setRoofSections(prev => prev.map(s => s.id === activeSectionId ? { ...s, ...patch } : s));
 
-  const handleMeshChange = (nodes, faces) => updateActiveSection({ nodes, faces });
+  // NEW: snapshot the active section's nodes/faces onto its undo stack, before a mutation is applied
+  const pushHistory = () => {
+    setHistory(prev => {
+      const stack = prev[activeSectionId] || [];
+      const snapshot = { nodes: activeSection?.nodes || [], faces: activeSection?.faces || [] };
+      return { ...prev, [activeSectionId]: [...stack, snapshot].slice(-MAX_HISTORY) };
+    });
+  };
+
+  const handleMeshChange = (nodes, faces) => { pushHistory(); updateActiveSection({ nodes, faces }); };
+
   const handleClearSection = () => {
+    pushHistory();
     updateActiveSection({ nodes: [], faces: [] }); setSelectedNodeId(null); setIsManualDraw(true);
     setSolarUnits(prev => prev.filter(u => u.sectionId !== activeSectionId));
     setObstacles(prev => prev.filter(o => o.sectionId !== activeSectionId));
   };
 
+  // NEW: pop the last snapshot for the active section and restore it
+  const handleUndo = () => {
+    const stack = history[activeSectionId] || [];
+    if (stack.length === 0) return;
+    const last = stack[stack.length - 1];
+    updateActiveSection({ nodes: last.nodes, faces: last.faces });
+    setHistory(prev => ({ ...prev, [activeSectionId]: stack.slice(0, -1) }));
+    setSelectedNodeId(null);
+  };
+
+  // NEW: delete the currently-selected point, stripping it out of any face
+  // (and dropping faces that fall below 3 points as a result)
+  const handleDeletePoint = () => {
+    if (!selectedNodeId || !activeSection) return;
+    pushHistory();
+    const updatedNodes = (activeSection.nodes || []).filter(n => n.id !== selectedNodeId);
+    const updatedFaces = (activeSection.faces || [])
+      .map(f => ({ ...f, nodeIds: f.nodeIds.filter(id => id !== selectedNodeId) }))
+      .filter(f => f.nodeIds.length >= 3);
+    updateActiveSection({ nodes: updatedNodes, faces: updatedFaces });
+    setSelectedNodeId(null);
+  };
+
+  const canUndo = (history[activeSectionId] || []).length > 0;
+
   const handleNodeElevationChange = (val) => {
     const newZ = parseFloat(val);
     if (isNaN(newZ) || !selectedNodeId) return;
+    pushHistory();
     const updatedNodes = (activeSection.nodes || []).map(n => n.id === selectedNodeId ? { ...n, z: newZ } : n);
     updateActiveSection({ nodes: updatedNodes });
   };
@@ -173,6 +214,15 @@ export default function RoofEditor({ location, onBack }) {
                     <span className="elevation-unit" style={{ color: '#fbbf24' }}>m</span>
                   </div>
                   <span style={{ fontSize: '10px', color: '#aaa', display: 'block', marginTop: '6px' }}>Raise this point to create sloped ridges and gables.</span>
+                  {/* NEW: DELETE POINT BUTTON */}
+                  <button
+                    className="toolbar-btn danger"
+                    style={{ marginTop: '8px', width: '100%', justifyContent: 'center' }}
+                    onClick={handleDeletePoint}
+                    title="Delete this point (Delete/Backspace)"
+                  >
+                    🗑 Delete Point
+                  </button>
                 </div>
               )}
 
@@ -194,6 +244,7 @@ export default function RoofEditor({ location, onBack }) {
                 solarUnits={solarUnits} setSolarUnits={setSolarUnits} obstacles={obstacles} setObstacles={setObstacles}
                 solarData={solarData}
                 onGenerateReport={handleGenerateReport}
+                onUndo={handleUndo} canUndo={canUndo} onDeletePoint={handleDeletePoint}
               />
             </div>
           </div>

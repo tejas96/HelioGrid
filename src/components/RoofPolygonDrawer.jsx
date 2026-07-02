@@ -24,7 +24,8 @@ export default function RoofPolygonDrawer({
   location, globalCenter, activeRoofZ, mpp, mpu, onSatImageReady,
   activeSectionId, solarUnits = [], setSolarUnits, obstacles = [], setObstacles,
   solarData, // <-- NEW PROP
-  onGenerateReport // <-- NEW PROP
+  onGenerateReport, // <-- NEW PROP
+  onUndo, canUndo, onDeletePoint // <-- NEW PROPS: undo history + point deletion (owned by parent RoofEditor)
 }) {
   const canvasRef = useRef(null), bgImageRef = useRef(null);
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -241,10 +242,30 @@ export default function RoofPolygonDrawer({
     dragOffset.current = { x: 0, y: 0 }; 
   }, [clipboard, cursorPos, canvasToWorld, activeRoofZ, viewTransform, activeSectionId, setSolarUnits, setObstacles]);
 
+  // NEW: undo / delete-point wrapper callbacks.
+  // These also tidy up local in-progress-drawing state (pendingNodeIds/hoveredNodeId)
+  // so we never reference a node id that the parent has just removed/restored away.
+  const handleUndoClick = useCallback(() => {
+    setPendingNodeIds([]);
+    setInferenceGuides([]);
+    if (onUndo) onUndo();
+  }, [onUndo]);
+
+  const handleDeletePointClick = useCallback(() => {
+    if (!selectedNodeId) return;
+    setPendingNodeIds(prev => prev.filter(id => id !== selectedNodeId));
+    setHoveredNodeId(prev => (prev === selectedNodeId ? null : prev));
+    if (onDeletePoint) onDeletePoint();
+  }, [selectedNodeId, onDeletePoint]);
+
   const copyRef = useRef(handleCopy);
   const pasteRef = useRef(handlePaste);
+  const undoRef = useRef(handleUndoClick);
+  const deletePointRef = useRef(handleDeletePointClick);
   useEffect(() => { copyRef.current = handleCopy; }, [handleCopy]);
   useEffect(() => { pasteRef.current = handlePaste; }, [handlePaste]);
+  useEffect(() => { undoRef.current = handleUndoClick; }, [handleUndoClick]);
+  useEffect(() => { deletePointRef.current = handleDeletePointClick; }, [handleDeletePointClick]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -252,6 +273,8 @@ export default function RoofPolygonDrawer({
       if (e.code === "Space") { e.preventDefault(); setIsSpacePressed(true); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') { e.preventDefault(); copyRef.current(); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') { e.preventDefault(); pasteRef.current(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undoRef.current(); } // NEW: Ctrl+Z / Cmd+Z undo
+      if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deletePointRef.current(); } // NEW: delete selected point
       if (e.key === 'Escape') { setPendingNodeIds([]); setInferenceGuides([]); }
     };
     const handleKeyUp = (e) => { if (e.code === "Space") setIsSpacePressed(false); };
@@ -605,6 +628,31 @@ export default function RoofPolygonDrawer({
   return (
     <div className="polygon-drawer" style={{ position: 'relative' }}>
       <div className="drawer-mode-bar" style={{ background: '#1e1e2d', borderBottom: '1px solid #333', padding: '8px 16px', display: 'flex', alignItems: 'center' }}>
+        {/* NEW: UNDO BUTTON — always visible, works on nodes/faces edits for the active section */}
+        <button
+          className="mode-btn"
+          style={{ opacity: canUndo ? 1 : 0.4, cursor: canUndo ? 'pointer' : 'not-allowed' }}
+          onClick={handleUndoClick}
+          disabled={!canUndo}
+          title={canUndo ? "Undo last action (Ctrl+Z)" : "Nothing to undo"}
+        >
+          ↩️ Undo
+        </button>
+
+        {/* NEW: DELETE POINT BUTTON — shown only when a point is selected */}
+        {selectedNodeId && (
+          <button
+            className="mode-btn danger"
+            style={{ marginLeft: 6 }}
+            onClick={handleDeletePointClick}
+            title="Delete selected point (Delete / Backspace)"
+          >
+            🗑 Delete Point
+          </button>
+        )}
+
+        <span className="toolbar-divider" style={{ margin: '0 8px', width: 1, height: 16, background: 'var(--border)' }} />
+
         {faces && faces.length > 0 ? (
           <>
             <span className="mode-label" style={{ color: '#6ee7b7', marginRight: '8px' }}>Place Layout:</span>
