@@ -1,3 +1,4 @@
+// FILE: src/components/RoofObstacle.jsx
 import { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -26,17 +27,22 @@ function buildWaterTank(w, h, d) {
   return group;
 }
 
-export default function RoofObstacle({ id, type, dimensions, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop, roofZ }) {
+export default function RoofObstacle({ id, type, dimensions, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop }) {
   const groupRef = useRef();
   const isDragging = useRef(false);
   const dragOffset = useRef(new THREE.Vector3());
-  const { camera, gl } = useThree();
+  const { camera, scene, gl } = useThree();
 
   const [localPos, setLocalPos] = useState(() => new THREE.Vector3(...position));
-  const actualRoofZ = roofZ !== undefined ? roofZ : position[1];
+  const [localNormal, setLocalNormal] = useState(() => new THREE.Vector3(0, 1, 0));
+  
+  const [needsInitialSnap, setNeedsInitialSnap] = useState(true);
 
   useEffect(() => {
-    if (!isDragging.current) setLocalPos(new THREE.Vector3(...position));
+    if (!isDragging.current) {
+      setLocalPos(new THREE.Vector3(...position));
+      setNeedsInitialSnap(true);
+    }
   }, [position]);
 
   const obstacleMesh = useMemo(() => {
@@ -45,61 +51,91 @@ export default function RoofObstacle({ id, type, dimensions, position, rotation 
     return buildACUnit(w, h, d);
   }, [type, dimensions, mpu]);
 
-  const dragPlane = useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+  const getRoofHitAtWorldXZ = useCallback((x, z) => {
+    const ray = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point, normal: hit.face.normal.clone().transformDirection(hit.object.matrixWorld).normalize() };
+  }, [scene]);
 
-  const getWorldPosFromPointer = useCallback((e) => {
+  const getCameraRayHit = useCallback((e) => {
     const nativeEvent = e.nativeEvent || e;
     const rect = gl.domElement.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((nativeEvent.clientX - rect.left) / rect.width) * 2 - 1,
-      -((nativeEvent.clientY - rect.top) / rect.height) * 2 + 1,
-    );
+    const ndc = new THREE.Vector2(((nativeEvent.clientX - rect.left) / rect.width) * 2 - 1, -((nativeEvent.clientY - rect.top) / rect.height) * 2 + 1);
     const ray = new THREE.Raycaster();
     ray.setFromCamera(ndc, camera);
-    dragPlane.current.constant = -actualRoofZ; 
-    const hit = new THREE.Vector3();
-    ray.ray.intersectPlane(dragPlane.current, hit);
-    return hit;
-  }, [camera, gl, actualRoofZ]);
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point };
+  }, [camera, gl, scene]);
 
   const onPointerDown = useCallback((e) => {
     e.stopPropagation();
     e.target.setPointerCapture(e.pointerId);
-    
-    // 👇 THIS IS THE CRITICAL FIX THAT OPENS THE SIDE MENU
     onSelect?.(id); 
-    
     isDragging.current = true;
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) dragOffset.current.set(localPos.x - worldHit.x, 0, localPos.z - worldHit.z);
-  }, [id, onSelect, localPos, getWorldPosFromPointer]);
+
+    const camHit = getCameraRayHit(e);
+    if (camHit) dragOffset.current.set(localPos.x - camHit.point.x, 0, localPos.z - camHit.point.z);
+  }, [id, onSelect, localPos, getCameraRayHit]);
 
   const onPointerMove = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) {
-      const newX = worldHit.x + dragOffset.current.x, newZ = worldHit.z + dragOffset.current.z;
-      setLocalPos(new THREE.Vector3(newX, actualRoofZ, newZ));
-      onDrag?.(id, [newX, actualRoofZ, newZ]);
+    const camHit = getCameraRayHit(e);
+    if (camHit) {
+      const targetX = camHit.point.x + dragOffset.current.x;
+      const targetZ = camHit.point.z + dragOffset.current.z;
+      
+      const roofHit = getRoofHitAtWorldXZ(targetX, targetZ);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        onDrag?.(id, [roofHit.point.x, roofHit.point.y, roofHit.point.z]);
+      }
     }
-  }, [getWorldPosFromPointer, actualRoofZ, onDrag, id]);
+  }, [getCameraRayHit, getRoofHitAtWorldXZ, onDrag, id]);
 
   const onPointerUp = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
     isDragging.current = false;
     try { e.target.releasePointerCapture(e.pointerId); } catch(err) {}
-    onDrop?.(id, [localPos.x, actualRoofZ, localPos.z]);
-  }, [id, onDrop, localPos, actualRoofZ]);
+    onDrop?.(id, [localPos.x, localPos.y, localPos.z]);
+  }, [id, onDrop, localPos]);
+
+  useEffect(() => {
+    if (groupRef.current) {
+      const up = new THREE.Vector3(0, 1, 0);
+      const normalQuat = new THREE.Quaternion().setFromUnitVectors(up, localNormal);
+      const userQuat = new THREE.Quaternion().setFromAxisAngle(up, -rotation);
+      groupRef.current.quaternion.copy(normalQuat).multiply(userQuat);
+    }
+  }, [localNormal, rotation]);
 
   useFrame(({ clock }) => {
+    if (needsInitialSnap && scene && !isDragging.current) {
+      const roofHit = getRoofHitAtWorldXZ(localPos.x, localPos.z);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        setNeedsInitialSnap(false); 
+      }
+    }
+
     if (!groupRef.current) return;
-    if (isSelected && isValid) groupRef.current.scale.setScalar(1 + 0.018 * Math.sin(clock.getElapsedTime() * 4));
-    else groupRef.current.scale.setScalar(1);
+    if (isSelected && isValid) {
+        const s = 1 + 0.018 * Math.sin(clock.getElapsedTime() * 4);
+        groupRef.current.scale.setScalar(s);
+    } else {
+        groupRef.current.scale.setScalar(1);
+    }
   });
 
-  const pos = isDragging.current ? localPos : new THREE.Vector3(...position);
+  // FIX: Always use our auto-snapped localPos instead of falling back to the raw prop!
+  const pos = localPos;
 
   const feedbackBox = (isSelected || !isValid) ? (() => {
     const w = metersToWorld(dimensions.w, mpu), d = metersToWorld(dimensions.d, mpu), h = metersToWorld(dimensions.h, mpu), pad = metersToWorld(0.12, mpu);
@@ -116,7 +152,6 @@ export default function RoofObstacle({ id, type, dimensions, position, rotation 
     <group
       ref={groupRef}
       position={[pos.x, pos.y, pos.z]}
-      rotation={[0, -rotation, 0]}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

@@ -1,11 +1,5 @@
 # Solar Roof POC Codebase
 
-# FILE: src\App.css
-
-```js
-
-```
-
 # FILE: src\App.jsx
 
 ```js
@@ -86,9 +80,9 @@ const CAMERA_HEIGHT_FACTOR = 1.35;
 const CAMERA_DIST_FACTOR = 2.3;
 const MIN_SCENE_RADIUS = 0.6;
 
-function getSolarUnitDimensions(rows, cols, orientation, mpu) {
+function getSolarUnitDimensions(rows, cols, orientation, mpu, tiltAngleDeg = 12) {
   const isLandscape = orientation === 'landscape', rawW = isLandscape ? 1.65 : 1.00, rawH = isLandscape ? 1.00 : 1.65;
-  const PW = metersToWorld(rawW, mpu), PH = metersToWorld(rawH, mpu), GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu), TILT = 12 * (Math.PI / 180);
+  const PW = metersToWorld(rawW, mpu), PH = metersToWorld(rawH, mpu), GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu), TILT = tiltAngleDeg * (Math.PI / 180);
   return { w: cols * PW + (cols - 1) * GAP_X, d: rows * PH * Math.cos(TILT) + (rows - 1) * GAP_Z };
 }
 
@@ -179,7 +173,7 @@ function CADBuildingSection({ section, baseHeightM, satImage, globalCenter, mpu 
 
   return (
     <group rotation={[-Math.PI / 2, 0, 0]}>
-      {wallGeo && <mesh geometry={wallGeo} castShadow receiveShadow><meshStandardMaterial color="#e0e0e0" roughness={0.8} metalness={0.05} side={THREE.DoubleSide} /></mesh>}
+      {wallGeo && <mesh geometry={wallGeo} castShadow receiveShadow userData={{ isWall: true, sectionId: section.id }}><meshStandardMaterial color="#e0e0e0" roughness={0.8} metalness={0.05} side={THREE.DoubleSide} /></mesh>}
       {isFlat && perimeterEdges.map((edge, i) => {
         const p1 = worldNodes[edge.id1], p2 = worldNodes[edge.id2];
         if (!p1 || !p2) return null;
@@ -192,7 +186,7 @@ function CADBuildingSection({ section, baseHeightM, satImage, globalCenter, mpu 
           </group>
         );
       })}
-      {roofGeo && <mesh geometry={roofGeo} position={[0, 0, wallH]} receiveShadow castShadow><meshStandardMaterial map={roofTexture || undefined} color={roofTexture ? undefined : "#c8c8c8"} roughness={0.75} metalness={0.0} side={THREE.DoubleSide} /></mesh>}
+      {roofGeo && <mesh geometry={roofGeo} position={[0, 0, wallH]} receiveShadow castShadow userData={{ isRoof: true, sectionId: section.id }}><meshStandardMaterial map={roofTexture || undefined} color={roofTexture ? undefined : "#c8c8c8"} roughness={0.75} metalness={0.0} side={THREE.DoubleSide} /></mesh>}
     </group>
   );
 }
@@ -436,19 +430,76 @@ function SunSimToggleButton({ active, onToggle }) {
 
 function EditElementPanel({ selectedEntity, onRotate, onRemove, onDeselect, onUpdateLayout, onUpdateDimensions }) {
   if (!selectedEntity) return null;
-  const rotationDeg = Math.round((selectedEntity.rotation || 0) * (180 / Math.PI)), isSolar = !selectedEntity.type, isObstacle = !!selectedEntity.type;
+  const rotationDeg = Math.round((selectedEntity.rotation || 0) * (180 / Math.PI));
+  const isSolar = !selectedEntity.type;
+  const isObstacle = !!selectedEntity.type;
+
   return (
     <div className="solar-control-panel" style={{ background: "rgba(20, 20, 30, 0.95)", border: "1px solid #44aaff", padding: "12px", borderRadius: "8px", color: "#fff", marginTop: "8px" }}>
       <div className="scp-header" style={{ color: "#44aaff", fontSize: "12px", fontWeight: "bold", marginBottom: "8px" }}>✏️ EDIT ELEMENT</div>
+      
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        
+        {/* SOLAR PANEL LAYOUT CONTROLS */}
         {isSolar && (
           <>
             <label style={{ fontSize: "11px", color: "#aaa" }}>Layout: <strong style={{ color: "#fff" }}>{selectedEntity.rows} x {selectedEntity.cols}</strong></label>
-            <div style={{ display: "flex", gap: "4px" }}><button onClick={() => onUpdateLayout(selectedEntity.id, { rows: Math.max(1, selectedEntity.rows - 1) })} style={{ flex: 1 }}>-</button><span style={{ fontSize: "11px", alignSelf: "center" }}>Rows</span><button onClick={() => onUpdateLayout(selectedEntity.id, { rows: selectedEntity.rows + 1 })} style={{ flex: 1 }}>+</button></div>
-            <div style={{ display: "flex", gap: "4px" }}><button onClick={() => onUpdateLayout(selectedEntity.id, { cols: Math.max(1, selectedEntity.cols - 1) })} style={{ flex: 1 }}>-</button><span style={{ fontSize: "11px", alignSelf: "center" }}>Cols</span><button onClick={() => onUpdateLayout(selectedEntity.id, { cols: selectedEntity.cols + 1 })} style={{ flex: 1 }}>+</button></div>
-            <div style={{ display: "flex", gap: "4px", marginTop: "4px" }}><button onClick={() => onUpdateLayout(selectedEntity.id, { orientation: "portrait" })} style={{ flex: 1, background: selectedEntity.orientation === "portrait" ? "#44aaff" : "#333" }}>Portrait</button><button onClick={() => onUpdateLayout(selectedEntity.id, { orientation: "landscape" })} style={{ flex: 1, background: selectedEntity.orientation === "landscape" ? "#44aaff" : "#333" }}>Landscape</button></div>
+            <div style={{ display: "flex", gap: "4px" }}>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { rows: Math.max(1, selectedEntity.rows - 1) })} style={{ flex: 1 }}>-</button>
+                <span style={{ fontSize: "11px", alignSelf: "center", minWidth: "30px", textAlign: "center" }}>Rows</span>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { rows: selectedEntity.rows + 1 })} style={{ flex: 1 }}>+</button>
+            </div>
+            <div style={{ display: "flex", gap: "4px" }}>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { cols: Math.max(1, selectedEntity.cols - 1) })} style={{ flex: 1 }}>-</button>
+                <span style={{ fontSize: "11px", alignSelf: "center", minWidth: "30px", textAlign: "center" }}>Cols</span>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { cols: selectedEntity.cols + 1 })} style={{ flex: 1 }}>+</button>
+            </div>
+            <div style={{ display: "flex", gap: "4px", marginTop: "4px" }}>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { orientation: "portrait" })} style={{ flex: 1, background: selectedEntity.orientation === "portrait" ? "#44aaff" : "#333" }}>Portrait</button>
+                <button onClick={() => onUpdateLayout(selectedEntity.id, { orientation: "landscape" })} style={{ flex: 1, background: selectedEntity.orientation === "landscape" ? "#44aaff" : "#333" }}>Landscape</button>
+            </div>
+
+            {/* DYNAMIC MOUNTING CONTROLS */}
+            <div style={{ borderTop: "1px solid #444", marginTop: "8px", paddingTop: "8px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                <label style={{ fontSize: "11px", color: "#44aaff", fontWeight: "bold" }}>🏗️ MOUNTING STRUCTURE</label>
+                
+                <select 
+                    value={selectedEntity.mountingType || 'tilt_legs'} 
+                    onChange={e => onUpdateLayout(selectedEntity.id, { mountingType: e.target.value })}
+                    style={{ background: "#222", color: "#fff", border: "1px solid #555", padding: "4px", borderRadius: "4px", fontSize: "11px" }}
+                >
+                    <option value="flush">Flush Mount (Roof Sloped)</option>
+                    <option value="tilt_legs">Fixed Tilt Legs (Elevated)</option>
+                </select>
+
+                {(!selectedEntity.mountingType || selectedEntity.mountingType === 'tilt_legs') && (
+                    <>
+                        <label style={{ fontSize: "11px", color: "#aaa", marginTop: "4px" }}>Structure Profile:</label>
+                        <select 
+                            value={selectedEntity.structureProfile || 'c_channel'} 
+                            onChange={e => onUpdateLayout(selectedEntity.id, { structureProfile: e.target.value })}
+                            style={{ background: "#222", color: "#fff", border: "1px solid #555", padding: "4px", borderRadius: "4px", fontSize: "11px" }}
+                        >
+                            <option value="c_channel">C-Channel (Standard)</option>
+                            <option value="box">RHS / Box Section (Heavy)</option>
+                        </select>
+
+                        <label style={{ fontSize: "11px", color: "#aaa", display: "flex", justifyContent: "space-between" }}>
+                            Front Leg Height: <strong>{selectedEntity.frontLegHeight ?? 1.2}m</strong>
+                        </label>
+                        <input type="range" min="0.2" max="4.0" step="0.1" value={selectedEntity.frontLegHeight ?? 1.2} onChange={(e) => onUpdateLayout(selectedEntity.id, { frontLegHeight: parseFloat(e.target.value) })} style={{ width: "100%" }} />
+                        
+                        <label style={{ fontSize: "11px", color: "#aaa", display: "flex", justifyContent: "space-between" }}>
+                            Tilt Angle: <strong>{selectedEntity.tiltAngle ?? 12}°</strong>
+                        </label>
+                        <input type="range" min="0" max="45" step="1" value={selectedEntity.tiltAngle ?? 12} onChange={(e) => onUpdateLayout(selectedEntity.id, { tiltAngle: parseFloat(e.target.value) })} style={{ width: "100%" }} />
+                    </>
+                )}
+            </div>
           </>
         )}
+
+        {/* OBSTACLE CONTROLS */}
         {isObstacle && (
           <>
             <label style={{ fontSize: "11px", color: "#aaa" }}>Dimensions (m):</label>
@@ -459,17 +510,25 @@ function EditElementPanel({ selectedEntity, onRotate, onRemove, onDeselect, onUp
             </div>
           </>
         )}
-        <label style={{ fontSize: "11px", color: "#aaa" }}>Rotation: <strong style={{ color: "#fff" }}>{rotationDeg}°</strong></label>
-        <input type="range" min="0" max="360" step="1" value={rotationDeg} onChange={(e) => onRotate(selectedEntity.id, parseInt(e.target.value))} style={{ width: "100%" }} />
-        <div style={{ display: "flex", gap: "8px" }}><button onClick={onDeselect} style={{ flex: 1, padding: "6px" }}>✕ Deselect</button><button onClick={() => onRemove(selectedEntity.id)} style={{ flex: 1, padding: "6px", background: "#ef4444" }}>🗑 Delete</button></div>
+
+        {/* UNIVERSAL ROTATION & ACTIONS */}
+        <div style={{ borderTop: "1px solid #444", marginTop: "4px", paddingTop: "8px", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <label style={{ fontSize: "11px", color: "#aaa", display: "flex", justifyContent: "space-between" }}>
+                Rotation: <strong>{rotationDeg}°</strong>
+            </label>
+            <input type="range" min="0" max="360" step="1" value={rotationDeg} onChange={(e) => onRotate(selectedEntity.id, parseInt(e.target.value))} style={{ width: "100%" }} />
+            
+            <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
+                <button onClick={onDeselect} style={{ flex: 1, padding: "6px" }}>✕ Deselect</button>
+                <button onClick={() => onRemove(selectedEntity.id)} style={{ flex: 1, padding: "6px", background: "#ef4444", border: "none", color: "white" }}>🗑 Delete</button>
+            </div>
+        </div>
+
       </div>
     </div>
   );
 }
 
-// Captures the underlying WebGLRenderer instance so a parent component can
-// grab a PNG snapshot of the current 3D view (used by the report's "3D
-// Structure & Panel Placement" section) without prop-drilling `gl` itself.
 function GLCapture({ captureRef }) {
   const { gl } = useThree();
   useEffect(() => { captureRef.current = gl; }, [gl]);
@@ -490,7 +549,6 @@ const Building3DViewer = forwardRef(function Building3DViewer(
   const lat = location?.lat ?? 28.6, lng = location?.lng ?? 77.2;
 
   useImperativeHandle(ref, () => ({
-    /** Returns a PNG data-URL of the current 3D view, or null if not yet rendered. */
     captureSnapshot: () => {
       try {
         if (!glRef.current) return null;
@@ -502,8 +560,8 @@ const Building3DViewer = forwardRef(function Building3DViewer(
     },
   }));
 
-  const allNodes = roofSections.flatMap(s => s.nodes || []);
-  const { mpu, groundWidthWorld } = useMemo(() => computeSceneScale(lat), [lat]);
+const allNodes = roofSections.flatMap(s => s.nodes || []);
+  const { mpu, mpp, groundWidthWorld } = useMemo(() => computeSceneScale(lat), [lat]); // <--- ADD mpp HERE
 
   const globalCenter = useMemo(() => {
     if (!allNodes.length) return { x: 350, y: 250 };
@@ -538,8 +596,34 @@ const Building3DViewer = forwardRef(function Building3DViewer(
     return { id: sec.id, roofZ, multiPolygons };
   }), [roofSections, globalCenter, mpu, wallH]);
 
-  useEffect(() => { if (viewMode === "heatmap" && heatmapCanvas) generateFluxHeatmapCanvas(heatmapCanvas, simMonth - 1).then(setActiveHeatmap); }, [viewMode, simMonth, heatmapCanvas]);
-  const activeImage = viewMode === "heatmap" && activeHeatmap ? activeHeatmap : satImage;
+// Removed the 2D roof heatmap generation. 
+  // We now ONLY color the panels to ensure a clean, professional UI.
+
+  // Accurate Automated Panel Sampling Effect
+  useEffect(() => {
+    if (!heatmapCanvas || solarUnits.length === 0) return;
+    
+    // Only sample if a panel moved significantly, or hasn't been sampled yet
+    const needsSampling = solarUnits.some(u => 
+      !u.fluxColor || 
+      !u.lastSampledPos || 
+      Math.abs(u.position[0] - u.lastSampledPos[0]) > 0.1 ||
+      Math.abs(u.position[2] - u.lastSampledPos[2]) > 0.1
+    );
+
+    if (!needsSampling) return;
+
+    import('../utils/heatmapUtils').then(({ samplePanelsFlux }) => {
+      // Pass mpp and globalCenter to accurately locate the panels mathematically!
+      samplePanelsFlux(heatmapCanvas, solarUnits, mpu, mpp, globalCenter, simMonth - 1).then(sampledUnits => {
+        const updated = sampledUnits.map(u => ({...u, lastSampledPos: [...u.position]}));
+        setSolarUnits(updated);
+      });
+    });
+  }, [heatmapCanvas, solarUnits, mpu, mpp, globalCenter, simMonth, setSolarUnits]);
+
+  // Always use the clean satellite image for the roof texture
+  const activeImage = satImage; 
   const groundTex = useGroundTexture(satImage);
 
   const validatePlacement = useCallback((id, newPos, newRotation, isObstacle, customDimensions = null, obsType = null) => {
@@ -548,14 +632,16 @@ const Building3DViewer = forwardRef(function Building3DViewer(
     if (isObstacle) {
       const worldDim = { w: metersToWorld(customDimensions.w, mpu), d: metersToWorld(customDimensions.d, mpu) }; movingCorners = getEntityCorners(newPos, worldDim.w, worldDim.d, newRotation);
     } else {
-      const dim = customDimensions || { rows: 3, cols: 4, orientation: "portrait" }, { w, d } = getSolarUnitDimensions(dim.rows, dim.cols, dim.orientation, mpu); movingCorners = getEntityCorners(newPos, w, d, newRotation);
+      const dim = customDimensions || { rows: 3, cols: 4, orientation: "portrait", tiltAngle: 12 }; 
+      const { w, d } = getSolarUnitDimensions(dim.rows, dim.cols, dim.orientation, mpu, dim.tiltAngle); 
+      movingCorners = getEntityCorners(newPos, w, d, newRotation);
     }
     let targetSection = null; const sortedSectionsHighToLow = [...sectionWorldData].sort((a, b) => b.roofZ - a.roofZ);
     for (const sec of sortedSectionsHighToLow) { if (sec.multiPolygons.some(poly => isOBBInsidePolygon(movingCorners, poly))) { targetSection = sec; break; } }
     let hasOverlap = false;
     for (const unit of solarUnits) {
       if (unit.id === id) continue;
-      const { w, d } = getSolarUnitDimensions(unit.rows, unit.cols, unit.orientation, mpu), otherCorners = getEntityCorners(unit.position, w, d, unit.rotation || 0);
+      const { w, d } = getSolarUnitDimensions(unit.rows, unit.cols, unit.orientation, mpu, unit.tiltAngle || 12), otherCorners = getEntityCorners(unit.position, w, d, unit.rotation || 0);
       if (doOBBsIntersect(movingCorners, otherCorners)) { hasOverlap = true; break; }
     }
     if (!hasOverlap) {
@@ -575,7 +661,7 @@ const Building3DViewer = forwardRef(function Building3DViewer(
   const handleDrag = useCallback((id, newPos, currentRotation, isObstacle, dimensions) => {
     const type = isObstacle ? obstacles.find(o => o.id === id)?.type : null;
     const { isValid, targetSection } = validatePlacement(id, newPos, currentRotation, isObstacle, dimensions, type);
-    const updateFn = prev => prev.map(item => item.id !== id ? item : { ...item, position: newPos, roofZ: targetSection ? targetSection.roofZ : item.roofZ, isValid });
+    const updateFn = prev => prev.map(item => item.id !== id ? item : { ...item, position: newPos, isValid });
     if (isObstacle) setObstacles(updateFn); else setSolarUnits(updateFn);
   }, [validatePlacement, setObstacles, setSolarUnits, obstacles]);
 
@@ -584,7 +670,7 @@ const Building3DViewer = forwardRef(function Building3DViewer(
     const { isValid, targetSection } = validatePlacement(id, dropPos, currentRotation, isObstacle, dimensions, type);
     const updateFn = prev => prev.map(item => {
       if (item.id !== id) return item;
-      if (isValid && targetSection) return { ...item, position: dropPos, roofZ: targetSection.roofZ, sectionId: targetSection.id, lastValidPos: dropPos, isValid: true };
+      if (isValid && targetSection) return { ...item, position: dropPos, sectionId: targetSection.id, lastValidPos: dropPos, isValid: true };
       return { ...item, position: item.lastValidPos || item.position, isValid: true };
     });
     if (isObstacle) setObstacles(updateFn); else setSolarUnits(updateFn);
@@ -593,7 +679,7 @@ const Building3DViewer = forwardRef(function Building3DViewer(
 
   const handleRotate = useCallback((id, angleDeg) => {
     const angleRad = angleDeg * (Math.PI / 180), isObs = obstacles.some(o => o.id === id); const item = isObs ? obstacles.find(o => o.id === id) : solarUnits.find(u => u.id === id); if (!item) return;
-    const dim = isObs ? item.dimensions : { rows: item.rows, cols: item.cols, orientation: item.orientation };
+    const dim = isObs ? item.dimensions : { rows: item.rows, cols: item.cols, orientation: item.orientation, tiltAngle: item.tiltAngle };
     const { isValid } = validatePlacement(id, item.position, angleRad, isObs, dim, isObs ? item.type : null);
     const updateFn = prev => prev.map(i => i.id === id ? { ...i, rotation: angleRad, isValid } : i);
     if (isObs) setObstacles(updateFn); else setSolarUnits(updateFn);
@@ -653,16 +739,21 @@ const Building3DViewer = forwardRef(function Building3DViewer(
         ))}
 
         {solarUnits.map(unit => {
-          const targetSec = sectionWorldData.find(s => s.id === unit.sectionId);
-          const currentRoofZ = targetSec ? targetSec.roofZ : unit.roofZ;
-          return <SolarUnit key={unit.id} id={unit.id} position={[unit.position[0], currentRoofZ + metersToWorld(0.1, mpu), unit.position[2]]} roofZ={currentRoofZ} rotation={unit.rotation || 0} mpu={mpu} isSelected={selectedId === unit.id} isValid={unit.isValid} rows={unit.rows} cols={unit.cols} orientation={unit.orientation} onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, unit.rotation || 0, false, { rows: unit.rows, cols: unit.cols, orientation: unit.orientation })} onDrop={(id, pos) => handleDrop(id, pos, unit.rotation || 0, false, { rows: unit.rows, cols: unit.cols, orientation: unit.orientation })} />;
+          return (
+            <SolarUnit 
+              key={unit.id} id={unit.id} position={unit.position} rotation={unit.rotation || 0} mpu={mpu} 
+              isSelected={selectedId === unit.id} isValid={unit.isValid} rows={unit.rows} cols={unit.cols} orientation={unit.orientation} 
+              mountingType={unit.mountingType} frontLegHeight={unit.frontLegHeight} tiltAngle={unit.tiltAngle} structureProfile={unit.structureProfile}
+              viewMode={viewMode} fluxColor={unit.fluxColor} // <--- ADDED PROPS
+              onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, unit.rotation || 0, false, { rows: unit.rows, cols: unit.cols, orientation: unit.orientation })} onDrop={(id, pos) => handleDrop(id, pos, unit.rotation || 0, false, { rows: unit.rows, cols: unit.cols, orientation: unit.orientation })} 
+            />
+          );
         })}
 
         {obstacles.map(obs => {
-          const isTree = obs.type === "tree"; const targetSec = isTree ? null : sectionWorldData.find(s => s.id === obs.sectionId);
-          const currentRoofZ = isTree ? 0 : (targetSec ? targetSec.roofZ : obs.roofZ);
-          if (isTree) return <TreeObstacle key={obs.id} id={obs.id} dimensions={obs.dimensions} position={[obs.position[0], currentRoofZ, obs.position[2]]} rotation={obs.rotation || 0} mpu={mpu} isSelected={selectedId === obs.id} onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, obs.rotation || 0, true, obs.dimensions)} onDrop={(id, pos) => handleDrop(id, pos, obs.rotation || 0, true, obs.dimensions)} orbitRef={orbitRef} />;
-          return <RoofObstacle key={obs.id} id={obs.id} type={obs.type} dimensions={obs.dimensions} position={[obs.position[0], currentRoofZ, obs.position[2]]} roofZ={currentRoofZ} rotation={obs.rotation || 0} mpu={mpu} isSelected={selectedId === obs.id} isValid={obs.isValid} onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, obs.rotation || 0, true, obs.dimensions)} onDrop={(id, pos) => handleDrop(id, pos, obs.rotation || 0, true, obs.dimensions)} />;
+          const isTree = obs.type === "tree";
+          if (isTree) return <TreeObstacle key={obs.id} id={obs.id} dimensions={obs.dimensions} position={[obs.position[0], 0, obs.position[2]]} rotation={obs.rotation || 0} mpu={mpu} isSelected={selectedId === obs.id} onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, obs.rotation || 0, true, obs.dimensions)} onDrop={(id, pos) => handleDrop(id, pos, obs.rotation || 0, true, obs.dimensions)} orbitRef={orbitRef} />;
+          return <RoofObstacle key={obs.id} id={obs.id} type={obs.type} dimensions={obs.dimensions} position={obs.position} rotation={obs.rotation || 0} mpu={mpu} isSelected={selectedId === obs.id} isValid={obs.isValid} onSelect={handleSelect} onDrag={(id, pos) => handleDrag(id, pos, obs.rotation || 0, true, obs.dimensions)} onDrop={(id, pos) => handleDrop(id, pos, obs.rotation || 0, true, obs.dimensions)} />;
         })}
 
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.005, 0]} receiveShadow>
@@ -1229,11 +1320,8 @@ export default function ReportModal({
 # FILE: src\components\ReportroofLayout.jsx
 
 ```js
-import {
-  worldToCanvasPoint,
-  getPanelPixelSize,
-  getObstaclePixelSize,
-} from "../utils/reportUtils";
+// FILE: src/components/ReportRoofLayout.jsx
+import { worldToCanvasPoint, getPanelPixelSize, getObstaclePixelSize } from "../utils/reportUtils";
 
 const CANVAS_W = 700;
 const CANVAS_H = 500;
@@ -1249,13 +1337,9 @@ function LegendItem({ color, border, label, round, dashed }) {
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <span
         style={{
-          width: 14,
-          height: 14,
-          background: color,
+          width: 14, height: 14, background: color,
           border: `1.5px ${dashed ? "dashed" : "solid"} ${border}`,
-          borderRadius: round ? "50%" : 3,
-          display: "inline-block",
-          flexShrink: 0,
+          borderRadius: round ? "50%" : 3, display: "inline-block", flexShrink: 0,
         }}
       />
       <span>{label}</span>
@@ -1263,23 +1347,8 @@ function LegendItem({ color, border, label, round, dashed }) {
   );
 }
 
-/**
- * Top-down (plan-view) drawing of the roof outline(s), placed panel arrays,
- * and obstacles — reusing the exact same coordinate math the live editor
- * canvas (RoofPolygonDrawer.jsx) already uses, so the report matches what
- * the user actually designed.
- *
- * Renders an inline <svg>, so it can be embedded directly in the report
- * and also prints cleanly (vector, no rasterization needed).
- */
 export default function ReportRoofLayout({
-  roofSections = [],
-  solarUnits = [],
-  obstacles = [],
-  globalCenter,
-  mpp,
-  satImageUrl,
-  scaleMetersBar = 5,
+  roofSections = [], solarUnits = [], obstacles = [], globalCenter, mpp, satImageUrl, scaleMetersBar = 5,
 }) {
   const safeMpp = mpp || 0.15;
   const scaleBarPx = scaleMetersBar / safeMpp;
@@ -1287,65 +1356,62 @@ export default function ReportRoofLayout({
 
   return (
     <div>
-      <svg
-        viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
-        style={{ width: "100%", height: "auto", display: "block", borderRadius: 6, background: "#0c0c14" }}
-      >
-        {satImageUrl && (
-          <image
-            href={satImageUrl}
-            x={0}
-            y={0}
-            width={CANVAS_W}
-            height={CANVAS_H}
-            opacity={0.85}
-            preserveAspectRatio="xMidYMid slice"
-          />
-        )}
-        <rect x={0} y={0} width={CANVAS_W} height={CANVAS_H} fill="rgba(0,0,0,0.22)" />
+      <svg viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`} style={{ width: "100%", height: "auto", display: "block", borderRadius: 6, background: "#0c0c14", border: "1px solid #e3e5ea" }}>
+        
+        {/* Define Gradient for Legend */}
+        <defs>
+          <linearGradient id="flux-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#30123b" />
+            <stop offset="25%" stopColor="#4686fb" />
+            <stop offset="50%" stopColor="#1be5b5" />
+            <stop offset="75%" stopColor="#fb9b06" />
+            <stop offset="100%" stopColor="#e31a1c" />
+          </linearGradient>
+        </defs>
 
-        {/* Roof outlines, for every building/section */}
+        {satImageUrl && (
+          <image href={satImageUrl} x={0} y={0} width={CANVAS_W} height={CANVAS_H} opacity={0.65} preserveAspectRatio="xMidYMid slice" />
+        )}
+        <rect x={0} y={0} width={CANVAS_W} height={CANVAS_H} fill="rgba(0,0,0,0.4)" />
+
+        {/* Roof Outlines */}
         {roofSections.map((section) =>
           (section.faces || []).map((face) => {
             const pts = face.nodeIds.map((id) => (section.nodes || []).find((n) => n.id === id)).filter(Boolean);
             if (pts.length < 3) return null;
             const pointsStr = pts.map((p) => `${p.x},${p.y}`).join(" ");
             return (
-              <polygon
-                key={`${section.id}-${face.id}`}
-                points={pointsStr}
-                fill="rgba(99,210,255,0.12)"
-                stroke="#63d2ff"
-                strokeWidth={2}
-                strokeDasharray="6 3"
-              />
+              <polygon key={`${section.id}-${face.id}`} points={pointsStr} fill="rgba(255,255,255,0.05)" stroke="#ffffff" strokeWidth={1.5} strokeDasharray="4 4" />
             );
           })
         )}
 
-        {/* Panel arrays */}
+        {/* Panel Arrays - Colored by Thermal Flux! */}
         {solarUnits.map((unit) => {
           const c = worldToCanvasPoint(unit.position, globalCenter);
           const { wPx, hPx } = getPanelPixelSize(unit, safeMpp);
           const deg = (unit.rotation || 0) * (180 / Math.PI);
-          const cols = unit.cols || 1;
-          const rows = unit.rows || 1;
+          const cols = unit.cols || 1, rows = unit.rows || 1;
+          
+          // Use the API derived color, fallback to default blue
+          const fillColor = unit.fluxColor || "#0f1f3a";
+
           return (
             <g key={unit.id} transform={`translate(${c.x} ${c.y}) rotate(${deg})`}>
-              <rect x={-wPx / 2} y={-hPx / 2} width={wPx} height={hPx} fill="#0f1f3a" stroke="#9fd6ff" strokeWidth={1} />
+              <rect x={-wPx / 2} y={-hPx / 2} width={wPx} height={hPx} fill={fillColor} stroke="#ffffff" strokeWidth={1} />
               {Array.from({ length: Math.max(cols - 1, 0) }).map((_, i) => {
                 const cx = -wPx / 2 + ((i + 1) * wPx) / cols;
-                return <line key={`c${i}`} x1={cx} y1={-hPx / 2} x2={cx} y2={hPx / 2} stroke="rgba(159,214,255,0.4)" strokeWidth={0.5} />;
+                return <line key={`c${i}`} x1={cx} y1={-hPx / 2} x2={cx} y2={hPx / 2} stroke="rgba(255,255,255,0.3)" strokeWidth={0.5} />;
               })}
               {Array.from({ length: Math.max(rows - 1, 0) }).map((_, i) => {
                 const cy = -hPx / 2 + ((i + 1) * hPx) / rows;
-                return <line key={`r${i}`} x1={-wPx / 2} y1={cy} x2={wPx / 2} y2={cy} stroke="rgba(159,214,255,0.4)" strokeWidth={0.5} />;
+                return <line key={`r${i}`} x1={-wPx / 2} y1={cy} x2={wPx / 2} y2={cy} stroke="rgba(255,255,255,0.3)" strokeWidth={0.5} />;
               })}
             </g>
           );
         })}
 
-        {/* Obstacles / keep-outs */}
+        {/* Obstacles */}
         {obstacles.map((o) => {
           const c = worldToCanvasPoint(o.position, globalCenter);
           const { wPx, hPx } = getObstaclePixelSize(o, safeMpp);
@@ -1366,33 +1432,30 @@ export default function ReportRoofLayout({
           );
         })}
 
-        {/* North arrow (canvas/satellite tiles are north-up, so this is a fixed indicator) */}
+        {/* North Arrow */}
         <g transform="translate(28 32)">
           <line x1={0} y1={16} x2={0} y2={-16} stroke="#ffffff" strokeWidth={2} />
           <polygon points="0,-22 -7,-10 7,-10" fill="#ffffff" />
-          <text x={0} y={32} textAnchor="middle" fill="#ffffff" fontSize={12} fontWeight="bold">
-            N
-          </text>
-        </g>
-
-        {/* Scale bar */}
-        <g transform={`translate(24 ${CANVAS_H - 22})`}>
-          <line x1={0} y1={0} x2={scaleBarPx} y2={0} stroke="#ffffff" strokeWidth={2} />
-          <line x1={0} y1={-4} x2={0} y2={4} stroke="#ffffff" strokeWidth={2} />
-          <line x1={scaleBarPx} y1={-4} x2={scaleBarPx} y2={4} stroke="#ffffff" strokeWidth={2} />
-          <text x={scaleBarPx / 2} y={-8} textAnchor="middle" fill="#ffffff" fontSize={11}>
-            {scaleMetersBar} m
-          </text>
+          <text x={0} y={32} textAnchor="middle" fill="#ffffff" fontSize={12} fontWeight="bold">N</text>
         </g>
       </svg>
 
-      {/* Legend */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, padding: "10px 2px 0", fontSize: 12, color: "#444" }}>
-        <LegendItem color="#0f1f3a" border="#9fd6ff" label={`Solar Panel (${totalPanelCount} total)`} />
-        <LegendItem color="#d4d4d4" border="#555555" label="AC Unit" />
+      {/* Enhanced Legend with Thermal Gradient */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16, padding: "10px 2px 0", fontSize: 12, color: "#444" }}>
+        
+        {/* Color Ramp for Panel Yield */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, width: "150px" }}>
+            <span style={{ fontSize: "10px", fontWeight: "bold" }}>Panel Solar Yield</span>
+            <div style={{ width: "100%", height: "8px", background: "linear-gradient(to right, #30123b, #4686fb, #1be5b5, #fb9b06, #e31a1c)", borderRadius: "4px" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "9px", color: "#888" }}>
+                <span>Shaded</span>
+                <span>Optimal</span>
+            </div>
+        </div>
+
+        <LegendItem color="#d4d4d4" border="#555555" label="AC Unit / Obstacle" />
         <LegendItem color="#1a1a1a" border="#000000" label="Water Tank" round />
         <LegendItem color="rgba(34,197,94,0.55)" border="#15803d" label="Tree" round />
-        <LegendItem color="rgba(99,210,255,0.12)" border="#63d2ff" dashed label="Roof Outline" />
       </div>
     </div>
   );
@@ -1414,6 +1477,7 @@ import { computeSceneScale, metersToWorld } from "../utils/scaleUtils";
 
 const STEPS = { LOADING: "loading", DRAW: "draw", VIEW3D: "view3d" };
 const DEFAULT_HEIGHT = 6;
+const MAX_HISTORY = 50; // cap undo stack depth per section
 
 const DEFAULT_SECTION = (id, label = "Main Building") => ({
   id, label,
@@ -1442,6 +1506,9 @@ export default function RoofEditor({ location, onBack }) {
 
   const [showReport, setShowReport] = useState(false);
   const [structureSnapshot, setStructureSnapshot] = useState(null);
+
+  // NEW: undo history for roof polygon (nodes/faces) edits, kept per section id
+  const [history, setHistory] = useState({}); // { [sectionId]: [{nodes, faces}, ...] }
 
   const { mpu, mpp } = useMemo(() => computeSceneScale(location?.lat ?? 28.6), [location?.lat]);
 
@@ -1483,16 +1550,53 @@ export default function RoofEditor({ location, onBack }) {
 
   const updateActiveSection = (patch) => setRoofSections(prev => prev.map(s => s.id === activeSectionId ? { ...s, ...patch } : s));
 
-  const handleMeshChange = (nodes, faces) => updateActiveSection({ nodes, faces });
+  // NEW: snapshot the active section's nodes/faces onto its undo stack, before a mutation is applied
+  const pushHistory = () => {
+    setHistory(prev => {
+      const stack = prev[activeSectionId] || [];
+      const snapshot = { nodes: activeSection?.nodes || [], faces: activeSection?.faces || [] };
+      return { ...prev, [activeSectionId]: [...stack, snapshot].slice(-MAX_HISTORY) };
+    });
+  };
+
+  const handleMeshChange = (nodes, faces) => { pushHistory(); updateActiveSection({ nodes, faces }); };
+
   const handleClearSection = () => {
+    pushHistory();
     updateActiveSection({ nodes: [], faces: [] }); setSelectedNodeId(null); setIsManualDraw(true);
     setSolarUnits(prev => prev.filter(u => u.sectionId !== activeSectionId));
     setObstacles(prev => prev.filter(o => o.sectionId !== activeSectionId));
   };
 
+  // NEW: pop the last snapshot for the active section and restore it
+  const handleUndo = () => {
+    const stack = history[activeSectionId] || [];
+    if (stack.length === 0) return;
+    const last = stack[stack.length - 1];
+    updateActiveSection({ nodes: last.nodes, faces: last.faces });
+    setHistory(prev => ({ ...prev, [activeSectionId]: stack.slice(0, -1) }));
+    setSelectedNodeId(null);
+  };
+
+  // NEW: delete the currently-selected point, stripping it out of any face
+  // (and dropping faces that fall below 3 points as a result)
+  const handleDeletePoint = () => {
+    if (!selectedNodeId || !activeSection) return;
+    pushHistory();
+    const updatedNodes = (activeSection.nodes || []).filter(n => n.id !== selectedNodeId);
+    const updatedFaces = (activeSection.faces || [])
+      .map(f => ({ ...f, nodeIds: f.nodeIds.filter(id => id !== selectedNodeId) }))
+      .filter(f => f.nodeIds.length >= 3);
+    updateActiveSection({ nodes: updatedNodes, faces: updatedFaces });
+    setSelectedNodeId(null);
+  };
+
+  const canUndo = (history[activeSectionId] || []).length > 0;
+
   const handleNodeElevationChange = (val) => {
     const newZ = parseFloat(val);
     if (isNaN(newZ) || !selectedNodeId) return;
+    pushHistory();
     const updatedNodes = (activeSection.nodes || []).map(n => n.id === selectedNodeId ? { ...n, z: newZ } : n);
     updateActiveSection({ nodes: updatedNodes });
   };
@@ -1577,6 +1681,15 @@ export default function RoofEditor({ location, onBack }) {
                     <span className="elevation-unit" style={{ color: '#fbbf24' }}>m</span>
                   </div>
                   <span style={{ fontSize: '10px', color: '#aaa', display: 'block', marginTop: '6px' }}>Raise this point to create sloped ridges and gables.</span>
+                  {/* NEW: DELETE POINT BUTTON */}
+                  <button
+                    className="toolbar-btn danger"
+                    style={{ marginTop: '8px', width: '100%', justifyContent: 'center' }}
+                    onClick={handleDeletePoint}
+                    title="Delete this point (Delete/Backspace)"
+                  >
+                    🗑 Delete Point
+                  </button>
                 </div>
               )}
 
@@ -1598,6 +1711,7 @@ export default function RoofEditor({ location, onBack }) {
                 solarUnits={solarUnits} setSolarUnits={setSolarUnits} obstacles={obstacles} setObstacles={setObstacles}
                 solarData={solarData}
                 onGenerateReport={handleGenerateReport}
+                onUndo={handleUndo} canUndo={canUndo} onDeletePoint={handleDeletePoint}
               />
             </div>
           </div>
@@ -1626,6 +1740,7 @@ export default function RoofEditor({ location, onBack }) {
 # FILE: src\components\RoofObstacle.jsx
 
 ```js
+// FILE: src/components/RoofObstacle.jsx
 import { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -1654,17 +1769,22 @@ function buildWaterTank(w, h, d) {
   return group;
 }
 
-export default function RoofObstacle({ id, type, dimensions, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop, roofZ }) {
+export default function RoofObstacle({ id, type, dimensions, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop }) {
   const groupRef = useRef();
   const isDragging = useRef(false);
   const dragOffset = useRef(new THREE.Vector3());
-  const { camera, gl } = useThree();
+  const { camera, scene, gl } = useThree();
 
   const [localPos, setLocalPos] = useState(() => new THREE.Vector3(...position));
-  const actualRoofZ = roofZ !== undefined ? roofZ : position[1];
+  const [localNormal, setLocalNormal] = useState(() => new THREE.Vector3(0, 1, 0));
+  
+  const [needsInitialSnap, setNeedsInitialSnap] = useState(true);
 
   useEffect(() => {
-    if (!isDragging.current) setLocalPos(new THREE.Vector3(...position));
+    if (!isDragging.current) {
+      setLocalPos(new THREE.Vector3(...position));
+      setNeedsInitialSnap(true);
+    }
   }, [position]);
 
   const obstacleMesh = useMemo(() => {
@@ -1673,61 +1793,91 @@ export default function RoofObstacle({ id, type, dimensions, position, rotation 
     return buildACUnit(w, h, d);
   }, [type, dimensions, mpu]);
 
-  const dragPlane = useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+  const getRoofHitAtWorldXZ = useCallback((x, z) => {
+    const ray = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point, normal: hit.face.normal.clone().transformDirection(hit.object.matrixWorld).normalize() };
+  }, [scene]);
 
-  const getWorldPosFromPointer = useCallback((e) => {
+  const getCameraRayHit = useCallback((e) => {
     const nativeEvent = e.nativeEvent || e;
     const rect = gl.domElement.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((nativeEvent.clientX - rect.left) / rect.width) * 2 - 1,
-      -((nativeEvent.clientY - rect.top) / rect.height) * 2 + 1,
-    );
+    const ndc = new THREE.Vector2(((nativeEvent.clientX - rect.left) / rect.width) * 2 - 1, -((nativeEvent.clientY - rect.top) / rect.height) * 2 + 1);
     const ray = new THREE.Raycaster();
     ray.setFromCamera(ndc, camera);
-    dragPlane.current.constant = -actualRoofZ; 
-    const hit = new THREE.Vector3();
-    ray.ray.intersectPlane(dragPlane.current, hit);
-    return hit;
-  }, [camera, gl, actualRoofZ]);
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point };
+  }, [camera, gl, scene]);
 
   const onPointerDown = useCallback((e) => {
     e.stopPropagation();
     e.target.setPointerCapture(e.pointerId);
-    
-    // 👇 THIS IS THE CRITICAL FIX THAT OPENS THE SIDE MENU
     onSelect?.(id); 
-    
     isDragging.current = true;
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) dragOffset.current.set(localPos.x - worldHit.x, 0, localPos.z - worldHit.z);
-  }, [id, onSelect, localPos, getWorldPosFromPointer]);
+
+    const camHit = getCameraRayHit(e);
+    if (camHit) dragOffset.current.set(localPos.x - camHit.point.x, 0, localPos.z - camHit.point.z);
+  }, [id, onSelect, localPos, getCameraRayHit]);
 
   const onPointerMove = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) {
-      const newX = worldHit.x + dragOffset.current.x, newZ = worldHit.z + dragOffset.current.z;
-      setLocalPos(new THREE.Vector3(newX, actualRoofZ, newZ));
-      onDrag?.(id, [newX, actualRoofZ, newZ]);
+    const camHit = getCameraRayHit(e);
+    if (camHit) {
+      const targetX = camHit.point.x + dragOffset.current.x;
+      const targetZ = camHit.point.z + dragOffset.current.z;
+      
+      const roofHit = getRoofHitAtWorldXZ(targetX, targetZ);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        onDrag?.(id, [roofHit.point.x, roofHit.point.y, roofHit.point.z]);
+      }
     }
-  }, [getWorldPosFromPointer, actualRoofZ, onDrag, id]);
+  }, [getCameraRayHit, getRoofHitAtWorldXZ, onDrag, id]);
 
   const onPointerUp = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
     isDragging.current = false;
     try { e.target.releasePointerCapture(e.pointerId); } catch(err) {}
-    onDrop?.(id, [localPos.x, actualRoofZ, localPos.z]);
-  }, [id, onDrop, localPos, actualRoofZ]);
+    onDrop?.(id, [localPos.x, localPos.y, localPos.z]);
+  }, [id, onDrop, localPos]);
+
+  useEffect(() => {
+    if (groupRef.current) {
+      const up = new THREE.Vector3(0, 1, 0);
+      const normalQuat = new THREE.Quaternion().setFromUnitVectors(up, localNormal);
+      const userQuat = new THREE.Quaternion().setFromAxisAngle(up, -rotation);
+      groupRef.current.quaternion.copy(normalQuat).multiply(userQuat);
+    }
+  }, [localNormal, rotation]);
 
   useFrame(({ clock }) => {
+    if (needsInitialSnap && scene && !isDragging.current) {
+      const roofHit = getRoofHitAtWorldXZ(localPos.x, localPos.z);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        setNeedsInitialSnap(false); 
+      }
+    }
+
     if (!groupRef.current) return;
-    if (isSelected && isValid) groupRef.current.scale.setScalar(1 + 0.018 * Math.sin(clock.getElapsedTime() * 4));
-    else groupRef.current.scale.setScalar(1);
+    if (isSelected && isValid) {
+        const s = 1 + 0.018 * Math.sin(clock.getElapsedTime() * 4);
+        groupRef.current.scale.setScalar(s);
+    } else {
+        groupRef.current.scale.setScalar(1);
+    }
   });
 
-  const pos = isDragging.current ? localPos : new THREE.Vector3(...position);
+  // FIX: Always use our auto-snapped localPos instead of falling back to the raw prop!
+  const pos = localPos;
 
   const feedbackBox = (isSelected || !isValid) ? (() => {
     const w = metersToWorld(dimensions.w, mpu), d = metersToWorld(dimensions.d, mpu), h = metersToWorld(dimensions.h, mpu), pad = metersToWorld(0.12, mpu);
@@ -1744,7 +1894,6 @@ export default function RoofObstacle({ id, type, dimensions, position, rotation 
     <group
       ref={groupRef}
       position={[pos.x, pos.y, pos.z]}
-      rotation={[0, -rotation, 0]}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -1786,7 +1935,8 @@ export default function RoofPolygonDrawer({
   location, globalCenter, activeRoofZ, mpp, mpu, onSatImageReady,
   activeSectionId, solarUnits = [], setSolarUnits, obstacles = [], setObstacles,
   solarData, // <-- NEW PROP
-  onGenerateReport // <-- NEW PROP
+  onGenerateReport, // <-- NEW PROP
+  onUndo, canUndo, onDeletePoint // <-- NEW PROPS: undo history + point deletion (owned by parent RoofEditor)
 }) {
   const canvasRef = useRef(null), bgImageRef = useRef(null);
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -2003,10 +2153,30 @@ export default function RoofPolygonDrawer({
     dragOffset.current = { x: 0, y: 0 }; 
   }, [clipboard, cursorPos, canvasToWorld, activeRoofZ, viewTransform, activeSectionId, setSolarUnits, setObstacles]);
 
+  // NEW: undo / delete-point wrapper callbacks.
+  // These also tidy up local in-progress-drawing state (pendingNodeIds/hoveredNodeId)
+  // so we never reference a node id that the parent has just removed/restored away.
+  const handleUndoClick = useCallback(() => {
+    setPendingNodeIds([]);
+    setInferenceGuides([]);
+    if (onUndo) onUndo();
+  }, [onUndo]);
+
+  const handleDeletePointClick = useCallback(() => {
+    if (!selectedNodeId) return;
+    setPendingNodeIds(prev => prev.filter(id => id !== selectedNodeId));
+    setHoveredNodeId(prev => (prev === selectedNodeId ? null : prev));
+    if (onDeletePoint) onDeletePoint();
+  }, [selectedNodeId, onDeletePoint]);
+
   const copyRef = useRef(handleCopy);
   const pasteRef = useRef(handlePaste);
+  const undoRef = useRef(handleUndoClick);
+  const deletePointRef = useRef(handleDeletePointClick);
   useEffect(() => { copyRef.current = handleCopy; }, [handleCopy]);
   useEffect(() => { pasteRef.current = handlePaste; }, [handlePaste]);
+  useEffect(() => { undoRef.current = handleUndoClick; }, [handleUndoClick]);
+  useEffect(() => { deletePointRef.current = handleDeletePointClick; }, [handleDeletePointClick]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -2014,6 +2184,8 @@ export default function RoofPolygonDrawer({
       if (e.code === "Space") { e.preventDefault(); setIsSpacePressed(true); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') { e.preventDefault(); copyRef.current(); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') { e.preventDefault(); pasteRef.current(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undoRef.current(); } // NEW: Ctrl+Z / Cmd+Z undo
+      if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deletePointRef.current(); } // NEW: delete selected point
       if (e.key === 'Escape') { setPendingNodeIds([]); setInferenceGuides([]); }
     };
     const handleKeyUp = (e) => { if (e.code === "Space") setIsSpacePressed(false); };
@@ -2367,6 +2539,31 @@ export default function RoofPolygonDrawer({
   return (
     <div className="polygon-drawer" style={{ position: 'relative' }}>
       <div className="drawer-mode-bar" style={{ background: '#1e1e2d', borderBottom: '1px solid #333', padding: '8px 16px', display: 'flex', alignItems: 'center' }}>
+        {/* NEW: UNDO BUTTON — always visible, works on nodes/faces edits for the active section */}
+        <button
+          className="mode-btn"
+          style={{ opacity: canUndo ? 1 : 0.4, cursor: canUndo ? 'pointer' : 'not-allowed' }}
+          onClick={handleUndoClick}
+          disabled={!canUndo}
+          title={canUndo ? "Undo last action (Ctrl+Z)" : "Nothing to undo"}
+        >
+          ↩️ Undo
+        </button>
+
+        {/* NEW: DELETE POINT BUTTON — shown only when a point is selected */}
+        {selectedNodeId && (
+          <button
+            className="mode-btn danger"
+            style={{ marginLeft: 6 }}
+            onClick={handleDeletePointClick}
+            title="Delete selected point (Delete / Backspace)"
+          >
+            🗑 Delete Point
+          </button>
+        )}
+
+        <span className="toolbar-divider" style={{ margin: '0 8px', width: 1, height: 16, background: 'var(--border)' }} />
+
         {faces && faces.length > 0 ? (
           <>
             <span className="mode-label" style={{ color: '#6ee7b7', marginRight: '8px' }}>Place Layout:</span>
@@ -2596,16 +2793,19 @@ export default function SingleLineDiagram({ metrics, design }) {
 # FILE: src\components\SolarArray.jsx
 
 ```js
-import { useRef, useState, useCallback, useEffect } from "react";
+// FILE: src/components/SolarArray.jsx
+import { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { metersToWorld } from "../utils/scaleUtils";
 
-const matPanel = new THREE.MeshStandardMaterial({ color: "#0f1f3a", roughness: 0.08, metalness: 0.95, emissive: "#050e1c", emissiveIntensity: 0.35 });
+// Default Materials
+const matPanelStandard = new THREE.MeshStandardMaterial({ color: "#0f1f3a", roughness: 0.08, metalness: 0.95, emissive: "#050e1c", emissiveIntensity: 0.35 });
 const matCellLine = new THREE.MeshStandardMaterial({ color: "#0a1628", roughness: 0.06, metalness: 0.98, emissive: "#040c1a", emissiveIntensity: 0.20 });
 const matAlumFrame = new THREE.MeshStandardMaterial({ color: "#d4d4d4", roughness: 0.25, metalness: 0.92 });
-const matSteel = new THREE.MeshStandardMaterial({ color: "#aaaaaa", roughness: 0.45, metalness: 0.80 });
-const matBasePlate = new THREE.MeshStandardMaterial({ color: "#888888", roughness: 0.60, metalness: 0.70 });
+const matSteelLight = new THREE.MeshStandardMaterial({ color: "#bbbbbb", roughness: 0.4, metalness: 0.85 }); 
+const matSteelHeavy = new THREE.MeshStandardMaterial({ color: "#777777", roughness: 0.6, metalness: 0.70 }); 
+const matBasePlate = new THREE.MeshStandardMaterial({ color: "#555555", roughness: 0.80, metalness: 0.50 });
 const matSelectGlow = new THREE.MeshStandardMaterial({ color: "#44aaff", emissive: "#0044aa", emissiveIntensity: 0.8, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide });
 const matInvalidGlow = new THREE.MeshStandardMaterial({ color: "#ff4444", emissive: "#aa0000", emissiveIntensity: 0.8, transparent: true, opacity: 0.3, depthWrite: false, side: THREE.DoubleSide });
 
@@ -2617,12 +2817,13 @@ function addBox(group, w, h, d, mat, x, y, z, rx = 0, ry = 0, rz = 0) {
   group.add(mesh); return mesh;
 }
 
-function buildPanelAssembly(PW, PH, PT, mpu) {
+// Passed dynamic material down to the panels
+function buildPanelAssembly(PW, PH, PT, mpu, activePanelMat) {
   const group = new THREE.Group();
   const BT = metersToWorld(0.022, mpu); 
   const CT = metersToWorld(0.010, mpu); 
 
-  addBox(group, PW, PT, PH, matPanel, 0, PT / 2, PH / 2);
+  addBox(group, PW, PT, PH, activePanelMat, 0, PT / 2, PH / 2);
 
   const fY = PT + BT / 4; 
   addBox(group, PW, BT, BT, matAlumFrame, 0, fY, BT / 2);
@@ -2631,7 +2832,6 @@ function buildPanelAssembly(PW, PH, PT, mpu) {
   addBox(group, BT, BT, PH - BT * 2, matAlumFrame,  PW / 2 - BT / 2, fY, PH / 2);
 
   const innerW = PW - BT * 2, innerH = PH - BT * 2, cY = PT + CT / 2;
-  // Adjust cell lines based on orientation ratio
   const cellRows = PH > PW ? 3 : 2; 
   for (let i = 1; i < cellRows; i++) addBox(group, innerW, CT, CT, matCellLine, 0, cY, BT + (innerH * i) / cellRows);
   if (PH > PW) addBox(group, CT, CT, innerH, matCellLine, 0, cY, PH / 2);
@@ -2639,18 +2839,23 @@ function buildPanelAssembly(PW, PH, PT, mpu) {
   return group;
 }
 
-function buildSolarUnitGroup(mpu, rows, cols, orientation) {
+function buildSolarUnitGroup(mpu, rows, cols, orientation, mountingType, frontLegHeight, tiltAngleDeg, structureProfile, activePanelMat) {
   const root = new THREE.Group();
-  
-  // Swap Dimensions for Landscape
   const isLandscape = orientation === 'landscape';
   const rawW = isLandscape ? 1.65 : 1.00;
   const rawH = isLandscape ? 1.00 : 1.65;
-  
   const PW = metersToWorld(rawW, mpu), PH = metersToWorld(rawH, mpu), PT = metersToWorld(0.035, mpu);  
-  const GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu), TILT = 12 * (Math.PI / 180);       
-  const RAIL_T = metersToWorld(0.050, mpu), LEG_W = metersToWorld(0.060, mpu), BP_SIZE = metersToWorld(0.180, mpu), BP_T = metersToWorld(0.020, mpu);  
-  const MH_FRONT = metersToWorld(1.20, mpu), MH_REAR = MH_FRONT + PH * Math.sin(TILT);
+  const GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu);
+  const isFlush = mountingType === 'flush';
+  const TILT = isFlush ? 0 : tiltAngleDeg * (Math.PI / 180);       
+  const MH_FRONT = isFlush ? 0 : metersToWorld(frontLegHeight, mpu);
+  const MH_REAR = isFlush ? 0 : MH_FRONT + PH * Math.sin(TILT);
+  
+  const isHeavyBox = structureProfile === 'box';
+  const RAIL_T = metersToWorld(isHeavyBox ? 0.080 : 0.040, mpu);
+  const LEG_W = metersToWorld(isHeavyBox ? 0.100 : 0.050, mpu);
+  const matStruct = isHeavyBox ? matSteelHeavy : matSteelLight;
+  const BP_SIZE = metersToWorld(0.200, mpu), BP_T = metersToWorld(0.020, mpu);  
 
   const totalW = cols * PW + (cols - 1) * GAP_X;
   const totalD = rows * PH * Math.cos(TILT) + (rows - 1) * GAP_Z;
@@ -2662,36 +2867,38 @@ function buildSolarUnitGroup(mpu, rows, cols, orientation) {
     const zFront = rowFrontZ[r], zRear = zFront + PH * Math.cos(TILT), zMid = (zFront + zRear) / 2;
     const yRailFront = MH_FRONT + RAIL_T / 2, yRailRear = MH_REAR + RAIL_T / 2;
 
-    for (let c = 0; c < cols; c++) {
-      const xEdges = [colX[c] - PW / 2 + RAIL_T / 2, colX[c] + PW / 2 - RAIL_T / 2];
-      for (const xe of xEdges) {
-        const yAvg = (yRailFront + yRailRear) / 2;
-        const railLen = Math.sqrt(Math.pow(zRear - zFront, 2) + Math.pow(MH_REAR - MH_FRONT, 2));
-        const railTiltAngle = Math.atan2(MH_REAR - MH_FRONT, zRear - zFront);
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(RAIL_T, RAIL_T, railLen), matSteel);
-        rail.position.set(xe, yAvg, zMid); rail.rotation.x = -railTiltAngle; rail.castShadow = true; root.add(rail);
-      }
+    if (!isFlush) {
+        for (let c = 0; c < cols; c++) {
+          const xEdges = [colX[c] - PW / 2 + RAIL_T / 2, colX[c] + PW / 2 - RAIL_T / 2];
+          for (const xe of xEdges) {
+            const yAvg = (yRailFront + yRailRear) / 2;
+            const railLen = Math.sqrt(Math.pow(zRear - zFront, 2) + Math.pow(MH_REAR - MH_FRONT, 2));
+            const railTiltAngle = Math.atan2(MH_REAR - MH_FRONT, zRear - zFront);
+            const rail = new THREE.Mesh(new THREE.BoxGeometry(RAIL_T, RAIL_T, railLen), matStruct);
+            rail.position.set(xe, yAvg, zMid); rail.rotation.x = -railTiltAngle; rail.castShadow = true; root.add(rail);
+          }
+        }
+        const crossRailLen = totalW + metersToWorld(0.10, mpu);
+        addBox(root, crossRailLen, RAIL_T, RAIL_T, matStruct, 0, yRailFront, zFront);
+        addBox(root, crossRailLen, RAIL_T, RAIL_T, matStruct, 0, yRailRear, zRear);
+
+        const legXPositions = [-totalW / 2];
+        for (let c = 0; c < cols - 1; c++) legXPositions.push(colX[c] + PW / 2 + GAP_X / 2); 
+        legXPositions.push(totalW / 2); 
+
+        for (const lx of legXPositions) {
+          addBox(root, LEG_W, MH_FRONT, LEG_W, matStruct, lx, MH_FRONT / 2, zFront);
+          addBox(root, BP_SIZE, BP_T, BP_SIZE, matBasePlate, lx, BP_T / 2, zFront);
+          addBox(root, LEG_W, MH_REAR, LEG_W, matStruct, lx, MH_REAR / 2, zRear);
+          addBox(root, BP_SIZE, BP_T, BP_SIZE, matBasePlate, lx, BP_T / 2, zRear);
+        }
     }
 
-    const crossRailLen = totalW + metersToWorld(0.10, mpu);
-    addBox(root, crossRailLen, RAIL_T, RAIL_T, matAlumFrame, 0, yRailFront, zFront);
-    addBox(root, crossRailLen, RAIL_T, RAIL_T, matAlumFrame, 0, yRailRear, zRear);
-
-    const legXPositions = [-totalW / 2];
-    for (let c = 0; c < cols - 1; c++) legXPositions.push(colX[c] + PW / 2 + GAP_X / 2); 
-    legXPositions.push(totalW / 2); 
-
-    for (const lx of legXPositions) {
-      addBox(root, LEG_W, MH_FRONT, LEG_W, matSteel, lx, MH_FRONT / 2, zFront);
-      addBox(root, BP_SIZE, BP_T, BP_SIZE, matBasePlate, lx, BP_T / 2, zFront);
-      addBox(root, LEG_W, MH_REAR, LEG_W, matSteel, lx, MH_REAR / 2, zRear);
-      addBox(root, BP_SIZE, BP_T, BP_SIZE, matBasePlate, lx, BP_T / 2, zRear);
-    }
-
     for (let c = 0; c < cols; c++) {
-      const panelGroup = buildPanelAssembly(PW, PH, PT, mpu);
+      const panelGroup = buildPanelAssembly(PW, PH, PT, mpu, activePanelMat); // Passed mat here
       panelGroup.rotation.x = -TILT;
-      panelGroup.position.set(colX[c], MH_FRONT + RAIL_T, zFront);
+      const yOffset = isFlush ? (PT / 2) + metersToWorld(0.04, mpu) : MH_FRONT + RAIL_T;
+      panelGroup.position.set(colX[c], yOffset, zFront);
       root.add(panelGroup);
     }
   }
@@ -2699,42 +2906,69 @@ function buildSolarUnitGroup(mpu, rows, cols, orientation) {
   return root;
 }
 
-export default function SolarUnit({ id, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop, roofZ, rows = 3, cols = 4, orientation = 'portrait' }) {
+export default function SolarUnit({ 
+  id, position, rotation = 0, mpu, isSelected, isValid, onSelect, onDrag, onDrop, 
+  rows = 3, cols = 4, orientation = 'portrait',
+  mountingType = 'tilt_legs', frontLegHeight = 1.2, tiltAngle = 12, structureProfile = 'c_channel',
+  viewMode, fluxColor // NEW PROPS FOR HEATMAP
+}) {
   const groupRef = useRef();
   const isDragging = useRef(false);
   const dragOffset = useRef(new THREE.Vector3());
-  const { camera, gl } = useThree();
+  const { camera, scene, gl } = useThree();
 
   const [localPos, setLocalPos] = useState(() => new THREE.Vector3(...position));
-  const actualRoofZ = roofZ !== undefined ? roofZ : position[1];
+  const [localNormal, setLocalNormal] = useState(() => new THREE.Vector3(0, 1, 0));
+  const [needsInitialSnap, setNeedsInitialSnap] = useState(true);
+
+  const isRoofSloped = localNormal.y < 0.99;
+  const activeMountingType = isRoofSloped ? 'flush' : mountingType;
 
   useEffect(() => {
-    if (!isDragging.current) setLocalPos(new THREE.Vector3(...position));
+    if (!isDragging.current) {
+      setLocalPos(new THREE.Vector3(...position));
+      setNeedsInitialSnap(true);
+    }
   }, [position]);
+
+  // Dynamically color the panel if heatmap is on
+  const activePanelMat = useMemo(() => {
+    if (viewMode === 'heatmap' && fluxColor) {
+        return new THREE.MeshStandardMaterial({ color: fluxColor, roughness: 0.1, metalness: 0.6 });
+    }
+    return matPanelStandard;
+  }, [viewMode, fluxColor]);
 
   const unitGroup = useRef(null);
   
-  // Rebuild mesh if mpu, rows, cols, or orientation change
-  const currentKey = `${mpu}-${rows}-${cols}-${orientation}`;
+  // Notice we added activePanelMat to the cache key so it rebuilds when color changes
+  const currentKey = `${mpu}-${rows}-${cols}-${orientation}-${activeMountingType}-${frontLegHeight}-${tiltAngle}-${structureProfile}-${activePanelMat.uuid}`;
+  
   if (!unitGroup.current || unitGroup.current.userData.cacheKey !== currentKey) {
     if (unitGroup.current) unitGroup.current.traverse(c => { c.geometry?.dispose(); });
-    unitGroup.current = buildSolarUnitGroup(mpu, rows, cols, orientation);
+    unitGroup.current = buildSolarUnitGroup(mpu, rows, cols, orientation, activeMountingType, frontLegHeight, tiltAngle, structureProfile, activePanelMat);
     unitGroup.current.userData.cacheKey = currentKey;
   }
 
-  const dragPlane = useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
+  const getRoofHitAtWorldXZ = useCallback((x, z) => {
+    const ray = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point, normal: hit.face.normal.clone().transformDirection(hit.object.matrixWorld).normalize() };
+  }, [scene]);
 
-  const getWorldPosFromPointer = useCallback((e) => {
+  const getCameraRayHit = useCallback((e) => {
     const nativeEvent = e.nativeEvent || e;
     const rect = gl.domElement.getBoundingClientRect();
     const ndc = new THREE.Vector2(((nativeEvent.clientX - rect.left) / rect.width) * 2 - 1, -((nativeEvent.clientY - rect.top) / rect.height) * 2 + 1);
     const ray = new THREE.Raycaster();
     ray.setFromCamera(ndc, camera);
-    dragPlane.current.constant = -actualRoofZ; 
-    const hit = new THREE.Vector3();
-    ray.ray.intersectPlane(dragPlane.current, hit);
-    return hit;
-  }, [camera, gl, actualRoofZ]);
+    const intersects = ray.intersectObjects(scene.children, true);
+    const hit = intersects.find(h => h.object.userData?.isRoof);
+    if (!hit) return null;
+    return { point: hit.point };
+  }, [camera, gl, scene]);
 
   const onPointerDown = useCallback((e) => {
     e.stopPropagation();
@@ -2742,49 +2976,79 @@ export default function SolarUnit({ id, position, rotation = 0, mpu, isSelected,
     onSelect?.(id);
     isDragging.current = true;
     
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) {
-      dragOffset.current.set(localPos.x - worldHit.x, 0, localPos.z - worldHit.z);
-    }
-  }, [id, onSelect, localPos, getWorldPosFromPointer]);
+    const camHit = getCameraRayHit(e);
+    if (camHit) dragOffset.current.set(localPos.x - camHit.point.x, 0, localPos.z - camHit.point.z);
+  }, [id, onSelect, localPos, getCameraRayHit]);
 
   const onPointerMove = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
-    const worldHit = getWorldPosFromPointer(e);
-    if (worldHit) {
-      const newX = worldHit.x + dragOffset.current.x;
-      const newZ = worldHit.z + dragOffset.current.z;
-      setLocalPos(new THREE.Vector3(newX, actualRoofZ, newZ));
-      onDrag?.(id, [newX, actualRoofZ, newZ]);
+    const camHit = getCameraRayHit(e);
+    if (camHit) {
+      const targetX = camHit.point.x + dragOffset.current.x;
+      const targetZ = camHit.point.z + dragOffset.current.z;
+      
+      const roofHit = getRoofHitAtWorldXZ(targetX, targetZ);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        onDrag?.(id, [roofHit.point.x, roofHit.point.y, roofHit.point.z]);
+      }
     }
-  }, [getWorldPosFromPointer, actualRoofZ, onDrag, id]);
+  }, [getCameraRayHit, getRoofHitAtWorldXZ, onDrag, id]);
 
   const onPointerUp = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
     isDragging.current = false;
     try { e.target.releasePointerCapture(e.pointerId); } catch(err) {} 
-    onDrop?.(id, [localPos.x, actualRoofZ, localPos.z]);
-  }, [id, onDrop, localPos, actualRoofZ]);
+    onDrop?.(id, [localPos.x, localPos.y, localPos.z]);
+  }, [id, onDrop, localPos]);
+
+  useEffect(() => {
+    if (groupRef.current) {
+      const up = new THREE.Vector3(0, 1, 0);
+      const normalQuat = new THREE.Quaternion().setFromUnitVectors(up, localNormal);
+      const userQuat = new THREE.Quaternion().setFromAxisAngle(up, -rotation);
+      groupRef.current.quaternion.copy(normalQuat).multiply(userQuat);
+    }
+  }, [localNormal, rotation]);
 
   useFrame(({ clock }) => {
+    if (needsInitialSnap && scene && !isDragging.current) {
+      const roofHit = getRoofHitAtWorldXZ(localPos.x, localPos.z);
+      if (roofHit) {
+        setLocalPos(roofHit.point);
+        setLocalNormal(roofHit.normal);
+        setNeedsInitialSnap(false); 
+      }
+    }
+
     if (!groupRef.current) return;
-    if (isSelected && isValid) groupRef.current.scale.setScalar(1 + 0.018 * Math.sin(clock.getElapsedTime() * 4));
-    else groupRef.current.scale.setScalar(1);
+    if (isSelected && isValid) {
+        const s = 1 + 0.018 * Math.sin(clock.getElapsedTime() * 4);
+        groupRef.current.scale.set(s, s, s);
+    } else {
+        groupRef.current.scale.set(1, 1, 1);
+    }
   });
 
-  const pos = isDragging.current ? localPos : new THREE.Vector3(...position);
+  const pos = localPos;
 
   const feedbackBox = (isSelected || !isValid) ? (() => {
     const isLandscape = orientation === 'landscape';
     const rawW = isLandscape ? 1.65 : 1.00;
     const rawH = isLandscape ? 1.00 : 1.65;
-    const PW = metersToWorld(rawW, mpu), PH = metersToWorld(rawH, mpu), GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu), TILT = 12 * (Math.PI / 180);
     
+    const TILT = activeMountingType === 'flush' ? 0 : tiltAngle * (Math.PI / 180);
+    const MH_FRONT = activeMountingType === 'flush' ? 0 : metersToWorld(frontLegHeight, mpu);
+    
+    const PW = metersToWorld(rawW, mpu), PH = metersToWorld(rawH, mpu), GAP_X = metersToWorld(0.05, mpu), GAP_Z = metersToWorld(0.30, mpu);
     const totalW = cols * PW + (cols - 1) * GAP_X;
     const totalD = rows * PH * Math.cos(TILT) + (rows - 1) * GAP_Z;
-    const totalH = metersToWorld(0.15 + rawH * Math.sin(TILT) + 0.10, mpu), pad = metersToWorld(0.12, mpu);
+    const totalH = MH_FRONT + metersToWorld(0.15 + rawH * Math.sin(TILT), mpu);
+    
+    const pad = metersToWorld(0.12, mpu);
     const material = isValid ? matSelectGlow : matInvalidGlow;
 
     return (
@@ -2799,7 +3063,6 @@ export default function SolarUnit({ id, position, rotation = 0, mpu, isSelected,
     <group
       ref={groupRef}
       position={[pos.x, pos.y, pos.z]}
-      rotation={[0, -rotation, 0]} 
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -3476,7 +3739,7 @@ function heightFromTags(tags) {
 
 
 
-export async function fetchSolarDataLayers(lat, lng, radiusMeters = 50) {
+export async function fetchSolarDataLayers(lat, lng, radiusMeters = 100) {
   const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   try {
@@ -5042,57 +5305,83 @@ export function getEntityCorners(position, width, depth, rotation = 0) {
 # FILE: src\utils\heatmapUtils.js
 
 ```js
+// FILE: src/utils/heatmapUtils.js
 import { fromArrayBuffer } from "geotiff";
+import { PIXELS_TO_WORLD } from "./scaleUtils";
 
-export async function generateFluxHeatmapCanvas(tiffBuffer, monthIndex = 5) {
-  if (!tiffBuffer) return null;
+// Professional "Turbo" Color Ramp (Used by industry tools)
+// Dark Purple (Heavy Shade) -> Blue -> Green -> Yellow -> Red (Max Sun)
+const COLORS = [
+  { val: 0.00, rgb: [48, 18, 59] },
+  { val: 0.20, rgb: [70, 134, 251] },
+  { val: 0.40, rgb: [27, 229, 181] },
+  { val: 0.60, rgb: [164, 252, 60] },
+  { val: 0.80, rgb: [251, 155, 6] },
+  { val: 1.00, rgb: [227, 26, 28] }
+];
 
+export function getColorForValue(normalized) {
+  for (let i = 0; i < COLORS.length - 1; i++) {
+    if (normalized >= COLORS[i].val && normalized <= COLORS[i + 1].val) {
+      const ratio = (normalized - COLORS[i].val) / (COLORS[i + 1].val - COLORS[i].val);
+      return COLORS[i].rgb.map((c, j) => Math.round(c + (COLORS[i + 1].rgb[j] - c) * ratio));
+    }
+  }
+  return COLORS[COLORS.length - 1].rgb;
+}
+
+// We removed the 2D roof overlay function entirely per your request!
+export async function generateFluxHeatmapCanvas() {
+  return null; 
+}
+
+export async function samplePanelsFlux(tiffBuffer, solarUnits, mpu, mpp, globalCenter, monthIndex = 5) {
+  if (!tiffBuffer || !solarUnits || solarUnits.length === 0) return solarUnits;
+  
   const tiff = await fromArrayBuffer(tiffBuffer);
   const image = await tiff.getImage();
   const rasters = await image.readRasters();
-  const width = image.getWidth();
-  const height = image.getHeight();
-
-  const bandIndex = rasters.length === 12 ? Math.max(0, Math.min(11, monthIndex)) : 0;
-  const data = rasters[bandIndex];
-
-  let min = Infinity;
-  let max = -Infinity;
-
-  for (let i = 0; i < data.length; i++) {
-    const val = data[i];
-    if (val !== -9999 && val > 0) {
-      if (val < min) min = val;
-      if (val > max) max = val;
+  const width = image.getWidth(), height = image.getHeight();
+  const band = rasters[Math.max(0, Math.min(11, monthIndex))];
+  
+  let min = Infinity, max = -Infinity;
+  for (const v of band) {
+    if (v > 0 && v !== -9999 && !isNaN(v)) {
+      if (v < min) min = v;
+      if (v > max) max = v;
     }
   }
 
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  const imgData = ctx.createImageData(width, height);
+  // We requested radiusMeters = 100 in the API, meaning the TIFF is exactly 200x200 meters
+  const TIFF_COVERAGE_METERS = 200; 
+  const mpp_tiff = TIFF_COVERAGE_METERS / width;
 
-  for (let i = 0; i < data.length; i++) {
-    const val = data[i];
-    const idx = i * 4;
+  return solarUnits.map(unit => {
+    // 1. Convert Panel's 3D coordinates back into 2D Canvas Pixels
+    const canvasX = (unit.position[0] / PIXELS_TO_WORLD) + globalCenter.x;
+    const canvasY = (unit.position[2] / PIXELS_TO_WORLD) + globalCenter.y;
 
-    if (val === -9999 || val <= 0) {
-      imgData.data[idx] = 0;     
-      imgData.data[idx + 1] = 0; 
-      imgData.data[idx + 2] = 0; 
-      imgData.data[idx + 3] = 0; 
-    } else {
-      const normalized = (val - min) / (max - min);
-      imgData.data[idx] = Math.min(255, Math.max(0, Math.floor(255 * Math.pow(normalized, 0.5))));
-      imgData.data[idx + 1] = Math.min(255, Math.max(0, Math.floor(255 * Math.sin(normalized * Math.PI))));
-      imgData.data[idx + 2] = Math.min(255, Math.max(0, Math.floor(255 * (1 - normalized))));
-      imgData.data[idx + 3] = 230; 
+    // 2. The Google Map is perfectly centered at canvas pixel (350, 250). 
+    // Calculate the distance in METERS from the center of the searched property.
+    const offsetX_meters = (canvasX - 350) * mpp;
+    const offsetY_meters = (canvasY - 250) * mpp;
+
+    // 3. Map that meter offset perfectly into the GeoTIFF's pixel grid
+    const px = Math.floor((width / 2) + (offsetX_meters / mpp_tiff));
+    const py = Math.floor((height / 2) + (offsetY_meters / mpp_tiff));
+
+    if (px >= 0 && px < width && py >= 0 && py < height) {
+      const val = band[py * width + px];
+      if (val > 0 && val !== -9999) {
+        const normalized = Math.max(0, Math.min(1, (val - min) / (max - min)));
+        const color = getColorForValue(normalized);
+        const hex = "#" + color.map(c => c.toString(16).padStart(2, '0')).join('');
+        return { ...unit, fluxYield: normalized, fluxColor: hex };
+      }
     }
-  }
-
-  ctx.putImageData(imgData, 0, 0);
-  return canvas;
+    // Fallback if panel is placed off the edge of the known universe
+    return { ...unit, fluxYield: 0, fluxColor: "#30123b" }; 
+  });
 }
 ```
 
@@ -5726,6 +6015,56 @@ export function formatNumber(n) {
 export function formatCurrency(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
   return `$${n.toLocaleString()}`;
+}
+
+// Add this to the BOTTOM of src/utils/reportUtils.js
+
+/**
+ * Generates a Month-by-Month Shadow Analysis Profile.
+ * Uses a geometric heuristic: checks obstacle height and distance against 
+ * average monthly sun elevation for the given latitude.
+ */
+export function generateShadowProfile(solarUnits = [], obstacles = [], lat = 20) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  if (!obstacles.length || !solarUnits.length) {
+    return months.map(month => ({ month, shadingPct: 0 }));
+  }
+
+  return months.map((month, i) => {
+    // 1. Calculate average sun elevation for this month
+    const declination = 23.45 * Math.sin((360 / 365) * (284 + (i * 30)) * (Math.PI / 180));
+    const avgElevation = 90 - Math.abs(lat - declination);
+    const tanElevation = Math.tan(avgElevation * (Math.PI / 180));
+
+    let totalShadingSeverity = 0;
+
+    // 2. Check every panel against every obstacle
+    solarUnits.forEach(unit => {
+      obstacles.forEach(obs => {
+        const dx = unit.position[0] - obs.position[0];
+        const dz = unit.position[2] - obs.position[2];
+        const distanceWorld = Math.sqrt(dx * dx + dz * dz);
+        
+        // Approximate height difference
+        const obsHeight = obs.dimensions?.h || 1.5; 
+        const shadowLength = obsHeight / Math.max(0.1, tanElevation);
+        
+        // If the panel is inside the shadow cast distance, calculate severity
+        if (distanceWorld < shadowLength) {
+           const severity = 1 - (distanceWorld / shadowLength);
+           totalShadingSeverity += severity;
+        }
+      });
+    });
+
+    // 3. Normalize to a percentage (0% to 100%)
+    const rawPct = (totalShadingSeverity / solarUnits.length) * 100;
+    // Cap at reasonable limits (e.g. max 45% shading for realism unless heavily blocked)
+    const finalPct = Math.min(Math.round(rawPct), 45); 
+
+    return { month, shadingPct: finalPct };
+  });
 }
 ```
 

@@ -331,3 +331,53 @@ export function formatCurrency(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
   return `$${n.toLocaleString()}`;
 }
+
+// Add this to the BOTTOM of src/utils/reportUtils.js
+
+/**
+ * Generates a Month-by-Month Shadow Analysis Profile.
+ * Uses a geometric heuristic: checks obstacle height and distance against 
+ * average monthly sun elevation for the given latitude.
+ */
+export function generateShadowProfile(solarUnits = [], obstacles = [], lat = 20) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  if (!obstacles.length || !solarUnits.length) {
+    return months.map(month => ({ month, shadingPct: 0 }));
+  }
+
+  return months.map((month, i) => {
+    // 1. Calculate average sun elevation for this month
+    const declination = 23.45 * Math.sin((360 / 365) * (284 + (i * 30)) * (Math.PI / 180));
+    const avgElevation = 90 - Math.abs(lat - declination);
+    const tanElevation = Math.tan(avgElevation * (Math.PI / 180));
+
+    let totalShadingSeverity = 0;
+
+    // 2. Check every panel against every obstacle
+    solarUnits.forEach(unit => {
+      obstacles.forEach(obs => {
+        const dx = unit.position[0] - obs.position[0];
+        const dz = unit.position[2] - obs.position[2];
+        const distanceWorld = Math.sqrt(dx * dx + dz * dz);
+        
+        // Approximate height difference
+        const obsHeight = obs.dimensions?.h || 1.5; 
+        const shadowLength = obsHeight / Math.max(0.1, tanElevation);
+        
+        // If the panel is inside the shadow cast distance, calculate severity
+        if (distanceWorld < shadowLength) {
+           const severity = 1 - (distanceWorld / shadowLength);
+           totalShadingSeverity += severity;
+        }
+      });
+    });
+
+    // 3. Normalize to a percentage (0% to 100%)
+    const rawPct = (totalShadingSeverity / solarUnits.length) * 100;
+    // Cap at reasonable limits (e.g. max 45% shading for realism unless heavily blocked)
+    const finalPct = Math.min(Math.round(rawPct), 45); 
+
+    return { month, shadingPct: finalPct };
+  });
+}

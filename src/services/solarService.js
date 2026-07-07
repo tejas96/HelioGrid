@@ -244,7 +244,7 @@ function heightFromTags(tags) {
 
 
 
-export async function fetchSolarDataLayers(lat, lng, radiusMeters = 50) {
+export async function fetchSolarDataLayers(lat, lng, radiusMeters = 100) {
   const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   try {
