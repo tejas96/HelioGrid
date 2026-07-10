@@ -9,6 +9,9 @@ import {
   DEFAULT_COST_PER_WATT,
   DEFAULT_ELECTRICITY_RATE,
   DEFAULT_INCENTIVE_PCT,
+  DEFAULT_PANEL_VOC,
+  DEFAULT_PANEL_VMP,
+  DEFAULT_PANEL_IMP,
   computeSystemMetrics,
   computeFinancials,
   estimateMonthlyProduction,
@@ -17,6 +20,7 @@ import {
   computeElectricalDesign,
   summarizeRoofSegments,
   summarizeObstacles,
+  generateShadowProfile,
   formatNumber,
   formatCurrency,
 } from "../utils/reportUtils";
@@ -130,6 +134,36 @@ function MonthlyProductionChart({ monthly }) {
   );
 }
 
+function ShadowProfileChart({ shadowData }) {
+  if (!shadowData || shadowData.length === 0) return null;
+  const maxShading = Math.max(...shadowData.map((m) => m.shadingPct), 1);
+  
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 140, padding: "4px 2px 0" }}>
+      {shadowData.map((m) => {
+        const h = Math.max((m.shadingPct / maxShading) * 110, 3);
+        const color = m.shadingPct > 20 ? "#ef4444" : m.shadingPct > 10 ? "#fbbf24" : "#22c55e";
+        
+        return (
+          <div key={m.month} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <div style={{ fontSize: 9, color: "#6b7280" }}>{m.shadingPct}%</div>
+            <div
+              title={`${m.month}: ${m.shadingPct}% Shaded`}
+              style={{
+                width: "100%",
+                height: h,
+                background: color,
+                borderRadius: "3px 3px 0 0",
+              }}
+            />
+            <div style={{ fontSize: 10, color: "#6b7280", fontWeight: 600 }}>{m.month}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function DerateRow({ label, factor }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, padding: "5px 0", borderBottom: "1px dashed #e8e9ed" }}>
@@ -150,8 +184,6 @@ export default function ReportModal({
   globalCenter,
   mpp,
   satImageUrl,
-  // 3D snapshot of the panel layout, captured from Building3DViewer just
-  // before the report is opened. Optional — degrades gracefully if absent.
   structureSnapshot,
 }) {
   const [panelWatts, setPanelWatts] = useState(DEFAULT_PANEL_WATTS);
@@ -159,6 +191,11 @@ export default function ReportModal({
   const [costPerWatt, setCostPerWatt] = useState(DEFAULT_COST_PER_WATT);
   const [electricityRate, setElectricityRate] = useState(DEFAULT_ELECTRICITY_RATE);
   const [incentivePct, setIncentivePct] = useState(DEFAULT_INCENTIVE_PCT);
+  
+  // Electrical Parameters for production-grade SLD logic
+  const [panelVoc, setPanelVoc] = useState(DEFAULT_PANEL_VOC);
+  const [panelVmp, setPanelVmp] = useState(DEFAULT_PANEL_VMP);
+  const [panelImp, setPanelImp] = useState(DEFAULT_PANEL_IMP);
 
   const safeSolarUnits = solarUnits || [];
   const safeObstacles = obstacles || [];
@@ -182,14 +219,27 @@ export default function ReportModal({
     [metrics.annualKwh, metrics.totalCapacityKw, electricityRate, costPerWatt, incentivePct]
   );
 
-  const monthly = useMemo(() => estimateMonthlyProduction(metrics.annualKwh, location?.lat ?? 20), [metrics.annualKwh, location?.lat]);
+  const monthly = useMemo(
+    () => estimateMonthlyProduction(metrics.annualKwh, location?.lat ?? 20, safeSolarUnits), 
+    [metrics.annualKwh, location?.lat, safeSolarUnits]
+  );
   const envEquivalents = useMemo(() => computeEnvironmentalEquivalents(metrics.carbonOffsetKg), [metrics.carbonOffsetKg]);
   const roofSegmentRows = useMemo(() => summarizeRoofSegments(solarData), [solarData]);
   const obstacleRows = useMemo(() => summarizeObstacles(safeObstacles), [safeObstacles]);
   const derateBreakdown = useMemo(() => computeDerateBreakdown({ obstacles: safeObstacles, totalPanels: metrics.totalPanels }), [safeObstacles, metrics.totalPanels]);
+  
+  const shadowProfile = useMemo(() => generateShadowProfile(safeSolarUnits, safeObstacles, location?.lat ?? 20), [safeSolarUnits, safeObstacles, location?.lat]);
+
   const electricalDesign = useMemo(
-    () => computeElectricalDesign({ totalPanels: metrics.totalPanels, totalCapacityKw: metrics.totalCapacityKw, panelWatts }),
-    [metrics.totalPanels, metrics.totalCapacityKw, panelWatts]
+    () => computeElectricalDesign({ 
+        totalPanels: metrics.totalPanels, 
+        totalCapacityKw: metrics.totalCapacityKw, 
+        panelWatts,
+        voc: panelVoc,
+        vmp: panelVmp,
+        imp: panelImp
+    }),
+    [metrics.totalPanels, metrics.totalCapacityKw, panelWatts, panelVoc, panelVmp, panelImp]
   );
 
   const hasLayoutData = roofSections.some((s) => (s.faces || []).length > 0) && globalCenter && mpp;
@@ -201,16 +251,9 @@ export default function ReportModal({
     <div
       style={{
         position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0, 0, 0, 0.7)",
-        backdropFilter: "blur(4px)",
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: "rgba(0, 0, 0, 0.7)", backdropFilter: "blur(4px)",
+        zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center",
         padding: "20px",
       }}
       className="report-modal-overlay"
@@ -229,31 +272,17 @@ export default function ReportModal({
       <div
         className="report-modal-shell"
         style={{
-          background: "#eef0f4",
-          width: "100%",
-          maxWidth: "880px",
-          maxHeight: "92vh",
-          overflowY: "auto",
-          borderRadius: "12px",
-          border: "1px solid var(--accent)",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+          background: "#eef0f4", width: "100%", maxWidth: "880px", maxHeight: "92vh",
+          overflowY: "auto", borderRadius: "12px", border: "1px solid var(--accent)",
+          display: "flex", flexDirection: "column", boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
         }}
       >
         <div
           className="report-no-print"
           style={{
-            padding: "16px 20px",
-            borderBottom: "1px solid #333",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            background: "#1e1e2d",
-            borderRadius: "12px 12px 0 0",
-            position: "sticky",
-            top: 0,
-            zIndex: 5,
+            padding: "16px 20px", borderBottom: "1px solid #333", display: "flex",
+            justifyContent: "space-between", alignItems: "center", background: "#1e1e2d",
+            borderRadius: "12px 12px 0 0", position: "sticky", top: 0, zIndex: 5,
           }}
         >
           <div>
@@ -271,7 +300,7 @@ export default function ReportModal({
         </div>
 
         <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "18px" }}>
-          {/* Cover block */}
+          
           <Section style={{ background: "linear-gradient(135deg, #0f172a, #1e293b)", border: "none" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
               <div>
@@ -283,11 +312,8 @@ export default function ReportModal({
               </div>
               <div
                 style={{
-                  background: "rgba(251,191,36,0.12)",
-                  border: "1px solid rgba(251,191,36,0.4)",
-                  borderRadius: 8,
-                  padding: "10px 16px",
-                  textAlign: "right",
+                  background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.4)",
+                  borderRadius: 8, padding: "10px 16px", textAlign: "right",
                 }}
               >
                 <div style={{ color: "#fbbf24", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>System Size</div>
@@ -296,7 +322,6 @@ export default function ReportModal({
             </div>
           </Section>
 
-          {/* Key metrics */}
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <StatCard label="System Size" value={`${metrics.totalCapacityKw} kW`} sub={`${metrics.totalPanels} panels × ${panelWatts}W`} />
             <StatCard label="Annual Production" value={`${formatNumber(metrics.annualKwh)} kWh`} sub={`${metrics.sunHours} weighted sun-hrs/yr`} accent="#16a34a" />
@@ -304,50 +329,41 @@ export default function ReportModal({
             <StatCard label="Payback Period" value={financials.paybackYears ? `${financials.paybackYears} yrs` : "—"} sub={`${financials.lifetimeYears}-yr system life`} accent="#2563eb" />
           </div>
 
-          {/* 3D Structure & Panel Placement */}
           <Section title="3D Structure &amp; Panel Placement" icon="🏗️">
             {structureSnapshot ? (
               <div>
-                <img
-                  src={structureSnapshot}
-                  alt="3D structure with placed solar panels"
-                  style={{ width: "100%", height: "auto", display: "block", borderRadius: 6, border: "1px solid #e3e5ea", background: "#0c0c14" }}
-                />
-                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 8 }}>
-                  Snapshot of the 3D model showing the building and final placement of {metrics.totalPanels} panels, captured directly from the 3D viewer.
-                </div>
+                <img src={structureSnapshot} alt="3D structure with placed solar panels" style={{ width: "100%", height: "auto", display: "block", borderRadius: 6, border: "1px solid #e3e5ea", background: "#0c0c14" }} />
+                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 8 }}>Snapshot of the 3D model showing the building and final placement of {metrics.totalPanels} panels.</div>
               </div>
             ) : (
-              <div style={{ fontSize: 13, color: "#6b7280", padding: "20px 0", textAlign: "center" }}>
-                Open the 3D Structure Viewer once (and orbit to a clear angle) before generating the report to include a snapshot of the panel placement here.
-              </div>
+              <div style={{ fontSize: 13, color: "#6b7280", padding: "20px 0", textAlign: "center" }}>Open the 3D Structure Viewer once before generating the report to include a snapshot here.</div>
             )}
           </Section>
 
-          {/* 2D Roof & Panel Layout */}
           <Section title="Roof &amp; Panel Layout (Plan View)" icon="🗺️">
             {hasLayoutData ? (
-              <ReportRoofLayout
-                roofSections={roofSections}
-                solarUnits={safeSolarUnits}
-                obstacles={safeObstacles}
-                globalCenter={globalCenter}
-                mpp={mpp}
-                satImageUrl={satImageUrl}
-              />
+              <ReportRoofLayout roofSections={roofSections} solarUnits={safeSolarUnits} obstacles={safeObstacles} globalCenter={globalCenter} mpp={mpp} satImageUrl={satImageUrl} />
             ) : (
-              <div style={{ fontSize: 13, color: "#6b7280", padding: "20px 0", textAlign: "center" }}>
-                Trace at least one roof face in the editor to generate the layout drawing.
-              </div>
+              <div style={{ fontSize: 13, color: "#6b7280", padding: "20px 0", textAlign: "center" }}>Trace at least one roof face in the editor to generate the layout drawing.</div>
             )}
           </Section>
 
-          {/* Electrical Single-Line Diagram */}
           <Section title="Electrical Single-Line Diagram (SLD)" icon="⚡">
+             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16, padding: "12px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e3e5ea" }} className="report-no-print">
+               <AssumptionInput label="Panel Voc" value={panelVoc} onChange={setPanelVoc} suffix="V" step="0.1" />
+               <AssumptionInput label="Panel Vmp" value={panelVmp} onChange={setPanelVmp} suffix="V" step="0.1" />
+               <AssumptionInput label="Panel Imp" value={panelImp} onChange={setPanelImp} suffix="A" step="0.1" />
+             </div>
             <SingleLineDiagram metrics={metrics} design={electricalDesign} />
           </Section>
 
-          {/* Roof Segment Analysis (from Google Solar API) */}
+          <Section title="Shadow Analysis Profile" icon="🌘">
+            <ShadowProfileChart shadowData={shadowProfile} />
+            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 10 }}>
+              Modeled monthly shading percentage based on panel proximity to mapped roof obstructions and seasonal sun elevation.
+            </div>
+          </Section>
+
           {roofSegmentRows.length > 0 && (
             <Section title="Roof Segment Analysis" icon="📐">
               <div style={{ overflowX: "auto" }}>
@@ -366,9 +382,7 @@ export default function ReportModal({
                       <tr key={seg.id} style={{ borderTop: "1px solid #eef0f4" }}>
                         <td style={{ padding: "8px" }}>Segment {seg.id}</td>
                         <td style={{ padding: "8px" }}>{seg.pitchDegrees}°</td>
-                        <td style={{ padding: "8px" }}>
-                          {seg.azimuthLabel} ({seg.azimuthDegrees}°)
-                        </td>
+                        <td style={{ padding: "8px" }}>{seg.azimuthLabel} ({seg.azimuthDegrees}°)</td>
                         <td style={{ padding: "8px" }}>{formatNumber(seg.areaM2)} m²</td>
                         <td style={{ padding: "8px" }}>{formatNumber(seg.sunshineHoursPerYear)} hrs/yr</td>
                       </tr>
@@ -379,15 +393,14 @@ export default function ReportModal({
             </Section>
           )}
 
-          {/* Equipment + Site specifications */}
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
             <Section title="System Specifications" icon="⚙️" style={{ flex: "1 1 320px" }}>
               <Row label="Total Panels Placed" value={metrics.totalPanels} />
-              <Row label="Panel Wattage (assumed)" value={`${panelWatts} W`} />
-              <Row label="System Efficiency (derate)" value={`${Math.round(efficiency * 100)}%`} />
-              <Row label="Obstacles / Keep-outs Mapped" value={safeObstacles.length} />
-              <Row label="Building Base Height" value={`${buildingHeight} m`} />
-              <Row label="Roof Sections / Buildings" value={Math.max(roofSections.length, 1)} />
+              <Row label="Panel Wattage" value={`${panelWatts} W`} />
+              <Row label="System Efficiency" value={`${Math.round(efficiency * 100)}%`} />
+              <Row label="Total Roof Area (API)" value={`${formatNumber(solarData?.wholeRoofStats?.areaMeters2)} m²`} />
+              <Row label="Estimated Panel Area" value={`${formatNumber(metrics.totalPanels * 1.65)} m²`} />
+              <Row label="Roof Utilization" value={`${Math.round(((metrics.totalPanels * 1.65) / (solarData?.wholeRoofStats?.areaMeters2 || 1)) * 100)}%`} strong="#16a34a" />
             </Section>
 
             <Section title="Environmental Impact &amp; Site" icon="🌎" style={{ flex: "1 1 320px" }}>
@@ -400,7 +413,6 @@ export default function ReportModal({
             </Section>
           </div>
 
-          {/* Obstacles breakdown */}
           {obstacleRows.length > 0 && (
             <Section title="Roof Obstructions Mapped" icon="🚧">
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -414,7 +426,6 @@ export default function ReportModal({
             </Section>
           )}
 
-          {/* Production estimate — itemized derate breakdown for transparency/accuracy */}
           <Section title="Production Estimate — Derate Assumptions" icon="🔍">
             <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
               <div style={{ flex: "1 1 260px" }}>
@@ -438,17 +449,15 @@ export default function ReportModal({
             </div>
           </Section>
 
-          {/* Monthly production estimate */}
           <Section title="Estimated Monthly Production" icon="📈">
             <MonthlyProductionChart monthly={monthly} />
             <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 10 }}>
-              Modeled distribution of the annual production estimate across the year based on seasonal sun angle for this latitude. Actual monthly output varies with weather, shading, and panel degradation.
+              Modeled distribution of the annual production estimate across the year based on seasonal sun angle.
             </div>
           </Section>
 
-          {/* Financial analysis with editable assumptions */}
           <Section title="Financial Analysis" icon="💰">
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16, padding: "12px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e3e5ea" }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16, padding: "12px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e3e5ea" }} className="report-no-print">
               <AssumptionInput label="Panel Wattage" value={panelWatts} onChange={setPanelWatts} suffix="W" step="10" />
               <AssumptionInput label="System Efficiency" value={Math.round(efficiency * 100)} onChange={(v) => setEfficiency(v / 100)} suffix="%" step="1" />
               <AssumptionInput label="Cost per Watt" value={costPerWatt} onChange={setCostPerWatt} suffix="$/W" step="0.01" />
@@ -468,23 +477,10 @@ export default function ReportModal({
                 <Row label={`${financials.lifetimeYears}-Year Net Savings`} value={formatCurrency(financials.lifetimeSavingsUsd)} strong="#16a34a" />
               </div>
             </div>
-            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 10 }}>
-              Lifetime savings assume a flat electricity rate with no annual escalation and no panel degradation, for simplicity. Actual savings are typically higher due to utility rate inflation.
-            </div>
           </Section>
 
-          {/* Disclaimer */}
-          <div
-            style={{
-              background: "rgba(59, 130, 246, 0.08)",
-              border: "1px solid rgba(59, 130, 246, 0.25)",
-              padding: "16px",
-              borderRadius: "8px",
-              color: "#1d4ed8",
-              fontSize: "12.5px",
-            }}
-          >
-            <strong>Note:</strong> This is an auto-generated preliminary report based on satellite tracing, manual roof drawing, and Google Solar API parameters. The single-line diagram uses generic panel/inverter electrical characteristics for sizing until real equipment is selected. Financial figures are estimates based on the assumptions above. A final physical site survey and a licensed electrical design are required before installation.
+          <div style={{ background: "rgba(59, 130, 246, 0.08)", border: "1px solid rgba(59, 130, 246, 0.25)", padding: "16px", borderRadius: "8px", color: "#1d4ed8", fontSize: "12.5px" }}>
+            <strong>Note:</strong> This is an auto-generated preliminary report based on satellite tracing, manual roof drawing, and Google Solar API parameters. A final physical site survey and a licensed electrical design are required before installation.
           </div>
         </div>
       </div>

@@ -1,30 +1,17 @@
 // FILE: src/utils/reportUtils.js
-/**
- * reportUtils.js
- *
- * Pure calculation + formatting helpers for the Solar Project Report.
- * Nothing in this file touches React or the DOM — it only takes the
- * existing app state (solarUnits, obstacles, solarData, roofSections)
- * and derives the extra numbers/structures the report needs.
- */
 
 import { PIXELS_TO_WORLD } from "./scaleUtils";
 
-// ─── Defaults (all editable by the user inside the report) ────────────────────
-
-export const DEFAULT_PANEL_WATTS = 400;          // W per panel
-export const DEFAULT_SYSTEM_EFFICIENCY = 0.86;    // derate factor — see computeDerateBreakdown() for the itemized basis
-export const DEFAULT_COST_PER_WATT = 0.75;        // $ per installed watt (DC)
-export const DEFAULT_ELECTRICITY_RATE = 0.12;     // $ per kWh
-export const DEFAULT_INCENTIVE_PCT = 30;          // % of gross system cost
+export const DEFAULT_PANEL_WATTS = 400;          
+export const DEFAULT_SYSTEM_EFFICIENCY = 0.86;    
+export const DEFAULT_COST_PER_WATT = 0.75;        
+export const DEFAULT_ELECTRICITY_RATE = 0.12;     
+export const DEFAULT_INCENTIVE_PCT = 30;          
 export const DEFAULT_LIFETIME_YEARS = 25;
 
 const CO2_KG_PER_TREE_PER_YEAR = 21;
 const CO2_KG_PER_KM_DRIVEN = 0.12;
-
 const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-// ─── Coordinate helpers ─────────────────────────────────────────────────────
 
 export function worldToCanvasPoint(position, globalCenter) {
   if (!position || !globalCenter) return { x: 0, y: 0 };
@@ -51,15 +38,6 @@ export function getObstaclePixelSize(obstacle, mpp) {
   return { wPx: wM / mpp, hPx: dM / mpp };
 }
 
-// ─── Sun-hours accuracy ─────────────────────────────────────────────────────
-
-/**
- * Area-weighted average sunshine hours across every roof segment the Solar
- * API returned, instead of blindly using "maxSunshineHoursPerYear" (the
- * single BEST-facing segment). Using the max overstates production whenever
- * the actual array includes panels on less-optimal-facing roof planes, so
- * this is a materially more accurate basis for the annual estimate.
- */
 export function computeWeightedSunshineHours(solarData) {
   const segs = solarData?.roofSegments;
   if (!segs || !segs.length) return solarData?.maxSunshineHoursPerYear ?? 1600;
@@ -68,18 +46,12 @@ export function computeWeightedSunshineHours(solarData) {
   return segs.reduce((a, s) => a + (s.areaMeters2 || 0) * (s.sunshineHoursPerYear || 0), 0) / totalArea;
 }
 
-/**
- * Itemized loss/derate breakdown so the production estimate is auditable
- * instead of hiding behind one opaque "efficiency" number. The combined
- * value approximates DEFAULT_SYSTEM_EFFICIENCY and is shown in the report
- * as the basis for that editable field.
- */
 export function computeDerateBreakdown({ obstacles = [], totalPanels = 0 } = {}) {
   const inverterEff = 0.97;
   const wiringLoss = 0.98;
   const soilingLoss = 0.98;
   const mismatchLoss = 0.99;
-  const tempDerate = 0.93; // annualized average cell-temperature loss
+  const tempDerate = 0.93; 
 
   const shadingLoss = totalPanels > 0
     ? Math.max(0.90, 1 - (obstacles.length * 0.5) / Math.max(totalPanels, 1))
@@ -92,8 +64,6 @@ export function computeDerateBreakdown({ obstacles = [], totalPanels = 0 } = {})
     combined: +combined.toFixed(4),
   };
 }
-
-// ─── System sizing ──────────────────────────────────────────────────────────
 
 export function computeSystemMetrics({
   solarUnits = [],
@@ -112,8 +82,6 @@ export function computeSystemMetrics({
   return { totalPanels, totalCapacityKw, annualKwh, carbonOffsetKg, sunHours: Math.round(sunHours), panelWatts, efficiency };
 }
 
-// ─── Financials ─────────────────────────────────────────────────────────────
-
 export function computeFinancials({
   annualKwh,
   totalCapacityKw,
@@ -131,34 +99,12 @@ export function computeFinancials({
   const monthlySavingsUsd = Math.round(annualSavingsUsd / 12);
 
   return {
-    annualSavingsUsd,
-    grossSystemCostUsd,
-    incentiveUsd,
-    netSystemCostUsd,
-    paybackYears,
-    lifetimeYears,
-    lifetimeSavingsUsd,
-    monthlySavingsUsd,
+    annualSavingsUsd, grossSystemCostUsd, incentiveUsd,
+    netSystemCostUsd, paybackYears, lifetimeYears,
+    lifetimeSavingsUsd, monthlySavingsUsd,
   };
 }
 
-// ─── Monthly production estimate ───────────────────────────────────────────
-
-export function estimateMonthlyProduction(annualKwh, lat = 20) {
-  const isNorthern = lat >= 0;
-  const peakMonthIdx = isNorthern ? 5 : 11;
-  const amplitude = 0.32;
-
-  const rawWeights = MONTH_LABELS.map((_, i) => 1 + amplitude * Math.cos((2 * Math.PI * (i - peakMonthIdx)) / 12));
-  const sumWeights = rawWeights.reduce((a, b) => a + b, 0);
-
-  return MONTH_LABELS.map((month, i) => ({
-    month,
-    kwh: Math.round((rawWeights[i] / sumWeights) * (annualKwh || 0)),
-  }));
-}
-
-// ─── Environmental equivalents ──────────────────────────────────────────────
 
 export function computeEnvironmentalEquivalents(carbonOffsetKg) {
   return {
@@ -166,8 +112,6 @@ export function computeEnvironmentalEquivalents(carbonOffsetKg) {
     kmNotDriven: Math.round((carbonOffsetKg || 0) / CO2_KG_PER_KM_DRIVEN),
   };
 }
-
-// ─── Roof segment analysis ──────────────────────────────────────────────────
 
 export function azimuthToCompass(deg) {
   const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
@@ -187,13 +131,7 @@ export function summarizeRoofSegments(solarData) {
   }));
 }
 
-// ─── Obstacles summary ──────────────────────────────────────────────────────
-
-const OBSTACLE_LABELS = {
-  ac_unit: "AC Unit",
-  water_tank: "Water Tank",
-  tree: "Tree",
-};
+const OBSTACLE_LABELS = { ac_unit: "AC Unit", water_tank: "Water Tank", tree: "Tree" };
 
 export function summarizeObstacles(obstacles = []) {
   const counts = {};
@@ -202,28 +140,18 @@ export function summarizeObstacles(obstacles = []) {
     counts[key] = (counts[key] || 0) + 1;
   });
   return Object.entries(counts).map(([type, count]) => ({
-    type,
-    label: OBSTACLE_LABELS[type] || type,
-    count,
+    type, label: OBSTACLE_LABELS[type] || type, count,
   }));
 }
 
-// ─── Electrical single-line diagram (SLD) sizing ───────────────────────────
-//
-// These sizing helpers use representative electrical characteristics for a
-// generic ~400W monocrystalline module and common string-inverter voltage
-// windows. They produce a preliminary, code-informed single-line diagram —
-// substitute the actual selected panel/inverter datasheets before this is
-// used for permitting or construction.
+export const DEFAULT_PANEL_VOC = 41.0;   
+export const DEFAULT_PANEL_VMP = 34.5;   
+export const DEFAULT_PANEL_ISC = 12.4;   
+export const DEFAULT_PANEL_IMP = 11.6;   
 
-export const DEFAULT_PANEL_VOC = 41.0;   // V, open-circuit voltage per panel
-export const DEFAULT_PANEL_VMP = 34.5;   // V, voltage at max power
-export const DEFAULT_PANEL_ISC = 12.4;   // A, short-circuit current
-export const DEFAULT_PANEL_IMP = 11.6;   // A, current at max power
-
-const INVERTER_MAX_STRING_VOLTAGE = 600; // V, common 600V-class string-inverter window
-const INVERTER_MIN_STRING_VOLTAGE = 200; // V, minimum MPPT start voltage
-const COLD_TEMP_VOC_MULTIPLIER = 1.15;   // safety margin for cold-weather Voc rise
+const INVERTER_MAX_STRING_VOLTAGE = 600; 
+const INVERTER_MIN_STRING_VOLTAGE = 200; 
+const COLD_TEMP_VOC_MULTIPLIER = 1.15;   
 
 const STANDARD_INVERTER_SIZES_KW = [3, 3.8, 5, 6, 7.6, 10, 11.4, 15, 20, 25, 30, 36, 40, 50, 60, 75, 100, 125, 150];
 const STANDARD_BREAKER_SIZES_A = [15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 125, 150, 175, 200, 225, 250, 300, 350, 400];
@@ -233,7 +161,6 @@ function roundUpToStandard(value, table) {
   return table[table.length - 1];
 }
 
-/** Splits the total panel count into strings that respect the inverter's MPPT voltage window. */
 export function computeStringingPlan(totalPanels, {
   panelWatts = DEFAULT_PANEL_WATTS,
   voc = DEFAULT_PANEL_VOC,
@@ -275,20 +202,12 @@ function pickAcService(totalCapacityKw) {
   return { voltage: 480, phase: 3, label: "480V 3-Phase" };
 }
 
-/**
- * Full electrical design used to draw the single-line diagram: stringing
- * plan, inverter sizing/count, AC output current, and recommended breaker
- * size. This is a preliminary, code-informed sizing exercise, not a stamped
- * design — a licensed electrical designer must finalize it.
- */
-export function computeElectricalDesign({ totalPanels, totalCapacityKw, panelWatts = DEFAULT_PANEL_WATTS }) {
-  const stringing = computeStringingPlan(totalPanels, { panelWatts });
+export function computeElectricalDesign({ totalPanels, totalCapacityKw, panelWatts = DEFAULT_PANEL_WATTS, voc = DEFAULT_PANEL_VOC, vmp = DEFAULT_PANEL_VMP, imp = DEFAULT_PANEL_IMP }) {
+  const stringing = computeStringingPlan(totalPanels, { panelWatts, voc, vmp, imp });
 
-  if (!totalPanels || !totalCapacityKw) {
-    return null;
-  }
+  if (!totalPanels || !totalCapacityKw) return null;
 
-  const targetInverterKw = totalCapacityKw / 1.2; // ~1.2 DC:AC ratio design point
+  const targetInverterKw = totalCapacityKw / 1.2; 
   let inverterCount = 1;
   let perInverterKw = roundUpToStandard(targetInverterKw, STANDARD_INVERTER_SIZES_KW);
   const MAX_SINGLE_INVERTER_KW = 100;
@@ -308,19 +227,11 @@ export function computeElectricalDesign({ totalPanels, totalCapacityKw, panelWat
   const stringsPerInverter = Math.ceil(stringing.numStrings / inverterCount);
 
   return {
-    stringing,
-    inverterCount,
-    perInverterKw,
-    totalInverterKw,
-    stringsPerInverter,
-    acService,
-    acCurrentTotal: +acCurrentTotal.toFixed(1),
-    breakerSize,
+    stringing, inverterCount, perInverterKw, totalInverterKw, stringsPerInverter,
+    acService, acCurrentTotal: +acCurrentTotal.toFixed(1), breakerSize,
     dcAcRatio: totalInverterKw > 0 ? +(totalCapacityKw / totalInverterKw).toFixed(2) : null,
   };
 }
-
-// ─── Formatting helpers ─────────────────────────────────────────────────────
 
 export function formatNumber(n) {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
@@ -332,40 +243,87 @@ export function formatCurrency(n) {
   return `$${n.toLocaleString()}`;
 }
 
-// Add this to the BOTTOM of src/utils/reportUtils.js
+// FILE: src/utils/reportUtils.js (Replace these two functions at the bottom)
 
-/**
- * Generates a Month-by-Month Shadow Analysis Profile.
- * Uses a geometric heuristic: checks obstacle height and distance against 
- * average monthly sun elevation for the given latitude.
- */
+export function estimateMonthlyProduction(annualKwh, lat = 20, solarUnits = []) {
+  const hasRealApiData = solarUnits.length > 0 && solarUnits[0].monthlyRaw;
+
+  // PRODUCTION-GRADE: Distribute the annual total exactly according to the 
+  // real monthly solar flux sampled from the Google Solar API GeoTIFF.
+  if (hasRealApiData) {
+    const monthlyTotals = new Array(12).fill(0);
+    solarUnits.forEach(unit => {
+      if (unit.monthlyRaw) {
+        unit.monthlyRaw.forEach((val, i) => monthlyTotals[i] += val);
+      }
+    });
+
+    const sumFlux = monthlyTotals.reduce((a, b) => a + b, 0);
+
+    return MONTH_LABELS.map((month, i) => ({
+      month,
+      kwh: sumFlux > 0 ? Math.round((monthlyTotals[i] / sumFlux) * (annualKwh || 0)) : 0,
+    }));
+  }
+
+  // FALLBACK: Use cosine curve if GeoTIFF wasn't processed yet
+  const isNorthern = lat >= 0;
+  const peakMonthIdx = isNorthern ? 5 : 11;
+  const amplitude = 0.32;
+  const rawWeights = MONTH_LABELS.map((_, i) => 1 + amplitude * Math.cos((2 * Math.PI * (i - peakMonthIdx)) / 12));
+  const sumWeights = rawWeights.reduce((a, b) => a + b, 0);
+
+  return MONTH_LABELS.map((month, i) => ({
+    month,
+    kwh: Math.round((rawWeights[i] / sumWeights) * (annualKwh || 0)),
+  }));
+}
+
+
 export function generateShadowProfile(solarUnits = [], obstacles = [], lat = 20) {
+  const hasRealApiData = solarUnits.length > 0 && solarUnits[0].monthlyYield;
+
+  // PRODUCTION-GRADE: Read the shading exactness directly from the API. 
+  // If a panel's yield is 0.7 compared to the unshaded roof max of 1.0, it is 30% shaded.
+  if (hasRealApiData) {
+    const monthlyShading = new Array(12).fill(0);
+    const panelCount = solarUnits.length;
+
+    solarUnits.forEach(unit => {
+      if (unit.monthlyYield) {
+        unit.monthlyYield.forEach((yieldVal, i) => {
+          const shadingSeverity = 1 - yieldVal; 
+          monthlyShading[i] += shadingSeverity;
+        });
+      }
+    });
+
+    return MONTH_LABELS.map((month, i) => {
+       const avgShading = (monthlyShading[i] / panelCount) * 100;
+       return { month, shadingPct: Math.round(avgShading) };
+    });
+  }
+
+  // FALLBACK: Use geometric distance heuristics if GeoTIFF wasn't processed
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  
   if (!obstacles.length || !solarUnits.length) {
     return months.map(month => ({ month, shadingPct: 0 }));
   }
 
   return months.map((month, i) => {
-    // 1. Calculate average sun elevation for this month
     const declination = 23.45 * Math.sin((360 / 365) * (284 + (i * 30)) * (Math.PI / 180));
     const avgElevation = 90 - Math.abs(lat - declination);
     const tanElevation = Math.tan(avgElevation * (Math.PI / 180));
 
     let totalShadingSeverity = 0;
-
-    // 2. Check every panel against every obstacle
     solarUnits.forEach(unit => {
       obstacles.forEach(obs => {
         const dx = unit.position[0] - obs.position[0];
         const dz = unit.position[2] - obs.position[2];
         const distanceWorld = Math.sqrt(dx * dx + dz * dz);
-        
-        // Approximate height difference
         const obsHeight = obs.dimensions?.h || 1.5; 
         const shadowLength = obsHeight / Math.max(0.1, tanElevation);
         
-        // If the panel is inside the shadow cast distance, calculate severity
         if (distanceWorld < shadowLength) {
            const severity = 1 - (distanceWorld / shadowLength);
            totalShadingSeverity += severity;
@@ -373,11 +331,7 @@ export function generateShadowProfile(solarUnits = [], obstacles = [], lat = 20)
       });
     });
 
-    // 3. Normalize to a percentage (0% to 100%)
     const rawPct = (totalShadingSeverity / solarUnits.length) * 100;
-    // Cap at reasonable limits (e.g. max 45% shading for realism unless heavily blocked)
-    const finalPct = Math.min(Math.round(rawPct), 45); 
-
-    return { month, shadingPct: finalPct };
+    return { month, shadingPct: Math.min(Math.round(rawPct), 45) };
   });
 }
