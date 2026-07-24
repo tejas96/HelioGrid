@@ -38,10 +38,11 @@ Full detail in `./research/journey.md` §1. The stages, one line each:
 
 ## v1 scope
 
-**v1 = Sell + light projects + billing + voice agent.** Sequenced in `14-build-roadmap.md` as Launch-1 (web core, next month) then Launch-2 (+weeks):
+**v1 = Sell + light projects + billing + voice agent.** Sequenced in `14-build-roadmap.md` as Launch-1 (web core, next month) → Launch-2 (+weeks) → the final phases (owner directive 2026-07-24 rev 2: studio and offline build LAST — the studio because a validated POC implementation already exists; moved in time only, never in scope or quality):
 
-- **Launch-1:** studio web port (flagship — tool-census acceptance gate) · auth/tenancy (Better Auth + MSG91 OTP, 6 preset roles) · **billing, subscriptions, entitlements and usage metering** (Razorpay Subscriptions; D38 superseded 2026-07-24 — billing IS in v1, trial-only, no free tier) · CRM core (stages 2–3) · remote survey · proposal builder + tokenised customer link · light projects + tranche collections via BYO-Razorpay payment links.
-- **Launch-2:** bare React Native field app (iOS + Android, offline physical survey via PowerSync) · voice agent GA (Exotel + Sarvam, per-tenant numbers and IVR, ComplianceGate) · dashboards.
+- **Launch-1 (no studio, no offline):** auth/tenancy (Better Auth + MSG91 OTP, 6 preset roles) · **billing, subscriptions, entitlements and usage metering** (Razorpay Subscriptions; D38 superseded 2026-07-24 — billing IS in v1, trial-only, no free tier) · CRM core (stages 2–3) · two-tier catalog · remote survey (satellite + AI detection) · **Path B proposal builder** + tokenised customer link · light projects + tranche collections via BYO-Razorpay payment links · dashboards-lite.
+- **Launch-2:** bare React Native field app (iOS + Android, **online-first** behind a repository abstraction) · physical survey (online) · voice agent GA (Exotel + Sarvam, per-tenant numbers and IVR, ComplianceGate) · notifications + global search · full dashboards.
+- **Final phases:** **3a — the 3D Design Studio port + enhancement** (THE flagship; tool-census acceptance gate; Path A proposals + BOM activate; mobile WebView studio) · **3b — offline layer** (PowerSync; mobile swaps to synced SQLite; physical survey becomes fully offline).
 - **Then:** the scale program (blocks/zones, GPU shadow-map shading, single-axis trackers, GLO-30 terrain) as continued investment into the studio moat — 1 kW → 100 MW is a v1 commitment with a credible ramp, not a later product.
 
 ## Explicit non-goals (v1)

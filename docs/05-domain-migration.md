@@ -21,8 +21,8 @@ POC root: `/Volumes/works-space/Solar-App-POC/src/features/solar-studio/`.
 2. **No algorithm changes during the port.** Port → verify → improve later in a separate
    change with its own verification. Known limitations (O(n²) shading, `far=250` m raycast
    cap, `MAX_EVENTS=400`) are pinned behaviour through the port batches; three-mesh-bvh
-   integration and `far=250` cap removal land in Launch-1 **immediately after the port
-   batches complete**, as a separate golden-verified change (part of scale Phase A,
+   integration and `far=250` cap removal land **immediately after the port batches
+   complete** (in the studio phase, docs/14 §3a), as a separate golden-verified change (part of scale Phase A,
    `docs/11-scale-program.md` — but NOT "during the port"). `ProjectionContext` is the one
    structural exception: it IS introduced at port time as an injected context whose
    **default implementation is the existing equirectangular projector**, keeping ported
@@ -252,8 +252,8 @@ one-frame gate exists to prevent. Consequences accepted for v1:
   `scene/scene-frame.ts` so the one-frame gate tests the identical composition.
 
 **After the port:** three-mesh-bvh integration (CPU raycast path with centred geometry —
-float precision at km scale) plus removal of the `far=250` m raycaster cap land in
-Launch-1 **immediately after the port batches complete**, as a separate golden-verified
+float precision at km scale) plus removal of the `far=250` m raycaster cap land
+**immediately after the port batches complete** (studio phase, docs/14 §3a), as a separate golden-verified
 change (part of scale Phase A, `docs/11-scale-program.md` — NOT "during the port").
 Neutral mesh/AABB output structs for `scene-model` and GPU shadow-map shading (web app
 only) are scale **Phase B**. The `far=250` m cap and O(panels²) cost are pinned POC
@@ -306,6 +306,14 @@ The POC persists to localStorage/IndexedDB; HelioGrid persists the same canonica
 ---
 
 ## 7. Port order and verification gates
+
+**When: the studio phase (docs/14 §3a) — the LAST major build phase per owner directive
+2026-07-24 rev 2 — EXCEPT a thin subset that ports early in Launch-1 W3** because remote
+survey and Path-B proposal money depend on it: `project/types` + contexts (incl. the default
+equirect ProjectionContext), `rules/presets/india`, `geometry/geo`, `roof/roof-factory`,
+`roof-ai/*` pure kernels, `finance/*`, `project/normalize` — each with its ported tests and
+the same gates below. The batch structure is unchanged; the thin subset simply pre-completes
+those rows of Batch A/B/H when the studio phase begins.
 
 Nine batches, dependency-ordered. **Every batch closes with the same three gates:**
 (1) `pnpm turbo typecheck` green across the workspace; (2) the batch's ported POC tests

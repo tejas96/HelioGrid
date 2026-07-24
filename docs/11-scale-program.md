@@ -55,9 +55,12 @@ changes numeric results, invalidating stale solar-access data by construction.
 
 ---
 
-## 3. Phase A — Launch-1 (part of the studio port; not optional)
+## 3. Phase A — the studio phase (part of the studio port; not optional)
 
-Phase A ships in Launch-1 alongside the domain port (docs/05-domain-migration.md), but its
+Phase A ships with the studio phase (docs/14 §3a — the studio port and offline are the LAST
+build phases per owner directive 2026-07-24 rev 2; a thin kernel subset incl. the default
+ProjectionContext already lands in Launch-1 W3 for remote survey) alongside the domain port
+(docs/05-domain-migration.md), but its
 items are NOT all "during the port". They split three ways: **at port time** —
 `ProjectionContext` context injection with the default equirect implementation (A3) and
 the blocks/tables schema (A4); **immediately post-port** — three-mesh-bvh integration and
@@ -69,7 +72,7 @@ shadow-map shading and the neutral mesh/AABB structs.
 three-as-math is RETAINED through the v1 port (docs/05-domain-migration.md §4);
 `scene-model`/`scene-frame`/`shading`/`solar-heatmap` keep importing `three` as CPU maths,
 and the neutral mesh/AABB structs move to Phase B. three-mesh-bvh integration and removal
-of the `far=250` m cap land in Launch-1 **immediately after the port batches complete**,
+of the `far=250` m cap land **immediately after the port batches complete**,
 as a separate golden-verified change — part of Phase A, but NOT "during the port"
 (order-of-magnitude raycast gains — 500 rays vs 80k polys at 60 fps,
 [github.com/gkjohnson/three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh)).

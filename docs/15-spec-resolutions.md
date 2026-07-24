@@ -143,7 +143,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D20 | Visibility: rep own / manager team / owner all | HONORED — role scoping + RLS backstop (docs/08) |
 | D21 | Proposal with or without design, one builder | HONORED — Path A/B, provenance differs (R18) |
 | D22 | Components mandatory on every proposal | HONORED — enforced at Generate (R12), not per-step |
-| D23 | Studio lowest build priority | SUPERSEDED — by product-owner final review 2026-07-24 (BLUEPRINT directive 9): studio is the flagship, first-class in Launch-1 |
+| D23 | Studio lowest build priority | HONORED — restored by owner directive 2026-07-24 rev 2 (BLUEPRINT directive 10): studio builds LAST (docs/14 §3a). Flagship status, tool-census gate and scope are unchanged (directive 9) — the earlier same-day "first-class in Launch-1" ruling was reversed by the owner |
 | D24 | Guided agent config + KB + unanswered loop | PARTIAL — honored, except "locked by platform" half superseded by D36 (all config tenant-editable) |
 | D25 | App UI multilingual EN/HI/MR | HONORED — Lingui v5, per-user re-render, Devanagari chain (docs/10) |
 | D26 | Billing screens are mocks | SUPERSEDED — by D38 (removed entirely), then by product-owner override 2026-07-24: real billing in v1; the D26-era mock is redesigned (UXG-13, docs/16) |

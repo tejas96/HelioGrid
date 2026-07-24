@@ -1,5 +1,13 @@
 # 06 — Offline & Sync
 
+> **Sequencing (owner directive, 2026-07-24 rev 2): this layer is the LAST build phase**
+> (docs/14 §3b, after the studio phase §3a). Until it lands, the mobile app is
+> **online-first** with all data access behind repository interfaces so PowerSync slots in
+> as a data-layer swap, not a screen rewrite. Two things ship EARLY regardless, because
+> they are this document's write model: surveys are versioned-append from Launch-1, and
+> the `sync_mutations` idempotency ledger exists (empty) from the first migration.
+> Everything below is the binding design, unchanged — only its start date moved.
+
 Offline-first architecture for the field app (bare React Native) and the web studio.
 Engine: **PowerSync self-hosted (Open Edition)** on Fly `bom`, Postgres bucket storage,
 writes through **our NestJS backend connector**. Sources: [`./research/sync.md`](./research/sync.md),
@@ -27,7 +35,7 @@ run as the `powersync` **process group** of the api Fly app in `bom`, per BLUEPR
 |---|---|
 | Image | `journeyapps/powersync-service` (pin digest in `fly.toml`; upgrade deliberately) |
 | Region | `bom`, `min_machines_running=1`, `autostop="off"` (bom capacity is tight; cold restarts can fail — [`./research/fly.md`](./research/fly.md)); `sin` overflow fallback documented, never default |
-| Sizing | Start **1× shared-cpu-2x / 2 GB**. Field fleet at Launch-2 is < 500 concurrent devices; PowerSync API nodes are stateless over shared bucket storage — scale by adding machines behind Fly proxy, not by resizing first |
+| Sizing | Start **1× shared-cpu-2x / 2 GB**. Field fleet at offline GA (docs/14 §3b) is < 500 concurrent devices; PowerSync API nodes are stateless over shared bucket storage — scale by adding machines behind Fly proxy, not by resizing first |
 | Source DB | Fly postgres-flex primary, `wal_level=logical`; dedicated replication role `powersync_repl` (REPLICATION, SELECT on synced tables only, no BYPASSRLS) |
 | Publication | `CREATE PUBLICATION powersync FOR TABLE leads, customers, sites, surveys, survey_photos, visits, designs, notifications, tenant_catalog_items, tenant_catalog_overrides, platform_catalog_items, users, user_roles;` — synced tables only, never the whole DB (keeps WAL fan-out and bucket churn bounded) |
 | Bucket storage | **Postgres** (no Mongo in the stack — [`./research/sync.md`](./research/sync.md)): a dedicated database `powersync_buckets` on the same postgres-flex cluster, so bucket vacuum churn never bloats the app DB. Escape hatch: move buckets to their own small cluster if replication lag alerts fire |
