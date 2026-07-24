@@ -38,12 +38,13 @@ Full detail in `./research/journey.md` §1. The stages, one line each:
 
 ## v1 scope
 
-**v1 = Sell + light projects + billing + voice agent.** Sequenced in `14-build-roadmap.md` as Launch-1 (web core, next month) → Launch-2 (+weeks) → the final phases (owner directive 2026-07-24 rev 2: studio and offline build LAST — the studio because a validated POC implementation already exists; moved in time only, never in scope or quality):
+**v1 = the ENTIRE product, shipped in ONE 20-day build (owner directive 2026-07-24, final): no Launch-2, no v1.1, no "later" bucket.** Sequencing inside the window follows the earlier priority ruling — studio and offline are the LAST tracks — but everything lands by Day 20 (`14-build-roadmap.md` is the plan of record):
 
-- **Launch-1 (no studio, no offline):** auth/tenancy (Better Auth + MSG91 OTP, 6 preset roles) · **billing, subscriptions, entitlements and usage metering** (Razorpay Subscriptions; D38 superseded 2026-07-24 — billing IS in v1, trial-only, no free tier) · CRM core (stages 2–3) · two-tier catalog · remote survey (satellite + AI detection) · **Path B proposal builder** + tokenised customer link · light projects + tranche collections via BYO-Razorpay payment links · dashboards-lite.
-- **Launch-2:** bare React Native field app (iOS + Android, **online-first** behind a repository abstraction) · physical survey (online) · voice agent GA (Exotel + Sarvam, per-tenant numbers and IVR, ComplianceGate) · notifications + global search · full dashboards.
-- **Final phases:** **3a — the 3D Design Studio port + enhancement** (THE flagship; tool-census acceptance gate; Path A proposals + BOM activate; mobile WebView studio) · **3b — offline layer** (PowerSync; mobile swaps to synced SQLite; physical survey becomes fully offline).
-- **Then:** the scale program (blocks/zones, GPU shadow-map shading, single-axis trackers, GLO-30 terrain) as continued investment into the studio moat — 1 kW → 100 MW is a v1 commitment with a credible ramp, not a later product.
+- **Tracks A–C (Days 3–13):** auth/tenancy (Better Auth + MSG91 OTP, 6 preset roles) · **billing, subscriptions, entitlements and usage metering** (Razorpay Subscriptions; D38 superseded — billing IS in v1, trial-only, no free tier) · CRM (incl. customer-merge flow) · two-tier catalog · remote survey (satellite + AI detection) · proposal builder (Path B first, Path A seams complete) · tokenised customer link **incl. named links + OTP-at-accept** (D33 closed at launch) · projects + BYO-Razorpay tranche collections · voice agent (code-complete; activation rides the DLT/KYC clock) · notifications + global search · full dashboards.
+- **Track M (Days 10–15):** bare React Native field app (iOS + Android), online-first behind repository interfaces; TestFlight/Play-internal from Day 12.
+- **Track D (Days 14–18):** the 3D Design Studio port + enhancement — THE flagship; tool-census acceptance gate; Path A proposals + BOM activate; mobile WebView studio.
+- **Track E (Days 17–20):** offline layer (PowerSync; mobile swaps to synced SQLite; physical survey fully offline) + hardening + launch gate.
+- **Outside the 20 days, honestly:** only (a) third-party approval clocks (DLT, Exotel KYC, store review — code ships Day 20, activation follows the clocks), (b) spec-locked exclusions (D32/D29/D35/D9), and (c) utility-scale studio enhancements (scale Phases B/C: GPU shading, trackers, terrain) which continue immediately after as studio-moat investment. 1 kW → 100 MW remains a v1 commitment with the Phase-A foundations shipped in the 20 days.
 
 ## Explicit non-goals (v1)
 

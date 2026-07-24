@@ -81,7 +81,7 @@ Sources: [./research/backend.md](./research/backend.md) · [drizzle-zod](https:/
 
 > **DB: Fly postgres-flex (unmanaged) in bom — ⚠️ flagged risk: Fly has DEPRECATED unmanaged
 > Postgres (self-support only; wal-g not bundled).** User chose Fly-native; mitigations are
-> MANDATORY and in-scope for Launch-1: 3-node repmgr HA; **two backup layers → Tigris**
+> MANDATORY and in-scope for the 20-day build: 3-node repmgr HA; **two backup layers → Tigris**
 > (pgBackRest/Barman WAL archiving + nightly `pg_dump` logical dumps); restore drill before
 > launch and monthly; disk/replication/OOM alerts; documented escape hatches (Fly MPG in
 > `sin`, or external managed Mumbai Postgres) via logical replication — plain Postgres,

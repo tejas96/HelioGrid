@@ -101,8 +101,8 @@ public customer-link URL. `/healthz` is shallow (process up); `/readyz` is deep 
 ([./research/verify-flyNative.md](./research/verify-flyNative.md),
 [postgres-flex](https://github.com/fly-apps/postgres-flex),
 [what you should know](https://fly.io/docs/postgres/getting-started/what-you-should-know/)).
-The user chose Fly-native anyway; therefore the mitigations below are **mandatory Launch-1
-scope, not optional hardening**. This section is the operative document — print-it-out
+The user chose Fly-native anyway; therefore the mitigations below are **mandatory in-scope
+work for the 20-day build, not optional hardening**. This section is the operative document — print-it-out
 grade.
 
 ### 4.1 Topology

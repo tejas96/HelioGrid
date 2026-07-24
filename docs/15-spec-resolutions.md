@@ -36,8 +36,8 @@ Journey implies Google Solar drives the roof; phase-10 says PVGIS drives energy 
 
 ### R6 — D33 single customer link (C&I risk)
 Anyone holding the link can accept a ₹92L order.
-**RULING: single link stands for launch (accepted risk, as decided); named links + OTP-at-accept are designed-for now.** The `customer_links` entity carries `label` and a nullable `contact_id` from day one (docs/08-security-and-tenancy.md), and OTP-at-accept is reserved in the token format; the mitigation ships as v1.1 (UXG-11 in docs/13) with per-contact links and an MSG91 OTP challenge on Accept above a tenant-set value threshold.
-**Consequence:** no schema migration needed when the mitigation lands; acceptance records capture whatever attribution exists (link id, IP, user agent) even in v1.
+**RULING (amended by the 20-day everything-in directive, 2026-07-24): named links + OTP-at-accept SHIP IN the 20-day build** (Track B, docs/14) — per-contact labelled links, per-link open attribution, and an MSG91 OTP challenge on Accept above a tenant-set value threshold. The `customer_links` entity carries `label` and nullable `contact_id` (docs/08); D33's accepted risk is closed at launch, not later.
+**Consequence:** acceptance records capture full attribution (link id, contact, OTP verification, IP, user agent) from day one; UXG-11 in docs/13 is in-scope, not deferred.
 
 ### R7 — Phantom step 5
 The studio wizard counts a step 5 that has no screen (auto panel placement).
@@ -46,8 +46,8 @@ The studio wizard counts a step 5 that has no screen (auto panel placement).
 
 ### R8 — Customer merge (same person, two numbers)
 Dedupe by phone cannot catch it; "offer merge later" is undesigned.
-**RULING: merge flow ships v1.1; the data model is merge-ready in v1.** The customers/contacts split (docs/04) means merge = re-point contact and lead references to the survivor, mark the loser merged (never deleted), keep the audit trail.
-**Consequence:** no v1 UI (UXG-05); no support back-door either — until v1.1 the duplicate pair simply coexists. Schema review in docs/04 must show the merge operation touches no money tables.
+**RULING (amended by the 20-day everything-in directive, 2026-07-24): the merge flow SHIPS IN the 20-day build** (Track A CRM, docs/14). The customers/contacts split (docs/04) makes merge = re-point contact and lead references to the survivor, mark the loser merged (never deleted), keep the audit trail.
+**Consequence:** merge UI lands with CRM core (UXG-05 in-scope); the merge operation provably touches no money tables (schema review in docs/04).
 
 ### R9 — Snooze / dormant / reopen: consolidated state machine
 Triggers and timers were scattered across Stages 2/3/7.
@@ -72,7 +72,7 @@ Triggers and timers were scattered across Stages 2/3/7.
 
 ### R11 — Quick mode status
 Proposed (steps 1/3/8/10) but never locked.
-**RULING: committed. Quick mode ships in Launch-1** — steps 1, 3, 8, 10 visible; AI auto-fill for 4/5; tenant defaults for 6/7/9/11; loss-free expansion to the full builder.
+**RULING: committed. Quick mode ships in the 20-day build (Track B proposal builder)** — steps 1, 3, 8, 10 visible; AI auto-fill for 4/5; tenant defaults for 6/7/9/11; loss-free expansion to the full builder.
 **Consequence:** UXG-09 designs it; duplicate-proposal (the fastest path) and Quick mode are the two speed paths and must not diverge in validation behaviour (see R12).
 
 ### R12 — Chip-rail free navigation vs step gating
@@ -143,7 +143,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D20 | Visibility: rep own / manager team / owner all | HONORED — role scoping + RLS backstop (docs/08) |
 | D21 | Proposal with or without design, one builder | HONORED — Path A/B, provenance differs (R18) |
 | D22 | Components mandatory on every proposal | HONORED — enforced at Generate (R12), not per-step |
-| D23 | Studio lowest build priority | HONORED — restored by owner directive 2026-07-24 rev 2 (BLUEPRINT directive 10): studio builds LAST (docs/14 §3a). Flagship status, tool-census gate and scope are unchanged (directive 9) — the earlier same-day "first-class in Launch-1" ruling was reversed by the owner |
+| D23 | Studio lowest build priority | HONORED — restored by owner directive 2026-07-24 rev 2 (BLUEPRINT directive 10): studio is the LAST track of the single 20-day build (docs/14 Track D, Days 14–18). Flagship status, tool-census gate and scope are unchanged (directive 9) — the earlier same-day "studio-first" ruling was reversed by the owner |
 | D24 | Guided agent config + KB + unanswered loop | PARTIAL — honored, except "locked by platform" half superseded by D36 (all config tenant-editable) |
 | D25 | App UI multilingual EN/HI/MR | HONORED — Lingui v5, per-user re-render, Devanagari chain (docs/10) |
 | D26 | Billing screens are mocks | SUPERSEDED — by D38 (removed entirely), then by product-owner override 2026-07-24: real billing in v1; the D26-era mock is redesigned (UXG-13, docs/16) |

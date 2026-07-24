@@ -6,7 +6,7 @@ Competitors of record: **ARKA 360** ([arka360.com/pricing-in](https://www.arka36
 
 ## Feature matrix — HelioGrid v1 spec vs the field
 
-✔ full · ◐ partial · ✖ absent. "HG" = HelioGrid as specified for v1 (Launch-1 + Launch-2).
+✔ full · ◐ partial · ✖ absent. "HG" = HelioGrid as specified for v1 (the single 20-day build, docs/14).
 
 | Capability | HG | ARKA 360 | Reslink | Aurora | OpenSolar | HelioScope | PVcase |
 |---|---|---|---|---|---|---|---|

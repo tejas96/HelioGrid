@@ -5,6 +5,13 @@
 
 The 85 mockups in `/Users/devtejas/Downloads/HelioGrid UX/` are production specs for most of the product. This register lists every screen or flow the mockups do **not** cover. Each gap is **designed at implementation time** — by the implementing agent/designer, directly in the design system (`packages/tokens`, N1–N10, touch contract), inside the module's build slice. No new Claude-Design phase. A gap is closed when the screen ships wired into its flow (never orphaned), with loading/empty/error/offline states, both breakpoints, and the light theme correct (light-only per docs/15 R19-A).
 
+> **20-day directive (2026-07-24):** every phase label in the tables below now lands INSIDE
+> the single 20-day build (docs/14 tracks): "Launch-1 …" rows → Tracks A/B/C, "Launch-2 …"
+> rows → Tracks C/M, "studio port" rows → Track D, offline rows → Track E. UXG-11 (named
+> links + OTP-at-accept) and UXG-05 (customer merge) are IN-SCOPE — no v1.1 exists. Only
+> spec-locked exclusions (D29 crew login, D32 WhatsApp sending) stay out, by product law
+> not by timeline.
+
 **Register rules**
 1. Before building a module, check this table; claim the gaps your slice touches.
 2. Closing a gap = ship it + mark the row `CLOSED (PR/date)`. Do not delete rows.
@@ -40,7 +47,7 @@ The 85 mockups in `/Users/devtejas/Downloads/HelioGrid UX/` are production specs
 
 | ID | Gap | Stage | Why it matters | Design-at-implementation notes | Blocks |
 |---|---|---|---|---|---|
-| UXG-11 | **Named links + OTP-at-accept** (D33 mitigation) | 6 / C8 | Single link accepted for launch (R6), but a ₹92L C&I acceptance by "whoever holds the URL" is the sharpest liability in the product; docs/08 requires the token scheme to support it from day one | Designed-for now, shipped when triggered: per-contact named links (label + scope on the tokenised-link entity), per-link open attribution, and MSG91 OTP challenge on Accept above a tenant-set value threshold. UI: link manager on the deal + OTP sheet on the customer page | v1.1 C&I hardening (schema ready in Launch-1) |
+| UXG-11 | **Named links + OTP-at-accept** (D33 mitigation) | 6 / C8 | Single link accepted for launch (R6), but a ₹92L C&I acceptance by "whoever holds the URL" is the sharpest liability in the product; docs/08 requires the token scheme to support it from day one | SHIPS IN the 20-day build (R6 amended): per-contact named links (label + scope on the customer_links entity), per-link open attribution, and MSG91 OTP challenge on Accept above a tenant-set value threshold. UI: link manager on the deal + OTP sheet on the customer page | Track B customer link (in-scope) |
 | UXG-12 | **Customer mid-journey states** — question inbox (tenant side), C9 advance-payment via tenant Razorpay link | C3–C9 | CustomerProposal covers states A–F; the tenant-side handling of "Ask a question" and the BYO-Razorpay payment-link handoff have no mockups | Questions land as notifications + timeline entries with reply-by-call workflow (app never sends). C9: "Copy payment link" action on the due tranche once tenant connects Razorpay (`PaymentLinkPort`); receipt state reflects webhook confirmation | Launch-1 customer link; tenant collections |
 
 ## E · Billing, usage & trial (v1 — supersedes the D26-era mock)
@@ -66,7 +73,7 @@ The 85 mockups in `/Users/devtejas/Downloads/HelioGrid UX/` are production specs
 | ID | Gap | Stage | Why it matters | Design-at-implementation notes | Blocks |
 |---|---|---|---|---|---|
 | UXG-19 | **Referral credit flow** | C12 / 8 | Handover asks for referrals; attribution is specced, the credit model is not (./research/journey.md §6.15) | v1 per ruling R15: referral = tagged attribution (referrer customer → new lead, source=referral) visible on both records; **no credits ledger v1**. Design the tag + "came from" chip only | v1.1 growth |
-| UXG-20 | **Installer/crew surface** (D29) | 8 | Crew has no login in v1; the InstallationSheet's "crew ticks" need an owner | Per ruling R16: coordinator (Manager role) runs the checklist on their device; optional free-text "done by" per step; money never shown. Crew login + role = v2 | Launch-2 projects polish |
+| UXG-20 | **Installer/crew surface** (D29) | 8 | Crew has no login in v1; the InstallationSheet's "crew ticks" need an owner | Per ruling R16: coordinator (Manager role) runs the checklist on their device; optional free-text "done by" per step; money never shown. Crew login + role stay excluded by D29 (spec-locked, not a timeline deferral) | Track B projects |
 
 ## H · Studio refactor deltas (phase-10 mandates the mockups only partially cover)
 
@@ -78,7 +85,7 @@ The studio is **kept and refactored** (D39) with the ./research/phases710.md §2
 | UXG-22 | **Mode toolbar + touch gesture layer (2D canvas)** | 10.3–10.6 | Phase-10's core interaction mandate: mode-based canvas, no modifier keys; 2D lacks pinch-zoom/two-finger pan entirely | Persistent mode bar (Select · Draw · Detect AI · Measure · per-step tools); one gesture = one undo step; tap-select-then-big-handles replaces ~9px handles; +/− steppers for precise nudge; visible labels, zero hover-only meaning | Launch-1 studio port |
 | UXG-23 | **AI ghost review UX** | 10.3 | RoofSetup mockup shows a "ghost review" state tab, not the full accept/reject contract | Ghosts rendered distinct from committed geometry; per-shape confidence + include/exclude tap; imagery date/quality line; dropped-shape warnings; "add selected" commits as one undo step; provenance recorded (manual vs AI + confidence) | Launch-1 studio port |
 | UXG-24 | **Studio sheet system** | 10.4–10.10 | Layout* sheet mockups exist (grow/string/table/why); the obstruction Settings sheet (setback → shadow → blocking → nested bridging chain) and the 375px BOM line-edit sheet do not | One sheet grammar for all editors: spring-in bottom sheet (mobile) / side panel (desktop), progressive disclosure for the bridging chain with the live clearance calc, BOM line edit with per-field provenance + reset. Blur-toward-white overlays per brand law | Launch-1 studio port |
-| UXG-25 | **Scale-program surfaces** — blocks/zones editing, tracker tables, DEM/terrain import | 11-scale | 1 kW→100 MW is a committed design range (docs/11); zero mockups exist beyond LayoutTableSheet's single table | Design when each scale phase lands: zone draw → auto-tables, GCR/backtracking controls on the table sheet, DEM import status. Reuse the studio sheet grammar; block/table is the editable unit, panels derived | Scale phases (post-Launch-2) |
+| UXG-25 | **Scale-program surfaces** — blocks/zones editing, tracker tables, DEM/terrain import | 11-scale | 1 kW→100 MW is a committed design range (docs/11); zero mockups exist beyond LayoutTableSheet's single table | Design when each scale phase lands: zone draw → auto-tables, GCR/backtracking controls on the table sheet, DEM import status. Reuse the studio sheet grammar; block/table is the editable unit, panels derived | Scale Phases B/C (immediately after the 20-day build) |
 
 ## Cross-cutting note
 

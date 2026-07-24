@@ -36,7 +36,7 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 2. Verify (single-use, 5-min TTL, constant-time compare) → Better Auth session created → active organisation resolved → `tenant_id`.
 3. Invited employee: invite row keyed by phone (Stage 1 journey) — OTP verify attaches membership + roles atomically.
 
-DLT registration (principal entity + headers + templates) is a Launch-1 critical-path item: 1–2 weeks lead time, tracked in [`./14-build-roadmap.md`](./14-build-roadmap.md).
+DLT registration (principal entity + headers + templates) is a Day-1 critical-path item of the 20-day build: 1–2 weeks lead time, tracked in [`./14-build-roadmap.md`](./14-build-roadmap.md).
 
 ### Session models
 

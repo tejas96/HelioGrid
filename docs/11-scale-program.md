@@ -57,9 +57,9 @@ changes numeric results, invalidating stale solar-access data by construction.
 
 ## 3. Phase A — the studio phase (part of the studio port; not optional)
 
-Phase A ships with the studio phase (docs/14 §3a — the studio port and offline are the LAST
-build phases per owner directive 2026-07-24 rev 2; a thin kernel subset incl. the default
-ProjectionContext already lands in Launch-1 W3 for remote survey) alongside the domain port
+Phase A ships with the studio track of the 20-day build (Track D, Days 14–18, docs/14 —
+the last track by owner priority, inside the window; a thin kernel subset incl. the default
+ProjectionContext already lands Day 7 for remote survey) alongside the domain port
 (docs/05-domain-migration.md), but its
 items are NOT all "during the port". They split three ways: **at port time** —
 `ProjectionContext` context injection with the default equirect implementation (A3) and

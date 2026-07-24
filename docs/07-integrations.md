@@ -416,7 +416,7 @@ interface OtpPort {
 
 **v1: `Msg91Adapter`.** Better Auth's phoneNumber plugin generates and verifies the code;
 this port only delivers it. SMS via DLT-registered template (~₹0.15/SMS; **DLT registration
-lead time 1–2 weeks is on the Launch-1 critical path** — `14-build-roadmap.md`); WhatsApp-OTP
+lead time 1–2 weeks is on the Day-1 critical path of the 20-day build** — `14-build-roadmap.md`); WhatsApp-OTP
 (same MSG91 account) as automatic fallback on SMS delivery failure or 30 s timeout.
 
 **Rate limits (ours, in front of the port):** 3 sends/number/15 min, 8/number/day, per-IP
