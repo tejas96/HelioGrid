@@ -41,7 +41,7 @@ code, everything blocks on paperwork):**
 | Track | Actions | Lead time | Blocks |
 |---|---|---|---|
 | DLT / SMS | MSG91 account, DLT Principal Entity registration, sender ID + OTP/transactional templates | 1–2 weeks (`./research/auth.md`) | Real-phone OTP (W2 auth); until approved, use MSG91 test route + WhatsApp-OTP fallback |
-| Razorpay | Merchant KYC, Subscriptions enablement, plan objects (Growth/Pro per docs/16), webhook endpoint registration, GST invoice settings | days–2 weeks | Live billing (W4); build against test mode from W2 |
+| Razorpay | Merchant KYC, Subscriptions enablement, plan objects (Starter/Growth/Pro × monthly + yearly, per docs/16), webhook endpoint registration, GST invoice settings | days–2 weeks | Live billing (W4); build against test mode from W2 |
 | Exotel | Account, KYC, Exophone pool enquiry, BYO-number porting mechanics quote, AgentStream access | 2–6 weeks | Voice GA (Launch-2) — start now precisely because it is slow |
 | Apple/Google | Developer accounts, org verification | 1–2 weeks | Store submissions (Launch-2) |
 

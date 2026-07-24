@@ -52,13 +52,41 @@ Verdicts: **ADOPT-NOW** (in v1 spec, build it) · **DESIGN-FOR** (port/seam exis
 | 8 | **Utility-scale terrain + AutoCAD workflows** (PVcase, HelioScope) | **DESIGN-FOR** | The scale program is committed v1 ramp: blocks/tables/zones model, GPU shadow-map shading, single-axis trackers with GCR backtracking, GLO-30 DEM import. Terrain-following articulation and utility autorouting defer; AutoCAD-native is never — we are browser-native by identity. |
 | 9 | **PVsyst / SketchUp / CAD export** (ARKA; PVcase) | **DESIGN-FOR** | C&I lenders ask for PVsyst-bankable files. The BOM engine's emitter architecture takes new emitters cheaply; PVsyst-compatible + DXF exports are post-launch emitters, not re-architecture. |
 | 10 | **Bankable P50/P90 yield reports** (HelioScope) | **DESIGN-FOR** | PVGIS TMY + PR ladder are in place; uncertainty bands and exceedance statistics are an additive reporting layer on the same energy model, needed when Enterprise/utility tenants arrive. |
-| 11 | **Per-design pay-as-you-go pricing** (Pylon $4–10/design) | **SKIP-DELIBERATELY** | Capacity tiers align our price to EPC revenue and keep ARPU predictable; PAYG fragments revenue and complicates entitlements. Revisit only if seasonal micro-installers churn on the Growth floor. |
+| 11 | **Per-design pay-as-you-go pricing** (Pylon $4–10/design) | **SKIP-DELIBERATELY** | Capacity tiers align our price to EPC revenue and keep ARPU predictable; PAYG fragments revenue and complicates entitlements. The ₹1,999/mo Starter tier (01) already serves seasonal micro-installers; revisit only if they churn even on the Starter floor. |
 | 12 | **Free tier** (OpenSolar) | **SKIP-DELIBERATELY** | User decision: trial-only. OpenSolar's free is funded by distributor placement + payments cut (gaps 5, 13) — without that engine a free tier is pure metered COGS. |
 | 13 | **Partner-funded distributor placement in catalog** (OpenSolar) | **SKIP-DELIBERATELY** | The two-tier catalog's neutrality is a trust wedge with EPCs. If ever revisited, only as clearly-labelled sponsored listings — never silent ranking. |
 | 14 | **WhatsApp-native proposal sending** (no incumbent has it natively — market gap, not competitor feature) | **DESIGN-FOR** | D32 stands for v1: ManualCopyAdapter behind `MessagingPort`. v2 = BYO-WABA via Meta Embedded Signup (tenant owns the number and reputation). The port boundary means zero rework. |
 | 15 | **MLPE (micro-inverter/optimiser) electrical design** (ARKA, Aurora, HelioScope) | **DESIGN-FOR** | Catalog holds the components in v1; the string-sizing ladder gains an MLPE branch later. Indian residential is string-inverter-dominated, so this follows demand, not launch. |
 | 16 | **Public API with keys/quotas** (ARKA, Aurora, OpenSolar) | **DESIGN-FOR** | ts-rest emits OpenAPI 3.1 from day one (customer-link endpoints + webhooks already public); tenant API keys and quotas are a thin layer post-launch. |
 | 17 | **CRM as included, not add-on** (ARKA charges extra) | **ADOPT-NOW** | Already our pricing stance (`01-business-model.md`): every feature in every tier; CRM inclusion is a stated selling line against ARKA. |
+| 18 | **White-label options** (Reslink Enterprise) | **DESIGN-FOR** | Tenant branding on customer documents is all-tiers already (docs/10); full white-label (custom domain for customer links + unbranded portal) is an Enterprise option (owner-confirmed 2026-07-24). Custom-domain routing designed at the customer-link module; built when the first Enterprise deal asks. |
+| 19 | **Custom integrations / partner API** (Reslink Enterprise; ARKA API) | **DESIGN-FOR** | Owner-confirmed Enterprise differentiator: tenant API keys + webhook subscriptions over the already-emitted OpenAPI 3.1 surface (gap 16 is the same engineering; this row is its Enterprise packaging). |
+
+## Reslink feature-list coverage check (owner-supplied pricing page, 2026-07-24)
+
+Every feature Reslink lists on its tier cards, mapped to HelioGrid — **all available on every HelioGrid tier** (they gate most into higher tiers; that contrast is a selling line):
+
+| Reslink lists (tier they gate it to) | HelioGrid equivalent (tier) |
+|---|---|
+| CRM & Project Management (Basic+) | Full CRM + 9-stage projects module — every tier |
+| Proposal Editing (Basic+) | 11-step builder, versions, Path A/B — every tier (counts per 01) |
+| 3D Export & SLD (Basic+) | SLD + drawing sheets, DXF/SVG/PNG/PDF export — every tier |
+| PV Report (Basic+) | PVGIS energy report (monthly, losses, 25-yr, provenance-labelled) — every tier |
+| AC/DC & Earthing Layout (Basic+) | SLD with DCDB/ACDB/SPD/isolators/earthing pits + cable routing + IS/IEC ladders — every tier |
+| Tin Shed Support (Basic+) | `metal_shed` roof type with monorail structure — every tier |
+| Detailed Structure Analysis (Pro+) | Parametric member/steel model + foundations (honest: material estimate + engineer sign-off, never a computed safety verdict) — every tier |
+| Advanced Shadow Analysis (Pro+) | Per-panel raycast solar access, monthly heatmap, sun-path simulation — every tier |
+| Detailed Energy Reports (Pro+) | Full loss breakdown, specific yield, PR, degradation — every tier |
+| Standard / All Obstruction Types (Pro/Premium) | All 11 obstruction types incl. bridging + convert-to-platform — every tier |
+| Design Location Editing (Pro+) | Pin placement + relocation guard + calibration + north offset — every tier |
+| Industrial Drawings (Premium+) | Title-blocked drawing sheets (SLD, PV layout, string route, structure) — every tier |
+| Ground Mount Design (Premium+) | Ground arrays (flat v1; trackers/terrain in scale program) — every tier |
+| Advanced Structures (Premium+) | Structure presets + full parametric customisation — every tier |
+| Priority Support (Premium+) | Pro+ (support is the one ladder we also climb) |
+| Unlimited Projects (Enterprise) | Growth+ (Starter capped at 10 active — owner directive) |
+| White-Label Options (Enterprise) | Enterprise (gap 18) |
+| Custom Integrations (Enterprise) | Enterprise (gap 19) |
+| SLA / Dedicated Account Manager (Enterprise) | Enterprise: dedicated manager; contractual SLA at sales discretion (not pre-committed) |
 
 ## What nobody else has
 

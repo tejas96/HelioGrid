@@ -17,15 +17,16 @@ Two money systems live here and they never mix:
 
 **Authoritative prices, caps and bundle sizes live in [`./01-business-model.md`](./01-business-model.md)** — this doc fixes the mechanics. Shape (BLUEPRINT): org-level, capacity-tiered — never per-seat (Indian EPCs employ many low-cost designers; ARKA/Reslink both price per-org, [`./research/market.md`](./research/market.md)) — priced below ARKA 360 (₹7.5k–16.5k/mo) and Reslink ($949–1,899/yr):
 
-| Tier | Indicative price | Mandate route |
+| Tier | Price (monthly · yearly, per 01) | Mandate route (monthly) |
 |---|---|---|
-| Growth | ~₹4–5k/mo | UPI AutoPay (under ₹15k cap) |
-| Pro (voice bundle) | ~₹8–10k/mo | UPI AutoPay (under ₹15k cap) |
-| Enterprise | custom | e-NACH / invoice |
-| Annual variants (~2 months off) | > ₹15k one-shot | Single Razorpay payment link/invoice per year — **no mandate needed**; renewal is a fresh invoice |
+| Starter (small-EPC entry — owner directive: affordable to every EPC) | ₹1,999/mo · ₹19,990/yr | UPI AutoPay (under ₹15k cap) |
+| Growth | ₹3,999/mo · ₹39,990/yr | UPI AutoPay (under ₹15k cap) |
+| Pro (voice bundle) | ₹9,999/mo · ₹99,999/yr | UPI AutoPay (under ₹15k cap) |
+| Enterprise (white-label options, public API, custom integrations) | custom | e-NACH / invoice |
+| **Yearly variants — every tier, 2 months free (pay 10, get 12)** | totals incl. 18% GST all exceed ₹15k | Single Razorpay payment link/invoice per year — **no mandate needed**; renewal is a fresh invoice (card e-mandate/e-NACH optional for auto-renew) |
 
-- **Unlimited users on every tier.** Capacity/usage differentiates tiers: design-capacity ceiling (kW per design), voice-minute bundle, AI-detection bundle, storage GB — values in 01.
-- Every plan exists as a Razorpay Plan object (monthly) mirrored 1:1 by a row in our `plans` table; our table is the source of truth for entitlements, Razorpay's for money.
+- **Unlimited users on every tier.** Capacity/usage differentiates tiers — never features (owner-confirmed): single-design kW ceiling, **proposal-creation cap per month + Starter active-project cap (owner directive; counts in 01: 30/300/1,500/unlimited proposals; Starter 10 active projects)**, voice-minute bundle, AI-detection bundle, storage GB — values in 01.
+- Every tier exists as **two Razorpay Plan objects (monthly + yearly)** mirrored 1:1 by rows in our `plans` table (`billing_cycle` column: monthly/yearly); our table is the source of truth for entitlements, Razorpay's for money. Cycle switches (monthly → yearly) follow the same upgrade mechanics as tier changes (§10): immediate entitlements, prorated delta, new subscription at boundary.
 
 **Trial (the only non-paying state):** 14 days, **every tier capability**, within the Trial caps defined in [`./01-business-model.md`](./01-business-model.md) — the single source (25 AI detections / 15 voice minutes / 5 GB storage). No card/mandate required to start — signup stays phone+OTP+company (Stage 0). One 7-day extension available to support. Trial is modelled **in-app only** (state on `subscriptions`), not as a Razorpay object; the Razorpay subscription is created at conversion with `start_at = now` ([`./research/verify-billing.md`](./research/verify-billing.md): model free access as in-app state, not a gateway plan).
 
@@ -137,6 +138,8 @@ Tables (per BLUEPRINT): `plans`, `subscriptions`, `subscription_events`, `entitl
 |---|---|---|
 | All UI mutations (leads/surveys/designs/proposals/projects) | `BillingStateGuard` on every non-GET ts-rest route (state matrix §3) | `ENTITLEMENT_BLOCKED` + reactivate CTA |
 | Design capacity (kW tier ceiling) | Design **save/creation** + proposal Generate — never mid-edit in the studio; the flagship is never interrupted per-keystroke | Save blocked with upgrade prompt; existing designs always open |
+| Proposal count/mo (30/300/1,500/∞ per 01) | Proposal **create** endpoint — plain `COUNT(*)` over the billing-cycle window, no new metering infra; banner at 80%, 7-day grace at 100% | New proposal creation pauses; editing/sharing/duplicating EXISTING proposals, and all reads/exports, never pause |
+| Active projects (Starter: 10; others ∞) | Mark-won → project **create**; "active" = not handed over/cancelled | Mark-won blocked with upgrade prompt; existing projects fully workable — never strand a live installation |
 | Voice agent outbound | Before queue insert AND before dial (queue entries can outlive allowance) | Call not placed; queue entry marked `blocked_entitlement`, owner notified |
 | Voice agent AI inbound | CallSession accept hook | Fallback: human ring-group/voicemail per tenant IVR config |
 | AI roof detection (Gemini/Google Solar) | Server proxy pre-call check | Detection blocked; manual outline always available (it costs us nothing) |

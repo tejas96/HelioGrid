@@ -89,3 +89,13 @@ Exploitable gaps:
 - PM Surya Ghar subsidy detail (ClearTax) — https://cleartax.in/s/rooftop-solar-scheme
 
 **Note on data confidence:** All India-tool tier prices (ARKA, Reslink, SolarPlus, Pylon) are from vendor pricing pages and are firm. Aurora/HelioScope/PVcase/Enact installer-tier prices are sales-gated and come from third-party reviewer estimates (SurgePV, Heaven Green Energy, getLatka) — treat as directional, not quoted. Reslink and ARKA sit at capacity/project-cap org pricing, not true per-seat, which matters for a per-seat SaaS cost model.
+---
+
+## CORRECTION (2026-07-24, owner-supplied): Reslink India INR pricing page
+
+The USD prices above ($949/$1,349/$1,899) are Reslink's international page. The **INR page is authoritative for India** and lower:
+- **Basic ₹60,000/yr** — up to 50 kW. CRM & PM, proposal editing, 3D export & SLD, PV report, AC/DC & earthing layout, tin-shed support.
+- **Pro ₹85,000/yr** — up to 500 kW, **1,000 proposals**. + Detailed structure analysis, advanced shadow analysis, detailed energy reports, standard obstructions, design location editing.
+- **Premium ₹1,20,000/yr** — up to 5 MW. + Industrial drawings, ground mount, advanced structures, all obstruction types, priority support.
+- **Enterprise** — custom. + Unlimited projects, custom integrations, white-label, SLA, dedicated account manager.
+Note: Reslink gates FEATURES per tier (shadow analysis, ground mount, obstruction types) — HelioGrid deliberately does not (see docs/01, docs/12 coverage table).
