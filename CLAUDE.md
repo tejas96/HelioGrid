@@ -74,12 +74,20 @@ three.js/R3F + WebGPU (studio). Rationale + pins: `docs/03-tech-stack.md` and `d
 - Match surrounding code style. Comments only for constraints code can't express.
 - Never commit secrets. Fly secrets / .env.local only; .env.example documents every var.
 
-**UI (see .claude/rules/ui.md for the full contract)**
-- No raw values: no hex, no arbitrary px, no inline style. Everything from `packages/tokens`.
-- Brass fills carry INK text (`text-on-accent`); `text-accent` does not exist — use
-  `text-accent-text`. Accent brightens on hover.
+**UI (see .claude/rules/ui.md + docs/10 for the full contract)**
+- No raw values: no hex, no arbitrary px, no inline style. Everything from `packages/tokens`,
+  which is GENERATED from `design/ds-source` — missing tokens are extended at generation,
+  clearly marked; never hand-transcribed, never inlined.
+- Primary actions are NEAR-BLACK (`#0A0A0B`, hover `#26262A`, pressed `#000000`), never
+  coloured. Accent `#5A4BFF` = focus/links/selected/active-tab/control fills ONLY — never a
+  button fill. Iridescence is atmosphere, never information. Hierarchy from luminance +
+  elevation — no structural 1px borders (hairline `rgba(10,10,11,0.06)` only).
+- LIGHT-ONLY v1: dark is struck from the DoD (alias layer kept for a later dark set). The
+  11px/700/uppercase/0.12em overline is the ONE sub-12px exception — micro-labels only.
+- The POC's DESIGN-SYSTEM.md is interaction/a11y contracts only — ALL visuals come from
+  `design/ds-source` (see docs/10). "Instrument" graphite+brass is retired.
 - Touch targets ≥44px; no hover-only meaning; 375px works for EVERY screen incl. studio;
-  loading/empty/error/offline states are part of done; light AND dark both correct.
+  loading/empty/error/offline states are part of done.
 
 ## Testing (deliberately thin — do not expand it)
 

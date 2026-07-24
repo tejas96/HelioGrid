@@ -159,7 +159,7 @@ each has a pre-agreed fallback so a failed spike costs a decision, not a week):*
 5. Restore drill passed within the documented RTO; backups verified in Tigris (both layers).
 6. RLS backstop: cross-tenant read/write fails at the DB even with app guards disabled.
 7. Customer link states A–F + edge states render; Hindi proposal PDF correct; 375 px pass on
-   every shipped screen; light and dark both correct.
+   every shipped screen; light theme correct (light-only per docs/15 R19-A).
 8. Provenance tiers + Path-B "Indicative proposal" label present on every surface that shows
    a number.
 
@@ -262,7 +262,8 @@ Domain       — pure logic in packages/domain only (no Nest/React/fetch/env)
 DoD          — typecheck + lint green · ported/invariant tests green ·
                run-and-look: verified in the browser (or curl/logs for api,
                simulator for mobile) · wired into an existing flow, no orphan
-               screen · loading/empty/error/offline states · 375px · light+dark
+               screen · loading/empty/error/offline states · 375px · light theme
+               correct (light-only, R19-A)
 UX sources   — exact mockup files by name from /Users/devtejas/Downloads/HelioGrid UX/
                (e.g. MyDay.dc.html, ProposalStep7.dc.html) — states and seeded
                data in the mockups are the spec

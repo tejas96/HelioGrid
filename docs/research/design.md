@@ -1,3 +1,5 @@
+> **SUPERSEDED FOR VISUALS (2026-07-24):** this documents the POC Instrument system. The production visual system is the vendored UX package (`design/ds-source`) — see [ds-tokens.md](./ds-tokens.md) / [ds-brand-law.md](./ds-brand-law.md) / [ds-usage.md](./ds-usage.md) / [ds-reconciliation.md](./ds-reconciliation.md). Interaction/a11y contracts in here remain valid input.
+
 # HelioGrid "Instrument" Design System — Architecture Brief for SaaS Rebuild
 
 Sources: `docs/DESIGN-SYSTEM.md`, `src/design/tokens.css`, `src/design/index.css`, `src/app/design/page.tsx`. All paths absolute below.

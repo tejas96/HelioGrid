@@ -123,7 +123,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 |---|---|---|
 | D1 | Residential AND C&I, both high volume | HONORED — segment flag through lead/proposal; 1 kW→100 MW range (docs/11) |
 | D2 | Full mobile parity at 375px incl. studio | HONORED — responsive web studio; RN app presents it via authenticated WebView |
-| D3 | "Instrument" brand: graphite + brass, ink on brass | HONORED — `packages/tokens`, N1–N10 carried as design-spec law (docs/10) |
+| D3 | "Instrument" brand: graphite + brass, ink on brass | **SUPERSEDED — 2026-07-24, by the vendored UX design-system package (owner-confirmed, pixel-perfect directive):** visual identity is now `design/ds-source` — Geist typography, near-black primary `#0A0A0B`, violet accent `#5A4BFF`, iridescent atmosphere (`#7B5CFF`/`#3B82F6`/`#E85CBE`), light-only. No brass/graphite token survives anywhere. POC DESIGN-SYSTEM.md retained for interaction/a11y/product-law contracts ONLY (touch targets, no-hover-only, provenance, states, focus visibility). See §3 and ./research/ds-reconciliation.md |
 | D4 | WhatsApp primary channel | SUPERSEDED — by D32 (2026, POC spec): no WhatsApp integration v1, manual copy-paste |
 | D5 | Customer never logs in; tokenised link | HONORED — stateless signed tokens (docs/08); named-links mitigation designed-for (R6) |
 | D6 | Tailwind + Radix; Claude Design for screens | HONORED — Tailwind v4 + Radix in `packages/ui`; Claude-Design mockup phase complete, gaps via docs/13 |
@@ -151,7 +151,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D28 | No per-person permission exceptions | HONORED — permissions derive purely from roles |
 | D29 | Custom roles deferred; installer deferred | HONORED — coordinator=Manager runs checklist (R16); crew login v2 |
 | D30 | Survey two modes: remote / physical | HONORED — remote-first residential; provenance split (R18) |
-| D31 | Arc-bar mobile nav, brass centre, role-adaptive | HONORED — RN field app + responsive web |
+| D31 | Arc-bar mobile nav, brass centre, role-adaptive | PARTIAL — arc-bar + role-adaptive honored (RN field app + responsive web); the "brass centre" half is void with D3: the centre FAB is near-black `--action-primary` `#0A0A0B` on the white arc (mockup ground truth, ./research/ds-usage.md §3) |
 | D32 | No WhatsApp integration v1; copy-paste | HONORED — `MessagingPort` ManualCopyAdapter; v2 BYO-WABA documented (docs/07) |
 | D33 | C&I same single link, no per-contact links/OTP | HONORED for launch — accepted risk; mitigation designed-for (R6, UXG-11) |
 | D34 | No discount approval; only arithmetic guard | HONORED — payable ≤ ₹0 blocks Generate; below-cost warns |
@@ -162,3 +162,19 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D39 | Studio kept & refactored; new repo, shared TS domain, Fly.io | HONORED — this repo; tool census (./research/phases710.md §2) is the studio acceptance checklist |
 
 **Reading rule:** a SUPERSEDED decision is dead — do not implement it, do not partially honour it. A PARTIAL row names exactly which half survives. Any future supersession is recorded here, dated, with the superseding authority named.
+
+---
+
+## 3 · Design-system owner rulings (2026-07-24, final)
+
+The canonical visual system is the vendored UX package at `design/ds-source/` (tokens/*.css, readme brand law, `_adherence.oxlintrc.json`, 21-component manifest, Geist fonts). The 22-point conflict list and its binding resolutions live in [./research/ds-reconciliation.md](./research/ds-reconciliation.md); the owner ruled the four open items as follows. Agents implement these; they do not re-litigate them.
+
+**R19-A — Light-only v1.** Dark mode is struck from the definition of done. The DS is light-only by law and by fact (`color-scheme:light`, zero dark tokens; the readme's "(+ dark mode)" index line is false). The semantic-alias indirection (`--bg-page`, `--surface-card`, `--text-body`, …) is kept so a dark value-set can drop in later. The old "studio canvas stays dark" doctrine is dead — the mockups show a light studio (`--canvas` `#F6F7F9` / `--canvas-sunken` `#EEF0F3` wells).
+
+**R19-B — The overline is a NAMED EXCEPTION to the 12px floor (N3).** The signature overline micro-label — **11px / 700 / uppercase / 0.12em tracking** — is the single sanctioned sub-12px use. Micro-labels only; never body, data, or interactive text. N3 otherwise stands unchanged.
+
+**R19-C — AA-failing DS colours keep their exact hex but get RESTRICTED ROLES.** `--text-tertiary` `#A1A5AC` (~2.5:1 on white) = decorative/timestamps only, never load-bearing text — meaning-bearing overlines render in `--text-secondary` `#74787E`. `--warning` `#E9A23B` (~2.2:1 as bare text) always sits on its tinted chip `--warning-bg` `#FDF4E6`, never as bare foreground text. The N4 contrast build gate stays; the pairs file is regenerated from ds-source values with these role constraints encoded.
+
+**R19-D — Weight 600 is SANCTIONED.** `--fw-semibold:600` becomes a token (mockups use 600 ×210 on dense desktop screens); the sanctioned weight set is **400 / 500 / 600 / 700**. The readme's "500 restricted to buttons/tabs/table-headers" clause is dead (usage overrules it — 500 ×1213).
+
+**R19-E — "Instrument" is formally retired** (recorded in the D3 row above): graphite+brass is not the product's visual identity anywhere, for any tenant. Every visual fact now comes from ds-source; the POC DESIGN-SYSTEM.md survives only as the interaction/a11y/product-law contract layer.

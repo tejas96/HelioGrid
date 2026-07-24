@@ -1,409 +1,505 @@
 # 10 — i18n & Design System
 
-Binding law for every pixel and every string in HelioGrid. The design system is
-**"Instrument"** (warm graphite + brass, machined-instrument feel) — locked in the POC,
-ported here unchanged in values and rules, changed only in delivery mechanics (fresh repo,
-two platforms). i18n is **Lingui v5**, one catalog, EN/HI/MR, per-user language.
+Binding law for every pixel and every string in HelioGrid. The visual system is the
+**vendored HelioGrid UX design-system package** at `design/ds-source/` — light, warm-neutral,
+Geist, near-black actions, iridescent atmosphere. i18n is **Lingui v5**, one catalog,
+EN/HI/MR, per-user language.
 
-Sources: [./research/design.md](./research/design.md) (token contract, CSS architecture,
-portability audit) · [./research/tooling.md](./research/tooling.md) (Lingui v5 selection)
-· `.claude/rules/ui.md` + `.claude/rules/i18n.md` (the enforcement rules — this doc is
-their long form; where phrasing differs, the rules files win) · POC
-`docs/DESIGN-SYSTEM.md` (original ratified spec).
+Sources: [./research/ds-tokens.md](./research/ds-tokens.md) (complete token census) ·
+[./research/ds-brand-law.md](./research/ds-brand-law.md) (brand law, lint rules, component
+inventory) · [./research/ds-usage.md](./research/ds-usage.md) (how the 85 mockups consume
+the system) · [./research/ds-reconciliation.md](./research/ds-reconciliation.md) (the
+22-point conflict list — its resolutions are binding) · owner rulings A–E of 2026-07-24
+(final; restated inline where they apply).
 
 ---
 
-## 1. Token pipeline — `packages/tokens`
+## 1. Canon statement
 
-One framework-neutral source of truth; everything else is generated.
+**`design/ds-source/` is the pixel-perfect source of truth.** It is the UX package vendored
+into this repo: `tokens/*.css` (fonts, colors, typography, spacing, radius, elevation,
+motion, base), `readme.md` (the brand law), `_adherence.oxlintrc.json` (rule intents +
+component prop allowlists), the 21-component manifest, and the two Geist variable woff2
+files. Every visual fact in this document is an extraction from that package; where any
+doc and the vendored CSS disagree, **the CSS wins**.
+
+- `docs/research/ds-*.md` are the reference extraction of that package — read them instead
+  of re-deriving values, but they are downstream of the source.
+- **The POC's `DESIGN-SYSTEM.md` is superseded for all visuals** (ruling E). "Instrument"
+  graphite+brass is retired as the product's identity — there is no brass token, no ink-on-
+  brass rule, no `text-accent-text`, no dark-canvas doctrine. The POC document survives
+  **only** for its interaction/a11y/product-law contracts: touch targets ≥44px, no
+  hover-only meaning, provenance tiers, N10 states, focus-visibility requirement, the
+  touch/gesture contract. Those are product law and carry over unreduced.
+- `_ds_manifest.json` is inventory only — **never a source of values** (it snapshotted the
+  1ms reduced-motion durations as canonical and miscategorises token kinds).
+
+---
+
+## 2. Token pipeline — `packages/tokens` GENERATES from the vendored CSS
+
+The build **parses `design/ds-source/tokens/*.css`** as source of truth and emits:
 
 ```
 packages/tokens/
-  src/
-    primitives.tokens.json     # --c-* ramps: neutral, brass, status, data hues (DTCG format)
-    semantic.light.tokens.json # role names → primitive references (light value set)
-    semantic.dark.tokens.json  # same role names → dark value set
-    scales.tokens.json         # space, radius, type, weight, motion, z, elevation, touch
-    contrast.pairs.json        # declared pairs + minimum ratios (see §1.3)
-  build.ts                     # Style Dictionary v4 config + contrast verifier
-  dist/                        # GENERATED, never committed, never hand-edited
-    tokens.css                 # web: CSS custom properties, light + dark blocks
-    theme.ts                   # RN: typed theme object { light, dark, space, type, ... }
-    tokens.json                # flat resolved contract for design tooling & doc renderers
+  build.ts        # CSS parser + generators + contrast verifier
+  dist/           # GENERATED, never committed, never hand-edited
+    tokens.css    # web: the ds-source custom properties, near-verbatim
+    theme.ts      # RN: typed theme object with the SAME names (px → dp)
+    tokens.json   # flat resolved contract for /design, PDF templates, tooling
 ```
 
-- **Style Dictionary v4**, DTCG token format (`$value` / `$type` / `$extensions`).
-- Build: `pnpm --filter @heliogrid/tokens build`. Turborepo `dependsOn` makes
-  `apps/web`, `apps/mobile` and `apps/worker` (PDF templates) build after tokens — no app
-  ever ships against a stale `dist/`.
-- `theme.ts` converts rem → dp (1rem = 16) and exposes the **same semantic names** as the
-  CSS (`theme.color.surfaceRaised`, `theme.space[4]`, `theme.type.sm`). One vocabulary,
-  two platforms.
-- `tokens.json` is the machine contract: the `/design` page, the proposal-PDF templates
-  and the tenant-palette verifier (§10) all consume it rather than parsing CSS.
+- **Never hand-transcribe.** The package's own manifest proves re-transcription drifts
+  (1ms durations, phantom dark mode, wrong `kind` tags). The vendored CSS is parsed
+  mechanically; token names survive **verbatim** (`--sp-*`, `--fs-*`, `--e0–e5`,
+  `--r-*`/`--rf-*`, `--dur-*`/`--ease-*`, `--chart-1..8`, the semantic aliases
+  `--bg-page`/`--surface-card`/`--text-body`/`--link`/`--focus-ring`) because the mockups
+  reference them — renaming breaks pixel-perfect traceability.
+- The semantic-alias indirection layer is kept intact: it is the drop-in point for a
+  future dark value set (§5).
+- Turborepo `dependsOn` makes `apps/web`, `apps/mobile` and `apps/worker` build after
+  tokens — no app ships against a stale `dist/`.
 
-### 1.1 Two-layer system (enforced, not stylistic)
+**Marked EXTENSIONS applied at generation** (each emitted under an explicit
+`/* @heliogrid-extension */` marker so ds-source diffs stay clean):
 
-- **PRIMITIVES** — raw ramps, prefix `--c-*` (`--c-neutral-500`, `--c-brass-500`).
-  **Never referenced by any component on any platform.** They exist only as inputs to the
-  semantic layer.
-- **SEMANTIC** — role-named (`--surface`, `--surface-raised`, `--surface-canvas`, `--text`,
-  `--text-muted`, `--accent`, `--accent-hover`, `--accent-text`, `--border`, `--focus-inner`
-  / `--focus-outer`, status `--success/--warning/--danger/--info` with `-subtle` pairs).
-  This is the only layer components may consume. A brand adjustment is one edit here.
-- Naming is by ROLE, never literal: `--surface-raised`, never `--gray-100`. There is
-  deliberately no `bg-neutral-500` utility on web — wanting a raw ramp value means the
-  system is missing a name; add the name with a verified ratio, never inline the value.
-- Scales are deliberately non-continuous: space `0,1,2,3,4,6,8,12,16,20,24` (4px base —
-  `p-5`/`p-7` do not exist); weights 400/500/600/700 only; radius sm/md/lg/full
-  (6/10/14/9999); elevation `--elev-1/2/3` only; motion 120/200/320ms; z-index named
-  (`--z-base/sticky/canvas-chrome/nav/popover/modal/toast` = 0/10/20/30/40/50/60) so
-  nobody writes 9999; `--target-min: 2.75rem` (44px).
+1. **Noto Sans Devanagari `@font-face`** + the fallback chain appended to `--font-sans`
+   (Geist has zero Devanagari coverage — §7.5).
+2. **`--fw-semibold: 600`** — sanctioned by ruling D. The mockups use weight 600 ×210 on
+   dense desktop screens; the shipped weight set is **400 / 500 / 600 / 700**.
+3. **`--brand-wash`** — promotes the recurring hand-mixed violet washes in the mockups
+   (`#F4F1FF`, `#FCFBFF`, `#FBFAFF`, and the hero gradient
+   `linear-gradient(180deg,#F4F1FF 0%,#FCFBFF 78%)`) into proper tokens; they are the one
+   recurring off-token colour in usage.
+4. **Studio data-viz namespaces** — `--data-roof-1…8` (categorical, roof identity),
+   `--data-string-1…12` (categorical, electrical strings), `--data-scale-0…10`
+   (sequential, irradiance/solar access). These are a genuine gap in the UX package,
+   **authored new and harmonised with `--chart-1..8`**; requirements carried as metadata:
+   deuteranopia-distinguishable within each categorical set, and every data-colour
+   encoding pairs with a non-colour channel (label, pattern or position). UI colour ≠ data
+   colour remains law: never style a button with a data colour; never chart with
+   `--accent` or `--action-primary`.
+5. **`contrast.pairs.json` regenerated from ds values** with the restricted-role
+   annotations of ruling C baked in (§3.2). The build recomputes WCAG ratios from resolved
+   values and **fails below floor** — contrast is computed, never eyeballed.
 
-### 1.2 The N6 data-colour namespace
+---
 
-UI colour and DATA colour are separate systems (rule N6). Data tokens live in their own
-namespace so misuse is visible at the call site:
+## 3. The visual system (exact values from the census)
 
-- `--data-roof-1…8` — categorical, roof identity
-- `--data-string-1…12` — categorical, electrical strings
-- `--data-scale-0…10` — sequential, irradiance / solar access
-- `--data-good` / `--data-mid` / `--data-poor` — diverging, performance
+### 3.1 Fonts
 
-These are saturated raw hues (intentionally outside the warm neutral/brass world) because
-they encode meaning. Requirements carried as metadata: deuteranopia-distinguishable
-within each categorical set, and every data-colour encoding pairs with a non-colour
-channel (label, pattern or position). Never style a button with a data colour; never
-chart with brass.
+- **Geist** (variable woff2, weight `100 900`, `font-display:swap`) — default sans.
+- **Geist Mono** (variable woff2, `100 900`, swap) — for **IDs, kWh readings, ₹ amounts,
+  coordinates, invoice numbers, phone numbers**. The mono-for-numerics rule is one of the
+  strongest visual signatures (564 mono uses in the mockups); numeric data is
+  `tabular-nums` (set globally on `body`) and currency/quantities **right-align** in tables.
+- Stacks: `--font-sans:"Geist","Inter",-apple-system,system-ui,sans-serif` (extended with
+  Noto Sans Devanagari at generation) · `--font-mono:"Geist Mono",ui-monospace,
+  SFMono-Regular,Menlo,monospace`.
+- Weights: `--fw-regular:400` · `--fw-medium:500` · `--fw-semibold:600` (extension,
+  ruling D) · `--fw-bold:700`. The readme's "500 restricted to buttons/tabs/table-headers"
+  clause is dead — usage overrules it (500 ×1213 across the mockups).
 
-### 1.3 Contrast ratios are build-verified metadata
+### 3.2 Colour
 
-Every shipped colour **pair** declares its minimum in `contrast.pairs.json`
-(text ≥ 4.5:1, UI/graphic boundaries ≥ 3:1). The tokens build recomputes WCAG ratios from
-the resolved values and **fails the build** if any pair drops below its floor — contrast
-is computed, never eyeballed (N4). The load-bearing pairs, carried from the POC:
+Surfaces / neutrals · text · lines:
 
-| Pair | Ratio | Rule it protects |
+| Token | Value | | Token | Value |
+|---|---|---|---|---|
+| `--canvas` | `#F6F7F9` | | `--text-primary` | `#0A0A0B` (near-black, never pure black) |
+| `--canvas-sunken` | `#EEF0F3` | | `--text-secondary` | `#74787E` |
+| `--surface` | `#FFFFFF` | | `--text-tertiary` | `#A1A5AC` — **restricted, see below** |
+| `--surface-alt` | `#FAFBFC` | | `--text-disabled` | `#C7CAD0` |
+| `--hairline` | `rgba(10,10,11,0.06)` | | `--chart-gridline` | `#EEF0F3` |
+
+**No structural 1px borders anywhere** — `--hairline` is the only line, and hierarchy
+comes from luminance + shadow (§4). Table rows alternate `#FFFFFF`/`#FAFBFC`.
+
+Two separate accent systems — never conflated:
+
+| System | Tokens | Role |
 |---|---|---|
-| `--text` on `--surface` (light) | 17.6:1 | body text |
-| `--text-muted` on `--surface` | 7.1:1 | secondary text |
-| `--text-on-accent` (ink `#1A1712`-class) on `--accent` (brass-500) | 5.78:1 | **brass fills carry INK labels** — white on brass is 3.09:1 and FAILS |
-| ink on `--accent-hover` (brass-300) | 7.85:1 | accent **brightens** on hover, never darkens |
-| `--accent-text` (brass-700) on `--surface` | ≥4.5:1 | `text-accent` does not exist; brass-500 as type is 2.96:1 |
-| dark-theme primary (brass-300) under ink | 8.16:1 | dark is not inverted light |
+| **Interactive accent** | `--accent #5A4BFF` · `--accent-hover #4A3BF0` · `--accent-subtle #EEECFF` | focus rings, links, selected states, active tabs, control fills — **never a button fill**. `#5A4BFF` on white ≈ 5.4:1, so it works as link text directly |
+| **Iridescent trio** | `--iris-violet #7B5CFF` · `--iris-blue #3B82F6` · `--iris-magenta #E85CBE` | atmosphere only — gradient / glow / icon-wash / AI cues |
+| **Actions** | `--action-primary #0A0A0B` · hover `#26262A` · pressed `#000000` | the primary button. **Near-black, never coloured — the strongest identity marker** |
 
-Changing a primitive that breaks a declared pair is a build failure, not a review comment.
+Gradients (exact stops):
+`--gradient-brand: linear-gradient(135deg,#7B5CFF 0%,#3B82F6 45%,#E85CBE 100%)` ·
+`--glow-brand: radial-gradient(circle,rgba(123,92,255,0.22) 0%,rgba(59,130,246,0.14) 40%,rgba(255,255,255,0) 72%)`.
+
+Status (muted FG always paired with tinted BG):
+
+| Tone | FG | BG |
+|---|---|---|
+| success | `#159A5B` | `#E9F7EF` |
+| warning | `#E9A23B` | `#FDF4E6` |
+| danger | `#E5484D` | `#FDECEC` |
+| info | `#3B82F6` | `#EAF2FE` |
+| neutral | `#74787E` | `#F0F1F3` |
+
+Chart palette (ordered, colourblind-safe, sampled from the iridescence):
+`--chart-1 #5A4BFF` · `--chart-2 #3B82F6` · `--chart-3 #E85CBE` · `--chart-4 #159A5B` ·
+`--chart-5 #E9A23B` · `--chart-6 #7B5CFF` · `--chart-7 #14B8C4` · `--chart-8 #A1A5AC` ·
+gridline `#EEF0F3`.
+
+**Restricted roles (ruling C — exact hex kept, roles constrained; annotations live in
+`contrast.pairs.json`):**
+
+- `--text-tertiary #A1A5AC` (≈2.5:1 on white) — **decorative/timestamps only, never
+  load-bearing text**. Meaning-bearing overlines use `--text-secondary`, not tertiary.
+- `--warning #E9A23B` (≈2.2:1 as bare text) — **always on its `--warning-bg #FDF4E6` chip,
+  never bare foreground text**.
+- `--text-secondary #74787E` is borderline (≈4.45:1 on white) — annotated in the pairs
+  file; body text on `--surface` is `--text-primary`.
+
+### 3.3 Type scale
+
+| Role | Size / line-height | Tracking |
+|---|---|---|
+| Display | 40px / 44px | −0.03em |
+| H1 | 32px / 36px | −0.025em |
+| H2 | 24px / 28px | −0.02em |
+| H3 | 20px / 22px | −0.015em |
+| H4 | 17px / 18px | −0.01em |
+| Body large | 17px / 1.55 | — |
+| **Body** | **15px** / 1.55 | — |
+| Body small | 13px / 1.5 | — |
+| Caption | 12px / 1.4 | — |
+| **Overline** | **11px** / — | **0.12em, weight 700, UPPERCASE** |
+| Button | 15px / — | −0.01em |
+| Table | 13px / 1.45 | — |
+
+- Headings are **tightly tracked (−0.01 to −0.03em) — essential to the look**. Body roles
+  use unitless 1.4–1.55 line-heights, no tracking. Sentence case everywhere; uppercase
+  only in the overline style.
+- **The overline is a NAMED EXCEPTION to the 12px floor (ruling B)**: 11px/700/0.12em/
+  uppercase **micro-labels only** ("SITE SURVEY", "SYSTEM CAPACITY") — never body, data
+  or interactive text. The 12px floor stands everywhere else.
+
+### 3.4 Spacing & layout constants
+
+4px base: `--sp-0..24` = 0, 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96 px
+(`--sp-0-5` is the 2px fractional step).
+
+Layout: `--sidebar-w 260px` / collapsed `68px` · `--header-h 64px` ·
+`--topbar-h-mobile 56px` · `--bottomnav-h 72px` · `--content-max 1440px` ·
+screen padding **20/32px** (expressive mobile/desktop), **16/24px** (functional) ·
+gutters 16/20/24px (mobile/tablet/desktop).
+
+### 3.5 Radius — dual scales
+
+| Expressive | Functional | Assignments |
+|---|---|---|
+| `--r-xs..2xl` = 8/12/16/24/32/40 | `--rf-xs..xl` = 4/6/8/12/16 | `--r-pill 999px` — **all buttons and chips are fully pill** |
+| | | cards **24px** expressive / **12px** functional |
+| | | sheets/modals `--r-sheet-top 32px` top corners |
+| | | inputs 14px expressive / 10px functional |
+| | | feature tile `999px 999px 32px 32px` (stadium silhouette — marketing/discovery only, sparingly) |
+
+### 3.6 Elevation — "shadows felt, not seen"
+
+`--e0 none` · `--e1 0 1px 2px rgba(16,24,40,0.04)` · `--e2 0 2px 8px rgba(16,24,40,0.05)`
+· `--e3 0 8px 24px rgba(16,24,40,0.06)` · `--e4 0 16px 48px rgba(16,24,40,0.08)` ·
+`--e5 0 24px 72px rgba(16,24,40,0.10)`.
+
+Assignment: rows e1 → cards e2 → hover/dropdown e3 → popover/nav e4 → modal/sheet/FAB e5.
+**Hover raises exactly one step and translates Y by −1px.** Never hard, dark or
+offset-heavy.
+
+### 3.7 Motion
+
+Durations `--dur-micro 120ms` / `--dur-standard 200ms` / `--dur-emphasised 320ms` /
+`--dur-ambient 500ms`. Easings: standard `cubic-bezier(0.4,0,0.2,1)`, enter
+`cubic-bezier(0,0,0.2,1)`, exit `cubic-bezier(0.4,0,1,1)`, **spring
+`cubic-bezier(0.34,1.56,0.64,1)`** (sheets, FAB, radial menus, segmented controls).
+
+Signature motions: buttons **scale 0.97 on press** (icon buttons 0.94); cards fade+rise
+8px on mount, **staggered 40ms, max 6**; skeleton shimmer **1.4s**; hero bloom breathes 8s.
+`prefers-reduced-motion` collapses all four durations to **1ms** (opacity-only, no loops).
 
 ---
 
-## 2. Web wiring — Tailwind v4, full import
+## 4. Brand law (binding, from ds-source `readme.md`)
 
-The fresh repo takes the **full** Tailwind v4 import:
-
-```css
-/* apps/web/src/app/globals.css */
-@import "tailwindcss";
-@import "@heliogrid/tokens/dist/tokens.css";
-```
-
-- **The POC's legacy-layer trick is explicitly NOT needed and must not be cargo-culted.**
-  The POC declared `@layer legacy, theme, base, components, utilities` and imported only
-  `tailwindcss/theme.css` + `utilities.css` to keep Preflight away from old Solar Studio
-  screens whose unlayered bare-element resets beat every utility. This repo has no legacy
-  screens: Preflight loads globally, there is no `legacy` layer, no partial import, and no
-  `.ds` opt-in wrapper — base styles apply to the whole document.
-- **`@theme` mapping is non-`inline`, and this is load-bearing.** Semantic tokens map into
-  Tailwind's namespace as `@theme { --color-surface: var(--surface); … }`. With
-  `@theme inline`, Tailwind resolves `var()` at build time and bakes the **light** value
-  into every utility — the page background flips in dark mode while `bg-accent` stays
-  light-brass. Verified failure in the POC. Non-inline emits utilities that resolve
-  through the variable chain at runtime, so theme switches actually reach utilities.
-- Only **semantic** names are exposed to utilities (`bg-surface`, `text-muted`,
-  `bg-accent text-on-accent`, `text-accent-text`, `bg-data-good`). Type steps bake their
-  line-height (`--text-sm--line-height`) so `text-sm` is complete. Breakpoints: sm 30rem /
-  md 48rem / lg 64rem / xl 80rem / 2xl 96rem — but interaction branches on capability
-  (`pointer: coarse`, `hover: hover`), never on width.
-- Custom utilities kept from the POC: `.tap-target` (44px hit area via `::after`, no
-  visual change), `.pt-safe/.pb-safe/.pl-safe/.pr-safe` (safe-area insets), `.sr-only`
-  (clip-rect, never `display:none`), `.nowrap-unit`; `dvh`/`svh` via Tailwind's native
-  `h-dvh` family — `vh` is banned. Global `prefers-reduced-motion` block kills
-  animation/transition durations.
-- Fonts load via `next/font` in the root layout (the old app declared Inter and never
-  shipped it — do not repeat that): Inter + Noto Sans Devanagari, wired per §8.
-
----
-
-## 3. Dark mode — one semantic system, two value sets
-
-Never a second palette. Dark redefines the **same semantic names** with the dark value
-set: surfaces go warm-black (`#141310` / raised `#1D1B17` class values from the ramp),
-primary fill moves **up** the ramp to brass-300, the label stays ink, status colours
-brighten, elevations deepen.
-
-```css
-:root { color-scheme: light; /* light value set */ }
-@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) { /* dark set */ } }
-:root[data-theme='dark'] { /* dark set, duplicated — explicit toggle wins */ }
-```
-
-- The theme toggle stamps `data-theme` on `<html>`; OS preference applies unless the user
-  forced light. Both blocks carry identical dark values (generated from the same source,
-  so they cannot drift).
-- **`--surface-canvas` is theme-invariant dark in both themes** — satellite imagery and
-  the 3D studio need a dark ground. Chrome overlaying the canvas uses the dark token set
-  regardless of page theme (`--text-on-canvas`, `--surface-canvas-panel`).
-- RN: the theme provider swaps the same named objects (`theme.light` / `theme.dark`) from
-  `theme.ts`, following `Appearance` with the same explicit-override precedence.
-  Conceptually identical, zero CSS involved.
+- **Neutrals are the product (95%). Iridescence is atmosphere only** — gradient, glow,
+  icon-wash, AI cues; it never fills a button, row, chip or field. Brand/AI features use a
+  gradient-filled object, not an outlined icon.
+- **The primary action is near-black `#0A0A0B`, never coloured.** Restraint is the
+  premium signal: minimal weights, one accent gesture per screen.
+- **Hierarchy comes from luminance and softness, never from lines.** Surfaces separate by
+  being brighter than the canvas plus a soft wide low-opacity shadow. No 1px grey borders
+  anywhere. Exceptions: dashed file-upload drop zones, and an **opt-in high-contrast field
+  mode** (the sanctioned escape hatch — a good fit for sunlight visibility on site).
+- **Overlays blur (0→8px) the layer behind and fade it toward white (0.35) — never a dark
+  scrim.** `backdrop-filter: blur(8px)` is reserved for overlay backdrops and the glass
+  credit chip; semantic tints are flat, not translucent.
+- **Focus is always a single 2px `#5A4BFF` ring at 2px offset, never removed**
+  (`:focus-visible` global in `base.css`). Inputs are borderless (`--e1` at rest) and
+  focus via the elevation treatment: `--e2, 0 0 0 2px var(--surface), 0 0 0 4px
+  var(--accent)` — no border appears; error state is an inset `1.5px --danger` ring.
+- **Density: Expressive vs Functional** — same colours, type and rules; only spacing and
+  radius change. Expressive = mobile, onboarding, dashboards, empty states; Functional =
+  data tables, long forms, kanban, settings, admin. Default Expressive on mobile,
+  Functional on desktop data screens. **Implemented as the component-level `density`
+  prop** (what the ds components and lint allowlists actually specify) — the
+  `:root[data-mode]` selector in ds-source is a no-op placeholder and is not our mechanism.
+- **Iconography: Lucide, outlined, 1.5px stroke, round caps/joins.** 24px default, 20px
+  functional, 28px bottom nav. Icons in cards/rows sit in the **circular icon container:
+  40px expressive / 32px functional, perfect circle, 6% colour tint**
+  (`color-mix(in srgb, {color} 6%, white)`). Never mix filled and outlined in one context;
+  filled variants only for the active bottom-nav item. Bundle Lucide locally — the CDN
+  reference is mockup-only. No icon font, no emoji, no unicode-as-icon.
+- **No logo exists — the wordmark is plain Geist Bold. Do not invent a mark.**
+- Content: sentence case, plain, direct, short. Buttons are verbs ("Schedule survey",
+  "Send over WhatsApp") — never "Submit", "OK", "Click here". Errors state problem and
+  fix. Dates as "12 Mar 2026"; numbers always carry units; ~68-char max line length for
+  prose. No emoji.
+- Photos masked to 16–24px radius, never colour-filtered; no repeating patterns, no
+  full-bleed photos.
 
 ---
 
-## 4. Component strategy
+## 5. Light-only (owner ruling A, final)
 
-### Web — `packages/ui` (Radix-based, owned in repo)
+**v1 is LIGHT-ONLY.** The ds-source system is light-only by law ("The system is
+light-only") and by fact (zero dark tokens; `base.css` sets `color-scheme:light`; the
+readme's "colors.css (+ dark mode)" index line is false). "Light AND dark correct" is
+**struck from the Definition of Done**.
 
-Radix primitives + Tailwind semantic utilities, shadcn-style **vendored into the repo**
-(we own every component file; no styled-kit dependency). Radix supplies focus trap,
-dismissal, positioning and ARIA plumbing; our layer supplies Instrument styling and the
-behavioural contracts. Component pattern is pure utility classes off semantic tokens:
-`bg-accent text-on-accent hover:bg-accent-hover rounded-md tap-target`.
+- **The old "studio canvas stays dark" doctrine is dead.** The mockups show a light
+  studio: DesignStudio's workspace is `--canvas #F6F7F9` / `--canvas-sunken #EEF0F3` wells
+  with white panels. No theme-invariant dark canvas, no `--text-on-canvas` chrome set.
+- **What stays open for dark later:** the semantic-alias indirection
+  (`--bg-page`, `--surface-card`, `--text-body`, `--link`, `--focus-ring` → raw tokens) is
+  kept in the generated output, and components consume aliases where they exist, so a dark
+  value set is a later **value-set drop into the alias layer** — no component rewrite. No
+  dark values are invented in the meantime; if dark is commissioned, the value set comes
+  from the UX side and enters through the §2 pipeline as a marked extension.
 
-### The four ported component contracts (both platforms, RN natively)
+---
 
-RN cannot use Radix (web-DOM-only). Mobile components live in `apps/mobile/src/ui`,
-consume `theme.ts`, and re-implement the **contracts** — the contracts port, the
-implementation does not:
+## 6. Component API — `packages/ui`
 
-1. **`NumberField` commits on blur** (and explicit Done/Cancel on mobile keyboards) —
-   never on keystroke. Numeric entry is the always-available precise path beside every
-   gesture (touch contract), so its commit semantics are product law.
-2. **`DataTable` requires a `caption`** (`sr-only` on web; `accessibilityLabel` on the RN
-   list equivalent). No anonymous tables — the BOM and quote are commercial documents.
+**The 21-component ds-source inventory + its prop enums are the public API of
+`packages/ui`.** The JSX library in the package is spec to implement, not code to import
+(the mockups themselves consume only `Button`; everything else is hand-rolled to spec).
+Radix primitives sit underneath for a11y plumbing (focus trap, dismissal, positioning,
+ARIA); the visual layer is pure token-driven styling.
+
+Inventory (manifest): **forms/** `Button, IconButton, Input, Checkbox, Radio, Switch` ·
+**data/** `Card, IconCircle, Chip, Badge, Avatar, AvatarGroup, ListRow, StatCard,
+StatusChip` · **feedback/** `EmptyState, OfflineBanner, ProgressBar, Toast` ·
+**navigation/** `SegmentedControl, Tabs`.
+
+Prop enums (from the oxlint allowlists — these are the contract):
+
+- `Button`: `variant primary|secondary|ghost|destructive` · `size lg(48px)|md(40px)|sm(32px)`
+  · pill, weight 500, −0.01em, `minHeight:44`. **Mockup bug: `variant="danger"` (×1) does
+  not exist — canonical is `destructive`** (the bundle silently fell back to primary).
+- `Card`: `density expressive|functional`, `interactive`, `selected` (= `--e2, 0 0 0 2px
+  var(--accent)`).
+- `Chip`: `tone neutral|success|warning|danger|info|accent`, `dot`, `active` (active =
+  `--action-primary` fill + white text), `density`.
+- `Input`: `density`, `error`, `success`, `helper`, `mono` (→ `--font-mono`), `leading`,
+  `trailing` — borderless focus spec per §4.
+- `StatusChip`: `status lead|survey-scheduled|design-in-progress|approved|installing|
+  commissioned|on-hold` — the domain status→semantic-colour map, pill + 6px dot; **status
+  is never conveyed by colour alone — always label + dot**.
+- `IconButton`: `variant surface|dark|ghost`, `minWidth/Height:44`, press scale 0.94.
+- `StatCard`: overline → 32px/700/−0.025em tabular value → delta pill (`deltaDir up|down`).
+- `Toast`: `tone success|warning|danger|info|neutral`. `ProgressBar`: `gradient` bool
+  (`--gradient-brand` for AI/long ops only). Full APIs in ds-brand-law.md §2.
+
+**The four behavioural contracts** (product law, layered on top — ds-source has no
+NumberField, so the contract fills a gap; both platforms, RN natively):
+
+1. **`NumberField` commits on blur** (explicit Done/Cancel on mobile keyboards) — never on
+   keystroke. Numeric entry is the always-available precise path beside every gesture.
+2. **`DataTable` requires a `caption`** (`sr-only` web; `accessibilityLabel` RN). The BOM
+   and quote are commercial documents — no anonymous tables.
 3. **`ariaLabel`/`accessibilityLabel` is a required prop** on every icon-only control —
-   a missing label is a compile error, not a lint warning (N5, N1).
-4. **Focus management: move-in / wrap / restore** — web via Radix + `useFocusTrap`;
-   RN via `accessibilityViewIsModal` / `importantForAccessibility` + focus restore on
-   dismiss. Two-tone focus ring on web (`--focus-inner` outline + `--focus-outer` halo —
-   one ring everywhere, legible on paper, brass, photo and dark canvas); RN keyboard/
-   switch-control focus gets a bespoke bordered treatment meeting the same 3:1 boundary.
+   a missing label is a compile error, not a lint warning.
+4. **Focus management: move-in / wrap / restore** — web via Radix; RN via
+   `accessibilityViewIsModal` / focus restore on dismiss, with a bespoke ≥3:1 focus
+   treatment for keyboard/switch-control (the single web ring is `outline`-based and does
+   not exist on RN).
 
-Web-CSS mechanisms get native equivalents, not emulation: safe-area via
-`react-native-safe-area-context`; reduced motion via `AccessibilityInfo.isReduceMotionEnabled()`;
-`tabular-nums` via `fontVariant: ['tabular-nums']` (verify Inter ships the feature in the
-bundled font — verify rendered output, not config); container-query-style components use
-`onLayout` width.
+**RN implementation notes:** same API, native implementation (`apps/mobile/src/ui`,
+consuming `theme.ts`). ds-source ships **only the variable woff2s** — RN needs **static
+Geist and Geist Mono instances cut at 400/500/600/700** (synthetic bolding is banned).
+Safe-area via `react-native-safe-area-context`; reduced motion via
+`AccessibilityInfo.isReduceMotionEnabled()`; `tabular-nums` via
+`fontVariant:['tabular-nums']` — verify rendered output, not config.
 
----
-
-## 5. `/design` — the living reference
-
-`apps/web/app/design` renders **every token and every component state**: the full
-semantic set in light and dark, ink-on-brass proof, the two-tone focus ring, the N6 data
-namespace, the 12px floor, all four `DataTable`/`NumberField` states.
-
-- It is the verification surface: "add a token → add it to `/design` or nobody can check
-  it renders" carries over as law.
-- It is also the **Tailwind content-scan surface**: a semantic utility used nowhere else
-  must appear here or v4 will not emit it. The page is generated from
-  `dist/tokens.json`, so a new token appears automatically and an unrendered token is
-  impossible.
-- RN keeps a `DesignReference` dev screen for review parity (no purge concern on native —
-  it is for human verification only).
-
----
-
-## 6. The acceptance law — N1–N10, touch contract, Definition of Done
-
-Restated here as the acceptance gate for every screen on every surface. Full text in
-`.claude/rules/ui.md`; a screen violating any single item **is not done**.
-
-**N1** no hover-only meaning · **N2** every target ≥44×44 CSS px (`.tap-target`) ·
-**N3** no font <12px, body 14px · **N4** text ≥4.5:1, boundaries ≥3:1, computed not
-eyeballed · **N5** accessible names everywhere; modals trap + restore focus · **N6** UI
-colour ≠ DATA colour · **N7** provenance tier (measured/derived/estimated/assumed) on
-every user-visible number · **N8** destructive = confirmed + undoable, undo
-thumb-reachable · **N9** no fixed-viewport layouts · **N10** loading/empty/error/offline
-states are part of done.
-
-**Touch contract**: branch on capability, never width · one canvas gesture vocabulary
-across satellite, layout editor and 3D (1-finger pan, pinch zoom, two-finger rotate, tap
-select, long-press 350ms context, two-finger tap undo; one gesture = one undo step) ·
-precision under fingertip (loupe, offset drag, snap-then-nudge, numeric entry always
-available, explicit Done/Cancel) · primary actions bottom third, destructive never
-adjacent to primary · `dvh`/`svh` only, safe-area on fixed chrome, mobile inputs ≥16px.
-
-**Definition of Done (per screen)**: works at 375px and 1536px with no horizontal
-scroll (wide tables become card list + edit sheet; drawings scroll inside their own
-container) · all four N10 states · keyboard-operable, visible two-tone focus · axe clean,
-contrast verified against token pairs · targets ≥44px · light AND dark correct · every
-number carries provenance · zero raw hex, zero off-scale spacing, zero inline styles ·
-tested at realistic volume (200-lead list, 40-line BOM, 221-panel design) · **rendered in
-Hindi and checked** (§9) · wired into the flows that reach it — no orphan screens.
-
-This applies unreduced to the 3D studio: it is the flagship, and full parity at 375px is
-the hardest and least negotiable commitment in the system.
+`/design` (`apps/web/app/design`) remains the living reference and the Tailwind
+content-scan surface: generated from `dist/tokens.json`, it renders every token and every
+component state — a new token appears automatically and an unrendered token is impossible.
+"Add a token → it renders at `/design` or nobody can verify it" carries over as law.
 
 ---
 
 ## 7. i18n architecture — Lingui v5, one catalog
 
-Selected over Paraglide (no first-class RN), i18next (runtime-heavy, error-prone typing
-boilerplate) and FormatJS (weak RN DX) — see [./research/tooling.md](./research/tooling.md);
-Lingui v5 is the only compile-time option covering Next.js App Router **and** bare RN
-from one catalog ([RN tutorial](https://lingui.dev/tutorials/react-native),
-[RSC tutorial](https://lingui.dev/tutorials/react-rsc)).
+Selected over Paraglide (no first-class RN), i18next (runtime-heavy) and FormatJS (weak RN
+DX) — see [./research/tooling.md](./research/tooling.md); Lingui v5 is the only
+compile-time option covering Next.js App Router **and** bare RN from one catalog.
 
 ### 7.1 Catalog structure — `packages/i18n`
 
 ```
 packages/i18n/
   lingui.config.ts        # locales: ['en','hi','mr'], sourceLocale 'en', format 'po'
-  locales/
-    en/messages.po        # source of truth is the CODE (t / <Trans> macros);
-    hi/messages.po        # .po files are the translation working surface
-    mr/messages.po
+  locales/{en,hi,mr}/messages.po   # source of truth is the CODE (t / <Trans> macros)
   src/index.ts            # i18n instance factory, locale constants, loadCatalog()
 ```
 
 - One catalog package, two consumers. Catalogs compile to per-locale `messages.ts`
-  modules (tree-shaken, ICU MessageFormat compiled away — no runtime parser).
+  (tree-shaken, ICU compiled away — no runtime parser).
 - Message IDs are the natural-language English source with generated hashes; explicit
-  `id=` only for genuinely ambiguous short strings ("Open" verb vs adjective).
-- Hygiene (from `.claude/rules/i18n.md`, binding): no sentence concatenation; ICU
-  plurals/selects; named placeholders (`{customerName}`), never positional. Voice-agent
-  and WhatsApp templates are tenant **data** in all three languages, not catalog messages.
+  `id=` only for genuinely ambiguous short strings.
+- Hygiene (binding): no sentence concatenation; ICU plurals/selects; named placeholders
+  (`{customerName}`), never positional. Voice-agent and WhatsApp templates are tenant
+  **data** in all three languages, not catalog messages.
 
 ### 7.2 Extraction workflow
 
-```
-pnpm i18n:extract   # lingui extract across apps/web, apps/mobile, packages/ui
-pnpm i18n:compile   # lingui compile --typescript
-```
-
-- CI runs `extract` and fails if the working tree changes — unextracted messages never
-  merge. Missing translations fall back to the English source at runtime (never a bare
-  key, never a crash); untranslated-count per locale is reported in CI output so HI/MR
-  debt is visible, but does not block a merge.
-- `compile` runs in the Turborepo build graph before web/mobile builds.
+`pnpm i18n:extract` across apps/web, apps/mobile, packages/ui; `pnpm i18n:compile
+--typescript` in the Turborepo graph before app builds. CI runs `extract` and fails if the
+working tree changes — unextracted messages never merge. Missing translations fall back to
+English at runtime (never a bare key, never a crash); untranslated counts per locale are
+reported in CI but do not block a merge.
 
 ### 7.3 Web (Next.js App Router + RSC)
 
-Per the Lingui RSC pattern: a per-request `setupI18n()` on the server keyed by the
-resolved locale; server components read it via the request-scoped instance;
-`<LinguiClientProvider>` hands the serialised catalog to client components. Locale
-resolution order: **user profile setting (D25 — per-USER, not per-tenant)** → session
-cookie mirror (for first SSR paint) → `en`. Switching language calls the API, updates the
-provider, and **re-renders the whole app immediately — no reload**. A Marathi surveyor
-and an English owner coexist in one tenant.
+Per-request `setupI18n()` on the server keyed by the resolved locale; server components
+read the request-scoped instance; `<LinguiClientProvider>` hands the serialised catalog to
+client components. Locale resolution: **user profile setting (per-USER, not per-tenant)**
+→ session cookie mirror (first SSR paint) → `en`. Switching language re-renders the whole
+app immediately — no reload. A Marathi surveyor and an English owner coexist in one tenant.
 
-### 7.4 Bare RN (metro transformer)
+### 7.4 Bare RN (Metro transformer)
 
-Verified for bare RN ≥0.73, no Expo needed (`.claude/rules/mobile.md`):
+`@lingui/metro-transformer` (`babelTransformerPath` + `po`/`pot` in `sourceExts`) —
+catalogs import directly. **Intl polyfills required on Hermes**: `@formatjs/intl-locale` +
+`@formatjs/intl-pluralrules`, imported once at app entry. Language switch updates the
+shared i18n instance; the RN provider re-renders identically to web.
 
-- `@lingui/metro-transformer`: `babelTransformerPath` in `metro.config.js` +
-  `po`/`pot` in `sourceExts` — catalogs import directly, compile step handled by Metro.
-- **Intl polyfills required on Hermes**: `@formatjs/intl-locale` +
-  `@formatjs/intl-pluralrules`, imported once at app entry before any i18n use.
-- Language switch updates the shared i18n instance; the RN provider re-renders the tree
-  identically to web.
+### 7.5 Devanagari typography
 
----
-
-## 8. Devanagari typography
-
-- **Font chain: Inter → Noto Sans Devanagari** (Inter has zero Devanagari coverage).
-- **Web**: both loaded via `next/font` with `--font-inter` and `--font-devanagari`
-  variables composed into `--font-sans`; the browser reaches Noto per-codepoint
-  automatically. Nothing else to do — but the Hindi render check (§9) is still mandatory
-  because automatic fallback hides weight mismatches.
+- **Geist has ZERO Devanagari coverage. Font chain: Geist → Noto Sans Devanagari.** The
+  mockups render Hindi/Marathi via OS fallback (Kohinoor/Nirmala) — that is a gap, not a
+  decision; system-font fallback is unacceptable for a pixel-perfect product.
+- **Web**: both families via `next/font`, composed into `--font-sans`; the browser reaches
+  Noto per-codepoint automatically. The Hindi render check (§10) is still mandatory —
+  automatic fallback hides weight mismatches.
 - **RN has no per-codepoint fallback to bundled fonts — explicit handling is mandatory.**
   The shared `<AppText>` primitive (the only text component screens may use) detects
   Devanagari codepoints (U+0900–U+097F) and applies the Noto family to those runs;
-  mixed-script strings render as nested spans. Verify rendered output on both simulators,
-  not just config.
-- **Weight mapping**: the system uses exactly 400/500/600/700. Bundle both families at
-  those four weights (`Inter-Regular/Medium/SemiBold/Bold`,
-  `NotoSansDevanagari-Regular/Medium/SemiBold/Bold`) and map them in the theme —
-  RN synthetic bolding is banned (it fakes weights and breaks the instrument look).
-  No 550, no synthetic anything.
-- **Layouts must survive ~20–30% Hindi/Marathi text expansion**: no fixed-width labels,
-  no truncation of amounts or units, buttons size to content.
+  mixed-script strings render as nested spans. Verify rendered output on both simulators.
+- **Weight mapping**: bundle both families at the four sanctioned weights
+  (`Geist` + `NotoSansDevanagari` Regular/Medium/SemiBold/Bold = 400/500/600/700) and map
+  them in the theme. RN synthetic bolding is banned.
+- **Layouts must survive ~20–30% Hindi/Marathi expansion**: no fixed-width labels, no
+  truncation of amounts or units, buttons size to content.
 
----
+### 7.6 Formatting law
 
-## 9. Formatting law
-
-- **Money: one function, everywhere.** `formatInr()` from the `packages/domain` units
-  module renders Indian digit grouping — `₹4,52,471`, compact `₹92L`, `₹1.4 Cr` — in
-  **every locale**, web, mobile, PDFs and voice-agent text alike. Never raw
-  `Intl.NumberFormat` for currency: locale defaults drift between en/hi/mr and compact
-  notation is wrong for lakh/crore. Money strings also obey the wider money law
-  (provenance tier, never-stale rendering) from `CLAUDE.md`.
-- **Units are never translated**: kW, kWh, kWp, brand/model names, DISCOM names stay
-  as-is in all locales; `.nowrap-unit` keeps value+unit unbreakable. m/ft follows the
-  user preference — **except procurement quantities, which stay metric** (Indian
-  suppliers sell by the metre).
+- **Money: one function, everywhere.** `formatInr()` from `packages/domain` renders Indian
+  grouping — `₹4,52,471`, compact `₹92L`, `₹1.4 Cr` — in **every locale**, web, mobile,
+  PDFs and voice-agent text alike. Never raw `Intl.NumberFormat` for currency. Money
+  strings also obey provenance and never-stale rendering. ₹ amounts render in
+  **Geist Mono, tabular, right-aligned** in tables (§3.1).
+- **Units are never translated**: kW, kWh, kWp, brand/model names, DISCOM names stay as-is
+  in all locales; value+unit is unbreakable. m/ft follows user preference — **except
+  procurement quantities, which stay metric**.
 - **Digits are always Latin 0-9** — never Devanagari numerals, in any locale, including
   documents.
-- **Non-money numbers** go through Lingui's `i18n.number()` with the active locale;
-  **dates** through `i18n.date()`; default timezone Asia/Kolkata per tenant, stored
-  per-tenant for global readiness. No hand-rolled date strings.
+- Non-money numbers via `i18n.number()`; dates via `i18n.date()` ("12 Mar 2026" style);
+  default timezone Asia/Kolkata per tenant. No hand-rolled date strings.
 
----
+### 7.7 Adding a language — the playbook
 
-## 10. Per-tenant branding — customer documents ONLY
-
-Tenants brand what their **customers** see; they never restyle the app.
-
-- **In scope**: the proposal PDF (Playwright/Chromium render in `apps/worker`) and the
-  tokenised customer-link pages. Tenant supplies logo + primary brand colour (optional
-  secondary) on the tenant record; document templates map them into a document-scoped
-  semantic layer (`--doc-accent`, `--doc-accent-text`, …) generated per render.
-- **Out of scope, permanently**: the operator app (web and mobile) is Instrument
-  graphite+brass for every tenant. No tenant CSS, no theme upload, no per-tenant app
-  palette. This protects N4/N6 and keeps every screenshot, support session and training
-  video identical across tenants.
-- **Contrast re-verification is mandatory**: the POC's verified ratios are specific to
-  the brass hue and do NOT transfer to arbitrary tenant colours. On palette save, the
-  same contrast engine that gates the tokens build (§1.3) runs against the tenant colour:
-  label colour on tenant-accent fills is **chosen by computation** (ink or white,
-  whichever clears 4.5:1), and the derived `-text` shade is darkened/lightened along the
-  tenant hue until it clears 4.5:1 on the document surface. Palettes are never rejected —
-  compliant shades are derived and shown in a live preview. Data colours (N6) are never
-  tenant-overridable: roof/string/irradiance hues carry engineering meaning.
-
----
-
-## 11. Adding a language — the playbook
-
-Adding locale X must touch **only** the items below. If anything else needs changing,
-the change that caused it was wrong — fix that instead.
-
-1. Add the locale to `lingui.config.ts`; run `pnpm i18n:extract` → new `locales/xx/messages.po`.
-2. Translate (English fallback covers gaps until done; CI reports the untranslated count).
-3. **Font check**: does the script render in the Inter → Noto chain? New script (e.g.
-   Tamil, Telugu for the voice-agent languages) ⇒ add the Noto family for that script at
-   the four weights, extend the web font chain, extend the `<AppText>` script-detection
-   map on RN. Verify rendered output on device.
-4. **Number/date review**: `formatInr()` is unchanged by design (Indian grouping is law
-   in every locale); verify ICU plural rules exist for the locale (Hermes polyfill
-   coverage) and spot-check `i18n.date()` output.
-5. Extend the locale enum in `packages/contracts` (user profile `language` field) and the
-   profile language switcher.
-6. **Expansion check**: render the five densest screens (BOM, quote, proposal builder,
-   lead list, studio panels) in the new locale; fix any truncation as a layout bug.
+1. Add locale to `lingui.config.ts`; `pnpm i18n:extract` → new `.po`.
+2. Translate (English fallback covers gaps; CI reports the count).
+3. **Font check**: does the script render in the Geist → Noto chain? New script (Tamil,
+   Telugu…) ⇒ add that Noto family at the four weights, extend the web chain and the
+   `<AppText>` script-detection map. Verify on device.
+4. **Number/date review**: `formatInr()` unchanged by design; verify ICU plural rules
+   exist for the locale (Hermes polyfill coverage).
+5. Extend the locale enum in `packages/contracts` and the profile switcher.
+6. **Expansion check** on the five densest screens (BOM, quote, proposal builder, lead
+   list, studio panels).
 7. Ship. No token change, no component change, no schema migration beyond the enum.
 
 ---
 
-## 12. Enforcement summary
+## 8. Adherence & lint
 
-| Rule | Enforced by |
+Adopt the `_adherence.oxlintrc.json` rule **INTENTS at error severity in our own
+toolchain** — not the config as-is (it is warn-only, unscoped, guards only 18 of 21
+components, and would flag the design system's own token files):
+
+| Intent (from ds-source) | Our enforcement |
 |---|---|
-| No raw values in components | Biome `noRestrictedImports`/review + tokens are the only colour source; `/design` renders every token |
-| Contrast floors | tokens build fails on any declared pair below floor (§1.3); tenant palettes re-verified on save (§10) |
-| Primitive layer never consumed | only semantic names exposed to Tailwind `@theme` / `theme.ts` export |
-| Dark-mode utilities actually flip | `@theme` non-inline (§2) — regression = the POC's baked-light-value failure |
-| Catalog completeness | CI `lingui extract` clean-tree check (§7.2) |
-| Hindi survives | DoD requires the Hindi render check per screen (§6, §8) |
-| Money format | single `formatInr()` in `packages/domain`; no raw currency `Intl` calls |
+| No raw hex colours in component code | error — tokens are the only colour source |
+| No raw px values in component code | error — spacing/radius/size via tokens |
+| No non-Geist `font-family` | error — Geist / Geist Mono (+ Noto Devanagari extension) only |
+| No deep component imports | import from the package index only |
+| Unknown props rejected per component | the §6 prop enums are typed — TypeScript makes violations compile errors, lint backs it up |
+
+Implementation: Biome/GritQL rules (plus oxlint scoped to JSX source and excluding
+`packages/tokens` and `design/ds-source`, if useful). Kept from the repo plan:
+**dependency-cruiser** boundaries and the **contrast build gate** (§2.5) — the tokens
+build fails on any declared pair below floor, with ruling C's restricted-role annotations
+as the pairs metadata. `/design` renders every token as the human verification surface.
+
+---
+
+## 9. Per-tenant branding — customer documents ONLY (scope unchanged)
+
+Tenants brand what their **customers** see; they never restyle the app.
+
+- **In scope**: the proposal PDF (Playwright/Chromium render in `apps/worker`) and the
+  tokenised customer-link pages. Tenant supplies logo + primary brand colour on the tenant
+  record; document templates map them into a document-scoped semantic layer
+  (`--doc-accent`, `--doc-accent-text`, …) generated per render.
+- **Out of scope, permanently**: **the operator app (web and mobile) is the ds-source
+  system for every tenant.** No tenant CSS, no theme upload, no per-tenant app palette.
+  Every screenshot, support session and training video stays identical across tenants.
+- **Contrast re-verification is mandatory**: on palette save, the same contrast engine
+  that gates the tokens build runs against the tenant colour; label colour on tenant-accent
+  fills is chosen by computation (near-black or white, whichever clears 4.5:1) and the
+  derived `-text` shade is adjusted along the tenant hue until it clears 4.5:1 on the
+  document surface. Palettes are never rejected — compliant shades are derived and
+  previewed live. Data colours are never tenant-overridable: roof/string/irradiance hues
+  carry engineering meaning.
+
+---
+
+## 10. Definition of Done (per screen — updated)
+
+A screen violating any single item is not done:
+
+1. Works at **375px and 1536px** with no horizontal scroll (wide tables become card list +
+   edit sheet; drawings scroll inside their own container).
+2. All four states: loading / empty / error / offline.
+3. **Keyboard-operable, visible focus** — the single 2px `#5A4BFF` ring at 2px offset,
+   never removed; inputs use the elevation focus treatment.
+4. **axe clean, contrast verified against the regenerated `contrast.pairs.json`** —
+   including the restricted roles: no load-bearing `--text-tertiary`, no bare `--warning`
+   text.
+5. Every target **≥44×44 CSS px**.
+6. **LIGHT theme correct.** (Dark is struck from the DoD per ruling A.)
+7. **Rendered in Hindi and checked** (§7.5) — layout survives Devanagari and expansion.
+8. Every user-visible number carries its **provenance tier**
+   (measured/derived/estimated/assumed).
+9. **Density correct for the surface** — Expressive on mobile/dashboards/onboarding,
+   Functional on desktop data screens; radii, padding and icon sizes from the correct
+   token family.
+10. Zero raw hex, zero off-scale spacing, zero inline style values outside tokens.
+11. Tested at **realistic volume** (200-lead list, 40-line BOM, 221-panel design).
+12. Wired into the flows that reach it — no orphan screens.
+
+This applies unreduced to the 3D studio: it is the flagship, it is **light** (§5), and
+full parity at 375px is the hardest and least negotiable commitment in the system.

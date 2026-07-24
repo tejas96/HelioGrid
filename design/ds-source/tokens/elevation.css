@@ -1,0 +1,10 @@
+/* HelioGrid — elevation. Wide blur, minimal Y-offset, very low opacity.
+   Shadows felt, not seen. Never hard/dark. Canvas -> card(e2) -> control(e4) -> overlay(e5). */
+:root{
+  --e0:none; /* @kind shadow */
+  --e1:0 1px 2px rgba(16,24,40,0.04);
+  --e2:0 2px 8px rgba(16,24,40,0.05);
+  --e3:0 8px 24px rgba(16,24,40,0.06);
+  --e4:0 16px 48px rgba(16,24,40,0.08);
+  --e5:0 24px 72px rgba(16,24,40,0.10);
+}

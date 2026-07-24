@@ -28,8 +28,8 @@ bounded context; services return domain types, controllers map to contract types
 <known sharp edges: metro config, RLS session vars, normalize-on-read, etc.>
 
 ## Definition of done here
-<the package-specific additions to the global gates — e.g. "screen: 375px + dark +
-Hindi checked" or "migration: invariant round-trip green">
+<the package-specific additions to the global gates — e.g. "screen: 375px + Hindi
+checked" or "migration: invariant round-trip green">
 ```
 
 Rules for authors of per-package CLAUDE.md files:

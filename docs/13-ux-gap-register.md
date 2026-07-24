@@ -3,7 +3,7 @@
 **Status:** Binding · 2026-07-24 · Owner: product/design
 **Sources:** ./research/uxAL.md, ./research/uxMZ.md (85-mockup catalogue + "Notable gaps"), ./research/journey.md (journey map), ./research/phases710.md (studio tool census). Rulings referenced: docs/15-spec-resolutions.md.
 
-The 85 mockups in `/Users/devtejas/Downloads/HelioGrid UX/` are production specs for most of the product. This register lists every screen or flow the mockups do **not** cover. Each gap is **designed at implementation time** — by the implementing agent/designer, directly in the design system (`packages/tokens`, N1–N10, touch contract), inside the module's build slice. No new Claude-Design phase. A gap is closed when the screen ships wired into its flow (never orphaned), with loading/empty/error/offline states, both breakpoints, and light+dark.
+The 85 mockups in `/Users/devtejas/Downloads/HelioGrid UX/` are production specs for most of the product. This register lists every screen or flow the mockups do **not** cover. Each gap is **designed at implementation time** — by the implementing agent/designer, directly in the design system (`packages/tokens`, N1–N10, touch contract), inside the module's build slice. No new Claude-Design phase. A gap is closed when the screen ships wired into its flow (never orphaned), with loading/empty/error/offline states, both breakpoints, and the light theme correct (light-only per docs/15 R19-A).
 
 **Register rules**
 1. Before building a module, check this table; claim the gaps your slice touches.
