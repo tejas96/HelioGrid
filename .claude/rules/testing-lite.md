@@ -20,8 +20,8 @@ Small, named, frozen list. Additions require explicit user approval.
   every tenant-scoped table (generated over the schema, not hand-listed); customer-link
   token for deal X cannot read deal Y; role capability matrix matches D27 presets.
 - **billing**: Razorpay webhook duplicate delivery does not double-grant/double-charge;
-  entitlement state machine (trial → active → past_due → halted) transitions only on
-  allowed edges; usage_events are append-only.
+  entitlement state machine (trialing → active → past_due → halted; terminals:
+  cancelled, expired) transitions only on allowed edges; usage_events are append-only.
 - **migrations**: fresh-apply == schema snapshot; demo project seed → normalize → persist
   round-trips stable.
 

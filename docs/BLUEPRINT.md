@@ -29,9 +29,9 @@ This session produces **planning documents only**, written to the new repo dir `
 - Consistency & stability over cleverness; **Claude/AI-agent rules are the most important deliverable**.
 
 ## Exploration & research artifacts (source material for execution)
-At `/private/tmp/claude-501/-Volumes-works-space-Solar-App-POC/542a87c5-335c-40db-adb9-f6278f02b6af/scratchpad/`:
-- `explore/`: journey.md (journey map, D-census, business rules, entities, 18 spec ambiguities) · buildplan.md · phases710.md (full studio tool census) · design.md (token portability) · geo3d.md (purity/coupling audit + scale cliffs) · calc.md (calc modules, API usage, provenance systems) · appShape.md · uxAL.md / uxMZ.md (85-screen catalogue + UX gaps) · market.md (competitor pricing w/ sources).
-- `research/`: fly.md, backend.md, auth.md, voice.md, tooling.md, integrations.md, sync.md, scale3d.md + `verify-*.md` (NestJS contracts, bare-RN, Fly-native, billing) — all July-2026-verified with URLs.
+The corpus lives at `docs/research/` inside this repo. (Provenance note: originally produced in the POC session scratchpad at `/private/tmp/claude-501/-Volumes-works-space-Solar-App-POC/542a87c5-335c-40db-adb9-f6278f02b6af/scratchpad/`.)
+- Exploration: journey.md (journey map, D-census, business rules, entities, 18 spec ambiguities) · buildplan.md · phases710.md (full studio tool census) · design.md (token portability) · geo3d.md (purity/coupling audit + scale cliffs) · calc.md (calc modules, API usage, provenance systems) · appShape.md · uxAL.md / uxMZ.md (85-screen catalogue + UX gaps) · market.md (competitor pricing w/ sources).
+- Research: fly.md, backend.md, auth.md, voice.md, tooling.md, integrations.md, sync.md, scale3d.md + `verify-*.md` (NestJS contracts, bare-RN, Fly-native, billing) — all July-2026-verified with URLs.
 
 ---
 
@@ -44,7 +44,7 @@ pnpm workspaces + Turborepo + TS project references (ship source; references for
 - `apps/worker` — NestJS standalone app: BullMQ processors (shading sim, PDF render, imports, agent post-processing)
 - `apps/voice` — NestJS standalone: CallSession orchestrator (Exotel AgentStream ↔ Sarvam STT/TTS/LLM)
 - `apps/mobile` — **bare React Native** (iOS + Android)
-- `packages/`: `domain` (ported studio engines; rules/catalog injected — kill the `resolveRules()` global), `contracts` (ts-rest contract + Zod schemas), `db` (Drizzle schema + migrations), `ui` (web components), `tokens` (Style Dictionary → CSS vars + RN theme), `i18n` (Lingui catalogs EN/HI/MR), `config`.
+- `packages/`: `domain` (ported studio engines; rules/catalog injected — kill the `resolveRules()` global), `contracts` (ts-rest contract + Zod schemas), `db` (Drizzle schema + migrations), `adapters` (port implementations), `ui` (web components), `tokens` (Style Dictionary → CSS vars + RN theme), `i18n` (Lingui catalogs EN/HI/MR), `config`.
 
 ### API & contracts
 **NestJS + ts-rest (@ts-rest/nest)** — single contract package gives end-to-end typed clients (Next.js + bare RN) AND emitted OpenAPI 3.1 (public customer-link endpoints, webhooks, future public API). **Zod pinned 3.x** until ts-rest Zod-4 support leaves RC (`nestjs-zod` where DTO validation is needed). Rejected: @orpc/nest (beta, ESM-only), Hono (user override), Swagger-codegen-only (drift). Realtime: **SSE** (Nest-native) for notifications/design staleness; WebSockets only if collaborative editing lands.
