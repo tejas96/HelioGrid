@@ -118,13 +118,20 @@ offline phase so Track E starts warm).
 
 ## Day 9–13 — Track C: voice agent + awareness surfaces
 
-- **voice agent** (Day 9–13, code-complete; GA activation = DLT/KYC clock): apps/voice
-  CallSession (Exotel AgentStream ↔ Sarvam), ComplianceGate, number provisioning
-  (platform Exophone / BYO-ported) + inbound IVR flows + outbound DTMF traversal, queue +
-  triggers (repeatable jobs), transcripts→timeline, config versioning, knowledge base +
-  unanswered loop, performance screens (correlation-not-attribution), per-tenant cost
-  ledger. UX: all 7 Agent* files. Fallback if Exotel clock overruns: Bolna adapter behind
-  the same ports (S5 verdict decides by Day 5).
+- **voice agent** (Day 9–13, code-complete; GA activation = DLT/KYC clock; architecture
+  per **ADR-0019** — capability-negotiated port family + provider-agnostic control
+  plane): apps/voice CallSession (Exotel AgentStream ↔ Sarvam) + CallOrchestrator
+  (call-leg FSM, routing-policy executor, ComplianceGate on every leg), number
+  provisioning (platform Exophone / BYO-forwarding — no porting, S5) + inbound IVR
+  flows, **cold transfer + pinned-context handoff + callback queue live; warm transfer
+  live if the Exotel consult-leg sandbox verifies by Day 11 (else auto-degrades);
+  single-level escalation live, chains as data; DTMF-send/IVR-traversal degrades
+  honestly (absent on Exotel — S5)**, queue + triggers (repeatable jobs),
+  transcripts→timeline, config versioning, knowledge base + unanswered loop,
+  performance screens (correlation-not-attribution), per-tenant cost ledger.
+  Track C's first migration adds ring_groups / routing_policies / call_handoffs /
+  user_presence (docs/04 §8). UX: all 7 Agent* files. Fallback if Exotel clock
+  overruns: Bolna adapter behind the same ports (S5 verdict decides by Day 5).
 - **notifications + global search** (Day 10–12): bell centre, push wiring, app-wide
   search. UX: NotificationsCentre/GlobalSearch.
 - **dashboards** (Day 11–13): owner + rep + funnel/win-loss (D37 honesty rules).
@@ -210,6 +217,7 @@ owning module's FIRST migration; 0001 covers the identity/platform spine.)
 |---|---|
 | auth/tenancy | Stackable roles M:N; JWT claims = PowerSync stream params; long-lived refresh for offline; E.164; deactivate-never-delete. |
 | tenants | Per-user language; settings JSONB w/ branding/agent/IVR/holiday room; tenant_phone_numbers from migration 0001. |
+| voice/telephony | ADR-0019 seams honoured by earlier tracks: users carry presence-compatible identity (user_presence keys on users), notifications enum already includes agent_escalation, call_handoffs summaries deep-link into the Track A timeline; Track C's first migration owns ring_groups/routing_policies/call_handoffs/user_presence + call_queue callback fields + `transferred` outcome. |
 | billing | usage_events full metric enum from day 1; entitlement guard is a decorator; proposal/project caps read COUNT over cycle window; read+export exemption in the guard. |
 | crm/leads | consent/dnd/do_not_call/preferred_language on customers from day 1 (ComplianceGate reads them); source incl. inbound_call; snooze/dormant timestamps; multi-contact; merge-ready (survivor re-pointing touches no money tables). |
 | survey | Versioned-append = the PowerSync conflict strategy; assigned_to = stream partition key; photos = files rows w/ Tigris keys; sync_mutations exists from 0001. |

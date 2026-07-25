@@ -26,7 +26,7 @@ graph TB
     WEB[apps/web — Next.js BFF, no domain logic]
     API[apps/api — NestJS modular monolith]
     WORKER[apps/worker — NestJS standalone, BullMQ processors]
-    VOICE[apps/voice — NestJS standalone, CallSession orchestrator]
+    VOICE[apps/voice — NestJS standalone: CallSession media/AI plane + CallOrchestrator control plane, ADR-0019]
     PS[powersync — self-hosted PowerSync service]
     PG[(Fly postgres-flex — 3-node repmgr HA)]
     RD[(Upstash Redis — fixed plan, eviction off)]
@@ -357,8 +357,9 @@ code cannot read a market fact any other way — dependency-cruiser blocks the i
 data, math is not), the provenance/honesty system (4 tiers, fingerprints,
 money-never-stale), the one money path, the tenancy model, the ts-rest contract layer, the
 design system. **What swaps per market:** rules data, catalog/price book, tax + subsidy
-models, locale, telephony adapter (Exotel is India; `TelephonyProvider` is the port) and
-payment adapter (`SubscriptionBillingPort`/`PaymentLinkPort`).
+models, locale, telephony adapter (Exotel is India; the capability-negotiated telephony port
+family of ADR-0019 is the seam — a new market's provider declares its own capability
+matrix) and payment adapter (`SubscriptionBillingPort`/`PaymentLinkPort`).
 
 **Region expansion on Fly:** a new market that earns it gets web/api/worker machines in
 the nearest region, a regional Postgres and a regional Tigris pin, with `fly-replay`

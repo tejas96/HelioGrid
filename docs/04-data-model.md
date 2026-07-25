@@ -621,7 +621,8 @@ the named knowledge section. Index `(tenant_id, status)`.
 | id | uuid PK | |
 | tenant_id | uuid | |
 | customer_id, lead_id | uuid | |
-| trigger | enum `call_trigger` | `proposal_unopened_3d` / `task_overdue_2d` / `failed_attempts_3` / `manual` |
+| trigger | enum `call_trigger` | `proposal_unopened_3d` / `task_overdue_2d` / `failed_attempts_3` / `manual` / `callback_requested` (ADR-0019: callback queue + fallback routing) |
+| callback | jsonb, nullable | callback-request details: requested window, reason, source handoff id (set when trigger = `callback_requested`) |
 | scheduled_at | timestamptz | window-shifted: 11 pm capture ⇒ not before 9 am |
 | agent_config_version | int | **pinned at queue time** |
 | attempt_no | int | |
@@ -645,7 +646,7 @@ consumes it.
 | actor | enum | `agent` / `human` |
 | provider_call_ref | text | Exotel call SID |
 | started_at, duration_secs | timestamptz / int | |
-| outcome | enum `call_outcome` | `interested` / `callback_requested` / `not_interested` / `no_answer` / `busy` / `wrong_number` / `voicemail` / `escalated` / `opted_out` |
+| outcome | enum `call_outcome` | `interested` / `callback_requested` / `not_interested` / `no_answer` / `busy` / `wrong_number` / `voicemail` / `escalated` / `transferred` / `opted_out` |
 | interest_signal | enum `interest_signal` | `hot` / `warm` / `cold` / `none` |
 | summary | text | the one-line timeline summary (D18) |
 | language | enum `agent_language` | |
@@ -682,9 +683,43 @@ table; its trace persists on `calls.dtmf_trace`.
 
 Consent/DND live on `customers` (§2) — the gate reads one row per dial.
 
----
+### Telephony platform tables (ADR-0019 — land with Track C's first migration)
 
-## 9. Billing & entitlements (v1 — D38 superseded by owner, 2026-07-24)
+The call-control plane (warm/cold transfer, escalation chains, callback routing) is
+tenant-configurable data. All TENANT; specified here so earlier tracks leave room
+(forward-compat register).
+
+**`ring_groups`** — `id` · `tenant_id` · `name` · `member_user_ids uuid[]` · `strategy`
+enum `ring_strategy` (`round_robin` / `simultaneous` / `longest_idle`) ·
+`ring_timeout_secs int` · `status` (`active`/`archived`). Transfer/escalation targets.
+
+**`routing_policies`** — versioned-append (D36-style): `id` · `tenant_id` ·
+`version int` (unique `(tenant_id, version)`) · `status` (`draft`/`active`/`superseded`;
+partial unique one `active`) · `policy jsonb` — ordered rules `when(conditions) →
+then(action)`; conditions: AI confidence threshold, customer-requests-human,
+intent/department, priority, business-hours state, VIP/existing-project; actions:
+`continue_ai` / `warm_transfer` / `cold_transfer` / `escalate(chain)` /
+`enqueue_callback` / `voicemail`; escalation chains = ordered levels (target + ring
+timeout) with mandatory terminal fallback (callback queue or voicemail) ·
+`activated_at` · `created_by`. In-flight calls keep the version they started with.
+
+**`call_handoffs`** — append-only, the context-handoff ledger: `id` · `tenant_id` ·
+`call_id → calls` · `kind` enum `handoff_kind` (`warm_transfer` / `cold_transfer` /
+`escalation`) · `escalation_level int, nullable` · `target_type` enum (`user` /
+`ring_group` / `external`) + `target_user_id?` / `target_ring_group_id?` /
+`target_e164?` · `summary jsonb` — the PINNED AI-generated context (summary text,
+intent, sentiment, collected fields, transcript pointer) generated once at handoff
+decision time · `outcome` enum `handoff_outcome` (`accepted` / `no_answer` /
+`rejected` / `timeout` / `cancelled`) · `whisper_played boolean` · `occurred_at`.
+Index `(tenant_id, call_id)`.
+
+**`user_presence`** — routing availability (one row per user): `tenant_id` + `user_id`
+PK · `status` enum `presence_status` (`available` / `busy` / `off`) ·
+`until timestamptz, nullable` · `updated_at`. v1 = manual toggle; richer presence later
+without schema change.
+
+`calls.dtmf_trace` (above) additionally records capability degradations
+(`ivr_blocked` markers) per ADR-0019's honesty rule.
 
 Platform SaaS billing = Razorpay Subscriptions; entitlements + usage in-house on Postgres
 (./research/verify-billing.md). Trial-only, no free tier. Enforcement is soft-block UX;
@@ -881,8 +916,10 @@ across tenants; cache misses emit non-billable `solar_data_fetch` usage_events.
 `proposal_components` (immutable with their version) · `customer_link_events` ·
 `project_payments` (corrections = reversal rows) · `platform_catalog_versions` ·
 `catalog_releases` · `agent_configs` (versioned-append; only `status` transitions) ·
-`subscription_events` · `usage_events` · `audit_log` · `webhook_events` (worker-role status
-transition excepted) · `ops_drills` · `surveys` (versioned-append; only `status` transitions on
+`routing_policies` (versioned-append; only `status` transitions) · `call_handoffs`
+(only `outcome` transition by the control plane) · `subscription_events` ·
+`usage_events` · `audit_log` · `webhook_events` (worker-role status transition
+excepted) · `ops_drills` · `surveys` (versioned-append; only `status` transitions on
 the head row).
 
 ## 13. State-machine index (transitions only via service functions)

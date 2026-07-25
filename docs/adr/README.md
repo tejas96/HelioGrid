@@ -24,6 +24,7 @@ Decisions that are expensive to reverse, recorded at the moment they were made, 
 | [0016](0016-no-feature-flags.md) | No feature flags — entitlements-only gating, trunk discipline | Accepted |
 | [0017](0017-studio-primacy-tool-census-gate.md) | Studio primacy — tool census as port acceptance gate; WebView on mobile | Accepted |
 | [0018](0018-fly-one-app-per-service.md) | Fly topology — one app per service (web/api/worker/voice/powersync + pg + log-shipper) | Accepted |
+| [0019](0019-telephony-platform-capability-framework.md) | Telephony — provider-agnostic capability framework: port family, control plane, tenant routing policies, capability-declared transfers/DTMF/conference/monitoring | Accepted |
 
 ## When to write an ADR
 

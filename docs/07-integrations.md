@@ -177,42 +177,68 @@ Gemini key → `unconfigured` (graceful, feature hidden). Never a hard error in 
 the tenant buys the outcome, not the vendor). Entitlement check before dispatch; bundled
 detections per plan, metered beyond (`16-billing-and-entitlements.md`).
 
-## 4. TelephonyProvider — Exotel
+## 4. Telephony — a capability-negotiated port FAMILY (ADR-0019)
+
+Telephony is a PLATFORM capability, never one vendor-shaped interface. A small REQUIRED
+core plus OPTIONAL capability interfaces; every adapter declares what it truly supports
+via `getCapabilities()`, and business logic branches on the declaration — never on the
+vendor name. Full rationale + interfaces: [ADR-0019](./adr/0019-telephony-platform-capability-framework.md).
 
 ```ts
-interface TelephonyProvider {
-  placeOutbound(to: E164, from: TenantNumberRef, opts: CallOpts): Promise<CallHandle>;
-  onInbound(handler: (call: InboundCall) => void): void;
-  mediaStream(call: CallHandle): DuplexAudio;              // AgentStream bidirectional WS
-  sendDtmf(call: CallHandle, digits: string): Promise<void>;
-  onDtmf(call: CallHandle, handler: (d: DtmfEvent) => void): void;
-  hangup(call: CallHandle): Promise<void>;
-  provisionNumber(tenantId: string, req:
-    | { type: 'platform'; series: '1600' | '140' }                    // Exophone from pool
-    | { type: 'byo'; number: E164; kyc: KycDocsRef }                  // hosted/ported, KYC-gated
-  ): Promise<PortResult<TenantPhoneNumber>>;
-  configureIvr(numberId: string, flow: IvrFlow): Promise<PortResult<void>>;
-}
+interface TelephonyCorePort {                       // REQUIRED of every adapter
+  placeOutbound(to: E164, from: TenantNumberRef, opts: CallOpts): Promise<CallLeg>;
+  onInbound(handler: (call: InboundLeg) => void): void;
+  mediaStream(leg: CallLeg): DuplexAudio;
+  hangup(leg: CallLeg): Promise<void>;
+  getCapabilities(): TelephonyCapabilities;   // dtmfSend/Receive, transferWarm/Cold,
+}                                             // conference, recording, monitoring,
+                                              // voicemail, queueing, provisioning, ivr
+// Optional: DtmfCapable · TransferCapable (consult/bridge/redirect) · ConferenceCapable ·
+// RecordingCapable · MonitoringCapable (listen/whisper/barge) · VoicemailCapable
 ```
 
-**v1: `ExotelAdapter`** ([./research/voice.md](./research/voice.md)). AgentStream gives
-<20 ms media over WS so `apps/voice` owns STT→LLM→TTS itself — the exact seam that keeps
-vendors swappable. DTMF both directions rides AgentStream (`sendDtmf`/`onDtmf`), which is
-what lets the outbound agent traverse a customer's IVR (prompt detection via STT + DTMF
-send). Doc-level verified; live behaviour is a **week-1 spike** (`14-build-roadmap.md`).
+**Two planes in `apps/voice`:** the media/AI plane (`CallSession` — STT→LLM→TTS,
+barge-in, disclosure) and the provider-agnostic **call-control plane**
+(`CallOrchestrator` — call-leg FSM, routing-plan execution, ComplianceGate before every
+leg incl. consult legs, ledger writes). Transfers, escalation chains, callbacks and
+conferences are control-plane plans; adapters only move legs.
 
-**Number provisioning (per-tenant, BLUEPRINT directive 7):** default = platform-provisioned
-Exophone assigned to the tenant; alternative = tenant's own number hosted/ported onto Exotel
-with KYC. TRAI CLI rules mean BYO is a porting/hosting flow, never caller-ID spoofing.
-Backed by `tenant_phone_numbers` (provider ref, type platform/byo, CLI series 1600/140x,
-status, KYC docs). **Inbound IVR** is a per-tenant flow config (greeting → menu → AI agent /
-human ring-group / voicemail, business-hours aware) compiled to Exotel IVR applets by
-`configureIvr`; the `IvrFlow` JSON is ours, so a provider swap re-compiles rather than
-rebuilds.
+**Routing/escalation are tenant DATA:** `routing_policies` (versioned-append JSONB) —
+conditions (AI confidence, customer-requests-human, intent/department, priority,
+business hours, VIP) → actions (`continue_ai`, `warm_transfer`, `cold_transfer`,
+`escalate(chain)`, `enqueue_callback`, `voicemail`). Targets: user, `ring_group`, or
+external number. Escalation chains ring level-by-level with timeouts; the final
+fallback (callback queue / voicemail) is always reachable. Every handoff writes
+`call_handoffs` with the pinned AI summary/context; warm transfers deliver a TTS
+whisper summary before bridging, cold transfers push summary + deep-link.
 
-**Later adapters:** `BolnaAdapter` = documented Plan B (all-in-one runtime; `mediaStream`
-collapses to Bolna's agent config — coarser control, same port). `LiveKitSipAdapter` = v2
-self-host at volume.
+**Capability degradation ladder (binding):** a feature needing a missing capability
+degrades on a defined path — never throws, never silently no-ops. Warm transfer w/o
+`transferWarm` → cold transfer + push. IVR traversal w/o `dtmfSend` → step skipped,
+call flagged `ivr_blocked` for human follow-up. No agent available → callback queue →
+voicemail. Conference/monitoring/voicemail/provider-queues are declared, not built, v1.
+
+**v1: `ExotelAdapter`** ([./research/voice.md](./research/voice.md), spike S5).
+AgentStream gives <20 ms media over WS so `apps/voice` owns STT→LLM→TTS itself.
+Honest capability declaration per S5: `dtmfReceive: true` (verified event shape);
+**`dtmfSend: false`** (undocumented on AgentStream — in-band synthesis is a sandbox
+experiment, not a plan); `transferCold: true` (leg redirect via applet/API);
+`transferWarm:` **sandbox-verify by Day 11**, else auto-degrade. Outbound promotional
+uses the **140-series RTM route** — 1600 is closed to non-BFSI (TRAI, S5).
+
+**Number provisioning (per-tenant, BLUEPRINT directive 7 as amended by ADR-0019/S5):**
+default = platform-provisioned Exophone; **BYO = the tenant's existing number
+forwarding inbound to their ExoPhone — outbound identity remains the ExoPhone. There is
+no porting/hosting of outbound CLI (TRAI; Exotel numbers are not transferable) and
+product copy must say "forwarding".** Backed by `tenant_phone_numbers`. **Inbound IVR**
+is a per-tenant flow config (greeting → menu → AI agent / ring group / voicemail,
+business-hours aware) compiled to provider applets; the `IvrFlow` JSON is ours, so a
+provider swap re-compiles rather than rebuilds.
+
+**Later adapters:** `BolnaAdapter` = documented Plan B (all-in-one runtime; coarser
+control, same ports — S5 verdict gates the Day-5 go/no-go). `LiveKitSipAdapter` /
+`TwilioAdapter` = future; each maps a `phone_provider` enum value and declares its own
+capability matrix. Adding one is an adapter + enum value — zero business-logic change.
 
 **Failure/degradation:** call-setup failure → 2 retries with backoff, then the attempt is
 marked failed and rescheduled per campaign rules; media drop mid-call → attempt one apology
