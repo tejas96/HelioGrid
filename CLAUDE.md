@@ -4,9 +4,10 @@ Multi-tenant SaaS for Indian solar EPC companies: CRM → survey → 3D design �
 customer link → voice-agent follow-up → projects → payments. India-first, global-ready.
 **The 3D Design Studio is the flagship. Nothing is compromised against it.**
 
-> **Current repo state: PLANNING.** Only `docs/` and agent rules exist. Application code
-> starts with the roadmap in `docs/14-build-roadmap.md`. Until scaffolding lands, the
-> Commands section below is the contract for how it WILL work — do not invent other flows.
+> **Current repo state: TRACK F LANDED (Day 1–2 foundations).** The monorepo scaffold,
+> packages/{config,tokens,contracts,db}, apps/{api,worker,web,mobile}, tests/invariants,
+> CI and migration 0001 exist and are green. Feature modules start with Track A
+> (`docs/14-build-roadmap.md`). Spike verdicts live in `docs/spikes/`.
 
 ## Read order (before writing any code)
 
