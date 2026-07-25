@@ -13,6 +13,7 @@
       "!**/node_modules",
       "!design/ds-source",
       "!design/mockups",
+      "!packages/contracts/openapi",
       "!apps/mobile/ios",
       "!apps/mobile/android",
       "!apps/mobile/vendor",
@@ -58,6 +59,9 @@
     }
   },
   "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
     "formatter": {
       "quoteStyle": "single",
       "semicolons": "always",
@@ -70,6 +74,16 @@
     }
   },
   "overrides": [
+    {
+      "includes": ["apps/api/**", "apps/worker/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    },
     {
       "includes": [
         "packages/tokens/build.ts",

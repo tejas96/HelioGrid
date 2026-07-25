@@ -1,5 +1,11 @@
 import { type BaseErrorCode, errorHttpStatusByCode } from '@heliogrid/contracts';
-import { type ArgumentsHost, Catch, type ExceptionFilter, HttpException } from '@nestjs/common';
+import {
+  type ArgumentsHost,
+  Catch,
+  type ExceptionFilter,
+  HttpException,
+  Logger,
+} from '@nestjs/common';
 import type { Request, Response } from 'express';
 
 /**
@@ -10,7 +16,15 @@ import type { Request, Response } from 'express';
  */
 @Catch()
 export class EnvelopeExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(EnvelopeExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost): void {
+    if (!(exception instanceof HttpException)) {
+      // The client sees opaque INTERNAL; the log keeps the truth (never in the response).
+      this.logger.error(
+        exception instanceof Error ? (exception.stack ?? exception.message) : String(exception),
+      );
+    }
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request & { id?: string }>();
