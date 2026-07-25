@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-07-25\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hi\n"
+
+msgid "Foundations ready"
+msgstr "आधार तैयार है"
+
+msgid "Field-first CRM, surveys and design for solar EPCs."
+msgstr "सोलर EPC के लिए फ़ील्ड-फ़र्स्ट CRM, सर्वेक्षण और डिज़ाइन।"
+
+msgid "Open my day"
+msgstr "मेरा दिन खोलें"
