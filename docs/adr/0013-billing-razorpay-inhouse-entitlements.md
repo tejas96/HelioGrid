@@ -9,7 +9,7 @@ Billing is IN v1 by product-owner override of D38 (recorded 2026-07-24). Two mon
 
 ## Decision
 
-**Platform billing: Razorpay Subscriptions.** UPI AutoPay primary (₹15,000/debit cap comfortably fits tier prices; ~0.5% + GST fees), card e-mandate fallback (~2% + 0.99% + GST). Razorpay's native trial support implements **trial-only, no free tier** (14–30 days full-feature); pre-debit notifications are Razorpay's job.
+**Platform billing: Razorpay Subscriptions.** UPI AutoPay primary (₹15,000/debit cap comfortably fits tier prices; ~0.5% + GST fees), card e-mandate fallback (~2% + 0.99% + GST). Razorpay's native trial support implements **trial-only, no free tier** (14-day trial full-feature, single 7-day support extension); pre-debit notifications are Razorpay's job.
 
 **Webhooks are at-least-once** — required handling: HMAC signature verify, dedupe on `x-razorpay-event-id`, fast-2xx + queue via BullMQ, `subscription.charged` is the entitlement-granting event, API-polling reconciliation as backstop.
 

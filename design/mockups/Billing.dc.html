@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes bl-modal { from{ opacity:0; transform:translateY(10px) scale(0.98) } to{ opacity:1; transform:translateY(0) scale(1) } }
+  @keyframes bl-sheet { from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+  @keyframes bl-back { from{ opacity:0 } to{ opacity:1 } }
+  @keyframes bl-toast { from{ opacity:0; transform:translate(-50%,10px) } to{ opacity:1; transform:translate(-50%,0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important } }
+</style>
+</helmet>
+<div style="position:relative; min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:20px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Settings · 8.7</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Billing & subscription — the shape, ready for real pricing</div>
+      <div style="margin-top:8px; font-size:13.5px; color:var(--text-secondary); max-width:880px; text-wrap:pretty">A mock of the whole flow so pricing drops in later without a redesign. We never hold your data hostage — every read-only state still lets you see and export all your leads and quotes.</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap; max-width:640px">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="8">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:9px; margin-bottom:24px; padding:9px 14px; background:var(--warning-bg); border-radius:999px; width:max-content; max-width:100%"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span style="font-size:12px; font-weight:500; color:var(--warning)">Every price on this screen is a placeholder (D26) — not real pricing. Shapes only.</span></div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — companion · back ‹ · no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 12px">
+          <button onClick="{{ goBack }}" aria-label="Back" style="width:38px; height:38px; border-radius:50%; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-primary); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">Billing</div><div style="font-size:12px; color:var(--text-secondary)">{{ mobileSub }}</div></div>
+          <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}"><span style="{{ readOnlyPill }}">Read-only</span></sc-if>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:4px 16px 24px; display:flex; flex-direction:column; gap:14px">
+
+          <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ banner.wrap }}">
+              <div style="display:flex; align-items:flex-start; gap:11px">
+                <span style="{{ banner.iconWrap }}">{{ banner.iconEl }}</span>
+                <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:600; color:{{ banner.fg }}; text-wrap:pretty">{{ banner.title }}</div><div style="margin-top:3px; font-size:12.5px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">{{ banner.text }}</div></div>
+                <sc-if value="{{ banner.dismissible }}" hint-placeholder-val="{{ false }}"><button onClick="{{ dismiss }}" aria-label="Dismiss" style="{{ dismissX }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></sc-if>
+              </div>
+              <div style="margin-top:12px; display:flex; gap:8px"><sc-for list="{{ banner.actions }}" as="a" hint-placeholder-count="1"><button onClick="{{ a.onClick }}" style="{{ a.style }}">{{ a.label }}</button></sc-for></div>
+            </div>
+          </sc-if>
+
+          <!-- PLANS -->
+          <sc-if value="{{ isPlans }}" hint-placeholder-val="{{ false }}">
+            <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+              <div style="{{ p.cardStyle }}">
+                <div style="display:flex; align-items:center; gap:8px"><span style="font-size:16px; font-weight:700; letter-spacing:-0.01em">{{ p.name }}</span><sc-if value="{{ p.current }}" hint-placeholder-val="{{ false }}"><span style="{{ currentPill }}">Current</span></sc-if></div>
+                <div style="margin-top:8px; display:flex; align-items:baseline; gap:6px"><span style="font-family:var(--font-mono); font-size:24px; font-weight:700; letter-spacing:-0.02em">{{ p.price }}</span><span style="font-size:12.5px; color:var(--text-tertiary)">/mo · {{ p.axis }}</span></div>
+                <span style="{{ samplePill }}">sample price</span>
+                <div style="margin-top:12px; display:flex; flex-direction:column; gap:7px"><sc-for list="{{ p.features }}" as="f" hint-placeholder-count="3"><div style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--text-secondary)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M20 6 9 17l-5-5"></path></svg>{{ f }}</div></sc-for></div>
+                <button onClick="{{ p.onPick }}" style="{{ p.btnStyle }}">{{ p.btnLabel }}</button>
+              </div>
+            </sc-for>
+          </sc-if>
+
+          <!-- INVOICES -->
+          <sc-if value="{{ isInvoices }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e2); overflow:hidden">
+              <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
+                <div style="{{ inv.rowStyle }}">
+                  <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ inv.no }}</div><div style="margin-top:2px; font-size:11.5px; color:var(--text-tertiary)">{{ inv.date }} · GST invoice</div></div>
+                  <span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ inv.amount }}</span>
+                  <button onClick="{{ downloadInv }}" aria-label="Download" style="{{ iconBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg></button>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size:12px; color:var(--text-tertiary); text-wrap:pretty">GST invoices carry your GSTIN so you can claim input tax credit.</div>
+          </sc-if>
+
+          <!-- OVERVIEW -->
+          <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Current plan</span><span style="{{ statusChip.style }}">{{ statusChip.label }}</span></div>
+              <div style="margin-top:10px; display:flex; align-items:baseline; gap:8px"><span style="font-size:22px; font-weight:700; letter-spacing:-0.02em">{{ plan.name }}</span><span style="font-family:var(--font-mono); font-size:14px; color:var(--text-secondary)">{{ plan.price }}/mo</span></div>
+              <div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary)">{{ plan.renewalLine }}</div>
+              <div style="margin-top:16px; display:flex; flex-direction:column; gap:13px"><sc-for list="{{ usage }}" as="u" hint-placeholder-count="3"><div><div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:12.5px; color:var(--text-secondary)">{{ u.label }}</span><span style="font-family:var(--font-mono); font-size:12.5px; font-variant-numeric:tabular-nums; color:var(--text-primary)">{{ u.value }}</span></div><div style="margin-top:6px; height:7px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ u.fillStyle }}"></div></div></div></sc-for></div>
+              <sc-if value="{{ canUpgrade }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openPlans }}" style="{{ primaryBtnM }}">Upgrade or change plan</button></sc-if>
+            </div>
+
+            <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e2); padding:16px"><div style="display:flex; align-items:center; gap:10px"><span style="width:38px; height:38px; border-radius:50%; background:var(--success-bg); color:var(--success); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg></span><div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:600">Your data is always yours</div><div style="margin-top:2px; font-size:12px; color:var(--text-secondary); text-wrap:pretty">Export every lead, quote and invoice — even now.</div></div></div><button onClick="{{ doExport }}" style="{{ exportBtnM }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>Export all my data</button></div>
+            </sc-if>
+
+            <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e2); padding:16px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Payment method</div>
+              <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px"><sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="3"><div style="{{ m.rowStyle }}"><span style="{{ m.iconWrap }}">{{ m.iconEl }}</span><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ m.label }}</div><div style="font-size:11.5px; color:var(--text-tertiary)">{{ m.detail }}</div></div><sc-if value="{{ m.primary }}" hint-placeholder-val="{{ false }}"><span style="{{ primaryTag }}">Default</span></sc-if></div></sc-for></div>
+            </div>
+
+            <button onClick="{{ openInvoices }}" style="{{ linkRowM }}"><span style="flex:1; text-align:left; font-size:14px; font-weight:500">Invoices &amp; GST receipts</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </sc-if>
+        </div>
+
+        <!-- MOBILE CONFIRM SHEET -->
+        <sc-if value="{{ confirmShow }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeConfirm }}" style="position:absolute; inset:0; z-index:30; background:rgba(246,247,249,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); animation:bl-back 200ms var(--ease-enter) both"></div>
+          <div style="position:absolute; left:0; right:0; bottom:0; z-index:31; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 22px 26px; animation:bl-sheet 320ms var(--ease-spring) both">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 16px"></div>
+            <div style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Confirm change to {{ confirm.name }}</div>
+            <div style="margin-top:16px; display:flex; flex-direction:column; gap:2px"><sc-for list="{{ confirm.rows }}" as="r" hint-placeholder-count="3"><div style="{{ r.rowStyle }}"><span style="flex:1; font-size:13.5px; color:{{ r.labelColor }}">{{ r.label }}</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:{{ r.weight }}; font-variant-numeric:tabular-nums; color:{{ r.valueColor }}">{{ r.value }}</span></div></sc-for></div>
+            <div style="margin-top:14px; display:flex; align-items:flex-start; gap:9px; padding:12px 14px; background:var(--info-bg); border-radius:12px; color:var(--info)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span style="font-size:12px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">{{ confirm.note }}</span></div>
+            <button onClick="{{ doConfirm }}" style="{{ confirmPrimaryM }}">Confirm & pay {{ confirm.due }}</button>
+            <button onClick="{{ closeConfirm }}" style="{{ confirmGhostM }}">Not now</button>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — sidebar stays</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px; box-sizing:border-box; z-index:2">
+          <div style="display:flex; align-items:center; gap:10px; padding:0 6px">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </div>
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goMyDay }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div onClick="{{ goLeads }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span></div>
+            <div onClick="{{ goProposals }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goBack }}" style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; margin-top:12px; padding:8px; border-radius:12px">
+              <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0">RP</div>
+              <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Rajesh Patil</div><div style="font-size:12px; color:var(--text-secondary)">Owner</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:20px 30px 18px">
+            <button onClick="{{ goBack }}" style="{{ backChip }}" style-hover="{{ navHover }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Settings</button>
+            <div style="flex:1; min-width:0"><div style="font-size:22px; font-weight:700; letter-spacing:-0.025em">Billing & subscription</div><div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">{{ deskSub }}</div></div>
+            <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}"><span style="{{ readOnlyPill }}">Read-only</span></sc-if>
+            <sc-if value="{{ showPlansBtn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openPlans }}" style="{{ primaryBtn }}">Upgrade or change plan</button></sc-if>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:2px 30px 40px">
+            <div style="max-width:1040px">
+
+              <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ banner.wrapD }}">
+                  <span style="{{ banner.iconWrap }}">{{ banner.iconEl }}</span>
+                  <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:600; color:{{ banner.fg }}">{{ banner.title }}</div><div style="margin-top:3px; font-size:13px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">{{ banner.text }}</div></div>
+                  <div style="display:flex; align-items:center; gap:10px; flex-shrink:0"><sc-for list="{{ banner.actions }}" as="a" hint-placeholder-count="1"><button onClick="{{ a.onClick }}" style="{{ a.styleD }}">{{ a.label }}</button></sc-for><sc-if value="{{ banner.dismissible }}" hint-placeholder-val="{{ false }}"><button onClick="{{ dismiss }}" aria-label="Dismiss" style="{{ dismissX }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></sc-if></div>
+                </div>
+              </sc-if>
+
+              <!-- PLANS -->
+              <sc-if value="{{ isPlans }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:6px 0 14px">Compare plans</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; align-items:start">
+                  <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+                    <div style="{{ p.cardStyleD }}">
+                      <div style="display:flex; align-items:center; gap:8px"><span style="font-size:17px; font-weight:700; letter-spacing:-0.01em">{{ p.name }}</span><sc-if value="{{ p.current }}" hint-placeholder-val="{{ false }}"><span style="{{ currentPill }}">Current</span></sc-if></div>
+                      <div style="margin-top:4px; font-size:12.5px; color:var(--text-secondary)">{{ p.tagline }}</div>
+                      <div style="margin-top:14px; display:flex; align-items:baseline; gap:6px"><span style="font-family:var(--font-mono); font-size:28px; font-weight:700; letter-spacing:-0.02em">{{ p.price }}</span><span style="font-size:12.5px; color:var(--text-tertiary)">/mo</span></div>
+                      <div style="margin-top:4px; display:flex; align-items:center; gap:8px"><span style="{{ samplePill }}">sample price</span><span style="font-size:11.5px; color:var(--text-tertiary)">{{ p.axis }}</span></div>
+                      <div style="margin-top:16px; display:flex; flex-direction:column; gap:9px"><sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4"><div style="display:flex; align-items:flex-start; gap:9px; font-size:13px; color:var(--text-secondary); text-wrap:pretty"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M20 6 9 17l-5-5"></path></svg>{{ f }}</div></sc-for></div>
+                      <button onClick="{{ p.onPick }}" style="{{ p.btnStyleD }}">{{ p.btnLabel }}</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <!-- INVOICES -->
+              <sc-if value="{{ isInvoices }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin:6px 0 14px"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Invoices & GST receipts</span><button onClick="{{ doExport }}" style="{{ ghostBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>Export all</button></div>
+                <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e2); overflow:hidden">
+                  <div style="display:grid; grid-template-columns:1.4fr 2fr 1.2fr 1fr; gap:16px; padding:13px 22px; background:var(--surface-alt)"><span style="{{ thStyle }}">Invoice</span><span style="{{ thStyle }}">Date</span><span style="{{ thStyle }}; text-align:right">Amount</span><span style="{{ thStyle }}; text-align:right">&nbsp;</span></div>
+                  <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
+                    <div style="{{ inv.rowStyleD }}">
+                      <span style="font-family:var(--font-mono); font-size:13px; font-weight:500">{{ inv.no }}</span>
+                      <div style="min-width:0"><span style="font-size:13px">{{ inv.date }}</span><span style="margin-left:8px; font-size:11.5px; color:var(--text-tertiary)">GST invoice</span></div>
+                      <span style="text-align:right; font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ inv.amount }}</span>
+                      <div style="display:flex; justify-content:flex-end"><button onClick="{{ downloadInv }}" style="{{ downloadBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>Download</button></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:12px; font-size:12.5px; color:var(--text-tertiary); text-wrap:pretty">Each invoice carries your GSTIN (27ABCDE1234F1Z5) for input tax credit.</div>
+              </sc-if>
+
+              <!-- OVERVIEW -->
+              <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,0.7fr); gap:22px; align-items:start">
+                  <div style="display:flex; flex-direction:column; gap:18px">
+                    <div style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:24px">
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Current plan</span><span style="{{ statusChip.style }}">{{ statusChip.label }}</span></div>
+                      <div style="margin-top:12px; display:flex; align-items:baseline; gap:10px"><span style="font-size:26px; font-weight:700; letter-spacing:-0.025em">{{ plan.name }}</span><span style="font-family:var(--font-mono); font-size:15px; color:var(--text-secondary)">{{ plan.price }}/mo</span><span style="{{ samplePill }}">sample</span></div>
+                      <div style="margin-top:4px; font-size:13px; color:var(--text-secondary)">{{ plan.renewalLine }}</div>
+                      <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px"><sc-for list="{{ usage }}" as="u" hint-placeholder-count="3"><div><div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:12.5px; color:var(--text-secondary)">{{ u.label }}</span></div><div style="margin-top:6px; font-family:var(--font-mono); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums">{{ u.value }}</div><div style="margin-top:8px; height:7px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ u.fillStyle }}"></div></div></div></sc-for></div>
+                    </div>
+
+                    <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}">
+                      <div style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:22px; display:flex; align-items:center; gap:18px"><span style="width:48px; height:48px; border-radius:50%; background:var(--success-bg); color:var(--success); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg></span><div style="flex:1; min-width:0"><div style="font-size:15.5px; font-weight:600">Your data is always yours</div><div style="margin-top:3px; font-size:13px; color:var(--text-secondary); text-wrap:pretty">{{ readOnlyNote }} Export every lead, quote and invoice at any time.</div></div><button onClick="{{ doExport }}" style="{{ primaryBtn }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>Export all data</button></div>
+                    </sc-if>
+                  </div>
+
+                  <div style="display:flex; flex-direction:column; gap:18px">
+                    <div style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:22px">
+                      <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Payment method</span><button onClick="{{ manageToast }}" style="{{ miniLink }}">Manage</button></div>
+                      <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px"><sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="3"><div style="{{ m.rowStyle }}"><span style="{{ m.iconWrap }}">{{ m.iconEl }}</span><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ m.label }}</div><div style="font-size:11.5px; color:var(--text-tertiary)">{{ m.detail }}</div></div><sc-if value="{{ m.primary }}" hint-placeholder-val="{{ false }}"><span style="{{ primaryTag }}">Default</span></sc-if></div></sc-for></div>
+                    </div>
+                    <button onClick="{{ openInvoices }}" style="{{ linkRowM }}"><span style="flex:1; text-align:left; font-size:14px; font-weight:500">Invoices &amp; GST receipts</span><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ invoiceCount }}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+                  </div>
+                </div>
+              </sc-if>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- DESKTOP CONFIRM MODAL -->
+        <sc-if value="{{ confirmShow }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeConfirm }}" style="position:absolute; inset:0; z-index:30; background:rgba(246,247,249,0.62); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); animation:bl-back 200ms var(--ease-enter) both; display:flex; align-items:center; justify-content:center; padding:40px">
+            <div onClick="{{ stop }}" style="width:460px; background:var(--surface); border-radius:24px; box-shadow:var(--e5); padding:28px; animation:bl-modal 320ms var(--ease-spring) both">
+              <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em">Confirm change to {{ confirm.name }}</div>
+              <div style="margin-top:4px; font-size:13px; color:var(--text-secondary)">{{ confirm.name }} plan · {{ confirm.axis }}</div>
+              <div style="margin-top:18px; background:var(--surface-alt); border-radius:16px; padding:6px 16px"><sc-for list="{{ confirm.rows }}" as="r" hint-placeholder-count="3"><div style="{{ r.rowStyleD }}"><span style="flex:1; font-size:13.5px; color:{{ r.labelColor }}">{{ r.label }}</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:{{ r.weight }}; font-variant-numeric:tabular-nums; color:{{ r.valueColor }}">{{ r.value }}</span></div></sc-for></div>
+              <div style="margin-top:14px; display:flex; align-items:flex-start; gap:10px; padding:13px 15px; background:var(--info-bg); border-radius:13px; color:var(--info)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span style="font-size:12.5px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">{{ confirm.note }}</span></div>
+              <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:12px"><button onClick="{{ closeConfirm }}" style="{{ modalGhostBtn }}">Not now</button><button onClick="{{ doConfirm }}" style="{{ modalPrimaryBtn }}">Confirm & pay {{ confirm.due }}</button></div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; left:50%; bottom:34px; z-index:99; background:var(--action-primary); color:#fff; padding:13px 20px; border-radius:999px; box-shadow:var(--e4); font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:9px; animation:bl-toast 240ms var(--ease-enter) both">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastText }}
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2000,&quot;height&quot;:1050},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;trialActive&quot;,&quot;plans&quot;,&quot;trialEnding&quot;,&quot;trialExpired&quot;,&quot;paymentFailed&quot;,&quot;suspended&quot;,&quot;cancelled&quot;,&quot;invoices&quot;],&quot;default&quot;:&quot;trialActive&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: props.view || 'trialActive', confirmPlan: null, dismissed: false, toastShow: false, toastText: '' };
+  }
+  go = (href) => () => { window.location.href = href; };
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+  setView = (k) => this.setState({ view: k, dismissed: false });
+  openPlans = () => this.setState({ view: 'plans' });
+  openInvoices = () => this.setState({ view: 'invoices' });
+  dismiss = (e) => { this.stop(e); this.setState({ dismissed: true }); };
+  toast = (t) => () => { clearTimeout(this._tt); this.setState({ toastShow: true, toastText: t }); this._tt = setTimeout(() => this.setState({ toastShow: false }), 3200); };
+  pickPlan = (k) => () => this.setState({ confirmPlan: k });
+  closeConfirm = () => this.setState({ confirmPlan: null });
+  doConfirm = () => { const k = this.state.confirmPlan; this.setState({ confirmPlan: null, view: 'trialActive' }); this.toast('Plan changed — prorated charge applied')(); };
+
+  icon(paths, size, stroke, sw) { return React.createElement('svg', { width: size || 18, height: size || 18, viewBox: '0 0 24 24', fill: 'none', stroke: stroke || 'currentColor', strokeWidth: sw || 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }, paths.map((d, i) => React.createElement('path', { key: i, d }))); }
+
+  renderVals() {
+    const { view, confirmPlan, dismissed } = this.state;
+    const isPlans = view === 'plans';
+    const isInvoices = view === 'invoices';
+    const isOverview = !isPlans && !isInvoices;
+    const readOnly = view === 'trialExpired' || view === 'suspended' || view === 'cancelled';
+
+    // ---- plans (placeholder pricing) ----
+    const planDefs = [
+      { k: 'starter', name: 'Starter', tagline: 'A solo owner finding their feet', price: '₹0,000', axis: 'up to 0 seats', features: ['0 team seats', '00 proposals / cycle', '000 agent minutes', 'WhatsApp sharing'] },
+      { k: 'growth', name: 'Growth', tagline: 'A small team quoting every week', price: '₹0,000', axis: 'up to 00 seats', features: ['00 team seats', '000 proposals / cycle', '0,000 agent minutes', 'Roles & templates'] },
+      { k: 'scale', name: 'Scale', tagline: 'A busy multi-crew installer', price: '₹0,000', axis: 'unlimited seats', features: ['Unlimited seats', 'Unlimited proposals', '00,000 agent minutes', 'Priority support'] },
+    ];
+    const currentPlanKey = 'growth';
+    const currentPill = { display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 9px', borderRadius: 999, background: 'var(--accent-subtle)', color: 'var(--accent)', fontSize: 10.5, fontWeight: 600 };
+    const samplePill = { display: 'inline-flex', alignItems: 'center', height: 18, padding: '0 8px', borderRadius: 999, background: 'var(--warning-bg)', color: 'var(--warning)', fontSize: 10, fontWeight: 600, letterSpacing: '0.03em' };
+    const plans = planDefs.map(p => {
+      const cur = p.k === currentPlanKey;
+      const btnPrimary = !cur;
+      return { name: p.name, tagline: p.tagline, price: p.price, axis: p.axis, features: p.features, current: cur,
+        onPick: cur ? this.toast('You\u2019re already on ' + p.name) : this.pickPlan(p.k),
+        btnLabel: cur ? 'Current plan' : (p.k === 'scale' ? 'Upgrade to Scale' : (p.k === 'starter' ? 'Switch to Starter' : 'Choose Growth')),
+        btnStyle: { marginTop: 14, width: '100%', height: 42, borderRadius: 999, border: 'none', cursor: cur ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, background: cur ? 'var(--neutral-bg)' : 'var(--action-primary)', color: cur ? 'var(--text-secondary)' : '#fff' },
+        btnStyleD: { marginTop: 18, width: '100%', height: 44, borderRadius: 999, border: 'none', cursor: cur ? 'default' : 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: cur ? 'var(--neutral-bg)' : 'var(--action-primary)', color: cur ? 'var(--text-secondary)' : '#fff' },
+        cardStyle: { background: 'var(--surface)', borderRadius: 20, boxShadow: cur ? '0 0 0 2px var(--accent)' : 'var(--e2)', padding: 18 },
+        cardStyleD: { background: 'var(--surface)', borderRadius: 22, boxShadow: cur ? '0 0 0 2px var(--accent)' : 'var(--e2)', padding: 24 } };
+    });
+
+    // ---- current plan + usage ----
+    const renewalLineByView = {
+      trialActive: 'Free trial · renews to a paid plan on 30 May 2026',
+      trialEnding: 'Free trial · ends 20 May 2026',
+      trialExpired: 'Trial ended 18 May 2026 · no active plan',
+      paymentFailed: 'Renewal failed 14 May · grace period until 21 May 2026',
+      suspended: 'Suspended 21 May 2026 · awaiting payment',
+      cancelled: 'Cancelled 12 May · data export open until 12 Jun 2026',
+    };
+    const plan = { name: 'Growth', price: '₹0,000', renewalLine: renewalLineByView[view] || renewalLineByView.trialActive };
+    const usageDefs = [
+      { label: 'Team seats', used: 4, limit: 12, value: '4 / 12' },
+      { label: 'Proposals this cycle', used: 18, limit: 50, value: '18 / 50' },
+      { label: 'Agent minutes', used: 412, limit: 1000, value: '412 / 1,000' },
+    ];
+    const usage = usageDefs.map(u => { const pct = Math.min(100, Math.round(u.used / u.limit * 100)); const over = pct >= 85;
+      return { label: u.label, value: u.value, fillStyle: { height: '100%', borderRadius: 999, width: pct + '%', background: over ? 'var(--warning)' : 'var(--accent)' } }; });
+
+    // ---- status chip ----
+    const scByView = {
+      trialActive: { label: '12 days left', tone: ['var(--neutral-bg)', 'var(--text-secondary)'] },
+      trialEnding: { label: '2 days left', tone: ['var(--warning-bg)', 'var(--warning)'] },
+      trialExpired: { label: 'Trial ended', tone: ['var(--danger-bg)', 'var(--danger)'] },
+      paymentFailed: { label: 'Payment failed', tone: ['var(--warning-bg)', 'var(--warning)'] },
+      suspended: { label: 'Suspended', tone: ['var(--neutral-bg)', 'var(--text-tertiary)'] },
+      cancelled: { label: 'Cancelled', tone: ['var(--neutral-bg)', 'var(--text-tertiary)'] },
+    };
+    const scv = scByView[view] || scByView.trialActive;
+    const statusChip = { label: scv.label, style: { display: 'inline-flex', alignItems: 'center', height: 24, padding: '0 12px', borderRadius: 999, background: scv.tone[0], color: scv.tone[1], fontSize: 12, fontWeight: 500 } };
+
+    // ---- banner ----
+    const actBtn = (label, onClick, primary) => ({ label, onClick,
+      style: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, background: primary ? 'var(--action-primary)' : 'var(--surface)', color: primary ? '#fff' : 'var(--text-primary)', boxShadow: primary ? 'none' : 'var(--e1)' },
+      styleD: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 38, padding: '0 18px', borderRadius: 999, background: primary ? 'var(--action-primary)' : 'var(--surface)', color: primary ? '#fff' : 'var(--text-primary)', boxShadow: primary ? 'none' : 'var(--e1)' } });
+    const bannerDefs = {
+      trialEnding: { tone: 'warning', title: 'Your free trial ends in 2 days', text: 'Add a payment method to keep creating after 20 May. Nothing is lost — everything stays exactly as it is.', dismissible: true, icon: ['M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z', 'M12 9v4', 'M12 17h.01'], actions: [actBtn('Upgrade now', this.openPlans, true)] },
+      trialExpired: { tone: 'danger', title: 'Trial ended — you\u2019re in read-only', text: 'You can still see and export everything. Upgrade to create leads and proposals again.', dismissible: false, icon: ['M12 9v4', 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z', 'M12 17h.01'], actions: [actBtn('Upgrade', this.openPlans, true), actBtn('Export data', this.toast('Export started — we\u2019ll email a download link'), false)] },
+      paymentFailed: { tone: 'warning', title: 'Payment failed — full access for 7 more days', text: 'We couldn\u2019t charge your card. You keep everything until 21 May while we retry. Update your method to avoid interruption — no instant lockout.', dismissible: false, icon: ['M22 10H2', 'M5 6h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z'], actions: [actBtn('Retry payment', this.toast('Retrying payment…'), true), actBtn('Update method', this.toast('Opening payment method'), false)] },
+      suspended: { tone: 'neutral', title: 'Account suspended — read-only, never locked out', text: 'Your data is safe and fully exportable. Reactivate any time to start creating again; nothing has been deleted.', dismissible: false, icon: ['M12 8v4', 'M12 16h.01', 'M4.93 4.93a10 10 0 1 0 14.14 0'], actions: [actBtn('Reactivate', this.openPlans, true), actBtn('Export data', this.toast('Export started — we\u2019ll email a download link'), false)] },
+      cancelled: { tone: 'neutral', title: 'Subscription cancelled — export window open', text: 'Download everything until 12 Jun 2026. After that your workspace is archived; final deletion is 12 Jul 2026. You can reactivate before then.', dismissible: false, icon: ['M3 6h18', 'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2', 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6'], actions: [actBtn('Export everything', this.toast('Export started — we\u2019ll email a download link'), true), actBtn('Reactivate', this.openPlans, false)] },
+    };
+    let bDef = bannerDefs[view];
+    if (view === 'trialEnding' && dismissed) bDef = null;
+    const toneMap = { warning: ['var(--warning-bg)', 'var(--warning)'], danger: ['var(--danger-bg)', 'var(--danger)'], neutral: ['var(--surface)', 'var(--text-secondary)'] };
+    let banner = { show: false };
+    if (bDef && isOverview) {
+      const tm = toneMap[bDef.tone];
+      banner = { show: true, fg: tm[1], dismissible: bDef.dismissible, actions: bDef.actions, title: bDef.title, text: bDef.text,
+        iconEl: this.icon(bDef.icon, 18, 'currentColor', 1.8),
+        iconWrap: { flexShrink: 0, width: 36, height: 36, borderRadius: '50%', background: 'var(--surface)', color: tm[1], display: 'flex', alignItems: 'center', justifyContent: 'center' },
+        wrap: { padding: 16, borderRadius: 18, background: tm[0], boxShadow: bDef.tone === 'neutral' ? 'var(--e1)' : 'none' },
+        wrapD: { display: 'flex', alignItems: 'center', gap: 16, padding: '18px 20px', borderRadius: 18, background: tm[0], boxShadow: bDef.tone === 'neutral' ? 'var(--e1)' : 'none', marginBottom: 22 } };
+    }
+
+    // ---- payment methods (UPI first-class) ----
+    const payMethods = [
+      { label: 'UPI', detail: 'rajesh@okhdfcbank · autopay on', primary: true, tone: ['var(--accent-subtle)', 'var(--accent)'], icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
+      { label: 'Card', detail: 'HDFC •••• 4242 · exp 09/28', primary: false, tone: ['var(--neutral-bg)', 'var(--text-secondary)'], icon: ['M22 10H2', 'M5 6h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z'] },
+      { label: 'Net banking', detail: 'HDFC Bank · one-time', primary: false, tone: ['var(--neutral-bg)', 'var(--text-secondary)'], icon: ['M3 21h18', 'M5 21V10l7-5 7 5v11', 'M9 21v-6h6v6'] },
+    ].map(m => ({ label: m.label, detail: m.detail, primary: m.primary,
+      iconEl: this.icon(m.icon, 18, m.tone[1], 1.7),
+      iconWrap: { flexShrink: 0, width: 38, height: 38, borderRadius: '50%', background: m.tone[0], color: m.tone[1], display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 12, background: m.primary ? 'var(--accent-subtle)' : 'var(--surface-alt)' } }));
+
+    // ---- invoices ----
+    const invDefs = [
+      { no: 'HG/INV/26/003', date: '01 May 2026', amount: '₹0,000' },
+      { no: 'HG/INV/26/002', date: '01 Apr 2026', amount: '₹0,000' },
+      { no: 'HG/INV/26/001', date: '01 Mar 2026', amount: '₹0,000' },
+    ];
+    const invoices = invDefs.map((inv, i) => ({ no: inv.no, date: inv.date, amount: inv.amount,
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: i % 2 === 1 ? 'var(--surface-alt)' : 'var(--surface)' },
+      rowStyleD: { display: 'grid', gridTemplateColumns: '1.4fr 2fr 1.2fr 1fr', gap: 16, alignItems: 'center', padding: '13px 22px', background: i % 2 === 1 ? 'var(--surface-alt)' : 'var(--surface)' } }));
+
+    // ---- confirm ----
+    const confirmShow = !!confirmPlan;
+    const cp = planDefs.find(p => p.k === confirmPlan) || planDefs[2];
+    const rowStyle = { display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0' };
+    const rowStyleD = { display: 'flex', alignItems: 'center', gap: 10, padding: '11px 0' };
+    const confirm = { name: cp.name, axis: cp.axis, due: '₹0,000', note: 'Prorated for the 12 days left in this cycle. From your renewal date you\u2019ll pay ' + cp.price + '/mo. Placeholder amounts — real pricing lands later.',
+      rows: [
+        { label: 'New plan (' + cp.name + ')', value: cp.price + '/mo', weight: 500, labelColor: 'var(--text-secondary)', valueColor: 'var(--text-primary)', rowStyle, rowStyleD },
+        { label: 'Prorated for 12 days', value: '₹0,000', weight: 500, labelColor: 'var(--text-secondary)', valueColor: 'var(--text-primary)', rowStyle, rowStyleD },
+        { label: 'Due today', value: '₹0,000', weight: 700, labelColor: 'var(--text-primary)', valueColor: 'var(--accent)', rowStyle: { ...rowStyle, borderTop: '1px solid var(--hairline)' }, rowStyleD: { ...rowStyleD, borderTop: '1px solid var(--hairline)' } },
+      ] };
+
+    const readOnlyNoteByView = { trialExpired: 'Your trial ended, so new records are paused —', suspended: 'While suspended, creating is paused —', cancelled: 'After cancellation, creating is paused —' };
+
+    return {
+      views: [ { k: 'trialActive', l: 'Trial active' }, { k: 'plans', l: 'Plans & upgrade' }, { k: 'trialEnding', l: 'Trial ending' }, { k: 'trialExpired', l: 'Trial expired' }, { k: 'paymentFailed', l: 'Payment failed' }, { k: 'suspended', l: 'Suspended' }, { k: 'cancelled', l: 'Cancelled' }, { k: 'invoices', l: 'Invoices' } ]
+        .map(o => ({ label: o.l, onClick: () => this.setView(o.k),
+          style: view === o.k
+            ? { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, background: 'var(--action-primary)', color: '#fff', transition: 'all 160ms var(--ease-standard)' }
+            : { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, background: 'transparent', color: 'var(--text-secondary)', transition: 'all 160ms var(--ease-standard)' } })),
+
+      isPlans, isInvoices, isOverview, readOnly, banner,
+      plans, plan, usage, statusChip, currentPill, samplePill, payMethods, invoices,
+      canUpgrade: !readOnly || view === 'trialExpired' || view === 'suspended' || view === 'cancelled',
+      showPlansBtn: isOverview,
+      readOnlyNote: readOnlyNoteByView[view] || '',
+      invoiceCount: invDefs.length + ' invoices',
+      mobileSub: statusChip.label,
+      deskSub: 'Growth plan · ' + statusChip.label,
+
+      confirmShow, confirm,
+      openPlans: this.openPlans, openInvoices: this.openInvoices, dismiss: this.dismiss,
+      closeConfirm: this.closeConfirm, doConfirm: this.doConfirm, stop: this.stop,
+      downloadInv: this.toast('GST invoice downloaded'), doExport: this.toast('Export started — we\u2019ll email a download link'), manageToast: this.toast('Manage payment methods'),
+
+      readOnlyPill: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 13px', borderRadius: 999, background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontSize: 12.5, fontWeight: 500, flexShrink: 0 },
+      primaryTag: { display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 9px', borderRadius: 999, background: 'var(--accent-subtle)', color: 'var(--accent)', fontSize: 10.5, fontWeight: 600, flexShrink: 0 },
+      thStyle: { fontSize: 11, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-tertiary)' },
+      iconBtn: { width: 34, height: 34, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+      downloadBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 32, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-primary)' },
+      miniLink: { border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, color: 'var(--accent)' },
+      dismissX: { flexShrink: 0, width: 30, height: 30, borderRadius: 8, border: 'none', cursor: 'pointer', background: 'transparent', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      linkRowM: { display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '15px 16px', borderRadius: 16, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: 'var(--surface)', boxShadow: 'var(--e2)', color: 'var(--text-primary)' },
+      primaryBtnM: { marginTop: 16, width: '100%', height: 44, borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'var(--action-primary)', color: '#fff' },
+      exportBtnM: { marginTop: 14, width: '100%', height: 42, borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 },
+      confirmPrimaryM: { marginTop: 18, width: '100%', height: 46, borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14.5, fontWeight: 500, background: 'var(--action-primary)', color: '#fff' },
+      confirmGhostM: { marginTop: 10, width: '100%', height: 44, borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'transparent', color: 'var(--text-secondary)' },
+
+      backChip: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-primary)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 6, height: 36, padding: '0 14px 0 10px', fontSize: 13.5 },
+      ghostBtn: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-primary)', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 8, height: 36, padding: '0 15px', fontSize: 13 },
+      primaryBtn: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500, background: 'var(--action-primary)', color: '#fff', borderRadius: 999, display: 'inline-flex', alignItems: 'center', gap: 8, height: 40, padding: '0 20px', fontSize: 14 },
+      modalGhostBtn: { height: 44, padding: '0 22px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-primary)' },
+      modalPrimaryBtn: { height: 44, padding: '0 22px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'var(--action-primary)', color: '#fff' },
+
+      navRow: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      navRowActive: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, background: 'var(--accent-subtle)', color: 'var(--accent)', fontSize: 14, fontWeight: 500, cursor: 'pointer' },
+      navHover: { background: 'var(--neutral-bg)' },
+
+      goBack: this.go('Settings.dc.html'), goMyDay: this.go('MyDay.dc.html'), goLeads: this.go('Leads.dc.html'), goProposals: this.go('Proposals.dc.html'),
+      toastShow: this.state.toastShow, toastText: this.state.toastText,
+    };
+  }
+}
+</script>
+</body>
+</html>

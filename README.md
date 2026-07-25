@@ -23,7 +23,7 @@ is ported from the proof-of-concept at `Solar-App-POC` per `docs/05-domain-migra
 | `docs/02-system-architecture.md` | Full system design |
 | `docs/03-tech-stack.md` | Every technology choice, justified and pinned |
 | `docs/04-data-model.md` | Multi-tenant schema |
-| `docs/14-build-roadmap.md` | Launch-1 scope and module build order |
+| `docs/14-build-roadmap.md` | The 20-day build plan: tracks, day ranges, launch gate |
 | `docs/adr/` | Architecture decision records |
 | `docs/research/` | Verified market + technology research backing the decisions |
 

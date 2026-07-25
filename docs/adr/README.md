@@ -23,6 +23,7 @@ Decisions that are expensive to reverse, recorded at the moment they were made, 
 | [0015](0015-i18n-lingui-v5.md) | i18n — Lingui v5, one catalog for web and bare RN | Accepted |
 | [0016](0016-no-feature-flags.md) | No feature flags — entitlements-only gating, trunk discipline | Accepted |
 | [0017](0017-studio-primacy-tool-census-gate.md) | Studio primacy — tool census as port acceptance gate; WebView on mobile | Accepted |
+| [0018](0018-fly-one-app-per-service.md) | Fly topology — one app per service (web/api/worker/voice/powersync + pg + log-shipper) | Accepted |
 
 ## When to write an ADR
 

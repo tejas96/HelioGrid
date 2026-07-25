@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-bloom { 0%,100%{ transform:translateX(-50%) scale(1); opacity:.85 } 50%{ transform:translateX(-50%) scale(1.09); opacity:1 } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @media (prefers-reduced-motion: reduce){ .hg-bloom-layer{ animation:none !important } .hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="position:relative; width:100%; height:100%; background:var(--canvas); overflow:hidden; font-family:var(--font-sans); color:var(--text-primary)">
+  <div class="hg-bloom-layer" style="{{ bloomStyle }}"></div>
+  
+
+  <div style="position:relative; z-index:1; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:safe center; box-sizing:border-box; padding:{{ padX }}px; overflow-y:auto">
+    <div style="width:100%; max-width:{{ colMax }}px; display:flex; flex-direction:column; padding:{{ padY }}px 0">
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px">
+        <div style="font-weight:700; font-size:22px; letter-spacing:-0.02em; line-height:1">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></div>
+      </div>
+
+      <sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px">
+            <div style="display:flex; gap:5px">
+              <span style="width:26px; height:4px; border-radius:2px; background:var(--accent)"></span>
+              <span style="width:26px; height:4px; border-radius:2px; background:var(--canvas-sunken)"></span>
+            </div>
+            <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Step 1 of 2</span>
+          </div>
+
+          <h1 style="margin:0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">What do you install?</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary); max-width:40ch">This sets sensible defaults so your first proposal is close. You can change it anytime.</p>
+
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:12px">
+
+            <button onClick="{{ onSelectRes }}" onMouseEnter="{{ onEnterRes }}" onMouseLeave="{{ onLeave }}" style="{{ cardStyleRes }}">
+              <div style="flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center; color:var(--accent)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"></path><path d="M9 21v-6h6v6"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:16px; font-weight:700; letter-spacing:-0.01em">Residential rooftop</div>
+                <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">Homes · 1 to 15 kW</div>
+              </div>
+              <div style="{{ radioStyleRes }}"><sc-if value="{{ isRes }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></div>
+            </button>
+
+            <button onClick="{{ onSelectCi }}" onMouseEnter="{{ onEnterCi }}" onMouseLeave="{{ onLeave }}" style="{{ cardStyleCi }}">
+              <div style="flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center; color:var(--accent)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path><path d="M7 18h.01"></path><path d="M12 18h.01"></path><path d="M17 18h.01"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:16px; font-weight:700; letter-spacing:-0.01em">Commercial &amp; industrial</div>
+                <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">Factories and warehouses · 20 kW and above</div>
+              </div>
+              <div style="{{ radioStyleCi }}"><sc-if value="{{ isCi }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></div>
+            </button>
+
+            <button onClick="{{ onSelectBoth }}" onMouseEnter="{{ onEnterBoth }}" onMouseLeave="{{ onLeave }}" style="{{ cardStyleBoth }}">
+              <div style="flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center; color:var(--accent)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"></path><path d="m2 17 10 5 10-5"></path><path d="m2 12 10 5 10-5"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:16px; font-weight:700; letter-spacing:-0.01em">Both</div>
+                <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">Residential and C&amp;I projects</div>
+              </div>
+              <div style="{{ radioStyleBoth }}"><sc-if value="{{ isBoth }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></div>
+            </button>
+
+          </div>
+
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:7px">
+            <label for="hg-size" style="font-size:13px; font-weight:500; color:var(--text-secondary)">Typical system size <span style="color:var(--text-tertiary); font-weight:400">· optional</span></label>
+            <div style="{{ sizeWrapStyle }}">
+              <input id="hg-size" inputmode="decimal" placeholder="{{ sizePlaceholder }}" disabled="{{ sizeDisabled }}" value="{{ size }}" onChange="{{ onSizeChange }}" onFocus="{{ onSizeFocus }}" onBlur="{{ onSizeBlur }}" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:var(--font-mono); font-size:18px; color:var(--text-primary); font-variant-numeric:tabular-nums" />
+              <span style="flex-shrink:0; font-family:var(--font-mono); font-size:15px; font-weight:500; color:var(--text-secondary)">kW</span>
+            </div>
+          </div>
+
+          <div style="margin-top:24px; width:100%">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" disabled="{{ continueDisabled }}" onClick="{{ submit }}" hint-size="100%,48px" style="width:100%">Continue</x-import>
+          </div>
+
+          <div style="margin-top:16px; text-align:center">
+            <button onClick="{{ skip }}" style="background:none; border:none; padding:8px; cursor:pointer; color:var(--text-secondary); font-weight:400; font-size:14px; font-family:inherit">Skip for now</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column">
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--success-bg); display:flex; align-items:center; justify-content:center; color:var(--success)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <h1 style="margin:22px 0 0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">You're set up</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary)">{{ doneLine }}</p>
+          <button onClick="{{ restart }}" style="margin-top:26px; align-self:flex-start; background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Restart demo</button>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:760},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;mobile&quot;,&quot;tsType&quot;:&quot;'mobile'|'desktop'&quot;}}">
+class Component extends DCLogic {
+  state = { step: 'form', selected: '', size: '', hovered: '', focusedSize: false, skipped: false };
+  DEFAULTS = { res: '5', ci: '50', both: '10' };
+  LABELS = { res: 'residential rooftop', ci: 'commercial & industrial', both: 'residential and C&I' };
+
+  cardStyle(key) {
+    const sel = this.state.selected === key;
+    const hov = this.state.hovered === key;
+    return {
+      display: 'flex', alignItems: 'center', gap: 14, padding: '18px', width: '100%', boxSizing: 'border-box',
+      background: 'var(--surface)', borderRadius: 20, border: 'none', cursor: 'pointer', textAlign: 'left',
+      boxShadow: sel ? 'var(--e3), 0 0 0 2px var(--accent)' : hov ? 'var(--e3)' : 'var(--e2)',
+      transform: (sel || hov) ? 'translateY(-1px)' : 'translateY(0)',
+      transition: 'box-shadow 200ms var(--ease-standard), transform 120ms var(--ease-standard)',
+      font: 'inherit', color: 'inherit',
+    };
+  }
+  radioStyle(key) {
+    const sel = this.state.selected === key;
+    return {
+      flexShrink: 0, width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: sel ? 'var(--accent)' : 'var(--canvas-sunken)', transition: 'background 160ms var(--ease-standard)',
+    };
+  }
+  select(key) { this.setState({ selected: key, size: this.DEFAULTS[key] }); }
+  submit = () => { if (!this.state.selected) return; this.setState({ step: 'done', skipped: false }); };
+  skip = () => this.setState({ step: 'done', skipped: true });
+  restart = () => this.setState({ step: 'form', selected: '', size: '', hovered: '', skipped: false });
+
+  renderVals() {
+    const desktop = this.props.variant === 'desktop';
+    const { step, selected, size, skipped } = this.state;
+    const doneLine = skipped
+      ? "No problem — we'll use standard residential defaults for now. Change them anytime in settings."
+      : `Defaults tuned for ${this.LABELS[selected] || 'your business'}${size ? `, around ${size} kW` : ''}. Next, create your first lead.`;
+    return {
+      isForm: step === 'form', isDone: step === 'done',
+      isRes: selected === 'res', isCi: selected === 'ci', isBoth: selected === 'both',
+      cardStyleRes: this.cardStyle('res'), cardStyleCi: this.cardStyle('ci'), cardStyleBoth: this.cardStyle('both'),
+      radioStyleRes: this.radioStyle('res'), radioStyleCi: this.radioStyle('ci'), radioStyleBoth: this.radioStyle('both'),
+      onSelectRes: () => this.select('res'), onSelectCi: () => this.select('ci'), onSelectBoth: () => this.select('both'),
+      onEnterRes: () => this.setState({ hovered: 'res' }), onEnterCi: () => this.setState({ hovered: 'ci' }), onEnterBoth: () => this.setState({ hovered: 'both' }),
+      onLeave: () => this.setState({ hovered: '' }),
+      size, sizeDisabled: !selected, sizePlaceholder: selected ? 'e.g. 5' : 'Select an option above',
+      onSizeChange: (e) => this.setState({ size: e.target.value.replace(/[^\d.]/g, '').slice(0, 6) }),
+      onSizeFocus: () => this.setState({ focusedSize: true }), onSizeBlur: () => this.setState({ focusedSize: false }),
+      sizeWrapStyle: {
+        display: 'flex', alignItems: 'center', gap: 10, height: 56, padding: '0 18px',
+        background: this.state.selected ? 'var(--surface)' : 'var(--canvas-sunken)', borderRadius: 16,
+        transition: 'box-shadow 200ms var(--ease-standard)',
+        boxShadow: this.state.focusedSize ? 'var(--e2), 0 0 0 2px var(--surface), 0 0 0 4px var(--accent)' : (this.state.selected ? 'var(--e1)' : 'none'),
+      },
+      continueDisabled: !selected, submit: this.submit, skip: this.skip, restart: this.restart, doneLine,
+      padX: desktop ? 56 : 26, padY: desktop ? 0 : 20, colMax: desktop ? 440 : 620,
+      bloomStyle: {
+        position: 'absolute', top: desktop ? -180 : -150, left: '50%', transform: 'translateX(-50%)',
+        width: desktop ? 860 : 520, height: desktop ? 860 : 520, background: 'var(--glow-brand)',
+        pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

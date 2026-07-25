@@ -15,7 +15,7 @@ Two money systems live here and they never mix:
 
 ## 1. Plans & tiers
 
-**Authoritative prices, caps and bundle sizes live in [`./01-business-model.md`](./01-business-model.md)** — this doc fixes the mechanics. Shape (BLUEPRINT): org-level, capacity-tiered — never per-seat (Indian EPCs employ many low-cost designers; ARKA/Reslink both price per-org, [`./research/market.md`](./research/market.md)) — priced below ARKA 360 (₹7.5k–16.5k/mo) and Reslink ($949–1,899/yr):
+**Authoritative prices, caps and bundle sizes live in [`./01-business-model.md`](./01-business-model.md)** — this doc fixes the mechanics. Shape (BLUEPRINT): org-level, capacity-tiered — never per-seat (Indian EPCs employ many low-cost designers; ARKA/Reslink both price per-org, [`./research/market.md`](./research/market.md)) — priced below ARKA 360 (₹7.5k–16.5k/mo) and Reslink India (₹60k/₹85k/₹1.2L per year — INR page, authoritative per docs/01's calibration note):
 
 | Tier | Price (monthly · yearly, per 01) | Mandate route (monthly) |
 |---|---|---|

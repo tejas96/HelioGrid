@@ -16,7 +16,7 @@ The 3D Design Studio is THE flagship feature (binding directive: nothing is comp
 
 ## Consequences
 
-- The studio phase has no launch date riding on it — it is quality-gated (census), not calendar-gated; the flagship ships whole, not rushed. The cost: Launch-1 competes on CRM + Path B proposals while ARKA/Aurora demo design tools (mitigated in docs/14 §6 risk register — remote-survey AI detection still demos, and the POC studio remains usable internally).
+- The studio is calendar-bound to Track D (Days 14–18) inside the single 20-day release; the census remains the QUALITY gate — the release valve is non-census scope elsewhere (dashboard polish, analytics depth), never a studio-less launch and never census rows.
 - The census makes capability loss auditable: an agent (or reviewer) can diff the checklist against the running app rather than trusting "looks complete".
 - WebView means the studio is **not offline on mobile in v1** and requires an authenticated session bridge — the field survey flow (which IS offline, ADR-0009) is deliberately separate from design work.
 - One studio codebase to maintain instead of two; WebView performance on low-end Android is a verification item, not an assumption.

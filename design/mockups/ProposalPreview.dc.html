@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-sheet { from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+  @keyframes hg-spin { to{ transform:rotate(360deg) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  ::-webkit-scrollbar{ height:0; width:0 }
+  @media (prefers-reduced-motion: reduce){ .hg-sheet,.hg-spin{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · proposal builder</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Proposal preview — what the customer sees</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="4">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:13.5px; color:var(--text-secondary); margin-bottom:22px; max-width:840px; text-wrap:pretty">The exact document Priya will receive, checked before it goes out. Built from a design, the numbers are derived from a real shading simulation; built without one, an indicative-proposal line is shown.</div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — one page, swipe · pinch to zoom</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas-sunken); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 12px; background:var(--surface)">
+          <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Preview</div><div style="font-size:12px; color:var(--text-secondary)">Priya Sharma · HG-P-0151</div></div>
+          <div style="display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px; border-radius:999px; background:var(--neutral-bg); font-family:var(--font-mono); font-size:12.5px; font-weight:500; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ curNum }} / {{ pageCount }}</div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:18px 16px 16px; display:flex; flex-direction:column; align-items:center">
+          <div style="width:100%; max-width:343px">
+            <dc-import name="PropDocPage" kind="{{ curKind }}" estimate="{{ estimate }}" has-design="{{ hasDesign }}" hint-size="100%,560px"></dc-import>
+          </div>
+          <div style="margin-top:16px; display:flex; align-items:center; gap:10px">
+            <button onClick="{{ prevPage }}" aria-label="Previous" style="{{ pagerBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="display:flex; align-items:center; gap:6px"><sc-for list="{{ dots }}" as="d" hint-placeholder-count="6"><span style="{{ d.style }}"></span></sc-for></div>
+            <button onClick="{{ nextPage }}" aria-label="Next" style="{{ pagerBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+          <div style="margin-top:8px; font-size:12.5px; color:var(--text-secondary)">{{ curLabel }}</div>
+        </div>
+
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+          <button onClick="{{ openEditSheet }}" style="{{ editBtn }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>Edit</button>
+          <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" onClick="{{ goShare }}" hint-size="100%,48px" style="flex:1">Continue to share</x-import></sc-if>
+          <sc-if value="{{ blocked }}" hint-placeholder-val="{{ false }}"><button style="{{ shareDisabled }}">Fix 2 issues to share</button></sc-if>
+        </div>
+
+        <!-- EDIT / JUMP SHEET -->
+        <sc-if value="{{ editSheetOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:30; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeEditSheet }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:40; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 12px 24px; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 12px"></div>
+            <div style="padding:0 8px; font-size:17px; font-weight:700; letter-spacing:-0.01em">Edit a section</div>
+            <div style="margin-top:12px; display:flex; flex-direction:column; gap:2px">
+              <sc-for list="{{ editRows }}" as="e" hint-placeholder-count="5"><button onClick="{{ closeEditSheet }}" style="{{ editRowStyle }}"><span style="flex:1; text-align:left; font-size:14.5px; font-weight:500">{{ e.label }}</span><span style="font-size:12.5px; color:var(--accent); font-weight:500">Step {{ e.step }}</span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- INCOMPLETE overlay -->
+        <sc-if value="{{ incomplete }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:35; background:rgba(255,255,255,0.62); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:flex-end" onClick="{{ noop }}">
+            <div class="hg-sheet" style="width:100%; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:22px 20px 24px; animation:hg-sheet 320ms var(--ease-spring) both">
+              <div style="width:52px; height:52px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></div>
+              <div style="margin-top:14px; font-size:18px; font-weight:700; letter-spacing:-0.01em">Not ready to share yet</div>
+              <p style="margin:6px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Two things are still required. Fix them and the preview completes.</p>
+              <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px">
+                <sc-for list="{{ missing }}" as="m" hint-placeholder-count="2"><button onClick="{{ noop }}" style="{{ missingRow }}"><span style="{{ missingDot }}"></span><div style="flex:1; text-align:left"><div style="font-size:14px; font-weight:500">{{ m.title }}</div><div style="font-size:12px; color:var(--danger)">{{ m.detail }}</div></div><span style="font-size:12.5px; color:var(--accent); font-weight:500; white-space:nowrap">Fix · step {{ m.step }}</span></button></sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- GENERATING overlay -->
+        <sc-if value="{{ generating }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:40; background:rgba(255,255,255,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:28px">
+            <div style="width:100%; background:var(--surface); border-radius:24px; box-shadow:var(--e5); padding:28px 24px; text-align:center; display:flex; flex-direction:column; align-items:center">
+              <div style="{{ spinner }}"></div>
+              <div style="margin-top:18px; font-size:17px; font-weight:700; letter-spacing:-0.01em">Generating PDF</div>
+              <div style="margin-top:6px; font-size:13px; color:var(--text-secondary)">Rendering page 4 of 6 · your investment</div>
+              <div style="margin-top:16px; width:100%; height:6px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="width:66%; height:100%; border-radius:999px; background:var(--gradient-brand)"></div></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — thumbnail rail · continuous scroll · controls beside</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}"><span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span><span style="{{ navCount }}">10</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span style="flex:1">Designs</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px"><div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:20px 30px; background:var(--surface)">
+            <div style="flex:1; min-width:0"><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Preview · Proposal for Priya Sharma</div><div style="font-size:12.5px; color:var(--text-secondary)">8.2 kWp residential · Nashik · HG-P-0151 (draft)</div></div>
+            <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex; position:relative">
+            <!-- thumbnail rail -->
+            <div style="flex-shrink:0; width:150px; background:var(--surface); overflow-y:auto; padding:18px 14px; display:flex; flex-direction:column; gap:12px">
+              <div style="font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); padding:0 2px">Pages</div>
+              <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="6">
+                <button onClick="{{ t.onClick }}" style="{{ t.style }}"><div style="{{ t.sheet }}"><span style="font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--text-tertiary)">{{ t.n }}</span></div><span style="font-size:11px; font-weight:500; color:{{ t.labelColor }}; text-align:center; line-height:1.3">{{ t.label }}</span></button>
+              </sc-for>
+            </div>
+
+            <!-- continuous scroll document -->
+            <div style="flex:1; min-width:0; overflow-y:auto; padding:28px 30px; background:var(--canvas-sunken)">
+              <div style="max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:22px">
+                <sc-for list="{{ pages }}" as="p" hint-placeholder-count="6">
+                  <dc-import name="PropDocPage" kind="{{ p.kind }}" estimate="{{ estimate }}" has-design="{{ hasDesign }}" hint-size="100%,540px"></dc-import>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- controls beside -->
+            <div style="flex-shrink:0; width:320px; background:var(--surface); box-shadow:-6px 0 16px -14px rgba(10,10,11,0.16); overflow-y:auto; padding:22px 22px; display:flex; flex-direction:column; gap:16px">
+              <sc-if value="{{ incomplete }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:16px 18px; border-radius:16px; background:var(--warning-bg); box-shadow:0 0 0 1.5px rgba(233,162,59,0.4)">
+                  <div style="display:flex; align-items:center; gap:10px; color:var(--warning)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span style="font-size:14px; font-weight:700; color:var(--text-primary)">Not ready to share</span></div>
+                  <p style="margin:8px 0 0; font-size:12.5px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Two required items are still missing.</p>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px">
+                  <sc-for list="{{ missing }}" as="m" hint-placeholder-count="2"><button onClick="{{ noop }}" style="{{ missingRow }}"><span style="{{ missingDot }}"></span><div style="flex:1; text-align:left"><div style="font-size:13.5px; font-weight:500">{{ m.title }}</div><div style="font-size:12px; color:var(--danger)">{{ m.detail }}</div></div><span style="font-size:12px; color:var(--accent); font-weight:500; white-space:nowrap">Step {{ m.step }}</span></button></sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ complete }}" hint-placeholder-val="{{ true }}">
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Before you share</div>
+                  <sc-if value="{{ hasDesign }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:14px; display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--canvas); border-radius:14px"><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Include technical page</div><div style="margin-top:2px; font-size:12px; color:var(--text-secondary)">Single-line diagram</div></div><div onClick="{{ toggleSld }}" style="{{ sldTrack }}"><div style="{{ sldKnob }}"></div></div></div>
+                  </sc-if>
+                  <sc-if value="{{ estimate }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:12px; display:flex; gap:9px; padding:13px 15px; background:var(--warning-bg); border-radius:14px; color:var(--warning)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M12 9v4"></path><path d="M12 17h.01"></path><circle cx="12" cy="12" r="10"></circle></svg><div style="font-size:12px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">No design — the document shows the indicative-proposal line to the customer.</div></div>
+                  </sc-if>
+                  <sc-if value="{{ hasDesign }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:12px; display:flex; gap:9px; padding:13px 15px; background:var(--success-bg); border-radius:14px; color:var(--success)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M20 6 9 17l-5-5"></path></svg><div style="font-size:12px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Numbers are derived from a real shading simulation — no estimate label needed.</div></div>
+                  </sc-if>
+                </div>
+                <div style="margin-top:2px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Jump to edit</div>
+                  <div style="margin-top:12px; display:flex; flex-direction:column; gap:2px">
+                    <sc-for list="{{ editRows }}" as="e" hint-placeholder-count="5"><button onClick="{{ noop }}" style="{{ editRowStyle }}"><span style="flex:1; text-align:left; font-size:13px">{{ e.label }}</span><span style="font-size:11.5px; color:var(--accent); font-weight:500">Step {{ e.step }}</span></button></sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- GENERATING overlay (desktop, over document area) -->
+            <sc-if value="{{ generating }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; inset:0; z-index:20; background:rgba(255,255,255,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center">
+                <div style="width:380px; background:var(--surface); border-radius:24px; box-shadow:var(--e5); padding:32px; text-align:center; display:flex; flex-direction:column; align-items:center">
+                  <div style="{{ spinner }}"></div>
+                  <div style="margin-top:20px; font-size:19px; font-weight:700; letter-spacing:-0.01em">Generating PDF</div>
+                  <div style="margin-top:6px; font-size:13.5px; color:var(--text-secondary)">Rendering page 4 of 6 · your investment</div>
+                  <div style="margin-top:18px; width:100%; height:6px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="width:66%; height:100%; border-radius:999px; background:var(--gradient-brand)"></div></div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:16px 30px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <button style="{{ footBackD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back to builder</button>
+            <div style="flex:1"></div>
+            <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" onClick="{{ goShare }}" hint-size="190px,40px">Continue to share</x-import></sc-if>
+            <sc-if value="{{ blocked }}" hint-placeholder-val="{{ false }}"><button style="{{ shareDisabled }}">Fix 2 issues to share</button></sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;fromDesign&quot;,&quot;withoutDesign&quot;,&quot;incomplete&quot;,&quot;generating&quot;],&quot;default&quot;:&quot;fromDesign&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: props.view || 'fromDesign', page: 1, sldOn: false, editSheetOpen: false };
+  }
+  setView = (v) => this.setState({ view: v, page: 1 });
+  toggleSld = () => this.setState(s => ({ sldOn: !s.sldOn }));
+  openEditSheet = () => this.setState({ editSheetOpen: true });
+  closeEditSheet = () => this.setState({ editSheetOpen: false });
+  noop = () => {};
+
+  renderVals() {
+    const { view, page, sldOn, editSheetOpen } = this.state;
+    const hasDesign = view === 'fromDesign' || view === 'incomplete' || view === 'generating';
+    const estimate = view === 'withoutDesign';
+    const incomplete = view === 'incomplete';
+    const generating = view === 'generating';
+
+    const kinds = ['cover', 'system', 'savings', 'investment', 'included', 'terms'];
+    if (hasDesign && sldOn) kinds.push('sld');
+    const labelMap = { cover: 'Cover', system: 'Your system', savings: 'Generation & savings', investment: 'Your investment', included: "What's included", terms: 'Timeline & terms', sld: 'Technical (SLD)' };
+    const pages = kinds.map(k => ({ kind: k }));
+    const pageCount = kinds.length;
+    const curPage = Math.min(page, pageCount);
+    const curKind = kinds[curPage - 1];
+
+    const dots = kinds.map((k, i) => ({ style: { width: i === curPage - 1 ? 20 : 7, height: 7, borderRadius: 999, background: i === curPage - 1 ? 'var(--accent)' : 'var(--canvas-sunken)', transition: 'all 160ms var(--ease-standard)' } }));
+    const thumbs = kinds.map((k, i) => {
+      const active = i === curPage - 1;
+      return { n: i + 1, label: labelMap[k], onClick: () => this.setState({ page: i + 1 }),
+        labelColor: active ? 'var(--accent)' : 'var(--text-secondary)',
+        style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: 6, borderRadius: 12, border: 'none', cursor: 'pointer', background: active ? 'var(--accent-subtle)' : 'transparent', fontFamily: 'inherit' },
+        sheet: { width: '100%', height: 74, borderRadius: 8, background: 'var(--surface)', boxShadow: active ? '0 0 0 2px var(--accent)' : 'var(--e1)', display: 'flex', alignItems: 'center', justifyContent: 'center' } };
+    });
+
+    const editRows = [
+      { label: 'Cover & client details', step: 10 }, { label: 'Solar system', step: 3 }, { label: 'Performance & savings', step: 4 },
+      { label: 'Pricing & payment', step: 7 }, { label: 'Components', step: 8 },
+    ];
+    const missing = [
+      { title: 'Components', detail: '3 of 5 selected', step: 8 },
+      { title: 'Payment terms', detail: '88% allocated · 12% short', step: 7 },
+    ];
+
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const views = [
+      { key: 'fromDesign', label: 'From a design' }, { key: 'withoutDesign', label: 'Without a design' },
+      { key: 'incomplete', label: 'Incomplete' }, { key: 'generating', label: 'Generating' },
+    ].map(v => ({ label: v.label, onClick: () => this.setView(v.key), style: view === v.key ? { ...pill, background: 'var(--action-primary)', color: '#fff' } : { ...pill, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const navRow = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, color: 'var(--text-secondary)', cursor: 'pointer' };
+
+    return {
+      views, pages, thumbs, dots, editRows, missing,
+      curKind, curNum: curPage, pageCount, curLabel: labelMap[curKind],
+      estimate, hasDesign, incomplete, generating, complete: !incomplete,
+      canShare: !incomplete && !generating, blocked: incomplete,
+      sldOn, toggleSld: this.toggleSld,
+      prevPage: () => this.setState(s => ({ page: Math.max(1, s.page - 1) })),
+      nextPage: () => this.setState(s => ({ page: Math.min(pageCount, s.page + 1) })),
+      editSheetOpen, openEditSheet: this.openEditSheet, closeEditSheet: this.closeEditSheet,
+      goShare: () => { window.location.href = 'ShareProposal.dc.html'; }, noop: this.noop,
+      spinner: { width: 46, height: 46, borderRadius: '50%', border: '4px solid var(--canvas-sunken)', borderTopColor: 'var(--accent)', animation: 'hg-spin 900ms linear infinite' },
+      sldTrack: { width: 44, height: 26, borderRadius: 999, background: sldOn ? 'var(--accent)' : 'var(--canvas-sunken)', padding: 3, cursor: 'pointer', display: 'flex', justifyContent: sldOn ? 'flex-end' : 'flex-start', transition: 'all 160ms var(--ease-standard)', flexShrink: 0 },
+      sldKnob: { width: 20, height: 20, borderRadius: '50%', background: '#fff', boxShadow: 'var(--e1)' },
+      closeBtn: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      pagerBtn: { width: 40, height: 40, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--surface)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--e1)' },
+      editBtn: { display: 'flex', alignItems: 'center', gap: 7, height: 48, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      editRowStyle: { display: 'flex', alignItems: 'center', gap: 10, width: '100%', minHeight: 44, padding: '0 12px', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--text-primary)' },
+      shareDisabled: { flex: 1, height: 48, borderRadius: 999, border: 'none', background: 'var(--neutral-bg)', color: 'var(--text-tertiary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, cursor: 'not-allowed' },
+      missingRow: { display: 'flex', alignItems: 'center', gap: 11, width: '100%', padding: '12px 14px', borderRadius: 12, border: 'none', cursor: 'pointer', background: 'var(--danger-bg)', fontFamily: 'inherit' },
+      missingDot: { flexShrink: 0, width: 9, height: 9, borderRadius: '50%', background: 'var(--danger)' },
+      footBackD: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      railStyle: { flexShrink: 0, width: 240, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: '22px 16px', overflow: 'hidden', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', gap: 10 },
+      navRow, navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-sheet { from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  input,textarea{ font-family:inherit }
+  ::-webkit-scrollbar{ height:0; width:0 }
+  @media (prefers-reduced-motion: reduce){ .hg-sheet,.hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · proposal builder · step 8</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Components</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="7">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:13.5px; color:var(--text-secondary); margin-bottom:22px; max-width:860px; text-wrap:pretty">All five categories must be selected before Generate — no lump-sum proposals. They fill from a design, from a duplicated proposal, or by hand from the catalog. The footer counter is the gate.</div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — category cards · edit as bottom sheet</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 10px">
+          <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Priya Sharma</div><div style="font-size:12px; color:var(--text-secondary)">New proposal · Nashik</div></div>
+          <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved</div>
+        </div>
+        <div style="flex-shrink:0; padding:4px 16px 12px">
+          <div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 8px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+            <button style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">8 / 11</span><span style="font-size:14.5px; font-weight:500">Components</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></div>
+            <button style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 16px 16px">
+          <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ banner.style }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ banner.title }}</div><div style="margin-top:2px; font-size:12.5px; opacity:0.9">{{ banner.text }}</div></div></div>
+          </sc-if>
+
+          <sc-if value="{{ showFillHint }}" hint-placeholder-val="{{ false }}">
+            <div style="background:linear-gradient(135deg,#F1EEFF 0%,#FBFAFF 72%); border-radius:16px; box-shadow:0 0 0 1px rgba(123,92,255,0.12); padding:16px 18px; margin-bottom:12px">
+              <div style="font-size:13.5px; font-weight:500">Three ways to fill these</div>
+              <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">
+                <div style="display:flex; gap:8px"><span style="color:var(--accent); font-weight:700">1</span>From a design — the bill of materials fills all five</div>
+                <div style="display:flex; gap:8px"><span style="color:var(--accent); font-weight:700">2</span>From a duplicated proposal — they come with it</div>
+                <div style="display:flex; gap:8px"><span style="color:var(--accent); font-weight:700">3</span>By hand — pick from your catalog below</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex; flex-direction:column; gap:12px">
+            <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+              <div style="{{ c.cardStyle }}">
+                <div style="display:flex; align-items:center; gap:12px">
+                  <div style="{{ c.iconStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ c.iconPaths }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}"></path></sc-for></svg></div>
+                  <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:500">{{ c.label }}</div></div>
+                  <span style="{{ c.chipStyle }}"><sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>{{ c.chipLabel }}</span>
+                </div>
+                <sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top:12px; display:flex; align-items:center; gap:10px; padding:11px 12px; background:var(--canvas); border-radius:12px">
+                    <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ c.brand }}</div><sc-if value="{{ c.derived }}" hint-placeholder-val="{{ false }}"><span style="{{ derivedTag }}">Derived · BOM</span></sc-if></div>
+                    <sc-if value="{{ c.hasCount }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; color:var(--text-secondary); font-variant-numeric:tabular-nums">×{{ c.count }}</span></sc-if>
+                    <button onClick="{{ c.onEdit }}" aria-label="Edit" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                    <button onClick="{{ c.onRemove }}" aria-label="Remove" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ c.onAdd }}" style="{{ c.addStyle }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add {{ c.labelLower }} from catalog</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- GATE bar -->
+        <div style="flex-shrink:0; padding:0 16px 12px">
+          <div style="{{ gateCard }}">
+            <div style="display:flex; align-items:center; gap:10px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ gateIconColor }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ gateComplete }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ gateIncomplete }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg>
+              <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Components selected</div><div style="font-size:12px; color:{{ gateSubColor }}">{{ gateSub }}</div></div>
+              <span style="font-family:var(--font-mono); font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; color:{{ gateCountColor }}">{{ gateCount }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+          <button style="{{ footBack }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+          <button style="{{ footNext }}">Next<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
+
+        <!-- PANEL EDIT SHEET (mobile) -->
+        <sc-if value="{{ editOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:30; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeEdit }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:40; max-height:90%; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); display:flex; flex-direction:column; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="flex-shrink:0; padding:8px 20px 4px"><div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 12px"></div><div style="font-size:18px; font-weight:700; letter-spacing:-0.01em">Edit panel</div></div>
+            <div style="flex:1; min-height:0; overflow-y:auto; padding:16px 20px 8px; display:flex; flex-direction:column; gap:16px">
+              <div>
+                <div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Brand</div>
+                <div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 14px; background:var(--canvas-sunken); border-radius:12px"><span style="flex:1; font-size:14.5px; font-weight:500">AESOLAR CMER-132BDS 610 Wp</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                <div style="margin-top:6px; font-size:11.5px; color:var(--text-tertiary)">Locked — chosen when the panel was added.</div>
+              </div>
+              <div style="display:flex; gap:12px">
+                <div style="flex:1"><div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Quantity <span style="color:var(--danger)">*</span></div><div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; text-align:left; font-family:var(--font-mono); font-size:15px; font-weight:500; font-variant-numeric:tabular-nums">12</span><span style="font-size:13px; color:var(--text-tertiary)">nos</span></div></div>
+                <div style="flex:1"><div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Watt peak range</div><div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:15px; font-variant-numeric:tabular-nums">600–620</span><span style="font-size:13px; color:var(--text-tertiary)">Wp</span></div></div>
+              </div>
+              <div>
+                <div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Panel type</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px"><sc-for list="{{ panelTypeOptions }}" as="t" hint-placeholder-count="7"><div onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</div></sc-for></div>
+              </div>
+              <div style="display:flex; gap:12px">
+                <div style="flex:1"><div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Product warranty</div><div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:15px; font-variant-numeric:tabular-nums">12</span><span style="font-size:13px; color:var(--text-tertiary)">years</span></div></div>
+                <div style="flex:1"><div style="font-size:12.5px; font-weight:500; color:var(--text-secondary); margin-bottom:8px">Performance warranty</div><div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:15px; font-variant-numeric:tabular-nums">25</span><span style="font-size:13px; color:var(--text-tertiary)">years</span></div></div>
+              </div>
+              <div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px"><span style="font-size:12.5px; font-weight:500; color:var(--text-secondary)">Description</span><span style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">66 / 110</span></div>
+                <div style="min-height:72px; padding:12px 14px; background:var(--canvas); border-radius:12px; font-size:14px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">Premium TOPCon bifacial modules, 30-year linear output warranty.</div>
+              </div>
+            </div>
+            <div style="flex-shrink:0; display:flex; gap:10px; padding:12px 20px 22px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" full-width="{{ true }}" onClick="{{ closeEdit }}" hint-size="100%,48px" style="flex:1">Cancel</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" onClick="{{ closeEdit }}" hint-size="100%,48px" style="flex:1">Done</x-import></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — two-column categories · edit in side panel</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}"><span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span><span style="{{ navCount }}">10</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span style="flex:1">Designs</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px"><div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:20px 30px; background:var(--surface)">
+            <div style="flex:1; min-width:0"><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Proposal for Priya Sharma</div><div style="font-size:12.5px; color:var(--text-secondary)">8.2 kWp residential · Nashik · HG-P-0151 (draft)</div></div>
+            <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved · just now</div>
+            <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+          <div style="flex-shrink:0; padding:18px 30px 16px; background:var(--surface); box-shadow:0 6px 10px -10px rgba(10,10,11,0.16)">
+            <div style="position:relative"><div style="position:absolute; left:16px; right:16px; top:16px; height:2px; background:var(--canvas-sunken)"></div><div style="position:relative; display:flex; justify-content:space-between"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="11"><div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; min-width:0"><div style="{{ s.marker }}"><sc-if value="{{ s.isCheck }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.isNum }}" hint-placeholder-val="{{ true }}"><span style="{{ s.numStyle }}">{{ s.num }}</span></sc-if></div><div style="text-align:center; min-width:0; padding:0 2px"><div style="{{ s.railLabel }}">{{ s.shortLabel }}</div><div style="{{ s.railState }}">{{ s.stateShort }}</div></div></div></sc-for></div></div>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:24px 30px 34px; display:flex; gap:24px">
+            <div style="flex:1; min-width:0">
+              <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px">
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Step 8 · Components</div><div style="margin-top:6px; font-size:22px; font-weight:700; letter-spacing:-0.02em">Components</div></div>
+              </div>
+              <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}"><div style="{{ banner.styleD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ banner.title }}</div><div style="margin-top:2px; font-size:12.5px; opacity:0.9">{{ banner.text }}</div></div></div></sc-if>
+
+              <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:16px">
+                <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+                  <div style="{{ c.cardStyleD }}">
+                    <div style="display:flex; align-items:center; gap:12px">
+                      <div style="{{ c.iconStyle }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ c.iconPaths }}" as="p" hint-placeholder-count="1"><path d="{{ p.d }}"></path></sc-for></svg></div>
+                      <div style="flex:1; min-width:0"><div style="font-size:14.5px; font-weight:500">{{ c.label }}</div></div>
+                      <span style="{{ c.chipStyle }}"><sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>{{ c.chipLabel }}</span>
+                    </div>
+                    <sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}">
+                      <div style="margin-top:12px; display:flex; align-items:center; gap:10px; padding:11px 12px; background:var(--canvas); border-radius:12px">
+                        <div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ c.brand }}</div><sc-if value="{{ c.derived }}" hint-placeholder-val="{{ false }}"><span style="{{ derivedTag }}">Derived · BOM</span></sc-if></div>
+                        <sc-if value="{{ c.hasCount }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--text-secondary); font-variant-numeric:tabular-nums">×{{ c.count }}</span></sc-if>
+                        <button onClick="{{ c.onEdit }}" aria-label="Edit" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                        <button onClick="{{ c.onRemove }}" aria-label="Remove" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ c.onAdd }}" style="{{ c.addStyle }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add from catalog</button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- side panel: edit OR gate summary -->
+            <div style="width:340px; flex-shrink:0; display:flex; flex-direction:column; gap:16px">
+              <sc-if value="{{ editOpen }}" hint-placeholder-val="{{ false }}">
+                <div class="hg-rise" style="background:var(--surface); border-radius:16px; box-shadow:var(--e2); padding:20px; animation:hg-rise 200ms var(--ease-enter) both">
+                  <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:15px; font-weight:700; letter-spacing:-0.01em">Edit panel</span><button onClick="{{ closeEdit }}" aria-label="Close" style="border:none; background:none; padding:4px; cursor:pointer; color:var(--text-tertiary); display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+                  <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px">
+                    <div><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Brand</div><div style="display:flex; align-items:center; gap:8px; height:46px; padding:0 14px; background:var(--canvas-sunken); border-radius:12px"><span style="flex:1; min-width:0; font-size:13.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">AESOLAR CMER-132BDS 610 Wp</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div></div>
+                    <div style="display:flex; gap:12px">
+                      <div style="flex:1"><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Quantity <span style="color:var(--danger)">*</span></div><div style="display:flex; align-items:center; gap:8px; height:46px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; text-align:left; font-family:var(--font-mono); font-size:15px; font-weight:500; font-variant-numeric:tabular-nums">12</span><span style="font-size:13px; color:var(--text-tertiary)">nos</span></div></div>
+                      <div style="flex:1"><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Wp range</div><div style="display:flex; align-items:center; gap:6px; height:46px; padding:0 12px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:14px; font-variant-numeric:tabular-nums">600–620</span></div></div>
+                    </div>
+                    <div><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Panel type</div><div style="display:flex; flex-wrap:wrap; gap:8px"><sc-for list="{{ panelTypeOptions }}" as="t" hint-placeholder-count="7"><div onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</div></sc-for></div></div>
+                    <div style="display:flex; gap:12px">
+                      <div style="flex:1"><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Product warr.</div><div style="display:flex; align-items:center; gap:6px; height:46px; padding:0 12px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:14px; font-variant-numeric:tabular-nums">12</span><span style="font-size:12.5px; color:var(--text-tertiary)">yr</span></div></div>
+                      <div style="flex:1"><div style="font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:9px">Perf. warr.</div><div style="display:flex; align-items:center; gap:6px; height:46px; padding:0 12px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:14px; font-variant-numeric:tabular-nums">25</span><span style="font-size:12.5px; color:var(--text-tertiary)">yr</span></div></div>
+                    </div>
+                    <div><div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:9px"><span style="font-size:13px; font-weight:500; color:var(--text-secondary)">Description</span><span style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">66 / 110</span></div><div style="min-height:70px; padding:11px 13px; background:var(--canvas); border-radius:12px; font-size:13.5px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">Premium TOPCon bifacial modules, 30-year linear output warranty.</div></div>
+                  </div>
+                  <div style="margin-top:18px; display:flex; gap:10px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="md" full-width="{{ true }}" onClick="{{ closeEdit }}" hint-size="100%,40px" style="flex:1">Cancel</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" full-width="{{ true }}" onClick="{{ closeEdit }}" hint-size="100%,40px" style="flex:1">Done</x-import></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ editClosed }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ gateCardD }}">
+                  <div style="display:flex; align-items:center; gap:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ gateIconColor }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ gateComplete }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ gateIncomplete }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg><div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">The gate</div><div style="font-size:15px; font-weight:700; letter-spacing:-0.01em; color:{{ gateCountColor }}">{{ gateCount }} selected</div></div></div>
+                  <div style="margin-top:12px; font-size:13px; color:{{ gateSubColor }}; text-wrap:pretty">{{ gateSub }}</div>
+                  <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px">
+                    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5"><div style="display:flex; align-items:center; gap:9px; font-size:13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ c.tickColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}"><circle cx="12" cy="12" r="9"></circle></sc-if></svg><span style="flex:1; color:{{ c.gateTextColor }}">{{ c.label }}</span></div></sc-for>
+                  </div>
+                </div>
+                <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:18px 20px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">How they fill</div><div style="margin-top:12px; display:flex; flex-direction:column; gap:9px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty"><div>From a design — the BOM fills all five</div><div>From a duplicated proposal — they come with it</div><div>By hand — pick from the catalog</div></div></div>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:16px 30px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <button style="{{ footBackD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+            <div style="{{ gatePill }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ gateComplete }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ gateIncomplete }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg>Components selected {{ gateCount }}</div>
+            <div style="flex:1; text-align:center"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">8 / 11</span><span style="margin-left:8px; font-size:14px; font-weight:500">Components</span></div>
+            <button style="{{ footNextD }}">Next<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;empty&quot;,&quot;filled&quot;,&quot;partial&quot;,&quot;blocked&quot;,&quot;editSheet&quot;,&quot;pathA&quot;,&quot;battery&quot;],&quot;default&quot;:&quot;filled&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: props.view || 'filled', editOpen: props.view === 'editSheet', panelType: 'topcon' };
+  }
+  setView = (v) => this.setState({ view: v, editOpen: v === 'editSheet' });
+  openEdit = () => this.setState({ editOpen: true });
+  closeEdit = () => this.setState({ editOpen: false });
+  setPanelType = (t) => this.setState({ panelType: t });
+
+  renderVals() {
+    const { view, editOpen, panelType } = this.state;
+    const isEmpty = view === 'empty';
+    const isPartial = view === 'partial';
+    const isBlocked = view === 'blocked';
+    const isPathA = view === 'pathA';
+    const hasBattery = view === 'battery';
+
+    const P = {
+      panel: ['M3 3h18v18H3z', 'M3 9h18', 'M3 15h18', 'M9 3v18', 'M15 3v18'],
+      inverter: ['M4 4h16v16H4z', 'M8 9h8', 'M8 13h5'],
+      cable: ['M4 9a4 4 0 0 1 8 0v6a4 4 0 0 0 8 0', 'M2 9h4', 'M18 15h4'],
+      electrical: ['M13 2 3 14h7l-1 8 10-12h-7z'],
+      structure: ['M3 21h18', 'M5 21V8l7-5 7 5v13', 'M9 21v-6h6v6'],
+      battery: ['M3 7h16v10H3z', 'M22 10v4', 'M7 10v4', 'M11 10v4'],
+    };
+
+    const catDefs = [
+      { key: 'panel', label: 'Panel', brand: 'AESOLAR CMER-132BDS 610 Wp', count: '12', hasCount: true },
+      { key: 'inverter', label: 'Inverter', brand: 'Growatt MIN 5000TL-X', count: '2', hasCount: true },
+      { key: 'cable', label: 'Cable', brand: 'Polycab 4 sq.mm Cu', hasCount: false },
+      { key: 'electrical', label: 'Electrical', brand: 'Standard AC/DC protection kit', hasCount: false },
+      { key: 'structure', label: 'Structure', brand: 'GI elevated table, 2.5 m', hasCount: false },
+    ];
+    if (hasBattery) catDefs.push({ key: 'battery', label: 'Battery', brand: 'Livguard LFP 10 kWh', hasCount: false });
+
+    let filledSet;
+    if (isEmpty) filledSet = {};
+    else if (isPartial || isBlocked) filledSet = { panel: 1, inverter: 1, cable: 1 };
+    else { filledSet = { panel: 1, inverter: 1, cable: 1, electrical: 1, structure: 1, battery: 1 }; }
+
+    const total = catDefs.length;
+    let filledN = 0;
+    catDefs.forEach(c => { if (filledSet[c.key]) filledN++; });
+    const complete = filledN === total;
+
+    const chipS = (bg, fg) => ({ display: 'inline-flex', alignItems: 'center', gap: 5, height: 24, padding: '0 10px', borderRadius: 999, fontSize: 11.5, fontWeight: 600, whiteSpace: 'nowrap', background: bg, color: fg });
+    const iconC = (tone) => ({ flexShrink: 0, width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tone === 'danger' ? 'var(--danger-bg)' : tone === 'filled' ? 'var(--accent-subtle)' : 'var(--neutral-bg)', color: tone === 'danger' ? 'var(--danger)' : tone === 'filled' ? 'var(--accent)' : 'var(--text-tertiary)' });
+
+    const cats = catDefs.map(c => {
+      const filled = !!filledSet[c.key];
+      const missingHi = isBlocked && !filled;
+      const cardBase = { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: '16px 18px' };
+      const cardMiss = { ...cardBase, boxShadow: '0 0 0 1.5px var(--danger)' };
+      let chipStyle, chipLabel;
+      if (filled) { chipStyle = chipS('var(--success-bg)', 'var(--success)'); chipLabel = 'Selected'; }
+      else if (missingHi) { chipStyle = chipS('var(--danger-bg)', 'var(--danger)'); chipLabel = 'Required'; }
+      else { chipStyle = chipS('var(--neutral-bg)', 'var(--text-secondary)'); chipLabel = 'Empty'; }
+      return {
+        ...c, filled, empty: !filled, labelLower: c.label.toLowerCase(),
+        derived: isPathA && filled,
+        iconPaths: (P[c.key] || []).map(d => ({ d })),
+        iconStyle: iconC(missingHi ? 'danger' : filled ? 'filled' : 'neutral'),
+        chipStyle, chipLabel,
+        cardStyle: missingHi ? cardMiss : cardBase,
+        cardStyleD: missingHi ? cardMiss : cardBase,
+        addStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, width: '100%', marginTop: 12, height: 44, borderRadius: 12, border: 'none', cursor: 'pointer', background: missingHi ? 'var(--danger-bg)' : 'var(--accent-subtle)', color: missingHi ? 'var(--danger)' : 'var(--accent)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+        onEdit: this.openEdit, onRemove: () => {}, onAdd: this.openEdit,
+        tickColor: filled ? 'var(--success)' : missingHi ? 'var(--danger)' : 'var(--text-disabled)',
+        gateTextColor: filled ? 'var(--text-primary)' : missingHi ? 'var(--danger)' : 'var(--text-tertiary)',
+      };
+    });
+
+    // gate
+    const gateCount = filledN + ' / ' + total;
+    const gateComplete = complete;
+    const missingLabels = catDefs.filter(c => !filledSet[c.key]).map(c => c.label);
+    let gateSub, gateSubColor;
+    if (complete) { gateSub = 'All set — you can generate the proposal.'; gateSubColor = 'var(--success)'; }
+    else if (isBlocked) { gateSub = 'Add ' + missingLabels.join(' and ') + ' to generate.'; gateSubColor = 'var(--danger)'; }
+    else { gateSub = missingLabels.length + ' left · ' + missingLabels.join(', '); gateSubColor = 'var(--text-secondary)'; }
+
+    // banner
+    let banner = { show: false };
+    const bMobile = (tone) => ({ display: 'flex', gap: 10, padding: '12px 14px', borderRadius: 14, marginBottom: 12, background: 'var(--danger-bg)', color: 'var(--danger)' });
+    const bDesktop = { display: 'flex', gap: 10, padding: '12px 14px', borderRadius: 14, marginTop: 16, background: 'var(--danger-bg)', color: 'var(--danger)' };
+    if (isBlocked) {
+      const batteryMiss = hasBattery && !filledSet.battery;
+      banner = { show: true,
+        title: batteryMiss ? 'This system has a battery — add the battery component' : 'Complete all components to generate',
+        text: 'Generate is blocked until every category is selected. Missing: ' + missingLabels.join(', ') + '.',
+        style: bMobile(), styleD: bDesktop };
+    }
+
+    // steps
+    const base = { 1: 'complete', 2: 'skipped', 3: 'complete', 4: 'complete', 5: 'complete', 6: 'complete', 7: 'complete', 8: 'current', 9: 'skipped', 10: 'notStarted', 11: 'notStarted' };
+    const defs = [['Company', 'Company'], ['Achievements', 'Achieve'], ['Solar System', 'System'], ['Performance', 'Perform'], ['Financial', 'Finance'], ['Timeline', 'Timeline'], ['Payment Terms', 'Payment'], ['Components', 'Compon.'], ['Terms & Conditions', 'Terms'], ['Client Details', 'Client'], ['Bank Details', 'Bank']];
+    const stateShort = { complete: 'Done', current: 'Editing', notStarted: '—', skipped: 'Skipped' };
+    const stateColor = { complete: 'var(--success)', current: 'var(--accent)', notStarted: 'var(--text-tertiary)', skipped: 'var(--text-tertiary)' };
+    const marker = (st) => {
+      const b = { flexShrink: 0, width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' };
+      if (st === 'complete') return { ...b, background: 'var(--success)', color: '#fff' };
+      if (st === 'current') return { ...b, background: 'var(--accent)', color: '#fff', boxShadow: '0 0 0 4px var(--accent-subtle)' };
+      if (st === 'skipped') return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px dashed var(--text-tertiary)' };
+      return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px solid var(--canvas-sunken)' };
+    };
+    const steps = defs.map((d, i) => {
+      const st = base[i + 1]; const isCheck = st === 'complete', isCurrent = st === 'current';
+      return { num: i + 1, shortLabel: d[1], stateShort: stateShort[st], isCheck, isNum: !isCheck, marker: marker(st),
+        numStyle: { fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: st === 'skipped' ? 'var(--text-tertiary)' : 'var(--text-secondary)' },
+        railLabel: { fontSize: 11.5, fontWeight: isCurrent ? 700 : 500, color: isCurrent ? 'var(--accent)' : 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+        railState: { marginTop: 2, fontSize: 10.5, color: stateColor[st], whiteSpace: 'nowrap' } };
+    });
+
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const views = [
+      { key: 'empty', label: 'Empty' }, { key: 'filled', label: 'All filled' }, { key: 'partial', label: 'Partial 3/5' },
+      { key: 'blocked', label: 'Blocked' }, { key: 'editSheet', label: 'Edit panel' }, { key: 'pathA', label: 'From design (A)' }, { key: 'battery', label: 'With battery' },
+    ].map(v => ({ label: v.label, onClick: () => this.setView(v.key), style: view === v.key ? { ...pill, background: 'var(--action-primary)', color: '#fff' } : { ...pill, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const ptDefs = [['mono-perc', 'Mono PERC'], ['topcon', 'TOPCon'], ['bifacial', 'Bifacial'], ['mono', 'Mono'], ['poly', 'Poly'], ['hjt', 'HJT'], ['thin', 'Thin-film']];
+    const chip = { display: 'inline-flex', alignItems: 'center', height: 34, padding: '0 13px', borderRadius: 999, fontSize: 12.5, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' };
+    const panelTypeOptions = ptDefs.map(([k, l]) => ({ label: l, onClick: () => this.setPanelType(k), style: k === panelType ? { ...chip, background: 'var(--accent)', color: '#fff' } : { ...chip, background: 'var(--neutral-bg)', color: 'var(--text-secondary)' } }));
+
+    const navRow = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, color: 'var(--text-secondary)', cursor: 'pointer' };
+    const gateTone = complete ? ['var(--success-bg)', 'var(--success)'] : isBlocked ? ['var(--danger-bg)', 'var(--danger)'] : ['var(--surface)', 'var(--text-primary)'];
+
+    return {
+      views, cats, steps,
+      editOpen, editClosed: !editOpen, openEdit: this.openEdit, closeEdit: this.closeEdit, panelTypeOptions,
+      showFillHint: isEmpty,
+      banner,
+      gateCount, gateComplete, gateIncomplete: !gateComplete, gateSub, gateSubColor,
+      gateCountColor: complete ? 'var(--success)' : isBlocked ? 'var(--danger)' : 'var(--text-primary)',
+      gateIconColor: complete ? 'var(--success)' : isBlocked ? 'var(--danger)' : 'var(--text-tertiary)',
+      gateCard: { background: gateTone[0], borderRadius: 16, boxShadow: complete ? '0 0 0 1.5px rgba(21,154,91,0.35)' : isBlocked ? '0 0 0 1.5px var(--danger)' : 'var(--e2)', padding: '13px 16px' },
+      gateCardD: { background: 'var(--surface)', borderRadius: 16, boxShadow: complete ? '0 0 0 1.5px rgba(21,154,91,0.35)' : isBlocked ? '0 0 0 1.5px var(--danger)' : 'var(--e2)', padding: '18px 20px' },
+      gatePill: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 34, padding: '0 14px', borderRadius: 999, fontSize: 13, fontWeight: 500, background: gateTone[0] === 'var(--surface)' ? 'var(--neutral-bg)' : gateTone[0], color: gateTone[1] },
+      derivedTag: { display: 'inline-flex', alignItems: 'center', height: 17, marginTop: 4, padding: '0 7px', borderRadius: 999, fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', background: 'var(--accent-subtle)', color: 'var(--accent)' },
+      miniBtn: { flexShrink: 0, width: 32, height: 32, borderRadius: 9, border: 'none', cursor: 'pointer', background: 'var(--surface)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--e1)' },
+      closeBtn: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      savedPill: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 12.5, fontWeight: 500 },
+      stepArrow: { flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      footBack: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNext: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 20px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footBackD: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNextD: { display: 'flex', alignItems: 'center', gap: 7, height: 44, padding: '0 24px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      railStyle: { flexShrink: 0, width: 240, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: '22px 16px', overflow: 'hidden', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', gap: 10 },
+      navRow, navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+    };
+  }
+}
+</script>
+</body>
+</html>

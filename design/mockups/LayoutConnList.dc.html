@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+</helmet>
+<div style="font-family:var(--font-sans); color:var(--text-primary)">
+  <div style="font-size:17px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px">String connections</div>
+  <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">Every string and the exact chain of panels in it.</div>
+  <div style="display:flex; flex-direction:column; gap:10px"><sc-for list="{{ strings }}" as="s" hint-placeholder-count="3"><div style="padding:13px 14px; border-radius:14px; background:var(--surface-alt); box-shadow:var(--e1)"><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px"><span style="width:14px; height:4px; border-radius:2px; background:{{ s.color }}"></span><span style="font-size:13px; font-weight:600">{{ s.name }}</span><span style="flex:1"></span><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">{{ s.count }} · {{ s.voc }}</span></div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-secondary); line-height:1.6">{{ s.chain }}</div></div></sc-for></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { strings: [
+      { name: 'String A', color: 'var(--accent)', count: '4 panels', voc: '892 V', chain: 'P1 → P2 → P3 → P4' },
+      { name: 'String B', color: '#3b82f6', count: '4 panels', voc: '1042 V', chain: 'P5 → P6 → P7 → P8' },
+      { name: 'String C', color: '#e08a2c', count: '4 panels', voc: '892 V', chain: 'P9 → P10 → P11 → P12' },
+    ] };
+  }
+}
+</script>
+</body>
+</html>

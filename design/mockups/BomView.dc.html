@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+</helmet>
+<div style="font-family:var(--font-sans); color:var(--text-primary)">
+
+  <!-- PATH B — no BOM -->
+  <sc-if value="{{ isPathB }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; align-items:center; text-align:center; justify-content:center; min-height:320px; padding:44px 28px; background:var(--surface); border-radius:20px; box-shadow:var(--e1)">
+      <div style="width:60px; height:60px; border-radius:16px; background:var(--neutral-bg); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg></div>
+      <div style="margin-top:16px; font-size:17px; font-weight:700; letter-spacing:-0.01em">No bill of materials for this proposal</div>
+      <p style="margin:8px 0 0; font-size:13.5px; color:var(--text-secondary); line-height:1.55; max-width:380px; text-wrap:pretty">This quote was priced by hand rather than built from a design, so there are no line items behind it. Attach a design to generate an itemised BOM.</p>
+      <button style="{{ ghostBtn }}">Attach a design</button>
+    </div>
+  </sc-if>
+
+  <!-- BOM PRESENT -->
+  <sc-if value="{{ hasBom }}" hint-placeholder-val="{{ true }}">
+
+    <!-- provenance legend + reconcile line -->
+    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px">
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4"><span style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-secondary)"><span style="width:8px; height:8px; border-radius:2px; background:{{ l.color }}"></span>{{ l.label }}</span></sc-for>
+      </div>
+      <div style="flex:1"></div>
+      <div style="{{ reconcilePill }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ reconcileText }}</div>
+    </div>
+
+    <!-- DESKTOP TABLE -->
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden">
+        <div style="{{ headRow }}">
+          <div style="{{ hItem }}">Item</div>
+          <div style="{{ hSpec }}">Specification</div>
+          <div style="{{ hQty }}">Qty</div>
+          <div style="{{ hRate }}">Rate</div>
+          <div style="{{ hGst }}">GST</div>
+          <div style="{{ hTotal }}">Total</div>
+        </div>
+        <div style="max-height:520px; overflow-y:auto">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+            <div>
+              <div style="{{ g.catRow }}"><span style="{{ g.catDot }}"></span><span style="flex:1">{{ g.name }}</span><span style="font-size:11.5px; color:var(--text-tertiary); font-weight:400; text-transform:none; letter-spacing:0">{{ g.count }}</span><span style="{{ g.subVal }}">{{ g.subtotal }}</span></div>
+              <sc-for list="{{ g.lines }}" as="r" hint-placeholder-count="4">
+                <div onClick="{{ r.onOpen }}" style="{{ r.row }}" style-hover="{{ r.rowHover }}">
+                  <div style="{{ tItem }}"><span style="font-size:13.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.item }}</span><span style="{{ r.provDot }}" title="{{ r.provLabel }}"></span></div>
+                  <div style="{{ tSpec }}">{{ r.spec }}</div>
+                  <div style="{{ tQty }}">{{ r.qtyText }}</div>
+                  <div style="{{ tRate }}">{{ r.rate }}</div>
+                  <div style="{{ tGst }}">{{ r.gst }}</div>
+                  <div style="{{ tTotal }}">{{ r.total }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <div style="{{ grandRow }}"><span style="flex:1; font-size:13px; font-weight:500; color:var(--text-secondary)">Grand total · incl. GST</span><span style="font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:-0.01em; font-variant-numeric:tabular-nums">{{ grandTotal }}</span></div>
+      </div>
+    </sc-if>
+
+    <!-- MOBILE CARD LIST -->
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:20px">
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; padding:0 4px 9px"><span style="{{ g.catDot }}"></span><span style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary)">{{ g.name }}</span><div style="flex:1"></div><span style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ g.subtotal }}</span></div>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ g.lines }}" as="r" hint-placeholder-count="4">
+                <div onClick="{{ r.onOpen }}" style="display:flex; align-items:center; gap:12px; padding:13px 14px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+                  <div style="flex:1; min-width:0">
+                    <div style="display:flex; align-items:center; gap:7px"><span style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.item }}</span><span style="{{ r.provDot }}"></span></div>
+                    <div style="margin-top:3px; font-size:12px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ r.qtyText }} · {{ r.provLabel }}</div>
+                  </div>
+                  <div style="text-align:right; flex-shrink:0"><div style="font-family:var(--font-mono); font-size:14px; font-weight:700; font-variant-numeric:tabular-nums">{{ r.total }}</div></div>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px; background:var(--action-primary); color:#fff; border-radius:16px"><span style="font-size:13.5px; font-weight:500; opacity:0.85">Grand total · incl. GST</span><span style="font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:-0.01em; font-variant-numeric:tabular-nums">{{ grandTotal }}</span></div>
+      </div>
+    </sc-if>
+
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:560},&quot;state&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;bom&quot;,&quot;pathb&quot;],&quot;default&quot;:&quot;bom&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onOpenLine&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(line:any)=&gt;void&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const v = this.props.variant || 'desktop';
+    const isMobile = v === 'mobile';
+    const isDesktop = !isMobile;
+    const isPathB = this.props.state === 'pathb';
+    const hasBom = !isPathB;
+
+    const provColors = { measured: 'var(--success)', derived: 'var(--accent)', estimated: 'var(--warning)', assumed: 'var(--text-tertiary)' };
+    const provLabels = { measured: 'Measured', derived: 'Derived', estimated: 'Estimated', assumed: 'Assumed' };
+    const legend = ['measured', 'derived', 'estimated', 'assumed'].map(k => ({ label: provLabels[k], color: provColors[k] }));
+
+    const fmt = (n) => '₹' + n.toLocaleString('en-IN');
+    const catColors = ['var(--chart-2)', 'var(--chart-4)', 'var(--accent)', 'var(--chart-1)', 'var(--warning)', 'var(--text-tertiary)'];
+
+    const data = [
+      { name: 'Modules', lines: [
+        { item: 'AESOLAR CMER-132BDS', spec: '610 Wp · Mono PERC bifacial', qty: 12, unit: 'nos', rate: 18500, gst: 12, prov: 'measured' },
+      ] },
+      { name: 'Inverter', lines: [
+        { item: 'Growatt MIN 5000TL-X', spec: '5 kW · on-grid string', qty: 1, unit: 'no', rate: 46500, gst: 18, prov: 'measured' },
+        { item: 'DC combiner box', spec: '2-in 1-out · 1000 V', qty: 1, unit: 'no', rate: 3200, gst: 18, prov: 'derived' },
+      ] },
+      { name: 'Electrical BOS', lines: [
+        { item: 'DC solar cable', spec: '4 sq.mm Cu · Polycab', qty: 90, unit: 'm', rate: 62, gst: 18, prov: 'derived' },
+        { item: 'AC cable', spec: '4 sq.mm Cu · 3-core', qty: 24, unit: 'm', rate: 148, gst: 18, prov: 'derived' },
+        { item: 'MC4 connectors', spec: 'IP68 · pairs', qty: 8, unit: 'pr', rate: 90, gst: 18, prov: 'assumed' },
+        { item: 'Earthing cable', spec: '6 sq.mm Cu green', qty: 30, unit: 'm', rate: 78, gst: 18, prov: 'estimated' },
+      ] },
+      { name: 'Mechanical BOS', lines: [
+        { item: 'GI elevated structure', spec: 'Hot-dip · 2.5 m tilt', qty: 8.2, unit: 'kW', rate: 8600, gst: 18, prov: 'derived' },
+        { item: 'Module clamps', spec: 'Mid + end · anodised Al', qty: 48, unit: 'nos', rate: 42, gst: 18, prov: 'derived' },
+        { item: 'Roof anchors', spec: 'Chemical fastener set', qty: 24, unit: 'nos', rate: 110, gst: 18, prov: 'estimated' },
+      ] },
+      { name: 'Safety', lines: [
+        { item: 'DC SPD', spec: 'Type 2 · 1000 V', qty: 1, unit: 'no', rate: 2400, gst: 18, prov: 'measured' },
+        { item: 'AC SPD + MCB', spec: '40 A · 4-pole', qty: 1, unit: 'set', rate: 3100, gst: 18, prov: 'measured' },
+        { item: 'Earthing kit', spec: 'Chemical earthing · 2 pits', qty: 2, unit: 'pit', rate: 3900, gst: 18, prov: 'estimated' },
+        { item: 'Lightning arrester', spec: 'Copper spike + strip', qty: 1, unit: 'set', rate: 4200, gst: 18, prov: 'assumed' },
+      ] },
+      { name: 'Civil & Misc.', lines: [
+        { item: 'Cable trenching', spec: 'Civil + backfill', qty: 18, unit: 'm', rate: 180, gst: 18, prov: 'estimated' },
+        { item: 'Walkway & labelling', spec: 'Signage + route marking', qty: 1, unit: 'lot', rate: 5399, gst: 18, prov: 'assumed' },
+        { item: 'Transport & handling', spec: 'To site · Nashik', qty: 1, unit: 'lot', rate: 9531, gst: 18, prov: 'estimated' },
+      ] },
+    ];
+
+    let grand = 0;
+    const openSheet = this.props.onOpenLine;
+    const groups = data.map((g, gi) => {
+      let sub = 0;
+      const lines = g.lines.map((l) => {
+        const net = l.qty * l.rate;
+        const tot = Math.round(net * (1 + l.gst / 100));
+        sub += tot;
+        const qtyText = (Number.isInteger(l.qty) ? l.qty : l.qty.toFixed(1)) + ' ' + l.unit;
+        return {
+          item: l.item, spec: l.spec, qtyText, rate: fmt(l.rate), gst: l.gst + '%', total: fmt(tot),
+          provLabel: provLabels[l.prov],
+          provDot: { flexShrink: 0, width: 7, height: 7, borderRadius: 2, background: provColors[l.prov] },
+          onOpen: openSheet ? () => openSheet({ ...l, qtyText, net, tot, group: g.name }) : (() => {}),
+          row: this.rowStyle(false), rowHover: this.rowStyle(true),
+        };
+      });
+      grand += sub;
+      return {
+        name: g.name, count: g.lines.length + (g.lines.length === 1 ? ' item' : ' items'),
+        subtotal: fmt(sub),
+        catDot: { flexShrink: 0, width: 9, height: 9, borderRadius: 3, background: catColors[gi] },
+        catRow: { display: 'flex', alignItems: 'center', gap: 9, padding: '11px 18px', background: 'var(--canvas-sunken)', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-secondary)' },
+        subVal: { fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: 0, textTransform: 'none', fontVariantNumeric: 'tabular-nums' },
+        lines,
+      };
+    });
+
+    // desktop grid template — item | spec | qty | rate | gst | total
+    const grid = '1.7fr 1.9fr 0.8fr 0.9fr 0.6fr 1fr';
+    const cell = { padding: '0 8px', fontSize: 13, minWidth: 0, display: 'flex', alignItems: 'center' };
+    const num = { ...cell, justifyContent: 'flex-end', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' };
+    const hBase = { padding: '0 8px', fontSize: 11, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center' };
+
+    return {
+      isPathB, hasBom, isMobile, isDesktop, legend,
+      grandTotal: fmt(grand),
+      reconcileText: 'Reconciles with step 3 · ' + fmt(grand),
+      reconcilePill: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 12, fontWeight: 500, fontVariantNumeric: 'tabular-nums' },
+      groups,
+      ghostBtn: { marginTop: 20, height: 42, padding: '0 20px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      // header
+      headRow: { display: 'grid', gridTemplateColumns: grid, gap: 0, padding: '12px 18px', background: 'var(--surface)', position: 'sticky', top: 0, zIndex: 2, boxShadow: '0 1px 0 var(--hairline)' },
+      hItem: hBase, hSpec: hBase, hQty: { ...hBase, justifyContent: 'flex-end' }, hRate: { ...hBase, justifyContent: 'flex-end' }, hGst: { ...hBase, justifyContent: 'flex-end' }, hTotal: { ...hBase, justifyContent: 'flex-end' },
+      tItem: { ...cell, gap: 7 }, tSpec: { ...cell, color: 'var(--text-secondary)', fontSize: 12.5, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }, tQty: num, tRate: num, tGst: { ...num, color: 'var(--text-secondary)' }, tTotal: { ...num, fontWeight: 700 },
+      grandRow: { display: 'flex', alignItems: 'center', gap: 12, padding: '16px 18px', background: 'var(--canvas-sunken)' },
+      _grid: grid,
+    };
+  }
+  rowStyle(hover) {
+    return { display: 'grid', gridTemplateColumns: '1.7fr 1.9fr 0.8fr 0.9fr 0.6fr 1fr', gap: 0, padding: '12px 18px', cursor: 'pointer', alignItems: 'center', borderTop: '1px solid var(--hairline)', background: hover ? 'var(--canvas-sunken)' : 'transparent', transition: 'background 120ms var(--ease-standard)' };
+  }
+}
+</script>
+</body>
+</html>

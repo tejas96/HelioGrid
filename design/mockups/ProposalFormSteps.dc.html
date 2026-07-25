@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  ::-webkit-scrollbar{ height:0; width:0 }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · proposal builder</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">The four form steps — 1 · 2 · 10 · 11</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="4">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:13.5px; color:var(--text-secondary); margin-bottom:30px; max-width:840px; text-wrap:pretty">Simple forms on the 11-step shell. Locked fields come from the account and read as deliberately locked. Steps 2 &amp; 11 are optional — skipping never feels like failure. Toggle the state to see empty, filled, validation and skipped.</div>
+
+  <div style="display:flex; flex-direction:column; gap:48px">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+      <div>
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:14px">{{ s.rowLabel }}</div>
+        <div style="display:flex; align-items:flex-start; gap:44px">
+
+          <!-- MOBILE -->
+          <div style="flex-shrink:0">
+            <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:10px">Mobile · 375</div>
+            <div style="position:relative; width:375px; height:720px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+              <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 10px">
+                <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">Priya Sharma</div><div style="font-size:12px; color:var(--text-secondary)">New proposal</div></div>
+                <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved</div>
+              </div>
+              <div style="flex-shrink:0; padding:2px 16px 12px">
+                <div style="display:flex; align-items:center; gap:8px; height:46px; padding:0 8px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+                  <button style="{{ stepArrow }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+                  <div style="flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px"><span style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">{{ s.num }} / 11</span><span style="font-size:14px; font-weight:500">{{ s.title }}</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></div>
+                  <button style="{{ stepArrow }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+                </div>
+              </div>
+              <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 16px 18px">
+                <dc-import name="PropFormStep" step="{{ s.key }}" state="{{ s.state }}" variant="mobile" hint-size="100%,460px"></dc-import>
+              </div>
+              <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+                <sc-if value="{{ s.optional }}" hint-placeholder-val="{{ false }}"><button style="{{ skipBtn }}">Skip this step</button></sc-if>
+                <sc-if value="{{ s.notOptional }}" hint-placeholder-val="{{ true }}"><button style="{{ footBack }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button></sc-if>
+                <button style="{{ footNext }}">{{ s.nextLabel }}<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESKTOP -->
+          <div style="flex-shrink:0">
+            <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:10px">Desktop · 1440</div>
+            <div style="position:relative; width:1440px; height:720px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+              <div style="{{ railStyle }}">
+                <div style="{{ railTop }}"><span style="width:34px; height:34px; border-radius:10px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; flex-shrink:0">H</span><span style="font-size:18px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+                <div style="margin-top:20px; display:flex; flex-direction:column; gap:4px">
+                  <div style="{{ navRow }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+                  <div style="{{ navRow }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span></div>
+                  <div style="{{ navRowActive }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span></div>
+                  <div style="{{ navRow }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+                </div>
+                <div style="margin-top:auto; display:flex; align-items:center; gap:10px; padding:8px"><div style="width:34px; height:34px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px">RP</div><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:500">Rajesh Patil</div><div style="font-size:11.5px; color:var(--text-secondary)">Owner</div></div></div>
+              </div>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+                <div style="flex-shrink:0; display:flex; align-items:center; gap:14px; padding:16px 28px; background:var(--surface)">
+                  <div style="flex:1; min-width:0"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Proposal for Priya Sharma</div><div style="font-size:12px; color:var(--text-secondary)">HG-2026-0142 (draft)</div></div>
+                  <div style="display:flex; align-items:center; gap:8px; height:34px; padding:0 14px; border-radius:999px; background:var(--neutral-bg)"><span style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">{{ s.num }} / 11</span><span style="font-size:13px; font-weight:500">{{ s.title }}</span></div>
+                  <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved</div>
+                  <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                </div>
+                <div style="flex:1; min-height:0; overflow-y:auto; padding:28px 32px">
+                  <div style="max-width:720px"><dc-import name="PropFormStep" step="{{ s.key }}" state="{{ s.state }}" variant="desktop" hint-size="100%,440px"></dc-import></div>
+                </div>
+                <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:14px 28px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+                  <button style="{{ footBackD }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+                  <sc-if value="{{ s.optional }}" hint-placeholder-val="{{ false }}"><button style="{{ skipBtn }}">Skip this step</button></sc-if>
+                  <div style="flex:1"></div>
+                  <button style="{{ footNextD }}">{{ s.nextLabel }}<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </sc-for>
+
+    <!-- Proposal type sheet (after step 1 → Next) -->
+    <div>
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:14px">After step 1 · Next → Proposal type</div>
+      <div style="flex-shrink:0">
+        <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:10px">Mobile · bottom sheet</div>
+        <div style="position:relative; width:375px; height:560px; border-radius:44px; background:var(--canvas-sunken); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end">
+          <div style="position:absolute; inset:0; background:rgba(255,255,255,0.4); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px)"></div>
+          <div style="position:relative; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 20px 24px">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 14px"></div>
+            <div style="font-size:18px; font-weight:700; letter-spacing:-0.01em">Choose proposal type</div>
+            <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px">
+              <div style="{{ typeCardOn }}">
+                <div style="display:flex; align-items:flex-start; gap:13px"><div style="{{ typeIconOn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg></div><div style="flex:1; min-width:0"><div style="font-size:15.5px; font-weight:500">CAPEX</div><p style="margin:4px 0 0; font-size:13px; line-height:1.5; color:var(--text-secondary)">Customer purchases the system outright.</p></div><div style="{{ radioOn }}"><span style="width:8px; height:8px; border-radius:50%; background:#fff"></span></div></div>
+              </div>
+              <div style="{{ typeCard }}">
+                <div style="display:flex; align-items:flex-start; gap:13px"><div style="{{ typeIcon }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg></div><div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:15.5px; font-weight:500">OPEX / PPA</span><span style="{{ proBadge }}">PRO</span></div><p style="margin:4px 0 0; font-size:13px; line-height:1.5; color:var(--text-secondary)">Per-unit billing — pay for what it generates.</p></div><div style="{{ radioOff }}"></div></div>
+              </div>
+            </div>
+            <div style="margin-top:20px; display:flex; gap:10px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" hint-size="100px,48px">Back</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" hint-size="100%,48px" style="flex:1">Continue</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;empty&quot;,&quot;filled&quot;,&quot;error&quot;,&quot;skipped&quot;],&quot;default&quot;:&quot;filled&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { view: props.view || 'filled' }; }
+  setView = (v) => this.setState({ view: v });
+
+  renderVals() {
+    const view = this.state.view;
+    const defs = [
+      { key: 'company', num: 1, title: 'Company', rowLabel: 'Step 1 · Company', optional: false, nextLabel: 'Next' },
+      { key: 'achievements', num: 2, title: 'Achievements', rowLabel: 'Step 2 · Achievements (optional)', optional: true, nextLabel: 'Next' },
+      { key: 'client', num: 10, title: 'Client details', rowLabel: 'Step 10 · Client details', optional: false, nextLabel: 'Next' },
+      { key: 'bank', num: 11, title: 'Bank details', rowLabel: 'Step 11 · Bank details (optional)', optional: true, nextLabel: 'Generate' },
+    ];
+    const steps = defs.map(d => ({
+      ...d, notOptional: !d.optional,
+      state: (view === 'skipped' && !d.optional) ? 'filled' : view,
+    }));
+
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 14px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const views = [
+      { key: 'empty', label: 'Empty' }, { key: 'filled', label: 'Filled' }, { key: 'error', label: 'Validation error' }, { key: 'skipped', label: 'Skipped (2 & 11)' },
+    ].map(v => ({ label: v.label, onClick: () => this.setView(v.key), style: view === v.key ? { ...pill, background: 'var(--action-primary)', color: '#fff' } : { ...pill, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const navRow = { display: 'flex', alignItems: 'center', gap: 11, height: 42, padding: '0 12px', borderRadius: 12, fontSize: 13.5, color: 'var(--text-secondary)', cursor: 'pointer' };
+    return {
+      views, steps,
+      closeBtn: { flexShrink: 0, width: 38, height: 38, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      savedPill: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 27, padding: '0 11px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 12, fontWeight: 500 },
+      stepArrow: { flexShrink: 0, width: 34, height: 34, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      footBack: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNext: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 20px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footBackD: { display: 'flex', alignItems: 'center', gap: 4, height: 42, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      footNextD: { display: 'flex', alignItems: 'center', gap: 6, height: 42, padding: '0 22px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      skipBtn: { height: 44, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'transparent', color: 'var(--accent)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      railStyle: { flexShrink: 0, width: 220, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: '20px 14px', overflow: 'hidden', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', gap: 9 },
+      navRow, navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 },
+      typeCard: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: 16, cursor: 'pointer' },
+      typeCardOn: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e2), 0 0 0 2px var(--accent)', padding: 16, cursor: 'pointer' },
+      typeIcon: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      typeIconOn: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      radioOn: { flexShrink: 0, width: 22, height: 22, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 },
+      radioOff: { flexShrink: 0, width: 22, height: 22, borderRadius: '50%', border: '2px solid var(--canvas-sunken)', boxSizing: 'border-box', marginTop: 2 },
+      proBadge: { display: 'inline-flex', alignItems: 'center', height: 18, padding: '0 8px', borderRadius: 999, background: 'var(--gradient-brand)', color: '#fff', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes lb-pulse { 0%{ transform:translate(-50%,-50%) scale(0.6); opacity:0.6 } 100%{ transform:translate(-50%,-50%) scale(2.4); opacity:0 } }
+  @keyframes lb-spin { to{ transform:rotate(360deg) } }
+  @keyframes lb-shimmer { 0%{ background-position:-300px 0 } 100%{ background-position:300px 0 } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  input{ font-family:inherit }
+  @media (prefers-reduced-motion: reduce){ .lb-pulse,.lb-spin{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:24px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · remote survey · 5.2</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Locate the building</div>
+      <div style="margin-top:5px; font-size:14px; color:var(--text-secondary); max-width:660px; text-wrap:pretty">Land on the exact rooftop we're about to detect — the right building, not the one next door. Everything downstream is measured off this footprint, so the pin has to be right.</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — nested flow, no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- HEADER -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e1); padding:18px 16px 12px; z-index:8">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px">
+            <button onClick="{{ goBack }}" aria-label="Back" style="display:flex; align-items:center; gap:4px; background:none; border:none; padding:4px 0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:13.5px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+            <div style="font-size:14.5px; font-weight:700; letter-spacing:-0.02em">Locate the building</div>
+            <button onClick="{{ goBack }}" aria-label="Close" style="width:34px; height:34px; border-radius:50%; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+
+          <!-- search bar -->
+          <div style="margin-top:10px; position:relative; z-index:9">
+            <div style="{{ mSearchWrap }}">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input onFocus="{{ focusSearch }}" onInput="{{ onSearch }}" value="{{ query }}" placeholder="Search address or area" style="flex:1; min-width:0; border:none; background:none; outline:none; font-size:14px; color:var(--text-primary)"/>
+              <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0; font-size:11px; color:var(--text-tertiary)">Nashik</span></sc-if>
+            </div>
+            <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; left:0; right:0; top:52px; background:var(--surface); border-radius:16px; box-shadow:var(--e4); padding:6px; z-index:10">
+                <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="4">
+                  <button onClick="{{ s.onClick }}" style="{{ mSuggestRow }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span style="flex:1; min-width:0; text-align:left"><span style="display:block; font-size:13.5px; font-weight:500">{{ s.label }}</span><span style="display:block; font-size:12px; color:var(--text-secondary)">{{ s.sub }}</span></span>
+                    <sc-if value="{{ s.fromLead }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0; display:inline-flex; align-items:center; height:20px; padding:0 9px; border-radius:999px; background:var(--accent-subtle); color:var(--accent); font-size:11px; font-weight:500">From lead</span></sc-if>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <!-- MAP -->
+        <div data-map style="flex:1; min-height:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#3c4a3b 0%,#2f3a2f 55%,#333f35 100%)">
+          <!-- roads -->
+          <div style="position:absolute; left:0; right:0; top:33%; height:7%; background:linear-gradient(180deg,#c9bfa8,#b7ad95); opacity:0.9"></div>
+          <div style="position:absolute; top:0; bottom:0; left:63%; width:6%; background:linear-gradient(90deg,#c9bfa8,#b7ad95); opacity:0.9"></div>
+          <!-- trees -->
+          <div style="position:absolute; left:4%; top:60%; width:34px; height:34px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+          <div style="position:absolute; left:84%; top:24%; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+          <div style="position:absolute; left:46%; top:88%; width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+          <!-- buildings -->
+          <sc-for list="{{ buildings }}" as="b" hint-placeholder-count="8">
+            <div onClick="{{ b.onClick }}" style="{{ b.style }}"></div>
+          </sc-for>
+          <!-- pin -->
+          <sc-if value="{{ pinShown }}" hint-placeholder-val="{{ true }}">
+            <div style="{{ pinPulseStyle }}" class="lb-pulse"></div>
+            <div onPointerDown="{{ onPinDown }}" style="{{ pinStyle }}">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="var(--action-primary)" stroke="#fff" stroke-width="1.4" style="filter:drop-shadow(0 3px 5px rgba(10,10,11,0.4))"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"></path><circle cx="12" cy="9" r="2.5" fill="#fff" stroke="none"></circle></svg>
+            </div>
+          </sc-if>
+          <!-- notfound crosshair -->
+          <sc-if value="{{ showCrosshair }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:60px; height:60px; z-index:5; pointer-events:none">
+              <div style="position:absolute; left:50%; top:0; bottom:0; width:2px; background:rgba(255,255,255,0.85); transform:translateX(-50%)"></div>
+              <div style="position:absolute; top:50%; left:0; right:0; height:2px; background:rgba(255,255,255,0.85); transform:translateY(-50%)"></div>
+              <div style="position:absolute; inset:20px; border:2px solid rgba(255,255,255,0.9); border-radius:50%"></div>
+            </div>
+          </sc-if>
+          <!-- zoom controls -->
+          <div style="position:absolute; top:12px; right:12px; display:flex; flex-direction:column; background:var(--surface); border-radius:12px; box-shadow:var(--e2); overflow:hidden; z-index:6">
+            <button aria-label="Zoom in" style="width:38px; height:38px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button>
+            <div style="height:1px; background:var(--hairline)"></div>
+            <button aria-label="Zoom out" style="width:38px; height:38px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg></button>
+          </div>
+          <!-- coords -->
+          <div style="position:absolute; left:12px; bottom:12px; font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.85); background:rgba(10,10,11,0.35); padding:3px 8px; border-radius:8px; z-index:6">{{ coords }}</div>
+
+          <!-- loading overlay -->
+          <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; z-index:7; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(246,247,249,0.55); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px)">
+              <div class="lb-spin" style="width:34px; height:34px; border-radius:50%; border:3px solid var(--neutral-bg); border-top-color:var(--accent); animation:lb-spin 0.9s linear infinite"></div>
+              <div style="font-size:13px; font-weight:500; color:var(--text-primary)">Loading satellite imagery…</div>
+            </div>
+          </sc-if>
+
+          <!-- on-map bottom card -->
+          <sc-if value="{{ mCard.show }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute; left:12px; right:12px; bottom:12px; z-index:6; background:var(--surface); border-radius:16px; box-shadow:var(--e3); padding:13px 14px">
+              <div style="display:flex; align-items:flex-start; gap:10px">
+                <span style="{{ mCard.iconWrap }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ mCard.iconPath }}"></path></svg></span>
+                <div style="flex:1; min-width:0">
+                  <div style="font-size:13.5px; font-weight:600; line-height:1.3">{{ mCard.title }}</div>
+                  <div style="margin-top:2px; font-size:12px; color:var(--text-secondary); line-height:1.4; text-wrap:pretty">{{ mCard.body }}</div>
+                </div>
+              </div>
+              <sc-if value="{{ isCorrecting }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ confirmLocated }}" style="{{ mCardBtn }}">This is the right roof</button>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- FOOTER -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:0 -3px 14px rgba(10,10,11,0.06); padding:12px 16px calc(12px + env(safe-area-inset-bottom))">
+          <button onClick="{{ footer.onClick }}" style="{{ footer.style }}">{{ footer.label }}</button>
+          <button onClick="{{ goCoverage }}" style="margin-top:8px; width:100%; background:none; border:none; padding:4px; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:500; color:var(--text-secondary)">No clear imagery here?</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — sidebar persists, map + a panel beside it</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px">
+          <div style="display:flex; align-items:center; gap:10px; padding:0 6px">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <sc-for list="{{ navRows }}" as="n" hint-placeholder-count="5">
+              <div onClick="{{ n.onClick }}" style="{{ n.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.icon }}"></path></svg><span style="flex:1; white-space:nowrap">{{ n.label }}</span><sc-if value="{{ n.count }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ n.count }}</span></sc-if></div>
+            </sc-for>
+          </div>
+          <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px">
+            <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div>
+            <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Rep · Surveyor</div></div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; padding:20px 32px 18px; background:var(--surface); box-shadow:var(--e1)">
+            <button onClick="{{ goBack }}" style="display:flex; align-items:center; gap:5px; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:12.5px; font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Leads / Priya Sharma / Site survey / Locate building</button>
+            <div style="margin-top:10px; display:flex; align-items:center; gap:16px">
+              <div>
+                <div style="font-size:23px; font-weight:700; letter-spacing:-0.025em">Locate the building</div>
+                <div style="margin-top:3px; font-size:13.5px; color:var(--text-secondary)">{{ dSubtitle }}</div>
+              </div>
+              <div style="flex:1"></div>
+              <div style="display:flex; align-items:center; gap:14px; padding:8px 14px; background:var(--canvas); border-radius:12px">
+                <div style="width:36px; height:36px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px">PS</div>
+                <div><div style="font-size:13.5px; font-weight:600">Priya Sharma</div><div style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">Nashik · 8.2 kWp target</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex; gap:0">
+
+            <!-- MAP -->
+            <div data-map style="flex:1; min-width:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#3c4a3b 0%,#2f3a2f 55%,#333f35 100%)">
+              <div style="position:absolute; left:0; right:0; top:33%; height:7%; background:linear-gradient(180deg,#c9bfa8,#b7ad95); opacity:0.9"></div>
+              <div style="position:absolute; top:0; bottom:0; left:63%; width:5%; background:linear-gradient(90deg,#c9bfa8,#b7ad95); opacity:0.9"></div>
+              <div style="position:absolute; left:5%; top:60%; width:52px; height:52px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+              <div style="position:absolute; left:85%; top:22%; width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+              <div style="position:absolute; left:44%; top:86%; width:48px; height:48px; border-radius:50%; background:radial-gradient(circle at 40% 35%,#3f5a3c,#243821)"></div>
+              <sc-for list="{{ buildings }}" as="b" hint-placeholder-count="8">
+                <div onClick="{{ b.onClick }}" style="{{ b.style }}"></div>
+              </sc-for>
+              <sc-if value="{{ pinShown }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ pinPulseStyle }}" class="lb-pulse"></div>
+                <div onPointerDown="{{ onPinDown }}" style="{{ pinStyle }}">
+                  <svg width="42" height="42" viewBox="0 0 24 24" fill="var(--action-primary)" stroke="#fff" stroke-width="1.4" style="filter:drop-shadow(0 4px 6px rgba(10,10,11,0.4))"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"></path><circle cx="12" cy="9" r="2.5" fill="#fff" stroke="none"></circle></svg>
+                </div>
+              </sc-if>
+              <sc-if value="{{ showCrosshair }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:80px; height:80px; z-index:5; pointer-events:none">
+                  <div style="position:absolute; left:50%; top:0; bottom:0; width:2px; background:rgba(255,255,255,0.85); transform:translateX(-50%)"></div>
+                  <div style="position:absolute; top:50%; left:0; right:0; height:2px; background:rgba(255,255,255,0.85); transform:translateY(-50%)"></div>
+                  <div style="position:absolute; inset:26px; border:2px solid rgba(255,255,255,0.9); border-radius:50%"></div>
+                </div>
+              </sc-if>
+              <div style="position:absolute; top:16px; right:16px; display:flex; flex-direction:column; background:var(--surface); border-radius:12px; box-shadow:var(--e2); overflow:hidden; z-index:6">
+                <button aria-label="Zoom in" style="width:42px; height:42px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button>
+                <div style="height:1px; background:var(--hairline)"></div>
+                <button aria-label="Zoom out" style="width:42px; height:42px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg></button>
+              </div>
+              <div style="position:absolute; left:16px; bottom:16px; font-family:var(--font-mono); font-size:12px; color:rgba(255,255,255,0.85); background:rgba(10,10,11,0.35); padding:4px 10px; border-radius:8px; z-index:6">{{ coords }}</div>
+              <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; inset:0; z-index:7; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:rgba(246,247,249,0.5); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px)">
+                  <div class="lb-spin" style="width:40px; height:40px; border-radius:50%; border:3px solid var(--neutral-bg); border-top-color:var(--accent); animation:lb-spin 0.9s linear infinite"></div>
+                  <div style="font-size:14px; font-weight:500; color:var(--text-primary)">Loading satellite imagery…</div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div style="width:380px; flex-shrink:0; background:var(--surface); box-shadow:-1px 0 0 var(--hairline); display:flex; flex-direction:column; padding:24px; overflow-y:auto">
+
+              <!-- search -->
+              <div style="{{ dSearchWrap }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                <input onFocus="{{ focusSearch }}" onInput="{{ onSearch }}" value="{{ query }}" placeholder="Search address or area" style="flex:1; min-width:0; border:none; background:none; outline:none; font-size:14px; color:var(--text-primary)"/>
+              </div>
+
+              <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px; display:flex; flex-direction:column; gap:2px">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); padding:2px 4px 8px">Matches</div>
+                  <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="4">
+                    <button onClick="{{ s.onClick }}" style="{{ dSuggestRow }}">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                      <span style="flex:1; min-width:0; text-align:left"><span style="display:block; font-size:14px; font-weight:500">{{ s.label }}</span><span style="display:block; font-size:12px; color:var(--text-secondary)">{{ s.sub }}</span></span>
+                      <sc-if value="{{ s.fromLead }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0; display:inline-flex; align-items:center; height:20px; padding:0 9px; border-radius:999px; background:var(--accent-subtle); color:var(--accent); font-size:11px; font-weight:500">From lead</span></sc-if>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ showResolved }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px">
+                  <div style="display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--canvas); border-radius:14px">
+                    <span style="flex-shrink:0; width:34px; height:34px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+                    <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:600; line-height:1.35">14 Gangapur Rd, Nashik 422013</div><div style="margin-top:3px; font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">{{ coords }}</div></div>
+                  </div>
+
+                  <div style="{{ dStatusWrap }}">
+                    <div style="display:flex; align-items:flex-start; gap:11px">
+                      <span style="{{ dStatusIcon }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ dStatusPath }}"></path></svg></span>
+                      <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:600; line-height:1.35">{{ dStatusTitle }}</div><div style="margin-top:3px; font-size:13px; color:var(--text-secondary); line-height:1.45; text-wrap:pretty">{{ dStatusBody }}</div></div>
+                    </div>
+                    <sc-if value="{{ isLocated }}" hint-placeholder-val="{{ true }}"><button onClick="{{ startCorrecting }}" style="{{ dMoveBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3"></path><path d="M9 5l3-3 3 3"></path><path d="M15 19l-3 3-3-3"></path><path d="M19 9l3 3-3 3"></path><path d="M2 12h20"></path><path d="M12 2v20"></path></svg>Wrong building? Move the pin</button></sc-if>
+                    <sc-if value="{{ isCorrecting }}" hint-placeholder-val="{{ false }}"><button onClick="{{ confirmLocated }}" style="{{ dMoveBtn }}">Done — this is the right roof</button></sc-if>
+                  </div>
+
+                  <div style="display:flex; align-items:flex-start; gap:9px; padding:12px 14px; background:var(--info-bg); border-radius:12px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    <div style="font-size:12.5px; color:var(--info); line-height:1.45; text-wrap:pretty">This footprint is measured from satellite imagery. Imagery can be out of date — a site visit confirms it.</div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isNotFound }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px">
+                  <div style="display:flex; align-items:flex-start; gap:11px; padding:14px 16px; background:var(--warning-bg); border-radius:14px">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v3"></path><path d="M11 14h.01"></path></svg>
+                    <div style="flex:1"><div style="font-size:14px; font-weight:600">No match for this address</div><div style="margin-top:3px; font-size:13px; color:var(--text-secondary); line-height:1.45; text-wrap:pretty">New or rural addresses often aren't searchable. Pan the map to the roof and drop a pin by hand.</div></div>
+                  </div>
+                  <ol style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:7px; font-size:13px; color:var(--text-secondary); line-height:1.4">
+                    <li>Pan and zoom to the building</li>
+                    <li>Line the crosshair up on the rooftop</li>
+                    <li>Drop the pin to lock the footprint</li>
+                  </ol>
+                </div>
+              </sc-if>
+
+              <div style="flex:1; min-height:16px"></div>
+
+              <button onClick="{{ footer.onClick }}" style="{{ dFooterBtn }}">{{ footer.label }}</button>
+              <button onClick="{{ goCoverage }}" style="margin-top:10px; width:100%; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-primary); font-family:inherit; font-size:13.5px; font-weight:500">No clear imagery here?</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1000},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;search&quot;,&quot;located&quot;,&quot;correcting&quot;,&quot;loading&quot;,&quot;notfound&quot;],&quot;default&quot;:&quot;located&quot;,&quot;tsType&quot;:&quot;'search'|'located'|'correcting'|'loading'|'notfound'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.LEAD_ADDR = '14 Gangapur Rd, Nashik 422013';
+    this.CHOSEN = 4;      // index of the lead's building
+    this.NEIGHBOUR = 3;   // building to the left
+    this.buildingsRaw = [
+      { x: 8, y: 12, w: 20, h: 13, tone: '#9aa0a6', rot: -3 },
+      { x: 34, y: 7, w: 15, h: 11, tone: '#8f8577', rot: 0 },
+      { x: 58, y: 13, w: 21, h: 15, tone: '#8a9098', rot: 4 },
+      { x: 13, y: 40, w: 17, h: 16, tone: '#a89b86', rot: 0 },   // neighbour
+      { x: 41, y: 41, w: 19, h: 18, tone: '#9aa0a6', rot: -2 },  // chosen
+      { x: 71, y: 46, w: 17, h: 13, tone: '#8f8577', rot: 6 },
+      { x: 20, y: 72, w: 21, h: 15, tone: '#8a9098', rot: 0 },
+      { x: 52, y: 74, w: 23, h: 15, tone: '#a89b86', rot: -3 },
+    ];
+    this.state = {
+      view: props.view || 'located',
+      query: this.LEAD_ADDR,
+      pin: { x: 50, y: 49 },
+      dragging: false,
+      manualPin: false,
+    };
+  }
+
+  center(i) { const b = this.buildingsRaw[i]; return { x: b.x + b.w / 2, y: b.y + b.h / 2 }; }
+
+  seed(v) {
+    if (v === 'search') return { query: 'Gangapur', pin: this.center(this.CHOSEN), manualPin: false };
+    if (v === 'located') return { query: this.LEAD_ADDR, pin: this.center(this.CHOSEN), manualPin: false };
+    if (v === 'correcting') return { query: this.LEAD_ADDR, pin: { x: 27, y: 44 }, manualPin: false };
+    if (v === 'loading') return { query: this.LEAD_ADDR, pin: this.center(this.CHOSEN), manualPin: false };
+    if (v === 'notfound') return { query: 'Plot 7, Sinnar Phata', pin: this.center(this.CHOSEN), manualPin: false };
+    return {};
+  }
+  setView = (v) => this.setState(s => ({ view: v, dragging: false, ...this.seed(v) }));
+
+  focusSearch = () => { if (this.state.view !== 'search') this.setView('search'); };
+  onSearch = (e) => this.setState({ query: e.target.value });
+  selectSuggestion = (addr) => this.setState({ view: 'located', query: addr, pin: this.center(this.CHOSEN), manualPin: false });
+  startCorrecting = () => this.setState({ view: 'correcting' });
+  confirmLocated = () => this.setState({ view: 'located' });
+  dropPin = () => this.setState({ manualPin: true, pin: { x: 50, y: 50 } });
+
+  pickBuilding = (i) => this.setState(s => ({ pin: this.center(i), view: s.view === 'correcting' ? 'located' : s.view }));
+
+  onPinDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    this._map = e.currentTarget.closest('[data-map]');
+    this.setState(s => ({ dragging: true, view: s.view === 'located' ? 'correcting' : s.view }));
+    window.addEventListener('pointermove', this.onPinMove);
+    window.addEventListener('pointerup', this.onPinUp);
+  };
+  onPinMove = (e) => {
+    if (!this._map) return;
+    const r = this._map.getBoundingClientRect();
+    let x = ((e.clientX - r.left) / r.width) * 100;
+    let y = ((e.clientY - r.top) / r.height) * 100;
+    x = Math.max(4, Math.min(96, x)); y = Math.max(6, Math.min(94, y));
+    this.setState({ pin: { x, y } });
+  };
+  onPinUp = () => {
+    window.removeEventListener('pointermove', this.onPinMove);
+    window.removeEventListener('pointerup', this.onPinUp);
+    this._map = null;
+    this.setState({ dragging: false });
+  };
+
+  goBack = () => { window.location.href = 'SurveyMode.dc.html'; };
+  detect = () => { window.location.href = 'DetectRoof.dc.html'; };
+  goCoverage = () => { window.location.href = 'CoverageFailure.dc.html'; };
+
+  chipStyle(active) {
+    return { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, background: active ? 'var(--action-primary)' : 'transparent', color: active ? '#fff' : 'var(--text-secondary)', whiteSpace: 'nowrap' };
+  }
+
+  selectedIdx() {
+    const p = this.state.pin;
+    let idx = -1;
+    this.buildingsRaw.forEach((b, i) => { if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) idx = i; });
+    return idx;
+  }
+
+  renderVals() {
+    const { view, query, pin, dragging, manualPin } = this.state;
+    const isSearch = view === 'search', isLocated = view === 'located', isCorrecting = view === 'correcting', isLoading = view === 'loading', isNotFound = view === 'notfound';
+    const pinShown = isLocated || isCorrecting || isLoading || (isNotFound && manualPin);
+    const showCrosshair = isNotFound && !manualPin;
+    const idx = this.selectedIdx();
+    const onBuilding = pinShown && idx >= 0;
+    const onNeighbour = idx === this.NEIGHBOUR;
+
+    const chipDefs = [
+      { k: 'search', label: 'Searching' }, { k: 'located', label: 'Located' },
+      { k: 'correcting', label: 'Correcting pin' }, { k: 'loading', label: 'Imagery loading' },
+      { k: 'notfound', label: 'Not found' },
+    ];
+    const chips = chipDefs.map(c => ({ label: c.label, onClick: () => this.setView(c.k), style: this.chipStyle(view === c.k) }));
+
+    const dSubs = {
+      search: 'Search the address, then confirm which rooftop is theirs.',
+      located: 'Pin is on the building. Detect the roof, or nudge it if it landed next door.',
+      correcting: 'Drag the pin — or tap the correct rooftop — then confirm.',
+      loading: 'Fetching imagery for this address. You can still adjust the pin.',
+      notfound: "Couldn't find this address — drop a pin on the map by hand.",
+    };
+
+    const suggestionData = [
+      { label: '14 Gangapur Rd, Nashik 422013', sub: 'Residential · College Rd area', fromLead: true },
+      { label: '14 Gangapur Rd, Nashik', sub: 'Near Gangapur Naka', fromLead: false },
+      { label: 'Gangapur Village Rd, Nashik', sub: 'Gangapur, 422222', fromLead: false },
+      { label: 'Gangapur Dam Rd, Nashik', sub: 'Off Anandwalli', fromLead: false },
+    ];
+    const suggestions = suggestionData.map(s => ({ ...s, onClick: () => this.selectSuggestion(s.label) }));
+
+    // buildings with per-item style + selection/click
+    const buildings = this.buildingsRaw.map((b, i) => {
+      const sel = pinShown && i === idx;
+      const clickable = pinShown && !isLoading;
+      return {
+        onClick: clickable ? (() => this.pickBuilding(i)) : (() => {}),
+        style: {
+          position: 'absolute', left: b.x + '%', top: b.y + '%', width: b.w + '%', height: b.h + '%',
+          background: b.tone, borderRadius: 3, transform: `rotate(${b.rot}deg)`,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 2px 4px rgba(0,0,0,0.35)',
+          outline: sel ? '3px solid var(--accent)' : 'none', outlineOffset: 2,
+          cursor: clickable ? 'pointer' : 'default', zIndex: sel ? 4 : 2,
+        },
+      };
+    });
+
+    const pinStyle = { position: 'absolute', left: pin.x + '%', top: pin.y + '%', transform: 'translate(-50%,-100%)', zIndex: 6, cursor: dragging ? 'grabbing' : 'grab', touchAction: 'none', lineHeight: 0 };
+    const pinPulseStyle = { position: 'absolute', left: pin.x + '%', top: pin.y + '%', width: 22, height: 22, borderRadius: '50%', background: 'var(--accent)', zIndex: 5, pointerEvents: 'none' };
+
+    // mobile on-map card
+    let mCard = { show: false };
+    if (isLocated || isCorrecting) {
+      const warn = !onBuilding || onNeighbour;
+      mCard = {
+        show: true,
+        iconWrap: { flexShrink: 0, width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: warn ? 'var(--warning-bg)' : 'var(--success-bg)', color: warn ? 'var(--warning)' : 'var(--success)' },
+        iconPath: warn ? 'M12 9v4 M12 17h.01 M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' : 'M20 6 9 17l-5-5',
+        title: !onBuilding ? 'Pin is between buildings' : onNeighbour ? "That's the building next door" : isCorrecting ? 'Rooftop selected' : 'This is the building',
+        body: !onBuilding ? 'Drag the pin onto the correct rooftop.' : onNeighbour ? 'Drag it one plot right, onto 14 Gangapur Rd.' : '14 Gangapur Rd, Nashik 422013',
+      };
+    }
+
+    // desktop resolved status block
+    const showResolved = isLocated || isCorrecting || isLoading;
+    const dWarn = showResolved && (!onBuilding || onNeighbour);
+    const dStatusTitle = isLoading ? 'Loading imagery…' : !onBuilding ? 'Pin is between buildings' : onNeighbour ? "That's the building next door" : 'Pin is on the building';
+    const dStatusBody = isLoading ? 'Adjust the pin now if it needs it.' : !onBuilding ? 'Drag the pin, or click the correct rooftop.' : onNeighbour ? 'Nudge it one plot right, onto 14 Gangapur Rd.' : "Detect will trace this rooftop's outline.";
+
+    // footer
+    let footer;
+    const disabledStyle = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, borderRadius: 999, border: 'none', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 15, fontWeight: 500, letterSpacing: '-0.01em', opacity: 0.4, cursor: 'default' };
+    const enabledStyle = { ...disabledStyle, opacity: 1, cursor: 'pointer' };
+    if (isSearch) footer = { label: 'Pick an address first', onClick: () => {}, style: disabledStyle };
+    else if (isLoading) footer = { label: 'Loading imagery…', onClick: () => {}, style: disabledStyle };
+    else if (isNotFound && !manualPin) footer = { label: 'Drop a pin here', onClick: this.dropPin, style: enabledStyle };
+    else footer = onBuilding
+      ? { label: 'Detect the roof', onClick: this.detect, style: enabledStyle }
+      : { label: 'Drag the pin onto a roof', onClick: () => {}, style: disabledStyle };
+
+    // desktop footer button variant (same label/handler, own height)
+    const dFooterBtn = { ...footer.style };
+
+    // nav
+    const navBase = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, cursor: 'pointer', color: 'var(--text-secondary)' };
+    const navActive = { ...navBase, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 };
+    const navRows = [
+      { label: 'My Day', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', onClick: () => { window.location.href = 'MyDay.dc.html'; }, style: navBase, count: '' },
+      { label: 'Leads', icon: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 .01', onClick: this.goBack, style: navActive, count: '24' },
+      { label: 'Site visits', icon: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z', onClick: () => {}, style: navBase, count: '3' },
+      { label: 'Proposals', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', onClick: () => {}, style: navBase, count: '' },
+      { label: 'Projects', icon: 'M3 3h7v7H3z', onClick: () => {}, style: navBase, count: '' },
+    ];
+
+    const searchBase = { display: 'flex', alignItems: 'center', gap: 9, height: 46, padding: '0 14px', borderRadius: 12, background: 'var(--canvas)', boxSizing: 'border-box' };
+
+    return {
+      chips, coords: '19.9975°N · 73.7898°E',
+      isSearch, isLocated, isCorrecting, isLoading, isNotFound,
+      pinShown, showCrosshair, pinStyle, pinPulseStyle, onPinDown: this.onPinDown,
+      buildings, query, onSearch: this.onSearch, focusSearch: this.focusSearch, suggestions,
+      selectSuggestion: this.selectSuggestion, startCorrecting: this.startCorrecting, confirmLocated: this.confirmLocated, dropPin: this.dropPin,
+      goBack: this.goBack, detect: this.detect, goCoverage: this.goCoverage,
+      footer, dFooterBtn, dSubtitle: dSubs[view] || '',
+      navRows,
+      mSearchWrap: searchBase,
+      dSearchWrap: { ...searchBase, boxShadow: isSearch ? '0 0 0 2px var(--accent)' : 'none' },
+      mSuggestRow: { display: 'flex', alignItems: 'flex-start', gap: 10, width: '100%', padding: '10px 10px', borderRadius: 10, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' },
+      dSuggestRow: { display: 'flex', alignItems: 'flex-start', gap: 11, width: '100%', padding: '11px 12px', borderRadius: 10, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' },
+      mCard, mCardBtn: { marginTop: 10, width: '100%', height: 40, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      showResolved,
+      dStatusWrap: { padding: 16, borderRadius: 14, background: dWarn ? 'var(--warning-bg)' : 'var(--success-bg)' },
+      dStatusIcon: { flexShrink: 0, width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dWarn ? 'var(--warning)' : 'var(--success)', color: '#fff' },
+      dStatusPath: dWarn ? 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4 M12 17h.01' : 'M20 6 9 17l-5-5',
+      dStatusTitle, dStatusBody,
+      dMoveBtn: { marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 42, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--e1)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+    };
+  }
+}
+</script>
+</body>
+</html>

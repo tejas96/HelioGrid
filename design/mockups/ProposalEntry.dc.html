@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-sheet { from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  input{ font-family:inherit }
+  ::-webkit-scrollbar{ height:0; width:0 }
+  @media (prefers-reduced-motion: reduce){ .hg-sheet,.hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="margin-bottom:30px">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · proposal builder</div>
+    <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Create a proposal — entry &amp; the 11-step shell</div>
+    <div style="margin-top:6px; font-size:14px; color:var(--text-secondary); max-width:840px; text-wrap:pretty">For Priya Sharma · 8.2 kWp residential · Nashik. Steps go in any order — Next never blocks; only Generate validates and jumps to the first problem. Every field saves on blur.</div>
+  </div>
+
+  <!-- ================= PART A · ENTRY ================= -->
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent)">Part A · Entry — who it's for, then how it's built</div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+      <sc-for list="{{ entryViews }}" as="v" hint-placeholder-count="5">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:13.5px; color:var(--text-secondary); margin-bottom:16px; max-width:840px; text-wrap:pretty">"Who is this for?" appears only when the builder is started from the Proposals list. Started from a <strong style="font-weight:500; color:var(--text-primary)">lead</strong>, the customer is already known — that step is skipped and this opens straight at the route cards, customer named.</div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px; margin-bottom:60px">
+
+    <!-- MOBILE ENTRY -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — full screen, close ✕, no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:22px 18px 12px">
+          <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:18px; font-weight:700; letter-spacing:-0.02em">{{ headerTitle }}</div><div style="font-size:12.5px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ headerSub }}</div></div>
+        </div>
+
+        <!-- SEARCH -->
+        <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ true }}">
+          <div style="flex-shrink:0; padding:6px 18px 8px">
+            <div style="{{ searchBox }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ searchIconColor }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span style="flex:1; font-size:14.5px; color:var(--text-primary)">{{ searchValue }}</span><button aria-label="Clear" style="border:none; background:none; padding:2px; cursor:pointer; color:var(--text-tertiary); display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></sc-if>
+              <sc-if value="{{ noQuery }}" hint-placeholder-val="{{ true }}"><span style="flex:1; font-size:14.5px; color:var(--text-tertiary)">Search existing leads and customers</span></sc-if>
+            </div>
+          </div>
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 18px 20px">
+            <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:6px 2px 10px">{{ resultCount }} matches</div>
+              <div style="display:flex; flex-direction:column; gap:10px">
+                <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--surface); border-radius:14px; box-shadow:var(--e1); cursor:pointer"><div style="{{ resAv }}">{{ r.initials }}</div><div style="flex:1; min-width:0"><div style="font-size:14.5px; font-weight:500">{{ r.name }}</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary)">{{ r.city }} · {{ r.phone }}</div></div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showEmptyHelp }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:44px 8px; text-align:center; display:flex; flex-direction:column; align-items:center">
+                <div style="width:56px; height:56px; border-radius:50%; background:var(--neutral-bg); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
+                <div style="margin-top:16px; font-size:15px; font-weight:500">Find the customer</div>
+                <p style="margin:8px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); max-width:250px; text-wrap:pretty">Start typing a name, phone or city to match an existing lead or customer.</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showNoMatch }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:44px 8px; text-align:center; display:flex; flex-direction:column; align-items:center">
+                <div style="width:56px; height:56px; border-radius:50%; background:var(--neutral-bg); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v6"></path><path d="M8 11h6"></path></svg></div>
+                <div style="margin-top:16px; font-size:15px; font-weight:500">No one matches "{{ searchValue }}"</div>
+                <p style="margin:8px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); max-width:262px; text-wrap:pretty">They're not in your leads or customers yet. Add them as a new customer and keep going.</p>
+              </div>
+            </sc-if>
+          </div>
+          <div style="flex-shrink:0; padding:14px 18px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <div style="{{ newCustCard }}">
+              <div style="{{ newCustIcon }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+              <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:500">{{ newCustTitle }}</div><div style="font-size:12.5px; color:var(--text-secondary)">Not in the system yet</div></div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+            </div>
+            <div style="margin-top:9px; text-align:center; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">We'll add them to your leads automatically.</div>
+          </div>
+        </sc-if>
+
+        <!-- ROUTES -->
+        <sc-if value="{{ isRoutes }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 18px 24px">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:6px 2px 12px">Choose a starting point</div>
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <div style="{{ r1Card }}">
+                <div style="display:flex; align-items:flex-start; gap:13px">
+                  <div style="{{ r1Icon }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+                  <div style="flex:1; min-width:0">
+                    <div style="display:flex; align-items:center; gap:8px"><span style="font-size:15.5px; font-weight:500; color:{{ r1TitleColor }}">With a design</span><sc-if value="{{ r1Rec }}" hint-placeholder-val="{{ true }}"><span style="{{ recBadge }}">Recommended</span></sc-if></div>
+                    <p style="margin:5px 0 0; font-size:13px; line-height:1.5; color:{{ r1BodyColor }}; text-wrap:pretty">Use the design you built. System size, generation, savings and components are filled in from it.</p>
+                    <sc-if value="{{ r1Ready }}" hint-placeholder-val="{{ true }}"><div style="margin-top:9px; display:inline-flex; align-items:center; gap:7px; padding:5px 10px; border-radius:999px; background:var(--success-bg); color:var(--success); font-size:12px; font-weight:500"><span style="width:6px; height:6px; border-radius:50%; background:var(--success)"></span>Design v1 · 8.2 kWp ready</div></sc-if>
+                    <sc-if value="{{ r1NoDesign }}" hint-placeholder-val="{{ false }}"><div style="margin-top:9px; display:inline-flex; align-items:center; gap:7px; padding:5px 10px; border-radius:999px; background:var(--neutral-bg); color:var(--text-tertiary); font-size:12px; font-weight:500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>No design yet — build one first</div></sc-if>
+                  </div>
+                  <sc-if value="{{ r1Selected }}" hint-placeholder-val="{{ true }}"><div style="{{ radioOn }}"><span style="width:8px; height:8px; border-radius:50%; background:#fff"></span></div></sc-if>
+                </div>
+              </div>
+              <div style="{{ r2Card }}">
+                <div style="display:flex; align-items:flex-start; gap:13px">
+                  <div style="{{ r2Icon }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></div>
+                  <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:15.5px; font-weight:500">Without a design</span><sc-if value="{{ r2Rec }}" hint-placeholder-val="{{ false }}"><span style="{{ recBadge }}">Recommended</span></sc-if></div><p style="margin:5px 0 0; font-size:13px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Enter the system yourself. Faster, but generation and savings will be estimates until a survey confirms them.</p></div>
+                  <sc-if value="{{ r2Selected }}" hint-placeholder-val="{{ false }}"><div style="{{ radioOn }}"><span style="width:8px; height:8px; border-radius:50%; background:#fff"></span></div></sc-if>
+                  <sc-if value="{{ r2Unselected }}" hint-placeholder-val="{{ true }}"><div style="{{ radioOff }}"></div></sc-if>
+                </div>
+              </div>
+              <div style="{{ card }}">
+                <div style="display:flex; align-items:flex-start; gap:13px">
+                  <div style="{{ icNeutral }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>
+                  <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:15.5px; font-weight:500">Duplicate a proposal</span><span style="{{ fastBadge }}">Fastest</span></div><p style="margin:5px 0 0; font-size:13px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Same as the Kulkarni proposal, new customer. Best for repeat residential jobs.</p></div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:10px"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="flex-shrink:0; padding:14px 18px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" onClick="{{ goBuilder }}" hint-size="100%,48px" style="width:100%">{{ continueLabel }}</x-import>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- DESKTOP ENTRY -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — sidebar stays · secondary panel beside content</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}"><span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span><span style="{{ navCount }}">10</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span style="flex:1">Designs</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px"><div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:26px 32px 0"><div style="flex:1; min-width:0"><div style="font-size:24px; font-weight:700; letter-spacing:-0.025em">{{ dHeaderTitle }}</div><div style="margin-top:3px; font-size:13.5px; color:var(--text-secondary)">{{ dHeaderSub }}</div></div><button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+
+          <!-- SEARCH (desktop) -->
+          <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ true }}">
+            <div style="flex-shrink:0; padding:20px 32px 0"><div style="{{ searchBoxD }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{ searchIconColor }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span style="flex:1; font-size:15px; color:var(--text-primary)">{{ searchValue }}</span></sc-if><sc-if value="{{ noQuery }}" hint-placeholder-val="{{ true }}"><span style="flex:1; font-size:15px; color:var(--text-tertiary)">Search existing leads and customers</span></sc-if></div></div>
+            <div style="flex:1; min-height:0; overflow-y:auto; padding:20px 32px; display:flex; gap:24px">
+              <div style="flex:1; min-width:0">
+                <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">{{ resultCount }} matches</div>
+                  <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden">
+                    <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+                      <div style="{{ r.rowStyle }}" style-hover="{{ rowHover }}"><div style="{{ resAvD }}">{{ r.initials }}</div><div style="flex:1; min-width:0; font-size:14.5px; font-weight:500">{{ r.name }}</div><span style="width:160px; font-size:13.5px; color:var(--text-secondary)">{{ r.city }}</span><span style="width:150px; font-family:var(--font-mono); font-size:13px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ r.phone }}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ showEmptyHelp }}" hint-placeholder-val="{{ true }}">
+                  <div style="height:100%; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center"><div style="width:64px; height:64px; border-radius:50%; background:var(--neutral-bg); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div><div style="margin-top:18px; font-size:17px; font-weight:700; letter-spacing:-0.01em">Find the customer</div><p style="margin:8px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:320px; text-wrap:pretty">Start typing a name, phone or city to match an existing lead or customer — or add a new one on the right.</p></div>
+                </sc-if>
+                <sc-if value="{{ showNoMatch }}" hint-placeholder-val="{{ false }}">
+                  <div style="height:100%; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center"><div style="width:64px; height:64px; border-radius:50%; background:var(--neutral-bg); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v6"></path><path d="M8 11h6"></path></svg></div><div style="margin-top:18px; font-size:19px; font-weight:700; letter-spacing:-0.02em">No one matches "{{ searchValue }}"</div><p style="margin:8px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:340px; text-wrap:pretty">They're not in your leads or customers yet. Add them as a new customer on the right and keep going.</p></div>
+                </sc-if>
+              </div>
+              <div style="width:340px; flex-shrink:0"><div style="{{ newCustPanel }}"><div style="{{ newCustIcon }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div><div style="margin-top:14px; font-size:17px; font-weight:700; letter-spacing:-0.01em">{{ newCustTitle }}</div><p style="margin:8px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Not in the system yet. Start the proposal now — we'll add them to your leads automatically from the client details you enter in step 10.</p><div style="margin-top:16px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" full-width="{{ true }}" onClick="{{ goBuilder }}" hint-size="100%,40px" style="width:100%">Start as new customer</x-import></div></div></div>
+            </div>
+          </sc-if>
+
+          <!-- ROUTES (desktop) -->
+          <sc-if value="{{ isRoutes }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; min-height:0; overflow-y:auto; padding:22px 32px; display:flex; gap:24px">
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:14px">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Choose a starting point</div>
+                <div style="{{ r1Card }}">
+                  <div style="display:flex; align-items:flex-start; gap:14px">
+                    <div style="{{ r1Icon }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></div>
+                    <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:16px; font-weight:500; color:{{ r1TitleColor }}">With a design</span><sc-if value="{{ r1Rec }}" hint-placeholder-val="{{ true }}"><span style="{{ recBadge }}">Recommended</span></sc-if></div><p style="margin:5px 0 0; font-size:13.5px; line-height:1.5; color:{{ r1BodyColor }}; text-wrap:pretty">Use the design you built. System size, generation, savings and components are filled in from it.</p><sc-if value="{{ r1NoDesign }}" hint-placeholder-val="{{ false }}"><div style="margin-top:9px; display:inline-flex; align-items:center; gap:7px; padding:5px 10px; border-radius:999px; background:var(--neutral-bg); color:var(--text-tertiary); font-size:12px; font-weight:500"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>No design yet — build one first</div></sc-if></div>
+                    <sc-if value="{{ r1Selected }}" hint-placeholder-val="{{ true }}"><div style="display:flex; align-items:center; gap:12px"><sc-if value="{{ r1Ready }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex; align-items:center; gap:7px; padding:5px 10px; border-radius:999px; background:var(--success-bg); color:var(--success); font-size:12px; font-weight:500"><span style="width:6px; height:6px; border-radius:50%; background:var(--success)"></span>Design v1 ready</span></sc-if><div style="{{ radioOn }}"><span style="width:8px; height:8px; border-radius:50%; background:#fff"></span></div></div></sc-if>
+                  </div>
+                </div>
+                <div style="{{ r2Card }}">
+                  <div style="display:flex; align-items:flex-start; gap:14px">
+                    <div style="{{ r2Icon }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></div>
+                    <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:16px; font-weight:500">Without a design</span><sc-if value="{{ r2Rec }}" hint-placeholder-val="{{ false }}"><span style="{{ recBadge }}">Recommended</span></sc-if></div><p style="margin:5px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Enter the system yourself. Faster, but generation and savings will be estimates until a survey confirms them.</p></div>
+                    <sc-if value="{{ r2Selected }}" hint-placeholder-val="{{ false }}"><div style="{{ radioOn }}"><span style="width:8px; height:8px; border-radius:50%; background:#fff"></span></div></sc-if>
+                    <sc-if value="{{ r2Unselected }}" hint-placeholder-val="{{ true }}"><div style="{{ radioOff }}"></div></sc-if>
+                  </div>
+                </div>
+                <div style="{{ card }}">
+                  <div style="display:flex; align-items:flex-start; gap:14px">
+                    <div style="{{ icNeutral }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>
+                    <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:16px; font-weight:500">Duplicate an earlier proposal</span><span style="{{ fastBadge }}">Fastest</span></div><p style="margin:5px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Copies every step from a past proposal — just change the customer. Most repeat residential jobs should start here.</p></div>
+                    <div style="{{ radioOff }}"></div>
+                  </div>
+                </div>
+              </div>
+              <div style="width:400px; flex-shrink:0; background:var(--surface); border-radius:16px; box-shadow:var(--e1); display:flex; flex-direction:column; overflow:hidden">
+                <div style="padding:16px 16px 12px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Duplicate from</div><div style="margin-top:10px; display:flex; align-items:center; gap:10px; height:40px; padding:0 14px; background:var(--canvas); border-radius:999px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input value="{{ dupSearch }}" onInput="{{ setDupSearch }}" placeholder="Search recent proposals" style="flex:1; min-width:0; border:none; outline:none; background:none; font-size:13.5px; color:var(--text-primary)"></div></div>
+                <div style="flex:1; min-height:0; overflow-y:auto; padding:0 8px 10px"><sc-for list="{{ dupList }}" as="d" hint-placeholder-count="4"><div style="{{ d.rowStyle }}" style-hover="{{ rowHover }}" onClick="{{ goBuilder }}"><div style="{{ d.av }}">{{ d.initials }}</div><div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ d.name }}</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary)">{{ d.number }} · {{ d.size }} · {{ d.value }}</div></div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div></sc-for></div>
+              </div>
+            </div>
+            <div style="flex-shrink:0; display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:16px 32px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="90px,40px">Cancel</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" onClick="{{ goBuilder }}" hint-size="190px,40px">{{ continueLabel }}</x-import></div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= PART B · SHELL (step 3) ================= -->
+  <div style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:16px">Part B · The shell — currently on step {{ curNum }} of 11</div>
+  <div style="display:flex; align-items:flex-start; gap:56px; margin-bottom:60px">
+
+    <!-- MOBILE SHELL -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · compact indicator (tap to open the step list)</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 10px">
+          <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">Priya Sharma</div><div style="font-size:12px; color:var(--text-secondary)">8.2 kWp · Nashik</div></div>
+          <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved</div>
+        </div>
+        <div style="flex-shrink:0; padding:4px 16px 12px">
+          <div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 8px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+            <button onClick="{{ prev }}" aria-label="Back" style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <button onClick="{{ openSheet }}" style="flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; background:none; border:none; cursor:pointer; font-family:inherit"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">{{ curNum }} / 11</span><span style="font-size:14.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ curTitle }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+            <button onClick="{{ next }}" aria-label="Next" style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+          <div style="margin-top:8px; height:4px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ progFill }}"></div></div>
+        </div>
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 16px 20px">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:6px 2px 12px">Solar system setup</div>
+          <div style="display:flex; flex-direction:column; gap:12px">
+            <div style="{{ formCard }}"><div style="{{ fieldLabel }}">Location</div><div style="margin-top:10px; display:flex; gap:10px"><div style="flex:1"><div style="{{ fieldMini }}">State</div><div style="{{ fieldBox }}">Maharashtra</div></div><div style="flex:1"><div style="{{ fieldMini }}">District</div><div style="{{ fieldBox }}">Nashik</div></div></div></div>
+            <div style="{{ formCard }}"><div style="{{ fieldLabel }}">System capacity <span style="color:var(--danger)">*</span></div><div style="margin-top:10px; display:flex; align-items:center; gap:8px; height:46px; padding:0 14px; background:var(--canvas); border-radius:12px"><span style="flex:1; font-family:var(--font-mono); font-size:16px; font-weight:500; font-variant-numeric:tabular-nums">8.2</span><span style="font-size:13px; color:var(--text-tertiary)">kW</span></div><div style="margin-top:14px; {{ fieldMini }}">System type <span style="color:var(--danger)">*</span></div><div style="margin-top:8px; display:flex; padding:3px; gap:3px; background:var(--canvas); border-radius:999px"><div style="{{ segOn }}">Ongrid</div><div style="{{ segOff }}">Offgrid</div><div style="{{ segOff }}">Hybrid</div></div><div style="margin-top:14px; {{ fieldMini }}">Category <span style="color:var(--danger)">*</span></div><div style="margin-top:8px; display:flex; padding:3px; gap:3px; background:var(--canvas); border-radius:999px"><div style="{{ segOn }}">Residential</div><div style="{{ segOff }}">Commercial</div></div></div>
+            <div style="background:linear-gradient(180deg,#F4F1FF 0%,#FCFBFF 80%); border-radius:16px; box-shadow:0 1px 2px rgba(10,10,11,0.04), 0 0 0 1px rgba(123,92,255,0.10); padding:16px 18px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Client pays</div><div style="margin-top:12px; display:flex; flex-direction:column; gap:9px; font-size:13px; color:var(--text-secondary)"><div style="display:flex; justify-content:space-between"><span>System cost (incl. GST)</span><span style="font-family:var(--font-mono); color:var(--text-primary); font-variant-numeric:tabular-nums">₹5,30,471</span></div><div style="display:flex; justify-content:space-between"><span>PM Surya Ghar subsidy</span><span style="font-family:var(--font-mono); color:var(--success); font-variant-numeric:tabular-nums">− ₹78,000</span></div></div><div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline); display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:14px; font-weight:500">Payable</span><span style="font-family:var(--font-mono); font-size:20px; font-weight:700; font-variant-numeric:tabular-nums">₹4,52,471</span></div></div>
+          </div>
+        </div>
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+          <button onClick="{{ prev }}" style="{{ footBack }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+          <div style="flex:1; text-align:center; min-width:0"><div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">{{ curNum }} / 11</div><div style="font-size:12.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ curTitle }}</div></div>
+          <button onClick="{{ next }}" style="{{ footNext }}">{{ nextLabel }}<sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="m7 10 5 5 5-5"></path><path d="M21 21H3"></path></svg></sc-if><sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></sc-if></button>
+        </div>
+        <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:30; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeSheet }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:40; max-height:80%; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); display:flex; flex-direction:column; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="flex-shrink:0; padding:8px 20px 8px"><div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 12px"></div><div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:17px; font-weight:700; letter-spacing:-0.01em">All steps</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary)">3 done · 1 needs fixing</span></div></div>
+            <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 12px 24px">
+              <sc-for list="{{ steps }}" as="s" hint-placeholder-count="11">
+                <div onClick="{{ s.onClick }}" style="{{ s.sheetRow }}">
+                  <div style="{{ s.marker }}"><sc-if value="{{ s.isCheck }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.isBang }}" hint-placeholder-val="{{ false }}"><span style="color:#fff; font-weight:700; font-size:14px">!</span></sc-if><sc-if value="{{ s.isNum }}" hint-placeholder-val="{{ true }}"><span style="{{ s.numStyle }}">{{ s.num }}</span></sc-if></div>
+                  <div style="flex:1; min-width:0"><div style="{{ s.labelStyle }}">{{ s.label }}</div><div style="{{ s.stateStyle }}">{{ s.stateText }}</div></div>
+                  <sc-if value="{{ s.isCurrent }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent)">Here</span></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- DESKTOP SHELL -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · sidebar + builder · full 11-step rail · context panel beside</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}"><span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span><span style="{{ navCount }}">10</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span style="flex:1">Designs</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px"><div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></div>
+          </div>
+        </div>
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:20px 30px; background:var(--surface)">
+            <div style="flex:1; min-width:0"><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Proposal for Priya Sharma</div><div style="font-size:12.5px; color:var(--text-secondary)">8.2 kWp residential · Nashik · HG-P-0151 (draft)</div></div>
+            <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved · just now</div>
+            <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+          <div style="flex-shrink:0; padding:20px 30px 18px; background:var(--surface); box-shadow:0 6px 10px -10px rgba(10,10,11,0.16)">
+            <div style="position:relative">
+              <div style="position:absolute; left:16px; right:16px; top:16px; height:2px; background:var(--canvas-sunken)"></div>
+              <div style="position:relative; display:flex; justify-content:space-between">
+                <sc-for list="{{ steps }}" as="s" hint-placeholder-count="11">
+                  <div onClick="{{ s.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; flex:1; min-width:0">
+                    <div style="{{ s.marker }}"><sc-if value="{{ s.isCheck }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.isBang }}" hint-placeholder-val="{{ false }}"><span style="color:#fff; font-weight:700; font-size:14px">!</span></sc-if><sc-if value="{{ s.isNum }}" hint-placeholder-val="{{ true }}"><span style="{{ s.numStyle }}">{{ s.num }}</span></sc-if></div>
+                    <div style="text-align:center; min-width:0; padding:0 2px"><div style="{{ s.railLabel }}">{{ s.shortLabel }}</div><div style="{{ s.railState }}">{{ s.stateShort }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:26px 30px; display:flex; gap:24px">
+            <div style="flex:1; min-width:0">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Step 3 · Solar system</div>
+              <div style="margin-top:6px; font-size:22px; font-weight:700; letter-spacing:-0.02em">Solar system setup</div>
+              <p style="margin:6px 0 0; font-size:14px; color:var(--text-secondary); text-wrap:pretty">Pre-filled from the design — edit anything and it saves on blur.</p>
+              <div style="margin-top:20px; background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:24px 26px">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px 24px">
+                  <div><div style="{{ dFieldLabel }}">State <span style="color:var(--danger)">*</span></div><div style="{{ dFieldBox }}">Maharashtra</div></div>
+                  <div><div style="{{ dFieldLabel }}">District <span style="color:var(--danger)">*</span></div><div style="{{ dFieldBox }}">Nashik</div></div>
+                  <div><div style="{{ dFieldLabel }}">System capacity <span style="color:var(--danger)">*</span></div><div style="{{ dFieldBox }}"><span style="flex:1; font-family:var(--font-mono); font-size:15px; font-weight:500; font-variant-numeric:tabular-nums">8.2</span><span style="font-size:13px; color:var(--text-tertiary)">kW</span></div></div>
+                  <div><div style="{{ dFieldLabel }}">AMC <span style="color:var(--danger)">*</span></div><div style="{{ dFieldBox }}"><span style="flex:1">Free AMC · 5 years</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></div></div>
+                  <div style="grid-column:1 / -1"><div style="{{ dFieldLabel }}">System type <span style="color:var(--danger)">*</span></div><div style="display:flex; padding:3px; gap:3px; background:var(--canvas); border-radius:999px; max-width:420px"><span style="{{ segOn }}">Ongrid</span><span style="{{ segOff }}">Offgrid</span><span style="{{ segOff }}">Hybrid</span></div></div>
+                  <div style="grid-column:1 / -1"><div style="{{ dFieldLabel }}">Category <span style="color:var(--danger)">*</span></div><div style="display:flex; padding:3px; gap:3px; background:var(--canvas); border-radius:999px; max-width:300px"><span style="{{ segOn }}">Residential</span><span style="{{ segOff }}">Commercial</span></div></div>
+                </div>
+              </div>
+            </div>
+            <div style="width:340px; flex-shrink:0; display:flex; flex-direction:column; gap:16px">
+              <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:18px 20px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">From your design · v1</div><div style="margin-top:14px; display:flex; flex-direction:column; gap:12px"><div style="display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:13px; color:var(--text-secondary)">Capacity</span><span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">8.2 kWp</span></div><div style="display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:13px; color:var(--text-secondary)">Annual generation</span><span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">12,400 kWh</span></div><div style="display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:13px; color:var(--text-secondary)">Components</span><span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">5 / 5 set</span></div></div><div style="margin-top:12px; font-size:12px; color:var(--text-tertiary); text-wrap:pretty">Derived from the design's shadow simulation.</div></div>
+              <div style="background:linear-gradient(135deg,#F4F1FF 0%,#FCFBFF 70%); border-radius:16px; box-shadow:0 1px 2px rgba(10,10,11,0.04), 0 0 0 1px rgba(123,92,255,0.10); padding:18px 20px"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Client pays</div><div style="margin-top:12px; display:flex; flex-direction:column; gap:9px; font-size:13px; color:var(--text-secondary)"><div style="display:flex; justify-content:space-between"><span>System cost (incl. GST)</span><span style="font-family:var(--font-mono); color:var(--text-primary); font-variant-numeric:tabular-nums">₹5,30,471</span></div><div style="display:flex; justify-content:space-between"><span>PM Surya Ghar subsidy</span><span style="font-family:var(--font-mono); color:var(--success); font-variant-numeric:tabular-nums">− ₹78,000</span></div></div><div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline); display:flex; justify-content:space-between; align-items:baseline"><span style="font-size:14px; font-weight:500">Payable</span><span style="font-family:var(--font-mono); font-size:22px; font-weight:700; font-variant-numeric:tabular-nums">₹4,52,471</span></div></div>
+            </div>
+          </div>
+          <div style="flex-shrink:0; display:flex; align-items:center; padding:16px 30px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <button onClick="{{ prev }}" style="{{ footBackD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+            <div style="flex:1; text-align:center"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">{{ curNum }} / 11</span><span style="margin-left:8px; font-size:14px; font-weight:500">{{ curTitle }}</span></div>
+            <button onClick="{{ next }}" style="{{ footNextD }}">{{ nextLabel }}<sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"></path><path d="m7 10 5 5 5-5"></path><path d="M21 21H3"></path></svg></sc-if><sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></sc-if></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= DRAFT RESUMED ON THE LEAD ================= -->
+  <div style="font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:16px">Draft is resumable from the lead</div>
+  <div style="display:flex; align-items:flex-start; gap:56px">
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · lead detail · "Draft · 7 of 11"</div>
+      <div style="position:relative; width:375px; height:560px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:22px 18px 12px">
+          <button aria-label="Back" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:18px; font-weight:700; letter-spacing:-0.02em">Priya Sharma</div><div style="font-size:12.5px; color:var(--text-secondary)">Nashik · Residential</div></div>
+        </div>
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 18px 24px">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:6px 2px 12px">Designs &amp; proposals</div>
+          <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e2); padding:16px 18px">
+            <div style="display:flex; align-items:center; gap:12px">
+              <div style="width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg></div>
+              <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:15px; font-weight:500">Proposal draft</span><span style="display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 9px; border-radius:999px; background:var(--neutral-bg); color:var(--text-secondary); font-size:11.5px; font-weight:500"><span style="width:6px; height:6px; border-radius:50%; background:var(--text-tertiary)"></span>Draft · 7 of 11</span></div><div style="margin-top:3px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary)">HG-P-0151 · edited 2h ago</div></div>
+            </div>
+            <div style="margin-top:12px; display:flex; align-items:center; gap:9px"><div style="flex:1; height:5px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="width:63.6%; height:100%; border-radius:999px; background:var(--accent)"></div></div><span style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">64%</span></div>
+            <div style="margin-top:14px; display:flex; gap:10px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="md" hint-size="90px,40px">Preview</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" full-width="{{ true }}" onClick="{{ goBuilder }}" hint-size="100%,40px" style="flex:1">Resume · step 7</x-import></div>
+          </div>
+          <div style="margin-top:12px; font-size:12.5px; color:var(--text-secondary); text-align:center; text-wrap:pretty">Picks up exactly where you left off — Payment Terms.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;entryState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;searchEmpty&quot;,&quot;searchMatches&quot;,&quot;searchNone&quot;,&quot;routesDesign&quot;,&quot;routesNoDesign&quot;],&quot;default&quot;:&quot;searchMatches&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Entry&quot;},&quot;currentStep&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:11,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Shell&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      entryState: props.entryState || 'searchMatches',
+      step: props.currentStep || 3,
+      dupSearch: '',
+      sheetOpen: false,
+    };
+  }
+
+  setEntry = (s) => this.setState({ entryState: s });
+  setStep = (n) => this.setState({ step: Math.max(1, Math.min(11, n)), sheetOpen: false });
+  prev = () => this.setStep(this.state.step - 1);
+  next = () => this.setStep(this.state.step + 1);
+  openSheet = () => this.setState({ sheetOpen: true });
+  closeSheet = () => this.setState({ sheetOpen: false });
+  setDupSearch = (e) => this.setState({ dupSearch: e.target.value });
+  goBuilder = () => { window.location.href = 'ProposalBuilder.dc.html'; };
+
+  renderVals() {
+    const { entryState, step, dupSearch, sheetOpen } = this.state;
+
+    // ---- Entry state ----
+    const es = entryState;
+    const isSearch = es.indexOf('search') === 0;
+    const isSearchEmpty = es === 'searchEmpty';
+    const isSearchMatches = es === 'searchMatches';
+    const isSearchNone = es === 'searchNone';
+    const isRoutes = es.indexOf('routes') === 0;
+    const isRoutesNoDesign = es === 'routesNoDesign';
+
+    const searchValue = isSearchMatches ? 'Sha' : isSearchNone ? 'Meghana Rao' : '';
+    const hasQuery = isSearchMatches || isSearchNone;
+    const resultsData = isSearchMatches ? [
+      { initials: 'PS', name: 'Priya Sharma', city: 'Nashik', phone: '+91 98220 11234' },
+      { initials: 'SS', name: 'Sushma Shah', city: 'Pune', phone: '+91 98230 55120' },
+      { initials: 'RS', name: 'Rahul Sharma', city: 'Nashik', phone: '+91 90280 77410' },
+    ] : [];
+    const resAvD = { flexShrink: 0, width: 36, height: 36, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13 };
+    const results = resultsData.map((r, i) => ({
+      ...r,
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 16, minHeight: 58, padding: '0 18px', cursor: 'pointer', transition: 'background 140ms var(--ease-standard)', borderBottom: i < resultsData.length - 1 ? '1px solid var(--hairline)' : 'none' },
+    }));
+
+    const newCustProminent = isSearchNone;
+    const newCustTitle = isSearchNone ? ('New customer · ' + searchValue) : 'New customer';
+
+    // ---- Route card styling (design exists vs none) ----
+    const cardBase = { background: 'var(--surface)', borderRadius: 18, boxShadow: 'var(--e1)', padding: 16, cursor: 'pointer' };
+    const cardSel = { background: 'var(--surface)', borderRadius: 18, boxShadow: 'var(--e2), 0 0 0 2px var(--accent)', padding: 16, cursor: 'pointer' };
+    const cardDis = { background: 'var(--surface-alt)', borderRadius: 18, boxShadow: 'var(--e1)', padding: 16, opacity: 0.72 };
+    const icAccent = { flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+    const icNeutral = { flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+    const icDisabled = { flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: 'var(--neutral-bg)', color: 'var(--text-disabled)', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+
+    // ---- Steps (shell) ----
+    const base = { 1: 'complete', 2: 'skipped', 3: 'progress', 4: 'notStarted', 5: 'notStarted', 6: 'complete', 7: 'error', 8: 'notStarted', 9: 'skipped', 10: 'notStarted', 11: 'notStarted' };
+    const defs = [
+      { n: 1, label: 'Company', short: 'Company' }, { n: 2, label: 'Achievements', short: 'Achieve' },
+      { n: 3, label: 'Solar System', short: 'System' }, { n: 4, label: 'Performance', short: 'Perform' },
+      { n: 5, label: 'Financial', short: 'Finance' }, { n: 6, label: 'Timeline', short: 'Timeline' },
+      { n: 7, label: 'Payment Terms', short: 'Payment' }, { n: 8, label: 'Components', short: 'Compon.' },
+      { n: 9, label: 'Terms & Conditions', short: 'Terms' }, { n: 10, label: 'Client Details', short: 'Client' },
+      { n: 11, label: 'Bank Details', short: 'Bank' },
+    ];
+    const stateText = { complete: 'Complete', progress: 'In progress', notStarted: 'Not started', error: 'Needs fixing', skipped: 'Skipped · optional', current: 'In progress' };
+    const stateShort = { complete: 'Done', progress: 'In progress', notStarted: '—', error: 'Fix', skipped: 'Skipped', current: 'Editing' };
+    const stateColor = { complete: 'var(--success)', progress: 'var(--accent)', current: 'var(--accent)', error: 'var(--danger)', notStarted: 'var(--text-tertiary)', skipped: 'var(--text-tertiary)' };
+    const marker = (st) => {
+      const b = { flexShrink: 0, width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' };
+      if (st === 'complete') return { ...b, background: 'var(--success)', color: '#fff' };
+      if (st === 'error') return { ...b, background: 'var(--danger)', color: '#fff' };
+      if (st === 'current' || st === 'progress') return { ...b, background: 'var(--accent)', color: '#fff', boxShadow: '0 0 0 4px var(--accent-subtle)' };
+      if (st === 'skipped') return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px dashed var(--text-tertiary)' };
+      return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px solid var(--canvas-sunken)' };
+    };
+    const numStyle = (st) => ({ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: st === 'skipped' ? 'var(--text-tertiary)' : 'var(--text-secondary)' });
+    const steps = defs.map(d => {
+      const isCurrent = d.n === step;
+      const st = isCurrent ? 'current' : base[d.n];
+      const isCheck = st === 'complete', isBang = st === 'error';
+      return {
+        num: d.n, label: d.label, shortLabel: d.short, isCurrent, isCheck, isBang, isNum: !isCheck && !isBang,
+        marker: marker(st), numStyle: numStyle(st), stateText: stateText[st], stateShort: stateShort[st],
+        onClick: () => this.setStep(d.n),
+        sheetRow: { display: 'flex', alignItems: 'center', gap: 14, padding: '10px 10px', borderRadius: 14, cursor: 'pointer', background: isCurrent ? 'var(--accent-subtle)' : 'transparent' },
+        labelStyle: { fontSize: 14.5, fontWeight: 500, color: st === 'skipped' ? 'var(--text-secondary)' : 'var(--text-primary)' },
+        stateStyle: { marginTop: 2, fontSize: 12, color: stateColor[st] },
+        railLabel: { fontSize: 11.5, fontWeight: isCurrent ? 700 : 500, color: isCurrent ? 'var(--accent)' : 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+        railState: { marginTop: 2, fontSize: 10.5, color: stateColor[st], whiteSpace: 'nowrap' },
+      };
+    });
+    const cur = defs[step - 1];
+    const isLast = step === 11;
+
+    // ---- Duplicate list ----
+    const dupDefs = [
+      { initials: 'SK', name: 'Suresh Kulkarni', number: 'HG-P-0145', size: '6.5 kWp', value: '\u20B93,40,000' },
+      { initials: 'RM', name: 'Rohit Mehta', number: 'HG-P-0147', size: '10 kWp', value: '\u20B95,60,000' },
+      { initials: 'KJ', name: 'Kavita Joshi', number: 'HG-P-0148', size: '7.6 kWp', value: '\u20B94,10,000' },
+      { initials: 'GP', name: 'Ganesh Patil', number: 'HG-P-0146', size: '9.1 kWp', value: '\u20B94,95,000' },
+    ];
+    const q = dupSearch.trim().toLowerCase();
+    const dupList = dupDefs.filter(d => !q || (d.name + ' ' + d.number).toLowerCase().includes(q)).map(d => ({
+      ...d,
+      av: { flexShrink: 0, width: 36, height: 36, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13 },
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 10px', borderRadius: 12, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+    }));
+
+    // ---- Entry control chips ----
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const entryViews = [
+      { key: 'searchEmpty', label: 'Search · empty' },
+      { key: 'searchMatches', label: 'Search · matches' },
+      { key: 'searchNone', label: 'Search · none' },
+      { key: 'routesDesign', label: 'Routes · design' },
+      { key: 'routesNoDesign', label: 'Routes · no design' },
+    ].map(v => ({ label: v.label, onClick: () => this.setEntry(v.key), style: es === v.key ? { ...pill, background: 'var(--action-primary)', color: '#fff' } : { ...pill, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const navRow = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, color: 'var(--text-secondary)', cursor: 'pointer' };
+    const seg = { display: 'flex', alignItems: 'center', justifyContent: 'center', height: 34, padding: '0 16px', borderRadius: 999, fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' };
+
+    return {
+      // entry
+      entryViews,
+      isSearch, isRoutes,
+      hasQuery, noQuery: !hasQuery, searchValue,
+      showResults: isSearchMatches, showEmptyHelp: isSearchEmpty, showNoMatch: isSearchNone,
+      resultCount: resultsData.length, results, resAvD,
+      searchIconColor: hasQuery ? 'var(--accent)' : 'var(--text-tertiary)',
+      searchBox: { display: 'flex', alignItems: 'center', gap: 10, height: 46, padding: '0 14px', background: 'var(--surface)', borderRadius: 14, boxShadow: hasQuery ? '0 0 0 2px var(--accent)' : 'var(--e1)' },
+      searchBoxD: { display: 'flex', alignItems: 'center', gap: 10, height: 44, padding: '0 16px', background: 'var(--surface)', borderRadius: 999, boxShadow: hasQuery ? '0 0 0 2px var(--accent)' : 'var(--e1)' },
+      newCustTitle,
+      newCustCard: { display: 'flex', alignItems: 'center', gap: 13, padding: '15px 16px', background: 'var(--accent-subtle)', borderRadius: 16, cursor: 'pointer', boxShadow: newCustProminent ? '0 0 0 2px var(--accent)' : 'none' },
+      newCustIcon: { flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: newCustProminent ? 'var(--accent)' : 'var(--surface)', color: newCustProminent ? '#fff' : 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      newCustPanel: { background: 'var(--accent-subtle)', borderRadius: 16, padding: 20, boxShadow: newCustProminent ? '0 0 0 2px var(--accent)' : 'none' },
+      headerTitle: isSearch ? 'Who is this for?' : 'Create proposal',
+      headerSub: isSearch ? 'New proposal' : 'Priya Sharma · 8.2 kWp · Nashik',
+      dHeaderTitle: isSearch ? 'Who is this for?' : 'Create a proposal',
+      dHeaderSub: isSearch ? 'Started from the Proposals list — pick who it\u2019s for' : 'Priya Sharma · 8.2 kWp residential · Nashik',
+      // route cards
+      r1Card: isRoutesNoDesign ? cardDis : cardSel,
+      r1Icon: isRoutesNoDesign ? icDisabled : icAccent,
+      r1TitleColor: isRoutesNoDesign ? 'var(--text-tertiary)' : 'var(--text-primary)',
+      r1BodyColor: isRoutesNoDesign ? 'var(--text-tertiary)' : 'var(--text-secondary)',
+      r1Rec: !isRoutesNoDesign, r1Ready: !isRoutesNoDesign, r1NoDesign: isRoutesNoDesign,
+      r1Selected: !isRoutesNoDesign,
+      r2Card: isRoutesNoDesign ? cardSel : cardBase,
+      r2Icon: isRoutesNoDesign ? icAccent : icNeutral,
+      r2Rec: isRoutesNoDesign, r2Selected: isRoutesNoDesign, r2Unselected: !isRoutesNoDesign,
+      card: cardBase, icNeutral,
+      radioOn: { flexShrink: 0, width: 22, height: 22, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 },
+      radioOff: { flexShrink: 0, width: 22, height: 22, borderRadius: '50%', border: '2px solid var(--canvas-sunken)', boxSizing: 'border-box', marginTop: 2 },
+      recBadge: { display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 9px', borderRadius: 999, background: 'var(--accent-subtle)', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.02em' },
+      fastBadge: { display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 9px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 11, fontWeight: 700, letterSpacing: '0.02em' },
+      continueLabel: isRoutesNoDesign ? 'Continue without a design' : 'Continue with design',
+      dupSearch, setDupSearch: this.setDupSearch, dupList,
+      rowHover: { background: 'var(--neutral-bg)' },
+      goBuilder: this.goBuilder,
+      // shell
+      steps, curNum: step, curTitle: cur.label, isLast, notLast: !isLast, nextLabel: isLast ? 'Generate proposal' : 'Next',
+      prev: this.prev, next: this.next, setStep: this.setStep, sheetOpen, openSheet: this.openSheet, closeSheet: this.closeSheet,
+      progFill: { width: (step / 11 * 100) + '%', height: '100%', borderRadius: 999, background: 'var(--accent)', transition: 'width 240ms var(--ease-standard)' },
+      // shared chrome
+      closeBtn: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      savedPill: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 12.5, fontWeight: 500 },
+      stepArrow: { flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      formCard: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: '16px 18px' },
+      fieldLabel: { fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)' },
+      fieldMini: { fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)' },
+      fieldBox: { height: 44, display: 'flex', alignItems: 'center', padding: '0 14px', background: 'var(--canvas)', borderRadius: 12, fontSize: 14.5, color: 'var(--text-primary)' },
+      segOn: { ...seg, background: 'var(--surface)', color: 'var(--text-primary)', boxShadow: 'var(--e1)', flex: 1 },
+      segOff: { ...seg, background: 'transparent', color: 'var(--text-secondary)', flex: 1 },
+      dFieldLabel: { fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 9 },
+      dFieldBox: { display: 'flex', alignItems: 'center', gap: 8, height: 46, padding: '0 14px', background: 'var(--canvas)', borderRadius: 12, fontSize: 14.5, color: 'var(--text-primary)' },
+      dRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, minHeight: 58, padding: '0 20px', borderBottom: '1px solid var(--hairline)' },
+      dRowLast: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, minHeight: 58, padding: '0 20px' },
+      dRowLabel: { fontSize: 13.5, color: 'var(--text-secondary)' },
+      dRowVal: { fontSize: 14.5, fontWeight: 500, color: 'var(--text-primary)' },
+      footBack: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNext: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footBackD: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNextD: { display: 'flex', alignItems: 'center', gap: 7, height: 44, padding: '0 24px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      railStyle: { flexShrink: 0, width: 240, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: '22px 16px', overflow: 'hidden', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', gap: 10 },
+      navRow,
+      navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+      resAv: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14 },
+    };
+  }
+}
+</script>
+</body>
+</html>

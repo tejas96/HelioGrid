@@ -95,7 +95,7 @@ Catalog listed twice; catalog/price-book overlap.
 
 ### R15 — Referral model
 "Tagged and credited" with no credit model.
-**RULING: v1 = tagged attribution entity only; credits ledger later.** A referral row links referrer customer → referred lead (source=referral), visible on both records and in win/loss analytics. No monetary credit, no redemption, no balance in v1.
+**RULING: the referral tag + "came from" chip ship in Track A (CRM core); the credits LEDGER is the spec-locked exclusion.** A referral row links referrer customer → referred lead (source=referral), visible on both records and in win/loss analytics. No monetary credit, no redemption, no balance in v1.
 **Consequence:** UXG-19; when a credits ledger arrives it references the existing referral rows — no backfill problem.
 
 ### R16 — Installer role gap
@@ -125,7 +125,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D2 | Full mobile parity at 375px incl. studio | HONORED — responsive web studio; RN app presents it via authenticated WebView |
 | D3 | "Instrument" brand: graphite + brass, ink on brass | **SUPERSEDED — 2026-07-24, by the vendored UX design-system package (owner-confirmed, pixel-perfect directive):** visual identity is now `design/ds-source` — Geist typography, near-black primary `#0A0A0B`, violet accent `#5A4BFF`, iridescent atmosphere (`#7B5CFF`/`#3B82F6`/`#E85CBE`), light-only. No brass/graphite token survives anywhere. POC DESIGN-SYSTEM.md retained for interaction/a11y/product-law contracts ONLY (touch targets, no-hover-only, provenance, states, focus visibility). See §3 and ./research/ds-reconciliation.md |
 | D4 | WhatsApp primary channel | SUPERSEDED — by D32 (2026, POC spec): no WhatsApp integration v1, manual copy-paste |
-| D5 | Customer never logs in; tokenised link | HONORED — stateless signed tokens (docs/08); named-links mitigation designed-for (R6) |
+| D5 | Customer never logs in; tokenised link | HONORED — stateless signed tokens (docs/08); named links + OTP ship v1 (R6-amended) |
 | D6 | Tailwind + Radix; Claude Design for screens | HONORED — Tailwind v4 + Radix in `packages/ui`; Claude-Design mockup phase complete, gaps via docs/13 |
 | D7 | Three audiences: owner, employees, customer | HONORED — two authenticated persona classes + anonymous link persona |
 | D8 | Voice agent outbound + inbound | HONORED — Exotel+Sarvam (R3); inbound IVR per BLUEPRINT directive 7 |
@@ -153,7 +153,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D30 | Survey two modes: remote / physical | HONORED — remote-first residential; provenance split (R18) |
 | D31 | Arc-bar mobile nav, brass centre, role-adaptive | PARTIAL — arc-bar + role-adaptive honored (RN field app + responsive web); the "brass centre" half is void with D3: the centre FAB is near-black `--action-primary` `#0A0A0B` on the white arc (mockup ground truth, ./research/ds-usage.md §3) |
 | D32 | No WhatsApp integration v1; copy-paste | HONORED — `MessagingPort` ManualCopyAdapter; v2 BYO-WABA documented (docs/07) |
-| D33 | C&I same single link, no per-contact links/OTP | HONORED for launch — accepted risk; mitigation designed-for (R6, UXG-11) |
+| D33 | C&I same single link, no per-contact links/OTP | SUPERSEDED — R6-amended 2026-07-24: named links + OTP-at-accept ship in the 20-day build (Track B) |
 | D34 | No discount approval; only arithmetic guard | HONORED — payable ≤ ₹0 blocks Generate; below-cost warns |
 | D35 | Survey photos = reference, not measurement | HONORED — no LiDAR/AR/auto-measure; drone-as-imagery ok |
 | D36 | Agent fully tenant-configurable, India defaults | PARTIAL — config fully tenant-owned; the statutory floor (DND scrub, 9am–9pm, DLT series, opt-out, recording retention) is enforced by our non-swappable `ComplianceGate`, not merely surfaced. Tenants configure within the law, not around it |

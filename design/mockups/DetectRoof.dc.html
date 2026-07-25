@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes dr-spin { to{ transform:rotate(360deg) } }
+  @keyframes dr-sweep { 0%{ transform:translateY(-100%) } 100%{ transform:translateY(100%) } }
+  @keyframes dr-pulse { 0%,100%{ opacity:0.35 } 50%{ opacity:0.9 } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  @media (prefers-reduced-motion: reduce){ .dr-spin,.dr-sweep,.dr-pulse{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:24px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · remote survey · 5.3</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Detect &amp; review the roof</div>
+      <div style="margin-top:5px; font-size:14px; color:var(--text-secondary); max-width:680px; text-wrap:pretty">The detection is a first pass, never the last word. Every outline, obstruction and estimate is measured from satellite imagery — accept it, adjust it, or reject it. Nothing is committed until you say so.</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="7">
+        <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — nested flow, no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- HEADER -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e1); padding:18px 16px 12px; z-index:8">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px">
+            <button onClick="{{ goBack }}" aria-label="Back" style="display:flex; align-items:center; gap:4px; background:none; border:none; padding:4px 0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:13.5px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Building</button>
+            <div style="font-size:14.5px; font-weight:700; letter-spacing:-0.02em">Detect the roof</div>
+            <button onClick="{{ goSurvey }}" aria-label="Close" style="width:34px; height:34px; border-radius:50%; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+          <div style="margin-top:9px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-secondary)">
+            <span style="display:inline-flex; align-items:center; gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>14 Gangapur Rd, Nashik</span>
+            <span style="color:var(--text-tertiary)">·</span>
+            <span style="font-family:var(--font-mono)">Priya Sharma</span>
+          </div>
+        </div>
+
+        <!-- MAP / CANVAS -->
+        <div data-map onClick="{{ onMapClick }}" style="{{ mapCursor }}">
+          <div style="position:absolute; inset:0; background:linear-gradient(160deg,#3c4a3b 0%,#2f3a2f 55%,#333f35 100%)"></div>
+          <div style="position:absolute; left:0; right:0; bottom:0; height:12%; background:linear-gradient(180deg,#b7ad95,#a89e86); opacity:0.9"></div>
+          <div style="position:absolute; left:16%; top:18%; width:66%; height:60%; background:#9aa0a6; border-radius:4px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 3px 8px rgba(0,0,0,0.4)"></div>
+          <div style="position:absolute; left:84%; top:26%; width:18%; height:44%; background:#8f8577; border-radius:4px; opacity:0.92"></div>
+          <!-- detection outline -->
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; z-index:3; pointer-events:none"><polygon points="{{ polyPoints }}" fill="{{ polyFill }}" stroke="{{ polyStroke }}" stroke-width="0.8" stroke-linejoin="round"></polygon></svg>
+          <!-- obstruction markers -->
+          <sc-for list="{{ markers }}" as="m" hint-placeholder-count="3">
+            <div style="{{ m.wrap }}"><span style="{{ m.dot }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.icon }}"></path></svg></span></div>
+          </sc-for>
+          <!-- reshape vertex handles -->
+          <sc-if value="{{ isReshape }}" hint-placeholder-val="{{ false }}">
+            <sc-for list="{{ handles }}" as="h" hint-placeholder-count="5">
+              <div onPointerDown="{{ h.onDown }}" style="{{ h.style }}"></div>
+            </sc-for>
+          </sc-if>
+          <!-- scanning sweep -->
+          <sc-if value="{{ isDetecting }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute; inset:0; overflow:hidden; z-index:5"><div class="dr-sweep" style="position:absolute; left:0; right:0; height:40%; background:linear-gradient(180deg,transparent,rgba(90,75,255,0.25),transparent); animation:dr-sweep 2s var(--ease-standard) infinite"></div></div>
+          </sc-if>
+          <div style="position:absolute; left:12px; bottom:12px; font-family:var(--font-mono); font-size:11px; color:rgba(255,255,255,0.85); background:rgba(10,10,11,0.35); padding:3px 8px; border-radius:8px; z-index:6">measured from satellite imagery</div>
+        </div>
+
+        <!-- SCROLL REVIEW -->
+        <div style="flex-shrink:0; max-height:340px; overflow-y:auto; background:var(--canvas); padding:12px 14px; display:flex; flex-direction:column; gap:10px">
+
+          <sc-if value="{{ isDetecting }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 13px; background:var(--surface); border-radius:12px; box-shadow:var(--e1)">
+                  <span style="{{ s.dot }}"><sc-if value="{{ s.done }}" hint-placeholder-val="{{ true }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.active }}" hint-placeholder-val="{{ false }}"><span class="dr-spin" style="width:13px; height:13px; border-radius:50%; border:2px solid rgba(255,255,255,0.5); border-top-color:#fff; animation:dr-spin 0.8s linear infinite"></span></sc-if></span>
+                  <span style="flex:1; font-size:13.5px; font-weight:500; color:{{ s.color }}">{{ s.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding:14px 12px 6px">
+              <span style="width:48px; height:48px; border-radius:50%; background:var(--danger-bg); color:var(--danger); display:flex; align-items:center; justify-content:center; margin-bottom:10px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+              <div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Detection didn't finish</div>
+              <div style="margin-top:4px; font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">The imagery service didn't respond. Nothing was saved — try again, or draw the roof yourself.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ showCaveat }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:flex-start; gap:9px; padding:11px 13px; background:var(--warning-bg); border-radius:12px">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                <div style="font-size:12.5px; color:var(--warning); line-height:1.45; text-wrap:pretty">{{ caveatText }}</div>
+              </div>
+            </sc-if>
+
+            <!-- outline row -->
+            <div style="background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:13px 14px">
+              <div style="display:flex; align-items:center; gap:9px"><span style="flex:1; font-size:14px; font-weight:600">Roof outline</span><span style="{{ outlineConf.style }}">{{ outlineConf.label }}</span></div>
+              <div style="margin-top:6px; display:flex; align-items:baseline; gap:8px"><span style="font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:-0.02em">{{ usableArea }} m²</span><span style="font-size:12px; color:var(--text-secondary)">usable · {{ roofArea }} m² total</span></div>
+              <div style="margin-top:11px; display:flex; gap:8px">
+                <button onClick="{{ startReshape }}" style="{{ chipBtnGhost }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>Adjust</button>
+                <button onClick="{{ rejectOutline }}" style="{{ chipBtnGhost }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg><span style="color:var(--danger)">Reject</span></button>
+              </div>
+            </div>
+
+            <!-- obstructions -->
+            <div style="background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:13px 14px">
+              <div style="display:flex; align-items:center; gap:9px; margin-bottom:8px"><span style="flex:1; font-size:14px; font-weight:600">Obstructions</span><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ obsCount }} found</span></div>
+              <div style="display:flex; flex-direction:column; gap:7px">
+                <sc-for list="{{ obstructions }}" as="o" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:10px">
+                    <span style="{{ o.iconWrap }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ o.icon }}"></path></svg></span>
+                    <span style="flex:1; min-width:0"><span style="display:block; font-size:13.5px; font-weight:500">{{ o.label }}</span><span style="{{ o.confInline }}">{{ o.confText }}</span></span>
+                    <button onClick="{{ o.remove }}" aria-label="Remove" style="flex-shrink:0; width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ startAdd }}" style="{{ addBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add an obstruction</button>
+            </div>
+
+            <!-- estimates -->
+            <div style="background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:13px 14px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:4px">Estimates · from satellite imagery</div>
+              <sc-for list="{{ estimates }}" as="e" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--hairline)">
+                  <span style="flex:1; min-width:0"><span style="display:block; font-size:13px; color:var(--text-secondary)">{{ e.label }}</span><span style="display:block; font-family:var(--font-mono); font-size:14px; font-weight:500">{{ e.value }}</span></span>
+                  <span style="{{ e.conf.style }}">{{ e.conf.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isBad }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:flex-start; gap:9px; padding:12px 13px; background:var(--danger-bg); border-radius:12px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
+              <div><div style="font-size:14px; font-weight:600; color:var(--danger)">This footprint looks wrong</div><div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary); line-height:1.45; text-wrap:pretty">The outline spills onto the road and the neighbour's roof — likely old or merged imagery. Don't design on this. Draw it yourself, or send it to a physical visit.</div></div>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:0 -3px 14px rgba(10,10,11,0.06); padding:12px 16px calc(12px + env(safe-area-inset-bottom))">
+          <button onClick="{{ footerPrimary.onClick }}" style="{{ footerPrimary.style }}">{{ footerPrimary.label }}</button>
+          <sc-if value="{{ footerLinks.show }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:8px; display:flex; gap:8px">
+              <button onClick="{{ footerLinks.aClick }}" style="{{ footerLinkStyle }}">{{ footerLinks.aLabel }}</button>
+              <sc-if value="{{ footerLinks.hasB }}" hint-placeholder-val="{{ true }}"><button onClick="{{ footerLinks.bClick }}" style="{{ footerLinkStyle }}">{{ footerLinks.bLabel }}</button></sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — canvas left, review panel beside it</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px">
+          <div style="display:flex; align-items:center; gap:10px; padding:0 6px">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <sc-for list="{{ navRows }}" as="n" hint-placeholder-count="5">
+              <div onClick="{{ n.onClick }}" style="{{ n.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.icon }}"></path></svg><span style="flex:1; white-space:nowrap">{{ n.label }}</span><sc-if value="{{ n.count }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ n.count }}</span></sc-if></div>
+            </sc-for>
+          </div>
+          <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px">
+            <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div>
+            <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Rep · Surveyor</div></div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; padding:20px 32px 18px; background:var(--surface); box-shadow:var(--e1)">
+            <button onClick="{{ goBack }}" style="display:flex; align-items:center; gap:5px; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:12.5px; font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Leads / Priya Sharma / Site survey / Detect roof</button>
+            <div style="margin-top:10px; display:flex; align-items:center; gap:16px">
+              <div>
+                <div style="font-size:23px; font-weight:700; letter-spacing:-0.025em">Detect &amp; review the roof</div>
+                <div style="margin-top:3px; font-size:13.5px; color:var(--text-secondary)">{{ dSubtitle }}</div>
+              </div>
+              <div style="flex:1"></div>
+              <div style="display:flex; align-items:center; gap:14px; padding:8px 14px; background:var(--canvas); border-radius:12px">
+                <div style="width:36px; height:36px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px">PS</div>
+                <div><div style="font-size:13.5px; font-weight:600">14 Gangapur Rd, Nashik</div><div style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">Priya Sharma · 8.2 kWp</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex">
+
+            <!-- CANVAS -->
+            <div data-map onClick="{{ onMapClick }}" style="{{ dMapCursor }}">
+              <div style="position:absolute; inset:0; background:linear-gradient(160deg,#3c4a3b 0%,#2f3a2f 55%,#333f35 100%)"></div>
+              <div style="position:absolute; left:0; right:0; bottom:0; height:12%; background:linear-gradient(180deg,#b7ad95,#a89e86); opacity:0.9"></div>
+              <div style="position:absolute; left:20%; top:16%; width:56%; height:62%; background:#9aa0a6; border-radius:5px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.4)"></div>
+              <div style="position:absolute; left:80%; top:24%; width:16%; height:46%; background:#8f8577; border-radius:5px; opacity:0.92"></div>
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; z-index:3; pointer-events:none"><polygon points="{{ polyPoints }}" fill="{{ polyFill }}" stroke="{{ polyStroke }}" stroke-width="0.6" stroke-linejoin="round"></polygon></svg>
+              <sc-for list="{{ markers }}" as="m" hint-placeholder-count="3">
+                <div style="{{ m.wrapLg }}"><span style="{{ m.dotLg }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ m.icon }}"></path></svg></span><span style="{{ m.tag }}">{{ m.label }}</span></div>
+              </sc-for>
+              <sc-if value="{{ isReshape }}" hint-placeholder-val="{{ false }}">
+                <sc-for list="{{ handles }}" as="h" hint-placeholder-count="5">
+                  <div onPointerDown="{{ h.onDown }}" style="{{ h.styleLg }}"></div>
+                </sc-for>
+              </sc-if>
+              <sc-if value="{{ isDetecting }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute; inset:0; overflow:hidden; z-index:5"><div class="dr-sweep" style="position:absolute; left:0; right:0; height:40%; background:linear-gradient(180deg,transparent,rgba(90,75,255,0.25),transparent); animation:dr-sweep 2s var(--ease-standard) infinite"></div></div>
+              </sc-if>
+              <div style="position:absolute; left:16px; bottom:16px; font-family:var(--font-mono); font-size:12px; color:rgba(255,255,255,0.85); background:rgba(10,10,11,0.35); padding:4px 10px; border-radius:8px; z-index:6">measured from satellite imagery · 19.9975°N 73.7898°E</div>
+              <sc-if value="{{ isReshape }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; left:16px; top:16px; z-index:6; padding:8px 13px; background:var(--surface); border-radius:999px; box-shadow:var(--e2); font-size:12.5px; font-weight:500; color:var(--text-primary)">Drag the handles to reshape the outline</div>
+              </sc-if>
+              <sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute; left:16px; top:16px; z-index:6; padding:8px 13px; background:var(--surface); border-radius:999px; box-shadow:var(--e2); font-size:12.5px; font-weight:500; color:var(--text-primary)">Tap the roof to drop a {{ placingType }}</div>
+              </sc-if>
+            </div>
+
+            <!-- REVIEW PANEL -->
+            <div style="width:400px; flex-shrink:0; background:var(--surface); box-shadow:-1px 0 0 var(--hairline); display:flex; flex-direction:column">
+              <div style="flex:1; min-height:0; overflow-y:auto; padding:22px 22px 8px; display:flex; flex-direction:column; gap:14px">
+
+                <sc-if value="{{ isDetecting }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex; flex-direction:column; gap:9px">
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Detecting</div>
+                    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+                      <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--canvas); border-radius:12px">
+                        <span style="{{ s.dot }}"><sc-if value="{{ s.done }}" hint-placeholder-val="{{ true }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.active }}" hint-placeholder-val="{{ false }}"><span class="dr-spin" style="width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.5); border-top-color:#fff; animation:dr-spin 0.8s linear infinite"></span></sc-if></span>
+                        <span style="flex:1; font-size:14px; font-weight:500; color:{{ s.color }}">{{ s.label }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; flex-direction:column; gap:12px">
+                    <div style="display:flex; align-items:flex-start; gap:12px; padding:16px; background:var(--danger-bg); border-radius:14px">
+                      <span style="flex-shrink:0; width:36px; height:36px; border-radius:50%; background:var(--danger); color:#fff; display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+                      <div><div style="font-size:15px; font-weight:600; color:var(--danger)">Detection didn't finish</div><div style="margin-top:3px; font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">The imagery service didn't respond. Nothing was saved.</div></div>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+                  <sc-if value="{{ showCaveat }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex; align-items:flex-start; gap:10px; padding:13px 15px; background:var(--warning-bg); border-radius:12px">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                      <div style="font-size:13px; color:var(--warning); line-height:1.45; text-wrap:pretty">{{ caveatText }}</div>
+                    </div>
+                  </sc-if>
+
+                  <div>
+                    <div style="display:flex; align-items:center; gap:9px; margin-bottom:8px"><span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Roof outline</span><span style="{{ outlineConf.style }}">{{ outlineConf.label }}</span></div>
+                    <div style="display:flex; align-items:baseline; gap:10px"><span style="font-family:var(--font-mono); font-size:26px; font-weight:700; letter-spacing:-0.02em">{{ usableArea }} m²</span><span style="font-size:13px; color:var(--text-secondary)">usable · {{ roofArea }} m² total</span></div>
+                    <div style="margin-top:12px; display:flex; gap:8px">
+                      <button onClick="{{ startReshape }}" style="{{ chipBtnGhost }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>Adjust outline</button>
+                      <button onClick="{{ rejectOutline }}" style="{{ chipBtnGhost }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg><span style="color:var(--danger)">Reject</span></button>
+                    </div>
+                  </div>
+
+                  <div style="height:1px; background:var(--hairline)"></div>
+
+                  <div>
+                    <div style="display:flex; align-items:center; gap:9px; margin-bottom:10px"><span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Obstructions</span><span style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ obsCount }} found</span></div>
+                    <div style="display:flex; flex-direction:column; gap:8px">
+                      <sc-for list="{{ obstructions }}" as="o" hint-placeholder-count="3">
+                        <div style="display:flex; align-items:center; gap:11px; padding:9px 8px; border-radius:10px" style-hover="{{ rowHover }}">
+                          <span style="{{ o.iconWrap }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ o.icon }}"></path></svg></span>
+                          <span style="flex:1; min-width:0"><span style="display:block; font-size:14px; font-weight:500">{{ o.label }}</span><span style="{{ o.confInline }}">{{ o.confText }}</span></span>
+                          <button onClick="{{ o.remove }}" aria-label="Remove" style="flex-shrink:0; width:32px; height:32px; border-radius:50%; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <button onClick="{{ startAdd }}" style="{{ addBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add an obstruction</button>
+                  </div>
+
+                  <div style="height:1px; background:var(--hairline)"></div>
+
+                  <div>
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:2px">Estimates · from satellite imagery</div>
+                    <sc-for list="{{ estimates }}" as="e" hint-placeholder-count="3">
+                      <div style="display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--hairline)">
+                        <span style="flex:1; min-width:0"><span style="display:block; font-size:13px; color:var(--text-secondary)">{{ e.label }}</span><span style="display:block; font-family:var(--font-mono); font-size:15px; font-weight:500">{{ e.value }}</span></span>
+                        <span style="{{ e.conf.style }}">{{ e.conf.label }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isBad }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; flex-direction:column; gap:12px">
+                    <div style="display:flex; align-items:flex-start; gap:11px; padding:16px; background:var(--danger-bg); border-radius:14px">
+                      <span style="flex-shrink:0; width:36px; height:36px; border-radius:50%; background:var(--danger); color:#fff; display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg></span>
+                      <div><div style="font-size:15px; font-weight:600; color:var(--danger)">This footprint looks wrong</div><div style="margin-top:3px; font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">The outline spills onto the road and the neighbour's roof — likely old or merged imagery. Don't design on this.</div></div>
+                    </div>
+                    <div style="font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">Draw the outline yourself from the imagery, or send this lead to a physical visit where someone measures it on site.</div>
+                  </div>
+                </sc-if>
+
+              </div>
+
+              <!-- panel footer -->
+              <div style="flex-shrink:0; padding:16px 22px 20px; box-shadow:0 -1px 0 var(--hairline)">
+                <button onClick="{{ footerPrimary.onClick }}" style="{{ dFooterPrimary }}">{{ footerPrimary.label }}</button>
+                <sc-if value="{{ footerLinks.show }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:10px; display:flex; gap:10px">
+                    <button onClick="{{ footerLinks.aClick }}" style="{{ dFooterLink }}">{{ footerLinks.aLabel }}</button>
+                    <sc-if value="{{ footerLinks.hasB }}" hint-placeholder-val="{{ true }}"><button onClick="{{ footerLinks.bClick }}" style="{{ dFooterLink }}">{{ footerLinks.bLabel }}</button></sc-if>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MOBILE: add-obstruction bottom sheet -->
+  <sc-if value="{{ addSheetOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; left:0; right:0; bottom:0; z-index:40; display:flex; justify-content:center"></div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1000},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;detecting&quot;,&quot;failed&quot;,&quot;high&quot;,&quot;low&quot;,&quot;add&quot;,&quot;reshape&quot;,&quot;bad&quot;],&quot;default&quot;:&quot;high&quot;,&quot;tsType&quot;:&quot;'detecting'|'failed'|'high'|'low'|'add'|'reshape'|'bad'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.DEFAULT_POINTS = [{ x: 24, y: 26 }, { x: 74, y: 24 }, { x: 78, y: 62 }, { x: 34, y: 70 }, { x: 20, y: 48 }];
+    this.BAD_POINTS = [{ x: 44, y: 34 }, { x: 94, y: 30 }, { x: 96, y: 80 }, { x: 52, y: 88 }, { x: 40, y: 62 }];
+    this.ICONS = {
+      tank: 'M8 2h8v4a4 4 0 0 1-4 4 4 4 0 0 1-4-4z M6 10h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z',
+      mumty: 'M3 21h18 M5 21V8l7-5 7 5v13 M9 21v-6h6v6',
+      vent: 'M12 2v6 M12 8a4 4 0 0 0-4 4v9h8v-9a4 4 0 0 0-4-4z',
+      panel: 'M3 4h18v10H3z M3 9h18 M9 4v10 M15 4v10 M12 14v6 M8 20h8',
+      unclear: 'M12 17h.01 M12 13a2.5 2.5 0 1 0-2.5-3',
+    };
+    this.state = {
+      view: props.view || 'high',
+      points: this.DEFAULT_POINTS.map(p => ({ ...p })),
+      removed: {},
+      view_prev: 'high',
+      placingType: 'Water tank',
+      addSheetOpen: false,
+      dragIdx: -1,
+    };
+  }
+
+  baseObstructions(view) {
+    const list = [
+      { id: 'tank', icon: 'tank', label: 'Water tank', x: 58, y: 36, conf: 'high' },
+      { id: 'mumty', icon: 'mumty', label: 'Mumty (stair room)', x: 36, y: 58, conf: 'medium' },
+      { id: 'vent', icon: 'vent', label: 'Vent pipe', x: 66, y: 54, conf: 'low' },
+    ];
+    if (view === 'low') list.push({ id: 'q1', icon: 'unclear', label: 'Unclear object — check', x: 48, y: 44, conf: 'low' });
+    return list;
+  }
+
+  setView = (v) => {
+    this.setState(s => {
+      const leaving = (s.view === 'high' || s.view === 'low');
+      const patch = { view: v, addSheetOpen: v === 'add', dragIdx: -1 };
+      if ((v === 'reshape' || v === 'add') && leaving) patch.view_prev = s.view;
+      if (v === 'bad') patch.points = this.BAD_POINTS.map(p => ({ ...p }));
+      if (v === 'high' || v === 'low') { patch.points = this.DEFAULT_POINTS.map(p => ({ ...p })); patch.removed = {}; }
+      return patch;
+    });
+  };
+  done = () => this.setState(s => ({ view: s.view_prev || 'high', addSheetOpen: false }));
+  startReshape = () => this.setView('reshape');
+  startAdd = () => this.setView('add');
+  removeObs = (id) => this.setState(s => ({ removed: { ...s.removed, [id]: true } }));
+  rejectOutline = () => this.setView('bad');
+  setPlacing = (t) => this.setState({ placingType: t });
+
+  onMapClick = (e) => {
+    if (this.state.view !== 'add') return;
+    const map = e.currentTarget;
+    const r = map.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    const t = this.state.placingType;
+    const iconKey = t === 'Water tank' ? 'tank' : t === 'Mumty' ? 'mumty' : t === 'Vent / pipe' ? 'vent' : t === 'Existing panels' ? 'panel' : 'unclear';
+    const id = 'm' + Date.now();
+    this._added = this._added || [];
+    this._added.push({ id, icon: iconKey, label: t, x, y, conf: 'manual' });
+    this.forceUpdate();
+  };
+
+  onVertexDown = (i, e) => {
+    e.preventDefault(); e.stopPropagation();
+    this._map = e.currentTarget.closest('[data-map]');
+    this.setState({ dragIdx: i });
+    window.addEventListener('pointermove', this.onVertexMove);
+    window.addEventListener('pointerup', this.onVertexUp);
+  };
+  onVertexMove = (e) => {
+    if (!this._map || this.state.dragIdx < 0) return;
+    const r = this._map.getBoundingClientRect();
+    let x = ((e.clientX - r.left) / r.width) * 100;
+    let y = ((e.clientY - r.top) / r.height) * 100;
+    x = Math.max(2, Math.min(98, x)); y = Math.max(2, Math.min(98, y));
+    this.setState(s => { const pts = s.points.map(p => ({ ...p })); pts[s.dragIdx] = { x, y }; return { points: pts }; });
+  };
+  onVertexUp = () => {
+    window.removeEventListener('pointermove', this.onVertexMove);
+    window.removeEventListener('pointerup', this.onVertexUp);
+    this._map = null;
+    this.setState({ dragIdx: -1 });
+  };
+
+  goBack = () => { window.location.href = 'LocateBuilding.dc.html'; };
+  goSurvey = () => { window.location.href = 'SurveyMode.dc.html'; };
+  goGaps = () => { window.location.href = 'GapsRemote.dc.html'; };
+  goDraw = () => { window.location.href = 'CoverageFailure.dc.html'; };
+  goVisit = () => { window.location.href = 'SurveyMode.dc.html'; };
+
+  polyArea(pts) { let a = 0; for (let i = 0; i < pts.length; i++) { const p = pts[i], q = pts[(i + 1) % pts.length]; a += p.x * q.y - q.x * p.y; } return Math.abs(a) / 2; }
+
+  chipStyle(active) { return { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, background: active ? 'var(--action-primary)' : 'transparent', color: active ? '#fff' : 'var(--text-secondary)', whiteSpace: 'nowrap' }; }
+  confChip(level) {
+    const m = { high: ['var(--success-bg)', 'var(--success)', 'High confidence'], medium: ['var(--info-bg)', 'var(--info)', 'Medium'], low: ['var(--warning-bg)', 'var(--warning)', 'Low — check'], manual: ['var(--accent-subtle)', 'var(--accent)', 'Added by you'], derived: ['var(--neutral-bg)', 'var(--text-secondary)', 'Derived'] }[level] || ['var(--neutral-bg)', 'var(--text-secondary)', level];
+    return { style: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 22, padding: '0 10px', borderRadius: 999, fontSize: 11, fontWeight: 500, background: m[0], color: m[1] }, label: m[2] };
+  }
+
+  renderVals() {
+    const { view, points, removed, placingType, addSheetOpen } = this.state;
+    const isDetecting = view === 'detecting', isFailed = view === 'failed', isBad = view === 'bad';
+    const isReshape = view === 'reshape', isAdd = view === 'add';
+    const isHigh = view === 'high', isLow = view === 'low';
+    const isReview = isHigh || isLow || isReshape || isAdd;
+
+    const chipDefs = [
+      { k: 'detecting', label: 'Detecting' }, { k: 'failed', label: 'Failed' },
+      { k: 'high', label: 'High confidence' }, { k: 'low', label: 'Low confidence' },
+      { k: 'add', label: 'Add obstruction' }, { k: 'reshape', label: 'Reshape' },
+      { k: 'bad', label: 'Bad result' },
+    ];
+    const chips = chipDefs.map(c => ({ label: c.label, onClick: () => this.setView(c.k), style: this.chipStyle(view === c.k) }));
+
+    const dSubs = {
+      detecting: 'Reading the imagery — staged, and it fails gracefully if the service is down.',
+      failed: "The service didn't respond. Retry, or draw the roof by hand.",
+      high: 'Crisp outline, little to change. Confirm what you see, then continue.',
+      low: 'Several detections are uncertain — check the flagged ones before you rely on them.',
+      add: 'Drop an obstruction the detection missed.',
+      reshape: 'Drag the vertices; usable area updates as you go.',
+      bad: 'The footprint is clearly wrong — reject it and redraw, or book a visit.',
+    };
+
+    // polygon
+    const polyPoints = points.map(p => `${p.x},${p.y}`).join(' ');
+    const bad = isBad;
+    const polyFill = bad ? 'rgba(224,70,70,0.18)' : 'rgba(90,75,255,0.16)';
+    const polyStroke = bad ? 'var(--danger)' : 'var(--accent)';
+
+    // area live
+    const frac = this.polyArea(points) / (100 * 100);
+    const roofArea = Math.max(1, Math.round(frac * 354));
+    const usableArea = Math.max(1, Math.round(roofArea * 0.66));
+
+    // obstructions (review list)
+    let obs = this.baseObstructions(isLow ? 'low' : 'high').concat(this._added || []);
+    obs = obs.filter(o => !removed[o.id]);
+    const obstructions = obs.map(o => {
+      const c = this.confChip(o.conf);
+      const tint = o.conf === 'low' ? ['var(--warning-bg)', 'var(--warning)'] : o.conf === 'manual' ? ['var(--accent-subtle)', 'var(--accent)'] : ['var(--neutral-bg)', 'var(--text-secondary)'];
+      return {
+        label: o.label, icon: this.ICONS[o.icon] || this.ICONS.unclear, remove: () => this.removeObs(o.id),
+        iconWrap: { flexShrink: 0, width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tint[0], color: tint[1] },
+        confInline: { fontSize: 11.5, color: c.label === 'Low — check' ? 'var(--warning)' : 'var(--text-tertiary)', fontWeight: 500 },
+        confText: c.label + ' · satellite imagery',
+      };
+    });
+
+    // map markers (positioned)
+    const markers = obs.map(o => {
+      const tint = o.conf === 'low' ? ['var(--warning)', '#fff'] : o.conf === 'manual' ? ['var(--accent)', '#fff'] : ['var(--action-primary)', '#fff'];
+      return {
+        icon: this.ICONS[o.icon] || this.ICONS.unclear,
+        wrap: { position: 'absolute', left: o.x + '%', top: o.y + '%', transform: 'translate(-50%,-50%)', zIndex: 4, pointerEvents: 'none' },
+        wrapLg: { position: 'absolute', left: o.x + '%', top: o.y + '%', transform: 'translate(-50%,-50%)', zIndex: 4, display: 'flex', alignItems: 'center', gap: 6, pointerEvents: 'none' },
+        dot: { width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tint[0], color: tint[1], boxShadow: '0 1px 3px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.9)' },
+        dotLg: { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: tint[0], color: tint[1], boxShadow: '0 1px 3px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.9)' },
+        tag: { fontSize: 11.5, fontWeight: 500, color: '#fff', background: 'rgba(10,10,11,0.6)', padding: '2px 8px', borderRadius: 999, whiteSpace: 'nowrap' },
+        label: o.label,
+      };
+    });
+
+    // vertex handles (reshape)
+    const handles = points.map((p, i) => ({
+      onDown: (e) => this.onVertexDown(i, e),
+      style: { position: 'absolute', left: p.x + '%', top: p.y + '%', width: 18, height: 18, transform: 'translate(-50%,-50%)', borderRadius: '50%', background: '#fff', border: '3px solid var(--accent)', boxSizing: 'border-box', cursor: 'grab', touchAction: 'none', zIndex: 7 },
+      styleLg: { position: 'absolute', left: p.x + '%', top: p.y + '%', width: 20, height: 20, transform: 'translate(-50%,-50%)', borderRadius: '50%', background: '#fff', border: '3px solid var(--accent)', boxSizing: 'border-box', cursor: 'grab', touchAction: 'none', zIndex: 7 },
+    }));
+
+    // estimates
+    const pitchConf = isLow ? 'low' : 'medium';
+    const azConf = isLow ? 'low' : 'medium';
+    const estimates = [
+      { label: 'Roof pitch', value: isLow ? '10–15° (unclear)' : '~12° (est.)', conf: this.confChip(pitchConf) },
+      { label: 'Orientation', value: isLow ? 'SW · ~205°' : 'SW · 210°', conf: this.confChip(azConf) },
+      { label: 'Usable area', value: usableArea + ' m²', conf: this.confChip('derived') },
+    ];
+
+    // caveat
+    const showCaveat = isLow;
+    const caveatText = 'Imagery here looks a few years old — a corner may have changed. Reshape the outline if it doesn\u2019t match, and a site visit will confirm it.';
+
+    // detecting steps
+    const steps = [
+      { label: 'Fetching satellite imagery', st: 'done' },
+      { label: 'Detecting the roof outline', st: 'done' },
+      { label: 'Finding obstructions', st: 'active' },
+      { label: 'Estimating pitch & shading', st: 'queued' },
+    ].map(s => ({
+      label: s.label, done: s.st === 'done', active: s.st === 'active',
+      color: s.st === 'queued' ? 'var(--text-tertiary)' : 'var(--text-primary)',
+      dot: { flexShrink: 0, width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: s.st === 'done' ? 'var(--success)' : s.st === 'active' ? 'var(--accent)' : 'var(--neutral-bg)' },
+    }));
+
+    // footer
+    const primaryEnabled = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 15, fontWeight: 500, letterSpacing: '-0.01em' };
+    const primaryDisabled = { ...primaryEnabled, opacity: 0.4, cursor: 'default' };
+    let footerPrimary, footerLinks = { show: false };
+    if (isDetecting) { footerPrimary = { label: 'Detecting…', onClick: () => {}, style: primaryDisabled }; }
+    else if (isFailed) { footerPrimary = { label: 'Retry detection', onClick: () => this.setView('high'), style: primaryEnabled }; footerLinks = { show: true, hasB: false, aLabel: 'Draw it myself', aClick: this.goDraw }; }
+    else if (isReshape || isAdd) { footerPrimary = { label: isReshape ? 'Done reshaping' : 'Done adding', onClick: this.done, style: primaryEnabled }; }
+    else if (isBad) { footerPrimary = { label: 'Reject & draw it myself', onClick: this.goDraw, style: primaryEnabled }; footerLinks = { show: true, hasB: false, aLabel: 'This needs a visit', aClick: this.goVisit }; }
+    else { footerPrimary = { label: isLow ? 'Accept with gaps & continue' : 'Accept & continue', onClick: this.goGaps, style: primaryEnabled }; footerLinks = { show: true, hasB: true, aLabel: 'Draw it myself', aClick: this.goDraw, bLabel: 'Needs a visit', bClick: this.goVisit }; }
+
+    const navBase = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, cursor: 'pointer', color: 'var(--text-secondary)' };
+    const navActive = { ...navBase, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 };
+    const navRows = [
+      { label: 'My Day', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', onClick: () => { window.location.href = 'MyDay.dc.html'; }, style: navBase, count: '' },
+      { label: 'Leads', icon: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 .01', onClick: this.goBack, style: navActive, count: '24' },
+      { label: 'Site visits', icon: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z', onClick: () => {}, style: navBase, count: '3' },
+      { label: 'Proposals', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', onClick: () => {}, style: navBase, count: '' },
+      { label: 'Projects', icon: 'M3 3h7v7H3z', onClick: () => {}, style: navBase, count: '' },
+    ];
+
+    const mapBase = { flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden' };
+    const dMapBase = { flex: 1, minWidth: 0, position: 'relative', overflow: 'hidden' };
+
+    return {
+      chips, dSubtitle: dSubs[view] || '',
+      isDetecting, isFailed, isReview, isBad, isReshape, isAdd,
+      polyPoints, polyFill, polyStroke,
+      markers, handles,
+      roofArea, usableArea,
+      outlineConf: this.confChip(isLow ? 'medium' : 'high'),
+      obstructions, obsCount: obs.length, estimates,
+      showCaveat, caveatText,
+      steps, placingType,
+      mapCursor: { ...mapBase, cursor: isAdd ? 'crosshair' : 'default' },
+      dMapCursor: { ...dMapBase, cursor: isAdd ? 'crosshair' : 'default' },
+      onMapClick: this.onMapClick, onVertexDown: this.onVertexDown,
+      startReshape: this.startReshape, startAdd: this.startAdd, rejectOutline: this.rejectOutline,
+      goBack: this.goBack, goSurvey: this.goSurvey,
+      footerPrimary, footerLinks, addSheetOpen,
+      footerLinkStyle: { flex: 1, height: 40, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500 },
+      dFooterPrimary: primaryEnabled,
+      dFooterLink: { flex: 1, height: 42, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 },
+      chipBtnGhost: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 36, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 },
+      addBtn: { marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 6, height: 38, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--accent-subtle)', color: 'var(--accent)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 },
+      rowHover: { background: 'var(--neutral-bg)' },
+    };
+  }
+}
+</script>
+</body>
+</html>

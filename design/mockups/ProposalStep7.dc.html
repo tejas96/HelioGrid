@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  input{ font-family:inherit }
+  ::-webkit-scrollbar{ height:0; width:0 }
+  @media (prefers-reduced-motion: reduce){ .hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:6px">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · proposal builder · step 7</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Payment terms</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:13.5px; color:var(--text-secondary); margin-bottom:22px; max-width:860px; text-wrap:pretty">Tranches must total exactly 100%. Rupee values are live from the client-payable ₹3,51,847 in step 3. These labels become the project's collection schedule after the deal is won — write them as milestones a customer recognises.</div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — progress sticky on top · rows stacked</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:12px; padding:20px 16px 10px">
+          <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          <div style="flex:1; min-width:0"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Priya Sharma</div><div style="font-size:12px; color:var(--text-secondary)">New proposal · Nashik</div></div>
+          <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved</div>
+        </div>
+        <div style="flex-shrink:0; padding:4px 16px 10px">
+          <div style="display:flex; align-items:center; gap:8px; height:48px; padding:0 8px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+            <button style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">7 / 11</span><span style="font-size:14.5px; font-weight:500">Payment Terms</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></div>
+            <button style="{{ stepArrow }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+
+        <!-- sticky progress -->
+        <div style="flex-shrink:0; padding:0 16px 10px">
+          <div style="{{ progCard }}">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px"><span style="font-size:13.5px; font-weight:500; color:{{ progColor }}">{{ progText }}</span><span style="font-family:var(--font-mono); font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; color:{{ progColor }}">{{ totalPct }}%</span></div>
+            <div style="margin-top:9px; height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ progFill }}"></div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:2px 16px 16px">
+          <!-- templates -->
+          <div style="display:flex; align-items:center; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:12px">
+            <sc-for list="{{ templates }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="{{ t.style }}"><sc-if value="{{ t.isReset }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></sc-if>{{ t.label }}</button></sc-for>
+          </div>
+
+          <sc-if value="{{ labelErr }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ bannerStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Give this tranche a name</div><div style="margin-top:2px; font-size:12.5px; opacity:0.9">The customer sees these words on the proposal.</div></div></div>
+          </sc-if>
+
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+              <div style="{{ r.cardStyle }}">
+                <div style="display:flex; gap:11px">
+                  <svg width="16" height="18" viewBox="0 0 24 24" fill="{{ r.gripColor }}" style="flex-shrink:0; align-self:center"><circle cx="9" cy="6" r="1.4"></circle><circle cx="15" cy="6" r="1.4"></circle><circle cx="9" cy="12" r="1.4"></circle><circle cx="15" cy="12" r="1.4"></circle><circle cx="9" cy="18" r="1.4"></circle><circle cx="15" cy="18" r="1.4"></circle></svg>
+                  <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:11px">
+                    <div style="display:flex; align-items:center; gap:8px">
+                      <div style="{{ r.labelBox }}"><span style="{{ r.labelStyle }}">{{ r.labelText }}</span></div>
+                      <button onClick="{{ r.onRemove }}" aria-label="Remove" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+                      <div style="display:flex; align-items:center; gap:6px">
+                        <button onClick="{{ noop }}" aria-label="Decrease" style="{{ stepBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg></button>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:5px; min-width:70px; height:44px; padding:0 12px; background:var(--canvas); border-radius:12px"><span style="font-family:var(--font-mono); font-size:15px; font-weight:500; font-variant-numeric:tabular-nums">{{ r.pct }}</span><span style="font-size:13px; color:var(--text-tertiary)">%</span></div>
+                        <button onClick="{{ noop }}" aria-label="Increase" style="{{ stepBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button>
+                      </div>
+                      <div style="text-align:right"><div style="font-family:var(--font-mono); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums">{{ r.amount }}</div><div style="font-size:11px; color:var(--text-tertiary)">customer pays</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ noop }}" style="{{ addRowBtn }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add tranche</button>
+        </div>
+
+        <div style="flex-shrink:0; padding:0 16px 10px">
+          <div style="{{ gateCard }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ isValid }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ isInvalid }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg><span style="flex:1; min-width:0">{{ gateText }}</span></div>
+        </div>
+        <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+          <button style="{{ footBack }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+          <button style="{{ footNext }}">Next<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — table with inline editing · progress above</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}"><span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div style="{{ navRowActive }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span><span style="{{ navCount }}">10</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><span style="flex:1">Designs</span></div>
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px"><div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">AR</div><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:20px 30px; background:var(--surface)">
+            <div style="flex:1; min-width:0"><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Proposal for Priya Sharma</div><div style="font-size:12.5px; color:var(--text-secondary)">8.2 kWp residential · Nashik · HG-P-0151 (draft)</div></div>
+            <div style="{{ savedPill }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved · just now</div>
+            <button aria-label="Close" style="{{ closeBtn }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+          <div style="flex-shrink:0; padding:18px 30px 16px; background:var(--surface); box-shadow:0 6px 10px -10px rgba(10,10,11,0.16)">
+            <div style="position:relative"><div style="position:absolute; left:16px; right:16px; top:16px; height:2px; background:var(--canvas-sunken)"></div><div style="position:relative; display:flex; justify-content:space-between"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="11"><div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; min-width:0"><div style="{{ s.marker }}"><sc-if value="{{ s.isCheck }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if><sc-if value="{{ s.isNum }}" hint-placeholder-val="{{ true }}"><span style="{{ s.numStyle }}">{{ s.num }}</span></sc-if></div><div style="text-align:center; min-width:0; padding:0 2px"><div style="{{ s.railLabel }}">{{ s.shortLabel }}</div><div style="{{ s.railState }}">{{ s.stateShort }}</div></div></div></sc-for></div></div>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:24px 30px 34px; display:flex; gap:24px">
+            <div style="flex:1; min-width:0">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Step 7 · Payment terms</div>
+              <div style="margin-top:6px; font-size:22px; font-weight:700; letter-spacing:-0.02em">Payment terms</div>
+
+              <!-- templates -->
+              <div style="margin-top:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+                <span style="font-size:12px; color:var(--text-tertiary); margin-right:2px">Templates</span>
+                <sc-for list="{{ templates }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="{{ t.style }}"><sc-if value="{{ t.isReset }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></sc-if>{{ t.label }}</button></sc-for>
+              </div>
+
+              <!-- progress -->
+              <div style="{{ progCardD }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px"><span style="font-size:14px; font-weight:500; color:{{ progColor }}">{{ progText }}</span><span style="font-family:var(--font-mono); font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; color:{{ progColor }}">{{ totalPct }}%</span></div>
+                <div style="margin-top:10px; height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ progFill }}"></div></div>
+              </div>
+
+              <sc-if value="{{ labelErr }}" hint-placeholder-val="{{ false }}"><div style="{{ bannerStyleD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Give this tranche a name</div><div style="margin-top:2px; font-size:12.5px; opacity:0.9">The customer sees these words on the proposal.</div></div></div></sc-if>
+
+              <!-- table -->
+              <div style="margin-top:16px; background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden">
+                <div style="display:grid; grid-template-columns:28px 1fr 120px 150px 44px; align-items:center; gap:14px; height:44px; padding:0 18px; background:var(--surface)"><span></span><span style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-tertiary)">Milestone</span><span style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-tertiary); text-align:right">Share</span><span style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-tertiary); text-align:right">Customer pays</span><span></span></div>
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+                  <div style="{{ r.rowStyleD }}">
+                    <svg width="16" height="18" viewBox="0 0 24 24" fill="{{ r.gripColor }}"><circle cx="9" cy="6" r="1.4"></circle><circle cx="15" cy="6" r="1.4"></circle><circle cx="9" cy="12" r="1.4"></circle><circle cx="15" cy="12" r="1.4"></circle><circle cx="9" cy="18" r="1.4"></circle><circle cx="15" cy="18" r="1.4"></circle></svg>
+                    <div style="{{ r.labelBoxD }}"><span style="{{ r.labelStyle }}">{{ r.labelText }}</span></div>
+                    <div style="display:flex; align-items:center; gap:6px; height:42px; padding:0 12px; background:var(--canvas); border-radius:10px"><span style="flex:1; text-align:right; font-family:var(--font-mono); font-size:14.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ r.pct }}</span><span style="font-size:12.5px; color:var(--text-tertiary)">%</span></div>
+                    <span style="font-family:var(--font-mono); font-size:14.5px; font-weight:500; text-align:right; font-variant-numeric:tabular-nums">{{ r.amount }}</span>
+                    <button onClick="{{ r.onRemove }}" aria-label="Remove" style="{{ miniBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                  </div>
+                </sc-for>
+                <div style="padding:12px 18px 14px"><button onClick="{{ noop }}" style="{{ addRowBtnD }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add tranche</button></div>
+              </div>
+            </div>
+
+            <!-- side context -->
+            <div style="width:320px; flex-shrink:0; display:flex; flex-direction:column; gap:16px">
+              <div style="{{ gateCardD }}">
+                <div style="display:flex; align-items:center; gap:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ progColor }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ isValid }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ isInvalid }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg><div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Allocation</div><div style="font-size:15px; font-weight:700; letter-spacing:-0.01em; color:{{ progColor }}">{{ progText }}</div></div></div>
+                <div style="margin-top:12px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">{{ gateHelp }}</div>
+              </div>
+              <div style="background:linear-gradient(135deg,#F1EEFF 0%,#FBFAFF 72%); border-radius:16px; box-shadow:0 0 0 1px rgba(123,92,255,0.12); padding:18px 20px">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Based on</div>
+                <div style="margin-top:10px; display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Client pays (step 3)</span><span style="font-family:var(--font-mono); font-size:15px; font-weight:700; font-variant-numeric:tabular-nums">₹3,51,847</span></div>
+                <div style="margin-top:10px; font-size:12px; color:var(--text-secondary); text-wrap:pretty">Change it in step 3 and every rupee value here recalculates.</div>
+              </div>
+              <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:16px 18px; display:flex; gap:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M12 8v4"></path><path d="M12 16h.01"></path><circle cx="12" cy="12" r="10"></circle></svg><div style="font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">These become the project's collection schedule after the deal is won — write labels a customer recognises.</div></div>
+            </div>
+          </div>
+
+          <div style="flex-shrink:0; display:flex; align-items:center; gap:16px; padding:16px 30px; background:var(--surface); box-shadow:0 -6px 16px -12px rgba(10,10,11,0.16)">
+            <button style="{{ footBackD }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back</button>
+            <div style="{{ gatePill }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><sc-if value="{{ isValid }}" hint-placeholder-val="{{ false }}"><path d="M20 6 9 17l-5-5"></path></sc-if><sc-if value="{{ isInvalid }}" hint-placeholder-val="{{ true }}"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></sc-if></svg>{{ gateText }}</div>
+            <div style="flex:1; text-align:center"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-tertiary); font-variant-numeric:tabular-nums">7 / 11</span><span style="margin-left:8px; font-size:14px; font-weight:500">Payment Terms</span></div>
+            <button style="{{ footNextD }}">Next<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;template100&quot;,&quot;under88&quot;,&quot;over112&quot;,&quot;custom6&quot;,&quot;emptyLabel&quot;,&quot;reorder&quot;],&quot;default&quot;:&quot;template100&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: props.view || 'template100', tmpl: 't1' };
+  }
+  setView = (v) => this.setState({ view: v });
+  applyTmpl = (k) => this.setState({ view: 'template100', tmpl: k });
+  noop = () => {};
+
+  inr(n) {
+    let s = String(Math.round(Math.abs(n)));
+    let last3 = s.slice(-3), rest = s.slice(0, -3);
+    if (rest) last3 = ',' + last3;
+    rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+    return '\u20B9' + rest + last3;
+  }
+
+  renderVals() {
+    const { view, tmpl } = this.state;
+    const BASE = 351847;
+
+    const tmplRows = {
+      t1: [['On booking', 10], ['On material dispatch', 60], ['On installation', 20], ['On commissioning', 10]],
+      t2: [['Advance', 30], ['On material dispatch', 60], ['On commissioning', 10]],
+      t3: [['Advance', 50], ['On completion', 50]],
+    };
+    let raw, dragIdx = -1, emptyIdx = -1;
+    if (view === 'template100') raw = tmplRows[tmpl];
+    else if (view === 'under88') raw = [['On booking', 10], ['On material dispatch', 60], ['On installation', 8], ['On commissioning', 10]];
+    else if (view === 'over112') raw = [['On booking', 10], ['On material dispatch', 60], ['On installation', 32], ['On commissioning', 10]];
+    else if (view === 'custom6') raw = [['On booking', 10], ['On design approval', 10], ['On material dispatch', 40], ['On installation', 20], ['On commissioning', 10], ['On net-metering', 10]];
+    else if (view === 'emptyLabel') { raw = [['On booking', 10], ['On material dispatch', 60], ['', 20], ['On commissioning', 10]]; emptyIdx = 2; }
+    else if (view === 'reorder') { raw = [['On booking', 10], ['On material dispatch', 60], ['On installation', 20], ['On commissioning', 10]]; dragIdx = 1; }
+    else raw = tmplRows.t1;
+
+    const totalPct = raw.reduce((s, r) => s + r[1], 0);
+    const isValid = totalPct === 100 && emptyIdx < 0;
+    const labelErr = emptyIdx >= 0;
+
+    const progColor = isValid ? 'var(--success)' : (totalPct > 100 ? 'var(--danger)' : (labelErr ? 'var(--danger)' : 'var(--warning)'));
+    let progText;
+    if (labelErr) progText = 'A tranche needs a name';
+    else if (totalPct === 100) progText = '100% allocated';
+    else if (totalPct < 100) progText = totalPct + '% allocated · ' + (100 - totalPct) + '% unallocated';
+    else progText = totalPct + '% allocated · ' + (totalPct - 100) + '% too much';
+
+    const fillColor = isValid ? 'var(--success)' : (totalPct > 100 ? 'var(--danger)' : 'var(--accent)');
+    const progFill = { width: Math.min(totalPct, 100) + '%', height: '100%', borderRadius: 999, background: fillColor, transition: 'width 240ms var(--ease-standard)' };
+
+    const rows = raw.map((r, i) => {
+      const isEmpty = i === emptyIdx;
+      const isDrag = i === dragIdx;
+      const labelBoxBase = { flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', height: 42, padding: '0 14px', background: 'var(--canvas)', borderRadius: 12, boxShadow: isEmpty ? '0 0 0 1.5px var(--danger)' : 'none' };
+      return {
+        labelText: isEmpty ? 'Name this tranche' : r[0],
+        labelStyle: { flex: 1, minWidth: 0, fontSize: 14.5, fontWeight: 500, color: isEmpty ? 'var(--danger)' : 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+        labelBox: { ...labelBoxBase, height: 44 },
+        labelBoxD: labelBoxBase,
+        pct: r[1], amount: this.inr(r[1] / 100 * BASE),
+        gripColor: isDrag ? 'var(--accent)' : 'var(--text-disabled)',
+        onRemove: this.noop,
+        cardStyle: { background: 'var(--surface)', borderRadius: 16, boxShadow: isDrag ? 'var(--e3)' : 'var(--e1)', padding: '14px 16px', transform: isDrag ? 'translateY(-2px) scale(1.01)' : 'none', transition: 'box-shadow 160ms var(--ease-standard)' },
+        rowStyleD: { display: 'grid', gridTemplateColumns: '28px 1fr 120px 150px 44px', alignItems: 'center', gap: 14, minHeight: 60, padding: '0 18px', background: isDrag ? 'var(--accent-subtle)' : (i % 2 ? 'var(--surface-alt)' : 'var(--surface)'), boxShadow: isDrag ? 'var(--e3)' : 'none', borderRadius: isDrag ? 12 : 0 },
+      };
+    });
+
+    const tdefs = [{ k: 't1', label: '10 / 60 / 20 / 10' }, { k: 't2', label: '30 / 60 / 10' }, { k: 't3', label: '50 / 50' }];
+    const tpill = { display: 'inline-flex', alignItems: 'center', gap: 6, height: 34, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' };
+    const templates = tdefs.map(t => ({ label: t.label, isReset: false, onClick: () => this.applyTmpl(t.k), style: (view === 'template100' && tmpl === t.k) ? { ...tpill, background: 'var(--accent)', color: '#fff' } : { ...tpill, background: 'var(--neutral-bg)', color: 'var(--text-secondary)' } }));
+    templates.push({ label: 'Reset', isReset: true, onClick: () => this.applyTmpl('t1'), style: { ...tpill, background: 'transparent', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1.5px var(--canvas-sunken)' } });
+
+    const base = { 1: 'complete', 2: 'skipped', 3: 'complete', 4: 'complete', 5: 'complete', 6: 'complete', 7: 'current', 8: 'notStarted', 9: 'skipped', 10: 'notStarted', 11: 'notStarted' };
+    const defs = [['Company', 'Company'], ['Achievements', 'Achieve'], ['Solar System', 'System'], ['Performance', 'Perform'], ['Financial', 'Finance'], ['Timeline', 'Timeline'], ['Payment Terms', 'Payment'], ['Components', 'Compon.'], ['Terms & Conditions', 'Terms'], ['Client Details', 'Client'], ['Bank Details', 'Bank']];
+    const stateShort = { complete: 'Done', current: 'Editing', notStarted: '—', skipped: 'Skipped' };
+    const stateColor = { complete: 'var(--success)', current: 'var(--accent)', notStarted: 'var(--text-tertiary)', skipped: 'var(--text-tertiary)' };
+    const marker = (st) => {
+      const b = { flexShrink: 0, width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' };
+      if (st === 'complete') return { ...b, background: 'var(--success)', color: '#fff' };
+      if (st === 'current') return { ...b, background: 'var(--accent)', color: '#fff', boxShadow: '0 0 0 4px var(--accent-subtle)' };
+      if (st === 'skipped') return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px dashed var(--text-tertiary)' };
+      return { ...b, background: 'var(--surface)', color: 'var(--text-tertiary)', border: '1.5px solid var(--canvas-sunken)' };
+    };
+    const steps = defs.map((d, i) => {
+      const st = base[i + 1]; const isCheck = st === 'complete', isCurrent = st === 'current';
+      return { num: i + 1, shortLabel: d[1], stateShort: stateShort[st], isCheck, isNum: !isCheck, marker: marker(st),
+        numStyle: { fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: st === 'skipped' ? 'var(--text-tertiary)' : 'var(--text-secondary)' },
+        railLabel: { fontSize: 11.5, fontWeight: isCurrent ? 700 : 500, color: isCurrent ? 'var(--accent)' : 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+        railState: { marginTop: 2, fontSize: 10.5, color: stateColor[st], whiteSpace: 'nowrap' } };
+    });
+
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const views = [
+      { key: 'template100', label: 'Template · 100%' }, { key: 'under88', label: 'Under · 88%' }, { key: 'over112', label: 'Over · 112%' },
+      { key: 'custom6', label: 'Custom · 6' }, { key: 'emptyLabel', label: 'Empty label' }, { key: 'reorder', label: 'Reordering' },
+    ].map(v => ({ label: v.label, onClick: () => this.setView(v.key), style: view === v.key ? { ...pill, background: 'var(--action-primary)', color: '#fff' } : { ...pill, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const navRow = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, color: 'var(--text-secondary)', cursor: 'pointer' };
+    const gateText = labelErr ? 'Name every tranche to generate' : (totalPct === 100 ? '100% allocated \u2713' : (totalPct < 100 ? (100 - totalPct) + '% unallocated \u00b7 blocked' : (totalPct - 100) + '% over \u00b7 blocked'));
+    const gateHelp = isValid ? 'Adds to exactly 100%. Generate is unlocked.' : (labelErr ? 'A tranche has no label. The proposal shows these names to the customer.' : (totalPct < 100 ? 'Add ' + (100 - totalPct) + '% more across the tranches to reach 100%.' : 'Remove ' + (totalPct - 100) + '% — the tranches add up to more than the price.'));
+    const gTone = isValid ? ['var(--success-bg)', 'var(--success)'] : ['var(--danger-bg)', 'var(--danger)'];
+
+    return {
+      views, templates, rows, steps, totalPct, progText, progColor, progFill,
+      isValid, isInvalid: !isValid, labelErr,
+      gateText, gateHelp, noop: this.noop,
+      progCard: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e2)', padding: '13px 16px' },
+      progCardD: { marginTop: 16, background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: '16px 20px' },
+      gateCard: { display: 'flex', alignItems: 'center', gap: 9, padding: '11px 14px', borderRadius: 14, fontSize: 13.5, fontWeight: 500, background: gTone[0], color: gTone[1] },
+      gateCardD: { background: 'var(--surface)', borderRadius: 16, boxShadow: isValid ? '0 0 0 1.5px rgba(21,154,91,0.35)' : '0 0 0 1.5px var(--danger)', padding: '18px 20px' },
+      gatePill: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 34, padding: '0 14px', borderRadius: 999, fontSize: 13, fontWeight: 500, background: gTone[0], color: gTone[1] },
+      bannerStyle: { display: 'flex', gap: 10, padding: '12px 14px', borderRadius: 14, marginBottom: 12, background: 'var(--danger-bg)', color: 'var(--danger)' },
+      bannerStyleD: { display: 'flex', gap: 10, padding: '12px 14px', borderRadius: 14, marginTop: 16, background: 'var(--danger-bg)', color: 'var(--danger)' },
+      miniBtn: { flexShrink: 0, width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      stepBtn: { flexShrink: 0, width: 34, height: 44, borderRadius: 11, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      addRowBtn: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, width: '100%', marginTop: 12, height: 46, borderRadius: 12, border: 'none', cursor: 'pointer', background: 'var(--accent-subtle)', color: 'var(--accent)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      addRowBtnD: { display: 'flex', alignItems: 'center', gap: 7, height: 40, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--accent-subtle)', color: 'var(--accent)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      closeBtn: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      savedPill: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', borderRadius: 999, background: 'var(--success-bg)', color: 'var(--success)', fontSize: 12.5, fontWeight: 500 },
+      stepArrow: { flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      footBack: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNext: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 20px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footBackD: { display: 'flex', alignItems: 'center', gap: 4, height: 44, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      footNextD: { display: 'flex', alignItems: 'center', gap: 7, height: 44, padding: '0 24px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500 },
+      railStyle: { flexShrink: 0, width: 240, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: '22px 16px', overflow: 'hidden', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', gap: 10 },
+      navRow, navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+    };
+  }
+}
+</script>
+</body>
+</html>

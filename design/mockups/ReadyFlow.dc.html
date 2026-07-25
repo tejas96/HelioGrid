@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-bloom { 0%,100%{ transform:translateX(-50%) scale(1); opacity:.85 } 50%{ transform:translateX(-50%) scale(1.09); opacity:1 } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-spin { to{ transform:rotate(360deg) } }
+  @media (prefers-reduced-motion: reduce){ .hg-bloom-layer{ animation:none !important } .hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="position:relative; width:100%; height:100%; background:var(--canvas); overflow:hidden; font-family:var(--font-sans); color:var(--text-primary)">
+  <div class="hg-bloom-layer" style="{{ bloomStyle }}"></div>
+  
+
+  <div style="position:relative; z-index:1; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:safe center; box-sizing:border-box; padding:{{ padX }}px; overflow-y:auto">
+    <div style="width:100%; max-width:{{ colMax }}px; display:flex; flex-direction:column; padding:{{ padY }}px 0">
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:26px">
+        <div style="font-weight:700; font-size:22px; letter-spacing:-0.02em; line-height:1">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></div>
+      </div>
+
+      <sc-if value="{{ isReady }}" hint-placeholder-val="{{ true }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column">
+          <div style="width:56px; height:56px; border-radius:50%; background:var(--success-bg); display:flex; align-items:center; justify-content:center; color:var(--success)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <h1 style="margin:20px 0 0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">You're set up, Rajesh</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary)">Your account is ready. Where would you like to start?</p>
+
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:12px">
+
+            <button onClick="{{ openLead }}" onMouseEnter="{{ onEnterLead }}" onMouseLeave="{{ onLeave }}" style="{{ leadStyle }}">
+              <div style="flex-shrink:0; width:48px; height:48px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center; color:var(--accent)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:17px; font-weight:700; letter-spacing:-0.015em">Add your first lead</div>
+                <div style="margin-top:3px; font-size:13.5px; line-height:1.4; color:var(--text-secondary)">Start selling now — capture a lead in under a minute.</div>
+              </div>
+              <div style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--action-primary); color:#fff; display:flex; align-items:center; justify-content:center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </div>
+            </button>
+
+            <button onClick="{{ openDemo }}" onMouseEnter="{{ onEnterDemo }}" onMouseLeave="{{ onLeave }}" style="{{ demoStyle }}">
+              <div style="flex-shrink:0; width:48px; height:48px; border-radius:50%; background:var(--warning-bg); display:flex; align-items:center; justify-content:center; color:var(--warning)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.9 4.9 1.4 1.4"></path><path d="m17.7 17.7 1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.3 17.7-1.4 1.4"></path><path d="m19.1 4.9-1.4 1.4"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:17px; font-weight:700; letter-spacing:-0.015em">Explore a demo project</div>
+                <div style="margin-top:3px; font-size:13.5px; line-height:1.4; color:var(--text-secondary)">A finished 8.2 kWp Pune rooftop — open it and poke around, nothing to break.</div>
+              </div>
+              <div style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--canvas-sunken); color:var(--text-secondary); display:flex; align-items:center; justify-content:center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </div>
+            </button>
+
+          </div>
+
+          <div style="margin-top:14px">
+            <dc-import name="SetupLater" variant="{{ variant }}" hint-size="100%,84px" style="width:100%"></dc-import>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOpening }}" hint-placeholder-val="{{ false }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column; align-items:flex-start">
+          <div style="width:44px; height:44px; border-radius:50%; border:3px solid var(--accent-subtle); border-top-color:var(--accent); animation:hg-spin 0.7s linear infinite"></div>
+          <h1 style="margin:22px 0 0; font-size:26px; font-weight:700; letter-spacing:-0.02em; line-height:1.15">{{ openingTitle }}</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary)">{{ openingSub }}</p>
+          <button onClick="{{ restart }}" style="margin-top:24px; background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Back to start</button>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:760},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;mobile&quot;,&quot;tsType&quot;:&quot;'mobile'|'desktop'&quot;}}">
+class Component extends DCLogic {
+  state = { step: 'ready', hovered: '', opening: '' };
+
+  doorStyle(key) {
+    const hov = this.state.hovered === key;
+    return {
+      display: 'flex', alignItems: 'center', gap: 16, padding: '20px', width: '100%', boxSizing: 'border-box',
+      background: 'var(--surface)', borderRadius: 22, border: 'none', cursor: 'pointer', textAlign: 'left',
+      boxShadow: hov ? 'var(--e3)' : 'var(--e2)', transform: hov ? 'translateY(-1px)' : 'translateY(0)',
+      transition: 'box-shadow 200ms var(--ease-standard), transform 120ms var(--ease-standard)', font: 'inherit', color: 'inherit',
+    };
+  }
+  openLead = () => this.setState({ step: 'opening', opening: 'lead' });
+  openDemo = () => this.setState({ step: 'opening', opening: 'demo' });
+  restart = () => this.setState({ step: 'ready', opening: '', hovered: '' });
+
+  renderVals() {
+    const desktop = this.props.variant === 'desktop';
+    const { step, opening } = this.state;
+    const titles = { lead: 'Opening lead capture', demo: 'Opening the demo project', later: 'Opening setup' };
+    const subs = {
+      lead: "Let's capture your first customer.",
+      demo: "A finished 8.2 kWp Pune rooftop — explore the design and proposal, all safe to touch.",
+      later: "Add your logo, GST details or invite your team whenever suits you.",
+    };
+    return {
+      isReady: step === 'ready', isOpening: step === 'opening',
+      leadStyle: this.doorStyle('lead'), demoStyle: this.doorStyle('demo'),
+      onEnterLead: () => this.setState({ hovered: 'lead' }), onEnterDemo: () => this.setState({ hovered: 'demo' }),
+      onLeave: () => this.setState({ hovered: '' }),
+      openLead: this.openLead, openDemo: this.openDemo, restart: this.restart,
+      variant: this.props.variant || 'mobile',
+      openingTitle: titles[opening] || titles.lead,
+      openingSub: subs[opening] || subs.lead,
+      padX: desktop ? 56 : 26, padY: desktop ? 0 : 20, colMax: desktop ? 440 : 620,
+      bloomStyle: {
+        position: 'absolute', top: desktop ? -180 : -150, left: '50%', transform: 'translateX(-50%)',
+        width: desktop ? 860 : 520, height: desktop ? 860 : 520, background: 'var(--glow-brand)',
+        pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

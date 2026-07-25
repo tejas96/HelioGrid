@@ -430,16 +430,18 @@ Index `(tenant_id, project_id, status)`.
 | tenant_id | uuid | |
 | customer_id, lead_id | uuid | |
 | project_id | uuid, nullable | set at Won |
-| label | text, nullable | named-link readiness (D33) — e.g. "CFO link"; unused in v1 |
-| contact_id | uuid → contacts, nullable | named-link recipient (D33 schema-readiness); unused in v1 |
+| label | text, nullable | named link (D33) — e.g. "CFO link"; ships in the 20-day build (Track B, R6-amended 2026-07-24) |
+| contact_id | uuid → contacts, nullable | named-link recipient (D33); ships in v1 |
+| otp_required | boolean, not null, default false | OTP-at-accept gate (R6-amended); the tenant-set value threshold that flips it lives in `tenant_settings` |
 | token_hash | text | **unique GLOBAL index** (public route resolves without tenant context); raw token never stored |
 | phase | enum `link_phase` | `proposal → progress → handover` — **one URL advances in place through the lifecycle** (journey: "same tokenised URL") |
 | status | enum `link_status` | `active` / `revoked` / `expired` |
 | created_by | uuid → users | |
 
-One link per deal; C&I uses the same single link (D33 accepted risk — named links + OTP-at-accept
-is the registered later fix; `label`/`contact_id` above and an `otp_required` flag reserved in
-the token payload are schema-readiness only, unused in v1). Public reads go through **SECURITY DEFINER
+Named links + OTP-at-accept **ship in the 20-day build** (Track B, R6-amended 2026-07-24): a
+deal may carry multiple named links (`label`/`contact_id`), and `otp_required` gates acceptance
+— the tenant-set value threshold lives in `tenant_settings`; per-link open attribution rows are
+append-only events (`customer_link_events` below). Public reads go through **SECURITY DEFINER
 functions scoped to the link's single deal** (db.md) — never a broad RLS policy. Never revoked
 over unpaid money (product law: chase the person, don't punish the view).
 
@@ -691,7 +693,7 @@ hostage.
 
 ### `plans` — PLATFORM
 
-`id` · `code text unique` (`growth` / `pro` / `enterprise`) · `name` ·
+`id` · `code text unique` (`starter` / `growth` / `pro` / `enterprise`) · `name` ·
 `price_monthly_inr, price_annual_inr numeric(14,2)` · `razorpay_plan_id text` ·
 `trial_days int` · `bundles jsonb` — included quotas: `voice_minutes`, `ai_detections`,
 `otp_sms` (fair-use cap — not billed v1), `storage_gb`, `seats` (reserved — always unlimited in
@@ -788,6 +790,15 @@ are not re-translated) · `subject_type, subject_id` (deep-link target) · `read
 `language` enum `ui_language` (`en`/`hi`/`mr`) · `body text` with `{placeholders}` ·
 `is_platform_seed boolean`. **Unique `(tenant_id, template_key, language)`.** Copy-paste
 supply for the rep's manual WhatsApp flow (D32 — the app never sends).
+
+### `targets` — TENANT (monthly targets)
+
+`id` · `tenant_id` · `scope` enum `target_scope` (`tenant` / `user`) · `user_id → users,
+nullable` (null when scope = `tenant`) · `period_month date` (first of month) ·
+`value_inr numeric(14,2)` · `created_by → users` · `created_at, updated_at`.
+**Unique `(tenant_id, scope, user_id, period_month)`.** Consumed by the Track C dashboards —
+"set a monthly target" (journey Stage 9). Stores the goal only; actuals derive from
+proposals/payments at read time.
 
 ### `audit_log` — append-only, TENANT-scoped with platform rows
 
@@ -940,6 +951,7 @@ erDiagram
 - Referral credit model — `source='referral'` exists; attribution is a registered UX gap.
 
 Forward-compatibility hooks already in place: `customers.merged_into_customer_id` (merge flow),
-`customer_links` single-deal SECURITY DEFINER path (named links + OTP later), `market_rules_packs`
+`customer_links` single-deal SECURITY DEFINER path (named links + OTP-at-accept in v1 — Track B,
+R6-amended), `market_rules_packs`
 country/state versioning (global expansion), `design_blocks`/`design_tables` (tracker + terrain
 phases), `webhook_events.provider` enum extension point (BSP adapters v2).

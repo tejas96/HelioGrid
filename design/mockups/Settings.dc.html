@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-expand { from{ opacity:0; transform:translateY(-4px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-toast { from{ opacity:0; transform:translate(-50%,10px) } to{ opacity:1; transform:translate(-50%,0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  @media (prefers-reduced-motion: reduce){ .hg-expand,.hg-toast{ animation:none !important } }
+</style>
+</helmet>
+<div style="position:relative; min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:26px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · settings</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Settings home — the configuration hub</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="4">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — reached from More › Settings · nested, back ‹, no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <div style="flex-shrink:0; padding:22px 20px 12px">
+          <button onClick="{{ goBack }}" aria-label="Back" style="width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div style="margin-top:14px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Suryodaya Solar</div>
+          <div style="margin-top:5px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Settings</div>
+          <div style="margin-top:4px; font-size:13.5px; color:var(--text-secondary)">{{ whoLine }}</div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 16px 30px">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+            <div style="margin-top:18px">
+              <div style="padding:0 6px 10px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">{{ g.label }}</div>
+              <div style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:6px">
+                <sc-for list="{{ g.rows }}" as="row" hint-placeholder-count="3">
+                  <div onClick="{{ row.onClick }}" style="display:flex; align-items:center; gap:13px; padding:12px; border-radius:14px; cursor:pointer" style-hover="{{ rowHover }}">
+                    <span style="{{ row.iconWrap }}">{{ row.iconEl }}</span>
+                    <div style="flex:1; min-width:0">
+                      <div style="font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.title }}</div>
+                      <div style="margin-top:3px; display:flex; align-items:center"><span style="{{ row.statusTextStyle }}"><sc-if value="{{ row.statusDot }}" hint-placeholder-val="{{ false }}"><span style="{{ row.dotStyle }}"></span></sc-if>{{ row.statusLabel }}</span></div>
+                    </div>
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                  </div>
+                </sc-for>
+
+                <sc-if value="{{ g.hasLeadSources }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ toggleLeads }}" style="width:100%; display:flex; align-items:center; gap:13px; padding:12px; border-radius:14px; border:none; background:none; cursor:pointer; font-family:inherit; text-align:left">
+                    <span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></span>
+                    <div style="flex:1; min-width:0">
+                      <div style="font-size:15px; font-weight:500">Lead sources</div>
+                      <div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary)">{{ leadsSub }}</div>
+                    </div>
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="{{ leadsChev }}"><path d="m6 9 6 6 6-6"></path></svg>
+                  </button>
+                  <sc-if value="{{ leadsOpen }}" hint-placeholder-val="{{ false }}">
+                    <div class="hg-expand" style="padding:2px 8px 8px; display:flex; flex-direction:column; gap:2px; animation:hg-expand 200ms var(--ease-enter) both">
+                      <sc-for list="{{ leadSources }}" as="s" hint-placeholder-count="5">
+                        <div style="display:flex; align-items:center; gap:12px; padding:9px 6px">
+                          <span style="{{ s.iconWrap }}">{{ s.iconEl }}</span>
+                          <div style="flex:1; min-width:0">
+                            <div style="font-size:14px; font-weight:500">{{ s.title }}</div>
+                            <div style="margin-top:1px; font-size:12px; color:var(--text-secondary); text-wrap:pretty">{{ s.sub }}</div>
+                          </div>
+                          <sc-if value="{{ s.later }}" hint-placeholder-val="{{ false }}"><span style="{{ leadsLaterPill }}">Later</span></sc-if>
+                          <sc-if value="{{ s.toggleable }}" hint-placeholder-val="{{ true }}"><button onClick="{{ s.onToggle }}" style="{{ s.trackStyle }}" aria-label="{{ s.title }}"><span style="{{ s.thumbStyle }}"></span></button></sc-if>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+
+          <sc-if value="{{ nonOwnerNote }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px; display:flex; gap:12px; padding:16px; background:var(--surface-alt); border-radius:18px; box-shadow:var(--e1)">
+              <span style="flex-shrink:0; width:38px; height:38px; border-radius:50%; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+              <div style="flex:1; min-width:0; font-size:13px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">Business, agent, team and billing are managed by <strong style="color:var(--text-primary); font-weight:500">Rajesh Patil</strong> (owner). Ask Rajesh if you need one of them changed.</div>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:20px; text-align:center; font-size:12.5px; color:var(--text-tertiary); text-wrap:pretty">Nothing here is required — the defaults already work.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — reached from the sidebar · owner at a desk</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px; box-sizing:border-box; z-index:2">
+          <div style="display:flex; align-items:center; gap:10px; padding:0 6px">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </div>
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goMyDay }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div onClick="{{ goLeads }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span style="flex:1">Leads</span><span style="{{ navCount }}">24</span></div>
+            <div onClick="{{ goProposals }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><span style="flex:1">Proposals</span></div>
+            <div onClick="{{ goProjects }}" style="{{ navRow }}" style-hover="{{ navHover }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goNotifs }}" style="{{ navRow }}" style-hover="{{ navHover }}"><span style="position:relative; display:flex; flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; border-radius:50%; background:var(--danger); box-shadow:0 0 0 2px var(--surface)"></span></span><span style="flex:1">Notifications</span><span style="{{ navCount }}">3</span></div>
+            <div style="display:flex; align-items:center; gap:12px; height:44px; padding:0 14px; border-radius:12px; background:var(--accent-subtle); color:var(--accent); font-size:14px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+            <div style="display:flex; align-items:center; gap:11px; margin-top:12px; padding:8px; border-radius:12px">
+              <div style="{{ avatarStyle }}">{{ initials }}</div>
+              <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ personName }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ personRole }}</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; height:68px; display:flex; align-items:center; gap:16px; padding:0 30px">
+            <div style="display:flex; align-items:center; gap:10px; width:420px; height:42px; padding:0 16px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <span style="font-size:14px; color:var(--text-tertiary)">Search settings</span>
+            </div>
+            <div style="flex:1"></div>
+            <span style="font-size:13px; color:var(--text-secondary)">{{ whoLine }}</span>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 30px 44px">
+            <div style="max-width:880px; margin:0 auto">
+              <div style="font-size:28px; font-weight:700; letter-spacing:-0.025em">Settings</div>
+              <p style="margin:8px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary); max-width:600px; text-wrap:pretty">{{ deskIntro }}</p>
+
+              <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+                <div style="margin-top:30px">
+                  <div style="padding:0 4px 12px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">{{ g.label }}</div>
+                  <div style="background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:8px">
+                    <sc-for list="{{ g.rows }}" as="row" hint-placeholder-count="3">
+                      <div onClick="{{ row.onClick }}" style="display:flex; align-items:center; gap:16px; padding:16px; border-radius:16px; cursor:pointer" style-hover="{{ rowHover }}">
+                        <span style="{{ row.iconWrap }}">{{ row.iconEl }}</span>
+                        <div style="flex:1; min-width:0">
+                          <div style="font-size:15.5px; font-weight:500">{{ row.title }}</div>
+                          <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">{{ row.desc }}</div>
+                        </div>
+                        <span style="{{ row.pillStyle }}"><sc-if value="{{ row.statusDot }}" hint-placeholder-val="{{ false }}"><span style="{{ row.dotStyle }}"></span></sc-if>{{ row.statusLabel }}</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                      </div>
+                    </sc-for>
+
+                    <sc-if value="{{ g.hasLeadSources }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ toggleLeads }}" style="width:100%; display:flex; align-items:center; gap:16px; padding:16px; border-radius:16px; border:none; background:none; cursor:pointer; font-family:inherit; text-align:left" style-hover="{{ rowHover }}">
+                        <span style="flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></span>
+                        <div style="flex:1; min-width:0">
+                          <div style="font-size:15.5px; font-weight:500">Lead sources</div>
+                          <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">Which channels bring you leads · {{ leadsSub }}</div>
+                        </div>
+                        <span style="font-size:13px; color:var(--accent); font-weight:500">{{ leadsToggleLabel }}</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="{{ leadsChev }}"><path d="m6 9 6 6 6-6"></path></svg>
+                      </button>
+                      <sc-if value="{{ leadsOpen }}" hint-placeholder-val="{{ false }}">
+                        <div class="hg-expand" style="margin:0 8px 8px; padding:6px 8px 10px; background:var(--surface-alt); border-radius:16px; display:flex; flex-direction:column; gap:2px; animation:hg-expand 200ms var(--ease-enter) both">
+                          <sc-for list="{{ leadSources }}" as="s" hint-placeholder-count="5">
+                            <div style="display:flex; align-items:center; gap:14px; padding:12px 10px">
+                              <span style="{{ s.iconWrap }}">{{ s.iconEl }}</span>
+                              <div style="flex:1; min-width:0">
+                                <div style="font-size:14.5px; font-weight:500">{{ s.title }}</div>
+                                <div style="margin-top:1px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">{{ s.sub }}</div>
+                              </div>
+                              <sc-if value="{{ s.later }}" hint-placeholder-val="{{ false }}"><span style="{{ leadsLaterPill }}">Later</span></sc-if>
+                              <sc-if value="{{ s.toggleable }}" hint-placeholder-val="{{ true }}"><button onClick="{{ s.onToggle }}" style="{{ s.trackStyle }}" aria-label="{{ s.title }}"><span style="{{ s.thumbStyle }}"></span></button></sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+
+              <sc-if value="{{ nonOwnerNote }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:24px; display:flex; gap:14px; padding:20px; background:var(--surface-alt); border-radius:18px; box-shadow:var(--e1); max-width:600px">
+                  <span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+                  <div style="flex:1; min-width:0; font-size:13.5px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">Business, agent, team and billing are managed by <strong style="color:var(--text-primary); font-weight:500">Rajesh Patil</strong> (owner). Ask Rajesh if you need one of these changed.</div>
+                </div>
+              </sc-if>
+
+              <div style="margin-top:26px; text-align:center; font-size:13px; color:var(--text-tertiary)">Nothing here is required — the defaults already work.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Business profile & branding” · 8.2</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="BusinessProfile" view="personalised" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Catalog & price book” · 8.3</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="CatalogPriceBook" view="catalog" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Proposal defaults & templates” · 8.4</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="ProposalDefaults" view="overview" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Message templates” · 8.5</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="MessageTemplates" view="defaults" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Team & roles” · 8.6</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="TeamRoles" view="team" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Billing” · 8.7</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="Billing" view="trialActive" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <div style="margin-top:56px; display:flex; align-items:center; gap:16px">
+    <div style="flex-shrink:0; display:flex; align-items:center; gap:12px">
+      <span style="width:30px; height:30px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span>
+      <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Opens from “Profile & preferences” · 8.8 · everyone</div><div style="margin-top:2px; font-size:15px; font-weight:600; letter-spacing:-0.02em">The screen that row leads to</div></div>
+    </div>
+    <div style="flex:1; height:1px; background:var(--hairline)"></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <dc-import name="ProfilePreferences" view="profile" hint-size="100%,1050px"></dc-import>
+  </div>
+
+  <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
+    <div class="hg-toast" style="position:absolute; left:50%; bottom:34px; z-index:99; background:var(--action-primary); color:#fff; padding:12px 20px; border-radius:999px; box-shadow:var(--e4); font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:10px; animation:hg-toast 220ms var(--ease-enter) both">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ toastText }}
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2000,&quot;height&quot;:1050},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ownerDefaults&quot;,&quot;ownerCustom&quot;,&quot;nonOwner&quot;,&quot;leadsExpanded&quot;],&quot;default&quot;:&quot;ownerDefaults&quot;,&quot;tsType&quot;:&quot;'ownerDefaults'|'ownerCustom'|'nonOwner'|'leadsExpanded'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const v = props.view || 'ownerDefaults';
+    this.state = {
+      view: v,
+      leadsOpen: v === 'leadsExpanded',
+      sources: { manual: true, csv: true, inbound: true },
+      toastShow: false, toastText: '',
+    };
+  }
+
+  go = (href) => () => { window.location.href = href; };
+  setView = (k) => this.setState({ view: k, leadsOpen: k === 'leadsExpanded' });
+  toggleLeads = () => this.setState(s => ({ leadsOpen: !s.leadsOpen }));
+  toggleSource = (k) => () => this.setState(s => ({ sources: { ...s.sources, [k]: !s.sources[k] } }));
+  toast = (t) => () => {
+    clearTimeout(this._tt);
+    this.setState({ toastShow: true, toastText: t });
+    this._tt = setTimeout(() => this.setState({ toastShow: false }), 2400);
+  };
+
+  P(d) { return React.createElement('path', { d }); }
+  C(cx, cy, r) { return React.createElement('circle', { cx, cy, r }); }
+  R(x, y, w, h, rx) { return React.createElement('rect', { x, y, width: w, height: h, rx }); }
+  icon(children, size, stroke) {
+    size = size || 20; stroke = stroke || 'currentColor';
+    return React.createElement('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke, strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      children.map((ch, i) => React.cloneElement(ch, { key: i })));
+  }
+  tintPair(t) {
+    const m = {
+      accent: ['var(--accent-subtle)', 'var(--accent)'],
+      info: ['var(--info-bg)', 'var(--info)'],
+      neutral: ['var(--neutral-bg)', 'var(--text-secondary)'],
+      success: ['var(--success-bg)', 'var(--success)'],
+    };
+    return m[t] || m.neutral;
+  }
+
+  renderVals() {
+    const { view, leadsOpen, sources: src } = this.state;
+    const isOwner = view !== 'nonOwner';
+    const custom = view === 'ownerCustom';
+
+    const def = (l) => ({ label: l, kind: 'default' });
+    const cust = (l) => ({ label: l, kind: 'custom' });
+    const info = (l) => ({ label: l, kind: 'info' });
+
+    const statusStyle = (kind) => {
+      if (kind === 'custom') return {
+        text: { fontSize: 12.5, fontWeight: 500, color: 'var(--accent)', display: 'inline-flex', alignItems: 'center', gap: 6 },
+        pill: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 26, padding: '0 11px', borderRadius: 999, background: 'var(--accent-subtle)', color: 'var(--accent)', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 },
+        dot: true, dotStyle: { width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 },
+      };
+      if (kind === 'info') return {
+        text: { fontSize: 12.5, fontWeight: 400, color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: 6 },
+        pill: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 26, padding: '0 11px', borderRadius: 999, background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 },
+        dot: false, dotStyle: {},
+      };
+      return {
+        text: { fontSize: 12.5, fontWeight: 400, color: 'var(--text-tertiary)', display: 'inline-flex', alignItems: 'center', gap: 6 },
+        pill: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 26, padding: '0 4px', borderRadius: 999, background: 'transparent', color: 'var(--text-tertiary)', fontSize: 12.5, fontWeight: 400, whiteSpace: 'nowrap', flexShrink: 0 },
+        dot: false, dotStyle: {},
+      };
+    };
+
+    const styleRow = (raw) => {
+      const orb = raw.tint === 'orb';
+      const [bg, fg] = orb ? ['', '#fff'] : this.tintPair(raw.tint);
+      const iconWrap = orb
+        ? { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--gradient-brand)', color: '#fff', boxShadow: '0 3px 10px rgba(123,92,255,0.28)' }
+        : { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: bg, color: fg };
+      const ss = statusStyle(raw.status.kind);
+      return {
+        title: raw.title, desc: raw.desc,
+        iconWrap, iconEl: this.icon(raw.icon, 20, orb ? '#fff' : 'currentColor'),
+        statusLabel: raw.status.label, statusTextStyle: ss.text, pillStyle: ss.pill, statusDot: ss.dot, dotStyle: ss.dotStyle,
+        onClick: raw.onClick,
+      };
+    };
+
+    const businessRaw = [
+      { title: 'Business profile & branding', desc: 'Logo, GSTIN, address, bank details', tint: 'accent',
+        icon: [this.P('M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z'), this.P('M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2'), this.P('M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2'), this.P('M10 6h4'), this.P('M10 10h4'), this.P('M10 14h4'), this.P('M10 18h4')],
+        status: custom ? cust('Customised') : def('Using defaults'), onClick: this.go('BusinessProfile.dc.html') },
+      { title: 'Catalog & price book', desc: 'Panels, inverters, BOS and your rates', tint: 'accent',
+        icon: [this.P('m7.5 4.27 9 5.15'), this.P('M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'), this.P('m3.3 7 8.7 5 8.7-5'), this.P('M12 22V12')],
+        status: custom ? cust('14 products') : def('Using defaults'), onClick: this.go('CatalogPriceBook.dc.html') },
+      { title: 'Proposal defaults & templates', desc: 'Cover, sections included, default T&C', tint: 'accent',
+        icon: [this.P('M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'), this.P('M14 2v5h5'), this.P('M16 13H8'), this.P('M16 17H8'), this.P('M10 9H8')],
+        status: def('Using defaults'), onClick: this.go('ProposalDefaults.dc.html') },
+      { title: 'Message templates', desc: 'WhatsApp proposal, follow-up, reminders', tint: 'accent',
+        icon: [this.P('M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'), this.P('M7 8h10'), this.P('M7 12h6')],
+        status: custom ? cust('5 templates') : def('Using defaults'), onClick: this.go('MessageTemplates.dc.html') },
+    ];
+
+    const agentRaw = [
+      { title: 'Agent setup', desc: 'Name, voice, languages, calling window', tint: 'orb',
+        icon: [this.P('M4 21v-7'), this.P('M4 10V3'), this.P('M12 21v-9'), this.P('M12 8V3'), this.P('M20 21v-5'), this.P('M20 12V3'), this.P('M2 14h4'), this.P('M10 8h4'), this.P('M18 16h4')],
+        status: custom ? cust('Asha · 3 languages') : def('India defaults'), onClick: this.go('AgentSetup.dc.html') },
+      { title: 'Agent knowledge', desc: 'What Asha tells your customers', tint: 'orb',
+        icon: [this.P('M12 7v14'), this.P('M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z')],
+        status: custom ? cust('48 answers · 3 to review') : def('Starter pack'), onClick: this.go('AgentKnowledge.dc.html') },
+      { title: 'Agent performance', desc: 'Calls, outcomes, what it saved you', tint: 'orb',
+        icon: [this.P('M22 12h-4l-3 9L9 3l-3 9H2')],
+        status: info('412 calls this month'), onClick: this.go('AgentPerformance.dc.html') },
+    ];
+
+    const teamRaw = [
+      { title: 'Team & roles', desc: 'People, the roles they hold, invites', tint: 'info',
+        icon: [this.P('M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'), this.C(9, 7, 4), this.P('M22 21v-2a4 4 0 0 0-3-3.87'), this.P('M16 3.13a4 4 0 0 1 0 7.75')],
+        status: custom ? cust('6 people · 4 roles') : def('Just you'), onClick: this.go('TeamRoles.dc.html') },
+    ];
+
+    const billingRaw = { title: 'Billing', desc: 'Plan, usage, payment method, invoices', tint: 'neutral',
+      icon: [this.R(2, 5, 20, 14, 2), this.P('M2 10h20')],
+      status: info('Free trial · 12 days left'), onClick: this.go('Billing.dc.html') };
+    const profileRaw = { title: 'Profile & preferences', desc: 'Your name, language, notifications', tint: 'neutral',
+      icon: [this.P('M19 21v-1a7 7 0 0 0-14 0v1'), this.C(12, 8, 4)],
+      status: info('English'), onClick: this.go('ProfilePreferences.dc.html') };
+
+    const groups = [];
+    if (isOwner) {
+      groups.push({ label: 'Business', rows: businessRaw.map(styleRow), hasLeadSources: true });
+      groups.push({ label: 'Your agent', rows: agentRaw.map(styleRow), hasLeadSources: false });
+      groups.push({ label: 'Team', rows: teamRaw.map(styleRow), hasLeadSources: false });
+      groups.push({ label: 'Account', rows: [billingRaw, profileRaw].map(styleRow), hasLeadSources: false });
+    } else {
+      groups.push({ label: 'Account', rows: [profileRaw].map(styleRow), hasLeadSources: false });
+    }
+
+    // Lead sources
+    const chanRow = (o) => {
+      const on = !!o.checked;
+      return {
+        title: o.title, sub: o.sub, later: !!o.later, toggleable: !o.later,
+        iconWrap: { flexShrink: 0, width: 38, height: 38, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: o.later ? 'var(--neutral-bg)' : 'var(--accent-subtle)', color: o.later ? 'var(--text-tertiary)' : 'var(--accent)' },
+        iconEl: this.icon(o.icon, 19, o.later ? 'var(--text-tertiary)' : 'var(--accent)'),
+        onToggle: o.onToggle,
+        trackStyle: { flexShrink: 0, width: 44, height: 26, borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0, position: 'relative', background: on ? 'var(--accent)' : 'var(--canvas-sunken)', transition: 'background 200ms var(--ease-standard)' },
+        thumbStyle: { position: 'absolute', top: 3, left: on ? 21 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', boxShadow: 'var(--e2)', transition: 'left 200ms var(--ease-spring)' },
+      };
+    };
+    const leadSources = [
+      chanRow({ title: 'Manual quick-add', sub: 'Reps type a lead in — under 30 seconds', checked: src.manual, onToggle: this.toggleSource('manual'),
+        icon: [this.P('M12 20h9'), this.P('M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z')] }),
+      chanRow({ title: 'CSV import', sub: 'Bulk upload from an old spreadsheet', checked: src.csv, onToggle: this.toggleSource('csv'),
+        icon: [this.P('M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'), this.P('M14 2v5h5'), this.P('M12 18v-6'), this.P('m9 15 3-3 3 3')] }),
+      chanRow({ title: 'Inbound call via the agent', sub: 'Asha answers when nobody picks up', checked: src.inbound, onToggle: this.toggleSource('inbound'),
+        icon: [this.P('M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z')] }),
+      chanRow({ title: 'Website form', sub: 'Embed a form on your site — coming later', later: true,
+        icon: [this.C(12, 12, 10), this.P('M2 12h20'), this.P('M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z')] }),
+      chanRow({ title: 'Inbound WhatsApp', sub: 'Customers message your number — coming later', later: true,
+        icon: [this.P('M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z')] }),
+    ];
+    const liveCount = [src.manual, src.csv, src.inbound].filter(Boolean).length;
+
+    const views = [
+      { k: 'ownerDefaults', l: 'Owner · on defaults' },
+      { k: 'ownerCustom', l: 'Owner · customised' },
+      { k: 'nonOwner', l: 'Non-owner' },
+      { k: 'leadsExpanded', l: 'Lead sources open' },
+    ].map(o => ({
+      label: o.l, onClick: () => this.setView(o.k),
+      style: view === o.k
+        ? { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, transition: 'all 160ms var(--ease-standard)', background: 'var(--action-primary)', color: '#fff' }
+        : { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, transition: 'all 160ms var(--ease-standard)', background: 'transparent', color: 'var(--text-secondary)' },
+    }));
+
+    return {
+      views, groups,
+      leadSources, leadsOpen, toggleLeads: this.toggleLeads,
+      leadsSub: leadsOpen ? (liveCount + ' live · 2 coming later') : (liveCount + ' channels live'),
+      leadsToggleLabel: leadsOpen ? 'Hide' : 'Manage',
+      leadsChev: { transition: 'transform 200ms var(--ease-standard)', transform: leadsOpen ? 'rotate(180deg)' : 'none', flexShrink: 0 },
+      leadsLaterPill: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 24, padding: '0 11px', borderRadius: 999, background: 'var(--neutral-bg)', color: 'var(--text-tertiary)', fontSize: 11.5, fontWeight: 500, whiteSpace: 'nowrap' },
+      nonOwnerNote: !isOwner,
+      whoLine: isOwner ? 'Rajesh Patil · Owner' : 'Anita Rao · Sales rep',
+      personName: isOwner ? 'Rajesh Patil' : 'Anita Rao',
+      personRole: isOwner ? 'Owner' : 'Sales rep',
+      initials: isOwner ? 'RP' : 'AR',
+      avatarStyle: { width: 38, height: 38, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, flexShrink: 0 },
+      deskIntro: isOwner
+        ? 'Everything you can configure for Suryodaya Solar. Nothing here is required — the defaults already work.'
+        : 'Your personal settings. Company settings are managed by the owner.',
+      rowHover: { background: 'var(--neutral-bg)' },
+      navRow: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      navHover: { background: 'var(--neutral-bg)' },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+      goBack: this.go('MyDay.dc.html'),
+      goMyDay: this.go('MyDay.dc.html'), goLeads: this.go('Leads.dc.html'), goProposals: this.go('Proposals.dc.html'),
+      goProjects: this.toast('Projects — Stage 8'), goNotifs: this.toast('Notifications'),
+      toastShow: this.state.toastShow, toastText: this.state.toastText,
+    };
+  }
+}
+</script>
+</body>
+</html>

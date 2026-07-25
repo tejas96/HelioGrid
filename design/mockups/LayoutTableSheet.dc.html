@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+</helmet>
+<div style="font-family:var(--font-sans); color:var(--text-primary)">
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:14px"><div><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Table A</div><div style="font-size:12px; color:var(--text-secondary)">3 × 4 · 12 panels · 6.5 kWp</div></div></div>
+
+  <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Structure preset</div>
+  <div style="display:flex; gap:8px; margin-bottom:16px"><sc-for list="{{ presets }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.onClick }}" style="{{ p.style }}"><span style="{{ p.preview }}"></span>{{ p.label }}</button></sc-for></div>
+
+  <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Racking</div>
+  <div style="display:flex; gap:8px; margin-bottom:16px"><sc-for list="{{ racking }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.onClick }}" style="{{ r.style }}">{{ r.label }}</button></sc-for></div>
+
+  <div style="margin-bottom:16px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:13px; font-weight:500">Panel tilt</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--accent)">{{ tilt }}°</span></div><div style="display:flex; align-items:center; gap:10px"><button onClick="{{ tiltMinus }}" style="{{ stepBtn }}">−</button><input type="range" min="0" max="35" value="{{ tilt }}" onInput="{{ setTilt }}" style="flex:1; height:5px; accent-color:var(--accent); cursor:pointer"><button onClick="{{ tiltPlus }}" style="{{ stepBtn }}">+</button></div></div>
+
+  <div style="padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:16px"><div style="font-size:12.5px; font-weight:600; margin-bottom:6px">Inter-row shading</div><div style="display:flex; align-items:baseline; justify-content:space-between; font-size:12px; color:var(--text-secondary)"><span>Winter shadow-free row pitch</span><span style="font-family:var(--font-mono); color:var(--text-primary)">1.85 m</span></div><div style="display:flex; align-items:baseline; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-top:3px"><span>GCR</span><span style="font-family:var(--font-mono); color:var(--text-primary)">0.42</span></div><button onClick="{{ noop }}" style="{{ applySpacing }}">Apply shadow-free spacing</button></div>
+
+  <div style="margin-bottom:16px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:13px; font-weight:500">Azimuth</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--accent)">{{ azimuth }}° · {{ azDir }}</span></div><div style="display:flex; gap:8px"><button onClick="{{ azMinus }}" style="{{ stepBtn }}">−5°</button><button onClick="{{ azPlus }}" style="{{ stepBtn }}">+5°</button><button onClick="{{ azSouth }}" style="{{ presetPill }}">Due south</button><button onClick="{{ azSlope }}" style="{{ presetPill }}">Roof slope</button></div></div>
+
+  <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Structure member model</div>
+  <div style="padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:10px"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 14px"><sc-for list="{{ members }}" as="m" hint-placeholder-count="4"><div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:12px; color:var(--text-secondary)">{{ m.k }}</span><span style="font-family:var(--font-mono); font-size:12.5px; font-weight:500">{{ m.v }}</span></div></sc-for></div><div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--hairline); display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:12.5px; font-weight:600">Total steel</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:700">248 kg</span></div></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px"><label><span style="{{ fLabel }}">Leg spacing</span><div style="{{ inBox }}"><span style="font-family:var(--font-mono); font-size:13px">2.0</span><span style="{{ inUnit }}">m</span></div></label><label><span style="{{ fLabel }}">Clearance</span><div style="{{ inBox }}"><span style="font-family:var(--font-mono); font-size:13px">0.5</span><span style="{{ inUnit }}">m</span></div></label></div>
+
+  <div style="display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border-radius:14px; background:var(--warning-bg); margin-bottom:14px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg><span style="font-size:11.5px; color:var(--text-primary); line-height:1.45">This is a material estimate and visual model — not a wind, uplift or roof-capacity check. Needs engineer verification.</span></div>
+
+  <div style="display:flex; gap:8px"><button onClick="{{ noop }}" style="{{ ghostFull }}">Duplicate table</button><button onClick="{{ noop }}" style="{{ dangerGhost }}">Delete table</button></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340}}">
+class Component extends DCLogic {
+  state = { preset: 'std', rack: 'fixed', tilt: 10, az: 178 };
+  renderVals() {
+    const s = this.state;
+    const seg = (on) => ({ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 6px', borderRadius: 14, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 500, background: on ? 'var(--accent-subtle)' : 'var(--surface-alt)', color: on ? 'var(--accent-hover)' : 'var(--text-primary)', outline: on ? '1.5px solid var(--accent)' : 'none', outlineOffset: -1.5 });
+    const pill = (on) => ({ flex: 1, height: 40, borderRadius: 12, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, background: on ? 'var(--accent-subtle)' : 'var(--surface-alt)', color: on ? 'var(--accent-hover)' : 'var(--text-primary)', outline: on ? '1.5px solid var(--accent)' : 'none', outlineOffset: -1.5 });
+    const prev = (h) => ({ width: 30, height: 14, borderRadius: 3, background: 'var(--neutral-bg)', borderBottom: '2px solid var(--text-tertiary)', transform: h });
+    const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W'];
+    const azDir = s.az >= 158 && s.az <= 202 ? (s.az === 180 ? 'S' : s.az < 180 ? 'SSE' : 'SSW') : 'S';
+    return {
+      noop: () => {},
+      presets: [['flush', 'Flush', 'none'], ['std', 'Standard 10°', 'skewX(-10deg)'], ['walk', 'Walk-under 2.2 m', 'translateY(-3px)']].map(([k, l, t]) => ({ label: l, onClick: () => this.setState({ preset: k }), style: seg(s.preset === k), preview: prev(t) })),
+      racking: [['flush', 'Flush'], ['fixed', 'Fixed tilt'], ['dual', 'Dual tilt']].map(([k, l]) => ({ label: l, onClick: () => this.setState({ rack: k }), style: pill(s.rack === k) })),
+      tilt: s.tilt, setTilt: (e) => this.setState({ tilt: +e.target.value }), tiltMinus: () => this.setState(p => ({ tilt: Math.max(0, p.tilt - 5) })), tiltPlus: () => this.setState(p => ({ tilt: Math.min(35, p.tilt + 5) })),
+      azimuth: s.az, azDir, azMinus: () => this.setState(p => ({ az: (p.az - 5 + 360) % 360 })), azPlus: () => this.setState(p => ({ az: (p.az + 5) % 360 })), azSouth: () => this.setState({ az: 180 }), azSlope: () => this.setState({ az: 172 }),
+      members: [{ k: 'Legs', v: '12 · 34 m' }, { k: 'Rafters', v: '4 · 22 m' }, { k: 'Purlins', v: '9 · 41 m' }, { k: 'Braces', v: '6 · 14 m' }],
+      stepBtn: { flex: 1, height: 40, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--surface-alt)', boxShadow: 'var(--e1)', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' },
+      presetPill: { flex: 1, height: 40, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--surface-alt)', boxShadow: 'var(--e1)', fontFamily: 'inherit', fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' },
+      applySpacing: { marginTop: 10, width: '100%', height: 38, borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--accent-subtle)', color: 'var(--accent-hover)', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 600 },
+      fLabel: { display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 }, inBox: { display: 'flex', alignItems: 'center', gap: 6, height: 42, padding: '0 12px', borderRadius: 12, background: 'var(--surface)', boxShadow: 'var(--e1)' }, inUnit: { marginLeft: 'auto', fontSize: 12, color: 'var(--text-tertiary)' },
+      ghostFull: { flex: 1, height: 46, borderRadius: 12, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 },
+      dangerGhost: { flex: 1, height: 46, borderRadius: 12, border: 'none', cursor: 'pointer', background: 'var(--danger-bg)', color: 'var(--danger)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 },
+    };
+  }
+}
+</script>
+</body>
+</html>

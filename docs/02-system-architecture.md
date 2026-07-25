@@ -72,11 +72,14 @@ graph TB
   API --> MSG
 ```
 
-Fly topology (from `./research/fly.md`): `bom` is capacity-tight, so web/api run
-`min_machines_running=1` (never scale-to-zero), `sin` is the overflow fallback in
-`fly.toml`. Process groups: `web`, `api`, `worker` (`autostop="off"`, larger machines),
-`voice`, `powersync`. Internal traffic rides 6PN `.internal`/flycast — the api is never
-exposed except through Fly's proxy for webhooks and mobile.
+Fly topology (from `./research/fly.md`; ADR-0018): **one Fly app per service** —
+`heliogrid-web`, `heliogrid-api`, `heliogrid-worker` (`autostop="off"`, larger machines),
+`heliogrid-voice`, `heliogrid-powersync` (prebuilt `journeyapps/powersync-service` image) —
+plus the postgres-flex cluster app and the log-shipper. web/api/worker/voice build per-app
+Dockerfiles. `bom` is capacity-tight, so web/api run `min_machines_running=1` (never
+scale-to-zero); `sin` is the overflow fallback. Internal traffic rides 6PN
+`.internal`/flycast private networking — the api is never exposed except through Fly's
+proxy for webhooks and mobile.
 
 ---
 
@@ -100,7 +103,7 @@ packages/
   adapters/   provider adapters implementing the ports in 07-integrations.md
   db/         Drizzle schema + migrations
   ui/         web components (design system)
-  tokens/     Style Dictionary → CSS vars (web) + RN theme object
+  tokens/     Style Dictionary (shorthand — canonical: bespoke build.ts CSS parser, docs/10 §2) → CSS vars (web) + RN theme object
   i18n/       Lingui v5 catalogs (EN/HI/MR)
   config/     shared tsconfig / biome / dependency-cruiser presets
 ```

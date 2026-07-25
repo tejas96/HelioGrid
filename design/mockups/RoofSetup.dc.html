@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-spin { to{ transform:rotate(360deg) } }
+  @keyframes hg-dash { to{ stroke-dashoffset:-16 } }
+  @keyframes hg-pulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  .hg-sheet{ animation:hg-rise 320ms cubic-bezier(0.34,1.56,0.64,1) }
+  .hg-cv{ touch-action:none; cursor:grab }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important } }
+</style>
+</helmet>
+
+<div style="min-width:100%; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary); padding:28px 32px 60px">
+
+  <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; margin-bottom:26px">
+    <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">State</span>
+    <div style="display:flex; flex-wrap:wrap; gap:8px"><sc-for list="{{ scenarios }}" as="s" hint-placeholder-count="8"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:52px; flex-wrap:wrap">
+
+    <!-- ============ MOBILE ============ -->
+    <div style="flex-shrink:0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg><span style="font-size:12.5px; font-weight:500">Mobile · 375</span></div>
+      <div style="position:relative; width:375px; height:812px; background:var(--surface); border-radius:32px; box-shadow:var(--e4); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- header -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e2); z-index:5">
+          <div style="height:54px; display:flex; align-items:center; gap:6px; padding:0 10px">
+            <button onClick="{{ prevStep }}" style="width:38px; height:38px; border-radius:11px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">Roof</div><div style="font-size:11px; color:var(--text-secondary)">{{ leadName }} · {{ roofCountLabel }}</div></div>
+            <span style="{{ health.chip }}"><span style="{{ health.dot }}"></span>{{ health.text }}</span>
+          </div>
+          <div style="height:44px; display:flex; align-items:center; gap:6px; padding:0 10px 8px">
+            <button onClick="{{ prevStep }}" style="width:38px; height:38px; border-radius:11px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; height:38px; border-radius:11px; background:var(--neutral-bg); display:flex; align-items:center; justify-content:center; gap:8px"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent)">2 / 10</span><span style="font-size:13px; font-weight:500">Roof</span></div>
+            <button onClick="{{ next }}" style="width:38px; height:38px; border-radius:11px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+
+        <!-- roof-list chip strip -->
+        <sc-if value="{{ hasRoofs }}" hint-placeholder-val="{{ false }}">
+          <div style="flex-shrink:0; display:flex; gap:8px; padding:10px 12px; overflow-x:auto; background:var(--canvas); box-shadow:var(--e1); z-index:4">
+            <sc-for list="{{ roofs }}" as="r" hint-placeholder-count="2">
+              <div style="{{ r.chipStyle }}"><button onClick="{{ r.onSelect }}" style="display:flex; align-items:center; gap:7px; border:none; background:none; cursor:pointer; font-family:inherit; padding:0; color:inherit"><span style="{{ r.dotStyle }}"></span><span style="font-size:12.5px; font-weight:600; white-space:nowrap">{{ r.name }}</span><span style="font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); white-space:nowrap">{{ r.area }}</span></button><button onClick="{{ r.onLock }}" style="width:24px; height:24px; border:none; background:none; cursor:pointer; color:{{ r.lockColor }}; display:flex; align-items:center; justify-content:center; padding:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="{{ r.lockPath }}"></path></svg></button><button onClick="{{ r.onDelete }}" style="width:24px; height:24px; border:none; background:none; cursor:pointer; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center; padding:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- canvas -->
+        <div style="flex:1; position:relative; overflow:hidden; background:var(--canvas-sunken)">
+          <div id="cvMob" class="hg-cv" style="position:absolute; inset:0">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block">
+              <defs><pattern id="rm-grid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0V22" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"></path></pattern><linearGradient id="satM" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a5340"></stop><stop offset="0.5" stop-color="#6b6350"></stop><stop offset="1" stop-color="#524a3e"></stop></linearGradient><radialGradient id="satMb" cx="0.3" cy="0.3" r="0.6"><stop offset="0" stop-color="#5b6b4a"></stop><stop offset="1" stop-color="#4a5340" stop-opacity="0"></stop></radialGradient></defs>
+              <g id="gMob">
+                <rect x="-200" y="-200" width="800" height="900" fill="url(#satM)"></rect>
+                <rect x="-200" y="-200" width="800" height="900" fill="url(#satMb)"></rect>
+                <rect x="-200" y="-200" width="800" height="900" fill="url(#rm-grid)"></rect>
+                <sc-for list="{{ cm.polys }}" as="p" hint-placeholder-count="0"><polygon points="{{ p.points }}" fill="{{ p.fill }}" stroke="{{ p.stroke }}" stroke-width="{{ p.sw }}" stroke-dasharray="{{ p.dash }}" stroke-linejoin="round"></polygon></sc-for>
+                <sc-for list="{{ cm.guides }}" as="g" hint-placeholder-count="0"><line x1="{{ g.x1 }}" y1="{{ g.y1 }}" x2="{{ g.x2 }}" y2="{{ g.y2 }}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 4" opacity="0.8"></line></sc-for>
+                <sc-for list="{{ cm.iso }}" as="f" hint-placeholder-count="0"><polygon points="{{ f.points }}" fill="{{ f.fill }}" stroke="rgba(10,10,11,0.35)" stroke-width="1" stroke-linejoin="round"></polygon></sc-for>
+                <sc-for list="{{ cm.measure }}" as="m" hint-placeholder-count="0"><g><line x1="{{ m.x1 }}" y1="{{ m.y1 }}" x2="{{ m.x2 }}" y2="{{ m.y2 }}" stroke="var(--warning)" stroke-width="2"></line><circle cx="{{ m.x1 }}" cy="{{ m.y1 }}" r="5" fill="var(--warning)"></circle><circle cx="{{ m.x2 }}" cy="{{ m.y2 }}" r="5" fill="var(--warning)"></circle></g></sc-for>
+                <sc-for list="{{ cm.labels }}" as="l" hint-placeholder-count="0"><g><rect x="{{ l.bx }}" y="{{ l.by }}" width="{{ l.bw }}" height="16" rx="8" fill="var(--surface)"></rect><text x="{{ l.x }}" y="{{ l.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="500" fill="var(--text-primary)">{{ l.text }}</text></g></sc-for>
+                <sc-for list="{{ cm.inserts }}" as="h" hint-placeholder-count="0"><g><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="7" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5" opacity="0.9"></circle><path d="M{{ h.cx }} {{ h.my1 }}V{{ h.my2 }}M{{ h.mx1 }} {{ h.cy }}H{{ h.mx2 }}" stroke="var(--accent)" stroke-width="1.5"></path></g></sc-for>
+                <sc-for list="{{ cm.handles }}" as="h" hint-placeholder-count="0"><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="{{ h.r }}" fill="{{ h.fill }}" stroke="{{ h.stroke }}" stroke-width="2.5"></circle></sc-for>
+                <sc-for list="{{ cm.rotate }}" as="r" hint-placeholder-count="0"><g><line x1="{{ r.lx }}" y1="{{ r.ly }}" x2="{{ r.cx }}" y2="{{ r.cy }}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"></line><circle cx="{{ r.cx }}" cy="{{ r.cy }}" r="11" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"></circle><path d="{{ r.icon }}" transform="translate({{ r.tx }},{{ r.ty }})" stroke="var(--accent)" stroke-width="1.8" fill="none" stroke-linecap="round"></path></g></sc-for>
+                <sc-for list="{{ cm.ghosts }}" as="g" hint-placeholder-count="0"><g><circle cx="{{ g.bx }}" cy="{{ g.by }}" r="13" fill="{{ g.badgeFill }}" stroke="{{ g.badgeStroke }}" stroke-width="2"></circle><text x="{{ g.bx }}" y="{{ g.bty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="700" fill="{{ g.badgeStroke }}">{{ g.conf }}</text></g></sc-for>
+                <sc-for list="{{ cm.closeDot }}" as="c" hint-placeholder-count="0"><circle cx="{{ c.cx }}" cy="{{ c.cy }}" r="12" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-dasharray="4 3" style="animation:hg-pulse 1.2s ease-in-out infinite"></circle></sc-for>
+              </g>
+            </svg>
+          </div>
+
+          <!-- canvas chips -->
+          <!-- snap state is controlled from the tool pod -->
+          <div style="position:absolute; right:10px; bottom:10px; z-index:3; display:flex; flex-direction:column; align-items:center; gap:8px">
+            <div style="display:flex; flex-direction:column; gap:1px; border-radius:11px; overflow:hidden; box-shadow:var(--e2)"><button onClick="{{ zoomIn }}" style="width:36px; height:36px; border:none; background:var(--surface); cursor:pointer; color:var(--text-primary); font-size:18px">+</button><button onClick="{{ zoomOut }}" style="width:36px; height:36px; border:none; background:var(--surface); cursor:pointer; color:var(--text-primary); font-size:18px; border-top:1px solid var(--hairline)">−</button></div>
+            <div title="North" style="width:42px; height:42px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center"><svg width="30" height="30" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><circle cx="22" cy="37" r="1" fill="var(--text-tertiary)"></circle><circle cx="7" cy="22" r="1" fill="var(--text-tertiary)"></circle><circle cx="37" cy="22" r="1" fill="var(--text-tertiary)"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><circle cx="22" cy="23" r="1.8" fill="var(--surface)" stroke="var(--text-secondary)" stroke-width="1"></circle><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div>
+          </div>
+          <!-- floating tool pods (bottom-left, no background) -->
+          <div style="position:absolute; left:10px; bottom:12px; z-index:4; display:flex; flex-direction:column; gap:6px">
+            <sc-if value="{{ toolsOpen }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ podWrap }}"><sc-for list="{{ toolsMeasureM }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+              <div style="{{ podWrap }}"><sc-for list="{{ toolsMainM }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+              <div style="{{ podWrap }}"><sc-for list="{{ toolsHistoryM }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+            </sc-if>
+            <button onClick="{{ toggleTools }}" title="Tools" style="{{ toolsToggleM }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ toolsChevron }}"></path></svg></button>
+          </div>
+          <sc-if value="{{ selPodShow }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute; right:10px; top:10px; z-index:4; display:flex; gap:6px"><sc-for list="{{ selActionsM }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.onClick }}" title="{{ a.label }}" style="{{ a.style }}">{{ a.icon }}</button></sc-for></div>
+          </sc-if>
+
+          <!-- empty prompt -->
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); width:270px; text-align:center; padding:20px; border-radius:20px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); box-shadow:var(--e3)">
+              <div style="width:56px; height:56px; margin:0 auto; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V9l6-5 6 5v12M9 21v-6h6v6"></path></svg></div>
+              <div style="margin-top:12px; font-size:16px; font-weight:700; letter-spacing:-0.02em">No roofs yet</div>
+              <p style="margin:6px 0 0; font-size:12.5px; line-height:1.5; color:var(--text-secondary)">Trace each roof on the imagery, or let AI detect them for you to review.</p>
+            </div>
+          </sc-if>
+
+          <!-- provisional/detecting -->
+          <sc-if value="{{ detecting }}" hint-placeholder-val="{{ false }}"><div style="position:absolute; left:50%; bottom:16px; transform:translateX(-50%); display:flex; align-items:center; gap:9px; padding:10px 14px; border-radius:14px; background:var(--surface); box-shadow:var(--e4)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" style="animation:hg-spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.5"></path></svg><span style="font-size:12.5px; color:var(--text-secondary)">Detecting roofs from Google imagery…</span></div></sc-if>
+        </div>
+
+        <!-- contextual action bar -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e3); z-index:5">
+          <sc-if value="{{ ctxEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; gap:10px; padding:12px 14px"><button onClick="{{ startDraw }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>Draw roof</button><button onClick="{{ runDetect }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-primary); font-family:inherit; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"></path></svg>Detect (AI)</button></div>
+          </sc-if>
+          <sc-if value="{{ ctxDraw }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:12px 14px"><div style="display:flex; align-items:center; gap:10px; margin-bottom:12px"><span style="flex-shrink:0; height:24px; padding:0 10px; border-radius:999px; background:var(--accent-subtle); color:var(--accent); font-family:var(--font-mono); font-size:12px; font-weight:700; display:inline-flex; align-items:center">3 pts</span><span style="font-size:12.5px; color:var(--text-secondary); line-height:1.4">Tap to drop corners, then tap the first point to close.</span></div>
+              <div style="display:flex; gap:8px"><button onClick="{{ removeLast }}" style="{{ drawGhostBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"></path><path d="M4 9h11a5 5 0 0 1 0 10h-3"></path></svg>Undo point</button><button onClick="{{ toggleOrtho }}" style="{{ drawGhostBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3z"></path><path d="M3 15h12V3"></path></svg>Snap {{ orthoWord }}</button><button onClick="{{ confirmShape }}" style="flex:2; height:44px; border-radius:12px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Complete shape</button></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ ctxThree }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; gap:10px; padding:12px 14px"><div style="flex:1"><div style="font-size:13.5px; font-weight:600">3D preview</div><div style="font-size:11.5px; color:var(--text-secondary)">Pinch to orbit the massing.</div></div><button onClick="{{ exit3d }}" style="height:44px; padding:0 20px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Exit 3D</button></div>
+          </sc-if>
+          <sc-if value="{{ ctxSelected }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:10px 12px 12px"><div style="display:flex; align-items:center; gap:8px"><span style="{{ rotChip }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path></svg></span><span style="font-size:12px; color:var(--text-secondary)">Rotate</span><button onClick="{{ toggleSnap15 }}" style="{{ snap15Chip }}">Snap 15°</button><div style="flex:1"></div><span style="font-size:11px; color:var(--text-tertiary)">{{ selProvenance }}</span></div>
+            </div>
+          </sc-if>
+        </div>
+
+
+        <!-- sheets -->
+        <sc-if value="{{ anySheet }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:30; background:rgba(246,247,249,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:31; max-height:82%; overflow:auto; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 16px calc(20px + env(safe-area-inset-bottom))">
+            <div style="width:38px; height:4px; border-radius:999px; background:var(--canvas-sunken); margin:6px auto 14px"></div>
+
+            <sc-if value="{{ sheetGhosts }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">AI-detected roofs</div><span style="font-size:12px; color:var(--text-secondary)">{{ ghostCount }} found</span></div>
+              <div style="display:flex; align-items:center; gap:7px; margin:10px 0 14px; padding:8px 12px; border-radius:12px; background:var(--surface-alt)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 2v4M16 2v4M3 10h18"></path></svg><span style="font-size:11.5px; color:var(--text-secondary)">Imagery {{ imageryDate }}</span><span style="{{ qualityChip }}">{{ imageryQuality }}</span></div>
+              <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px"><sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="3"><button onClick="{{ g.onToggle }}" style="{{ g.rowStyle }}"><span style="{{ g.checkStyle }}"><sc-if value="{{ g.included }}" hint-placeholder-val="{{ true }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex:1; text-align:left"><span style="display:block; font-size:14px; font-weight:600">{{ g.name }}</span><span style="display:block; font-size:11.5px; color:var(--text-secondary)">{{ g.detail }}</span></span><span style="{{ g.confChip }}">{{ g.confText }}</span></button></sc-for></div>
+              <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="display:flex; align-items:flex-start; gap:9px; margin-bottom:12px; padding:10px 12px; border-radius:12px; background:var(--warning-bg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg><span style="font-size:12px; color:var(--text-primary); line-height:1.45">1 low-confidence shape was dropped (photo fallback, no height/pitch). Draw it manually if needed.</span></div></sc-if>
+              <div style="display:flex; gap:8px"><button onClick="{{ nudgeAlign }}" style="{{ sheetGhostBtn }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"></path></svg>Align nudge</button><button onClick="{{ addSelectedGhosts }}" style="flex:2; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Add {{ selGhostCount }} selected</button></div>
+            </sc-if>
+
+            <sc-if value="{{ sheetType }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:16px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px">Roof type</div>
+              <div style="display:flex; flex-direction:column; gap:8px"><sc-for list="{{ roofTypes }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.onClick }}" style="{{ t.rowStyle }}"><span style="{{ t.iconStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg></span><span style="flex:1; text-align:left"><span style="display:block; font-size:14px; font-weight:600; color:{{ t.titleColor }}">{{ t.name }}</span><span style="display:block; font-size:11.5px; color:var(--text-tertiary)">{{ t.note }}</span></span><sc-if value="{{ t.selected }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button></sc-for></div>
+            </sc-if>
+
+            <sc-if value="{{ sheetHeight }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:16px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px">Height &amp; parapet</div>
+              <div style="display:flex; align-items:flex-start; gap:9px; margin-bottom:14px; padding:11px 13px; border-radius:14px; background:var(--info-bg)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 6v6l4 2"></path></svg><div style="flex:1"><div style="font-size:12.5px; font-weight:600">Google detected 18° facing SSW</div><div style="font-size:11.5px; color:var(--text-secondary)">Apply the measured pitch &amp; azimuth?</div><div style="display:flex; gap:8px; margin-top:8px"><button onClick="{{ applyPitch }}" style="height:32px; padding:0 14px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:12px; font-weight:500">Apply</button><button onClick="{{ closeSheet }}" style="height:32px; padding:0 14px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-secondary); font-family:inherit; font-size:12px; font-weight:500">Dismiss</button></div></div></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px"><label style="display:block"><span style="{{ fieldLabel }}">Height from ground</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px">3.2</span><span style="font-size:12px; color:var(--text-tertiary)">m</span></div></label><label style="display:block"><span style="{{ fieldLabel }}">Pitch</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px">18</span><span style="font-size:12px; color:var(--text-tertiary)">°</span></div></label></div>
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Slopes toward</div>
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px; padding:12px; border-radius:14px; background:var(--surface-alt)"><div style="flex-shrink:0; width:56px; height:56px; border-radius:50%; background:var(--surface); box-shadow:var(--e1); position:relative; display:flex; align-items:center; justify-content:center"><span style="position:absolute; top:4px; font-size:9px; font-weight:700; color:var(--text-tertiary)">N</span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(200deg)"><path d="M12 19V5M5 12l7 7 7-7"></path></svg></div><div style="flex:1"><div style="font-size:13.5px; font-weight:600">Faces SSW · 200°</div><div style="font-size:11.5px; color:var(--text-secondary)">Tap the low edge on the canvas to change.</div></div></div>
+              <div style="display:flex; align-items:center; gap:7px; margin-bottom:16px; padding:8px 12px; border-radius:12px; background:var(--success-bg)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M5 10l7-7 7 7"></path></svg><span style="font-size:11.5px; color:var(--success); font-weight:500">South is best — this roof is close.</span></div>
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Edge setback</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px"><span style="font-size:13px">Uniform</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.30</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></div>
+              <div style="font-size:11.5px; color:var(--text-tertiary); margin-bottom:16px">Tap any edge on the canvas to set a per-edge value.</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--hairline)"><div><div style="font-size:14px; font-weight:600">Parapet wall</div><div style="font-size:11.5px; color:var(--text-secondary)">Direction, height &amp; width · shared walls auto-skipped</div></div><button onClick="{{ toggleParapet }}" style="{{ parapetTrack }}"><span style="{{ parapetKnob }}"></span></button></div>
+              <sc-if value="{{ parapetOn }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px; padding:12px; border-radius:14px; background:var(--surface-alt)"><div style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Tap a side to add / remove its wall</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px"><sc-for list="{{ parapetSides }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px"><label><span style="{{ fieldLabel }}">Height</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.9</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></label><label><span style="{{ fieldLabel }}">Width</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.15</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></label></div></div></sc-if>
+            </sc-if>
+
+            <sc-if value="{{ sheetCoords }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:16px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px">Vertex coordinates</div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">Local metres from the roof origin. Type to set exact values.</div>
+              <div style="display:flex; flex-direction:column; gap:8px"><sc-for list="{{ vertexRows }}" as="v" hint-placeholder-count="5"><div style="display:flex; align-items:center; gap:10px"><span style="flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:700">{{ v.n }}</span><div style="flex:1; {{ inputBoxSm }}"><span style="font-size:11px; color:var(--text-tertiary)">X</span><span style="font-family:var(--font-mono); font-size:13px; margin-left:auto">{{ v.x }}</span></div><div style="flex:1; {{ inputBoxSm }}"><span style="font-size:11px; color:var(--text-tertiary)">Y</span><span style="font-family:var(--font-mono); font-size:13px; margin-left:auto">{{ v.y }}</span></div></div></sc-for></div>
+            </sc-if>
+
+            <sc-if value="{{ sheetCalib }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:16px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px">Calibrate scale</div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">You measured two points. Know the real distance? Enter it to correct the scale of all geometry.</div>
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; padding:12px; border-radius:14px; background:var(--surface-alt)"><span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z"></path></svg></span><div><div style="font-size:12px; color:var(--text-secondary)">Measured on imagery</div><div style="font-family:var(--font-mono); font-size:18px; font-weight:700">12.6 m</div></div></div>
+              <label style="display:block; margin-bottom:12px"><span style="{{ fieldLabel }}">Actual distance</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px; color:var(--accent)">13.0</span><span style="font-size:12px; color:var(--text-tertiary)">m</span><span style="margin-left:auto; font-size:11px; color:var(--success)">+3.2% scale</span></div></label>
+              <label style="display:block; margin-bottom:16px"><span style="{{ fieldLabel }}">North offset (expert)</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px">0</span><span style="font-size:12px; color:var(--text-tertiary)">°</span></div></label>
+              <button onClick="{{ applyCalib }}" style="width:100%; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Apply scale correction</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- dependent-items confirm (modal) -->
+        <sc-if value="{{ showDep }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:40; background:rgba(246,247,249,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:14px; right:14px; bottom:24px; z-index:41; background:var(--surface); border-radius:26px; box-shadow:var(--e5); padding:22px 20px">
+            <div style="width:52px; height:52px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></div>
+            <div style="font-size:18px; font-weight:700; letter-spacing:-0.02em; margin-top:14px">This change affects other items</div>
+            <p style="margin:8px 0 0; font-size:13px; line-height:1.55; color:var(--text-secondary)">Reshaping this roof leaves 12 panels and 2 obstructions outside its bounds. What should happen to them?</p>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:18px"><sc-for list="{{ depOptions }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="{{ o.style }}"><span style="display:block; font-size:14px; font-weight:600">{{ o.title }}</span><span style="display:block; margin-top:1px; font-size:12px; color:var(--text-secondary)">{{ o.note }}</span></button></sc-for></div>
+          </div>
+        </sc-if>
+
+        <!-- ============ 3D STUDIO (mobile) ============ -->
+        <sc-if value="{{ isThree }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:8; background:linear-gradient(180deg,#eceef1,#f6f7f9 60%); overflow:hidden">
+            <div style="position:absolute; inset:0; overflow:hidden">
+              <svg viewBox="0 0 375 430" preserveAspectRatio="xMidYMid slice" style="position:absolute; inset:0; width:100%; height:100%">
+                <polygon points="{{ three3Dm.ground }}" fill="var(--canvas-sunken)"></polygon>
+                <polygon points="{{ three3Dm.plane }}" fill="url(#satM)"></polygon>
+                <sc-for list="{{ three3Dm.grid }}" as="g" hint-placeholder-count="0"><line x1="{{ g.x1 }}" y1="{{ g.y1 }}" x2="{{ g.x2 }}" y2="{{ g.y2 }}" stroke="rgba(10,10,11,0.05)" stroke-width="1"></line></sc-for>
+                <sc-for list="{{ three3Dm.buildings }}" as="b" hint-placeholder-count="0"><polygon points="{{ b.points }}" fill="{{ b.fill }}" stroke="var(--accent)" stroke-width="0.8" stroke-linejoin="round"></polygon></sc-for>
+                <path d="{{ three3Dm.arc }}" fill="none" stroke="var(--warning)" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"></path>
+                <sc-for list="{{ three3Dm.badges }}" as="h" hint-placeholder-count="13"><g><rect x="{{ h.rx }}" y="{{ h.ry }}" width="18" height="14" rx="4" fill="var(--surface)"></rect><text x="{{ h.tx }}" y="{{ h.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="8" font-weight="700" fill="var(--warning)">{{ h.label }}</text></g></sc-for>
+                <circle cx="{{ three3Dm.sun.x }}" cy="{{ three3Dm.sun.y }}" r="18" fill="var(--warning)" opacity="0.2"></circle>
+                <circle cx="{{ three3Dm.sun.x }}" cy="{{ three3Dm.sun.y }}" r="9" fill="var(--warning)"></circle>
+              </svg>
+              <div style="position:absolute; left:12px; top:12px; display:flex; flex-direction:column; gap:4px; padding:5px; border-radius:16px; background:var(--surface); box-shadow:var(--e3)"><sc-for list="{{ threeLeftTools }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+              <div style="position:absolute; left:12px; bottom:184px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 5px 5px; border-radius:16px; background:var(--surface); box-shadow:var(--e3)"><span style="font-size:9px; font-weight:700; letter-spacing:0.14em; color:var(--text-tertiary)">VIEW</span><sc-for list="{{ threeViews }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.onClick }}" title="{{ v.label }}" style="{{ v.style }}">{{ v.icon }}</button></sc-for></div>
+              <div style="position:absolute; right:12px; top:12px; padding:12px; border-radius:16px; background:var(--surface); box-shadow:var(--e3); text-align:center"><div style="width:44px; height:44px; margin:0 auto; border-radius:50%; background:var(--surface-alt); display:flex; align-items:center; justify-content:center"><svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><circle cx="22" cy="37" r="1" fill="var(--text-tertiary)"></circle><circle cx="7" cy="22" r="1" fill="var(--text-tertiary)"></circle><circle cx="37" cy="22" r="1" fill="var(--text-tertiary)"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><circle cx="22" cy="23" r="1.8" fill="var(--surface)" stroke="var(--text-secondary)" stroke-width="1"></circle><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div><div style="margin-top:6px; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--text-primary)">Az {{ sunAz }}° · Alt {{ sunAlt }}°</div></div>
+            </div>
+            <div style="position:absolute; left:12px; right:12px; bottom:calc(14px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:12px; padding:0">
+              <div style="display:flex; gap:8px; overflow-x:auto"><sc-for list="{{ seasonsM }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div>
+              <div style="display:flex; align-items:center; gap:12px"><button title="Play sun path" style="flex-shrink:0; width:42px; height:42px; border-radius:12px; border:none; cursor:pointer; background:var(--surface-alt); box-shadow:var(--e1); color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button><span style="font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)">5 AM</span><input type="range" min="0" max="100" value="{{ sunPct }}" onInput="{{ setSunT }}" style="flex:1; height:5px; accent-color:var(--warning); cursor:pointer"><span style="font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)">7 PM</span></div>
+              <div style="display:flex; align-items:center; justify-content:center; gap:18px"><span style="font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--warning)">{{ sunTime }}</span><span style="font-size:11.5px; color:var(--text-secondary)">↑ 5:42 AM</span><span style="font-size:11.5px; color:var(--text-secondary)">↓ 6:32 PM</span></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- complete-shape confirm (bottom sheet) -->
+        <sc-if value="{{ showComplete }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:40; background:rgba(246,247,249,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:41; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 18px calc(22px + env(safe-area-inset-bottom))">
+            <div style="width:38px; height:4px; border-radius:999px; background:var(--canvas-sunken); margin:6px auto 14px"></div>
+            <div style="width:52px; height:52px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><defs><linearGradient id="aiGradM" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B5CFF"></stop><stop offset="0.5" stop-color="#3B82F6"></stop><stop offset="1" stop-color="#E85CBE"></stop></linearGradient></defs><path d="M12 2l2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2z" fill="url(#aiGradM)"></path><path d="M18.5 3l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="url(#aiGradM)"></path></svg></div>
+            <div style="font-size:18px; font-weight:700; letter-spacing:-0.02em; margin-top:14px">Complete shape?</div>
+            <p style="margin:8px 0 0; font-size:13.5px; line-height:1.55; color:var(--text-secondary)">Your shape isn't closed yet. Want us to connect the last point back to the first to complete the roof area?</p>
+            <div style="display:flex; gap:8px; margin-top:18px"><button onClick="{{ closeSheet }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-primary); font-family:inherit; font-size:14px; font-weight:500">Keep drawing</button><button onClick="{{ doComplete }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Complete shape</button></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- ============ DESKTOP ============ -->
+    <div style="flex-shrink:0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg><span style="font-size:12.5px; font-weight:500">Desktop · 1440</span></div>
+      <div style="position:relative; width:1440px; height:900px; background:var(--canvas); border-radius:20px; box-shadow:var(--e4); overflow:hidden; display:flex; flex-direction:column">
+        <!-- header -->
+        <div style="flex-shrink:0; height:66px; display:flex; align-items:center; gap:14px; padding:0 24px; background:var(--surface); box-shadow:var(--e2); z-index:6">
+          <button onClick="{{ prevStep }}" style="width:42px; height:42px; border-radius:12px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div style="min-width:180px"><div style="font-size:12px; color:var(--text-secondary)">{{ leadName }} · {{ roofCountLabel }}</div><div style="font-size:18px; font-weight:700; letter-spacing:-0.025em">Roof setup</div></div>
+          <div style="flex:1"></div>
+          <span style="{{ health.chipD }}"><span style="{{ health.dot }}"></span><span style="font-family:var(--font-mono); font-weight:700">{{ health.score }}</span><span style="font-weight:500; color:var(--text-secondary)">{{ health.band }}</span></span>
+          <div style="width:1px; height:28px; background:var(--hairline)"></div>
+          <button onClick="{{ prevStep }}" style="{{ hdrGhost }}">Save &amp; exit</button>
+          <button onClick="{{ next }}" style="{{ nextStyleD }}"><span>Next · Obstructions</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
+
+        <div style="flex:1; display:flex; min-height:0">
+
+          <!-- canvas -->
+          <div style="flex:1; position:relative; min-width:0; background:var(--canvas-sunken)">
+            <div id="cvDesk" class="hg-cv" style="position:absolute; inset:0">
+              <svg viewBox="0 0 900 620" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block">
+                <defs><pattern id="rd-grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1"></path></pattern><linearGradient id="satD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a5340"></stop><stop offset="0.5" stop-color="#6b6350"></stop><stop offset="1" stop-color="#524a3e"></stop></linearGradient><radialGradient id="satDb" cx="0.35" cy="0.3" r="0.6"><stop offset="0" stop-color="#5b6b4a"></stop><stop offset="1" stop-color="#4a5340" stop-opacity="0"></stop></radialGradient></defs>
+                <g id="gDesk">
+                  <rect x="-300" y="-300" width="1500" height="1200" fill="url(#satD)"></rect>
+                  <rect x="-300" y="-300" width="1500" height="1200" fill="url(#satDb)"></rect>
+                  <rect x="-300" y="-300" width="1500" height="1200" fill="url(#rd-grid)"></rect>
+                  <sc-for list="{{ cd.polys }}" as="p" hint-placeholder-count="0"><polygon points="{{ p.points }}" fill="{{ p.fill }}" stroke="{{ p.stroke }}" stroke-width="{{ p.sw }}" stroke-dasharray="{{ p.dash }}" stroke-linejoin="round"></polygon></sc-for>
+                  <sc-for list="{{ cd.guides }}" as="g" hint-placeholder-count="0"><line x1="{{ g.x1 }}" y1="{{ g.y1 }}" x2="{{ g.x2 }}" y2="{{ g.y2 }}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="5 5" opacity="0.8"></line></sc-for>
+                  <sc-for list="{{ cd.iso }}" as="f" hint-placeholder-count="0"><polygon points="{{ f.points }}" fill="{{ f.fill }}" stroke="rgba(10,10,11,0.35)" stroke-width="1.2" stroke-linejoin="round"></polygon></sc-for>
+                  <sc-for list="{{ cd.measure }}" as="m" hint-placeholder-count="0"><g><line x1="{{ m.x1 }}" y1="{{ m.y1 }}" x2="{{ m.x2 }}" y2="{{ m.y2 }}" stroke="var(--warning)" stroke-width="2.5"></line><circle cx="{{ m.x1 }}" cy="{{ m.y1 }}" r="6" fill="var(--warning)"></circle><circle cx="{{ m.x2 }}" cy="{{ m.y2 }}" r="6" fill="var(--warning)"></circle></g></sc-for>
+                  <sc-for list="{{ cd.labels }}" as="l" hint-placeholder-count="0"><g><rect x="{{ l.bx }}" y="{{ l.by }}" width="{{ l.bw }}" height="20" rx="10" fill="var(--surface)"></rect><text x="{{ l.x }}" y="{{ l.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="12" font-weight="500" fill="var(--text-primary)">{{ l.text }}</text></g></sc-for>
+                  <sc-for list="{{ cd.inserts }}" as="h" hint-placeholder-count="0"><g><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="9" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8" opacity="0.9"></circle><path d="M{{ h.cx }} {{ h.my1 }}V{{ h.my2 }}M{{ h.mx1 }} {{ h.cy }}H{{ h.mx2 }}" stroke="var(--accent)" stroke-width="1.8"></path></g></sc-for>
+                  <sc-for list="{{ cd.handles }}" as="h" hint-placeholder-count="0"><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="{{ h.r }}" fill="{{ h.fill }}" stroke="{{ h.stroke }}" stroke-width="3"></circle></sc-for>
+                  <sc-for list="{{ cd.rotate }}" as="r" hint-placeholder-count="0"><g><line x1="{{ r.lx }}" y1="{{ r.ly }}" x2="{{ r.cx }}" y2="{{ r.cy }}" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="4 4"></line><circle cx="{{ r.cx }}" cy="{{ r.cy }}" r="15" fill="var(--surface)" stroke="var(--accent)" stroke-width="3"></circle><path d="{{ r.icon }}" transform="translate({{ r.txD }},{{ r.tyD }}) scale(1.3)" stroke="var(--accent)" stroke-width="1.6" fill="none" stroke-linecap="round"></path></g></sc-for>
+                  <sc-for list="{{ cd.ghosts }}" as="g" hint-placeholder-count="0"><g><circle cx="{{ g.bx }}" cy="{{ g.by }}" r="17" fill="{{ g.badgeFill }}" stroke="{{ g.badgeStroke }}" stroke-width="2.5"></circle><text x="{{ g.bx }}" y="{{ g.btyD }}" text-anchor="middle" font-family="var(--font-mono)" font-size="12" font-weight="700" fill="{{ g.badgeStroke }}">{{ g.conf }}</text></g></sc-for>
+                  <sc-for list="{{ cd.closeDot }}" as="c" hint-placeholder-count="0"><circle cx="{{ c.cx }}" cy="{{ c.cy }}" r="15" fill="none" stroke="var(--success)" stroke-width="3" stroke-dasharray="5 4" style="animation:hg-pulse 1.2s ease-in-out infinite"></circle></sc-for>
+                </g>
+              </svg>
+            </div>
+            <div style="position:absolute; top:14px; left:14px; display:flex; gap:8px"><span style="{{ orthoChip }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3z"></path><path d="M3 15h12V3"></path></svg>Ortho-snap {{ orthoWord }}</span></div>
+            <sc-if value="{{ selPodShow }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute; right:16px; top:16px; z-index:4; display:flex; gap:8px"><sc-for list="{{ selActionsD }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.onClick }}" title="{{ a.label }}" style="{{ a.style }}">{{ a.icon }}</button></sc-for></div>
+            </sc-if>
+            <div style="position:absolute; right:16px; bottom:16px; z-index:3; display:flex; flex-direction:column; align-items:center; gap:10px">
+              <div style="display:flex; flex-direction:column; gap:1px; border-radius:11px; overflow:hidden; box-shadow:var(--e2)"><button onClick="{{ zoomIn }}" style="width:38px; height:38px; border:none; background:var(--surface); cursor:pointer; color:var(--text-primary); font-size:19px">+</button><button onClick="{{ zoomOut }}" style="width:38px; height:38px; border:none; background:var(--surface); cursor:pointer; color:var(--text-primary); font-size:19px; border-top:1px solid var(--hairline)">−</button></div>
+              <div title="North" style="width:46px; height:46px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center"><svg width="34" height="34" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><circle cx="22" cy="37" r="1" fill="var(--text-tertiary)"></circle><circle cx="7" cy="22" r="1" fill="var(--text-tertiary)"></circle><circle cx="37" cy="22" r="1" fill="var(--text-tertiary)"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><circle cx="22" cy="23" r="1.8" fill="var(--surface)" stroke="var(--text-secondary)" stroke-width="1"></circle><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div>
+            </div>
+            <!-- floating tool pods (bottom-left, no background) -->
+            <div style="position:absolute; left:16px; bottom:16px; z-index:4; display:flex; flex-direction:column; gap:8px">
+              <sc-if value="{{ toolsOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="{{ podWrap }}"><sc-for list="{{ toolsMeasureD }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" title="{{ t.labelKbd }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+                <div style="{{ podWrap }}"><sc-for list="{{ toolsMainD }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" title="{{ t.labelKbd }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+                <div style="{{ podWrap }}"><sc-for list="{{ toolsHistoryD }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" title="{{ t.labelKbd }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+              </sc-if>
+              <button onClick="{{ toggleTools }}" title="Tools" style="{{ toolsToggleD }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ toolsChevron }}"></path></svg></button>
+            </div>
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}"><div style="position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:340px; text-align:center; padding:26px; border-radius:22px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); box-shadow:var(--e4)"><div style="width:64px; height:64px; margin:0 auto; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V9l6-5 6 5v12M9 21v-6h6v6"></path></svg></div><div style="margin-top:14px; font-size:20px; font-weight:700; letter-spacing:-0.02em">No roofs yet</div><p style="margin:8px 0 0; font-size:13.5px; line-height:1.55; color:var(--text-secondary)">Trace each roof surface on the imagery, or let AI detect them for you to review and accept.</p><div style="display:flex; gap:10px; margin-top:18px"><button onClick="{{ startDraw }}" style="flex:1; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Draw roof</button><button onClick="{{ runDetect }}" style="flex:1; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-primary); font-family:inherit; font-size:13.5px; font-weight:500">Detect (AI)</button></div></div></sc-if>
+            <sc-if value="{{ detecting }}" hint-placeholder-val="{{ false }}"><div style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px; background:var(--surface); box-shadow:var(--e4)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" style="animation:hg-spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.5"></path></svg><span style="font-size:13px; color:var(--text-secondary)">Detecting roofs from Google imagery…</span></div></sc-if>
+          </div>
+
+          <!-- right properties panel -->
+          <div style="flex-shrink:0; width:340px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; z-index:3">
+            <div style="flex-shrink:0; padding:18px 20px 12px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:10px">Roofs · {{ roofs.length }}</div>
+              <sc-if value="{{ hasRoofs }}" hint-placeholder-val="{{ false }}"><div style="display:flex; flex-direction:column; gap:6px"><sc-for list="{{ roofs }}" as="r" hint-placeholder-count="2"><div style="{{ r.rowStyleD }}"><button onClick="{{ r.onSelect }}" style="flex:1; display:flex; align-items:center; gap:9px; border:none; background:none; cursor:pointer; font-family:inherit; padding:0; text-align:left; color:inherit"><span style="{{ r.dotStyle }}"></span><span style="flex:1"><span style="display:block; font-size:13.5px; font-weight:600">{{ r.name }}</span><span style="display:block; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary)">{{ r.area }} · {{ r.prov }}</span></span></button><button onClick="{{ r.onLock }}" style="width:30px; height:30px; border:none; background:none; cursor:pointer; color:{{ r.lockColor }}; display:flex; align-items:center; justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="{{ r.lockPath }}"></path></svg></button><button onClick="{{ r.onDelete }}" style="width:30px; height:30px; border:none; background:none; cursor:pointer; color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg></button></div></sc-for></div></sc-if>
+              <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}"><div style="padding:14px; border-radius:14px; background:var(--surface-alt); font-size:12.5px; color:var(--text-secondary); text-align:center">No roofs yet — draw or detect to begin.</div></sc-if>
+            </div>
+            <div style="flex:1; overflow:auto; padding:6px 20px 20px; border-top:1px solid var(--hairline)">
+
+              <sc-if value="{{ panelGhosts }}" hint-placeholder-val="{{ false }}">
+                <div style="padding-top:14px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">Review detected roofs</div><span style="font-size:12px; color:var(--text-secondary)">{{ ghostCount }} found</span></div>
+                <div style="display:flex; align-items:center; gap:7px; margin-bottom:12px; padding:8px 12px; border-radius:12px; background:var(--surface-alt)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 2v4M16 2v4M3 10h18"></path></svg><span style="font-size:11.5px; color:var(--text-secondary)">Imagery {{ imageryDate }}</span><span style="{{ qualityChip }}">{{ imageryQuality }}</span></div>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px"><sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="3"><button onClick="{{ g.onToggle }}" style="{{ g.rowStyle }}"><span style="{{ g.checkStyle }}"><sc-if value="{{ g.included }}" hint-placeholder-val="{{ true }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="flex:1; text-align:left"><span style="display:block; font-size:13.5px; font-weight:600">{{ g.name }}</span><span style="display:block; font-size:11px; color:var(--text-secondary)">{{ g.detail }}</span></span><span style="{{ g.confChip }}">{{ g.confText }}</span></button></sc-for></div>
+                <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="display:flex; align-items:flex-start; gap:9px; margin-bottom:12px; padding:10px 12px; border-radius:12px; background:var(--warning-bg)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg><span style="font-size:11.5px; color:var(--text-primary); line-height:1.45">1 low-confidence shape dropped (photo fallback — no height/pitch).</span></div></sc-if>
+                <div style="display:flex; gap:8px"><button onClick="{{ nudgeAlign }}" style="{{ sheetGhostBtn }}">Align nudge</button><button onClick="{{ addSelectedGhosts }}" style="flex:2; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Add {{ selGhostCount }} selected</button></div></div>
+              </sc-if>
+
+              <sc-if value="{{ panelSelected }}" hint-placeholder-val="{{ true }}">
+                <div style="padding-top:14px"><div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">{{ selName }}</div><span style="{{ provChip }}">{{ selProvenance }}</span></div>
+                <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); margin-bottom:14px">{{ selArea }} · {{ selType }}</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px"><button onClick="{{ toggleSnap15 }}" style="{{ snap15Chip }}">Rotate · snap 15°</button><span style="font-size:11.5px; color:var(--text-tertiary)">Big handles on canvas</span></div>
+                <div style="margin-top:16px; padding:12px 14px; border-radius:14px; background:var(--surface-alt)"><div style="display:flex; align-items:center; gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 3H8M12 7v14"></path></svg><span style="font-size:11.5px; color:var(--text-secondary)">Keyboard: <span style="font-family:var(--font-mono)">V</span> select · <span style="font-family:var(--font-mono)">R</span> draw · <span style="font-family:var(--font-mono)">⌘Z</span> undo</span></div></div></div>
+              </sc-if>
+
+              <sc-if value="{{ panelType }}" hint-placeholder-val="{{ false }}">
+                <div style="padding-top:14px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px">Roof type</div><div style="display:flex; flex-direction:column; gap:8px"><sc-for list="{{ roofTypes }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.onClick }}" style="{{ t.rowStyle }}"><span style="{{ t.iconStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg></span><span style="flex:1; text-align:left"><span style="display:block; font-size:14px; font-weight:600; color:{{ t.titleColor }}">{{ t.name }}</span><span style="display:block; font-size:11.5px; color:var(--text-tertiary)">{{ t.note }}</span></span><sc-if value="{{ t.selected }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></button></sc-for></div><button onClick="{{ backToProps }}" style="margin-top:14px; width:100%; height:42px; border-radius:12px; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-primary); font-family:inherit; font-size:13px; font-weight:500">Done</button></div>
+              </sc-if>
+
+              <sc-if value="{{ panelHeight }}" hint-placeholder-val="{{ false }}">
+                <div style="padding-top:14px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px">Height &amp; parapet</div>
+                <div style="display:flex; align-items:flex-start; gap:9px; margin-bottom:14px; padding:11px 13px; border-radius:14px; background:var(--info-bg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M12 2a10 10 0 1 0 10 10"></path><path d="M12 6v6l4 2"></path></svg><div style="flex:1"><div style="font-size:12.5px; font-weight:600">Google detected 18° facing SSW</div><div style="display:flex; gap:8px; margin-top:8px"><button onClick="{{ applyPitch }}" style="height:30px; padding:0 12px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:11.5px; font-weight:500">Apply</button><button onClick="{{ backToProps }}" style="height:30px; padding:0 12px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); color:var(--text-secondary); font-family:inherit; font-size:11.5px; font-weight:500">Dismiss</button></div></div></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px"><label><span style="{{ fieldLabel }}">Height</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">3.2</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></label><label><span style="{{ fieldLabel }}">Pitch</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">18</span><span style="font-size:11px; color:var(--text-tertiary)">°</span></div></label></div>
+                <div style="display:flex; align-items:center; gap:7px; margin-bottom:14px; padding:8px 12px; border-radius:12px; background:var(--success-bg)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M5 10l7-7 7 7"></path></svg><span style="font-size:11.5px; color:var(--success); font-weight:500">Faces SSW · south is best, close.</span></div>
+                <div style="margin-bottom:14px"><span style="{{ fieldLabel }}">Slopes toward — tap the low edge panels face</span><div style="display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:14px; background:var(--surface-alt)"><div style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:700">SSW</div><div style="flex:1"><div style="font-size:12.5px; font-weight:500">Facing 202°</div><div style="font-size:11px; color:var(--text-secondary)">Tap the low edge on the canvas to change.</div></div></div></div>
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px"><span style="font-size:13px">Edge setback (uniform)</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.30</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></div>
+                <button style="width:100%; height:38px; border-radius:12px; border:none; cursor:pointer; background:var(--surface-alt); box-shadow:var(--e1); color:var(--text-secondary); font-family:inherit; font-size:12.5px; font-weight:500; margin-bottom:12px">Per-edge setbacks</button>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--hairline)"><div><div style="font-size:13.5px; font-weight:600">Parapet wall</div><div style="font-size:11px; color:var(--text-tertiary)">Shared walls auto-skipped</div></div><button onClick="{{ toggleParapet }}" style="{{ parapetTrack }}"><span style="{{ parapetKnob }}"></span></button></div>
+                <sc-if value="{{ parapetOn }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px; padding:12px; border-radius:14px; background:var(--surface-alt)"><div style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Tap a side to add / remove its wall</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px"><sc-for list="{{ parapetSides }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px"><label><span style="{{ fieldLabel }}">Wall height</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.9</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></label><label><span style="{{ fieldLabel }}">Wall width</span><div style="{{ inputBoxSm }}"><span style="font-family:var(--font-mono); font-size:13px">0.15</span><span style="font-size:11px; color:var(--text-tertiary)">m</span></div></label></div></div></sc-if>
+                <button onClick="{{ backToProps }}" style="margin-top:14px; width:100%; height:42px; border-radius:12px; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-primary); font-family:inherit; font-size:13px; font-weight:500">Done</button></div>
+              </sc-if>
+
+              <sc-if value="{{ panelCalib }}" hint-placeholder-val="{{ false }}">
+                <div style="padding-top:14px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px">Calibrate scale</div><div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">Enter the real distance between the two measured points to rescale all geometry.</div>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; padding:12px; border-radius:14px; background:var(--surface-alt)"><span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z"></path></svg></span><div><div style="font-size:11.5px; color:var(--text-secondary)">Measured</div><div style="font-family:var(--font-mono); font-size:17px; font-weight:700">12.6 m</div></div></div>
+                <label style="display:block; margin-bottom:10px"><span style="{{ fieldLabel }}">Actual distance</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px; color:var(--accent)">13.0</span><span style="font-size:12px; color:var(--text-tertiary)">m</span><span style="margin-left:auto; font-size:11px; color:var(--success)">+3.2%</span></div></label>
+                <label style="display:block; margin-bottom:14px"><span style="{{ fieldLabel }}">North offset (expert)</span><div style="{{ inputBox }}"><span style="font-family:var(--font-mono); font-size:14px">0</span><span style="font-size:12px; color:var(--text-tertiary)">°</span></div></label>
+                <button onClick="{{ applyCalib }}" style="width:100%; height:46px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Apply scale correction</button></div>
+              </sc-if>
+
+              <sc-if value="{{ panelDraw }}" hint-placeholder-val="{{ false }}">
+                <div style="padding-top:14px"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em; margin-bottom:12px">Drawing roof</div><div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px"><div style="display:flex; align-items:center; gap:10px"><span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:700">1</span><span style="font-size:12.5px; color:var(--text-secondary)">Click corners on the canvas.</span></div><div style="display:flex; align-items:center; gap:10px"><span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:700">2</span><span style="font-size:12.5px; color:var(--text-secondary)">Click the first point to close.</span></div><div style="display:flex; align-items:center; gap:10px"><span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--surface-alt); color:var(--text-tertiary); display:flex; align-items:center; justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16v-4M12 8h.01"></path><circle cx="12" cy="12" r="10"></circle></svg></span><span style="font-size:12.5px; color:var(--text-tertiary)">Points too close are rejected.</span></div></div><div style="display:flex; flex-direction:column; gap:8px"><button onClick="{{ removeLast }}" style="{{ sheetGhostBtn }}">Undo last point</button><button onClick="{{ toggleOrtho }}" style="{{ sheetGhostBtn }}">Ortho-snap {{ orthoWord }}</button><button onClick="{{ confirmShape }}" style="width:100%; height:44px; border-radius:12px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Complete shape</button></div></div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 3D STUDIO (desktop) ============ -->
+                <sc-if value="{{ isThree }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; left:0; right:0; top:66px; bottom:0; z-index:8; background:linear-gradient(180deg,#eceef1,#f6f7f9 55%); overflow:hidden">
+            <div style="position:absolute; inset:0; overflow:hidden">
+              <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" style="position:absolute; inset:0; width:100%; height:100%">
+                <polygon points="{{ three3D.ground }}" fill="var(--canvas-sunken)"></polygon>
+                <polygon points="{{ three3D.plane }}" fill="url(#satD)"></polygon>
+                <sc-for list="{{ three3D.grid }}" as="g" hint-placeholder-count="0"><line x1="{{ g.x1 }}" y1="{{ g.y1 }}" x2="{{ g.x2 }}" y2="{{ g.y2 }}" stroke="rgba(10,10,11,0.05)" stroke-width="1"></line></sc-for>
+                <sc-for list="{{ three3D.buildings }}" as="b" hint-placeholder-count="0"><polygon points="{{ b.points }}" fill="{{ b.fill }}" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"></polygon></sc-for>
+                <path d="{{ three3D.arc }}" fill="none" stroke="var(--warning)" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round"></path>
+                <sc-for list="{{ three3D.badges }}" as="h" hint-placeholder-count="13"><g><rect x="{{ h.rx }}" y="{{ h.ry }}" width="22" height="16" rx="5" fill="var(--surface)"></rect><text x="{{ h.tx }}" y="{{ h.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--warning)">{{ h.label }}</text></g></sc-for>
+                <circle cx="{{ three3D.sun.x }}" cy="{{ three3D.sun.y }}" r="28" fill="var(--warning)" opacity="0.2"></circle>
+                <circle cx="{{ three3D.sun.x }}" cy="{{ three3D.sun.y }}" r="13" fill="var(--warning)"></circle>
+              </svg>
+              <!-- left top toolbar -->
+              <div style="position:absolute; left:20px; top:20px; display:flex; flex-direction:column; gap:4px; padding:6px; border-radius:18px; background:var(--surface); box-shadow:var(--e3)"><sc-for list="{{ threeLeftTools }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}">{{ t.icon }}</button></sc-for></div>
+              <!-- bottom-left VIEW group -->
+              <div style="position:absolute; left:20px; bottom:150px; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px 6px; border-radius:18px; background:var(--surface); box-shadow:var(--e3)"><span style="font-size:10px; font-weight:700; letter-spacing:0.14em; color:var(--text-tertiary); margin-bottom:2px">VIEW</span><sc-for list="{{ threeViews }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.onClick }}" title="{{ v.label }}" style="{{ v.style }}">{{ v.icon }}</button></sc-for></div>
+              <!-- top-right compass card (matches 2D view) -->
+              <div style="position:absolute; right:20px; top:20px; padding:14px 16px; border-radius:18px; background:var(--surface); box-shadow:var(--e3); text-align:center">
+                <div style="width:48px; height:48px; margin:0 auto; border-radius:50%; background:var(--surface-alt); display:flex; align-items:center; justify-content:center"><svg width="34" height="34" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><circle cx="22" cy="37" r="1" fill="var(--text-tertiary)"></circle><circle cx="7" cy="22" r="1" fill="var(--text-tertiary)"></circle><circle cx="37" cy="22" r="1" fill="var(--text-tertiary)"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><circle cx="22" cy="23" r="1.8" fill="var(--surface)" stroke="var(--text-secondary)" stroke-width="1"></circle><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div>
+                <div style="margin-top:10px; font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--text-primary)">Az {{ sunAz }}° · Alt {{ sunAlt }}°</div>
+                <div style="margin-top:2px; font-size:11px; color:var(--text-tertiary)">{{ sunDate }} · {{ sunTime }}</div>
+              </div>
+            </div>
+            <!-- sun simulation bar — floating, fixed at bottom over the scene -->
+            <div style="position:absolute; left:50%; bottom:20px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:12px; padding:0">
+              <div style="display:flex; align-items:center; gap:10px"><sc-for list="{{ seasons }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for><input type="date" value="2026-07-24" style="height:40px; padding:0 14px; border:none; border-radius:12px; background:var(--surface-alt); box-shadow:var(--e1); font-family:var(--font-mono); font-size:13px; color:var(--text-primary)"></div>
+              <div style="display:flex; align-items:center; gap:16px; width:100%; max-width:720px"><button title="Play sun path" style="flex-shrink:0; width:44px; height:44px; border-radius:12px; border:none; cursor:pointer; background:var(--surface-alt); box-shadow:var(--e1); color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary)">5 AM</span><input type="range" min="0" max="100" value="{{ sunPct }}" onInput="{{ setSunT }}" style="flex:1; height:5px; accent-color:var(--warning); cursor:pointer"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary)">7 PM</span></div>
+              <div style="display:flex; align-items:center; gap:22px"><span style="font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--warning)">{{ sunTime }}</span><span style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M4.9 10.9l1.4 1.4M2 18h2M20 18h2M17.7 12.3l1.4-1.4M22 22H2M16 18a4 4 0 0 0-8 0"></path></svg>Sunrise 5:42 AM</span><span style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2M8.5 5.5 12 2l3.5 3.5M2 18h2M20 18h2M22 22H2M16 18a4 4 0 0 0-8 0"></path></svg>Sunset 6:32 PM</span></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- complete-shape confirm (modal) -->
+        <sc-if value="{{ showComplete }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:40; background:rgba(246,247,249,0.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:41; width:440px; background:var(--surface); border-radius:26px; box-shadow:var(--e5); padding:28px">
+            <div style="width:56px; height:56px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><defs><linearGradient id="aiGradD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B5CFF"></stop><stop offset="0.5" stop-color="#3B82F6"></stop><stop offset="1" stop-color="#E85CBE"></stop></linearGradient></defs><path d="M12 2l2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2z" fill="url(#aiGradD)"></path><path d="M18.5 3l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="url(#aiGradD)"></path></svg></div>
+            <div style="font-size:21px; font-weight:700; letter-spacing:-0.02em; margin-top:16px">Complete shape?</div>
+            <p style="margin:10px 0 0; font-size:14px; line-height:1.6; color:var(--text-secondary)">Your shape isn't closed yet. Would you like us to automatically connect the last point to the first point to complete the roof area?</p>
+            <div style="display:flex; gap:10px; margin-top:22px"><button onClick="{{ closeSheet }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-primary); font-family:inherit; font-size:14.5px; font-weight:500">Keep drawing</button><button onClick="{{ doComplete }}" style="flex:1; height:48px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14.5px; font-weight:500">Complete shape</button></div>
+          </div>
+        </sc-if>
+
+        <!-- desktop dependent modal -->
+        <sc-if value="{{ showDep }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:40; background:rgba(246,247,249,0.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:41; width:460px; background:var(--surface); border-radius:26px; box-shadow:var(--e5); padding:28px">
+            <div style="width:56px; height:56px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></div>
+            <div style="font-size:21px; font-weight:700; letter-spacing:-0.02em; margin-top:16px">This change affects other items</div>
+            <p style="margin:10px 0 0; font-size:14px; line-height:1.6; color:var(--text-secondary)">Reshaping this roof leaves 12 panels and 2 obstructions outside its bounds. Choose what happens to them.</p>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px"><sc-for list="{{ depOptions }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="{{ o.styleD }}"><span style="display:block; font-size:14.5px; font-weight:600">{{ o.title }}</span><span style="display:block; margin-top:2px; font-size:12.5px; color:var(--text-secondary)">{{ o.note }}</span></button></sc-for></div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { scene: 'selected', sheet: null, ortho: true, snap15: true, showMeas: false, sel: 0, parapet: false, ghostSel: [true, true, false], detecting: false, lockA: false, para: [true, false, true, false], toolsOpen: true, sunT: 0.5, season: 'today', threeView: 'iso', heatmap: false, mesh: 'map' };
+
+  ic(paths, size, sw) { const s = size || 20; return React.createElement('svg', { width: s, height: s, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: sw || 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }, paths.map((d, i) => React.createElement('path', { key: i, d }))); }
+
+  scen = (patch) => this.setState({ sheet: null, detecting: false, ...patch });
+  prevStep = () => { window.location.href = 'ProjectSetup.dc.html'; };
+  next = () => { window.location.href = 'Obstructions.dc.html'; };
+  view3d = () => this.scen({ scene: 'three' });
+  startDraw = () => this.scen({ scene: 'draw' });
+  runDetect = () => { this.setState({ detecting: true, sheet: null, scene: 'empty' }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ detecting: false, scene: 'ghosts', sheet: 'ghosts' }), 1500); };
+  addSelectedGhosts = () => this.scen({ scene: 'selected', sheet: null });
+  confirmShape = () => this.setState({ sheet: 'complete' });
+  doComplete = () => this.scen({ scene: 'selected', sheet: null });
+  exit3d2 = () => this.scen({ scene: 'selected' });
+  removeLast = () => {};
+  nudgeAlign = () => {};
+  applyPitch = () => this.setState({ sheet: this._deskCtx ? null : this.state.sheet });
+  applyCalib = () => this.scen({ scene: 'selected', sheet: null });
+  toggleOrtho = () => this.setState(s => ({ ortho: !s.ortho }));
+  toggleSnap15 = () => this.setState(s => ({ snap15: !s.snap15 }));
+  toggleParapet = () => this.setState(s => ({ parapet: !s.parapet }));
+  toggleTools = () => this.setState(s => ({ toolsOpen: !s.toolsOpen }));
+  setSunT = (e) => { const v = e && e.target ? +e.target.value : 50; this.setState({ sunT: Math.max(0, Math.min(1, v / 100)) }); };
+  setSeason = (s) => this.setState({ season: s });
+  setThreeView = (v) => this.setState({ threeView: v });
+  toggleHeatmap = () => this.setState(s => ({ heatmap: !s.heatmap }));
+  toggleMesh = () => this.setState(s => ({ mesh: s.mesh === 'map' ? 'mesh' : 'map' }));
+
+  build3D(c) {
+    const AX = [c.scale, c.scale * 0.5], AY = [-c.scale, c.scale * 0.5], HZ = c.scale * 1.3;
+    const pr = (gx, gy, gz) => [c.cx + gx * AX[0] + gy * AY[0], c.cy + gx * AX[1] + gy * AY[1] - (gz || 0) * HZ];
+    const S = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const plane = [pr(-6, -6), pr(6, -6), pr(6, 6), pr(-6, 6)];
+    const ground = [pr(-17, -11), pr(17, -11), pr(17, 17), pr(-17, 17)];
+    const grid = [];
+    for (let i = -6; i <= 6; i += 1.5) { const a = pr(i, -6), b = pr(i, 6), d = pr(-6, i), e = pr(6, i); grid.push({ x1: a[0], y1: a[1], x2: b[0], y2: b[1] }); grid.push({ x1: d[0], y1: d[1], x2: e[0], y2: e[1] }); }
+    const defs = [[-3, -3, 1.6, 1.2, 2.4], [-1.1, -3.6, 1.1, 0.9, 1.8], [0.6, -3.2, 1.5, 1.2, 2.3], [2.6, -2.2, 1.1, 1.1, 1.6], [-3.8, -0.2, 1.2, 1.4, 1.5], [-1.2, -0.6, 3.4, 1.7, 0.7], [2.3, 0.3, 1.2, 1.2, 1.9], [3.3, 2.1, 1, 1, 1.5], [-2.8, 2.3, 1.2, 1, 1.7], [0.1, 2.5, 1.3, 1.1, 1.4]];
+    const b = [];
+    defs.forEach(([x, y, w, d, h]) => { const base = [pr(x, y), pr(x + w, y), pr(x + w, y + d), pr(x, y + d)]; const top = [pr(x, y, h), pr(x + w, y, h), pr(x + w, y + d, h), pr(x, y + d, h)]; b.push({ points: S([base[1], base[2], top[2], top[1]]), fill: 'rgba(90,75,255,0.5)' }); b.push({ points: S([base[2], base[3], top[3], top[2]]), fill: 'rgba(90,75,255,0.68)' }); b.push({ points: S(top), fill: 'var(--accent-subtle)' }); });
+    const badges = [];
+    for (let h = 6; h <= 18; h++) { const ang = Math.PI * (h - 6) / 12; badges.push({ cx: c.acx + c.R * Math.cos(ang), cy: c.acy - c.R * Math.sin(ang), tx: c.acx + c.R * Math.cos(ang), ty: c.acy - c.R * Math.sin(ang) + 3.5, rx: c.acx + c.R * Math.cos(ang) - 11, ry: c.acy - c.R * Math.sin(ang) - 8, label: '' + h }); }
+    const sh = 5 + 14 * c.sunT; const sang = Math.PI * (Math.min(18, Math.max(6, sh)) - 6) / 12;
+    const arc = 'M ' + (c.acx + c.R).toFixed(1) + ' ' + c.acy.toFixed(1) + ' A ' + c.R + ' ' + c.R + ' 0 0 0 ' + (c.acx - c.R).toFixed(1) + ' ' + c.acy.toFixed(1);
+    const sun = { x: c.acx + c.R * Math.cos(sang), y: c.acy - c.R * Math.sin(sang) };
+    return { plane: S(plane), ground: S(ground), grid, buildings: b, arc, badges, sun };
+  }
+  openSheet = (x) => this.setState({ sheet: x, scene: this.state.scene === 'empty' || this.state.scene === 'ghosts' ? 'selected' : this.state.scene });
+  closeSheet = () => this.setState({ sheet: null, scene: this.state.scene === 'ghosts' ? 'selected' : this.state.scene });
+  backToProps = () => this.setState({ sheet: null });
+  toggleGhost = (i) => this.setState(s => { const g = s.ghostSel.slice(); g[i] = !g[i]; return { ghostSel: g }; });
+  toggleParaSide = (i) => this.setState(s => { const p = s.para.slice(); p[i] = !p[i]; return { para: p }; });
+  selectRoof = (i) => this.setState({ sel: i, scene: 'selected', sheet: null });
+  zoomIn = () => this.applyZoom(1.15);
+  zoomOut = () => this.applyZoom(1 / 1.15);
+
+  applyZoom(f) { ['gMob', 'gDesk'].forEach(id => { const g = document.getElementById(id); if (!g) return; const t = this._tf[id]; t.z = Math.max(0.5, Math.min(4, t.z * f)); this.paint(id); }); }
+  paint(id) { const g = document.getElementById(id); if (!g) return; const t = this._tf[id]; g.setAttribute('transform', `translate(${t.x} ${t.y}) scale(${t.z})`); }
+
+  componentDidMount() {
+    this._tf = { gMob: { x: 0, y: 0, z: 1 }, gDesk: { x: 0, y: 0, z: 1 } };
+    [['cvMob', 'gMob'], ['cvDesk', 'gDesk']].forEach(([wid, gid]) => {
+      const wrap = document.getElementById(wid); if (!wrap) return;
+      const pts = new Map();
+      const rel = (e) => { const r = wrap.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+      let lastMid = null, lastDist = null;
+      wrap.addEventListener('pointerdown', (e) => { wrap.setPointerCapture(e.pointerId); pts.set(e.pointerId, rel(e)); wrap.style.cursor = 'grabbing'; });
+      wrap.addEventListener('pointermove', (e) => {
+        if (!pts.has(e.pointerId)) return; const p = rel(e); const t = this._tf[gid];
+        if (pts.size === 1) { const prev = pts.get(e.pointerId); t.x += p.x - prev.x; t.y += p.y - prev.y; pts.set(e.pointerId, p); this.paint(gid); }
+        else if (pts.size === 2) { pts.set(e.pointerId, p); const a = [...pts.values()]; const mid = { x: (a[0].x + a[1].x) / 2, y: (a[0].y + a[1].y) / 2 }; const dist = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y); if (lastDist) { const f = dist / lastDist; const nz = Math.max(0.5, Math.min(4, t.z * f)); t.x = mid.x - (mid.x - t.x) * (nz / t.z); t.y = mid.y - (mid.y - t.y) * (nz / t.z); t.z = nz; } if (lastMid) { t.x += mid.x - lastMid.x; t.y += mid.y - lastMid.y; } lastMid = mid; lastDist = dist; this.paint(gid); }
+      });
+      const end = (e) => { pts.delete(e.pointerId); if (pts.size < 2) { lastMid = null; lastDist = null; } if (pts.size === 0) wrap.style.cursor = 'grab'; };
+      wrap.addEventListener('pointerup', end); wrap.addEventListener('pointercancel', end);
+      wrap.addEventListener('wheel', (e) => { e.preventDefault(); const p = rel(e); const t = this._tf[gid]; const f = e.deltaY < 0 ? 1.1 : 1 / 1.1; const nz = Math.max(0.5, Math.min(4, t.z * f)); t.x = p.x - (p.x - t.x) * (nz / t.z); t.y = p.y - (p.y - t.y) * (nz / t.z); t.z = nz; this.paint(gid); }, { passive: false });
+    });
+  }
+
+  // ---- canvas builder ----
+  buildCanvas(cfg) {
+    const { W, H, vr, ir, scene, sel, ghostSel } = cfg;
+    const P = (x, y) => [x * W, y * H];
+    const str = (a) => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const cen = (a) => a.reduce((s, p) => [s[0] + p[0] / a.length, s[1] + p[1] / a.length], [0, 0]);
+    const roofA = [[.20, .30], [.55, .25], [.63, .52], [.42, .66], [.17, .56]].map(p => P(p[0], p[1]));
+    const roofB = [[.66, .58], [.88, .54], [.90, .80], [.68, .84]].map(p => P(p[0], p[1]));
+    const out = { polys: [], guides: [], iso: [], measure: [], labels: [], inserts: [], handles: [], rotate: [], ghosts: [], closeDot: [] };
+    const labelsFor = (a, arr) => a.map((p, i) => { const q = a[(i + 1) % a.length]; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; const txt = arr[i] || '—'; const bw = txt.length * (cfg.fs * 0.62) + 10; return { x: mx, ty: my + cfg.fs * 0.35, bx: mx - bw / 2, by: my - (cfg.lh / 2), bw, text: txt }; });
+
+    if (scene === 'three') {
+      const hgt = cfg.h3;
+      [roofB, roofA].forEach((a, ri) => {
+        const top = a.map(p => [p[0], p[1] - hgt]);
+        out.polys.push({ points: str(a), fill: 'rgba(10,10,11,0.28)', stroke: 'rgba(10,10,11,0.4)', sw: 1, dash: '0' });
+        a.forEach((p, i) => { const q = a[(i + 1) % a.length]; const pt = top[i], qt = top[(i + 1) % a.length]; if ((p[1] + q[1]) / 2 > cen(a)[1] - 2) out.iso.push({ points: str([p, q, qt, pt]), fill: ri === 1 ? 'rgba(90,75,255,0.5)' : 'rgba(90,75,255,0.32)' }); });
+        out.iso.push({ points: str(top), fill: ri === 1 ? 'var(--accent)' : 'rgba(90,75,255,0.7)' });
+      });
+      return out;
+    }
+
+    if (scene === 'empty') return out;
+
+    if (scene === 'draw') {
+      const placed = [[.24, .34], [.56, .29], [.62, .52]].map(p => P(p[0], p[1]));
+      const cursor = P(.33, .63);
+      out.polys.push({ points: str([...placed, cursor]), fill: 'rgba(90,75,255,0.16)', stroke: 'var(--accent)', sw: cfg.sw, dash: '6 5' });
+      out.guides.push({ x1: placed[0][0], y1: placed[0][1], x2: placed[0][0], y2: H }, { x1: 0, y1: placed[2][1], x2: W, y2: placed[2][1] });
+      out.labels = labelsFor([...placed, cursor], ['8.4 m', '9.1 m', '7.6 m', '']).slice(0, 3);
+      placed.forEach(p => out.handles.push({ cx: p[0], cy: p[1], r: vr * 0.7, fill: 'var(--surface)', stroke: 'var(--accent)' }));
+      out.closeDot.push({ cx: placed[0][0], cy: placed[0][1] });
+      return out;
+    }
+
+    // roofs present
+    const selA = sel === 0;
+    out.polys.push({ points: str(roofA), fill: selA ? 'rgba(90,75,255,0.22)' : 'rgba(90,75,255,0.12)', stroke: 'var(--accent)', sw: selA ? cfg.sw + 0.6 : cfg.sw, dash: '0' });
+    out.polys.push({ points: str(roofB), fill: !selA ? 'rgba(90,75,255,0.22)' : 'rgba(90,75,255,0.12)', stroke: 'var(--accent)', sw: !selA ? cfg.sw + 0.6 : cfg.sw, dash: '0' });
+
+    if (scene === 'ghosts') {
+      const g1 = [[.20, .30], [.55, .25], [.63, .52], [.42, .66], [.17, .56]].map(p => P(p[0], p[1]));
+      const g2 = [[.66, .58], [.88, .54], [.90, .80], [.68, .84]].map(p => P(p[0], p[1]));
+      const g3 = [[.30, .70], [.52, .68], [.53, .84], [.31, .86]].map(p => P(p[0], p[1]));
+      const ghs = [{ a: g1, c: '92' }, { a: g2, c: '84' }, { a: g3, c: '61' }];
+      out.polys = [];
+      ghs.forEach((gh, i) => { const inc = ghostSel[i]; const cc = i === 2 ? 'var(--warning)' : 'var(--accent)'; out.polys.push({ points: str(gh.a), fill: inc ? (i === 2 ? 'rgba(224,138,44,0.18)' : 'rgba(90,75,255,0.2)') : 'rgba(120,120,130,0.1)', stroke: inc ? cc : 'var(--text-tertiary)', sw: cfg.sw, dash: '7 5' }); const c = cen(gh.a); out.ghosts.push({ bx: c[0], by: c[1], bty: c[1] + cfg.fs * 0.35, btyD: c[1] + 4, conf: gh.c, badgeFill: 'var(--surface)', badgeStroke: inc ? cc : 'var(--text-tertiary)' }); });
+      return out;
+    }
+
+    if (scene === 'calibrate') {
+      const m1 = P(.24, .72), m2 = P(.60, .38);
+      out.measure.push({ x1: m1[0], y1: m1[1], x2: m2[0], y2: m2[1] });
+      const mx = (m1[0] + m2[0]) / 2, my = (m1[1] + m2[1]) / 2;
+      out.labels.push({ x: mx, ty: my + cfg.fs * 0.35, bx: mx - 30, by: my - cfg.lh / 2, bw: 60, text: '12.6 m' });
+      return out;
+    }
+
+    // selected: handles on roofA (or selected roof)
+    const A = selA ? roofA : roofB;
+    if (cfg.showMeas) out.labels = labelsFor(A, ['8.4 m', '9.2 m', '7.1 m', '6.8 m', '5.9 m']);
+    else out.labels = labelsFor(A, ['8.4 m', '9.2 m', '7.1 m', '6.8 m', '5.9 m']).slice(0, 2);
+    A.forEach((p, i) => { const q = A[(i + 1) % A.length]; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; out.inserts.push({ cx: mx, cy: my, mx1: mx - ir * 0.5, mx2: mx + ir * 0.5, my1: my - ir * 0.5, my2: my + ir * 0.5 }); });
+    A.forEach(p => out.handles.push({ cx: p[0], cy: p[1], r: vr, fill: 'var(--surface)', stroke: 'var(--accent)' }));
+    const c = cen(A); const top = A.reduce((m, p) => p[1] < m ? p[1] : m, 1e9);
+    out.rotate.push({ cx: c[0], cy: top - cfg.rot, lx: c[0], ly: top, tx: c[0] - 8, ty: top - cfg.rot - 8, txD: c[0] - 8, tyD: top - cfg.rot - 10, icon: 'M18 4v5h-5M20 11a8 8 0 1 0-2 6' });
+    return out;
+  }
+
+  renderVals() {
+    const { scene, sheet, ortho, snap15, showMeas, sel, parapet, ghostSel, detecting, lockA, para, season, threeView, heatmap, mesh } = this.state;
+    const hasRoofs = scene !== 'empty' && scene !== 'draw';
+    const isEmpty = scene === 'empty' && !detecting;
+
+    const scDefs = [
+      { key: 'empty', label: 'Empty', on: () => this.scen({ scene: 'empty' }) },
+      { key: 'draw', label: 'Drawing', on: () => this.scen({ scene: 'draw' }) },
+      { key: 'selected', label: 'Roof selected', on: () => this.scen({ scene: 'selected', sel: 0 }) },
+      { key: 'ghosts', label: 'AI ghost review', on: () => this.setState({ scene: 'ghosts', sheet: 'ghosts', detecting: false }) },
+      { key: 'height', label: 'Height & parapet', on: () => this.setState({ scene: 'selected', sheet: 'height', detecting: false }) },
+      { key: 'calibrate', label: 'Calibration', on: () => this.setState({ scene: 'calibrate', sheet: 'calib', detecting: false }) },
+      { key: 'dep', label: 'Dependent-items', on: () => this.setState({ scene: 'selected', sheet: 'dep', detecting: false }) },
+      { key: 'three', label: '3D preview', on: () => this.scen({ scene: 'three' }) },
+    ];
+    const act = sheet === 'ghosts' ? 'ghosts' : sheet === 'height' ? 'height' : sheet === 'calib' ? 'calibrate' : sheet === 'dep' ? 'dep' : scene === 'three' ? 'three' : scene === 'draw' ? 'draw' : scene === 'empty' ? 'empty' : 'selected';
+    const scenarios = scDefs.map(s => ({ label: s.label, onClick: s.on, style: { height: 32, padding: '0 13px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, background: act === s.key ? 'var(--action-primary)' : 'var(--surface)', color: act === s.key ? '#fff' : 'var(--text-secondary)', boxShadow: act === s.key ? 'none' : 'var(--e1)' } }));
+
+    // tools
+    const toolDefs = [
+      { key: 'select', label: 'Select', kbd: 'Select · V', paths: ['M4 3l16 7-7 2-2 7z'] },
+      { key: 'draw', label: 'Draw roof', kbd: 'Draw roof · R', paths: ['M12 20h9', 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z'] },
+      { key: 'detect', label: 'Detect (AI)', kbd: 'Detect roofs (AI)', paths: ['M12 3v3M12 18v3M3 12h3M18 12h3', 'M6.5 6.5l2 2M15.5 15.5l2 2M17.5 6.5l-2 2M8.5 15.5l-2 2'] },
+      { key: 'ortho', label: 'Ortho-snap', kbd: 'Ortho-snap toggle', paths: ['M3 3h18v18H3z', 'M3 15h12V3'] },
+      { key: 'meas', label: 'Show measurements', kbd: 'Show all measurements', paths: ['M2 12h20', 'M6 8v8M12 8v8M18 8v8'] },
+      { key: 'measure', label: 'Measure distance', kbd: 'Measure distance', paths: ['M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z', 'M8 6l2 2M12 10l2 2M6 8l1.5 1.5'] },
+      { key: '3d', label: 'View in 3D', kbd: 'View in 3D', paths: ['M12 2 2 7v10l10 5 10-5V7z', 'M2 7l10 5 10-5M12 12v10'] },
+      { key: 'undo', label: 'Undo', kbd: 'Undo · ⌘Z', paths: ['M9 14 4 9l5-5', 'M4 9h11a5 5 0 0 1 0 10h-3'] },
+      { key: 'redo', label: 'Redo', kbd: 'Redo · ⌘⇧Z', paths: ['M15 14l5-5-5-5', 'M20 9H9a5 5 0 0 0 0 10h3'] },
+    ];
+    const toolActive = { select: scene === 'selected' || scene === 'ghosts', draw: scene === 'draw', detect: detecting || scene === 'ghosts', ortho: ortho, meas: showMeas, measure: scene === 'calibrate', '3d': scene === 'three', undo: false, redo: false };
+    const onTool = (k) => { if (k === 'draw') return this.startDraw(); if (k === 'detect') return this.runDetect(); if (k === 'ortho') return this.toggleOrtho(); if (k === 'meas') return this.setState(s => ({ showMeas: !s.showMeas })); if (k === 'measure') return this.setState({ scene: 'calibrate', sheet: 'calib' }); if (k === '3d') return this.view3d(); if (k === 'select') return this.setState({ scene: 'selected', sheet: null }); };
+    const tbtn = (on, sz) => ({ width: sz, height: sz, flexShrink: 0, borderRadius: sz * 0.32, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? 'var(--accent-subtle)' : 'none', color: on ? 'var(--accent)' : 'var(--text-secondary)' });
+    const tools = toolDefs.map(t => ({ label: t.label, labelKbd: t.kbd, onClick: () => onTool(t.key), icon: this.ic(t.paths), iconD: this.ic(t.paths), style: tbtn(toolActive[t.key], 40), styleD: tbtn(toolActive[t.key], 44) }));
+    // floating, grouped, transparent-circular tool pods (measurement / main / history)
+    const podBtn = (on, sz) => ({ width: sz, height: sz, flexShrink: 0, borderRadius: '50%', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? 'var(--accent)' : 'none', color: on ? '#fff' : '#fff', filter: on ? 'drop-shadow(0 1px 3px rgba(10,10,11,0.4))' : 'drop-shadow(0 1px 2px rgba(10,10,11,0.6))' });
+    const mkTool = (key, sz) => { const t = toolDefs.find(d => d.key === key); return { label: t.label, labelKbd: t.kbd, onClick: () => onTool(key), icon: this.ic(t.paths, Math.round(sz * 0.55)), style: podBtn(toolActive[key], sz) }; };
+    const grp = (keys, sz) => keys.map(k => mkTool(k, sz));
+    const G_MEASURE = ['measure', 'meas'], G_MAIN = ['select', 'draw', 'detect', 'ortho', '3d'], G_HIST = ['undo', 'redo'];
+
+    // roofs
+    const roofMeta = [
+      { name: 'Roof A', area: '96 m²', prov: 'AI · 92%', provFull: 'AI-detected · 92%', locked: lockA, type: 'RCC flat' },
+      { name: 'Roof B', area: '54 m²', prov: 'Manual', provFull: 'Manual', locked: false, type: 'Metal shed' },
+    ];
+    const roofs = roofMeta.map((r, i) => ({
+      name: r.name, area: r.area, prov: r.prov, onSelect: () => this.selectRoof(i), onLock: () => this.setState({ lockA: !this.state.lockA }), onDelete: () => {},
+      lockColor: r.locked ? 'var(--accent)' : 'var(--text-tertiary)', lockPath: r.locked ? 'M8 11V7a4 4 0 0 1 8 0v4' : 'M8 11V7a4 4 0 0 1 7-2.6',
+      dotStyle: { width: 9, height: 9, borderRadius: '50%', flexShrink: 0, background: sel === i ? 'var(--accent)' : 'var(--text-tertiary)' },
+      chipStyle: { flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6, height: 36, padding: '0 8px 0 12px', borderRadius: 999, background: 'var(--surface)', boxShadow: sel === i ? 'var(--e2)' : 'var(--e1)', outline: sel === i ? '1.5px solid var(--accent)' : 'none', outlineOffset: -1.5 },
+      rowStyleD: { display: 'flex', alignItems: 'center', gap: 6, padding: '8px 10px', borderRadius: 12, background: sel === i ? 'var(--accent-subtle)' : 'var(--surface-alt)' },
+    }));
+
+    // action set
+    const actDefs = [
+      { key: 'type', label: 'Roof type', icon: 'M3 21h18M5 21V10l7-5 7 5v11' },
+      { key: 'height', label: 'Height & parapet', icon: 'M12 3v18M5 10l7-7 7 7M6 21h12' },
+      { key: 'coords', label: 'Coordinates', icon: 'M12 2v20M2 12h20M7 7l10 10M17 7 7 17' },
+      { key: 'dup', label: 'Duplicate', icon: 'M9 9h11v11H9zM5 15V4h11' },
+      { key: 'delete', label: 'Delete', icon: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6' },
+    ];
+    const onAct = (k) => { if (k === 'type') return this.openSheet('type'); if (k === 'height') return this.openSheet('height'); if (k === 'coords') return this.openSheet('coords'); if (k === 'dup') return this.setState({ sheet: 'dep' }); if (k === 'delete') return this.setState({ sheet: 'dep' }); };
+    const chipBtn = { flexShrink: 0, display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 14px 0 6px', borderRadius: 999, border: 'none', background: 'var(--surface)', boxShadow: 'var(--e1)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' };
+    const gridBtn = { display: 'flex', alignItems: 'center', gap: 10, height: 54, padding: '0 12px', borderRadius: 14, border: 'none', background: 'var(--surface-alt)', boxShadow: 'var(--e1)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' };
+    const actionSet = actDefs.map(a => ({ label: a.label, icon: a.icon, onClick: () => onAct(a.key), style: chipBtn, styleD: gridBtn }));
+    // floating top-right quick actions (only 3, shown when a roof is selected)
+    const selPodDefs = [
+      { key: 'type', label: 'Roof type', icon: 'M3 21h18M5 21V10l7-5 7 5v11' },
+      { key: 'height', label: 'Height & parapet', icon: 'M12 3v18M5 10l7-7 7 7M6 21h12' },
+      { key: 'dup', label: 'Duplicate roof', icon: 'M9 9h11v11H9zM5 15V4h11' },
+    ];
+    const selPodClick = (k) => { if (k === 'type') return this.openSheet('type'); if (k === 'height') return this.openSheet('height'); return this.selectRoof(sel); };
+    const selActionsM = selPodDefs.map(a => ({ label: a.label, onClick: () => selPodClick(a.key), icon: this.ic([a.icon], 18), style: podBtn(false, 34) }));
+    const selActionsD = selPodDefs.map(a => ({ label: a.label, onClick: () => selPodClick(a.key), icon: this.ic([a.icon], 19), style: podBtn(false, 36) }));
+
+    // roof types
+    const typeDefs = [
+      { key: 'rcc', name: 'RCC flat', note: 'Concrete flat roof', icon: 'M3 12h18M5 12v6h14v-6', ok: true, sel: true },
+      { key: 'metal', name: 'Metal shed', note: 'Trapezoidal / standing seam', icon: 'M3 14 12 8l9 6M5 14v5h14v-5', ok: true, sel: false },
+      { key: 'tile', name: 'Tile', note: 'Clay or concrete tile', icon: 'M3 14 12 7l9 7M6 14c0 2 12 2 12 0', ok: true, sel: false },
+      { key: 'ground', name: 'Ground array', note: 'Free-standing on ground', icon: 'M4 18h16M6 18l2-8h8l2 8M9 10V6', ok: true, sel: false },
+      { key: 'gable', name: 'Pitched gable (2 faces)', note: 'Footprint allows a ridge', icon: 'M3 18 12 6l9 12', ok: true, sel: false },
+      { key: 'hip', name: 'Pitched hip (4 faces)', note: 'Footprint too narrow for 4 faces', icon: 'M3 18 12 8l9 10M12 8v-2', ok: false, sel: false },
+    ];
+    const roofTypes = typeDefs.map(t => ({ name: t.name, note: t.ok ? t.note : t.note, icon: t.icon, selected: t.sel, onClick: t.ok ? () => this.backToProps() : () => {},
+      titleColor: t.ok ? 'var(--text-primary)' : 'var(--text-disabled)',
+      iconStyle: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: t.sel ? 'var(--accent-subtle)' : 'var(--neutral-bg)', color: t.ok ? (t.sel ? 'var(--accent)' : 'var(--text-secondary)') : 'var(--text-disabled)' },
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 12, padding: 12, borderRadius: 16, border: 'none', background: t.sel ? 'var(--accent-subtle)' : 'var(--surface-alt)', cursor: t.ok ? 'pointer' : 'not-allowed', opacity: t.ok ? 1 : 0.7, fontFamily: 'inherit', width: '100%' } }));
+
+    // ghosts
+    const ghostDefs = [
+      { name: 'North block', detail: 'Geometric · pitch 18° · eave 3.2 m', conf: 92, tone: 'ok' },
+      { name: 'Rear extension', detail: 'Geometric · pitch 12° · eave 2.8 m', conf: 84, tone: 'ok' },
+      { name: 'Porch (photo)', detail: 'Photo fallback · shape only, no height/pitch', conf: 61, tone: 'warn' },
+    ];
+    const confChip = (tone, txt) => ({ flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 22, padding: '0 9px', borderRadius: 999, fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, background: tone === 'warn' ? 'var(--warning-bg)' : 'var(--success-bg)', color: tone === 'warn' ? 'var(--warning)' : 'var(--success)' });
+    const ghostRows = ghostDefs.map((g, i) => ({ name: g.name, detail: g.detail, included: ghostSel[i], confText: g.conf + '%', confChip: confChip(g.tone, g.conf),
+      onToggle: () => this.toggleGhost(i),
+      checkStyle: { flexShrink: 0, width: 22, height: 22, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', background: ghostSel[i] ? 'var(--accent)' : 'var(--neutral-bg)', boxShadow: ghostSel[i] ? 'none' : 'inset 0 0 0 1.5px var(--text-disabled)' },
+      rowStyle: { display: 'flex', alignItems: 'center', gap: 12, padding: 12, borderRadius: 16, border: 'none', background: ghostSel[i] ? 'var(--accent-subtle)' : 'var(--surface-alt)', cursor: 'pointer', fontFamily: 'inherit', width: '100%' } }));
+    const selGhostCount = ghostSel.filter(Boolean).length;
+
+    // dependent
+    const depDefs = [
+      { key: 'keep', title: 'Keep current', note: 'Leave the 12 panels and 2 obstructions where they are.' },
+      { key: 'review', title: 'Keep for review', note: 'Flag them so you can re-check each one.' },
+      { key: 'remove', title: 'Remove invalid', note: 'Delete anything now outside the roof.', danger: true },
+    ];
+    const depBtn = (d, big) => ({ padding: big ? '14px 16px' : '12px 14px', borderRadius: 16, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', fontFamily: 'inherit', background: d.danger ? 'var(--danger-bg)' : 'var(--surface-alt)', boxShadow: 'var(--e1)' });
+    const depOptions = depDefs.map(d => ({ title: d.title, note: d.note, onClick: () => this.scen({ scene: 'selected', sheet: null }), style: depBtn(d, false), styleD: depBtn(d, true) }));
+
+    // parapet sides
+    const sideLabels = ['N', 'E', 'S', 'W'];
+    const parapetSides = sideLabels.map((l, i) => ({ label: l, onClick: () => this.toggleParaSide(i), style: { height: 40, borderRadius: 12, border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, background: para[i] ? 'var(--accent-subtle)' : 'var(--surface)', color: para[i] ? 'var(--accent)' : 'var(--text-tertiary)', boxShadow: para[i] ? 'none' : 'var(--e1)', outline: para[i] ? '1.5px solid var(--accent)' : 'none', outlineOffset: -1.5 } }));
+
+    const vertexRows = [['1', '0.0', '0.0'], ['2', '9.2', '1.4'], ['3', '11.1', '8.6'], ['4', '5.7', '12.0'], ['5', '0.9', '9.4']].map(v => ({ n: v[0], x: v[1], y: v[2] }));
+
+    // shared styles
+    const fieldLabel = { display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 };
+    const inputBox = { display: 'flex', alignItems: 'center', gap: 8, height: 46, padding: '0 14px', borderRadius: 14, background: 'var(--surface)', boxShadow: 'var(--e1)' };
+    const inputBoxSm = { display: 'flex', alignItems: 'center', gap: 6, height: 40, padding: '0 12px', borderRadius: 12, background: 'var(--surface)', boxShadow: 'var(--e1)' };
+    const pill = (on) => ({ height: 30, padding: '0 12px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 500, background: on ? 'var(--accent-subtle)' : 'var(--neutral-bg)', color: on ? 'var(--accent)' : 'var(--text-secondary)' });
+
+    // canvas
+    const cmCfg = { W: 400, H: 500, vr: 9, ir: 8, fs: 10, lh: 16, sw: 2, rot: 34, h3: 46, scene, sel, ghostSel, showMeas };
+    const cdCfg = { W: 900, H: 620, vr: 12, ir: 10, fs: 12, lh: 20, sw: 2.4, rot: 44, h3: 62, scene, sel, ghostSel, showMeas };
+
+    return {
+      scenarios, leadName: 'Priya Sharma', roofCountLabel: hasRoofs ? '2 roofs' : 'no roofs yet',
+      health: {
+        chip: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 30, padding: '0 11px', borderRadius: 999, fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 700, background: 'var(--warning-bg)', color: 'var(--warning)' },
+        chipD: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 8, height: 40, padding: '0 14px', borderRadius: 999, fontSize: 14, background: 'var(--warning-bg)', color: 'var(--warning)' },
+        dot: { width: 7, height: 7, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 }, text: '62', score: '62', band: 'Fair',
+      },
+      tools,
+      toolsMeasureM: grp(G_MEASURE, 34), toolsMainM: grp(G_MAIN, 34), toolsHistoryM: grp(G_HIST, 34),
+      toolsMeasureD: grp(G_MEASURE, 36), toolsMainD: grp(G_MAIN, 36), toolsHistoryD: grp(G_HIST, 36),
+      toolsOpen: this.state.toolsOpen, toggleTools: this.toggleTools,
+      toolsChevron: this.state.toolsOpen ? 'M6 9l6 6 6-6' : 'M18 15l-6-6-6 6',
+      podWrap: { display: 'flex', flexDirection: 'column', gap: 2 },
+      toolsToggleM: { width: 34, height: 34, borderRadius: '50%', border: 'none', background: 'none', cursor: 'pointer', color: '#fff', filter: 'drop-shadow(0 1px 2px rgba(10,10,11,0.6))', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      toolsToggleD: { width: 36, height: 36, borderRadius: '50%', border: 'none', background: 'none', cursor: 'pointer', color: '#fff', filter: 'drop-shadow(0 1px 2px rgba(10,10,11,0.6))', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      isEmpty, hasRoofs, detecting, roofs,
+      cm: this.buildCanvas(cmCfg), cd: this.buildCanvas(cdCfg),
+      orthoWord: ortho ? 'on' : 'off', provWord: 'AI + manual',
+      orthoChip: { display: 'inline-flex', alignItems: 'center', gap: 5, height: 26, padding: '0 10px', borderRadius: 999, background: ortho ? 'var(--accent-subtle)' : 'var(--surface)', boxShadow: ortho ? 'none' : 'var(--e2)', fontSize: 11, fontWeight: 500, color: ortho ? 'var(--accent)' : 'var(--text-secondary)' },
+      zoomIn: this.zoomIn, zoomOut: this.zoomOut,
+      // context bars
+      ctxEmpty: isEmpty, ctxDraw: scene === 'draw', ctxSelected: hasRoofs && scene === 'selected', ctxThree: scene === 'three', exit3d: () => this.scen({ scene: 'selected' }),
+      startDraw: this.startDraw, runDetect: this.runDetect, removeLast: this.removeLast, toggleOrtho: this.toggleOrtho, confirmShape: this.confirmShape,
+      drawGhostBtn: { flex: 1, height: 44, borderRadius: 12, border: 'none', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--e1)', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 },
+      actionSet, selActionsM, selActionsD, selPodShow: hasRoofs && scene === 'selected' && !sheet,
+      selPodWrap: { display: 'flex', gap: 6 },
+      toggleSnap15: this.toggleSnap15, snap15Chip: pill(snap15),
+      rotChip: { flexShrink: 0, width: 26, height: 26, borderRadius: 8, background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      selProvenance: sel === 0 ? 'AI · 92%' : 'Manual', selName: roofMeta[sel].name, selArea: roofMeta[sel].area, selType: roofMeta[sel].type,
+      provChip: { display: 'inline-flex', alignItems: 'center', height: 22, padding: '0 9px', borderRadius: 999, background: sel === 0 ? 'var(--success-bg)' : 'var(--neutral-bg)', color: sel === 0 ? 'var(--success)' : 'var(--text-secondary)', fontSize: 11, fontWeight: 700 },
+      // sheets (mobile)
+      anySheet: !!sheet && sheet !== 'dep', sheetGhosts: sheet === 'ghosts', sheetType: sheet === 'type', sheetHeight: sheet === 'height', sheetCoords: sheet === 'coords', sheetCalib: sheet === 'calib',
+      closeSheet: this.closeSheet, backToProps: this.backToProps,
+      roofTypes, ghostRows, ghostCount: 3, selGhostCount, hasDropped: true, imageryDate: 'Mar 2025', imageryQuality: 'HIGH',
+      qualityChip: { flexShrink: 0, fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', color: 'var(--success)', background: 'var(--success-bg)', padding: '2px 8px', borderRadius: 999 },
+      sheetGhostBtn: { flex: 1, height: 48, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--surface)', boxShadow: 'var(--e1)', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 },
+      addSelectedGhosts: this.addSelectedGhosts, nudgeAlign: this.nudgeAlign, applyPitch: this.applyPitch, applyCalib: this.applyCalib,
+      toggleParapet: this.toggleParapet, parapetOn: parapet, parapetSides,
+      parapetTrack: { flexShrink: 0, width: 46, height: 26, borderRadius: 999, border: 'none', cursor: 'pointer', background: parapet ? 'var(--accent)' : 'var(--neutral-bg)', position: 'relative', padding: 0 },
+      parapetKnob: { position: 'absolute', top: 3, left: parapet ? 23 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', boxShadow: 'var(--e1)', transition: 'left 160ms' },
+      vertexRows, fieldLabel, inputBox, inputBoxSm,
+      // dependent
+      showDep: sheet === 'dep', depOptions,
+      showComplete: sheet === 'complete', doComplete: this.doComplete,
+      // ---- 3D studio ----
+      isThree: scene === 'three',
+      three3D: this.build3D({ cx: 720, cy: 430, scale: 40, acx: 720, acy: 560, R: 360, sunT: this.state.sunT }),
+      three3Dm: this.build3D({ cx: 187, cy: 250, scale: 13, acx: 187, acy: 330, R: 210, sunT: this.state.sunT }),
+      sunNeedleRot: Math.round((5 + 14 * this.state.sunT - 12) * 14),
+      sunPct: Math.round(this.state.sunT * 100), setSunT: this.setSunT,
+      sunTime: (() => { const sh = 5 + 14 * this.state.sunT, hh = Math.floor(sh), mm = Math.round((sh - hh) * 60), h12 = ((hh + 11) % 12) + 1; return h12 + ':' + (mm < 10 ? '0' : '') + mm + ' ' + (hh >= 12 ? 'PM' : 'AM'); })(),
+      sunDate: '24 Jul', sunAz: Math.round(90 + (5 + 14 * this.state.sunT - 12) * 14), sunAlt: Math.max(0, Math.round(90 * Math.sin(Math.PI * (Math.min(18, Math.max(6, 5 + 14 * this.state.sunT)) - 6) / 12))),
+      seasons: [['winter', 'Winter'], ['summer', 'Summer'], ['equinox', 'Equinox'], ['today', 'Today']].map(([k, l]) => ({ label: l, onClick: () => this.setSeason(k), style: { height: 40, padding: '0 18px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: season === k ? 'var(--warning)' : 'var(--surface)', color: season === k ? '#fff' : 'var(--text-secondary)', boxShadow: season === k ? 'none' : 'var(--e1)' } })),
+      seasonsM: [['winter', 'Winter'], ['summer', 'Summer'], ['equinox', 'Equinox'], ['today', 'Today']].map(([k, l]) => ({ label: l, onClick: () => this.setSeason(k), style: { flexShrink: 0, height: 34, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, background: season === k ? 'var(--warning)' : 'var(--surface)', color: season === k ? '#fff' : 'var(--text-secondary)', boxShadow: season === k ? 'none' : 'var(--e1)' } })),
+      threeViews: [['top', 'Top view', 'M4 4h16v16H4z M4 10h16 M10 4v16'], ['iso', 'Isometric view', 'M12 2 2 7v10l10 5 10-5V7z M2 7l10 5 10-5 M12 12v10'], ['front', 'Front view', 'M4 6h16v12H4z M4 12h16']].map(([k, l, p]) => ({ label: l, onClick: () => this.setThreeView(k), active: threeView === k, icon: this.ic([p], 20), style: { width: 42, height: 42, borderRadius: 12, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: threeView === k ? 'var(--accent-subtle)' : 'none', color: threeView === k ? 'var(--accent)' : 'var(--text-secondary)' } })),
+      threeLeftTools: [
+        { key: 'close', label: 'Close 3D view', onClick: this.exit3d2, icon: this.ic(['M18 6 6 18M6 6l12 12'], 20), active: false },
+        { key: 'heat', label: 'Solar access heatmap', onClick: this.toggleHeatmap, icon: this.ic(['M12 3a4 4 0 0 0 0 8 4 4 0 0 1 0 8', 'M12 2v2M12 20v2M4 12H2M22 12h-2'], 20), active: heatmap },
+        { key: 'mesh', label: mesh === 'map' ? 'Switch to mesh render' : 'Switch to map view', onClick: this.toggleMesh, icon: this.ic(['M12 2 2 7l10 5 10-5z', 'M2 12l10 5 10-5M2 17l10 5 10-5'], 20), active: mesh === 'mesh' },
+      ].map(t => ({ ...t, style: { width: 42, height: 42, borderRadius: 12, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: t.active ? 'var(--accent-subtle)' : 'none', color: t.active ? 'var(--accent)' : 'var(--text-secondary)' } })),
+      exit3d2: this.exit3d2,
+      // desktop panels
+      panelGhosts: scene === 'ghosts', panelSelected: hasRoofs && scene === 'selected' && !sheet, panelType: sheet === 'type', panelHeight: sheet === 'height', panelCalib: sheet === 'calib', panelDraw: scene === 'draw',
+      view3d: this.view3d, prevStep: this.prevStep, next: this.next,
+      hdrGhost: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 42, padding: '0 14px', borderRadius: 12, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, color: 'var(--text-secondary)' },
+      nextStyleD: { display: 'inline-flex', alignItems: 'center', gap: 8, height: 44, padding: '0 22px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'var(--action-primary)', color: '#fff' },
+    };
+  }
+}
+</script>
+</body>
+</html>

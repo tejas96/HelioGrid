@@ -24,7 +24,7 @@ Honest costs, all accepted with the directive:
 - **macOS CI lane is mandatory** for iOS builds.
 - **No OTA-updates story in v1** — without expo-updates, every JS fix rides a store review cycle. This is a real operational constraint on mobile hotfixes; a self-hosted OTA solution is a post-launch evaluation, not a v1 commitment.
 - No Expo Go for quick iteration; dev builds only.
-- Store-review lead time means **mobile may trail the web launch by weeks** (explicitly allowed by the roadmap directive).
+- Store-review lead time affects only the **public store listing** — TestFlight/Play-internal distribution from Day 5 is the Day-20 launch reality (lockstep directive 2026-07-24: mobile ships in the same slices as web, never as a follow-up).
 - Upside: no Expo SDK version treadmill, no config-plugin abstraction between us and native code, smaller dependency surface for an agent to reason about.
 
 ## Alternatives rejected

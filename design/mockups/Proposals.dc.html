@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-over { from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-sheet { from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+  @keyframes hg-pop { from{ opacity:0; transform:translateY(-4px) scale(0.98) } to{ opacity:1; transform:translateY(0) scale(1) } }
+  @keyframes hg-bloom { 0%,100%{ transform:translate(-50%,-50%) scale(1); opacity:.85 } 50%{ transform:translate(-50%,-50%) scale(1.08); opacity:1 } }
+  @keyframes hg-shimmer { 0%{ background-position:100% 50% } 100%{ background-position:0% 50% } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  input{ font-family:inherit }
+  ::-webkit-scrollbar{ height:0; width:0 }
+  @media (prefers-reduced-motion: reduce){ .hg-rise,.hg-over,.hg-sheet,.hg-pop,.hg-bloom-layer,[data-shimmer]{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:26px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · quotes</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Proposals — every quote, and where it stands</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="4">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — reached from More · arc nav present</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- header + controls -->
+        <div style="flex-shrink:0; padding:22px 16px 10px">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <div style="font-size:23px; font-weight:700; letter-spacing:-0.02em">Proposals</div>
+            <div style="width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; box-shadow:var(--e1)">AR</div>
+          </div>
+          <div style="margin-top:14px; display:flex; align-items:center; gap:10px; height:44px; padding:0 14px; background:var(--surface); border-radius:14px; box-shadow:var(--e1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            <input value="{{ search }}" onInput="{{ setSearch }}" placeholder="Search customer or proposal no." style="flex:1; min-width:0; border:none; outline:none; background:none; font-size:14.5px; color:var(--text-primary)">
+            <sc-if value="{{ hasSearch }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearSearch }}" aria-label="Clear" style="border:none; background:none; padding:2px; cursor:pointer; color:var(--text-tertiary); display:flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></sc-if>
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:10px; overflow-x:auto">
+            <sc-for list="{{ statusChips }}" as="c" hint-placeholder-count="5">
+              <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <div style="margin-top:12px; display:flex; align-items:center; gap:10px">
+            <div style="flex:1; min-width:0; font-size:12.5px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ statusLine }}</div>
+            <button onClick="{{ openSort }}" style="display:flex; align-items:center; gap:6px; height:32px; padding:0 12px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e1); font-family:inherit; font-size:12.5px; font-weight:500; color:var(--text-primary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10"></path><path d="M11 9h7"></path><path d="M11 13h4"></path><path d="m3 17 3 3 3-3"></path><path d="M6 18V4"></path></svg>{{ sortLabel }}</button>
+          </div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:4px 16px 128px">
+
+          <!-- LIST -->
+          <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ visible }}" as="row" hint-placeholder-count="6">
+                <div style="{{ row.cardStyle }}" onClick="{{ row.onOpen }}">
+                  <div style="display:flex; align-items:flex-start; gap:12px">
+                    <div style="{{ row.av40 }}">{{ row.initials }}</div>
+                    <div style="flex:1; min-width:0">
+                      <div style="display:flex; align-items:center; gap:8px"><span style="flex:1; min-width:0; font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</span><span style="{{ row.statusChip }}"><span style="{{ row.statusDot }}"></span>{{ row.statusLabel }}</span></div>
+                      <div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary)">{{ row.city }} · {{ row.kind }}</div>
+                      <div style="margin-top:6px; font-family:var(--font-mono); font-size:13px; color:var(--text-primary); font-variant-numeric:tabular-nums"><span style="color:var(--text-secondary)">{{ row.size }}</span> · <span style="font-weight:500">{{ row.value }}</span></div>
+                      <sc-if value="{{ row.isDraft }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:9px; display:flex; align-items:center; gap:9px">
+                          <div style="{{ row.progTrack }}"><div style="{{ row.progFill }}"></div></div>
+                          <span style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); white-space:nowrap; font-variant-numeric:tabular-nums">{{ row.progText }}</span>
+                        </div>
+                      </sc-if>
+                      <div style="margin-top:9px; display:flex; align-items:center; gap:8px">
+                        <span style="flex:1; min-width:0; font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.number }} · {{ row.version }} · {{ row.activity }}</span>
+                        <button onClick="{{ row.onMenu }}" aria-label="Actions" style="{{ mMenuBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- EMPTY (never made a proposal) -->
+          <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative; padding:64px 8px; text-align:center">
+              <div class="hg-bloom-layer" style="{{ bloomSm }}"></div>
+              <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center">
+                <div style="width:64px; height:64px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M12 18v-6"></path><path d="M9 15h6"></path></svg></div>
+                <div style="margin-top:20px; font-size:19px; font-weight:700; letter-spacing:-0.02em">No proposals yet</div>
+                <p style="margin:10px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:284px; text-wrap:pretty">Every quote you build lands here — with its status, version and last activity. Start one from a lead, or straight from scratch.</p>
+                <div style="margin-top:24px; width:100%; max-width:240px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" onClick="{{ goEntry }}" hint-size="100%,48px" style="width:100%">New proposal</x-import></div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- FILTERED EMPTY -->
+          <sc-if value="{{ showFiltered }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:64px 8px; text-align:center; display:flex; flex-direction:column; align-items:center">
+              <div style="width:60px; height:60px; border-radius:50%; background:var(--neutral-bg); display:flex; align-items:center; justify-content:center; color:var(--text-tertiary)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
+              <div style="margin-top:20px; font-size:19px; font-weight:700; letter-spacing:-0.02em">No proposals match</div>
+              <p style="margin:10px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:272px; text-wrap:pretty">You have proposals, but none fit this status, search or period. Widen or clear the filters.</p>
+              <div style="margin-top:22px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="md" onClick="{{ clearFilters }}" hint-size="150px,40px">Clear filters</x-import></div>
+            </div>
+          </sc-if>
+
+          <!-- LOADING -->
+          <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ skelCards }}" as="s" hint-placeholder-count="5">
+                <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:14px; display:flex; gap:12px">
+                  <div style="{{ skCircle }}"></div>
+                  <div style="flex:1">
+                    <div style="display:flex; justify-content:space-between; gap:12px"><div style="width:44%"><div style="{{ skStrong }}" data-shimmer></div></div><div style="width:78px"><div style="{{ skPill }}" data-shimmer></div></div></div>
+                    <div style="margin-top:12px; width:66%"><div style="{{ skel }}" data-shimmer></div></div>
+                    <div style="margin-top:12px; width:52%"><div style="{{ skel }}" data-shimmer></div></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <!-- ARC NAV — More active -->
+        <div style="flex-shrink:0; position:absolute; left:0; right:0; bottom:0; height:96px; overflow:visible; z-index:5">
+          <svg width="100%" height="96" viewBox="0 0 375 96" preserveAspectRatio="none" style="display:block; position:absolute; left:0; bottom:0; filter:drop-shadow(0 -3px 12px rgba(10,10,11,0.08))"><path d="M0,34 Q187.5,-10 375,34 L375,96 L0,96 Z" fill="var(--surface)"></path></svg>
+          <div onClick="{{ goMyDay }}" style="position:absolute; left:12%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+            <span style="font-size:11px">My Day</span>
+          </div>
+          <div onClick="{{ goLeads }}" style="position:absolute; left:31%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span style="font-size:11px">Leads</span>
+          </div>
+          <div style="position:absolute; left:69%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg>
+            <span style="font-size:11px">Projects</span>
+          </div>
+          <div onClick="{{ openMore }}" style="position:absolute; left:88%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--accent); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg>
+            <span style="font-size:11px; font-weight:500">More</span>
+          </div>
+          <!-- Arc centre override (this screen only): normally the elevated centre is the global "Add lead"
+               and never changes per screen (D31). On Proposals it becomes "New proposal" (routes to the
+               entry screen) so the primary create action matches the section the rep is in. Other screens
+               keep "Add lead". This is a deliberate, scoped exception to D31. -->
+          <div onClick="{{ goEntry }}" style="position:absolute; left:50%; top:-14px; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer">
+            <div style="width:54px; height:54px; border-radius:50%; background:var(--action-primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--e4)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+            <span style="font-size:11px; font-weight:500; color:var(--text-secondary)">Proposal</span>
+          </div>
+        </div>
+
+        <!-- SORT SHEET -->
+        <sc-if value="{{ sortOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:30; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeSort }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:40; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 20px 26px; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 16px"></div>
+            <div style="font-size:17px; font-weight:700; letter-spacing:-0.01em">Sort &amp; period</div>
+            <div style="margin-top:18px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Sort by</div>
+            <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px">
+              <sc-for list="{{ sortChips }}" as="c" hint-placeholder-count="3">
+                <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <div style="margin-top:20px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Period</div>
+            <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px">
+              <sc-for list="{{ periodChips }}" as="c" hint-placeholder-count="3">
+                <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <div style="margin-top:24px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" onClick="{{ closeSort }}" hint-size="100%,48px" style="width:100%">Show {{ visibleCount }} proposals</x-import></div>
+          </div>
+        </sc-if>
+
+        <!-- ROW ACTIONS SHEET -->
+        <sc-if value="{{ hasMenu }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:32; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeMenu }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:42; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 16px 24px; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 14px"></div>
+            <div style="padding:0 8px 8px; display:flex; align-items:center; gap:12px">
+              <div style="{{ menuRow.av40 }}">{{ menuRow.initials }}</div>
+              <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:500">{{ menuRow.name }}</div><div style="font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary)">{{ menuRow.number }} · {{ menuRow.version }}</div></div>
+            </div>
+            <button onClick="{{ menuRow.onOpenAction }}" style="{{ sheetItem }}"><span style="{{ sheetIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></span>{{ menuRow.openLabel }}</button>
+            <button onClick="{{ menuRow.onDuplicate }}" style="{{ sheetItem }}"><span style="{{ sheetIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></span>Duplicate</button>
+            <button onClick="{{ menuRow.onShare }}" style="{{ sheetItem }}"><span style="{{ sheetIcon }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="m16 6-4-4-4 4"></path><path d="M12 2v13"></path></svg></span>Share</button>
+            <sc-if value="{{ menuRow.canDelete }}" hint-placeholder-val="{{ false }}">
+              <div style="height:1px; background:var(--hairline); margin:6px 12px"></div>
+              <button onClick="{{ menuRow.onDelete }}" style="{{ sheetItemDanger }}"><span style="{{ sheetIconDanger }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></span>Delete draft</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- DELETE CONFIRM -->
+        <sc-if value="{{ hasConfirm }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:44; background:rgba(255,255,255,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:24px" onClick="{{ cancelDelete }}">
+            <div class="hg-pop" style="width:100%; background:var(--surface); border-radius:24px; box-shadow:var(--e5); padding:24px; animation:hg-pop 200ms var(--ease-spring) both" onClick="{{ stop }}">
+              <div style="width:52px; height:52px; border-radius:50%; background:var(--danger-bg); color:var(--danger); display:flex; align-items:center; justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
+              <div style="margin-top:16px; font-size:18px; font-weight:700; letter-spacing:-0.01em">Delete this draft?</div>
+              <p style="margin:8px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); text-wrap:pretty">{{ confirmRow.name }}'s draft ({{ confirmRow.number }}) will be removed. This can't be undone.</p>
+              <div style="margin-top:20px; display:flex; gap:10px">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" onClick="{{ cancelDelete }}" hint-size="100%,48px" style="flex:1">Keep</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="danger" size="lg" onClick="{{ confirmDelete }}" hint-size="100%,48px" style="flex:1">Delete</x-import>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- MORE SHEET -->
+        <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:34; background:rgba(255,255,255,0.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)" onClick="{{ closeMore }}"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:44; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 16px 26px; animation:hg-sheet 320ms var(--ease-spring) both">
+            <div style="width:40px; height:5px; border-radius:999px; background:var(--canvas-sunken); margin:8px auto 14px"></div>
+            <div style="padding:0 8px; font-size:17px; font-weight:700; letter-spacing:-0.01em">More</div>
+            <div style="margin-top:14px; display:flex; flex-direction:column; gap:2px">
+              <sc-for list="{{ moreItems }}" as="m" hint-placeholder-count="6">
+                <div onClick="{{ m.onClick }}" style="{{ m.rowStyle }}">
+                  <span style="{{ m.iconStyle }}">{{ m.icon }}</span>
+                  <span style="flex:1; font-size:15px; font-weight:500">{{ m.label }}</span>
+                  <sc-if value="{{ m.active }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — Proposals in the sidebar · sortable table</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}">
+            <button onClick="{{ toggleRail }}" aria-label="Toggle menu" style="{{ logoBtn }}">
+              <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+              <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></sc-if>
+            </button>
+            <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleRail }}" aria-label="Collapse menu" style="{{ toggleBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"></path><path d="m18 17-5-5 5-5"></path></svg></button></sc-if>
+          </div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="My Day" onClick="{{ goMyDay }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">My Day</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Leads" onClick="{{ goLeads }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Leads</span><span style="{{ navCount }}">24</span></sc-if></div>
+            <div style="{{ navRowActive }}" title="Proposals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Proposals</span><span style="{{ navCount }}">10</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Designs"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Designs</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Projects"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Projects</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Customers"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Customers</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Reports</span></sc-if></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1; white-space:nowrap">Settings</span></sc-if></div>
+            <div style="{{ profileRow }}">
+              <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0">AR</div>
+              <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ true }}"><div style="flex:1; min-width:0; white-space:nowrap"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></sc-if>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; padding:22px 30px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:20px">
+            <div>
+              <div style="font-size:24px; font-weight:700; letter-spacing:-0.025em">Proposals</div>
+              <div style="margin-top:4px; font-size:13px; color:var(--text-secondary)">{{ statusLine }}</div>
+            </div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" onClick="{{ goEntry }}" hint-size="150px,40px">New proposal</x-import>
+          </div>
+
+          <!-- controls -->
+          <div style="flex-shrink:0; padding:16px 30px 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+            <div style="display:flex; align-items:center; gap:10px; width:340px; height:42px; padding:0 16px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input value="{{ search }}" onInput="{{ setSearch }}" placeholder="Search customer or proposal no." style="flex:1; min-width:0; border:none; outline:none; background:none; font-size:14px; color:var(--text-primary)">
+            </div>
+            <div style="flex:1"></div>
+            <span style="font-size:12px; color:var(--text-tertiary)">Period</span>
+            <div style="display:flex; gap:6px">
+              <sc-for list="{{ periodChips }}" as="c" hint-placeholder-count="3">
+                <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex-shrink:0; padding:12px 30px 4px; display:flex; gap:7px; flex-wrap:wrap">
+            <sc-for list="{{ statusChips }}" as="c" hint-placeholder-count="8">
+              <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex; gap:18px; padding:12px 30px 26px">
+
+            <!-- TABLE -->
+            <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1; min-width:0; background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden; display:flex; flex-direction:column">
+                <div style="{{ headStyle }}">
+                  <span style="{{ headCell }}">Customer</span>
+                  <span style="{{ headCell }}">City</span>
+                  <span style="{{ headCell }}; text-align:right">Size</span>
+                  <button onClick="{{ onValueSort }}" style="{{ sortHeadRight }}">Value<sc-if value="{{ valueSort }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></sc-if></button>
+                  <button onClick="{{ onStatusSort }}" style="{{ sortHead }}">Status<sc-if value="{{ statusSort }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></sc-if></button>
+                  <span style="{{ headCell }}; text-align:center">Ver</span>
+                  <button onClick="{{ onDateSort }}" style="{{ sortHead }}">Last activity<sc-if value="{{ dateSort }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></sc-if></button>
+                  <span></span>
+                </div>
+                <div style="flex:1; min-height:0; overflow-y:auto">
+                  <sc-for list="{{ visible }}" as="row" hint-placeholder-count="10">
+                    <div style="{{ row.rowStyle }}" style-hover="{{ rowHover }}" onClick="{{ row.onOpen }}">
+                      <div style="min-width:0; display:flex; align-items:center; gap:12px">
+                        <div style="{{ row.av36 }}">{{ row.initials }}</div>
+                        <div style="min-width:0"><div style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-tertiary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.number }} · {{ row.kind }}</div></div>
+                      </div>
+                      <span style="font-size:13px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.city }}</span>
+                      <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary); text-align:right; font-variant-numeric:tabular-nums">{{ row.size }}</span>
+                      <span style="font-family:var(--font-mono); font-size:13.5px; font-weight:500; text-align:right; font-variant-numeric:tabular-nums">{{ row.value }}</span>
+                      <div style="min-width:0">
+                        <span style="{{ row.statusChip }}"><span style="{{ row.statusDot }}"></span>{{ row.statusLabel }}</span>
+                        <sc-if value="{{ row.isDraft }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:6px; display:flex; align-items:center; gap:7px"><div style="{{ row.progTrack }}"><div style="{{ row.progFill }}"></div></div><span style="font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); white-space:nowrap; font-variant-numeric:tabular-nums">{{ row.progText }}</span></div>
+                        </sc-if>
+                      </div>
+                      <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary); text-align:center; font-variant-numeric:tabular-nums">{{ row.version }}</span>
+                      <span style="font-size:13px; color:var(--text-secondary); white-space:nowrap">{{ row.activity }}</span>
+                      <div style="{{ row.actionCell }}">
+                        <button onClick="{{ row.onMenu }}" style="{{ dIconBtn }}" aria-label="Actions"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
+                        <sc-if value="{{ row.menuOpen }}" hint-placeholder-val="{{ false }}">
+                          <div style="position:fixed; inset:0; z-index:18" onClick="{{ row.onCloseMenu }}"></div>
+                          <div class="hg-pop" style="{{ row.menuStyle }}">
+                            <button onClick="{{ row.onOpenAction }}" style="{{ menuItem }}" style-hover="{{ menuItemHover }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>{{ row.openLabel }}</button>
+                            <button onClick="{{ row.onDuplicate }}" style="{{ menuItem }}" style-hover="{{ menuItemHover }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Duplicate</button>
+                            <button onClick="{{ row.onShare }}" style="{{ menuItem }}" style-hover="{{ menuItemHover }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="m16 6-4-4-4 4"></path><path d="M12 2v13"></path></svg>Share</button>
+                            <sc-if value="{{ row.canDelete }}" hint-placeholder-val="{{ false }}">
+                              <div style="height:1px; background:var(--hairline); margin:5px 8px"></div>
+                              <button onClick="{{ row.onDelete }}" style="{{ menuItemDanger }}" style-hover="{{ menuItemDangerHover }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Delete draft</button>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- EMPTY -->
+            <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1; position:relative; display:flex; align-items:center; justify-content:center">
+                <div class="hg-bloom-layer" style="{{ bloomLg }}"></div>
+                <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; max-width:440px">
+                  <div style="width:76px; height:76px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M12 18v-6"></path><path d="M9 15h6"></path></svg></div>
+                  <div style="margin-top:24px; font-size:24px; font-weight:700; letter-spacing:-0.02em">No proposals yet</div>
+                  <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">Every quote you build lands here — with its status, version and last activity. Start one from a lead, or duplicate an earlier proposal for a repeat job.</p>
+                  <div style="margin-top:26px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" onClick="{{ goEntry }}" hint-size="160px,48px">New proposal</x-import></div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- FILTERED EMPTY -->
+            <sc-if value="{{ showFiltered }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1; display:flex; align-items:center; justify-content:center">
+                <div style="display:flex; flex-direction:column; align-items:center; text-align:center; max-width:420px">
+                  <div style="width:68px; height:68px; border-radius:50%; background:var(--neutral-bg); display:flex; align-items:center; justify-content:center; color:var(--text-tertiary)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></div>
+                  <div style="margin-top:22px; font-size:22px; font-weight:700; letter-spacing:-0.02em">No proposals match these filters</div>
+                  <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">You have proposals, but none fit the current status, search and period. Widen the filters or clear them to see everything.</p>
+                  <div style="margin-top:24px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" onClick="{{ clearFilters }}" hint-size="150px,48px">Clear filters</x-import></div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- LOADING -->
+            <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1; min-width:0; background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden">
+                <div style="{{ headStyle }}">
+                  <span style="{{ headCell }}">Customer</span>
+                  <span style="{{ headCell }}">City</span>
+                  <span style="{{ headCell }}; text-align:right">Size</span>
+                  <span style="{{ headCell }}; text-align:right">Value</span>
+                  <span style="{{ headCell }}">Status</span>
+                  <span style="{{ headCell }}; text-align:center">Ver</span>
+                  <span style="{{ headCell }}">Last activity</span>
+                  <span></span>
+                </div>
+                <sc-for list="{{ skelRows }}" as="s" hint-placeholder-count="9">
+                  <div style="{{ skelRowStyle }}">
+                    <div style="min-width:0; display:flex; align-items:center; gap:12px"><div style="{{ skCircleSm }}"></div><div style="flex:1"><div style="width:76%"><div style="{{ skStrong }}" data-shimmer></div></div><div style="margin-top:8px; width:52%"><div style="{{ skel }}" data-shimmer></div></div></div></div>
+                    <div style="width:66%"><div style="{{ skel }}" data-shimmer></div></div>
+                    <div style="width:56%; margin-left:auto"><div style="{{ skel }}" data-shimmer></div></div>
+                    <div style="width:72%; margin-left:auto"><div style="{{ skel }}" data-shimmer></div></div>
+                    <div style="width:86px"><div style="{{ skPill }}" data-shimmer></div></div>
+                    <div style="width:34px; margin:0 auto"><div style="{{ skel }}" data-shimmer></div></div>
+                    <div style="width:70%"><div style="{{ skel }}" data-shimmer></div></div>
+                    <span></span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;empty&quot;,&quot;filtered&quot;,&quot;loading&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'empty'|'filtered'|'loading'&quot;,&quot;section&quot;:&quot;State&quot;},&quot;showMoreSheet&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;State&quot;},&quot;period&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;this month&quot;,&quot;this quarter&quot;,&quot;all time&quot;],&quot;default&quot;:&quot;this month&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: props.view || 'normal',
+      search: '',
+      status: null,
+      sort: 'recent',
+      period: props.period || 'this month',
+      sortOpen: false,
+      moreOpen: !!props.showMoreSheet,
+      openMenuId: null,
+      confirmId: null,
+      railOpen: true,
+    };
+  }
+
+  setView = (v) => this.setState({ view: v, openMenuId: null, confirmId: null });
+  setSearch = (e) => this.setState({ search: e.target.value });
+  clearSearch = () => this.setState({ search: '' });
+  setStatus = (s) => this.setState({ status: s });
+  setSort = (s) => this.setState({ sort: s });
+  setPeriod = (p) => this.setState({ period: p });
+  clearFilters = () => this.setState({ search: '', status: null, period: 'all time', view: 'normal', sortOpen: false });
+  openSort = () => this.setState({ sortOpen: true });
+  closeSort = () => this.setState({ sortOpen: false });
+  openMore = () => this.setState({ moreOpen: true });
+  closeMore = () => this.setState({ moreOpen: false });
+  openMenu = (e, id) => { e.stopPropagation(); this.setState({ openMenuId: id }); };
+  closeMenu = () => this.setState({ openMenuId: null });
+  askDelete = (e, id) => { if (e) e.stopPropagation(); this.setState({ openMenuId: null, confirmId: id }); };
+  cancelDelete = () => this.setState({ confirmId: null });
+  confirmDelete = () => this.setState({ confirmId: null });
+  stop = (e) => { e.stopPropagation(); };
+  toggleRail = () => this.setState(s => ({ railOpen: !s.railOpen }));
+
+  goMyDay = () => { window.location.href = 'MyDay.dc.html'; };
+  goLeads = () => { window.location.href = 'Leads.dc.html'; };
+  goSettings = () => { window.location.href = 'Settings.dc.html'; };
+  goProfile = () => { window.location.href = 'ProfilePreferences.dc.html'; };
+  goEntry = () => { window.location.href = 'ProposalEntry.dc.html'; };
+  goEntryDup = () => { window.location.href = 'ProposalEntry.dc.html?duplicate=1'; };
+  goBuilder = () => { window.location.href = 'ProposalBuilder.dc.html'; };
+  goDetail = () => { window.location.href = 'ProposalDetail.dc.html'; };
+  goShare = () => { window.location.href = 'ShareProposal.dc.html'; };
+  goQuickAdd = () => { window.location.href = 'QuickAddLead.dc.html'; };
+
+  tone(t) {
+    const m = {
+      draft: ['var(--neutral-bg)', 'var(--text-secondary)'],
+      accent: ['var(--accent-subtle)', 'var(--accent)'],
+      info: ['var(--info-bg)', 'var(--info)'],
+      teal: ['#E4F6F7', '#0E9AA6'],
+      success: ['var(--success-bg)', 'var(--success)'],
+      danger: ['var(--danger-bg)', 'var(--danger)'],
+      warning: ['var(--warning-bg)', 'var(--warning)'],
+      neutral: ['var(--neutral-bg)', 'var(--text-secondary)'],
+    };
+    return m[t] || m.neutral;
+  }
+  circle(t, s) {
+    const [bg, fg] = this.tone(t);
+    return { flexShrink: 0, width: s, height: s, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: s >= 48 ? 15 : s >= 40 ? 14 : 12.5, background: bg, color: fg };
+  }
+  statusChipStyle(t) {
+    const [bg, fg] = this.tone(t);
+    return { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 24, padding: '0 10px 0 9px', borderRadius: 999, fontSize: 12, fontWeight: 500, whiteSpace: 'nowrap', background: bg, color: fg };
+  }
+  dot(color) {
+    return { flexShrink: 0, width: 6, height: 6, borderRadius: '50%', background: color };
+  }
+
+  railVals() {
+    const open = this.state.railOpen;
+    const navBase = { display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'background 140ms var(--ease-standard)' };
+    const navRow = open
+      ? { ...navBase, gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14 }
+      : { ...navBase, justifyContent: 'center', width: 44, height: 44, borderRadius: 13, alignSelf: 'center' };
+    return {
+      railOpen: open, toggleRail: this.toggleRail,
+      railStyle: { flexShrink: 0, width: open ? 240 : 72, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: open ? '22px 16px' : '22px 14px', overflow: 'hidden', transition: 'width 240ms var(--ease-standard)', zIndex: 3 },
+      railTop: { display: 'flex', alignItems: 'center', justifyContent: open ? 'space-between' : 'center', gap: 8 },
+      logoBtn: { display: 'flex', alignItems: 'center', gap: 10, padding: 0, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', minWidth: 0 },
+      toggleBtn: { flexShrink: 0, width: 30, height: 30, borderRadius: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      navRow,
+      navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: open ? 500 : 400 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+      navHover: { background: 'var(--neutral-bg)' },
+      profileRow: open ? { display: 'flex', alignItems: 'center', gap: 11, marginTop: 12, padding: 8, borderRadius: 12 } : { display: 'flex', justifyContent: 'center', marginTop: 12, padding: '4px 0' },
+    };
+  }
+
+  renderVals() {
+    const { view, search, status, sort, period, sortOpen, moreOpen, openMenuId, confirmId } = this.state;
+
+    const statusMeta = {
+      draft: { label: 'Draft', tone: 'draft', dot: 'var(--text-tertiary)', order: 0 },
+      ready: { label: 'Ready', tone: 'accent', dot: 'var(--accent)', order: 1 },
+      shared: { label: 'Shared', tone: 'info', dot: 'var(--info)', order: 2 },
+      opened: { label: 'Opened', tone: 'teal', dot: '#0E9AA6', order: 3 },
+      accepted: { label: 'Accepted', tone: 'success', dot: 'var(--success)', order: 4 },
+      rejected: { label: 'Rejected', tone: 'danger', dot: 'var(--danger)', order: 5 },
+      expired: { label: 'Expired', tone: 'warning', dot: 'var(--warning)', order: 6 },
+    };
+
+    const data = [
+      { id: 'priya', initials: 'PS', name: 'Priya Sharma', city: 'Nashik', kind: 'Residential', size: '8.2 kWp', value: '\u20B94,52,471', valueNum: 452471, statusKey: 'shared', version: 'v1', activity: '2d ago', hours: 48, number: 'HG-P-0142' },
+      { id: 'anand', initials: 'AT', name: 'Anand Traders', city: 'Pune', kind: 'Commercial', size: '180 kWp', value: '\u20B992,00,000', valueNum: 9200000, statusKey: 'opened', version: 'v2', activity: '4h ago', hours: 4, number: 'HG-P-0139' },
+      { id: 'suresh', initials: 'SK', name: 'Suresh Kulkarni', city: 'Kothrud', kind: 'Residential', size: '6.5 kWp', value: '\u20B93,40,000', valueNum: 340000, statusKey: 'draft', step: 7, steps: 11, version: 'v1', activity: '1d ago', hours: 24, number: 'HG-P-0145' },
+      { id: 'rohit', initials: 'RM', name: 'Rohit Mehta', city: 'Aundh', kind: 'Residential', size: '10 kWp', value: '\u20B95,60,000', valueNum: 560000, statusKey: 'ready', version: 'v1', activity: '3h ago', hours: 3, number: 'HG-P-0147' },
+      { id: 'deshmukh', initials: 'DT', name: 'Deshmukh Textiles', city: 'Nashik', kind: 'Commercial', size: '250 kWp', value: '\u20B91,28,00,000', valueNum: 12800000, statusKey: 'accepted', version: 'v3', activity: '5d ago', hours: 120, number: 'HG-P-0131' },
+      { id: 'kavita', initials: 'KJ', name: 'Kavita Joshi', city: 'Wakad', kind: 'Residential', size: '7.6 kWp', value: '\u20B94,10,000', valueNum: 410000, statusKey: 'ready', version: 'v1', activity: 'Today', hours: 1, number: 'HG-P-0148' },
+      { id: 'vikram', initials: 'VD', name: 'Vikram Deshpande', city: 'Baner', kind: 'Residential', size: '5.4 kWp', value: '\u20B92,90,000', valueNum: 290000, statusKey: 'rejected', version: 'v1', activity: '8d ago', hours: 192, number: 'HG-P-0128' },
+      { id: 'imran', initials: 'IS', name: 'Imran Shaikh', city: 'Camp', kind: 'Residential', size: '14 kWp', value: '\u20B97,80,000', valueNum: 780000, statusKey: 'opened', version: 'v1', activity: '1d ago', hours: 26, number: 'HG-P-0144' },
+      { id: 'sunita', initials: 'SD', name: 'Sunita Deshmukh', city: 'Hadapsar', kind: 'Residential', size: '4.8 kWp', value: '\u20B92,65,000', valueNum: 265000, statusKey: 'expired', version: 'v1', activity: '32d ago', hours: 768, number: 'HG-P-0109' },
+      { id: 'ganesh', initials: 'GP', name: 'Ganesh Patil', city: 'Chinchwad', kind: 'Residential', size: '9.1 kWp', value: '\u20B94,95,000', valueNum: 495000, statusKey: 'shared', version: 'v2', activity: '6h ago', hours: 6, number: 'HG-P-0146' },
+    ];
+
+    let list = data.slice();
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter(p => (p.name + ' ' + p.number).toLowerCase().includes(q));
+    }
+    if (status) list = list.filter(p => p.statusKey === status);
+    if (sort === 'value') list.sort((a, b) => b.valueNum - a.valueNum);
+    else if (sort === 'status') list.sort((a, b) => statusMeta[a.statusKey].order - statusMeta[b.statusKey].order || a.hours - b.hours);
+    else list.sort((a, b) => a.hours - b.hours);
+
+    const routeOpen = (p) => (p.statusKey === 'draft' ? this.goBuilder : this.goDetail);
+    const openLabelFor = (p) => (p.statusKey === 'draft' ? 'Open in builder' : p.statusKey === 'accepted' ? 'Open (locked)' : 'Open proposal');
+    const N = list.length;
+
+    const mk = (p, i) => {
+      const m = statusMeta[p.statusKey];
+      const isDraft = p.statusKey === 'draft';
+      const canDelete = isDraft;
+      const pct = isDraft ? Math.round((p.step / p.steps) * 100) : 0;
+      const menuUp = i >= N - 4 && N > 4;
+      return {
+        ...p,
+        statusLabel: m.label, statusChip: this.statusChipStyle(m.tone), statusDot: this.dot(m.dot),
+        isDraft, canDelete, openLabel: openLabelFor(p),
+        progText: isDraft ? (p.step + ' of ' + p.steps + ' steps') : '',
+        progTrack: { flexShrink: 0, width: 84, height: 4, borderRadius: 999, background: 'var(--canvas-sunken)', overflow: 'hidden' },
+        progFill: { width: pct + '%', height: '100%', borderRadius: 999, background: 'var(--accent)' },
+        av36: this.circle('accent', 36), av40: this.circle('accent', 40),
+        onOpen: routeOpen(p),
+        onMenu: (e) => this.openMenu(e, p.id),
+        onCloseMenu: (e) => { if (e) e.stopPropagation(); this.closeMenu(); },
+        menuOpen: openMenuId === p.id,
+        onOpenAction: (e) => { e.stopPropagation(); routeOpen(p)(); },
+        onDuplicate: (e) => { e.stopPropagation(); this.goEntryDup(); },
+        onShare: (e) => { e.stopPropagation(); this.goShare(); },
+        onDelete: (e) => this.askDelete(e, p.id),
+        rowStyle: {
+          display: 'grid', gridTemplateColumns: 'minmax(200px,1.7fr) 116px 92px 128px 156px 54px 116px 48px',
+          alignItems: 'center', gap: 14, padding: '0 16px', minHeight: 62, cursor: 'pointer',
+          transition: 'background 140ms var(--ease-standard)',
+          background: (i % 2) ? 'var(--surface-alt)' : 'var(--surface)',
+        },
+        cardStyle: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: 14, cursor: 'pointer' },
+        actionCell: { position: 'relative', display: 'flex', justifyContent: 'flex-end' },
+        menuStyle: {
+          position: 'absolute', right: 4, zIndex: 19, width: 188,
+          top: menuUp ? 'auto' : 40, bottom: menuUp ? 40 : 'auto',
+          background: 'var(--surface)', borderRadius: 14, boxShadow: 'var(--e4)', padding: 6,
+          animation: 'hg-pop 160ms var(--ease-spring) both',
+        },
+      };
+    };
+    const visible = list.map(mk);
+
+    const byId = {}; data.forEach(p => { byId[p.id] = p; });
+    const buildMenuRow = (id) => {
+      if (!id || !byId[id]) return null;
+      const p = byId[id]; const m = statusMeta[p.statusKey];
+      return {
+        ...p, statusLabel: m.label, canDelete: p.statusKey === 'draft', openLabel: openLabelFor(p),
+        av40: this.circle('accent', 40),
+        onOpenAction: (e) => { if (e) e.stopPropagation(); routeOpen(p)(); },
+        onDuplicate: (e) => { if (e) e.stopPropagation(); this.goEntryDup(); },
+        onShare: (e) => { if (e) e.stopPropagation(); this.goShare(); },
+        onDelete: (e) => this.askDelete(e, p.id),
+      };
+    };
+    const menuRow = buildMenuRow(openMenuId);
+    const confirmRow = confirmId && byId[confirmId] ? byId[confirmId] : null;
+
+    const showEmpty = view === 'empty';
+    const showLoading = view === 'loading';
+    const showFiltered = view === 'filtered' || (view === 'normal' && visible.length === 0);
+    const showList = view === 'normal' && visible.length > 0;
+
+    const periodLabelMap = { 'this month': 'this month', 'this quarter': 'this quarter', 'all time': 'all time' };
+    const total = (showEmpty ? 0 : view === 'loading' ? 0 : visible.length);
+    const parts = [total + ' proposal' + (total === 1 ? '' : 's'), status ? statusMeta[status].label : 'All statuses', periodLabelMap[period]];
+    if (search.trim()) parts.push('\u201C' + search.trim() + '\u201D');
+    const statusLine = showEmpty ? 'No proposals yet' : showLoading ? 'Loading proposals\u2026' : parts.join(' \u00B7 ');
+
+    const pill = { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 32, padding: '0 14px', borderRadius: 999, whiteSpace: 'nowrap', transition: 'all 140ms var(--ease-standard)' };
+    const filterPill = (active) => active ? { ...pill, background: 'var(--accent)', color: '#fff' } : { ...pill, background: 'var(--neutral-bg)', color: 'var(--text-secondary)' };
+
+    const statusChips = [{ key: null, label: 'All' }, { key: 'draft', label: 'Draft' }, { key: 'ready', label: 'Ready' }, { key: 'shared', label: 'Shared' }, { key: 'opened', label: 'Opened' }, { key: 'accepted', label: 'Accepted' }, { key: 'rejected', label: 'Rejected' }, { key: 'expired', label: 'Expired' }]
+      .map(s => ({ label: s.label, onClick: () => this.setStatus(s.key), style: filterPill(status === s.key) }));
+    const sortDefs = [{ key: 'recent', label: 'Latest activity' }, { key: 'value', label: 'Value' }, { key: 'status', label: 'Status' }];
+    const sortChips = sortDefs.map(s => ({ label: s.label, onClick: () => this.setSort(s.key), style: filterPill(sort === s.key) }));
+    const sortLabel = (sortDefs.find(s => s.key === sort) || sortDefs[0]).label;
+    const periodChips = [{ key: 'this month', label: 'This month' }, { key: 'this quarter', label: 'This quarter' }, { key: 'all time', label: 'All time' }]
+      .map(p => ({ label: p.label, onClick: () => this.setPeriod(p.key), style: filterPill(period === p.key) }));
+
+    const views = [{ key: 'normal', label: 'Normal' }, { key: 'empty', label: 'Empty' }, { key: 'filtered', label: 'Filtered empty' }, { key: 'loading', label: 'Loading' }]
+      .map(v => ({ label: v.label, onClick: () => this.setView(v.key), style: view === v.key ? { ...pill, height: 34, background: 'var(--action-primary)', color: '#fff' } : { ...pill, height: 34, background: 'transparent', color: 'var(--text-secondary)' } }));
+
+    const moreDefs = [
+      { key: 'proposals', label: 'Proposals', tone: 'accent', active: true, path: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6' },
+      { key: 'designs', label: 'Designs', tone: 'neutral', active: false, path: 'M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z', fn: null },
+      { key: 'customers', label: 'Customers', tone: 'neutral', active: false, path: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7 a4 4 0 1 0 0 0.01', fn: null },
+      { key: 'reports', label: 'Reports', tone: 'neutral', active: false, path: 'M3 3v18h18 M19 9l-5 5-4-4-3 3', fn: null },
+      { key: 'settings', label: 'Settings', tone: 'neutral', active: false, path: '', fn: null },
+      { key: 'profile', label: 'Profile', tone: 'neutral', active: false, path: '', fn: null },
+    ];
+    const moreItems = moreDefs.map(mi => {
+      const [bg, fg] = this.tone(mi.active ? 'accent' : 'neutral');
+      return {
+        label: mi.label, active: mi.active,
+        icon: this.moreIcon(mi.key),
+        onClick: mi.key === 'settings' ? this.goSettings : (mi.key === 'profile' ? this.goProfile : this.closeMore),
+        rowStyle: { display: 'flex', alignItems: 'center', gap: 14, height: 52, padding: '0 12px', borderRadius: 14, cursor: 'pointer', background: mi.active ? 'var(--accent-subtle)' : 'transparent' },
+        iconStyle: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      };
+    });
+
+    const headCell = { fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-tertiary)' };
+    const sortHeadBase = { display: 'flex', alignItems: 'center', gap: 3, border: 'none', background: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' };
+    const GRID = 'minmax(200px,1.7fr) 116px 92px 128px 156px 54px 116px 48px';
+    const skel = { height: 12, width: '100%', borderRadius: 6, background: 'linear-gradient(90deg,#ECEEF1 25%,#F7F8FA 37%,#ECEEF1 63%)', backgroundSize: '400% 100%', animation: 'hg-shimmer 1.4s ease infinite' };
+
+    const menuItem = { display: 'flex', alignItems: 'center', gap: 10, width: '100%', height: 40, padding: '0 12px', borderRadius: 10, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', textAlign: 'left', transition: 'background 120ms var(--ease-standard)' };
+    const menuItemDanger = { ...menuItem, color: 'var(--danger)' };
+    const sheetItem = { display: 'flex', alignItems: 'center', gap: 14, width: '100%', height: 54, padding: '0 12px', borderRadius: 14, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 15, fontWeight: 500, color: 'var(--text-primary)', textAlign: 'left' };
+
+    return {
+      ...this.railVals(),
+      views, statusLine,
+      search, setSearch: this.setSearch, clearSearch: this.clearSearch, hasSearch: !!search,
+      statusChips, sortChips, periodChips, sortLabel,
+      sortOpen, openSort: this.openSort, closeSort: this.closeSort,
+      clearFilters: this.clearFilters,
+      visible, visibleCount: visible.length,
+      showList, showEmpty, showFiltered, showLoading,
+      goEntry: this.goEntry, goMyDay: this.goMyDay, goLeads: this.goLeads, goQuickAdd: this.goQuickAdd,
+      openMore: this.openMore, closeMore: this.closeMore, moreOpen, moreItems,
+      hasMenu: !!menuRow, menuRow: menuRow || { av40: {}, canDelete: false }, closeMenu: this.closeMenu,
+      hasConfirm: !!confirmRow, confirmRow: confirmRow || {}, cancelDelete: this.cancelDelete, confirmDelete: this.confirmDelete, stop: this.stop,
+      rowHover: { background: 'var(--neutral-bg)' },
+      dIconBtn: { width: 32, height: 32, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'transparent', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 120ms var(--ease-standard)' },
+      mMenuBtn: { flexShrink: 0, width: 34, height: 34, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      menuItem, menuItemDanger,
+      menuItemHover: { background: 'var(--neutral-bg)' },
+      menuItemDangerHover: { background: 'var(--danger-bg)' },
+      sheetItem, sheetItemDanger: { ...sheetItem, color: 'var(--danger)' },
+      sheetIcon: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      sheetIconDanger: { flexShrink: 0, width: 40, height: 40, borderRadius: '50%', background: 'var(--danger-bg)', color: 'var(--danger)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      headCell,
+      headStyle: { display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', gap: 14, padding: '0 16px', height: 46, position: 'sticky', top: 0, background: 'var(--surface)', zIndex: 2, boxShadow: '0 6px 8px -8px rgba(10,10,11,0.14)' },
+      sortHead: { ...sortHeadBase, color: (sort === 'status' || sort === 'recent') ? 'var(--text-tertiary)' : 'var(--text-tertiary)' },
+      sortHeadRight: { ...sortHeadBase, justifyContent: 'flex-end', color: 'var(--text-tertiary)' },
+      onValueSort: () => this.setSort('value'), onStatusSort: () => this.setSort('status'), onDateSort: () => this.setSort('recent'),
+      valueSort: sort === 'value', statusSort: sort === 'status', dateSort: sort === 'recent',
+      skelRows: [0, 1, 2, 3, 4, 5, 6, 7, 8], skelCards: [0, 1, 2, 3, 4],
+      skel, skStrong: { ...skel, height: 14 }, skPill: { ...skel, height: 22, borderRadius: 999 },
+      skCircle: { width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(90deg,#ECEEF1 25%,#F7F8FA 37%,#ECEEF1 63%)', backgroundSize: '400% 100%', animation: 'hg-shimmer 1.4s ease infinite' },
+      skCircleSm: { width: 36, height: 36, borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(90deg,#ECEEF1 25%,#F7F8FA 37%,#ECEEF1 63%)', backgroundSize: '400% 100%', animation: 'hg-shimmer 1.4s ease infinite' },
+      skelRowStyle: { display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', gap: 14, padding: '0 16px', minHeight: 62 },
+      bloomSm: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 360, height: 360, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+      bloomLg: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 680, height: 680, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+    };
+  }
+
+  moreIcon(key) {
+    const p = {
+      proposals: React.createElement('path', { d: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z' }),
+    };
+    const paths = {
+      proposals: ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6'],
+      designs: ['M12 20h9', 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'],
+      customers: ['M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M23 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
+      reports: ['M3 3v18h18', 'm19 9-5 5-4-4-3 3'],
+      settings: ['M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z'],
+      circleSettings: [],
+      profile: ['M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2', 'M12 7 a4 4 0 1 0 0 0.01'],
+    };
+    const extra = key === 'settings' ? [React.createElement('circle', { key: 'c', cx: 12, cy: 12, r: 3 })] : key === 'customers' ? [React.createElement('circle', { key: 'c', cx: 9, cy: 7, r: 4 })] : key === 'profile' ? [React.createElement('circle', { key: 'c', cx: 12, cy: 7, r: 4 })] : [];
+    const usePaths = key === 'customers' ? ['M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2', 'M23 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'] : key === 'profile' ? ['M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'] : (paths[key] || []);
+    return React.createElement('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      ...usePaths.map((d, i) => React.createElement('path', { key: i, d })), ...extra);
+  }
+}
+</script>
+</body>
+</html>

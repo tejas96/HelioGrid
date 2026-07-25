@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="{{ paperStyle }}">
+
+  <!-- COVER -->
+  <sc-if value="{{ isCover }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ bandStyle }}">
+      <div style="{{ bandGlow }}"></div>
+      <div style="{{ logoCircle }}">
+        <sc-if value="{{ hasLogo }}" hint-placeholder-val="{{ false }}"><span style="{{ monoStyle }}">S</span></sc-if>
+        <sc-if value="{{ noLogo }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px; color:var(--text-tertiary); text-align:center; line-height:1.2">Your<br>logo</span></sc-if>
+      </div>
+    </div>
+    <div style="{{ coverBody }}">
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Rooftop solar proposal</div>
+      <div style="{{ coName }}">{{ company }}</div>
+      <div style="flex:1"></div>
+      <div style="font-size:12px; color:var(--text-tertiary)">Prepared for</div>
+      <div style="{{ preparedFor }}">Priya Sharma</div>
+      <div style="margin-top:auto; display:flex; align-items:center; justify-content:space-between; padding-top:14px">
+        <span style="font-size:11.5px; color:var(--text-tertiary)">12 Mar 2026</span>
+        <span style="{{ accentTag }}">HG-2026-0142</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ABOUT -->
+  <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ aboutPad }}">
+      <div style="display:flex; align-items:center; gap:8px"><span style="{{ accentBar }}"></span><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">About us</span></div>
+      <p style="{{ aboutPara }}">{{ about }}</p>
+      <div style="{{ numRow }}">
+        <sc-for list="{{ nums }}" as="n" hint-placeholder-count="3">
+          <div style="flex:1; min-width:0">
+            <div style="{{ numVal }}">{{ n.value }}</div>
+            <div style="font-size:10.5px; color:var(--text-secondary); line-height:1.3; margin-top:3px; text-wrap:pretty">{{ n.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="{{ photoWrap }}">
+        <sc-if value="{{ hasImage }}" hint-placeholder-val="{{ false }}"><image-slot id="biz-about-photo-preview" shape="rect" placeholder="Team photo"></image-slot></sc-if>
+        <sc-if value="{{ noImage }}" hint-placeholder-val="{{ true }}"><div style="display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--text-tertiary)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"></path></svg><span style="font-size:11px">Your team photo</span></div></sc-if>
+        <div style="position:absolute; inset:0; pointer-events:none; box-shadow:inset 0 2px 0 rgba(255,255,255,0.25); border-radius:inherit"></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:460},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cover&quot;,&quot;about&quot;],&quot;default&quot;:&quot;cover&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;brand&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#0A0A0B&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;company&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Suryodaya Solar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;about&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;numbers&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{value:string,label:string}&gt;&quot;},&quot;hasLogo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;hasImage&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;scale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  hexToRgba(hex, a) {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+  renderVals() {
+    const mode = this.props.mode || 'cover';
+    const brand = this.props.brand || '#0A0A0B';
+    const small = this.props.scale === 'mobile';
+    const hasLogo = !!this.props.hasLogo;
+    const hasImage = !!this.props.hasImage;
+    const nums = this.props.numbers || [];
+    const tint = this.hexToRgba(brand, 0.14);
+
+    const paperH = small ? 272 : 400;
+    return {
+      isCover: mode === 'cover', isAbout: mode === 'about',
+      company: this.props.company || 'Suryodaya Solar', about: this.props.about || '', nums,
+      hasLogo, noLogo: !hasLogo, hasImage, noImage: !hasImage,
+
+      paperStyle: { width: '100%', height: paperH, borderRadius: small ? 14 : 18, background: 'var(--surface)', boxShadow: 'var(--e2)', overflow: 'hidden', display: 'flex', flexDirection: 'column' },
+
+      bandStyle: { position: 'relative', height: small ? 96 : 140, background: brand, flexShrink: 0, overflow: 'hidden' },
+      bandGlow: { position: 'absolute', top: '-40%', right: '-10%', width: '70%', height: '180%', background: this.hexToRgba('#FFFFFF', 0.12), borderRadius: '50%', filter: 'blur(20px)' },
+      logoCircle: { position: 'absolute', left: small ? 20 : 28, bottom: small ? -22 : -30, width: small ? 52 : 68, height: small ? 52 : 68, borderRadius: '50%', background: 'var(--surface)', boxShadow: 'var(--e2)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      monoStyle: { width: small ? 38 : 50, height: small ? 38 : 50, borderRadius: small ? 11 : 14, background: brand, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: small ? 20 : 26 },
+
+      coverBody: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', padding: small ? '34px 20px 18px' : '46px 28px 24px' },
+      coName: { marginTop: 6, fontSize: small ? 20 : 27, fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-primary)' },
+      preparedFor: { marginTop: 2, fontSize: small ? 15 : 18, fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--text-primary)' },
+      accentTag: { fontFamily: 'var(--font-mono)', fontSize: small ? 10.5 : 12, fontWeight: 500, color: brand, background: tint, padding: '3px 9px', borderRadius: 999 },
+
+      aboutPad: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', padding: small ? '18px 18px' : '26px 28px', gap: small ? 10 : 14 },
+      accentBar: { width: 14, height: 3, borderRadius: 999, background: brand },
+      aboutPara: { margin: 0, fontSize: small ? 11.5 : 13.5, lineHeight: 1.55, color: 'var(--text-secondary)', textWrap: 'pretty', display: '-webkit-box', WebkitLineClamp: small ? 4 : 5, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+      numRow: { display: 'flex', gap: small ? 10 : 16, paddingTop: small ? 2 : 4 },
+      numVal: { fontSize: small ? 18 : 24, fontWeight: 700, letterSpacing: '-0.02em', color: brand, fontVariantNumeric: 'tabular-nums' },
+      photoWrap: { position: 'relative', marginTop: 'auto', width: '100%', height: small ? 78 : 128, borderRadius: small ? 10 : 14, overflow: 'hidden', background: 'var(--canvas-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    };
+  }
+}
+</script>
+</body>
+</html>

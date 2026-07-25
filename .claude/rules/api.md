@@ -16,6 +16,20 @@
   except webhook receivers (which validate raw payloads + signatures explicitly).
 - Breaking a contract = versioned route (`/v2/...`) + ADR. Additive changes preferred.
 
+## Error contract (canonical)
+- Every non-2xx response body is `{ error: { code, message, details?, requestId } }`.
+  - `code`: UPPER_SNAKE enum defined per contract in `packages/contracts` — never free-text.
+  - `message`: human-safe; never stack traces or SQL.
+  - `details`: optional field-level array `[{ path, issue }]` for validation errors.
+  - `requestId`: echoes the request id so support can find the log line.
+- HTTP mapping: 400 validation · 401 unauthenticated · 403 forbidden/entitlement
+  (`ENTITLEMENT_BLOCKED`) · 404 not-found-or-not-yours (never reveal existence across
+  tenants) · 409 version/conflict · 422 domain-rule violation · 429 rate-limited ·
+  5xx opaque `INTERNAL`.
+- ts-rest contracts declare the error union per route; the NestJS exception filter maps
+  typed domain errors → this shape. Provider-port ALWAYS-200 status envelopes (docs/07)
+  are a separate pattern and unchanged.
+
 ## Tenancy & authz (defense in depth — all three, always)
 1. Guard: verified Better Auth JWT → `{ tenantId, userId, roles[] }` on the request context.
 2. Repository layer: every query filtered by `tenantId` from context (never from client input).

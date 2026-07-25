@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-bloom { 0%,100%{ transform:translate(-50%,0) scale(1); opacity:.85 } 50%{ transform:translate(-50%,0) scale(1.08); opacity:1 } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  @media (prefers-reduced-motion: reduce){ .hg-bloom-layer{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:26px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · reports</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Owner dashboard — the honest view</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — reached from More › Reports</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- header -->
+        <div style="flex-shrink:0; padding:22px 18px 12px; background:var(--canvas)">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">More · Reports</div>
+          <div style="margin-top:6px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px">
+            <div>
+              <div style="font-size:23px; font-weight:700; letter-spacing:-0.02em">Business health</div>
+              <div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary)">{{ periodLabel }}</div>
+            </div>
+            <span style="{{ scopeChipStyle }}">{{ scopeLabel }}</span>
+          </div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 16px 108px">
+
+          <!-- ---------- EMPTY / new company ---------- -->
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative; padding:28px 4px 8px; text-align:center">
+              <div class="hg-bloom-layer" style="{{ bloomSm }}"></div>
+              <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center">
+                <div style="width:62px; height:62px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg></div>
+                <div style="margin-top:18px; font-size:20px; font-weight:700; letter-spacing:-0.02em">Your dashboard fills in as you work</div>
+                <p style="margin:10px 0 0; font-size:13.5px; line-height:1.55; color:var(--text-secondary); max-width:290px; text-wrap:pretty">Nothing to show yet — Suryodaya Solar hasn't logged a lead, proposal or payment. Here's what will appear, and why each earns its place.</p>
+              </div>
+            </div>
+            <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ teachItems }}" as="t" hint-placeholder-count="6">
+                <div style="display:flex; gap:12px; background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:14px 15px">
+                  <span style="{{ t.av }}">{{ t.iconEl }}</span>
+                  <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:500">{{ t.title }}</div><div style="margin-top:3px; font-size:12.5px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">{{ t.why }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- ---------- POPULATED ---------- -->
+          <sc-if value="{{ isPop }}" hint-placeholder-val="{{ true }}">
+
+            <!-- pushed monthly summary -->
+            <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ summaryCard }}">
+                <div style="display:flex; align-items:flex-start; gap:11px">
+                  <span style="flex-shrink:0; width:34px; height:34px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
+                  <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--iris-violet)">Pushed to you · in-app</div><div style="margin-top:2px; font-size:13px; color:var(--text-primary); line-height:1.5; text-wrap:pretty">{{ summaryBody }}</div></div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- 1 · WHAT NEEDS YOU -->
+            <div style="margin-top:14px; display:flex; align-items:center; gap:8px; padding:0 2px">
+              <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--danger)">What needs you</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">{{ attnCount }}</span>
+            </div>
+            <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ attention }}" as="row" hint-placeholder-count="4">
+                <div style="{{ attnRowStyle }}" onClick="{{ row.onOpen }}">
+                  <span style="{{ row.av }}">{{ row.iconEl }}</span>
+                  <div style="flex:1; min-width:0">
+                    <div style="{{ row.catStyle }}">{{ row.cat }}</div>
+                    <div style="margin-top:2px; font-size:14.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div>
+                    <div style="margin-top:1px; font-size:12.5px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.detail }}</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- 2 · CASH -->
+            <div style="margin-top:20px; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Cash · this month</div>
+              <div style="margin-top:14px; display:flex; gap:18px">
+                <div style="flex:1"><div style="font-size:12px; color:var(--text-secondary)">Collected</div><div style="margin-top:3px; font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:-0.01em; font-variant-numeric:tabular-nums">{{ cash.collectedD }}</div></div>
+                <div style="flex:1"><div style="font-size:12px; color:var(--text-secondary)">Still due</div><div style="margin-top:3px; font-family:var(--font-mono); font-size:20px; font-weight:700; letter-spacing:-0.01em; font-variant-numeric:tabular-nums">{{ cash.dueD }}</div></div>
+              </div>
+              <div style="margin-top:14px; height:10px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden; display:flex">
+                <div style="{{ cash.barCollected }}"></div>
+                <div style="{{ cash.barDue }}"></div>
+              </div>
+              <div style="margin-top:14px; display:flex; align-items:center; gap:10px; padding:11px 13px; background:var(--danger-bg); border-radius:14px">
+                <span style="flex-shrink:0; color:var(--danger)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg></span>
+                <span style="flex:1; font-size:13px; color:var(--text-primary)">Overdue</span>
+                <span style="font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--danger); font-variant-numeric:tabular-nums">{{ cash.overdueD }}</span>
+              </div>
+            </div>
+
+            <!-- 3 · PIPELINE -->
+            <div style="margin-top:14px; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Pipeline · open</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:700; font-variant-numeric:tabular-nums">{{ pipeTotalD }}</span></div>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:11px">
+                <sc-for list="{{ pipeline }}" as="p" hint-placeholder-count="7">
+                  <div>
+                    <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:5px">
+                      <span style="flex:1; font-size:13px; color:var(--text-primary)">{{ p.label }}</span>
+                      <sc-if value="{{ p.flag }}" hint-placeholder-val="{{ false }}"><span style="{{ flagChip }}">outlier</span></sc-if>
+                      <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ p.count }}</span>
+                      <span style="width:88px; text-align:right; font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ p.valD }}</span>
+                    </div>
+                    <div style="height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ p.barStyle }}"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ showOutlier }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px; background:var(--surface-alt); border-radius:14px; padding:12px 13px; display:flex; gap:10px">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                  <div style="font-size:12px; color:var(--text-secondary); line-height:1.55; text-wrap:pretty">{{ outlierNote }}</div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- 4 · THIS PERIOD (won) -->
+            <div style="margin-top:14px; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Won this period · signed</div>
+              <div style="margin-top:10px; display:flex; align-items:baseline; gap:9px">
+                <span style="font-family:var(--font-mono); font-size:28px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums">{{ won.wonD }}</span>
+                <span style="font-size:13px; color:var(--text-secondary)">{{ won.countLabel }}</span>
+              </div>
+              <div style="margin-top:6px; display:flex; align-items:center; gap:5px; {{ won.deltaColor }}">{{ won.deltaIcon }}<span style="font-size:12.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ won.deltaTxt }}</span></div>
+              <sc-if value="{{ won.hasTarget }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:14px">
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:12.5px; color:var(--text-secondary)">Target {{ won.targetD }}</span><span style="font-family:var(--font-mono); font-size:12.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ won.progLabel }}</span></div>
+                  <div style="height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ won.progStyle }}"></div></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ won.noTarget }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ won.onSetTarget }}" style="margin-top:14px; display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 15px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:13px; font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Set a monthly target</button>
+              </sc-if>
+              <sc-if value="{{ won.mid }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px; font-size:12px; color:var(--text-tertiary); line-height:1.5; text-wrap:pretty">{{ won.midNote }}</div>
+              </sc-if>
+            </div>
+
+            <!-- 5 · FORECAST -->
+            <div style="margin-top:14px; position:relative; overflow:hidden; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="position:absolute; right:-50px; top:-60px; width:180px; height:180px; background:var(--glow-brand); pointer-events:none"></div>
+              <div style="position:relative; z-index:1">
+                <div style="display:flex; align-items:center; gap:8px"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Forecast</span><span style="display:inline-flex; align-items:center; height:20px; padding:0 8px; border-radius:999px; background:var(--surface-alt); color:var(--text-secondary); font-size:10.5px; font-weight:600">Expected, not promised</span></div>
+                <div style="margin-top:12px; font-family:var(--font-mono); font-size:28px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums">{{ forecastD }}</div>
+                <div style="margin-top:4px; font-size:12.5px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">{{ forecastNote }}</div>
+              </div>
+            </div>
+
+            <!-- 6 · WIN / LOSS -->
+            <div style="margin-top:14px; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px">
+                <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Win rate · closed deals</div><div style="margin-top:8px; font-family:var(--font-mono); font-size:28px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums">{{ winRate }}</div></div>
+                <span style="font-size:12px; color:var(--text-secondary); padding-bottom:4px; text-align:right; max-width:150px; text-wrap:pretty">{{ closedNote }}</span>
+              </div>
+              <div style="margin-top:16px; font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary)">Disqualified early</div>
+              <div style="margin-top:9px; display:flex; flex-direction:column; gap:8px">
+                <sc-for list="{{ earlyLoss }}" as="l" hint-placeholder-count="6">
+                  <div style="display:flex; align-items:center; gap:10px"><span style="width:104px; flex-shrink:0; font-size:12.5px; color:var(--text-primary)">{{ l.label }}</span><div style="flex:1; height:7px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ l.barStyle }}"></div></div><span style="width:22px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:12px; font-variant-numeric:tabular-nums">{{ l.n }}</span></div>
+                </sc-for>
+              </div>
+              <div style="margin-top:16px; font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary)">Lost late</div>
+              <div style="margin-top:9px; display:flex; flex-direction:column; gap:8px">
+                <sc-for list="{{ lateLoss }}" as="l" hint-placeholder-count="6">
+                  <div style="display:flex; align-items:center; gap:10px"><span style="width:104px; flex-shrink:0; font-size:12.5px; color:var(--text-primary)">{{ l.label }}</span><div style="flex:1; height:7px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ l.barStyle }}"></div></div><span style="width:22px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:12px; font-variant-numeric:tabular-nums">{{ l.n }}</span></div>
+                </sc-for>
+              </div>
+              <button onClick="{{ onFunnel }}" style="margin-top:16px; width:100%; height:42px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:13.5px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:7px">See full funnel &amp; conversion<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+            </div>
+
+            <!-- 7 · AGENT -->
+            <button onClick="{{ goAgent }}" style="margin-top:14px; width:100%; position:relative; overflow:hidden; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:16px 18px; border:none; cursor:pointer; font-family:inherit; text-align:left; display:flex; align-items:center; gap:13px">
+              <span style="flex-shrink:0; width:42px; height:42px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span>
+              <div style="flex:1; min-width:0"><div style="font-size:14.5px; font-weight:500">Voice agent · Asha</div><div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">{{ agentLine }}</div><div style="margin-top:3px; font-size:11.5px; color:var(--text-tertiary)">Linked to pipeline — not credited with revenue.</div></div>
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+
+            <!-- 8 · TEAM -->
+            <div style="margin-top:14px; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Team</span><span style="font-size:11.5px; color:var(--text-tertiary)">{{ teamNote }}</span></div>
+              <div style="margin-top:12px; display:flex; flex-direction:column; gap:4px">
+                <sc-for list="{{ team }}" as="r" hint-placeholder-count="4">
+                  <div style="{{ teamRowStyle }}" onClick="{{ r.onOpen }}">
+                    <span style="{{ r.av }}">{{ r.initials }}</span>
+                    <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.name }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ r.open }} open · win {{ r.win }}</div></div>
+                    <span style="font-family:var(--font-mono); font-size:13.5px; font-weight:600; font-variant-numeric:tabular-nums">{{ r.pipeD }}</span>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+          </sc-if>
+        </div>
+
+        <!-- ARC NAV -->
+        <div style="flex-shrink:0; position:absolute; left:0; right:0; bottom:0; height:96px; overflow:visible; z-index:5">
+          <svg width="100%" height="96" viewBox="0 0 375 96" preserveAspectRatio="none" style="display:block; position:absolute; left:0; bottom:0; filter:drop-shadow(0 -3px 12px rgba(10,10,11,0.08))"><path d="M0,34 Q187.5,-10 375,34 L375,96 L0,96 Z" fill="var(--surface)"></path></svg>
+          <div onClick="{{ goHome }}" style="position:absolute; left:12%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+            <span style="font-size:11px">My Day</span>
+          </div>
+          <div onClick="{{ goLeads }}" style="position:absolute; left:31%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span style="font-size:11px">Leads</span>
+          </div>
+          <div onClick="{{ goProjects }}" style="position:absolute; left:69%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg>
+            <span style="font-size:11px">Projects</span>
+          </div>
+          <div style="position:absolute; left:88%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--accent); z-index:2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg>
+            <span style="font-size:11px; font-weight:500">More</span>
+          </div>
+          <div onClick="{{ goQuickAdd }}" style="position:absolute; left:50%; top:-14px; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer">
+            <div style="width:54px; height:54px; border-radius:50%; background:var(--action-primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--e4)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+            <span style="font-size:11px; font-weight:500; color:var(--text-secondary)">Add lead</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — Reports, sidebar + header</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px; z-index:2">
+          <button onClick="{{ goHome }}" style="display:flex; align-items:center; gap:10px; padding:0; background:none; border:none; cursor:pointer; font-family:inherit">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </button>
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goHome }}" style="{{ navRow }}" title="My Day"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div onClick="{{ goLeads }}" style="{{ navRow }}" title="Leads"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span></div>
+            <div onClick="{{ goProjects }}" style="{{ navRow }}" title="Projects"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+            <div style="{{ navRowActive }}" title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg><span style="flex:1">Reports</span></div>
+            <div onClick="{{ goSettings }}" style="{{ navRow }}" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px">
+            <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0">{{ roleInitials }}</div>
+            <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">{{ roleName }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ roleSub }}</div></div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; height:68px; display:flex; align-items:center; gap:14px; padding:0 30px">
+            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-secondary)"><span>Reports</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg><span style="color:var(--text-primary); font-weight:500">Owner dashboard</span></div>
+            <div style="flex:1"></div>
+            <span style="{{ scopeChipStyle }}">{{ scopeLabel }} · {{ scopeName }}</span>
+            <div style="{{ selWrap }}"><select aria-label="Period" style="{{ selEl }}"><option>{{ periodLabel }}</option><option>June 2026 · vs May</option><option>Last 90 days</option></select></div>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 30px 28px">
+
+            <!-- EMPTY -->
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:44px 40px 40px">
+                <div class="hg-bloom-layer" style="{{ bloomLg }}"></div>
+                <div style="position:relative; z-index:1">
+                  <div style="display:flex; flex-direction:column; align-items:center; text-align:center">
+                    <div style="width:74px; height:74px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg></div>
+                    <div style="margin-top:20px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Your dashboard fills in as you work</div>
+                    <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:var(--text-secondary); max-width:560px; text-wrap:pretty">Nothing to show yet — Suryodaya Solar hasn't logged a lead, proposal or payment. Rather than draw an empty chart, here's what each part of this dashboard will show, and why it earns its place.</p>
+                  </div>
+                  <div style="margin-top:28px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px">
+                    <sc-for list="{{ teachItems }}" as="t" hint-placeholder-count="6">
+                      <div style="background:var(--surface-alt); border-radius:16px; padding:18px">
+                        <span style="{{ t.av }}">{{ t.iconEl }}</span>
+                        <div style="margin-top:12px; font-size:15px; font-weight:500">{{ t.title }}</div>
+                        <div style="margin-top:5px; font-size:13px; color:var(--text-secondary); line-height:1.55; text-wrap:pretty">{{ t.why }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- POPULATED -->
+            <sc-if value="{{ isPop }}" hint-placeholder-val="{{ true }}">
+
+              <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ summaryCard }}">
+                  <span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
+                  <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--iris-violet)">Pushed to you · in-app monthly summary</div><div style="margin-top:2px; font-size:14px; color:var(--text-primary); text-wrap:pretty">{{ summaryBody }}</div></div>
+                </div>
+                <div style="height:16px"></div>
+              </sc-if>
+
+              <!-- 1 · WHAT NEEDS YOU (hero, full width) -->
+              <div style="background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                <div style="display:flex; align-items:center; gap:10px">
+                  <span style="width:30px; height:30px; border-radius:50%; background:var(--danger-bg); color:var(--danger); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+                  <span style="font-size:15px; font-weight:600; letter-spacing:-0.01em">What needs you</span>
+                  <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary)">{{ attnCount }}</span>
+                  <div style="flex:1"></div>
+                  <span style="font-size:12.5px; color:var(--text-tertiary)">Each links straight to the lead, proposal or project</span>
+                </div>
+                <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:8px">
+                  <sc-for list="{{ attention }}" as="row" hint-placeholder-count="6">
+                    <div style="{{ attnRowStyle }}" style-hover="{{ rowHover }}" onClick="{{ row.onOpen }}">
+                      <span style="{{ row.av }}">{{ row.iconEl }}</span>
+                      <div style="flex:1; min-width:0">
+                        <div style="{{ row.catStyle }}">{{ row.cat }}</div>
+                        <div style="margin-top:2px; font-size:14.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div>
+                        <div style="margin-top:1px; font-size:12.5px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.detail }}</div>
+                      </div>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; align-self:center"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- 2/4/5 · CASH · THIS PERIOD · FORECAST -->
+              <div style="margin-top:16px; display:flex; gap:16px; align-items:stretch">
+                <!-- CASH -->
+                <div style="flex:1.2; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px; display:flex; flex-direction:column">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Cash · this month</div>
+                  <div style="margin-top:16px; display:flex; gap:28px">
+                    <div><div style="font-size:12.5px; color:var(--text-secondary)">Collected</div><div style="margin-top:4px; font-family:var(--font-mono); font-size:26px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums">{{ cash.collectedD }}</div></div>
+                    <div><div style="font-size:12.5px; color:var(--text-secondary)">Still due</div><div style="margin-top:4px; font-family:var(--font-mono); font-size:26px; font-weight:700; letter-spacing:-0.02em; font-variant-numeric:tabular-nums">{{ cash.dueD }}</div></div>
+                  </div>
+                  <div style="margin-top:16px; height:12px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden; display:flex"><div style="{{ cash.barCollected }}"></div><div style="{{ cash.barDue }}"></div></div>
+                  <div style="margin-top:16px; display:flex; align-items:center; gap:11px; padding:13px 15px; background:var(--danger-bg); border-radius:14px"><span style="flex-shrink:0; color:var(--danger)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg></span><span style="flex:1; font-size:14px; color:var(--text-primary)">Overdue — chase these</span><span style="font-family:var(--font-mono); font-size:18px; font-weight:700; color:var(--danger); font-variant-numeric:tabular-nums">{{ cash.overdueD }}</span></div>
+                </div>
+                <!-- THIS PERIOD -->
+                <div style="flex:1; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px; display:flex; flex-direction:column">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Won this period · signed</div>
+                  <div style="margin-top:14px; display:flex; align-items:baseline; gap:9px"><span style="font-family:var(--font-mono); font-size:34px; font-weight:700; letter-spacing:-0.025em; font-variant-numeric:tabular-nums">{{ won.wonD }}</span><span style="font-size:13px; color:var(--text-secondary)">{{ won.countLabel }}</span></div>
+                  <div style="margin-top:6px; display:flex; align-items:center; gap:5px; {{ won.deltaColor }}">{{ won.deltaIcon }}<span style="font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ won.deltaTxt }}</span></div>
+                  <sc-if value="{{ won.hasTarget }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:auto; padding-top:18px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:7px"><span style="font-size:13px; color:var(--text-secondary)">Target {{ won.targetD }}</span><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ won.progLabel }}</span></div><div style="height:10px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ won.progStyle }}"></div></div></div>
+                  </sc-if>
+                  <sc-if value="{{ won.noTarget }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:auto; padding-top:18px"><button onClick="{{ won.onSetTarget }}" style="display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 16px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:13.5px; font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Set a monthly target</button><div style="margin-top:9px; font-size:11.5px; color:var(--text-tertiary)">Optional — the dashboard works fine without one.</div></div>
+                  </sc-if>
+                  <sc-if value="{{ won.mid }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:auto; padding-top:14px; font-size:12px; color:var(--text-tertiary); line-height:1.5; text-wrap:pretty">{{ won.midNote }}</div>
+                  </sc-if>
+                </div>
+                <!-- FORECAST -->
+                <div style="flex:1; position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                  <div style="position:absolute; right:-40px; top:-60px; width:200px; height:200px; background:var(--glow-brand); pointer-events:none"></div>
+                  <div style="position:relative; z-index:1; height:100%; display:flex; flex-direction:column">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Forecast</span><span style="display:inline-flex; align-items:center; height:20px; padding:0 9px; border-radius:999px; background:var(--surface-alt); color:var(--text-secondary); font-size:10.5px; font-weight:600">Expected, not promised</span></div>
+                    <div style="margin-top:14px; font-family:var(--font-mono); font-size:34px; font-weight:700; letter-spacing:-0.025em; font-variant-numeric:tabular-nums">{{ forecastD }}</div>
+                    <div style="margin-top:auto; padding-top:12px; font-size:12.5px; color:var(--text-secondary); line-height:1.55; text-wrap:pretty">{{ forecastNote }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3 · PIPELINE (full) -->
+              <div style="margin-top:16px; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                <div style="display:flex; align-items:baseline; justify-content:space-between"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Pipeline · open by stage</span><span style="font-size:13px; color:var(--text-secondary)">Total open <span style="font-family:var(--font-mono); font-weight:700; color:var(--text-primary); font-variant-numeric:tabular-nums">{{ pipeTotalD }}</span></span></div>
+                <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px">
+                  <sc-for list="{{ pipeline }}" as="p" hint-placeholder-count="7">
+                    <div style="display:flex; align-items:center; gap:14px">
+                      <span style="width:96px; flex-shrink:0; font-size:13.5px; color:var(--text-primary)">{{ p.label }}</span>
+                      <span style="width:34px; flex-shrink:0; font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ p.count }}</span>
+                      <div style="flex:1; height:12px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ p.barStyle }}"></div></div>
+                      <sc-if value="{{ p.flag }}" hint-placeholder-val="{{ false }}"><span style="{{ flagChip }}">outlier inside</span></sc-if>
+                      <span style="width:120px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:14px; font-weight:600; font-variant-numeric:tabular-nums">{{ p.valD }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ showOutlier }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:16px; background:var(--surface-alt); border-radius:14px; padding:14px 16px; display:flex; gap:12px; align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="font-size:13px; color:var(--text-secondary); line-height:1.55; text-wrap:pretty">{{ outlierNote }}</div></div>
+                </sc-if>
+              </div>
+
+              <!-- 6/7 · WIN-LOSS + AGENT -->
+              <div style="margin-top:16px; display:flex; gap:16px; align-items:stretch">
+                <div style="flex:1.7; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px">
+                    <div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Win / loss · closed deals</div><div style="margin-top:8px; display:flex; align-items:baseline; gap:10px"><span style="font-family:var(--font-mono); font-size:32px; font-weight:700; letter-spacing:-0.025em; font-variant-numeric:tabular-nums">{{ winRate }}</span><span style="font-size:13px; color:var(--text-secondary)">win rate · {{ closedNote }}</span></div></div>
+                    <button onClick="{{ onFunnel }}" style="flex-shrink:0; height:40px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:7px">See full funnel<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+                  </div>
+                  <div style="margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:28px">
+                    <div>
+                      <div style="font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary)">Disqualified early</div>
+                      <div style="margin-top:12px; display:flex; flex-direction:column; gap:9px">
+                        <sc-for list="{{ earlyLoss }}" as="l" hint-placeholder-count="6">
+                          <div style="display:flex; align-items:center; gap:12px"><span style="width:120px; flex-shrink:0; font-size:13px; color:var(--text-primary)">{{ l.label }}</span><div style="flex:1; height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ l.barStyle }}"></div></div><span style="width:24px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13px; font-variant-numeric:tabular-nums">{{ l.n }}</span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div>
+                      <div style="font-size:10.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary)">Lost late</div>
+                      <div style="margin-top:12px; display:flex; flex-direction:column; gap:9px">
+                        <sc-for list="{{ lateLoss }}" as="l" hint-placeholder-count="6">
+                          <div style="display:flex; align-items:center; gap:12px"><span style="width:120px; flex-shrink:0; font-size:13px; color:var(--text-primary)">{{ l.label }}</span><div style="flex:1; height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ l.barStyle }}"></div></div><span style="width:24px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13px; font-variant-numeric:tabular-nums">{{ l.n }}</span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button onClick="{{ goAgent }}" style="flex:1; position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px; border:none; cursor:pointer; font-family:inherit; text-align:left; display:flex; flex-direction:column">
+                  <div style="position:absolute; right:-40px; top:-50px; width:180px; height:180px; background:var(--glow-brand); pointer-events:none"></div>
+                  <div style="position:relative; z-index:1; display:flex; flex-direction:column; height:100%">
+                    <div style="display:flex; align-items:center; gap:11px"><span style="flex-shrink:0; width:44px; height:44px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span><div><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Voice agent</div><div style="font-size:15px; font-weight:600; letter-spacing:-0.01em">Asha</div></div></div>
+                    <div style="margin-top:16px; font-size:14px; color:var(--text-primary); text-wrap:pretty">{{ agentLine }}</div>
+                    <div style="margin-top:auto; padding-top:16px; display:flex; align-items:center; gap:8px"><span style="font-size:12px; color:var(--text-tertiary); text-wrap:pretty">Linked to pipeline — not credited with revenue</span><div style="flex:1"></div><span style="display:inline-flex; align-items:center; gap:5px; font-size:13px; font-weight:500; color:var(--accent)">Performance<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- 8 · TEAM -->
+              <div style="margin-top:16px; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:14px 16px">
+                <div style="display:flex; align-items:baseline; justify-content:space-between; padding:8px 8px 4px"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Team · pipeline &amp; conversion</span><span style="font-size:12px; color:var(--text-tertiary)">{{ teamNote }}</span></div>
+                <div style="display:flex; align-items:center; gap:16px; padding:6px 10px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary)"><span style="width:210px; flex-shrink:0">Rep</span><span style="flex:1">Pipeline</span><span style="width:70px; flex-shrink:0; text-align:right">Win</span><span style="width:70px; flex-shrink:0; text-align:right">Open</span><span style="width:130px; flex-shrink:0; text-align:right">Value</span><span style="width:20px; flex-shrink:0"></span></div>
+                <div style="display:flex; flex-direction:column">
+                  <sc-for list="{{ team }}" as="r" hint-placeholder-count="4">
+                    <div style="{{ teamRowStyle }}" style-hover="{{ rowHover }}" onClick="{{ r.onOpen }}">
+                      <div style="width:210px; flex-shrink:0; display:flex; align-items:center; gap:12px"><span style="{{ r.av }}">{{ r.initials }}</span><span style="font-size:14.5px; font-weight:500">{{ r.name }}</span></div>
+                      <div style="flex:1; height:10px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ r.barStyle }}"></div></div>
+                      <span style="width:70px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13.5px; font-variant-numeric:tabular-nums">{{ r.win }}</span>
+                      <span style="width:70px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13.5px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ r.open }}</span>
+                      <span style="width:130px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:15px; font-weight:600; font-variant-numeric:tabular-nums">{{ r.pipeD }}</span>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:20px; flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2010,&quot;height&quot;:1040},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;empty&quot;,&quot;midMonth&quot;,&quot;noTarget&quot;,&quot;outlier&quot;,&quot;manager&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'empty'|'midMonth'|'noTarget'|'outlier'|'manager'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: props.defaultView || 'normal' };
+  }
+
+  setView = (v) => this.setState({ view: v });
+  go = (url) => () => { window.location.href = url; };
+
+  grp(n) {
+    let s = String(Math.round(n));
+    let l3 = s.slice(-3);
+    let r = s.slice(0, -3);
+    if (r) l3 = ',' + l3;
+    r = r.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+    return r + l3;
+  }
+  inr(n) { return '\u20B9' + this.grp(n); }
+  cr(n) {
+    if (n >= 10000000) return '\u20B9' + (n / 10000000).toFixed(2).replace(/\.?0+$/, '') + ' Cr';
+    if (n >= 100000) return '\u20B9' + (n / 100000).toFixed(2).replace(/\.?0+$/, '') + ' L';
+    return this.inr(n);
+  }
+  tone(t) {
+    const m = {
+      danger: ['var(--danger-bg)', 'var(--danger)'], warning: ['var(--warning-bg)', 'var(--warning)'],
+      accent: ['var(--accent-subtle)', 'var(--accent)'], success: ['var(--success-bg)', 'var(--success)'],
+      info: ['var(--info-bg)', 'var(--info)'], neutral: ['var(--neutral-bg)', 'var(--text-secondary)'],
+    };
+    return m[t] || m.neutral;
+  }
+  iconCircle(t, size) {
+    const [bg, fg] = this.tone(t);
+    return { flexShrink: 0, width: size, height: size, borderRadius: '50%', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center' };
+  }
+  deltaEls(dir) {
+    const up = dir === 'up', flat = dir === 'flat';
+    const E = React.createElement;
+    if (flat) return E('svg', { width: 13, height: 13, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, E('path', { d: 'M5 12h14' }));
+    return E('svg', { width: 13, height: 13, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      E('path', { key: 1, d: up ? 'M7 17 17 7' : 'M7 7l10 10' }), E('path', { key: 2, d: up ? 'M8 7h9v9' : 'M17 8v9H8' }));
+  }
+
+  renderVals() {
+    const view = this.state.view;
+    const E = React.createElement;
+    const sv = (kids) => E('svg', { width: 19, height: 19, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }, kids);
+    const icons = {
+      rupee: E('span', { style: { fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 14, lineHeight: 1 } }, '\u20B9'),
+      clock: sv([E('circle', { key: 1, cx: 12, cy: 12, r: 9 }), E('path', { key: 2, d: 'M12 8v4l2.5 1.6' })]),
+      block: sv([E('circle', { key: 1, cx: 12, cy: 12, r: 9 }), E('path', { key: 2, d: 'M10 15V9' }), E('path', { key: 3, d: 'M14 15V9' })]),
+      doc: sv([E('path', { key: 1, d: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z' }), E('path', { key: 2, d: 'M14 3v5h5' })]),
+      chart: sv([E('path', { key: 1, d: 'M3 3v18h18' }), E('path', { key: 2, d: 'm19 9-5 5-4-4-3 3' })]),
+      cash: sv([E('rect', { key: 1, x: 2, y: 5, width: 20, height: 14, rx: 2 }), E('path', { key: 2, d: 'M2 10h20' })]),
+      target: sv([E('circle', { key: 1, cx: 12, cy: 12, r: 9 }), E('circle', { key: 2, cx: 12, cy: 12, r: 4 })]),
+      cloud: sv([E('path', { key: 1, d: 'M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 2A4 4 0 0 0 6 19z' })]),
+      scale: sv([E('path', { key: 1, d: 'M12 3v18' }), E('path', { key: 2, d: 'm5 8 7-4 7 4' }), E('path', { key: 3, d: 'M3 8h18' })]),
+    };
+
+    const isEmpty = view === 'empty';
+    const isMgr = view === 'manager';
+    const isMid = view === 'midMonth';
+    const noTarget = view === 'noTarget';
+    const showOutlier = view === 'outlier';
+
+    const views = [
+      { k: 'normal', l: 'Normal' }, { k: 'empty', l: 'New company' }, { k: 'midMonth', l: 'Mid-month' },
+      { k: 'noTarget', l: 'No target' }, { k: 'outlier', l: 'Outlier flagged' }, { k: 'manager', l: 'Manager view' },
+    ].map(v => { const a = view === v.k; return { label: v.l, onClick: () => this.setView(v.k), style: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 13px', borderRadius: 999, whiteSpace: 'nowrap', background: a ? 'var(--action-primary)' : 'transparent', color: a ? '#fff' : 'var(--text-secondary)', transition: 'all 160ms var(--ease-standard)' } }; });
+
+    // scope / header
+    const scopeLabel = isMgr ? 'Your team' : 'Everything';
+    const scopeName = isMgr ? 'West Pune team' : 'Suryodaya Solar';
+    const roleName = isMgr ? 'Meera Kulkarni' : 'Rajesh Patil';
+    const roleSub = isMgr ? 'Manager' : 'Owner';
+    const roleInitials = isMgr ? 'MK' : 'RP';
+    const periodLabel = isMid ? 'So far this month · day 12 of 31' : 'July 2026 · vs June';
+
+    // attention
+    const catMeta = {
+      payment: { tone: 'danger', label: 'Payment overdue', icon: 'rupee' },
+      deal: { tone: 'warning', label: 'Deal going cold', icon: 'clock' },
+      project: { tone: 'warning', label: 'Project blocked', icon: 'block' },
+      proposal: { tone: 'accent', label: 'Proposal not opened', icon: 'doc' },
+    };
+    const attnOwner = [
+      { cat: 'payment', name: 'Fabtech Industries', detail: '\u20B92,13,600 due since 12 Aug', url: 'CustomerPage.dc.html' },
+      { cat: 'payment', name: 'Kavita Joshi', detail: '\u20B970,369 due since 20 Aug', url: 'CustomerPage.dc.html' },
+      { cat: 'deal', name: 'Anand Traders', detail: 'Negotiating \u00B7 no activity 18 days', url: 'LeadDetail.dc.html' },
+      { cat: 'project', name: 'Deshmukh Textiles', detail: 'Waiting on DISCOM \u00B7 34 days in stage', url: 'Project Flow.dc.html' },
+      { cat: 'proposal', name: 'Priya Sharma', detail: 'Shared 4 days ago \u00B7 not opened', url: 'Proposals.dc.html' },
+      { cat: 'deal', name: 'Ramesh Gupta', detail: 'Qualified \u00B7 follow-up overdue 6 days', url: 'LeadDetail.dc.html' },
+    ];
+    const attnMgr = [
+      { cat: 'payment', name: 'Kavita Joshi', detail: '\u20B970,369 due since 20 Aug', url: 'CustomerPage.dc.html' },
+      { cat: 'deal', name: 'Anand Traders', detail: 'Negotiating \u00B7 no activity 18 days', url: 'LeadDetail.dc.html' },
+      { cat: 'proposal', name: 'Priya Sharma', detail: 'Shared 4 days ago \u00B7 not opened', url: 'Proposals.dc.html' },
+    ];
+    const attnRaw = isMgr ? attnMgr : attnOwner;
+    const attention = attnRaw.map(a => {
+      const m = catMeta[a.cat];
+      const [, fg] = this.tone(m.tone);
+      return { name: a.name, detail: a.detail, cat: m.label, iconEl: icons[m.icon],
+        av: this.iconCircle(m.tone, 40),
+        catStyle: { fontSize: 10.5, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: fg },
+        onOpen: this.go(a.url) };
+    });
+    const attnCount = attnRaw.length;
+
+    // cash
+    const cashD = isMgr ? { collected: 640000, due: 320000, overdue: 70369 }
+      : isMid ? { collected: 742000, due: 1820000, overdue: 283969 }
+      : { collected: 1842000, due: 960000, overdue: 283969 };
+    const cashTotal = cashD.collected + cashD.due;
+    const cash = {
+      collectedD: this.inr(cashD.collected), dueD: this.inr(cashD.due), overdueD: this.inr(cashD.overdue),
+      barCollected: { width: Math.round(cashD.collected / cashTotal * 100) + '%', height: '100%', background: 'var(--chart-4)' },
+      barDue: { width: Math.round(cashD.due / cashTotal * 100) + '%', height: '100%', background: 'var(--warning)' },
+    };
+
+    // pipeline
+    const chartCols = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)', 'var(--chart-7)'];
+    let pipeRaw;
+    if (isMgr) pipeRaw = [
+      { label: 'New', value: 980000, count: 4 }, { label: 'Contacted', value: 1240000, count: 3 },
+      { label: 'Qualified', value: 1820000, count: 3 }, { label: 'Survey', value: 1100000, count: 2 },
+      { label: 'Design', value: 1400000, count: 1 }, { label: 'Proposal', value: 2100000, count: 2 },
+      { label: 'Negotiating', value: 1600000, count: 1 },
+    ];
+    else pipeRaw = [
+      { label: 'New', value: 2840000, count: 12 }, { label: 'Contacted', value: 3620000, count: 9 },
+      { label: 'Qualified', value: 5280000, count: 8 }, { label: 'Survey', value: 3100000, count: 5 },
+      { label: 'Design', value: 4060000, count: 4 }, { label: 'Proposal', value: 5800000, count: 6 },
+      { label: 'Negotiating', value: showOutlier ? 13400000 : 4200000, count: showOutlier ? 4 : 3, flag: showOutlier },
+    ];
+    const pipeMax = Math.max(...pipeRaw.map(p => p.value));
+    const pipeTotalRaw = pipeRaw.reduce((s, p) => s + p.value, 0);
+    const pipeline = pipeRaw.map((p, i) => ({
+      label: p.label, count: p.count, valD: this.inr(p.value), flag: !!p.flag,
+      barStyle: { width: Math.max(3, Math.round(p.value / pipeMax * 100)) + '%', height: '100%', borderRadius: 999, background: chartCols[i % chartCols.length] },
+    }));
+    const pipeTotalD = this.cr(pipeTotalRaw);
+    const outlierNote = 'One deal — Sundaram C&I, ' + this.inr(9200000) + ' — is 3.2\u00D7 your median (' + this.inr(540000) + '). It sits inside Negotiating and is flagged so it doesn\u2019t make the pipeline look healthier than it is. Without it, Negotiating is ' + this.inr(4200000) + '.';
+
+    // won / this period
+    const wonD = isMgr ? { won: 920000, count: 2, last: 740000, target: 1000000 }
+      : isMid ? { won: 1120000, count: 3, last: 940000, target: 3000000 }
+      : { won: 2460000, count: 6, last: 1980000, target: 3000000 };
+    const deltaPct = Math.round((wonD.won - wonD.last) / wonD.last * 100);
+    const dir = deltaPct > 0 ? 'up' : deltaPct < 0 ? 'down' : 'flat';
+    const progPct = Math.round(wonD.won / wonD.target * 100);
+    const won = {
+      wonD: this.inr(wonD.won), countLabel: wonD.count + (wonD.count === 1 ? ' deal signed' : ' deals signed'),
+      deltaTxt: (deltaPct >= 0 ? '+' : '') + deltaPct + '% ' + (isMid ? 'vs same point last month' : 'vs last month'),
+      deltaIcon: this.deltaEls(dir), deltaColor: { color: dir === 'flat' ? 'var(--text-tertiary)' : dir === 'up' ? 'var(--success)' : 'var(--danger)' },
+      hasTarget: !noTarget, noTarget: noTarget, mid: isMid,
+      targetD: this.inr(wonD.target), progLabel: progPct + '% of target',
+      progStyle: { width: Math.min(100, progPct) + '%', height: '100%', borderRadius: 999, background: 'var(--chart-1)' },
+      midNote: 'Shown as-is with 12 of 31 days gone \u2014 not projected to a full month.',
+      onSetTarget: () => {},
+    };
+
+    // forecast
+    const fcRaw = isMgr ? 3600000 : 10800000;
+    const forecastD = this.cr(fcRaw);
+    const forecastNote = 'Open pipeline weighted by how likely each stage is to close (Negotiating \u00D70.7, Proposal \u00D70.5). A projection \u2014 never counted as won.';
+
+    // win / loss
+    const wl = isMgr ? { rate: '40%', note: '2 won of 5 closed' } : { rate: '38%', note: '6 won of 16 closed' };
+    const earlyRaw = isMgr
+      ? [{ label: 'Renting', n: 3 }, { label: 'Budget', n: 2 }, { label: 'Not interested', n: 2 }, { label: 'Unreachable', n: 1 }, { label: 'Already installed', n: 1 }]
+      : [{ label: 'Renting', n: 7 }, { label: 'Budget', n: 5 }, { label: 'Not interested', n: 4 }, { label: 'Unreachable', n: 3 }, { label: 'Already installed', n: 2 }, { label: 'Wrong number', n: 2 }];
+    const lateRaw = isMgr
+      ? [{ label: 'Price', n: 2 }, { label: 'Competitor', n: 1 }, { label: 'Postponed', n: 1 }, { label: 'Roof unsuitable', n: 1 }]
+      : [{ label: 'Price', n: 4 }, { label: 'Competitor', n: 3 }, { label: 'Postponed', n: 3 }, { label: 'Roof unsuitable', n: 1 }, { label: 'Financing failed', n: 1 }, { label: 'Not reachable', n: 1 }];
+    const eMax = Math.max(...earlyRaw.map(x => x.n));
+    const lMax = Math.max(...lateRaw.map(x => x.n));
+    const earlyLoss = earlyRaw.map(x => ({ label: x.label, n: x.n, barStyle: { width: Math.round(x.n / eMax * 100) + '%', height: '100%', borderRadius: 999, background: 'var(--chart-8)' } }));
+    const lateLoss = lateRaw.map(x => ({ label: x.label, n: x.n, barStyle: { width: Math.round(x.n / lMax * 100) + '%', height: '100%', borderRadius: 999, background: 'var(--danger)' } }));
+
+    // agent
+    const agentLine = isMgr ? '148 calls this month \u00B7 92 connected \u00B7 12 quiet leads it re-touched.'
+      : '412 calls this month \u00B7 246 connected \u00B7 31 quiet deals it re-touched.';
+
+    // team
+    const teamAv = { flexShrink: 0, width: 38, height: 38, borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13 };
+    const teamOwner = [
+      { initials: 'AR', name: 'Anita Rao', pipe: 7800000, win: '41%', open: 6 },
+      { initials: 'SK', name: 'Suresh Kale', pipe: 6400000, win: '35%', open: 5 },
+      { initials: 'PN', name: 'Pooja Nair', pipe: 5200000, win: '44%', open: 4 },
+      { initials: 'DM', name: 'Dinesh More', pipe: 3100000, win: '22%', open: 3 },
+    ];
+    const teamMgr = [
+      { initials: 'AR', name: 'Anita Rao', pipe: 7800000, win: '41%', open: 6 },
+      { initials: 'PN', name: 'Pooja Nair', pipe: 5200000, win: '44%', open: 4 },
+    ];
+    const teamRaw = isMgr ? teamMgr : teamOwner;
+    const tMax = Math.max(...teamRaw.map(t => t.pipe));
+    const team = teamRaw.map(t => ({
+      initials: t.initials, name: t.name, win: t.win, open: t.open, pipeD: this.cr(t.pipe),
+      av: teamAv, barStyle: { width: Math.round(t.pipe / tMax * 100) + '%', height: '100%', borderRadius: 999, background: 'var(--chart-2)' },
+      onOpen: this.go('Leads.dc.html'),
+    }));
+    const teamNote = isMgr ? 'Your team \u00B7 2 reps' : 'All reps \u00B7 owner & manager only';
+
+    // summary push
+    const showSummary = view === 'normal';
+    const summaryBody = 'Your July summary is ready \u2014 ' + this.inr(2460000) + ' won across 6 deals, 38% win rate. ' + attnCount + ' things need you, and ' + this.inr(283969) + ' is overdue.';
+
+    // teach (empty)
+    const teachRaw = [
+      { icon: 'chart', title: 'What needs you', why: 'The honest attention list \u2014 cold deals, unopened proposals, blocked projects, overdue payments. Each links to the thing.' },
+      { icon: 'cash', title: 'Cash', why: 'Collected vs still due this month from your project payment tranches, and anything overdue.' },
+      { icon: 'scale', title: 'Pipeline', why: 'Value and deal count at every stage, New through Negotiating.' },
+      { icon: 'target', title: 'This period', why: 'What you\u2019ve actually signed, vs last period and an optional target you set right here.' },
+      { icon: 'cloud', title: 'Forecast', why: 'Weighted pipeline \u2014 expected, not promised. Never mixed with what\u2019s won.' },
+      { icon: 'doc', title: 'Win / loss', why: 'Your win rate, and why deals were disqualified early or lost late.' },
+    ];
+    const teachItems = teachRaw.map(t => ({ title: t.title, why: t.why, iconEl: icons[t.icon], av: this.iconCircle('accent', 40) }));
+
+    return {
+      views,
+      isEmpty, isPop: !isEmpty,
+      periodLabel, scopeLabel, scopeName, roleName, roleSub, roleInitials,
+      scopeChipStyle: { display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 13px', borderRadius: 999, background: 'var(--surface)', boxShadow: 'var(--e1)', color: 'var(--text-secondary)', fontSize: 12.5, fontWeight: 500, whiteSpace: 'nowrap' },
+      showSummary, summaryBody,
+      summaryCard: { display: 'flex', alignItems: 'flex-start', gap: 12, background: 'linear-gradient(180deg,#F4F1FF 0%,#FCFBFF 82%)', borderRadius: 18, boxShadow: '0 1px 2px rgba(10,10,11,0.04), 0 0 0 1px rgba(123,92,255,0.10)', padding: '15px 17px' },
+      attention, attnCount,
+      attnRowStyle: { display: 'flex', alignItems: 'flex-start', gap: 12, padding: '11px 12px', borderRadius: 14, cursor: 'pointer', background: 'var(--surface-alt)', transition: 'background 140ms var(--ease-standard)' },
+      rowHover: { background: 'var(--neutral-bg)' },
+      cash, pipeline, pipeTotalD, showOutlier, outlierNote,
+      flagChip: { display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 8px', borderRadius: 999, background: 'var(--warning-bg)', color: 'var(--warning)', fontSize: 10.5, fontWeight: 600, whiteSpace: 'nowrap' },
+      won, forecastD, forecastNote,
+      winRate: wl.rate, closedNote: wl.note, earlyLoss, lateLoss, onFunnel: this.go('PipelineFunnel.dc.html'),
+      agentLine, goAgent: this.go('AgentPerformance.dc.html'),
+      team, teamNote, teamRowStyle: { display: 'flex', alignItems: 'center', gap: 16, padding: '11px 10px', borderRadius: 12, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      teachItems,
+      goHome: this.go('MyDay.dc.html'), goLeads: this.go('Leads.dc.html'), goProjects: this.go('Project Flow.dc.html'),
+      goSettings: this.go('Settings.dc.html'), goQuickAdd: this.go('QuickAddLead.dc.html'),
+      navRow: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      navRowActive: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500, fontSize: 14, cursor: 'pointer' },
+      selWrap: { position: 'relative', display: 'inline-flex', alignItems: 'center' },
+      selEl: { appearance: 'none', WebkitAppearance: 'none', height: 40, padding: '0 38px 0 16px', border: 'none', outline: 'none', cursor: 'pointer', background: 'var(--surface)', borderRadius: 999, boxShadow: 'var(--e1)', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23A1A5AC' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' },
+      bloomSm: { position: 'absolute', top: -10, left: '50%', transform: 'translate(-50%,0)', width: 340, height: 340, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+      bloomLg: { position: 'absolute', top: 0, left: '50%', transform: 'translate(-50%,0)', width: 640, height: 640, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+    };
+  }
+}
+</script>
+</body>
+</html>

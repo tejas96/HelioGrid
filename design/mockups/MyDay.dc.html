@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-bloom { 0%,100%{ transform:translate(-50%,0) scale(1); opacity:.85 } 50%{ transform:translate(-50%,0) scale(1.08); opacity:1 } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-over { from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:translateY(0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  @media (prefers-reduced-motion: reduce){ .hg-bloom-layer,.hg-rise,.hg-over{ animation:none !important } }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:26px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · field app</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">My Day — the sales rep's home screen</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- header -->
+        <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:24px 22px 12px">
+          <div>
+            <div style="font-size:23px; font-weight:700; letter-spacing:-0.02em">My Day</div>
+            <div style="margin-top:2px; font-size:13px; color:var(--text-secondary)">Tuesday, 21 Jul · 9:04 am</div>
+          </div>
+          <div style="width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; box-shadow:var(--e1)">AR</div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:6px 16px 108px">
+
+          <!-- ---------- NORMAL ---------- -->
+          <sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--danger); margin:8px 2px 10px">Overdue · 2</div>
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ overdue }}" as="row" hint-placeholder-count="2">
+                <div style="{{ mCardDanger }}" onClick="{{ row.onOpen }}">
+                  <div style="display:flex; align-items:flex-start; gap:12px">
+                    <div style="{{ row.av44 }}">{{ row.initials }}</div>
+                    <div style="flex:1; min-width:0">
+                      <div style="display:flex; align-items:baseline; gap:7px"><span style="font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</span><span style="font-size:12.5px; color:var(--text-secondary)">{{ row.city }}</span></div>
+                      <div style="margin-top:2px; font-size:13px; color:var(--danger); font-weight:500">{{ row.taskLate }}</div>
+                      <div style="margin-top:4px; font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ row.size }} · {{ row.value }}</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px; display:flex; gap:8px">
+                    <button onClick="{{ row.onCall }}" style="{{ mCall }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Call</button>
+                    <button onClick="{{ row.onWhats }}" style="{{ mWhats }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"></path></svg>WhatsApp</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin:22px 2px 10px">Today · 5</div>
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <sc-for list="{{ today }}" as="row" hint-placeholder-count="5">
+                <div style="{{ mCard }}" onClick="{{ row.onOpen }}">
+                  <div style="display:flex; align-items:flex-start; gap:12px">
+                    <div style="{{ row.timeCircle }}">{{ row.time }}</div>
+                    <div style="flex:1; min-width:0">
+                      <div style="font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div>
+                      <div style="margin-top:2px; font-size:13px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.city }} · {{ row.task }}</div>
+                      <div style="margin-top:4px; font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ row.size }} · {{ row.value }}</div>
+                    </div>
+                    <div style="flex-shrink:0; display:flex; gap:8px">
+                      <button onClick="{{ row.onCall }}" style="{{ mIconBtn }}" aria-label="Call"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+                      <button onClick="{{ row.onWhats }}" style="{{ mIconBtn }}" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"></path></svg></button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- AGENT ACTIVITY — distinct automated container -->
+            <div style="{{ mAgentPanel }}">
+              <div style="display:flex; align-items:center; gap:9px">
+                <span style="{{ agentOrb }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span>
+                <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Voice agent · overnight</div><div style="font-size:12px; color:var(--text-secondary)">3 calls made automatically for you</div></div>
+              </div>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ agent }}" as="row" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:flex-start; gap:11px; cursor:pointer" onClick="{{ row.onOpen }}">
+                    <div style="{{ row.av34 }}">{{ row.initials }}</div>
+                    <div style="flex:1; min-width:0">
+                      <div style="display:flex; align-items:center; gap:8px"><span style="font-size:14px; font-weight:500">{{ row.name }}</span><span style="{{ row.chip }}">{{ row.outcome }}</span></div>
+                      <div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary); text-wrap:pretty">{{ row.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- UPCOMING — collapsed summary, expandable -->
+            <div style="margin-top:12px; background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:16px">
+              <button onClick="{{ toggleUpcoming }}" style="width:100%; display:flex; align-items:center; gap:10px; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; text-align:left">
+                <span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Upcoming this week</span>
+                <span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary)">13 tasks</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="{{ chevStyle }}"><path d="m6 9 6 6 6-6"></path></svg>
+              </button>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:11px"><span style="{{ upIcon }}">{{ u.glyph }}</span><span style="flex:1; font-size:14px">{{ u.label }}</span><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ u.n }}</span></div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:14px; padding-top:14px; display:flex; flex-direction:column; gap:10px">
+                  <sc-for list="{{ upcomingDetail }}" as="d" hint-placeholder-count="3">
+                    <div style="display:flex; align-items:baseline; gap:9px; font-size:13px"><span style="font-family:var(--font-mono); color:var(--text-tertiary); width:34px; flex-shrink:0">{{ d.day }}</span><span style="font-weight:500">{{ d.name }}</span><span style="color:var(--text-secondary); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ d.what }}</span></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <!-- ---------- EMPTY ---------- -->
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative; padding:64px 8px; text-align:center">
+              <div class="hg-bloom-layer" style="{{ bloomSm }}"></div>
+              <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center">
+                <div style="width:64px; height:64px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></div>
+                <div style="margin-top:20px; font-size:19px; font-weight:700; letter-spacing:-0.02em">Nothing assigned yet</div>
+                <p style="margin:10px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:280px; text-wrap:pretty">Your leads will land here — overdue first, then today's calls and site visits. Your voice agent's overnight calls show up too.</p>
+                <div style="margin-top:16px; font-size:13px; color:var(--text-tertiary)">Anil Kulkarni (your manager) assigns leads.</div>
+                <div style="margin-top:24px; width:100%; max-width:260px; display:flex; flex-direction:column; gap:10px">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" hint-size="100%,48px" style="width:100%">Add a lead</x-import>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ---------- ALL DONE ---------- -->
+          <sc-if value="{{ isAllDone }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative; padding:48px 8px 24px; text-align:center">
+              <div class="hg-bloom-layer" style="{{ bloomSm }}"></div>
+              <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center">
+                <div style="width:66px; height:66px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; box-shadow:var(--e3)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+                <div style="margin-top:20px; font-size:21px; font-weight:700; letter-spacing:-0.02em">You're all caught up</div>
+                <p style="margin:10px 0 0; font-size:14px; line-height:1.5; color:var(--text-secondary); max-width:280px; text-wrap:pretty">Every lead handled today — 2 overdue cleared and 5 tasks done. Nothing else needs you right now.</p>
+              </div>
+            </div>
+            <div style="{{ mAgentPanel }}">
+              <div style="display:flex; align-items:center; gap:9px">
+                <span style="{{ agentOrb }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span>
+                <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Voice agent · overnight</div><div style="font-size:12px; color:var(--text-secondary)">3 calls made automatically for you</div></div>
+              </div>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ agent }}" as="row" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:flex-start; gap:11px; cursor:pointer" onClick="{{ row.onOpen }}">
+                    <div style="{{ row.av34 }}">{{ row.initials }}</div>
+                    <div style="flex:1; min-width:0">
+                      <div style="display:flex; align-items:center; gap:8px"><span style="font-size:14px; font-weight:500">{{ row.name }}</span><span style="{{ row.chip }}">{{ row.outcome }}</span></div>
+                      <div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary)">{{ row.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="margin-top:12px; background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:16px">
+              <div style="display:flex; align-items:center; gap:10px"><span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Upcoming this week</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary)">13 tasks</span></div>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+                  <div style="display:flex; align-items:center; gap:11px"><span style="{{ upIcon }}">{{ u.glyph }}</span><span style="flex:1; font-size:14px">{{ u.label }}</span><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ u.n }}</span></div>
+                </sc-for>
+              </div>
+              <div style="margin-top:14px; font-size:13px; color:var(--text-secondary); text-align:center; text-wrap:pretty">Want to get ahead? Pull a follow-up forward.</div>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <!-- ARC NAV -->
+        <div style="flex-shrink:0; position:absolute; left:0; right:0; bottom:0; height:96px; overflow:visible; z-index:5">
+          <svg width="100%" height="96" viewBox="0 0 375 96" preserveAspectRatio="none" style="display:block; position:absolute; left:0; bottom:0; filter:drop-shadow(0 -3px 12px rgba(10,10,11,0.08))"><path d="M0,34 Q187.5,-10 375,34 L375,96 L0,96 Z" fill="var(--surface)"></path></svg>
+          <div style="position:absolute; left:12%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--accent); z-index:2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent)" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10" fill="var(--surface)"></path></svg>
+            <span style="font-size:11px; font-weight:500">My Day</span>
+          </div>
+          <div onClick="{{ goLeads }}" style="position:absolute; left:31%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2; cursor:pointer">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span style="font-size:11px">Leads</span>
+          </div>
+          <div style="position:absolute; left:69%; top:28px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg>
+            <span style="font-size:11px">Projects</span>
+          </div>
+          <div style="position:absolute; left:88%; top:38px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); z-index:2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg>
+            <span style="font-size:11px">More</span>
+          </div>
+          <div onClick="{{ goQuickAdd }}" style="position:absolute; left:50%; top:-14px; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer">
+            <div style="width:54px; height:54px; border-radius:50%; background:var(--action-primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--e4)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+            <span style="font-size:11px; font-weight:500; color:var(--text-secondary)">Add lead</span>
+          </div>
+        </div>
+
+        <!-- MOBILE FULL-SCREEN DETAIL -->
+        <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:30; background:rgba(255,255,255,0.6); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)" onClick="{{ close }}"></div>
+          <div class="hg-over" style="position:absolute; inset:0; z-index:40; background:var(--canvas); border-radius:44px; overflow-y:auto; animation:hg-over 320ms var(--ease-spring) both">
+            <div style="padding:22px 22px 40px">
+              <button onClick="{{ close }}" style="display:flex; align-items:center; gap:6px; background:none; border:none; padding:8px 0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:14px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>My Day</button>
+              <div style="margin-top:14px; display:flex; align-items:center; gap:14px">
+                <div style="{{ selectedLead.av56 }}">{{ selectedLead.initials }}</div>
+                <div style="flex:1; min-width:0"><div style="font-size:20px; font-weight:700; letter-spacing:-0.02em">{{ selectedLead.name }}</div><div style="font-size:13px; color:var(--text-secondary)">{{ selectedLead.city }}</div></div>
+                <span style="{{ selectedLead.chip }}">{{ selectedLead.stage }}</span>
+              </div>
+              <div style="margin-top:22px; background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:16px 18px; display:flex; flex-direction:column; gap:14px">
+                <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Phone</span><span style="font-family:var(--font-mono); font-size:14px; font-variant-numeric:tabular-nums">{{ selectedLead.phone }}</span></div>
+                <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">System size</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums">{{ selectedLead.size }}</span></div>
+                <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Estimated value</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums">{{ selectedLead.value }}</span></div>
+                <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Next task</span><span style="font-size:13.5px; font-weight:500; text-align:right; max-width:60%">{{ selectedLead.taskFull }}</span></div>
+              </div>
+              <div style="margin-top:16px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Recent activity</div>
+              <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px">
+                <div style="font-size:13.5px; color:var(--text-secondary)"><span style="color:var(--text-primary); font-weight:500">Proposal sent</span> · 3 days ago</div>
+                <div style="font-size:13.5px; color:var(--text-secondary)"><span style="color:var(--text-primary); font-weight:500">Site visit done</span> · 6 days ago</div>
+              </div>
+              <div style="margin-top:24px; display:flex; gap:10px">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" hint-size="90px,48px">Call</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" hint-size="100%,48px" style="flex:1">Send on WhatsApp</x-import>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- COLLAPSIBLE RAIL -->
+        <div style="{{ railStyle }}">
+          <div style="{{ railTop }}">
+            <button onClick="{{ toggleRail }}" aria-label="Toggle menu" style="{{ logoBtn }}">
+              <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+              <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="font-size:19px; font-weight:700; letter-spacing:-0.02em; white-space:nowrap">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span></sc-if>
+            </button>
+            <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toggleRail }}" aria-label="Collapse menu" style="{{ toggleBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"></path><path d="m18 17-5-5 5-5"></path></svg></button></sc-if>
+          </div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRowActive }}" title="My Day"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">My Day</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Leads" onClick="{{ goLeads }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Leads</span><span style="{{ navCount }}">24</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Site visits"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Site visits</span><span style="{{ navCount }}">3</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Proposals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Proposals</span><span style="{{ navCount }}">2</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Projects"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Projects</span></sc-if></div>
+          </div>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:4px">
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Notifications" onClick="{{ goNotifications }}"><span style="position:relative; display:flex; flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; border-radius:50%; background:var(--danger); box-shadow:0 0 0 2px var(--surface)"></span></span><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Notifications</span><span style="{{ navCount }}">3</span></sc-if></div>
+            <div style="{{ navRow }}" style-hover="{{ navHover }}" title="Settings" onClick="{{ goSettings }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><span style="flex:1; white-space:nowrap">Settings</span></sc-if></div>
+            <div style="{{ profileRow }}">
+              <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0">AR</div>
+              <sc-if value="{{ railOpen }}" hint-placeholder-val="{{ false }}"><div style="flex:1; min-width:0; white-space:nowrap"><div style="font-size:13.5px; font-weight:500">Anita Rao</div><div style="font-size:12px; color:var(--text-secondary)">Sales rep</div></div></sc-if>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; height:68px; display:flex; align-items:center; gap:16px; padding:0 30px">
+            <div onClick="{{ goSearch }}" style="display:flex; align-items:center; gap:10px; width:420px; height:42px; padding:0 16px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); cursor:pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <span style="font-size:14px; color:var(--text-tertiary)">Search leads, customers, sites</span>
+            </div>
+            <div style="flex:1"></div>
+            <span style="font-size:13px; color:var(--text-secondary)">Tuesday, 21 Jul</span>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" hint-size="120px,40px">Add lead</x-import>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex; gap:20px; padding:8px 30px 28px">
+
+            <!-- NORMAL: LEFT LIST + RIGHT PANEL -->
+            <sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1.7; min-width:0; display:flex; flex-direction:column; gap:16px; overflow-y:auto">
+                <div style="position:relative; overflow:hidden; background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:20px 22px">
+                  <div style="position:absolute; right:-60px; top:-70px; width:240px; height:240px; background:var(--glow-brand); pointer-events:none"></div>
+                  <div style="position:relative; z-index:1">
+                    <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em">Good morning, Anita</div>
+                    <div style="margin-top:5px; font-size:14px; color:var(--text-secondary)"><span style="color:var(--danger); font-weight:500">2 overdue</span> · <span style="color:var(--text-primary); font-weight:500">5 to do today</span> · your voice agent made 3 calls overnight</div>
+                  </div>
+                </div>
+
+                <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:18px 16px 16px">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--danger); padding:0 8px">Overdue · 2</div>
+                  <div style="margin-top:10px; display:flex; flex-direction:column; gap:2px">
+                    <sc-for list="{{ overdue }}" as="row" hint-placeholder-count="2">
+                      <div style="{{ row.rowStyle }}" style-hover="{{ rowHover }}" onClick="{{ row.onOpen }}">
+                        <div style="{{ row.av36 }}">{{ row.initials }}</div>
+                        <div style="width:150px; flex-shrink:0; min-width:0"><div style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ row.city }}</div></div>
+                        <div style="flex:1; min-width:0; font-size:13px; color:var(--danger); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.taskLate }}</div>
+                        <span style="width:78px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ row.size }}</span>
+                        <span style="width:110px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ row.value }}</span>
+                        <div style="flex-shrink:0; display:flex; gap:6px" onClick="{{ row.onCall }}">
+                          <button onClick="{{ row.onCall }}" style="{{ dIconBtn }}" aria-label="Call"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+                          <button onClick="{{ row.onWhats }}" style="{{ dIconBtn }}" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"></path></svg></button>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div style="background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:18px 16px 16px">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); padding:0 8px">Today · 5</div>
+                  <div style="margin-top:10px; display:flex; flex-direction:column; gap:2px">
+                    <sc-for list="{{ today }}" as="row" hint-placeholder-count="5">
+                      <div style="{{ row.rowStyle }}" style-hover="{{ rowHover }}" onClick="{{ row.onOpen }}">
+                        <span style="width:46px; flex-shrink:0; font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent); font-variant-numeric:tabular-nums">{{ row.time }}</span>
+                        <div style="{{ row.av36 }}">{{ row.initials }}</div>
+                        <div style="width:150px; flex-shrink:0; min-width:0"><div style="font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.name }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ row.city }}</div></div>
+                        <div style="flex:1; min-width:0; font-size:13px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ row.task }}</div>
+                        <span style="width:78px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13px; color:var(--text-secondary); font-variant-numeric:tabular-nums">{{ row.size }}</span>
+                        <span style="width:110px; flex-shrink:0; text-align:right; font-family:var(--font-mono); font-size:13.5px; font-weight:500; font-variant-numeric:tabular-nums">{{ row.value }}</span>
+                        <div style="flex-shrink:0; display:flex; gap:6px">
+                          <button onClick="{{ row.onCall }}" style="{{ dIconBtn }}" aria-label="Call"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+                          <button onClick="{{ row.onWhats }}" style="{{ dIconBtn }}" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"></path></svg></button>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT COLUMN -->
+              <div style="width:380px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; overflow-y:auto">
+                <sc-if value="{{ noSelected }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ dAgentPanel }}">
+                    <div style="display:flex; align-items:center; gap:9px">
+                      <span style="{{ agentOrb }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span>
+                      <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Voice agent · overnight</div><div style="font-size:12px; color:var(--text-secondary)">3 calls made automatically for you</div></div>
+                    </div>
+                    <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                      <sc-for list="{{ agent }}" as="row" hint-placeholder-count="3">
+                        <div style="display:flex; align-items:flex-start; gap:11px; cursor:pointer" onClick="{{ row.onOpen }}">
+                          <div style="{{ row.av34 }}">{{ row.initials }}</div>
+                          <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:14px; font-weight:500">{{ row.name }}</span><span style="{{ row.chip }}">{{ row.outcome }}</span></div><div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary)">{{ row.note }}</div></div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:18px 18px 16px">
+                    <div style="display:flex; align-items:center; gap:10px"><span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Upcoming this week</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary)">13 tasks</span></div>
+                    <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                      <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+                        <div style="display:flex; align-items:center; gap:11px"><span style="{{ upIcon }}">{{ u.glyph }}</span><span style="flex:1; font-size:14px">{{ u.label }}</span><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ u.n }}</span></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ false }}">
+                  <div class="hg-rise" style="background:var(--surface); border-radius:16px; box-shadow:var(--e2); padding:20px; display:flex; flex-direction:column; height:100%; animation:hg-rise 200ms var(--ease-enter) both">
+                    <div style="display:flex; align-items:center; gap:13px">
+                      <div style="{{ selectedLead.av48 }}">{{ selectedLead.initials }}</div>
+                      <div style="flex:1; min-width:0"><div style="font-size:17px; font-weight:700; letter-spacing:-0.01em">{{ selectedLead.name }}</div><div style="font-size:13px; color:var(--text-secondary)">{{ selectedLead.city }}</div></div>
+                      <button onClick="{{ close }}" aria-label="Close" style="background:none; border:none; padding:4px; cursor:pointer; color:var(--text-tertiary); display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+                    </div>
+                    <div style="margin-top:12px"><span style="{{ selectedLead.chip }}">{{ selectedLead.stage }}</span></div>
+                    <div style="margin-top:20px; display:flex; flex-direction:column; gap:14px">
+                      <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Phone</span><span style="font-family:var(--font-mono); font-size:14px; font-variant-numeric:tabular-nums">{{ selectedLead.phone }}</span></div>
+                      <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">System size</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums">{{ selectedLead.size }}</span></div>
+                      <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; color:var(--text-secondary)">Estimated value</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:500; font-variant-numeric:tabular-nums">{{ selectedLead.value }}</span></div>
+                      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px"><span style="font-size:13px; color:var(--text-secondary); flex-shrink:0">Next task</span><span style="font-size:13.5px; font-weight:500; text-align:right">{{ selectedLead.taskFull }}</span></div>
+                    </div>
+                    <div style="margin-top:20px; padding-top:18px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Recent activity</div>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px">
+                      <div style="font-size:13.5px; color:var(--text-secondary)"><span style="color:var(--text-primary); font-weight:500">Proposal sent</span> · 3 days ago</div>
+                      <div style="font-size:13.5px; color:var(--text-secondary)"><span style="color:var(--text-primary); font-weight:500">Site visit done</span> · 6 days ago</div>
+                    </div>
+                    <div style="margin-top:auto; padding-top:20px; display:flex; gap:10px">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="md" hint-size="80px,40px">Call</x-import>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" full-width="{{ true }}" hint-size="100%,40px" style="flex:1">Send on WhatsApp</x-import>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <!-- EMPTY -->
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1; position:relative; display:flex; align-items:center; justify-content:center">
+                <div class="hg-bloom-layer" style="{{ bloomLg }}"></div>
+                <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; max-width:420px">
+                  <div style="width:76px; height:76px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center; color:var(--accent)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></div>
+                  <div style="margin-top:24px; font-size:24px; font-weight:700; letter-spacing:-0.02em">Nothing assigned yet</div>
+                  <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">Your leads will land here — overdue first, then today's calls and site visits. Your voice agent's overnight calls show up too.</p>
+                  <div style="margin-top:14px; font-size:13.5px; color:var(--text-tertiary)">Anil Kulkarni (your manager) assigns leads.</div>
+                  <div style="margin-top:26px; display:flex; gap:12px">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="130px,48px">Add a lead</x-import>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- ALL DONE -->
+            <sc-if value="{{ isAllDone }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1.7; min-width:0; position:relative; display:flex; align-items:center; justify-content:center">
+                <div class="hg-bloom-layer" style="{{ bloomLg }}"></div>
+                <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; max-width:440px">
+                  <div style="width:82px; height:82px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; box-shadow:var(--e3)"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+                  <div style="margin-top:24px; font-size:27px; font-weight:700; letter-spacing:-0.025em">You're all caught up</div>
+                  <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">Every lead handled today — 2 overdue cleared and 5 tasks done. Nothing else needs you right now.</p>
+                  <div style="margin-top:26px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="lg" hint-size="150px,48px">See this week</x-import></div>
+                </div>
+              </div>
+              <div style="width:380px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; overflow-y:auto">
+                <div style="{{ dAgentPanel }}">
+                  <div style="display:flex; align-items:center; gap:9px">
+                    <span style="{{ agentOrb }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M12 4v4"></path><circle cx="12" cy="3" r="1"></circle><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg></span>
+                    <div style="flex:1; min-width:0"><div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--iris-violet)">Voice agent · overnight</div><div style="font-size:12px; color:var(--text-secondary)">3 calls made automatically for you</div></div>
+                  </div>
+                  <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                    <sc-for list="{{ agent }}" as="row" hint-placeholder-count="3">
+                      <div style="display:flex; align-items:flex-start; gap:11px; cursor:pointer" onClick="{{ row.onOpen }}">
+                        <div style="{{ row.av34 }}">{{ row.initials }}</div>
+                        <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:14px; font-weight:500">{{ row.name }}</span><span style="{{ row.chip }}">{{ row.outcome }}</span></div><div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary)">{{ row.note }}</div></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:18px 18px 16px">
+                  <div style="display:flex; align-items:center; gap:10px"><span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Upcoming this week</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary)">13 tasks</span></div>
+                  <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                    <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="3">
+                      <div style="display:flex; align-items:center; gap:11px"><span style="{{ upIcon }}">{{ u.glyph }}</span><span style="flex:1; font-size:14px">{{ u.label }}</span><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; font-variant-numeric:tabular-nums">{{ u.n }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1040},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;empty&quot;,&quot;allDone&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'empty'|'allDone'&quot;,&quot;section&quot;:&quot;State&quot;},&quot;expandUpcoming&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: props.view || 'normal',
+      selected: null,
+      expanded: !!props.expandUpcoming,
+      railOpen: false,
+    };
+  }
+
+  toggleRail = () => this.setState(s => ({ railOpen: !s.railOpen }));
+  goLeads = () => { window.location.href = 'Leads.dc.html'; };
+  goQuickAdd = () => { window.location.href = 'QuickAddLead.dc.html'; };
+  goSettings = () => { window.location.href = 'Settings.dc.html'; };
+
+  railVals() {
+    const open = this.state.railOpen;
+    const navBase = { display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'var(--text-secondary)', transition: 'background 140ms var(--ease-standard)' };
+    const navRow = open
+      ? { ...navBase, gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14 }
+      : { ...navBase, justifyContent: 'center', width: 44, height: 44, borderRadius: 13, alignSelf: 'center' };
+    return {
+      railOpen: open, toggleRail: this.toggleRail,
+      railStyle: { flexShrink: 0, width: open ? 220 : 72, background: 'var(--surface)', boxShadow: 'var(--e1)', display: 'flex', flexDirection: 'column', padding: open ? '22px 16px' : '22px 14px', overflow: 'hidden', transition: 'width 240ms var(--ease-standard)', zIndex: 2 },
+      railTop: { display: 'flex', alignItems: 'center', justifyContent: open ? 'space-between' : 'center', gap: 8 },
+      logoBtn: { display: 'flex', alignItems: 'center', gap: 10, padding: 0, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', minWidth: 0 },
+      toggleBtn: { flexShrink: 0, width: 30, height: 30, borderRadius: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      navRow,
+      navRowActive: { ...navRow, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: open ? 500 : 400 },
+      navCount: { marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-tertiary)' },
+      profileRow: open ? { display: 'flex', alignItems: 'center', gap: 11, marginTop: 12, padding: 8, borderRadius: 12 } : { display: 'flex', justifyContent: 'center', marginTop: 12, padding: '4px 0' },
+    };
+  }
+
+  setView = (v) => this.setState({ view: v, selected: null });
+  open = (id) => this.setState({ selected: id });
+  close = () => this.setState({ selected: null });
+  stop = (e) => { e.stopPropagation(); };
+  toggleUpcoming = () => this.setState(s => ({ expanded: !s.expanded }));
+
+  tone(t) {
+    const m = {
+      danger: ['var(--danger-bg)', 'var(--danger)'],
+      accent: ['var(--accent-subtle)', 'var(--accent)'],
+      success: ['var(--success-bg)', 'var(--success)'],
+      info: ['var(--info-bg)', 'var(--info)'],
+      neutral: ['var(--neutral-bg)', 'var(--text-secondary)'],
+    };
+    return m[t] || m.neutral;
+  }
+  circle(t, s, mono) {
+    const [bg, fg] = this.tone(t);
+    return {
+      flexShrink: 0, width: s, height: s, borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontWeight: 700, fontSize: mono ? 13 : (s >= 48 ? 15 : s >= 44 ? 14 : 12.5),
+      background: bg, color: fg,
+      fontFamily: mono ? 'var(--font-mono)' : 'var(--font-sans)',
+      fontVariantNumeric: mono ? 'tabular-nums' : 'normal',
+    };
+  }
+  chip(t) {
+    const [bg, fg] = this.tone(t);
+    return {
+      flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 24,
+      padding: '0 11px', borderRadius: 999, fontSize: 12, fontWeight: 500,
+      whiteSpace: 'nowrap', background: bg, color: fg,
+    };
+  }
+
+  renderVals() {
+    const { view, selected, expanded } = this.state;
+    const stop = this.stop;
+
+    const overdueData = [
+      { id: 'priya', initials: 'PS', name: 'Priya Sharma', city: 'Nashik', task: 'Follow-up', late: '3 days late', size: '8.2 kWp', value: '\u20B94,52,000', phone: '+91 98220 11234', stage: 'Proposal sent' },
+      { id: 'anand', initials: 'AT', name: 'Anand Traders', city: 'Pune', task: 'Proposal not opened', late: '5 days', size: '180 kWp', value: '\u20B992,00,000', phone: '+91 98230 55677', stage: 'Proposal sent' },
+    ];
+    const todayData = [
+      { id: 'suresh', time: '10:00', initials: 'SK', name: 'Suresh Kulkarni', city: 'Kothrud, Pune', task: 'Site visit', size: '6.5 kWp', value: '\u20B93,40,000', phone: '+91 90280 44521', stage: 'Survey scheduled' },
+      { id: 'rohit', time: '14:00', initials: 'RM', name: 'Rohit Mehta', city: 'Aundh', task: 'Call back \u00B7 asked about subsidy', size: '9.5 kWp', value: '\u20B95,60,000', phone: '+91 91300 77820', stage: 'Qualified' },
+      { id: 'vikram', time: '16:30', initials: 'VD', name: 'Vikram Deshpande', city: 'Baner', task: 'Follow-up', size: '5 kWp', value: '\u20B92,90,000', phone: '+91 99700 12045', stage: 'New lead' },
+      { id: 'kavita', time: '17:00', initials: 'KJ', name: 'Kavita Joshi', city: 'Wakad', task: 'Send proposal', size: '7.5 kWp', value: '\u20B94,10,000', phone: '+91 90110 33280', stage: 'Design ready' },
+      { id: 'imran', time: '18:00', initials: 'IS', name: 'Imran Shaikh', city: 'Camp', task: 'Call', size: '14 kWp', value: '\u20B97,80,000', phone: '+91 98900 22119', stage: 'Qualified' },
+    ];
+    const agentData = [
+      { id: 'rakesh', initials: 'RP', name: 'Rakesh Patil', city: 'Hadapsar', outcome: 'Interested', note: 'Wants a callback Thursday 4pm', size: '9 kWp', value: '\u20B95,10,000', phone: '+91 98110 44520', stage: 'Qualified', task: 'Callback Thu 4pm', t: 'success' },
+      { id: 'sunita', initials: 'SD', name: 'Sunita Deshmukh', city: 'Kharadi', outcome: 'No answer', note: 'Will retry tomorrow', size: '6 kWp', value: '\u20B93,20,000', phone: '+91 90020 11890', stage: 'New lead', task: 'Agent will retry tomorrow', t: 'neutral' },
+      { id: 'vinod', initials: 'VK', name: 'Vinod Kumar', city: 'Viman Nagar', outcome: 'Asked about warranty', note: 'Answered \u00B7 still deciding', size: '11 kWp', value: '\u20B96,40,000', phone: '+91 99870 55120', stage: 'Design ready', task: 'Follow up \u2014 still deciding', t: 'info' },
+    ];
+
+    const mk = (r, tn) => ({
+      ...r, tone: tn,
+      taskLate: r.late ? (r.task + ' \u00B7 ' + r.late) : r.task,
+      taskFull: (r.time ? r.time + ' \u00B7 ' : '') + r.task + (r.late ? ' \u00B7 ' + r.late : ''),
+      selected: selected === r.id,
+      onOpen: () => this.open(r.id), onCall: stop, onWhats: stop,
+      av34: this.circle(tn, 34), av36: this.circle(tn, 36),
+      av44: this.circle(tn, 44), av48: this.circle(tn, 48), av56: this.circle(tn, 56),
+      timeCircle: this.circle('accent', 44, true),
+      chip: this.chip(tn === 'danger' ? 'danger' : 'accent'),
+      rowStyle: {
+        display: 'flex', alignItems: 'center', gap: 14, padding: '10px 8px',
+        borderRadius: 12, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)',
+        background: selected === r.id ? 'var(--accent-subtle)' : 'transparent',
+      },
+    });
+
+    const overdue = overdueData.map(r => mk(r, 'danger'));
+    const today = todayData.map(r => mk(r, 'accent'));
+    const agent = agentData.map(r => ({
+      ...r, onOpen: () => this.open(r.id),
+      av34: this.circle(r.t, 34), chip: this.chip(r.t),
+    }));
+
+    const byId = {};
+    [...overdueData, ...todayData, ...agentData].forEach(r => { byId[r.id] = r; });
+    let selectedLead = null;
+    if (selected && byId[selected]) {
+      const r = byId[selected];
+      const tn = r.late ? 'danger' : (r.t || 'accent');
+      selectedLead = {
+        ...r,
+        av48: this.circle(tn, 48), av56: this.circle(tn, 56),
+        chip: this.chip(tn === 'danger' ? 'danger' : 'accent'),
+        taskFull: (r.time ? r.time + ' \u00B7 ' : '') + (r.task || '') + (r.late ? ' \u00B7 ' + r.late : ''),
+      };
+    }
+
+    const upIcon = {
+      flexShrink: 0, width: 30, height: 30, borderRadius: '50%',
+      background: 'var(--accent-subtle)', color: 'var(--accent)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
+    };
+    const upcoming = [
+      { label: 'Follow-ups', n: 8, glyph: '\u21BA' },
+      { label: 'Site visits', n: 3, glyph: '\u25CE' },
+      { label: 'Proposals to send', n: 2, glyph: '\u2709' },
+    ];
+    const upcomingDetail = [
+      { day: 'Wed', name: 'Deepak Rao', what: 'Follow-up \u00B7 Hinjewadi \u00B7 8 kWp' },
+      { day: 'Thu', name: 'Meena Iyer', what: 'Site visit \u00B7 Baner \u00B7 5.5 kWp' },
+      { day: 'Fri', name: 'Farhan Qureshi', what: 'Send proposal \u00B7 Kondhwa \u00B7 12 kWp' },
+      { day: 'Sat', name: 'Lata Gaikwad', what: 'Follow-up \u00B7 Warje \u00B7 4 kWp' },
+    ];
+
+    const segBase = {
+      border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13,
+      fontWeight: 500, height: 34, padding: '0 16px', borderRadius: 999,
+      transition: 'all 160ms var(--ease-standard)',
+    };
+    const views = [
+      { key: 'normal', label: 'Normal day' },
+      { key: 'empty', label: 'New rep \u2014 empty' },
+      { key: 'allDone', label: 'All done' },
+    ].map(v => ({
+      label: v.label,
+      onClick: () => this.setView(v.key),
+      style: view === v.key
+        ? { ...segBase, background: 'var(--action-primary)', color: '#fff' }
+        : { ...segBase, background: 'transparent', color: 'var(--text-secondary)' },
+    }));
+
+    const agentOrb = {
+      flexShrink: 0, width: 26, height: 26, borderRadius: '50%',
+      background: 'var(--gradient-brand)', display: 'flex',
+      alignItems: 'center', justifyContent: 'center',
+    };
+    const agentPanelBase = {
+      marginTop: 14,
+      background: 'linear-gradient(180deg, #F4F1FF 0%, #FCFBFF 78%)',
+      borderRadius: 18,
+      boxShadow: '0 1px 2px rgba(10,10,11,0.04), 0 0 0 1px rgba(123,92,255,0.10)',
+      padding: 16,
+    };
+
+    return {
+      ...this.railVals(),
+      views,
+      isNormal: view === 'normal', isEmpty: view === 'empty', isAllDone: view === 'allDone',
+      overdue, today, agent, upcoming, upcomingDetail, upIcon,
+      expanded, toggleUpcoming: this.toggleUpcoming,
+      chevStyle: { transition: 'transform 200ms var(--ease-standard)', transform: expanded ? 'rotate(180deg)' : 'none' },
+      hasSelected: !!selectedLead, noSelected: !selectedLead, selectedLead: selectedLead || { chip: {}, av48: {}, av56: {} },
+      close: this.close, goLeads: this.goLeads, goQuickAdd: this.goQuickAdd, goSettings: this.goSettings,
+      goNotifications: () => { window.location.href = 'NotificationsCentre.dc.html'; },
+      goSearch: () => { window.location.href = 'GlobalSearch.dc.html'; },
+      rowHover: { background: 'var(--neutral-bg)' },
+      agentOrb,
+      mAgentPanel: agentPanelBase,
+      dAgentPanel: { ...agentPanelBase, marginTop: 0, padding: '18px 18px 16px' },
+      mCard: { background: 'var(--surface)', borderRadius: 16, boxShadow: 'var(--e1)', padding: 14, cursor: 'pointer' },
+      mCardDanger: { background: 'var(--surface)', borderRadius: 16, boxShadow: '0 1px 2px rgba(10,10,11,0.04), 0 0 0 1px rgba(229,72,77,0.12)', padding: 14, cursor: 'pointer' },
+      mIconBtn: { flexShrink: 0, width: 44, height: 44, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      mCall: { flex: 1, height: 40, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      mWhats: { flex: 1, height: 40, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500 },
+      dIconBtn: { width: 32, height: 32, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      navItem: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      navHover: { background: 'var(--neutral-bg)' },
+      bloomSm: { position: 'absolute', top: -40, left: '50%', transform: 'translate(-50%,0)', width: 380, height: 380, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+      bloomLg: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 720, height: 720, background: 'var(--glow-brand)', pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite' },
+    };
+  }
+}
+</script>
+</body>
+</html>

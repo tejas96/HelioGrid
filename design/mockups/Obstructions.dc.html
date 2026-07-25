@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-spin { to{ transform:rotate(360deg) } }
+  @keyframes hg-pulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  .hg-sheet{ animation:hg-rise 320ms cubic-bezier(0.34,1.56,0.64,1) }
+  .hg-cv{ touch-action:none; cursor:grab }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important } }
+</style>
+</helmet>
+
+<div style="min-width:100%; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary); padding:28px 32px 60px">
+
+  <div style="max-width:1100px; margin:0 0 22px">
+    <h1 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.03em">Step 3 · Obstructions</h1>
+    <p style="margin:6px 0 0; font-size:13.5px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">The designer marks every rooftop object that shades or blocks panels — tanks, trees, chimneys — then sizes each one and sets how it affects panel placement. Roofs from Step 2 are a read-only backdrop.</p>
+  </div>
+
+  <div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; margin-bottom:22px">
+    <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">State</span>
+    <div style="display:flex; flex-wrap:wrap; gap:8px"><sc-for list="{{ scenarios }}" as="s" hint-placeholder-count="9"><button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button></sc-for></div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:52px; flex-wrap:wrap">
+
+    <!-- ============ MOBILE ============ -->
+    <div style="flex-shrink:0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg><span style="font-size:12.5px; font-weight:500">Mobile · 375 · {{ stateLabel }}</span></div>
+      <div style="position:relative; width:375px; height:812px; background:var(--surface); border-radius:32px; box-shadow:var(--e4); overflow:hidden; display:flex; flex-direction:column">
+
+        <!-- header -->
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e2); z-index:5">
+          <div style="height:54px; display:flex; align-items:center; gap:6px; padding:0 10px">
+            <button onClick="{{ prevStep }}" style="width:38px; height:38px; border-radius:11px; border:none; background:none; cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; min-width:0"><div style="font-size:15px; font-weight:700; letter-spacing:-0.02em">Obstructions</div><div style="font-size:11px; color:var(--text-secondary)">{{ leadName }} · {{ countLabel }}</div></div>
+            <span style="{{ health.chip }}"><span style="{{ health.dot }}"></span>{{ health.text }}</span>
+          </div>
+          <div style="height:44px; display:flex; align-items:center; gap:6px; padding:0 10px 8px">
+            <button onClick="{{ prevStep }}" style="width:38px; height:38px; border-radius:11px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <div style="flex:1; height:38px; border-radius:11px; background:var(--neutral-bg); display:flex; align-items:center; justify-content:center; gap:8px"><span style="font-family:var(--font-mono); font-size:13px; font-weight:500; color:var(--accent)">3 / 10</span><span style="font-size:13px; font-weight:500">Obstructions</span></div>
+            <button onClick="{{ next }}" style="width:38px; height:38px; border-radius:11px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+
+        <!-- canvas -->
+        <div style="flex:1; position:relative; overflow:hidden; background:#3f4738">
+          <div id="cvM" class="hg-cv" style="position:absolute; inset:0">
+            <svg viewBox="0 0 375 560" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block">
+              <defs><pattern id="og-m" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"></path></pattern><linearGradient id="osat-m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a5340"></stop><stop offset="0.5" stop-color="#6b6350"></stop><stop offset="1" stop-color="#524a3e"></stop></linearGradient></defs>
+              <rect x="-300" y="-300" width="1000" height="1200" fill="url(#osat-m)"></rect>
+              <rect x="-300" y="-300" width="1000" height="1200" fill="url(#og-m)"></rect>
+              <g id="gM">
+                <sc-for list="{{ cm.roofs }}" as="r" hint-placeholder-count="2"><g><polygon points="{{ r.points }}" fill="rgba(90,75,255,0.12)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"></polygon><polygon points="{{ r.inset }}" fill="none" stroke="var(--danger)" stroke-width="1.4" stroke-dasharray="5 4" stroke-linejoin="round" opacity="0.8"></polygon></g></sc-for>
+                <sc-if value="{{ showObs }}" hint-placeholder-val="{{ true }}">
+                  <sc-for list="{{ cm.rings }}" as="k" hint-placeholder-count="3"><g><rect x="{{ k.x }}" y="{{ k.y }}" width="{{ k.w }}" height="{{ k.h }}" rx="{{ k.r }}" fill="none" stroke="var(--danger)" stroke-width="1.4" stroke-dasharray="5 4"></rect></g></sc-for>
+                  <sc-for list="{{ cm.obs }}" as="o" hint-placeholder-count="3"><g><sc-if value="{{ o.isRect }}" hint-placeholder-val="{{ true }}"><rect x="{{ o.x }}" y="{{ o.y }}" width="{{ o.w }}" height="{{ o.h }}" rx="2" fill="{{ o.fill }}" stroke="{{ o.stroke }}" stroke-width="{{ o.sw }}" transform="rotate({{ o.rot }} {{ o.cx }} {{ o.cy }})"></rect></sc-if><sc-if value="{{ o.isCircle }}" hint-placeholder-val="{{ false }}"><circle cx="{{ o.cx }}" cy="{{ o.cy }}" r="{{ o.rad }}" fill="{{ o.fill }}" stroke="{{ o.stroke }}" stroke-width="{{ o.sw }}"></circle></sc-if></g></sc-for>
+                </sc-if>
+                <sc-if value="{{ cm.measure }}" hint-placeholder-val="{{ false }}"><g><line x1="{{ cm.measure.x1 }}" y1="{{ cm.measure.y1 }}" x2="{{ cm.measure.x2 }}" y2="{{ cm.measure.y2 }}" stroke="var(--warning)" stroke-width="2"></line><circle cx="{{ cm.measure.x1 }}" cy="{{ cm.measure.y1 }}" r="4" fill="var(--warning)"></circle><circle cx="{{ cm.measure.x2 }}" cy="{{ cm.measure.y2 }}" r="4" fill="var(--warning)"></circle></g></sc-if>
+                <sc-for list="{{ cm.handles }}" as="h" hint-placeholder-count="0"><g><sc-if value="{{ h.stem }}" hint-placeholder-val="{{ false }}"><line x1="{{ h.sx }}" y1="{{ h.sy }}" x2="{{ h.cx }}" y2="{{ h.cy }}" stroke="var(--accent)" stroke-width="1.5"></line></sc-if><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="{{ h.r }}" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"></circle></g></sc-for>
+              </g>
+              <!-- ID chips (screen-constant, drawn last, not zoom-scaled group) -->
+              <sc-if value="{{ showObs }}" hint-placeholder-val="{{ true }}"><sc-for list="{{ cm.chips }}" as="c" hint-placeholder-count="3"><g><rect x="{{ c.x }}" y="{{ c.y }}" width="{{ c.w }}" height="16" rx="5" fill="var(--surface)" stroke="{{ c.border }}" stroke-width="1"></rect><text x="{{ c.tx }}" y="{{ c.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" font-weight="700" fill="var(--text-primary)">{{ c.id }}</text></g></sc-for></sc-if>
+            </svg>
+          </div>
+
+          <!-- top-left context chips -->
+          <div style="position:absolute; top:10px; left:10px; display:flex; gap:6px; flex-wrap:wrap; max-width:230px">
+            <sc-if value="{{ hidden }}" hint-placeholder-val="{{ false }}"><span style="{{ infoChip }}">Obstructions hidden</span></sc-if>
+            <sc-if value="{{ measurements }}" hint-placeholder-val="{{ false }}"><span style="{{ infoChip }}">Measurements on</span></sc-if>
+          </div>
+
+          <!-- zoom + compass + scale (bottom-right) -->
+          <div style="position:absolute; right:10px; bottom:10px; z-index:3; display:flex; flex-direction:column; align-items:flex-end; gap:8px">
+            <div style="display:flex; flex-direction:column; gap:1px; border-radius:11px; overflow:hidden; box-shadow:var(--e2)"><button onClick="{{ zoomIn }}" style="{{ zBtn }}">+</button><button onClick="{{ zoomOut }}" style="{{ zBtn }}; border-top:1px solid var(--hairline)">−</button></div>
+            <div title="North" style="width:42px; height:42px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center"><svg width="30" height="30" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div>
+          </div>
+          <div style="position:absolute; left:10px; bottom:10px; display:flex; align-items:center; gap:6px"><div style="width:56px; height:4px; border-radius:2px; background:var(--surface); box-shadow:var(--e1); position:relative"><div style="position:absolute; left:0; top:-3px; width:1px; height:10px; background:var(--text-secondary)"></div><div style="position:absolute; right:0; top:-3px; width:1px; height:10px; background:var(--text-secondary)"></div></div><span style="font-family:var(--font-mono); font-size:10px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.6)">{{ scaleLabel }}</span></div>
+
+          <div style="position:absolute; left:10px; bottom:64px; z-index:4; display:flex; flex-direction:column; gap:8px"><sc-for list="{{ floatToolsM }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}"><span style="position:relative; display:flex; align-items:center; justify-content:center">{{ t.icon }}<sc-if value="{{ t.badge }}" hint-placeholder-val="{{ false }}"><span style="{{ addBadge }}">{{ count }}</span></sc-if></span></button></sc-for></div>
+
+          <!-- placement guidance -->
+          <sc-if value="{{ placing }}" hint-placeholder-val="{{ false }}"><div style="position:absolute; left:50%; top:16px; transform:translateX(-50%); z-index:4; display:flex; align-items:center; gap:9px; padding:9px 14px; border-radius:999px; background:var(--accent); box-shadow:var(--e4)"><span style="width:6px; height:6px; border-radius:50%; background:#fff; animation:hg-pulse 1.2s infinite"></span><span style="font-size:12.5px; font-weight:500; color:#fff">Tap to place {{ placeName }}</span><button onClick="{{ cancelPlace }}" style="margin-left:4px; border:none; background:rgba(255,255,255,0.2); color:#fff; border-radius:999px; height:22px; padding:0 9px; font-family:inherit; font-size:11px; font-weight:500; cursor:pointer">Cancel</button></div></sc-if>
+
+          <!-- empty prompt -->
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}"><div style="position:absolute; left:50%; top:42%; transform:translate(-50%,-50%); width:260px; text-align:center; padding:20px; border-radius:20px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); box-shadow:var(--e3)"><div style="width:54px; height:54px; margin:0 auto; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V8l6-4 6 4v13M9 12h.01M9 16h.01"></path></svg></div><div style="margin-top:12px; font-size:16px; font-weight:700; letter-spacing:-0.02em">No obstructions yet</div><p style="margin:6px 0 0; font-size:12.5px; line-height:1.5; color:var(--text-secondary)">Add anything on the roof that shades or blocks panels — the roofs below stay locked.</p></div></sc-if>
+        </div>
+
+        <!-- selected context action bar -->
+        <sc-if value="{{ isSelected }}" hint-placeholder-val="{{ false }}">
+          <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e3); padding:10px 12px; z-index:4">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px"><span style="{{ selBadge }}">{{ selId }}</span><span style="font-size:13px; font-weight:600">{{ selTypeName }}</span><sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}"><span style="{{ lockChip }}">Locked</span></sc-if><div style="flex:1"></div>
+              <div style="display:flex; align-items:center; gap:4px"><span style="font-size:11px; color:var(--text-tertiary)">Nudge</span><button onClick="{{ noop }}" style="{{ nudgeBtn }}">·</button><button onClick="{{ noop }}" style="{{ nudgeBtn }}">··</button></div>
+            </div>
+            <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:2px"><sc-for list="{{ contextActions }}" as="a" hint-placeholder-count="7"><button onClick="{{ a.onClick }}" title="{{ a.hint }}" style="{{ a.style }}"><span style="{{ a.icoStyle }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span><span style="font-size:10.5px; font-weight:500; white-space:nowrap">{{ a.label }}</span></button></sc-for></div>
+          </div>
+        </sc-if>
+
+        <!-- tools removed from bottom bar — now floating on canvas (see cluster) -->
+
+        <!-- mobile overlays -->
+        <sc-if value="{{ anySheet }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:30; background:rgba(246,247,249,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:0; right:0; bottom:0; z-index:31; max-height:84%; overflow:auto; background:var(--surface); border-radius:32px 32px 0 0; box-shadow:var(--e5); padding:8px 16px calc(20px + env(safe-area-inset-bottom))">
+            <div style="width:38px; height:4px; border-radius:999px; background:var(--canvas-sunken); margin:6px auto 14px"></div>
+
+            <sc-if value="{{ sheetPicker }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:17px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px">Add obstruction</div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">Pick a type — it drops at its default size, then you can adjust it.</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px"><sc-for list="{{ types }}" as="t" hint-placeholder-count="11"><button onClick="{{ t.onClick }}" style="{{ typeCard }}"><span style="position:relative; width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg><sc-if value="{{ t.beta }}" hint-placeholder-val="{{ false }}"><span style="{{ betaTag }}">BETA</span></sc-if></span><span style="flex:1; text-align:left"><span style="display:block; font-size:13px; font-weight:600">{{ t.name }}</span><span style="display:block; font-family:var(--font-mono); font-size:10.5px; color:var(--text-tertiary)">{{ t.code }} · {{ t.size }}</span></span></button></sc-for></div>
+            </sc-if>
+
+            <sc-if value="{{ sheetShape }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:17px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px">Shape · {{ selId }}</div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">Switching shape changes which size fields apply.</div>
+              <div style="display:flex; gap:10px"><button onClick="{{ setRect }}" style="{{ shapeRectStyle }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="1"></rect></svg>Rectangle<span style="font-size:11px; color:var(--text-tertiary)">Length × width</span></button><button onClick="{{ setCircle }}" style="{{ shapeCircStyle }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle></svg>Circle<span style="font-size:11px; color:var(--text-tertiary)">Diameter</span></button></div>
+            </sc-if>
+
+            <sc-if value="{{ sheetSize }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px"><div style="font-size:17px; font-weight:700; letter-spacing:-0.02em">Size &amp; rotation · {{ selId }}</div><div style="display:flex; background:var(--neutral-bg); border-radius:999px; padding:3px"><button onClick="{{ setUnitM }}" style="{{ unitM }}">m</button><button onClick="{{ setUnitFt }}" style="{{ unitFt }}">ft</button></div></div>
+              <sc-if value="{{ isRect }}" hint-placeholder-val="{{ true }}"><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px"><label><span style="{{ fLabel }}">Length</span><div style="{{ inBox }}"><span style="{{ inNum }}">2.0</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label><label><span style="{{ fLabel }}">Width</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.5</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label><label><span style="{{ fLabel }}">Height</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.2</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label></div></sc-if>
+              <sc-if value="{{ isCircle }}" hint-placeholder-val="{{ false }}"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px"><label><span style="{{ fLabel }}">Diameter</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.0</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label><label><span style="{{ fLabel }}">Height</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.2</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label></div></sc-if>
+              <div><span style="{{ fLabel }}">Rotation <span style="color:var(--text-tertiary)">· 0–359°, 1° steps</span></span><div style="display:flex; align-items:center; gap:10px"><div style="{{ inBox }}; flex:1"><span style="{{ inNum }}">{{ rotDeg }}</span><span style="{{ inUnit }}">°</span></div><button onClick="{{ rotMinus }}" style="{{ stepBtn }}">−1°</button><button onClick="{{ rotPlus }}" style="{{ stepBtn }}">+1°</button><button onClick="{{ toggleSnap15 }}" style="{{ snap15Style }}">Snap 15°</button></div></div>
+              <div style="margin-top:12px; font-size:11.5px; color:var(--text-tertiary)">Height drives the shadow and bridging maths. No dimension below 0.3 {{ unitLabel }}.</div>
+            </sc-if>
+
+            <sc-if value="{{ sheetSettings }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:17px; font-weight:700; letter-spacing:-0.02em; margin-bottom:14px">Settings · {{ selId }}</div>
+              <div style="margin-bottom:16px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:13.5px; font-weight:500">Setback</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--accent)">{{ setback }} {{ unitLabel }}</span></div><input type="range" min="0" max="30" value="{{ setbackPct }}" onInput="{{ setSetback }}" style="width:100%; height:5px; accent-color:var(--accent); cursor:pointer"><div style="font-size:11.5px; color:var(--text-tertiary); margin-top:5px">Buffer zone where panels cannot be placed — draws the red ring. 0–3 {{ unitLabel }}, 0.1 steps.</div></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:10px"><div><div style="font-size:13.5px; font-weight:500">Casts shadow</div><div style="font-size:11.5px; color:var(--text-secondary)">Include in the shading simulation</div></div><button onClick="{{ toggleCasts }}" style="{{ castsTrack }}"><span style="{{ castsKnob }}"></span></button></div>
+              <div style="padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:10px">
+                <div style="display:flex; align-items:center; justify-content:space-between"><div><div style="font-size:13.5px; font-weight:500">Blocks panel placement</div><div style="font-size:11.5px; color:var(--text-secondary)">Panels can't sit where it stands</div></div><button onClick="{{ toggleBlocks }}" style="{{ blocksTrack }}"><span style="{{ blocksKnob }}"></span></button></div>
+                <sc-if value="{{ blocks }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline)">
+                    <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; font-weight:500">Panels may bridge above</span><button onClick="{{ toggleBridge }}" style="{{ bridgeTrack }}"><span style="{{ bridgeKnob }}"></span></button></div>
+                    <sc-if value="{{ bridge }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:12px; padding:10px 12px; border-radius:12px; background:var(--surface)">
+                        <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:13px; font-weight:500">Must remain open to sky</span><button onClick="{{ toggleOpenSky }}" style="{{ skyTrack }}"><span style="{{ skyKnob }}"></span></button></div>
+                        <sc-if value="{{ clearanceShown }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:12px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:12.5px; font-weight:500">Clearance above it</span><span style="font-family:var(--font-mono); font-size:12px; color:var(--accent)">{{ clearance }} {{ unitLabel }}</span></div><input type="range" min="0" max="20" value="{{ clearancePct }}" onInput="{{ setClearance }}" style="width:100%; height:5px; accent-color:var(--accent); cursor:pointer"><div style="margin-top:6px; font-size:11.5px; color:var(--accent-hover); line-height:1.45">Bridgeable when the array structure clears {{ bridgeClear }} {{ unitLabel }} (its {{ selHeight }} {{ unitLabel }} + margin).</div></div>
+                        </sc-if>
+                        <div style="margin-top:10px; display:flex; align-items:flex-start; gap:8px; padding:9px 11px; border-radius:12px; background:var(--warning-bg)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg><span style="font-size:11.5px; color:var(--text-primary); line-height:1.4">Bridging over this object is flagged for engineer confirmation.</span></div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+              </div>
+              <button onClick="{{ convertPlatform }}" style="{{ platformBtn }}" title="{{ platformHint }}"><span style="display:flex; align-items:center; gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10V7l7-4 7 4v3M6 21v-6M18 21v-6M3 21h18"></path></svg>Convert to rooftop platform</span><span style="font-size:11px; color:var(--text-tertiary); font-weight:400">Mount panels on top</span></button>
+              <div style="font-size:11px; color:var(--text-tertiary); margin:6px 2px 14px; line-height:1.4">{{ platformNote }}</div>
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Height information</div>
+              <div style="display:flex; flex-direction:column; gap:2px"><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Placement</span><span style="font-weight:500">{{ selPlacement }}</span></div><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Base surface</span><span style="font-family:var(--font-mono); font-weight:500">{{ selBase }} {{ unitLabel }}</span></div><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Top from ground</span><span style="font-family:var(--font-mono); font-weight:500">{{ selTop }} {{ unitLabel }}</span></div></div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <!-- 3D takeover (mobile) -->
+        <sc-if value="{{ isThree }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; z-index:9; background:linear-gradient(180deg,#eceef1,#f6f7f9 60%); overflow:hidden">
+            <svg viewBox="0 0 375 700" preserveAspectRatio="xMidYMid slice" style="position:absolute; inset:0; width:100%; height:100%">
+              <polygon points="{{ iso.ground }}" fill="var(--canvas-sunken)"></polygon>
+              <sc-for list="{{ iso.shadows }}" as="s" hint-placeholder-count="0"><polygon points="{{ s }}" fill="rgba(10,10,11,0.14)"></polygon></sc-for>
+              <sc-for list="{{ iso.roofs }}" as="r" hint-placeholder-count="2"><polygon points="{{ r }}" fill="rgba(90,75,255,0.14)" stroke="var(--accent)" stroke-width="1.5" stroke-linejoin="round"></polygon></sc-for>
+              <sc-for list="{{ iso.faces }}" as="f" hint-placeholder-count="0"><polygon points="{{ f.points }}" fill="{{ f.fill }}" stroke="var(--accent)" stroke-width="0.8" stroke-linejoin="round"></polygon></sc-for>
+            </svg>
+            <button onClick="{{ close3D }}" style="position:absolute; left:12px; top:12px; height:40px; padding:0 16px 0 12px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e3); color:var(--text-primary); font-family:inherit; font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:7px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back to 2D</button>
+            <div style="position:absolute; right:12px; top:12px; display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; border-radius:999px; background:var(--surface); box-shadow:var(--e3); font-size:11.5px; font-weight:500; color:var(--text-secondary)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7"><circle cx="12" cy="12" r="5"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>Shadows · 12:00 PM</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- ============ DESKTOP ============ -->
+    <div style="flex-shrink:0">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg><span style="font-size:12.5px; font-weight:500">Desktop · 1440 · {{ stateLabel }}</span></div>
+      <div style="position:relative; width:1440px; height:900px; background:var(--canvas); border-radius:20px; box-shadow:var(--e4); overflow:hidden; display:flex; flex-direction:column">
+        <!-- header -->
+        <div style="flex-shrink:0; height:66px; display:flex; align-items:center; gap:14px; padding:0 24px; background:var(--surface); box-shadow:var(--e2); z-index:6">
+          <button onClick="{{ prevStep }}" style="width:42px; height:42px; border-radius:12px; border:none; background:var(--neutral-bg); cursor:pointer; color:var(--text-primary); display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <div style="min-width:190px"><div style="font-size:12px; color:var(--text-secondary)">{{ leadName }} · step 3 of 10</div><div style="font-size:18px; font-weight:700; letter-spacing:-0.025em">Obstructions</div></div>
+          <div style="flex:1"></div>
+          <span style="{{ health.chipD }}"><span style="{{ health.dot }}"></span><span style="font-family:var(--font-mono); font-weight:700">{{ health.score }}</span><span style="font-weight:500; color:var(--text-secondary)">{{ health.band }}</span></span>
+          <div style="display:flex; background:var(--neutral-bg); border-radius:999px; padding:3px"><button onClick="{{ setUnitM }}" style="{{ unitM }}">m</button><button onClick="{{ setUnitFt }}" style="{{ unitFt }}">ft</button></div>
+          <div style="width:1px; height:28px; background:var(--hairline)"></div>
+          <button onClick="{{ prevStep }}" style="{{ hdrGhost }}">Save &amp; exit</button>
+          <button onClick="{{ next }}" style="{{ nextStyleD }}"><span>Next · Components</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </div>
+
+        <div style="flex:1; display:flex; min-height:0">
+          <!-- canvas -->
+          <div style="flex:1; position:relative; min-width:0; background:#3f4738">
+            <div id="cvD" class="hg-cv" style="position:absolute; inset:0">
+              <svg viewBox="0 0 1040 770" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block">
+                <defs><pattern id="og-d" width="34" height="34" patternUnits="userSpaceOnUse"><path d="M34 0H0V34" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"></path></pattern><linearGradient id="osat-d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a5340"></stop><stop offset="0.5" stop-color="#6b6350"></stop><stop offset="1" stop-color="#524a3e"></stop></linearGradient></defs>
+                <rect x="-400" y="-400" width="1900" height="1600" fill="url(#osat-d)"></rect>
+                <rect x="-400" y="-400" width="1900" height="1600" fill="url(#og-d)"></rect>
+                <g id="gD">
+                  <sc-for list="{{ cd.roofs }}" as="r" hint-placeholder-count="2"><g><polygon points="{{ r.points }}" fill="rgba(90,75,255,0.12)" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"></polygon><polygon points="{{ r.inset }}" fill="none" stroke="var(--danger)" stroke-width="1.6" stroke-dasharray="6 5" stroke-linejoin="round" opacity="0.8"></polygon><sc-if value="{{ measurements }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ r.edgeLabels }}" as="e" hint-placeholder-count="0"><g><rect x="{{ e.bx }}" y="{{ e.by }}" width="{{ e.bw }}" height="18" rx="6" fill="var(--surface)"></rect><text x="{{ e.tx }}" y="{{ e.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-primary)">{{ e.text }}</text></g></sc-for></sc-if></g></sc-for>
+                  <sc-if value="{{ showObs }}" hint-placeholder-val="{{ true }}">
+                    <sc-for list="{{ cd.rings }}" as="k" hint-placeholder-count="3"><rect x="{{ k.x }}" y="{{ k.y }}" width="{{ k.w }}" height="{{ k.h }}" rx="{{ k.r }}" fill="none" stroke="var(--danger)" stroke-width="1.6" stroke-dasharray="6 5"></rect></sc-for>
+                    <sc-for list="{{ cd.obs }}" as="o" hint-placeholder-count="3"><g><sc-if value="{{ o.isRect }}" hint-placeholder-val="{{ true }}"><rect x="{{ o.x }}" y="{{ o.y }}" width="{{ o.w }}" height="{{ o.h }}" rx="3" fill="{{ o.fill }}" stroke="{{ o.stroke }}" stroke-width="{{ o.sw }}" transform="rotate({{ o.rot }} {{ o.cx }} {{ o.cy }})"></rect></sc-if><sc-if value="{{ o.isCircle }}" hint-placeholder-val="{{ false }}"><circle cx="{{ o.cx }}" cy="{{ o.cy }}" r="{{ o.rad }}" fill="{{ o.fill }}" stroke="{{ o.stroke }}" stroke-width="{{ o.sw }}"></circle></sc-if></g></sc-for>
+                  </sc-if>
+                  <sc-if value="{{ cd.measure }}" hint-placeholder-val="{{ false }}"><g><line x1="{{ cd.measure.x1 }}" y1="{{ cd.measure.y1 }}" x2="{{ cd.measure.x2 }}" y2="{{ cd.measure.y2 }}" stroke="var(--warning)" stroke-width="2.5"></line><circle cx="{{ cd.measure.x1 }}" cy="{{ cd.measure.y1 }}" r="5" fill="var(--warning)"></circle><circle cx="{{ cd.measure.x2 }}" cy="{{ cd.measure.y2 }}" r="5" fill="var(--warning)"></circle><rect x="{{ cd.measure.bx }}" y="{{ cd.measure.by }}" width="60" height="22" rx="8" fill="var(--warning)"></rect><text x="{{ cd.measure.tx }}" y="{{ cd.measure.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="12" font-weight="700" fill="#fff">{{ cd.measure.text }}</text></g></sc-if>
+                  <sc-for list="{{ cd.handles }}" as="h" hint-placeholder-count="0"><g><sc-if value="{{ h.stem }}" hint-placeholder-val="{{ false }}"><line x1="{{ h.sx }}" y1="{{ h.sy }}" x2="{{ h.cx }}" y2="{{ h.cy }}" stroke="var(--accent)" stroke-width="1.8"></line></sc-if><circle cx="{{ h.cx }}" cy="{{ h.cy }}" r="{{ h.r }}" fill="var(--surface)" stroke="var(--accent)" stroke-width="3"></circle></g></sc-for>
+                </g>
+                <sc-if value="{{ showObs }}" hint-placeholder-val="{{ true }}"><sc-for list="{{ cd.chips }}" as="c" hint-placeholder-count="3"><g><rect x="{{ c.x }}" y="{{ c.y }}" width="{{ c.w }}" height="20" rx="6" fill="var(--surface)" stroke="{{ c.border }}" stroke-width="1"></rect><text x="{{ c.tx }}" y="{{ c.ty }}" text-anchor="middle" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--text-primary)">{{ c.id }}</text></g></sc-for></sc-if>
+              </svg>
+            </div>
+            <div style="position:absolute; top:16px; left:16px; display:flex; gap:8px"><sc-if value="{{ hidden }}" hint-placeholder-val="{{ false }}"><span style="{{ infoChip }}">Obstructions hidden</span></sc-if><sc-if value="{{ measurements }}" hint-placeholder-val="{{ false }}"><span style="{{ infoChip }}">All measurements on</span></sc-if></div>
+            <sc-if value="{{ placing }}" hint-placeholder-val="{{ false }}"><div style="position:absolute; left:50%; top:18px; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; background:var(--accent); box-shadow:var(--e4)"><span style="width:7px; height:7px; border-radius:50%; background:#fff; animation:hg-pulse 1.2s infinite"></span><span style="font-size:13px; font-weight:500; color:#fff">Click to place {{ placeName }} · Esc to cancel</span><button onClick="{{ cancelPlace }}" style="margin-left:4px; border:none; background:rgba(255,255,255,0.2); color:#fff; border-radius:999px; height:24px; padding:0 11px; font-family:inherit; font-size:11.5px; font-weight:500; cursor:pointer">Cancel</button></div></sc-if>
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}"><div style="position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); width:320px; text-align:center; padding:26px; border-radius:22px; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); box-shadow:var(--e4)"><div style="width:60px; height:60px; margin:0 auto; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V8l6-4 6 4v13M9 12h.01M9 16h.01"></path></svg></div><div style="margin-top:14px; font-size:19px; font-weight:700; letter-spacing:-0.02em">No obstructions yet</div><p style="margin:8px 0 18px; font-size:13.5px; line-height:1.55; color:var(--text-secondary)">Add every rooftop object that shades or blocks panels. The Step 2 roofs stay locked here.</p><button onClick="{{ openPicker }}" style="height:44px; padding:0 20px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Add obstruction</button></div></sc-if>
+            <!-- zoom + compass + scale -->
+            <div style="position:absolute; right:16px; bottom:16px; display:flex; flex-direction:column; align-items:flex-end; gap:8px"><div style="display:flex; flex-direction:column; gap:1px; border-radius:11px; overflow:hidden; box-shadow:var(--e2)"><button onClick="{{ zoomIn }}" style="{{ zBtnD }}">+</button><button onClick="{{ zoomOut }}" style="{{ zBtnD }}; border-top:1px solid var(--hairline)">−</button></div><div title="North" style="width:46px; height:46px; border-radius:50%; background:var(--surface); box-shadow:var(--e2); display:flex; align-items:center; justify-content:center"><svg width="34" height="34" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--hairline)" stroke-width="1.5"></circle><polygon points="22,12 26,23 22,20.5 18,23" fill="var(--danger)"></polygon><polygon points="22,34 26,23 22,25.5 18,23" fill="var(--text-tertiary)"></polygon><text x="22" y="9.5" text-anchor="middle" font-size="8" font-weight="700" fill="var(--danger)" font-family="var(--font-sans)">N</text></svg></div></div>
+            <div style="position:absolute; left:16px; bottom:16px; display:flex; align-items:center; gap:8px"><div style="width:72px; height:5px; border-radius:2px; background:var(--surface); box-shadow:var(--e1); position:relative"><div style="position:absolute; left:0; top:-3px; width:1px; height:11px; background:var(--text-secondary)"></div><div style="position:absolute; right:0; top:-3px; width:1px; height:11px; background:var(--text-secondary)"></div></div><span style="font-family:var(--font-mono); font-size:11px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.6)">{{ scaleLabel }}</span></div>
+            <!-- floating tools bottom-left (icon-only, matches Step 2) -->
+            <div style="position:absolute; left:16px; bottom:70px; display:flex; flex-direction:column; gap:8px"><sc-for list="{{ floatToolsD }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" title="{{ t.label }}" style="{{ t.style }}"><span style="position:relative; display:flex; align-items:center; justify-content:center">{{ t.icon }}<sc-if value="{{ t.badge }}" hint-placeholder-val="{{ false }}"><span style="{{ addBadge }}">{{ count }}</span></sc-if></span></button></sc-for></div>
+          </div>
+
+          <!-- right panel -->
+          <div style="flex-shrink:0; width:352px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; z-index:3">
+            <div style="flex:1; overflow:auto; padding:20px">
+              <sc-if value="{{ panelDefault }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px">Obstructions · {{ count }}</div>
+                <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:16px; border-radius:14px; background:var(--surface-alt); font-size:12.5px; color:var(--text-secondary); text-align:center; line-height:1.5">Nothing placed yet. Use <strong>Add obstruction</strong> to drop the first one.</div></sc-if>
+                <sc-if value="{{ hasObs }}" hint-placeholder-val="{{ true }}"><div style="display:flex; flex-direction:column; gap:6px"><sc-for list="{{ obsList }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="{{ o.rowStyle }}"><span style="{{ o.badge }}">{{ o.id }}</span><span style="flex:1; text-align:left"><span style="display:block; font-size:13.5px; font-weight:500">{{ o.name }}</span><span style="display:block; font-size:11px; color:var(--text-tertiary)">{{ o.meta }}</span></span><sc-if value="{{ o.locked }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg></sc-if></button></sc-for></div></sc-if>
+                <div style="margin-top:16px; padding:12px 14px; border-radius:14px; background:var(--surface-alt); font-size:11.5px; color:var(--text-secondary); line-height:1.5">Select an object on the canvas to edit its shape, size, settings and bridging.</div>
+              </sc-if>
+
+              <sc-if value="{{ panelSelected }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px"><span style="{{ selBadge }}">{{ selId }}</span><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">{{ selTypeName }}</div><sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}"><span style="{{ lockChip }}">Locked</span></sc-if></div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px">{{ selPlacement }} · top {{ selTop }} {{ unitLabel }}</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:12px"><sc-for list="{{ contextActions }}" as="a" hint-placeholder-count="7"><button onClick="{{ a.onClick }}" title="{{ a.hint }}" style="{{ a.styleD }}"><span style="{{ a.icoStyleD }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ a.icon }}"></path></svg></span><span style="font-size:11px; font-weight:500">{{ a.label }}</span></button></sc-for></div>
+                <div style="padding:12px 14px; border-radius:14px; background:var(--surface-alt)"><div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Precise positioning</div><div style="display:flex; align-items:center; gap:8px; margin-bottom:8px"><span style="font-size:12px; color:var(--text-secondary); width:44px">Nudge</span><button onClick="{{ noop }}" style="{{ stepBtn }}">Fine</button><button onClick="{{ noop }}" style="{{ stepBtn }}">Coarse</button><span style="font-size:11px; color:var(--text-tertiary)">arrow keys too</span></div><div style="display:flex; align-items:center; gap:8px"><span style="font-size:12px; color:var(--text-secondary); width:44px">Rotate</span><button onClick="{{ rotMinus }}" style="{{ stepBtn }}">−1°</button><div style="{{ inBox }}; flex:1"><span style="{{ inNum }}">{{ rotDeg }}</span><span style="{{ inUnit }}">°</span></div><button onClick="{{ rotPlus }}" style="{{ stepBtn }}">+1°</button></div></div>
+              </sc-if>
+
+              <sc-if value="{{ panelShape }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Shape · {{ selId }}</div><button onClick="{{ backPanel }}" style="{{ backBtn }}">Back</button></div>
+                <div style="display:flex; gap:10px"><button onClick="{{ setRect }}" style="{{ shapeRectStyle }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="1"></rect></svg>Rectangle<span style="font-size:11px; color:var(--text-tertiary)">Length × width</span></button><button onClick="{{ setCircle }}" style="{{ shapeCircStyle }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle></svg>Circle<span style="font-size:11px; color:var(--text-tertiary)">Diameter</span></button></div>
+              </sc-if>
+
+              <sc-if value="{{ panelSize }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Size &amp; rotation · {{ selId }}</div><button onClick="{{ backPanel }}" style="{{ backBtn }}">Back</button></div>
+                <sc-if value="{{ isRect }}" hint-placeholder-val="{{ true }}"><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px"><label><span style="{{ fLabel }}">Length</span><div style="{{ inBox }}"><span style="{{ inNum }}">2.0</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label><label><span style="{{ fLabel }}">Width</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.5</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label></div></sc-if>
+                <sc-if value="{{ isCircle }}" hint-placeholder-val="{{ false }}"><div style="margin-bottom:12px"><label><span style="{{ fLabel }}">Diameter</span><div style="{{ inBox }}"><span style="{{ inNum }}">1.0</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label></div></sc-if>
+                <label style="display:block; margin-bottom:12px"><span style="{{ fLabel }}">Height <span style="color:var(--text-tertiary)">· drives shadow &amp; bridging</span></span><div style="{{ inBox }}"><span style="{{ inNum }}">1.2</span><span style="{{ inUnit }}">{{ unitLabel }}</span></div></label>
+                <div style="margin-bottom:8px"><span style="{{ fLabel }}">Rotation · 0–359°, 1° steps</span><div style="display:flex; align-items:center; gap:8px"><button onClick="{{ rotMinus }}" style="{{ stepBtn }}">−1°</button><div style="{{ inBox }}; flex:1"><span style="{{ inNum }}">{{ rotDeg }}</span><span style="{{ inUnit }}">°</span></div><button onClick="{{ rotPlus }}" style="{{ stepBtn }}">+1°</button></div></div>
+                <div style="font-size:11.5px; color:var(--text-tertiary)">No dimension may go below 0.3 {{ unitLabel }}.</div>
+              </sc-if>
+
+              <sc-if value="{{ panelSettings }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px"><div style="font-size:16px; font-weight:700; letter-spacing:-0.02em">Settings · {{ selId }}</div><button onClick="{{ backPanel }}" style="{{ backBtn }}">Back</button></div>
+                <div style="margin-bottom:16px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:13px; font-weight:500">Setback</span><span style="font-family:var(--font-mono); font-size:12.5px; color:var(--accent)">{{ setback }} {{ unitLabel }}</span></div><input type="range" min="0" max="30" value="{{ setbackPct }}" onInput="{{ setSetback }}" style="width:100%; height:5px; accent-color:var(--accent); cursor:pointer"><div style="font-size:11.5px; color:var(--text-tertiary); margin-top:5px">Buffer zone where panels cannot be placed — draws the red ring. 0–3 {{ unitLabel }}.</div></div>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:10px"><div><div style="font-size:13px; font-weight:500">Casts shadow</div><div style="font-size:11.5px; color:var(--text-secondary)">Include in shading simulation</div></div><button onClick="{{ toggleCasts }}" style="{{ castsTrack }}"><span style="{{ castsKnob }}"></span></button></div>
+                <div style="padding:12px 14px; border-radius:14px; background:var(--surface-alt); margin-bottom:10px">
+                  <div style="display:flex; align-items:center; justify-content:space-between"><div><div style="font-size:13px; font-weight:500">Blocks panel placement</div></div><button onClick="{{ toggleBlocks }}" style="{{ blocksTrack }}"><span style="{{ blocksKnob }}"></span></button></div>
+                  <sc-if value="{{ blocks }}" hint-placeholder-val="{{ true }}"><div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--hairline)">
+                    <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:12.5px; font-weight:500">Panels may bridge above</span><button onClick="{{ toggleBridge }}" style="{{ bridgeTrack }}"><span style="{{ bridgeKnob }}"></span></button></div>
+                    <sc-if value="{{ bridge }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px; padding:10px 12px; border-radius:12px; background:var(--surface)">
+                      <div style="display:flex; align-items:center; justify-content:space-between"><span style="font-size:12.5px; font-weight:500">Must remain open to sky</span><button onClick="{{ toggleOpenSky }}" style="{{ skyTrack }}"><span style="{{ skyKnob }}"></span></button></div>
+                      <sc-if value="{{ clearanceShown }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px"><div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px"><span style="font-size:12px; font-weight:500">Clearance above it</span><span style="font-family:var(--font-mono); font-size:12px; color:var(--accent)">{{ clearance }} {{ unitLabel }}</span></div><input type="range" min="0" max="20" value="{{ clearancePct }}" onInput="{{ setClearance }}" style="width:100%; height:5px; accent-color:var(--accent); cursor:pointer"><div style="margin-top:6px; font-size:11.5px; color:var(--accent-hover); line-height:1.45">Bridgeable when the array structure clears {{ bridgeClear }} {{ unitLabel }} (its {{ selHeight }} {{ unitLabel }} + margin).</div></div></sc-if>
+                      <div style="margin-top:10px; display:flex; align-items:flex-start; gap:8px; padding:9px 11px; border-radius:12px; background:var(--warning-bg)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4M12 17h.01"></path></svg><span style="font-size:11.5px; color:var(--text-primary); line-height:1.4">Bridging over this object is flagged for engineer confirmation.</span></div>
+                    </div></sc-if>
+                  </div></sc-if>
+                </div>
+                <button onClick="{{ convertPlatform }}" style="{{ platformBtn }}" title="{{ platformHint }}"><span style="display:flex; align-items:center; gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10V7l7-4 7 4v3M6 21v-6M18 21v-6M3 21h18"></path></svg>Convert to rooftop platform</span></button>
+                <div style="font-size:11px; color:var(--text-tertiary); margin:6px 2px 14px; line-height:1.4">{{ platformNote }}</div>
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Height information</div>
+                <div style="display:flex; flex-direction:column; gap:2px"><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Placement</span><span style="font-weight:500">{{ selPlacement }}</span></div><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Base surface</span><span style="font-family:var(--font-mono); font-weight:500">{{ selBase }} {{ unitLabel }}</span></div><div style="{{ infoRow }}"><span style="color:var(--text-secondary)">Top from ground</span><span style="font-family:var(--font-mono); font-weight:500">{{ selTop }} {{ unitLabel }}</span></div></div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <!-- desktop type picker (modal) -->
+        <sc-if value="{{ sheetPicker }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closeSheet }}" style="position:absolute; inset:0; z-index:40; background:rgba(246,247,249,0.5); backdrop-filter:blur(8px)"></div>
+          <div class="hg-sheet" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:41; width:640px; max-height:78%; overflow:auto; background:var(--surface); border-radius:26px; box-shadow:var(--e5); padding:26px">
+            <div style="font-size:19px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px">Add obstruction</div>
+            <div style="font-size:13px; color:var(--text-secondary); margin-bottom:18px">Pick a type — it drops at its default size, then you adjust it on the canvas.</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px"><sc-for list="{{ types }}" as="t" hint-placeholder-count="11"><button onClick="{{ t.onClick }}" style="{{ typeCardD }}"><span style="position:relative; width:44px; height:44px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg><sc-if value="{{ t.beta }}" hint-placeholder-val="{{ false }}"><span style="{{ betaTag }}">BETA</span></sc-if></span><span style="margin-top:8px; font-size:13.5px; font-weight:600">{{ t.name }}</span><span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-tertiary)">{{ t.code }} · {{ t.size }}</span></button></sc-for></div>
+          </div>
+        </sc-if>
+
+        <!-- desktop 3D takeover -->
+        <sc-if value="{{ isThree }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; left:0; right:0; top:66px; bottom:0; z-index:9; background:linear-gradient(180deg,#eceef1,#f6f7f9 55%); overflow:hidden">
+            <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" style="position:absolute; inset:0; width:100%; height:100%">
+              <polygon points="{{ isoD.ground }}" fill="var(--canvas-sunken)"></polygon>
+              <sc-for list="{{ isoD.shadows }}" as="s" hint-placeholder-count="0"><polygon points="{{ s }}" fill="rgba(10,10,11,0.14)"></polygon></sc-for>
+              <sc-for list="{{ isoD.roofs }}" as="r" hint-placeholder-count="2"><polygon points="{{ r }}" fill="rgba(90,75,255,0.14)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"></polygon></sc-for>
+              <sc-for list="{{ isoD.faces }}" as="f" hint-placeholder-count="0"><polygon points="{{ f.points }}" fill="{{ f.fill }}" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"></polygon></sc-for>
+            </svg>
+            <button onClick="{{ close3D }}" style="position:absolute; left:20px; top:20px; height:44px; padding:0 18px 0 14px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); box-shadow:var(--e3); color:var(--text-primary); font-family:inherit; font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Back to obstructions</button>
+            <div style="position:absolute; right:20px; top:20px; display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 14px; border-radius:999px; background:var(--surface); box-shadow:var(--e3); font-size:13px; font-weight:500; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7"><circle cx="12" cy="12" r="5"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>Objects &amp; shadows · 12:00 PM</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { scene: 'empty', sheet: null, panel: 'default', placeType: null, units: 'm', measurements: false, measuring: false, hidden: false, snap15: false, shape: 'rect', locked: false, blocks: true, bridge: false, openSky: false, casts: true, setback: 0.3, clearance: 0.35, rot: 0, zoom: 100, converted: false, sel: 'WT1' };
+
+  ic(paths, s) { return React.createElement('svg', { width: s || 18, height: s || 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' }, (Array.isArray(paths) ? paths : [paths]).map((d, i) => React.createElement('path', { key: i, d }))); }
+
+  TYPES = [
+    { code: 'WT', name: 'Tank', size: '2 × 1.5 × 1.2', icon: 'M6 8h12v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z M6 8a6 3 0 0 1 12 0' },
+    { code: 'DS', name: 'Dish', size: '1 × 1 × 1.2', icon: 'M4 14a8 8 0 0 1 14-5 M4 14l14-5 M4 14v4h4 M12 12l3 6' },
+    { code: 'CH', name: 'Chimney', size: '0.8 × 0.8 × 2', icon: 'M7 21V6l5-2 5 2v15 M7 6h10 M14 4v3' },
+    { code: 'TR', name: 'Tree', size: '3 × 3 × 5', icon: 'M12 2a6 6 0 0 1 4 10 5 5 0 0 1-8 0 6 6 0 0 1 4-10z M12 12v9' },
+    { code: 'EL', name: 'Elevated', size: '3 × 2.5 × 2.6', icon: 'M3 9h18v8H3z M6 17v3M18 17v3M3 9l3-4h12l3 4' },
+    { code: 'BL', name: 'Building', size: '8 × 6 × 9', icon: 'M4 21V4h10v17M14 21V9h6v12M7 8h.01M7 12h.01M17 13h.01' },
+    { code: 'SW', name: 'Solar WH', size: '2 × 1.2 × 1.5', icon: 'M3 9h18v6H3z M3 9l3-4h12l3 4M8 15v3M16 15v3' },
+    { code: 'LD', name: 'Ladder', size: '0.6 × 1.5 × 3', beta: true, icon: 'M8 2v20M16 2v20M8 7h8M8 12h8M8 17h8' },
+    { code: 'WM', name: 'Windmill', size: '1.8 × 1.8 × 3.5', icon: 'M12 12V22M12 12l7-4M12 12l-7-4M12 12l0-9' },
+    { code: 'TV', name: 'Turbine Vent', size: '0.4 × 0.4 × 0.5', icon: 'M12 3a4 4 0 0 1 0 8 4 4 0 0 0 0 8M4 12h4M16 12h4' },
+    { code: 'OB', name: 'Other', size: '1.5 × 1.5 × 1', icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20M9 9a3 3 0 0 1 5 2c0 2-3 2-3 4M11 17h.01' },
+  ];
+
+  scen = (p) => this.setState({ sheet: null, panel: 'default', ...p });
+  prevStep = () => { window.location.href = 'RoofSetup.dc.html'; };
+  next = () => { window.location.href = 'Components.dc.html'; };
+  noop = () => {};
+
+  openPicker = () => this.setState({ sheet: 'picker' });
+  closeSheet = () => this.setState({ sheet: null });
+  chooseType = (code) => { const t = this.TYPES.find(x => x.code === code); this.setState({ sheet: null, scene: 'placement', placeType: t }); };
+  cancelPlace = () => this.setState({ scene: this.state.sel ? 'selected' : 'empty', placeType: null });
+  placeNow = () => this.setState({ scene: 'selected', placeType: null });
+
+  toggleHidden = () => this.setState(s => ({ hidden: !s.hidden, scene: !s.hidden ? 'hidden' : (s.sel ? 'selected' : 'empty') }));
+  toggleMeasurements = () => this.setState(s => ({ measurements: !s.measurements }));
+  toggleMeasuring = () => this.setState(s => ({ measuring: !s.measuring, scene: !s.measuring ? 'measure' : (s.sel ? 'selected' : 'empty') }));
+  open3D = () => this.setState({ scene: 'three' });
+  close3D = () => this.setState({ scene: this.state.sel ? 'selected' : 'empty' });
+
+  selectObj = () => this.setState({ scene: 'selected', sheet: null, panel: 'default' });
+  deselect = () => this.setState({ scene: 'empty', panel: 'default', sheet: null });
+  openGroup = (g) => this.setState({ sheet: g, panel: g });
+  backPanel = () => this.setState({ panel: 'default', sheet: null });
+  toggleLock = () => this.setState(s => ({ locked: !s.locked }));
+  setShape = (sh) => this.setState({ shape: sh });
+  setUnits = (u) => this.setState({ units: u });
+  toggleSnap15 = () => this.setState(s => ({ snap15: !s.snap15 }));
+  toggleCasts = () => this.setState(s => ({ casts: !s.casts }));
+  toggleBlocks = () => this.setState(s => ({ blocks: !s.blocks }));
+  toggleBridge = () => this.setState(s => ({ bridge: !s.bridge }));
+  toggleOpenSky = () => this.setState(s => ({ openSky: !s.openSky }));
+  setSetback = (e) => this.setState({ setback: Math.round((+e.target.value / 10)) / 10 });
+  setClearance = (e) => this.setState({ clearance: Math.round((+e.target.value / 20) * 100) / 100 });
+  rotBy = (d) => this.setState(s => ({ rot: (s.rot + d + 360) % 360 }));
+  zoomBy = (f) => this.setState(s => ({ zoom: Math.max(40, Math.min(400, Math.round(s.zoom * f))) }));
+  fitView = () => this.setState({ zoom: 100 });
+  convertPlatform = () => this.setState({ converted: true });
+
+  // ---- canvas ----
+  buildCanvas(cfg) {
+    const { W, H, sel, selShape, rot } = cfg;
+    const roofApts = [[.14, .30], [.55, .24], [.62, .54], [.40, .70], [.12, .58]];
+    const roofBpts = [[.66, .40], [.90, .36], [.92, .66], [.68, .70]];
+    const P = (p) => [p[0] * W, p[1] * H];
+    const S = (a) => a.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
+    const inset = (pts, d) => { const c = pts.reduce((s, p) => [s[0] + p[0] / pts.length, s[1] + p[1] / pts.length], [0, 0]); return pts.map(p => [p[0] + (c[0] - p[0]) * d, p[1] + (c[1] - p[1]) * d]); };
+    const roofs = [roofApts, roofBpts].map(rp => { const pts = rp.map(P); const edgeLabels = pts.map((p, i) => { const q = pts[(i + 1) % pts.length]; const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; const txt = (6 + i) + '.2 m'; const bw = txt.length * (cfg.fs * 0.62) + 8; return { bx: mx - bw / 2, by: my - 9, bw, tx: mx, ty: my + cfg.fs * 0.35, text: txt }; }); return { points: S(pts), inset: S(inset(pts, 0.12)), edgeLabels }; });
+
+    // obstructions (screen positions)
+    const OB = [
+      { id: 'WT1', shape: 'rect', cx: .30, cy: .40, w: .11, h: .08, blocks: true, sel: sel === 'WT1' },
+      { id: 'TR2', shape: 'circle', cx: .48, cy: .48, rad: .07, blocks: true, sel: sel === 'TR2' },
+      { id: 'CH1', shape: 'rect', cx: .78, cy: .54, w: .05, h: .05, blocks: true, sel: sel === 'CH1' },
+    ];
+    const obs = [], rings = [], chips = [], handles = [];
+    OB.forEach(o => {
+      const cx = o.cx * W, cy = o.cy * H;
+      const selFill = o.sel ? 'rgba(90,75,255,0.5)' : 'rgba(226,138,120,0.55)';
+      const stroke = o.sel ? 'var(--accent)' : 'var(--danger)';
+      const sw = o.sel ? 2.5 : 1.6;
+      if (o.shape === 'rect') {
+        const w = o.w * W, h = o.h * H, x = cx - w / 2, y = cy - h / 2;
+        const r = (o.sel ? cfg.selRot : 0);
+        obs.push({ isRect: true, isCircle: false, x, y, w, h, cx, cy, rot: r, fill: selFill, stroke, sw });
+        if (o.blocks) { const pad = cfg.ring; rings.push({ x: x - pad, y: y - pad, w: w + pad * 2, h: h + pad * 2, r: 4 }); }
+        if (o.sel && cfg.handlesOn) { [[x, y], [x + w, y], [x + w, y + h], [x, y + h]].forEach(p => handles.push({ cx: p[0], cy: p[1], r: cfg.hr, stem: false })); handles.push({ cx, cy: y - cfg.stem, sx: cx, sy: y, r: cfg.hr, stem: true }); }
+        chips.push({ id: o.id, cx, top: y });
+      } else {
+        const rad = o.rad * W;
+        obs.push({ isRect: false, isCircle: true, cx, cy, rad, fill: selFill, stroke, sw });
+        if (o.blocks) { const pad = cfg.ring; rings.push({ x: cx - rad - pad, y: cy - rad - pad, w: (rad + pad) * 2, h: (rad + pad) * 2, r: rad + pad }); }
+        if (o.sel && cfg.handlesOn) { handles.push({ cx: cx + rad, cy, r: cfg.hr, stem: false }); handles.push({ cx, cy: cy - rad - cfg.stem, sx: cx, sy: cy - rad, r: cfg.hr, stem: true }); }
+        chips.push({ id: o.id, cx, top: cy - rad });
+      }
+    });
+    chips.forEach(c => { const bw = c.id.length * (cfg.fs * 0.66) + 8; c.x = c.cx - bw / 2; c.y = c.top - cfg.chipGap; c.w = bw; c.tx = c.cx; c.ty = c.top - cfg.chipGap + (cfg.chipH * 0.68); c.border = 'var(--accent)'; });
+
+    const measure = cfg.measuring ? (() => { const a = P([.22, .66]), b = P([.5, .34]); const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; return { x1: a[0], y1: a[1], x2: b[0], y2: b[1], bx: mx - 30, by: my - 11, tx: mx, ty: my + 4, text: '9.4 m' }; })() : null;
+    return { roofs, obs, rings, chips, handles, measure };
+  }
+
+  buildIso(cfg) {
+    const { W, H } = cfg; const AX = [cfg.s, cfg.s * 0.5], AY = [-cfg.s, cfg.s * 0.5], HZ = cfg.s * 1.3;
+    const pr = (gx, gy, gz) => [cfg.cx + gx * AX[0] + gy * AY[0], cfg.cy + gx * AX[1] + gy * AY[1] - (gz || 0) * HZ];
+    const S = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const ground = S([pr(-15, -10), pr(15, -10), pr(15, 15), pr(-15, 15)]);
+    const roofs = [S([pr(-5, -4), pr(3, -4), pr(4, 3), pr(-2, 5), pr(-6, 3)]), S([pr(4, 0), pr(8, 0), pr(8, 4), pr(4, 4)])];
+    const boxes = [[-3, -2, 1.4, 1, 1.4], [0, 1, 1.2, 1.2, 2.2], [5.5, 1.5, 1, 1, 1.6]];
+    const faces = [], shadows = [];
+    boxes.forEach(([x, y, w, d, h]) => {
+      const base = [pr(x, y), pr(x + w, y), pr(x + w, y + d), pr(x, y + d)];
+      const top = [pr(x, y, h), pr(x + w, y, h), pr(x + w, y + d, h), pr(x, y + d, h)];
+      shadows.push(S([base[0], base[1], [base[1][0] + h * cfg.s * 1.4, base[1][1] + h * cfg.s * 0.5], [base[0][0] + h * cfg.s * 1.4, base[0][1] + h * cfg.s * 0.5]]));
+      faces.push({ points: S([base[1], base[2], top[2], top[1]]), fill: 'rgba(90,75,255,0.5)' });
+      faces.push({ points: S([base[2], base[3], top[3], top[2]]), fill: 'rgba(90,75,255,0.68)' });
+      faces.push({ points: S(top), fill: 'var(--accent-subtle)' });
+    });
+    return { ground, roofs, faces, shadows };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const { scene, sheet, panel, units, measurements, measuring, hidden, snap15, shape, locked, blocks, bridge, openSky, casts, setback, clearance, rot, zoom, converted } = st;
+    const isEmpty = scene === 'empty';
+    const isSelected = scene === 'selected';
+    const placing = scene === 'placement';
+    const isThree = scene === 'three';
+    const showObs = !hidden;
+    const unitLabel = units === 'm' ? 'm' : 'ft';
+    const selType = this.TYPES.find(t => t.code === (st.sel || 'WT').replace(/[0-9]/g, '')) || this.TYPES[0];
+
+    const scDefs = [
+      ['empty', 'Empty', () => this.scen({ scene: 'empty', hidden: false, measuring: false })],
+      ['picker', 'Type picker', () => this.setState({ scene: 'empty', sheet: 'picker', panel: 'default' })],
+      ['placement', 'Placement mode', () => this.scen({ scene: 'placement', placeType: this.TYPES[0] })],
+      ['selected', 'Object selected', () => this.scen({ scene: 'selected', sel: 'WT1', locked: false })],
+      ['settings', 'Settings · bridging', () => this.setState({ scene: 'selected', sel: 'WT1', locked: false, blocks: true, bridge: true, openSky: false, panel: 'settings', sheet: 'settings' })],
+      ['locked', 'Locked object', () => this.scen({ scene: 'selected', sel: 'WT1', locked: true })],
+      ['hidden', 'Obstructions hidden', () => this.scen({ scene: 'hidden', hidden: true })],
+      ['measure', 'Measuring', () => this.scen({ scene: 'measure', measuring: true })],
+      ['three', '3D view', () => this.scen({ scene: 'three' })],
+    ];
+    const act = sheet === 'picker' ? 'picker' : (sheet === 'settings' || panel === 'settings') ? 'settings' : scene === 'placement' ? 'placement' : scene === 'hidden' ? 'hidden' : scene === 'measure' ? 'measure' : scene === 'three' ? 'three' : isSelected ? (locked ? 'locked' : 'selected') : 'empty';
+    const scenarios = scDefs.map(([k, label, on]) => ({ label, onClick: on, style: { height: 32, padding: '0 13px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, background: act === k ? 'var(--action-primary)' : 'var(--surface)', color: act === k ? '#fff' : 'var(--text-secondary)', boxShadow: act === k ? 'none' : 'var(--e1)' } }));
+    const stateLabelMap = { empty: 'Empty', picker: 'Type picker', placement: 'Placement', selected: 'Object selected', settings: 'Settings + bridging', locked: 'Locked', hidden: 'Hidden', measure: 'Measuring', three: '3D view' };
+
+    // tools
+    const tool = (on, label, paths, click, sz) => ({ label, onClick: click, icon: this.ic(paths, sz || 19), style: { width: sz ? 44 : 44, height: 44, flexShrink: 0, borderRadius: 12, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? 'var(--accent-subtle)' : 'var(--neutral-bg)', color: on ? 'var(--accent)' : 'var(--text-secondary)' } });
+    const toolDefD = (on, label, paths, click) => ({ label, onClick: click, icon: this.ic(paths, 20), style: { width: 44, height: 44, flexShrink: 0, borderRadius: 12, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? 'var(--accent-subtle)' : 'none', color: on ? 'var(--accent)' : 'var(--text-secondary)' } });
+    const toolset = (mk) => [
+      mk(!showObs, 'Show / hide obstructions', showObs ? ['M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z', 'M12 9a3 3 0 0 0 0 6'] : ['m2 2 20 20', 'M6.7 6.7C4 8.5 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.2M9.9 5.2A9 9 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3'], this.toggleHidden),
+      mk(measurements, 'Show all measurements', ['M2 12h20', 'M6 8v8M12 8v8M18 8v8'], this.toggleMeasurements),
+      mk(measuring, 'Measure distance', ['M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z', 'M8 6l2 2M12 10l2 2'], this.toggleMeasuring),
+      mk(isThree, 'Open 3D view', ['M12 2 2 7v10l10 5 10-5V7z', 'M2 7l10 5 10-5M12 12v10'], this.open3D),
+    ];
+
+    // floating tool cluster (matches Step 2 — transparent circular icons, no labels)
+    const tbtn = (on, sz) => ({ width: sz, height: sz, flexShrink: 0, borderRadius: '50%', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? 'var(--accent)' : 'none', color: '#fff', filter: on ? 'drop-shadow(0 1px 3px rgba(10,10,11,0.4))' : 'drop-shadow(0 1px 2px rgba(10,10,11,0.6))' });
+    const floatDefs = [
+      { key: 'add', label: 'Add obstruction', paths: ['M12 5v14M5 12h14'], on: placing || sheet === 'picker', badge: true, click: this.openPicker },
+      { key: 'hide', label: 'Show / hide obstructions', paths: showObs ? ['M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z', 'M12 9a3 3 0 0 0 0 6'] : ['m2 2 20 20', 'M6.7 6.7C4 8.5 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.2M9.9 5.2A9 9 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3'], on: !showObs, click: this.toggleHidden },
+      { key: 'meas', label: 'Show all measurements', paths: ['M2 12h20', 'M6 8v8M12 8v8M18 8v8'], on: measurements, click: this.toggleMeasurements },
+      { key: 'measure', label: 'Measure distance', paths: ['M21.3 15.3 8.7 2.7a1 1 0 0 0-1.4 0L2.7 7.3a1 1 0 0 0 0 1.4l12.6 12.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z', 'M8 6l2 2M12 10l2 2'], on: measuring, click: this.toggleMeasuring },
+      { key: '3d', label: 'Open 3D view', paths: ['M12 2 2 7v10l10 5 10-5V7z', 'M2 7l10 5 10-5M12 12v10'], on: isThree, click: this.open3D },
+    ];
+    const floatToolsM = floatDefs.map(d => ({ label: d.label, onClick: d.click, badge: !!d.badge, icon: this.ic(d.paths, 20), style: tbtn(d.on, 42) }));
+    const floatToolsD = floatDefs.map(d => ({ label: d.label, onClick: d.click, badge: !!d.badge, icon: this.ic(d.paths, 21), style: tbtn(d.on, 44) }));
+
+    // types
+    const types = this.TYPES.map(t => ({ name: t.name, code: t.code, size: t.size, beta: !!t.beta, icon: t.icon, onClick: () => this.chooseType(t.code) }));
+
+    // context actions (7)
+    const lockedHint = 'Unlock to edit';
+    const ctx = [
+      { key: 'dup', label: 'Duplicate', hint: 'Copy offset nearby', icon: 'M9 9h11v11H9zM5 15V4h11', dis: false, onClick: this.noop },
+      { key: 'shape', label: 'Shape', hint: locked ? lockedHint : 'Rectangle or circle', icon: 'M3 3h8v8H3zM13 13a4 4 0 1 0 8 0 4 4 0 0 0-8 0', dis: locked, onClick: locked ? this.noop : () => this.openGroup('shape') },
+      { key: 'size', label: 'Size & rotation', hint: locked ? lockedHint : 'Type exact sizes', icon: 'M21 6H3M21 12H3M21 18H3', dis: locked, onClick: locked ? this.noop : () => this.openGroup('size') },
+      { key: 'settings', label: 'Settings', hint: 'Setback, shadow, bridging', icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-4l-.3 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L4 11a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z', dis: false, onClick: () => this.openGroup('settings') },
+      { key: 'lock', label: locked ? 'Unlock' : 'Lock', hint: locked ? 'Free geometry' : 'Freeze geometry', icon: locked ? 'M5 11h14v10H5zM8 11V7a4 4 0 0 1 7-2.6' : 'M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4', dis: false, onClick: this.toggleLock },
+      { key: 'del', label: 'Delete', hint: locked ? 'Unlock to delete' : 'Remove object', icon: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6', dis: locked, onClick: locked ? this.noop : this.deselect },
+      { key: 'desel', label: 'Deselect', hint: 'Clear selection', icon: 'M18 6 6 18M6 6l12 12', dis: false, onClick: this.deselect },
+    ];
+    const contextActions = ctx.map(a => ({
+      label: a.label, hint: a.hint, icon: a.icon, onClick: a.onClick,
+      style: { flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, width: 66, padding: '8px 4px', borderRadius: 12, border: 'none', background: 'none', cursor: a.dis ? 'not-allowed' : 'pointer', fontFamily: 'inherit', color: a.dis ? 'var(--text-disabled)' : 'var(--text-primary)', opacity: a.dis ? 0.6 : 1 },
+      styleD: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 4px', borderRadius: 14, border: 'none', background: 'var(--surface-alt)', cursor: a.dis ? 'not-allowed' : 'pointer', fontFamily: 'inherit', color: a.dis ? 'var(--text-disabled)' : 'var(--text-primary)', opacity: a.dis ? 0.6 : 1 },
+      icoStyle: { width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: a.key === 'del' ? 'var(--danger-bg)' : 'var(--accent-subtle)', color: a.key === 'del' ? 'var(--danger)' : 'var(--accent)' },
+      icoStyleD: { width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: a.key === 'del' ? 'var(--danger-bg)' : 'var(--accent-subtle)', color: a.key === 'del' ? 'var(--danger)' : 'var(--accent)' },
+    }));
+
+    // obs list (desktop default panel)
+    const obsList = [
+      { id: 'WT1', name: 'Tank', meta: 'Roof A · 2.0 × 1.5 m', locked: locked },
+      { id: 'TR2', name: 'Tree', meta: 'On ground · ⌀3.0 m', locked: false },
+      { id: 'CH1', name: 'Chimney', meta: 'Roof B · 0.8 × 0.8 m', locked: false },
+    ].map(o => ({ ...o, onClick: () => this.setState({ scene: 'selected', sel: o.id, panel: 'default', sheet: null }), rowStyle: { display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, border: 'none', background: st.sel === o.id && isSelected ? 'var(--accent-subtle)' : 'var(--surface-alt)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', width: '100%' }, badge: { flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--accent)', background: 'var(--surface)', boxShadow: 'var(--e1)', padding: '3px 7px', borderRadius: 7 } }));
+
+    // sizes / geometry cfgs
+    const cm = this.buildCanvas({ W: 375, H: 560, fs: 10, ring: 10, hr: 7, stem: 26, chipGap: 4, chipH: 16, sel: isSelected || sheet ? st.sel : null, selShape: shape, selRot: rot, handlesOn: (isSelected && !sheet) || panel === 'default', measuring });
+    const cd = this.buildCanvas({ W: 1040, H: 770, fs: 11, ring: 14, hr: 9, stem: 32, chipGap: 6, chipH: 20, sel: (isSelected || panel !== 'default') ? st.sel : null, selShape: shape, selRot: rot, handlesOn: isSelected, measuring, measurements });
+    const iso = this.buildIso({ W: 375, H: 700, cx: 187, cy: 330, s: 17 });
+    const isoD = this.buildIso({ W: 1440, H: 800, cx: 720, cy: 380, s: 34 });
+
+    const platformTooSmall = (st.sel || '').startsWith('CH') || (st.sel || '').startsWith('TV');
+    const selHeight = 1.2;
+    const clearanceShown = bridge && !openSky;
+
+    const track = (on, c) => ({ flexShrink: 0, width: 44, height: 25, borderRadius: 999, border: 'none', cursor: 'pointer', background: on ? (c || 'var(--accent)') : 'var(--neutral-bg)', position: 'relative', padding: 0 });
+    const knob = (on) => ({ position: 'absolute', top: 3, left: on ? 22 : 3, width: 19, height: 19, borderRadius: '50%', background: '#fff', boxShadow: 'var(--e1)', transition: 'left 160ms' });
+    const unitPill = (on) => ({ height: 30, minWidth: 34, padding: '0 12px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, background: on ? 'var(--surface)' : 'none', color: on ? 'var(--text-primary)' : 'var(--text-tertiary)', boxShadow: on ? 'var(--e1)' : 'none' });
+    const shapeCard = (on) => ({ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '18px 12px', borderRadius: 16, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600, background: on ? 'var(--accent-subtle)' : 'var(--surface-alt)', color: on ? 'var(--accent-hover)' : 'var(--text-primary)', outline: on ? '1.5px solid var(--accent)' : 'none', outlineOffset: -1.5 });
+    const stepBtn = { height: 36, padding: '0 12px', borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--surface-alt)', boxShadow: 'var(--e1)', fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)' };
+
+    return {
+      scenarios, stateLabel: stateLabelMap[act] || 'Empty', leadName: 'Priya Sharma',
+      countLabel: isEmpty ? 'no obstructions' : '3 obstructions', count: isEmpty ? 0 : 3,
+      health: {
+        chip: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6, height: 30, padding: '0 11px', borderRadius: 999, fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 700, background: 'var(--success-bg)', color: 'var(--success)' },
+        chipD: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 8, height: 40, padding: '0 14px', borderRadius: 999, fontSize: 14, background: 'var(--success-bg)', color: 'var(--success)' },
+        dot: { width: 7, height: 7, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }, text: '84', score: '84', band: 'Good',
+      },
+      prevStep: this.prevStep, next: this.next, noop: this.noop,
+      isEmpty, isSelected, placing, isThree, showObs, hidden, measurements, measuring,
+      cm, cd, iso, isoD,
+      zoomPct: zoom, zoomIn: () => this.zoomBy(1.2), zoomOut: () => this.zoomBy(0.83), fitView: this.fitView, scaleLabel: units === 'm' ? '5 m' : '16 ft',
+      zBtn: { width: 36, height: 36, border: 'none', background: 'var(--surface)', cursor: 'pointer', color: 'var(--text-primary)', fontSize: 18 },
+      zBtnD: { width: 38, height: 38, border: 'none', background: 'var(--surface)', cursor: 'pointer', color: 'var(--text-primary)', fontSize: 19 },
+      infoChip: { display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 12px', borderRadius: 999, background: 'var(--surface)', boxShadow: 'var(--e2)', fontSize: 11.5, fontWeight: 500, color: 'var(--text-secondary)' },
+      // tools
+      openPicker: this.openPicker, floatToolsM, floatToolsD,
+      addBtn: { flexShrink: 0, flex: 1, minWidth: 0, height: 48, borderRadius: 14, border: 'none', cursor: 'pointer', background: placing ? 'var(--accent)' : 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, display: 'flex', align: 'center', alignItems: 'center', justifyContent: 'center', gap: 8 },
+      addBtnD: { height: 46, padding: '0 20px', borderRadius: 999, border: 'none', cursor: 'pointer', background: placing ? 'var(--accent)' : 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: 'var(--e3)' },
+      addBadge: { position: 'absolute', top: -8, right: -10, minWidth: 16, height: 16, padding: '0 4px', borderRadius: 999, background: '#fff', color: 'var(--accent)', fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      // placement
+      placeName: (st.placeType && st.placeType.name) || 'object', cancelPlace: this.cancelPlace,
+      // selected
+      selId: st.sel, selTypeName: selType.name, locked,
+      selBadge: { flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, color: 'var(--accent)', background: 'var(--accent-subtle)', padding: '3px 9px', borderRadius: 7 },
+      lockChip: { display: 'inline-flex', alignItems: 'center', height: 22, padding: '0 9px', borderRadius: 999, background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 },
+      nudgeBtn: { width: 30, height: 28, borderRadius: 8, border: 'none', background: 'var(--neutral-bg)', cursor: 'pointer', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700 },
+      contextActions, obsList, hasObs: !isEmpty,
+      rotDeg: rot, rotMinus: () => this.rotBy(-1), rotPlus: () => this.rotBy(1), toggleSnap15: this.toggleSnap15, snap15Style: unitPill(snap15),
+      stepBtn, backBtn: { height: 30, padding: '0 12px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-secondary)', fontFamily: 'inherit', fontSize: 12, fontWeight: 500 },
+      // panels / sheets
+      anySheet: !!sheet, sheetPicker: sheet === 'picker', sheetShape: sheet === 'shape', sheetSize: sheet === 'size', sheetSettings: sheet === 'settings',
+      panelDefault: panel === 'default' && !isEmpty ? true : (panel === 'default'), panelSelected: panel === 'default' && isSelected, panelShape: panel === 'shape', panelSize: panel === 'size', panelSettings: panel === 'settings',
+      closeSheet: this.closeSheet, backPanel: this.backPanel,
+      types, typeCard: { display: 'flex', alignItems: 'center', gap: 10, padding: 10, borderRadius: 14, border: 'none', background: 'var(--surface-alt)', cursor: 'pointer', fontFamily: 'inherit', width: '100%' }, typeCardD: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '16px 10px', borderRadius: 16, border: 'none', background: 'var(--surface-alt)', cursor: 'pointer', fontFamily: 'inherit' },
+      betaTag: { position: 'absolute', bottom: -6, left: '50%', transform: 'translateX(-50%)', fontSize: 8, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--warning)', background: 'var(--warning-bg)', padding: '1px 5px', borderRadius: 999 },
+      // shape
+      shape, isRect: shape === 'rect', isCircle: shape === 'circle', setRect: () => this.setShape('rect'), setCircle: () => this.setShape('circle'),
+      shapeRectStyle: shapeCard(shape === 'rect'), shapeCircStyle: shapeCard(shape === 'circle'),
+      // units
+      units, unitLabel, setUnitM: () => this.setUnits('m'), setUnitFt: () => this.setUnits('ft'), unitM: unitPill(units === 'm'), unitFt: unitPill(units === 'ft'),
+      fLabel: { display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 }, inBox: { display: 'flex', alignItems: 'center', gap: 6, height: 44, padding: '0 12px', borderRadius: 12, background: 'var(--surface)', boxShadow: 'var(--e1)' }, inNum: { fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }, inUnit: { marginLeft: 'auto', fontSize: 12, color: 'var(--text-tertiary)' },
+      // settings
+      setback: setback.toFixed(1), setbackPct: Math.round(setback * 10), setSetback: this.setSetback,
+      casts, toggleCasts: this.toggleCasts, castsTrack: track(casts), castsKnob: knob(casts),
+      blocks, toggleBlocks: this.toggleBlocks, blocksTrack: track(blocks), blocksKnob: knob(blocks),
+      bridge, toggleBridge: this.toggleBridge, bridgeTrack: track(bridge), bridgeKnob: knob(bridge),
+      openSky, toggleOpenSky: this.toggleOpenSky, skyTrack: track(openSky), skyKnob: knob(openSky),
+      clearanceShown, clearance: clearance.toFixed(2), clearancePct: Math.round(clearance * 20), setClearance: this.setClearance,
+      selHeight: selHeight.toFixed(1), bridgeClear: (selHeight + clearance).toFixed(2),
+      convertPlatform: this.convertPlatform,
+      platformBtn: { width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2, padding: '12px 14px', borderRadius: 14, border: 'none', cursor: platformTooSmall ? 'not-allowed' : 'pointer', background: converted ? 'var(--success-bg)' : 'var(--accent-subtle)', color: platformTooSmall ? 'var(--text-disabled)' : (converted ? 'var(--success)' : 'var(--accent-hover)'), fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600, opacity: platformTooSmall ? 0.6 : 1 },
+      platformHint: platformTooSmall ? 'Top is too small to stand on' : 'Mount panels on top',
+      platformNote: platformTooSmall ? 'Unavailable — this object’s top is too small to stand on.' : (converted ? 'Created “' + st.sel + ' platform” at base + height. Panels can now be placed on top. Structural adequacy needs engineer verification.' : 'Replaces the object with a roof surface at (its roof height + its own height). Structural adequacy needs engineer verification.'),
+      selPlacement: (st.sel || '').startsWith('TR') ? 'On ground' : 'Roof A',
+      selBase: (st.sel || '').startsWith('TR') ? '0.0' : '6.2', selTop: (st.sel || '').startsWith('TR') ? '5.0' : '7.4',
+      infoRow: { display: 'flex', align: 'center', alignItems: 'center', justifyContent: 'space-between', padding: '9px 4px', fontSize: 13, borderBottom: '1px solid var(--hairline)' },
+      open3D: this.open3D, close3D: this.close3D,
+      hdrGhost: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 42, padding: '0 14px', borderRadius: 12, border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, color: 'var(--text-secondary)' },
+      nextStyleD: { display: 'inline-flex', alignItems: 'center', gap: 8, height: 44, padding: '0 22px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, background: 'var(--action-primary)', color: '#fff' },
+    };
+  }
+}
+</script>
+</body>
+</html>

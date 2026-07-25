@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @keyframes hg-toast { from{ opacity:0; transform:translate(-50%,10px) } to{ opacity:1; transform:translate(-50%,0) } }
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+  textarea::placeholder, input::placeholder{ color:var(--text-tertiary) }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:26px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · settings · voice agent</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Business knowledge</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1)">
+      <sc-for list="{{ views }}" as="v" hint-placeholder-count="2">
+        <button onClick="{{ v.onClick }}" style="{{ v.style }}">{{ v.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <div style="flex-shrink:0; padding:16px 18px 10px; background:var(--canvas)">
+          <button onClick="{{ goBack }}" style="display:flex; align-items:center; gap:5px; background:none; border:none; padding:6px 0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:14px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Voice agent</button>
+          <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between; gap:12px">
+            <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em">What Asha knows</div>
+            <button onClick="{{ save }}" style="height:36px; padding:0 16px; border-radius:999px; border:none; cursor:pointer; font-family:inherit; font-size:13.5px; font-weight:500; background:var(--surface); color:var(--text-primary); box-shadow:var(--e1)">Save</button>
+          </div>
+        </div>
+
+        <div style="flex:1; min-height:0; overflow-y:auto; padding:8px 16px 128px">
+
+          <!-- seeded reassurance -->
+          <div style="position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:18px">
+            <div style="position:absolute; right:-50px; top:-60px; width:200px; height:200px; background:var(--glow-brand); pointer-events:none"></div>
+            <div style="position:relative; z-index:1; display:flex; align-items:flex-start; gap:13px">
+              <span style="width:44px; height:44px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; box-shadow:var(--e2); flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span>
+              <div style="flex:1; min-width:0">
+                <div style="font-size:16px; font-weight:700; letter-spacing:-0.01em">Already filled in</div>
+                <div style="margin-top:3px; font-size:13px; color:var(--text-secondary); text-wrap:pretty">Every section has a correct answer to start. Day one it works — edit any of it to sound like you.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- unanswered loop callout -->
+          <button onClick="{{ goUnanswered }}" style="margin-top:12px; width:100%; background:var(--surface); border-radius:18px; box-shadow:var(--e1); padding:15px 16px; display:flex; align-items:center; gap:13px; cursor:pointer; border:none; font-family:inherit; text-align:left">
+            <span style="width:40px; height:40px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M12 7v4"></path><path d="M12 15h.01"></path></svg></span>
+            <span style="flex:1; min-width:0"><span style="display:block; font-size:14.5px; font-weight:500">3 customers asked about hail damage</span><span style="display:block; margin-top:1px; font-size:12.5px; color:var(--text-secondary)">Answer once, Asha knows it next call</span></span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m9 18 6-6-6-6"></path></svg>
+          </button>
+
+          <!-- SECTIONS -->
+          <div style="margin-top:16px; display:flex; flex-direction:column; gap:14px">
+            <sc-for list="{{ sections }}" as="s" hint-placeholder-count="7">
+              <div id="mk-{{ s.key }}" style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+                <div style="display:flex; align-items:center; gap:10px">
+                  <span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">{{ s.label }}</span>
+                  <span style="{{ s.badge }}">{{ s.badgeLabel }}</span>
+                  <sc-if value="{{ s.notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ s.onEdit }}" aria-label="Edit" style="width:32px; height:32px; border-radius:50%; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-secondary); display:flex; align-items:center; justify-content:center; box-shadow:var(--e1)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></button></sc-if>
+                </div>
+                <sc-if value="{{ s.hint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px; font-size:12.5px; color:var(--text-tertiary)">{{ s.hint }}</div></sc-if>
+                <sc-if value="{{ s.editing }}" hint-placeholder-val="{{ false }}">
+                  <textarea value="{{ draft }}" onChange="{{ onDraft }}" aria-label="Edit answer" style="margin-top:12px; width:100%; min-height:128px; padding:14px; border:none; outline:none; background:var(--surface-alt); border-radius:14px; box-shadow:var(--e1); font-family:inherit; font-size:14.5px; line-height:1.55; color:var(--text-primary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                  <div style="margin-top:10px; display:flex; gap:9px; justify-content:flex-end">
+                    <button onClick="{{ cancelEdit }}" style="height:40px; padding:0 16px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-secondary); font-family:inherit; font-size:14px; font-weight:500">Cancel</button>
+                    <button onClick="{{ saveEdit }}" style="height:40px; padding:0 20px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Done</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ s.notEditing }}" hint-placeholder-val="{{ true }}"><div style="margin-top:10px; font-size:14.5px; line-height:1.6; color:var(--text-primary); text-wrap:pretty">{{ s.body }}</div></sc-if>
+              </div>
+            </sc-for>
+
+            <!-- COMMON OBJECTIONS -->
+            <div id="mk-objections" style="background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="display:flex; align-items:center; gap:10px">
+                <span style="flex:1; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Common objections</span>
+                <span style="{{ objBadge }}">{{ objBadgeLabel }}</span>
+              </div>
+              <div style="margin-top:4px; font-size:12.5px; color:var(--text-tertiary)">What customers push back on — and the answer you want given.</div>
+              <div style="margin-top:14px; display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ objections }}" as="o" hint-placeholder-count="4">
+                  <div style="background:var(--surface-alt); border-radius:16px; box-shadow:var(--e1); padding:14px">
+                    <div style="display:flex; align-items:flex-start; gap:10px">
+                      <span style="flex:1; font-size:14px; font-weight:500; color:var(--text-primary); text-wrap:pretty">"{{ o.q }}"</span>
+                      <sc-if value="{{ o.notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ o.onEdit }}" aria-label="Edit" style="flex-shrink:0; width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; background:var(--surface); color:var(--text-secondary); display:flex; align-items:center; justify-content:center; box-shadow:var(--e1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></button></sc-if>
+                    </div>
+                    <sc-if value="{{ o.editing }}" hint-placeholder-val="{{ false }}">
+                      <input value="{{ objDraftQ }}" onChange="{{ onObjDraftQ }}" placeholder="What the customer says…" aria-label="Objection" style="margin-top:10px; width:100%; height:40px; padding:0 13px; border:none; outline:none; background:var(--surface); border-radius:11px; box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500; color:var(--text-primary); box-sizing:border-box" style-focus="{{ inputFocus }}">
+                      <textarea value="{{ objDraftA }}" onChange="{{ onObjDraftA }}" placeholder="The answer you want Asha to give…" aria-label="Answer" style="margin-top:9px; width:100%; min-height:96px; padding:12px 13px; border:none; outline:none; background:var(--surface); border-radius:11px; box-shadow:var(--e1); font-family:inherit; font-size:14px; line-height:1.55; color:var(--text-secondary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                      <div style="margin-top:10px; display:flex; gap:9px; justify-content:flex-end">
+                        <button onClick="{{ o.onRemove }}" aria-label="Remove" style="margin-right:auto; height:40px; padding:0 14px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-tertiary); font-family:inherit; font-size:14px; font-weight:500">Remove</button>
+                        <button onClick="{{ cancelObj }}" style="height:40px; padding:0 16px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-secondary); font-family:inherit; font-size:14px; font-weight:500">Cancel</button>
+                        <button onClick="{{ saveObj }}" style="height:40px; padding:0 20px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Done</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ o.notEditing }}" hint-placeholder-val="{{ true }}"><div style="margin-top:7px; font-size:13.5px; line-height:1.55; color:var(--text-secondary); text-wrap:pretty">{{ o.a }}</div></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ addObj }}" style="margin-top:12px; width:100%; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:7px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add an objection</button>
+            </div>
+
+            <!-- ANYTHING ELSE -->
+            <div id="mk-else" style="position:relative; overflow:hidden; background:var(--surface); border-radius:20px; box-shadow:var(--e2); padding:18px">
+              <div style="position:absolute; right:-50px; bottom:-70px; width:200px; height:200px; background:var(--glow-brand); pointer-events:none; opacity:.7"></div>
+              <div style="position:relative; z-index:1">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Anything else</div>
+                <div style="margin-top:4px; font-size:13px; color:var(--text-secondary)">Anything about your business that doesn't fit above — in your own words. You're never limited to our sections.</div>
+                <textarea value="{{ anythingElse }}" onChange="{{ onAnythingElse }}" placeholder="e.g. If a customer compares us with a cheaper installer, don't badmouth anyone — just mention our 400+ installs and free first-year cleaning." aria-label="Anything else" style="margin-top:12px; width:100%; min-height:120px; padding:14px 16px; border:none; outline:none; background:var(--surface-alt); border-radius:14px; box-shadow:var(--e1); font-family:inherit; font-size:15px; line-height:1.55; color:var(--text-primary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                <div style="margin-top:6px; font-size:12px; color:var(--text-tertiary)">{{ elseCount }}</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- sticky action bar -->
+        <div style="flex-shrink:0; position:absolute; left:0; right:0; bottom:0; z-index:6; padding:16px 16px 18px; background:var(--canvas); box-shadow:0 -8px 20px -6px rgba(10,10,11,0.10)">
+          <div style="display:flex; gap:10px">
+            <button onClick="{{ goUnanswered }}" style="flex-shrink:0; height:52px; padding:0 16px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); color:var(--text-primary); box-shadow:var(--e2); font-family:inherit; font-size:14.5px; font-weight:500">What was asked</button>
+            <button onClick="{{ goTest }}" style="flex:1; height:52px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; box-shadow:var(--e3); font-family:inherit; font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:center; gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"></path><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"></path></svg>Test how it answers</button>
+          </div>
+        </div>
+
+        <sc-if value="{{ showSaved }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; left:50%; bottom:86px; z-index:40; display:flex; align-items:center; gap:9px; padding:12px 18px; border-radius:999px; background:var(--action-primary); color:#fff; box-shadow:var(--e4); font-size:14px; font-weight:500; white-space:nowrap; animation:hg-toast 260ms var(--ease-spring) both"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved — Asha's knowledge updated</div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <!-- SIDEBAR -->
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px; z-index:2">
+          <button onClick="{{ goBack }}" style="display:flex; align-items:center; gap:10px; padding:0; background:none; border:none; cursor:pointer; font-family:inherit">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; flex-shrink:0">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </button>
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:4px">
+            <div onClick="{{ goBack }}" style="{{ navRow }}" title="My Day"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg><span style="flex:1">My Day</span></div>
+            <div onClick="{{ goLeads }}" style="{{ navRow }}" title="Leads"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span style="flex:1">Leads</span></div>
+            <div style="{{ navRow }}" title="Projects"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3z"></path><path d="M14 3h7v7h-7z"></path><path d="M14 14h7v7h-7z"></path><path d="M3 14h7v7H3z"></path></svg><span style="flex:1">Projects</span></div>
+            <div style="{{ navRowActive }}" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex:1">Settings</span></div>
+          </div>
+          <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px">
+            <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0">RP</div>
+            <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Rajesh Patil</div><div style="font-size:12px; color:var(--text-secondary)">Owner</div></div>
+          </div>
+        </div>
+
+        <!-- MAIN -->
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; height:68px; display:flex; align-items:center; gap:16px; padding:0 30px">
+            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-secondary)"><button onClick="{{ goBack }}" style="background:none; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--text-secondary)">Settings</button><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg><button onClick="{{ goSetup }}" style="background:none; border:none; padding:0; cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--text-secondary)">Voice agent</button><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg><span style="color:var(--text-primary); font-weight:500">What it knows</span></div>
+            <div style="flex:1"></div>
+            <button onClick="{{ goUnanswered }}" style="height:40px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500">See what customers asked</button>
+            <button onClick="{{ save }}" style="height:40px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; background:var(--surface); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500">Save</button>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" on-click="{{ goTest }}" hint-size="150px,40px">Test how it answers</x-import>
+          </div>
+
+          <div style="flex:1; min-height:0; display:flex; gap:24px; padding:6px 30px 26px">
+
+            <!-- LEFT nav -->
+            <div style="width:196px; flex-shrink:0; position:relative">
+              <div style="position:sticky; top:0; display:flex; flex-direction:column">
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); padding:0 6px">Sections</div>
+                <div style="margin-top:12px; display:flex; flex-direction:column; gap:2px">
+                  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="9">
+                    <button onClick="{{ g.onClick }}" style="display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:none; cursor:pointer; background:transparent; font-family:inherit; text-align:left; color:var(--text-secondary)" style-hover="{{ navHover }}">
+                      <span style="width:18px; height:18px; border-radius:50%; background:var(--success-bg); color:var(--success); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                      <span style="flex:1; font-size:13.5px">{{ g.label }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <!-- CENTER -->
+            <div id="k-scroll" style="flex:1; min-width:0; position:relative; overflow-y:auto; padding-right:4px">
+
+              <div style="position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                <div style="position:absolute; right:-40px; top:-70px; width:280px; height:280px; background:var(--glow-brand); pointer-events:none"></div>
+                <div style="position:relative; z-index:1; display:flex; align-items:center; gap:16px">
+                  <span style="width:52px; height:52px; border-radius:50%; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; box-shadow:var(--e2); flex-shrink:0"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></span>
+                  <div style="flex:1; min-width:0">
+                    <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em">What Asha tells your customers</div>
+                    <div style="margin-top:4px; font-size:14px; color:var(--text-secondary); text-wrap:pretty">Every section's already filled in with a correct answer — day one it works. Edit anything and it starts to sound like you.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTIONS -->
+              <sc-for list="{{ sections }}" as="s" hint-placeholder-count="7">
+                <div id="k-{{ s.key }}" style="margin-top:16px; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                  <div style="display:flex; align-items:center; gap:12px">
+                    <div style="flex:1; min-width:0">
+                      <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">{{ s.label }}</span>
+                      <sc-if value="{{ s.hint }}" hint-placeholder-val="{{ false }}"><span style="margin-left:10px; font-size:12.5px; color:var(--text-tertiary)">{{ s.hint }}</span></sc-if>
+                    </div>
+                    <span style="{{ s.badge }}">{{ s.badgeLabel }}</span>
+                    <sc-if value="{{ s.notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ s.onEdit }}" style="height:34px; padding:0 15px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:13.5px; font-weight:500; display:inline-flex; align-items:center; gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>Edit</button></sc-if>
+                  </div>
+                  <sc-if value="{{ s.editing }}" hint-placeholder-val="{{ false }}">
+                    <textarea value="{{ draft }}" onChange="{{ onDraft }}" aria-label="Edit answer" style="margin-top:14px; width:100%; min-height:120px; padding:14px 16px; border:none; outline:none; background:var(--surface-alt); border-radius:14px; box-shadow:var(--e1); font-family:inherit; font-size:15px; line-height:1.6; color:var(--text-primary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                    <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end">
+                      <button onClick="{{ cancelEdit }}" style="height:40px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-secondary); font-family:inherit; font-size:14px; font-weight:500">Cancel</button>
+                      <button onClick="{{ saveEdit }}" style="height:40px; padding:0 22px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:14px; font-weight:500">Done</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ s.notEditing }}" hint-placeholder-val="{{ true }}"><div style="margin-top:12px; font-size:15px; line-height:1.65; color:var(--text-primary); max-width:680px; text-wrap:pretty">{{ s.body }}</div></sc-if>
+                </div>
+              </sc-for>
+
+              <!-- OBJECTIONS -->
+              <div id="k-objections" style="margin-top:16px; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                <div style="display:flex; align-items:center; gap:12px">
+                  <div style="flex:1; min-width:0"><span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Common objections</span><span style="margin-left:10px; font-size:12.5px; color:var(--text-tertiary)">What customers push back on — and the answer you want given.</span></div>
+                  <span style="{{ objBadge }}">{{ objBadgeLabel }}</span>
+                </div>
+                <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                  <sc-for list="{{ objections }}" as="o" hint-placeholder-count="4">
+                    <div style="background:var(--surface-alt); border-radius:16px; box-shadow:var(--e1); padding:16px; display:flex; flex-direction:column">
+                      <div style="display:flex; align-items:flex-start; gap:10px">
+                        <span style="flex:1; font-size:14.5px; font-weight:500; color:var(--text-primary); text-wrap:pretty">"{{ o.q }}"</span>
+                        <sc-if value="{{ o.notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ o.onEdit }}" aria-label="Edit" style="flex-shrink:0; width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; background:var(--surface); color:var(--text-secondary); display:flex; align-items:center; justify-content:center; box-shadow:var(--e1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></button></sc-if>
+                      </div>
+                      <sc-if value="{{ o.editing }}" hint-placeholder-val="{{ false }}">
+                        <input value="{{ objDraftQ }}" onChange="{{ onObjDraftQ }}" placeholder="What the customer says…" aria-label="Objection" style="margin-top:10px; width:100%; height:40px; padding:0 13px; border:none; outline:none; background:var(--surface); border-radius:11px; box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500; color:var(--text-primary); box-sizing:border-box" style-focus="{{ inputFocus }}">
+                        <textarea value="{{ objDraftA }}" onChange="{{ onObjDraftA }}" placeholder="The answer you want Asha to give…" aria-label="Answer" style="margin-top:9px; width:100%; min-height:96px; padding:12px 13px; border:none; outline:none; background:var(--surface); border-radius:11px; box-shadow:var(--e1); font-family:inherit; font-size:14px; line-height:1.55; color:var(--text-secondary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                        <div style="margin-top:10px; display:flex; gap:9px; align-items:center">
+                          <button onClick="{{ o.onRemove }}" style="margin-right:auto; height:38px; padding:0 12px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-tertiary); font-family:inherit; font-size:13.5px; font-weight:500">Remove</button>
+                          <button onClick="{{ cancelObj }}" style="height:38px; padding:0 15px; border-radius:999px; border:none; cursor:pointer; background:transparent; color:var(--text-secondary); font-family:inherit; font-size:13.5px; font-weight:500">Cancel</button>
+                          <button onClick="{{ saveObj }}" style="height:38px; padding:0 18px; border-radius:999px; border:none; cursor:pointer; background:var(--action-primary); color:#fff; font-family:inherit; font-size:13.5px; font-weight:500">Done</button>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ o.notEditing }}" hint-placeholder-val="{{ true }}"><div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:var(--text-secondary); text-wrap:pretty">{{ o.a }}</div></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <button onClick="{{ addObj }}" style="margin-top:14px; height:44px; padding:0 20px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:7px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Add an objection</button>
+              </div>
+
+              <!-- ANYTHING ELSE -->
+              <div id="k-else" style="margin-top:16px; position:relative; overflow:hidden; background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:22px 24px">
+                <div style="position:absolute; right:-40px; bottom:-80px; width:260px; height:260px; background:var(--glow-brand); pointer-events:none; opacity:.7"></div>
+                <div style="position:relative; z-index:1">
+                  <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Anything else</div>
+                  <div style="margin-top:4px; font-size:14px; color:var(--text-secondary)">Anything about your business that doesn't fit above — in your own words. You're never limited to our sections.</div>
+                  <textarea value="{{ anythingElse }}" onChange="{{ onAnythingElse }}" placeholder="e.g. If a customer compares us with a cheaper installer, don't badmouth anyone — just mention our 400+ installs and free first-year cleaning." aria-label="Anything else" style="margin-top:12px; width:100%; min-height:104px; padding:14px 16px; border:none; outline:none; background:var(--surface-alt); border-radius:14px; box-shadow:var(--e1); font-family:inherit; font-size:15px; line-height:1.55; color:var(--text-primary); resize:vertical; box-sizing:border-box" style-focus="{{ inputFocus }}"></textarea>
+                  <div style="margin-top:6px; font-size:12.5px; color:var(--text-tertiary)">{{ elseCount }}</div>
+                </div>
+              </div>
+
+              <div style="height:8px"></div>
+            </div>
+
+            <!-- RIGHT rail -->
+            <div style="width:300px; flex-shrink:0; position:relative">
+              <div style="position:sticky; top:0; display:flex; flex-direction:column; gap:14px">
+                <div style="background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:20px">
+                  <div style="display:flex; align-items:center; gap:10px">
+                    <span style="width:36px; height:36px; border-radius:50%; background:var(--warning-bg); color:var(--warning); display:flex; align-items:center; justify-content:center; flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M12 7v4"></path><path d="M12 15h.01"></path></svg></span>
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">Keeps improving</div>
+                  </div>
+                  <div style="margin-top:12px; font-size:14.5px; font-weight:500; color:var(--text-primary); text-wrap:pretty">3 customers asked about hail damage this week</div>
+                  <div style="margin-top:5px; font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">Answer it once and Asha knows it from the next call. Your knowledge grows from real calls, not a blank page.</div>
+                  <button onClick="{{ goUnanswered }}" style="margin-top:14px; width:100%; height:44px; border-radius:999px; border:none; cursor:pointer; background:var(--surface-alt); color:var(--text-primary); box-shadow:var(--e1); font-family:inherit; font-size:14px; font-weight:500">See what customers asked</button>
+                </div>
+                <div style="background:var(--surface); border-radius:22px; box-shadow:var(--e2); padding:20px">
+                  <div style="font-size:14px; font-weight:500; color:var(--text-primary)">Hear it out loud</div>
+                  <div style="margin-top:4px; font-size:13px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">Ask Asha a question and check the answer before any customer does.</div>
+                  <div style="margin-top:14px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" on-click="{{ goTest }}" hint-size="100%,48px" style="width:100%">Test how it answers</x-import></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <sc-if value="{{ showSaved }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; left:50%; bottom:28px; z-index:40; display:flex; align-items:center; gap:9px; padding:13px 20px; border-radius:999px; background:var(--action-primary); color:#fff; box-shadow:var(--e4); font-size:14.5px; font-weight:500; white-space:nowrap; animation:hg-toast 260ms var(--ease-spring) both"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Saved — Asha's knowledge updated. Nothing else changed.</div>
+        </sc-if>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2010,&quot;height&quot;:1040},&quot;defaultState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;seeded&quot;,&quot;personalised&quot;],&quot;default&quot;:&quot;seeded&quot;,&quot;tsType&quot;:&quot;'seeded'|'personalised'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const view = props.defaultState || 'seeded';
+    const p = this.preset(view);
+    this.state = {
+      view, fields: p.fields, objections: p.objections, anythingElse: p.anythingElse, editedKeys: p.editedKeys, objEdited: p.objEdited,
+      editing: null, draft: '', objEditing: null, objDraftQ: '', objDraftA: '', showSaved: false,
+    };
+  }
+
+  seed() {
+    return {
+      about: "Suryodaya Solar has installed rooftop solar since 2015 — over 400 systems across Nashik and nearby districts. We're MNRE-empanelled and our electricians are BEE-certified. We serve Nashik, Sinnar, Niphad and the areas around them.",
+      products: "We fit Tier-1 mono PERC and TOPCon panels — mainly Waaree, Adani and Vikram Solar — chosen for proven performance in Indian heat. Inverters are Growatt and Sungrow, picked for reliable local service, not just the lowest price.",
+      warranty: "Panels carry a 25-year performance warranty and a 12-year product warranty. Inverters have a 5-year warranty, extendable. Our own workmanship is covered for 2 years, including free service visits.",
+      process: "Survey within about 2 days of your enquiry. Design and quotation in 3 days. Installation takes 1–2 days once material arrives. Net-metering approval from the DISCOM usually takes 3–6 weeks — that part is with the utility, not us.",
+      pricing: "Our price includes panels, inverter, mounting structure, cabling, installation and the net-metering paperwork. Extra charges apply only for civil work or unusually long cable runs, and we tell you upfront. For an exact quote, Asha offers a callback from our team.",
+      subsidy: "Under PM Surya Ghar, residential rooftop gets a central subsidy — up to ₹78,000 for systems of 3 kW and above. We handle the whole application, and it's paid into your bank account after installation and inspection, usually within a few weeks.",
+      financing: "We work with SBI, Bank of Baroda and a couple of NBFCs for solar loans. Typical EMIs start around ₹1,500–2,000 a month depending on system size and tenure. We help you with the paperwork.",
+    };
+  }
+  seedObjections() {
+    return [
+      { id: 'o1', q: "It's too expensive", a: "I understand. Most homeowners recover the cost in 4–5 years through bill savings and the subsidy, and the system runs for 25 years — so it really pays you back over time." },
+      { id: 'o2', q: "I'll wait for prices to drop", a: "That's fair. Panel prices have mostly settled, and every month without solar is a full bill paid to the grid. The PM Surya Ghar subsidy is available now, too — that may not last forever." },
+      { id: 'o3', q: "Does it work in the monsoon?", a: "Yes — panels still generate on cloudy days, just a little less. We size the system for Nashik's monsoon months, so your yearly savings hold up." },
+      { id: 'o4', q: "What about cleaning and upkeep?", a: "Very little. A rinse every few weeks in the dry season is enough, and we include free service visits for the first two years. The rain does most of the cleaning." },
+    ];
+  }
+
+  preset(v) {
+    const fields = this.seed();
+    const objections = this.seedObjections();
+    if (v === 'personalised') {
+      fields.about = "I'm Rajesh — I started Suryodaya Solar in Nashik in 2015, and we've now put up over 400 rooftops around here. We're MNRE-empanelled, my team is local, and if something needs fixing we're a short drive away, not a call centre.";
+      fields.products = "We only fit Tier-1 panels — Waaree and Adani mostly — because I've seen the cheaper ones fade in five summers. Growatt and Sungrow inverters, because their service turns up when you call. I'd rather quote a fair price than the cheapest one and let you down later.";
+      fields.pricing = "The price covers everything — panels, inverter, structure, wiring, installation and the net-metering paperwork. The only extras are civil work or a very long cable run, and I'll always tell you before, never after. If you want an exact number, Asha will set up a call with me.";
+      fields.subsidy = "PM Surya Ghar gives residential rooftops up to ₹78,000 back for 3 kW and above. We do the whole application for you — you don't chase anyone. It lands in your bank account after the DISCOM inspection, usually within a few weeks.";
+      objections[0].a = "I hear you. Look at it this way — it pays for itself in about 4–5 years from bill savings and the subsidy, then gives you free power for another twenty. We've done 400+ of these and I'm happy to show you a neighbour's bill.";
+      return {
+        fields, objections,
+        anythingElse: "If a customer is comparing us with a cheaper local installer, don't badmouth anyone — just mention our 400+ installs around Nashik and the free first-year cleaning we include. And always offer to have me call them personally.",
+        editedKeys: ['about', 'products', 'pricing', 'subsidy'],
+        objEdited: true,
+      };
+    }
+    return { fields, objections, anythingElse: '', editedKeys: [], objEdited: false };
+  }
+
+  setView = (v) => { const p = this.preset(v); this.setState({ view: v, fields: p.fields, objections: p.objections, anythingElse: p.anythingElse, editedKeys: p.editedKeys, objEdited: p.objEdited, editing: null, objEditing: null }); };
+
+  startEdit = (key) => this.setState(s => ({ editing: key, draft: s.fields[key], objEditing: null }));
+  onDraft = (e) => { const v = e.target.value; this.setState({ draft: v }); };
+  cancelEdit = () => this.setState({ editing: null });
+  saveEdit = () => this.setState(s => ({ fields: { ...s.fields, [s.editing]: s.draft }, editedKeys: s.editedKeys.includes(s.editing) ? s.editedKeys : [...s.editedKeys, s.editing], editing: null }));
+
+  startObj = (id) => this.setState(s => { const o = s.objections.find(x => x.id === id) || { q: '', a: '' }; return { objEditing: id, objDraftQ: o.q, objDraftA: o.a, editing: null }; });
+  onObjDraftQ = (e) => { const v = e.target.value; this.setState({ objDraftQ: v }); };
+  onObjDraftA = (e) => { const v = e.target.value; this.setState({ objDraftA: v }); };
+  cancelObj = () => this.setState({ objEditing: null });
+  saveObj = () => this.setState(s => ({ objections: s.objections.map(o => o.id === s.objEditing ? { ...o, q: s.objDraftQ, a: s.objDraftA } : o), objEdited: true, objEditing: null }));
+  removeObj = () => this.setState(s => ({ objections: s.objections.filter(o => o.id !== s.objEditing), objEdited: true, objEditing: null }));
+  addObj = () => { const id = 'o' + Date.now(); this.setState(s => ({ objections: [...s.objections, { id, q: '', a: '' }], objEditing: id, objDraftQ: '', objDraftA: '', editing: null })); };
+
+  onAnythingElse = (e) => { const v = e.target.value; this.setState({ anythingElse: v }); };
+  save = () => { this.setState({ showSaved: true }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ showSaved: false }), 3000); };
+  scrollTo = (id) => () => { const el = document.getElementById(id); const sc = document.getElementById('k-scroll'); if (el && sc) sc.scrollTop = Math.max(0, el.offsetTop - 12); };
+  go = (url) => () => { window.location.href = url; };
+
+  badge(edited) {
+    return edited
+      ? { flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 5, height: 24, padding: '0 11px', borderRadius: 999, fontSize: 12, fontWeight: 500, background: 'var(--accent-subtle)', color: 'var(--accent)' }
+      : { flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 24, padding: '0 11px', borderRadius: 999, fontSize: 12, fontWeight: 500, background: 'var(--neutral-bg)', color: 'var(--text-secondary)' };
+  }
+
+  renderVals() {
+    const { view, fields, objections, anythingElse, editedKeys, objEdited, editing, objEditing } = this.state;
+
+    const views = [
+      { key: 'seeded', label: 'Seeded defaults' },
+      { key: 'personalised', label: 'Personalised' },
+    ].map(v => {
+      const active = view === v.key;
+      return {
+        label: v.label, onClick: () => this.setView(v.key),
+        style: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 16px', borderRadius: 999, whiteSpace: 'nowrap', background: active ? 'var(--action-primary)' : 'transparent', color: active ? '#fff' : 'var(--text-secondary)', transition: 'all 160ms var(--ease-standard)' },
+      };
+    });
+
+    const meta = [
+      { key: 'about', label: 'About us' },
+      { key: 'products', label: 'Products' },
+      { key: 'warranty', label: 'Warranty' },
+      { key: 'process', label: 'Process & timeline' },
+      { key: 'pricing', label: 'Pricing & offers', hint: "It's your call what Asha may say about price." },
+      { key: 'subsidy', label: 'Subsidy' },
+      { key: 'financing', label: 'Financing' },
+    ];
+    const sections = meta.map(m => {
+      const edited = editedKeys.includes(m.key);
+      const isEditing = editing === m.key;
+      return {
+        key: m.key, label: m.label, hint: m.hint || false, body: fields[m.key],
+        edited, badge: this.badge(edited), badgeLabel: edited ? 'Edited by you' : 'Seeded',
+        editing: isEditing, notEditing: !isEditing, onEdit: () => this.startEdit(m.key),
+      };
+    });
+
+    const objectionsV = objections.map(o => {
+      const isEditing = objEditing === o.id;
+      return { ...o, editing: isEditing, notEditing: !isEditing, onEdit: () => this.startObj(o.id), onRemove: this.removeObj };
+    });
+
+    const groups = [
+      ...meta.map(m => ({ id: 'k-' + m.key, label: m.label })),
+      { id: 'k-objections', label: 'Common objections' },
+      { id: 'k-else', label: 'Anything else' },
+    ].map(g => ({ ...g, onClick: this.scrollTo(g.id) }));
+
+    const elseLen = (anythingElse || '').length;
+
+    return {
+      views,
+      fields,
+      sections,
+      draft: this.state.draft, onDraft: this.onDraft, cancelEdit: this.cancelEdit, saveEdit: this.saveEdit,
+      objections: objectionsV,
+      objBadge: this.badge(objEdited), objBadgeLabel: objEdited ? 'Edited by you' : 'Seeded',
+      objDraftQ: this.state.objDraftQ, objDraftA: this.state.objDraftA,
+      onObjDraftQ: this.onObjDraftQ, onObjDraftA: this.onObjDraftA,
+      cancelObj: this.cancelObj, saveObj: this.saveObj, addObj: this.addObj,
+      anythingElse, onAnythingElse: this.onAnythingElse,
+      elseCount: elseLen === 0 ? 'Optional — nothing here yet' : elseLen + ' characters',
+      groups,
+      save: this.save, showSaved: this.state.showSaved,
+      goTest: this.go('AgentTest.dc.html'),
+      goUnanswered: this.go('AgentUnanswered.dc.html'),
+      goSetup: this.go('AgentSetup.dc.html'),
+      goBack: this.go('MyDay.dc.html'),
+      goLeads: this.go('Leads.dc.html'),
+      navRow: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, color: 'var(--text-secondary)', fontSize: 14, cursor: 'pointer', transition: 'background 140ms var(--ease-standard)' },
+      navRowActive: { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500, fontSize: 14, cursor: 'pointer' },
+      navHover: { background: 'var(--neutral-bg)' },
+      inputFocus: { boxShadow: 'var(--e2), 0 0 0 2px var(--surface), 0 0 0 4px var(--accent)' },
+    };
+  }
+}
+</script>
+</body>
+</html>

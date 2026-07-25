@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  a{ color:var(--link); text-decoration:none } a:hover{ color:var(--link-hover) }
+</style>
+</helmet>
+<div style="min-width:100%; padding:44px 52px; box-sizing:border-box; background:var(--canvas); font-family:var(--font-sans); color:var(--text-primary)">
+
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:24px; flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary)">HelioGrid · physical survey · 5.9</div>
+      <div style="margin-top:6px; font-size:26px; font-weight:700; letter-spacing:-0.025em">Review &amp; submit</div>
+      <div style="margin-top:5px; font-size:14px; color:var(--text-secondary); max-width:680px; text-wrap:pretty">The last check before leaving the roof — catch the one forgotten thing that costs a second trip. Submitting hands everything to the designer: notes, measurements and every photo. Gaps are allowed; they just travel forward, said plainly.</div>
+    </div>
+    <div style="display:inline-flex; padding:4px; gap:2px; background:var(--surface); border-radius:999px; box-shadow:var(--e1); flex-wrap:wrap">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:56px">
+
+    <!-- ============================ MOBILE 375 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Mobile · 375 — nested flow, no bottom nav</div>
+      <div style="position:relative; width:375px; height:812px; border-radius:44px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex; flex-direction:column">
+
+        <div style="flex-shrink:0; background:var(--surface); box-shadow:var(--e1); padding:18px 16px 12px; z-index:8">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px">
+            <button onClick="{{ goCapture }}" aria-label="Back" style="display:flex; align-items:center; gap:4px; background:none; border:none; padding:4px 0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:13.5px; font-weight:500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Capture</button>
+            <div style="font-size:14.5px; font-weight:700; letter-spacing:-0.02em">{{ mTitle }}</div>
+            <button onClick="{{ goVisits }}" aria-label="Close" style="width:34px; height:34px; border-radius:50%; border:none; cursor:pointer; background:var(--neutral-bg); color:var(--text-secondary); display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+          </div>
+          <div style="margin-top:9px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-secondary)"><span style="font-weight:500">Priya Sharma · 14 Gangapur Rd</span><span style="display:inline-flex; align-items:center; gap:4px; color:var(--text-tertiary)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>measured on site</span></div>
+        </div>
+
+        <!-- CONFIRMATION -->
+        <sc-if value="{{ isConfirm }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:24px 18px; display:flex; flex-direction:column; align-items:center; text-align:center">
+            <span style="{{ confIconWrap }}"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ confIcon }}"></path></svg></span>
+            <div style="margin-top:14px; font-size:21px; font-weight:700; letter-spacing:-0.02em">{{ confTitle }}</div>
+            <div style="margin-top:6px; font-size:13.5px; color:var(--text-secondary); line-height:1.5; max-width:290px; text-wrap:pretty">{{ confBody }}</div>
+            <div style="margin-top:18px; width:100%; background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:6px 16px">
+              <sc-for list="{{ confRows }}" as="r" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid var(--hairline)"><span style="display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--text-secondary)"><span style="{{ r.dot }}"></span>{{ r.label }}</span><span style="font-family:var(--font-mono); font-size:13.5px; font-weight:600">{{ r.value }}</span></div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ carriedGap }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px; width:100%; display:flex; align-items:flex-start; gap:9px; padding:12px 14px; background:var(--warning-bg); border-radius:12px; text-align:left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="font-size:12.5px; color:var(--warning); line-height:1.45">1 gap carried to the designer: <span style="font-weight:600">meter photo missing</span>. They'll see it before sizing.</div></div>
+            </sc-if>
+          </div>
+          <div style="flex-shrink:0; background:var(--surface); box-shadow:0 -3px 14px rgba(10,10,11,0.06); padding:12px 16px calc(12px + env(safe-area-inset-bottom))">
+            <button onClick="{{ goVisits }}" style="{{ primaryBtn }}">{{ confCta }}</button>
+          </div>
+        </sc-if>
+
+        <!-- REVIEW -->
+        <sc-if value="{{ isReview }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1; min-height:0; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:12px">
+
+            <sc-if value="{{ isRevisit }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--info-bg); border-radius:14px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><div style="font-size:12.5px; color:var(--info); line-height:1.45; text-wrap:pretty">This site was surveyed on 12 Jul (v1). Submitting saves this as <span style="font-weight:600">v2</span> — v1 is kept, never overwritten.</div></div>
+            </sc-if>
+
+            <!-- summary strip -->
+            <div style="display:flex; gap:10px">
+              <div style="flex:1; background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:12px 14px"><div style="font-family:var(--font-mono); font-size:22px; font-weight:700; letter-spacing:-0.02em">{{ photoTotal }}</div><div style="font-size:11.5px; color:var(--text-secondary)">photos</div></div>
+              <div style="flex:1; background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:12px 14px"><div style="font-family:var(--font-mono); font-size:22px; font-weight:700; letter-spacing:-0.02em">{{ noteTotal }}</div><div style="font-size:11.5px; color:var(--text-secondary)">notes</div></div>
+              <div style="flex:1; background:{{ gapStatBg }}; border-radius:14px; box-shadow:var(--e1); padding:12px 14px"><div style="font-family:var(--font-mono); font-size:22px; font-weight:700; letter-spacing:-0.02em; color:{{ gapStatColor }}">{{ gapCount }}</div><div style="font-size:11.5px; color:{{ gapStatColor }}">gaps</div></div>
+            </div>
+
+            <!-- critical gap callout -->
+            <sc-if value="{{ hasCritical }}" hint-placeholder-val="{{ false }}">
+              <div style="border-radius:16px; background:var(--danger-bg); padding:14px 15px">
+                <div style="display:flex; align-items:flex-start; gap:10px">
+                  <span style="flex-shrink:0; width:32px; height:32px; border-radius:50%; background:var(--danger); color:#fff; display:flex; align-items:center; justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg></span>
+                  <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:600; color:var(--danger)">Meter photo missing</div><div style="margin-top:2px; font-size:12.5px; color:var(--text-primary); line-height:1.45; text-wrap:pretty">The designer can't size the system without the meter reading and sanctioned load.</div></div>
+                </div>
+                <button onClick="{{ fixMeter }}" style="{{ fixBtnStrong }}">Fix — back to Electrical</button>
+              </div>
+            </sc-if>
+
+            <!-- groups -->
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+                <div style="background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:13px 14px">
+                  <div style="display:flex; align-items:center; gap:11px">
+                    <span style="{{ g.iconWrap }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ g.icon }}"></path></svg></span>
+                    <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:7px"><span style="font-size:14px; font-weight:600">{{ g.label }}</span><span style="{{ g.statusChip }}">{{ g.statusText }}</span></div><div style="margin-top:2px; font-size:12px; color:var(--text-secondary); line-height:1.35; text-wrap:pretty">{{ g.summary }}</div></div>
+                    <sc-if value="{{ g.canFix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ g.onFix }}" style="{{ fixLink }}">Fix</button></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- flagged -->
+            <div style="background:var(--surface); border-radius:14px; box-shadow:var(--e1); padding:13px 14px">
+              <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px">Flagged for the designer</div>
+              <div style="display:flex; flex-direction:column; gap:9px">
+                <sc-for list="{{ flags }}" as="f" hint-placeholder-count="2">
+                  <div style="display:flex; align-items:flex-start; gap:9px"><span style="flex-shrink:0; width:7px; height:7px; border-radius:50%; margin-top:6px; background:var(--warning)"></span><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:500">{{ f.label }}</div><div style="font-size:12px; color:var(--text-secondary); line-height:1.4; text-wrap:pretty">{{ f.note }}</div></div></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex-shrink:0; background:var(--surface); box-shadow:0 -3px 14px rgba(10,10,11,0.06); padding:12px 16px calc(12px + env(safe-area-inset-bottom))">
+            <button onClick="{{ submit }}" style="{{ primaryBtn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4z"></path></svg>{{ submitLabel }}</button>
+            <sc-if value="{{ hasCritical }}" hint-placeholder-val="{{ false }}"><div style="margin-top:7px; text-align:center; font-size:11.5px; color:var(--text-tertiary)">You can submit with the gap — it's carried to the designer.</div></sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <!-- ============================ DESKTOP 1440 ============================ -->
+    <div style="flex-shrink:0">
+      <div style="font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:12px">Desktop · 1440 — group checklist, submit summary beside it</div>
+      <div style="position:relative; width:1440px; height:900px; border-radius:24px; background:var(--canvas); box-shadow:var(--e3); overflow:hidden; display:flex">
+
+        <div style="flex-shrink:0; width:240px; background:var(--surface); box-shadow:var(--e1); display:flex; flex-direction:column; padding:22px 16px">
+          <div style="display:flex; align-items:center; gap:10px; padding:0 6px">
+            <span style="width:38px; height:38px; border-radius:11px; background:var(--gradient-brand); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px">H</span>
+            <span style="font-size:19px; font-weight:700; letter-spacing:-0.02em">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></span>
+          </div>
+          <div style="margin-top:22px; display:flex; flex-direction:column; gap:4px">
+            <sc-for list="{{ navRows }}" as="n" hint-placeholder-count="5">
+              <div onClick="{{ n.onClick }}" style="{{ n.style }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.icon }}"></path></svg><span style="flex:1; white-space:nowrap">{{ n.label }}</span></div>
+            </sc-for>
+          </div>
+          <div style="margin-top:auto; display:flex; align-items:center; gap:11px; padding:8px; border-radius:12px">
+            <div style="width:38px; height:38px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px">RP</div>
+            <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Ravi Pawar</div><div style="font-size:12px; color:var(--text-secondary)">Surveyor</div></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column">
+          <div style="flex-shrink:0; padding:20px 32px 18px; background:var(--surface); box-shadow:var(--e1)">
+            <button onClick="{{ goCapture }}" style="display:flex; align-items:center; gap:5px; background:none; border:none; padding:0; cursor:pointer; font-family:inherit; color:var(--text-secondary); font-size:12.5px; font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>Guided capture / Review</button>
+            <div style="margin-top:10px; display:flex; align-items:center; gap:16px">
+              <div>
+                <div style="font-size:23px; font-weight:700; letter-spacing:-0.025em">Review &amp; submit</div>
+                <div style="margin-top:3px; font-size:13.5px; color:var(--text-secondary)">{{ dSubtitle }}</div>
+              </div>
+              <div style="flex:1"></div>
+              <div style="display:flex; align-items:center; gap:14px; padding:8px 14px; background:var(--canvas); border-radius:12px">
+                <div style="width:36px; height:36px; border-radius:50%; background:var(--accent-subtle); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px">PS</div>
+                <div><div style="font-size:13.5px; font-weight:600">Priya Sharma · 14 Gangapur Rd</div><div style="font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)">Nashik · measured on site</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONFIRMATION (desktop) -->
+          <sc-if value="{{ isConfirm }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:32px">
+              <div style="max-width:520px; text-align:center">
+                <span style="{{ confIconWrap }}"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ confIcon }}"></path></svg></span>
+                <div style="margin-top:16px; font-size:26px; font-weight:700; letter-spacing:-0.025em">{{ confTitle }}</div>
+                <div style="margin-top:8px; font-size:14.5px; color:var(--text-secondary); line-height:1.55; text-wrap:pretty">{{ confBody }}</div>
+                <div style="margin-top:22px; background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:6px 20px; text-align:left">
+                  <sc-for list="{{ confRows }}" as="r" hint-placeholder-count="3">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-top:1px solid var(--hairline)"><span style="display:flex; align-items:center; gap:10px; font-size:14px; color:var(--text-secondary)"><span style="{{ r.dot }}"></span>{{ r.label }}</span><span style="font-family:var(--font-mono); font-size:14px; font-weight:600">{{ r.value }}</span></div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ carriedGap }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:14px; display:flex; align-items:flex-start; gap:10px; padding:14px 16px; background:var(--warning-bg); border-radius:12px; text-align:left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><div style="font-size:13px; color:var(--warning); line-height:1.45">1 gap carried to the designer: <span style="font-weight:600">meter photo missing</span>. They see it before sizing the system.</div></div>
+                </sc-if>
+                <button onClick="{{ goVisits }}" style="{{ confCtaBtn }}">{{ confCta }}</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- REVIEW (desktop) -->
+          <sc-if value="{{ isReview }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1; min-height:0; display:flex">
+              <div style="flex:1; min-width:0; overflow-y:auto; padding:24px 28px">
+                <sc-if value="{{ isRevisit }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; align-items:flex-start; gap:11px; padding:14px 16px; margin-bottom:16px; background:var(--info-bg); border-radius:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg><div style="font-size:13.5px; color:var(--info); line-height:1.5; text-wrap:pretty">This site was surveyed on 12 Jul (v1). Submitting saves this as <span style="font-weight:600">v2</span> — the earlier survey is preserved, never overwritten.</div></div>
+                </sc-if>
+                <sc-if value="{{ hasCritical }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; align-items:center; gap:14px; padding:16px 18px; margin-bottom:18px; background:var(--danger-bg); border-radius:16px">
+                    <span style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--danger); color:#fff; display:flex; align-items:center; justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg></span>
+                    <div style="flex:1"><div style="font-size:15px; font-weight:600; color:var(--danger)">Meter photo missing</div><div style="margin-top:2px; font-size:13px; color:var(--text-primary); line-height:1.45">The designer can't size the system without the meter reading and sanctioned load.</div></div>
+                    <button onClick="{{ fixMeter }}" style="{{ fixBtnStrong }}">Fix — Electrical</button>
+                  </div>
+                </sc-if>
+                <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:10px">Captured, group by group</div>
+                <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); overflow:hidden">
+                  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+                    <div style="{{ g.rowStyle }}">
+                      <span style="{{ g.iconWrap }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ g.icon }}"></path></svg></span>
+                      <div style="flex:1; min-width:0"><div style="display:flex; align-items:center; gap:8px"><span style="font-size:14.5px; font-weight:600">{{ g.label }}</span><span style="{{ g.statusChip }}">{{ g.statusText }}</span></div><div style="margin-top:2px; font-size:12.5px; color:var(--text-secondary)">{{ g.summary }}</div></div>
+                      <sc-if value="{{ g.canFix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ g.onFix }}" style="{{ fixLink }}">Fix</button></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:18px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:10px">Flagged for the designer</div>
+                <div style="background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:6px 18px">
+                  <sc-for list="{{ flags }}" as="f" hint-placeholder-count="2">
+                    <div style="display:flex; align-items:flex-start; gap:11px; padding:13px 0; border-top:1px solid var(--hairline)"><span style="flex-shrink:0; width:8px; height:8px; border-radius:50%; margin-top:6px; background:var(--warning)"></span><div style="flex:1"><div style="font-size:13.5px; font-weight:500">{{ f.label }}</div><div style="margin-top:1px; font-size:12.5px; color:var(--text-secondary); line-height:1.4; text-wrap:pretty">{{ f.note }}</div></div></div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- submit summary panel -->
+              <div style="width:360px; flex-shrink:0; background:var(--surface); box-shadow:-1px 0 0 var(--hairline); display:flex; flex-direction:column">
+                <div style="flex:1; min-height:0; overflow-y:auto; padding:24px 24px 8px; display:flex; flex-direction:column; gap:18px">
+                  <div>
+                    <div style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px">Going to the designer</div>
+                    <div style="display:flex; gap:10px">
+                      <div style="flex:1; background:var(--canvas); border-radius:12px; padding:13px 14px"><div style="font-family:var(--font-mono); font-size:24px; font-weight:700; letter-spacing:-0.02em">{{ photoTotal }}</div><div style="font-size:12px; color:var(--text-secondary)">photos</div></div>
+                      <div style="flex:1; background:var(--canvas); border-radius:12px; padding:13px 14px"><div style="font-family:var(--font-mono); font-size:24px; font-weight:700; letter-spacing:-0.02em">{{ noteTotal }}</div><div style="font-size:12px; color:var(--text-secondary)">notes</div></div>
+                      <div style="flex:1; background:{{ gapStatBg }}; border-radius:12px; padding:13px 14px"><div style="font-family:var(--font-mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; color:{{ gapStatColor }}">{{ gapCount }}</div><div style="font-size:12px; color:{{ gapStatColor }}">gaps</div></div>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:flex-start; gap:10px; padding:13px 15px; background:var(--info-bg); border-radius:12px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.5-3.5L11 18"></path></svg><div style="font-size:12.5px; color:var(--info); line-height:1.45; text-wrap:pretty">All 14 photos — roof, obstructions and surroundings — travel with the survey. The design studio opens them when building the 3D proposal.</div></div>
+                  <div style="font-size:12.5px; color:var(--text-secondary); line-height:1.5; text-wrap:pretty">Submitting hands this to <span style="font-weight:600; color:var(--text-primary)">Nikhil Joshi</span> (designer). Any remaining gap goes with it, said plainly.</div>
+                </div>
+                <div style="flex-shrink:0; padding:16px 24px 20px; box-shadow:0 -1px 0 var(--hairline)">
+                  <button onClick="{{ submit }}" style="{{ dPrimary }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4z"></path></svg>{{ submitLabel }}</button>
+                  <sc-if value="{{ hasCritical }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px; text-align:center; font-size:12px; color:var(--text-tertiary)">Submitting with a gap is allowed — it's carried forward.</div></sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1000},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;clean&quot;,&quot;metergap&quot;,&quot;offline&quot;,&quot;submitted&quot;,&quot;revisit&quot;],&quot;default&quot;:&quot;clean&quot;,&quot;tsType&quot;:&quot;'clean'|'metergap'|'offline'|'submitted'|'revisit'&quot;,&quot;section&quot;:&quot;State&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.ICONS = {
+      roof: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
+      elec: 'M13 2 3 14h9l-1 8 10-12h-9z',
+      shade: 'M12 2a6 6 0 0 0 0 12 6 6 0 0 1 0-12z M12 14v8 M8 22h8',
+      access: 'M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2 M7 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0z M20 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0z M14 9h4l4 4v4a1 1 0 0 1-1 1h-1',
+      struct: 'M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z',
+      photos: 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+    };
+    this.state = { view: props.view || 'clean', carriedGap: false };
+  }
+  setView = (v) => this.setState({ view: v, carriedGap: false });
+  submit = () => this.setState(s => ({ view: s.view === 'offline' ? 'offlinesubmit' : 'submitted', carriedGap: s.view === 'metergap' }));
+
+  goCapture = () => { window.location.href = 'GuidedCapture.dc.html'; };
+  fixMeter = () => { window.location.href = 'GuidedCapture.dc.html'; };
+  fixShading = () => { window.location.href = 'ShadingCapture.dc.html'; };
+  goVisits = () => { window.location.href = 'SurveyorVisits.dc.html'; };
+  goMyDay = () => { window.location.href = 'MyDay.dc.html'; };
+
+  chipStyle(active) { return { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, height: 34, padding: '0 15px', borderRadius: 999, background: active ? 'var(--action-primary)' : 'transparent', color: active ? '#fff' : 'var(--text-secondary)', whiteSpace: 'nowrap' }; }
+  statusChip(kind) {
+    const m = { done: ['var(--success-bg)', 'var(--success)', 'Captured'], gap: ['var(--danger-bg)', 'var(--danger)', 'Missing'], flagged: ['var(--warning-bg)', 'var(--warning)', 'Flagged'] }[kind];
+    return { chip: { flexShrink: 0, display: 'inline-flex', alignItems: 'center', height: 20, padding: '0 9px', borderRadius: 999, fontSize: 11, fontWeight: 500, background: m[0], color: m[1] }, text: m[2] };
+  }
+  iconTint(kind) { return { done: ['var(--success-bg)', 'var(--success)'], gap: ['var(--danger-bg)', 'var(--danger)'], flagged: ['var(--warning-bg)', 'var(--warning)'] }[kind] || ['var(--neutral-bg)', 'var(--text-secondary)']; }
+
+  renderVals() {
+    const { view, carriedGap } = this.state;
+    const isConfirm = view === 'submitted' || view === 'offlinesubmit';
+    const isReview = !isConfirm;
+    const isRevisit = view === 'revisit';
+    const meterGap = view === 'metergap';
+    const hasCritical = meterGap;
+
+    const chipDefs = [
+      { k: 'clean', label: 'Clean' }, { k: 'metergap', label: 'Meter missing' },
+      { k: 'offline', label: 'Offline submit' }, { k: 'submitted', label: 'Submitted' },
+      { k: 'revisit', label: 'Revisit' },
+    ];
+    const chips = chipDefs.map(c => ({ label: c.label, onClick: () => this.setView(c.k), style: this.chipStyle(view === c.k) }));
+
+    const dSubs = {
+      clean: 'Everything captured. One look, then hand it to the designer.',
+      metergap: 'The meter photo is missing — flagged with its consequence. You can still submit.',
+      offline: 'No signal — submitting will queue and upload later. You won\u2019t lose anything.',
+      submitted: 'Handed to the designer.',
+      offlinesubmit: 'Saved locally — will upload when you\u2019re back online.',
+      revisit: 'This site was surveyed before — this becomes a new version.',
+    };
+
+    // groups
+    const g = (id, label, icon, kind, summary, fixTo) => {
+      const sc = this.statusChip(kind); const [bg, fg] = this.iconTint(kind);
+      const canFix = kind !== 'done';
+      return {
+        label, icon, summary, statusChip: sc.chip, statusText: sc.text, canFix,
+        onFix: fixTo === 'shade' ? this.fixShading : this.fixMeter,
+        iconWrap: { flexShrink: 0, width: 34, height: 34, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: bg, color: fg },
+        rowStyle: { display: 'flex', alignItems: 'center', gap: 13, padding: '15px 18px', borderTop: id === 'roof' ? 'none' : '1px solid var(--hairline)' },
+      };
+    };
+    const elecKind = meterGap ? 'gap' : 'done';
+    const elecSummary = meterGap ? 'Main DB photographed · meter photo not taken' : 'Main DB photo · meter reading · sanctioned load 5 kW · MSEDCL';
+    const groups = [
+      g('roof', 'Roof', this.ICONS.roof, 'done', 'RCC flat · 92 m² outlined · 4 corner photos + overall'),
+      g('elec', 'Electrical', this.ICONS.elec, elecKind, elecSummary, 'elec'),
+      g('shade', 'Shading', this.ICONS.shade, 'flagged', '3 obstructions placed · 1 height marked unsure', 'shade'),
+      g('access', 'Access', this.ICONS.access, 'done', 'Internal stairs · 3 m lane · no crane needed'),
+      g('struct', 'Structural notes', this.ICONS.struct, 'flagged', 'Observation logged · for the engineer to assess'),
+      g('photos', 'Photos', this.ICONS.photos, 'done', '14 photos · roof, obstructions & surroundings'),
+    ];
+
+    const flags = [
+      { label: 'Water-tank height marked "unsure"', note: 'Estimated range only — a re-measure on install would confirm it.' },
+      { label: 'Visible crack near the parapet', note: 'Recorded as an observation for the engineer — not a safety verdict.' },
+    ];
+    if (meterGap) flags.unshift({ label: 'Meter photo not captured', note: 'Carried to the designer as an open gap — they must ask the customer or wait for the visit.' });
+
+    const gapCount = meterGap ? 1 : 0;
+    const gapStat = gapCount > 0 ? ['var(--danger-bg)', 'var(--danger)'] : ['var(--surface)', 'var(--text-primary)'];
+
+    // confirmation content
+    const offline = view === 'offlinesubmit';
+    const confIcon = offline ? 'M12 3a9 9 0 1 0 9 9 M21 3l-9 9 M16 3h5v5' : 'M20 6 9 17l-5-5';
+    const confIconWrap = { width: 66, height: 66, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: offline ? 'var(--neutral-bg)' : 'var(--success-bg)', color: offline ? 'var(--text-secondary)' : 'var(--success)' };
+    const confTitle = offline ? 'Saved — will upload later' : 'Survey submitted';
+    const confBody = offline
+      ? "No signal right now. The survey is safe on your phone and uploads automatically on Wi-Fi. You're free to move to the next visit."
+      : 'Handed to Nikhil Joshi (designer) — they\u2019ve been notified and can start building.';
+    const confCta = offline ? 'On to the next visit' : 'Back to my visits';
+    const confRows = offline
+      ? [
+        { label: 'This survey', value: 'Queued', dotC: 'var(--text-tertiary)' },
+        { label: 'Waiting to sync', value: '3 surveys', dotC: 'var(--text-tertiary)' },
+        { label: 'Photos pending', value: '47', dotC: 'var(--text-tertiary)' },
+      ]
+      : [
+        { label: 'Photos handed over', value: '14', dotC: 'var(--success)' },
+        { label: 'Notes & measurements', value: '5', dotC: 'var(--success)' },
+        { label: 'Gaps carried forward', value: carriedGap ? '1' : '0', dotC: carriedGap ? 'var(--warning)' : 'var(--success)' },
+      ];
+    const confRowsV = confRows.map(r => ({ ...r, dot: { width: 8, height: 8, borderRadius: '50%', background: r.dotC } }));
+
+    const navBase = { display: 'flex', alignItems: 'center', gap: 12, height: 44, padding: '0 14px', borderRadius: 12, fontSize: 14, cursor: 'pointer', color: 'var(--text-secondary)' };
+    const navActive = { ...navBase, background: 'var(--accent-subtle)', color: 'var(--accent)', fontWeight: 500 };
+    const navRows = [
+      { label: 'My Day', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', onClick: this.goMyDay, style: navBase },
+      { label: 'My visits', icon: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z', onClick: this.goVisits, style: navActive },
+      { label: 'Leads', icon: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 .01', onClick: () => {}, style: navBase },
+      { label: 'Proposals', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', onClick: () => {}, style: navBase },
+      { label: 'Projects', icon: 'M3 3h7v7H3z', onClick: () => {}, style: navBase },
+    ];
+
+    const primaryBtn = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', height: 48, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--action-primary)', color: '#fff', fontFamily: 'inherit', fontSize: 15, fontWeight: 500, letterSpacing: '-0.01em' };
+
+    return {
+      chips, isConfirm, isReview, isRevisit, hasCritical, carriedGap,
+      mTitle: isConfirm ? 'Submitted' : 'Review',
+      dSubtitle: dSubs[view] || '',
+      groups, flags,
+      photoTotal: 14, noteTotal: 5, gapCount,
+      gapStatBg: gapStat[0], gapStatColor: gapStat[1],
+      submit: this.submit, submitLabel: view === 'offline' ? 'Submit — will sync later' : 'Submit to designer',
+      fixMeter: this.fixMeter, fixShading: this.fixShading, goCapture: this.goCapture, goVisits: this.goVisits,
+      confIcon, confIconWrap, confTitle, confBody, confCta, confRows: confRowsV,
+      navRows, primaryBtn,
+      confCtaBtn: { ...primaryBtn, marginTop: 22, width: 'auto', display: 'inline-flex', padding: '0 28px' },
+      dPrimary: primaryBtn,
+      fixLink: { flexShrink: 0, height: 32, padding: '0 13px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500 },
+      fixBtnStrong: { marginTop: 12, height: 38, padding: '0 16px', borderRadius: 999, border: 'none', cursor: 'pointer', background: 'var(--danger)', color: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 500, flexShrink: 0 },
+    };
+  }
+}
+</script>
+</body>
+</html>

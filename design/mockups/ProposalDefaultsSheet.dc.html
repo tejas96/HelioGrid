@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="{{ wrap }}">
+
+  <!-- ============ PAYMENT TERMS ============ -->
+  <sc-if value="{{ isPayment }}" hint-placeholder-val="{{ true }}">
+    <div style="font-size:12.5px; color:var(--text-secondary)">Named tranche sets the builder offers as chips. Pick a default or edit its split — each set must total 100%.</div>
+    <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px">
+      <sc-for list="{{ presetChips }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}<sc-if value="{{ p.isDefault }}" hint-placeholder-val="{{ false }}"><span style="{{ defaultTag }}">default</span></sc-if></button></sc-for>
+      <button style="{{ addSetChip }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>New set</button>
+    </div>
+    <div style="margin-top:18px; display:flex; flex-direction:column; gap:8px">
+      <sc-for list="{{ trancheRows }}" as="t" hint-placeholder-count="4">
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--surface-alt); border-radius:12px; box-shadow:var(--e1)">
+          <span style="flex:1; min-width:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ t.label }}</span>
+          <button onClick="{{ t.dec }}" aria-label="Less" style="{{ stepBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg></button>
+          <span style="width:52px; text-align:center; font-family:var(--font-mono); font-size:15px; font-weight:700; font-variant-numeric:tabular-nums">{{ t.pct }}%</span>
+          <button onClick="{{ t.inc }}" aria-label="More" style="{{ stepBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:16px; padding:14px; border-radius:14px; background:{{ totalBg }}">
+      <div style="display:flex; align-items:center; gap:10px">
+        <span style="{{ totalIconWrap }}">{{ totalIcon }}</span>
+        <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:600; color:{{ totalColor }}">{{ totalText }}</div><div style="font-size:12px; color:var(--text-secondary)">{{ totalHelp }}</div></div>
+        <span style="font-family:var(--font-mono); font-size:20px; font-weight:700; color:{{ totalColor }}; font-variant-numeric:tabular-nums">{{ total }}%</span>
+      </div>
+      <div style="margin-top:12px; height:8px; border-radius:999px; background:var(--canvas-sunken); overflow:hidden"><div style="{{ totalFill }}"></div></div>
+    </div>
+  </sc-if>
+
+  <!-- ============ TIMELINE ============ -->
+  <sc-if value="{{ isTimeline }}" hint-placeholder-val="{{ false }}">
+    <div style="font-size:12.5px; color:var(--text-secondary)">The default phases every new project timeline starts with. Reorder them — the sequence flows straight into step 6.</div>
+    <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px">
+      <sc-for list="{{ phaseRows }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--surface-alt); border-radius:12px; box-shadow:var(--e1)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="9" cy="6" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="18" r="1"></circle><circle cx="15" cy="6" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="18" r="1"></circle></svg>
+          <div style="flex:1; min-width:0"><div style="font-size:14px; font-weight:500">{{ p.name }}</div><div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-mono)">{{ p.dur }}</div></div>
+          <button onClick="{{ p.up }}" aria-label="Move up" style="{{ p.upStyle }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg></button>
+          <button onClick="{{ p.down }}" aria-label="Move down" style="{{ p.downStyle }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:14px; display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>Roughly 6–9 weeks end to end · net-metering is the long pole.</div>
+  </sc-if>
+
+  <!-- ============ T&C EDITOR ============ -->
+  <sc-if value="{{ isTerms }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-wrap:wrap; gap:8px">
+      <span style="{{ tcTabActive }}">Standard<span style="{{ defaultTag }}">default</span></span>
+      <span style="{{ tcTab }}">Short-form</span>
+      <button style="{{ addSetChip }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>New template</button>
+    </div>
+    <div style="margin-top:14px; border-radius:14px; box-shadow:var(--e1); overflow:hidden; background:var(--surface)">
+      <div style="display:flex; align-items:center; gap:2px; padding:8px 10px; background:var(--surface-alt)">
+        <span style="{{ tbBtn }}; font-weight:700">B</span><span style="{{ tbBtn }}; font-style:italic">I</span><span style="{{ tbBtn }}; text-decoration:underline">U</span>
+        <span style="width:1px; height:20px; background:var(--hairline); margin:0 4px"></span>
+        <span style="{{ tbBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg></span>
+        <span style="{{ tbBtn }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6h11"></path><path d="M10 12h11"></path><path d="M10 18h11"></path><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></span>
+      </div>
+      <div style="padding:16px 18px; font-size:13px; line-height:1.65; color:var(--text-primary); {{ tcBodyExtra }}">
+        <div style="font-weight:700">1. Scope of work</div>
+        <div style="margin-top:4px; color:var(--text-secondary)">Suryodaya Solar will supply, install and commission the rooftop solar system as specified in this proposal, including all balance-of-system components and DISCOM liaison for net metering.</div>
+        <div style="margin-top:12px; font-weight:700">2. Payment</div>
+        <div style="margin-top:4px; color:var(--text-secondary)">Payments follow the tranche schedule in this proposal. Work on each phase begins once the corresponding tranche is received.</div>
+        <div style="margin-top:12px; font-weight:700">3. Warranty</div>
+        <div style="margin-top:4px; color:var(--text-secondary)">Manufacturer warranties apply to panels and inverters as listed. Workmanship is warranted for 5 years from commissioning.</div>
+        <sc-if value="{{ tcLong }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; font-weight:700">4. Force majeure &amp; delays</div>
+          <div style="margin-top:4px; color:var(--text-secondary)">Timelines are estimates. DISCOM approval and net-metering timelines are outside Suryodaya Solar's control and may extend the schedule. Delays caused by site access, weather or statutory approvals are excluded from any penalty.</div>
+          <div style="margin-top:12px; font-weight:700">5. Cancellation</div>
+          <div style="margin-top:4px; color:var(--text-secondary)">Orders cancelled after material dispatch are subject to restocking and logistics charges. Advance payments are adjusted against costs already incurred.</div>
+        </sc-if>
+      </div>
+    </div>
+    <sc-if value="{{ tcLong }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:12px; display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--warning-bg); border-radius:13px; color:var(--warning)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><span style="font-size:12.5px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">This runs to about 4 pages — 1 over the 3-page limit. Trim it, or the overflow may be cut from the PDF.</span></div>
+    </sc-if>
+    <div style="margin-top:14px; display:flex; align-items:center; gap:12px">
+      <div style="flex:1; min-width:0; display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12.5px; color:{{ pageColor }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v5h5"></path></svg>{{ pageText }}</div>
+      <button onClick="{{ onToggleTc }}" style="{{ demoBtn }}">{{ demoLabel }}</button>
+    </div>
+    <div style="margin-top:14px; display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--surface-alt); border-radius:13px">
+      <div style="flex:1; min-width:0"><div style="font-size:13.5px; font-weight:500">Include our logo on the T&C pages</div><div style="font-size:12px; color:var(--text-secondary)">Header on every terms page of the PDF.</div></div>
+      <div style="{{ logoTrack }}"><span style="{{ logoThumb }}"></span></div>
+    </div>
+  </sc-if>
+
+  <!-- ============ FINANCIAL ============ -->
+  <sc-if value="{{ isFinancial }}" hint-placeholder-val="{{ false }}">
+    <div style="font-size:12.5px; color:var(--text-secondary)">Sensible India defaults for savings maths and financing. These pre-fill steps 3 & 5 — reps only adjust per customer.</div>
+    <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px">
+      <sc-for list="{{ finCards }}" as="f" hint-placeholder-count="6">
+        <div style="padding:14px 16px; background:var(--surface-alt); border-radius:14px; box-shadow:var(--e1)">
+          <div style="font-size:12px; color:var(--text-secondary)">{{ f.label }}</div>
+          <div style="margin-top:6px; display:flex; align-items:baseline; gap:8px"><span style="font-family:var(--font-mono); font-size:19px; font-weight:700; letter-spacing:-0.01em; font-variant-numeric:tabular-nums">{{ f.value }}</span><span style="font-size:12px; color:var(--text-tertiary)">{{ f.sub }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:14px; display:flex; align-items:flex-start; gap:10px; padding:12px 14px; background:var(--info-bg); border-radius:13px; color:var(--info)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span style="font-size:12.5px; line-height:1.5; color:var(--text-primary); text-wrap:pretty">Subsidy follows the PM Surya Ghar slab automatically from the system size in step 3.</span></div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:460},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;payment&quot;,&quot;timeline&quot;,&quot;terms&quot;,&quot;financial&quot;],&quot;default&quot;:&quot;payment&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;scale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tranches&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{label:string,pct:number}&gt;&quot;},&quot;total&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;presets&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;any[]&quot;},&quot;phases&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;any[]&quot;},&quot;tcLong&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;financials&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;any[]&quot;},&quot;onInc&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Function&quot;},&quot;onPreset&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Function&quot;},&quot;onMove&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Function&quot;},&quot;onToggleTc&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Function&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const mode = this.props.mode || 'payment';
+    const small = this.props.scale === 'mobile';
+    const tranches = this.props.tranches || [];
+    const total = this.props.total != null ? this.props.total : tranches.reduce((a, b) => a + b.pct, 0);
+    const presets = this.props.presets || [];
+    const phases = this.props.phases || [];
+    const tcLong = !!this.props.tcLong;
+    const financials = this.props.financials || [];
+    const onInc = this.props.onInc, onPreset = this.props.onPreset, onMove = this.props.onMove, onToggleTc = this.props.onToggleTc;
+
+    const valid = total === 100;
+    const totalColor = valid ? 'var(--success)' : (total > 100 ? 'var(--danger)' : 'var(--warning)');
+    const trancheLabel = tranches.map(t => t.pct).join(' / ');
+    const activePreset = presets.find(p => p.arr.map(x => x[1]).join('/') === tranches.map(t => t.pct).join('/'));
+
+    const stepBtn = { width: 32, height: 32, borderRadius: 9, border: 'none', cursor: 'pointer', background: 'var(--neutral-bg)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
+    const chipBase = { display: 'inline-flex', alignItems: 'center', gap: 7, height: 34, padding: '0 14px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500 };
+    const defaultTag = { display: 'inline-flex', alignItems: 'center', height: 17, padding: '0 7px', borderRadius: 999, background: 'rgba(255,255,255,0.22)', color: 'inherit', fontSize: 9.5, fontWeight: 600, letterSpacing: '0.03em' };
+
+    const presetChips = presets.map((p, i) => {
+      const on = i === 0;
+      const sel = activePreset && activePreset.label === p.label;
+      return { label: p.label, isDefault: on, onClick: onPreset ? onPreset(p.arr) : null,
+        style: { ...chipBase, background: sel ? 'var(--accent)' : 'var(--surface-alt)', color: sel ? '#fff' : 'var(--text-secondary)', boxShadow: sel ? 'none' : 'var(--e1)' } };
+    });
+
+    const trancheRows = tranches.map((t, i) => ({ label: t.label, pct: t.pct,
+      inc: onInc ? onInc(i, 5) : null, dec: onInc ? onInc(i, -5) : null }));
+
+    const phaseRows = phases.map((p, i) => ({ name: p.name, dur: p.dur,
+      up: onMove ? onMove(i, -1) : null, down: onMove ? onMove(i, 1) : null,
+      upStyle: { ...stepBtn, opacity: i === 0 ? 0.35 : 1, pointerEvents: i === 0 ? 'none' : 'auto' },
+      downStyle: { ...stepBtn, opacity: i === phases.length - 1 ? 0.35 : 1, pointerEvents: i === phases.length - 1 ? 'none' : 'auto' } }));
+
+    const pages = tcLong ? 4 : 2;
+    const pageOver = pages > 3;
+    const tbBtn = { width: 30, height: 30, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'var(--text-secondary)', cursor: 'pointer' };
+    const tcTab = { display: 'inline-flex', alignItems: 'center', gap: 7, height: 34, padding: '0 14px', borderRadius: 999, fontSize: 12.5, fontWeight: 500, background: 'var(--surface-alt)', color: 'var(--text-secondary)', boxShadow: 'var(--e1)' };
+
+    const finCards = financials.map(f => ({ label: f.label, value: f.value, sub: f.sub }));
+
+    return {
+      isPayment: mode === 'payment', isTimeline: mode === 'timeline', isTerms: mode === 'terms', isFinancial: mode === 'financial',
+      wrap: { display: 'flex', flexDirection: 'column' },
+
+      presetChips, trancheRows, total, totalColor, defaultTag,
+      addSetChip: { ...chipBase, background: 'transparent', color: 'var(--accent)', boxShadow: '0 0 0 1.5px var(--accent-subtle)' },
+      stepBtn,
+      totalBg: valid ? 'var(--success-bg)' : (total > 100 ? 'var(--danger-bg)' : 'var(--warning-bg)'),
+      totalIconWrap: { width: 30, height: 30, borderRadius: '50%', background: 'var(--surface)', color: totalColor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+      totalIcon: valid
+        ? React.createElement('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M20 6 9 17l-5-5' }))
+        : React.createElement('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }, [React.createElement('circle', { key: 'c', cx: 12, cy: 12, r: 10 }), React.createElement('path', { key: 'l', d: 'M12 8v4' }), React.createElement('path', { key: 'd', d: 'M12 16h.01' })]),
+      totalText: valid ? '100% allocated — valid' : (total > 100 ? (total - 100) + '% over — trim a tranche' : (100 - total) + '% still unallocated'),
+      totalHelp: valid ? 'Ready to offer in the builder.' : 'A tranche set must total exactly 100%.',
+      totalFill: { height: '100%', borderRadius: 999, width: Math.min(100, total) + '%', background: totalColor, transition: 'width 200ms var(--ease-standard)' },
+
+      phaseRows,
+
+      tcLong, onToggleTc,
+      tcTab, tcTabActive: { display: 'inline-flex', alignItems: 'center', gap: 7, height: 34, padding: '0 14px', borderRadius: 999, fontSize: 12.5, fontWeight: 500, background: 'var(--accent)', color: '#fff' },
+      tbBtn,
+      tcBodyExtra: small ? 'max-height:200px; overflow:hidden' : 'max-height:260px; overflow:hidden',
+      pageColor: pageOver ? 'var(--warning)' : 'var(--text-secondary)',
+      pageText: '~ ' + pages + ' / 3 pages' + (pageOver ? ' · over limit' : ''),
+      demoBtn: { border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12.5, fontWeight: 500, height: 32, padding: '0 14px', borderRadius: 999, background: 'var(--neutral-bg)', color: 'var(--text-primary)', flexShrink: 0 },
+      demoLabel: tcLong ? 'Use short version' : 'Preview long version',
+      logoTrack: { width: 44, height: 26, borderRadius: 999, background: 'var(--accent)', padding: 3, display: 'flex', justifyContent: 'flex-end', flexShrink: 0 },
+      logoThumb: { width: 20, height: 20, borderRadius: '50%', background: '#fff', boxShadow: 'var(--e1)' },
+
+      finCards,
+    };
+  }
+}
+</script>
+</body>
+</html>

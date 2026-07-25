@@ -248,9 +248,11 @@ cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
 
 ## 5. Deploys
 
-- **Fly process groups** in one `fly.toml` app: `web`, `api`, `worker`, `voice`,
-  `powersync` (+ separate Fly apps: the 3-node `pg` cluster, `log-shipper`).
-  `primary_region = "bom"`.
+- **One Fly app per service** (ADR-0018): `heliogrid-web`, `heliogrid-api`,
+  `heliogrid-worker`, `heliogrid-voice`, `heliogrid-powersync` (prebuilt
+  `journeyapps/powersync-service` image) — plus the 3-node postgres-flex cluster app and
+  `log-shipper`. web/api/worker/voice build per-app Dockerfiles; apps talk over
+  6PN/flycast private networking. `primary_region = "bom"` on every app.
 - **Capacity posture** ([./research/fly.md](./research/fly.md) — `bom` is chronically
   capacity-tight): `min_machines_running = 1` for web and api (never scale-to-zero in bom);
   worker and voice `autostop = "off"`. **`sin` overflow is a documented manual play**, not

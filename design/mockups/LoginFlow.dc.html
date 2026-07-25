@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/colors.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/typography.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/radius.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/motion.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/tokens/base.css">
+<link rel="stylesheet" href="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/styles.css">
+<script src="_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12/_ds_bundle.js"></script>
+<style>
+  @keyframes hg-bloom { 0%,100%{ transform:translateX(-50%) scale(1); opacity:.85 } 50%{ transform:translateX(-50%) scale(1.09); opacity:1 } }
+  @keyframes hg-rise { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:translateY(0) } }
+  @media (prefers-reduced-motion: reduce){ .hg-bloom-layer{ animation:none !important } .hg-rise{ animation:none !important } }
+</style>
+</helmet>
+<div style="position:relative; width:100%; height:100%; background:var(--canvas); overflow:hidden; font-family:var(--font-sans); color:var(--text-primary)">
+  <div class="hg-bloom-layer" style="{{ bloomStyle }}"></div>
+  
+
+  <div style="position:relative; z-index:1; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:safe center; box-sizing:border-box; padding:{{ padX }}px; overflow-y:auto">
+    <div style="width:100%; max-width:{{ colMax }}px; display:flex; flex-direction:column">
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:36px">
+        <div style="font-weight:700; font-size:22px; letter-spacing:-0.02em; line-height:1">Helio<span style="background:var(--gradient-brand); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent">Grid</span></div>
+      </div>
+
+      <sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column">
+          <h1 style="margin:0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">Welcome back</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary); max-width:36ch">Sign in with your phone number. No password — we'll text you a one-time code.</p>
+
+          <div style="margin-top:28px; display:flex; flex-direction:column; gap:7px">
+            <label for="hg-phone" style="font-size:13px; font-weight:500; color:var(--text-secondary)">Mobile number</label>
+            <div style="{{ phoneWrapStyle }}">
+              <span style="flex-shrink:0; font-family:var(--font-mono); font-size:18px; font-weight:700; color:var(--text-secondary); letter-spacing:0.02em">+91</span>
+              <input id="hg-phone" inputmode="tel" placeholder="98765 43210" value="{{ phone }}" onChange="{{ onPhoneChange }}" onKeyDown="{{ onPhoneKeyDown }}" onFocus="{{ onPhoneFocus }}" onBlur="{{ onPhoneBlur }}" style="flex:1; min-width:0; border:none; outline:none; background:transparent; font-family:var(--font-mono); font-size:18px; letter-spacing:0.14em; color:var(--text-primary); font-variant-numeric:tabular-nums" />
+            </div>
+            <span style="font-size:12px; color:var(--text-tertiary)">Sent by SMS to your registered number.</span>
+          </div>
+
+          <div style="margin-top:22px; width:100%">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ true }}" disabled="{{ continueDisabled }}" loading="{{ continueLoading }}" onClick="{{ submitPhone }}" hint-size="100%,48px" style="width:100%">Continue</x-import>
+          </div>
+
+          <div style="margin-top:22px; text-align:center; font-size:14px; color:var(--text-secondary)">New company? <a href="SignUp.dc.html" style="color:var(--accent); font-weight:500; text-decoration:none">Create an account</a></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOtp }}" hint-placeholder-val="{{ true }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column">
+          <h1 style="margin:0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">Enter your code</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary)">Enter the 6-digit code sent to <span style="color:var(--text-primary); font-weight:500; white-space:nowrap">+91 {{ phoneFormatted }}</span>.</p>
+          <button onClick="{{ changeNumber }}" style="align-self:flex-start; margin-top:8px; background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Change number</button>
+
+          <div style="margin-top:26px; display:flex; gap:10px">
+            <sc-for list="{{ otpBoxes }}" as="box" hint-placeholder-count="6">
+              <input inputmode="numeric" maxlength="1" value="{{ box.value }}" onChange="{{ box.onChange }}" onKeyDown="{{ box.onKeyDown }}" onPaste="{{ box.onPaste }}" onFocus="{{ box.onFocus }}" onBlur="{{ box.onBlur }}" ref="{{ box.setRef }}" style="{{ box.style }}" />
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ otpError }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px; display:flex; align-items:center; gap:7px; color:var(--danger); font-size:13px; font-weight:500">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+              That code doesn't match. Check it and try again.
+            </div>
+          </sc-if>
+
+          <div style="margin-top:22px; display:flex; align-items:center; gap:6px; font-size:14px">
+            <sc-if value="{{ resendEnabled }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ onResend }}" style="background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Resend code</button>
+            </sc-if>
+            <sc-if value="{{ resendDisabled }}" hint-placeholder-val="{{ true }}">
+              <span style="color:var(--text-tertiary)">Resend code in <span style="font-family:var(--font-mono); font-variant-numeric:tabular-nums">{{ countdownLabel }}</span></span>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ showCallMe }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:18px; background:var(--surface); border-radius:16px; box-shadow:var(--e1); padding:16px 18px; display:flex; align-items:center; gap:14px">
+              <div style="flex-shrink:0; width:40px; height:40px; border-radius:50%; background:var(--accent-subtle); display:flex; align-items:center; justify-content:center; color:var(--accent)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div style="flex:1; min-width:0">
+                <sc-if value="{{ callRequested }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:13.5px; line-height:1.45; color:var(--text-secondary)">Calling <span style="color:var(--text-primary); font-weight:500; white-space:nowrap">+91 {{ phoneFormatted }}</span> now with your code. Keep the phone nearby.</div>
+                </sc-if>
+                <sc-if value="{{ callNotRequested }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:13.5px; line-height:1.4; color:var(--text-secondary)">Still no code after two tries?</div>
+                  <button onClick="{{ onCallMe }}" style="margin-top:2px; background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Call me with the code instead</button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:26px; font-size:12px; color:var(--text-tertiary)">Demo — the code is <span style="font-family:var(--font-mono); color:var(--text-secondary)">424242</span>. Type anything else to see the error state.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div class="hg-rise" style="animation:hg-rise 320ms var(--ease-enter) both; display:flex; flex-direction:column; align-items:flex-start">
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--success-bg); display:flex; align-items:center; justify-content:center; color:var(--success)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <h1 style="margin:22px 0 0; font-size:30px; font-weight:700; letter-spacing:-0.025em; line-height:1.1">You're signed in</h1>
+          <p style="margin:10px 0 0; font-size:15px; line-height:1.5; color:var(--text-secondary)">Welcome back. Taking you to your day.</p>
+          <button onClick="{{ restart }}" style="margin-top:26px; background:none; border:none; padding:0; cursor:pointer; color:var(--accent); font-weight:500; font-size:14px; font-family:inherit">Restart demo</button>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:760},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;mobile&quot;,&quot;tsType&quot;:&quot;'mobile'|'desktop'&quot;}}">
+class Component extends DCLogic {
+  state = {
+    step: 'phone', phone: '', phoneFocus: false, continueLoading: false,
+    otp: ['', '', '', '', '', ''], otpError: false, focusedOtp: -1,
+    resendCount: 0, secondsLeft: 0, callRequested: false,
+  };
+  CORRECT = '424242';
+  otpRefs = [];
+  timer = null;
+
+  componentWillUnmount() { this.stopTimer(); }
+
+  stopTimer() { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
+  startTimer() {
+    this.stopTimer();
+    this.setState({ secondsLeft: 30 });
+    this.timer = setInterval(() => {
+      this.setState(s => {
+        const n = s.secondsLeft - 1;
+        if (n <= 0) { this.stopTimer(); return { secondsLeft: 0 }; }
+        return { secondsLeft: n };
+      });
+    }, 1000);
+  }
+
+  onPhoneChange = (e) => this.setState({ phone: e.target.value.replace(/\D/g, '').slice(0, 10) });
+  onPhoneKeyDown = (e) => { if (e.key === 'Enter' && this.state.phone.length === 10) this.submitPhone(); };
+  submitPhone = () => {
+    if (this.state.phone.length !== 10 || this.state.continueLoading) return;
+    this.setState({ continueLoading: true });
+    setTimeout(() => {
+      this.setState({ step: 'otp', continueLoading: false, otp: ['', '', '', '', '', ''], otpError: false, focusedOtp: -1, resendCount: 0, callRequested: false });
+      this.startTimer();
+      setTimeout(() => this.otpRefs[0] && this.otpRefs[0].focus(), 60);
+    }, 700);
+  };
+  changeNumber = () => { this.stopTimer(); this.setState({ step: 'phone', otp: ['', '', '', '', '', ''], otpError: false, focusedOtp: -1, secondsLeft: 0 }); };
+
+  onOtpChange = (i, e) => {
+    const ch = e.target.value.replace(/\D/g, '').slice(-1) || '';
+    const arr = [...this.state.otp]; arr[i] = ch;
+    this.setState({ otp: arr, otpError: false });
+    if (ch && i < 5 && this.otpRefs[i + 1]) this.otpRefs[i + 1].focus();
+    this.maybeVerify(arr);
+  };
+  onOtpKeyDown = (i, e) => {
+    if (e.key === 'Backspace' && !this.state.otp[i] && i > 0) {
+      e.preventDefault();
+      const arr = [...this.state.otp]; arr[i - 1] = '';
+      this.setState({ otp: arr, otpError: false });
+      if (this.otpRefs[i - 1]) this.otpRefs[i - 1].focus();
+    }
+  };
+  onOtpPaste = (e) => {
+    const t = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    if (!t) return;
+    e.preventDefault();
+    const arr = ['', '', '', '', '', ''];
+    for (let k = 0; k < t.length; k++) arr[k] = t[k];
+    this.setState({ otp: arr, otpError: false });
+    const idx = Math.min(t.length, 5);
+    if (this.otpRefs[idx]) this.otpRefs[idx].focus();
+    this.maybeVerify(arr);
+  };
+  maybeVerify(arr) { if (arr.every(c => c !== '')) setTimeout(() => this.verify(arr.join('')), 140); }
+  verify(code) {
+    if (code === this.CORRECT) { this.stopTimer(); this.setState({ step: 'done' }); }
+    else this.setState({ otpError: true });
+  }
+
+  onResend = () => {
+    if (this.state.secondsLeft > 0) return;
+    this.setState(s => ({ resendCount: s.resendCount + 1, otp: ['', '', '', '', '', ''], otpError: false, focusedOtp: -1 }));
+    this.startTimer();
+    setTimeout(() => this.otpRefs[0] && this.otpRefs[0].focus(), 60);
+  };
+  onCallMe = () => this.setState({ callRequested: true });
+  restart = () => { this.stopTimer(); this.setState({ step: 'phone', phone: '', otp: ['', '', '', '', '', ''], otpError: false, focusedOtp: -1, secondsLeft: 0, resendCount: 0, callRequested: false, continueLoading: false }); };
+
+  otpBoxStyle(i) {
+    const desktop = this.props.variant === 'desktop';
+    const { focusedOtp, otpError, otp } = this.state;
+    const filled = otp[i] !== '';
+    const focused = focusedOtp === i;
+    let shadow;
+    if (otpError) shadow = 'inset 0 0 0 1.5px var(--danger), var(--e1)';
+    else if (focused) shadow = 'var(--e2), 0 0 0 2px var(--surface), 0 0 0 4px var(--accent)';
+    else if (filled) shadow = 'var(--e2)';
+    else shadow = 'var(--e1)';
+    return {
+      width: desktop ? 54 : 46, height: desktop ? 62 : 54, borderRadius: 14, background: 'var(--surface)',
+      border: 'none', outline: 'none', textAlign: 'center', fontFamily: 'var(--font-mono)',
+      fontSize: desktop ? 26 : 22, fontWeight: 700, color: otpError ? 'var(--danger)' : 'var(--text-primary)',
+      boxShadow: shadow, fontVariantNumeric: 'tabular-nums', transition: 'box-shadow 160ms var(--ease-standard)', padding: 0,
+    };
+  }
+
+  renderVals() {
+    const desktop = this.props.variant === 'desktop';
+    const { step, phone, otp, secondsLeft, resendCount, callRequested } = this.state;
+    const f = phone.length > 5 ? `${phone.slice(0, 5)} ${phone.slice(5)}` : phone;
+    const showCallMe = resendCount >= 2;
+    const boxes = otp.map((v, i) => ({
+      value: v,
+      style: this.otpBoxStyle(i),
+      onChange: (e) => this.onOtpChange(i, e),
+      onKeyDown: (e) => this.onOtpKeyDown(i, e),
+      onPaste: this.onOtpPaste,
+      onFocus: () => this.setState({ focusedOtp: i }),
+      onBlur: () => this.setState(s => (s.focusedOtp === i ? { focusedOtp: -1 } : null)),
+      setRef: (el) => { this.otpRefs[i] = el; },
+    }));
+    return {
+      isPhone: step === 'phone', isOtp: step === 'otp', isDone: step === 'done',
+      phone, phoneFormatted: f,
+      onPhoneChange: this.onPhoneChange, onPhoneKeyDown: this.onPhoneKeyDown,
+      onPhoneFocus: () => this.setState({ phoneFocus: true }), onPhoneBlur: () => this.setState({ phoneFocus: false }),
+      phoneWrapStyle: {
+        display: 'flex', alignItems: 'center', height: 56, padding: '0 18px', gap: 12,
+        background: 'var(--surface)', borderRadius: 16, transition: 'box-shadow 200ms var(--ease-standard)',
+        boxShadow: this.state.phoneFocus ? 'var(--e2), 0 0 0 2px var(--surface), 0 0 0 4px var(--accent)' : 'var(--e1)',
+      },
+      submitPhone: this.submitPhone,
+      continueDisabled: phone.length !== 10 || this.state.continueLoading,
+      continueLoading: this.state.continueLoading,
+      changeNumber: this.changeNumber,
+      otpBoxes: boxes, otpError: this.state.otpError,
+      resendEnabled: secondsLeft <= 0, resendDisabled: secondsLeft > 0,
+      countdownLabel: `0:${String(secondsLeft).padStart(2, '0')}`,
+      onResend: this.onResend,
+      showCallMe, callRequested, callNotRequested: !callRequested,
+      onCallMe: this.onCallMe, restart: this.restart,
+      padX: desktop ? 56 : 26, colMax: desktop ? 400 : 620,
+      bloomStyle: {
+        position: 'absolute', top: desktop ? -180 : -150, left: '50%', transform: 'translateX(-50%)',
+        width: desktop ? 860 : 520, height: desktop ? 860 : 520, background: 'var(--glow-brand)',
+        pointerEvents: 'none', animation: 'hg-bloom 8s var(--ease-standard) infinite',
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
