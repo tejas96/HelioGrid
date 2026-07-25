@@ -27,10 +27,11 @@ uses: @heliogrid/tokens (theme), @heliogrid/contracts        used by: nobody
 ## Landmines
 - metro.config.js carries the monorepo + Lingui transformer wiring AND the note about
   PowerSync's Track-E blockList — runtime breakage if removed, not build errors.
-- @react-native-firebase is installed but NOT initialised: google-services.json /
-  GoogleService-Info.plist are external paperwork; the google-services gradle plugin is
-  NOT applied until they exist (applying it without the file fails the Android build).
-  Notifee local notifications work today; remote FCM/APNs activates with credentials.
+- Firebase is LIVE (project `heliogrid-app`, both apps registered as `com.heliogrid.app`
+  — docs/ops/firebase-setup.md): google-services.json + GoogleService-Info.plist are
+  committed and wired (gradle plugin 4.5.0 / Xcode Resources phase). RNFB auto-inits.
+  iOS REMOTE push still needs the APNs .p8 upload (Apple Developer account paperwork);
+  Android FCM + Notifee local notifications work today.
 - Geist/Noto static TTFs (400/500/600/700) are NOT bundled yet — system fonts render
   meanwhile; `theme.fonts.staticFamilyByWeight` documents the target names. Devanagari
   needs the `<AppText>` run-splitting primitive when fonts land (docs/10 §7.5) — verify

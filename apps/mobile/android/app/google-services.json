@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "349637662348",
+    "project_id": "heliogrid-app",
+    "storage_bucket": "heliogrid-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349637662348:android:601a842a80e40bdb2ecda9",
+        "android_client_info": {
+          "package_name": "com.heliogrid.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-sTHTzMPbX7Nyv1I-nY0-nBW6f8MwffE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

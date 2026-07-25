@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "com.google.gms.google-services"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -79,7 +80,8 @@ android {
 
     namespace "com.heliogridmobile"
     defaultConfig {
-        applicationId "com.heliogridmobile"
+        // Store identity — registered in Firebase (heliogrid-app); never change post-publish.
+        applicationId "com.heliogrid.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
