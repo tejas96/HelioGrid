@@ -1,0 +1,14 @@
+# heliogrid-worker — autostop OFF (repeatable jobs + queue consumers must keep running).
+app = "heliogrid-worker"
+primary_region = "bom"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[[vm]]
+  size = "shared-cpu-2x"
+
+# No services: the worker exposes no HTTP. Machines stay up:
+[machine]
+  auto_stop_machines = "off"
+  min_machines_running = 1
