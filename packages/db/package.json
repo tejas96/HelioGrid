@@ -1,0 +1,35 @@
+{
+  "name": "@heliogrid/db",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Drizzle schema + append-only SQL migrations + RLS plumbing",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "migrate": "tsx src/migrate.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.44.7",
+    "postgres": "3.4.9"
+  },
+  "devDependencies": {
+    "@heliogrid/config": "workspace:*",
+    "@types/node": "22.20.1",
+    "drizzle-kit": "0.31.10",
+    "tsx": "4.23.1",
+    "typescript": "5.8.3"
+  },
+  "turbo": {
+    "tags": [
+      "db"
+    ]
+  }
+}

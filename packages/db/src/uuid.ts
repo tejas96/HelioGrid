@@ -1,0 +1,21 @@
+import { randomBytes } from 'node:crypto';
+
+/**
+ * UUIDv7 — time-ordered, generated APP-SIDE (docs/04 conventions): no Postgres extension
+ * dependency on postgres-flex. Layout per RFC 9562: 48-bit unix-ms timestamp, ver 7,
+ * variant 10, 74 bits randomness.
+ */
+export function uuidv7(): string {
+  const bytes = randomBytes(16);
+  const ts = BigInt(Date.now());
+  bytes[0] = Number((ts >> 40n) & 0xffn);
+  bytes[1] = Number((ts >> 32n) & 0xffn);
+  bytes[2] = Number((ts >> 24n) & 0xffn);
+  bytes[3] = Number((ts >> 16n) & 0xffn);
+  bytes[4] = Number((ts >> 8n) & 0xffn);
+  bytes[5] = Number(ts & 0xffn);
+  bytes[6] = ((bytes[6] as number) & 0x0f) | 0x70;
+  bytes[8] = ((bytes[8] as number) & 0x3f) | 0x80;
+  const hex = bytes.toString('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
