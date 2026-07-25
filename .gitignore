@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs (generated, never committed)
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Env — secrets never committed; .env.example documents every var
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# React Native
+apps/mobile/ios/Pods/
+apps/mobile/ios/build/
+apps/mobile/android/build/
+apps/mobile/android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/vendor/
+apps/mobile/.bundle/config
+*.xcuserdata
+*.xcworkspace/xcuserdata/
+
+# Playwright / test artifacts
+playwright-report/
+test-results/

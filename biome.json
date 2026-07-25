@@ -1,0 +1,90 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/.next",
+      "!**/node_modules",
+      "!design/ds-source",
+      "!design/mockups",
+      "!apps/mobile/ios",
+      "!apps/mobile/android",
+      "!apps/mobile/vendor",
+      "!**/*.pbxproj"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only."
+            }
+          }
+        }
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["error", "warn"]
+          }
+        }
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/tokens/build.ts",
+        "packages/db/src/migrate.ts",
+        "tests/invariants/**",
+        "**/*.config.{js,ts,mjs,cjs}",
+        "**/scripts/**"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    }
+  ]
+}

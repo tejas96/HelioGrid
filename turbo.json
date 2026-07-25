@@ -1,0 +1,65 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "//#lint": {},
+    "lint": {},
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "openapi": {
+      "dependsOn": ["build"],
+      "outputs": ["openapi/**"]
+    }
+  },
+  "boundaries": {
+    "tags": {
+      "domain": {
+        "dependencies": {
+          "allow": ["domain"]
+        }
+      },
+      "contracts": {
+        "dependencies": {
+          "allow": ["contracts", "domain"]
+        }
+      },
+      "db": {
+        "dependencies": {
+          "allow": ["db", "domain"]
+        }
+      },
+      "tokens": {
+        "dependencies": {
+          "allow": ["tokens"]
+        }
+      },
+      "app": {
+        "dependencies": {
+          "allow": [
+            "app",
+            "contracts",
+            "domain",
+            "db",
+            "tokens",
+            "ui",
+            "i18n",
+            "adapters",
+            "config"
+          ]
+        }
+      }
+    }
+  }
+}

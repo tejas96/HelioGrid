@@ -1,0 +1,23 @@
+{
+  "name": "heliogrid",
+  "private": true,
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "biome check . && dependency-cruiser --config .dependency-cruiser.cjs apps packages tests && sherif",
+    "lint:fix": "biome check --write .",
+    "boundaries": "turbo boundaries"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.5",
+    "dependency-cruiser": "16.10.4",
+    "sherif": "1.13.0",
+    "turbo": "2.10.7",
+    "typescript": "5.8.3"
+  }
+}

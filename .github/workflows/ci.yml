@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+
+jobs:
+  quality:
+    name: quality (lint · typecheck · test · build · openapi)
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: heliogrid
+          POSTGRES_PASSWORD: heliogrid
+          POSTGRES_DB: heliogrid_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U heliogrid"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+      DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo lint
+      - run: pnpm turbo typecheck
+      - name: Apply migrations (CI database)
+        run: pnpm --filter @heliogrid/db migrate
+      - run: pnpm turbo test
+      - run: pnpm turbo build
+      - name: Emit OpenAPI (contract surface)
+        run: pnpm --filter @heliogrid/contracts openapi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: packages/contracts/openapi/openapi.json
+
+  android:
+    name: android (assembleDebug)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      - name: Assemble debug APK
+        working-directory: apps/mobile/android
+        run: ./gradlew assembleDebug --no-daemon
+
+  ios:
+    name: ios (simulator build, macOS lane)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      - name: Pod install
+        working-directory: apps/mobile/ios
+        run: |
+          bundle install || sudo gem install cocoapods
+          pod install
+      - name: Build for simulator (no signing)
+        working-directory: apps/mobile/ios
+        run: |
+          xcodebuild -workspace HelioGridMobile.xcworkspace \
+            -scheme HelioGridMobile \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tail -50
