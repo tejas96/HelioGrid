@@ -260,7 +260,7 @@ Spec      docs/04, docs/15, product-journey D-census, phase prompts.
 | **20-day scope compression** — the plan's own size | H×H | Parallel tracks + contract-first isolation; the ONLY release valves are dashboard polish, funnel analytics depth, and agent-performance screens — NEVER: money invariants, tenancy isolation, census rows, offline round-trip, provenance/honesty surfaces. Anything cut ships in the days immediately after 20, and the cut is logged here dated. |
 | DLT delay (OTP + voice) | H×M | Filed Day 1; WhatsApp-OTP fallback; voice code-complete with test evidence; Bolna Plan-B adapter. |
 | Exotel KYC/number clock (2–6 wks) | H×M | Filed Day 1; S5 verdict Day 5; Bolna fallback keeps voice demo-able at Day 20 even if Exophones lag. |
-| Store review | M×M | TestFlight/Play-internal from Day 5 = the Day-20 distribution; public listing follows. |
+| Store review | M×M | TestFlight/Play-internal from Day 5 = the Day-20 distribution; public listing follows. **[2026-07-26: store org accounts wait on company registration (D-U-N-S) — owner declined personal accounts; until then Day-5+ internal distribution = APK sideload + simulator (docs/ops/company-registration-blockers.md).]** |
 | postgres-flex deprecated | M×H | Unchanged mitigations; restore drill Day 2 AND Day 19; failed drill = launch blocker. |
 | Studio-port underestimation | H×H | Census checklist objective; thin subset pre-lands Day 7; batches parallelisable after D; valve rule above — census never shrinks. |
 | bom capacity | M×H | min=1, sin overflow, paid plan Day 1. |
