@@ -23,7 +23,7 @@ This session produces **planning documents only**, written to the new repo dir `
 
 ## Earlier user directives (still binding)
 - Thin test safety net only: strict typecheck+lint gates + locked invariant set for money math, tenant isolation, migrations; port POC domain tests as-is; no routine unit-test authoring (testing program designed post-release).
-- Benchmark pricing vs **Reslink Energy** ($949–1,899/yr capacity-tiered), **ARKA 360** (₹7.5k–16.5k/mo org), **Aurora** ($159–259/user/mo), **OpenSolar** (free): price BELOW, more features, healthy margin.
+- Benchmark pricing vs **Reslink Energy** (India INR page authoritative: ₹60k/₹85k/₹1.2L per yr — owner-supplied 2026-07-24, supersedes the $949–1,899 USD page), **ARKA 360** (₹7.5k–16.5k/mo org), **Aurora** ($159–259/user/mo), **OpenSolar** (free): price BELOW, more features, healthy margin. Final tiers: docs/01.
 - **1 kW → 100 MW** design range with credible scale path; cover POC gaps (ground mount v1-only, no trackers/terrain, O(n²) shading, single projection origin).
 - Competitive gap analysis first-class; UX gaps registered for implementation-time design.
 - **Two-tier catalog**: platform master catalog + tenant own catalog + tenant price overrides; resolution: tenant-override → tenant-item → platform-item.
