@@ -104,6 +104,9 @@ What DOES exist and must stay green:
 - Plan → contract → schema → implement → verify in the running app. In that order.
 - Small complete slices; wire every new screen into the flows that reach it (never orphan
   a screen — backward-wire into existing actions).
+- Web + mobile LOCKSTEP (owner directive): a module with a mobile surface ships its web
+  AND React Native screens in the same slice, from the same contract — verified in the
+  browser and on both simulators before the module is done. Mobile is never a follow-up.
 - When a doc and code disagree, STOP and reconcile the doc first (or flag it) — docs here
   are load-bearing for other agents.
 - Irreversible/architectural choices get an ADR in `docs/adr/` before implementation.

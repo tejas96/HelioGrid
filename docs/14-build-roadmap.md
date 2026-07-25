@@ -32,6 +32,11 @@ the frozen data model (docs/04) + exclusive module ownership let independent sli
 concurrently. The plan below is organised as parallel TRACKS with day ranges, not a single
 queue. WIP rule stays ≤1 module per layer *per track*.
 
+**Web + mobile lockstep rule (owner directive, 2026-07-24):** a module with a mobile
+surface is not done until BOTH its web and RN screens ship, in the same slice, from the
+same contract — verified in the browser and on both simulators. Mobile is never a
+follow-up task; Track M below is the RN thread of the same modules, not a separate phase.
+
 ---
 
 ## Day 1–2 — Foundations (Track F) + ALL external paperwork filed
@@ -109,14 +114,24 @@ offline phase so Track E starts warm).
 - **dashboards** (Day 11–13): owner + rep + funnel/win-loss (D37 honesty rules).
   UX: OwnerDashboard/RepDashboard/PipelineFunnel.
 
-## Day 10–15 — Track M: mobile app (bare RN, iOS + Android)
+## Day 2–15 — Track M: mobile in LOCKSTEP with web (owner directive)
 
-Online-first behind repository interfaces (PowerSync swap ready): auth (S1 pattern),
-My Day, leads + quick-add, surveys (guided capture, inline camera, shading capture,
-review/submit, revisit=new version), visits, notifications, profile/language, WebView
-studio slot. Notifee+FCM/APNs, Lingui metro, keychain. **TestFlight + Play internal from
-Day 12** (store review clock starts early; internal distribution is the Day-20 reality,
-public listing follows review).
+**Web and mobile are developed together, not sequentially.** The bare-RN app scaffolds on
+Day 2 (RN CLI init iOS+Android, keychain, Notifee+FCM/APNs wiring, Lingui metro, tokens
+theme, repository-interface data layer), and from Day 3 onward **every module slice that
+has a mobile surface ships its RN screens in the SAME slice as its web screens** — one
+ticket, both surfaces, verified on browser AND simulators before the module is done:
+- auth/invites/onboarding (Day 3–4): RN login/OTP/invite/profile alongside web.
+- CRM (Day 4–6): My Day, leads, quick-add, lead detail on RN with the web slice.
+- surveys (Day 7–10): guided capture, inline camera, shading capture, review/submit,
+  visits — RN-primary (the field surfaces), web mode in the same slice.
+- notifications/search (Day 10–12), dashboards-lite mobile views (Day 11–13).
+- Studio = authenticated WebView slot (activates with Track D); billing/settings screens
+  are web-first with RN read views.
+Online-first behind repository interfaces throughout (PowerSync swap in Track E).
+**TestFlight + Play internal from Day 5** (first authenticated build) — the store-review
+clock starts as early as physically possible; internal distribution is the Day-20
+reality, public listing follows review.
 
 ## Day 14–18 — Track D: THE STUDIO PORT (flagship; last by priority, in scope by directive)
 
