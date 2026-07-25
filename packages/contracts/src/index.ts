@@ -1,6 +1,8 @@
 import { initContract } from '@ts-rest/core';
+import { authContract } from './auth';
 import { healthContract } from './health';
 
+export * from './auth';
 export * from './common';
 export * from './error';
 export { healthContract };
@@ -14,6 +16,7 @@ const c = initContract();
 export const apiContract = c.router(
   {
     health: healthContract,
+    auth: authContract,
   },
   {
     strictStatusCodes: true,
