@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Tokens come ONLY from @heliogrid/tokens (imported in layout.tsx). This file maps them
+   into Tailwind v4 theme keys so utilities stay token-driven — no raw values here. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-sunken: var(--canvas-sunken);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-disabled: var(--text-disabled);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-action-primary: var(--action-primary);
+  --color-action-primary-hover: var(--action-primary-hover);
+  --color-action-primary-pressed: var(--action-primary-pressed);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-brand-wash: var(--brand-wash);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --radius-pill: var(--r-pill);
+  --radius-card: var(--r-card-expressive);
+  --radius-card-fn: var(--r-card-functional);
+  --shadow-e1: var(--e1);
+  --shadow-e2: var(--e2);
+  --shadow-e3: var(--e3);
+  --shadow-e4: var(--e4);
+  --shadow-e5: var(--e5);
+}
+
+/* Scaffold primitives — token-driven only; replaced by packages/ui's 21-component set
+   when it lands (the _ds API is spec to implement, docs/10 §6). */
+.hg-card {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e2);
+  padding: var(--sp-8);
+}
+.hg-overline {
+  font-size: var(--fs-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.hg-h1 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-top: var(--sp-2);
+}
+.hg-muted {
+  color: var(--text-secondary);
+  margin-top: var(--sp-2);
+}
+.hg-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--sp-6);
+  min-height: 48px;
+  padding-inline: var(--sp-6);
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--surface);
+  font-size: var(--fs-button);
+  letter-spacing: var(--tr-button);
+  font-weight: var(--fw-medium);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+.hg-btn-primary:hover {
+  background: var(--action-primary-hover);
+}
+.hg-btn-primary:active {
+  background: var(--action-primary-pressed);
+  transform: scale(0.97);
+}

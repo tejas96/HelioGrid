@@ -1,0 +1,112 @@
+/* /design — the living token reference. Layout-only styles, all values from tokens. */
+.ds-page {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: var(--screen-pad-desktop);
+  display: grid;
+  gap: var(--sp-10);
+}
+.ds-section {
+  display: grid;
+  gap: var(--sp-4);
+}
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--sp-3);
+}
+.ds-swatch {
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e1);
+  padding: var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+}
+.ds-swatch-chip {
+  height: var(--sp-12);
+  border-radius: var(--rf-md);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.ds-name {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+.ds-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+.ds-ext {
+  display: inline-block;
+  font-size: var(--fs-caption);
+  color: var(--accent);
+  background: var(--accent-subtle);
+  border-radius: var(--r-pill);
+  padding: 0 var(--sp-2);
+  margin-left: var(--sp-2);
+}
+.ds-row {
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e1);
+  padding: var(--sp-4);
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.ds-table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e1);
+}
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-table);
+  line-height: var(--lh-table);
+}
+.ds-table th {
+  text-align: left;
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  padding: var(--sp-3) var(--sp-4);
+}
+.ds-table td {
+  padding: var(--sp-3) var(--sp-4);
+}
+.ds-table tbody tr:nth-child(even) {
+  background: var(--surface-alt);
+}
+.ds-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.ds-elev-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--sp-5);
+}
+.ds-elev {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  padding: var(--sp-6);
+  text-align: center;
+}
+.ds-pass {
+  color: var(--success);
+  font-weight: var(--fw-medium);
+}
+.ds-restricted {
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-radius: var(--r-pill);
+  padding: 0 var(--sp-2);
+  font-size: var(--fs-caption);
+}
