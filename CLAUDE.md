@@ -59,6 +59,10 @@ three.js/R3F + WebGPU (studio). Rationale + pins: `docs/03-tech-stack.md` and `d
 - No feature flags. Features ship enabled when merged; incomplete work doesn't merge.
   The only runtime gating is billing entitlements.
 - Server assigns all business identifiers (proposal numbers, project numbers). Never client-generated.
+- SCHEMA & APIs GROW MODULE-WISE, never in one shot (owner directive 2026-07-26; docs/17
+  Law 9): docs/04 is the frozen DESIGN, not a build order — tables/enums/contracts/
+  endpoints are authored only when their OWNING module's slice begins. Each module gets
+  its roadmap in docs/modules/ BEFORE it starts; the roadmap is its only task list.
 
 **Money & honesty (product law, from the POC — port, don't reinvent)**
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
@@ -122,4 +126,6 @@ What DOES exist and must stay green:
 
 Each package/app gets its own `CLAUDE.md` at creation (template in
 `.claude/rules/module-template.md`). Layer rules live in `.claude/rules/`:
-`domain.md` · `api.md` · `db.md` · `ui.md` · `mobile.md` · `i18n.md` · `testing-lite.md`.
+`workflow.md` (THE slice loop + DoD — read before any implementation) · `domain.md` ·
+`api.md` · `db.md` · `ui.md` · `mobile.md` · `i18n.md` · `testing-lite.md`.
+Governance constitution + decision hierarchy: `docs/17-engineering-governance.md`.
