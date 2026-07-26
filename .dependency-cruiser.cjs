@@ -70,6 +70,13 @@ module.exports = {
       to: { path: '^packages/db/' },
     },
     {
+      name: 'ui-index-only',
+      severity: 'error',
+      comment: 'apps consume @heliogrid/ui and mobile src/ui through the package index only',
+      from: { path: '^apps/' },
+      to: { path: '(^packages/ui/src/(?!index)|^apps/mobile/src/ui/(?!index))' },
+    },
+    {
       name: 'no-circular',
       severity: 'error',
       from: {},

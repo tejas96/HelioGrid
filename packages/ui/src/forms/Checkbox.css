@@ -21,7 +21,11 @@
   padding: 0;
   border-radius: var(--rf-sm);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* Reference is surface+e1 only — invisible on white cards. The hairline is the DS's
+     one sanctioned line (docs/10 §3.2); inset ring keeps unchecked controls findable. */
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 1px var(--hairline);
   cursor: inherit;
   /* reference hard-codes #fff for the check stroke — maps to var(--surface) */
   color: var(--surface);

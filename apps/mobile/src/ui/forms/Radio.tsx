@@ -73,6 +73,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.hairline,
   },
   circleUnchecked: { ...theme.elevation.e1 },
   circleChecked: { borderWidth: 2, borderColor: theme.colors.accent },

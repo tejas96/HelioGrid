@@ -70,7 +70,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  boxUnchecked: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
+  boxUnchecked: {
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.hairline,
+    ...theme.elevation.e1,
+  },
   boxChecked: { backgroundColor: theme.colors.accent },
   boxDisabled: {
     backgroundColor: theme.colors['canvas-sunken'],

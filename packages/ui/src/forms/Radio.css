@@ -43,7 +43,11 @@
   align-items: center;
   justify-content: center;
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* Reference is surface+e1 only — invisible on white cards. The hairline is the DS's
+     one sanctioned line (docs/10 §3.2); inset ring keeps unchecked controls findable. */
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 1px var(--hairline);
   transition: box-shadow var(--dur-micro) var(--ease-standard);
   /* clicks land on the invisible input underneath */
   pointer-events: none;

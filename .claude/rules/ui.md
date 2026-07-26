@@ -118,6 +118,10 @@ A screen violating one of these is not done:
 
 ## Components
 
+- **IMPLEMENTED 2026-07-26**: `packages/ui` (web) + `apps/mobile/src/ui` (RN) exist,
+  gallery-verified. Screens import ONLY from these indexes — never deep paths, never
+  raw styling/hex/px in app code; a state not rendered in the galleries doesn't exist.
+  Surfaces without a mockup are composed from THIS vocabulary (packages/ui/CLAUDE.md law).
 - Build against the **21-component `_ds` API** in `packages/ui`: Button, IconButton,
   Input, Checkbox, Radio, Switch · Card, IconCircle, Chip, Badge, Avatar, AvatarGroup,
   ListRow, StatCard, StatusChip · EmptyState, OfflineBanner, ProgressBar, Toast ·

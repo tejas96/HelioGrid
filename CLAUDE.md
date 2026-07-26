@@ -4,10 +4,13 @@ Multi-tenant SaaS for Indian solar EPC companies: CRM → survey → 3D design �
 customer link → voice-agent follow-up → projects → payments. India-first, global-ready.
 **The 3D Design Studio is the flagship. Nothing is compromised against it.**
 
-> **Current repo state: TRACK F LANDED (Day 1–2 foundations).** The monorepo scaffold,
-> packages/{config,tokens,contracts,db}, apps/{api,worker,web,mobile}, tests/invariants,
-> CI and migration 0001 exist and are green. Feature modules start with Track A
-> (`docs/14-build-roadmap.md`). Spike verdicts live in `docs/spikes/`.
+> **Current repo state: FOUNDATIONS + AUTH BACKEND + UI LIBRARY LANDED.** Monorepo,
+> packages/{config,tokens,contracts,db,ui}, apps/{api,worker,web,mobile}, migrations
+> 0001–0002, the auth/tenancy api (E2E-verified), and the 21-component _ds library
+> (web `packages/ui` + RN `apps/mobile/src/ui`, gallery-verified on browser + both
+> simulators) exist and are green. SCREENS IMPORT ONLY FROM THOSE COMPONENT INDEXES —
+> raw styling in app screens is a violation. Galleries: web `/design/components`, RN
+> GalleryScreen. Spike verdicts: `docs/spikes/`; ops state: `docs/ops/`.
 
 ## Read order (before writing any code)
 

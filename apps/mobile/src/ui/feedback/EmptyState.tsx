@@ -7,8 +7,8 @@ import { AppText } from '../AppText';
  * Centred empty state — soft brand-glow bloom behind a large circular icon container.
  * Web ref: design/ds-source _ds_bundle components/feedback/EmptyState.jsx.
  * RN cannot paint the --glow-brand radial gradient; the bloom is approximated with two
- * concentric circles using the gradient token's own stops (iris-violet @0.22 centre,
- * iris-blue @0.14 at 40%). Pass icons pre-coloured (web renders them text-tertiary).
+ * concentric PALE circles (accent-subtle + faint iris-violet) — full-saturation stops
+ * band visibly without gradients; upgrade to react-native-svg radial when svg lands. Pass icons pre-coloured (web renders them text-tertiary).
  */
 export interface EmptyStateProps {
   icon?: ReactNode;
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
     width: GLOW_OUTER,
     height: GLOW_OUTER,
     borderRadius: GLOW_OUTER / 2,
-    backgroundColor: theme.colors['iris-blue'],
-    opacity: 0.14,
+    backgroundColor: theme.colors['accent-subtle'],
+    opacity: 0.45,
   },
   glowInner: {
     position: 'absolute',
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     height: GLOW_INNER,
     borderRadius: GLOW_INNER / 2,
     backgroundColor: theme.colors['iris-violet'],
-    opacity: 0.22,
+    opacity: 0.08,
   },
   iconCircle: {
     width: ICON_CIRCLE,
