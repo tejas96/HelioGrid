@@ -1,5 +1,5 @@
 import { authContract } from '@heliogrid/contracts';
-import { Controller, ForbiddenException, UseGuards } from '@nestjs/common';
+import { Controller, ForbiddenException, Inject, UseGuards } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { AuthService } from './auth.service';
 import { CurrentClaims, type SessionClaims, SessionGuard } from './claims';
@@ -20,7 +20,9 @@ function requireTeamManager(claims: SessionClaims) {
 @Controller()
 @UseGuards(SessionGuard)
 export class AuthController {
-  constructor(private readonly service: AuthService) {}
+  // Explicit token: tsx (esbuild) emits no decorator metadata, so type-only injection
+  // fails under `pnpm dev` — every constructor param in this app carries @Inject.
+  constructor(@Inject(AuthService) private readonly service: AuthService) {}
 
   @TsRestHandler(authContract)
   handler(@CurrentClaims() claims: SessionClaims) {

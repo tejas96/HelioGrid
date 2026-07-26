@@ -25,6 +25,12 @@ uses: @heliogrid/tokens (theme), @heliogrid/contracts        used by: nobody
 - Targets ≥44pt, safe-area insets everywhere, arc-bar nav per DS when nav lands.
 
 ## Landmines
+- Cookies: EVERY fetch to the api runs `credentials: 'omit'` — the keychain jar is the
+  only cookie path. With native handling on, iOS CFNetwork merges its stored copy into
+  the manual header ("token,token") and every authed call 401s (hit 2026-07-26). Absorb
+  via `absorbSetCookies(headers)` (getSetCookie, S1 verdict) — never `.get('set-cookie')`.
+- RN ≥0.82 no longer streams console.log to Metro stdout (DevTools only) — debug network
+  issues from the API side (pino logs), not Metro.
 - metro.config.js carries the monorepo + Lingui transformer wiring AND the note about
   PowerSync's Track-E blockList — runtime breakage if removed, not build errors.
 - Firebase is LIVE (project `heliogrid-app`, both apps registered as `com.heliogrid.app`

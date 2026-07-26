@@ -23,6 +23,10 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
 - Established decorators only: @CurrentTenant() @CurrentUser() @Public() (Track A adds).
 
 ## Landmines
+- `pnpm dev` runs tsx (esbuild) which emits NO decorator metadata: type-only constructor
+  injection resolves under `node dist/main.js` but crashes DI on dev start. EVERY
+  constructor param needs an explicit `@Inject(Token)` — including `Reflector` and
+  class providers. (Hit 2026-07-26: SessionGuard.)
 - `pnpm deploy` in the Dockerfile needs the workspace lockfile — build from repo root
   (`flyctl deploy --dockerfile apps/api/Dockerfile` with root context).
 - Readiness check opens a 1-connection pool per call — fine for Fly checks, do not put

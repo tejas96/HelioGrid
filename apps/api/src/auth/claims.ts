@@ -39,7 +39,7 @@ export const CurrentClaims = createParamDecorator((_data: unknown, ctx: Executio
 @Injectable()
 export class SessionGuard implements CanActivate {
   constructor(
-    private readonly reflector: Reflector,
+    @Inject(Reflector) private readonly reflector: Reflector,
     @Inject(AUTH) private readonly auth: Auth,
     @Inject('CLAIMS_RESOLVER')
     private readonly resolveTenant: (userId: string) => Promise<{

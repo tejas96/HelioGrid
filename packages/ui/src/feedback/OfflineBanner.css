@@ -3,9 +3,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  height: 32px;
+  /* reference fixed 32px/nowrap clipped long i18n messages at 375 (Hindi expansion
+     rule: never truncate) — min-height + wrapping keeps the one-line pill when short */
+  min-height: 32px;
   /* reference 14px side padding snapped to the 4px spacing scale */
-  padding: 0 var(--sp-4);
+  padding: var(--sp-1) var(--sp-4);
   border-radius: var(--r-pill);
   background: var(--warning-bg);
   color: var(--warning);
@@ -13,5 +15,4 @@
   line-height: var(--lh-body-sm);
   font-weight: var(--fw-medium);
   box-shadow: var(--e1);
-  white-space: nowrap;
 }

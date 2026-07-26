@@ -13,22 +13,175 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:54
+#: ../../apps/mobile/App.tsx:87
 #: ../../apps/web/app/page.tsx:15
 msgid "Foundations ready"
 msgstr "Foundations ready"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:57
+#: ../../apps/mobile/App.tsx:93
 #: ../../apps/web/app/page.tsx:18
 msgid "Field-first CRM, surveys and design for solar EPCs."
 msgstr "Field-first CRM, surveys and design for solar EPCs."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:61
+#: ../../apps/web/app/signup/page.tsx:19
+msgid "Company sign-up opens here"
+msgstr "Company sign-up opens here"
+
+#. js-lingui-explicit-id
+#: ../../apps/web/app/signup/page.tsx:21
+msgid "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
+msgstr "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
+
+#. js-lingui-explicit-id
+#: ../../apps/web/app/signup/page.tsx:25
+msgid "Back to sign in"
+msgstr "Back to sign in"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/App.tsx:90
+msgid "Signed in as {name}"
+msgstr "Signed in as {name}"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/App.tsx:97
 msgid "Open my day"
 msgstr "Open my day"
 
-#: ../../apps/mobile/App.tsx:61
-#~ msgid "Open my day"
-#~ msgstr "Open my day"
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:388
+#: ../../apps/web/app/login/page.tsx:213
+msgid "You're offline — check your connection and try again."
+msgstr "You're offline — check your connection and try again."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:206
+#: ../../apps/web/app/login/page.tsx:224
+msgid "Welcome back"
+msgstr "Welcome back"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:209
+#: ../../apps/web/app/login/page.tsx:227
+msgid "Sign in with your phone number. No password — we'll text you a one-time code."
+msgstr "Sign in with your phone number. No password — we'll text you a one-time code."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:213
+#: ../../apps/web/app/login/page.tsx:231
+msgid "Mobile number"
+msgstr "Mobile number"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:223
+#: ../../apps/web/app/login/page.tsx:245
+msgid "Sent by SMS to your registered number."
+msgstr "Sent by SMS to your registered number."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:224
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:306
+#: ../../apps/web/app/login/page.tsx:246
+#: ../../apps/web/app/login/page.tsx:306
+msgid "Couldn't send the code. Try again."
+msgstr "Couldn't send the code. Try again."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:242
+#: ../../apps/web/app/login/page.tsx:258
+msgid "Continue"
+msgstr "Continue"
+
+#. js-lingui-explicit-id
+#: ../../apps/web/app/login/page.tsx:262
+msgid "New company?"
+msgstr "New company?"
+
+#. js-lingui-explicit-id
+#: ../../apps/web/app/login/page.tsx:264
+msgid "Create an account"
+msgstr "Create an account"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:254
+#: ../../apps/web/app/login/page.tsx:273
+msgid "Enter your code"
+msgstr "Enter your code"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:257
+#: ../../apps/web/app/login/page.tsx:276
+msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
+msgstr "Enter the 6-digit code sent to +91 {phoneFormatted}."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:263
+#: ../../apps/web/app/login/page.tsx:283
+msgid "Change number"
+msgstr "Change number"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:274
+#: ../../apps/web/app/login/page.tsx:289
+msgid "6-digit code"
+msgstr "6-digit code"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:282
+#: ../../apps/web/app/login/page.tsx:302
+msgid "That code doesn’t match. Check it and try again."
+msgstr "That code doesn’t match. Check it and try again."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:284
+#: ../../apps/web/app/login/page.tsx:304
+msgid "Couldn't check the code. Try again."
+msgstr "Couldn't check the code. Try again."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:302
+#: ../../apps/web/app/login/page.tsx:315
+msgid "Resend code"
+msgstr "Resend code"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:289
+#: ../../apps/web/app/login/page.tsx:319
+msgid "Resend code in {time}"
+msgstr "Resend code in {time}"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:324
+#: ../../apps/web/app/login/page.tsx:341
+msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
+msgstr "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:338
+#: ../../apps/web/app/login/page.tsx:351
+msgid "Still no code after two tries?"
+msgstr "Still no code after two tries?"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:341
+#: ../../apps/web/app/login/page.tsx:354
+msgid "Call me with the code instead"
+msgstr "Call me with the code instead"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:358
+#: ../../apps/web/app/login/page.tsx:374
+msgid "You're signed in"
+msgstr "You're signed in"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:361
+#: ../../apps/web/app/login/page.tsx:377
+msgid "Welcome back. Taking you to your day."
+msgstr "Welcome back. Taking you to your day."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/LoginScreen.tsx:246
+msgid "Joining a team? Open your invite link"
+msgstr "Joining a team? Open your invite link"

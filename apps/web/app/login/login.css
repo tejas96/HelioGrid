@@ -1,0 +1,182 @@
+/* /login — layout-only classes, every value a token (login.md §2; C3/C4 spacing snapped
+   to the 4px scale, C2 h1 → --fs-h1, C4 pads → screen-pad tokens). Column widths 620/400
+   are the spec's colMax constants (login.md §2 layer 4). */
+.lg-screen {
+  position: relative;
+  overflow: hidden;
+  height: 100dvh;
+  background: var(--canvas);
+}
+/* two BloomLayer instances (520 mobile / 860 desktop) toggled per breakpoint —
+   display:contents keeps the disc positioned against .lg-screen */
+.lg-bloom-m {
+  display: contents;
+}
+.lg-bloom-d {
+  display: none;
+}
+.lg-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* keyboard-safe centering: content tops out instead of clipping (login.md §2 layer 3) */
+  justify-content: safe center;
+  padding: var(--sp-8) var(--screen-pad-mobile);
+}
+.lg-col {
+  position: relative;
+  width: 100%;
+  max-width: 620px; /* login.md §2: mobile colMax */
+  display: flex;
+  flex-direction: column;
+  /* Safari drops `safe center` entirely — auto block margins are the overflow-safe
+     fallback (they floor at 0, so tall content top-aligns instead of clipping). */
+  margin-block: auto;
+}
+.lg-offline {
+  margin-bottom: var(--sp-6);
+}
+.lg-mark {
+  margin-bottom: var(--sp-8); /* spec 36 → 32 (C3) */
+}
+.lg-step {
+  display: flex;
+  flex-direction: column;
+  /* the DS card-mount motion applied to the whole step (login.md §2) */
+  animation: lg-rise var(--dur-emphasised) var(--ease-enter) both;
+}
+@keyframes lg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lg-step {
+    animation: none;
+  }
+}
+.lg-h1 {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.lg-body {
+  margin: var(--sp-3) 0 0; /* spec 10 → 12 (C3) */
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+  max-width: 36ch;
+}
+.lg-field {
+  margin-top: var(--sp-6); /* spec 28 → 24 (C3) */
+}
+.lg-prefix {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}
+.lg-cta {
+  margin-top: var(--sp-6); /* spec 22 → 24 (C3) */
+}
+.lg-footer {
+  margin: var(--sp-6) 0 0;
+  text-align: center;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+.lg-change {
+  margin-top: var(--sp-2); /* spec 8 */
+  align-self: flex-start;
+  font-size: var(--fs-body-sm);
+}
+.lg-otp {
+  margin-top: var(--sp-6); /* spec 26 → 24 (C3) */
+}
+.lg-error {
+  margin: var(--sp-4) 0 0; /* spec 14 → 16 (C3) */
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2); /* spec 7 → 8 (C3) */
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--danger);
+}
+.lg-error > svg {
+  flex-shrink: 0;
+}
+.lg-resend {
+  margin-top: var(--sp-6); /* spec 22 → 24 (C3) */
+  display: flex;
+  align-items: center;
+  min-height: var(--sp-6); /* stable row across countdown / link / spinner */
+  font-size: var(--fs-body-sm);
+  /* spec §2: countdown text is tertiary (timestamp role); the TextLink recolours itself */
+  color: var(--text-tertiary);
+}
+.lg-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.lg-call {
+  margin-top: var(--sp-4); /* spec 18 → 16 (C3) */
+}
+.lg-call-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4); /* spec 14 → 16 (C3) */
+}
+.lg-call-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-0-5); /* spec 2 */
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.lg-call-body p {
+  margin: 0;
+}
+.lg-phone {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  /* phone numbers are numerics-as-data → Geist Mono (ui.md typography law) */
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lg-done {
+  align-items: flex-start;
+}
+.lg-done-h1 {
+  margin-top: var(--sp-6); /* spec 22 → 24 (C3) */
+}
+@media (min-width: 1024px) {
+  .lg-bloom-m {
+    display: none;
+  }
+  .lg-bloom-d {
+    display: contents;
+  }
+  .lg-scroll {
+    padding-inline: var(--screen-pad-desktop);
+  }
+  .lg-col {
+    max-width: 400px; /* login.md §2: desktop colMax */
+  }
+}

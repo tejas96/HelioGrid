@@ -1,34 +1,66 @@
 import { theme } from '@heliogrid/tokens/theme';
 import { I18nProvider, Trans } from '@lingui/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { api } from './src/data/api-client';
 import { i18n, type Locale, setupI18n } from './src/i18n';
 import { GalleryScreen } from './src/screens/GalleryScreen';
+import { LoginScreen } from './src/screens/LoginScreen';
+import { Spinner } from './src/ui';
 
 /**
- * Track F scaffold screen — proves the chain: tokens theme → RN, Lingui catalogs via the
- * metro transformer (per-user language switch, D25), safe-area, ≥44pt targets.
- * Real screens (My Day, leads, surveys) land with their module slices from Day 3.
+ * App entry: session gate (api.auth.me via the keychain cookie jar) → LoginScreen when
+ * unauthenticated, else the Track F scaffold Home card (placeholder post-login surface
+ * until My Day lands with the CRM module).
  */
 setupI18n('en');
+
+type Session = 'checking' | 'unauthenticated' | { name: string };
 
 function App() {
   const [locale, setLocale] = useState<Locale>('en');
   const [showGallery, setShowGallery] = useState(false);
+  const [session, setSession] = useState<Session>('checking');
   const onLocale = useCallback((l: Locale) => {
     i18n.activate(l);
     setLocale(l);
   }, []);
 
+  const refreshSession = useCallback(async () => {
+    try {
+      const res = await api.auth.me.query({});
+      setSession(res.status === 200 ? { name: res.body.user.name } : 'unauthenticated');
+    } catch {
+      // Unreachable api (offline / dev server down): land on the login gate — it owns
+      // the offline treatment.
+      setSession('unauthenticated');
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshSession();
+  }, [refreshSession]);
+
   return (
     <I18nProvider i18n={i18n}>
       <SafeAreaProvider>
         <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
-        {showGallery ? (
+        {session === 'checking' ? (
+          <View style={styles.boot}>
+            <Spinner />
+          </View>
+        ) : session === 'unauthenticated' ? (
+          <LoginScreen onSignedIn={() => void refreshSession()} />
+        ) : showGallery ? (
           <GalleryScreen onBack={() => setShowGallery(false)} />
         ) : (
-          <Home locale={locale} onLocale={onLocale} onOpenGallery={() => setShowGallery(true)} />
+          <Home
+            locale={locale}
+            onLocale={onLocale}
+            onOpenGallery={() => setShowGallery(true)}
+            userName={session.name}
+          />
         )}
       </SafeAreaProvider>
     </I18nProvider>
@@ -39,10 +71,12 @@ function Home({
   locale,
   onLocale,
   onOpenGallery,
+  userName,
 }: {
   locale: Locale;
   onLocale: (l: Locale) => void;
   onOpenGallery: () => void;
+  userName: string;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -51,6 +85,9 @@ function Home({
         <Text style={styles.overline}>HELIOGRID</Text>
         <Text style={styles.h2}>
           <Trans id="Foundations ready" />
+        </Text>
+        <Text style={styles.signedIn}>
+          <Trans id="Signed in as {name}" values={{ name: userName }} />
         </Text>
         <Text style={styles.body}>
           <Trans id="Field-first CRM, surveys and design for solar EPCs." />
@@ -116,6 +153,18 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.body.fontSize,
     lineHeight: theme.typography.body.lineHeight,
     color: theme.colors['text-secondary'],
+  },
+  signedIn: {
+    fontSize: theme.typography.body.fontSize,
+    lineHeight: theme.typography.body.lineHeight,
+    fontWeight: '500',
+    color: theme.colors['text-primary'],
+  },
+  boot: {
+    flex: 1,
+    backgroundColor: theme.colors.canvas,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   primary: {
     minHeight: 48,

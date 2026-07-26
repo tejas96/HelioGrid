@@ -1,0 +1,9 @@
+/* Placeholder layout only (task 3 replaces this page) — full-height centering, tokens only. */
+.sg-page {
+  min-height: 100dvh;
+  background: var(--canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--screen-pad-mobile);
+}

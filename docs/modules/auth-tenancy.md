@@ -38,7 +38,7 @@ custom roles (D29 excluded).
 |---|---|---|---|---|---|---|
 | 0 | Backend: BA wiring, guard, onboarding/me/profile/team/invites api | contracts+db+api | D7/D11/D27 | — | VERIFIED | curl E2E 2026-07-26 (commit a66a4c3) |
 | 1 | Shared auth primitives: OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator, Spinner (+RadioCard) web+RN + galleries | ui | specs §component-maps | 0 | VERIFIED | galleries checked in browser + iPhone sim 2026-07-26; OtpInput live-typed |
-| 2 | Login screen web+RN (phone→OTP→success; 30s resend; call-me seam; ~14 states) | web+mobile+ux | Login/LoginFlow specs | 1 | todo | |
+| 2 | Login screen web+RN (phone→OTP→success; 30s resend; call-me seam; ~14 states) | web+mobile+ux | Login/LoginFlow specs | 1 | VERIFIED | E2E dev-OTP walked 2026-07-26: browser 375+1440 (happy + wrong-code + send-error + change-number), iPhone (verify→session→Home, relaunch restores) AND Pixel (fresh user one-pass). Fixed in-slice: RN cookie jar credentials 'omit' + getSetCookie (S1 landmine, mobile CLAUDE.md), tsx @Inject metadata (api CLAUDE.md). /signup placeholder holds the exit until task 3. Five-lens review passed; open QA notes → task 12: offline boot relaunch UX (Track E), jar cookie-expiry on future sign-out |
 | 3 | SignUp (web-only, ruling 1) + route /signup | web+ux | SignUp specs | 1 | todo | |
 | 4 | WhatYouSell onboarding step (radio-cards, kW input, skip) web-only (owner flow) | web+ux | WhatYouSell specs | 1,3 | todo | |
 | 5 | YoureReady doors + SetupLater accordion (team invites live; GST live; logo seam blocked ruling 3) | web+ux | YoureReady specs | 4 | todo | |
