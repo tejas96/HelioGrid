@@ -143,6 +143,6 @@ COMPLETED 2026-07-26 (closing the technical gate):
    (providers + /home on typed hooks) and RN (custom fetcher with the keychain cookie
    jar; health repository on the typed client).
 
-REMAINING: **owner approval** of the Architecture Review Package = this document + the
-galleries + the green gates. Approval opens module implementation; module roadmaps (§3)
-are authored per module at that point, not en masse.
+**GATE APPROVED by the owner, 2026-07-26** ("approved, start auth tenancy module").
+Module implementation is open. Module roadmaps (§3) are authored per module as each
+begins — auth-tenancy first.
