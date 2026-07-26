@@ -4,6 +4,13 @@
  * AppText is the sole text primitive (Devanagari run-splitting, static font weights).
  */
 export { AppText, type AppTextProps, type TypeRole } from './AppText';
+export { BloomLayer, type BloomLayerProps } from './composites/BloomLayer';
+export { OtpInput, type OtpInputProps } from './composites/OtpInput';
+export { RadioCard, type RadioCardOption, type RadioCardProps } from './composites/RadioCard';
+export { Spinner, type SpinnerProps } from './composites/Spinner';
+export { StepIndicator, type StepIndicatorProps } from './composites/StepIndicator';
+export { TextLink, type TextLinkProps } from './composites/TextLink';
+export { Wordmark, type WordmarkProps } from './composites/Wordmark';
 export { Avatar, AvatarGroup, type AvatarGroupProps, type AvatarProps } from './data/Avatar';
 export { Card, type CardProps, IconCircle, type IconCircleProps } from './data/Card';
 export { Badge, type BadgeProps, Chip, type ChipProps } from './data/Chip';

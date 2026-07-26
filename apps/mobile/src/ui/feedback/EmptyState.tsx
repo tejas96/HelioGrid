@@ -1,14 +1,14 @@
 import { theme } from '@heliogrid/tokens/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { AppText } from '../AppText';
+import { BloomLayer } from '../composites/BloomLayer';
 
 /**
  * Centred empty state — soft brand-glow bloom behind a large circular icon container.
  * Web ref: design/ds-source _ds_bundle components/feedback/EmptyState.jsx.
- * The bloom is the REAL --glow-brand radial via react-native-svg — stop-for-stop from
- * the token: iris-violet 0.22 @0% → iris-blue 0.14 @40% → transparent @72%.
+ * The bloom is the shared BloomLayer (extracted from this file's original GlowBrand —
+ * same react-native-svg radial, stop-for-stop from the --glow-brand token).
  */
 export interface EmptyStateProps {
   icon?: ReactNode;
@@ -25,28 +25,6 @@ const ICON_CIRCLE = 72;
 const GLOW_SIZE = 360;
 const DESCRIPTION_MAX_WIDTH = 320;
 
-function GlowBrand() {
-  return (
-    <Svg
-      pointerEvents="none"
-      width={GLOW_SIZE}
-      height={GLOW_SIZE}
-      style={styles.glow}
-      accessible={false}
-    >
-      <Defs>
-        <RadialGradient id="hgGlowBrand" cx="50%" cy="50%" r="50%">
-          <Stop offset="0%" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
-          <Stop offset="40%" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
-          <Stop offset="72%" stopColor={theme.colors['iris-blue']} stopOpacity={0} />
-          <Stop offset="100%" stopColor={theme.colors['iris-blue']} stopOpacity={0} />
-        </RadialGradient>
-      </Defs>
-      <Rect width={GLOW_SIZE} height={GLOW_SIZE} fill="url(#hgGlowBrand)" />
-    </Svg>
-  );
-}
-
 export function EmptyState({
   icon,
   title,
@@ -58,7 +36,7 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.iconWrap}>
-        {glow && <GlowBrand />}
+        {glow && <BloomLayer size={GLOW_SIZE} style={styles.glow} />}
         <View style={styles.iconCircle}>{icon}</View>
       </View>
       {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}

@@ -149,3 +149,23 @@
   gap: var(--sp-3);
   justify-items: stretch;
 }
+/* Auth composites: stage for the absolutely-positioned BloomLayer (clips the top bleed). */
+.ds-bloom-stage {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-16) var(--sp-6);
+  background: var(--canvas);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e1);
+}
+/* Auth composites: near-black swatch for the onDark Spinner tone. */
+.ds-on-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  border-radius: var(--r-card-functional);
+  background: var(--action-primary);
+}

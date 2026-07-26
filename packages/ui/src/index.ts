@@ -4,6 +4,15 @@
  * the _ds_bundle reference implementations; every value is a token var.
  */
 
+/* Auth composites (docs/modules/auth-tenancy specs) — DS compositions from the existing
+   vocabulary, NOT additions to the 21-component API (login.md/whatyousell.md §4). */
+export { BloomLayer, type BloomLayerProps } from './composites/BloomLayer';
+export { OtpInput, type OtpInputProps } from './composites/OtpInput';
+export { RadioCard, type RadioCardOption, type RadioCardProps } from './composites/RadioCard';
+export { Spinner, type SpinnerProps } from './composites/Spinner';
+export { StepIndicator, type StepIndicatorProps } from './composites/StepIndicator';
+export { TextLink, type TextLinkProps } from './composites/TextLink';
+export { Wordmark, type WordmarkProps } from './composites/Wordmark';
 export { Avatar, AvatarGroup, type AvatarGroupProps, type AvatarProps } from './data/Avatar';
 export { Card, type CardProps, IconCircle, type IconCircleProps } from './data/Card';
 export { Badge, type BadgeProps, Chip, type ChipProps } from './data/Chip';
@@ -20,7 +29,6 @@ export { IconButton, type IconButtonProps } from './forms/IconButton';
 export { Input, type InputProps } from './forms/Input';
 export { Radio, type RadioProps } from './forms/Radio';
 export { Switch, type SwitchProps } from './forms/Switch';
-
 export {
   SegmentedControl,
   type SegmentedControlProps,

@@ -1,0 +1,24 @@
+/* Brand wordmark (login.md §2): 700 weight, −0.02em brand tracking, line-height 1.
+   22px is the mockup's brand constant (login.md C2) — component-internal, never in screens. */
+.ui-wordmark {
+  display: inline-flex;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-primary);
+  user-select: none;
+}
+.ui-wordmark[data-size="md"] {
+  font-size: 22px; /* mockup wordmark size (login.md C2) */
+}
+.ui-wordmark[data-size="sm"] {
+  font-size: var(--fs-h4);
+}
+.ui-wordmark-grid {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

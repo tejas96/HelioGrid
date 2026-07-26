@@ -1,0 +1,32 @@
+/* Ambient brand bloom (login.md §2 layer 2): --glow-brand disc, horizontally centred,
+   bleeding ~29% off the top edge (mockup 520 at −150 / 860 at −180); pointer-events none. */
+.ui-bloom {
+  position: absolute;
+  width: var(--ui-bloom-size, 220px);
+  height: var(--ui-bloom-size, 220px);
+  top: calc(var(--ui-bloom-size, 220px) * -0.29);
+  left: 50%;
+  margin-left: calc(var(--ui-bloom-size, 220px) / -2);
+  border-radius: var(--r-pill);
+  background: var(--glow-brand);
+  pointer-events: none;
+  /* hg-bloom breathe: scale 1→1.09, opacity 0.85→1, 8s ambient loop (login.md §2) */
+  animation: ui-bloom-breathe 8s var(--ease-standard) infinite;
+}
+@keyframes ui-bloom-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-bloom {
+    animation: none;
+    opacity: 1;
+  }
+}

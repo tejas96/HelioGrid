@@ -1,5 +1,6 @@
 'use client';
 import '../design.css';
+import { AuthSections } from './auth';
 import { DataSections } from './data';
 import { RowsSections } from './data-rows';
 import { FeedbackNavSections } from './feedback-nav';
@@ -30,6 +31,7 @@ export default function ComponentGallery() {
       <DataSections />
       <RowsSections />
       <FeedbackNavSections />
+      <AuthSections />
     </main>
   );
 }

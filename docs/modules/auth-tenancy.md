@@ -37,7 +37,7 @@ custom roles (D29 excluded).
 | # | Task | Layer(s) | Traces to | Depends | Status | Evidence |
 |---|---|---|---|---|---|---|
 | 0 | Backend: BA wiring, guard, onboarding/me/profile/team/invites api | contracts+db+api | D7/D11/D27 | — | VERIFIED | curl E2E 2026-07-26 (commit a66a4c3) |
-| 1 | Shared auth primitives: OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator, Spinner (+RadioCard) web+RN + galleries | ui | specs §component-maps | 0 | todo | |
+| 1 | Shared auth primitives: OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator, Spinner (+RadioCard) web+RN + galleries | ui | specs §component-maps | 0 | VERIFIED | galleries checked in browser + iPhone sim 2026-07-26; OtpInput live-typed |
 | 2 | Login screen web+RN (phone→OTP→success; 30s resend; call-me seam; ~14 states) | web+mobile+ux | Login/LoginFlow specs | 1 | todo | |
 | 3 | SignUp (web-only, ruling 1) + route /signup | web+ux | SignUp specs | 1 | todo | |
 | 4 | WhatYouSell onboarding step (radio-cards, kW input, skip) web-only (owner flow) | web+ux | WhatYouSell specs | 1,3 | todo | |

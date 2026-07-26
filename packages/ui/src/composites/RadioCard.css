@@ -1,0 +1,83 @@
+/* Composition (whatyousell.md §2/§4): selectable radio-card. Card surface rules apply —
+   e2 rest, e3 + −1px hover (exactly one step), selected = e3 + 2px accent ring (accent
+   as selected-state is sanctioned). Mockup radius 20 → --r-card-expressive; padding 18 /
+   gap 14 → the 4px scale; title 16/700 → 15/600 (whatyousell.md conflicts 1–3). */
+.ui-radio-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.ui-radio-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e2);
+  font-family: var(--font-sans);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+.ui-radio-card:hover {
+  box-shadow: var(--e3);
+  transform: translateY(-1px);
+}
+.ui-radio-card[data-state="checked"] {
+  box-shadow:
+    var(--e3),
+    0 0 0 2px var(--accent);
+}
+.ui-radio-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+.ui-radio-card-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+.ui-radio-card-desc {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+.ui-radio-card-indicator {
+  width: var(--sp-6);
+  height: var(--sp-6);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--canvas-sunken);
+  /* mockup hard-codes #fff for the check stroke — maps to var(--surface) (Checkbox.css precedent) */
+  color: var(--surface);
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+.ui-radio-card-indicator svg {
+  opacity: 0;
+  transition: opacity var(--dur-standard) var(--ease-standard);
+}
+.ui-radio-card[data-state="checked"] .ui-radio-card-indicator {
+  background: var(--accent);
+}
+.ui-radio-card[data-state="checked"] .ui-radio-card-indicator svg {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-radio-card {
+    transition: none;
+  }
+  .ui-radio-card:hover {
+    transform: none;
+  }
+}
