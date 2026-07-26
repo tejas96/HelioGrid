@@ -21,8 +21,7 @@ export async function loadCookie(): Promise<string | null> {
   return cookieCache;
 }
 
-async function absorbSetCookie(res: Response) {
-  const setCookie = res.headers.get('set-cookie');
+export async function absorbSetCookieHeader(setCookie: string | null) {
   if (!setCookie) return;
   // Keep only the session pair (name=value before the first attribute).
   const pair = setCookie.split(';')[0];
@@ -41,7 +40,7 @@ export const authClient = createAuthClient({
       if (cookie) ctx.headers.set('cookie', cookie);
     },
     onResponse: async (ctx) => {
-      await absorbSetCookie(ctx.response);
+      await absorbSetCookieHeader(ctx.response.headers.get('set-cookie'));
     },
   },
 });
@@ -60,6 +59,6 @@ export async function api<T>(
       ...(init?.headers ?? {}),
     },
   });
-  await absorbSetCookie(res);
+  await absorbSetCookieHeader(res.headers.get('set-cookie'));
   return { status: res.status, body: (await res.json()) as T };
 }

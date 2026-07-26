@@ -7,7 +7,6 @@ const defaultConfig = getDefaultConfig(__dirname);
 /**
  * Monorepo + Lingui wiring (docs/research/verify-bareRn.md — verified bare-RN requirements):
  * 1. watchFolders/nodeModulesPaths make pnpm workspace packages resolvable.
- * 2. Lingui metro transformer + po/pot sourceExts compile catalogs on import.
  * 3. PowerSync (Track E) will ADD: inline-requires blockList for
  *    require.resolve('@powersync/react-native') + the WebSocket transport — skipping
  *    either produces runtime breakage, not build errors. Do not remove this note.
@@ -19,10 +18,6 @@ const config = {
       path.resolve(__dirname, 'node_modules'),
       path.resolve(workspaceRoot, 'node_modules'),
     ],
-    sourceExts: [...defaultConfig.resolver.sourceExts, 'po', 'pot'],
-  },
-  transformer: {
-    babelTransformerPath: require.resolve('@lingui/metro-transformer/react-native'),
   },
 };
 

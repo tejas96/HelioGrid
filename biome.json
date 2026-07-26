@@ -14,6 +14,7 @@
       "!design/ds-source",
       "!design/mockups",
       "!packages/contracts/openapi",
+      "!packages/i18n/src/locales/**/messages.ts",
       "!apps/mobile/ios",
       "!apps/mobile/android",
       "!apps/mobile/vendor",

@@ -48,6 +48,10 @@ jobs:
       - run: pnpm turbo build
       - name: Emit OpenAPI (contract surface)
         run: pnpm --filter @heliogrid/contracts openapi
+      - name: i18n extract guard (unextracted messages never merge — docs/10 §7.2)
+        run: |
+          pnpm --filter @heliogrid/i18n extract
+          git diff --exit-code packages/i18n/src/locales
       - uses: actions/upload-artifact@v4
         with:
           name: openapi

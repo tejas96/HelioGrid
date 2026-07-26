@@ -1,0 +1,1 @@
+/*eslint-disable*/import type{Messages}from"@lingui/core";export const messages=JSON.parse("{\"5Oxztw\":[\"माझा दिवस उघडा\"],\"Field-first CRM, surveys and design for solar EPCs.\":[\"सोलर EPC साठी फील्ड-फर्स्ट CRM, सर्वेक्षण आणि डिझाइन.\"],\"Foundations ready\":[\"पाया तयार आहे\"],\"Open my day\":[\"माझा दिवस उघडा\"]}")as Messages;

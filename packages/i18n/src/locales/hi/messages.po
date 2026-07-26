@@ -5,12 +5,30 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hi\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../apps/mobile/App.tsx:54
+#: ../../apps/web/app/page.tsx:15
 msgid "Foundations ready"
 msgstr "आधार तैयार है"
 
+#. js-lingui-explicit-id
+#: ../../apps/mobile/App.tsx:57
+#: ../../apps/web/app/page.tsx:18
 msgid "Field-first CRM, surveys and design for solar EPCs."
 msgstr "सोलर EPC के लिए फ़ील्ड-फ़र्स्ट CRM, सर्वेक्षण और डिज़ाइन।"
 
+#. js-lingui-explicit-id
+#: ../../apps/mobile/App.tsx:61
 msgid "Open my day"
 msgstr "मेरा दिन खोलें"
+
+#: ../../apps/mobile/App.tsx:61
+#~ msgid "Open my day"
+#~ msgstr "मेरा दिन खोलें"

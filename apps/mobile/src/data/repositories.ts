@@ -1,3 +1,5 @@
+import { api } from './api-client';
+
 /**
  * Repository-interface data layer (forward-compat register: mobile) — ALL data access
  * goes through these interfaces. Online-first HTTP implementations back them until
@@ -20,13 +22,13 @@ export interface RepositoryContext {
   apiBaseUrl: string;
 }
 
-/** Online-first implementation — replaced per-module by ts-rest clients as slices land. */
-export function createHealthRepository(ctx: RepositoryContext): HealthRepository {
+/** Online-first implementation over THE typed client (compile-checked shapes). */
+export function createHealthRepository(_ctx: RepositoryContext): HealthRepository {
   return {
     async liveness() {
-      const res = await fetch(`${ctx.apiBaseUrl}/health`);
-      if (!res.ok) throw new Error(`health ${res.status}`);
-      return (await res.json()) as HealthStatus;
+      const res = await api.health.liveness.query();
+      if (res.status !== 200) throw new Error(`health ${res.status}`);
+      return res.body;
     },
   };
 }

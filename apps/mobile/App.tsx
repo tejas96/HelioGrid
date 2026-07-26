@@ -1,6 +1,5 @@
 import { theme } from '@heliogrid/tokens/theme';
-import { I18nProvider } from '@lingui/react';
-import { Trans } from '@lingui/react/macro';
+import { I18nProvider, Trans } from '@lingui/react';
 import { useCallback, useState } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -51,14 +50,14 @@ function Home({
       <View style={styles.card}>
         <Text style={styles.overline}>HELIOGRID</Text>
         <Text style={styles.h2}>
-          <Trans>Foundations ready</Trans>
+          <Trans id="Foundations ready" />
         </Text>
         <Text style={styles.body}>
-          <Trans>Field-first CRM, surveys and design for solar EPCs.</Trans>
+          <Trans id="Field-first CRM, surveys and design for solar EPCs." />
         </Text>
         <Pressable style={({ pressed }) => [styles.primary, pressed && styles.primaryPressed]}>
           <Text style={styles.primaryLabel}>
-            <Trans>Open my day</Trans>
+            <Trans id="Open my day" />
           </Text>
         </Pressable>
         <View style={styles.langRow}>

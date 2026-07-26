@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import '@heliogrid/tokens/tokens.css';
 import '@heliogrid/tokens/base.css';
 import './globals.css';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'HelioGrid',
@@ -17,7 +18,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

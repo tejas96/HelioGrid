@@ -135,9 +135,14 @@ web+RN + static fonts + Lucide runtime + galleries (browser + both sims verified
 contracts skeleton + OpenAPI · db spine (0001–0002) + RLS proven · api/worker/web/mobile
 scaffolds · auth backend E2E · telephony platform ADR · external services staged.
 
-REMAINING before the gate closes (no feature screens before these):
-1. `packages/i18n` — shared Lingui catalog (web currently has NO i18n; mobile's is app-local).
-2. Typed ts-rest clients (`@ts-rest/react-query`) wired for web + RN.
-3. Owner approval of the Architecture Review Package = this document + the galleries +
-   the green gates. **Approval opens module implementation; module roadmaps (§3) are
-   authored per module at that point, not en masse.**
+COMPLETED 2026-07-26 (closing the technical gate):
+1. `packages/i18n` — ONE shared Lingui catalog (EN/HI/MR), compiled messages, CI
+   extract-guard; Hindi verified rendered on web + both simulators from the same package.
+   Convention + swc-plugin landmine: packages/i18n/CLAUDE.md.
+2. Typed ts-rest clients (`@ts-rest/react-query` + TanStack Query) wired on web
+   (providers + /home on typed hooks) and RN (custom fetcher with the keychain cookie
+   jar; health repository on the typed client).
+
+REMAINING: **owner approval** of the Architecture Review Package = this document + the
+galleries + the green gates. Approval opens module implementation; module roadmaps (§3)
+are authored per module at that point, not en masse.
