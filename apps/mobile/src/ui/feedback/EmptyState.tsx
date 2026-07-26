@@ -21,8 +21,14 @@ export interface EmptyStateProps {
 
 // Web-ref dimensions (component spec, not spacing-scale values).
 const ICON_CIRCLE = 72;
-const GLOW_OUTER = 180;
-const GLOW_INNER = 128;
+/** Graduated rings approximating the --glow-brand radial fade (web ref: 180px, gone by 72%). */
+const GLOW_LAYERS = [
+  { size: 92, opacity: 0.08 },
+  { size: 112, opacity: 0.06 },
+  { size: 132, opacity: 0.045 },
+  { size: 150, opacity: 0.03 },
+  { size: 166, opacity: 0.015 },
+];
 const DESCRIPTION_MAX_WIDTH = 320;
 
 export function EmptyState({
@@ -36,12 +42,24 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.iconWrap}>
-        {glow && (
-          <>
-            <View pointerEvents="none" style={styles.glowOuter} />
-            <View pointerEvents="none" style={styles.glowInner} />
-          </>
-        )}
+        {glow &&
+          GLOW_LAYERS.map((layer) => (
+            <View
+              key={layer.size}
+              pointerEvents="none"
+              style={[
+                styles.glowLayer,
+                {
+                  top: (ICON_CIRCLE - layer.size) / 2,
+                  left: (ICON_CIRCLE - layer.size) / 2,
+                  width: layer.size,
+                  height: layer.size,
+                  borderRadius: layer.size / 2,
+                  opacity: layer.opacity,
+                },
+              ]}
+            />
+          ))}
         <View style={styles.iconCircle}>{icon}</View>
       </View>
       {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
@@ -78,26 +96,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: theme.spacing['sp-3'],
   },
-  // Bloom stops lifted from the --glow-brand token (rgba stops 0.22 / 0.14).
-  glowOuter: {
+  // The --glow-brand radial fades to transparent by 72% — hard-edged discs cannot do
+  // that (visible banding + apparent text overlap). GLOW_LAYERS approximates the fade.
+  glowLayer: {
     position: 'absolute',
-    top: (ICON_CIRCLE - GLOW_OUTER) / 2,
-    left: (ICON_CIRCLE - GLOW_OUTER) / 2,
-    width: GLOW_OUTER,
-    height: GLOW_OUTER,
-    borderRadius: GLOW_OUTER / 2,
-    backgroundColor: theme.colors['accent-subtle'],
-    opacity: 0.45,
-  },
-  glowInner: {
-    position: 'absolute',
-    top: (ICON_CIRCLE - GLOW_INNER) / 2,
-    left: (ICON_CIRCLE - GLOW_INNER) / 2,
-    width: GLOW_INNER,
-    height: GLOW_INNER,
-    borderRadius: GLOW_INNER / 2,
     backgroundColor: theme.colors['iris-violet'],
-    opacity: 0.08,
   },
   iconCircle: {
     width: ICON_CIRCLE,
