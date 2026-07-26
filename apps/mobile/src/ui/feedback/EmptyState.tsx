@@ -21,7 +21,8 @@ export interface EmptyStateProps {
 
 // Web-ref dimensions (component spec, not spacing-scale values).
 const ICON_CIRCLE = 72;
-const GLOW_SIZE = 220;
+// Owner ruling 2026-07-26: bloom spans the whole empty area (matches web/mockup wash).
+const GLOW_SIZE = 360;
 const DESCRIPTION_MAX_WIDTH = 320;
 
 function GlowBrand() {

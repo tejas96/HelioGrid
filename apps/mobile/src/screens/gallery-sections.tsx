@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/tokens/theme';
+import { Inbox } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
@@ -253,7 +254,14 @@ export function EmptyStateSection() {
   return (
     <Section title="Empty state">
       <EmptyState
-        icon={<Glyph color={theme.colors['text-tertiary']} size={24} />}
+        icon={
+          <Inbox
+            color={theme.colors['iris-violet']}
+            size={28}
+            strokeWidth={1.5}
+            absoluteStrokeWidth
+          />
+        }
         title="No leads yet"
         description="Leads you add or import appear here."
         action={

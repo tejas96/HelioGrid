@@ -15,9 +15,10 @@
 }
 .ui-empty-state-glow {
   position: absolute;
-  /* bloom diameter per reference — component-specific size, no token exists */
-  width: 180px;
-  height: 180px;
+  /* Owner ruling 2026-07-26: bloom fills the empty area like the mockups' ambient
+     wash (bundle's 180px read as a small puff) — spans icon + title + description. */
+  width: 360px;
+  height: 360px;
   border-radius: var(--r-pill);
   background: var(--glow-brand);
   pointer-events: none;
