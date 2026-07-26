@@ -109,6 +109,8 @@ What DOES exist and must stay green:
 
 ## Working style
 
+- EVERY slice is executed through the FIVE LENSES (rules/workflow.md): senior engineer ·
+  UX master · solar-EPC domain expert · product owner · QA-that-tries-to-break-it.
 - Plan → contract → schema → implement → verify in the running app. In that order.
 - Small complete slices; wire every new screen into the flows that reach it (never orphan
   a screen — backward-wire into existing actions).

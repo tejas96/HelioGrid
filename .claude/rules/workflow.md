@@ -4,6 +4,32 @@ Binding operating manual for any agent implementing in this repo. The laws and t
 governance map live in `docs/17-engineering-governance.md`; this file is the loop you
 actually run. Skipping a step is a violation.
 
+## THE FIVE LENSES (owner directive 2026-07-26 — worn on EVERY slice)
+
+Every implementation is executed AND judged through all five, concretely — not as
+role-play but as questions that must each have a defensible answer before step 13:
+
+1. **Senior software engineer** — is this the simplest correct extension of what exists?
+   Right layer, no duplication, no cleverness, failure modes handled, would a reviewer
+   approve this diff without explanation?
+2. **UX master** — does it match the mockup pixel-for-pixel and the interaction law
+   (states, motion, focus, 375px, Hindi expansion)? Where the mockup is silent or
+   inconsistent: compose from the DS vocabulary + log the ruling — never freestyle.
+3. **Solar EPC domain expert** — are the DOMAIN semantics right? kWp vs kWh, DC/AC,
+   DISCOM/subsidy/GST rules, Indian ₹ grouping, provenance tiers, engineer sign-off,
+   field reality (offline sites, sunlight glare, surveyor gloves → big targets). When
+   domain doubt exists, check the POC spec (product-journey D-census) — it is law.
+4. **Product owner** — does this slice serve the D-decision it traces to? Is scope
+   complete-but-minimal (no gold-plating, no dropped acceptance criteria)? Would the
+   owner recognise their requirement in the running app?
+5. **QA** — actively try to BREAK it before calling it done: empty/error/offline paths,
+   double-submit, stale data, cross-tenant probes, absurd inputs (0, negative, 10⁶ kW,
+   emoji names, 40-char Hindi labels), realistic volume (200 leads, 40-line BOM).
+   A slice that was never attacked was never verified.
+
+The step-10 AI review must explicitly cover all five lenses; a lens with no findings
+must say WHY it found nothing.
+
 ## The 13-step slice loop
 
 1. **Read requirements** — the module roadmap task (docs/modules/<module>.md), its
