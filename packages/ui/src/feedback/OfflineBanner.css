@@ -1,0 +1,17 @@
+/* Reference: ds-ref OfflineBanner.jsx — warning pill, e1; --warning always sits on --warning-bg. */
+.ui-offline-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 32px;
+  /* reference 14px side padding snapped to the 4px spacing scale */
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  box-shadow: var(--e1);
+  white-space: nowrap;
+}

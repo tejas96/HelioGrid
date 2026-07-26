@@ -6,9 +6,20 @@
   display: grid;
   gap: var(--sp-10);
 }
+/* Grid items default to min-width:auto — content min-content would inflate tracks past
+   the viewport (the 375px law). Zero it so rows truncate instead of overflowing. */
+.ds-page > *,
+.ds-section > * {
+  min-width: 0;
+}
 .ds-section {
   display: grid;
   gap: var(--sp-4);
+}
+@media (max-width: 480px) {
+  .ds-page {
+    padding: var(--screen-pad-mobile);
+  }
 }
 .ds-grid {
   display: grid;
@@ -109,4 +120,32 @@
   border-radius: var(--r-pill);
   padding: 0 var(--sp-2);
   font-size: var(--fs-caption);
+}
+
+/* /design/components — the living component gallery. Layout-only, same discipline. */
+.ds-demo {
+  display: grid;
+  gap: var(--sp-2);
+  justify-items: start;
+  align-content: start;
+}
+/* Same 375px law one level deeper: demo cells and their children may never inflate
+   tracks — rows truncate, they don't scroll the page. */
+.ds-demo,
+.ds-demo > *,
+.ds-demo-grid > *,
+.ds-demo-stack > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.ds-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--sidebar-w), 1fr));
+  gap: var(--sp-3);
+  align-items: start;
+}
+.ds-demo-stack {
+  display: grid;
+  gap: var(--sp-3);
+  justify-items: stretch;
 }

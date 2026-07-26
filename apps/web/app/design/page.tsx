@@ -99,7 +99,10 @@ export default function DesignReference() {
         </h1>
         <p className="hg-muted">
           Source: {tokensJson.$source} · generator: {tokensJson.$generator}. Light-only v1 (ruling
-          A). Never hand-transcribed; the manifest is untrusted for values.
+          A). Never hand-transcribed; the manifest is untrusted for values.{' '}
+          <a className="font-medium text-accent" href="/design/components">
+            Component gallery →
+          </a>
         </p>
       </header>
 

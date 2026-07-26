@@ -1,0 +1,19 @@
+/* Aggregate for non-transpiling consumers. Components also import their own CSS. */
+@import "./forms/Button.css";
+@import "./forms/IconButton.css";
+@import "./forms/Input.css";
+@import "./forms/Checkbox.css";
+@import "./forms/Radio.css";
+@import "./forms/Switch.css";
+@import "./data/Card.css";
+@import "./data/Chip.css";
+@import "./data/Avatar.css";
+@import "./data/ListRow.css";
+@import "./data/StatCard.css";
+@import "./data/StatusChip.css";
+@import "./feedback/EmptyState.css";
+@import "./feedback/OfflineBanner.css";
+@import "./feedback/ProgressBar.css";
+@import "./feedback/Toast.css";
+@import "./navigation/SegmentedControl.css";
+@import "./navigation/Tabs.css";

@@ -19,6 +19,7 @@
     "@notifee/react-native": "9.1.8",
     "@react-native-firebase/app": "25.1.0",
     "@react-native-firebase/messaging": "25.1.0",
+    "better-auth": "1.6.25",
     "react": "19.2.3",
     "react-native": "0.86.0",
     "react-native-keychain": "10.0.0",

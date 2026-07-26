@@ -13,6 +13,18 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A5E3AE6C4D20D65EFEAD5D31 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		B41F2E9A11223344556677AA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B41F2E9A11223344556677BB /* GoogleService-Info.plist */; };
+		B4F0A17E5D0000000000B101 /* Geist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F201 /* Geist-Regular.ttf */; };
+		B4F0A17E5D0000000000B102 /* Geist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F202 /* Geist-Medium.ttf */; };
+		B4F0A17E5D0000000000B103 /* Geist-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F203 /* Geist-SemiBold.ttf */; };
+		B4F0A17E5D0000000000B104 /* Geist-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F204 /* Geist-Bold.ttf */; };
+		B4F0A17E5D0000000000B105 /* GeistMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F205 /* GeistMono-Regular.ttf */; };
+		B4F0A17E5D0000000000B106 /* GeistMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F206 /* GeistMono-Medium.ttf */; };
+		B4F0A17E5D0000000000B107 /* GeistMono-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F207 /* GeistMono-SemiBold.ttf */; };
+		B4F0A17E5D0000000000B108 /* GeistMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F208 /* GeistMono-Bold.ttf */; };
+		B4F0A17E5D0000000000B109 /* NotoSansDevanagari-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F209 /* NotoSansDevanagari-Regular.ttf */; };
+		B4F0A17E5D0000000000B110 /* NotoSansDevanagari-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */; };
+		B4F0A17E5D0000000000B111 /* NotoSansDevanagari-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */; };
+		B4F0A17E5D0000000000B112 /* NotoSansDevanagari-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +38,18 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = HelioGridMobile/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = HelioGridMobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B41F2E9A11223344556677BB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F201 /* Geist-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Geist-Regular.ttf"; path = "../assets/fonts/Geist-Regular.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F202 /* Geist-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Geist-Medium.ttf"; path = "../assets/fonts/Geist-Medium.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F203 /* Geist-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Geist-SemiBold.ttf"; path = "../assets/fonts/Geist-SemiBold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F204 /* Geist-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Geist-Bold.ttf"; path = "../assets/fonts/Geist-Bold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F205 /* GeistMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GeistMono-Regular.ttf"; path = "../assets/fonts/GeistMono-Regular.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F206 /* GeistMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GeistMono-Medium.ttf"; path = "../assets/fonts/GeistMono-Medium.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F207 /* GeistMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GeistMono-SemiBold.ttf"; path = "../assets/fonts/GeistMono-SemiBold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F208 /* GeistMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GeistMono-Bold.ttf"; path = "../assets/fonts/GeistMono-Bold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F209 /* NotoSansDevanagari-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-Regular.ttf"; path = "../assets/fonts/NotoSansDevanagari-Regular.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-Medium.ttf"; path = "../assets/fonts/NotoSansDevanagari-Medium.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-SemiBold.ttf"; path = "../assets/fonts/NotoSansDevanagari-SemiBold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-Bold.ttf"; path = "../assets/fonts/NotoSansDevanagari-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -50,6 +74,18 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				B41F2E9A11223344556677BB /* GoogleService-Info.plist */,
+				B4F0A17E5D0000000000F201 /* Geist-Regular.ttf */,
+				B4F0A17E5D0000000000F202 /* Geist-Medium.ttf */,
+				B4F0A17E5D0000000000F203 /* Geist-SemiBold.ttf */,
+				B4F0A17E5D0000000000F204 /* Geist-Bold.ttf */,
+				B4F0A17E5D0000000000F205 /* GeistMono-Regular.ttf */,
+				B4F0A17E5D0000000000F206 /* GeistMono-Medium.ttf */,
+				B4F0A17E5D0000000000F207 /* GeistMono-SemiBold.ttf */,
+				B4F0A17E5D0000000000F208 /* GeistMono-Bold.ttf */,
+				B4F0A17E5D0000000000F209 /* NotoSansDevanagari-Regular.ttf */,
+				B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */,
+				B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */,
+				B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */,
 			);
 			name = HelioGridMobile;
 			sourceTree = "<group>";
@@ -166,6 +202,18 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				A5E3AE6C4D20D65EFEAD5D31 /* PrivacyInfo.xcprivacy in Resources */,
 				B41F2E9A11223344556677AA /* GoogleService-Info.plist in Resources */,
+				B4F0A17E5D0000000000B101 /* Geist-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B102 /* Geist-Medium.ttf in Resources */,
+				B4F0A17E5D0000000000B103 /* Geist-SemiBold.ttf in Resources */,
+				B4F0A17E5D0000000000B104 /* Geist-Bold.ttf in Resources */,
+				B4F0A17E5D0000000000B105 /* GeistMono-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B106 /* GeistMono-Medium.ttf in Resources */,
+				B4F0A17E5D0000000000B107 /* GeistMono-SemiBold.ttf in Resources */,
+				B4F0A17E5D0000000000B108 /* GeistMono-Bold.ttf in Resources */,
+				B4F0A17E5D0000000000B109 /* NotoSansDevanagari-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B110 /* NotoSansDevanagari-Medium.ttf in Resources */,
+				B4F0A17E5D0000000000B111 /* NotoSansDevanagari-SemiBold.ttf in Resources */,
+				B4F0A17E5D0000000000B112 /* NotoSansDevanagari-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +339,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.heliogrid.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.heliogrid.app;
 				PRODUCT_NAME = HelioGridMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -320,7 +368,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.heliogrid.app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.heliogrid.app;
 				PRODUCT_NAME = HelioGridMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;

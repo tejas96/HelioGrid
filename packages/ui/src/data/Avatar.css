@@ -1,0 +1,50 @@
+/* Reference: ds-ref Avatar.jsx — perfect circle; fallback = initials on the soft brand tint. */
+.ui-avatar {
+  width: var(--ui-avatar-size, 40px);
+  height: var(--ui-avatar-size, 40px);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: var(--ui-avatar-font, var(--fs-body));
+  font-weight: var(--fw-medium);
+  user-select: none;
+}
+.ui-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlapping stack — every member wears a 2px surface ring. */
+.ui-avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+.ui-avatar-group-item {
+  display: inline-flex;
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.ui-avatar-group > * + * {
+  margin-left: var(--ui-avatar-group-overlap, calc(-1 * var(--sp-2)));
+}
+.ui-avatar-group-extra {
+  width: var(--ui-avatar-group-size, 32px);
+  height: var(--ui-avatar-group-size, 32px);
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 2px var(--surface);
+  background: var(--canvas-sunken);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: var(--ui-avatar-group-extra-font, var(--fs-caption));
+  font-weight: var(--fw-medium);
+}

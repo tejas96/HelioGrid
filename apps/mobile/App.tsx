@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { i18n, type Locale, setupI18n } from './src/i18n';
+import { GalleryScreen } from './src/screens/GalleryScreen';
 
 /**
  * Track F scaffold screen — proves the chain: tokens theme → RN, Lingui catalogs via the
@@ -15,6 +16,7 @@ setupI18n('en');
 
 function App() {
   const [locale, setLocale] = useState<Locale>('en');
+  const [showGallery, setShowGallery] = useState(false);
   const onLocale = useCallback((l: Locale) => {
     i18n.activate(l);
     setLocale(l);
@@ -24,13 +26,25 @@ function App() {
     <I18nProvider i18n={i18n}>
       <SafeAreaProvider>
         <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
-        <Home locale={locale} onLocale={onLocale} />
+        {showGallery ? (
+          <GalleryScreen onBack={() => setShowGallery(false)} />
+        ) : (
+          <Home locale={locale} onLocale={onLocale} onOpenGallery={() => setShowGallery(true)} />
+        )}
       </SafeAreaProvider>
     </I18nProvider>
   );
 }
 
-function Home({ locale, onLocale }: { locale: Locale; onLocale: (l: Locale) => void }) {
+function Home({
+  locale,
+  onLocale,
+  onOpenGallery,
+}: {
+  locale: Locale;
+  onLocale: (l: Locale) => void;
+  onOpenGallery: () => void;
+}) {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.screen, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -59,6 +73,14 @@ function Home({ locale, onLocale }: { locale: Locale; onLocale: (l: Locale) => v
             </Pressable>
           ))}
         </View>
+        <Pressable
+          onPress={onOpenGallery}
+          accessibilityRole="button"
+          accessibilityLabel="Open component gallery"
+          style={({ pressed }) => [styles.galleryChip, pressed && styles.galleryChipPressed]}
+        >
+          <Text style={styles.galleryLabel}>Component gallery</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -131,6 +153,16 @@ const styles = StyleSheet.create({
   langChipActive: { backgroundColor: theme.colors['action-primary'] },
   langLabel: { color: theme.colors['text-secondary'], fontWeight: '500' },
   langLabelActive: { color: theme.colors.surface },
+  // Ghost chip (dev-only gallery entry): transparent at rest, neutral wash when pressed.
+  galleryChip: {
+    minHeight: 44,
+    borderRadius: theme.radius['r-pill'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+  },
+  galleryChipPressed: { backgroundColor: theme.colors['neutral-bg'] },
+  galleryLabel: { color: theme.colors['text-secondary'], fontWeight: '500' },
 });
 
 export default App;

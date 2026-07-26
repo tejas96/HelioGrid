@@ -11,6 +11,8 @@
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/tokens": "workspace:*",
+    "@heliogrid/ui": "workspace:*",
+    "better-auth": "1.6.25",
     "next": "15.5.21",
     "react": "19.2.3",
     "react-dom": "19.2.3"

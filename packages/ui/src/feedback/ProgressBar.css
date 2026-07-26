@@ -1,0 +1,24 @@
+/* Reference: ds-ref ProgressBar.jsx — 6px pill track; accent fill, gradient-brand for AI/long-ops. */
+.ui-progress {
+  display: block;
+  height: 6px;
+  width: 100%;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  overflow: hidden;
+}
+.ui-progress-fill {
+  height: 100%;
+  width: var(--ui-progress-value, 0%);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+.ui-progress[data-gradient="true"] .ui-progress-fill {
+  background: var(--gradient-brand);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-progress-fill {
+    transition: none;
+  }
+}

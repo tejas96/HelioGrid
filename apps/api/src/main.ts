@@ -12,6 +12,7 @@ async function bootstrap() {
   // bodyParser off globally: Better Auth's handler must read the raw stream on
   // /api/auth/* (S1 pattern); JSON parsing is re-added for everything else below.
   const app = await NestFactory.create(AppModule, { bufferLogs: true, bodyParser: false });
+  app.enableCors({ origin: process.env.WEB_ORIGIN ?? 'http://localhost:3000', credentials: true });
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.useGlobalFilters(new EnvelopeExceptionFilter());

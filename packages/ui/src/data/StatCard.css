@@ -1,0 +1,54 @@
+/* Reference: ds-ref StatCard.jsx — overline label → 32px/700 tabular value → semantic delta pill. */
+.ui-stat-card {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  padding: var(--sp-6);
+  box-shadow: var(--e2);
+  position: relative;
+  overflow: hidden;
+}
+.ui-stat-card-label {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  /* reference uses --text-tertiary; ruling: meaning-bearing overlines use --text-secondary (AA) */
+  color: var(--text-secondary);
+}
+.ui-stat-card-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  /* reference 10px snapped to the 4px scale (10 → --sp-2) */
+  margin-top: var(--sp-2);
+}
+.ui-stat-card-value {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h1);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.ui-stat-card-unit {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+}
+.ui-stat-card-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+  height: 24px;
+  /* reference 10px snapped to the 4px scale (10 → --sp-2) */
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  background: var(--success-bg);
+  color: var(--success);
+}
+.ui-stat-card-delta[data-dir="down"] {
+  background: var(--danger-bg);
+  color: var(--danger);
+}

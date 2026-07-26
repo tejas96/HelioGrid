@@ -1,0 +1,64 @@
+/* Reference: ds-ref Switch.jsx — 52x32 track, accent fill when on, white thumb, spring. */
+.ui-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  cursor: pointer;
+}
+.ui-switch[data-disabled="true"] {
+  cursor: not-allowed;
+}
+.ui-switch-track {
+  position: relative;
+  /* intrinsic geometry from the reference — 52px track has no token */
+  width: 52px;
+  height: var(--sp-8);
+  flex-shrink: 0;
+  border: none;
+  padding: 0;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  cursor: inherit;
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+/* ≥44px effective target: track is 32px tall */
+.ui-switch-track::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
+}
+.ui-switch-track[data-state="checked"] {
+  background: var(--accent);
+}
+.ui-switch-track:disabled {
+  background: var(--canvas-sunken);
+}
+.ui-switch-thumb {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
+  display: block;
+  width: var(--sp-6);
+  height: var(--sp-6);
+  border-radius: var(--r-pill);
+  /* reference hard-codes #fff — thumb maps to var(--surface) */
+  background: var(--surface);
+  box-shadow: var(--e2);
+  transform: translateX(0);
+  transition: transform var(--dur-standard) var(--ease-spring);
+}
+.ui-switch-thumb[data-state="checked"] {
+  /* reference left 4 -> 24 = 20px travel */
+  transform: translateX(var(--sp-5));
+}
+.ui-switch-label {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+.ui-switch[data-disabled="true"] .ui-switch-label {
+  color: var(--text-disabled);
+}
