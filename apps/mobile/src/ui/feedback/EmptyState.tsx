@@ -1,14 +1,14 @@
 import { theme } from '@heliogrid/tokens/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
+import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { AppText } from '../AppText';
 
 /**
  * Centred empty state — soft brand-glow bloom behind a large circular icon container.
  * Web ref: design/ds-source _ds_bundle components/feedback/EmptyState.jsx.
- * RN cannot paint the --glow-brand radial gradient; the bloom is approximated with two
- * concentric PALE circles (accent-subtle + faint iris-violet) — full-saturation stops
- * band visibly without gradients; upgrade to react-native-svg radial when svg lands. Pass icons pre-coloured (web renders them text-tertiary).
+ * The bloom is the REAL --glow-brand radial via react-native-svg — stop-for-stop from
+ * the token: iris-violet 0.22 @0% → iris-blue 0.14 @40% → transparent @72%.
  */
 export interface EmptyStateProps {
   icon?: ReactNode;
@@ -21,15 +21,30 @@ export interface EmptyStateProps {
 
 // Web-ref dimensions (component spec, not spacing-scale values).
 const ICON_CIRCLE = 72;
-/** Graduated rings approximating the --glow-brand radial fade (web ref: 180px, gone by 72%). */
-const GLOW_LAYERS = [
-  { size: 92, opacity: 0.08 },
-  { size: 112, opacity: 0.06 },
-  { size: 132, opacity: 0.045 },
-  { size: 150, opacity: 0.03 },
-  { size: 166, opacity: 0.015 },
-];
+const GLOW_SIZE = 220;
 const DESCRIPTION_MAX_WIDTH = 320;
+
+function GlowBrand() {
+  return (
+    <Svg
+      pointerEvents="none"
+      width={GLOW_SIZE}
+      height={GLOW_SIZE}
+      style={styles.glow}
+      accessible={false}
+    >
+      <Defs>
+        <RadialGradient id="hgGlowBrand" cx="50%" cy="50%" r="50%">
+          <Stop offset="0%" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
+          <Stop offset="40%" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
+          <Stop offset="72%" stopColor={theme.colors['iris-blue']} stopOpacity={0} />
+          <Stop offset="100%" stopColor={theme.colors['iris-blue']} stopOpacity={0} />
+        </RadialGradient>
+      </Defs>
+      <Rect width={GLOW_SIZE} height={GLOW_SIZE} fill="url(#hgGlowBrand)" />
+    </Svg>
+  );
+}
 
 export function EmptyState({
   icon,
@@ -42,24 +57,7 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.iconWrap}>
-        {glow &&
-          GLOW_LAYERS.map((layer) => (
-            <View
-              key={layer.size}
-              pointerEvents="none"
-              style={[
-                styles.glowLayer,
-                {
-                  top: (ICON_CIRCLE - layer.size) / 2,
-                  left: (ICON_CIRCLE - layer.size) / 2,
-                  width: layer.size,
-                  height: layer.size,
-                  borderRadius: layer.size / 2,
-                  opacity: layer.opacity,
-                },
-              ]}
-            />
-          ))}
+        {glow && <GlowBrand />}
         <View style={styles.iconCircle}>{icon}</View>
       </View>
       {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
@@ -96,11 +94,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: theme.spacing['sp-3'],
   },
-  // The --glow-brand radial fades to transparent by 72% — hard-edged discs cannot do
-  // that (visible banding + apparent text overlap). GLOW_LAYERS approximates the fade.
-  glowLayer: {
+  glow: {
     position: 'absolute',
-    backgroundColor: theme.colors['iris-violet'],
+    top: (ICON_CIRCLE - GLOW_SIZE) / 2,
+    left: (ICON_CIRCLE - GLOW_SIZE) / 2,
   },
   iconCircle: {
     width: ICON_CIRCLE,
