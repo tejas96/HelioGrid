@@ -72,8 +72,8 @@ module.exports = {
     {
       name: 'ui-index-only',
       severity: 'error',
-      comment: 'apps consume @heliogrid/ui and mobile src/ui through the package index only',
-      from: { path: '^apps/' },
+      comment: 'app SCREENS consume the component libraries through their index only',
+      from: { path: '^apps/', pathNot: '^apps/mobile/src/ui/' },
       to: { path: '(^packages/ui/src/(?!index)|^apps/mobile/src/ui/(?!index))' },
     },
     {
