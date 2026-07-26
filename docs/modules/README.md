@@ -8,7 +8,7 @@ docs/14 stays the cross-module plan of record.
 
 | Module | Track | Roadmap | Status |
 |---|---|---|---|
-| auth & tenancy | A | (author at screen-slice start — backend landed pre-system) | backend DONE · screens pending |
+| auth & tenancy | A | [auth-tenancy.md](./auth-tenancy.md) | IN PROGRESS — backend VERIFIED · screens phase started 2026-07-26 |
 | billing | A | — | not started |
 | settings & templates | A | — | not started |
 | crm | A | — | not started |
