@@ -1,0 +1,47 @@
+---
+name: migration
+description: Author a database migration safely — a new append-only file, tenancy and grants, then applied and proven against a real database. Use whenever schema changes.
+---
+
+# Authoring a migration
+
+Schema law — what every table needs, tenancy defence in depth, Law 9 scoping — is in
+`.claude/rules/db-schema.md`, which loads when you open a db file. This is the sequence.
+
+## 1. A new file, never an edit
+
+```bash
+ls packages/db/migrations/
+```
+
+Number one above the highest. Editing an applied file is blocked by a hook, and would make
+the sha256-locked runner refuse to run at all.
+
+## 2. Write the DDL
+
+Every tenant-owned table needs all four things the rule lists: `tenant_id`, a composite
+index leading with it, a fail-closed RLS policy for `app_user`, and explicit grants. A
+genuinely global table is justified in writing — there is no third option.
+
+## 3. Mirror the Drizzle schema
+
+Update `packages/db/src/schema/*.ts` to match. If you touched a pgEnum, run
+`/contract-change` in the same slice.
+
+## 4. Apply and prove — three runs, all must pass
+
+```bash
+pnpm --filter @heliogrid/db migrate    # fresh apply
+pnpm --filter @heliogrid/db migrate    # again — must skip cleanly (idempotent)
+pnpm turbo test                        # needs DATABASE_URL, or the invariants skip
+```
+
+The third is the one that matters. It proves cross-tenant reads see zero rows, cross-tenant
+writes fail, missing tenant context fails closed, and the append-only ledgers reject
+UPDATE. Without a database URL it skips — loudly when run locally, and as a hard failure
+under CI. A skipped invariant that reports success is worse than no invariant at all.
+
+## 5. Document
+
+Add the table to `docs/04-data-model.md` if it is not already in the frozen design, and
+note the migration in the roadmap row. Same commit (Law 8).

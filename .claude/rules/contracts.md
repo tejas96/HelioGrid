@@ -23,7 +23,5 @@ paths:
 - Zod is pinned at 3.x and `zod/v4` is Biome-banned (ts-rest Zod-4 support is still RC —
   spike S3). Do not lift the pin.
 
-After any change: re-emit the OpenAPI surface and commit it in the same change
-(`pnpm --filter @heliogrid/contracts openapi`), then `pnpm turbo typecheck` to sweep every
-typed client. A call site that did NOT break where you expected it to is hand-rolling HTTP —
-fix it to use the typed client.
+Changing a contract has a sequence — re-emit, keep db enums in step, sweep the clients,
+judge breaking changes. Run `/contract-change`.

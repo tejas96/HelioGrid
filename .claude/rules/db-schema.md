@@ -28,5 +28,5 @@ paths:
 - Schema grows module-wise only (Law 9). docs/04 is frozen design, not a build order — a
   table belonging to a module that has not started is a violation, so stop and ask.
 
-Verify: `migrate` on a fresh DB **and** again on the migrated one (idempotent skip), then
-`pnpm turbo test` with a DB URL so the tenancy invariants actually execute.
+Authoring a migration has a sequence — new file, DDL, Drizzle mirror, three verification
+runs. Run `/migration`.
