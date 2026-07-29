@@ -20,11 +20,13 @@ module.exports = {
       name: 'domain-purity-no-frameworks',
       severity: 'error',
       comment:
-        'domain may not import NestJS, React, zustand, fetch clients or storage (rules/domain.md)',
+        'domain may not import NestJS, React, zustand, fetch clients or storage (CLAUDE.md hard rules — domain purity)',
       from: { path: '^packages/domain/' },
       to: {
         dependencyTypes: ['npm'],
-        path: '^(@nestjs|react|react-dom|react-native|zustand|axios|drizzle-orm|@powersync)',
+        // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>_<hash>/node_modules/<pkg>/… —
+        // a bare '^react' anchor never matches. Always anchor on the node_modules segment.
+        path: '(^|/)node_modules/(@nestjs|react|react-dom|react-native|zustand|axios|drizzle-orm|@powersync)/',
       },
     },
     {
@@ -60,22 +62,128 @@ module.exports = {
       severity: 'error',
       comment: 'apps/web is frontend only — no direct db access, everything through contracts',
       from: { path: '^apps/web/' },
-      to: { path: '^packages/db/' },
+      // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
+      // connection, so importing it is not database access.
+      to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
     },
     {
       name: 'mobile-no-db',
       severity: 'error',
       comment: 'apps/mobile data access goes through repository interfaces, never packages/db',
       from: { path: '^apps/mobile/' },
-      to: { path: '^packages/db/' },
+      // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
+      // connection, so importing it is not database access.
+      to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
     },
     {
-      name: 'ui-index-only',
+      name: 'package-index-only',
       severity: 'error',
-      comment: 'app SCREENS consume the component libraries through their index only',
+      comment:
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (CLAUDE.md §Structure). Generalises the former ui-index-only. tokens is omitted deliberately: every one of its entry points is a declared subpath export.',
       from: { path: '^apps/', pathNot: '^apps/mobile/src/ui/' },
-      to: { path: '(^packages/ui/src/(?!index)|^apps/mobile/src/ui/(?!index))' },
+      to: {
+        path: [
+          '^packages/(ui|db|i18n|domain|adapters)/src/(?!index)',
+          '^packages/contracts/src/(?!index|jobs)',
+          '^apps/mobile/src/ui/(?!index)',
+        ].join('|'),
+      },
     },
+
+    /* ---- Structure standard (CLAUDE.md §Structure) ---------------------------------
+     * `warn` marks a rule today's code still violates; it flips to `error` in the
+     * migration slice that fixes it (plan: docs/… structure standard, steps 3–6).
+     * The lint chain only breaks on `error`, so warns stay visible without blocking. */
+    {
+      name: 'db-access-in-repositories-only',
+      severity: 'error',
+      comment:
+        'packages/db is importable ONLY by *.repository.ts (+ common/db, scripts). Services take repositories by DI and never see a tx or a table. This is what makes "every query path is tenant-scoped" a lint result instead of a hope.',
+      from: {
+        path: '^apps/(api|worker|voice)/src/',
+        pathNot: '(\\.repository\\.ts$|^apps/[^/]+/src/common/db/|^apps/[^/]+/src/scripts/)',
+      },
+      // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
+      // connection, so importing it is not database access.
+      to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
+    },
+    {
+      name: 'drizzle-in-repositories-only',
+      severity: 'error',
+      comment: 'the ORM itself is fenced with the same boundary as packages/db.',
+      from: {
+        path: '^apps/(api|worker|voice)/src/',
+        pathNot: '(\\.repository\\.ts$|^apps/[^/]+/src/common/db/|^apps/[^/]+/src/scripts/)',
+      },
+      to: { dependencyTypes: ['npm'], path: '(^|/)node_modules/drizzle-orm/' },
+    },
+    {
+      name: 'admin-pool-fenced',
+      severity: 'error',
+      comment:
+        'the cross-tenant ADMIN pool bypasses RLS — only *.admin.repository.ts and common/db itself may reach it. Inert until migration step 4 creates common/db/; landed now so the fence exists BEFORE the code does.',
+      from: {
+        path: '^apps/',
+        pathNot: '(\\.admin\\.repository\\.ts$|^apps/[^/]+/src/common/db/)',
+      },
+      to: { path: '^apps/[^/]+/src/common/db/admin' },
+    },
+    {
+      name: 'api-module-boundary',
+      severity: 'error',
+      comment:
+        'a module reaches another module ONLY through its <module>.public.ts — never a service class. This is the one-change-one-file property: a service signature change cannot ripple across modules because the caller only ever saw the public surface.',
+      from: { path: '^apps/(api|worker|voice)/src/modules/([^/]+)/' },
+      to: {
+        path: '^apps/[^/]+/src/modules/',
+        pathNot: '(^apps/[^/]+/src/modules/$2/|\\.public\\.ts$)',
+      },
+    },
+    {
+      name: 'common-imports-no-modules',
+      severity: 'error',
+      comment:
+        'common/ is framework plumbing beneath the modules — it may never import one. A guard that needs module behaviour depends on a PORT (token + interface in contracts) that the module implements.',
+      from: { path: '^apps/(api|worker|voice)/src/common/' },
+      to: { path: '^apps/[^/]+/src/modules/' },
+    },
+    {
+      name: 'bullmq-fenced',
+      severity: 'error',
+      comment:
+        'queue machinery lives in processors/schedulers and common/queue only — a module never constructs a Queue itself (worker.module.ts registers the root connection).',
+      from: {
+        path: '^apps/',
+        pathNot:
+          '(\\.processor\\.ts$|\\.scheduler\\.ts$|^apps/[^/]+/src/common/queue/|^apps/worker/src/worker\\.module\\.ts$)',
+      },
+      to: { dependencyTypes: ['npm'], path: '(^|/)node_modules/(bullmq|@nestjs/bullmq)/' },
+    },
+    {
+      name: 'mobile-app-entry-thin',
+      severity: 'error',
+      comment:
+        'App.tsx composes providers and renders RootNavigator — it never imports a screen. This single rule permanently stops App.tsx regrowing a hand-rolled router (ADR-0020).',
+      from: { path: '^apps/mobile/App\\.tsx$' },
+      to: { path: '^apps/mobile/src/screens/' },
+    },
+    {
+      name: 'no-tests-in-apps',
+      severity: 'error',
+      comment:
+        'testing policy is deliberately thin (CLAUDE.md §Testing): colocated tests exist only in packages/domain; everything else is tests/invariants.',
+      from: { path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$' },
+      to: { path: '.*' },
+    },
+    {
+      name: 'adapters-no-domain-internals',
+      severity: 'error',
+      comment:
+        'adapters implement ports (contracts/src/ports) and may use domain only through its index — never reach into an engine.',
+      from: { path: '^packages/adapters/' },
+      to: { path: '^packages/domain/src/(?!index)' },
+    },
+
     {
       name: 'no-circular',
       severity: 'error',
@@ -84,9 +192,18 @@ module.exports = {
     },
   ],
   options: {
-    doNotFollow: { path: 'node_modules' },
+    /*
+     * doNotFollow vs exclude — this distinction is load-bearing, do not collapse it.
+     * `exclude` deletes the module from the graph, so NO rule can ever match it;
+     * `doNotFollow` keeps it as a node (rules match) but does not traverse into it.
+     * node_modules and dist were previously EXCLUDED, which silently made every
+     * npm-targeting rule (domain-purity-no-frameworks) and every rule aimed at a
+     * dist-shipping workspace package (web-no-db, mobile-no-db, contracts-lean)
+     * unable to fire — they passed because their targets were invisible, not absent.
+     */
+    doNotFollow: { path: '(^|/)(node_modules|dist)/' },
     exclude: {
-      path: '(^|/)(dist|\\.next|\\.turbo|node_modules)/|^design/|^apps/mobile/(ios|android|vendor)/',
+      path: '(^|/)(\\.next|\\.turbo)/|^design/|^apps/mobile/(ios|android|vendor)/',
     },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.base.json' },

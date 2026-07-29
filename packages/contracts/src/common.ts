@@ -31,6 +31,10 @@ export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
 export const uiLanguageSchema = z.enum(['en', 'hi', 'mr']);
 export type UiLanguage = z.infer<typeof uiLanguageSchema>;
 
+/** Per-USER measurement units preference. */
+export const unitsPrefSchema = z.enum(['m', 'ft']);
+export type UnitsPref = z.infer<typeof unitsPrefSchema>;
+
 /** The six preset roles (D27/D28) — OR across held roles, widest visibility wins. */
 export const rolePresetSchema = z.enum([
   'owner',
@@ -41,6 +45,23 @@ export const rolePresetSchema = z.enum([
   'engineer',
 ]);
 export type RolePreset = z.infer<typeof rolePresetSchema>;
+
+/**
+ * The customer-journey pipeline status shared by leads, proposals and projects, and by
+ * every surface that renders one (StatusChip on both platforms, list filters, reports).
+ * Lives here — not in a UI package — because Law 4 makes this the only definition; the
+ * owning module's migration adds the matching pgEnum from THIS list.
+ */
+export const workflowStatusSchema = z.enum([
+  'lead',
+  'survey-scheduled',
+  'design-in-progress',
+  'approved',
+  'installing',
+  'commissioned',
+  'on-hold',
+]);
+export type WorkflowStatus = z.infer<typeof workflowStatusSchema>;
 
 /**
  * Pagination convention: cursor-based, tenant-scoped, stable order.
@@ -71,3 +92,17 @@ export const tenantClaimSchema = z.object({
   roles: z.array(rolePresetSchema).min(1),
 });
 export type TenantClaim = z.infer<typeof tenantClaimSchema>;
+
+/**
+ * What the session guard puts on the request. Lives here — not in the api — because it is
+ * the shape every controller signature depends on, and the guard that produces it now sits
+ * in `common/` while the module that resolves it sits in `modules/auth/`; a single owner
+ * keeps those two from drifting. `tenantId` is null until onboarding/accept-invite completes.
+ */
+export const sessionClaimsSchema = z.object({
+  userId: z.string(),
+  phoneE164: z.string(),
+  tenantId: z.string().nullable(),
+  roles: z.array(rolePresetSchema),
+});
+export type SessionClaims = z.infer<typeof sessionClaimsSchema>;

@@ -6,6 +6,7 @@ import {
   phoneE164Schema,
   rolePresetSchema,
   uiLanguageSchema,
+  unitsPrefSchema,
   uuidSchema,
 } from './common';
 import { errorEnvelope } from './error';
@@ -20,6 +21,32 @@ const c = initContract();
  */
 
 export const tenantSegmentSchema = z.enum(['residential', 'ci', 'both']);
+export type TenantSegment = z.infer<typeof tenantSegmentSchema>;
+
+export const tenantStatusSchema = z.enum(['active', 'suspended', 'churned']);
+export type TenantStatus = z.infer<typeof tenantStatusSchema>;
+
+export const inviteStatusSchema = z.enum(['pending', 'accepted', 'expired', 'revoked']);
+export type InviteStatus = z.infer<typeof inviteStatusSchema>;
+
+/** Membership lifecycle of a user inside a tenant (Law 4: named, never inline). */
+export const memberStatusSchema = z.enum(['invited', 'active', 'deactivated']);
+export type MemberStatus = z.infer<typeof memberStatusSchema>;
+
+/**
+ * Phone-OTP protocol constants. These describe the WIRE, so both clients and the Better
+ * Auth server config must derive from them — a server-side change to OTP length that
+ * leaves the inputs rendering the old box count is the exact drift Law 4 exists to stop.
+ */
+export const OTP_LENGTH = 6;
+/** Better Auth `expiresIn` (seconds) — surfaced so client countdowns cannot disagree. */
+export const OTP_EXPIRY_SECONDS = 300;
+/**
+ * India NSN length behind `+91`. India-first, global-ready: when a second market lands,
+ * this pair becomes market config injected at the edge — it stays ONE definition either way.
+ */
+export const PHONE_NSN_LENGTH = 10;
+export const COUNTRY_CALLING_CODE = '+91';
 
 export const meSchema = z.object({
   user: z.object({
@@ -27,7 +54,7 @@ export const meSchema = z.object({
     name: z.string(),
     phoneE164: phoneE164Schema,
     language: uiLanguageSchema,
-    unitsPref: z.enum(['m', 'ft']),
+    unitsPref: unitsPrefSchema,
     roles: z.array(rolePresetSchema),
   }),
   /** Null until onboarding completes (OTP-verified user without a tenant yet). */
@@ -37,7 +64,7 @@ export const meSchema = z.object({
       name: z.string(),
       slug: z.string(),
       segment: tenantSegmentSchema.nullable(),
-      status: z.enum(['active', 'suspended', 'churned']),
+      status: tenantStatusSchema,
     })
     .nullable(),
 });
@@ -46,7 +73,7 @@ export const inviteSchema = z.object({
   id: uuidSchema,
   phoneE164: phoneE164Schema,
   roles: z.array(rolePresetSchema).min(1),
-  status: z.enum(['pending', 'accepted', 'expired', 'revoked']),
+  status: inviteStatusSchema,
   invitedByUserId: uuidSchema,
   expiresAt: z.string().datetime(),
   createdAt: z.string().datetime(),
@@ -88,7 +115,7 @@ export const authContract = c.router(
       body: z.object({
         name: z.string().min(1).max(120).optional(),
         language: uiLanguageSchema.optional(),
-        unitsPref: z.enum(['m', 'ft']).optional(),
+        unitsPref: unitsPrefSchema.optional(),
       }),
       responses: {
         200: meSchema,
@@ -107,7 +134,7 @@ export const authContract = c.router(
               name: z.string(),
               phoneE164: phoneE164Schema,
               roles: z.array(rolePresetSchema),
-              status: z.enum(['invited', 'active', 'deactivated']),
+              status: memberStatusSchema,
             }),
           ),
         }),

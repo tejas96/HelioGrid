@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { uuidSchema } from './common';
 
 /**
- * Typed BullMQ job payloads (rules/api.md): every job has a schema here and an
+ * Typed BullMQ job payloads (apps/api/CLAUDE.md): every job has a schema here and an
  * idempotency key; handlers must be idempotent — a retried job never double-applies.
  * Queue names are namespaced `heliogrid.<area>`; job names dot-namespaced within.
  */

@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./uuid": {
+      "types": "./dist/uuid.d.ts",
+      "default": "./dist/uuid.js"
     }
   },
   "scripts": {

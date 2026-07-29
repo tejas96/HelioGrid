@@ -3,7 +3,7 @@ import { Button, EmptyState } from '@heliogrid/ui';
 import { Trans } from '@lingui/react';
 import { Building2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import './signup.css';
+import './styles.css';
 
 /**
  * Placeholder for the SignUp flow (auth-tenancy roadmap task 3 replaces this page).

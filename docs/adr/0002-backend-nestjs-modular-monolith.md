@@ -21,7 +21,7 @@ The API must serve five non-web consumers (bare RN mobile, tokenised public cust
 
 - One framework idiom across api/worker/voice; `@nestjs/bullmq`, guards, pipes, interceptors and SSE are first-class rather than hand-rolled.
 - CommonJS-friendly, which is precisely what keeps ts-rest viable (ADR-0003) and avoids the `@orpc/nest` ESM tax.
-- Heavier baseline than Hono; DI indirection remains a real agent hazard — the four caveats above must be enforced in `.claude/rules/api.md` and code review, or we inherit the failure mode the research warned about.
+- Heavier baseline than Hono; DI indirection remains a real agent hazard — the four caveats above must be enforced in `CLAUDE.md` §Layer quick-ref and `apps/api/CLAUDE.md`, or we inherit the failure mode the research warned about.
 - Monolith-first means module extraction (e.g. voice at scale) is a later refactor; standalone apps for worker/voice already cut the two most likely seams.
 
 ## Alternatives rejected

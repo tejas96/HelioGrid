@@ -155,7 +155,9 @@ All copy is English sentence-case; buttons are verbs/phrases (no "Submit"). No H
 - **Exits:** "Sign in" (form footer) → Login. "Sign in instead" (registered) → Login. Done → catalog onboarding (implied by copy; route undefined §8-Q4).
 - **Back behaviour:** no in-surface back chevron; browser back = leave signup. Registered→form via "Use a different number" (phone cleared, rest kept). Pre-auth: no bottom nav / no app chrome on mobile.
 - **Guards:** already-authenticated visitors hitting /signup should redirect to the app (not specified — standard practice, §8-Q7).
-- **RN:** signup is NOT in the mobile app scope (`.claude/rules/mobile.md` lists My Day/leads/surveys/visits/notifications/profile; team members join by invite). Treat this as **web-only**, pending owner confirmation (§8-Q8) — a deliberate exception to Law 7 lockstep that must be ruled on, not assumed.
+- **RN:** SignUp ships in the **same slice** as web (Law 7 lockstep, owner ruling 2026-07-27).
+  Field-app entry remains Sign in + invite accept; new company creation is native parity
+  with web `/signup`, verified on both simulators.
 
 ---
 
@@ -183,7 +185,7 @@ All copy is English sentence-case; buttons are verbs/phrases (no "Submit"). No H
 9. **Terms/privacy consent** absent — no checkbox, no legal line. Deliberate? (Billing exists in v1; some consent line is normal.)
 10. **Language**: per-user language is D25, but signup has no locale switcher and no Hindi/Marathi copy. What locale does the pre-auth surface use, and is the first user's language captured here?
 11. **What does City feed** — tenant HQ, default site city, DISCOM inference? Free text with no autocomplete; server contract undefined.
-12. **Phone-exists disclosure** is an intentional UX (account-enumeration surface). Confirm acceptable + specify rate limiting on the lookup (api.md: aggressive limits on public endpoints).
+12. **Phone-exists disclosure** is an intentional UX (account-enumeration surface). Confirm acceptable + specify rate limiting on the lookup (apps/api/CLAUDE.md: aggressive limits on public endpoints).
 13. **Phone field typography**: keep Input's `mono` 15px, or bless a larger "hero numeric input" extension (mockup 18px/0.14em; LoginFlow uses the same style)? Needs one ruling shared with Login.
 14. Mockup's `phoneFormatted` groups `5+5` (`98765 43210`) — confirm as the canonical Indian mobile display grouping everywhere.
 15. Off-scale type/spacing values (§4 conflicts): snap-to-token decisions needed once, shared with the Login spec (identical drift there).

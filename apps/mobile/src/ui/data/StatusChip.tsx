@@ -1,22 +1,17 @@
+import type { WorkflowStatus } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/tokens/theme';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
 import { AppText } from '../AppText';
 
 /**
  * Domain workflow status → fixed semantic colour. Status is never colour alone: the 6px
- * dot always sits next to a REQUIRED label, translated at the call site (unlike the web
- * ref, no baked-in English fallbacks — they would bypass Lingui).
+ * dot always sits next to a REQUIRED label, translated at the call site (both platforms —
+ * baked-in English fallbacks would bypass Lingui).
  */
 
-export type WorkflowStatus =
-  | 'lead'
-  | 'survey-scheduled'
-  | 'design-in-progress'
-  | 'approved'
-  | 'installing'
-  | 'commissioned'
-  | 'on-hold';
+export type { WorkflowStatus };
 
+/** Exhaustive by construction: a new contracts status is a compile error right here. */
 const STATUS: Record<WorkflowStatus, { fg: string; bg: string }> = {
   lead: { fg: theme.colors.neutral, bg: theme.colors['neutral-bg'] },
   'survey-scheduled': { fg: theme.colors.info, bg: theme.colors['info-bg'] },

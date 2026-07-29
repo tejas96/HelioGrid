@@ -2,7 +2,6 @@ import {
   bigint,
   index,
   jsonb,
-  pgEnum,
   pgTable,
   primaryKey,
   text,
@@ -10,7 +9,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
-import { rolePreset } from './enums';
+import { inviteStatus, rolePreset } from './enums';
 import { tenants, users } from './identity';
 
 const timestamps = {
@@ -20,8 +19,6 @@ const timestamps = {
     .defaultNow()
     .$onUpdate(() => new Date()),
 };
-
-export const inviteStatus = pgEnum('invite_status', ['pending', 'accepted', 'expired', 'revoked']);
 
 /** TENANT — phone-based invites; raw token never stored, only its hash (docs/04 §1). */
 export const invites = pgTable(

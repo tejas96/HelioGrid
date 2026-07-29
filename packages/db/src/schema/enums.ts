@@ -1,7 +1,10 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
 
-/** Postgres enums for closed sets that migrations own (rules/db.md). */
+/** Postgres enums for closed sets that migrations own (packages/db/CLAUDE.md). */
 
+// tenantSegment/uiLanguage/unitPref values mirror packages/contracts
+// (tenantSegmentSchema/uiLanguageSchema/unitsPrefSchema) — db stays contract-free
+// (migration-owned enums); a new value = migration here + enum change there in the same slice.
 export const tenantSegment = pgEnum('tenant_segment', ['residential', 'ci', 'both']);
 export const tenantStatus = pgEnum('tenant_status', ['active', 'suspended', 'churned']);
 export const uiLanguage = pgEnum('ui_language', ['en', 'hi', 'mr']);
@@ -15,6 +18,8 @@ export const rolePreset = pgEnum('role_preset', [
   'designer',
   'engineer',
 ]);
+
+export const inviteStatus = pgEnum('invite_status', ['pending', 'accepted', 'expired', 'revoked']);
 
 export const fileKind = pgEnum('file_kind', [
   'photo',

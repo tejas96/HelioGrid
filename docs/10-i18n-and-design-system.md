@@ -350,7 +350,7 @@ compile-time option covering Next.js App Router **and** bare RN from one catalog
 ```
 packages/i18n/
   lingui.config.ts        # locales: ['en','hi','mr'], sourceLocale 'en', format 'po'
-  locales/{en,hi,mr}/messages.po   # source of truth is the CODE (t / <Trans> macros)
+  locales/{en,hi,mr}/messages.po   # source of truth is runtime <Trans id="..."> in app code (macros banned)
   src/index.ts            # i18n instance factory, locale constants, loadCatalog()
 ```
 

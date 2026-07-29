@@ -1,4 +1,5 @@
 'use client';
+import { OTP_LENGTH } from '@heliogrid/contracts';
 import {
   type ChangeEvent,
   type ClipboardEvent,
@@ -31,7 +32,7 @@ export interface OtpInputProps {
 }
 
 export function OtpInput({
-  length = 6,
+  length = OTP_LENGTH,
   value,
   onChange,
   onComplete,

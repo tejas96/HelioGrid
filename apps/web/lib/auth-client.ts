@@ -1,9 +1,10 @@
 'use client';
 import { createAuthClient } from 'better-auth/client';
 import { phoneNumberClient } from 'better-auth/client/plugins';
+import { API_URL } from './env';
 
 /** Browser session is a first-party cookie on the api origin — credentials included. */
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+export { API_URL };
 
 export const authClient = createAuthClient({
   baseURL: `${API_URL}/api/auth`,
@@ -11,15 +12,8 @@ export const authClient = createAuthClient({
   fetchOptions: { credentials: 'include' },
 });
 
-/** Typed-enough fetch for the /auth product surface (ts-rest client lands with CRM slice). */
-export async function api<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ status: number; body: T }> {
-  const res = await fetch(`${API_URL}${path}`, {
-    credentials: 'include',
-    headers: { 'content-type': 'application/json' },
-    ...init,
-  });
-  return { status: res.status, body: (await res.json()) as T };
-}
+/*
+ * There is deliberately NO hand-rolled fetch helper here. Every product API call goes
+ * through the contract-checked client in lib/api-client.ts — an untyped `api<T>()` lets a
+ * screen invent a response shape the backend never returns, which typecheck cannot catch.
+ */

@@ -77,6 +77,6 @@
 .ui-input-helper {
   font-size: var(--fs-caption);
   /* reference uses --text-tertiary (AA-restricted to decorative); helper text is
-     meaning-bearing, so --text-secondary per ui.md restricted-roles ruling */
+     meaning-bearing, so --text-secondary per CLAUDE.md §Design / docs/10 restricted-roles ruling */
   color: var(--text-secondary);
 }

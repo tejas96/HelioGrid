@@ -2,21 +2,25 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { toNodeHandler } from 'better-auth/node';
 import express from 'express';
-import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
-import type { Auth } from './auth/better-auth';
-import { AUTH } from './auth/tokens';
-import { EnvelopeExceptionFilter } from './common/envelope-exception.filter';
+import { assertTenancyPrecondition } from './common/db/tenancy-precondition';
+import { ENV } from './config/env';
+import { AUTH, type Auth } from './modules/auth/auth.public';
 
 async function bootstrap() {
   // bodyParser off globally: Better Auth's handler must read the raw stream on
   // /api/auth/* (S1 pattern); JSON parsing is re-added for everything else below.
   const app = await NestFactory.create(AppModule, { bufferLogs: true, bodyParser: false });
-  app.enableCors({ origin: process.env.WEB_ORIGIN ?? 'http://localhost:3000', credentials: true });
+  app.enableCors({ origin: ENV.WEB_ORIGIN, credentials: true });
   app.useLogger(app.get(Logger));
-  app.useGlobalInterceptors(new LoggerErrorInterceptor());
-  app.useGlobalFilters(new EnvelopeExceptionFilter());
+  // Filter/interceptor/guard are registered declaratively (CommonModule + AppModule's
+  // APP_GUARD) — main.ts is bootstrap only, so they can inject like any other provider.
   app.enableShutdownHooks();
+
+  // Tenancy precondition (docs/08 §124): a SUPERUSER or BYPASSRLS runtime role makes RLS a
+  // silent no-op. Fail at boot rather than serve cross-tenant data that looks correct.
+  await assertTenancyPrecondition(app);
 
   const auth = app.get<Auth>(AUTH);
   const authHandler = toNodeHandler(auth);
@@ -26,8 +30,7 @@ async function bootstrap() {
     return jsonParser(req, res, next);
   });
 
-  const port = Number(process.env.PORT ?? 8080);
-  await app.listen(port, '0.0.0.0');
+  await app.listen(ENV.PORT, '0.0.0.0');
 }
 
 void bootstrap();

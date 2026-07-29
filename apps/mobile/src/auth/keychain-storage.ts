@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
  * Better Auth `storage` adapter over react-native-keychain (docs/03 §10, verified
  * pattern): keychain tolerates Better Auth's colon-separated keys — expo-secure-store
  * does not, which is why the custom adapter is the cleaner path. NEVER AsyncStorage
- * for tokens (rules/mobile.md). Consumed by the Track A auth slice + spike S1.
+ * for tokens (apps/mobile/CLAUDE.md). Consumed by the Track A auth slice + spike S1.
  */
 
 const SERVICE_PREFIX = 'heliogrid.auth';

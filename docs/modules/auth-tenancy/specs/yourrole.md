@@ -235,12 +235,12 @@ strong signal the rest is intended as composition.
 | Collapsible rail, search pill, top bar | app-shell pattern | | rail widths conflict — below |
 | Segmented/Tabs/Input/Checkbox/Radio/Switch/Toast/EmptyState/ProgressBar/OfflineBanner/StatCard/AvatarGroup | — | | not used on this surface |
 
-### CONFLICTS (mockup vs ds-source/ui.md — resolve before build)
+### CONFLICTS (mockup vs ds-source/CLAUDE.md §Design + docs/10 — resolve before build)
 
 1. **FAB fill is `--accent` (C-1, severity high).** `addCircleStyle` = 50px circle,
-   `background: var(--accent)`, icon `color: var(--action-primary)`. ui.md is explicit:
+   `background: var(--accent)`, icon `color: var(--action-primary)`. CLAUDE.md §Design + docs/10 is explicit:
    the centre FAB is **near-black `--action-primary`, 54px, `--e4`**, and accent is
-   "never a button fill". The mockup violates both fill and size. Build per ui.md
+   "never a button fill". The mockup violates both fill and size. Build per CLAUDE.md §Design + docs/10
    (near-black 54px); treat mockup as a bug like the documented "danger" variant bug.
 2. **Rail widths 220/72** vs layout tokens **sidebar 260 / collapsed 68**. Follow tokens
    unless the owner re-rules; the mockup's collapse interaction (logo toggles, 240ms) is
@@ -258,11 +258,11 @@ strong signal the rest is intended as composition.
 7. **Off-scale circle sizes** 26 / 30 / 34 / 38 / 50 / 56 for IconCircle/Avatar; only 40/32
    are documented for IconCircle. Needs a sanctioned size ramp or generation-time tokens.
 8. **StatusChip label mismatch**: mockup uses lead-stage labels (`New lead`, `Qualified`,
-   `Proposal sent`) + `Overdue`; ui.md enumerates lead / survey-scheduled /
+   `Proposal sent`) + `Overdue`; CLAUDE.md §Design + docs/10 enumerates lead / survey-scheduled /
    design-in-progress / approved / installing / commissioned / on-hold. The StatusChip
    domain map must be extended (or these are Chip, not StatusChip) — needs a ruling.
 9. **Meaning-bearing overlines in `--text-tertiary`** (`Today`, `Agent activity`,
-   `Upcoming this week`, coach-unrelated): ui.md says tertiary (~2.5:1) is decorative
+   `Upcoming this week`, coach-unrelated): CLAUDE.md §Design + docs/10 says tertiary (~2.5:1) is decorative
    only; meaning-bearing overlines use `--text-secondary`. `Overdue · n` in `--danger`
    is semantic and reasonable but is also below AA as bare text — verify.
 10. **Provenance missing** on ₹ values and kWp figures in the landing content (product
@@ -376,7 +376,7 @@ bundled locally (no CDN), round caps/joins.
 3. **StatusChip vocabulary** (CONFLICT 8): are `New lead / Qualified / Proposal sent /
    Overdue` sanctioned StatusChip states or ad-hoc chips? Needs a ruling before the
    component API is touched.
-4. **FAB colour** (CONFLICT 1): build per ui.md near-black, but the mockup's accent FAB
+4. **FAB colour** (CONFLICT 1): build per CLAUDE.md §Design + docs/10 near-black, but the mockup's accent FAB
    should be flagged to the owner in case it's a deliberate new ruling.
 5. **Coach target absence**: with zero leads (a brand-new tenant member's most likely
    state!) the leads block is an EmptyState — what does coach step 1 anchor to? The
@@ -395,7 +395,7 @@ bundled locally (no CDN), round caps/joins.
     production "review my role" re-entry point (e.g. from Profile) is nowhere defined.
 12. **Multi-role intro line** exists only for multi (`hasIntro: multi`); single-role gets
     no intro. Confirm this asymmetry is intended.
-13. **Coach overline colour**: `--accent` for "1 of 3" — ui.md restricts meaning-bearing
+13. **Coach overline colour**: `--accent` for "1 of 3" — CLAUDE.md §Design + docs/10 restricts meaning-bearing
     overlines to `--text-secondary`; accent-as-text for step counters needs a nod.
 14. **Provenance** on the landing's ₹/kWp values (CONFLICT 10) — which tier do My Day
     aggregates carry?

@@ -333,7 +333,7 @@ as an ICU message with a list-format select, never concatenation** (i18n rule).
 | Team table (desktop) | **composition** (CSS grid + zebra) | ListRow can't do 5-column grids |
 | Person card (mobile) | **composition** on `Card interactive density="expressive"` | 3-slot ListRow is insufficient (chips row + footer) |
 | Toast | `Toast tone="success" title={…}` | mockup's near-black pill ≠ `_ds` white Toast card (C11) |
-| Sheet/modal shells | **composition** (no Sheet/Modal in the 21) — Radix Dialog under the hood per ui.md, styled per §2.1 | focus trap/restore mandatory |
+| Sheet/modal shells | **composition** (no Sheet/Modal in the 21) — Radix Dialog under the hood per CLAUDE.md §Design + docs/10, styled per §2.1 | focus trap/restore mandatory |
 | Sidebar / nav rows | **composition** (app shell, not in the 21) | |
 | SetupLater card + section headers | **composition**: `Card` + `IconCircle icon color="var(--text-secondary)"` (36/40px) + rotating chevron | accordion pattern not in the 21 |
 | Saved check badge (22px) | **composition** (success circle + check) | |
@@ -494,7 +494,7 @@ well, selected chips), `x` (remove row), `plus` (add another),
 `triangle-alert` (logo warning).
 
 **CONFLICT C17**: the mockups use `↗` (home links) and `‹` (variant caption) as
-unicode-in-text icons — ui.md forbids unicode-as-icon; render `arrow-up-right` /
+unicode-in-text icons — CLAUDE.md §Design + docs/10 forbids unicode-as-icon; render `arrow-up-right` /
 `chevron-left` Lucide glyphs instead.
 
 ---

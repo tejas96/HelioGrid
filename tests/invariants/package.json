@@ -2,7 +2,7 @@
   "name": "@heliogrid/invariants",
   "version": "0.0.1",
   "private": true,
-  "description": "The locked invariant set (rules/testing-lite.md §2) — additions require explicit owner approval",
+  "description": "The locked invariant set (CLAUDE.md §Testing) — additions require explicit owner approval",
   "scripts": {
     "test": "tsx src/run.ts",
     "typecheck": "tsc -p tsconfig.json"

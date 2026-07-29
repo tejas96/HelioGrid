@@ -15,6 +15,12 @@ REDIS_URL unset ⇒ boots in idle scaffold mode (no queue connection).
 uses: @heliogrid/contracts (jobs.ts), @heliogrid/db        used by: nobody
 
 ## Local conventions
+- Same layout as apps/api (CLAUDE.md §Structure): `src/{config,common,modules,scripts}`, one
+  `src/modules/<m>/` per context, plus `<m>.processor.ts` (one per queue) and `<m>.scheduler.ts`.
+- **A processor holds no logic** — parse the payload schema, take the idempotency key,
+  delegate to the service, return. Same db/drizzle fence as the api: `*.repository.ts` only.
+- `bullmq`/`@nestjs/bullmq` are importable only from processors, schedulers, `common/queue/`
+  and `worker.module.ts` (dep-cruiser `bullmq-fenced`) — a module never builds a Queue itself.
 - Every job: typed payload schema in contracts/jobs.ts + idempotency key; handlers are
   idempotent — a retried job must not double-apply (money jobs especially).
 - Queue prefix `heliogrid`; queue names namespaced by area.

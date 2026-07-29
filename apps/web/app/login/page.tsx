@@ -1,4 +1,5 @@
 'use client';
+import { COUNTRY_CALLING_CODE, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
 import {
   BloomLayer,
   Button,
@@ -16,7 +17,7 @@ import { Check, CircleAlert, Phone } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '../../lib/auth-client';
-import './login.css';
+import './styles.css';
 
 const RESEND_SECONDS = 30;
 const CALL_OFFER_AFTER_RESENDS = 2;
@@ -95,7 +96,9 @@ export default function Login() {
 
   const requestCode = useCallback(async () => {
     try {
-      const { error } = await authClient.phoneNumber.sendOtp({ phoneNumber: `+91${phone}` });
+      const { error } = await authClient.phoneNumber.sendOtp({
+        phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
+      });
       return !error;
     } catch {
       return false;
@@ -104,7 +107,7 @@ export default function Login() {
 
   const handleContinue = async (event: FormEvent) => {
     event.preventDefault();
-    if (sending || phone.length !== 10 || !online) return;
+    if (sending || phone.length !== PHONE_NSN_LENGTH || !online) return;
     setSending(true);
     setSendError(false);
     const ok = await requestCode();
@@ -130,7 +133,7 @@ export default function Login() {
       setFailure(null);
       try {
         const { error } = await authClient.phoneNumber.verify({
-          phoneNumber: `+91${phone}`,
+          phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
           code,
         });
         if (error) {
@@ -238,7 +241,7 @@ export default function Login() {
                   value={phone}
                   disabled={sending}
                   onChange={(event) => {
-                    setPhone(event.target.value.replace(/\D/g, '').slice(0, 10));
+                    setPhone(event.target.value.replace(/\D/g, '').slice(0, PHONE_NSN_LENGTH));
                     setSendError(false);
                   }}
                   leading={<span className="lg-prefix">+91</span>}
@@ -253,7 +256,7 @@ export default function Login() {
                   size="lg"
                   fullWidth
                   loading={sending}
-                  disabled={phone.length !== 10 || sending || !online}
+                  disabled={phone.length !== PHONE_NSN_LENGTH || sending || !online}
                 >
                   <Trans id="Continue" />
                 </Button>

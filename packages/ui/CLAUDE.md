@@ -12,8 +12,11 @@
 2. Pixels: the `_ds_bundle.js` reference implementation (session split: scratchpad
    ds-ref/*.ref.jsx; re-split from the bundle when needed) — spec to implement, NEVER code
    to import.
-3. Law: docs/10 + `.claude/rules/ui.md`; conflicts resolve tokens/rulings over mockup bugs
+3. Law: docs/10 + `CLAUDE.md` §Design; conflicts resolve tokens/rulings over mockup bugs
    (e.g. Button `variant="danger"` doesn't exist).
+
+## Depends on / depended on by
+uses: @heliogrid/tokens        used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
 
 ## Conventions (locked by the Button exemplar)
 - One file pair per component: `src/<family>/<Name>.tsx` + `<Name>.css` (imported by the
@@ -23,6 +26,18 @@
 - a11y contracts: icon-only controls REQUIRE `label` (typed, not optional); status never
   colour-alone (StatusChip dot + label); ≥44px targets (sm/32px controls carry an
   invisible ::after hit area when interactive).
+
+## Landmines (incident-driven — 2026-07-27 architecture audit)
+- **Business sets come from `@heliogrid/contracts`, never re-typed here.** `WorkflowStatus`
+  was an inline union in BOTH this package and the RN mirror, absent from contracts, with
+  its labels restated in two galleries — four copies of one enum. `import type` from
+  contracts (the dependency exists, erases at runtime).
+- **Copy props are REQUIRED.** StatusChip's `label` was optional here with a baked-in
+  English `STATUS_LABEL` fallback while the RN mirror required it: callers that forgot the
+  prop silently shipped untranslated English, bypassing Lingui, and the two mirrors had
+  different APIs. Optional-with-fallback is banned for anything user-visible.
+- Status/variant → visual maps are `Record<TheEnum, …>` so a new contract value fails to
+  compile here rather than rendering blank.
 
 ## STANDING LAW — surfaces without a mockup
 When the data model needs UI the 82 mockups don't cover, design it INSIDE this component

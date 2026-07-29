@@ -1,0 +1,15 @@
+# Migrations are sha256-locked by packages/db/src/migrate.ts — the hash covers the RAW
+# BYTES, line endings included. Without this, a CRLF checkout on Windows would change every
+# applied migration's hash and the runner would refuse to run with a message that reads like
+# sabotage. Never remove this line.
+*.sql text eol=lf
+
+# Keep every other text file normalised too, for the same class of reason.
+* text=auto eol=lf
+
+# Binary assets must not be normalised.
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary

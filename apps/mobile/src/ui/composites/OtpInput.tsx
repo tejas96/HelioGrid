@@ -1,3 +1,4 @@
+import { OTP_LENGTH } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/tokens/theme';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
@@ -31,7 +32,7 @@ const DIGIT_SIZE = 22;
 const ROW_GAP = 2;
 
 export function OtpInput({
-  length = 6,
+  length = OTP_LENGTH,
   value,
   onChange,
   onComplete,

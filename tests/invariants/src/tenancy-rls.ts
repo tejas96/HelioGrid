@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import postgres from 'postgres';
 
 /**
- * Tenancy invariant (rules/testing-lite.md §2): with RLS on, tenant A's session cannot
+ * Tenancy invariant (CLAUDE.md §Testing): with RLS on, tenant A's session cannot
  * read or write any tenant B row — generated over the schema (every table carrying
  * tenant_id), not hand-listed. Uses SET ROLE app_user to run under the RLS-subject role.
  */

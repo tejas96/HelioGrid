@@ -14,7 +14,7 @@ Engine: **PowerSync self-hosted (Open Edition)** on Fly `bom`, Postgres bucket s
 writes through **our NestJS backend connector**. Sources: [`./research/sync.md`](./research/sync.md),
 [`./research/verify-bareRn.md`](./research/verify-bareRn.md),
 [`./research/verify-flyNative.md`](./research/verify-flyNative.md),
-[`./research/fly.md`](./research/fly.md), `.claude/rules/mobile.md`, BLUEPRINT §Offline & sync.
+[`./research/fly.md`](./research/fly.md), `apps/mobile/CLAUDE.md`, BLUEPRINT §Offline & sync.
 
 ## 1. Principles
 
@@ -207,7 +207,7 @@ unchecked, or pruning before server ack.
 
 | Entity | Rule | Mechanics |
 |---|---|---|
-| **Survey** | **Versioned-append.** A revisit NEVER overwrites v1 (product rule, `.claude/rules/mobile.md`) | Revisit = connector inserts a new survey version; prior versions immutable. Within one in-progress version by its own author, field updates are LWW by server apply order. Two devices editing the same in-progress version (shouldn't happen — assignee-scoped) → second writer's fields win, both recorded in audit |
+| **Survey** | **Versioned-append.** A revisit NEVER overwrites v1 (product rule, `apps/mobile/CLAUDE.md`) | Revisit = connector inserts a new survey version; prior versions immutable. Within one in-progress version by its own author, field updates are LWW by server apply order. Two devices editing the same in-progress version (shouldn't happen — assignee-scoped) → second writer's fields win, both recorded in audit |
 | **Design** | **Single-editor + server version check → 409** | Every design save carries `base_version`. Mismatch → `rejected:conflict` (HTTP 409 on the direct studio path); client reloads server state, user re-applies. No merge, ever — the canonical `Project` JSONB is one document. Practically LWW because single-editor, but the check makes a stale second editor impossible to silently lose |
 | **Lead field edits** | **Per-field LWW + activity log** | Server apply order wins per field; every applied change writes an activity entry (field, old → new, actor, `captured_at`, applied_at) so a "lost" concurrent edit is always visible and recoverable from the log. Stage transitions validated against the pipeline state machine; invalid transition → `rejected:conflict`, local state corrected on sync-down |
 | **Visit** | LWW + monotonic status | Status may only move forward (planned → en-route → completed/cancelled); a regressing offline write is rejected and corrected down |
@@ -277,7 +277,7 @@ Per the journey spec ([`./research/journey.md`](./research/journey.md) §Mode B)
 
 ## 11. Bare-RN wiring (binding, verified)
 
-From [`./research/verify-bareRn.md`](./research/verify-bareRn.md) and `.claude/rules/mobile.md` — not optional:
+From [`./research/verify-bareRn.md`](./research/verify-bareRn.md) and `apps/mobile/CLAUDE.md` — not optional:
 `@powersync/react-native` + `@op-engineering/op-sqlite` (pod install; New Architecture OK);
 `metro.config.js` blockList disabling inline requires for `@powersync/react-native`;
 WebSocket transport; `@babel/plugin-transform-async-generator-functions` +

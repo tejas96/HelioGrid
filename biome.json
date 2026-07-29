@@ -47,7 +47,8 @@
               "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only."
             }
           }
-        }
+        },
+        "noProcessEnv": "error"
       },
       "suspicious": {
         "noConsole": {
@@ -97,6 +98,34 @@
         "rules": {
           "suspicious": {
             "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/mobile/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useValidAriaRole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/*/src/config/env.ts",
+        "apps/web/lib/env.ts",
+        "packages/db/src/migrate.ts",
+        "packages/db/drizzle.config.ts",
+        "tests/invariants/**",
+        "**/*.config.{js,ts,mjs,cjs}",
+        "**/scripts/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noProcessEnv": "off"
           }
         }
       }

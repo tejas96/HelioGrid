@@ -1,17 +1,14 @@
 import { getMigrations } from 'better-auth/db/migration';
-import { createAuth } from '../auth/better-auth';
+import { ENV } from '../config/env';
+import { createAuth } from '../modules/auth/auth.public';
 
 /**
  * Better Auth owns its tables via ITS migrator (docs/14 — never authored in
  * packages/db). Run after packages/db migrate: `pnpm --filter @heliogrid/api auth:migrate`.
  */
 async function main() {
-  const url = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
-  if (!url) {
-    console.error('DATABASE_ADMIN_URL (or DATABASE_URL) is required');
-    process.exit(1);
-  }
-  const auth = createAuth(url);
+  // config/env.ts already refused to load without a valid DATABASE_URL.
+  const auth = createAuth(ENV.DATABASE_ADMIN_URL ?? ENV.DATABASE_URL);
   const { toBeCreated, toBeAdded, runMigrations } = await getMigrations(auth.options);
   if (toBeCreated.length === 0 && toBeAdded.length === 0) {
     console.log('better-auth schema up to date');

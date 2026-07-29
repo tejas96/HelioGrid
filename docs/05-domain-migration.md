@@ -7,7 +7,7 @@ module-by-module port plan into `packages/domain` (`@heliogrid/domain`).
 
 Sources: [./research/geo3d.md](./research/geo3d.md) (geometry purity audit),
 [./research/calc.md](./research/calc.md) (calculation/data audit),
-[`.claude/rules/domain.md`](../.claude/rules/domain.md) (binding purity contract).
+`CLAUDE.md` hard rules + [docs/05-domain-migration.md](./05-domain-migration.md) (binding purity contract).
 POC root: `/Volumes/works-space/Solar-App-POC/src/features/solar-studio/`.
 
 ---
@@ -239,7 +239,7 @@ functions.
 `scene-model`, `scene-frame`, `shading`, `solar-heatmap` import `three` as CPU maths only
 (Vector3/Matrix4/BufferGeometry/Raycaster — no WebGL, no DOM). They already run headless.
 
-**v1 ruling: keep three-as-math.** The purity contract in `.claude/rules/domain.md`
+**v1 ruling: keep three-as-math.** The purity contract in `CLAUDE.md` hard rules
 explicitly allows it. Porting to a neutral maths kernel now would violate philosophy
 rule 2 (no algorithm changes during port) and re-open the exact class of drift the
 one-frame gate exists to prevent. Consequences accepted for v1:

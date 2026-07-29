@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -101,7 +102,10 @@ export const usageEvents = pgTable(
     periodKey: text('period_key').notNull(),
   },
   (t) => [
-    uniqueIndex('usage_events_idem_idx').on(t.idempotencyKey, t.periodKey),
+    // tenant_id LEADS the dedupe key (0003): without it one tenant's idempotency_key
+    // suppresses another tenant's billable event. period_key stays because a unique index
+    // on a partitioned table must contain every partition-key column.
+    uniqueIndex('usage_events_idem_idx').on(t.tenantId, t.idempotencyKey, t.periodKey),
     index('usage_events_tenant_metric_idx').on(t.tenantId, t.metric, t.periodKey),
   ],
 );
@@ -140,11 +144,15 @@ export const syncMutations = pgTable(
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id),
-    mutationId: text('mutation_id').notNull().unique(),
+    // Client-generated on an offline device — scoped per tenant (0003), never global.
+    mutationId: text('mutation_id').notNull(),
     entityType: text('entity_type').notNull(),
     entityId: uuid('entity_id'),
     appliedAt: timestamp('applied_at', { withTimezone: true }).notNull().defaultNow(),
     result: mutationResult('result').notNull(),
   },
-  (t) => [index('sync_mutations_entity_idx').on(t.tenantId, t.entityType, t.entityId)],
+  (t) => [
+    unique('sync_mutations_tenant_mutation_key').on(t.tenantId, t.mutationId),
+    index('sync_mutations_entity_idx').on(t.tenantId, t.entityType, t.entityId),
+  ],
 );

@@ -129,6 +129,29 @@ packages/
 subscriptions, entitlements, usage), `catalog`, `agent` (voice config/calls/knowledge),
 `notifications`, `admin`.
 
+**Internal layout of a backend app** (binding closed set — full rules in `CLAUDE.md` §Structure):
+
+```
+apps/{api,worker,voice}/src/
+  main.ts            bootstrap only
+  app.module.ts
+  config/            env.schema.ts · env.ts (the ONLY process.env read) · config.module.ts
+  common/            common.module.ts · tokens.ts · guards/ decorators/ filters/
+                     interceptors/ errors/ db/ queue/   — framework plumbing, never behaviour
+  modules/<m>/       <m>.module.ts · <m>.public.ts · tokens.ts   (required)
+                     <m>.controller.ts · <m>.service.ts · <m>.repository.ts
+                     <m>.processor.ts · <m>.scheduler.ts   (worker)
+                     constants.ts · types.ts · internal/   (optional)
+  scripts/           one-shot ops scripts, never imported by runtime code
+```
+
+Two boundaries are enforced by dependency-cruiser rather than review: **`packages/db` and
+`drizzle-orm` are importable only from `*.repository.ts`** (so every query path is
+tenant-scoped by construction, with cross-tenant access isolated in `*.admin.repository.ts`),
+and **a module reaches another module only through its `<m>.public.ts`** (module class, DI
+tokens, types — never a service class), which keeps a service-signature change from rippling
+across contexts.
+
 **Why modular monolith now.** One deployable API means one Postgres transaction scope, no
 distributed sagas, one deploy pipeline, and single-digit-ms internal calls — the only
 honest shape for a next-month launch run by AI agents. NestJS modules give compile-visible

@@ -14,7 +14,7 @@ Status legend: HONORED / PARTIAL / SUPERSEDED per docs/15 §2 ("a SUPERSEDED dec
 Verbatim: "Customer never logs in — tokenised link only."
 docs/15 row: "HONORED — stateless signed tokens (docs/08); named links + OTP ship v1 (R6-amended)."
 Journey reinforces: "The customer almost never touches the app. They have no login (D5)." Day-in-the-life table: "Logins: **0**". Stage 8 roles table: "**Customer** | The progress link. No login."
-**Implication:** No customer user records, no customer sessions. Customer-link module = stateless signed tokens, no RLS-user context, read-only except explicit accept/question actions (per api.md). One tokenised URL serves proposal AND progress for its whole life.
+**Implication:** No customer user records, no customer sessions. Customer-link module = stateless signed tokens, no RLS-user context, read-only except explicit accept/question actions (per apps/api/CLAUDE.md). One tokenised URL serves proposal AND progress for its whole life.
 
 ### D7 — Three audiences (2026-07-21) — HONORED
 Verbatim: "Three audiences: company **owner**, **employees**, and the **EPC's customer**."
@@ -78,7 +78,7 @@ Stacking rules: "Permission granted if **any** held role grants it · Lead visib
 | ~~Manage billing~~ (D38-era strike; billing now v1 → Owner) | | | | | | |
 | See company reports | ✓ | ✓ | — | — | — | — |
 Notes: "Discounting is not a separate permission (D34). It rides with *Create and edit proposals*." · "No object-level permissions, no field-level rules, no inheritance tree."
-**Implication:** Capability checks are against this fixed matrix (the D27 presets); invariant tests assert "role capability matrix matches D27 presets" (testing-lite). With billing back in v1, Manage billing = Owner-only (Manager explicitly "cannot change... billing").
+**Implication:** Capability checks are against this fixed matrix (the D27 presets); invariant tests assert "role capability matrix matches D27 presets" (CLAUDE.md §Testing). With billing back in v1, Manage billing = Owner-only (Manager explicitly "cannot change... billing").
 
 ### D28 — No per-person exceptions (2026-07-21) — HONORED
 Verbatim: "**No per-person permission exceptions, ever.** To know what someone can do, you look at their roles — one source of truth. Exceptions are how permission systems become unauditable."

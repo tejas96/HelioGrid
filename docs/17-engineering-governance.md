@@ -13,8 +13,8 @@ implemented, this document points — it never duplicates (Law: Single Source of
 Laws 1–8 below bind every agent and every slice. Conflicts resolve by §4's hierarchy.
 
 **Law 1 — Foundation before features.** Feature modules build ONLY on the landed
-foundation (tokens → components → contracts → guards). Foundation gate status: §6.
-Explicit owner approval opens feature work — the owner is the approval gate.
+foundation (tokens → components → contracts → guards). Foundation gate: **APPROVED
+2026-07-26** (§6). Module work proceeds via per-module roadmaps (§3).
 
 **Law 2 — Architecture is fixed; features extend, never redefine.** No new architectural
 patterns, folder categories, state approaches, API styles or dependency categories
@@ -45,7 +45,8 @@ roadmaps expose implementation status per task (§3).
 
 **Law 7 — Cross-platform lockstep.** Web + RN ship in the SAME slice from the same
 contract, verified in the browser AND on both simulators (CLAUDE.md owner directive).
-Platform drift is a violation, not a follow-up.
+Platform drift is a violation, not a follow-up. **Exceptions require an owner ruling
+recorded in the module roadmap** (e.g. owner-only onboarding steps web-only); default is lockstep.
 
 **Law 8 — Documentation is code.** Docs are load-bearing for other agents: a change
 that invalidates a doc updates the doc in the SAME commit (CLAUDE.md working style;
@@ -97,7 +98,7 @@ docs/15 rulings) → 3. Architecture contracts (BLUEPRINT + docs/02/03 + ADRs) �
 4. Shared domain (docs/04 + packages/domain purity rules) → 5. API contracts
 (packages/contracts) → 6. UX specification (design/mockups by filename; interaction law
 docs/10) → 7. Design system (ds-source via packages/tokens + the 21-component API) →
-8. Existing repo standards (rules/, per-package CLAUDE.md) → 9. Implementation detail.
+8. Existing repo standards (`CLAUDE.md`, per-package `CLAUDE.md`) → 9. Implementation detail.
 Never invent at level N what a higher level already defines. When a doc and code
 disagree: STOP, reconcile the doc first or flag to the owner (CLAUDE.md).
 
@@ -107,26 +108,27 @@ disagree: STOP, reconcile the doc first or flag to the owner (CLAUDE.md).
 
 | Framework concern | Enforced by (already exists) |
 |---|---|
-| Repository constitution | `CLAUDE.md` (+`AGENTS.md`), `.claude/rules/*` , per-package `CLAUDE.md` |
-| Frontend architecture | docs/02, docs/10, rules/ui.md + rules/mobile.md; scaffolds landed |
-| Backend architecture | docs/02, rules/api.md (modules/guards/errors/jobs/webhooks) |
-| Shared domain strategy | rules/domain.md (purity, injected contexts), docs/05 port plan |
-| API governance | rules/api.md + packages/contracts/CLAUDE.md (contract-first, error envelope, versioning) |
-| Database governance | rules/db.md + packages/db/CLAUDE.md (append-only, RLS, conventions) + **Law 9** |
-| Design system governance | docs/10 + rules/ui.md + packages/tokens (generated, contrast gate) + galleries as enforcement surface |
-| Dependency governance | docs/03 pin policy (exact pins, majors need ADR) + sherif + lockfile authority |
-| Cross-platform sync | Law 7 lockstep + shared contracts + same component API web/RN |
-| Requirement traceability | §3 module roadmaps + docs/15 D-conformance + mockups-by-filename |
+| Repository constitution | `CLAUDE.md` (single file — Claude Code always-on) + per-package `CLAUDE.md` |
+| Frontend architecture | docs/02, docs/10, `CLAUDE.md` §Design + §Structure; scaffolds landed |
+| Backend architecture | docs/02, `CLAUDE.md` §Layer quick-ref API + `apps/api/CLAUDE.md` |
+| Shared domain strategy | `CLAUDE.md` hard rules + docs/05 port plan |
+| API governance | `CLAUDE.md` + packages/contracts/CLAUDE.md (contract-first, error envelope) |
+| Database governance | `CLAUDE.md` + packages/db/CLAUDE.md (append-only, RLS) + **Law 9** |
+| Design system governance | docs/10 + `CLAUDE.md` §Design + packages/tokens + galleries |
+| Dependency governance | docs/03 pin policy + sherif + lockfile authority |
+| Cross-platform sync | Law 7 + `CLAUDE.md` §Slice workflow step 7 |
+| Requirement traceability | §3 module roadmaps + docs/15 + mockups-by-filename |
 | Documentation strategy | Law 8 + landmine sections + docs/ops/ + spike verdicts |
-| AI workflow / operating manual | `.claude/rules/workflow.md` (the 13-step loop, checklists, DoD) |
-| Architecture protection | dependency-cruiser (.dependency-cruiser.cjs) + Turbo Boundaries + Biome restricted imports + TS project refs |
-| Quality gates | `pnpm turbo typecheck lint test build` + run-and-look law (CLAUDE.md Commands) |
-| Automated review | workflow.md §review: /code-review (or equivalent adversarial review) pre-merge on every slice; critical findings block completion |
-| Definition of Done | workflow.md §DoD (consolidates CLAUDE.md + docs/10 §10 + module template) |
-| Repo structure | CLAUDE.md stack section + module template; new top-level dirs need an ADR (Law 2) |
-| CI/CD enforcement | .github/workflows/ci.yml (3 lanes) + branch protection (required checks, squash-only, linear history) + PR template |
-| Testing policy | rules/testing-lite.md (locked invariant set — deliberately thin, additions need owner approval) |
+| AI workflow / operating manual | `CLAUDE.md` §Slice workflow (Five Lenses + 13-step loop) |
+| Architecture protection | dependency-cruiser + Turbo Boundaries + Biome + TS project refs |
+| Quality gates | `pnpm turbo typecheck lint test build` + run-and-look (`CLAUDE.md` Commands) |
+| Automated review | `CLAUDE.md` §Slice workflow step 10 (Five Lenses self-review) |
+| Definition of Done | `CLAUDE.md` §Definition of done + docs/10 §10 + module roadmap |
+| Repo structure | `CLAUDE.md` §Structure — closed sets for backend/web/RN/packages; imports enforced by dependency-cruiser, naming review-only; new top-level dirs need ADR |
+| CI/CD enforcement | .github/workflows/ci.yml + branch protection + PR template |
+| Testing policy | `CLAUDE.md` §Testing (locked invariants — additions need owner approval) |
 | Foundation phase | §6 gate below |
+| Law 4 enums (review) | `CLAUDE.md` §Enforcement matrix + contracts |
 
 ## 6. Foundation gate — current status (2026-07-26)
 
@@ -146,3 +148,39 @@ COMPLETED 2026-07-26 (closing the technical gate):
 **GATE APPROVED by the owner, 2026-07-26** ("approved, start auth tenancy module").
 Module implementation is open. Module roadmaps (§3) are authored per module as each
 begins — auth-tenancy first.
+
+---
+
+## Appendix A — per-package CLAUDE.md template
+
+Every `apps/*` and `packages/*` gets a `CLAUDE.md` at creation. Keep under ~60 lines;
+loads when Claude Code reads files in that package. Delete sections that don't apply.
+
+```markdown
+# <name> — <one-line role>
+
+## What lives here / what must never live here
+<2-6 bullets>
+
+## Commands
+pnpm --filter <name> typecheck | lint | test | dev
+
+## Depends on / depended on by
+uses: <packages>        used by: <apps/packages>
+
+## Local conventions
+<package-specific only — else: see CLAUDE.md §Layer quick-ref>
+
+## Landmines
+<incident-driven; date-stamp new ones>
+
+## Definition of done here
+<additions to CLAUDE.md §Definition of done>
+```
+
+Authoring rules:
+- Commands copy-paste runnable.
+- Landmines mandatory once first sharp edge discovered.
+- Update in SAME commit that changes the convention.
+- Never repeat Law N prose — reference by number.
+- Line budget: ≤40 default; ≤60 for ui/mobile/db standing law or critical landmines.

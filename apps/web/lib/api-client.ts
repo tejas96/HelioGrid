@@ -1,5 +1,5 @@
 'use client';
-import { apiContract } from '@heliogrid/contracts';
+import { apiContract, openErrorEnvelopeSchema } from '@heliogrid/contracts';
 import { initQueryClient } from '@ts-rest/react-query';
 import { API_URL } from './auth-client';
 
@@ -13,3 +13,14 @@ export const api = initQueryClient(apiContract, {
   baseHeaders: {},
   credentials: 'include',
 });
+
+/**
+ * Pull the human-safe message out of a rejected ts-rest call. The client rejects with the
+ * response, whose body is the canonical error envelope — parsed with the contract's own
+ * schema so no screen hand-declares the envelope shape. Returns undefined for transport
+ * failures (offline, DNS), where the caller supplies its own copy.
+ */
+export function envelopeMessage(err: unknown): string | undefined {
+  const parsed = openErrorEnvelopeSchema.safeParse((err as { body?: unknown } | null)?.body);
+  return parsed.success ? parsed.data.error.message : undefined;
+}

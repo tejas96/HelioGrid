@@ -13,18 +13,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:87
-#: ../../apps/web/app/page.tsx:15
-msgid "Foundations ready"
-msgstr "पाया तयार आहे"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:93
-#: ../../apps/web/app/page.tsx:18
-msgid "Field-first CRM, surveys and design for solar EPCs."
-msgstr "सोलर EPC साठी फील्ड-फर्स्ट CRM, सर्वेक्षण आणि डिझाइन."
-
-#. js-lingui-explicit-id
 #: ../../apps/web/app/signup/page.tsx:19
 msgid "Company sign-up opens here"
 msgstr "कंपनी साइन-अप येथे उघडेल"
@@ -40,148 +28,153 @@ msgid "Back to sign in"
 msgstr "साइन इनकडे परत जा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:90
-msgid "Signed in as {name}"
-msgstr "{name} म्हणून साइन इन"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/App.tsx:97
-msgid "Open my day"
-msgstr "माझा दिवस उघडा"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:388
-#: ../../apps/web/app/login/page.tsx:213
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:390
+#: ../../apps/web/app/login/page.tsx:216
 msgid "You're offline — check your connection and try again."
 msgstr "तुम्ही ऑफलाइन आहात — कनेक्शन तपासून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:206
-#: ../../apps/web/app/login/page.tsx:224
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:208
+#: ../../apps/web/app/login/page.tsx:227
 msgid "Welcome back"
 msgstr "पुन्हा स्वागत आहे"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:209
-#: ../../apps/web/app/login/page.tsx:227
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:211
+#: ../../apps/web/app/login/page.tsx:230
 msgid "Sign in with your phone number. No password — we'll text you a one-time code."
 msgstr "तुमच्या फोन नंबरने साइन इन करा. पासवर्ड नाही — आम्ही तुम्हाला SMS ने वन-टाइम कोड पाठवू."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:213
-#: ../../apps/web/app/login/page.tsx:231
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:215
+#: ../../apps/web/app/login/page.tsx:234
 msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:223
-#: ../../apps/web/app/login/page.tsx:245
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:225
+#: ../../apps/web/app/login/page.tsx:248
 msgid "Sent by SMS to your registered number."
 msgstr "तुमच्या नोंदणीकृत नंबरवर SMS ने पाठवला जाईल."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:224
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:306
-#: ../../apps/web/app/login/page.tsx:246
-#: ../../apps/web/app/login/page.tsx:306
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:226
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:308
+#: ../../apps/web/app/login/page.tsx:249
+#: ../../apps/web/app/login/page.tsx:309
 msgid "Couldn't send the code. Try again."
 msgstr "कोड पाठवता आला नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:242
-#: ../../apps/web/app/login/page.tsx:258
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:244
+#: ../../apps/web/app/login/page.tsx:261
 msgid "Continue"
 msgstr "पुढे जा"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/login/page.tsx:262
+#: ../../apps/web/app/login/page.tsx:265
 msgid "New company?"
 msgstr "नवीन कंपनी?"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/login/page.tsx:264
+#: ../../apps/web/app/login/page.tsx:267
 msgid "Create an account"
 msgstr "खाते तयार करा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:254
-#: ../../apps/web/app/login/page.tsx:273
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:256
+#: ../../apps/web/app/login/page.tsx:276
 msgid "Enter your code"
 msgstr "तुमचा कोड टाका"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:257
-#: ../../apps/web/app/login/page.tsx:276
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:259
+#: ../../apps/web/app/login/page.tsx:279
 msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
 msgstr "+91 {phoneFormatted} वर पाठवलेला 6-अंकी कोड टाका."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:263
-#: ../../apps/web/app/login/page.tsx:283
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:265
+#: ../../apps/web/app/login/page.tsx:286
 msgid "Change number"
 msgstr "नंबर बदला"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:274
-#: ../../apps/web/app/login/page.tsx:289
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:276
+#: ../../apps/web/app/login/page.tsx:292
 msgid "6-digit code"
 msgstr "6-अंकी कोड"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:282
-#: ../../apps/web/app/login/page.tsx:302
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:284
+#: ../../apps/web/app/login/page.tsx:305
 msgid "That code doesn’t match. Check it and try again."
 msgstr "हा कोड जुळत नाही. तपासून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:284
-#: ../../apps/web/app/login/page.tsx:304
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:286
+#: ../../apps/web/app/login/page.tsx:307
 msgid "Couldn't check the code. Try again."
 msgstr "कोड तपासता आला नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:302
-#: ../../apps/web/app/login/page.tsx:315
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:304
+#: ../../apps/web/app/login/page.tsx:318
 msgid "Resend code"
 msgstr "कोड पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:289
-#: ../../apps/web/app/login/page.tsx:319
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:291
+#: ../../apps/web/app/login/page.tsx:322
 msgid "Resend code in {time}"
 msgstr "{time} मध्ये कोड पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:324
-#: ../../apps/web/app/login/page.tsx:341
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:326
+#: ../../apps/web/app/login/page.tsx:344
 msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
 msgstr "तुमच्या कोडसह +91 {phoneFormatted} वर आता कॉल करत आहोत. फोन जवळ ठेवा."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:338
-#: ../../apps/web/app/login/page.tsx:351
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:340
+#: ../../apps/web/app/login/page.tsx:354
 msgid "Still no code after two tries?"
 msgstr "दोनदा पाठवूनही कोड मिळाला नाही?"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:341
-#: ../../apps/web/app/login/page.tsx:354
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:343
+#: ../../apps/web/app/login/page.tsx:357
 msgid "Call me with the code instead"
 msgstr "कोडसाठी मला कॉल करा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:358
-#: ../../apps/web/app/login/page.tsx:374
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:360
+#: ../../apps/web/app/login/page.tsx:377
 msgid "You're signed in"
 msgstr "तुम्ही साइन इन झाला आहात"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:361
-#: ../../apps/web/app/login/page.tsx:377
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:363
+#: ../../apps/web/app/login/page.tsx:380
 msgid "Welcome back. Taking you to your day."
 msgstr "पुन्हा स्वागत आहे. तुम्हाला तुमच्या दिवसाकडे नेत आहोत."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/LoginScreen.tsx:246
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
+msgid "Foundations ready"
+msgstr "पाया तयार आहे"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:44
+msgid "Field-first CRM, surveys and design for solar EPCs."
+msgstr "सोलर EPC साठी फील्ड-फर्स्ट CRM, सर्वेक्षण आणि डिझाइन."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:49
+msgid "Open my day"
+msgstr "माझा दिवस उघडा"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:248
 msgid "Joining a team? Open your invite link"
 msgstr "टीममध्ये सामील होत आहात? तुमची आमंत्रण लिंक उघडा"

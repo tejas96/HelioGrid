@@ -1,3 +1,4 @@
+import type { Liveness } from '@heliogrid/contracts';
 import { api } from './api-client';
 
 /**
@@ -7,11 +8,8 @@ import { api } from './api-client';
  * change. Screens never see fetch, SQLite or sync machinery.
  */
 
-export interface HealthStatus {
-  status: 'ok';
-  service: string;
-  version: string;
-}
+/** Inferred from the contract — never a hand-written copy of the response shape. */
+export type HealthStatus = Liveness;
 
 export interface HealthRepository {
   liveness(): Promise<HealthStatus>;

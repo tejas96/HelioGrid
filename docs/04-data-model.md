@@ -2,7 +2,7 @@
 
 Canonical schema for HelioGrid on Postgres (Fly postgres-flex, `bom`) via Drizzle. This document
 is the source of truth for every table: **never invent a table or column that is not here or in a
-migration** (CLAUDE.md read order, rule 3). Conventions in `.claude/rules/db.md` are binding and
+migration** (CLAUDE.md read order). Conventions in `packages/db/CLAUDE.md` are binding and
 are not restated per-table; the deltas that matter:
 
 - `id uuid` PK, **UUIDv7 generated app-side** by Drizzle's default function (time-ordered; no
@@ -160,7 +160,7 @@ Rules enforced in the transition function: reason mandatory entering `lost`/`dis
 `dormant` set only by the 30-day-silent sweep; **reopen** from `lost`/`dormant`/`disqualified`
 restores `stage_before_close` and increments `reopened_count`; `postponed` losses auto-resurface
 via `snoozed_until`; entering `won` creates the `projects` row in the same transaction.
-Raw stage UPDATEs are forbidden (db.md).
+Raw stage UPDATEs are forbidden (packages/db/CLAUDE.md).
 
 Indexes: `(tenant_id, owner_user_id, stage)` · `(tenant_id, stage, stage_entered_at)` ·
 partial `(tenant_id, created_at)` where `owner_user_id is null` (inbox/escalation) ·
@@ -220,7 +220,7 @@ Index `(tenant_id, subject_type, subject_id)`. Storage bytes roll into `usage_ev
 ## 3. Survey
 
 All TENANT. **Surveys are versioned-append: a revisit inserts a new version row; nothing mutates**
-(db.md). This is also the PowerSync conflict story — offline captures never fight over one row.
+(packages/db/CLAUDE.md). This is also the PowerSync conflict story — offline captures never fight over one row.
 
 ### `sites` — the physical roof/building
 
@@ -310,7 +310,7 @@ All TENANT. The studio is the flagship; this group carries the POC's honesty mac
 Ruling (the load-bearing one): **the design graph stays JSONB** — it is a deep single-editor
 document mutated hundreds of times per session; relational decomposition would buy nothing and
 cost the ported normalize/fingerprint machinery. **Mirrors are derived, recomputed on write,
-never hand-edited** (db.md). Money-never-stale: `proposal_versions.design_fp ≠ designs.design_fp`
+never hand-edited** (packages/db/CLAUDE.md). Money-never-stale: `proposal_versions.design_fp ≠ designs.design_fp`
 ⇒ every money figure renders provisional. Indexes: `(tenant_id, lead_id)` ·
 `(tenant_id, signoff_status)` (engineer queue, oldest first via `updated_at`).
 
@@ -377,7 +377,7 @@ Staleness is **derived, never stored**: latest version's pinned `design_fp` vs l
 | proposal_id | uuid → proposals | |
 | version_no | int | server-assigned; unique `(proposal_id, version_no)` |
 | snapshot | jsonb | full 11-step field set + computed money block (cost ex/incl GST, GST %, battery + battery GST %, subsidy ₹, discount %⇄₹, payable) + narrative facts |
-| catalog_version, price_book_version | text | **pinned — sent proposals keep original prices forever** (db.md) |
+| catalog_version, price_book_version | text | **pinned — sent proposals keep original prices forever** (packages/db/CLAUDE.md) |
 | design_fp | text, nullable | pinned design state (Path A) |
 | pdf_file_id | uuid → files | Playwright-rendered |
 | change_note | text | "what changed and why" (v1 vs v2 screen) |
@@ -442,7 +442,7 @@ Named links + OTP-at-accept **ship in the 20-day build** (Track B, R6-amended 20
 deal may carry multiple named links (`label`/`contact_id`), and `otp_required` gates acceptance
 — the tenant-set value threshold lives in `tenant_settings`; per-link open attribution rows are
 append-only events (`customer_link_events` below). Public reads go through **SECURITY DEFINER
-functions scoped to the link's single deal** (db.md) — never a broad RLS policy. Never revoked
+functions scoped to the link's single deal** (packages/db/CLAUDE.md) — never a broad RLS policy. Never revoked
 over unpaid money (product law: chase the person, don't punish the view).
 
 ### `customer_link_events` — append-only open tracking (D32: opens tracked, delivery never)
@@ -531,7 +531,7 @@ is the mirror recomputed from Σ payments. BYO-Razorpay payment-link receipts ar
 
 Resolution order — implemented **once**, in the domain `CatalogContext` builder, nowhere else:
 **tenant_catalog_overrides → tenant_catalog_items → platform_catalog_items.** Archive, never
-delete: removed products keep serving old proposals (db.md).
+delete: removed products keep serving old proposals (packages/db/CLAUDE.md).
 
 ### `platform_catalog_items` — PLATFORM (curated master)
 
@@ -580,7 +580,7 @@ POC `PriceBook` shape verbatim: ~50 keyed flat rates + by-size DC/AC cable table
 
 Ruling: rates are **JSONB per version** — an immutable snapshot document read whole by the BOM
 engine; no query ever filters on an individual rate. **Price updates create a new version, never
-mutate rates in place**; sent proposals pin `version_no` (db.md).
+mutate rates in place**; sent proposals pin `version_no` (packages/db/CLAUDE.md).
 
 ---
 

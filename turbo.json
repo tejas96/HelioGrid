@@ -45,6 +45,16 @@
           "allow": ["tokens"]
         }
       },
+      "i18n": {
+        "dependencies": {
+          "allow": ["i18n", "contracts", "domain"]
+        }
+      },
+      "ui": {
+        "dependencies": {
+          "allow": ["ui", "tokens"]
+        }
+      },
       "app": {
         "dependencies": {
           "allow": [

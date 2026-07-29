@@ -6,8 +6,8 @@ import { AppText } from '../AppText';
 /**
  * KPI card: overline label → 32dp/700 tabular value → delta pill. RN adaptations: the
  * ref's inline-SVG trend arrow becomes a border-drawn triangle (no react-native-svg
- * dependency yet); the meaning-bearing overline uses text-secondary per ui.md (the ref's
- * text-tertiary is decorative-only); the ref's off-scale 10px gaps snap to the 4dp scale.
+ * dependency yet); the meaning-bearing overline uses text-secondary per CLAUDE.md §Design
+ * (text-tertiary is decorative-only); the ref's off-scale 10px gaps snap to the 4dp scale.
  */
 
 const DELTA_H = 24;

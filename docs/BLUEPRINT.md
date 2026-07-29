@@ -102,8 +102,7 @@ OWASP-aligned NestJS guards/pipes; tokenised-link scoping; secrets via Fly secre
 ## Deliverables to write in `/Volumes/works-space/heliogrid/` (git init; no remote yet)
 
 ```
-README.md                         CLAUDE.md (master agent constitution ~200 lines, commands-first)
-AGENTS.md (dual-emit)             .claude/rules/ (per-area: domain, api, db, ui, mobile, i18n, testing-lite)
+README.md                         CLAUDE.md (master agent constitution — Claude Code always-on)
 docs/
   00-vision-and-scope.md          01-business-model.md (tiers, unit economics, GTM, competitor matrix)
   02-system-architecture.md       03-tech-stack.md (choices + justifications + version pins + citations)
@@ -121,7 +120,7 @@ Per-package CLAUDE.md files are specified inside 14-build-roadmap (created when 
 
 ### Execution order
 1. `git init` + README skeleton.
-2. **CLAUDE.md + AGENTS.md + .claude/rules/** (top-priority deliverable).
+2. **CLAUDE.md** (top-priority deliverable — single constitution for Claude Code).
 3. 02-architecture + 03-stack + 04-data-model (load-bearing trio, written together).
 4. 16-billing + 08-security (billing now core).
 5. 05-domain-migration + 06-offline-sync + 11-scale-program.

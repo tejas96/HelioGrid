@@ -26,6 +26,13 @@ uses: drizzle-orm, postgres        used by: apps/api, apps/worker, tests/invaria
   there are no default privileges, so a forgotten grant fails closed.
 
 ## Landmines
+- **pgEnum values hand-mirror the contracts `z.enum`s and NOTHING checks they match.**
+  `db-no-upward` (dependency-cruiser) forbids importing contracts here, so the two lists
+  are kept in sync by discipline alone — the highest-risk drift in the repo. When you touch
+  `src/schema/enums.ts`, diff it against `packages/contracts/src/common.ts` + `auth.ts`
+  value-for-value in the same change, and say so in the commit. A value present in one and
+  not the other is a silent production defect (rows the API can never return, or API values
+  the DB rejects at insert).
 - audit_log / usage_events are PARTITIONED — drizzle-kit cannot express this; their DDL
   is hand-authored in migrations, the Drizzle model is the query surface via the parent.
   Partition upkeep beyond 2027-06 is a worker job (Track A); default partitions catch

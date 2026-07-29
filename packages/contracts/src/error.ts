@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Canonical error contract (rules/api.md): every non-2xx body is
+ * Canonical error contract (apps/api/CLAUDE.md): every non-2xx body is
  * `{ error: { code, message, details?, requestId } }`.
  * `code` is UPPER_SNAKE from a per-contract enum — never free text.
  * `message` is human-safe — never stack traces or SQL.
@@ -48,7 +48,15 @@ export const genericErrorSchema = errorEnvelope(baseErrorCodeSchema);
 export type ErrorEnvelope = z.infer<typeof genericErrorSchema>;
 
 /**
- * HTTP mapping (rules/api.md — binding):
+ * Envelope with the code left open. Clients that only need the human-safe `message` parse
+ * with this instead of re-declaring `{ error: { message } }` locally — route-specific
+ * codes (ALREADY_ONBOARDED, LAST_OWNER…) are not in the base union and would fail
+ * `genericErrorSchema`. The envelope SHAPE stays defined exactly once, here.
+ */
+export const openErrorEnvelopeSchema = errorEnvelope(z.string());
+
+/**
+ * HTTP mapping (apps/api/CLAUDE.md — binding):
  * 400 VALIDATION_FAILED · 401 UNAUTHENTICATED · 403 FORBIDDEN / ENTITLEMENT_BLOCKED ·
  * 404 NOT_FOUND (not-found-or-not-yours — never reveal existence across tenants) ·
  * 409 CONFLICT (version/optimistic-concurrency) · 422 DOMAIN_RULE_VIOLATION ·

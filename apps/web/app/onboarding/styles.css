@@ -1,0 +1,7 @@
+/* Onboarding route layout. Screens own layout via tokens here — never inline `style`
+   (apps/web/CLAUDE.md §Styling layers). */
+
+.ob-input {
+  margin-top: var(--sp-2);
+  font-family: var(--font-sans);
+}

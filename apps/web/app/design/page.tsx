@@ -1,6 +1,6 @@
 import contrastPairs from '@heliogrid/tokens/contrast.pairs.json';
 import tokensJson from '@heliogrid/tokens/tokens.json';
-import './design.css';
+import './styles.css';
 
 /**
  * The living token reference (docs/10 §6): generated from dist/tokens.json — a new token
@@ -100,7 +100,7 @@ export default function DesignReference() {
         <p className="hg-muted">
           Source: {tokensJson.$source} · generator: {tokensJson.$generator}. Light-only v1 (ruling
           A). Never hand-transcribed; the manifest is untrusted for values.{' '}
-          <a className="font-medium text-accent" href="/design/components">
+          <a className="font-medium text-accent" href="/design/gallery">
             Component gallery →
           </a>
         </p>

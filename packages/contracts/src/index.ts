@@ -4,8 +4,10 @@ import { healthContract } from './health';
 
 export * from './auth';
 export * from './common';
+export * from './env';
 export * from './error';
-export { healthContract };
+export * from './health';
+export * from './ports/session';
 
 const c = initContract();
 
