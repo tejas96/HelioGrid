@@ -26,9 +26,20 @@ an hour the next person will lose too.
 ## Leave no dangling pointer
 
 Every `docs/NN §M`, relative link and cross-reference you touched must resolve to a real
-file and heading. Twelve files once cited constitution sections that were never committed —
-nothing detected it because nothing checked. A repo-wide checker lands with the docs
-restructure; until then, verify the references in your own diff by hand.
+file and heading. Files once cited constitution sections that were never committed —
+nothing detected it because nothing checked. Two grep checks catch this (owner decision:
+grep, not a checker script):
+
+```bash
+# broken relative links in the files you touched
+grep -rHoE '\]\((\.{1,2}/)[^)#]+' docs --include='*.md' | grep -v '/superpowers/' \
+  | sed -E 's/^([^:]+):\]\((.+)$/\1\t\2/' \
+  | while IFS=$'\t' read -r src rel; do ( cd "$(dirname "$src")" && [ -e "$rel" ] ) \
+      || echo "BROKEN $src -> $rel"; done | sort -u
+# §Section citations vs headings that exist
+grep -E '^## ' CLAUDE.md   # the headings that exist
+grep -rhoE 'CLAUDE\.md §[A-Za-z][A-Za-z -]*' docs apps packages .claude | grep -v '/dist/' | sort -u
+```
 
 ## Update the roadmap row
 

@@ -2170,238 +2170,42 @@ EOF
 
 ---
 
-### Task 13: Doc-anchor integrity checker
+### Task 13: SKIPPED — reference integrity checked with grep, not a script
 
-**Files:**
-- Create: `scripts/check-doc-anchors.mjs`
-- Modify: `package.json` (add the `check:anchors` script)
+**Owner decision (2026-07-30): do not build `scripts/check-doc-anchors.mjs`. Use grep.**
+The two grep checks below reproduce everything the ~80-line script would have done, proven
+against the live corpus. There is NO `pnpm check:anchors` script, NO CI step, and NO
+`scripts/check-doc-anchors.mjs`. Downstream tasks that say `pnpm check:anchors` mean:
+**run the grep block below.**
 
-**Interfaces:**
-- Consumes: nothing from Phase 1
-- Produces: `node scripts/check-doc-anchors.mjs` → exit 0 clean / exit 1 with a list of unresolved references. `/doc-sync` (Task 10) calls it; Task 29 wires it into CI. **Every remaining Phase 2 task uses it as its test.**
-
-- [ ] **Step 1: Write the failing test — confirm the corpus currently has dangling references**
+**The two checks — the verification step for every remaining Phase 2 task:**
 
 ```bash
-grep -rn 'CLAUDE\.md §' docs --include=*.md | head -5
-grep -rc 'CLAUDE\.md §' docs/17-engineering-governance.md
+# CHECK A — broken relative markdown links in docs/, resolved per file's own directory.
+# Nothing printed = every link resolves.
+grep -rHoE '\]\((\.{1,2}/)[^)#]+' docs --include='*.md' \
+  | grep -v '/superpowers/' \
+  | sed -E 's/^([^:]+):\]\((.+)$/\1\t\2/' \
+  | while IFS=$'\t' read -r src rel; do
+      ( cd "$(dirname "$src")" && [ -e "$rel" ] ) || echo "BROKEN  $src -> $rel"
+    done | sort -u
+
+# CHECK B — CLAUDE.md §Section citations vs headings that actually exist.
+# The left column is every §Section cited; compare against the headings CLAUDE.md defines.
+echo "--- headings CLAUDE.md defines ---"; grep -E '^## ' CLAUDE.md | sed 's/^## //'
+echo "--- §Sections cited across the repo ---"
+grep -rhoE 'CLAUDE\.md §[A-Za-z][A-Za-z -]*' docs apps packages .claude 2>/dev/null \
+  | grep -v '/dist/' | sed 's/CLAUDE\.md §//;s/[[:space:]]*$//' | sort | uniq -c | sort -rn
 ```
 
-Expected: several hits, including `docs/17` citing `CLAUDE.md §Structure`, `§Layer quick-ref`, `§Slice workflow`, `§Definition of done`, `§Enforcement matrix` — none of which exist in the new `CLAUDE.md` either. The checker must find these.
+**Baseline captured 2026-07-30 (the state Phase 2 must drive to zero):** CHECK A is already
+clean (all relative links resolve). CHECK B shows 61 dangling §Section citations — chiefly
+`Structure`×27 and `Design`×15 — none of which exist in the rebuilt CLAUDE.md. Tasks 16
+and 19 repair the `docs/` share; ~20 live in `.ts`/`.css` source comments and are a
+separate cleanup (raise with the owner — not in Phase 2 scope).
 
-- [ ] **Step 2: Write the checker**
-
-Create `scripts/check-doc-anchors.mjs`:
-
-```js
-#!/usr/bin/env node
-/**
- * Doc-anchor integrity gate.
- *
- * Twelve files once cited root-CLAUDE.md sections that were never committed
- * (docs/foundation-redesign.md F3). Nothing detected it because nothing checked.
- * This script makes that class of drift a red build.
- *
- * It verifies three reference shapes across the doc corpus:
- *   1. Relative markdown links            [text](./research/foo.md), [x](../adr/0002-...md)
- *   2. Bare doc-file references           docs/04-data-model.md
- *   3. Section references                 docs/17 §4   ·   CLAUDE.md §Structure
- *
- * Exit 0 = every reference resolves. Exit 1 = a list of what does not.
- */
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
-import { join, dirname, resolve, relative } from 'node:path';
-
-const ROOT = resolve(import.meta.dirname, '..');
-
-/** Files whose references we check. */
-function collectSources() {
-  const out = [];
-  const walk = (dir) => {
-    for (const entry of readdirSync(dir)) {
-      if (entry === 'node_modules' || entry === '.git' || entry === 'archive') continue;
-      const full = join(dir, entry);
-      if (statSync(full).isDirectory()) walk(full);
-      else if (entry.endsWith('.md')) out.push(full);
-    }
-  };
-  walk(join(ROOT, 'docs'));
-  for (const f of ['CLAUDE.md', 'AGENTS.md']) {
-    const p = join(ROOT, f);
-    if (existsSync(p)) out.push(p);
-  }
-  for (const area of ['apps', 'packages']) {
-    const base = join(ROOT, area);
-    if (!existsSync(base)) continue;
-    for (const pkg of readdirSync(base)) {
-      const p = join(base, pkg, 'CLAUDE.md');
-      if (existsSync(p)) out.push(p);
-    }
-  }
-  const rules = join(ROOT, '.claude', 'rules');
-  if (existsSync(rules)) {
-    for (const f of readdirSync(rules)) if (f.endsWith('.md')) out.push(join(rules, f));
-  }
-  return out;
-}
-
-/** Strip fenced code blocks and inline code so examples are not treated as references. */
-function stripCode(text) {
-  return text.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '');
-}
-
-/** Headings of a markdown file, lowercased, for §-anchor resolution. */
-const headingCache = new Map();
-function headingsOf(file) {
-  if (headingCache.has(file)) return headingCache.get(file);
-  let hs = [];
-  if (existsSync(file)) {
-    hs = readFileSync(file, 'utf8')
-      .split('\n')
-      .filter((l) => /^#{1,6}\s/.test(l))
-      .map((l) => l.replace(/^#{1,6}\s+/, '').trim().toLowerCase());
-  }
-  headingCache.set(file, hs);
-  return hs;
-}
-
-/** Resolve `docs/NN` or `docs/NN-name.md` to a real path. */
-function resolveDocsPrefix(numOrName) {
-  const docsDir = join(ROOT, 'docs');
-  if (numOrName.endsWith('.md')) {
-    const direct = join(docsDir, numOrName.replace(/^docs\//, ''));
-    return existsSync(direct) ? direct : null;
-  }
-  const num = numOrName.padStart(2, '0');
-  const match = readdirSync(docsDir).find((f) => f.startsWith(`${num}-`) && f.endsWith('.md'));
-  return match ? join(docsDir, match) : null;
-}
-
-const failures = [];
-function fail(file, line, message) {
-  failures.push(`${relative(ROOT, file)}:${line}  ${message}`);
-}
-
-for (const file of collectSources()) {
-  const raw = readFileSync(file, 'utf8');
-  const lines = stripCode(raw).split('\n');
-
-  lines.forEach((line, i) => {
-    const lineNo = i + 1;
-
-    // 1. Relative markdown links to local files
-    for (const m of line.matchAll(/\[[^\]]*\]\((\.{1,2}\/[^)\s#]+|[a-zA-Z0-9_./-]+\.md)(#[^)]*)?\)/g)) {
-      const target = m[1];
-      if (/^https?:/.test(target)) continue;
-      const abs = resolve(dirname(file), target);
-      if (!existsSync(abs)) fail(file, lineNo, `broken link → ${target}`);
-    }
-
-    // 2. Bare docs/NN-name.md references
-    for (const m of line.matchAll(/\bdocs\/([0-9]{2}-[a-z0-9-]+\.md)\b/g)) {
-      if (!existsSync(join(ROOT, 'docs', m[1]))) fail(file, lineNo, `missing doc → docs/${m[1]}`);
-    }
-
-    // 3a. Section references: docs/NN §M  or  docs/NN-name.md §M
-    for (const m of line.matchAll(/\bdocs\/([0-9]{2}(?:-[a-z0-9-]+\.md)?)\s*§\s*([0-9]+(?:\.[0-9]+)?)/g)) {
-      const target = resolveDocsPrefix(m[1]);
-      if (!target) {
-        fail(file, lineNo, `missing doc for section ref → docs/${m[1]} §${m[2]}`);
-        continue;
-      }
-      const section = m[2];
-      const found = headingsOf(target).some(
-        (h) => h.startsWith(`${section}.`) || h.startsWith(`${section} `) || h.includes(`§${section}`),
-      );
-      if (!found) fail(file, lineNo, `no §${section} heading in ${relative(ROOT, target)}`);
-    }
-
-    // 3b. Section references into CLAUDE.md files by heading NAME
-    for (const m of line.matchAll(/\bCLAUDE\.md\s*§\s*([A-Za-z][A-Za-z0-9 -]{2,40}?)(?=[,.;:)\]]|\s{2}|$)/g)) {
-      const wanted = m[1].trim().toLowerCase();
-      // A per-package CLAUDE.md reference resolves against its own package first,
-      // then the root constitution.
-      const candidates = [join(dirname(file), 'CLAUDE.md'), join(ROOT, 'CLAUDE.md')];
-      const found = candidates.some((c) => headingsOf(c).some((h) => h.includes(wanted)));
-      if (!found) fail(file, lineNo, `CLAUDE.md has no section matching "${m[1].trim()}"`);
-    }
-  });
-}
-
-if (failures.length) {
-  console.error(`\nDOC ANCHOR FAILURES (${failures.length}):\n`);
-  for (const f of failures) console.error('  ' + f);
-  console.error(
-    '\nEvery cross-reference must resolve. Fix the reference or the target — never leave a pointer to nowhere.\n',
-  );
-  process.exit(1);
-}
-console.log('doc anchors OK — every cross-reference resolves');
-```
-
-- [ ] **Step 3: Run it to verify it FAILS on the current corpus**
-
-```bash
-node scripts/check-doc-anchors.mjs
-```
-
-Expected: FAIL (exit 1) listing the `docs/17` phantom `CLAUDE.md §…` references plus any other dangling links. **If it exits 0, the checker is broken** — it must catch the known-bad state before it is trustworthy. Verify at minimum that `docs/17-engineering-governance.md` appears in the failure list.
-
-- [ ] **Step 4: Add the script entry**
-
-In `package.json`, replace:
-
-```json
-    "boundaries": "turbo boundaries"
-```
-
-with:
-
-```json
-    "boundaries": "turbo boundaries",
-    "check:anchors": "node scripts/check-doc-anchors.mjs"
-```
-
-- [ ] **Step 5: Verify a clean file passes and a deliberate break fails**
-
-```bash
-node -e "
-const fs=require('fs');
-fs.writeFileSync('docs/__anchor_probe.md','See [vision](./00-vision-and-scope.md) and docs/04 §1.\n');
-" && pnpm check:anchors 2>&1 | tail -3
-```
-
-Expected: the probe alone does not introduce failures (the pre-existing docs/17 ones remain). Now prove a break is caught:
-
-```bash
-node -e "
-const fs=require('fs');
-fs.writeFileSync('docs/__anchor_probe.md','See [ghost](./99-does-not-exist.md).\n');
-" && pnpm check:anchors 2>&1 | grep "__anchor_probe"
-rm docs/__anchor_probe.md
-```
-
-Expected: the grep prints `docs/__anchor_probe.md:1  broken link → ./99-does-not-exist.md`.
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add scripts/check-doc-anchors.mjs package.json
-git commit -m "$(cat <<'EOF'
-feat(gates): doc-anchor integrity checker — the F3 fix
-
-VERIFIED: run against the current corpus it FAILS, correctly naming docs/17's phantom
-`CLAUDE.md §Structure/§Layer quick-ref/§Slice workflow/§Definition of done/§Enforcement
-matrix` references; a probe file with a broken relative link is caught by path and line;
-a probe with valid references is not flagged.
-
-Built BEFORE the rest of the Phase 2 doc work so every subsequent edit has a mechanical
-test. The corpus goes green in Task 19 when docs/17 is rebuilt.
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
-EOF
-)"
-```
+**Every remaining Phase 2 task's "test" is: run CHECK A + CHECK B and confirm no NEW
+breakage vs this baseline.** No script to write, no CI to wire.
 
 ---
 
