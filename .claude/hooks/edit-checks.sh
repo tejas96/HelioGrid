@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # PostToolUse:Edit|Write — advisory feedback only (exit 0 always).
-# Hard enforcement lives in CI (oxlint max-lines + no-raw-hex); this is the fast signal.
+# TODAY THIS IS THE ONLY SIGNAL for these two rules: nothing in `pnpm lint` or CI enforces
+# max-lines or no-raw-hex yet. A lint-stage gate for both is planned (oxlint); until it
+# lands, do not treat a silent hook as proof the rule holds.
 set -uo pipefail
 
 payload=$(cat)
@@ -26,7 +28,7 @@ fi
 case "$path" in
   *packages/ui/src/*|*apps/mobile/src/ui/*|*apps/mobile/src/screens/*|*apps/web/app/*)
     if grep -Eq "#[0-9a-fA-F]{3,8}\b" "$path"; then
-      notes="${notes}${path} contains a raw hex colour. Every visual value comes from @heliogrid/tokens (generated from design/ds-source) — see .claude/rules/ui-adherence.md. "
+      notes="${notes}${path} contains a raw hex colour. Every visual value comes from @heliogrid/tokens, generated from design/ds-source — see docs/10-i18n-and-design-system.md. "
     fi
     ;;
 esac

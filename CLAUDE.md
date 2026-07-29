@@ -23,17 +23,19 @@ change is wrong. Rule→mechanism matrix: docs/17.
 - Money never renders stale: design changed + quote not recomputed → figure reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ project payments reconcile to the paisa.
 - Sent proposals keep their original prices; price-book updates create new versions.
-- Structural adequacy is NEVER computed — engineer sign-off recorded (who + when).
+- Structural adequacy is NEVER computed — engineer sign-off recorded (who + when), and the
+  disclaimer travels with every structure-bearing output.
 - ₹ uses Indian grouping (lakh/crore) in every locale; kW/kWh/kWp are never translated.
 - Read + export always work regardless of billing state. Never hold data hostage.
 - Server assigns all business identifiers. No feature flags — entitlements are the only gating.
 
+## Testing
+Deliberately thin by owner decision. `tests/invariants/` (the locked set — tenant isolation
+today; money, billing and migration families land with their modules) plus on-demand
+`scripts/`. Additions need explicit owner approval. See the no-unit-tests rule below.
+
 ## Process
-- Edit/Write tools for ALL file changes. Never sed/perl/python -i (corrupted files before).
-- Never edit an applied migration; append a new one.
-- Schema/APIs grow module-wise ONLY (Law 9): docs/04 is frozen design, not a build order.
-- Web + RN ship in the SAME slice from the same contract (Law 7); exceptions need an owner
-  ruling recorded in the module roadmap.
+- Edit/Write tools for ALL file changes. In-place stream edits are blocked by a hook.
 - **NO UNIT TESTS. Never create a `.test.*` or `.spec.*` file** in any app or package
   (owner directive 2026-07-29 — a testing program comes after the product is complete).
   The only executable checks are `tests/invariants/` and on-demand `scripts/`. Verify
@@ -45,12 +47,13 @@ change is wrong. Rule→mechanism matrix: docs/17.
   not also fetch, orchestrate or hold flow logic. Container (`<Name>Screen.tsx`: data,
   state, handlers) → presentational components (props in, markup out); shared logic in a
   `hooks.ts` satellite, or `packages/domain` when both platforms need it.
-- **Config and credentials come from `.env` via the shared env service only.** No file
-  outside that service reads `process.env` (Biome `noProcessEnv` enforces it). No secret
-  literal in code, ever. `.env.example` documents every var.
+- **Config and credentials come from `.env`, read in ONE place per app** — today each app's
+  `src/config/env.ts` (web: `lib/env.ts`), validated by a Zod schema; Biome `noProcessEnv`
+  enforces it. No secret literal in code, ever. `.env.example` documents every var.
 - **Git is manual.** Commit when the user asks. Create branches or PRs ONLY on an explicit
   user command — never open a PR or push unprompted.
 - Match surrounding style; comments only for constraints code can't express.
 
-Laws digest: .claude/rules/00-laws.md (auto-loads) · layer law: each package's CLAUDE.md ·
-governance: docs/17 · product truth: docs/15 rulings + the module's specs/ extraction.
+Laws 1–9, the decision hierarchy and stop-and-ask triggers: `.claude/rules/00-laws.md`
+(auto-loads, no `paths:` frontmatter) · layer law: each package's CLAUDE.md · governance:
+docs/17 · product truth: docs/15 rulings + the module's specs/ extraction.
