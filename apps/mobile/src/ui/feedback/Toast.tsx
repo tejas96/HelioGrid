@@ -46,7 +46,6 @@ export function Toast({ tone = 'success', title, description, icon, action, styl
           {title}
         </AppText>
         {description != null && (
-          // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA
           <AppText color={theme.colors['text-secondary']} role="body-sm">
             {description}
           </AppText>

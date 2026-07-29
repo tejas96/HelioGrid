@@ -88,7 +88,6 @@ export function SegmentedControl({
               pressed && styles.optionPressed,
             ]}
           >
-            {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
             <AppText
               color={active ? theme.colors['text-primary'] : theme.colors['text-secondary']}
               role="body-sm"

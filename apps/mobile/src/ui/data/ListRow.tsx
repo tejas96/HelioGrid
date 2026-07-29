@@ -57,7 +57,6 @@ export function ListRow({
           {title}
         </AppText>
         {subtitle != null && (
-          // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA
           <AppText role="body-sm" color={theme.colors['text-secondary']} numberOfLines={1}>
             {subtitle}
           </AppText>

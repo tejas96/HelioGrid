@@ -3,7 +3,9 @@
  *
  * `RootStackParamList` makes a wrong route name or wrong params a COMPILE ERROR, which is
  * what replaces the prop-callback chain the app used before. A screen's props are its route
- * params; screens never receive `onSignedIn`/`onBack` style callbacks.
+ * params. Navigation between screens is by route name, never by prop callback. The one
+ * sanctioned exception is the session boundary: `RootNavigator` passes `onSignedIn` to
+ * `LoginScreen` because the auth stack is SWAPPED (not navigated) once a session exists.
  */
 export type RootStackParamList = {
   Login: undefined;

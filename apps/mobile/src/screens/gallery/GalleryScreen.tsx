@@ -185,7 +185,6 @@ export function GalleryScreen({ navigation }: GalleryScreenProps) {
         <IconButton label="Back to home" variant="ghost" onClick={onBack}>
           <BackGlyph />
         </IconButton>
-        {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles */}
         <AppText role="h3" weight="700">
           Component gallery
         </AppText>

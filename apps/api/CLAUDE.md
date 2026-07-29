@@ -21,7 +21,7 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
   Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).
 - **db + drizzle are legal ONLY in `*.repository.ts`** — services take repositories by DI and
   never see a `tx` or a table; cross-tenant work lives in `*.admin.repository.ts`
-  (dep-cruiser `db-access-in-repositories-only`, currently `warn` — see Landmines).
+  (dep-cruiser `db-access-in-repositories-only`, severity `error`).
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - `common/` is framework plumbing 2+ modules need; it may never import a module, and business
   behaviour belongs in `packages/domain` instead. Register globals via `APP_*` providers.
@@ -33,7 +33,7 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
 
 ## Landmines
 - **A route whose contract declares a NON-base error code must throw `ContractException`
-  with that literal** (`src/common/contract-exception.ts`). The envelope filter reverse-maps
+  with that literal** (`src/common/errors/contract-exception.ts`). The envelope filter reverse-maps
   status→code, so a bare `ConflictException` on `completeOnboarding` emitted `CONFLICT`
   while the contract promised `ALREADY_ONBOARDED` — both sides compiled, the wire was wrong.
   Base codes (`NOT_FOUND`, `FORBIDDEN`…) may still use the plain Nest exceptions.

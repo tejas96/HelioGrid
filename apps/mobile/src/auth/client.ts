@@ -70,22 +70,3 @@ export const authClient = createAuthClient({
     },
   },
 });
-
-/** Product-surface fetch with the same jar (repository layer wraps this per module). */
-export async function api<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ status: number; body: T }> {
-  const cookie = await loadCookie();
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    credentials: 'omit',
-    headers: {
-      'content-type': 'application/json',
-      ...(cookie ? { cookie } : {}),
-      ...(init?.headers ?? {}),
-    },
-  });
-  await absorbSetCookies(res.headers);
-  return { status: res.status, body: (await res.json()) as T };
-}

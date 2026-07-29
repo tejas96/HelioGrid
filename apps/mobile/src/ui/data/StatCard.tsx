@@ -37,7 +37,6 @@ export function StatCard({
   const fg = good ? theme.colors.success : theme.colors.danger;
   return (
     <View style={[styles.card, style]}>
-      {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
       <AppText
         role="overline"
         weight="700"
@@ -47,12 +46,10 @@ export function StatCard({
         {label}
       </AppText>
       <View style={styles.valueRow}>
-        {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
         <AppText role="h1" weight="700" style={styles.value}>
           {value}
         </AppText>
         {unit != null && (
-          // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA
           <AppText role="body" color={theme.colors['text-secondary']}>
             {unit}
           </AppText>

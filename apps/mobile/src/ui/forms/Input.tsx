@@ -71,7 +71,6 @@ export function Input({
   return (
     <View style={[styles.stack, style]}>
       {label != null && (
-        // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles
         <AppText role="body-sm" weight="500" color={theme.colors['text-secondary']}>
           {label}
         </AppText>

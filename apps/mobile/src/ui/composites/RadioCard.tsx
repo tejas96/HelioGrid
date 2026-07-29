@@ -53,7 +53,6 @@ export function RadioCard({ options, value, onChange, label, style }: RadioCardP
             <View style={styles.body}>
               <AppText weight="600">{option.label}</AppText>
               {option.description != null && (
-                // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles
                 <AppText role="body-sm" color={theme.colors['text-secondary']}>
                   {option.description}
                 </AppText>

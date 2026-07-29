@@ -30,8 +30,8 @@ RN UI components: `src/ui` (mirror of packages/ui — Law 7)
 - Screen folders: CLAUDE.md §Structure (`<Name>Screen.tsx` + satellites). `src/` is the closed
   set `{auth,data,hooks,navigation,push,screens,ui}` + `i18n.ts`.
 - Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
-  `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser `mobile-app-entry-thin`,
-  currently `warn`; flips to `error` with ADR-0020's navigation slice).
+  `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
+  `mobile-app-entry-thin`, severity `error` since ADR-0020's navigation slice landed).
 
 ## Landmines
 - **Repository types are INFERRED from contracts, never re-declared.** `HealthStatus` was a

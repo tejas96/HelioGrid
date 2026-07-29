@@ -47,7 +47,6 @@ export function Checkbox({
         {checked && <View style={[styles.check, disabled && styles.checkDisabled]} />}
       </View>
       {label != null && (
-        // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles
         <AppText
           role="body"
           color={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}

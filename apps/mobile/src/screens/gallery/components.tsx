@@ -69,7 +69,6 @@ export function Glyph({ color, size = 10 }: { color: string; size?: number }) {
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <View style={styles.section}>
-      {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles */}
       <AppText
         role="overline"
         weight="700"

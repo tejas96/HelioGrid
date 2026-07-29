@@ -39,12 +39,10 @@ export function EmptyState({
         {glow && <BloomLayer size={GLOW_SIZE} style={styles.glow} />}
         <View style={styles.iconCircle}>{icon}</View>
       </View>
-      {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
       <AppText align="center" role="h3" weight="700">
         {title}
       </AppText>
       {description != null && (
-        // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA
         <AppText
           align="center"
           color={theme.colors['text-secondary']}

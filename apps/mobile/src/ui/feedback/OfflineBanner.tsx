@@ -24,7 +24,6 @@ export function OfflineBanner({ count = 0, message, style }: OfflineBannerProps)
   return (
     <View accessibilityLiveRegion="polite" style={[styles.root, style]}>
       <View style={styles.dot} />
-      {/* biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role, not ARIA */}
       <AppText color={theme.colors.warning} role="body-sm" weight="500">
         {text}
       </AppText>

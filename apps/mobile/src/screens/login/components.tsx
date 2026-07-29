@@ -16,7 +16,6 @@ const BLOOM_LOOP_MS = 8000;
 
 export function H1({ children, style }: { children: ReactNode; style?: TextStyle }) {
   return (
-    // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles
     <AppText role="h1" weight="700" style={style}>
       {children}
     </AppText>
@@ -35,7 +34,6 @@ export function Small({
   mono?: boolean;
 }) {
   return (
-    // biome-ignore lint/a11y/useValidAriaRole: AppText `role` is the typography role (TypeRole), not ARIA — RN has no DOM roles
     <AppText role="body-sm" color={color} weight={weight} mono={mono} style={styles.small}>
       {children}
     </AppText>
