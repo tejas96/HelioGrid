@@ -30,9 +30,8 @@ change is wrong. Rule→mechanism matrix: docs/17.
 - Server assigns all business identifiers. No feature flags — entitlements are the only gating.
 
 ## Testing
-Deliberately thin by owner decision. `tests/invariants/` (the locked set — tenant isolation
-today; money, billing and migration families land with their modules) plus on-demand
-`scripts/`. Additions need explicit owner approval. See the no-unit-tests rule below.
+Deliberately thin by owner decision: `tests/invariants/` (the locked set) + on-demand
+`scripts/`. Nothing else, ever, without explicit owner approval.
 
 ## Process
 - Edit/Write tools for ALL file changes. In-place stream edits are blocked by a hook.
@@ -43,10 +42,9 @@ today; money, billing and migration families land with their modules) plus on-de
 - **Files ≲450 lines, split by RESPONSIBILITY.** The new file is named for what it does
   (`auth.invites.service.ts`, `login.countdown.ts`) — NEVER `*-part2`, `*2`, `*-extra`,
   `*-continued`. A split needing a numeric suffix is the wrong split.
-- **React: presentation and logic live in different files.** A component renders; it does
-  not also fetch, orchestrate or hold flow logic. Container (`<Name>Screen.tsx`: data,
-  state, handlers) → presentational components (props in, markup out); shared logic in a
-  `hooks.ts` satellite, or `packages/domain` when both platforms need it.
+- **React: presentation and logic live in different files.** Container holds data, state
+  and handlers; presentational components take props and return markup. Detail:
+  `.claude/rules/ui-adherence.md`.
 - **Config and credentials come from `.env`, read in ONE place per app** — today each app's
   `src/config/env.ts` (web: `lib/env.ts`), validated by a Zod schema; Biome `noProcessEnv`
   enforces it. No secret literal in code, ever. `.env.example` documents every var.

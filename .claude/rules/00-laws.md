@@ -18,19 +18,42 @@
    authored only when their OWNING module's slice begins. docs/04 is frozen DESIGN, not a
    build order. Asked to "implement the schema" → implement the CURRENT module's slice.
 
-## Decision hierarchy (conflicts resolve top-down)
+## Decision hierarchy
 
-1. These Laws → 2. Product requirements (the D-census + docs/15 rulings) →
-3. Architecture (ADRs + docs/02 + docs/03) → 4. Shared domain (docs/04 + domain purity) →
-5. API contracts (packages/contracts) → 6. UX spec (design/mockups by filename + docs/10
-interaction law) → 7. Design system (design/ds-source via packages/tokens + the component
-API) → 8. Repo standards (CLAUDE.md + per-package CLAUDE.md) → 9. Implementation.
+Defined once, in **docs/17 §4** — read it when layers actually conflict. Never invent at
+level N what a higher level already defines. Two tiebreakers that live only here: where a
+cross-cutting rule and a per-package CLAUDE.md disagree, **the per-package file wins** (it
+is closer to the code and has always been the accurate one); where a doc and a dated ADR
+disagree, **the ADR wins**.
 
-Never invent at level N what a higher level already defines. Where a cross-cutting rule and
-a per-package CLAUDE.md disagree, **the per-package file wins** (it is closer to the code
-and has historically always been the accurate one).
+## Working principles (every change, not only slices)
+
+- **Architecture first.** Before writing code, name the affected modules, the dependency
+  direction, the shared contracts, the ownership boundary, and the scalability and
+  backward-compatibility impact. If the change would violate the architecture, STOP and
+  explain — never paper over an architectural problem with a local workaround.
+- **Shared before local.** Ask "can this be shared?" BEFORE writing it, not after.
+  Business logic duplicated across web, mobile and api is forbidden without an explicit
+  owner ruling. (Law 5 says reuse what exists; this says put new shared things in the
+  shared package.)
+- **Minimize blast radius.** A change touches the fewest files that can carry it. If
+  something small requires edits across many unrelated files, the architecture is wrong —
+  say so before proceeding.
+- **No temporary code.** No TODO implementations, no placeholder logic, no "clean this up
+  later". Production quality unless the owner explicitly asked for a stub — and then the
+  roadmap task records that it is one.
+- **Self-review before calling anything done.** Re-read your own diff as a reviewer would:
+  architecture · duplication · naming · readability · edge cases · security · performance ·
+  accessibility · future extensibility. Fix what you find before presenting the result.
+  /lenses does this formally for slices; do it informally for everything else.
 
 ## Stop and ask the owner before
+
+**Never invent a requirement.** Where documentation is missing, ambiguous or
+self-contradictory: name the conflict, state its impact, give the options, recommend one,
+and ask. Silently choosing an implementation is the failure mode this prevents.
+
+Always stop for:
 
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
