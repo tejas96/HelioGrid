@@ -332,9 +332,17 @@ truth gets promoted into the repo and deleted from memory.
 
 ## 4. Context-loading strategy
 
-**Always-on budget (~1.3k tokens, estimated — validate with `/context` after Phase 1):**
-CLAUDE.md (~500) + rules/00-laws.md (~400) + skill descriptions (~300) + MEMORY.md index (~100). Previous system: ~2.2k always-on plus a
-*mandated* prose read-path of ~15–16k governance tokens per slice before any product doc.
+**Always-on budget — MEASURED ~4,227 tokens (2026-07-30), not the ~1.3k first estimated.**
+Measured by differencing two fresh headless sessions (this repo vs a bare git repo):
+26,851 → 31,078. Decomposed: `CLAUDE.md` ~976 · `rules/00-laws.md` ~1,024 · MEMORY.md
+index ~164 · 8 skill descriptions ~364 · 3 agent descriptions ~81 · ~1,618 registry and
+framing overhead. The original estimate was wrong twice over: it counted only two files,
+and used a `bytes/4` ratio.
+
+Accepted at this figure (owner decision 2026-07-30) rather than trimming, because the
+remaining candidates are owner-specified product law. **The win was never the always-on
+number** — the previous system was ~2.2k always-on *plus a mandated ~15–16k prose
+read-path per slice before any product doc*. That read-path is now zero.
 
 **Per-task recipe (encoded in /slice, not left to judgment):**
 
@@ -564,7 +572,7 @@ fix (already drafted in §6.2).
 
 | | Old system | New system |
 |---|---|---|
-| Always-loaded | ~2.2k (constitution) | ~1.3k (CLAUDE.md + laws + skill descriptions + memory index) |
+| Always-loaded | ~2.2k (constitution) | **~4.2k measured** (CLAUDE.md + laws + 8 skill + 3 agent descriptions + memory index + registry overhead) |
 | Mandated governance read-path per slice | ~15–16k prose (rules layer, honor-system loading) | 0 — procedures load as skills on invocation; layer law loads by path |
 | Product/docs context per slice | ~65–80k naive walk | ~22–27k via specs recipe (measured, auth-tenancy) |
 | Enforcement of the above | prose ("read order") | /slice recipe + path-scoped rules + hooks |

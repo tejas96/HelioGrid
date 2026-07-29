@@ -18,10 +18,17 @@ path=$(printf '%s' "$payload" | node -e '
 
 notes=""
 
-lines=$(wc -l < "$path" | tr -d ' ')
-if [ "$lines" -gt 450 ]; then
-  notes="${notes}${path} is now ${lines} lines (cap ~450). Split by RESPONSIBILITY into a file named for what it does — never <name>-part2 or <name>2. "
-fi
+# The ~450-line cap is a SOURCE-CODE rule. Specs, data models and design docs are
+# legitimately long (docs/04 is ~1000 lines) — warning on those is noise, and noise is how
+# a hook teaches people to ignore it.
+case "$path" in
+  *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.css)
+    lines=$(wc -l < "$path" | tr -d ' ')
+    if [ "$lines" -gt 450 ]; then
+      notes="${notes}${path} is now ${lines} lines (cap ~450). Split by RESPONSIBILITY into a file named for what it does — never <name>-part2 or <name>2. "
+    fi
+    ;;
+esac
 
 # Token adherence: only product UI surfaces. packages/tokens and design/ds-source are the
 # token SOURCE, where raw hex is required, so they are deliberately not matched here.
