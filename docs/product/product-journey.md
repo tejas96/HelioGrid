@@ -1,0 +1,1591 @@
+> **VENDORED PRODUCT TRUTH — read only through the `docs/15-spec-resolutions.md` overlay.**
+>
+> This is the master product specification (D1–D39 census, the nine-stage journey, the
+> customer journey C1–C13, roles and permissions). It is the root requirement source for
+> Law 6 traceability.
+>
+> **Roughly 40% of the decision text below is SUPERSEDED.** `docs/15-spec-resolutions.md`
+> carries the conformance table (HONORED / SUPERSEDED / PARTIAL) and is the only safe way
+> to read the D-decisions — D3, D4, D12, D19, D26, D33 and D38 in particular have all been
+> overridden. Never cite a D-decision without checking its docs/15 row first.
+>
+> Vendored from the POC repository 2026-07-30 so product truth no longer lives outside this
+> repo. The mockup-generation prompt library that trailed the original (~190 lines: PROMPT
+> LIBRARY FOR CLAUDE DESIGN + ARC NAV) has been removed — it is history, not specification,
+> and remains in the POC repo's git history.
+
+# HelioGrid — Complete Product Journey
+
+**The single working file for product design.** Journey, screens, scenarios, decisions and
+the prompts we feed Claude Design. Grows as we walk the journey stage by stage.
+
+Companions (already done, do not duplicate here):
+- **The design system lives in Claude Design**, in the Design systems tab — brand, tokens
+  and components are already set up there. **Do not restate visual rules in this file or
+  in prompts.** Prompts describe the SCREEN; the system is selected in the dropdown.
+- `docs/product-spec.md` — objects and screen inventory
+- `docs/DESIGN-SYSTEM.md` — the Claude Code rulebook (for building in React later, not
+  for Claude Design)
+- `docs/build-plan.md` — the phase worklist
+
+---
+
+## Decisions locked
+
+| # | Decision | Date |
+|---|---|---|
+| D1 | Residential **and** C&I, both high volume | 2026-07-20 |
+| D2 | Full mobile parity — every screen works at 375px, including the design studio | 2026-07-20 |
+| D3 | Brand: "Instrument" — warm graphite + brass, ink label on brass fills | 2026-07-20 |
+| D4 | ~~WhatsApp is the primary customer channel; email secondary~~ **SUPERSEDED by D32.** | 2026-07-20 |
+| D39 | **The design studio is NOT being redesigned in Claude Design — it is kept and REFACTORED.** Supersedes the Phase 10 UX-redesign approach. The existing studio's geometry, engineering logic and code (energy, electrical, BOM, roof AI, structure, 3D) carry over as-is into the new production build; the work there is restyling it to the design system, adding the touch model, and hardening it to production — not designing it afresh. `docs/phase-10-prompts.md` is retained as the **refactor checklist** (every tool, state and computed output, so nothing is lost) and as input to the new architecture and DB schema. **The product also moves to a new repository, built from scratch as a real multi-tenant SaaS** (web + a real mobile app, shared TypeScript domain layer, Fly.io); this repo becomes the specification and the source of the reusable domain code. See `docs/NEW-PRODUCT-PLANNING-PROMPT.md`. | 2026-07-24 |
+| D38 | **Billing & subscription are DEFERRED and planned separately — and no subscription restriction gates any feature in this plan.** Supersedes D26. There is no billing screen in the current build; every plan/usage limit, trial-expiry, suspension, seat cap, PRO-tier lock and "upgrade" prompt is removed. Every user can use every built feature freely. The pricing model and billing surface are a separate planning effort; the only pre-committed rule for it is "never hold a customer's data hostage" (read + export always work). | 2026-07-24 |
+| D37 | **Dashboards are the owner's periodic decision tool, deliberately separate from the task-driven daily screens.** My Day and the lists stay *tasks, not KPIs* (2.1) — a rep never opens a chart to know who to call. Dashboards are honest and action-oriented, not a vanity wall: every tile answers "what do I do about this?"; **forecast is a projection, never revenue** (weighted pipeline, labelled expected-not-promised); **won means signed**, and a deal cancelled after Won never silently keeps counting as revenue; **agent contribution is correlation, not attribution** (links to Agent performance, does not re-claim credit); reps see their own, managers their team, owner all (D20). No new metric is added unless it changes a decision. See "Dashboards & reports". | 2026-07-23 |
+| D36 | **The voice agent is FULLY tenant-configurable — nothing is locked by the platform.** Supersedes the "compliance locked by the platform" half of D24. The owner sets and can change everything: name, voice, tone, languages, opening line, what it may discuss (including price), its whole knowledge, its hand-over rules, and its calling schedule. The app **ships India's calling rules as the starting defaults** — DND respected, 9am–9pm, and the agent disclosing it's automated — but the owner can change or switch off any of them. **The tenant owns compliance** (TRAI/DND and the rest); we provide safe defaults and one honest line, not a wall. Config stays simple: everything pre-filled, plain questions, plus a free-text box so the owner is never boxed in. **Accepted risk:** a tenant can configure calls that break local rules; that is their responsibility, surfaced once, plainly, not enforced. | 2026-07-23 |
+| D35 | **Survey photos are reference for the design, not measurement.** The survey captures and attaches photos of the roof, its obstructions and everything around the building — however taken: phone on site, customer-sent on WhatsApp, or a drone / other shot uploaded. Every photo is tagged and travels with the survey to the designer, who uses them when building the 3D proposal. What stays out of v1 is *deriving numbers* from photos (LiDAR, auto roof measurement, AR height) — a person still enters every dimension. This refines the earlier "drone out of scope" note: drone-as-imagery is fine; drone-as-automatic-measurement is not. | 2026-07-23 |
+| D34 | **No discount approval in this release** — supersedes D19. Anyone with permission to create a proposal can apply a discount and share it immediately. No request sheet, no approval queue, no "Pending approval" status. The only guard is arithmetic: a discount driving the client-payable figure to ₹0 or below is warned about and blocks Generate. Rationale: the approval hop was a known bottleneck and the permission to build a proposal already implies the commercial trust. Revisit if a tenant asks for per-rep discount ceilings. | 2026-07-22 |
+| D33 | **C&I customers use the same single link as residential in v1.** No per-contact links, no identity check, no portal accounts. Deferred deliberately — revisit when it hurts. ⚠️ **Known accepted risk:** anyone holding the link can tap Accept, including someone without authority to commit a ₹92 lakh order, and view tracking cannot say *which* stakeholder opened it. The likely later fix is named links per contact plus an OTP at the moment of accepting — reading stays frictionless, only the commitment is verified. | 2026-07-21 |
+| D32 | **No WhatsApp integration in v1.** The rep taps **Download PDF** and **Copy link**, then pastes both into their own WhatsApp. WhatsApp remains the channel customers actually use — the app just does not send on their behalf. **The link is ours, so opens ARE tracked**; delivery is not, because we do not control the sending. | 2026-07-21 |
+| D5 | Customer never logs in — tokenised link only | 2026-07-20 |
+| D6 | Tailwind + Radix in code; Claude Design for screens | 2026-07-20 |
+| D7 | Three audiences: company **owner**, **employees**, and the **EPC's customer** | 2026-07-21 |
+| D8 | A **voice agent** calls customers for follow-ups and answers inbound questions | 2026-07-21 |
+| D9 | v1 = **Sell + light project tracking**. Won deal → Ordered → Installed → Commissioned → Handed over, plus a document checklist and customer-visible progress. **No** inventory, POs, scheduling engine or O&M. | 2026-07-21 |
+| D10 | Voice agent's **default** behaviour: follow up, answer FAQ, book callbacks/visits, gauge interest; by default it offers a human for price/discount rather than negotiating. ~~It may never discuss discounts or negotiate.~~ **The "never" is SUPERSEDED by D36** — discount/negotiation are now owner-configurable defaults, not hard rules. (Actual deal *acceptance* still happens when the customer taps Accept on the proposal link — C8 — not by a verbal agent agreement.) Every call is transcribed onto the lead timeline. | 2026-07-21 |
+| D11 | **Self-serve signup.** ~~Free trial; billing prompted later.~~ Billing is DEFERRED (D38) — signup asks only for the company + the owner; there is no trial gate or billing prompt anywhere in the current plan. | 2026-07-21 |
+| D12 | App UI **English**. Voice agent speaks **Hindi, Marathi, Gujarati, Tamil, Telugu + English**, chosen per customer. | 2026-07-21 |
+
+## India's calling rules — shipped as defaults, owned by the tenant (D36)
+
+These are India's rules for automated commercial calling. The app ships them as the
+**starting defaults** so a tenant is compliant out of the box, but **the owner can change or
+switch off any of them** and owns the responsibility (D36). They are surfaced once, plainly —
+not enforced as locks.
+- **TRAI / DND** — default: don't call DND-registered numbers; consent tracked per customer.
+- **Calling hours** — default: 9am–9pm local; the owner can widen, narrow or move it.
+- **AI disclosure** — default opening line says it's an automated assistant; fully editable.
+- **Recording consent** — default: captured; a customer can decline and still be served.
+- **Human escape hatch** — "talk to a person" ships on by default; the owner shapes hand-over.
+
+| D13 | v1 lead sources: **manual quick-add, CSV import, inbound call via voice agent.** Website form and inbound WhatsApp are deferred — WhatsApp is outbound-only in v1. | 2026-07-21 |
+| D14 | Assignment is **manual, with each rep's open load visible** at the moment of assigning. No auto-routing rules in v1. | 2026-07-21 |
+| D15 | Survey is a **task assignable to anyone** with the capability — rep or dedicated surveyor. One capture flow for both. | 2026-07-21 |
+| D16 | Customer sees **one recommended system** by default; the designer may add variants when the customer is price-sensitive or undecided. | 2026-07-21 |
+
+| D17 | Voice agent triggers **two ways**: automatically as a safety net (proposal unopened 3d · rep task overdue 2d · 3 failed manual attempts), **and** on demand when a rep hands a lead to it. | 2026-07-21 |
+| D18 | After a call the timeline shows **outcome + one-line summary + interest signal**, with transcript and recording available on tap. | 2026-07-21 |
+| D19 | ~~The owner approves every discount.~~ **SUPERSEDED by D34.** | 2026-07-21 |
+| D20 | **Reps see only their own leads.** Managers see the team's, owner sees everything. | 2026-07-21 |
+| D21 | **Two ways to send a proposal: WITH a design, or WITHOUT one.** Both use the same 11-step proposal builder. A design pre-fills most of it; without a design the user types or AI-fills the same fields. See Stage 6B. | 2026-07-21 |
+| D31 | **Mobile navigation is an ARC BAR with an elevated centre**, not a flat five-tab rectangle. Slots: My Day · Leads · **➕ Add lead** (centre) · Projects · More. Centre is brass with an ink glyph and never changes per screen; the verb adapts by role (surveyor = Start survey). **Add this component to the Claude Design system** — see "Arc nav — addition" at the end of this file. | 2026-07-21 |
+| D30 | **Survey has two modes: REMOTE (address → Google Solar API → AI roof detection, minutes, no travel) and PHYSICAL (on site).** Remote is the default first pass for residential and is enough to design and quote; the physical visit becomes verification before installation rather than a prerequisite for quoting. Remote data is labelled **derived from imagery**, physical data **measured on site**. | 2026-07-21 |
+| D27 | **Six fixed preset roles; one person may hold SEVERAL.** Permission granted if any held role grants it; lead visibility takes the widest. Solves the small-firm "one person does three jobs" case without a custom-role builder. | 2026-07-21 |
+| D28 | **No per-person permission exceptions, ever.** To know what someone can do, you look at their roles — one source of truth. Exceptions are how permission systems become unauditable. | 2026-07-21 |
+| D29 | **Custom roles deferred to v2.** Ship the six, watch which combinations companies actually ask for, then add the presets they wanted — rather than guessing at a checkbox editor nobody fills in. | 2026-07-21 |
+| D25 | **The app UI is multilingual: English, Hindi, Marathi.** Supersedes the English-only half of D12. Voice agent languages stay configurable per tenant, defaulting to the same three. Devanagari support is a design-system change, not just a translation task — see "Multilingual". | 2026-07-21 |
+| D26 | ~~Billing screens are MOCK for now.~~ **SUPERSEDED by D38** — billing is deferred entirely and planned separately; no billing screen and no subscription restrictions in the current plan. | 2026-07-21 |
+| D24 | **The agent is configured through guided questions and a structured knowledge base, kept simple** — with a free-text box so the owner is never boxed in. Unanswered questions from real calls feed back as one-tap additions. ~~Everything about safety, honesty and compliance is locked by the platform.~~ **The "locked by platform" half is SUPERSEDED by D36** — the agent is fully tenant-configurable; the app ships safe defaults, the owner owns compliance. See "Tenant configuration". | 2026-07-21 |
+| D23 | **The design studio (Stage 5) and all 3D screens are LOW PRIORITY — design them last.** Everything else ships first: onboarding, CRM, survey, proposal builder, voice agent, close, project tracking. The studio already works in code; redesigning it is an improvement, not a blocker. | 2026-07-21 |
+| D22 | **Components are MANDATORY on every proposal.** No lump-sum quotes. All 5 categories (Panel · Inverter · Cable · Electrical · Structure, + Battery when added) must be selected before Generate. **Component kits were considered and REMOVED (2026-07-21)** — speed comes instead from *duplicate an earlier proposal*, which carries its components, and from Path A filling them straight off the BOM. | 2026-07-21 |
+
+---
+
+## The journey map
+
+```
+ STAGE 0   Company onboarding        owner signs up, configures, invites
+ STAGE 1   User onboarding           employee joins, learns their job
+ STAGE 2   Lead capture              lead arrives from any channel
+ STAGE 3   Qualify & assign          owner/rep triages, assigns, schedules
+ STAGE 4   Site survey               ⚡ REMOTE (Solar API, minutes) or PHYSICAL (on site)
+ STAGE 5   Design                    the existing studio → variants → sign-off
+ STAGE 6   Proposal                  11 steps → PDF + link, shared by rep
+ STAGE 7   Follow-up & close         tracking, VOICE AGENT, negotiate, won/lost
+ STAGE 8   Handover                  won deal → execution (scope TBD, Q1)
+ ─────────
+ CROSS     Roles & permissions · notifications · search · settings · reporting
+```
+
+Each stage below is written as: **who · what they are trying to do · screens · happy
+path · what goes wrong · what we deliberately leave out.**
+
+---
+
+## STAGE 0 — Company onboarding
+
+**Who:** the EPC company owner, usually on a laptop, often with a salesperson on a call.
+**Goal:** get from "I signed up" to "my team can quote a job" without a training session.
+
+### The trap to avoid
+Most B2B SaaS asks for everything up front — GST number, logo, price book, team — and
+people abandon. **We ask for the minimum to produce one real quote, and collect the rest
+when it is actually needed.**
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Sign up** | Phone number → OTP. Company name, your name, city. Nothing else. |
+| **What do you sell?** | Residential / C&I / both. Typical system size. Sets sensible defaults so the first quote is close. |
+| **Company profile** | Logo, GSTIN, address, bank details. **Skippable** — prompted later, when the first proposal is about to be sent. |
+| **Invite team** | Add by phone number, pick a role. **Skippable.** |
+| **You're ready** | Two doors: "Create your first lead" or "Try a demo project". |
+
+### Happy path
+Sign up → pick what you sell → skip the rest → land on an empty Leads screen that
+teaches → create the first lead in under a minute.
+
+### What goes wrong
+- **Phone already registered** → offer login instead, do not create a duplicate company
+- **OTP does not arrive** → resend after 30s, then offer "call me instead"
+- **Wrong GSTIN format** → validate live, explain the format, allow skip
+- **Owner abandons midway** → they are already an account; resume where they left off
+- **Two people from the same company sign up** → detect by company name + city, offer
+  "request to join" instead of creating a second workspace
+
+### Deliberately not in v1
+Payment/plan selection during signup — **all billing & subscription is deferred and planned
+separately (D38)**, with no trial or plan gating anywhere. Also not in v1: SSO, custom domains.
+
+### Recommendation
+**A demo project pre-loaded with a real Pune rooftop.** New users understand the product
+by opening something finished, not by staring at an empty state. It is also the safest
+place to learn the design studio without fear of breaking a real quote.
+
+---
+
+## STAGE 1 — User onboarding
+
+**Who:** a sales rep, surveyor, designer or engineer invited by the owner. **Phone, almost
+always.** Often standing in an office with the owner saying "just download it".
+
+**Goal:** be useful within two minutes, without reading anything.
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Invite landing** | "Rajesh invited you to HelioGrid — Suryodaya Solar." Phone pre-filled. |
+| **OTP** | 6 digits, auto-read from SMS where the platform allows. |
+| **Your profile** | Name, photo (optional). That is all. |
+| **Your role, explained** | One card: "You're a Sales Rep. You'll see your leads, your follow-ups, and you can send proposals." Sets expectations about what they cannot do. |
+| **First-run coach marks** | Maximum **three**, on the screen they actually landed on. Dismissible. Never a carousel. |
+
+### Happy path
+Tap invite → OTP → name → see My Day with real work already assigned to them.
+
+### What goes wrong
+- **Invite expired** → "Ask Rajesh to invite you again", with a one-tap request
+- **Wrong person got the invite** → decline, notifies the owner
+- **Role has nothing assigned yet** → empty state that says what will appear here and
+  who to ask, not a blank screen
+- **Owner removes them later** → graceful "your access was removed", no crash
+
+### Recommendation
+**Role decides the home screen, not a setting.** Sales rep lands on My Day. Surveyor lands
+on today's site visits. Designer lands on designs awaiting work. Engineer lands on the
+sign-off queue. Owner lands on the pipeline dashboard. Same app, five different front
+doors — this is the single highest-leverage UX decision in the product.
+
+---
+
+## STAGE 2 — Lead capture
+
+**Who:** anyone. A lead can arrive while nobody is looking.
+**Goal:** never lose an enquiry, and never create the same customer twice.
+
+### The one thing that kills solar CRMs
+**Duplicates.** A homeowner calls on Monday, fills the website form on Tuesday, and
+WhatsApps on Wednesday. Three leads, three reps, three quotes, one very confused customer
+— and two reps who wasted a week. **Phone number is the identity. Dedupe on capture, every
+time, from every channel.**
+
+### Channels
+| Channel | How it arrives | Notes |
+|---|---|---|
+| **Manual** | Rep types it | Must take <30s on a phone |
+| **Inbound call** | Voice agent answers when nobody picks | Captures name, city, bill amount, interest |
+| **WhatsApp** | Customer messages the business number | Highest volume in India |
+| **Website form** | Embedded form or link | |
+| **Referral** | Existing customer refers | Tag the referrer — they get credited |
+| **CSV import** | Bulk, from an old spreadsheet | Every EPC has one |
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Quick add** | Name, phone, city, type. Four fields. Everything else later. Live duplicate check on the phone number. |
+| **Lead inbox** | Unassigned/new leads from all channels in one queue, newest first, with a source badge. The owner's morning triage. |
+| **Duplicate found** | "Priya Sharma from Nashik already exists, owned by Rajesh, last contacted 4 days ago." Options: open existing · log as new enquiry on the existing lead · create anyway (needs a reason). |
+| **Import** | Upload CSV → map columns → preview → shows how many are duplicates before importing. |
+| **Capture settings** | Website form snippet, WhatsApp number, which sources are live. |
+
+### Happy path
+Lead lands in the inbox with its source → owner glances → assigns → rep is notified.
+
+### What goes wrong
+- **Duplicate** → detected on the phone number, before saving (see above)
+- **Junk / wrong number** → mark as junk; it leaves the queue but is not deleted
+- **Incomplete lead** (no name, only a number) → still accepted; the missing fields are
+  visible as gaps to fill on first contact
+- **Lead arrives at 11pm** → voice agent may capture but must not call back until 9am
+- **CSV has 400 rows and 90 duplicates** → shown before import, not after
+- **Same person, different number** (husband/wife) → dedupe cannot catch this; offer
+  merge from the customer record later
+- **Nobody triages for 3 days** → leads older than 24h unassigned escalate to the owner
+
+### Deliberately not in v1
+Lead scoring, marketing automation, campaign attribution, chatbot on the website.
+
+### Recommendation
+**The Lead Inbox is the owner's screen, not the rep's.** One queue, one decision per lead:
+assign or bin. Everything else waits. If triage takes more than three seconds per lead,
+it will not get done.
+
+---
+
+## STAGE 3 — Qualify & assign
+
+**Who:** owner or sales manager assigns; the rep qualifies.
+**Goal:** get the lead to the right person fast, and find out early whether it is real.
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Assign** | Pick a rep, or use a rule. Shows each rep's current open load so you do not bury someone. |
+| **Lead detail** | Header: name, phone, city, value, stage, owner. Then activity timeline, site info, designs, proposals, tasks, files. Actions: Call · WhatsApp · Log activity · Book visit · Create design. |
+| **Qualification** | Six things that decide whether this is real: monthly bill ₹, roof ownership (own/rent), roof type, shading obvious?, timeline, decision maker. Inline, not a separate form. |
+| **Book site visit** | Date, time, surveyor, address confirm. Gives the rep a ready-to-paste confirmation message to send the customer (D32 — the app does not send). |
+| **Disqualify** | Requires a reason: renting · budget · not interested · unreachable · already installed · wrong number. **The reason list is the most valuable analytics in the product.** |
+
+### Happy path
+Assigned → rep calls within the hour → qualifies on the call → books the site visit →
+rep sends the customer the ready-made confirmation message.
+
+### What goes wrong
+- **Customer does not answer** → log the attempt, auto-schedule a retry; after 3 failed
+  attempts hand to the voice agent
+- **Wrong number** → disqualify with that reason, no further calls
+- **Not the decision maker** → capture who is, add as a second contact
+- **Rents the property** → usually disqualified, but capture the landlord if offered
+- **"Call me next month"** → snooze the lead with a wake-up date; it disappears from
+  My Day until then and comes back automatically
+- **Rep goes on leave** → owner bulk-reassigns; the timeline records why
+- **Site visit no-show** → reschedule flow, and the customer gets one reminder, not five
+
+### Recommendation
+**Snooze is a first-class action, not a workaround.** In Indian residential solar, "call me
+after Diwali" is the single most common outcome of a first call. If the product cannot
+represent that cleanly, reps keep it in their head — and that is how pipeline leaks.
+
+---
+
+## STAGE 4 — Site survey
+
+> ### ⚡ There are TWO survey modes, and remote is often the first one
+>
+> **The app can survey a roof without anyone going there.** Type an address and Google
+> Solar API returns building insights and elevation data; the existing AI roof detection
+> traces the roof, finds obstructions and estimates pitch and azimuth from real DSM
+> rasters. A designable roof, from a desk, in minutes.
+>
+> ```
+> REMOTE SURVEY                          PHYSICAL SURVEY
+> address → Solar API → roof + shading   someone goes and photographs it
+>
+> minutes, no travel, no appointment     hours, travel, needs the customer home
+> enough to DESIGN and QUOTE             confirms reality before installing
+> data is DERIVED from imagery           data is MEASURED on site
+> ```
+>
+> **This is a competitive weapon, not a shortcut.** C1 says speed of first callback decides
+> who wins the job — a company that sends a real, design-backed proposal the same afternoon
+> beats one that books a visit for next Tuesday.
+>
+> **The sequence changes:** for residential, remote survey → design → proposal → *then* a
+> physical visit once the customer is interested. The site visit becomes **verification
+> before installation**, not a prerequisite for quoting.
+>
+> The 3D/design part of the product implements this. The UX must make the choice obvious
+> and make the difference in confidence honest.
+
+### Which mode, and when
+| | Use remote | Use physical |
+|---|---|---|
+| **Residential, simple roof** | ✅ default | after they show interest |
+| **C&I, large or complex** | start here | ✅ always, before quoting |
+| **Solar API has no data** | not possible | ✅ required |
+| **Roof recently modified** | unreliable | ✅ required |
+| **Before installation** | never enough | ✅ always |
+
+### The honesty consequence
+Remote data is **derived from satellite imagery**; physical data is **measured on site**.
+The product already labels numbers this way (N7), and it must here too:
+
+> *Roof measured from satellite imagery. A site visit will confirm dimensions, shading and
+> electrical access.*
+
+A proposal built on remote data is legitimate and sellable — it just must not claim to be
+a site survey. **This is the same rule as Path B in Stage 6B**, applied a layer earlier.
+
+### What remote CANNOT tell you
+Worth stating on screen, because it is what a site visit is actually for:
+- The meter, the sanctioned load, the main panel and whether it has room
+- Roof condition, age, waterproofing, structural doubts
+- Access — stairs, lift, crane, lane width for a truck
+- Shading from anything not visible from above (a neighbour's wall, a tree at ground level)
+- Whether the customer actually owns that roof
+
+---
+
+### Mode A · Remote survey
+**Who:** rep or designer, at a desk, minutes after the lead arrives.
+
+| Screen | Contains |
+|---|---|
+| **Address entry** | Search or drop a pin. Satellite preview with the building highlighted. |
+| **Detecting** | Honest progress — "fetching imagery · detecting roof · estimating shading". Fails gracefully. |
+| **Review detection** | The detected roof as an editable overlay: outline, obstructions, pitch, area. **Accept / adjust / reject** — never applied silently. Confidence shown per detection. |
+| **Coverage failure** | *"No detailed roof data available for this address."* → offer manual outline, or book a physical survey. **Not a dead end.** |
+| **Gaps to fill** | What remote could not determine (the list above), each with "ask the customer" or "capture on site". |
+
+**Goes wrong:** address resolves to the wrong building · Solar API has no coverage (real
+in parts of India) · imagery is years out of date and the roof has changed · a tall
+neighbouring building is missed · roof detected but obviously wrong → the customer must
+always be able to correct it.
+
+---
+
+### Mode B · Physical survey
+**Who:** whoever the survey task is assigned to (D15). **On a phone, on a roof, in the sun,
+often with one bar of signal or none.**
+**Goal:** capture everything remote could not, so nobody has to go back.
+
+### The constraint that shapes everything
+**Offline is the normal case, not the edge case.** A terrace in a dense Pune neighbourhood
+has no usable data. If capture depends on the network, the survey does not happen — the
+surveyor takes photos in the phone's camera app instead and the structure is lost.
+Everything saves locally first. Sync is a background fact, not a user action.
+
+### What gets captured
+| Group | Items |
+|---|---|
+| **Roof** | Photos from each corner, overall shot, roof type, approximate dimensions |
+| **Electrical** | Meter photo (reading + sanctioned load visible), main panel/DB photo, existing load |
+| **Shading** | Photos of anything tall nearby — water tanks, mumty, trees, adjacent buildings — with rough heights |
+| **Access** | How material gets to the roof: stairs, lift, crane needed? Narrow lane? |
+| **Structural notes** | Visible cracks, roof age, existing waterproofing — observations only, never a verdict |
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **My visits today** | The surveyor's home screen. Address, customer, time, distance, one-tap navigation and one-tap call. |
+| **Guided capture** | Step-by-step through the groups above. Progress bar. Each step skippable but flagged. Camera opens inline — never bounces to the OS camera app. |
+| **Shading capture** | Add an obstruction, photograph it, estimate height. Tap-to-add on a simple roof sketch. |
+| **Review & submit** | What is captured, what is missing, what is flagged. Submit hands off to the designer. |
+| **Sync status** | "3 surveys waiting · 47 photos · will upload on Wi-Fi." Visible, never blocking. |
+
+### Happy path
+Open My Visits → navigate → capture through the guided steps → review → submit →
+designer is notified.
+
+### What goes wrong
+- **No signal** → everything works; a persistent, calm indicator shows what is pending
+- **Phone storage full** → warn before capture starts, offer to compress
+- **Battery dies mid-survey** → draft is restored on reopen, nothing lost
+- **Customer not home / gate locked** → "Could not complete" with a reason → auto-reschedule
+  flow → customer gets one WhatsApp
+- **Roof not accessible** (no stairs, locked terrace) → captured as an access constraint;
+  designer sees it before designing
+- **Wrong address** → correct it on the spot; it updates the site record
+- **Surveyor forgets the meter photo** → review screen flags it before submit; if submitted
+  anyway, the designer sees the gap explicitly
+- **Two surveys of the same site** (revisit) → versioned, not overwritten
+
+### Deliberately not in v1
+**Deriving numbers from photos automatically:** LiDAR, automatic roof measurement from
+photos, AR height estimation. Every dimension and height is still entered or estimated by a
+person. **Capturing and attaching reference photos is IN scope** (D35) — of the roof, its
+obstructions and everything around the building, taken by the phone on site, sent by the
+customer, or uploaded from a drone / other camera. Those photos are kept with the survey and
+handed to the designer for the 3D proposal; the app just does not measure from them.
+
+### Recommendation
+**Make the review screen the star.** The surveyor's mistake is not laziness, it is
+forgetting one item that costs a second trip. A review screen that says "meter photo
+missing — the designer cannot size the system without it" in plain language prevents more
+rework than any amount of validation.
+
+---
+
+## STAGE 5 — Design
+
+**Who:** designer, on desktop or tablet. **This stage already exists in code.**
+**Goal:** turn a survey into a system that is buildable and honest.
+
+**The survey comes with its photos.** The roof, obstruction and surroundings photos captured
+in Stage 4 — on site, sent by the customer, or uploaded — are the designer's reference here
+while tracing the roof and placing panels (D35). The app never measures from them
+automatically; a person still enters every dimension.
+
+> 🔻 **LOW PRIORITY — DESIGN THIS LAST (D23).**
+> The studio and every 3D screen come after all other design work is finished. They
+> already work in code, so a customer can be quoted today; redesigning them is an
+> improvement, not a blocker. Do not spend early design cycles here.
+>
+> Build first: onboarding → CRM → survey → **proposal builder** → voice agent → close →
+> project tracking. Come back to the studio when those are done.
+
+> ⚠️ **When you do get here: these screens EXIST — redesign them, do not invent them.** The codebase has a
+> working 10-step studio with real satellite imagery, roof tracing, shading simulation, 3D,
+> auto-layout and a bill of materials. When connecting the codebase, Claude Design should
+> read the existing screens and improve the UX, not design a new solar tool from scratch.
+> The engineering underneath is validated and must not be redesigned away.
+
+### Existing steps (from the codebase)
+Site setup → roof drawing → obstructions → components → panel layout → 3D shadow view →
+proposal captures → single-line diagram → bill of materials → done.
+
+### Known UX problems to fix (from the audit)
+- **The BOM screen presents ~286 controls at once.** Needs progressive disclosure, not a
+  smaller font.
+- **Desktop-only throughout** — canvas tracing, vertex drag, hover tooltips, keyboard
+  shortcuts. All need a touch model (D2).
+- **"Step 5" is a phantom** — counted in the wizard, has no screen.
+- **Three unrelated header systems** across dashboard, wizard and proposal.
+- **No loading states** — blank screen until data hydrates.
+
+### New screens this stage needs
+| Screen | Contains |
+|---|---|
+| **Design list for a lead** | Variants side by side: size, generation, price, payback. Mark one recommended. |
+| **Engineer sign-off queue** | Designs awaiting review, oldest first. |
+| **Sign-off / return** | Approve, or return with comments pinned to what is wrong. |
+
+### What goes wrong
+- **Survey incomplete** → design cannot start; show exactly what is missing and who to ask
+- **Roof too shaded** → the system is honest about it; offer a smaller layout rather than
+  quietly producing bad numbers
+- **Exceeds sanctioned load** → warn with the actual limit; this is a real approval blocker
+- **Panel out of stock / discontinued** → catalog flags it; existing quotes keep their
+  original pricing
+- **Customer changes their mind on size** → variant, not a rewrite
+- **Engineer returns the design** → back to the designer with comments; the customer never
+  sees an unapproved design
+- **Design edited after the proposal exists** → its pricing goes stale and **must visibly
+  say so**
+
+### Recommendation
+**Do not let Claude Design redesign the studio from imagination.** Connect the codebase,
+have it read the existing screens, and ask it for a specific improvement — "redesign the
+BOM screen for mobile using progressive disclosure" — one screen at a time. The domain
+logic in there took months and is test-covered.
+
+---
+
+## STAGE 6 — Proposal
+
+> **ONE OBJECT, NOT TWO.** There is no separate "quote" a user manages. The **proposal** is
+> the thing — built in the 11 steps (Stage 6B), it contains the pricing, and it is what gets
+> versioned, sent, and accepted.
+>
+> The **BOM** is a different thing entirely: the line-item bill of materials produced by the
+> design studio. It is internal, engineering- and procurement-facing, and it *feeds* the
+> proposal's price when a design exists (Path A). Path B has no BOM at all — just a system
+> cost typed into step 3.
+>
+> *Naming note: Indian EPCs usually say "quotation" for the document. If the UI label should
+> read "Quotation" rather than "Proposal", that is a copy decision — but it is still one
+> object either way.*
+
+**Who:** designer or rep builds it, rep sends it. Whoever can build a proposal can
+discount it and share it — no approval step (D34).
+**Goal:** a price the customer trusts, delivered where they will actually read it.
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Proposal builder** | The 11 steps — see Stage 6B for the full specification. |
+| **BOM detail** *(Path A only)* | The line items behind the price: item, spec, qty, unit, rate, GST, total. Comes from the design. **The densest screen in the product — mobile gets a card list with an edit sheet, never a wide table.** Internal; the customer never sees it. |
+| **Proposal versions** | v1 vs v2 with what changed, and why. |
+| **Proposal preview** | Exactly what the customer will see, before sending. |
+| **Share** | Two actions: **Download PDF** and **Copy link**. Plus a suggested message the rep can copy. The rep pastes into their own WhatsApp — the app does not send (D32). Marking it shared is what starts the clock. |
+| **Link tracking** | Shared → opened → viewed for how long. **No "delivered" state** — we do not control the sending, so we cannot know it arrived. Only that the link was opened. |
+
+### Happy path
+Design approved → proposal pre-filled from the BOM → margin applied → preview → Download
+PDF + Copy link → rep pastes into WhatsApp → marks it shared → a follow-up task is created
+automatically for +2 days → when the customer opens the link, the rep is notified.
+
+### What goes wrong
+- **Design changed after the proposal was built** → its pricing is stale; **money must
+  never render as final while stale** — this is a hard product rule
+- **Discount pushes the job below cost** → warned explicitly, with the loss stated in ₹
+- **Discount drives the client-payable figure to ₹0 or below** → the negative is shown and
+  the proposal cannot be generated until it is corrected. The only hard discount guard.
+- **Customer's WhatsApp number is wrong** → delivery fails visibly; offer SMS or email
+- **Customer never opens it** → tracked; this is exactly what the voice agent picks up
+- **Customer asks for changes** → new version, old one preserved; the customer link always
+  shows the latest
+- **Proposal sent, then the price book changes** → the sent proposal keeps its original
+  prices
+- **Two reps quote the same customer** → the duplicate check at Stage 2 should have caught
+  it; if not, the customer record shows both and one must be withdrawn
+
+### Recommendation
+**Automatic follow-up task on send, always.** The single biggest leak in solar sales is a
+proposal sent on Friday and remembered the following Thursday. The moment a proposal goes
+out, the next action must already exist and be owned.
+
+---
+
+## STAGE 6B — The Proposal Builder (the two paths)
+
+**This is the most-used screen in the product.** Every deal passes through it, and many
+deals never touch the design studio at all.
+
+### The two paths
+
+```
+PATH A — WITH DESIGN                    PATH B — WITHOUT DESIGN
+Survey → studio → BOM → proposal        Lead → proposal, straight away
+
+Used when: the job is won on                Used when: the customer wants a
+engineering credibility, C&I, a             number today, a small residential
+complex roof, a customer comparing          job, a repeat/standard system, or
+vendors on technical detail.                the rep is standing in their living
+                                            room.
+Numbers are DERIVED from the model.      Numbers are ESTIMATED or ASSUMED.
+```
+
+**Both paths use the same 11-step builder.** The difference is only how much arrives
+pre-filled. This is the key architectural decision — not two proposal systems, one builder
+with two entry points.
+
+### What a design pre-fills
+
+| Step | With design | Without design |
+|---|---|---|
+| 3 · Solar System Setup | capacity, type, category **derived** | typed |
+| 4 · Performance Metrics | generation from real shading simulation — **derived** | ✦ AI auto-fill — **estimated** |
+| 5 · Financial Data | savings/payback from the real BOM pricing — **derived** | ✦ AI auto-fill — **estimated** |
+| 8 · Components | the actual BOM — **derived** | picked from catalog — **assumed** |
+| Cost | the real bill of materials | typed lump sum |
+
+### ⚠️ The honesty rule this creates
+The product already labels every number **measured / derived / estimated / assumed**. Path B
+numbers are *not* derived — they are estimates from capacity and location heuristics.
+
+**A proposal built without a design must say so.** Not in fine print — visibly, on the
+document. Something like:
+
+> *Indicative proposal. Generation and savings are estimated from system size and location.
+> A site survey and shadow analysis will confirm the final figures.*
+
+This is a genuine competitive advantage, not a disclaimer. Every competitor prints
+estimates as though they were calculations. Being the one product that distinguishes them
+is exactly the "shows its working" positioning — and it protects the EPC when the customer
+compares the final numbers to the promise.
+
+### Entry points to the builder
+- Lead detail → **Create proposal** → "With design or without?"
+- Design complete → **Generate proposal** (goes straight to Path A, most steps filled)
+- Duplicate an earlier proposal → all steps pre-filled from it (the fastest path of all,
+  and how repeat residential jobs should actually work)
+
+---
+
+### The 11-step builder — full specification
+
+**Shell & navigation**
+- **Chip rail (top)** — 11 jump chips, one per step. Tap any to jump, in any order.
+  Completed steps turn sage green.
+- **Footer bar** — `‹ Back` · `{step} / 11 · {step title}` · `Next ›`. The last step's
+  button becomes **Generate PDF ⤓**.
+- **Gating** — Next is disabled until that step's required (\*) fields are valid. A pill
+  reads *"Complete the required (\*) fields to continue."*
+
+#### 1 · Company
+- Phone number \* — locked, 🔗 linked to account
+- Company name \*
+- Email address \* — locked, 🔗 linked to account
+- Website
+- Company address
+- Company logo — "HG" swatch + **Change logo** (max 5 MB · 12×6 cm · PNG/JPG)
+
+→ **Proposal Type modal** (bottom sheet, fires after Company → Next): drag handle,
+"Choose proposal type", two radio cards — **CAPEX** (purchase outright) / **OPEX / PPA**
+(per-unit billing to the customer — no PRO/tier gate, D38). Actions: Back · Continue ›
+
+#### 2 · Achievements *(optional, skippable)*
+- About your company (textarea — "shown on proposal cover")
+- Total capacity installed (kW) → "200 kW"
+- Happy customers → "350+"
+- Cities served → "10+"
+- Numbers only; units auto-added
+
+#### 3 · Solar System Setup
+- **Location:** State \* · District \*
+- **System configuration:** System capacity kW \* (0.5–7000) · System type \* segmented
+  **ONGRID / OFFGRID / HYBRID**
+- **Battery storage card** — *Add battery backup*. OFFGRID/HYBRID force a
+  ⚠ "Battery required" notice. Added state shows a summary with Edit / Remove.
+- **Category** \* — Residential / Commercial
+- **AMC** \* — Free AMC · NO AMC · 1–8 years
+- **Commissioning included** (toggle)
+- **Pricing & subsidies:** System cost excl. battery incl. GST \* · excl. GST · GST % \* ·
+  GST amount (auto) · Subsidy ₹ \* (PM Surya Ghar) · Discount \* (% ⇄ ₹ mode switch) ·
+  Easy financing EMI (toggle → EMI interest rate 0–100%) · Electricity tariff ₹/kWh \* (1–50)
+- **Client-payable summary card** — live: `cost + battery − subsidy − discount = payable`.
+  Warns if the discount drives payable ≤ ₹0.
+
+→ **Battery modal** (bottom sheet): Battery capacity kWh (1–100) · Cost excl./incl. GST ·
+GST on battery % · Cell chemistry — Lithium LFP / Lithium NMC / Lead-acid / Custom
+(Custom reveals a free-text field). Cancel · Save.
+
+#### 4 · Performance Metrics
+✦ **AI Auto-fill**. Chart with **Generation / Savings / ROI** tabs.
+Efficiency / PR % \* (50–100) · Monsoon dip % \* (0–50) · Units per kW/day \*
+↺ Reset to AI values
+
+#### 5 · Financial Data
+✦ **AI Auto-fill**. Same tabbed chart.
+Yearly savings ₹ \* · Payback years \* · Lifetime lakhs \* (25 yr) ·
+Electricity inflation % \* (~6%)
+↺ Reset to AI values
+
+#### 6 · Project Timeline
+Reorderable phase rows (⌃ / ⌄ arrows, 🗑 delete). Each: Title \* (char count) +
+Description \* (char count).
+↺ Reset to System Default · ＋ Add Step
+
+#### 7 · Payment Terms
+↺ Reset + templates **10/60/20/10 · 30/60/10 · …**
+Tranche rows (label + % + ✕) · ＋ Add tranche
+Progress bar + validation: **"Total allocation must = 100%"**
+
+#### 8 · Components
+**Required — all categories must be selected before Generate (D22).**
+
+Sections: **Panel · Inverter · Cable · Electrical · Structure** (＋ **Battery** when added).
+Each shows Selected / Empty status, ＋ add, brand rows (✎ edit / ✕ remove), and count
+fields for Panel and Inverter.
+Footer: **"Components Selected X/5 ✓"** — this is the gate, not a status.
+
+Path A fills all five from the BOM automatically. A duplicated proposal brings its
+components with it. Otherwise the rep picks five.
+
+→ **Component Edit sheet** (bottom sheet, per type): Brand Name (locked), plus:
+| Type | Fields |
+|---|---|
+| Panel | Watt Peak Range · Panel Type (Mono PERC / TOPCon / Bifacial / Mono / Poly / HJT / Thin-film) · Product & Performance Warranty |
+| Inverter | Capacity kW · Inverter Type (On / Off / Hybrid) · Warranty |
+| Cable | Cable Type · Specification · Warranty |
+| Electrical | Includes · Standard |
+| Structure | Warranty · Weight per kW · Standard |
+| Battery | Capacity kWh · Chemistry · Warranty |
+
+Plus **Description** (max 110 chars). Cancel · Done.
+
+#### 9 · Terms & Conditions *(optional, up to 3 pages)*
+Add / Skip choice. When added: Add-logo toggle · rich-text toolbar + textarea ·
+"Save as template" · char count · ≈ PDF page estimate.
+
+#### 10 · Client Details
+Proposal number \* (auto, disabled) · Prepared by \* · Prepared for \* · Client address \* ·
+Client phone \* (10-digit validation) · Date \* · Time generated \* · Customer support number
+
+#### 11 · Bank Details *(optional)*
+Include-in-proposal toggle · Bank name · Account name · Account number · IFSC.
+Note when hidden: details save but will not print.
+
+→ **Add 3D Design prompt** and **"Almost done!" bank prompt** (bottom sheets) — Yes / No,
+then **Add Bank Details** · ⤓ **Generate Proposal**
+
+---
+
+### Product recommendations on this flow
+
+**1. Eleven steps is a lot for Path B.** A rep in a customer's living room needs a number
+in minutes. Recommendation: a **Quick mode** asking only steps **1, 3, 8, 10** (company,
+system, **components**, client), AI-filling 4 and 5, and using defaults for 6, 7, 9, 11 —
+with a "review the rest" link. Full mode stays for C&I. *Same builder, one toggle.*
+
+**1b. How mandatory components stay fast (D22).** Components are required on every
+proposal, which is right for credibility but would be slow if a rep had to pick five items
+from a catalog every single time.
+
+**Saved "component kits" were specced and then removed.** Duplicate-an-earlier-proposal
+already does the same job without a second concept to build, explain and maintain:
+
+- **Duplicate an earlier proposal** — components come with it. Most residential jobs are
+  near-identical, so this is the common path and the fastest one.
+- **Path A (with a design)** — the BOM fills all five categories directly.
+- **Genuinely new, no design, nothing to duplicate** — pick five. Slower, and rare.
+
+The lesson worth keeping: if mandatory components ever start costing minutes rather than
+seconds, the fix is to make duplicating easier, not to make components optional.
+
+**2. The chip rail and the gating fight each other.** Free jumping plus per-step required
+fields means a user can land on step 8 with step 3 incomplete. Recommendation: allow the
+jump, but show incomplete steps in the rail with a subtle dot, and block only the final
+**Generate PDF** — not each Next. Let people work out of order; validate at the end.
+
+**3. Duplicate-from-previous should be the primary path for residential.** Most residential
+jobs are near-identical. "Same as the Sharma proposal, new customer, 6 kW" should take
+under a minute. This deserves to be a first-class entry point, not buried.
+
+**4. On mobile, the chip rail must not eat the screen.** Eleven chips at 375px is a
+horizontal scroller nobody reads. Recommendation: mobile shows `‹ 3 / 11 · Solar System ›`
+with a tap to open the full step list as a sheet. Desktop keeps the full rail.
+
+**5. Save continuously, never on Next.** Someone will lose a network mid-build. Every field
+commits on blur; a draft always exists and is resumable from the lead.
+
+### What goes wrong
+- **Rep abandons at step 7** → draft saved, resumable, visible on the lead as "Proposal
+  draft — 7/11"
+- **Discount makes payable ≤ ₹0** → warned at step 3 (already in the spec) and blocked at
+  Generate
+- **Payment tranches ≠ 100%** → blocked with the remainder shown ("12% unallocated")
+- **No components selected** → **hard block at Generate** (D22). The footer counter
+  "Components Selected 3/5" is the gate; tapping Generate with gaps jumps to step 8 and
+  highlights exactly which categories are missing, so the rep goes straight to the gaps
+  rather than re-reading the whole step.
+- **Logo too large / wrong format** → validated on upload with the actual limits stated
+- **OFFGRID chosen, no battery** → hard block; the system cannot work
+- **Design changed after the proposal was generated** → the proposal is stale and must say
+  so; regenerate offered
+- **Proposal number collides** (two users at once) → server-assigned, never client-generated
+- **Path B proposal later gets a design** → offer to upgrade the numbers from estimated to
+  derived, showing what changed before committing
+
+---
+
+## STAGE 7 — Follow-up, the voice agent, and close
+
+**Who:** the rep, and the voice agent working alongside them.
+**Goal:** nothing goes quiet by accident.
+
+### The core screen: My Day
+The rep's home. Not a dashboard of numbers — a **list of what to do today**.
+
+```
+OVERDUE (2)          red, first, always
+  Priya Sharma · follow-up 3 days late · 8.2 kWp · ₹4.5L
+  Anand Traders · proposal unopened 5 days · 180 kWp · ₹92L
+
+TODAY (5)
+  10:00  Site visit · Kothrud
+  14:00  Call back Mehta · asked about subsidy
+  …
+
+AGENT ACTIVITY (3)          what the agent did while you slept
+  🤖 Rakesh Patil · interested · wants callback Thu 4pm
+  🤖 Sunita D. · no answer · will retry tomorrow
+  🤖 Vinod K. · asked about warranty · answered · still deciding
+
+UPCOMING THIS WEEK (8)
+```
+
+### Voice agent screens
+| Screen | Contains |
+|---|---|
+| **Agent settings** | On/off. Which triggers are live (D17). Calling window (default 9am–9pm). Language per customer or auto-detect. Max attempts before it gives up. |
+| **Agent queue** | Who is scheduled to be called, when, and why. The owner can remove anyone from it. |
+| **Call result** | On the lead timeline: outcome, one-line summary, interest signal, any action taken. Transcript and recording on tap. |
+| **Consent & eligibility** | Per customer: consent captured? DND-listed? Do-not-call flag? Shown before a dial; set to respect them by default, the owner owns the choice (D36). |
+| **Escalations** | Calls the agent handed to a human, and why — with the reason visible ("customer asked for a discount"). |
+
+### What the agent does by default — all editable by the owner (D36)
+| By default it does | By default it holds back |
+|---|---|
+| Ask whether the proposal was received and reviewed | Discuss or offer a discount *(the owner can enable this)* |
+| Answer FAQs: timeline, subsidy, warranty, process, financing | Negotiate price *(the owner can enable this)* |
+| Book a callback or a site visit | Accept or confirm a deal |
+| Record interest level and objections | Make technical or structural commitments |
+| Hand off to a human at any point | Continue after the customer asks to stop |
+
+**By default every call opens by identifying itself as an automated assistant, and "talk to a person"
+works at any moment — both are on by default and the owner can change them (D36).**
+
+### Close
+| Screen | Contains |
+|---|---|
+| **Mark won** | Final value, expected install date, and it creates the project (Stage 8). |
+| **Mark lost** | Requires a reason: price · chose competitor · postponed · not reachable · roof unsuitable · financing failed. **This list is the most valuable data in the product.** |
+| **Reopen** | A lost lead can come back. Postponed ones auto-resurface on their wake-up date. |
+
+### What goes wrong
+- **Customer is on DND** → the agent will not dial; the rep is told to call manually
+- **Customer says "stop calling"** → do-not-call set instantly, agent never dials again,
+  and this is irreversible without the customer's say-so
+- **Agent misunderstands** → the rep sees the transcript and can correct the outcome;
+  corrections train nothing automatically without review
+- **Agent reaches a wrong/reassigned number** → flagged, number marked unverified
+- **Customer asks about price** → immediate escalation; the rep gets a notification, not a
+  task buried in a list
+- **Agent calls during a festival or at a bad time** → calling window plus a holiday
+  calendar; a customer complaint sets a permanent quiet flag
+- **Rep disagrees with the agent's read** → rep's assessment always wins
+- **Customer goes silent for 30 days** → auto-move to a dormant state, not deleted
+
+### Recommendation
+**Show agent activity as a separate block in My Day, never mixed with the rep's own tasks.**
+The rep must be able to see at a glance what a machine did on their behalf. Blurring that
+line is how people stop trusting the automation.
+
+---
+
+## STAGE 8 — Project management (light)
+
+**Who:** owner and an operations coordinator. **Goal:** know what is stuck, collect the
+money, and let the customer see progress without phoning.
+
+### What "light" means — the v1 boundary
+
+```
+IN v1                              NOT in v1
+─────                              ────────
+stage board                        inventory / stock levels
+payment collection vs tranches     purchase orders to suppliers
+document checklist                 crew rostering & scheduling engine
+blockers with reasons              Gantt charts, dependencies
+customer progress link             procurement workflow
+the existing install checklist     O&M, monitoring, AMC, tickets
+```
+
+**This is a status + documents + money tracker, not project-management software.** Small
+and mid-size Indian EPCs do not run Primavera; they run a WhatsApp group and a notebook.
+We are replacing the notebook, not selling them MS Project.
+
+### The real stages of a solar project after Won
+
+```
+WON → MATERIAL ORDERED → DISPATCHED → INSTALLATION → ELECTRICAL & METERING
+    → DISCOM INSPECTION → COMMISSIONED → SUBSIDY CLAIMED → HANDED OVER
+```
+
+Two of these are almost entirely outside the EPC's control and cause nearly all the delay:
+- **DISCOM inspection & net-metering approval** — 3–6 weeks, sometimes longer
+- **Subsidy disbursement** (PM Surya Ghar, residential) — paid to the customer's bank
+  after inspection; the EPC usually does the paperwork and gets blamed for the wait
+
+**The product's job is not to speed these up. It is to make the waiting visible and
+attributable**, so the EPC stops absorbing blame for a utility's timeline.
+
+### 💡 The connection that makes this valuable: payment tranches
+
+Step 7 of the proposal builder already defines payment terms — **10 / 60 / 20 / 10**. Those
+are not just words on a PDF. **They are the project's collection schedule.**
+
+```
+10%  on booking          ✅ received   12 Aug   ₹45,247
+60%  on material dispatch ✅ received   14 Aug   ₹2,71,483
+20%  on installation      🔵 due now    ₹90,494   [Copy request message]
+10%  on commissioning     ⬜ upcoming   ₹45,247
+```
+
+When a stage completes, the matching tranche becomes due and the coordinator can request
+a ready-to-paste request message in one tap. **This is the feature an EPC owner will actually pay for** —
+solar businesses die of cash flow, not of bad design software, and money owed against a
+milestone that has already passed is the most common leak.
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Projects board** | Won deals as cards by stage. Each: customer, size, value, days in stage, **payment collected vs due**, blocker flag. Aged cards surface. Mobile = one column with a stage filter; desktop = the full board. |
+| **Project detail** | Stage timeline, the approved design, the accepted proposal, **payments**, documents, blockers, activity. One screen the coordinator lives in. |
+| **Payments** | The tranche schedule above. Mark received, copy a ready-made request message, record mode (UPI/NEFT/cheque), attach receipt. |
+| **Document checklist** | Signed proposal · advance receipt · net-metering application · DISCOM approval · **subsidy application & sanction** · commissioning certificate · warranty documents · handover pack. Each: pending / uploaded / verified. |
+| **Blockers** | Explicit, with a reason and who is waiting on whom: *waiting on DISCOM* · *waiting on customer* (site access, documents) · *waiting on material* · *waiting on us*. **The "waiting on customer" state is the one that protects the EPC.** |
+| **Installation** | ↳ reuses the **existing InstallationSheet** — foundation → legs → rafters → purlins → modules → stringing → BOS, derived from the structural model, crew ticks persisted. **Do not rebuild it.** |
+| **Customer progress link** | Same tokenised URL as the proposal. Shows stages, what is done, what is waiting and why, expected dates. |
+| **Handover** | Document pack downloaded and shared by the rep, project closed, referral asked for. |
+
+### Happy path
+Won → project created automatically from the deal → coordinator moves it stage by stage →
+each stage triggers the matching payment request and updates the customer link → handover
+pack sent → closed.
+
+### What goes wrong
+- **Stuck in a stage for weeks** → aged cards surface to the owner with days-in-stage
+- **DISCOM delay** → blocker with a reason; the customer link says *"waiting for DISCOM
+  approval, applied 15 Aug, typically 3–6 weeks"* — this single line prevents most support
+  calls
+- **Customer not paying a due tranche** → visible on the board and in the owner's dashboard;
+  the rep is prompted to chase; **never block the customer's progress link over money** — chase
+  the person, do not punish the view
+- **Customer blocks access** (nobody home, terrace locked) → *waiting on customer* with the
+  date it started, so responsibility for the delay is recorded and visible
+- **Material shortage** → blocked with an expected date; customer sees *"material ordered"*,
+  not the supplier's problem
+- **Subsidy rejected or delayed** → surfaced with the reason; this is the customer's money
+  and they will ask
+- **Change after Won** (customer wants 2 more panels) → new proposal version, revised tranches,
+  original preserved
+- **Project cancelled after Won** → allowed with a reason; **reporting must not silently
+  keep counting it as revenue**
+- **Install done but commissioning blocked for a month** → the board must not show it as
+  "nearly finished"; days-in-stage tells the truth
+
+### Roles here
+| Role | Can |
+|---|---|
+| **Owner** | Everything. Sees all projects, all money, all blockers. |
+| **Coordinator / ops** | Move stages, upload documents, request payments, set blockers. **= the Manager preset** — there is no separate coordinator role (D27). |
+| **Installer / crew** | The installation checklist only. Ticks steps. Nothing financial. **A dedicated Installer preset is DEFERRED (D29)** — in v1 the coordinator (Manager/Owner) runs the checklist. |
+| **Sales rep** | Read-only on their own won deals — so they can answer a customer without asking ops. |
+| **Customer** | The progress link. No login. |
+
+### Recommendations
+1. **Create the project automatically the moment a deal is Won.** No "create project" step —
+   a won deal *is* a project. Asking someone to re-enter the customer is how data diverges.
+2. **Days-in-stage is the only metric that matters on the board.** Not percentages, not
+   burndown. "This one has been in DISCOM inspection for 34 days" is the whole insight.
+3. **Every blocker names who is waiting.** Us, the customer, or the DISCOM. Over a year this
+   becomes the honest answer to "why do our projects take so long".
+4. **The customer link is the highest-value screen in the stage** — most support calls in
+   Indian solar are "what is the status?", and one honest link answers them.
+
+---
+
+## THE CUSTOMER'S JOURNEY — the other side of the glass
+
+Everything above is written from the EPC's side. This is the same story from the
+customer's — a homeowner or a factory owner about to spend ₹5–50 lakh with a company
+they do not yet trust.
+
+### The framing that matters
+**The customer almost never touches the app.** They have no login (D5). Their entire
+experience is:
+
+```
+WhatsApp messages  ·  phone calls  ·  ONE link
+```
+
+So the product's job on this side is not screens. It is **making sure the right message
+arrives at the right moment, and that the one link always answers "what is happening?"**
+
+Trust is the actual product here. A ₹8 lakh decision made from a WhatsApp message.
+
+---
+
+### C1 · They make an enquiry
+**Trigger:** they call, or a rep adds them. **What they experience:** a phone call.
+
+They are shopping. They have probably contacted two or three companies the same week.
+**Speed of first response is the single biggest predictor of who wins the job.**
+
+- Called back within an hour → strong signal
+- Called back in three days → the job is already lost
+- Called by three different people from the same company → looks disorganised
+  *(this is what the duplicate check at Stage 2 prevents)*
+
+**Goes wrong:** nobody calls back · they get called at 10pm · they are asked the same
+questions twice by two different reps.
+
+### C2 · First conversation
+**They experience:** a rep asking about their electricity bill, roof and timeline.
+
+What they are silently judging: does this person know more than I do? A rep fumbling
+basic subsidy questions loses the deal here, before any price is discussed.
+
+*(This is why the agent's business-knowledge base matters — the same answers must be
+right whoever, or whatever, is speaking.)*
+
+**They receive:** a WhatsApp confirming the site visit — date, time, name of who is
+coming, and the person's phone number.
+
+### C3 · The site visit — *which may not happen yet (D30)*
+**If the roof was surveyed remotely**, the customer experiences *nothing here* — and gets
+their proposal the same day instead of next week. That speed is often what wins the job.
+The visit then happens after they show interest, to verify before installation.
+
+**If a physical survey happens first**, they experience somebody on their roof for 30–45
+minutes with a phone.
+
+What builds trust: the surveyor explaining what they are photographing and why. What
+destroys it: silent photographing, then leaving without saying what happens next.
+
+**They receive:** a WhatsApp — *"Survey done. Your proposal will reach you by Thursday."*
+**A promise with a date.**
+
+**Goes wrong:** surveyor arrives late, or not at all · nobody tells them what happens next
+· the surveyor gives a verbal price that the real quote later contradicts.
+
+### C4 · The wait
+**They experience:** silence, for 1–3 days.
+
+This is where enthusiasm decays and competitors land their proposals first. **Nothing in
+the product should let this gap be silent** — an automatic "we are working on your design"
+message on day two costs nothing and holds the position.
+
+### C5 · The proposal arrives
+**They experience:** a WhatsApp with a message, a PDF, and a link.
+
+This is the moment of maximum attention. They will open it once, properly, probably in the
+evening, probably on a phone, possibly with their spouse.
+
+**What the link shows:**
+- System size, annual generation, monthly savings
+- Total price, subsidy, what they actually pay
+- Payback period
+- **A 3D view of their own roof** — this is the moment that separates you from a PDF
+  emailed by a competitor
+- Financing options
+- **Accept** · **Ask a question**
+
+**The honesty rule shows up here.** If the proposal came from Path B — no design — it says
+so on the document: *"Indicative proposal. A site survey and shadow analysis will confirm
+the final figures."* Competitors print estimates as certainties. When a customer compares
+three proposals and only yours admits which numbers are estimated, that reads as
+confidence, not weakness.
+
+**Goes wrong:** the PDF is too large to open on a slow connection · the link expires · the
+numbers on the PDF and the link disagree · it is in English and they read Marathi (D25).
+
+### C6 · They think about it
+**They experience:** comparing quotes, asking a relative who "knows about solar",
+searching the panel brand online, worrying about the roof leaking.
+
+**Nothing happens in the app. Everything happens in their head.** Typical decision window:
+3 days to 3 weeks.
+
+Their real questions are rarely about price:
+- Will this actually reduce my bill?
+- What if it does not work?
+- Who fixes it if something breaks in year four?
+- Will it damage my roof?
+- Is the subsidy real, and who does that paperwork?
+
+**This is exactly what the voice agent must be able to answer** (D24 knowledge base). Not
+a sales pitch — the boring, specific reassurance a person needs before spending ₹8 lakh.
+
+### C7 · The follow-up
+**They experience:** a call. Sometimes from the rep, sometimes from the agent.
+
+The agent opens by saying it is automated (the default; D36). Handled well, this is fine —
+people are increasingly used to it, and an agent that answers a warranty question at 8pm
+is more useful than a rep who calls back on Tuesday.
+
+Handled badly it is insulting: calling three times in a week, calling at dinner, not
+understanding Marathi, not letting them reach a human. **The app ships defaults that prevent
+all of those** — capped attempts, a 9am–9pm window, per-customer language, an always-offered
+human hand-off. The owner can change them and owns that choice (D36), so the defaults are set
+to protect the customer out of the box.
+
+**Goes wrong:** they ask about a discount and the agent handles it however the owner set it
+to *(by default it offers a human — D36)* · they say stop and get called again *(a "stop"
+sets do-not-call, on by default)*.
+
+### C8 · The decision
+**They experience:** tapping **Accept** on the link, or going quiet, or saying no.
+
+- **Accept** → they expect immediate acknowledgement. A WhatsApp within seconds, not a
+  silence that makes them wonder if the tap registered.
+- **Negotiate** → they ask for a discount. The rep can apply it and reshare the same day —
+  there is no approval hop (D34). **They should not wait two days for an answer**, and now
+  nothing in the product makes them.
+- **No** → the reason is recorded (Stage 7). They should not then be called for six months.
+
+### C9 · Paying the advance
+**They experience:** a payment link, then a receipt.
+
+Highest-anxiety moment in the entire journey — first real money to a company they met three
+weeks ago. What reduces the anxiety: an instant receipt, a named person to contact, and a
+clear statement of what happens next and when.
+
+### C10 · The long wait — the most under-served part of solar
+**They experience:** weeks. Material ordering, scheduling, and **net metering approval,
+which alone can take 3–6 weeks with the DISCOM.**
+
+**This is where every Indian solar customer becomes unhappy**, and almost always because
+of silence rather than delay. They call the rep. The rep does not know. They call again.
+
+**The single highest-value screen in Stage 8 is the customer progress link** — the same URL
+the proposal used, now showing:
+
+```
+✅ Advance received          12 Aug
+✅ Material ordered          14 Aug
+🔵 Installation scheduled    22 Aug
+⬜ Commissioning
+⬜ Net metering — waiting for DISCOM approval
+    Applied 15 Aug · typically 3–6 weeks
+```
+
+**That last line prevents more support calls than anything else in the product.** A delay
+you explained is tolerable; a delay you hid is a complaint.
+
+### C11 · Installation
+**They experience:** a crew on their roof for 1–2 days.
+
+They want to know: who is coming, when, how long, and will there be noise and mess.
+A WhatsApp the evening before with the crew lead's name and number covers it.
+
+*(The existing Installation Plan already derives the real work sequence from the structural
+model — foundation → legs → rafters → purlins → modules → stringing → BOS. It plugs in
+here rather than being rebuilt.)*
+
+### C12 · Commissioning & handover
+**They experience:** the system switching on, and a pile of documents.
+
+**They receive:** the handover pack — warranty documents, commissioning
+certificate, net-metering approval, and how to read their generation.
+
+This is the moment they will decide whether to refer you. **Ask for the referral here**,
+while the roof is new and the first bill is about to drop — not six months later.
+
+### C13 · Living with it *(beyond v1)*
+They will want: generation monitoring, cleaning reminders, service contact, and eventually
+warranty claims. Out of scope for v1 (D9), but the handover should leave them knowing
+exactly who to call.
+
+---
+
+### The customer's actual surface area
+
+| Touchpoint | Count in a whole project |
+|---|---|
+| WhatsApp messages | ~12–18 |
+| Phone calls | 3–6 (mix of human and agent) |
+| Web link | **1** — reused for proposal, then progress, then handover |
+| Logins | **0** |
+| App installs | **0** |
+
+**One link, its whole life.** The tokenised URL sent with the proposal becomes the progress
+tracker after Won, and the document pack after handover. The customer bookmarks it once.
+Designing it as three separate things would be the mistake.
+
+### The three moments that decide everything
+1. **Speed of first callback** — decides whether you are in the running at all
+2. **The proposal link, opened once, on a phone, in the evening** — decides the sale
+3. **Visible progress during the net-metering wait** — decides whether they refer you
+
+---
+
+## TENANT CONFIGURATION — everything an EPC can make their own
+
+Every company on the platform is different: different brands, different warranties,
+different pitch, different service area. **Configuration is a first-class product surface,
+not a settings dumping ground.**
+
+### The governing principle (updated — D36)
+
+The **agent is fully the tenant's** — nothing about it is locked. The app ships **safe,
+India-legal defaults** and the owner can change or switch off any of them; the tenant owns
+compliance. Config is kept **simple**: everything pre-filled, plain questions, plus a
+free-text box so they're never boxed in.
+
+**Safe defaults the app ships — all editable by the owner (D36):**
+- The agent introduces itself as an automated assistant *(default; editable)*
+- "Talk to a person" is offered *(default on; the owner shapes hand-over)*
+- Hand-over on price questions, an angry customer, "stop" *(default; add / edit / remove)*
+- Calls run 9am–9pm and skip DND numbers *(default; the owner can change it)*
+- Recording consent captured *(default; a customer may decline and still be served)*
+
+The owner decides how their agent talks, what it discusses (including price), and when it
+calls. They own the responsibility; we surface it once, plainly, not as a wall.
+
+*(Separate from the agent, and still platform behaviour: the product's own number-honesty —
+provenance labels, and estimates never printed as calculations — because that governs the
+proposal and design **output**, not the agent's speech. See N7.)*
+
+---
+
+### A · Voice agent configuration
+
+**The design approach:** a solar business owner shouldn't have to write a prompt, so the
+default is **guided questions with everything pre-filled** — plus a free-text box for anything
+else, so they're never limited. Simple by default, open when they want more.
+
+| Screen | Contains |
+|---|---|
+| **Agent setup — guided** | Plain-language steps, all pre-filled: name · voice · languages · tone · opening line · what to say when it doesn't know · when to hand to a human · when it may call (hours, days, holidays). Plus a free-text "anything else". Everything editable; nothing locked. |
+| **Opening line** | Pre-filled with an AI disclosure — "Namaste, this is *Asha* from *Suryodaya Solar*. I'm an automated assistant — is now a good time?" — that the owner can keep or change. All of it is theirs. |
+| **Hand-over rules** | A list the owner edits, adds to or removes: price questions · angry customer · asks for the owner · a question it can't answer · asks to stop. Each with what the agent says as it hands over. Sensible defaults, none forced. |
+| **Calling window** | Days, hours, holiday calendar. Defaults to 9am–9pm and skips DND; the owner can change any of it (and owns that choice — D36). |
+| **Test the agent** | **The most important screen here.** Call yourself, or run a typed conversation. Hear exactly what a customer hears, before anyone else does. |
+| **Change history** | Kept quietly in the background — each call records which settings answered it, so a dispute is answerable. Not a chore the owner manages. |
+
+### B · Business knowledge — what the agent knows
+
+Not a document upload. A **structured, reviewable knowledge base** in the owner's own words.
+
+| Section | Examples |
+|---|---|
+| **About us** | Years in business, installations completed, certifications, service area |
+| **Products** | Panel brands offered, inverter brands, why we chose them |
+| **Warranty** | Panel 25yr performance / 12yr product, inverter 5yr, workmanship 2yr |
+| **Process & timeline** | Survey in 2 days · design in 3 · install 1–2 days · net-metering 3–6 weeks |
+| **Pricing & offers** | What's included, what's extra, and whatever the owner wants the agent to say about price — their call (D36). |
+| **Subsidy** | How PM Surya Ghar works, who qualifies, who applies, typical timeline |
+| **Financing** | Which banks/NBFCs, typical EMI, documents needed |
+| **Common objections** | "Too expensive" · "I'll wait for prices to drop" · "Does it work in monsoon?" · "What about cleaning?" — with the answer the owner wants given |
+
+**How it stays current — the feature that makes this work:**
+
+> When a customer asks something the agent could not answer, it is captured as an
+> **unanswered question**. The owner sees a short list: *"3 customers asked about hail
+> damage this week."* One tap to answer it, and the agent knows it from the next call.
+
+The knowledge base grows from real calls instead of a blank page. This is the difference
+between a config screen people fill in once and abandon, and one that gets better weekly.
+
+**Seeded, not empty.** Every new tenant starts with a solar-industry default pack —
+generic but correct answers for subsidy, warranty, monsoon, cleaning, net metering. The
+owner reviews and personalises. Day one it works; week four it sounds like them.
+
+### C · Everything else configurable per tenant
+
+| Area | What |
+|---|---|
+| **Branding** | Logo, letterhead, colours on customer documents, company details |
+| **Catalog** | Which panels/inverters/BOS this company actually sells — the list step 8 picks from |
+| **Price book** | Rates per component, versioned so old quotes keep their prices |
+| **Catalog** | Which panels/inverters/BOS this company actually sells |
+| **Proposal templates** | Cover, sections included, default T&C, bank details |
+| **Payment terms** | Named tranche templates — 10/60/20/10, 30/60/10 |
+| **Project timeline** | Default phases and descriptions (Stage 6B, step 6) |
+| **Discount limits** | Not in this release — no approval, no ceiling (D34). Reserved for when a tenant asks for per-rep limits. |
+| **Lead sources** | Which channels are live |
+| **Roles** | Who sees what, who approves what |
+| **Message templates** | WhatsApp proposal message, follow-up nudge, reminder |
+
+### D · Making configuration not feel like work
+
+1. **Nothing is required on day one.** Every setting has a working default. A tenant can
+   sign up and send a real proposal without opening settings once.
+2. **Configure in context, not in a settings maze.** The moment a rep needs a component
+   product they do not stock, offer to add it to the catalog *there*. Settings screens
+   exist for revisiting, not for setup.
+3. **Show the effect.** Every config screen shows a live preview — the proposal with your
+   logo, the agent's opening line spoken aloud, the payment tranches as the customer sees
+   them.
+4. **One "Business profile" screen that feeds many places.** Company name, logo, address
+   and GSTIN are asked once and used by the proposal, the agent's script, the customer link
+   and the invoice.
+
+### What goes wrong
+- **Owner sets the agent to do something legally risky** (calls outside hours, edits out the
+  disclosure) → allowed (D36); the one honest note has already told them they own that choice
+- **Knowledge base contradicts itself** (two different warranty answers) → flagged on save
+- **Agent config changed mid-campaign** → versioned; calls already scheduled use the
+  version they were queued with, and the owner is told
+- **Tenant removes a catalog product still used by a draft proposal** → the draft keeps
+  its components; the product is archived, not destroyed
+- **Price book updated after quotes were sent** → sent quotes keep original prices, always
+- **A tenant with no config at all** → everything falls back to platform defaults and
+  nothing breaks
+- **Agent's tone set to "Direct" but the knowledge is verbose** → preview shows the
+  mismatch before it goes live
+
+### Recommendation
+**Build the "unanswered questions" loop early, even before the agent is live.** It is the
+mechanism that keeps the whole system honest and improving, and it costs almost nothing:
+capture what the agent couldn't handle, show the owner, make answering it one tap. Without
+it, every tenant's agent decays into a script nobody maintains.
+
+---
+
+## AGENT PERFORMANCE — proving the voice agent is worth keeping
+
+**The retention problem.** An owner paying for automated calls who cannot see what they
+bought will cancel within a month. This dashboard is not analytics garnish; it is the
+reason the agent survives its first invoice.
+
+### The screen: Agent performance
+
+```
+THIS MONTH                          vs last month
+  412  calls attempted                   ↑ 18%
+  246  connected                    60%  ↑  4%
+   38  callbacks booked
+   17  site visits booked
+   29  handed to a human
+   11  questions it could not answer   → review
+
+OUTCOMES
+  ▇▇▇▇▇▇▇▇  Interested            94
+  ▇▇▇▇▇     Not interested        61
+  ▇▇▇▇      Callback requested    38
+  ▇▇▇       No answer            166
+  ▇▇        Asked to stop          9
+
+WHAT IT SAVED YOU
+  246 conversations your team did not have to start
+  ≈ 20 hours of calling time
+
+DEALS IT TOUCHED                              (see note)
+  31 proposals were quiet, the agent called,
+     and the customer responded within 3 days
+  ₹ 1.4 Cr of pipeline in those deals
+```
+
+### The honesty rule this must follow
+**"Deals it touched" is correlation, not attribution — and the screen must say so.**
+
+> *The agent called and the customer responded within 3 days. We cannot prove the call
+> caused it.*
+
+Every competitor's AI dashboard claims credit for revenue. Claiming an agent "generated
+₹1.4 Cr" when it made one follow-up call is exactly the dishonesty this product exists to
+avoid — and an owner who catches you inflating it stops trusting every other number you
+show them. Being the one product that states the limit is consistent with everything else
+here (N7, D21).
+
+### Supporting screens
+| Screen | Contains |
+|---|---|
+| **Call log** | Every call: customer, duration, outcome, language, which config version, transcript, recording. Filterable. |
+| **Unanswered questions** | The list from D24 — what customers asked that the agent could not handle. One tap to answer. **This is where the dashboard turns into improvement.** |
+| **Usage** | Calls made and minutes used this period — a plain activity stat, **no plan cap or limit** (billing deferred, D38). |
+| **Per-rep view** | Which reps lean on the agent, whose leads it rescued. Manager-only. |
+
+### What goes wrong
+- **Connect rate collapses** (wrong numbers, bad timing) → surfaced as a warning with the
+  likely cause, not left for the owner to notice
+- **Agent escalating almost everything** → its knowledge is too thin; link straight to the
+  unanswered-questions list
+- **Owner sees a big "deals touched" number and over-trusts it** → the caveat is on the
+  screen, not in a tooltip
+- **Nobody opens this screen** → a monthly summary is pushed to the owner in-app, where
+  they actually read things
+
+---
+
+## BILLING & SUBSCRIPTION — DEFERRED, planned separately (D38)
+
+**Billing and subscription are OUT of the current plan.** No billing screen, and — the point —
+**no subscription restriction gates any feature**: no plan/usage limits, no trial-expiry or
+suspension read-only, no seat caps, no PRO-tier locks, no "upgrade" prompts. Every user can use
+every built feature. The pricing model and the whole billing/subscription surface will be
+designed in a **separate plan** (D38); when that lands, one principle is pre-committed:
+**never hold a customer's data hostage** (read + export always work, likely required under DPDP).
+
+---
+
+## MULTILINGUAL — English · Hindi · Marathi (D25)
+
+### This is a design-system change, not a translation task
+
+**The font.** Our design system specifies **Inter**, which has no Devanagari coverage.
+Hindi and Marathi both need it. Pair Inter with **Noto Sans Devanagari**, matched for
+optical size and weight, or Devanagari text will render in a system fallback that looks
+broken beside the Latin.
+
+**Text expansion.** Hindi and Marathi run roughly 15–30% longer than English, and
+Devanagari needs more line height for its headline stroke and matras. **Any layout tuned
+to English string lengths will break.** Buttons, chips, table headers and the 11 proposal
+step titles are the usual casualties.
+
+**Line height.** Devanagari needs more than the Latin scale allows. The type scale keeps
+its sizes; line heights get a per-script adjustment.
+
+### What is translated, and what is not
+| Translated | Not translated |
+|---|---|
+| All UI labels, buttons, navigation | Customer names, addresses |
+| Empty states, errors, help text | Brand and model names (panels, inverters) |
+| Notifications and WhatsApp templates | Technical units — kW, kWh, kWp |
+| Voice agent speech | ₹ formatting stays Indian in every language |
+
+### Screens
+| Screen | Contains |
+|---|---|
+| **Language picker** | In onboarding (first run) and in **Profile & preferences**, reachable by every user from More → Profile (mobile) and the sidebar (desktop). Shows each language *in its own script* — English · हिंदी · मराठी — never translated names. Defaults to the device locale; changing it re-renders the whole app immediately, no reload. |
+| **Per-user, not per-tenant** | One company can have an English-speaking owner and a Marathi-speaking surveyor. Language is a user setting. |
+
+### What goes wrong
+- **Missing translation** → falls back to English, never shows a raw key
+- **Long string breaks a button** → buttons wrap or truncate with the full text available;
+  they never overflow
+- **Mixed script in one line** ("8.2 kWp सिस्टम") → normal and must look deliberate; test it
+- **Agent language ≠ app language** → they are independent; a Marathi-speaking rep may call
+  a Hindi-speaking customer
+- **Numbers** → Indian grouping in all three languages, always
+
+### Recommendation
+**Design every screen in Hindi at least once, early.** English-only design that gets
+translated later always breaks — and the breakage is invisible until a real user opens it.
+Building one screen in Devanagari now surfaces the font, spacing and line-height issues
+while they are cheap to fix.
+
+---
+
+## ROLES & PERMISSIONS
+
+### The design principle
+**Six fixed presets. One person can hold several. No custom roles in v1, no per-person
+exceptions, ever.**
+
+The small-firm problem — one person is rep *and* surveyor *and* designer — is solved by
+**stacking roles**, not by building a custom one. Rajesh gets `Sales rep + Surveyor` and
+can do both jobs. The permission check is simply: *does any of my roles allow this?*
+
+That removes the need for a role editor in v1 entirely, and it removes the screen nobody
+completes — 18 unchecked boxes on a blank page.
+
+### The six preset roles
+
+| Role | For | Lead visibility |
+|---|---|---|
+| **Owner** | The business owner. Everything, always. Cannot be deleted or restricted. | All |
+| **Manager** | Runs a team. Sees and reassigns the team's leads, builds and sends proposals. Cannot change company settings, catalog, or billing. | Team |
+| **Sales rep** | Sells. Own leads, own quotes, sends proposals. | Own |
+| **Surveyor** | Visits sites and captures surveys. | Assigned only |
+| **Designer** | Builds designs and quotes. | Assigned only |
+| **Engineer** | Reviews and signs off designs. | Assigned only |
+
+### What each preset grants
+
+16 capabilities, phrased in plain language — never as CRUD on entities. This matrix is the
+definition of the presets, and it becomes the checkbox list when custom roles arrive later.
+
+| Capability | Owner | Manager | Sales rep | Surveyor | Designer | Engineer |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| **Lead visibility** | All | Team | Own | Assigned | Assigned | Assigned |
+| Add and edit leads | ✓ | ✓ | ✓ | — | — | — |
+| Assign leads to others | ✓ | ✓ | — | — | — | — |
+| Delete leads | ✓ | — | — | — | — | — |
+| Capture site surveys | ✓ | ✓ | ✓ | ✓ | — | — |
+| Create and edit designs | ✓ | — | — | — | ✓ | — |
+| Approve designs (sign-off) | ✓ | — | — | — | — | ✓ |
+| Create and edit proposals *(includes applying discounts)* | ✓ | ✓ | ✓ | — | ✓ | — |
+| Send proposals to customers | ✓ | ✓ | ✓ | — | — | — |
+| Update project stages | ✓ | ✓ | — | — | — | — |
+| Record payments, upload documents | ✓ | ✓ | — | — | — | — |
+| Configure the agent and its knowledge | ✓ | — | — | — | — | — |
+| See agent performance | ✓ | ✓ | — | — | — | — |
+| Manage team and roles | ✓ | — | — | — | — | — |
+| Manage catalog and price book | ✓ | — | — | — | — | — |
+| ~~Manage billing~~ *(deferred — D38)* | — | — | — | — | — | — |
+| See company reports | ✓ | ✓ | — | — | — | — |
+
+**Discounting is not a separate permission** (D34). It rides with *Create and edit
+proposals* — if someone is trusted to build the price, they are trusted to discount it.
+There is no approval step and no per-rep ceiling in this release; per-rep limits are the
+first thing that will be added if a tenant asks.
+
+**No object-level permissions, no field-level rules, no inheritance tree.** If a company
+needs more than this, they need a different product.
+
+### Stacking roles
+
+```
+Rajesh Patil
+  Sales rep · Surveyor · Designer
+  → can sell, survey and design. Lead visibility = the widest of the three.
+```
+
+- Permission granted if **any** held role grants it
+- Lead visibility takes the **widest** scope among them
+- The team list shows all roles a person holds as chips
+- Presets are fixed and cannot be edited — a company cannot break "Sales rep" for
+  everyone who came after
+
+### Screens — v1
+| Screen | Contains |
+|---|---|
+| **Team** | People, the roles each holds (as chips), status (active / invited / removed), last active. Invite by phone number. |
+| **Assign roles** | A person, with the six presets as toggles. A live plain-English line updates as they toggle: *"Rajesh can sell, survey and design."* |
+| **Roles reference** | Read-only in v1. The six presets and the matrix above, so an owner can see what each grants before assigning it. Shows how many people hold each. |
+| **Invite person** | Name, phone, one or more roles. That is all. |
+
+### Deferred to v2
+Custom roles, the role editor, duplicate-from-preset. **We ship the six, watch which
+combinations companies actually ask for, and then build the presets they wanted** —
+rather than guessing at a checkbox editor nobody fills in.
+
+### What goes wrong
+- **Owner removes their own admin rights** → blocked; there must always be at least one
+  Owner
+- **Last person with "Manage team" is removed** → blocked with an explanation
+- **A role is deleted while people hold it** → cannot delete; offer to move them to another
+  role first
+- **A permission is removed while someone is mid-task** → they finish what they started;
+  the restriction applies to the next action, not a mid-flight error
+- **Person invited with no role at all** → blocked; they would sign in and see nothing
+- **Someone holds two roles with different lead visibility** → the widest applies, and the
+  team list shows which one is doing the work
+- **Person leaves the company** → deactivate, never delete. Their leads and activity stay
+  attributed, and get reassigned.
+
+### Recommendations
+1. **Show the plain-English line while they toggle roles.** *"Rajesh can sell, survey and
+   design"* is the only way a non-technical owner verifies what they just granted.
+2. **Role decides the home screen** (Stage 1). Someone holding several roles gets a home
+   screen for their *widest* role, and can switch — a rep+surveyor lands on My Day with
+   today's visits shown inside it, not on two competing home screens.
+3. **Never delete a person — deactivate.** Their leads and activity stay attributed and get
+   reassigned. Deleting a user orphans a year of history.
+
+---
+
+## DASHBOARDS & REPORTS — the honest view of the business (D37)
+
+**The daily driver is My Day (tasks); this is where an owner steps back.** Weekly or monthly,
+not every morning. The whole product refuses vanity metrics — My Day is a list of what to do,
+not a wall of numbers — and the dashboards keep that promise: **every tile earns its place by
+answering "what do I do about this?"** If a number doesn't change a decision, it isn't here.
+
+### The governing rules
+- **Forecast is a projection, never revenue.** Weighted pipeline (value × how likely a stage
+  is to close), labelled *expected, not promised*. It never sits in the same total as won.
+- **Won means signed.** A deal cancelled after Won stops counting as revenue immediately —
+  reporting must not quietly keep it (Stage 8).
+- **Money never renders stale as final** — the existing rule holds on every figure here.
+- **Agent contribution is correlation, not attribution.** The owner dashboard links to Agent
+  performance; it does not re-claim credit for revenue.
+- **Visibility follows role (D20):** a rep sees only their own, a manager their team, the
+  owner everything. The same screen, scoped.
+
+### The screens
+| Screen | Who | Contains |
+|---|---|---|
+| **Owner dashboard** | Owner (+ manager, team-scoped) | Sections, in priority order: **What needs you** — the honest attention list (deals stuck/aging, proposals sent-not-opened, projects blocked, payments overdue), each linking straight to the thing · **Cash** — collected vs due this month from the project tranches, and the overdue total · **Pipeline** — value and count by stage · **This period** — won (signed) value vs last period and vs target if set · **Forecast** — weighted pipeline, marked a projection · **Win/loss** — win rate and the loss-reason breakdown · **Agent** — a compact card linking to Agent performance. |
+| **Rep dashboard** | Sales rep | "How am I doing", secondary to My Day: my pipeline value, my win rate, my proposals out / opened / accepted, my follow-up load, my target if set. A rep's daily driver stays My Day; this is the step-back view, their own data only. |
+| **Pipeline funnel + win/loss** | Owner, manager | The funnel (New → Contacted → Qualified → Survey → Design → Proposal → Negotiating → Won) with conversion between stages and **where deals leak**, plus win/loss reasons by count and value, and time-in-stage. **Show BOTH reason lists, kept distinct** — the early *Disqualify* reasons (Stage 3: renting · budget · not interested · unreachable · already installed · wrong number) and the late *Mark lost* reasons (Stage 7: price · competitor · postponed · not reachable · roof unsuitable · financing failed). Both are called the most valuable analytics in the product; losing a quoted deal is a different lesson from disqualifying a renter on day one. |
+| **Notifications + global search** | Everyone | The notification centre (proposal opened · agent escalation · follow-up due · survey submitted · design returned · payment due — push + in-app, grouped, each actionable) and one global search field that finds leads, customers, sites, quotes and projects by name, phone or city. *(The "settings hub" is the Phase 8 Settings home — reached from here, not rebuilt.)* |
+
+### These screens READ; they never create
+Everything on them comes from data already captured — leads (Stage 2/3), proposals (Stage 6),
+projects and payments (Stage 8), the agent (Stage 7). A dashboard surfaces and links; it is
+never a place you enter data. Every attention item deep-links to the real lead, proposal or
+project.
+
+### What goes wrong
+- **Brand-new company, no data** → teach what will appear and why, never a broken empty chart
+- **One ₹92L C&I deal skews the averages** → show medians or flag the outlier; don't let one
+  deal make the pipeline look healthier than it is
+- **No target set** → the dashboard works without one; targets are optional, never a nag. A
+  target, if used, is set **inline on the dashboard** — there is no separate targets settings
+  screen in v1
+- **Mid-month** → "so far this month" is honest; never project a partial month as if it were
+  the full actual
+- **A rep games a metric** (marks everything "interested") → the numbers are descriptive, not
+  a leaderboard to win; win/loss on *closed* deals is what counts
+- **Owner never opens it** → push a short monthly summary in-app, where they actually read
+  things (same fix as Agent performance)
+
+### Recommendation
+**The two panels that matter are "what needs you" and cash.** Pipeline totals and win rate are
+context; the attention list and money-owed are what an owner acts on. Lead with those, and let
+the vanity totals sit quietly below.
+
+---
+
+## CROSS-CUTTING
+
+**Roles** — Owner (everything) · Manager (team's leads, reassigns) ·
+Sales rep (own leads) · Surveyor (assigned surveys) · Designer (designs) · Engineer
+(sign-off queue). Role decides the home screen (Stage 1).
+
+**Notifications** — proposal opened · agent escalation · follow-up due · survey submitted ·
+design returned. Push + in-app. Never email-only.
+
+**Search** — one field, finds leads, customers, sites, quotes by name, phone or city.
+
+**Offline** — survey capture fully offline. Everything else degrades gracefully with a
+clear indicator, never a spinner that never resolves.
+
+**Empty states** — every list teaches on first use: what goes here, why it matters, one
+action.
