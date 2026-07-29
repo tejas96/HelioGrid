@@ -9,7 +9,9 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["DATABASE_URL", "DATABASE_ADMIN_URL", "CI"],
+      "cache": false
     },
     "//#lint": {},
     "lint": {},
