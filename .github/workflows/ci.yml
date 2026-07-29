@@ -41,6 +41,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo lint
+      - name: Package boundaries (turbo tags — docs/17 Law 2)
+        run: pnpm boundaries
       - run: pnpm turbo typecheck
       - name: Apply migrations (CI database)
         run: pnpm --filter @heliogrid/db migrate
