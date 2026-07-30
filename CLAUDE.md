@@ -12,7 +12,8 @@ nothing is compromised against it. Light-only v1 · EN/HI/MR · ₹ Indian group
 - Stop-and-ask triggers: .claude/rules/00-laws.md (auto-loads).
 
 ## Commands
-pnpm lint · pnpm boundaries · pnpm turbo typecheck · pnpm turbo test · pnpm turbo build
+**`pnpm verify`** runs the whole gate set: lint · boundaries · typecheck · test · build.
+Individually: pnpm lint · pnpm boundaries · pnpm turbo typecheck · pnpm turbo test · pnpm turbo build
 A task is DONE only when gates are green AND the change is verified running — browser AND
 both simulators for UI (/verify-app), curl/logs for api/worker. Green gates never prove UI work.
 **Never weaken a gate config to make a change pass** — a gate that blocks you means the

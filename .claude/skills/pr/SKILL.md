@@ -29,8 +29,17 @@ Docs travel in the same commit as the code that invalidated them (Law 8).
 
 ## Before handing over
 
-Run the gate set (the command list in `CLAUDE.md`). If you could not run one of them, say
-so plainly rather than letting the omission imply it passed.
+```bash
+pnpm verify        # lint · boundaries · typecheck · test · build — the whole gate set
+```
+
+`pnpm turbo test` needs `DATABASE_URL`; without it the invariants skip loudly (and fail hard
+under CI), so a local run that skipped them has NOT proven tenancy. If you could not run
+something, say so plainly rather than letting the omission imply it passed.
+
+Two gates sit outside `verify` on purpose: `pnpm check:openapi` (its oasdiff half is advisory
+and only runs where that binary exists — `verify` must mean the same thing on every machine;
+CI enforces the freshness half) and `check:unused` / `check:dupes` (cleanup tools, not gates).
 
 ## PR body
 

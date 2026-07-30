@@ -728,6 +728,8 @@ without schema change.
 `calls.dtmf_trace` (above) additionally records capability degradations
 (`ivr_blocked` markers) per ADR-0019's honesty rule.
 
+## 9. Billing, entitlements & usage
+
 Platform SaaS billing = Razorpay Subscriptions; entitlements + usage in-house on Postgres
 (./research/verify-billing.md). Trial-only, no free tier. Enforcement is soft-block UX;
 **read + export always work regardless of billing state** — no schema mechanism may hold data

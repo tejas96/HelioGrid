@@ -15,7 +15,7 @@ content first.
 
 | File | Who delegates to it |
 |---|---|
-| `journey.md` | docs/00 §1, docs/13, docs/15 §6 — cited by its own section numbering |
+| `journey.md` | docs/00, docs/13, docs/15 §1 (the 18 rulings, which reuse journey.md's own §6 numbering) |
 | `ds-reconciliation.md` | docs/15 §3: its 22 resolutions are binding, "agents do not re-litigate them" |
 | `uxAL.md` · `uxMZ.md` | docs/13 — the only interpretation layer over 80 raw mockups |
 | `ds-usage.md` | docs/10, docs/15 R19 — empirical ground truth for which component specs are real |

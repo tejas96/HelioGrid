@@ -168,6 +168,8 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | Five-lens review | `/lenses` + 3 read-only subagents | skill | `.claude/skills/lenses/`, `.claude/agents/` |
 | Docs updated in the same commit (Law 8) | `/doc-sync` + the grep reference checks | skill | `.claude/skills/doc-sync/` |
 | Per-task context stays ~22–27k tokens | `/slice` loading recipe; full-corpus reads named a defect | skill | `.claude/skills/slice/` |
+| The gate set runs as ONE command | `pnpm verify` = lint · boundaries · typecheck · test · build. Deliberately excludes `check:openapi` (its oasdiff half only exists where that binary does — `verify` must mean the same thing on every machine; CI enforces the freshness half) and `check:unused`/`check:dupes` (cleanup tools). | lint/CI | `package.json`, `/pr` |
+| PRs state evidence and known limitations | `.github/pull_request_template.md` — traceability header, `pnpm verify`, run-and-look, the product-law rows, plus an explicit "known limitations" section | prose | `.github/pull_request_template.md` |
 
 ### Planned — NOT yet enforced
 
@@ -191,7 +193,7 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Split by responsibility; never `*-part2` | No checker can judge whether a filename honestly names a responsibility. The 450-line gate forces the split; the naming is reviewed. | `CLAUDE.md` + `/lenses` |
 | React presentation/logic separation | The container/presentational boundary is a cohesion judgement, not a syntactic one. | `.claude/rules/ui-adherence.md` + `ux-lens` |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers. | code review + docs/04 conventions |
-| Reference integrity (`docs/NN §M`, links) | Owner ruling 2026-07-30: use the two grep checks, not a checker script. | `/doc-sync` grep block |
+| Reference integrity (`docs/NN §M`, `CLAUDE.md §X`, relative links) | Owner ruling 2026-07-30: grep checks, not a checker script. Now **three** greps over `docs apps packages .claude .github` — the `docs/NN §M` form was added after it caught two real defects the other two missed (a PR-template citation to a docs/14 section that never existed, and **docs/04 having lost its `## 9.` heading**). Two exclusions with reasons: `/superpowers/` plans are historical, and two `docs/08 §…` citations inside sha256-locked migrations cannot be fixed at all. | `/doc-sync` grep block |
 | `VERIFIED` rows carry real evidence | Owner ruling 2026-07-30: no bespoke roadmap linter. A script can only check a cell is non-empty, which "done" satisfies while proving nothing — evidence *quality* ("browser 375/1440, both sims, curl 409") is a judgement. Prefer instruction + review over a script. | `/slice` Evidence stage + `/pr` + `/roadmap` template + review |
 
 ---
