@@ -26,14 +26,23 @@ export interface AvatarApi {
 }
 
 /**
- * AvatarGroup — 2 shared props.
+ * AvatarGroup — 3 shared props.
  *
- * NOT in the contract:
- *   - people — DRIFT: Two differences. (1) RN is `readonly` array, web is mutable array.
- *   (2) The referenced element type differs because AvatarProps.name is required on RN and
- *   optional on web — so RN's element type demands `name`, web's does not.
+ * `people` was excluded as a DRIFT with two causes; both are now closed (2026-07-30) and it
+ * is IN the contract:
+ *   (1) RN declared a `readonly` array, web a mutable one — a readonly array is not assignable
+ *       to a mutable one, so `people={PEOPLE as const}` compiled on RN and failed on web. Web
+ *       is now `readonly` too: the mirror held the stricter contract, and a component has no
+ *       business mutating a prop array.
+ *   (2) The element type differed because `AvatarProps.name` was optional on web and required
+ *       on RN. That was fixed with the other six parity defects — `name` is required on both.
+ *
+ * Found by `pnpm check:ui-parity`, which compares AUTHORED props per platform against this
+ * contract. The three hand-written lists could not see it: a prop absent from all of them is
+ * invisible to an assertion that iterates `keyof ComponentApiSurface`.
  */
 export interface AvatarGroupApi {
+  people?: readonly Omit<AvatarApi, 'size'>[];
   size?: number;
   max?: number;
 }

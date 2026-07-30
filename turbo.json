@@ -1,9 +1,10 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["tsconfig.base.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", "*.tsbuildinfo", "**/*.tsbuildinfo", ".next/**", "!.next/cache/**"]
     },
     "typecheck": {
       "dependsOn": ["^build"]
@@ -13,7 +14,9 @@
       "env": ["DATABASE_URL", "DATABASE_ADMIN_URL", "CI"],
       "cache": false
     },
-    "//#lint": {},
+    "//#lint": {
+      "cache": false
+    },
     "lint": {},
     "dev": {
       "dependsOn": ["^build"],
@@ -54,7 +57,7 @@
       },
       "ui": {
         "dependencies": {
-          "allow": ["ui", "contracts", "tokens", "config"]
+          "allow": ["ui", "contracts", "domain", "tokens", "config"]
         }
       },
       "app": {

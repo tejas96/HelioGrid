@@ -27,24 +27,77 @@ an hour the next person will lose too.
 
 Every `docs/NN §M`, relative link and cross-reference you touched must resolve to a real
 file and heading. Files once cited constitution sections that were never committed —
-nothing detected it because nothing checked. Two grep checks catch this (owner decision:
+nothing detected it because nothing checked. Three grep checks catch this (owner decision:
 grep, not a checker script):
 
+Scan every TRACKED-or-untracked file via `git ls-files`, not `grep -r .` and not a hand-listed
+set of roots. The old root list (`docs apps packages .claude .github`) omitted repo-root files,
+`scripts/` and `tests/`, and walked a live `CLAUDE.md §Structure` in `.dependency-cruiser.cjs`
+and a `docs/08 §124` in `.env.example` straight through the "27 → 0" repair. Two traps make the
+obvious repairs worse, and both produce output that reads exactly like "clean":
+
+- **Root globs.** `*.example` matches no dotfile, and in zsh a single unmatched glob aborts the
+  whole command — the grep never runs and prints nothing.
+- **Unquoted `$SKIP` / `$ROOTS` variables.** zsh does not word-split unquoted parameters, so
+  `grep -v $SKIP` passes one giant pattern and filters nothing. Use literal arguments.
+
+`--exclude-dir` is not trustworthy here either: this repo's `grep` is ugrep, and it was observed
+to stop excluding once several were combined — which is why the walk scanned `node_modules` and
+took ~2 minutes. `git ls-files` is 0.2s and excludes build artifacts by construction.
+
 ```bash
-# broken relative links in the files you touched
-grep -rHoE '\]\((\.{1,2}/)[^)#]+' docs --include='*.md' | grep -v '/superpowers/' \
+
+# Scan scope = every tracked or untracked-but-not-ignored file. NOT `grep -r .`: this repo's
+# grep is ugrep, whose --exclude-dir stopped excluding once several were combined, so the walk
+# scanned node_modules and took ~2 minutes (0.2s this way). NOT a hand-listed set of roots
+# either — that omitted repo-root files, scripts/ and tests/, and walked a live
+# `CLAUDE.md §Structure` in .dependency-cruiser.cjs straight through the "27 -> 0" repair.
+files() { git ls-files --cached --others --exclude-standard -z; }
+# Self-exclude THIS file. Its prose quotes citations while explaining them, and the earlier fix
+# skipped the section NAMES instead (`X|'Section citations'*|Structure`) — which permanently
+# blinded the check to `§Structure`, the very citation the paragraph above boasts it now
+# catches. Skip by SOURCE, never by section name.
+skip() { grep -v -e /dist/ -e /node_modules/ -e /.next/ -e /superpowers/ -e /ios/ -e /android/ \
+                 -e '^.claude/skills/doc-sync/SKILL.md:'; }
+
+echo "── broken relative links ──"
+# Same scope as the other two. Scanning only `docs` meant a broken relative link in a
+# per-package CLAUDE.md, a skill, or the PR template was never checked at all.
+files | xargs -0 grep -HoE '\]\((\.{1,2}/)[^)#]+' 2>/dev/null | skip \
   | sed -E 's/^([^:]+):\]\((.+)$/\1\t\2/' \
   | while IFS=$'\t' read -r src rel; do ( cd "$(dirname "$src")" && [ -e "$rel" ] ) \
       || echo "BROKEN $src -> $rel"; done | sort -u
-# §Section citations vs headings that exist
-grep -E '^## ' CLAUDE.md   # the headings that exist
-# -H keeps the filename so the path filters below actually bite; -h would drop it and make
-# every `grep -v <path>` a silent no-op.
-grep -rHoE 'CLAUDE\.md §[A-Za-z][A-Za-z -]*' docs apps packages .claude .github \
-  | grep -v '/dist/' | cut -d: -f2- | sort -u
-# docs/NN §M citations — resolve each against that file's own headings
-grep -rHoE 'docs/[0-9]{2}[a-z-]* §[0-9]+[a-z]?' docs apps packages .claude .github \
-  | grep -v -e '/dist/' -e '/superpowers/' | cut -d: -f2- | sort -u \
+
+echo "── CLAUDE.md §Section citations ──"
+files | xargs -0 grep -HoE 'CLAUDE\.md §[A-Za-z][A-Za-z -]*' 2>/dev/null | skip \
+  | while IFS= read -r line; do
+      f="${line%%:*}"; sec="${line##*§}"; sec="${sec%"${sec##*[![:space:]]}"}"
+      owner="CLAUDE.md"
+      case "$f" in
+        apps/*/*|packages/*/*)
+          p=$(printf '%s' "$f" | cut -d/ -f1-2)
+          [ -f "$p/CLAUDE.md" ] && owner="$p/CLAUDE.md" ;;
+      esac
+      printf '%s\t%s\n' "$owner" "$sec"
+    done | sort -u \
+  | while IFS=$'\t' read -r owner sec; do
+      # EITHER direction counts. The capture regex swallows trailing prose ("§Commands per
+      # slice PLUS" -> heading prefixes citation), and a citation may name a heading in short
+      # form ("§What lives here" for "## What lives here / what must never live here" ->
+      # citation prefixes heading). One direction only reported correct citations as dangling.
+      grep -E '^## ' "$owner" | sed 's/^## //' \
+        | while IFS= read -r h; do
+            case "$sec" in "$h"*) echo MATCH;; esac
+            case "$h" in "$sec"*) echo MATCH;; esac
+          done | grep -q MATCH || echo "DANGLING §$sec (no such heading in $owner)"
+    done
+
+echo "── docs/NN §M citations ──"
+# `docs/08 §109` and `docs/08 §124` are line numbers written as sections, frozen inside
+# sha256-locked migrations 0005 and 0004 — editing those files makes the migrator refuse to
+# run, so they are UNFIXABLE and skipped by name. Any OTHER dangle is real.
+files | xargs -0 grep -HoE 'docs/[0-9]{2}[a-z-]* §[0-9]+[a-z]?' 2>/dev/null | skip \
+  | cut -d: -f2- | sort -u | grep -v -e 'docs/08 §109' -e 'docs/08 §124' \
   | while read -r ref; do n=${ref%% *}; s=${ref##*§}
       f=$(ls docs/${n#docs/}*.md 2>/dev/null | head -1)
       [ -n "$f" ] && grep -qE "^#{2,3} ${s}[. ]" "$f" || echo "DANGLING $ref"; done

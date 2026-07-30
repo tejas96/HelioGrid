@@ -47,7 +47,10 @@ export function Avatar({ src, name, size = 40, style }: AvatarProps) {
 
 /** Reference API: people, size, max — overlapping stack with a 2px surface ring. */
 export interface AvatarGroupProps {
-  people?: Omit<AvatarProps, 'size'>[];
+  // `readonly` matches the RN mirror, which held the stricter contract: a readonly array is
+  // not assignable to a mutable one, so `<AvatarGroup people={PEOPLE as const} />` compiled on
+  // RN and failed on web. A component has no business mutating a prop array either way.
+  people?: readonly Omit<AvatarProps, 'size'>[];
   size?: number;
   max?: number;
   style?: CSSProperties;

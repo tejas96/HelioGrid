@@ -9,7 +9,7 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "lint": "biome check . && dependency-cruiser --config .dependency-cruiser.cjs apps packages tests && sherif && pnpm check:adherence && pnpm check:env",
+    "lint": "bash scripts/lint-all.sh",
     "lint:fix": "biome check --write .",
     "boundaries": "turbo boundaries",
     "verify": "pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test && pnpm turbo build",
@@ -17,7 +17,8 @@
     "check:openapi": "node scripts/check-openapi-breaking.mjs",
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:unused": "knip",
-    "check:env": "node scripts/check-env-access.mjs"
+    "check:env": "node scripts/check-env-access.mjs",
+    "check:ui-parity": "node scripts/check-ui-parity.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

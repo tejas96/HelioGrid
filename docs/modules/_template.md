@@ -31,6 +31,6 @@ Status ∈ todo · in-progress · blocked(reason) · VERIFIED (never "done" with
 | 7 | AI review + DoD pass | all | /slice + /lenses | 1–6 | todo | |
 
 ## Module Definition of Done
-CLAUDE.md §Definition of done applies per slice, PLUS: all mockups above implemented · all D-decisions
+CLAUDE.md §Commands applies per slice, PLUS: all mockups above implemented · all D-decisions
 honored or escalated · invariants touched by this module green · module wired into the
 flows that reach it (no orphans) · docs + this roadmap fully updated.

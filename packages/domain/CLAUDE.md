@@ -17,7 +17,10 @@
 pnpm --filter @heliogrid/domain typecheck | build
 
 ## Depends on / depended on by
-uses: packages/contracts (types only)     used by: apps/web, apps/mobile, apps/api, apps/worker
+uses: NOTHING in the workspace — this is the BOTTOM layer (owner ruling 2026-07-30, ADR-0021)
+used by: packages/contracts, apps/web, apps/mobile, apps/api, apps/worker
+A business enum both layers need is defined HERE as a pure union; contracts builds its
+`z.enum` from it. Importing contracts from here is a package cycle, and both gates say so.
 
 ## Local conventions
 - Reducers are `(state, event) => state` — total, synchronous, no timers. The APP owns

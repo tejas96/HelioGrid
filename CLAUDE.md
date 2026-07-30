@@ -46,9 +46,12 @@ Deliberately thin by owner decision: `tests/invariants/` (the locked set) + on-d
 - **React: presentation and logic live in different files.** Container holds data, state
   and handlers; presentational components take props and return markup. Detail:
   `.claude/rules/ui-adherence.md`.
-- **Config and credentials come from `.env`, read in ONE place per app** — today each app's
-  `src/config/env.ts` (web: `lib/env.ts`), validated by a Zod schema; Biome `noProcessEnv`
-  enforces it. No secret literal in code, ever. `.env.example` documents every var.
+- **Config comes from `@heliogrid/env`, the ONLY package that reads a raw source.** Schemas
+  live in `packages/env/src/schema/` (one per consumer: api, worker, invariants, web, mobile,
+  plus shared `fragments.ts`), reached through three entry modules — `@heliogrid/env/server`,
+  `/web`, `/native`. Each app's own env file only decides what a failure means. Adding a
+  variable edits a schema there and `.env.example` — nothing else. Enforced by Biome
+  `noProcessEnv` + `pnpm check:env` + the turbo `env` boundary tag. No secret literal in code.
 - **Git is manual.** Commit when the user asks. Create branches or PRs ONLY on an explicit
   user command — never open a PR or push unprompted.
 - Match surrounding style; comments only for constraints code can't express.

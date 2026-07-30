@@ -1,0 +1,54 @@
+# Both app Dockerfiles do `COPY . .` in their build stage, so this file is the ONLY thing
+# deciding what leaves the developer's machine. Without it the build context was the whole
+# working tree: ~1.3G node_modules, ~2.3G apps/mobile/ios, ~2.4G apps/mobile/android, .git —
+# and, worse than the size, `.env.local`, which .env.example documents as the local secret
+# store. A secret that reaches any image layer has leaked, even if a later stage discards it.
+#
+# Deny-nothing-by-default is deliberate here: the build needs the sources, and enumerating
+# what to KEEP would silently drop a new package the day it is created.
+
+# Secrets — never, under any name.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.keystore
+google-services.json
+GoogleService-Info.plist
+
+# Installed and built output. pnpm install runs inside the image; a host node_modules is both
+# huge and wrong (platform-specific binaries, a different lockfile resolution).
+node_modules
+**/node_modules
+dist
+**/dist
+.next
+**/.next
+*.tsbuildinfo
+**/*.tsbuildinfo
+.turbo
+**/.turbo
+
+# Native mobile toolchains — not part of any server image, and the two largest trees here.
+apps/mobile/ios
+apps/mobile/android
+
+# History, tooling and local state.
+.git
+.gitignore
+.github
+.claude
+.vscode
+.idea
+.DS_Store
+coverage
+*.log
+
+# Docs and design assets. The server images render none of it; docs/ alone is a large tree of
+# markdown, and design/ carries the mockups and font binaries.
+docs
+design
+README.md

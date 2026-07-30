@@ -7,6 +7,18 @@
 module.exports = {
   forbidden: [
     {
+      name: 'domain-purity-no-core-modules',
+      severity: 'error',
+      comment:
+        'packages/domain may not import a Node builtin. `node:fs`/`node:crypto` looked gated ' +
+        'but were caught only by the ACCIDENTAL absence of @types/node — adding that one ' +
+        'devDependency (i18n and contracts both have it) would have made them compile clean. ' +
+        'dependencyTypes core is the one matcher that fires on a builtin whether or not its ' +
+        'types are installed. Isomorphic means it runs in a browser and on RN too.',
+      from: { path: '^packages/domain/' },
+      to: { dependencyTypes: ['core'] },
+    },
+    {
       name: 'domain-purity-no-layers',
       severity: 'error',
       comment:
@@ -51,7 +63,12 @@ module.exports = {
       severity: 'error',
       comment: 'tokens is generated from design/ds-source and depends on nothing in the workspace',
       from: { path: '^packages/tokens/' },
-      to: { path: '^(packages/(?!tokens)|apps)/' },
+      // `[^/]+` after the lookahead is load-bearing. The obvious `^(packages/(?!tokens)|apps)/`
+      // is DEAD: its first branch already ends in `/`, so the trailing `/` demanded
+      // `packages//` and the rule matched nothing for years. Unlike its sibling layer rules
+      // this one lists no package names — "depends on nothing in the workspace" must keep
+      // holding for packages that do not exist yet.
+      to: { path: '^(packages/(?!tokens/)[^/]+|apps)/' },
     },
     {
       name: 'no-app-to-app',
@@ -91,7 +108,14 @@ module.exports = {
         'Auth owns its own transport.',
       from: {
         path: '^apps/(web|mobile)/',
-        pathNot: '(lib/api-client\\.|src/data/api-client\\.|auth/client\\.|lib/auth-client\\.)',
+        // FULLY ANCHORED to the four real files. As unanchored substrings these matched any
+        // path CONTAINING them — `apps/web/app/auth/client.tsx` (the App Router convention
+        // for a route's client component, which the auth rebuild will land under an `auth/`
+        // segment) was silently exempt from the whole rule, as was any `api-client.*.ts` in
+        // any `lib/` directory.
+        pathNot:
+          '^(apps/web/lib/api-client\\.ts|apps/mobile/src/data/api-client\\.ts|' +
+          'apps/web/lib/auth-client\\.ts|apps/mobile/src/auth/client\\.ts)$',
       },
       to: {
         // 'npm-dev' for the same reason as domain-purity-no-frameworks: a devDependency import
@@ -106,7 +130,7 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (CLAUDE.md §Structure). Generalises the former ui-index-only. tokens is omitted deliberately: every one of its entry points is a declared subpath export.',
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/02 §2). Generalises the former ui-index-only. tokens is omitted deliberately: every one of its entry points is a declared subpath export.',
       from: { path: '^apps/', pathNot: '^apps/mobile/src/ui/' },
       to: {
         path: [
@@ -117,10 +141,10 @@ module.exports = {
       },
     },
 
-    /* ---- Structure standard (CLAUDE.md §Structure) ---------------------------------
-     * `warn` marks a rule today's code still violates; it flips to `error` in the
-     * migration slice that fixes it (plan: docs/… structure standard, steps 3–6).
-     * The lint chain only breaks on `error`, so warns stay visible without blocking. */
+    /* ---- Structure standard (docs/02 §2) --------------------------------------------
+     * Every rule in this file is `error`. The former `warn` tier — "a rule today's code
+     * still violates, flipping to error in the slice that fixes it" — is gone: the
+     * restructure landed, and a permanently-warning rule is one nobody acts on. */
     {
       name: 'db-access-in-repositories-only',
       severity: 'error',

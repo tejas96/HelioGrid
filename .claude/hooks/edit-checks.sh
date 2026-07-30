@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # PostToolUse:Edit|Write — advisory feedback only (exit 0 always).
-# TODAY THIS IS THE ONLY SIGNAL for these two rules: nothing in `pnpm lint` or CI enforces
-# max-lines or no-raw-hex yet. A lint-stage gate for both is planned (oxlint); until it
-# lands, do not treat a silent hook as proof the rule holds.
+# This is the AUTHOR-TIME signal, not the only one: `scripts/check-adherence.sh` runs inside
+# `pnpm lint` (and `pnpm turbo lint` in CI) and hard-FAILS on both the 450-line cap and raw
+# hex, so a violation cannot merge. This header used to claim the opposite and point at a
+# planned oxlint gate; oxlint was removed by owner decision 2026-07-30 (no
+# `no-restricted-syntax`, which was the entire reason to add it) and three greps replaced it.
+# A silent hook still is not proof: this hook and the lint gate scan the same UI paths, so
+# widening one without the other reopens the gap.
 set -uo pipefail
 
 payload=$(cat)
@@ -33,7 +37,7 @@ esac
 # Token adherence: only product UI surfaces. packages/tokens and design/ds-source are the
 # token SOURCE, where raw hex is required, so they are deliberately not matched here.
 case "$path" in
-  *packages/ui/src/*|*apps/mobile/src/ui/*|*apps/mobile/src/screens/*|*apps/web/app/*)
+  *packages/ui/src/*|*apps/mobile/src/*|*apps/mobile/App.tsx|*apps/web/app/*|*apps/web/lib/*)
     if grep -Eq "#[0-9a-fA-F]{3,8}\b" "$path"; then
       notes="${notes}${path} contains a raw hex colour. Every visual value comes from @heliogrid/tokens, generated from design/ds-source — see docs/10-i18n-and-design-system.md. "
     fi

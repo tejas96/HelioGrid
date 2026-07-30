@@ -533,9 +533,15 @@ importers:
       '@heliogrid/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@heliogrid/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@heliogrid/env':
         specifier: workspace:*
         version: link:../../packages/env
+      drizzle-orm:
+        specifier: 0.44.7
+        version: 0.44.7(@types/pg@8.20.0)(kysely@0.29.4)(pg@8.22.0)(postgres@3.4.9)
       postgres:
         specifier: 3.4.9
         version: 3.4.9

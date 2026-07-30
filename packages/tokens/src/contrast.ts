@@ -177,9 +177,44 @@ const NOT_A_PAIRING: { fg: string; bg: string; reason: string }[] = [
  * `.ui-segmented-item` sets `background: transparent` plus the label colour — no single rule
  * pairs them, so the gate passes while the inactive label sits at ≈3.89:1 (docs/13
  * UXG-A11Y-03, found by hand). It also does not read React Native at all (apps/mobile styles
- * from theme.ts objects). A firing is therefore a genuine finding; GREEN IS NOT A PROOF OF
- * TOTAL COVERAGE, and effective-background review stays a `ux-lens` job.
+ * from theme.ts objects), and `effectiveToken` resolves `var()` fallbacks and `color-mix()`
+ * by position rather than by evaluating them. A firing is therefore a genuine finding; GREEN
+ * IS NOT A PROOF OF TOTAL COVERAGE, and effective-background review stays a `ux-lens` job.
  */
+/**
+ * The token a declaration actually renders with — the LAST `--name` in its value.
+ *
+ * The old pattern demanded `var(--name)` with the paren closing right after, so it SKIPPED
+ * (not flagged — skipped) the two shapes packages/ui/CLAUDE.md sanctions: `var(--x, fallback)`
+ * and `color-mix()`. `.ui-icon-circle` in Card.css uses both at once and was invisible.
+ *
+ * Last, not first, because that is what renders by default in each shape:
+ *   var(--ui-icon-circle-color, var(--accent))            → accent  (end of the fallback
+ *     chain is the value when no caller sets the component property)
+ *   color-mix(in srgb, var(--accent) 6%, var(--surface))  → surface (the 94% component)
+ * HEURISTIC, and stated as one: percentages are not parsed, so a mix weighted the other way
+ * (`var(--a) 90%, var(--b)`) would resolve to the minority token. Every current use in
+ * packages/ui puts the dominant colour last. Reporting the wrong-but-close token is a finding
+ * someone reads; skipping the rule entirely was silence.
+ */
+function effectiveToken(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const tokens = [...value.matchAll(/--([a-z0-9-]+)/gi)].map((m) => m[1] as string);
+  return tokens.at(-1);
+}
+
+/**
+ * The token a PROPERTY finally renders with, across every declaration of it in one rule.
+ * `background: transparent; background-color: var(--surface)` must resolve to `surface`, not
+ * to nothing — taking only the first declaration made a reset silence the whole rule.
+ */
+function lastToken(body: string, decl: RegExp): string | undefined {
+  return [...body.matchAll(decl)]
+    .map((m) => effectiveToken(m[1]))
+    .filter((t): t is string => Boolean(t))
+    .at(-1);
+}
+
 export function findUndeclaredPairs(cssFiles: { path: string; text: string }[]): string[] {
   const undeclared = new Set<string>();
   // DECLARED_PAIRS names tokens bare ('text-primary'); CSS writes them as var(--text-primary).
@@ -192,8 +227,13 @@ export function findUndeclaredPairs(cssFiles: { path: string; text: string }[]):
     // Each rule body: capture colour and background-colour token references together.
     for (const block of text.matchAll(/\{([^}]*)\}/g)) {
       const body = block[1] as string;
-      const fg = body.match(/(?:^|[;\s])color:\s*var\(\s*--([a-z0-9-]+)\s*\)/i)?.[1];
-      const bg = body.match(/background(?:-color)?:\s*var\(\s*--([a-z0-9-]+)\s*\)/i)?.[1];
+      // ALL matching declarations, last one that yields a token — not the first declaration
+      // outright. A rule that resets then sets (`background: transparent;
+      // background-color: var(--surface)`) gave `transparent` on the first match, resolved to
+      // no token, and the whole rule was skipped — silently UNCHECKING a pairing the stricter
+      // old regex had caught. Last also matches CSS cascade order within a rule.
+      const fg = lastToken(body, /(?:^|[;\s])color:\s*([^;]+)/gi);
+      const bg = lastToken(body, /(?:^|[;\s])background(?:-color)?:\s*([^;]+)/gi);
       if (!fg || !bg) continue;
       const key = `${fg}|${bg}`;
       if (declared.has(key) || exempt.has(key)) continue;

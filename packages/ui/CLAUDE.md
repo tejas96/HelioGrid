@@ -47,7 +47,7 @@ used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
   here and the mirror must change in the same slice (Law 7).
 
 ## STANDING LAW — surfaces without a mockup
-When the data model needs UI the 82 mockups don't cover, design it INSIDE this component
+When the data model needs UI the 80 mockups don't cover, design it INSIDE this component
 vocabulary — compose existing components/patterns; never invent new visuals. Register the
 gap in docs/13 in the same slice.
 

@@ -77,14 +77,25 @@ export async function runMigrations(url: string) {
      */
     await sql`set statement_timeout = 0`;
 
+    /**
+     * LOCK FIRST, then create the ledger. The order used to be reversed, and it crashed real
+     * deploys: Fly runs a `release_command` per app, so apps/api and apps/worker migrate at
+     * the same instant against a fresh database. `create table if not exists` is NOT atomic
+     * against a concurrent creator — both sessions find no table, both attempt the CREATE, and
+     * the loser dies on a duplicate-key violation in pg_type (23505), which is not the
+     * "already exists" case the IF NOT EXISTS clause handles. Measured before this change:
+     * 2 of 3 concurrent first-deploys failed.
+     *
+     * The advisory lock lives on the SESSION, not a table, so it works before any table does —
+     * which is precisely why it has to be taken first.
+     */
+    await sql`select pg_advisory_lock(${MIGRATION_LOCK_KEY})`;
+
     await sql`create table if not exists schema_migrations (
       filename text primary key,
       sha256 text not null,
       applied_at timestamptz not null default now()
     )`;
-
-    // Serialise concurrent migrators. Session-scoped: released in the finally below.
-    await sql`select pg_advisory_lock(${MIGRATION_LOCK_KEY})`;
 
     const applied = new Map<string, string>(
       (await sql`select filename, sha256 from schema_migrations`).map((r) => [

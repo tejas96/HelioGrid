@@ -38,6 +38,7 @@ Rules:
 
 - **Format** (every file): `# ADR-NNNN: title` / `Status:` / `Date:` / `## Context` (2–4 sentences) / `## Decision` (decisive — one recommendation, no options-to-consider) / `## Consequences` (honest, including the negatives) / `## Alternatives rejected` (with reasons) / `## Sources` (research file paths + URLs).
 - **Numbering** is sequential and never reused. Filename: `NNNN-short-slug.md`.
-- **Never edit an accepted decision.** To change one, write a new ADR that supersedes it, set the old ADR's Status to `Superseded by ADR-NNNN`, and update this index.
+- **Never edit an accepted DECISION.** To change what was decided, write a new ADR that supersedes it, set the old ADR's Status to `Superseded by ADR-NNNN`, and update this index.
+  - **Appending in place is allowed for two things, dated:** a `## Consequences` entry recording something the decision turned out to imply, and a correction of fact where the ADR described the world wrongly (a path, a mechanism, a count). Both leave the Decision untouched. ADR-0021 carries both — its Consequences record the Boundaries-transitivity discovery and the `dist/` shipping shape, neither of which changes what was decided. Without this exception the rule forces either a superseding ADR for a typo, or a knowingly false document; the corpus chose the third option and edited silently, which is worse than both.
 - Cite evidence: research corpus files by relative path (`../research/<file>.md`) plus primary URLs. A decision without sources is an opinion.
 - Add the new ADR to the index table above in the same commit.

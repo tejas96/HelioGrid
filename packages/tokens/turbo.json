@@ -1,5 +1,16 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "extends": ["//"],
-  "tags": ["tokens"]
+  "tags": ["tokens"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/design/ds-source/**",
+        "$TURBO_ROOT$/packages/ui/src/**/*.css"
+      ]
+    }
+  }
 }

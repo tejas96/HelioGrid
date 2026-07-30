@@ -62,8 +62,21 @@ custom roles (D29 excluded).
 | 11 | i18n: full HI/MR catalogs for every string above; Hindi render verified | web+mobile | D25 | 2–10 | todo | |
 | 12 | Module QA attack + AI review (five lenses) + docs/13 rows + roadmap close | all | /slice + /lenses | 1–11 | todo | |
 
+
+## Carried debt — unwrapped copy (found 2026-07-31 by `pnpm check:adherence`)
+
+`apps/web/app/home/page.tsx` and `apps/web/app/onboarding/page.tsx` render user-visible English
+directly instead of through Lingui (`<Trans id="…">` / `i18n._()`), which docs/10 §7 and the
+EN/HI/MR product line forbid. They are listed in `COPY_DEBT` in `scripts/check-adherence.sh`
+so the gate stays honest rather than silent — a NEW screen with the same defect fails.
+
+They are not wrapped now because both screens are rebuilt by this module (ruling 6), and
+translating markup that is about to be deleted would add catalog entries for strings that will
+not survive. **Wrapping them is part of the rebuild slice, and the COPY_DEBT entry is deleted
+in the same change.**
+
 ## Module Definition of Done
-CLAUDE.md §Definition of done per slice PLUS: all 14 mockups implemented or explicitly ruled ·
+CLAUDE.md §Commands per slice PLUS: all 14 mockups implemented or explicitly ruled ·
 D5/D7/D11/D20/D25/D27/D28 honored · invite→OTP→role→app journey walked end-to-end on
 browser AND both simulators · tenancy invariants green · no orphan screens (every exit
 wired) · specs' CONFLICT lists resolved or logged in docs/13.

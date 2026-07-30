@@ -1,9 +1,17 @@
 # HelioGrid — AI Engineering Foundation Redesign
 
-**Status: PROPOSAL** (2026-07-29). Authored from a 9-agent repository audit + live official
-Claude Code documentation research (citations in Appendix C). Nothing in this document is
-executed yet. Execution plan: §9. Once executed, its content folds into `CLAUDE.md`,
-`.claude/`, and the rewritten `docs/17`; this file then moves to `docs/archive/`.
+**Status: LARGELY EXECUTED (2026-07-31) — read §5.2 and §9 against docs/17, not as instructions.**
+The foundation described here shipped, with documented divergences: `/code-review` is
+user-invoked only (an agent cannot call it), the three lens agents hold no Bash, `/pr` is
+model-disabled, and three §5.2 gates were dropped or deferred by owner ruling (struck through
+in place). **docs/17 §5 is the live rule→mechanism matrix**; where this file and docs/17
+disagree, docs/17 wins. This file is retained as the reasoning record and moves to
+`docs/archive/` once the auth rebuild closes the last Phase-4 item.
+
+**Original status: PROPOSAL** (2026-07-29). Authored from a 9-agent repository audit + live official
+Claude Code documentation research (citations in Appendix C). Execution plan: §9. Its content
+has since folded into `CLAUDE.md`, `.claude/`, and the rewritten `docs/17` — see the status
+line above for what diverged.
 
 ---
 
@@ -385,12 +393,12 @@ re-injects; path-scoped rules re-attach on next matching read).
 | API breaking-change / drift | `oasdiff breaking` main↔head on the emitted openapi.json + a freshness diff of the committed copy | CI |
 | No hand-rolled HTTP in apps | dep-cruiser rule: `axios|node-fetch|undici` (and bare `fetch` wrappers outside `lib/api-client.ts` / `src/data/`) banned from web+mobile — contract drift becomes a type error | lint |
 | Migration append-only | `git diff --diff-filter=MD --exit-code origin/main...HEAD -- packages/db/migrations` | CI |
-| Doc-anchor integrity | ~80-line script: every `docs/NN §M`, `CLAUDE.md §X`, `[[file]]` cross-reference in docs/ + CLAUDE.mds resolves to an existing file/heading | CI (the F3 fix) |
+| Doc-anchor integrity | ~~~80-line script~~ **dropped 2026-07-30 (owner):** rules and greps over a bespoke checker. Delivered instead as **three greps** over `docs apps packages .claude .github` in the `/doc-sync` block — which caught two real defects a script's remit would have missed, including docs/04 having lost its `## 9.` heading. Task 13 SKIPPED (commit 8e48442); see docs/17 §5 "Prose — with justification". | prose |
 | Roadmap evidence | ~~linter~~ **dropped 2026-07-30 (owner):** a non-empty-cell check is trivially gamed and can't judge evidence quality. Instruction + review instead — `/slice`, `/pr`, roadmap template. | prose |
 | Secrets | gitleaks action | CI |
-| Dead code + copy-paste duplication | knip (unused exports/files/deps) + jscpd (clone threshold) | CI, advisory→error after burn-in |
+| Dead code + copy-paste duplication | knip + jscpd, installed as `pnpm check:unused` / `pnpm check:dupes`. ~~CI, advisory→error after burn-in~~ **local only, 2026-07-30 (owner):** a `continue-on-error` CI step that can never fail is decoration everyone learns to scroll past. Promote `check:dupes` to blocking only once the tree already meets a threshold. | local |
 | Contrast coverage | derive fg/bg candidate pairs from `packages/ui/src/*.css` usage; fail on pairs missing from `DECLARED_PAIRS` | tokens build |
-| Auth E2E replay | scripted ts-rest/curl replay of the verified auth path (dev OtpPort) against disposable Postgres; one Playwright pass over web login | CI (answers F10) |
+| Auth E2E replay | ~~CI (answers F10)~~ **deferred into the auth rebuild, 2026-07-30 (owner):** scripting the current flow would be obsolete before it was useful, and that flow's local dev-login is already broken. Build it against the NEW flow as an on-demand `scripts/` entry — never a `.test.*` file. Task 33 SKIPPED; see docs/17 §5 "Planned — NOT yet enforced". | local, later |
 
 ### 5.3 The rule→mechanism matrix (governance visibility)
 
@@ -555,9 +563,11 @@ hex literal in a screen → adherence gate red; modify migration 0001 → append
 **Phase 4 — Structural dedup (2–3 days).** Create `packages/domain` (pure TS; seed: login
 flow state machine as a pure reducer consumed by both screens, phone/₹ formatters, invite/
 role invariants out of auth.service) — un-dangling the 11 phantom references and making the
-2 inert cruiser rules live; UI parity types package + check; auth E2E replay script +
-Playwright login pass. *Verify: both login screens on one machine (drift F7a dead by
-construction); parity gate red on a one-platform prop.*
+2 inert cruiser rules live; UI parity types package + check. *Verify: parity gate red on a
+one-platform prop.* **Amended 2026-07-30 (owner):** the auth E2E replay script and Playwright
+login pass move into the auth rebuild (Task 33 SKIPPED), and with them the "both login
+screens on one machine" verification — auth-tenancy ruling 6 rebuilds that flow, so its
+pre-foundation VERIFIED rows are not a foundation to check drift against.
 
 **Phase 5 — Shakedown (ongoing).** Resume auth-tenancy task 3 (signup) as the new system's
 first real slice; tune skill descriptions with real usage (optionally `skill-creator`

@@ -1,9 +1,10 @@
 ---
 paths:
   - "packages/ui/**"
-  - "apps/mobile/src/ui/**"
-  - "apps/mobile/src/screens/**"
+  - "apps/mobile/src/**"
+  - "apps/mobile/App.tsx"
   - "apps/web/app/**"
+  - "apps/web/lib/**"
 ---
 
 # UI — tokens only, compose don't invent, separate rendering from logic

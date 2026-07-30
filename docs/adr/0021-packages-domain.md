@@ -27,8 +27,20 @@ hand-maintained copies of a state machine cannot satisfy that, and every future 
 
 Create `packages/domain` as pure isomorphic TypeScript.
 
-**It may import:** nothing but the TypeScript standard library and `packages/contracts`
-**types**.
+**It may import:** nothing but the TypeScript standard library.
+
+`packages/domain` is the **BOTTOM layer**: `packages/contracts` imports it, never the reverse.
+This corrects an earlier draft of this line, which allowed `packages/contracts` **types** —
+prose that both mechanical gates had always contradicted (`domain-purity-no-layers` lists
+`contracts`; the `domain` boundaries tag allows only `domain` + `config`). The gates are
+right, and not merely by seniority: the `contracts` tag already permits `contracts → domain`,
+so sanctioning `domain → contracts` as well would have made the two packages mutually
+importable — a package cycle. Owner ruling 2026-07-30.
+
+**Where business enums live under this rule.** A value both layers need is defined HERE as a
+pure TypeScript union, and `packages/contracts` builds its `z.enum` from it. Validation still
+belongs to contracts (Law 4), and the value still has exactly one definition — at the bottom,
+where both layers can reach it.
 
 **It may never import:** NestJS, React, React Native, any storage, any fetch client, any
 environment read, `packages/db`, `packages/ui`, or any app. Rules, catalogs and market
@@ -54,6 +66,19 @@ today a green cruise proves less than it appears to.
 
 ## Consequences
 
+- **The Boundaries tag check is TRANSITIVE, so every tag that reaches `contracts` must also
+  allow `domain`.** Wiring the ruling above — adding `@heliogrid/domain` to
+  `packages/contracts/package.json` — turned `pnpm boundaries` red with an error naming
+  `@heliogrid/ui`, a package the change never touched and which does not import domain at all.
+  `ui` allows `contracts`, `contracts` now reaches `domain`, and turbo walks the whole graph.
+  The `ui` tag was widened on 2026-07-30 ahead of that slice so the next implementer does not
+  meet a failure whose obvious readings ("the ruling was wrong", "ui must import domain") are
+  all false. `contracts`, `db`, `i18n` and `app` already allowed `domain`.
+- **This package ships `dist/`, not source.** `main`/`types`/`exports` point at `./dist/`
+  exactly like `contracts`, `db` and `env`, and it carries no `"type": "module"` — with it,
+  `tsc` emitted ESM that NestJS (CJS) could not `require()`. The earlier source entry
+  (`./src/index.ts`) survived only on pnpm's dev symlink layout: every gate stayed green while
+  the built api/worker container would have died at `require("@heliogrid/domain")`.
 - The two dependency-cruiser purity rules become live and meaningful. Until now they targeted
   a path that matched nothing, so they could never fail. Both were proven to fire on the day
   this package landed, and proving them exposed two things worth recording:
@@ -63,9 +88,11 @@ today a green cruise proves less than it appears to.
     is the honest scope, but it means "green" never proves "nobody tried".
   - **`dependencyTypes: ['npm']` covers production dependencies only.** A `react`
     *devDependency* import passed clean until both rules were widened to
-    `['npm', 'npm-dev']`. That mattered here because this package ships SOURCE
-    (`main` → `src/index.ts`), so a devDependency import reaches consumers exactly like a
-    production one. The same widening was applied to `no-raw-http-clients` (ADR-less, rule 20),
+    `['npm', 'npm-dev']`. That matters regardless of what the package ships: a
+    devDependency import is a real edge in the graph, and these rules must bite while the
+    package is still empty — before any consumer wiring exists to make the distinction
+    observable. (An earlier draft justified the widening by saying this package ships SOURCE.
+    It ships `dist/`; see the Consequences entry above.) The same widening was applied to `no-raw-http-clients` (ADR-less, rule 20),
     which had the identical hole.
 - The eleven dangling references resolve.
 - Platform-specific concerns (timers, navigation, storage, rendering) stay in the apps; only

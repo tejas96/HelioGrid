@@ -32,6 +32,10 @@ jobs:
     env:
       DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
       DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+      # apps/api's schema requires this (>=32 chars, no default — a secret must never carry a
+      # dev fallback, packages/env/CLAUDE.md). `auth:migrate` loads the api env, so without it
+      # that step failed on EVERY run. Throwaway: it signs nothing that leaves the runner.
+      BETTER_AUTH_SECRET: ci-only-throwaway-not-a-real-secret-0123456789
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,11 +48,11 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           git fetch --no-tags origin ${{ github.base_ref }}
-          if ! git diff --diff-filter=MD --quiet origin/${{ github.base_ref }}...HEAD -- packages/db/migrations; then
-            echo "::error::An APPLIED migration was modified or deleted. Migrations are"
+          if ! git diff --diff-filter=MDR --no-renames --quiet origin/${{ github.base_ref }}...HEAD -- packages/db/migrations; then
+            echo "::error::An APPLIED migration was modified, deleted or RENAMED. Migrations are"
             echo "::error::append-only and sha256-locked by the runner — editing one makes"
             echo "::error::the db migrate step refuse to run. Add a new file instead."
-            git diff --diff-filter=MD --name-only origin/${{ github.base_ref }}...HEAD -- packages/db/migrations
+            git diff --diff-filter=MDR --no-renames --name-only origin/${{ github.base_ref }}...HEAD -- packages/db/migrations
             exit 1
           fi
           echo "migrations append-only: OK"
@@ -58,12 +62,25 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # BUILD FIRST. dependency-cruiser resolves a workspace import through the target's
+      # `main`/`types`, which point at dist/ — so before anything is built the edge does not
+      # exist and every rule aimed at a dist-shipping package reports clean. Proven
+      # 2026-07-31: `db-access-in-repositories-only` fires with dist present and reports
+      # "no dependency violations found" without it, on the identical offending file.
+      - run: pnpm turbo build
       - run: pnpm turbo lint
       - name: Package boundaries (turbo tags — docs/17 Law 2)
         run: pnpm boundaries
       - run: pnpm turbo typecheck
       - name: Apply migrations (CI database)
         run: pnpm --filter @heliogrid/db migrate
+      - name: Better Auth migrations (creates the 7 tables its enabled plugins own)
+        # Without this the tenancy scan only WARNS that they are absent, so the tables it is
+        # meant to vet are never inspected in CI at all. SEVEN, not eight: only the
+        # `organization` and `phoneNumber` plugins are enabled (better-auth.ts), so `jwks`
+        # is not created — it arrives with the jwt plugin, and the scan keeps warning about
+        # that one entry by design.
+        run: pnpm --filter @heliogrid/api auth:migrate
       - run: pnpm turbo test
       - run: pnpm turbo build
       - name: OpenAPI freshness (committed spec matches the contract)
@@ -100,6 +117,16 @@ jobs:
       - name: Assemble debug APK
         working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --no-daemon
+      - name: Bundle the RN JavaScript (Law 7's only proof that the JS resolves)
+        working-directory: apps/mobile
+        # `assembleDebug` does NOT bundle JS — a debug build loads it from Metro at runtime —
+        # and the iOS job builds Debug too. So until this step nothing mechanical proved the
+        # React Native JavaScript even resolves: a broken import path, a renamed asset, a Metro
+        # resolution failure of a workspace package, or a package-exports change in a dependency
+        # all passed CI green. typecheck does not catch these — the bundler is the only thing
+        # that walks the real module graph the app runs on.
+        shell: bash
+        run: pnpm bundle
 
   ios:
     name: ios (simulator build, macOS lane)
@@ -120,6 +147,11 @@ jobs:
           pod install
       - name: Build for simulator (no signing)
         working-directory: apps/mobile/ios
+        # `shell: bash` turns on `-o pipefail`. Without it the step's exit status is
+        # `tail`'s (always 0), so a Swift compile error, a missing Pod or a bad Info.plist
+        # produced a GREEN job — the only mechanical proof the RN app still builds for iOS
+        # (Law 7) could never fail.
+        shell: bash
         run: |
           xcodebuild -workspace HelioGridMobile.xcworkspace \
             -scheme HelioGridMobile \

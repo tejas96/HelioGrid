@@ -10,7 +10,12 @@ nothing must say what it checked and why each check passed.** Silence is not a p
 
 ## Dispatch the three specialists in parallel
 
-Over the slice diff (`git diff main...HEAD`), run these concurrently:
+Over the slice diff, run these concurrently. **Get the diff with plain `git diff` (plus
+`git diff --cached`) unless the slice is already on its own branch with commits** — this repo
+keeps git manual and reviews BEFORE shipping (CLAUDE.md §Process; /slice puts Review ahead of
+Ship), so at review time the work is normally uncommitted on `main` and `git diff main...HEAD`
+resolves to nothing. A lens handed an empty diff reports no findings, which reads exactly like
+a clean review. If `git diff main...HEAD --stat` is empty, use the working tree.
 
 | Agent | Hunts for |
 |---|---|
@@ -24,10 +29,15 @@ files — so it reviews against the spec rather than against its own taste.
 Their checklists live in `.claude/agents/`. Do not restate them here: if a lens keeps
 missing something, fix the agent, or every future review inherits the gap.
 
-## Senior-engineer lens
+## Senior-engineer lens — the USER runs this one
 
-Run `/code-review` over the same diff. Delegating beats writing a fifth bespoke prompt that
-would drift out of step with the other four.
+**You cannot invoke it.** `/code-review` is marked `disable-model-invocation` and refuses to
+start when an agent calls it, so "run /code-review" silently cost this step every time: four
+lenses ran, the fifth reported nothing, and the review still looked complete.
+
+Ask the user to run `/code-review` over the same diff (or `/code-review ultra` for the
+multi-agent cloud review of the branch), and say plainly in your summary that the
+senior-engineer lens is PENDING until they do. Four lenses reported is not five.
 
 ## Product-owner lens — you run this one yourself
 

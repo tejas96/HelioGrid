@@ -6,6 +6,16 @@ import { apiContract } from '../index';
 /**
  * Emits openapi/openapi.json from the root contract — run in CI after build; the
  * artifact is the reviewable public surface (customer links, webhooks, future public API).
+ *
+ * LIMIT, and it is load-bearing for `pnpm check:openapi`: `@ts-rest/open-api` drops
+ * `.refine()`, `.superRefine()` and `.transform()`. A contract change that materially narrows
+ * what the API accepts through one of those produces a BYTE-IDENTICAL spec — so the freshness
+ * comparison sees no change and oasdiff has no diff to judge. `percentSchema` in common.ts is
+ * exactly this shape today (`.regex(...)` plus a `.refine(v => Number(v) <= 100)`).
+ *
+ * Therefore: for anything that governs the wire, prefer Zod the generator can EXPRESS —
+ * `.max()`, `.min()`, `.lte()`, `.regex()` — over `.refine()`. A `.refine()` is a contract
+ * change no spec diff can show, so it needs a human callout in the PR instead.
  */
 const doc = generateOpenApi(apiContract, {
   info: {

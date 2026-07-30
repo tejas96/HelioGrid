@@ -1,5 +1,6 @@
 import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { runEnumParity } from './enum-parity';
+import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTenancyInvariants } from './tenancy-rls';
 
@@ -29,6 +30,7 @@ async function main() {
   await runTenancyInvariants(url);
   await runTableTenancyScan(url);
   await runEnumParity(url);
+  await runSchemaParity(url);
   console.log('invariants green');
 }
 

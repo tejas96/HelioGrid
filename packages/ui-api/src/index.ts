@@ -11,8 +11,13 @@
  * Each implementation index asserts `satisfies ComponentApiSurface`, so a platform that drifts
  * fails ITS OWN typecheck, naming the component.
  *
+ * Those assertions all iterate `keyof ComponentApiSurface`, so they cannot see a prop that is
+ * in NEITHER this contract nor the two `declare const` blocks. `pnpm check:ui-parity` closes
+ * that: it reads each platform's AUTHORED props straight from the source and fails on any
+ * declared by both but missing here. It found `AvatarGroup.people` — see data.ts.
+ *
  * WHAT THIS CONTRACT COVERS — read this before assuming a green build means full parity.
- * It declares the 117 props (of 172 across 28 components) that both platforms agree
+ * It declares the 118 props (of 172 across 28 components) that both platforms agree
  * on: same name, equivalent type, same optionality. Two categories remain deliberately absent:
  *
  *   1. Platform-owned props. Web inherits DOM attributes (`type`, `form`, `aria-*`) and RN has

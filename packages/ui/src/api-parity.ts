@@ -10,8 +10,10 @@
  * matters: every contract prop present, at the contract's type and optionality. If this stops
  * compiling, THIS platform drifted — fix the component's props, not this file.
  *
- * Scope is the 99 props both platforms already agreed on; @heliogrid/ui-api's header records
- * what sits outside the contract and the seven open drifts awaiting an owner ruling.
+ * Scope is stated ONCE, in @heliogrid/ui-api's header — deliberately no numeral here. Restating
+ * it is how this comment came to advertise "99 props" and "seven open drifts awaiting an owner
+ * ruling" for a contract that had moved on, and how the count then drifted again (117 in three
+ * files, 118 in the contract). One place, or it rots.
  */
 import type { ComponentApiSurface } from '@heliogrid/ui-api';
 import type { ComponentProps } from 'react';
@@ -80,3 +82,21 @@ contractShape satisfies {
     Extract<keyof ComponentApiSurface[K], keyof Impl[K]>
   >;
 };
+
+/**
+ * The third direction: the CONTRACT must cover every component, not just every prop.
+ *
+ * Both assertions above iterate `keyof ComponentApiSurface`, so they say nothing about a
+ * component missing from it. A 29th component exported here with no RN mirror — precisely the
+ * Law 7 lockstep failure this package exists to stop — passed every gate, because the contract
+ * and the two `declare const` blocks were three hand-maintained lists of the same 28 names and
+ * nothing compared them to the barrel.
+ *
+ * `keyof typeof UI` is exactly the barrel's VALUE exports (types erase), so adding a component
+ * to index.ts without adding it to ComponentApiSurface fails HERE, naming it. A non-component
+ * value export would also fail — correctly: it is a deliberate decision, so record it in the
+ * Exclude below with a reason rather than widening the contract.
+ */
+type UncoveredComponents = Exclude<keyof typeof UI, keyof ComponentApiSurface>;
+declare const uncoveredComponents: UncoveredComponents;
+uncoveredComponents satisfies never;

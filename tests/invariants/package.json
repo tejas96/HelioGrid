@@ -2,14 +2,16 @@
   "name": "@heliogrid/invariants",
   "version": "0.0.1",
   "private": true,
-  "description": "The locked invariant set (CLAUDE.md §Testing) — additions require explicit owner approval",
+  "description": "The locked invariant set (CLAUDE.md \u00a7Testing) \u2014 additions require explicit owner approval",
   "scripts": {
     "test": "tsx src/run.ts",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/db": "workspace:*",
     "@heliogrid/env": "workspace:*",
+    "drizzle-orm": "0.44.7",
     "postgres": "3.4.9"
   },
   "devDependencies": {
@@ -17,10 +19,5 @@
     "@types/node": "22.20.1",
     "tsx": "4.23.1",
     "typescript": "5.8.3"
-  },
-  "turbo": {
-    "tags": [
-      "app"
-    ]
   }
 }

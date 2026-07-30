@@ -13,6 +13,36 @@ documentation. Application code lands next, following `docs/14-build-roadmap.md`
 The validated engineering core (geometry, electrical, BOM, energy, structure engines)
 is ported from the proof-of-concept at `Solar-App-POC` per `docs/05-domain-migration.md`.
 
+## Local development
+
+Verified cold-start order. Steps 2 and 3 are not optional: workspace packages resolve through
+their `dist/`, so a migrate on an unbuilt tree dies on `MODULE_NOT_FOUND` with nothing pointing
+at the cause.
+
+```bash
+nvm use                                  # Node 22 (engines: >=22 <23)
+pnpm install --frozen-lockfile
+pnpm turbo build                         # REQUIRED before anything below
+
+docker run --rm -d --name heliogrid-db \
+  -e POSTGRES_USER=heliogrid -e POSTGRES_PASSWORD=heliogrid \
+  -e POSTGRES_DB=heliogrid -p 5432:5432 postgres:16
+
+cp .env.example .env.local               # then fill in:
+#   DATABASE_URL / DATABASE_ADMIN_URL  -> the container above
+#   BETTER_AUTH_SECRET                 -> openssl rand -hex 16   (>=32 chars, no default)
+
+pnpm --filter @heliogrid/db migrate      # schema + roles (0001-0006)
+pnpm --filter @heliogrid/api auth:migrate # Better Auth's own 7 tables
+pnpm verify                              # lint - boundaries - typecheck - test - build
+```
+
+Then, per app: `pnpm --filter @heliogrid/api dev` · `pnpm --filter @heliogrid/web dev`
+· `pnpm --filter @heliogrid/mobile start` (see each app's `CLAUDE.md` §Commands).
+
+`.env.local` is git-ignored and is the ONLY place local secrets live. Which commands read it,
+and which take their URL from the shell instead, is documented at the top of `.env.example`.
+
 ## Read this first
 
 | | |

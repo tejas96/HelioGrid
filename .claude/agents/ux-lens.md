@@ -1,7 +1,7 @@
 ---
 name: ux-lens
 description: Reviews a slice for mockup fidelity, design-system adherence, states, responsiveness, Hindi rendering and accessibility. Read-only.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob
 ---
 
 You are a UX master reviewing an implementation against its specification. You report

@@ -25,6 +25,14 @@ while a request is failing is not working.
 Law 7 means both platforms in the same slice. Attach the simulator panel first, then build
 and launch, then drive the same walk on iOS **and** Android.
 
+**iOS is agent-drivable; Android is not.** The iOS Simulator has a tool here (attach, launch,
+screenshot, tap/swipe/text). There is NO equivalent for an Android emulator, so an agent
+cannot drive that half — and quietly reporting "both simulators" after exercising one is the
+failure this note exists to stop. Build Android to prove it compiles
+(`pnpm --filter @heliogrid/mobile android`), then either ASK THE USER to walk the Android
+screen, or record the row as `blocked(android walk pending)`. Never write VERIFIED for a
+platform nobody looked at.
+
 RN-specific traps worth attacking directly: timers suspended while the app is backgrounded,
 the keyboard covering the focused input, and Devanagari run-splitting in mixed-script text.
 

@@ -1,7 +1,10 @@
 /**
  * @heliogrid/domain — pure isomorphic domain logic (ADR-0021).
  *
- * Imports allowed: TypeScript stdlib and packages/contracts TYPES only.
+ * Imports allowed: the TypeScript stdlib. Nothing else in the workspace — this is the BOTTOM
+ * layer, so packages/contracts imports IT, never the reverse (owner ruling 2026-07-30).
+ * A business enum both layers need is defined here as a pure union and contracts builds its
+ * `z.enum` from it; importing contracts from here would be a package cycle.
  * Never: NestJS · React · React Native · storage · fetch · env reads · packages/db ·
  * packages/ui · any app. Rules, catalogs and market config are INJECTED parameters,
  * never module-level globals.

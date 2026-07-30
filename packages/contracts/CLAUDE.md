@@ -22,9 +22,13 @@ used by: apps/api, apps/worker, apps/web, apps/mobile
 - tenant_id NEVER appears in request bodies/params — it comes from the JWT claim
   (see `tenantClaimSchema` note). Money is a 2-dp decimal string, never a float.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
-  `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) · `env.ts`
-  (env schema FRAGMENTS only — never a `process.env` read) · `ports/<capability>.ts`
-  (provider port interface + its DI token, implemented in `packages/adapters`).
+  `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
+  `ports/<capability>.ts` (provider port interface + its DI token, implemented in
+  `packages/adapters`).
+- **No `env.ts` here.** It existed until 2026-07-30 and moved to
+  `packages/env/src/schema/fragments.ts`: contracts is the WIRE format, and deployment
+  configuration is not part of the API surface. Environment shapes live in `@heliogrid/env`
+  and nowhere else — re-creating one here is the exact duplication that package prevents.
 - Every closed business set is ONE `z.enum` here, defined once (shared sets in
   `common.ts`), with its inferred type exported (`export type UiLanguage = z.infer<…>`)
   from the index. Consumers — api services, web, mobile, i18n — import the type; an

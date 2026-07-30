@@ -2,7 +2,9 @@
 
 ## What lives here / what must never live here
 - `schema/` DESCRIBES shapes and never reads. `parse.ts` VALIDATES. Each entry module
-  (`server.ts`, later `web.ts`/`native.ts`) is the ONLY place a raw source is touched.
+  (`server.ts`, `web.ts`, `native.ts` — all three exist) is the ONLY place a raw source is
+  touched. `server.ts` reads Node's `process.env` itself; `web.ts` and `native.ts` take the
+  source as a PARAMETER, because neither platform has one this package can reach.
 - NEVER: business logic, a database or HTTP client, a framework import, or a second read path.
 - **Secrets never carry `.default()`.** A dev fallback silently ships a predictable signing key
   to production. Absent secret ⇒ the app refuses to boot.
@@ -23,9 +25,10 @@ pnpm --filter @heliogrid/env typecheck
 
 ## Depends on / depended on by
 uses: zod (pinned 3.25.76)
-used by: apps/api, apps/worker, tests/invariants (via `./server`); apps/web, apps/mobile
-next (Task 35). NOT packages/db — its migrator takes the URL as a parameter — and NOT
-packages/domain, which may never read the environment (ADR-0021).
+used by: apps/api, apps/worker, tests/invariants (via `./server`); apps/web via `./web`
+(`apps/web/lib/env.ts`); apps/mobile via `./native` (`apps/mobile/src/env.ts`).
+NOT packages/db — its migrator takes the URL as a parameter — and NOT packages/domain, which
+may never read the environment and imports nothing in the workspace at all (ADR-0021).
 
 ## Local conventions
 - Adding a variable means editing a schema HERE and `.env.example`, and nothing else.
