@@ -89,9 +89,13 @@ export function AvatarGroup({
             { width: size + RING * 2, height: size + RING * 2, marginLeft: overlap },
           ]}
         >
+          {/* --text-primary, not the reference's --text-secondary: on --canvas-sunken that
+              measures 3.89:1 and the "+N" count is meaning-bearing text at caption size, so
+              it failed WCAG AA (docs/13 UXG-A11Y-01). Lockstep with packages/ui Avatar.css —
+              see the longer note there. Do not "restore" the reference value. */}
           <AppText
             weight="500"
-            color={theme.colors['text-secondary']}
+            color={theme.colors['text-primary']}
             style={{ fontSize: extraFont, lineHeight: extraFont }}
           >
             {`+${extra}`}

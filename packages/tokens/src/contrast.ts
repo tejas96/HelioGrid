@@ -110,7 +110,7 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     role: 'destructive button label (white on danger fill)',
     floor: 3.8,
     restriction:
-      'Measures ≈3.91:1 — the same colour pair as danger/surface (contrast is symmetric), so ruling C already governs it: clears AA for large text and UI components (≥3:1), not 4.5:1 body. The label is 15px/500, so it relies on that UI-component allowance plus an always-present text label — never colour alone.',
+      'OPEN FINDING (docs/13 UXG-A11Y-02): measures ≈3.91:1 at 15px/500. Ruling C sanctioned this colour pair citing the "large text / UI components (≥3:1)" allowance, but that is SC 1.4.11 non-text contrast (boundaries and graphics) — a button LABEL is text under SC 1.4.3 and needs 4.5:1 at this size. The floor holds the current value so it cannot worsen while the owner rules; it is not a claim that the label clears AA.',
   },
   {
     fg: 'text-disabled',
@@ -120,15 +120,13 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     restriction:
       'Measures ≈1.44:1. WCAG 1.4.3 exempts inactive/disabled controls from contrast minima, so this is compliant by exemption, not by ratio. Disabled state must never be the ONLY signal — controls also carry disabled semantics for assistive tech.',
   },
-  {
-    fg: 'text-secondary',
-    bg: 'canvas-sunken',
-    role: 'AvatarGroup "+N" overflow count',
-    floor: 3.8,
-    restriction:
-      'OPEN FINDING (docs/13 UXG-A11Y-01, raised 2026-07-30): measures ≈3.89:1 at 12px/500, which FAILS WCAG AA 4.5:1 for normal text and is NOT covered by ruling C (that ruling addresses --text-secondary on white ≈4.45:1). The floor holds the current value so it cannot silently worsen while the owner rules on the fix — the candidate fix is --text-primary on --canvas-sunken, already declared at floor 7.',
-  },
 ];
+
+// NOT declared, deliberately: --text-secondary on --canvas-sunken (≈3.89:1). The ds-source
+// reference used it for the AvatarGroup "+N" count, which failed WCAG AA for meaning-bearing
+// caption text; both platforms now use --text-primary there (docs/13 UXG-A11Y-01, CLOSED).
+// Declaring the pair would sanction a sub-AA combination nobody needs — leaving it out means
+// the coverage gate below fails the build if any component reaches for it again.
 
 /**
  * Pairings the per-rule scan reports that are NOT real foreground/background pairings.
@@ -163,11 +161,14 @@ const NOT_A_PAIRING: { fg: string; bg: string; reason: string }[] = [
  * component CSS for rules that set BOTH a colour and a background from tokens and reports
  * any pairing that is neither declared nor an acknowledged non-pairing.
  *
- * SCOPE, stated honestly: this sees one CSS rule at a time. A pairing split across rules
- * (base sets the colour, a state selector sets the background) is invisible to it, and it
- * does not read the React Native side at all (apps/mobile styles from theme.ts objects, not
- * CSS). It is a real check on what it covers — a firing means a genuinely unchecked
- * combination — not a proof of total coverage.
+ * SCOPE — a real limit, not a hypothetical one. This sees ONE CSS rule at a time, so a
+ * pairing whose background comes from an ancestor is invisible to it. Proven example:
+ * `.ui-segmented` sets the track `background: var(--canvas-sunken)` while
+ * `.ui-segmented-item` sets `background: transparent` plus the label colour — no single rule
+ * pairs them, so the gate passes while the inactive label sits at ≈3.89:1 (docs/13
+ * UXG-A11Y-03, found by hand). It also does not read React Native at all (apps/mobile styles
+ * from theme.ts objects). A firing is therefore a genuine finding; GREEN IS NOT A PROOF OF
+ * TOTAL COVERAGE, and effective-background review stays a `ux-lens` job.
  */
 export function findUndeclaredPairs(cssFiles: { path: string; text: string }[]): string[] {
   const undeclared = new Set<string>();

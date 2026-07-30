@@ -152,8 +152,17 @@ gridline `#EEF0F3`.
   never bare foreground text**.
 - `--text-secondary #74787E` is borderline (≈4.45:1 on white) — annotated in the pairs
   file; body text on `--surface` is `--text-primary`. **On `--canvas-sunken` it drops to
-  ≈3.89:1, which fails AA for normal text** — an open finding (docs/13 UXG-A11Y-01), not a
-  sanctioned restriction. Ruling C covers this token on white only.
+  ≈3.89:1 and is NOT a sanctioned pairing** — ruling C covers this token on white only. The
+  AvatarGroup "+N" count used it (inherited from the ds-source reference) and now uses
+  `--text-primary` (≈17.33:1): docs/13 UXG-A11Y-01, CLOSED. The pair is deliberately absent
+  from `DECLARED_PAIRS` so the coverage gate rejects any new use.
+
+**Open a11y finding — `--danger` fills carrying white labels (docs/13 UXG-A11Y-02):** ruling
+C sanctioned `--danger`/`--surface` at ≈3.91:1 citing the "large text / UI components ≥3:1"
+allowance. That allowance is SC 1.4.11 (non-text contrast: boundaries, graphics); a
+destructive button's **label** is text under SC 1.4.3 and needs 4.5:1 at 15px/500. Awaiting
+an owner ruling — the pair stays declared at its current floor so it cannot worsen, and the
+annotation no longer implies the label clears AA.
 
 The declared set is no longer purely hand-curated: the tokens build **derives coverage from
 component usage** and refuses to emit when a `packages/ui` rule pairs a foreground and
