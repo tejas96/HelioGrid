@@ -176,7 +176,6 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Rule | Intended mechanism | Stage |
 |---|---|---|
 | Arbitrary px / inline style in UI | Not attempted. Raw hex has a stable syntactic shape; "arbitrary px" does not — spacing, border and icon sizes are legitimately numeric, so the rule would be mostly false positives. Reviewed by `ux-lens` instead. | — |
-| VERIFIED rows carry evidence | roadmap linter | CI |
 | Dead code / clone detection | knip + jscpd, local hygiene tools | local |
 | Auth path is executably verified | `scripts/auth-e2e-replay.ts` | local |
 | OpenAPI breaking-change detection | `oasdiff` via `pnpm check:openapi` — advisory, a human reads the break | local |
@@ -192,6 +191,7 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | React presentation/logic separation | The container/presentational boundary is a cohesion judgement, not a syntactic one. | `.claude/rules/ui-adherence.md` + `ux-lens` |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers. | code review + docs/04 conventions |
 | Reference integrity (`docs/NN §M`, links) | Owner ruling 2026-07-30: use the two grep checks, not a checker script. | `/doc-sync` grep block |
+| `VERIFIED` rows carry real evidence | Owner ruling 2026-07-30: no bespoke roadmap linter. A script can only check a cell is non-empty, which "done" satisfies while proving nothing — evidence *quality* ("browser 375/1440, both sims, curl 409") is a judgement. Prefer instruction + review over a script. | `/slice` Evidence stage + `/pr` + `/roadmap` template + review |
 
 ---
 

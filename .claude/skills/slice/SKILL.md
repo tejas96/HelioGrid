@@ -45,8 +45,9 @@ you intend to handle and the ones you intend to skip. Do not edit until the plan
 | Verify | `/verify-app` | capture the evidence you will cite; green gates never prove UI |
 | Review | `/lenses` | resolve every critical finding |
 | Docs | `/doc-sync` | same commit as the code (Law 8) |
-| Evidence | roadmap row → `VERIFIED` | say what you ran and what you saw; an empty Evidence cell fails CI |
+| Evidence | roadmap row → `VERIFIED` | say what you ran and what you saw; a `VERIFIED` row with an empty Evidence cell is a defect a reviewer rejects |
 | Ship | `/pr` | only when the user asks for it |
 
-Skipping a stage leaves a trace: the gates, the doc-anchor check and the roadmap linter all
-run in CI, and a stage you cannot honestly complete is a finding to raise, not one to omit.
+Skipping a stage leaves a trace: the gates and the doc-anchor check run in CI, and a
+`VERIFIED` row without evidence is caught in review — a stage you cannot honestly complete
+is a finding to raise, not one to omit.

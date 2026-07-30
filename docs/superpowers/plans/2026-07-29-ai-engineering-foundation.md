@@ -75,7 +75,7 @@ Expected: a non-zero count (~113). If it reports `0`, the restructure was alread
 
 **Phase 3 — created:** gates.
 - `tests/invariants/src/{enum-parity.ts,table-tenancy-scan.ts}` — one invariant per concern
-- `.oxlintrc.json`, `scripts/check-roadmaps.mjs`, `.github/pull_request_template.md`
+- `.github/pull_request_template.md` (`.oxlintrc.json` and `scripts/check-roadmaps.mjs` were dropped — oxlint in Task 22, the roadmap linter in Task 26, both owner decisions favouring rules/greps over bespoke scripts)
 - `biome.json`, `.dependency-cruiser.cjs`, `.github/workflows/ci.yml` — extended
 
 **Phase 4 — created:** `packages/domain/` (pure TS), `packages/ui-api/` (types-only parity surface), `scripts/auth-e2e-replay.ts` (on-demand verification, not a test file).
@@ -2869,7 +2869,7 @@ Rewrite `docs/17-engineering-governance.md` with exactly these sections:
 | No hand-rolled HTTP in apps | dependency-cruiser `no-raw-http-clients` | lint | `.dependency-cruiser.cjs` |
 | API breaking changes | oasdiff vs main + openapi freshness diff | CI | `scripts/check-openapi-breaking.mjs` |
 | Doc cross-references resolve | anchor checker | CI | `scripts/check-doc-anchors.mjs` |
-| VERIFIED rows carry evidence | roadmap linter | CI | `scripts/check-roadmaps.mjs` |
+| `VERIFIED` rows carry real evidence | instruction + review (no linter — owner 2026-07-30) | prose | `/slice` · `/pr` · `/roadmap` template |
 | i18n catalogs extracted | lingui extract + git diff guard | CI | `ci.yml` |
 | Token contrast floors | tokens build gate (DECLARED_PAIRS) | typecheck/build | `packages/tokens/src/contrast.ts` |
 | Zod 4 ban · no `process.env` outside config · no `console.log` | Biome rules | lint | `biome.json` |
@@ -4116,160 +4116,16 @@ EOF
 
 ---
 
-### Task 26: Roadmap evidence linter
+### Task 26: Roadmap evidence linter — REMOVED (owner decision, 2026-07-30)
 
-**Files:**
-- Create: `scripts/check-roadmaps.mjs`
-- Modify: `package.json`
-
-**Interfaces:**
-- Consumes: `docs/modules/*.md` roadmaps and `docs/modules/README.md`
-- Produces: `node scripts/check-roadmaps.mjs` — `/pr` (Task 10) calls it by this path
-
-P5: evidence beats assertion. A VERIFIED row with an empty Evidence cell is an assertion.
-
-- [ ] **Step 1: Confirm the current roadmap shape**
-
-```bash
-grep -n "VERIFIED" docs/modules/auth-tenancy.md | head -5
-grep -n "^| # | Task" docs/modules/auth-tenancy.md
-```
-
-Expected: task-table rows with a Status column containing `VERIFIED` and an Evidence column. Confirm the existing VERIFIED rows genuinely carry evidence — they should (tasks 0–2 cite curl/browser/simulator runs).
-
-- [ ] **Step 2: Write the failing test — a VERIFIED row with no evidence**
-
-Append a probe row to the task table in `docs/modules/auth-tenancy.md`:
-
-```markdown
-| 99 | Probe row | api | D5 | — | VERIFIED | |
-```
-
-- [ ] **Step 3: Write the linter**
-
-Create `scripts/check-roadmaps.mjs`:
-
-```js
-#!/usr/bin/env node
-/**
- * Module roadmap linter.
- *
- * "VERIFIED" is the repo's strongest claim: it asserts someone ran the thing and watched
- * it work. A VERIFIED row with an empty Evidence cell is an assertion wearing a claim's
- * clothes (docs/foundation-redesign.md P5). This makes the distinction mechanical.
- *
- * Also checks that every roadmap is listed in docs/modules/README.md, so a module cannot
- * exist without appearing in the index agents read to find work.
- */
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-
-const ROOT = resolve(import.meta.dirname, '..');
-const DIR = join(ROOT, 'docs/modules');
-const VALID_STATUS = ['todo', 'in-progress', 'blocked', 'VERIFIED'];
-
-const failures = [];
-const roadmaps = readdirSync(DIR).filter(
-  (f) => f.endsWith('.md') && !['README.md', '_template.md', 'forward-compat.md'].includes(f),
-);
-
-if (!roadmaps.length) {
-  console.log('roadmap linter: no module roadmaps yet');
-  process.exit(0);
-}
-
-const indexText = existsSync(join(DIR, 'README.md'))
-  ? readFileSync(join(DIR, 'README.md'), 'utf8')
-  : '';
-
-for (const file of roadmaps) {
-  const moduleName = file.replace(/\.md$/, '');
-  const lines = readFileSync(join(DIR, file), 'utf8').split('\n');
-
-  if (indexText && !indexText.includes(moduleName)) {
-    failures.push(`docs/modules/README.md does not list "${moduleName}"`);
-  }
-
-  lines.forEach((line, i) => {
-    if (!line.startsWith('|')) return;
-    const cells = line.split('|').map((c) => c.trim());
-    // | # | Task | Layer(s) | Traces to | Depends on | Status | Evidence |
-    if (cells.length < 9) return;                       // not a task row
-    if (!/^[0-9]+$/.test(cells[1])) return;             // header or separator
-    const status = cells[6];
-    const evidence = cells[7];
-    const where = `docs/modules/${file}:${i + 1}`;
-
-    const known = VALID_STATUS.some((s) => status.startsWith(s));
-    if (!known) {
-      failures.push(`${where}  task ${cells[1]}: status "${status}" is not one of ${VALID_STATUS.join(' · ')}`);
-    }
-    if (status === 'VERIFIED' && !evidence) {
-      failures.push(
-        `${where}  task ${cells[1]}: VERIFIED with an EMPTY Evidence cell. ` +
-          'Record what you ran, on what surface, and what you saw — or set the status back.',
-      );
-    }
-    if (status.startsWith('blocked') && !/blocked\(.+\)/.test(status)) {
-      failures.push(`${where}  task ${cells[1]}: blocked status must name the reason — blocked(<reason>)`);
-    }
-  });
-}
-
-if (failures.length) {
-  console.error(`\nROADMAP FAILURES (${failures.length}):\n`);
-  for (const f of failures) console.error('  ' + f);
-  console.error('');
-  process.exit(1);
-}
-console.log(`roadmap linter OK — ${roadmaps.length} module roadmap(s) consistent`);
-```
-
-- [ ] **Step 4: Run to verify it CATCHES the evidence-free row**
-
-```bash
-node scripts/check-roadmaps.mjs
-```
-
-Expected: FAIL naming `task 99: VERIFIED with an EMPTY Evidence cell`.
-
-- [ ] **Step 5: Remove the probe and verify green**
-
-Delete the probe row from `docs/modules/auth-tenancy.md`, then:
-
-```bash
-node scripts/check-roadmaps.mjs
-```
-
-Expected: PASS — `roadmap linter OK — 1 module roadmap(s) consistent`. If a real VERIFIED row fails, that row was overclaiming: either add its evidence or lower its status.
-
-- [ ] **Step 6: Add the script entry**
-
-In `package.json`, add after `check:openapi`:
-
-```json
-    "check:roadmaps": "node scripts/check-roadmaps.mjs",
-```
-
-- [ ] **Step 7: Commit**
-
-```bash
-git add scripts/check-roadmaps.mjs package.json docs/modules/auth-tenancy.md
-git commit -m "$(cat <<'EOF'
-feat(gates): roadmap evidence linter — VERIFIED must carry evidence
-
-VERIFIED by deliberate violation: a probe row `| 99 | Probe | … | VERIFIED | |` fails with
-its file and line; removing it leaves the existing auth-tenancy roadmap green (tasks 0-2
-already cite real curl/browser/simulator evidence).
-
-Also enforces the status vocabulary (todo · in-progress · blocked(reason) · VERIFIED),
-requires blocked rows to name their reason, and requires every roadmap to appear in
-docs/modules/README.md.
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
-EOF
-)"
-```
+**Not built.** The owner ruled against a bespoke roadmap-parsing script: *"we always
+consider better rules and instructions, lint over script."* A linter can only check that an
+Evidence cell is non-empty — which the word "done" satisfies while proving nothing — so it
+cannot judge whether the evidence is real. The rule ("a `VERIFIED` row carries real
+evidence") is kept as instruction + review: the `/slice` Evidence stage, `/pr`, the roadmap
+template's status vocabulary, and reviewer judgement. docs/17 §5 records it under "Prose —
+with justification"; docs/foundation-redesign.md P5 and §5.2 are updated to match. No
+`scripts/check-roadmaps.mjs`, no `check:roadmaps` in `package.json`.
 
 ---
 
@@ -4358,7 +4214,7 @@ these now** — Task 32 handles the structural half and the rest is future clean
 
 - [ ] **Step 5: Add the scripts**
 
-In `package.json`, add after `check:roadmaps`:
+In `package.json`, add after `check:openapi`:
 
 ```json
     "check:dupes": "jscpd --config .jscpd.json apps packages",
@@ -4555,14 +4411,14 @@ node -e "const s=require('./package.json').scripts; console.log(Object.keys(s))"
 grep -c "name:" .github/workflows/ci.yml
 ```
 
-Expected: scripts include `check:anchors`, `check:openapi`, `check:roadmaps`, `check:dupes`, `check:unused`. Confirm each new gate from this phase has either a script or a CI step.
+Expected: scripts include `check:anchors`, `check:openapi`, `check:dupes`, `check:unused`. Confirm each new gate from this phase has either a script or a CI step.
 
 - [ ] **Step 2: Add the aggregate script**
 
 In `package.json`, add:
 
 ```json
-    "verify": "pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test && pnpm turbo build && pnpm check:anchors && pnpm check:roadmaps"
+    "verify": "pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test && pnpm turbo build && pnpm check:anchors"
 ```
 
 Deliberately excluded from `verify`: `check:openapi` (needs a base ref and network), and
@@ -4576,8 +4432,6 @@ In `.github/workflows/ci.yml`, add after the i18n extract guard step:
 ```yaml
       - name: Doc anchors resolve (docs/17 §4 — the F3 gate)
         run: pnpm check:anchors
-      - name: Roadmap evidence (VERIFIED rows must cite evidence)
-        run: pnpm check:roadmaps
 ```
 
 - [ ] **Step 4: Write the PR template**
@@ -4647,13 +4501,13 @@ git add .github/pull_request_template.md .github/workflows/ci.yml package.json
 git commit -m "$(cat <<'EOF'
 feat(gates): PR template + CI wiring; `pnpm verify` runs the gate set
 
-VERIFIED: `pnpm verify` green across lint (biome + oxlint + cruiser + sherif +
-no-test-files), boundaries, typecheck, test (tenancy + table scan + enum parity), build,
-doc anchors and roadmap evidence; a script asserts every required gate is present in
+VERIFIED: `pnpm verify` green across lint (biome + cruiser + sherif + adherence greps),
+boundaries, typecheck, test (tenancy + table scan + enum parity), build, and
+doc anchors; a script asserts every required gate is present in
 ci.yml AND that no decorative step (knip/jscpd/oasdiff/continue-on-error) has crept in.
 
 CI stays deliberately small: install, lint, boundaries, typecheck, migrate, test, build,
-openapi freshness, i18n extract, doc anchors, roadmap evidence, secret scan, append-only —
+openapi freshness, i18n extract, doc anchors, secret scan, append-only —
 plus the existing android and ios build lanes. Cleanup tools and optional binaries run
 locally. The PR template is short on purpose; a long one goes unfilled.
 
@@ -5919,7 +5773,7 @@ Deliberately **not** covered, with reasons: §3.8 memory policy is a convention 
 
 **Known gaps a reviewer should hold me to.** Task 32 declares two of twenty-five component interfaces explicitly and marks the rest with `/* … */`; the implementer must enumerate all twenty-five from the existing index files — the pattern is fully specified but the inventory is not transcribed. Task 33 describes its ten assertions rather than shipping the script body, because the dev `OtpPort` seam's exact interface must be read from `apps/api` first. Task 15's N1–N10 and Task 14's census extraction are verbatim copies whose source text is not reproduced here. Task 21's `GLOBAL_TABLES` allowlist is seeded from the migration files; Better Auth's table names must be confirmed against the live database. Task 35 pins `react-native-config@1.5.6` and adds a native module — if that version is stale at execution time, pin the current one, and budget for the iOS/Android clean-build verification the task requires. Task 22's Biome rule set will surface real findings on first run; the task says fix the code rather than relax the rules, which means its true size depends on what the tightened rules find.
 
-**Type consistency.** `runEnumParity`, `runTableTenancyScan`, `runTenancyInvariants` are all `(url: string) => Promise<void>` and all called from `run.ts`. `loginReducer`/`initialLoginState`/`LoginState`/`LoginEvent`/`DONE_DWELL_MS` are defined in Task 31 and consumed by both login screens under those exact names. `ComponentApiSurface` is defined and consumed in Task 32. `parseEnv(schema, source, label)` is defined in Task 34 and consumed by `server.ts`, `web.ts` and `native.ts` across Tasks 34–35. Script paths are stable across references: `scripts/check-doc-anchors.mjs` (Tasks 13, 19, 29 and `/doc-sync`), `scripts/check-roadmaps.mjs` (Tasks 26, 29 and `/pr`), `scripts/check-openapi-breaking.mjs` (Tasks 25, 29 and `/contract-change`), `scripts/check-env-access.mjs` (Tasks 34, 36), `scripts/auth-e2e-replay.ts` (Task 33 and `/verify-app`). The hook is `write-guard.sh` everywhere — no reference to the earlier `migration-guard.sh` name survives.
+**Type consistency.** `runEnumParity`, `runTableTenancyScan`, `runTenancyInvariants` are all `(url: string) => Promise<void>` and all called from `run.ts`. `loginReducer`/`initialLoginState`/`LoginState`/`LoginEvent`/`DONE_DWELL_MS` are defined in Task 31 and consumed by both login screens under those exact names. `ComponentApiSurface` is defined and consumed in Task 32. `parseEnv(schema, source, label)` is defined in Task 34 and consumed by `server.ts`, `web.ts` and `native.ts` across Tasks 34–35. Script paths are stable across references: `scripts/check-doc-anchors.mjs` (Tasks 13, 19, 29 and `/doc-sync`), `scripts/check-openapi-breaking.mjs` (Tasks 25, 29 and `/contract-change`), `scripts/check-env-access.mjs` (Tasks 34, 36), `scripts/auth-e2e-replay.ts` (Task 33 and `/verify-app`). (`scripts/check-roadmaps.mjs` was removed with Task 26 — owner decision 2026-07-30.) The hook is `write-guard.sh` everywhere — no reference to the earlier `migration-guard.sh` name survives.
 
 **Ordering dependencies verified.** Task 2 precedes Tasks 20–21 (invariants would silently skip without the real gate). Task 13 precedes Tasks 14–19 (each uses the anchor checker as its test). Task 22's Biome hardening precedes nothing that depends on it, but running it before Phase 4 means the new `packages/domain` and `packages/env` code is written under the tightened rules rather than retrofitted. Task 30 precedes Task 31. Task 34 precedes Tasks 35–36. Task 5's hooks precede all later editing, so the plan runs under its own guards — including the no-test-files rule.
 

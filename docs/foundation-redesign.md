@@ -59,8 +59,10 @@ marked SUPERSEDED, in an external repo, or under `research/` (F5). Implementatio
 becomes hidden truth: a change that invalidates a doc updates the doc in the same commit
 (Law 8), and the drift gates in §5 make the important cases mechanical.
 
-**P5 — Evidence beats assertion.** "VERIFIED" requires runnable or recorded evidence; the
-roadmap linter (§5.2) rejects VERIFIED rows with empty Evidence cells.
+**P5 — Evidence beats assertion.** "VERIFIED" requires runnable or recorded evidence.
+Enforced by instruction and review, not a linter (owner ruling 2026-07-30): a script can
+only check the Evidence cell is non-empty — which "done" satisfies while proving nothing —
+so `/slice`, `/pr` and the roadmap template carry the rule and a reviewer judges the evidence.
 
 ---
 
@@ -384,7 +386,7 @@ re-injects; path-scoped rules re-attach on next matching read).
 | No hand-rolled HTTP in apps | dep-cruiser rule: `axios|node-fetch|undici` (and bare `fetch` wrappers outside `lib/api-client.ts` / `src/data/`) banned from web+mobile — contract drift becomes a type error | lint |
 | Migration append-only | `git diff --diff-filter=MD --exit-code origin/main...HEAD -- packages/db/migrations` | CI |
 | Doc-anchor integrity | ~80-line script: every `docs/NN §M`, `CLAUDE.md §X`, `[[file]]` cross-reference in docs/ + CLAUDE.mds resolves to an existing file/heading | CI (the F3 fix) |
-| Roadmap evidence | linter: `VERIFIED` rows must have non-empty Evidence; module status matches README index | CI |
+| Roadmap evidence | ~~linter~~ **dropped 2026-07-30 (owner):** a non-empty-cell check is trivially gamed and can't judge evidence quality. Instruction + review instead — `/slice`, `/pr`, roadmap template. | prose |
 | Secrets | gitleaks action | CI |
 | Dead code + copy-paste duplication | knip (unused exports/files/deps) + jscpd (clone threshold) | CI, advisory→error after burn-in |
 | Contrast coverage | derive fg/bg candidate pairs from `packages/ui/src/*.css` usage; fail on pairs missing from `DECLARED_PAIRS` | tokens build |
