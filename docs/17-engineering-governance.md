@@ -137,7 +137,7 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | Rule | Mechanism | Stage | Where |
 |---|---|---|---|
 | Dependency direction & layer purity | dependency-cruiser, **20 rules**, all `error`. The two `domain-purity-*` rules were INERT until `packages/domain` existed (ADR-0021) — they targeted a path matching nothing, so a green cruise proved less than it looked like. Both proven to fire 2026-07-30. | lint | `.dependency-cruiser.cjs` |
-| Package encapsulation | Turborepo Boundaries tags | lint | `turbo.json` + `ci.yml` |
+| Package encapsulation | Turborepo Boundaries tags. **Tags live in each package's OWN `turbo.json`** (with `"extends": ["//"]`), never in `package.json`'s `turbo.tags` — turbo does not read them there, and while they sat in the wrong place `pnpm boundaries` enforced NOTHING: emptying an allowlist for a package with real dependencies still reported "no issues found" (found and fixed 2026-07-30). Proven to fail on a deliberate cross-tag import. | lint | per-package `turbo.json` + root `turbo.json` + `ci.yml` |
 | Screens import only from component indexes | dependency-cruiser `package-index-only` | lint | `.dependency-cruiser.cjs` |
 | Module public surface (one-change-one-file) | dependency-cruiser `api-module-boundary` | lint | `.dependency-cruiser.cjs` |
 | db/drizzle only in `*.repository.ts` | dependency-cruiser `db-access-in-repositories-only` | lint | `.dependency-cruiser.cjs` |

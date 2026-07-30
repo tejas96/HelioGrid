@@ -29,32 +29,32 @@
     "tags": {
       "domain": {
         "dependencies": {
-          "allow": ["domain"]
+          "allow": ["domain", "config"]
         }
       },
       "contracts": {
         "dependencies": {
-          "allow": ["contracts", "domain"]
+          "allow": ["contracts", "domain", "config"]
         }
       },
       "db": {
         "dependencies": {
-          "allow": ["db", "domain"]
+          "allow": ["db", "domain", "config"]
         }
       },
       "tokens": {
         "dependencies": {
-          "allow": ["tokens"]
+          "allow": ["tokens", "config"]
         }
       },
       "i18n": {
         "dependencies": {
-          "allow": ["i18n", "contracts", "domain"]
+          "allow": ["i18n", "contracts", "domain", "config"]
         }
       },
       "ui": {
         "dependencies": {
-          "allow": ["ui", "tokens"]
+          "allow": ["ui", "contracts", "tokens", "config"]
         }
       },
       "app": {

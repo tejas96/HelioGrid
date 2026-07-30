@@ -16,10 +16,5 @@
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
     "typescript": "5.8.3"
-  },
-  "turbo": {
-    "tags": [
-      "domain"
-    ]
   }
 }
