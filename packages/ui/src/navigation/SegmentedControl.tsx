@@ -1,18 +1,18 @@
 'use client';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import './SegmentedControl.css';
 
 export interface SegmentedOption {
   value: string;
-  label: ReactNode;
+  label: string;
 }
 
 /** _adherence allowlist: options, value, onChange, density, style. */
 export interface SegmentedControlProps {
   options: SegmentedOption[];
   value: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   density?: 'expressive' | 'functional';
   style?: CSSProperties;
 }

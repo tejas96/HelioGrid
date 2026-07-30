@@ -8,13 +8,13 @@ const AVATAR_FONT: Record<number, number> = { 24: 11, 32: 13, 40: 15, 56: 20, 80
 /** _adherence allowlist: src, name, size, style — perfect circle, initials fallback. */
 export interface AvatarProps {
   src?: string;
-  name?: string;
+  name: string;
   /** Diameter in px (reference steps: 24 / 32 / 40 / 56 / 80). */
   size?: number;
   style?: CSSProperties;
 }
 
-export function Avatar({ src, name = '', size = 40, style }: AvatarProps) {
+export function Avatar({ src, name, size = 40, style }: AvatarProps) {
   const initials = name
     .split(' ')
     .filter(Boolean)

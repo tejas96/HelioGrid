@@ -7,7 +7,9 @@
  * Divergences found during extraction are recorded per interface so the omission is a
  * decision on the record, not an oversight.
  */
+
 import type { ReactNode } from 'react';
+import type { RadioCardOption } from './common.js';
 
 /**
  * OtpInput — 8 shared props.
@@ -31,20 +33,13 @@ export interface OtpInputApi {
 }
 
 /**
- * RadioCard — 2 shared props.
- *
- * NOT in the contract:
- *   - options — DRIFT: Prop name, optionality and written type text match
- *   (`RadioCardOption[]`), but `RadioCardOption` is a DIFFERENT type declared in each file.
- *   Web: `label: ReactNode`, `description?: ReactNode`. RN: `label: string`, `description?:
- *   string`. `value: string` and `icon?: ReactNode` are identical on both. A shared
- *   contract must pick one — RN cannot render arbitrary ReactNode as a card
- *   title/description.
- *   - onChange — DRIFT: Identical function type, different optionality: `onChange?` is
- *   OPTIONAL on web and REQUIRED on RN. Call sites written against the web type (omitting
- *   onChange) will not compile against the RN component.
+ * RadioCard — 4 shared props. Same pair of defects as Tabs, fixed the same way 2026-07-30:
+ * `onChange` is required on both, and `RadioCardOption` has ONE definition in common.ts (its
+ * `label`/`description` were ReactNode on web, string on RN).
  */
 export interface RadioCardApi {
+  options: RadioCardOption[];
+  onChange: (value: string) => void;
   value: string;
   label: string;
 }

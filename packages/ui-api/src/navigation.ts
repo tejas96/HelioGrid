@@ -7,33 +7,27 @@
  * Divergences found during extraction are recorded per interface so the omission is a
  * decision on the record, not an oversight.
  */
-import type { Density } from './common.js';
+import type { Density, SegmentedOption, TabItem } from './common.js';
 
 /**
- * Tabs — 1 shared prop.
- *
- * NOT in the contract:
- *   - items — DRIFT: Type text is identical (`TabItem[]`) and both are required, but the
- *   referenced TabItem differs structurally: web `TabItem.label: ReactNode`, RN
- *   `TabItem.label: string`. `TabItem.value: string` on both.
- *   - onChange — DRIFT: Optionality differs: `onChange?` is optional on web, required on
- *   RN. Signatures are identical.
+ * Tabs — 3 shared props. All three defects here were FIXED 2026-07-30 rather than excluded:
+ * `onChange` was optional on web (a control with a required `value` that cannot report a
+ * change is broken, not permissive), and `TabItem.label` was `ReactNode` on web / `string` on
+ * RN. `TabItem` now has ONE definition, in common.ts.
  */
 export interface TabsApi {
+  items: TabItem[];
   value: string;
+  onChange: (value: string) => void;
 }
 
 /**
- * SegmentedControl — 2 shared props.
- *
- * NOT in the contract:
- *   - options — DRIFT: Type text is identical (`SegmentedOption[]`) and both required, but
- *   the referenced SegmentedOption differs: web `label: ReactNode`, RN `label: string`.
- *   `value: string` on both.
- *   - onChange — DRIFT: Optionality differs: `onChange?` is optional on web, required on
- *   RN. Signatures are identical.
+ * SegmentedControl — 4 shared props. Same two defects as Tabs, fixed the same way: `onChange`
+ * is required on both platforms and `SegmentedOption` has one definition in common.ts.
  */
 export interface SegmentedControlApi {
+  options: SegmentedOption[];
   value: string;
+  onChange: (value: string) => void;
   density?: Density;
 }

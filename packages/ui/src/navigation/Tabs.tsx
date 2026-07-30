@@ -1,19 +1,19 @@
 'use client';
 import * as RadixTabs from '@radix-ui/react-tabs';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import './Tabs.css';
 
 export interface TabItem {
   value: string;
-  label: ReactNode;
+  label: string;
 }
 
 /** _adherence allowlist: items, value, onChange, style. */
 export interface TabsProps {
   items: TabItem[];
   value: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   style?: CSSProperties;
 }
 

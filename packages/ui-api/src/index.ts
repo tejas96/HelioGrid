@@ -12,7 +12,7 @@
  * fails ITS OWN typecheck, naming the component.
  *
  * WHAT THIS CONTRACT COVERS — read this before assuming a green build means full parity.
- * It declares the 99 props (of 172 across 28 components) that both platforms ALREADY agree
+ * It declares the 107 props (of 172 across 28 components) that both platforms agree
  * on: same name, equivalent type, same optionality. Three categories are deliberately absent:
  *
  *   1. Platform-owned props. Web inherits DOM attributes (`type`, `form`, `aria-*`) and RN has
@@ -27,13 +27,22 @@
  *      accept JSX that RN cannot render; declaring the narrower one fails web today. Recorded
  *      per interface rather than papered over.
  *
- * SEVEN genuine parity defects were found while deriving this — the same class as the
- * StatusChip incident, none of them caught by the galleries. They are recorded in the
- * interface that owns them and await an owner ruling, because each is an API change:
- * `Avatar.name` (required RN / optional web), `EmptyState.icon` (required web / optional RN),
- * `Tabs.onChange`, `SegmentedControl.onChange`, `RadioCard.onChange` (all optional web /
- * required RN), and `TabItem` / `SegmentedOption` / `RadioCardOption`, whose referenced types
- * differ structurally between platforms.
+ * SEVEN parity defects were found while deriving this, all the same class as the StatusChip
+ * incident and none caught by the galleries. All SEVEN WERE FIXED on 2026-07-30 rather than
+ * excluded, and the props they governed are now IN the contract:
+ *
+ *   Avatar.name              optional web (defaulted to '') → required both. It is the
+ *                            accessible name; the default shipped alt="" on a person's avatar.
+ *   EmptyState.icon          optional RN → required both (RN drew an empty bloom circle).
+ *   Tabs.onChange            optional web → required both. With `value` required the parent
+ *   SegmentedControl.onChange   owns state, so a control that cannot report a change is
+ *   RadioCard.onChange          broken, not permissive.
+ *   TabItem / SegmentedOption / RadioCardOption
+ *                            declared separately per platform and drifted (`label` was
+ *                            ReactNode on web, string on RN). Now ONE definition in common.ts.
+ *
+ * In every case RN held the stricter, correct contract and web was the lax side. No call site
+ * had to change: each was already passing the prop and already passing a string.
  */
 export type { ChipTone, Density } from './common.js';
 export type {

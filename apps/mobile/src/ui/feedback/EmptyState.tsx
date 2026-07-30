@@ -11,7 +11,7 @@ import { BloomLayer } from '../composites/BloomLayer';
  * same react-native-svg radial, stop-for-stop from the --glow-brand token).
  */
 export interface EmptyStateProps {
-  icon?: ReactNode;
+  icon: ReactNode;
   title: string;
   description?: string;
   action?: ReactNode;

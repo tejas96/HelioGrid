@@ -13,14 +13,14 @@ import type { ReactNode } from 'react';
 import type { ChipTone, Density } from './common.js';
 
 /**
- * Avatar — 2 shared props.
- *
- * NOT in the contract:
- *   - name — DRIFT: Optionality differs: RN declares `name: string` (REQUIRED); web
- *   declares `name?: string` (optional, defaults to ''). Type is identical (string). The
- *   rnOptional flag here is reported as declared: RN is NOT optional.
+ * Avatar — 3 shared props. `name` was optional on web (defaulting to '') and required on RN:
+ * FIXED 2026-07-30 to required on both. It is the accessible name — web fed it to `alt` and RN
+ * to `accessibilityLabel`, so the web default rendered `alt=""` and hid a person's avatar from
+ * screen readers. packages/ui/CLAUDE.md already banned optional-with-fallback for anything
+ * user-visible; this was that rule being broken.
  */
 export interface AvatarApi {
+  name: string;
   src?: string;
   size?: number;
 }

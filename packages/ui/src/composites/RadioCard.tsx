@@ -6,8 +6,8 @@ import './RadioCard.css';
 
 export interface RadioCardOption {
   value: string;
-  label: ReactNode;
-  description?: ReactNode;
+  label: string;
+  description?: string;
   icon?: ReactNode;
 }
 
@@ -20,7 +20,7 @@ export interface RadioCardOption {
 export interface RadioCardProps {
   options: RadioCardOption[];
   value: string;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   /** Accessible group name — required (a11y contract). */
   label: string;
 }

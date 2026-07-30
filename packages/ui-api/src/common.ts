@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 /**
  * Vocabulary shared across component APIs.
  *
@@ -14,3 +16,28 @@ export type Density = 'expressive' | 'functional';
 
 /** Chip and Badge tones. NOT the workflow status set — that is `WorkflowStatus`. */
 export type ChipTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'accent';
+
+/**
+ * Option/item shapes for the selection controls.
+ *
+ * Defined here rather than twice: both platforms declared these locally and they had DRIFTED —
+ * `label` was `ReactNode` on web and `string` on RN, so a shared screen could pass JSX that RN
+ * cannot render. `string` is the honest intersection and every call site already used one.
+ */
+export interface TabItem {
+  value: string;
+  label: string;
+}
+
+export interface SegmentedOption {
+  value: string;
+  label: string;
+}
+
+export interface RadioCardOption {
+  value: string;
+  label: string;
+  description?: string;
+  /** The one genuinely renderable slot — both platforms accept a node here. */
+  icon?: ReactNode;
+}

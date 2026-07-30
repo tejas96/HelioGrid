@@ -10,16 +10,13 @@
 import type { ReactNode } from 'react';
 
 /**
- * EmptyState — 2 shared props.
- *
- * NOT in the contract:
- *   - icon — DRIFT: Optionality differs: `icon: ReactNode` is REQUIRED on web, `icon?:
- *   ReactNode` is OPTIONAL on RN. Types are equivalent.
- *   - title — DRIFT: Type differs: web accepts `ReactNode`, RN accepts only `string`.
- *   Required on both.
- *   - description — DRIFT: Type differs: web `ReactNode`, RN `string`. Optional on both.
+ * EmptyState — 3 shared props. `icon` was required on web and optional on RN: FIXED 2026-07-30
+ * to required on both (RN rendered an empty bloom circle when omitted). `title` and
+ * `description` remain outside the contract — ReactNode on web, string on RN, part of the
+ * eleven copy props in the package header.
  */
 export interface EmptyStateApi {
+  icon: ReactNode;
   action?: ReactNode;
   glow?: boolean;
 }
