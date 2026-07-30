@@ -7,6 +7,8 @@
   domain math (that's packages/domain), raw SQL outside repositories, console.log.
 
 ## Commands
+`dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load
+automatically and a REAL env var still wins (Fly secrets and CI are never overridden).
 pnpm --filter @heliogrid/api dev         # tsx watch (PORT=8080 default)
 pnpm --filter @heliogrid/api build | typecheck
 curl localhost:8080/health               # liveness · /health/ready = readiness

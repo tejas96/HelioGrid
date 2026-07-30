@@ -8,6 +8,8 @@
   into another module's repositories.
 
 ## Commands
+`dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load
+automatically and a REAL env var still wins (Fly secrets and CI are never overridden).
 pnpm --filter @heliogrid/worker dev | build | typecheck
 REDIS_URL unset ⇒ boots in idle scaffold mode (no queue connection).
 

@@ -12,6 +12,15 @@
 ## Commands
 pnpm --filter @heliogrid/env typecheck
 
+## Where real values come from
+- prod: Fly secrets. local: `.env.local` (git-ignored), loaded by Node's
+  `--env-file-if-exists` on the api/worker `dev`/`start` scripts and by Next for apps/web.
+  A real environment variable always WINS over the file, so CI and Fly are never overridden.
+- `db migrate` and the invariants runner take the URL from the SHELL — the value is expanded
+  before Node starts, so the flag cannot help. `set -a; . ./.env.local; set +a` for a session.
+- This package is the source of truth for WHICH variables exist and their shape;
+  `.env.example` documents them; neither ever holds a real secret.
+
 ## Depends on / depended on by
 uses: zod (pinned 3.25.76)
 used by: apps/api, apps/worker, tests/invariants (via `./server`); apps/web, apps/mobile
