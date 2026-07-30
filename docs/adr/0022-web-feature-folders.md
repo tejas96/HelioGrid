@@ -28,8 +28,11 @@ not a capability.
 
 ## Consequences
 
-- The 50-line cap is mechanical (`pnpm check:adherence`), so the shape cannot degrade silently
-  the way the previous convention did.
+- The 50-line cap is mechanical — Biome `noExcessiveLinesPerFunction` (maxLines 50) scoped to
+  `apps/web/app/**/page.tsx`, added by this plan's Task 6 — so the shape cannot degrade
+  silently the way the previous convention did. A lint rule rather than a line-counting script
+  is a standing preference (owner directive 2026-07-31): it measures the function BODY, so
+  imports and comments do not eat the budget, and it is versioned with the toolchain.
 - A capability's files change together and now live together; auth's three screens can share
   `features/auth/shared/` without a satellite that belongs to no route.
 - One more indirection: a reader following a route now opens two files instead of one. Accepted
@@ -37,7 +40,8 @@ not a capability.
   route folder was not actually one file's worth of reading.
 - **apps/mobile is deliberately NOT changed.** RN has no router-driven `app/` directory;
   `src/screens/<name>/` is already the equivalent shape. The asymmetry is intentional, not
-  drift, and is recorded in both CLAUDE.md files.
+  drift; this plan's Task 7 records it in both CLAUDE.md files so a later agent does not
+  "align" one to the other.
 - Migration touches screens the auth rebuild (auth-tenancy ruling 6) will replace. Accepted:
   the move is mechanical, and it is what allows the cap to be enabled before the rebuild lands
   rather than after.
