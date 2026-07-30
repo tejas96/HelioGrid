@@ -59,8 +59,8 @@ per-package CLAUDE.md landmines are mandatory on first discovery).
 **The data model and API surface are NEVER implemented in one shot.**
 
 - `docs/04-data-model.md` is the FROZEN DESIGN of the whole system — the reference that
-  keeps future modules coherent (forward-compat register, docs/14 §4). It is NOT a
-  build order.
+  keeps future modules coherent (forward-compat register:
+  `docs/modules/forward-compat.md`). It is NOT a build order.
 - **Tables, enums, columns, contracts and endpoints are AUTHORED only when their OWNING
   module's slice begins.** Migration 0001/0002 carry the identity/platform spine; every
   other table lands with its owning module's FIRST migration; every endpoint lands with

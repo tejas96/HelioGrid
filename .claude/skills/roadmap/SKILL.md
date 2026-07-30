@@ -35,9 +35,9 @@ spec rather than discovering them in review.
 Copy `docs/modules/_template.md` to `docs/modules/<module>.md` and fill it. Three things
 the template assumes you will do:
 
-- **Restate this module's forward-compat row** (`docs/14` §4) — what it must build in NOW
-  so a later module is not forced into a refactor. This is what makes Law 9's
-  module-by-module growth safe rather than short-sighted.
+- **Restate this module's forward-compat row** (`docs/modules/forward-compat.md`) — what it
+  must build in NOW so a later module is not forced into a refactor. This is what makes
+  Law 9's module-by-module growth safe rather than short-sighted.
 - **Claim the `docs/13` UX-gap rows** this module will design.
 - **Record five-lens calls as module rulings** as you make them. The owner may veto any of
   them, which is why they are written down rather than absorbed into the code.

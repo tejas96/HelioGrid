@@ -6,7 +6,8 @@
 > violation. Cross-module sequencing stays in docs/14.
 
 ## Scope
-One paragraph + explicit NON-goals. Forward-compat register row (docs/14 §4) restated.
+One paragraph + explicit NON-goals. Forward-compat register row
+([./forward-compat.md](./forward-compat.md)) restated.
 
 ## Traceability header
 - D-decisions: D<n>, D<n>… (+ docs/15 rulings touched)
