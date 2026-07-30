@@ -1,4 +1,4 @@
-# MODULE auth-tenancy — roadmap (Track A; screens phase, backend pre-landed)
+# MODULE auth-tenancy — roadmap (Track A; REBUILT FRESH — see ruling 6)
 
 > The module's ONLY task list (docs/17 §3). Specs extracted from the mockups live in
 > [auth-tenancy/specs/](./auth-tenancy/specs/) — layout, verbatim copy, component maps,
@@ -18,7 +18,8 @@ custom roles (D29 excluded).
   SetupLater (.dc.html, design/mockups/).
 - docs/04 owned: §1 spine (landed: 0001–0002). No new tables expected this phase;
   any discovered need lands as migration 0003+ within this module only (Law 9).
-- Contracts: auth router landed; ADDITIONS this phase: expired-invite re-request,
+- Contracts: an auth router exists from the pre-foundation pass and is re-derived in the
+  rebuild (ruling 6), not extended as-is; ADDITIONS this phase: expired-invite re-request,
   voice-OTP escalation (DLT-gated), coach-mark seen state (profile PATCH suffices).
 
 ## Module rulings (five-lenses calls — owner may veto)
@@ -33,13 +34,23 @@ custom roles (D29 excluded).
 5. New shared primitives (OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator,
    RadioCard, Spinner) are COMPOSED into packages/ui + RN mirrors and gallery-proven —
    docs/13 rows added (UX gaps designed in-slice per the standing law).
+6. **REBUILD, don't extend (owner ruling 2026-07-30).** The auth module — backend flow AND
+   frontend — is **rebuilt fresh** when this module's work begins. Tasks 0–2 were landed
+   BEFORE the foundation work (the harness, the laws digest, the path-scoped rules, the
+   gates), so they were not written against it. Their `VERIFIED` rows stay as an honest
+   record of what was proven on 2026-07-26 — do **not** read them as a foundation to build
+   on, and do not spend effort repairing that implementation. Known-broken and deliberately
+   NOT fixed: the local dev-login OTP path fails on the simulator ("Couldn't send the code"),
+   which is why any authenticated RN screen — including the dev gallery, reachable only from
+   a HomeScreen button — cannot currently be reached for `/verify-app`. Re-verify from
+   scratch during the rebuild rather than trusting the 2026-07-26 evidence.
 
 ## Tasks
 | # | Task | Layer(s) | Traces to | Depends | Status | Evidence |
 |---|---|---|---|---|---|---|
-| 0 | Backend: BA wiring, guard, onboarding/me/profile/team/invites api | contracts+db+api | D7/D11/D27 | — | VERIFIED | curl E2E 2026-07-26 (commit a66a4c3) |
-| 1 | Shared auth primitives: OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator, Spinner (+RadioCard) web+RN + galleries | ui | specs §component-maps | 0 | VERIFIED | galleries checked in browser + iPhone sim 2026-07-26; OtpInput live-typed |
-| 2 | Login screen web+RN (phone→OTP→success; 30s resend; call-me seam; ~14 states) | web+mobile+ux | Login/LoginFlow specs | 1 | VERIFIED | E2E dev-OTP walked 2026-07-26: browser 375+1440 (happy + wrong-code + send-error + change-number), iPhone (verify→session→Home, relaunch restores) AND Pixel (fresh user one-pass). Fixed in-slice: RN cookie jar credentials 'omit' + getSetCookie (S1 landmine, mobile CLAUDE.md), tsx @Inject metadata (api CLAUDE.md). /signup placeholder holds the exit until task 3. Five-lens review passed; open QA notes → task 12: offline boot relaunch UX (Track E), jar cookie-expiry on future sign-out |
+| 0 | Backend: BA wiring, guard, onboarding/me/profile/team/invites api | contracts+db+api | D7/D11/D27 | — | VERIFIED (pre-foundation — REBUILD, ruling 6) | curl E2E 2026-07-26 (commit a66a4c3) |
+| 1 | Shared auth primitives: OtpInput, TextLink, Wordmark, BloomLayer, StepIndicator, Spinner (+RadioCard) web+RN + galleries | ui | specs §component-maps | 0 | VERIFIED (pre-foundation — REBUILD, ruling 6) | galleries checked in browser + iPhone sim 2026-07-26; OtpInput live-typed |
+| 2 | Login screen web+RN (phone→OTP→success; 30s resend; call-me seam; ~14 states) | web+mobile+ux | Login/LoginFlow specs | 1 | VERIFIED (pre-foundation — REBUILD, ruling 6) | E2E dev-OTP walked 2026-07-26: browser 375+1440 (happy + wrong-code + send-error + change-number), iPhone (verify→session→Home, relaunch restores) AND Pixel (fresh user one-pass). Fixed in-slice: RN cookie jar credentials 'omit' + getSetCookie (S1 landmine, mobile CLAUDE.md), tsx @Inject metadata (api CLAUDE.md). /signup placeholder holds the exit until task 3. Five-lens review passed; open QA notes → task 12: offline boot relaunch UX (Track E), jar cookie-expiry on future sign-out |
 | 3 | SignUp web+RN (Law 7) + routes /signup | web+mobile+ux | SignUp specs | 1 | todo | |
 | 4 | WhatYouSell onboarding step (radio-cards, kW input, skip) web-only (owner flow) | web+ux | WhatYouSell specs | 1,3 | todo | |
 | 5 | YoureReady doors + SetupLater accordion (team invites live; GST live; logo seam blocked ruling 3) | web+ux | YoureReady specs | 4 | todo | |
