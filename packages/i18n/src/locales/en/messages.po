@@ -19,7 +19,7 @@ msgid "6-digit code"
 msgstr "6-digit code"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/signup/page.tsx:26
+#: ../../apps/web/features/auth/signup/SignupScreen.tsx:26
 msgid "Back to sign in"
 msgstr "Back to sign in"
 
@@ -42,7 +42,7 @@ msgid "Change number"
 msgstr "Change number"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/signup/page.tsx:20
+#: ../../apps/web/features/auth/signup/SignupScreen.tsx:20
 msgid "Company sign-up opens here"
 msgstr "Company sign-up opens here"
 
@@ -151,7 +151,7 @@ msgid "That code doesn’t match. Check it and try again."
 msgstr "That code doesn’t match. Check it and try again."
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/signup/page.tsx:21
+#: ../../apps/web/features/auth/signup/SignupScreen.tsx:21
 msgid "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
 msgstr "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
 

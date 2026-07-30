@@ -174,7 +174,7 @@ fi
 # They are being rebuilt with auth (auth-tenancy ruling 6), so wrapping them now would be
 # translating markup that is about to be deleted — but the debt is LISTED rather than invisible,
 # and a NEW screen gets no such grace.
-COPY_DEBT='apps/web/app/home/page.tsx|apps/web/app/onboarding/page.tsx'
+COPY_DEBT='apps/web/app/home/page.tsx|apps/web/features/auth/onboarding/OnboardingScreen.tsx'
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
          apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
