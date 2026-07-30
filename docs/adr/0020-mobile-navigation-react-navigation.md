@@ -32,7 +32,7 @@ registry-latest verified 2026-07-27, compatible with `react-native` 0.86.0 / Rea
 | `react-native-screens` | `4.26.2` | required peer; **new native dep → `pod install`** |
 | `react-native-safe-area-context` | `5.5.2` | required peer, **already a dependency** |
 
-Structure is fixed by `CLAUDE.md` §Structure:
+Structure is fixed by `docs/02` §2 (and `apps/mobile/CLAUDE.md` §Local conventions):
 
 ```
 apps/mobile/

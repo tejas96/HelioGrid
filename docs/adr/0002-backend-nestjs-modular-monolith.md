@@ -35,5 +35,5 @@ The API must serve five non-web consumers (bare RN mobile, tokenised public cust
 
 - `../research/backend.md` (Hono recommendation + NestJS caution — overridden by directive; separate-API rationale stands)
 - `../research/verify-nestContracts.md` (NestJS + ts-rest path verified)
-- BLUEPRINT.md — Final-review directive 1 (user-confirmed, binding)
+- `../15-spec-resolutions.md` §4 directive 1 (owner-confirmed, binding — absorbed from the archived BLUEPRINT)
 - https://encore.dev/articles/nestjs-vs-fastify-vs-hono · https://docs.expo.dev/guides/using-nextjs/
