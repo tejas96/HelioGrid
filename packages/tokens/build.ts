@@ -12,10 +12,17 @@
  * NEVER hand-transcribe values. NEVER read _ds_manifest.json (it snapshotted the 1ms
  * reduced-motion overrides as canonical — the exact drift this generator prevents).
  */
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computePairs } from './src/contrast';
+import { computePairs, findUndeclaredPairs } from './src/contrast';
 import { buildThemeObject, renderThemeTs } from './src/emit-theme';
 import {
   ALL_EXTENSION_TOKENS,
@@ -90,6 +97,32 @@ function main() {
     }
     throw new Error(`${failing.length} contrast pair(s) below floor — build refused`);
   }
+
+  // Ext 5b: coverage — a pairing a component USES but nobody declared is unchecked, not safe.
+  const uiCssDir = join(repoRoot, 'packages', 'ui', 'src');
+  const cssFiles = existsSync(uiCssDir)
+    ? readdirSync(uiCssDir, { recursive: true })
+        .map(String)
+        .filter((f) => f.endsWith('.css'))
+        .map((f) => ({
+          path: `packages/ui/src/${f}`,
+          text: readFileSync(join(uiCssDir, f), 'utf8'),
+        }))
+    : [];
+  const undeclared = findUndeclaredPairs(cssFiles);
+  if (undeclared.length > 0) {
+    throw new Error(
+      `tokens: ${undeclared.length} foreground/background pairing(s) used by components but ` +
+        `not in DECLARED_PAIRS — they are UNCHECKED, not safe:\n  - ${undeclared.join('\n  - ')}\n\n` +
+        'Add each to DECLARED_PAIRS with the WCAG floor its ROLE requires (never the measured ' +
+        'value — that would weaken the gate to pass), or change the component to use a declared ' +
+        'pairing. If it is not a real pairing (a hidden icon stroke over an inactive-state ' +
+        'background), add it to NOT_A_PAIRING with the reason.',
+    );
+  }
+  console.log(
+    `contrast coverage OK — ${cssFiles.length} component CSS files scanned, every per-rule fg/bg pairing declared`,
+  );
 
   mkdirSync(join(distDir, 'fonts'), { recursive: true });
 

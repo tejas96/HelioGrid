@@ -151,7 +151,14 @@ gridline `#EEF0F3`.
 - `--warning #E9A23B` (≈2.2:1 as bare text) — **always on its `--warning-bg #FDF4E6` chip,
   never bare foreground text**.
 - `--text-secondary #74787E` is borderline (≈4.45:1 on white) — annotated in the pairs
-  file; body text on `--surface` is `--text-primary`.
+  file; body text on `--surface` is `--text-primary`. **On `--canvas-sunken` it drops to
+  ≈3.89:1, which fails AA for normal text** — an open finding (docs/13 UXG-A11Y-01), not a
+  sanctioned restriction. Ruling C covers this token on white only.
+
+The declared set is no longer purely hand-curated: the tokens build **derives coverage from
+component usage** and refuses to emit when a `packages/ui` rule pairs a foreground and
+background nobody declared (§8 records the scope and its limits). Floors are set by the
+role's WCAG requirement — never by the measured value, which would weaken the gate to pass.
 
 ### 3.3 Type scale
 

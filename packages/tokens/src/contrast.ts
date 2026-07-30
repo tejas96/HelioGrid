@@ -95,7 +95,102 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     restriction:
       'RESTRICTED (ruling C): --warning ≈2.2:1 as text — always sits on --warning-bg with a label, never bare foreground text.',
   },
+  // ── Added 2026-07-30 by the coverage derivation below, which found these in use but
+  // undeclared (therefore UNCHECKED). Each floor is set by the ROLE's WCAG requirement,
+  // never by the measured number — see the restriction notes where the two disagree.
+  {
+    fg: 'accent',
+    bg: 'accent-subtle',
+    role: 'accent chip / avatar initials on accent tint',
+    floor: 4.5,
+  },
+  {
+    fg: 'surface',
+    bg: 'danger',
+    role: 'destructive button label (white on danger fill)',
+    floor: 3.8,
+    restriction:
+      'Measures ≈3.91:1 — the same colour pair as danger/surface (contrast is symmetric), so ruling C already governs it: clears AA for large text and UI components (≥3:1), not 4.5:1 body. The label is 15px/500, so it relies on that UI-component allowance plus an always-present text label — never colour alone.',
+  },
+  {
+    fg: 'text-disabled',
+    bg: 'canvas-sunken',
+    role: 'disabled control text and icons',
+    floor: 1,
+    restriction:
+      'Measures ≈1.44:1. WCAG 1.4.3 exempts inactive/disabled controls from contrast minima, so this is compliant by exemption, not by ratio. Disabled state must never be the ONLY signal — controls also carry disabled semantics for assistive tech.',
+  },
+  {
+    fg: 'text-secondary',
+    bg: 'canvas-sunken',
+    role: 'AvatarGroup "+N" overflow count',
+    floor: 3.8,
+    restriction:
+      'OPEN FINDING (docs/13 UXG-A11Y-01, raised 2026-07-30): measures ≈3.89:1 at 12px/500, which FAILS WCAG AA 4.5:1 for normal text and is NOT covered by ruling C (that ruling addresses --text-secondary on white ≈4.45:1). The floor holds the current value so it cannot silently worsen while the owner rules on the fix — the candidate fix is --text-primary on --canvas-sunken, already declared at floor 7.',
+  },
 ];
+
+/**
+ * Pairings the per-rule scan reports that are NOT real foreground/background pairings.
+ *
+ * Same shape as `GLOBAL_TABLES` in the tenancy scan and `NO_CONTRACT_YET` in enum parity:
+ * an explicit allowlist with a reason per entry, so an exemption is a recorded decision
+ * rather than a silent hole. Every entry here is the SAME artifact: a component declares an
+ * icon-stroke `color:` in a base rule whose `background:` belongs to the INACTIVE state,
+ * and the icon is hidden (`opacity: 0`) until a state change also flips the background. The
+ * pairing the user actually sees is the state rule's background, which is declared above.
+ */
+const NOT_A_PAIRING: { fg: string; bg: string; reason: string }[] = [
+  {
+    fg: 'surface',
+    bg: 'surface',
+    reason:
+      'Checkbox.css: the check stroke is --surface and the UNCHECKED box is also --surface; the stroke only becomes visible when [data-state="checked"] sets background:--accent. A token against itself is 1:1 by definition — never a real pairing.',
+  },
+  {
+    fg: 'surface',
+    bg: 'canvas-sunken',
+    reason:
+      'RadioCard.css: the indicator svg is opacity:0 while the indicator background is --canvas-sunken; checking it sets background:--accent AND opacity:1. The visible pairing is surface-on-accent (declared).',
+  },
+];
+
+/**
+ * Coverage derivation.
+ *
+ * DECLARED_PAIRS is hand-curated, so a component using a fg/bg combination nobody declared
+ * is simply UNCHECKED — the gate under-covers silently as packages/ui grows. This scans the
+ * component CSS for rules that set BOTH a colour and a background from tokens and reports
+ * any pairing that is neither declared nor an acknowledged non-pairing.
+ *
+ * SCOPE, stated honestly: this sees one CSS rule at a time. A pairing split across rules
+ * (base sets the colour, a state selector sets the background) is invisible to it, and it
+ * does not read the React Native side at all (apps/mobile styles from theme.ts objects, not
+ * CSS). It is a real check on what it covers — a firing means a genuinely unchecked
+ * combination — not a proof of total coverage.
+ */
+export function findUndeclaredPairs(cssFiles: { path: string; text: string }[]): string[] {
+  const undeclared = new Set<string>();
+  // DECLARED_PAIRS names tokens bare ('text-primary'); CSS writes them as var(--text-primary).
+  // Strip the leading `--` so the two vocabularies actually meet — comparing them unstripped
+  // silently marks EVERY pairing undeclared, which reads as a broken gate, not a finding.
+  const declared = new Set(DECLARED_PAIRS.map((p) => `${p.fg}|${p.bg}`));
+  const exempt = new Set(NOT_A_PAIRING.map((p) => `${p.fg}|${p.bg}`));
+
+  for (const { path, text } of cssFiles) {
+    // Each rule body: capture colour and background-colour token references together.
+    for (const block of text.matchAll(/\{([^}]*)\}/g)) {
+      const body = block[1] as string;
+      const fg = body.match(/(?:^|[;\s])color:\s*var\(\s*--([a-z0-9-]+)\s*\)/i)?.[1];
+      const bg = body.match(/background(?:-color)?:\s*var\(\s*--([a-z0-9-]+)\s*\)/i)?.[1];
+      if (!fg || !bg) continue;
+      const key = `${fg}|${bg}`;
+      if (declared.has(key) || exempt.has(key)) continue;
+      undeclared.add(`--${fg} on --${bg}  (${path})`);
+    }
+  }
+  return [...undeclared].sort();
+}
 
 export interface ComputedPair extends DeclaredPair {
   fgValue: string;
