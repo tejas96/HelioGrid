@@ -1,0 +1,115 @@
+/*
+ * Contrast proposal comparison — a DECISION AID, not product surface.
+ * Delete this route once the owner rules on docs/13 UXG-A11Y-02 / UXG-A11Y-03.
+ *
+ * The proposed values are expressed as color-mix darkenings of the LIVE tokens, never as
+ * raw hex: that keeps the page inside the token system (and inside the no-raw-hex gate),
+ * and it states the proposal in the exact form it would be adopted in.
+ *
+ * `@property` is load-bearing, not decoration. Custom properties are normally substituted
+ * at the point of USE, so `--danger-proposed: color-mix(… var(--danger) …)` would re-resolve
+ * inside `.cmp-proposed` — where `--danger` is itself `var(--danger-proposed)` — and CSS
+ * discards the whole cycle as invalid. Registering it as a `<color>` makes the value compute
+ * eagerly at the declaring element and inherit as a resolved colour, which breaks the cycle.
+ * Measured before/after: without this the proposed column read 20.95:1 (the mix collapsed and
+ * the fill fell back), with it the values land where the arithmetic says.
+ */
+@property --danger-proposed {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+@property --text-secondary-proposed {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+.cmp-root {
+  --danger-proposed: color-mix(in srgb, var(--danger) 92%, black);
+  --text-secondary-proposed: color-mix(in srgb, var(--text-secondary) 90%, black);
+}
+
+/* Every real component inside this wrapper renders in the proposed palette. */
+.cmp-proposed {
+  --danger: var(--danger-proposed);
+  --text-secondary: var(--text-secondary-proposed);
+}
+
+.cmp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+}
+@media (min-width: 900px) {
+  .cmp-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cmp-col {
+  border-radius: var(--r-lg);
+  padding: var(--sp-5);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.cmp-specimens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The sunken track behind the text-secondary specimens (SegmentedControl's context). */
+.cmp-sunken {
+  background: var(--canvas-sunken);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.cmp-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.cmp-pass {
+  color: var(--success);
+  font-weight: var(--fw-semibold);
+}
+.cmp-fail {
+  color: var(--danger);
+  font-weight: var(--fw-semibold);
+}
+
+.cmp-swatch {
+  width: var(--sp-8);
+  height: var(--sp-8);
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.cmp-swatch-danger {
+  background: var(--danger);
+}
+.cmp-swatch-secondary {
+  background: var(--text-secondary);
+}
+
+/* The two text specimens. Both take their colour from the token under evaluation, so the
+   proposed column re-colours them through the same cascade the real app uses. */
+.cmp-danger-text {
+  color: var(--danger);
+  font-size: var(--fs-body-sm);
+}
+.cmp-secondary-text {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+}
