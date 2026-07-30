@@ -176,7 +176,7 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Rule | Intended mechanism | Stage |
 |---|---|---|
 | Arbitrary px / inline style in UI | Not attempted. Raw hex has a stable syntactic shape; "arbitrary px" does not — spacing, border and icon sizes are legitimately numeric, so the rule would be mostly false positives. Reviewed by `ux-lens` instead. | — |
-| Dead code / clone detection | knip + jscpd, local hygiene tools | local |
+| Dead code / clone detection | Installed: `pnpm check:unused` (knip) · `pnpm check:dupes` (jscpd). Local hygiene a human runs during cleanup — deliberately NOT a CI gate: a `continue-on-error` step that can never fail is decoration everyone learns to scroll past. Promote `check:dupes` to blocking only once the tree already meets a threshold. | local |
 | Auth path is executably verified | `scripts/auth-e2e-replay.ts` | local |
 | OpenAPI breaking-change detection | `oasdiff` via `pnpm check:openapi` — advisory, a human reads the break | local |
 

@@ -1,0 +1,18 @@
+{
+  "threshold": 12,
+  "reporters": ["consoleFull"],
+  "absolute": true,
+  "gitignore": true,
+  "minLines": 12,
+  "minTokens": 80,
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.next/**",
+    "**/*.d.ts",
+    "packages/i18n/src/locales/**",
+    "apps/web/app/design/**",
+    "apps/mobile/src/screens/gallery/**"
+  ],
+  "format": ["typescript", "tsx"]
+}

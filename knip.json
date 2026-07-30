@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignoreWorkspaces": ["packages/config"],
+  "workspaces": {
+    "packages/tokens": { "entry": ["build.ts"], "project": "src/**/*.ts" },
+    "packages/contracts": { "entry": ["src/scripts/*.ts"], "project": "src/**/*.ts" },
+    "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
+    "apps/api": { "entry": ["src/main.ts", "src/scripts/*.ts"], "project": "src/**/*.ts" },
+    "apps/worker": { "entry": ["src/main.ts"], "project": "src/**/*.ts" },
+    "apps/web": {
+      "entry": ["app/**/page.tsx", "app/**/layout.tsx"],
+      "project": "{app,lib}/**/*.{ts,tsx}"
+    },
+    "apps/mobile": { "entry": ["App.tsx"], "project": "src/**/*.{ts,tsx}" },
+    "tests/invariants": { "entry": ["src/run.ts"], "project": "src/**/*.ts" }
+  },
+  "ignoreDependencies": ["@heliogrid/config"]
+}

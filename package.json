@@ -13,11 +13,15 @@
     "lint:fix": "biome check --write .",
     "boundaries": "turbo boundaries",
     "check:adherence": "bash scripts/check-adherence.sh",
-    "check:openapi": "node scripts/check-openapi-breaking.mjs"
+    "check:openapi": "node scripts/check-openapi-breaking.mjs",
+    "check:dupes": "jscpd --config .jscpd.json apps packages",
+    "check:unused": "knip"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
     "dependency-cruiser": "16.10.4",
+    "jscpd": "4.0.5",
+    "knip": "5.88.1",
     "sherif": "1.13.0",
     "turbo": "2.10.7",
     "typescript": "5.8.3"
