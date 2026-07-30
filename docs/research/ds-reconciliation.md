@@ -1,7 +1,7 @@
 > **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/15 §3 states its 22 conflict resolutions are binding and that "agents implement these; they do not re-litigate them."
 
 > **Note (2026-07-27):** References to `ui.md` below are historical (retired with
-> `.claude/rules/`). Binding design law is now `CLAUDE.md` §Design + `docs/10`.
+> `.claude/rules/`). Binding design law is now `docs/10`.
 
 1. **Font family** · Repo (10-i18n §2/§8, research/design.md §3): Inter is the sans, loaded via `next/font`; `--font-inter` composed into `--font-sans`. · _ds: **Geist** is the default sans, **Geist Mono** for IDs/kWh/₹/coordinates (564 mono uses in mockups); Inter appears only as an unloaded stack fallback (`--font-sans:"Geist","Inter",-apple-system…`); two variable woff2 files (100–900) are the only fonts shipped. · **RESOLUTION: UX wins — Geist + Geist Mono, vendored from `_ds/assets/fonts/`.** Drop Inter loading entirely (do not repeat the POC's "declared Inter, never shipped it" bug in reverse by shipping a font the spec doesn't use). Add the mono-for-numerics rule to repo docs — it is currently absent and is one of the strongest visual signatures. RN caveat: only variable woff2 exists; RN needs static instances cut at the sanctioned weights.
 
@@ -45,7 +45,7 @@
 
 21. **`packages/tokens` build source** · Repo plan: hand-authored DTCG JSON → Style Dictionary → outputs. · Ground truth: the vendored `_ds/tokens/*.css` **is** the pixel-perfect spec, and the package's own manifest already proves re-transcription drifts (1ms durations, miscategorised `kind`s, phantom dark mode). · **RESOLUTION: YES — vendor the `_ds` `tokens/` + `assets/fonts/` into `packages/tokens` and GENERATE from the CSS** (parse the vendored CSS as source of truth → emit `tokens.css` near-verbatim for web, `theme.ts` for RN, `tokens.json` for tooling). Never re-transcribe by hand; never read `_ds_manifest.json` for values. Additions applied at generation, clearly marked as extensions: Noto Devanagari font-face, `--brand-wash`, roof/string/irradiance namespaces, contrast-pairs metadata, and a dark set only if commissioned.
 
-22. **Brand mark & iconography** · Repo: "monogram, not a sun". · _ds: **no logo exists — wordmark is plain Geist Bold; do not invent a mark**; icons are Lucide, outlined, 1.5px stroke, 24/20/28px, circular 6%-tint containers, filled only for active bottom-nav. · **RESOLUTION: UX wins — no monogram, adopt the Lucide spec (retired ui.md / now CLAUDE.md §Design)** (currently absent). Bundle Lucide locally; the CDN reference is mockup-only.
+22. **Brand mark & iconography** · Repo: "monogram, not a sun". · _ds: **no logo exists — wordmark is plain Geist Bold; do not invent a mark**; icons are Lucide, outlined, 1.5px stroke, 24/20/28px, circular 6%-tint containers, filled only for active bottom-nav. · **RESOLUTION: UX wins — no monogram, adopt the Lucide spec (retired ui.md / now docs/10)** (currently absent). Bundle Lucide locally; the CDN reference is mockup-only.
 
 ---
 

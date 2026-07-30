@@ -12,7 +12,7 @@
 2. Pixels: the `_ds_bundle.js` reference implementation (session split: scratchpad
    ds-ref/*.ref.jsx; re-split from the bundle when needed) — spec to implement, NEVER code
    to import.
-3. Law: docs/10 + `CLAUDE.md` §Design; conflicts resolve tokens/rulings over mockup bugs
+3. Law: docs/10 + `docs/10`; conflicts resolve tokens/rulings over mockup bugs
    (e.g. Button `variant="danger"` doesn't exist).
 
 ## Depends on / depended on by

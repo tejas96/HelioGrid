@@ -101,7 +101,7 @@ Single DB, shared schema, `tenant_id` on every tenant-owned row (BLUEPRINT §Dat
 
 **Layer 1 — request guard.** `TenantContextGuard` extracts `tenant_id` from the verified JWT and binds it to request-scoped context (AsyncLocalStorage). No handler ever reads tenant from params/body.
 
-**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select()` outside a repository is a lint violation (dependency-cruiser rule + review rule in `CLAUDE.md` §Enforcement matrix).
+**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select()` outside a repository is a lint violation (dependency-cruiser rule + review rule in docs/17 §5 (rule → mechanism matrix)).
 
 **Layer 3 — Postgres RLS (backstop).** Every tenant-owned table:
 

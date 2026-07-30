@@ -133,7 +133,7 @@ packages/
 subscriptions, entitlements, usage), `catalog`, `agent` (voice config/calls/knowledge),
 `notifications`, `admin`.
 
-**Internal layout of a backend app** (binding closed set — full rules in `CLAUDE.md` §Structure):
+**Internal layout of a backend app** (binding closed set — full rules in docs/02 §2):
 
 ```
 apps/{api,worker,voice}/src/

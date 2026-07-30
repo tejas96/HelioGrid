@@ -28,7 +28,7 @@ Status ∈ todo · in-progress · blocked(reason) · VERIFIED (never "done" with
 | 4 | <screen> web + RN | web+mobile+ux | `<Mockup>.dc.html` | 3 | todo | |
 | 5 | Jobs: <name> (idempotent) | worker | D<n> | 2 | todo | |
 | 6 | i18n keys + Hindi check | web+mobile | docs/10 §7 | 4 | todo | |
-| 7 | AI review + DoD pass | all | CLAUDE.md §Slice workflow | 1–6 | todo | |
+| 7 | AI review + DoD pass | all | /slice + /lenses | 1–6 | todo | |
 
 ## Module Definition of Done
 CLAUDE.md §Definition of done applies per slice, PLUS: all mockups above implemented · all D-decisions

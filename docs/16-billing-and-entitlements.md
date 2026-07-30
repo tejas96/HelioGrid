@@ -15,15 +15,21 @@ Two money systems live here and they never mix:
 
 ## 1. Plans & tiers
 
-**Authoritative prices, caps and bundle sizes live in [`./01-business-model.md`](./01-business-model.md)** — this doc fixes the mechanics. Shape (BLUEPRINT): org-level, capacity-tiered — never per-seat (Indian EPCs employ many low-cost designers; ARKA/Reslink both price per-org, [`./research/market.md`](./research/market.md)) — priced below ARKA 360 (₹7.5k–16.5k/mo) and Reslink India (₹60k/₹85k/₹1.2L per year — INR page, authoritative per docs/01's calibration note):
+**Prices, caps and bundle sizes are defined ONCE in
+[`./01-business-model.md`](./01-business-model.md)** — restating them here would create a
+drift vector (Law 4). This document fixes the billing MECHANICS only.
 
-| Tier | Price (monthly · yearly, per 01) | Mandate route (monthly) |
-|---|---|---|
-| Starter (small-EPC entry — owner directive: affordable to every EPC) | ₹1,999/mo · ₹19,990/yr | UPI AutoPay (under ₹15k cap) |
-| Growth | ₹3,999/mo · ₹39,990/yr | UPI AutoPay (under ₹15k cap) |
-| Pro (voice bundle) | ₹9,999/mo · ₹99,999/yr | UPI AutoPay (under ₹15k cap) |
-| Enterprise (white-label options, public API, custom integrations) | custom | e-NACH / invoice |
-| **Yearly variants — every tier, 2 months free (pay 10, get 12)** | totals incl. 18% GST all exceed ₹15k | Single Razorpay payment link/invoice per year — **no mandate needed**; renewal is a fresh invoice (card e-mandate/e-NACH optional for auto-renew) |
+Shape (owner directive, docs/15 §4): org-level and capacity-tiered — **never per-seat**
+(Indian EPCs employ many low-cost designers; ARKA and Reslink both price per-org —
+[`./research/market.md`](./research/market.md)), priced below both.
+
+What this document owns is the mandate route each tier's price band requires:
+
+| Tier band | Mandate route (monthly) |
+|---|---|
+| Starter · Growth · Pro — all monthly prices under the ₹15k UPI AutoPay debit cap | UPI AutoPay |
+| Enterprise (custom) | e-NACH / invoice |
+| **Any yearly variant** — totals incl. 18% GST all exceed ₹15k | Single Razorpay payment link/invoice per year, **no mandate needed**; renewal is a fresh invoice (card e-mandate / e-NACH optional for auto-renew) |
 
 - **Unlimited users on every tier.** Capacity/usage differentiates tiers — never features (owner-confirmed): single-design kW ceiling, **proposal-creation cap per month + Starter active-project cap (owner directive; counts in 01: 30/300/1,500/unlimited proposals; Starter 10 active projects)**, voice-minute bundle, AI-detection bundle, storage GB — values in 01.
 - Every tier exists as **two Razorpay Plan objects (monthly + yearly)** mirrored 1:1 by rows in our `plans` table (`billing_cycle` column: monthly/yearly); our table is the source of truth for entitlements, Razorpay's for money. Cycle switches (monthly → yearly) follow the same upgrade mechanics as tier changes (§10): immediate entitlements, prorated delta, new subscription at boundary.

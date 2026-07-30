@@ -49,7 +49,7 @@ custom roles (D29 excluded).
 | 9 | TeamRoles management (roles matrix D27/D28, invites list/revoke/resend) web+RN | web+mobile+ux | TeamRoles specs | 5,7 | todo | |
 | 10 | Language picker in onboarding + profile (D25, per-user, immediate re-render) | web+mobile | D25 | 2 | todo | |
 | 11 | i18n: full HI/MR catalogs for every string above; Hindi render verified | web+mobile | D25 | 2–10 | todo | |
-| 12 | Module QA attack + AI review (five lenses) + docs/13 rows + roadmap close | all | CLAUDE.md §Slice workflow | 1–11 | todo | |
+| 12 | Module QA attack + AI review (five lenses) + docs/13 rows + roadmap close | all | /slice + /lenses | 1–11 | todo | |
 
 ## Module Definition of Done
 CLAUDE.md §Definition of done per slice PLUS: all 14 mockups implemented or explicitly ruled ·
