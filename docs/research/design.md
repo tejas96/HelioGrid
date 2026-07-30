@@ -1,4 +1,11 @@
-> **SUPERSEDED FOR VISUALS (2026-07-24):** this documents the POC Instrument system. The production visual system is the vendored UX package (`design/ds-source`) — see [ds-tokens.md](./ds-tokens.md) / [ds-brand-law.md](./ds-brand-law.md) / [ds-usage.md](./ds-usage.md) / [ds-reconciliation.md](./ds-reconciliation.md). Interaction/a11y contracts in here remain valid input.
+> **FULLY SUPERSEDED (2026-07-30) — do not cite.** The visual system here (POC "Instrument")
+> was retired by ruling E; the production visual system is the vendored UX package
+> (`design/ds-source`) — see [ds-tokens.md](./ds-tokens.md) / [ds-brand-law.md](./ds-brand-law.md) /
+> [ds-usage.md](./ds-usage.md) / [ds-reconciliation.md](./ds-reconciliation.md).
+> **The N1–N10 hard rules and the mobile/touch contract that were the last binding content
+> in this file have been promoted verbatim into `docs/10-i18n-and-design-system.md` §11.**
+> Cite that. This file is retained as historical evidence only — binding law must never live
+> inside a document readers are told to ignore.
 
 # HelioGrid "Instrument" Design System — Architecture Brief for SaaS Rebuild
 
@@ -14,17 +21,10 @@ Sources: `docs/DESIGN-SYSTEM.md`, `src/design/tokens.css`, `src/design/index.css
 - **The customer never logs in** — they open a tokenised link and accept/reject. Every customer-facing surface assumes a stranger on a phone with zero context.
 - v1 scope is **Sell only** (CRM → survey → design → quote → proposal → close). Procurement/installation/O&M are out.
 
-### The 10 hard rules (N1–N10) — a screen that violates one "is not done"
-- **N1 — No hover-only affordance may carry meaning.** Every icon-only control has a visible label or a persistent text alternative within one tap. (Old UI used 56 `data-tip` + 68 `title` as the *only* labels.)
-- **N2 — Every interactive target ≥ 44×44 CSS px** on touch pointers. Visual size may be smaller; hit area may not. (WCAG 2.5.8 / Apple HIG.)
-- **N3 — No font size below 12px, ever. 14px is body.** (Old UI shipped 23 sizes, nine below 11px.)
-- **N4 — Text contrast ≥ 4.5:1; UI/graphic boundaries ≥ 3:1 — verified, not eyeballed.**
-- **N5 — Every control has an accessible name; modals trap + restore focus.** Ported from the tested a11y layer — do not regress.
-- **N6 — UI colour and DATA colour are separate systems.** Never style a button with a data colour or a chart series with `--accent`. (Roof identity, string colours, solar-access heatmaps encode meaning by hue.)
-- **N7 — Every number the user sees carries a provenance tier** — measured / derived / estimated / assumed. The BOM and quote are commercial documents.
-- **N8 — Destructive/irreversible actions are confirmed and undoable; undo reachable by thumb on mobile.**
-- **N9 — No layout tuned to a fixed viewport.** No magic pixel offsets assuming a height. (Old Step 6 hand-tuned to ~860px collided elsewhere.)
-- **N10 — Loading, empty, error and offline states are part of "done."** All four required; no `null`-until-hydration blank first paint.
+### The 10 hard rules (N1–N10) — MOVED
+
+> Promoted verbatim to `docs/10-i18n-and-design-system.md` §11 on 2026-07-30 and REMOVED
+> here, so there is exactly one definition to keep current. Cite docs/10 §11.
 
 ### Brand rules (LOCKED — Direction A "Instrument")
 - **Brass fills carry INK labels, not white.** White on `#C8842A` = 3.09:1 (fails AA). Ink `#1A1712` on brass = 5.78:1. This is a machined-instrument look (Leica, not lemonade).
@@ -35,12 +35,10 @@ Sources: `docs/DESIGN-SYSTEM.md`, `src/design/tokens.css`, `src/design/index.css
 - **Name/mark: HelioGrid, monogram not a sun** — a sun icon competes with solar-access data colours.
 - Every shipped colour pair has a **computed** contrast ratio (§3.3 table): 17.6:1 text on surface, 7.1:1 muted, 5.78:1 ink-on-brass, 8.16:1 dark primary, etc.
 
-### Mobile / touch contract (§7 — "not optional reading")
-- **Build for pointer events, branch on capability (`pointer: coarse` / `hover: hover`), never on screen width.**
-- **One canvas gesture vocabulary** across satellite canvas, layout editor, 3D scene: 1-finger drag = pan, pinch = zoom, 2-finger rotate, tap = select, long-press 350ms = contextual, drag selected = move w/ snap, 2-finger tap = undo. **Never** require wheel/middle-click/keyboard to reach a function.
-- **Precision under fingertip**: loupe on long-press/drag, offset dragging (point above contact), snap-first-then-nudge, numeric entry always available (accessible + precise path), explicit Done/Cancel commit.
-- **Reachability**: primary actions in the bottom third; destructive never adjacent to primary; undo persistently reachable while any canvas tool is active.
-- **Viewport**: `dvh`/`svh` only, never `vh`. Respect `env(safe-area-inset-*)` on all fixed chrome. Mobile inputs ≥16px (else iOS zooms on focus).
+### Mobile / touch contract — MOVED
+
+> Promoted verbatim to `docs/10-i18n-and-design-system.md` §11 on 2026-07-30 and REMOVED
+> here. Cite docs/10 §11.
 
 ### Definition of Done (§13 — all must be true)
 Works at 375px and 1536px with no horizontal scroll · loading/empty/error/offline states exist · keyboard-operable end-to-end with visible ordered focus · axe clean + contrast verified against token pairs · touch targets ≥44px, no hover-only meaning · light and dark both correct · every number carries provenance · destructive actions confirmed and undoable · zero raw hex / zero off-scale spacing / zero inline styles · tested at realistic volume (40-line BOM, 200-lead list, 221-panel design).

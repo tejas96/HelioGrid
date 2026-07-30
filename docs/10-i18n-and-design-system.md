@@ -27,10 +27,10 @@ doc and the vendored CSS disagree, **the CSS wins**.
   of re-deriving values, but they are downstream of the source.
 - **The POC's `DESIGN-SYSTEM.md` is superseded for all visuals** (ruling E). "Instrument"
   graphite+brass is retired as the product's identity — there is no brass token, no ink-on-
-  brass rule, no `text-accent-text`, no dark-canvas doctrine. The POC document survives
-  **only** for its interaction/a11y/product-law contracts: touch targets ≥44px, no
-  hover-only meaning, provenance tiers, N10 states, focus-visibility requirement, the
-  touch/gesture contract. Those are product law and carry over unreduced.
+  brass rule, no `text-accent-text`, no dark-canvas doctrine. Its surviving
+  interaction/a11y/product-law contracts — **N1–N10 and the touch contract — are now
+  defined in §11 of this document**, promoted verbatim 2026-07-30. Cite §11, never the POC
+  file or `docs/research/design.md`.
 - `_ds_manifest.json` is inventory only — **never a source of values** (it snapshotted the
   1ms reduced-motion durations as canonical and miscategorises token kinds).
 
@@ -503,3 +503,38 @@ A screen violating any single item is not done:
 
 This applies unreduced to the 3D studio: it is the flagship, it is **light** (§5), and
 full parity at 375px is the hardest and least negotiable commitment in the system.
+
+---
+
+## 11. Interaction & accessibility law (N1–N10 + the touch contract)
+
+> Promoted verbatim 2026-07-30 from the POC design brief. The "Instrument" graphite+brass
+> VISUAL identity that accompanied these rules is **retired** (ruling E) — every visual value
+> now comes from `design/ds-source` via `packages/tokens`, per §1–§5 above. **These
+> interaction and accessibility contracts survive unchanged as product law.** They are cited
+> by number from docs/13, docs/15 R18/R19-B and this document, so the numbering is fixed:
+> never renumber, never reword an N-rule.
+
+### The 10 hard rules (N1–N10) — a screen that violates one "is not done"
+
+- **N1 — No hover-only affordance may carry meaning.** Every icon-only control has a visible label or a persistent text alternative within one tap. (The predecessor UI used 56 `data-tip` + 68 `title` as the *only* labels.)
+- **N2 — Every interactive target ≥ 44×44 CSS px** on touch pointers. Visual size may be smaller; hit area may not. (WCAG 2.5.8 / Apple HIG.)
+- **N3 — No font size below 12px, ever. 14px is body.** (The predecessor UI shipped 23 sizes, nine below 11px.) **Named exception:** the signature overline — 11px / 700 / uppercase / 0.12em — micro-labels only (docs/15 R19-B).
+- **N4 — Text contrast ≥ 4.5:1; UI/graphic boundaries ≥ 3:1 — verified, not eyeballed.** Enforced by the `DECLARED_PAIRS` build gate in `packages/tokens`, with the restricted roles of ruling C encoded (§3.2).
+- **N5 — Every control has an accessible name; modals trap + restore focus.** Ported from the tested a11y layer — do not regress.
+- **N6 — UI colour and DATA colour are separate systems.** Never style a button with a data colour or a chart series with `--accent`. (Roof identity, string colours and solar-access heatmaps encode meaning by hue.)
+- **N7 — Every number the user sees carries a provenance tier** — measured / derived / estimated / assumed. The BOM and quote are commercial documents. (Tier definitions are canonical in docs/15 R18; no screen invents a fifth tier.)
+- **N8 — Destructive/irreversible actions are confirmed and undoable; undo reachable by thumb on mobile.**
+- **N9 — No layout tuned to a fixed viewport.** No magic pixel offsets assuming a height.
+- **N10 — Loading, empty, error and offline states are part of "done."** All four required; no `null`-until-hydration blank first paint.
+
+### Mobile / touch contract — not optional reading
+
+- **Build for pointer events, branch on capability** (`pointer: coarse` / `hover: hover`), **never on screen width.**
+- **One canvas gesture vocabulary** across satellite canvas, layout editor and 3D scene: 1-finger drag = pan, pinch = zoom, 2-finger rotate, tap = select, long-press 350ms = contextual, drag selected = move with snap, 2-finger tap = undo. **Never** require wheel, middle-click or keyboard to reach a function.
+- **Precision under fingertip**: loupe on long-press/drag, offset dragging (point above contact), snap-first-then-nudge, numeric entry always available as the accessible and precise path, explicit Done/Cancel commit.
+- **Reachability**: primary actions in the bottom third; destructive never adjacent to primary; undo persistently reachable while any canvas tool is active.
+- **Viewport**: `dvh`/`svh` only, never `vh`. Respect `env(safe-area-inset-*)` on all fixed chrome. Mobile inputs ≥16px, or iOS zooms on focus.
+
+The per-screen Definition of Done in §10 is the operational form of these rules and is the
+list to check against; it supersedes the POC's own DoD (which still required dark mode).
