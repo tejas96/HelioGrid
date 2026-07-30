@@ -12,8 +12,8 @@
  * fails ITS OWN typecheck, naming the component.
  *
  * WHAT THIS CONTRACT COVERS — read this before assuming a green build means full parity.
- * It declares the 107 props (of 172 across 28 components) that both platforms agree
- * on: same name, equivalent type, same optionality. Three categories are deliberately absent:
+ * It declares the 117 props (of 172 across 28 components) that both platforms agree
+ * on: same name, equivalent type, same optionality. Two categories remain deliberately absent:
  *
  *   1. Platform-owned props. Web inherits DOM attributes (`type`, `form`, `aria-*`) and RN has
  *      `hitSlop`/`ViewStyle`. `className?: string` and `style?: ViewStyle` are not the same
@@ -22,10 +22,11 @@
  *      declares `() => void`; likewise `ChangeEventHandler` vs `(text: string) => void`.
  *      Neither is assignable to the other, so no single declaration can hold both without
  *      changing the components.
- *   3. ELEVEN copy props typed `ReactNode` on web and `string` on RN (`Input.label`,
- *      `EmptyState.title`, `Toast.description`, …). Declaring the wider type would let web
- *      accept JSX that RN cannot render; declaring the narrower one fails web today. Recorded
- *      per interface rather than papered over.
+ *   3. (RESOLVED 2026-07-30) Ten copy props were `ReactNode` on web and `string` on RN. They
+ *      are now `string` on both and IN the contract. Web needed a node type only so Lingui
+ *      `<Trans>` elements could be passed; those four call sites now use `i18n._()` with the
+ *      identical msgid, so the catalogues are byte-unchanged. No structural markup was ever
+ *      passed to them — the capability web appeared to have was never used.
  *
  * SEVEN parity defects were found while deriving this, all the same class as the StatusChip
  * incident and none caught by the galleries. All SEVEN WERE FIXED on 2026-07-30 rather than

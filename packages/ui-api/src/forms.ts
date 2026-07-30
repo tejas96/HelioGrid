@@ -50,23 +50,11 @@ export interface IconButtonApi {
 }
 
 /**
- * Input — 10 shared props.
- *
- * NOT in the contract:
- *   - label — DRIFT: Type differs: web accepts any ReactNode (rendered inside <label>); RN
- *   accepts only string (rendered in AppText and reused as accessibilityLabel). Optionality
- *   matches (both optional).
- *   - value — DRIFT: Same name, wider type on web: the inherited DOM value accepts string |
- *   number | readonly string[]; RN accepts string only. Both optional.
- *   - onChange — DRIFT: Same name, different signature: web inherits
- *   ChangeEventHandler<HTMLInputElement> (receives a ChangeEvent); RN receives the new text
- *   string (wired to TextInput onChangeText). The RN file documents this as an explicit
- *   adaptation. Both optional.
- *   - type — DRIFT: Web inherits the full HTML input type space (date, file, checkbox,
- *   ...); RN constrains it to a 5-member union that drives keyboardType/secureTextEntry.
- *   Web accepts values RN cannot express. Both optional, both default 'text'.
+ * Input — label is now `string` on both. It was ReactNode on web purely so a Lingui `<Trans>`
+ * element could be passed; the call site now uses `i18n._()`, which extracts to the same msgid.
  */
 export interface InputApi {
+  label?: string;
   density?: Density;
   error?: string;
   success?: boolean;
@@ -80,14 +68,10 @@ export interface InputApi {
 }
 
 /**
- * Checkbox — 4 shared props.
- *
- * NOT in the contract:
- *   - label — DRIFT: Same optionality (optional on both) but the TYPE differs: web accepts
- *   `ReactNode` (any renderable node), RN accepts only `string`. Web callers passing JSX
- *   have no RN equivalent.
+ * Checkbox — label narrowed to `string` on web to match RN (see InputApi).
  */
 export interface CheckboxApi {
+  label?: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;
@@ -95,18 +79,10 @@ export interface CheckboxApi {
 }
 
 /**
- * Radio — 5 shared props.
- *
- * NOT in the contract:
- *   - onChange — DRIFT: Same optionality but fundamentally different signatures: web is
- *   React's `ChangeEventHandler<HTMLInputElement>` (receives a DOM ChangeEvent; caller
- *   reads e.target.checked/value), RN is `(checked: boolean) => void` and fires with `true`
- *   only when the radio becomes selected (radios never untoggle on RN). No shared call
- *   signature exists. Note Checkbox and Switch use the value-based `(checked: boolean) =>
- *   void` on BOTH platforms — web Radio is the outlier.
- *   - label — DRIFT: Optional on both; type differs — web `ReactNode`, RN `string`.
+ * Radio — label narrowed to `string` on web to match RN (see InputApi).
  */
 export interface RadioApi {
+  label?: string;
   checked?: boolean;
   name?: string;
   value?: string;
@@ -115,12 +91,10 @@ export interface RadioApi {
 }
 
 /**
- * Switch — 4 shared props.
- *
- * NOT in the contract:
- *   - label — DRIFT: Optional on both; type differs — web `ReactNode`, RN `string`.
+ * Switch — label narrowed to `string` on web to match RN (see InputApi).
  */
 export interface SwitchApi {
+  label?: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;

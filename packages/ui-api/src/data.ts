@@ -120,14 +120,10 @@ export interface ListRowApi {
 }
 
 /**
- * StatCard — 5 shared props.
- *
- * NOT in the contract:
- *   - label — DRIFT: Same name, required on both, but the type differs: web accepts
- *   ReactNode (any renderable node, e.g. a <Trans> element or a span) while RN accepts only
- *   string. A web call site passing an element would not compile against the RN type.
+ * StatCard — label narrowed to `string` on web to match RN.
  */
 export interface StatCardApi {
+  label: string;
   value: ReactNode;
   unit?: ReactNode;
   delta?: ReactNode;

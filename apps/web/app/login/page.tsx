@@ -213,7 +213,7 @@ export default function Login() {
           {online ? null : (
             <div className="lg-offline">
               <OfflineBanner
-                message={<Trans id="You're offline — check your connection and try again." />}
+                message={i18n._("You're offline — check your connection and try again.")}
               />
             </div>
           )}
@@ -231,7 +231,7 @@ export default function Login() {
               </p>
               <div className="lg-field">
                 <Input
-                  label={<Trans id="Mobile number" />}
+                  label={i18n._('Mobile number')}
                   mono
                   type="tel"
                   inputMode="tel"

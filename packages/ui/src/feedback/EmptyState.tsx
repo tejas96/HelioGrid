@@ -5,8 +5,8 @@ import './EmptyState.css';
 /** _adherence allowlist: icon, title, description, action, glow, style. */
 export interface EmptyStateProps {
   icon: ReactNode;
-  title: ReactNode;
-  description?: ReactNode;
+  title: string;
+  description?: string;
   action?: ReactNode;
   glow?: boolean;
   style?: CSSProperties;

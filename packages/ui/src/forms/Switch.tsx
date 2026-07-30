@@ -1,13 +1,13 @@
 'use client';
 import * as RadixSwitch from '@radix-ui/react-switch';
-import { type CSSProperties, type ReactNode, useId } from 'react';
+import { type CSSProperties, useId } from 'react';
 import './Switch.css';
 
 /** _adherence allowlist: checked, onChange, label, disabled, id, style. */
 export interface SwitchProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label?: ReactNode;
+  label?: string;
   disabled?: boolean;
   id?: string;
   /** Applies to the root label wrapper. */

@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/signup/page.tsx:19
+#: ../../apps/web/app/signup/page.tsx:20
 msgid "Company sign-up opens here"
 msgstr "कंपनी साइन-अप येथे उघडेल"
 
@@ -23,7 +23,7 @@ msgid "This part of HelioGrid is being finished right now. Sign in, or check bac
 msgstr "HelioGrid चा हा भाग सध्या तयार होत आहे. साइन इन करा, किंवा थोड्या वेळाने पहा."
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/signup/page.tsx:25
+#: ../../apps/web/app/signup/page.tsx:26
 msgid "Back to sign in"
 msgstr "साइन इनकडे परत जा"
 

@@ -16,7 +16,7 @@ export type Locale = UiLanguage;
 export const catalogs = { en, hi, mr } as const;
 
 export function setupI18n(locale: Locale = 'en') {
-  i18n.load({ en, hi, mr });
+  i18n.load(catalogs);
   i18n.activate(locale);
   return i18n;
 }

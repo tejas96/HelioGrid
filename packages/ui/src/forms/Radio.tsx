@@ -1,5 +1,5 @@
 'use client';
-import { type ChangeEventHandler, type CSSProperties, type ReactNode, useId } from 'react';
+import { type ChangeEventHandler, type CSSProperties, useId } from 'react';
 import './Radio.css';
 
 /**
@@ -11,7 +11,7 @@ import './Radio.css';
 export interface RadioProps {
   checked?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  label?: ReactNode;
+  label?: string;
   name?: string;
   value?: string;
   disabled?: boolean;

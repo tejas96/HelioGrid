@@ -5,8 +5,8 @@ import './Toast.css';
 /** _adherence allowlist: tone, title, description, icon, action, style. */
 export interface ToastProps {
   tone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
-  title: ReactNode;
-  description?: ReactNode;
+  title: string;
+  description?: string;
   icon?: ReactNode;
   action?: ReactNode;
   style?: CSSProperties;

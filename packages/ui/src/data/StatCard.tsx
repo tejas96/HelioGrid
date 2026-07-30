@@ -4,7 +4,7 @@ import './StatCard.css';
 
 /** _adherence allowlist: label, value, unit, delta, deltaDir, children, style. */
 export interface StatCardProps {
-  label: ReactNode;
+  label: string;
   value: ReactNode;
   unit?: ReactNode;
   delta?: ReactNode;

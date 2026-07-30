@@ -8,7 +8,7 @@ import './Input.css';
  */
 export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'style'> {
-  label?: ReactNode;
+  label?: string;
   density?: 'expressive' | 'functional';
   /** Error message — renders below the field and switches the ring to danger. */
   error?: string;

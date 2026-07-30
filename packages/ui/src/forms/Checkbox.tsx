@@ -1,13 +1,13 @@
 'use client';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
-import { type CSSProperties, type ReactNode, useId } from 'react';
+import { type CSSProperties, useId } from 'react';
 import './Checkbox.css';
 
 /** _adherence allowlist: checked, onChange, label, disabled, id, style. */
 export interface CheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label?: ReactNode;
+  label?: string;
   disabled?: boolean;
   id?: string;
   /** Applies to the root label wrapper. */

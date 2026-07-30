@@ -10,25 +10,25 @@
 import type { ReactNode } from 'react';
 
 /**
- * EmptyState — 3 shared props. `icon` was required on web and optional on RN: FIXED 2026-07-30
- * to required on both (RN rendered an empty bloom circle when omitted). `title` and
- * `description` remain outside the contract — ReactNode on web, string on RN, part of the
- * eleven copy props in the package header.
+ * EmptyState — 5 shared props. `icon` was required on web and optional on RN: fixed to
+ * required on both (RN rendered an empty bloom circle when omitted). `title` and
+ * `description` were ReactNode on web and string on RN: narrowed to `string`. They carried
+ * Lingui `<Trans>` elements, which is why web needed a node type at all; the call site now
+ * uses `i18n._()` with the identical msgid, so the catalogue is unchanged.
  */
 export interface EmptyStateApi {
   icon: ReactNode;
+  title: string;
+  description?: string;
   action?: ReactNode;
   glow?: boolean;
 }
 
 /**
- * OfflineBanner — 1 shared prop.
- *
- * NOT in the contract:
- *   - message — DRIFT: Type differs: web `message?: ReactNode`, RN `message?: string`.
- *   Optional on both.
+ * OfflineBanner — message narrowed to `string` on web — it carried a `<Trans>`, now `i18n._()`.
  */
 export interface OfflineBannerApi {
+  message?: string;
   count?: number;
 }
 
@@ -41,15 +41,11 @@ export interface ProgressBarApi {
 }
 
 /**
- * Toast — 3 shared props.
- *
- * NOT in the contract:
- *   - title — DRIFT: Type differs: web `title: ReactNode`, RN `title: string`. Required on
- *   both.
- *   - description — DRIFT: Type differs: web `description?: ReactNode`, RN `description?:
- *   string`. Optional on both.
+ * Toast — title/description narrowed to `string` on web to match RN.
  */
 export interface ToastApi {
+  title: string;
+  description?: string;
   tone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
   icon?: ReactNode;
   action?: ReactNode;

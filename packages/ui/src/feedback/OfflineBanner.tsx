@@ -1,11 +1,11 @@
 'use client';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import './OfflineBanner.css';
 
 /** _adherence allowlist: count, message, style. */
 export interface OfflineBannerProps {
   count?: number;
-  message?: ReactNode;
+  message?: string;
   style?: CSSProperties;
 }
 
