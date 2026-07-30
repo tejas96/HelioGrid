@@ -2,8 +2,13 @@
 
 **Date:** 2026-07-25 · **Verdict: MATERIAL FINDINGS — three BLUEPRINT assumptions do not
 survive doc-level verification. Hands-on legs BLOCKED on Exotel credentials.**
-**⚠️ Requires owner review: docs/BLUEPRINT.md directive 7 and docs/03 §14 need
-reconciliation once confirmed with an Exotel account manager.**
+**✅ RECONCILED 2026-07-30.** All three findings are now carried by the live documents:
+directive 7 in `../15-spec-resolutions.md` §4 (amendment stated above the superseded
+wording), `../03-tech-stack.md` §14 (Telephony row, Orchestrator row and ComplianceGate all
+corrected; the week-1 spike entry struck as resolved), and ADR-0019 as the binding form.
+The archived `../archive/BLUEPRINT.md` retains the pre-S5 wording and is marked do-not-cite.
+Still open: **hands-on verification** of the consult-leg/DTMF legs, blocked on Exotel
+credentials — a findings-confirmation task, not a documentation gap.
 
 ## Finding 1 — BYO number is NOT a porting/hosting flow
 

@@ -1,3 +1,5 @@
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/15 §3 states its 22 conflict resolutions are binding and that "agents implement these; they do not re-litigate them."
+
 > **Note (2026-07-27):** References to `ui.md` below are historical (retired with
 > `.claude/rules/`). Binding design law is now `CLAUDE.md` §Design + `docs/10`.
 

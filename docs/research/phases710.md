@@ -1,9 +1,9 @@
-# HelioGrid Solar SaaS — Phase 7-10 Specification Analysis
-
 > **§2 PROMOTED — see `../product/studio-census.md`.** The studio tool census moved out of
 > research and became canonical product truth (owner ruling 2026-07-30). This file is
 > retained as historical evidence for its other sections and for inbound ADR citations;
 > its §2 is a stale copy and must not be cited.
+
+# HelioGrid Solar SaaS — Phase 7-10 Specification Analysis
 
 Source files (all read in full): `docs/phase-7-prompts.md` (486 ln), `docs/phase-8-prompts.md` (508 ln), `docs/phase-9-prompts.md` (382 ln), `docs/phase-10-prompts.md` (1586 ln). These are Claude-Design prompt packs; the prose encodes the intended product spec. Phase 10 carries a **top-level SUPERSEDED banner (D39, 2026-07-24): the studio is NOT being redesigned — it is kept, refactored to the design system, and hardened to production; its geometry/engineering/code carry over as-is. The file is retained as the refactor checklist and as input to the new product's architecture + DB schema.** Hand-off doc referenced: `docs/NEW-PRODUCT-PLANNING-PROMPT.md`. Source of truth for studio = codebase `src/features/solar-studio/`.
 

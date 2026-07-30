@@ -1,3 +1,5 @@
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/01 builds the price ladder on the owner-supplied INR correction recorded in this file; docs/12 and ADR-0013 cite its competitor table.
+
 I have comprehensive data across all competitors. Compiling the final report.
 
 ---

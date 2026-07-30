@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into docs/07 (the port definitions), docs/16 and ADR-0013.
+
 # Deferred Integrations: WhatsApp + Payments + PDF + Push (India, July 2026)
 
 ## Single recommendation

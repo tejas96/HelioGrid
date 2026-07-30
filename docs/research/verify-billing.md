@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0013, docs/16, docs/01 and docs/04.
+
 # VERDICT
 
 **Use Razorpay Subscriptions (UPI AutoPay as primary mandate, card e-mandate fallback) + build entitlements & usage-ledger in-house on Postgres in your NestJS stack. Do NOT add Chargebee/Zoho as a billing layer for a next-month launch.** Razorpay covers trials, recurring debit, and invoice generation natively; a dedicated billing platform adds cost, integration time, and a second source of truth you don't need at launch. Revisit Chargebee only when you have multi-currency, complex proration, or dunning-analytics needs at scale.

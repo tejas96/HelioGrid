@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0009/0010/0011/0015, docs/03, docs/06 and apps/mobile/CLAUDE.md.
+
 VERDICT SUMMARY (bare RN / no Expo, July 2026):
 1. PowerSync — SUPPORTED (with required Metro config).
 2. Better Auth — WORKS WITH CAVEATS (custom keychain/AsyncStorage adapter OK; expoClient plugin still pulls Expo deps).

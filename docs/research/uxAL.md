@@ -1,3 +1,5 @@
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/13 sources its screen catalogue and "Notable gaps" — the only interpretation layer over 80 raw mockups.
+
 I now have everything I need. Let me compile the catalogue.
 
 ---

@@ -1,3 +1,5 @@
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. Cited for its own section numbering by docs/00 §1, docs/13 (gaps) and docs/15 §6 (the 18 ambiguities). The vendored master spec is `docs/product/product-journey.md`; this is the architecture-facing extraction of it, and the two are not interchangeable.
+
 I have read all 1768 lines in full plus cross-referenced the integration names against the companion docs. Returning the analysis directly.
 
 ---

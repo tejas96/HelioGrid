@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0003 and ADR-0002; spike S3 supersedes it operationally.
+
 ## VERDICT
 
 **Yes — `@orpc/nest` is an official integration** (part of the [unnoq/orpc](https://github.com/unnoq/orpc/blob/main/apps/content/docs/openapi/integrations/implement-contract-in-nest.md) monorepo, not a third-party). You define an oRPC contract and implement it in NestJS controllers via the `@Implement` decorator. It is **real but not yet fully mature**: shipped as part of oRPC v1.x (core packages at **v1.14.8, published ~July 2026**, very active), but the Nest package is effectively beta with hard caveats. For a production NestJS API feeding Next.js + bare React Native today, **recommend `ts-rest` (NestJS adapter)** as the single lowest-friction choice that natively gives BOTH an end-to-end typed client AND OpenAPI. Consider `@orpc/nest` only if your Nest app is already ESM.

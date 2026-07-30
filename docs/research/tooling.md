@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0001, ADR-0015 and docs/03. Its agent-rules section is doubly dead — that layer was redesigned in 2026-07; see CLAUDE.md and `.claude/`.
+
 > **Superseded 2026-07-27:** Agent rules are Claude Code only — single root `CLAUDE.md` +
 > per-package `CLAUDE.md`. No `AGENTS.md`, no `.claude/rules/`. Mobile is bare React Native
 > (no Expo). See `CLAUDE.md` and `docs/17-engineering-governance.md`.

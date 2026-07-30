@@ -1,3 +1,5 @@
+> **⚠ OVERTURNED — DO NOT FOLLOW.** This file recommends **Hono + oRPC + Graphile Worker and explicitly rejects NestJS**. That direction was reversed by the verify-nestContracts spike. **The shipped stack is NestJS + ts-rest + BullMQ** — ADR-0002, ADR-0003, ADR-0008. Retained ONLY as considered-alternatives evidence for those ADRs. Read standalone, it hands you the wrong stack.
+
 # HelioGrid Backend Architecture — Recommendation (verified July 2026)
 
 ## THE RECOMMENDATION (one coherent combo)

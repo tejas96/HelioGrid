@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0014 and docs/11.
+
 # Scaling three.js Solar Studio: Rooftop → 100 MW (150k+ modules)
 
 ## Recommendation

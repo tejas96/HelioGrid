@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0009 and docs/06; verified by spike S6.
+
 # Sync Engine Recommendation: HelioGrid Offline-First
 
 ## Recommendation: PowerSync, self-hosted (Open Edition) on Fly.io Mumbai

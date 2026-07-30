@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0006, ADR-0007 and ADR-0008; spikes S2/S4 supersede it operationally.
+
 # VERDICT
 
 **(a) Tigris — sin pinning: YES.** Single-region buckets are supported; Singapore (`sin`) is a live Tigris region. S3 compatibility is high (SigV4, presigned URLs, multipart) — works as a wal-g/pgBackRest S3 target and as a PowerSync attachment backend. **(b) Upstash on Fly — LIVE, not deprecated;** reachable in all Fly regions incl. `bom`. BullMQ works over the TCP/RESP endpoint; the real risks are **cost (per-request billing)** and **eviction** — keep eviction OFF (it's the default). No command restriction fundamentally breaks BullMQ. **(c) Fly unmanaged Postgres — DEPRECATED;** repmgr HA works but backups to Tigris are DIY (Barman/pg_dumpall), not wal-g.

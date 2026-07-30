@@ -1,3 +1,5 @@
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/05 delegates its calculation/data audit; docs/04 imports its spec shapes verbatim. Keep until the Track D studio port completes — the audited POC code is in another repository.
+
 I now have comprehensive coverage of the calculation/data half. Here is the audit.
 
 ---

@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Superseded by docs/14 (tracks + dependencies) and the per-module roadmaps in docs/modules/.
+
 I have everything needed — the requested docs in full plus the code-grounded engineering constants. Here is the report.
 
 ---

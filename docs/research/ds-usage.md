@@ -1,6 +1,4 @@
-I have all the ground truth. Compiling the reference.
-
----
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/10 and docs/15 R19 cite its empirical usage statistics as ground truth for which component specs are real rather than theoretical.
 
 # HelioGrid Mockups — Design-System Usage Ground Truth
 

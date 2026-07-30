@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0010, ADR-0005 and docs/08; verified by spike S1.
+
 # Auth for HelioGrid — phone-OTP-first, multi-tenant, India
 
 ## Recommendation (one stack)

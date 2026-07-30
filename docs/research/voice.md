@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0012 and ADR-0019, docs/07 §4 and docs/01 COGS. **Spike S5 corrected several of its assumptions** (BYO is inbound-forwarding only; no AgentStream DTMF-send; 1600-series closed to non-BFSI) — ADR-0019 is the operative form.
+
 # AI Voice Agent Stack for HelioGrid (India, July 2026)
 
 ## Recommendation (v1): Integrate, don't buy a US black box, don't self-host yet

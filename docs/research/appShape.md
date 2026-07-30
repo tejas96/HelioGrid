@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into docs/03 (stack snapshot) and docs/06 §quarantine.
+
 I now have a complete picture of the application shell. Here is the map.
 
 ---

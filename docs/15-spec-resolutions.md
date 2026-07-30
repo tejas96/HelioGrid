@@ -1,7 +1,7 @@
 # 15 — Spec Resolutions
 
 **Status:** Binding · 2026-07-24 · Owner: product
-**Sources:** ./research/journey.md §6 (the 18 gaps/ambiguities/contradictions), ./research/phases710.md, ./research/voice.md, ./research/verify-billing.md, ./research/sync.md, docs/BLUEPRINT.md (final-review directives). Where a ruling touches another doc, that doc carries the detail; this file carries the decision.
+**Sources:** ./research/journey.md §6 (the 18 gaps/ambiguities/contradictions), ./research/phases710.md, ./research/voice.md, ./research/verify-billing.md, ./research/sync.md; the final-review directives are absorbed into §4 of this document (originally `./archive/BLUEPRINT.md`, archived and non-binding). Where a ruling touches another doc, that doc carries the detail; this file carries the decision.
 
 Every ambiguity in the POC spec is ruled here, once. Agents implement the ruling; they do not re-litigate it. If code and a ruling disagree, the ruling wins until the product owner changes it **in this file**.
 

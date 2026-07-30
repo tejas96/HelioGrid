@@ -1,3 +1,5 @@
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. The canonical brand law is the vendored `design/ds-source/readme.md`, codified in docs/10 §4. This prose copy is a third copy of in-repo truth.
+
 I have everything needed. All three required files read in full, plus verification of the two internal contradictions against the source token files.
 
 ---

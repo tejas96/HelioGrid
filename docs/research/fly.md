@@ -1,3 +1,5 @@
+> **⚠ OVERTURNED — DO NOT FOLLOW.** This file recommends **Crunchy Bridge and AWS S3, and rejects Tigris**. That direction was reversed by the verify-flyNative spike. **The shipped choices are Fly postgres-flex, Tigris (`sin`) and Upstash** — ADR-0006, ADR-0007, ADR-0008. Retained ONLY as considered-alternatives evidence, plus its still-valid bom-capacity and DPDP notes.
+
 # Fly.io Production Topology for India (verified July 2026)
 
 ## RECOMMENDATION — concrete topology
