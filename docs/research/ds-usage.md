@@ -4,7 +4,7 @@ I have all the ground truth. Compiling the reference.
 
 # HelioGrid Mockups — Design-System Usage Ground Truth
 
-Scope: 80 `*.dc.html` mockups in `/Users/devtejas/Downloads/HelioGrid UX` + the DS bundle at `/Users/devtejas/Downloads/HelioGrid UX/_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12`. (The "85 mockups" count includes the 8 `Layout*.dc.html` sub-sheets and `Project Flow.dc.html`.)
+Scope: 80 `*.dc.html` mockups in `/Users/devtejas/Downloads/HelioGrid UX` + the DS bundle at `/Users/devtejas/Downloads/HelioGrid UX/_ds/heliogrid-design-system-c8aa4326-21bf-453a-8d11-749cc81dee12`. (Verified against disk 2026-07-30: exactly **80** `*.dc.html`, inclusive of the 7 `Layout*` sub-sheets and `Project Flow.dc.html`. Earlier "85 mockups" references in the corpus were wrong under any counting and have been corrected.)
 
 ## 0. The single most important reality
 

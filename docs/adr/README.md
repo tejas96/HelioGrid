@@ -1,6 +1,8 @@
 # Architecture Decision Records
 
-Decisions that are expensive to reverse, recorded at the moment they were made, with the evidence that made them. BLUEPRINT.md is the top-layer authority; each ADR is the durable rationale behind one of its choices. When code and an ADR disagree, stop and reconcile the ADR first.
+Decisions that are expensive to reverse, recorded at the moment they were made, with the evidence that made them.
+
+**Authority order:** the Laws (docs/17) → product truth (docs/product + the docs/15 overlay) → **ADRs + docs/02 + docs/03** → module docs. An ADR is dated, so where an ADR and a prose doc disagree, **the ADR wins** — and where code and an ADR disagree, stop and reconcile the ADR first.
 
 ## Index
 

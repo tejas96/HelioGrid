@@ -1,9 +1,9 @@
 # 13 — UX Gap Register
 
 **Status:** Binding · 2026-07-24 · Owner: product/design
-**Sources:** ./research/uxAL.md, ./research/uxMZ.md (85-mockup catalogue + "Notable gaps"), ./research/journey.md (journey map), ./research/phases710.md (studio tool census). Rulings referenced: docs/15-spec-resolutions.md.
+**Sources:** ./research/uxAL.md, ./research/uxMZ.md (mockup catalogue + "Notable gaps"), ./research/journey.md (journey map), ./research/phases710.md (studio tool census). Rulings referenced: docs/15-spec-resolutions.md.
 
-The 85 mockups vendored at `design/mockups/` (original source: the owner's HelioGrid UX folder, vendored 2026-07-24) are production specs for most of the product. This register lists every screen or flow the mockups do **not** cover. Each gap is **designed at implementation time** — by the implementing agent/designer, directly in the design system (`packages/tokens`, N1–N10, touch contract), inside the module's build slice. No new Claude-Design phase. A gap is closed when the screen ships wired into its flow (never orphaned), with loading/empty/error/offline states, both breakpoints, and the light theme correct (light-only per docs/15 R19-A).
+The **80** mockups vendored at `design/mockups/` (original source: the owner's HelioGrid UX folder, vendored 2026-07-24) are production specs for most of the product. (Count verified against disk 2026-07-30: exactly 80 `*.dc.html`, inclusive of the 7 `Layout*` sub-sheets and `Project Flow`. Earlier "85" references were wrong under any counting.) This register lists every screen or flow the mockups do **not** cover. Each gap is **designed at implementation time** — by the implementing agent/designer, directly in the design system (`packages/tokens`, N1–N10, touch contract), inside the module's build slice. No new Claude-Design phase. A gap is closed when the screen ships wired into its flow (never orphaned), with loading/empty/error/offline states, both breakpoints, and the light theme correct (light-only per docs/15 R19-A).
 
 > **20-day directive (2026-07-24):** every phase label in the tables below now lands INSIDE
 > the single 20-day build (docs/14 tracks): "Launch-1 …" rows → Tracks A/B/C, "Launch-2 …"

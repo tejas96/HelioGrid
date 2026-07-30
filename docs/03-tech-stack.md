@@ -199,13 +199,14 @@ Sources: [./research/tooling.md](./research/tooling.md) · [./research/verify-ba
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| Telephony | **Exotel** (`TelephonyProvider` adapter): Exophones, DLT/TRAI ops, 1600/140x series, **AgentStream bidirectional WS** (<20 ms media), IVR applets, DTMF | Strongest India carrier compliance (UL-VNO licensed); audio/PII stays in India; AgentStream is exactly the seam that keeps STT/LLM/TTS swappable. Per-tenant numbers: platform Exophone default, BYO = hosted/ported with KYC (TRAI CLI rules — never caller-ID spoofing) | Twilio (2–3× cost, thinnest India DLT) · Plivo (less India-native compliance tooling) · Knowlarity/Ozonetel (weaker dev/streaming APIs) |
+| Telephony | **Exotel** behind the capability-negotiated port family of **ADR-0019** (not a direct integration): Exophones, DLT/TRAI ops, **AgentStream bidirectional WS** (<20 ms media), IVR applets. **Corrected by spike S5:** BYO = **inbound forwarding to the platform ExoPhone only — outbound CLI is NOT portable**; **DTMF-send is a declared capability Exotel AgentStream does NOT provide** (IVR traversal degrades honestly until a capable adapter exists); the **1600-series is closed to non-BFSI**, so promotional outbound uses the **140-series RTM** route | Strongest India carrier compliance (UL-VNO licensed); audio/PII stays in India; AgentStream is the seam that keeps STT/LLM/TTS swappable. Per-tenant numbers: platform Exophone is the default and the only outbound origin | Twilio (2–3× cost, thinnest India DLT) · Plivo (less India-native compliance tooling) · Knowlarity/Ozonetel (weaker dev/streaming APIs) |
 | Speech + LLM | **Sarvam AI**: Saarika STT / Bulbul TTS / Sarvam LLM | Lowest WER in 13/15 Indian languages (ahead of Gemini 3 Pro); Bulbul beats ElevenLabs on Hindi prosody; sovereign India compute — DPDP-clean; covers HI/MR/GU/TA/TE/EN | Google Chirp/Gemini (close #2, US residency) · ElevenLabs (loses on Hindi, US) · AI4Bharat open models (kept as self-host cost floor, not v1 SLA) |
-| Orchestrator | Thin **NestJS `apps/voice`** `CallSession`: turn-taking, barge-in, AI-disclosure ≤30 s, escalate-to-human, outcome classification, outbound **DTMF IVR traversal** (`sendDtmf`/`onDtmf`) | Owning the thin glue keeps every vendor swappable; every call ledgered per tenant with cost breakdown (≈₹2.5–4/min outbound all-in) | Vapi/Retell/Bland (US audio transit fails DPDP; ₹3+/min + fees) · Sarvam Samvaad (managed runtime weakens the swap boundary) · Pipecat (Python breaks TS-everywhere) |
+| Orchestrator | Thin **NestJS `apps/voice`** `CallSession`: turn-taking, barge-in, AI-disclosure ≤30 s, escalate-to-human, outcome classification. **DTMF IVR traversal is a DECLARED CAPABILITY, not a built feature** — the interface exists in the ADR-0019 port family, no current adapter provides it (S5), and the call degrades honestly when it is absent | Owning the thin glue keeps every vendor swappable; every call ledgered per tenant with cost breakdown (≈₹2.5–4/min outbound all-in) | Vapi/Retell/Bland (US audio transit fails DPDP; ₹3+/min + fees) · Sarvam Samvaad (managed runtime weakens the swap boundary) · Pipecat (Python breaks TS-everywhere) |
 | Plan B | **Bolna** (~₹6/min India-native all-in-one) behind the SAME ports | Documented single-vendor shortcut if orchestration slips; config swap, not rewrite | LiveKit self-host = v2 at volume, the reference target the ports are designed for |
 
 **`ComplianceGate` is ours and non-swappable**: daily DND scrub, consent, 9am–9pm window +
-holiday calendar, 1600/140x routing, keypress opt-out ≤24 h, 90-day recording retention.
+holiday calendar, **140-series RTM routing for promotional outbound** (the 1600-series is
+closed to non-BFSI — S5), keypress opt-out ≤24 h, 90-day recording retention.
 Penalty (₹25,000/upheld complaint) lands on the tenant — so we gate it in our code.
 
 Sources: [./research/voice.md](./research/voice.md) · [Exotel AgentStream](https://docs.exotel.com/exotel-agentstream/bidirectional-streaming) · [Sarvam pricing](https://www.sarvam.ai/api-pricing) · [Indic ASR benchmarks](https://huggingface.co/datasets/ai4bharat/SpeechArenaBench).
@@ -279,9 +280,10 @@ Sources: [./research/tooling.md](./research/tooling.md) · [./research/verify-ba
    window; until then the Zod 3.25.x pin stands.
 4. **Tigris single-region pin via `fly storage create`** — confirm the CLI/console path to a
    `sin`-pinned bucket (flag naming under-documented).
-5. **Exotel BYO-number porting mechanics + AgentStream DTMF** — exact hosted/ported-number
-   flow with KYC under TRAI CLI rules, and DTMF send/detect over AgentStream for outbound
-   IVR traversal.
+5. ~~**Exotel BYO-number porting mechanics + AgentStream DTMF**~~ — **RESOLVED by spike S5**
+   (`docs/spikes/S5-exotel-byo-dtmf.md`); binding form is ADR-0019. Findings: BYO is inbound
+   forwarding to the platform ExoPhone only (outbound CLI is not portable), AgentStream does
+   not provide DTMF-send, and the 1600-series is closed to non-BFSI. Nothing left to verify.
 6. **PowerSync self-host deploy smoke** — deploy the prebuilt `journeyapps/powersync-service`
    image (Postgres bucket storage, JWKS auth) on a scratch Fly app; pass = a sync round-trip
    on a scratch stream; fallback = PowerSync Cloud trial while self-host is debugged.

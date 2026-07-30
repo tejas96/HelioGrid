@@ -1,8 +1,15 @@
 # 04 — Data Model (full multi-tenant schema)
 
+> **LAW 9 — this is FROZEN DESIGN, not a build order.** Every table below is the reference
+> that keeps future modules coherent. Tables, enums and columns are AUTHORED only when their
+> OWNING module's slice begins. An agent asked to "implement the schema" implements the
+> CURRENT module's slice of it. Designing or migrating ahead for modules not being built is
+> a violation — the forward-compat register exists precisely so each module's first migration
+> can satisfy future needs without building them early.
+
 Canonical schema for HelioGrid on Postgres (Fly postgres-flex, `bom`) via Drizzle. This document
 is the source of truth for every table: **never invent a table or column that is not here or in a
-migration** (CLAUDE.md read order). Conventions in `packages/db/CLAUDE.md` are binding and
+migration**. Conventions in `packages/db/CLAUDE.md` are binding and
 are not restated per-table; the deltas that matter:
 
 - `id uuid` PK, **UUIDv7 generated app-side** by Drizzle's default function (time-ordered; no

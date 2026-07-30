@@ -1,9 +1,13 @@
 # 02 — System Architecture
 
-Binding source: `BLUEPRINT.md`. Evidence: `./research/backend.md`, `./research/fly.md`,
-`./research/sync.md`, `./research/geo3d.md`, `./research/calc.md`. Where a research file
-recommended differently (Hono/oRPC/Graphile/S3), the user's final-review directives in
-BLUEPRINT override it; this document records only the final architecture.
+Binding sources: **the ADRs (`./adr/`) + `./03-tech-stack.md`**. This document is the
+canonical architecture record; where it and an ADR disagree, the ADR wins (it is dated).
+Owner directives that shaped these choices: docs/15 §4.
+
+Evidence: `./research/backend.md`, `./research/fly.md`, `./research/sync.md`,
+`./research/geo3d.md`, `./research/calc.md` — but note that `backend.md` and `fly.md`
+recommended stacks (Hono/oRPC/Graphile/S3) that were **later overturned** by
+ADR-0002/0003/0006/0007/0008. Read them as considered alternatives, never as guidance.
 
 ---
 

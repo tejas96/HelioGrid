@@ -7,7 +7,7 @@ EN/HI/MR, per-user language.
 
 Sources: [./research/ds-tokens.md](./research/ds-tokens.md) (complete token census) ·
 [./research/ds-brand-law.md](./research/ds-brand-law.md) (brand law, lint rules, component
-inventory) · [./research/ds-usage.md](./research/ds-usage.md) (how the 85 mockups consume
+inventory) · [./research/ds-usage.md](./research/ds-usage.md) (how the 80 mockups consume
 the system) · [./research/ds-reconciliation.md](./research/ds-reconciliation.md) (the
 22-point conflict list — its resolutions are binding) · owner rulings A–E of 2026-07-24
 (final; restated inline where they apply).

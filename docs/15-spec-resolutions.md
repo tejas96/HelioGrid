@@ -178,3 +178,73 @@ The canonical visual system is the vendored UX package at `design/ds-source/` (t
 **R19-D — Weight 600 is SANCTIONED.** `--fw-semibold:600` becomes a token (mockups use 600 ×210 on dense desktop screens); the sanctioned weight set is **400 / 500 / 600 / 700**. The readme's "500 restricted to buttons/tabs/table-headers" clause is dead (usage overrules it — 500 ×1213).
 
 **R19-E — "Instrument" is formally retired** (recorded in the D3 row above): graphite+brass is not the product's visual identity anywhere, for any tenant. Every visual fact now comes from ds-source; the POC DESIGN-SYSTEM.md survives only as the interaction/a11y/product-law contract layer.
+
+---
+
+## 4 · Owner directives (absorbed from BLUEPRINT, 2026-07-30)
+
+The binding directives from the original planning session, preserved here because
+`BLUEPRINT.md` is archived. **Where a directive was later amended, the amendment is stated
+FIRST and the superseded wording is marked as such** — the archived file interleaved them,
+which let an agent quote stale law from above a correction.
+
+1. **Backend: NestJS.** (ADR-0002.)
+2. **Fly-native storage/services only initially — no AWS.** (ADR-0006/0007/0008.)
+3. **Mobile: bare React Native, NO Expo**, iOS + Android from day one. (ADR-0011.)
+4. **Payments, subscriptions, billing, entitlements, usage tracking and gateway integration
+   are IN the initial product** — supersedes D38. Trial-only, no free tier. (docs/16, ADR-0013.)
+5. **Timeline: SUPERSEDED.** The original directive was "the entire product ships in ONE
+   20-day build". Reality overtook it — foundation work ran its own path and store accounts
+   plus billable Fly infrastructure are owner-blocked
+   (`docs/ops/company-registration-blockers.md`). What survives is the *track dependency
+   structure*, not the calendar: docs/14. The scope commitment (no Launch-2, no "later"
+   buckets) stands; the day numbers do not.
+6. **Long-term scalability, global expansion, clean code, AI-assisted development,
+   maintainability and production ops — without unnecessary complexity.**
+7. **Telephony — AMENDED 2026-07-26; binding form is ADR-0019.** Telephony is a
+   provider-agnostic **capability framework**: a capability-negotiated port family, a
+   provider-agnostic call-control plane (warm/cold transfer with pinned AI context,
+   tenant-configurable escalation chains, callback queues, defined degradation ladders), and
+   routing policies as versioned tenant data. Corrections from spike S5, which are the
+   operative facts: **BYO = inbound forwarding to the platform ExoPhone — outbound CLI is
+   NOT portable**; **DTMF-send is a declared capability that Exotel AgentStream does NOT
+   provide**, so IVR traversal degrades honestly until a capable adapter exists; **the
+   1600-series is closed to non-BFSI**, so promotional outbound uses the 140-series RTM
+   route. Launch builds launch scope only; advanced capabilities are seams, not code.
+   *SUPERSEDED wording from the original directive: "BYO = hosted/ported with KYC" and
+   "`sendDtmf()`/`onDtmf()` over AgentStream" — both contradicted by S5. Do not implement.*
+8. **No feature-flag system.** Features ship enabled when merged; no flag infrastructure, no
+   dark launches. The ONLY runtime gating is billing entitlements. Incomplete work does not
+   merge. (ADR-0016.)
+9. **The 3D Design Studio is THE flagship — nothing is compromised against it.** The tool
+   census is the binding acceptance checklist for the port: every tool and every computed
+   output survives, refactored to the design system, touch-first. The scale program is
+   investment INTO the studio moat, never a reason to cut studio capability. Mobile presents
+   the full-parity touch studio through an authenticated WebView; no studio feature is
+   dropped on any surface. **Canonical census: `docs/product/studio-census.md`** (promoted
+   2026-07-30; the POC's `phase-10-prompts.md` is NOT canonical). (ADR-0017.)
+10. **Studio port and the offline layer are the LAST build phases.** The studio moves last
+    because a validated implementation already exists in the POC (re-honouring D23); offline
+    moves last because nothing at launch depends on it. This is a move in TIME only — never
+    in scope or quality: the census gate, DS-refactor targets and scale program are
+    unchanged. Until offline lands, mobile is online-first behind a repository abstraction.
+
+### Earlier owner decisions (still binding)
+
+Thin test safety net only — strict typecheck/lint gates plus the locked invariant set; no
+routine unit-test authoring (**reaffirmed and hardened 2026-07-29: no `.test.*`/`.spec.*`
+files at all until a testing program is explicitly commissioned**) · benchmark pricing below
+Reslink/ARKA/Aurora with healthy margin (final tiers: docs/01) · 1 kW → 100 MW design range
+with a credible scale path · competitive gap analysis first-class, UX gaps registered for
+implementation-time design · two-tier catalog (platform master + tenant own + tenant
+overrides; resolution: tenant-override → tenant-item → platform-item) · consistency and
+stability over cleverness · **the AI-agent rules are the most important deliverable**.
+
+### User decisions log
+
+Docs home `/Volumes/works-space/heliogrid` · competitors ARKA 360, Aurora, OpenSolar,
+Reslink · tests: thin safety net · two-tier catalog: yes · pricing: trial-only, no free
+tier · voice v1: Exotel + Sarvam · final review: NestJS, Fly-native storage
+(Tigris/Upstash, no AWS), bare React Native (no Expo), billing/entitlements/payments in v1 ·
+DB: Fly unmanaged postgres-flex (owner choice; deprecation risk accepted with mandatory
+mitigations and documented escape hatches — ADR-0006).

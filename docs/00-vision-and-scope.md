@@ -1,6 +1,6 @@
 # 00 · Vision & Scope
 
-Status: approved · Binding sources: `BLUEPRINT.md`, `./research/journey.md` (journey map + D1–D39 census)
+Status: approved · Binding sources: `./product/product-journey.md` (the D1–D39 census, read through the `./15-spec-resolutions.md` overlay) · owner directives: `./15-spec-resolutions.md` §4
 
 ## The product in one page
 

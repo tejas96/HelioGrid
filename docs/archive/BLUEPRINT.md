@@ -1,3 +1,14 @@
+> **ARCHIVED 2026-07-30 — NOT BINDING. Do not cite this file.**
+>
+> This was the original planning-session output. Its architecture content is duplicated —
+> and kept current — in docs/02, docs/03, docs/16 and the ADRs. Its owner-directive list and
+> user-decisions log moved to **docs/15 §4**, where amendments are stated above the wording
+> they supersede.
+>
+> Retained for provenance only. **Its telephony directive (7) in particular contains pre-S5
+> wording that ADR-0019 overturned** — BYO-as-porting and AgentStream DTMF-send are both
+> false. Reading directive 7 here, top-down, yields dead law.
+
 # HelioGrid — Final Production Architecture & Planning Blueprint (docs only, no app code this session)
 
 ## Context
