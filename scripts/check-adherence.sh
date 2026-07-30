@@ -29,7 +29,7 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-UI_DIRS="packages/ui/src apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib"
+UI_DIRS="packages/ui/src apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib apps/web/features"
 for d in $UI_DIRS; do
   [ -e "$d" ] || { printf 'CONFIG ROT: UI_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
 done
@@ -176,7 +176,7 @@ fi
 # and a NEW screen gets no such grace.
 COPY_DEBT='apps/web/app/home/page.tsx|apps/web/app/onboarding/page.tsx'
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
-         apps/web/app apps/mobile/src/screens --include='*.tsx' \
+         apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
        | grep -vE "^(apps/web/app/design/|apps/mobile/src/screens/gallery/)" \

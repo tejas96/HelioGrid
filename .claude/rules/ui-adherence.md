@@ -5,6 +5,7 @@ paths:
   - "apps/mobile/App.tsx"
   - "apps/web/app/**"
   - "apps/web/lib/**"
+  - "apps/web/features/**"
 ---
 
 # UI — tokens only, compose don't invent, separate rendering from logic
