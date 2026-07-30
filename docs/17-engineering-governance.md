@@ -150,7 +150,8 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | Invariants cannot silently skip | `turbo.json` test `env` + fail-closed runner under `CI` | invariant | `turbo.json`, `run.ts` |
 | Token contrast floors (WCAG) | `DECLARED_PAIRS` gate, fails the build | build | `packages/tokens/src/contrast.ts` |
 | i18n catalogs freshly extracted | `lingui extract` + `git diff --exit-code` | CI | `ci.yml` |
-| Migrations are append-only | sha256 lock (runner refuses) **+** PreToolUse hook | runtime + hook | `packages/db/src/migrate.ts`, `write-guard.sh` |
+| Migrations are append-only | sha256 lock (runner refuses) **+** PreToolUse hook (author) **+** CI merge gate (`git diff --diff-filter=MD` on PRs) for what the hook cannot see — a human, another tool, a rebase | runtime + hook + CI | `packages/db/src/migrate.ts`, `write-guard.sh`, `ci.yml` |
+| No committed secrets | gitleaks scans full history on push and PR | CI | `ci.yml` |
 | Runtime DB role cannot bypass tenancy | boot precondition — app refuses to start | runtime | `apps/api/src/common/db/tenancy-precondition.ts` |
 | Never `sed -i` / `perl -i` / `python -i` | PreToolUse hook, exit 2 | hook | `.claude/hooks/bash-guard.sh` |
 | No `.test.*` / `.spec.*` files | PreToolUse hook (Edit/Write **and** shell redirect/touch) **+** lint-chain backstop for files an agent did not author | hook + lint | `write-guard.sh`, `bash-guard.sh`, `scripts/check-adherence.sh` |
@@ -176,7 +177,6 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Arbitrary px / inline style in UI | Not attempted. Raw hex has a stable syntactic shape; "arbitrary px" does not — spacing, border and icon sizes are legitimately numeric, so the rule would be mostly false positives. Reviewed by `ux-lens` instead. | — |
 | OpenAPI freshness + breaking changes | emit + `git diff`; oasdiff locally | CI |
 | VERIFIED rows carry evidence | roadmap linter | CI |
-| No committed secrets | gitleaks | CI |
 | Dead code / clone detection | knip + jscpd, local hygiene tools | local |
 | Auth path is executably verified | `scripts/auth-e2e-replay.ts` | local |
 

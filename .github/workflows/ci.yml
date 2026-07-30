@@ -34,6 +34,24 @@ jobs:
       DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Migrations are append-only (packages/db/CLAUDE.md)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags origin ${{ github.base_ref }}
+          if ! git diff --diff-filter=MD --quiet origin/${{ github.base_ref }}...HEAD -- packages/db/migrations; then
+            echo "::error::An APPLIED migration was modified or deleted. Migrations are"
+            echo "::error::append-only and sha256-locked by the runner — editing one makes"
+            echo "::error::the db migrate step refuse to run. Add a new file instead."
+            git diff --diff-filter=MD --name-only origin/${{ github.base_ref }}...HEAD -- packages/db/migrations
+            exit 1
+          fi
+          echo "migrations append-only: OK"
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
