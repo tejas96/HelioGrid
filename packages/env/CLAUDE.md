@@ -47,7 +47,18 @@ packages/domain, which may never read the environment (ADR-0021).
   the presets — including `domain`, whose purity rule does not name `config`. Env living there
   would let `packages/domain` read the environment with neither boundaries nor
   dependency-cruiser objecting.
-- `noProcessEnv` is a Biome error repo-wide; `packages/env/src/**` is the allowlist entry.
+- **Three mechanisms guard this, and adding a read means editing TWO of them on purpose.**
+  Biome `noProcessEnv` catches a file; `pnpm check:env` (scripts/check-env-access.mjs) catches
+  the repo, so widening the Biome allowlist alone does not let a read through; the Turborepo
+  `env` tag stops non-apps importing this package at all.
+- Audited exceptions are three, each with a reason in `scripts/check-env-access.mjs`:
+  `packages/env/src/**`, `apps/web/lib/env.ts` (Next inlines `NEXT_PUBLIC_*` only in code IT
+  compiles, so the literal cannot live in this pre-built package), and
+  `scripts/check-openapi-breaking.mjs` (a developer-tool override read before any app loads).
+- The repo-level check matches `process.env`, NOT `process.env.` — the trailing dot misses
+  `safeParse(process.env)`, which is how apps/api and apps/worker read it. It also strips
+  comments first, because several files legitimately discuss `process.env` while explaining
+  why they must not read it.
 
 ## Definition of done here
 Every variable declared in a schema and documented in `.env.example` · no `process.env` read

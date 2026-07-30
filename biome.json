@@ -147,8 +147,7 @@
       "includes": [
         "packages/env/src/**",
         "apps/web/lib/env.ts",
-        "**/*.config.{js,ts,mjs,cjs}",
-        "**/scripts/**"
+        "scripts/check-openapi-breaking.mjs"
       ],
       "linter": {
         "rules": {
