@@ -66,8 +66,11 @@ jobs:
         run: pnpm --filter @heliogrid/db migrate
       - run: pnpm turbo test
       - run: pnpm turbo build
-      - name: Emit OpenAPI (contract surface)
-        run: pnpm --filter @heliogrid/contracts openapi
+      - name: OpenAPI freshness (committed spec matches the contract)
+        # Same script as `pnpm check:openapi` so CI and local can never diverge on what
+        # "fresh" means. oasdiff is absent here, so the breaking-change half skips cleanly
+        # and only the freshness half gates the merge.
+        run: pnpm check:openapi
       - name: i18n extract guard (unextracted messages never merge — docs/10 §7.2)
         run: |
           pnpm --filter @heliogrid/i18n extract

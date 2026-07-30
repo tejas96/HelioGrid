@@ -155,6 +155,9 @@
         "rules": {
           "style": {
             "noProcessEnv": "off"
+          },
+          "suspicious": {
+            "noUndeclaredEnvVars": "off"
           }
         }
       }

@@ -14,13 +14,20 @@ Before any implementation. The diff is the API review surface (Law 3).
 
 ## 2. Re-emit and commit the OpenAPI surface
 
+The emit reads `dist/`, so **build before you emit** — otherwise you emit the old surface
+from stale `dist` and see no diff for a change you did make:
+
 ```bash
+pnpm --filter @heliogrid/contracts build
 pnpm --filter @heliogrid/contracts openapi
 git diff --stat packages/contracts/openapi/openapi.json
 ```
 
+Or run `pnpm check:openapi`, which builds, emits, fails on a stale committed spec, and —
+when `oasdiff` is installed — also flags breaking changes against `origin/main`.
+
 The committed spec must match the contract **in the same change**. A stale committed
-surface is a lie told to every reader of it.
+surface is a lie told to every reader of it. CI enforces this half on every PR.
 
 ## 3. If you touched a `z.enum` the database also stores
 
@@ -49,3 +56,7 @@ nothing broke, the map is not exhaustive — make it so.
 Removing a field, tightening a type, renaming a key or changing a declared status code
 breaks every existing client. Additive changes — a new optional field, a new endpoint — do
 not. A genuine break needs an owner ruling recorded in the module roadmap before it merges.
+
+For a mechanical second opinion, `pnpm check:openapi` diffs the emitted surface against
+`origin/main` with `oasdiff` (install it locally: `brew install oasdiff`). It is advisory,
+not a CI gate — a human reads the break and decides.
