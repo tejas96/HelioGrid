@@ -26,13 +26,17 @@ uses: drizzle-orm, postgres        used by: apps/api, apps/worker, tests/invaria
   there are no default privileges, so a forgotten grant fails closed.
 
 ## Landmines
-- **pgEnum values hand-mirror the contracts `z.enum`s and NOTHING checks they match.**
-  `db-no-upward` (dependency-cruiser) forbids importing contracts here, so the two lists
-  are kept in sync by discipline alone — the highest-risk drift in the repo. When you touch
-  `src/schema/enums.ts`, diff it against `packages/contracts/src/common.ts` + `auth.ts`
-  value-for-value in the same change, and say so in the commit. A value present in one and
-  not the other is a silent production defect (rows the API can never return, or API values
-  the DB rejects at insert).
+- **pgEnum values hand-mirror the contracts `z.enum`s — and this is now CHECKED.**
+  `db-no-upward` (dependency-cruiser) forbids importing contracts here, so the sync cannot
+  be a type-level one. `tests/invariants/src/enum-parity.ts` closes it instead: it reads
+  live `pg_enum` values and compares them to the contract schemas (which it MAY import,
+  being tagged `app`). Both drift directions fail the build, and a NEW pg enum that is
+  neither mapped nor listed in `NO_CONTRACT_YET` also fails — so "does this cross the wire?"
+  becomes a conscious decision rather than a silent omission.
+  When you touch `src/schema/enums.ts`, change the contract `z.enum` in the same slice and
+  run `/contract-change`. A value present in one and not the other is a silent production
+  defect (rows the API can never return, or API values the DB rejects at insert) — which is
+  why it was the highest-risk drift in the repo until 2026-07-30.
 - audit_log / usage_events are PARTITIONED — drizzle-kit cannot express this; their DDL
   is hand-authored in migrations, the Drizzle model is the query surface via the parent.
   Partition upkeep beyond 2027-06 is a worker job (Track A); default partitions catch

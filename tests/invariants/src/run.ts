@@ -1,8 +1,9 @@
+import { runEnumParity } from './enum-parity';
 import { runTenancyInvariants } from './tenancy-rls';
 
 /**
- * Locked invariant runner. Sets: money (lands with the proposal module), tenancy (live),
- * billing (lands with the billing module), migrations (lands with Track A's migration).
+ * Locked invariant runner. Sets: tenancy (live), enum parity (live), money (lands with the
+ * proposal module), billing (lands with the billing module), migrations (Track A).
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -23,6 +24,7 @@ async function main() {
     return;
   }
   await runTenancyInvariants(url);
+  await runEnumParity(url);
   console.log('invariants green');
 }
 

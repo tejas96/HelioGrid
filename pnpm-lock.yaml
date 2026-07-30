@@ -462,6 +462,9 @@ importers:
 
   tests/invariants:
     dependencies:
+      '@heliogrid/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       postgres:
         specifier: 3.4.9
         version: 3.4.9

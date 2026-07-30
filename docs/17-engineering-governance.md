@@ -145,6 +145,7 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | Dependency version drift | sherif | lint | `package.json` lint chain |
 | Exact dependency pins | `.npmrc save-prefix=` + `--frozen-lockfile` | install + CI | `.npmrc`, `ci.yml` |
 | Tenant isolation (cross-tenant read/write, fail-closed, append-only ledgers) | `tests/invariants/tenancy-rls.ts`, schema-generated | invariant | CI test |
+| contracts `z.enum` ↔ db `pgEnum` parity | `tests/invariants/enum-parity.ts` — live `pg_enum` vs contract schemas, both directions, plus an unmapped-enum check | invariant | CI test |
 | Invariants cannot silently skip | `turbo.json` test `env` + fail-closed runner under `CI` | invariant | `turbo.json`, `run.ts` |
 | Token contrast floors (WCAG) | `DECLARED_PAIRS` gate, fails the build | build | `packages/tokens/src/contrast.ts` |
 | i18n catalogs freshly extracted | `lingui extract` + `git diff --exit-code` | CI | `ci.yml` |
@@ -169,7 +170,6 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 
 | Rule | Intended mechanism | Stage |
 |---|---|---|
-| contracts `z.enum` ↔ db `pgEnum` parity | invariant comparing live `pg_enum` to contract schemas | invariant |
 | `tenant_id` present on every new table | inverse scan + explicit global-table allowlist | invariant |
 | No raw hex / arbitrary px / inline style (hard gate) | oxlint `no-restricted-syntax` | lint |
 | Files ≲450 lines (hard gate) | oxlint `max-lines` | lint |

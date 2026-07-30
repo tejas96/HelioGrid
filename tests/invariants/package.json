@@ -8,6 +8,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@heliogrid/contracts": "workspace:*",
     "postgres": "3.4.9"
   },
   "devDependencies": {
