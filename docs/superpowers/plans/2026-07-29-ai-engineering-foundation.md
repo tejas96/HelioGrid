@@ -78,7 +78,7 @@ Expected: a non-zero count (~113). If it reports `0`, the restructure was alread
 - `.github/pull_request_template.md` (`.oxlintrc.json` and `scripts/check-roadmaps.mjs` were dropped — oxlint in Task 22, the roadmap linter in Task 26, both owner decisions favouring rules/greps over bespoke scripts)
 - `biome.json`, `.dependency-cruiser.cjs`, `.github/workflows/ci.yml` — extended
 
-**Phase 4 — created:** `packages/domain/` (pure TS), `packages/ui-api/` (types-only parity surface), `scripts/auth-e2e-replay.ts` (on-demand verification, not a test file).
+**Phase 4 — created:** `packages/domain/` (pure TS), `packages/ui-api/` (types-only parity surface). `scripts/auth-e2e-replay.ts` was DROPPED with Task 33 (auth is being rebuilt — owner 2026-07-30).
 
 **Phase 5 — created:** `packages/env/` — the one typed environment service for api, worker, web and mobile. Split by responsibility: `schema/` (shapes) · `parse.ts` (validation) · `server.ts` / `web.ts` / `native.ts` (the only three places a raw source is touched).
 
@@ -4539,7 +4539,7 @@ EOF
 
 **Interfaces:**
 - Consumes: the gate set from Phase 3
-- Produces: `@heliogrid/domain` exporting from `src/index.ts`. Task 31 adds the login machine to it; Task 32 is independent. Package tag: `domain` (turbo boundaries — may depend only on `domain`).
+- Produces: `@heliogrid/domain` exporting from `src/index.ts`. Task 31 (login machine) is SKIPPED — auth is being rebuilt — so `packages/domain` lands with the seed contents named below and gains the login machine during the auth rebuild instead; Task 32 is independent. Package tag: `domain` (turbo boundaries — may depend only on `domain`).
 
 `packages/domain` is currently a phantom: two dependency-cruiser rules target it, `turbo.json` has a `domain` boundaries tag, five per-package CLAUDE.mds point at it, and it does not exist. Either it becomes real or those eleven references get deleted. The owner chose real.
 
@@ -4596,7 +4596,7 @@ configuration are **injected parameters, never module-level globals** — the PO
 `resolveRules()` singleton is the anti-pattern this rule exists to prevent.
 
 Seeded with:
-1. The login flow state machine as a pure reducer, consumed by both platforms (Task 31).
+1. The login flow state machine as a pure reducer, consumed by both platforms (deferred into the auth rebuild — Task 31 skipped).
 2. Shared formatters — ₹ Indian grouping (`formatInr`) and E.164 phone display.
 3. The invite and role invariants currently embedded in `apps/api` service code.
 
@@ -4748,266 +4748,22 @@ EOF
 
 ---
 
-### Task 31: Extract the login state machine
+### Task 31: Extract the login state machine — SKIPPED (owner decision, 2026-07-30)
 
-**Files:**
-- Create: `packages/domain/src/auth/login-machine.ts`
-- Modify: `packages/domain/src/index.ts`
-- Modify: `apps/web/app/login/page.tsx`
-- Modify: `apps/mobile/src/screens/login/LoginScreen.tsx`
-- Modify: `docs/modules/auth-tenancy.md` (record the timing ruling)
+**Not built.** The auth module is being rebuilt from scratch (auth-tenancy ruling 6), and the
+router for web + mobile is being set up first. Extracting a state machine out of login screens
+that are about to be replaced would be refactoring code with no future. The *finding* the task
+was built on stays valid and must be honoured by the rebuild, so it is recorded here rather
+than lost:
 
-**Interfaces:**
-- Consumes: `@heliogrid/domain` (Task 30)
-- Produces: `loginReducer`, `initialLoginState`, `LoginState`, `LoginEvent`, `RESEND_SECONDS`, `AUTO_VERIFY_DELAY_MS`, `DONE_DWELL_MS` — imported by both login screens
+**Measured drift between the two login screens (2026-07-29):** done-step dwell 1400ms (web) vs
+900ms (RN); offline detection via `navigator.onLine` (web) vs local state (RN); failure unions
+`'mismatch' | 'verify-failed' | 'resend-failed'` (web) vs `'mismatch' | 'transport'` plus a
+separate offline flag (RN). The auth-tenancy roadmap records the 1400ms unification ruling.
 
-**Measured drift being fixed:** done-step dwell 1400ms (web) vs 900ms (RN); offline detection via `navigator.onLine` (web) vs local state (RN); failure unions `'mismatch' | 'verify-failed' | 'resend-failed'` (web) vs `'mismatch' | 'transport'` plus a separate offline flag (RN).
-
-- [ ] **Step 1: Confirm the drift precisely**
-
-```bash
-grep -n "RESEND_SECONDS\|DONE_REDIRECT_DWELL_MS\|AUTO_VERIFY_DELAY_MS\|CALL_OFFER_AFTER_RESENDS" apps/web/app/login/page.tsx
-grep -n "RESEND_SECONDS\|DONE_DWELL_MS\|AUTO_VERIFY_DELAY_MS\|CALL_OFFER" apps/mobile/src/screens/login/LoginScreen.tsx
-grep -n "OtpFailure\|otpFailure" apps/web/app/login/page.tsx apps/mobile/src/screens/login/LoginScreen.tsx | head -6
-wc -l apps/web/app/login/page.tsx apps/mobile/src/screens/login/LoginScreen.tsx
-```
-
-Expected: `RESEND_SECONDS = 30` and `AUTO_VERIFY_DELAY_MS = 140` agree; the dwell constants differ (1400 vs 900); the failure unions differ in name and shape; the files are ~388 and ~441 lines.
-
-- [ ] **Step 2: Record the timing ruling before changing behaviour**
-
-The dwell difference is a **user-visible behavioural decision**, not an implementation detail — it must be a recorded ruling, not a silent unification. Add to the "Module rulings" section of `docs/modules/auth-tenancy.md`:
-
-```markdown
-4. **Done-step dwell unified at 1400ms** (2026-07-29, ADR-0021 extraction — owner may veto).
-   Web used 1400ms and RN 900ms; the drift was invisible because the state machine was
-   implemented twice. 1400ms is adopted as canonical: the success state needs long enough
-   to register before the screen changes under the user, and it is the value that was
-   verified against the mockup's motion spec. RN's dwell changes 900 → 1400ms.
-```
-
-- [ ] **Step 3: Write the reducer**
-
-Create `packages/domain/src/auth/login-machine.ts`:
-
-```ts
-/**
- * Phone-OTP login flow — the decision logic, shared by web and React Native (ADR-0021).
- *
- * This reducer owns WHAT happens; each app owns HOW: timers, navigation, storage, network
- * and rendering stay in the app. Time enters as a parameter — never `Date.now()` in here —
- * which is what lets RN drive the countdown from wall-clock (its timers suspend while
- * backgrounded) while web drives it from an interval, without the two behaving differently.
- *
- * Before this existed the machine was implemented twice and had already drifted: done-step
- * dwell 1400ms vs 900ms, different offline detection, differently shaped failure unions.
- */
-
-export const RESEND_SECONDS = 30;
-export const AUTO_VERIFY_DELAY_MS = 140;
-/** Unified 2026-07-29 (auth-tenancy module ruling 4; web 1400 adopted over RN 900). */
-export const DONE_DWELL_MS = 1400;
-export const CALL_OFFER_AFTER_RESENDS = 2;
-
-export type LoginStep = 'phone' | 'otp' | 'done';
-
-/** One union for both platforms. `offline` is a failure, not a parallel boolean. */
-export type LoginFailure = 'mismatch' | 'send-failed' | 'verify-failed' | 'offline';
-
-export interface LoginState {
-  step: LoginStep;
-  phone: string;
-  otp: string;
-  /** Increments on each resend so the OTP input remounts and stale responses are ignored. */
-  otpEpoch: number;
-  sending: boolean;
-  verifying: boolean;
-  failure: LoginFailure | null;
-  /** Seconds until resend is allowed; 0 means allowed. */
-  secondsLeft: number;
-  resendCount: number;
-  callRequested: boolean;
-  online: boolean;
-}
-
-export type LoginEvent =
-  | { type: 'phone-changed'; phone: string }
-  | { type: 'send-requested' }
-  | { type: 'send-succeeded' }
-  | { type: 'send-failed'; offline: boolean }
-  | { type: 'otp-changed'; otp: string }
-  | { type: 'verify-requested' }
-  | { type: 'verify-succeeded' }
-  | { type: 'verify-failed'; reason: 'mismatch' | 'transport'; offline: boolean }
-  | { type: 'resend-requested' }
-  | { type: 'tick'; secondsLeft: number }
-  | { type: 'call-requested' }
-  | { type: 'connectivity-changed'; online: boolean };
-
-export const initialLoginState: LoginState = {
-  step: 'phone',
-  phone: '',
-  otp: '',
-  otpEpoch: 0,
-  sending: false,
-  verifying: false,
-  failure: null,
-  secondsLeft: RESEND_SECONDS,
-  resendCount: 0,
-  callRequested: false,
-  online: true,
-};
-
-/** Total, synchronous, side-effect free. */
-export function loginReducer(state: LoginState, event: LoginEvent): LoginState {
-  switch (event.type) {
-    case 'phone-changed':
-      return { ...state, phone: event.phone, failure: null };
-
-    case 'send-requested':
-      if (state.sending) return state;              // in-flight guard: no double-submit
-      return { ...state, sending: true, failure: null };
-
-    case 'send-succeeded':
-      return {
-        ...state,
-        sending: false,
-        step: 'otp',
-        otp: '',
-        otpEpoch: state.otpEpoch + 1,
-        secondsLeft: RESEND_SECONDS,
-        failure: null,
-      };
-
-    case 'send-failed':
-      return { ...state, sending: false, failure: event.offline ? 'offline' : 'send-failed' };
-
-    case 'otp-changed':
-      return { ...state, otp: event.otp, failure: state.failure === 'mismatch' ? null : state.failure };
-
-    case 'verify-requested':
-      if (state.verifying) return state;            // in-flight guard
-      return { ...state, verifying: true, failure: null };
-
-    case 'verify-succeeded':
-      return { ...state, verifying: false, step: 'done', failure: null };
-
-    case 'verify-failed':
-      return {
-        ...state,
-        verifying: false,
-        otp: '',
-        otpEpoch: state.otpEpoch + 1,              // remount clears the input
-        failure: event.offline ? 'offline' : event.reason === 'mismatch' ? 'mismatch' : 'verify-failed',
-      };
-
-    case 'resend-requested':
-      if (state.secondsLeft > 0 || state.sending) return state;
-      return { ...state, sending: true, resendCount: state.resendCount + 1, failure: null };
-
-    case 'tick':
-      return { ...state, secondsLeft: Math.max(0, event.secondsLeft) };
-
-    case 'call-requested':
-      return { ...state, callRequested: true };
-
-    case 'connectivity-changed':
-      return {
-        ...state,
-        online: event.online,
-        failure: event.online && state.failure === 'offline' ? null : state.failure,
-      };
-
-    default: {
-      const _exhaustive: never = event;
-      return state;
-    }
-  }
-}
-
-/** Derived: the call-me escalation appears only after enough resends have failed. */
-export function shouldOfferCall(state: LoginState): boolean {
-  return state.resendCount >= CALL_OFFER_AFTER_RESENDS && !state.callRequested;
-}
-
-/** Derived: resend is allowed only when the countdown has elapsed and nothing is in flight. */
-export function canResend(state: LoginState): boolean {
-  return state.secondsLeft === 0 && !state.sending && !state.verifying;
-}
-```
-
-- [ ] **Step 4: Export it**
-
-Replace the contents of `packages/domain/src/index.ts`'s export line with:
-
-```ts
-export * from './auth/login-machine';
-```
-
-(keeping the file's existing header comment).
-
-- [ ] **Step 5: Consume it from both screens**
-
-In `apps/web/app/login/page.tsx`: delete the local constants (`RESEND_SECONDS`,
-`AUTO_VERIFY_DELAY_MS`, `DONE_REDIRECT_DWELL_MS`, `CALL_OFFER_AFTER_RESENDS`), the local
-`OtpFailure` type, and the individual `useState` calls that the reducer now owns. Replace
-with `useReducer(loginReducer, initialLoginState)` and dispatch the events. Keep in the
-component: the router push, `navigator.onLine` listeners (dispatching
-`connectivity-changed`), the countdown interval (dispatching `tick`), the auto-verify
-`setTimeout`, and all rendering.
-
-In `apps/mobile/src/screens/login/LoginScreen.tsx`: the same substitution. Keep the RN
-specifics — the wall-clock countdown (compute `secondsLeft` from a stored end timestamp and
-dispatch `tick`, so backgrounding cannot stall it), `KeyboardAvoidingView`, the `onSignedIn`
-call after `DONE_DWELL_MS`, and all rendering. The `stepRef` stale-response guard is now
-handled by `otpEpoch` — compare the epoch at request time against the current epoch before
-dispatching a response event.
-
-Both screens import from `@heliogrid/domain`, and both add `"@heliogrid/domain": "workspace:*"` to their `package.json` dependencies.
-
-- [ ] **Step 6: Verify the machine is genuinely shared and the drift is gone**
-
-```bash
-pnpm install
-grep -c "RESEND_SECONDS = \|DONE_DWELL_MS = \|DONE_REDIRECT_DWELL_MS = \|AUTO_VERIFY_DELAY_MS = " \
-  apps/web/app/login/page.tsx apps/mobile/src/screens/login/LoginScreen.tsx
-grep -n "@heliogrid/domain" apps/web/app/login/page.tsx apps/mobile/src/screens/login/LoginScreen.tsx
-pnpm verify
-```
-
-Expected: **zero** local constant definitions in either screen (they import them); both import from `@heliogrid/domain`; `pnpm verify` green. The drift is now dead by construction — there is one definition to drift from.
-
-- [ ] **Step 7: Verify by running both platforms**
-
-Run `/verify-app` for the login flow on web and **both** simulators. Walk: happy path,
-wrong code, resend countdown, call-me offer after two resends, send error, offline. Confirm
-the done-step dwell now feels identical on all three surfaces (1400ms).
-
-Capture the evidence for the roadmap row.
-
-- [ ] **Step 8: Commit**
-
-```bash
-git add packages/domain apps/web apps/mobile docs/modules/auth-tenancy.md pnpm-lock.yaml
-git commit -m "$(cat <<'EOF'
-refactor(domain): one login state machine, consumed by web and RN
-
-VERIFIED: pnpm verify green; zero local flow constants remain in either screen (both
-import from @heliogrid/domain); login walked on browser + both simulators through happy /
-wrong-code / resend / call-offer / send-error / offline paths with identical behaviour.
-
-Kills the measured drift between two hand-maintained copies: done-step dwell 1400 vs
-900ms, `navigator.onLine` vs local-state offline detection, and failure unions that
-differed in both name and shape. Unified dwell is 1400ms — recorded as auth-tenancy module
-ruling 4 (owner may veto) because it is user-visible, not an implementation detail.
-
-Time enters the reducer as a parameter, so RN keeps its wall-clock countdown (its timers
-suspend while backgrounded) without that becoming a behavioural difference.
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
-EOF
-)"
-```
+**Carry into the rebuild:** one shared state machine (reducer + timings + failure union) in the
+shared layer, consumed by both platforms — not two hand-mirrored implementations. That is the
+Law 7 lockstep requirement, and this drift is the evidence for why it matters.
 
 ---
 
@@ -5192,144 +4948,17 @@ EOF
 
 ---
 
-### Task 33: Auth verification replay script
+### Task 33: Auth verification replay script — SKIPPED (owner decision, 2026-07-30)
 
-**Files:**
-- Create: `scripts/auth-e2e-replay.ts`
-- Modify: `package.json`
+**Not built.** It would script the CURRENT auth flow end to end, and that flow is being rebuilt
+(auth-tenancy ruling 6). The script would be obsolete before it was first useful — and the flow
+it targets is already known-broken locally (the dev-login OTP send fails, so no authenticated
+screen is reachable on the simulator).
 
-**Interfaces:**
-- Consumes: the dev `OtpPort` fallback in `apps/api`
-- Produces: `pnpm verify:auth` — an on-demand replay, run by a human or by `/verify-app`
-
-**This is a verification script, not a test file.** It lives in `scripts/`, it is not named
-`.spec` or `.test`, it introduces no test framework, and it is **not wired into CI** — it
-needs a running API and a database, which is exactly the CI weight the owner asked to avoid.
-It replaces the manual curl session that commit `a66a4c3` recorded in prose: the same
-sequence, runnable in one command, so the next person verifying auth does not re-derive it.
-
-Run it when touching auth, before claiming an auth slice VERIFIED, or when a regression is
-suspected.
-
-- [ ] **Step 1: Confirm the dev OTP seam exists**
-
-```bash
-grep -rn "DevLogOtp\|dev fallback\|DLT-pending" apps/api/src/modules/auth/ | head -5
-grep -n "sendOtp\|verify" packages/contracts/src/auth.ts | head -8
-```
-
-Expected: a dev `OtpPort` adapter that logs the OTP instead of sending SMS (DLT registration is still pending), and the contract routes the script will drive.
-
-- [ ] **Step 2: Write the replay script**
-
-Create `scripts/auth-e2e-replay.ts` driving the full path against a running API:
-
-1. `POST` send-OTP for a fresh E.164 phone number.
-2. Read the OTP from the dev adapter (log line or dev-only endpoint — use whichever the adapter exposes).
-3. Verify the OTP; assert a session cookie comes back.
-4. `GET /me`; assert `401`-free and no tenant yet.
-5. `completeOnboarding`; assert success.
-6. `completeOnboarding` **again**; **assert `409` with code `ALREADY_ONBOARDED`** — this is the exact regression that shipped as a silent `500` with the right code in the body, caught only by an end-to-end curl (`apps/api/CLAUDE.md` landmine). Typecheck was green at the time.
-7. `listTeam`; assert the caller appears with the `owner` role.
-8. Create an invite, accept it as a second phone, assert role assignment.
-9. Assert the last-owner invariant: attempting to remove the only owner returns `422 LAST_OWNER`.
-10. Clean up the created tenant.
-
-Each assertion prints PASS/FAIL with the actual response; the script exits non-zero on the first failure.
-
-- [ ] **Step 3: Run it against a local API and verify it passes**
-
-```bash
-docker run --rm -d --name hg-e2e -e POSTGRES_USER=heliogrid -e POSTGRES_PASSWORD=heliogrid \
-  -e POSTGRES_DB=heliogrid_ci -p 55432:5432 postgres:16
-sleep 5
-export DATABASE_URL=postgres://heliogrid:heliogrid@localhost:55432/heliogrid_ci
-export DATABASE_ADMIN_URL=$DATABASE_URL
-pnpm --filter @heliogrid/db migrate
-pnpm --filter @heliogrid/api dev &
-sleep 10
-pnpm verify:auth
-```
-
-Expected: every step PASSES, including the `409 ALREADY_ONBOARDED` assertion.
-
-- [ ] **Step 4: Prove it catches the historical regression**
-
-Temporarily change the `completeOnboarding` conflict path to throw a bare
-`ConflictException` instead of `ContractException` with the explicit status — recreating the
-shipped bug:
-
-```bash
-pnpm verify:auth
-```
-
-Expected: FAIL at step 6, showing a `500` where `409 ALREADY_ONBOARDED` was expected.
-**This is the regression that typecheck could not see.** Revert the change and re-run to
-confirm green.
-
-- [ ] **Step 5: Add the script entry (no CI wiring)**
-
-In `package.json`:
-
-```json
-    "verify:auth": "tsx scripts/auth-e2e-replay.ts"
-```
-
-Deliberately **not** added to `pnpm verify` and **not** added to `ci.yml`: it needs a
-running API and a live database. Booting a server inside CI to replay one flow is the kind
-of weight that makes a pipeline slow and flaky, and it would partly duplicate what the
-invariants already prove about the database. The script's value is that a human runs one
-command instead of re-deriving nine curls.
-
-Reference it from `.claude/skills/verify-app/SKILL.md` under the API section so it is found
-when it is needed.
-
-- [ ] **Step 6: Tear down and commit**
-
-```bash
-kill %1 2>/dev/null; docker rm -f hg-e2e
-git add scripts/auth-e2e-replay.ts package.json .claude/skills/verify-app/SKILL.md
-git commit -m "$(cat <<'EOF'
-feat(scripts): auth verification replay — one command instead of nine manual curls
-
-VERIFIED: full path green against a local API (send OTP then verify, me, onboard,
-duplicate onboard, team, invite, accept, last-owner invariant). Reverting
-completeOnboarding to a bare ConflictException makes step 6 FAIL with 500 where
-409 ALREADY_ONBOARDED was expected — reproducing the exact bug that shipped once with a
-green typecheck and was caught only by a manual curl.
-
-Not a test file and not in CI: it lives in scripts/, introduces no test framework, and
-needs a running API plus a database. It replaces the manual session commit a66a4c3
-recorded in prose, so the next person verifying auth does not re-derive it.
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
-EOF
-)"
-```
-
----
-
-**PHASE 4 GATE.**
-
-```bash
-pnpm verify && pnpm check:openapi && pnpm verify:auth
-```
-
-Expected: all green. Then continue to Phase 5.
-
----
-
-# PHASE 5 — The centralized typed environment service
-
-**Owner directive (2026-07-29):** credentials and configuration come from `.env`; no code reads `process.env` directly; **one** central, 100%-typed service serves api, worker, web and mobile.
-
-**What exists today** — partial and inconsistent:
-- `packages/contracts/src/env.ts` holds shared Zod *fragments* (shapes only, no reads) — a good idea living in the wrong package: contracts is the wire format, not the config layer.
-- `apps/api/src/config/{env.schema.ts,env.ts}` composes fragments and does the single read. This is the pattern to generalize.
-- `apps/web/lib/env.ts` does `process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'` — **a `??` fallback at a call site, which the repo's own convention explicitly forbids** ("Non-secret convenience values may default IN THE SCHEMA — never via `??` at a call site").
-- `packages/db/src/migrate.ts` and `tests/invariants/src/run.ts` read `process.env` directly.
-- `apps/mobile` has no env layer at all.
-- Biome's `noProcessEnv` is `error` but with a **seven-pattern allowlist** that includes `**/scripts/**` and `**/*.config.*` — wide enough that the rule proves little.
+**Carry into the rebuild:** an executable replay of the auth path is still worth having, because
+"auth works" is otherwise re-proven by hand every time. Build it against the new flow, as an
+on-demand `scripts/` entry (never a `.test.*` file — owner directive), and record it in docs/17
+under local/on-demand mechanisms.
 
 ---
 
@@ -5748,11 +5377,11 @@ Every finding F1–F10 plus the 2026-07-29 owner directives are now fixed or mec
 | F4 4-layer duplication | Tasks 6–10, 19 | Measured always-on budget; single copies |
 | F5 external product truth | Tasks 14, 15 | `docs/product/` vendored; census single-sourced |
 | F6 enum drift | Task 20 | Fake enum value turns CI red |
-| F7a login drift | Task 31 | One machine; both screens import it |
+| F7a login drift | Task 31 SKIPPED → auth rebuild | Drift measured and recorded in the Task 31 tombstone; one shared machine is a requirement of the rebuild |
 | F7b UI parity | Task 32 | Optional prop on one platform fails typecheck |
 | F8 phantom domain | Task 30 | Purity rules fire for the first time |
 | F9 stranded assets | Tasks 1, 3, 22 | Committed; boundaries and oxlint in CI |
-| F10 no executable verification | Task 33 | `verify:auth` catches the historical 500-vs-409 regression |
+| F10 no executable verification | Task 33 SKIPPED → auth rebuild | Still OPEN: build the replay against the new flow, as an on-demand `scripts/` entry |
 | **No unit tests** (owner 2026-07-29) | Tasks 5, 6, 22 | Hook blocks `.spec.ts` creation; `check:no-tests` blocks it at merge |
 | **Split by responsibility, no `-part2`** | Tasks 6, 22 | CLAUDE.md rule + oxlint `max-lines` + edit-checks hook advice |
 | **React presentation/logic split** | Tasks 6, 7 | CLAUDE.md rule + `ui-adherence.md` pattern; ux-lens reviews it |
