@@ -12,6 +12,7 @@ module.exports = {
       path: '<rootDir>/src/locales/{locale}/messages',
       include: [
         '<rootDir>/../../apps/web/app',
+        '<rootDir>/../../apps/web/features',
         '<rootDir>/../../apps/web/lib',
         '<rootDir>/../../apps/mobile/src',
         '<rootDir>/../../apps/mobile/App.tsx',

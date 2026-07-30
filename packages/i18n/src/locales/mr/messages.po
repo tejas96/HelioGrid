@@ -29,135 +29,135 @@ msgstr "साइन इनकडे परत जा"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:390
-#: ../../apps/web/app/login/page.tsx:216
+#: ../../apps/web/features/auth/login/LoginScreen.tsx:27
 msgid "You're offline — check your connection and try again."
 msgstr "तुम्ही ऑफलाइन आहात — कनेक्शन तपासून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:208
-#: ../../apps/web/app/login/page.tsx:227
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:29
 msgid "Welcome back"
 msgstr "पुन्हा स्वागत आहे"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:211
-#: ../../apps/web/app/login/page.tsx:230
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:32
 msgid "Sign in with your phone number. No password — we'll text you a one-time code."
 msgstr "तुमच्या फोन नंबरने साइन इन करा. पासवर्ड नाही — आम्ही तुम्हाला SMS ने वन-टाइम कोड पाठवू."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:215
-#: ../../apps/web/app/login/page.tsx:234
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:36
 msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:225
-#: ../../apps/web/app/login/page.tsx:248
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:47
 msgid "Sent by SMS to your registered number."
 msgstr "तुमच्या नोंदणीकृत नंबरवर SMS ने पाठवला जाईल."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:226
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:308
-#: ../../apps/web/app/login/page.tsx:249
-#: ../../apps/web/app/login/page.tsx:309
+#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:20
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:48
 msgid "Couldn't send the code. Try again."
 msgstr "कोड पाठवता आला नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:244
-#: ../../apps/web/app/login/page.tsx:261
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:60
 msgid "Continue"
 msgstr "पुढे जा"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/login/page.tsx:265
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:64
 msgid "New company?"
 msgstr "नवीन कंपनी?"
 
 #. js-lingui-explicit-id
-#: ../../apps/web/app/login/page.tsx:267
+#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:66
 msgid "Create an account"
 msgstr "खाते तयार करा"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:256
-#: ../../apps/web/app/login/page.tsx:276
-msgid "Enter your code"
-msgstr "तुमचा कोड टाका"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:259
-#: ../../apps/web/app/login/page.tsx:279
-msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
-msgstr "+91 {phoneFormatted} वर पाठवलेला 6-अंकी कोड टाका."
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:265
-#: ../../apps/web/app/login/page.tsx:286
-msgid "Change number"
-msgstr "नंबर बदला"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:276
-#: ../../apps/web/app/login/page.tsx:292
-msgid "6-digit code"
-msgstr "6-अंकी कोड"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:284
-#: ../../apps/web/app/login/page.tsx:305
-msgid "That code doesn’t match. Check it and try again."
-msgstr "हा कोड जुळत नाही. तपासून पुन्हा प्रयत्न करा."
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:286
-#: ../../apps/web/app/login/page.tsx:307
-msgid "Couldn't check the code. Try again."
-msgstr "कोड तपासता आला नाही. पुन्हा प्रयत्न करा."
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:304
-#: ../../apps/web/app/login/page.tsx:318
-msgid "Resend code"
-msgstr "कोड पुन्हा पाठवा"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:291
-#: ../../apps/web/app/login/page.tsx:322
-msgid "Resend code in {time}"
-msgstr "{time} मध्ये कोड पुन्हा पाठवा"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:326
-#: ../../apps/web/app/login/page.tsx:344
-msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
-msgstr "तुमच्या कोडसह +91 {phoneFormatted} वर आता कॉल करत आहोत. फोन जवळ ठेवा."
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:340
-#: ../../apps/web/app/login/page.tsx:354
-msgid "Still no code after two tries?"
-msgstr "दोनदा पाठवूनही कोड मिळाला नाही?"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:343
-#: ../../apps/web/app/login/page.tsx:357
-msgid "Call me with the code instead"
-msgstr "कोडसाठी मला कॉल करा"
-
-#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:360
-#: ../../apps/web/app/login/page.tsx:377
+#: ../../apps/web/features/auth/login/components/DoneStep.tsx:11
 msgid "You're signed in"
 msgstr "तुम्ही साइन इन झाला आहात"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:363
-#: ../../apps/web/app/login/page.tsx:380
+#: ../../apps/web/features/auth/login/components/DoneStep.tsx:14
 msgid "Welcome back. Taking you to your day."
 msgstr "पुन्हा स्वागत आहे. तुम्हाला तुमच्या दिवसाकडे नेत आहोत."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:284
+#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:16
+msgid "That code doesn’t match. Check it and try again."
+msgstr "हा कोड जुळत नाही. तपासून पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:286
+#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:18
+msgid "Couldn't check the code. Try again."
+msgstr "कोड तपासता आला नाही. पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:256
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:47
+msgid "Enter your code"
+msgstr "तुमचा कोड टाका"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:259
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
+msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
+msgstr "+91 {phoneFormatted} वर पाठवलेला 6-अंकी कोड टाका."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:265
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:57
+msgid "Change number"
+msgstr "नंबर बदला"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:276
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:63
+msgid "6-digit code"
+msgstr "6-अंकी कोड"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:304
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:78
+msgid "Resend code"
+msgstr "कोड पुन्हा पाठवा"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:291
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:82
+msgid "Resend code in {time}"
+msgstr "{time} मध्ये कोड पुन्हा पाठवा"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:326
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:99
+msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
+msgstr "तुमच्या कोडसह +91 {phoneFormatted} वर आता कॉल करत आहोत. फोन जवळ ठेवा."
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:340
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:109
+msgid "Still no code after two tries?"
+msgstr "दोनदा पाठवूनही कोड मिळाला नाही?"
+
+#. js-lingui-explicit-id
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:343
+#: ../../apps/web/features/auth/login/components/OtpStep.tsx:112
+msgid "Call me with the code instead"
+msgstr "कोडसाठी मला कॉल करा"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
