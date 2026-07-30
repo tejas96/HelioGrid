@@ -76,6 +76,28 @@ module.exports = {
       to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
     },
     {
+      name: 'no-raw-http-clients',
+      severity: 'error',
+      comment:
+        'apps/web and apps/mobile reach the API through the typed ts-rest client ONLY ' +
+        '(apps/web/lib/api-client.ts, apps/mobile/src/data/api-client.ts). A third-party ' +
+        'HTTP client bypasses the contract, so contract drift stops being a compile error ' +
+        'and becomes a runtime surprise. Complements — does NOT replace — the prose rule ' +
+        'in apps/web/CLAUDE.md: that landmine was a native fetch() via an untyped api<T>(), ' +
+        'which has no import for a bundler graph to catch. Auth clients are exempt: Better ' +
+        'Auth owns its own transport.',
+      from: {
+        path: '^apps/(web|mobile)/',
+        pathNot: '(lib/api-client\\.|src/data/api-client\\.|auth/client\\.|lib/auth-client\\.)',
+      },
+      to: {
+        dependencyTypes: ['npm'],
+        // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/… —
+        // always anchor on the node_modules segment (see domain-purity-no-frameworks).
+        path: '(^|/)node_modules/(axios|node-fetch|undici|superagent|got|ky)/',
+      },
+    },
+    {
       name: 'package-index-only',
       severity: 'error',
       comment:

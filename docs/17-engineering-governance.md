@@ -156,6 +156,7 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | No `.test.*` / `.spec.*` files | PreToolUse hook (Edit/Write **and** shell redirect/touch) **+** lint-chain backstop for files an agent did not author | hook + lint | `write-guard.sh`, `bash-guard.sh`, `scripts/check-adherence.sh` |
 | Git stays manual — no unprompted push or PR | PreToolUse hook blocks `git push`, `gh pr create\|merge\|ready` | hook | `bash-guard.sh` + `/pr` is `disable-model-invocation` |
 | No `rm -rf` outside the repo | PreToolUse hook | hook | `bash-guard.sh` |
+| No third-party HTTP client in apps (axios/got/ky/…) | dependency-cruiser rule 20 — apps reach the API through the typed ts-rest client only. Catches the client *family*, not native `fetch()` (no import to graph); that stays prose + review | lint | `.dependency-cruiser.cjs` |
 | Files ≲450 lines | PostToolUse hook warns at author time; lint chain fails at merge | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
 | No raw hex in UI paths | same pair — advisory then hard. Matches value positions only; comment mentions of reference hex are deliberately not flagged | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
 | Contract-first ordering | `/contract-change` skill + the contract diff in the PR | skill | `.claude/skills/contract-change/` |
@@ -173,7 +174,6 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Rule | Intended mechanism | Stage |
 |---|---|---|
 | Arbitrary px / inline style in UI | Not attempted. Raw hex has a stable syntactic shape; "arbitrary px" does not — spacing, border and icon sizes are legitimately numeric, so the rule would be mostly false positives. Reviewed by `ux-lens` instead. | — |
-| No hand-rolled HTTP in apps | dependency-cruiser rule banning axios/node-fetch/undici | lint |
 | OpenAPI freshness + breaking changes | emit + `git diff`; oasdiff locally | CI |
 | VERIFIED rows carry evidence | roadmap linter | CI |
 | No committed secrets | gitleaks | CI |
