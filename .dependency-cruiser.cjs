@@ -87,6 +87,37 @@ module.exports = {
       to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
     },
     {
+      name: 'web-app-imports-feature-barrel-only',
+      severity: 'error',
+      comment:
+        'apps/web/app is ROUTING ONLY (ADR-0022). A page may import a feature through its ' +
+        'index barrel — never a deep path into the feature. A deep import re-creates the ' +
+        'scattering the feature folder exists to remove, and makes the barrel a lie.',
+      from: { path: '^apps/web/app/' },
+      to: {
+        path: '^apps/web/features/([^/]+)/.+',
+        pathNot: '^apps/web/features/[^/]+/index\\.(ts|tsx)$',
+      },
+    },
+    {
+      name: 'web-feature-no-cross-internals',
+      severity: 'error',
+      comment:
+        "One feature may not reach INTO another (ADR-0022). Import the other feature's index " +
+        'barrel, or — if the thing is genuinely shared — move it to packages/ui (visual), ' +
+        'packages/domain (logic) or apps/web/lib (app infrastructure).',
+      // `pathNot` carries the $1 backreference, NOT a lookahead inside `path`. This mirrors the
+      // proven `no-app-to-app` rule twenty lines up. A backreference inside a negative lookahead
+      // is the shape that silently matches nothing — `tokens-standalone` was dead for exactly
+      // that class of reason until 2026-07-30, so verify this one fires (Step 3a) rather than
+      // assuming it does.
+      from: { path: '^apps/web/features/([^/]+)/' },
+      to: {
+        path: '^apps/web/features/[^/]+/.+',
+        pathNot: '^(apps/web/features/$1/|apps/web/features/[^/]+/index\\.(ts|tsx)$)',
+      },
+    },
+    {
       name: 'mobile-no-db',
       severity: 'error',
       comment: 'apps/mobile data access goes through repository interfaces, never packages/db',
