@@ -29,6 +29,7 @@ Decisions that are expensive to reverse, recorded at the moment they were made, 
 | [0019](0019-telephony-platform-capability-framework.md) | Telephony — provider-agnostic capability framework: port family, control plane, tenant routing policies, capability-declared transfers/DTMF/conference/monitoring | Accepted |
 | [0020](0020-mobile-navigation-react-navigation.md) | Mobile navigation — React Navigation v7 native-stack on bare RN; typed route names replace prop callbacks; `src/navigation/` owns deep links | Accepted |
 | [0021](0021-packages-domain.md) | `packages/domain` — pure isomorphic domain layer; makes two inert dependency-cruiser purity rules live and gives shared decision logic a home instead of accreting in api services and duplicated screens | Accepted |
+| [0022](0022-web-feature-folders.md) | `apps/web` feature folders — pages route, features own the capability; `app/` is Next.js routing only, everything else lives in `apps/web/features/<feature>/` behind a barrel | Accepted |
 
 ## When to write an ADR
 
