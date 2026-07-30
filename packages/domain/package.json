@@ -1,0 +1,25 @@
+{
+  "name": "@heliogrid/domain",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Pure isomorphic domain logic — no framework, no storage, no env, no fetch (ADR-0021)",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@heliogrid/config": "workspace:*",
+    "typescript": "5.8.3"
+  },
+  "turbo": {
+    "tags": [
+      "domain"
+    ]
+  }
+}

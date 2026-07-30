@@ -23,7 +23,10 @@ module.exports = {
         'domain may not import NestJS, React, zustand, fetch clients or storage (CLAUDE.md hard rules — domain purity)',
       from: { path: '^packages/domain/' },
       to: {
-        dependencyTypes: ['npm'],
+        // 'npm-dev' is included on purpose: this package ships SOURCE (main → src/index.ts),
+        // so a devDependency import reaches consumers exactly like a production one. Proven
+        // 2026-07-30 — with 'npm' alone a react devDependency import passed the cruise clean.
+        dependencyTypes: ['npm', 'npm-dev'],
         // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>_<hash>/node_modules/<pkg>/… —
         // a bare '^react' anchor never matches. Always anchor on the node_modules segment.
         path: '(^|/)node_modules/(@nestjs|react|react-dom|react-native|zustand|axios|drizzle-orm|@powersync)/',
@@ -91,7 +94,9 @@ module.exports = {
         pathNot: '(lib/api-client\\.|src/data/api-client\\.|auth/client\\.|lib/auth-client\\.)',
       },
       to: {
-        dependencyTypes: ['npm'],
+        // 'npm-dev' for the same reason as domain-purity-no-frameworks: a devDependency import
+        // is still an import, and 'npm' alone silently ignores it.
+        dependencyTypes: ['npm', 'npm-dev'],
         // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/… —
         // always anchor on the node_modules segment (see domain-purity-no-frameworks).
         path: '(^|/)node_modules/(axios|node-fetch|undici|superagent|got|ky)/',
@@ -193,7 +198,7 @@ module.exports = {
       name: 'no-tests-in-apps',
       severity: 'error',
       comment:
-        'testing policy is deliberately thin (CLAUDE.md §Testing): colocated tests exist only in packages/domain; everything else is tests/invariants.',
+        'testing policy is deliberately thin (CLAUDE.md §Testing): the ONLY executable checks are tests/invariants and on-demand scripts/. This comment used to say colocated tests live in packages/domain — that predates the owner no-unit-tests directive (2026-07-29) and was stale by the time packages/domain actually existed.',
       from: { path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$' },
       to: { path: '.*' },
     },

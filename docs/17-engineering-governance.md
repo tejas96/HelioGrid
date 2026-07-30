@@ -136,7 +136,7 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 
 | Rule | Mechanism | Stage | Where |
 |---|---|---|---|
-| Dependency direction & layer purity | dependency-cruiser, 19 rules, all `error` | lint | `.dependency-cruiser.cjs` |
+| Dependency direction & layer purity | dependency-cruiser, **20 rules**, all `error`. The two `domain-purity-*` rules were INERT until `packages/domain` existed (ADR-0021) — they targeted a path matching nothing, so a green cruise proved less than it looked like. Both proven to fire 2026-07-30. | lint | `.dependency-cruiser.cjs` |
 | Package encapsulation | Turborepo Boundaries tags | lint | `turbo.json` + `ci.yml` |
 | Screens import only from component indexes | dependency-cruiser `package-index-only` | lint | `.dependency-cruiser.cjs` |
 | Module public surface (one-change-one-file) | dependency-cruiser `api-module-boundary` | lint | `.dependency-cruiser.cjs` |
@@ -159,7 +159,7 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | No `.test.*` / `.spec.*` files | PreToolUse hook (Edit/Write **and** shell redirect/touch) **+** lint-chain backstop for files an agent did not author | hook + lint | `write-guard.sh`, `bash-guard.sh`, `scripts/check-adherence.sh` |
 | Git stays manual — no unprompted push or PR | PreToolUse hook blocks `git push`, `gh pr create\|merge\|ready` | hook | `bash-guard.sh` + `/pr` is `disable-model-invocation` |
 | No `rm -rf` outside the repo | PreToolUse hook | hook | `bash-guard.sh` |
-| No third-party HTTP client in apps (axios/got/ky/…) | dependency-cruiser rule 20 — apps reach the API through the typed ts-rest client only. Catches the client *family*, not native `fetch()` (no import to graph); that stays prose + review | lint | `.dependency-cruiser.cjs` |
+| No third-party HTTP client in apps (axios/got/ky/…) | dependency-cruiser `no-raw-http-clients` — apps reach the API through the typed ts-rest client only. Two honest limits: it catches the client *family*, not native `fetch()` (no import to graph), and an UNINSTALLED package is unresolvable so no edge exists to match — it bites the moment someone actually adds one. Covers `npm` **and** `npm-dev`; with `npm` alone a devDependency import passed clean. | lint | `.dependency-cruiser.cjs` |
 | Files ≲450 lines | PostToolUse hook warns at author time; lint chain fails at merge | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
 | No raw hex in UI paths | same pair — advisory then hard. Matches value positions only; comment mentions of reference hex are deliberately not flagged | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
 | Contract-first ordering | `/contract-change` skill + the contract diff in the PR | skill | `.claude/skills/contract-change/` |
