@@ -1,8 +1,8 @@
 {
-  "name": "@heliogrid/db",
+  "name": "@heliogrid/env",
   "version": "0.0.1",
   "private": true,
-  "description": "Drizzle schema + append-only SQL migrations + RLS plumbing",
+  "description": "The only package permitted to read a raw environment source — schemas describe, parse validates, entries read",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -10,25 +10,21 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./uuid": {
-      "types": "./dist/uuid.d.ts",
-      "default": "./dist/uuid.js"
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
     }
   },
   "scripts": {
     "build": "tsc -b",
-    "typecheck": "tsc -b",
-    "migrate": "tsx src/migrate.ts \"${DATABASE_ADMIN_URL:-$DATABASE_URL}\""
+    "typecheck": "tsc -b"
   },
   "dependencies": {
-    "drizzle-orm": "0.44.7",
-    "postgres": "3.4.9"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
     "@types/node": "22.20.1",
-    "drizzle-kit": "0.31.10",
-    "tsx": "4.23.1",
     "typescript": "5.8.3"
   }
 }

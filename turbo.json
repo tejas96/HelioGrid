@@ -68,8 +68,14 @@
             "ui",
             "i18n",
             "adapters",
-            "config"
+            "config",
+            "env"
           ]
+        }
+      },
+      "env": {
+        "dependencies": {
+          "allow": ["env", "config"]
         }
       }
     }

@@ -50,8 +50,8 @@
           "level": "error",
           "options": {
             "paths": {
-              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
-              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only."
+              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 \u00a74, spike S3). Import from 'zod' only.",
+              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 \u00a74, spike S3). Import from 'zod' only."
             }
           }
         },
@@ -78,7 +78,9 @@
         "noUselessFragments": "error",
         "noExcessiveCognitiveComplexity": {
           "level": "warn",
-          "options": { "maxAllowedComplexity": 15 }
+          "options": {
+            "maxAllowedComplexity": 15
+          }
         }
       },
       "a11y": {
@@ -143,11 +145,8 @@
     },
     {
       "includes": [
-        "apps/*/src/config/env.ts",
+        "packages/env/src/**",
         "apps/web/lib/env.ts",
-        "packages/db/src/migrate.ts",
-        "packages/db/drizzle.config.ts",
-        "tests/invariants/**",
         "**/*.config.{js,ts,mjs,cjs}",
         "**/scripts/**"
       ],

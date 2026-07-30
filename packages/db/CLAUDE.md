@@ -8,7 +8,10 @@
 
 ## Commands
 pnpm --filter @heliogrid/db build        # tsc -b
-pnpm --filter @heliogrid/db migrate      # apply migrations (DATABASE_ADMIN_URL)
+pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
+                                         # ${DATABASE_ADMIN_URL:-$DATABASE_URL} as argv[1].
+                                         # This package reads no environment: runMigrations(url)
+                                         # takes the URL, so it stays reusable and testable.
 pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
 ## Depends on / depended on by

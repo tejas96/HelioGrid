@@ -1,16 +1,16 @@
+import { z } from 'zod';
 import {
   adminDatabaseUrlSchema,
   databaseUrlSchema,
   nodeEnvSchema,
   redisUrlSchema,
-} from '@heliogrid/contracts';
-import { z } from 'zod';
+} from './fragments';
 
 /**
  * Everything apps/worker reads from the environment. Composed from the same shared
  * fragments as apps/api, so a var both services use is described once.
  */
-export const envSchema = z.object({
+export const workerEnvSchema = z.object({
   NODE_ENV: nodeEnvSchema,
 
   DATABASE_URL: databaseUrlSchema,
@@ -24,4 +24,4 @@ export const envSchema = z.object({
   REDIS_URL: redisUrlSchema.optional(),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export type WorkerEnv = z.infer<typeof workerEnvSchema>;

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   adminDatabaseUrlSchema,
   databaseUrlSchema,
@@ -5,8 +6,7 @@ import {
   originSchema,
   portSchema,
   secretSchema,
-} from '@heliogrid/contracts';
-import { z } from 'zod';
+} from './fragments';
 
 /**
  * Everything apps/api reads from the environment, in one place. Adding a var here and to
@@ -16,7 +16,7 @@ import { z } from 'zod';
  * empty-string. A missing DATABASE_URL used to coerce to `''` and fail at the first query;
  * now it fails at boot, loudly, with the key named.
  */
-export const envSchema = z.object({
+export const apiEnvSchema = z.object({
   NODE_ENV: nodeEnvSchema,
   PORT: portSchema,
 
@@ -35,4 +35,4 @@ export const envSchema = z.object({
   FLY_MACHINE_VERSION: z.string().default('0.0.1'),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export type ApiEnv = z.infer<typeof apiEnvSchema>;

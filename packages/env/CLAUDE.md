@@ -1,0 +1,45 @@
+# @heliogrid/env — the only package that may read a raw environment source
+
+## What lives here / what must never live here
+- `schema/` DESCRIBES shapes and never reads. `parse.ts` VALIDATES. Each entry module
+  (`server.ts`, later `web.ts`/`native.ts`) is the ONLY place a raw source is touched.
+- NEVER: business logic, a database or HTTP client, a framework import, or a second read path.
+- **Secrets never carry `.default()`.** A dev fallback silently ships a predictable signing key
+  to production. Absent secret ⇒ the app refuses to boot.
+- **Non-secret defaults live IN THE SCHEMA**, never behind `??` at a call site. The `??` form
+  scatters the real default across files and hides it from `.env.example`.
+
+## Commands
+pnpm --filter @heliogrid/env typecheck
+
+## Depends on / depended on by
+uses: zod (pinned 3.25.76)
+used by: apps/api, apps/worker, tests/invariants (via `./server`); apps/web, apps/mobile
+next (Task 35). NOT packages/db — its migrator takes the URL as a parameter — and NOT
+packages/domain, which may never read the environment (ADR-0021).
+
+## Local conventions
+- Adding a variable means editing a schema HERE and `.env.example`, and nothing else.
+- `parseEnv` THROWS; it never calls `process.exit`. A library that exits kills its host and
+  cannot be exercised. Each app's `src/config/env.ts` decides what failure means — for a
+  server that is `console.error` + `exit(1)`, before any logger or DI container exists.
+- Loaders are functions, not top-level consts, and memoize. Importing this module therefore
+  has no side effect: a consumer that never calls a loader never reads the environment.
+- One definition per type: `ApiEnv` comes from the schema and is re-exported, never
+  re-declared, or the same name would mean two things depending on the import path.
+
+## Landmines
+- **Turborepo boundaries tag is `env`, allowed ONLY from the `app` tag.** That is what makes
+  "only apps read the environment" mechanical rather than conventional. Do not add `env` to
+  another tag's allowlist to unblock an import — the import is the thing that is wrong.
+- **This package was NOT merged into `packages/config`** (owner question, 2026-07-30). That
+  package is tsconfig presets: two JSON files, no `src/`, no dependencies, a devDependency
+  everywhere. Crucially, every tag's allowlist includes `config` because every package needs
+  the presets — including `domain`, whose purity rule does not name `config`. Env living there
+  would let `packages/domain` read the environment with neither boundaries nor
+  dependency-cruiser objecting.
+- `noProcessEnv` is a Biome error repo-wide; `packages/env/src/**` is the allowlist entry.
+
+## Definition of done here
+Every variable declared in a schema and documented in `.env.example` · no `process.env` read
+outside this package · a missing required value fails at STARTUP naming the key.

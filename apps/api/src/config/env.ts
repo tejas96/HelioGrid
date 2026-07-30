@@ -1,22 +1,20 @@
-import { type Env, envSchema } from './env.schema';
+import { type ApiEnv, loadApiEnv } from '@heliogrid/env/server';
 
 /**
- * THE ONLY `process.env` READ IN apps/api (CLAUDE.md §Process; biome `noProcessEnv`
- * enforces it, with this file on the allow-list).
+ * apps/api's view of the environment. The READ and the validation live in @heliogrid/env —
+ * this file only decides what a failure MEANS here, which is: do not boot.
  *
- * Parsed once at module load and frozen, so misconfiguration is a boot failure that names
- * every bad key at once — not a 500 on the first request that happens to touch the var.
+ * console.error, not the Nest logger: this runs before the DI container exists. exit(1) rather
+ * than a thrown stack trace, because the operator needs the bad keys, not our call stack.
  */
-function loadEnv(): Env {
-  const parsed = envSchema.safeParse(process.env);
-  if (parsed.success) return Object.freeze(parsed.data);
-
-  const problems = parsed.error.issues
-    .map((issue) => `  ${issue.path.join('.') || '(root)'}: ${issue.message}`)
-    .join('\n');
-  // console, not the Nest logger: this runs before the DI container exists.
-  console.error(`Invalid environment for apps/api — fix these and restart:\n${problems}`);
-  process.exit(1);
+function load(): ApiEnv {
+  try {
+    return Object.freeze(loadApiEnv());
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
 }
 
-export const ENV = loadEnv();
+export const ENV = load();
+export type { ApiEnv };

@@ -1,3 +1,4 @@
+import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { runEnumParity } from './enum-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTenancyInvariants } from './tenancy-rls';
@@ -9,12 +10,13 @@ import { runTenancyInvariants } from './tenancy-rls';
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
 async function main() {
-  const url = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
+  const env = loadInvariantsEnv();
+  const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no
     // invariant at all — that is exactly how the tenancy gate went unexecuted for the
     // whole of the foundation phase (docs/foundation-redesign.md F1).
-    if (process.env.CI) {
+    if (env.CI) {
       throw new Error(
         'INVARIANTS NOT RUN: DATABASE_URL/DATABASE_ADMIN_URL missing under CI. ' +
           'Check the `env` list on turbo.json’s test task — Turborepo strict env mode ' +

@@ -38,6 +38,9 @@ importers:
       '@heliogrid/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@heliogrid/env':
+        specifier: workspace:*
+        version: link:../../packages/env
       '@nestjs/common':
         specifier: 11.1.28
         version: 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -299,6 +302,9 @@ importers:
       '@heliogrid/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@heliogrid/env':
+        specifier: workspace:*
+        version: link:../../packages/env
       '@nestjs/bullmq':
         specifier: 11.0.4
         version: 11.0.4(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28)(bullmq@5.81.2)
@@ -397,6 +403,22 @@ importers:
       '@heliogrid/config':
         specifier: workspace:*
         version: link:../config
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
+  packages/env:
+    dependencies:
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@heliogrid/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 22.20.1
+        version: 22.20.1
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -502,6 +524,9 @@ importers:
       '@heliogrid/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@heliogrid/env':
+        specifier: workspace:*
+        version: link:../../packages/env
       postgres:
         specifier: 3.4.9
         version: 3.4.9

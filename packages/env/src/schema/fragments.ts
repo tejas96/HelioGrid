@@ -1,12 +1,13 @@
 import { z } from 'zod';
 
 /**
- * Shared env FRAGMENTS. Each app composes its own `envSchema` from these in
- * `apps/<app>/src/config/env.schema.ts` — so a var two services share is described once,
- * while each service still declares exactly what it needs.
+ * Shared env FRAGMENTS — so a variable two services share is described ONCE while each
+ * service still declares exactly what it needs.
  *
- * This file never reads `process.env`; it only describes shapes. The single read per app
- * lives in that app's `src/config/env.ts` (CLAUDE.md §Process).
+ * This file never reads an environment source; it only describes shapes. Composition lives
+ * in the sibling per-target schemas, validation in ../parse.ts, and the single actual read
+ * in ../server.ts. Moved here from packages/contracts on 2026-07-30: contracts is the WIRE
+ * format, and deployment configuration is not part of the API surface.
  */
 
 /** Runtime role: member of app_user, subject to RLS. Required by anything touching Postgres. */

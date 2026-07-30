@@ -38,12 +38,16 @@ function isNoTransaction(body: string): boolean {
   return body.split('\n', 1)[0]?.trim() === NO_TRANSACTION_DIRECTIVE;
 }
 
-async function main() {
-  const url = process.env.DATABASE_ADMIN_URL ?? process.env.DATABASE_URL;
-  if (!url) {
-    console.error('DATABASE_ADMIN_URL (or DATABASE_URL) is required');
-    process.exit(1);
-  }
+/**
+ * Apply every pending migration against `url`.
+ *
+ * The URL is a PARAMETER, not an environment read. packages/db is a library: a library that
+ * reads the environment cannot be pointed at a second database, cannot be exercised, and drags
+ * a config dependency into every consumer. The CLI tail below is the only place a raw source is
+ * touched, and it reads argv — so this package needs no env access at all and is off the Biome
+ * noProcessEnv allowlist.
+ */
+export async function runMigrations(url: string) {
   const migrationsDir = join(__dirname, '..', 'migrations');
   const files = readdirSync(migrationsDir)
     .filter((f) => f.endsWith('.sql'))
@@ -124,7 +128,18 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+// CLI entry. The shell supplies the URL (see the package's `migrate` script), which keeps the
+// env→argv translation in one visible place instead of inside the library.
+const cliUrl = process.argv[2];
+if (!cliUrl) {
+  console.error(
+    'usage: migrate <postgres-url>\n' +
+      'Run it via `pnpm --filter @heliogrid/db migrate`, which passes ' +
+      'DATABASE_ADMIN_URL (falling back to DATABASE_URL).',
+  );
+  process.exit(1);
+}
+runMigrations(cliUrl).catch((err) => {
   console.error(err);
   process.exit(1);
 });
