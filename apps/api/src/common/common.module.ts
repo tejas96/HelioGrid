@@ -7,7 +7,7 @@ import { EnvelopeExceptionFilter } from './filters/envelope-exception.filter';
 /**
  * Cross-cutting plumbing, registered DECLARATIVELY — `main.ts` is bootstrap only, so a
  * filter/interceptor can inject dependencies and nothing is wired imperatively behind
- * Nest's back (apps/api/CLAUDE.md §Structure).
+ * Nest's back (apps/api/CLAUDE.md §Local conventions).
  *
  * SessionGuard is deliberately NOT provided here. Nest resolves a provider's dependencies
  * in the injector of the module that DECLARES it, and the guard needs SESSION_RESOLVER —

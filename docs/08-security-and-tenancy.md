@@ -1,6 +1,7 @@
 # 08 — Security & Tenancy
 
-Binding companion to `BLUEPRINT.md` (§Auth, §Data layer, §Security & honesty). Sources:
+Binding companion to `./15-spec-resolutions.md` §4 (owner directives, absorbed from the
+archived BLUEPRINT — originally its §Auth / §Data layer / §Security & honesty). Sources:
 [`./research/auth.md`](./research/auth.md), [`./research/journey.md`](./research/journey.md),
 [`./research/integrations.md`](./research/integrations.md). Schemas referenced here are defined in
 [`./04-data-model.md`](./04-data-model.md); billing states in [`./16-billing-and-entitlements.md`](./16-billing-and-entitlements.md).

@@ -1,7 +1,7 @@
 import { type Env, envSchema } from './env.schema';
 
 /**
- * THE ONLY `process.env` READ IN apps/api (CLAUDE.md §Structure; biome `noProcessEnv`
+ * THE ONLY `process.env` READ IN apps/api (CLAUDE.md §Process; biome `noProcessEnv`
  * enforces it, with this file on the allow-list).
  *
  * Parsed once at module load and frozen, so misconfiguration is a boot failure that names

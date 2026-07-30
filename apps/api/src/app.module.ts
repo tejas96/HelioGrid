@@ -18,7 +18,7 @@ import { HealthModule } from './modules/health/health.public';
       pinoHttp: {
         genReqId: (req) => (req.headers['x-request-id'] as string) ?? randomUUID(),
         redact: {
-          // DPDP hygiene: no phone numbers or tokens in logs (apps/api/CLAUDE.md §logging)
+          // DPDP hygiene: no phone numbers or tokens in logs (apps/api/CLAUDE.md §Local conventions)
           paths: ['req.headers.authorization', 'req.headers.cookie', '*.phone_e164', '*.phoneE164'],
           censor: '[redacted]',
         },

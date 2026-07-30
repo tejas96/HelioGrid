@@ -14,7 +14,7 @@ export interface InputProps
   error?: string;
   success?: boolean;
   helper?: string;
-  /** Numerics-as-data render in Geist Mono (docs/10 typography law). */
+  /** Numerics-as-data render in Geist Mono (docs/10 §3.1). */
   mono?: boolean;
   leading?: ReactNode;
   trailing?: ReactNode;

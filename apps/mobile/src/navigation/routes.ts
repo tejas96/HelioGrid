@@ -10,7 +10,7 @@
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
-  /** Dev-only component gallery (packages/ui mirror check — see CLAUDE.md §Design system). */
+  /** Dev-only component gallery (packages/ui mirror check — see docs/10 §6 · packages/ui/CLAUDE.md §Definition of done here). */
   Gallery: undefined;
 };
 

@@ -1,5 +1,5 @@
 /* Onboarding route layout. Screens own layout via tokens here — never inline `style`
-   (apps/web/CLAUDE.md §Styling layers). */
+   (apps/web/CLAUDE.md §Local conventions — styling layers). */
 
 .ob-input {
   margin-top: var(--sp-2);

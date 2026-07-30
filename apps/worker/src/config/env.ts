@@ -1,7 +1,7 @@
 import { type Env, envSchema } from './env.schema';
 
 /**
- * THE ONLY `process.env` READ IN apps/worker (CLAUDE.md §Structure; biome `noProcessEnv`
+ * THE ONLY `process.env` READ IN apps/worker (CLAUDE.md §Process; biome `noProcessEnv`
  * enforces it, with this file on the allow-list). Parsed once at load, frozen; bad config
  * is a boot failure naming every offending key, not a mid-job surprise.
  */

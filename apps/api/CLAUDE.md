@@ -15,7 +15,7 @@ curl localhost:8080/health               # liveness · /health/ready = readiness
 uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP)
 
 ## Local conventions
-- Layout is the closed set in CLAUDE.md §Structure: `src/{config,common,modules,scripts}`;
+- Layout is the closed set in docs/02 §2: `src/{config,common,modules,scripts}`;
   every bounded context is `src/modules/<m>/` with the fixed file roles
   (`<m>.module|public|controller|service|repository.ts`, `tokens.ts`, `internal/`).
   Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).

@@ -1,5 +1,5 @@
 /**
- * The auth module's ENTIRE export surface (CLAUDE.md §Structure). Anything outside
+ * The auth module's ENTIRE export surface (apps/api/CLAUDE.md §Local conventions). Anything outside
  * `modules/auth/` imports from here and nowhere else — dependency-cruiser
  * `api-module-boundary` enforces it. Deliberately no `AuthService`: callers depend on the
  * module, its DI tokens and types, so a service signature change cannot ripple outward.

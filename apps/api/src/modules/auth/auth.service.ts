@@ -21,7 +21,7 @@ function slugify(name: string): string {
 /**
  * Auth/tenancy behaviour. Deliberately contains NO SQL, no `tx`, and no table objects —
  * data access goes through the two repositories, which is what makes tenant scoping a
- * lint-enforced property rather than a per-method habit (CLAUDE.md §Structure).
+ * lint-enforced property rather than a per-method habit (apps/api/CLAUDE.md §Local conventions, `db-access-in-repositories-only`).
  */
 @Injectable()
 export class AuthService {

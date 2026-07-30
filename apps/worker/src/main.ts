@@ -7,7 +7,7 @@ import { WorkerModule } from './worker.module';
 /**
  * NestJS standalone application context — no HTTP surface. BullMQ processors register
  * as modules land with their tracks; heavy CPU (shading, Playwright PDF) runs in
- * worker_threads on dedicated machines (apps/api/CLAUDE.md §jobs).
+ * worker_threads on dedicated machines (apps/worker/CLAUDE.md §What lives here).
  */
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(WorkerModule, { bufferLogs: true });

@@ -27,7 +27,7 @@ RN UI components: `src/ui` (mirror of packages/ui — Law 7)
 - i18n: `@heliogrid/i18n` + runtime `<Trans id="...">` (macros banned). Intl polyfills
   in `src/i18n.ts` FIRST.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
-- Screen folders: CLAUDE.md §Structure (`<Name>Screen.tsx` + satellites). `src/` is the closed
+- Screen folders: docs/02 §2 (`<Name>Screen.tsx` + satellites). `src/` is the closed
   set `{auth,data,hooks,navigation,push,screens,ui}` + `i18n.ts`.
 - Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
   `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
@@ -61,4 +61,4 @@ RN UI components: `src/ui` (mirror of packages/ui — Law 7)
 - babel: `@babel/plugin-transform-class-static-block` for formatjs polyfills.
 
 ## Definition of done here
-Runs on BOTH simulators · typecheck green · CLAUDE.md §Definition of done for screens.
+Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + docs/10 §10 (per-screen DoD).

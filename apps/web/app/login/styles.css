@@ -155,7 +155,7 @@
 .lg-phone {
   color: var(--text-primary);
   font-weight: var(--fw-medium);
-  /* phone numbers are numerics-as-data → Geist Mono (CLAUDE.md §Design / docs/10) */
+  /* phone numbers are numerics-as-data → Geist Mono (docs/10 §3.1) */
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;

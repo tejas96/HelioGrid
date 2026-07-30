@@ -4,7 +4,7 @@ import { Animated, Easing, StyleSheet, type TextStyle } from 'react-native';
 import { AppText, BloomLayer } from '../../ui';
 
 /**
- * Screen-local components for LoginScreen (CLAUDE.md §Screen structure satellite): typography
+ * Screen-local components for LoginScreen (apps/mobile/CLAUDE.md §Local conventions — screen-folder satellites): typography
  * shorthands, the DS step-mount rise and the ambient brand-bloom backdrop. Nothing
  * here is shared vocabulary — promotion into src/ui needs an owner ruling.
  */

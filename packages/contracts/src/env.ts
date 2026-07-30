@@ -6,7 +6,7 @@ import { z } from 'zod';
  * while each service still declares exactly what it needs.
  *
  * This file never reads `process.env`; it only describes shapes. The single read per app
- * lives in that app's `src/config/env.ts` (CLAUDE.md §Structure).
+ * lives in that app's `src/config/env.ts` (CLAUDE.md §Process).
  */
 
 /** Runtime role: member of app_user, subject to RLS. Required by anything touching Postgres. */

@@ -1,5 +1,5 @@
 /* Home route layout. Screens own layout via tokens here — never inline `style`
-   (apps/web/CLAUDE.md §Styling layers). Pixels belong to @heliogrid/ui components. */
+   (apps/web/CLAUDE.md §Local conventions — styling layers). Pixels belong to @heliogrid/ui components. */
 
 .hm-screen {
   padding: var(--screen-pad-desktop);

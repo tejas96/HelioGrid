@@ -1,5 +1,5 @@
 /**
- * THE ONLY `process.env` READ IN apps/web (CLAUDE.md §Structure; biome `noProcessEnv`
+ * THE ONLY `process.env` READ IN apps/web (CLAUDE.md §Process; biome `noProcessEnv`
  * enforces it, with this file on the allow-list).
  *
  * Next.js inlines `NEXT_PUBLIC_*` at BUILD time, so this cannot be a runtime Zod parse the

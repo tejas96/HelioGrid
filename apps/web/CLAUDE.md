@@ -16,7 +16,7 @@ used by: nobody
 ## Local conventions
 - ONE FOLDER PER ROUTE: `app/<route>/` holds `page.tsx` plus satellites — `styles.css`
   (never `<route>.css`), `components.tsx`, `hooks.ts`, `constants.ts`, overflow folders.
-  See CLAUDE.md §Structure. Next.js reserved files (layout/loading/error/not-found/route…)
+  See docs/02 §2. Next.js reserved files (layout/loading/error/not-found/route…)
   are exempt; `route.ts` is cookie/session BFF glue ONLY. Root `page.tsx` is a redirect stub.
   A route segment is never named `components`/`hooks`/`constants`.
   `lib/` = `*-client.ts` · `env.ts` · `hooks/` · `constants.ts` — **no `lib/format/`, no
@@ -42,4 +42,5 @@ used by: nobody
 - Geist woff2 urls resolve relative to tokens.css — Next bundles automatically.
 
 ## Definition of done here
-docs/10 §10 + CLAUDE.md §Definition of done. Verified in the running browser.
+docs/10 §10 + CLAUDE.md §Commands (a task is DONE only when verified running).
+Verified in the running browser.

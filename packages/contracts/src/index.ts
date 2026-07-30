@@ -13,7 +13,7 @@ const c = initContract();
 
 /**
  * The root API contract. Feature modules mount their routers here — contract FIRST,
- * then implementation; the contract diff is the API review surface (CLAUDE.md hard rule).
+ * then implementation; the contract diff is the API review surface (.claude/rules/00-laws.md Law 3).
  */
 export const apiContract = c.router(
   {
