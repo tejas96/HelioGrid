@@ -1,10 +1,21 @@
+import { loadWebEnv } from '@heliogrid/env/web';
+
 /**
- * THE ONLY `process.env` READ IN apps/web (CLAUDE.md §Process; biome `noProcessEnv`
- * enforces it, with this file on the allow-list).
+ * apps/web's single configuration decision point. The SCHEMA and the VALIDATION live in
+ * `@heliogrid/env`; this file supplies the raw value, and that split is required rather than
+ * stylistic.
  *
- * Next.js inlines `NEXT_PUBLIC_*` at BUILD time, so this cannot be a runtime Zod parse the
- * way the server apps do it — the literal must appear statically for the bundler to
- * substitute it. Keeping the read in one file is still what matters: the fallback lives
- * here, once, instead of at every call site.
+ * `NEXT_PUBLIC_*` inlining is a build-time textual substitution over code NEXT COMPILES.
+ * `@heliogrid/env` ships pre-built CJS into node_modules, so Next never transforms it — the
+ * read has to be written out literally HERE. Written inside the package instead, it survived
+ * into the client bundle verbatim, evaluated to `undefined` in the browser, and silently fell
+ * back to the schema default: a production URL would have been ignored with nothing failing.
+ *
+ * The old `?? 'http://localhost:8080'` is gone: the default now lives in `webEnvSchema`, where
+ * `.env.example` and any reader can see it, and a malformed value fails naming the key instead
+ * of producing a mystery network error.
  */
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+export const API_URL = loadWebEnv({
+  // One key, written out. Do NOT rewrite as process.env[k] or a spread — neither is substituted.
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+}).NEXT_PUBLIC_API_URL;

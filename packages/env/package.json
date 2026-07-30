@@ -2,7 +2,7 @@
   "name": "@heliogrid/env",
   "version": "0.0.1",
   "private": true,
-  "description": "The only package permitted to read a raw environment source — schemas describe, parse validates, entries read",
+  "description": "The only package permitted to read a raw environment source \u2014 schemas describe, parse validates, entries read",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -13,6 +13,14 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "default": "./dist/server.js"
+    },
+    "./web": {
+      "types": "./dist/web.d.ts",
+      "default": "./dist/web.js"
+    },
+    "./native": {
+      "types": "./dist/native.d.ts",
+      "default": "./dist/native.js"
     }
   },
   "scripts": {

@@ -30,7 +30,11 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   in `src/i18n.ts` FIRST.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
 - Screen folders: docs/02 §2 (`<Name>Screen.tsx` + satellites). `src/` is the closed
-  set `{auth,data,hooks,navigation,push,screens,ui}` + `i18n.ts`.
+  set `{auth,data,hooks,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`.
+  `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
+  `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
+  and the validation. There is deliberately no `src/config/` — a new folder category
+  would need an ADR (Law 2).
 - Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
   `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
   `mobile-app-entry-thin`, severity `error` since ADR-0020's navigation slice landed).

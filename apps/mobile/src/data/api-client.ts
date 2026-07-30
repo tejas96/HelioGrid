@@ -10,7 +10,7 @@ import { API_URL, absorbSetCookies, loadCookie } from '../auth/client';
  * (see src/auth/client.ts).
  */
 export const api = initQueryClient(apiContract, {
-  baseUrl: API_URL ?? 'http://localhost:8080',
+  baseUrl: API_URL,
   baseHeaders: {},
   credentials: 'omit',
   api: async (args) => {

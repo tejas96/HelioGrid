@@ -12,4 +12,6 @@ export { parseEnv } from './parse';
 export { type ApiEnv, apiEnvSchema } from './schema/api';
 export * from './schema/fragments';
 export { type InvariantsEnv, invariantsEnvSchema } from './schema/invariants';
+export { type MobileEnv, mobileEnvSchema } from './schema/mobile';
+export { type WebEnv, webEnvSchema } from './schema/web';
 export { type WorkerEnv, workerEnvSchema } from './schema/worker';

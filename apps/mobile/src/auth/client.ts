@@ -1,6 +1,6 @@
 import { createAuthClient } from 'better-auth/client';
 import { phoneNumberClient } from 'better-auth/client/plugins';
-import { Platform } from 'react-native';
+import { API_URL } from '../env';
 import { keychainStorage } from './keychain-storage';
 
 /**
@@ -11,10 +11,9 @@ import { keychainStorage } from './keychain-storage';
  * (hit 2026-07-26). Absorption uses getSetCookie(), never .get('set-cookie') — the
  * S1 verdict: .get() joins multiple Set-Cookie headers lossily.
  */
-export const API_URL = Platform.select({
-  android: 'http://10.0.2.2:8080',
-  default: 'http://localhost:8080',
-});
+// Re-exported for the modules that already import it from here; the value and its validation
+// live in ../env.ts, which is the app's single configuration decision point.
+export { API_URL };
 
 const JAR_KEY = 'cookie-jar';
 let cookieCache: string | null = null;

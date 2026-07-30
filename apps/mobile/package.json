@@ -12,6 +12,7 @@
     "@formatjs/intl-locale": "5.3.10",
     "@formatjs/intl-pluralrules": "6.3.13",
     "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/env": "workspace:*",
     "@heliogrid/i18n": "workspace:*",
     "@heliogrid/tokens": "workspace:*",
     "@heliogrid/ui-api": "workspace:*",

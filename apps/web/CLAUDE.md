@@ -10,7 +10,7 @@ pnpm --filter @heliogrid/web dev      # localhost:3000 (tokens must be built fir
 pnpm --filter @heliogrid/web build | typecheck
 
 ## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n
+uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env
 used by: nobody
 
 ## Local conventions
@@ -38,6 +38,11 @@ used by: nobody
 - **Enum-driven pickers/labels are `Record<TheEnum, …>` and iterate `schema.options`.**
   Onboarding's `SEGMENTS` was an `as const` array — merely subset-assignable, so a new
   `tenantSegmentSchema` value compiled green while being unselectable in the UI.
+- **`lib/env.ts` must write `process.env.NEXT_PUBLIC_*` out LITERALLY.** Next inlines those
+  at build time by textual substitution; `process.env[key]` or a spread is not substituted
+  and reads `undefined` in the browser, silently falling back to the schema default — a
+  production URL would be ignored with nothing failing. The schema and validation live in
+  `@heliogrid/env/web`; only the literal read lives here.
 - Import order in layout.tsx: tokens.css → base.css → globals.css (base before Tailwind).
 - Geist woff2 urls resolve relative to tokens.css — Next bundles automatically.
 
