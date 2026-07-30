@@ -16,7 +16,8 @@
    (e.g. Button `variant="danger"` doesn't exist).
 
 ## Depends on / depended on by
-uses: @heliogrid/tokens        used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
+uses: @heliogrid/tokens, @heliogrid/contracts (business sets), @heliogrid/ui-api (parity contract)
+used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
 
 ## Conventions (locked by the Button exemplar)
 - One file pair per component: `src/<family>/<Name>.tsx` + `<Name>.css` (imported by the
@@ -38,6 +39,12 @@ uses: @heliogrid/tokens        used by: apps/web (index); RN mirror: apps/mobile
   different APIs. Optional-with-fallback is banned for anything user-visible.
 - Status/variant → visual maps are `Record<TheEnum, …>` so a new contract value fails to
   compile here rather than rendering blank.
+
+- **Prop parity with the RN mirror is a TYPECHECK now, not a gallery comparison.**
+  `src/api-parity.ts` asserts this package against `@heliogrid/ui-api`; drift fails this
+  package's own typecheck and names the component. It asserts BOTH directions — making a
+  required prop optional AND narrowing a union or dropping an optional prop. Change a prop
+  here and the mirror must change in the same slice (Law 7).
 
 ## STANDING LAW — surfaces without a mockup
 When the data model needs UI the 82 mockups don't cover, design it INSIDE this component

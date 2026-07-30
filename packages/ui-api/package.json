@@ -1,0 +1,23 @@
+{
+  "name": "@heliogrid/ui-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Types-only component API contract — the single surface both UI implementations must satisfy",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@heliogrid/config": "workspace:*",
+    "@types/react": "19.2.17",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "@heliogrid/contracts": "workspace:*"
+  }
+}

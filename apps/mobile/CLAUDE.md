@@ -18,7 +18,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n
 nav: @react-navigation/native + native-stack + react-native-screens (ADR-0020)
 used by: nobody
-RN UI components: `src/ui` (mirror of packages/ui — Law 7)
+RN UI components: `src/ui` (mirror of packages/ui — Law 7). Parity with web is a TYPECHECK,
+not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
+`@heliogrid/ui-api`. Drift fails THIS app's typecheck and names the component.
 
 ## Local conventions
 - Theme ONLY from `@heliogrid/tokens/theme`. Import UI ONLY from `src/ui` index.

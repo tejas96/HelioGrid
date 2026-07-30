@@ -1,0 +1,149 @@
+/**
+ * @heliogrid/ui-api — the component API contract. TYPES ONLY, no runtime code.
+ *
+ * `packages/ui` (web, DOM + CSS) and `apps/mobile/src/ui` (RN, StyleSheet) render differently
+ * by necessity — that split is legitimate and stays (ADR-0011: bare RN, pixel fidelity;
+ * react-native-web/Tamagui were rejected). What must NOT differ is the prop surface. Before
+ * this package, parity was checked by a human comparing two galleries, and it had already
+ * failed once in production: `StatusChip.label` was optional with an English fallback on web
+ * and required on RN, so callers who omitted it shipped untranslated English past Lingui.
+ *
+ * Each implementation index asserts `satisfies ComponentApiSurface`, so a platform that drifts
+ * fails ITS OWN typecheck, naming the component.
+ *
+ * WHAT THIS CONTRACT COVERS — read this before assuming a green build means full parity.
+ * It declares the 99 props (of 172 across 28 components) that both platforms ALREADY agree
+ * on: same name, equivalent type, same optionality. Three categories are deliberately absent:
+ *
+ *   1. Platform-owned props. Web inherits DOM attributes (`type`, `form`, `aria-*`) and RN has
+ *      `hitSlop`/`ViewStyle`. `className?: string` and `style?: ViewStyle` are not the same
+ *      prop wearing two hats. This is the shared surface, not the union.
+ *   2. Platform-shaped handlers. Web inherits `MouseEventHandler<HTMLButtonElement>` where RN
+ *      declares `() => void`; likewise `ChangeEventHandler` vs `(text: string) => void`.
+ *      Neither is assignable to the other, so no single declaration can hold both without
+ *      changing the components.
+ *   3. ELEVEN copy props typed `ReactNode` on web and `string` on RN (`Input.label`,
+ *      `EmptyState.title`, `Toast.description`, …). Declaring the wider type would let web
+ *      accept JSX that RN cannot render; declaring the narrower one fails web today. Recorded
+ *      per interface rather than papered over.
+ *
+ * SEVEN genuine parity defects were found while deriving this — the same class as the
+ * StatusChip incident, none of them caught by the galleries. They are recorded in the
+ * interface that owns them and await an owner ruling, because each is an API change:
+ * `Avatar.name` (required RN / optional web), `EmptyState.icon` (required web / optional RN),
+ * `Tabs.onChange`, `SegmentedControl.onChange`, `RadioCard.onChange` (all optional web /
+ * required RN), and `TabItem` / `SegmentedOption` / `RadioCardOption`, whose referenced types
+ * differ structurally between platforms.
+ */
+export type { ChipTone, Density } from './common.js';
+export type {
+  BloomLayerApi,
+  OtpInputApi,
+  RadioCardApi,
+  SpinnerApi,
+  StepIndicatorApi,
+  TextLinkApi,
+  WordmarkApi,
+} from './composites.js';
+export type {
+  AvatarApi,
+  AvatarGroupApi,
+  BadgeApi,
+  CardApi,
+  ChipApi,
+  IconCircleApi,
+  ListRowApi,
+  StatCardApi,
+  StatusChipApi,
+} from './data.js';
+export type {
+  EmptyStateApi,
+  OfflineBannerApi,
+  ProgressBarApi,
+  ToastApi,
+} from './feedback.js';
+export type {
+  ButtonApi,
+  CheckboxApi,
+  IconButtonApi,
+  InputApi,
+  RadioApi,
+  SwitchApi,
+} from './forms.js';
+export type { SegmentedControlApi, TabsApi } from './navigation.js';
+
+import type {
+  BloomLayerApi,
+  OtpInputApi,
+  RadioCardApi,
+  SpinnerApi,
+  StepIndicatorApi,
+  TextLinkApi,
+  WordmarkApi,
+} from './composites.js';
+import type {
+  AvatarApi,
+  AvatarGroupApi,
+  BadgeApi,
+  CardApi,
+  ChipApi,
+  IconCircleApi,
+  ListRowApi,
+  StatCardApi,
+  StatusChipApi,
+} from './data.js';
+import type { EmptyStateApi, OfflineBannerApi, ProgressBarApi, ToastApi } from './feedback.js';
+import type {
+  ButtonApi,
+  CheckboxApi,
+  IconButtonApi,
+  InputApi,
+  RadioApi,
+  SwitchApi,
+} from './forms.js';
+import type { SegmentedControlApi, TabsApi } from './navigation.js';
+
+/**
+ * The shape every implementation index must satisfy.
+ *
+ * Assert it with a declared const, never an object literal:
+ *
+ *     declare const _impl: { Button: ComponentProps<typeof Button>; … };
+ *     _impl satisfies ComponentApiSurface;
+ *
+ * A `declare const` carries a type without a value, so excess-property checking does not
+ * apply and each platform keeps its own extra props. What `satisfies` still enforces is the
+ * direction that matters: every contract prop must be present, at the contract's type, with
+ * the contract's optionality. An implementation that makes a required prop optional stops
+ * compiling — which is precisely what the galleries could not detect.
+ */
+export interface ComponentApiSurface {
+  Avatar: AvatarApi;
+  AvatarGroup: AvatarGroupApi;
+  Badge: BadgeApi;
+  BloomLayer: BloomLayerApi;
+  Button: ButtonApi;
+  Card: CardApi;
+  Checkbox: CheckboxApi;
+  Chip: ChipApi;
+  EmptyState: EmptyStateApi;
+  IconButton: IconButtonApi;
+  IconCircle: IconCircleApi;
+  Input: InputApi;
+  ListRow: ListRowApi;
+  OfflineBanner: OfflineBannerApi;
+  OtpInput: OtpInputApi;
+  ProgressBar: ProgressBarApi;
+  Radio: RadioApi;
+  RadioCard: RadioCardApi;
+  SegmentedControl: SegmentedControlApi;
+  Spinner: SpinnerApi;
+  StatCard: StatCardApi;
+  StatusChip: StatusChipApi;
+  StepIndicator: StepIndicatorApi;
+  Switch: SwitchApi;
+  Tabs: TabsApi;
+  TextLink: TextLinkApi;
+  Toast: ToastApi;
+  Wordmark: WordmarkApi;
+}
