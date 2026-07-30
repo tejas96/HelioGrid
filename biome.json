@@ -25,7 +25,8 @@
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100
+    "lineWidth": 100,
+    "lineEnding": "lf"
   },
   "assist": {
     "actions": {
@@ -37,7 +38,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error",
+        "useExhaustiveDependencies": "error"
+      },
       "style": {
         "noRestrictedImports": {
           "level": "error",
@@ -48,7 +55,13 @@
             }
           }
         },
-        "noProcessEnv": "error"
+        "noProcessEnv": "error",
+        "noNonNullAssertion": "error",
+        "useConst": "error",
+        "useTemplate": "error",
+        "noParameterAssign": "error",
+        "useImportType": "error",
+        "useExportType": "error"
       },
       "suspicious": {
         "noConsole": {
@@ -56,7 +69,20 @@
           "options": {
             "allow": ["error", "warn"]
           }
+        },
+        "noExplicitAny": "error",
+        "noDoubleEquals": "error",
+        "noArrayIndexKey": "error"
+      },
+      "complexity": {
+        "noUselessFragments": "error",
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": { "maxAllowedComplexity": 15 }
         }
+      },
+      "a11y": {
+        "preset": "recommended"
       }
     }
   },
@@ -66,8 +92,11 @@
     },
     "formatter": {
       "quoteStyle": "single",
+      "jsxQuoteStyle": "double",
       "semicolons": "always",
-      "trailingCommas": "all"
+      "trailingCommas": "all",
+      "arrowParentheses": "always",
+      "bracketSpacing": true
     }
   },
   "css": {

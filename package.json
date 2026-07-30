@@ -9,9 +9,10 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "lint": "biome check . && dependency-cruiser --config .dependency-cruiser.cjs apps packages tests && sherif",
+    "lint": "biome check . && dependency-cruiser --config .dependency-cruiser.cjs apps packages tests && sherif && pnpm check:adherence",
     "lint:fix": "biome check --write .",
-    "boundaries": "turbo boundaries"
+    "boundaries": "turbo boundaries",
+    "check:adherence": "bash scripts/check-adherence.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

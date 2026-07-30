@@ -153,10 +153,11 @@ Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invarian
 | Migrations are append-only | sha256 lock (runner refuses) **+** PreToolUse hook | runtime + hook | `packages/db/src/migrate.ts`, `write-guard.sh` |
 | Runtime DB role cannot bypass tenancy | boot precondition — app refuses to start | runtime | `apps/api/src/common/db/tenancy-precondition.ts` |
 | Never `sed -i` / `perl -i` / `python -i` | PreToolUse hook, exit 2 | hook | `.claude/hooks/bash-guard.sh` |
-| No `.test.*` / `.spec.*` files | PreToolUse hook (Edit/Write **and** shell redirect/touch) | hook | `write-guard.sh`, `bash-guard.sh` |
+| No `.test.*` / `.spec.*` files | PreToolUse hook (Edit/Write **and** shell redirect/touch) **+** lint-chain backstop for files an agent did not author | hook + lint | `write-guard.sh`, `bash-guard.sh`, `scripts/check-adherence.sh` |
 | Git stays manual — no unprompted push or PR | PreToolUse hook blocks `git push`, `gh pr create\|merge\|ready` | hook | `bash-guard.sh` + `/pr` is `disable-model-invocation` |
 | No `rm -rf` outside the repo | PreToolUse hook | hook | `bash-guard.sh` |
-| Files ≲450 lines · no raw hex in UI | PostToolUse hook — **advisory only today** | hook | `edit-checks.sh` |
+| Files ≲450 lines | PostToolUse hook warns at author time; lint chain fails at merge | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
+| No raw hex in UI paths | same pair — advisory then hard. Matches value positions only; comment mentions of reference hex are deliberately not flagged | hook + lint | `edit-checks.sh`, `scripts/check-adherence.sh` |
 | Contract-first ordering | `/contract-change` skill + the contract diff in the PR | skill | `.claude/skills/contract-change/` |
 | Schema changes follow the migration procedure | `/migration` skill | skill | `.claude/skills/migration/` |
 | Web + RN lockstep (Law 7) | `/slice` + `/verify-app` + PR checklist | skill | `.claude/skills/` |
@@ -171,8 +172,7 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 
 | Rule | Intended mechanism | Stage |
 |---|---|---|
-| No raw hex / arbitrary px / inline style (hard gate) | oxlint `no-restricted-syntax` | lint |
-| Files ≲450 lines (hard gate) | oxlint `max-lines` | lint |
+| Arbitrary px / inline style in UI | Not attempted. Raw hex has a stable syntactic shape; "arbitrary px" does not — spacing, border and icon sizes are legitimately numeric, so the rule would be mostly false positives. Reviewed by `ux-lens` instead. | — |
 | No hand-rolled HTTP in apps | dependency-cruiser rule banning axios/node-fetch/undici | lint |
 | OpenAPI freshness + breaking changes | emit + `git diff`; oasdiff locally | CI |
 | VERIFIED rows carry evidence | roadmap linter | CI |
@@ -187,7 +187,7 @@ Listed so nobody reads this matrix as claiming coverage that does not exist. Pla
 | Provenance tier on every user-visible number | No checker can distinguish a number needing provenance from an id, count or index. | `epc-lens` review + the per-screen DoD (docs/10 §10) |
 | Money never renders while stale | Staleness is a product-semantic judgement about one figure's inputs, not a syntactic property. | `epc-lens` + the fingerprint system when the studio lands |
 | Structural adequacy is NEVER computed | A negative existence claim over arbitrary code. Rated **critical** when found. | `epc-lens` (docs/05 honesty rules) |
-| Split by responsibility; never `*-part2` | No linter can judge whether a filename honestly names a responsibility. `max-lines` forces the split; naming is reviewed. | `CLAUDE.md` + `/lenses` |
+| Split by responsibility; never `*-part2` | No checker can judge whether a filename honestly names a responsibility. The 450-line gate forces the split; the naming is reviewed. | `CLAUDE.md` + `/lenses` |
 | React presentation/logic separation | The container/presentational boundary is a cohesion judgement, not a syntactic one. | `.claude/rules/ui-adherence.md` + `ux-lens` |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers. | code review + docs/04 conventions |
 | Reference integrity (`docs/NN §M`, links) | Owner ruling 2026-07-30: use the two grep checks, not a checker script. | `/doc-sync` grep block |

@@ -11,8 +11,9 @@ paths:
 ## Visual values
 - **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
   `@heliogrid/tokens`, which is GENERATED from `design/ds-source` — never hand-transcribed.
-  `_ds_manifest.json` is untrusted for values. (A PostToolUse hook warns immediately; a
-  lint-stage gate is planned. Until it lands the hook is the only signal.)
+  `_ds_manifest.json` is untrusted for values. (Hex: hook warns on write, `pnpm lint` fails
+  at merge. Arbitrary px and inline style are review-only — no honest gate exists, so the
+  rule holds by your care and `ux-lens`, not by a red build. docs/10 §8 says why.)
 - **Primary actions are near-black** (`#0A0A0B`). Accent `#5A4BFF` is focus, links,
   selection, active tab and control fills ONLY — **never a button fill**. Iridescence is
   atmosphere, never information. Hierarchy comes from luminance and elevation, not borders.

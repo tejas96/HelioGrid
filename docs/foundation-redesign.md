@@ -40,7 +40,7 @@ extract guard); and the docs corpus itself, which is unusually coherent.
 A rule may only be prose if no lower rung can hold it:
 
 1. **Type system / codegen** — drift becomes a compile error (contracts-inferred types, `Record<Enum,…>` maps, generated tokens).
-2. **Lint / CI gate** — drift becomes a red build (dep-cruiser, biome, oxlint, invariants, diff guards).
+2. **Lint / CI gate** — drift becomes a red build (dep-cruiser, biome, adherence greps, invariants, diff guards).
 3. **Harness hook** — the action is blocked or annotated at tool-call time (`sed -i` ban, migration-edit ban).
 4. **Skill** — a procedure loads on demand when that work happens (slice loop, contract change, migration).
 5. **Path-scoped rule / per-package CLAUDE.md** — a constraint loads when files in its area are touched.
@@ -155,7 +155,7 @@ A task is DONE only when gates are green AND the change is verified running — 
 both simulators for UI (/verify-app), curl/logs for api/worker. Green gates never prove UI work.
 
 ## Hard boundaries (mechanically enforced — never weaken a gate config to pass it)
-dependency-cruiser (19 rules) · turbo boundaries · biome · sherif · oxlint adherence ·
+dependency-cruiser (19 rules) · turbo boundaries · biome · sherif · adherence greps ·
 tokens contrast gate · i18n extract guard · tests/invariants (RLS, enum parity) · CI drift
 guards (openapi, migrations, doc anchors). A gate that blocks you means the change is wrong.
 
@@ -199,7 +199,7 @@ laws that span packages — each ≤25 lines, each pointing at its skill for the
 - `db-schema.md` → "new tables carry tenant_id or join the global allowlist in
   tests/invariants; migrations append-only via /migration; pgEnum values come from the
   parity-checked list; RLS is backstop, repository scoping is primary."
-- `ui-adherence.md` → "no raw hex/px/inline style — tokens only (oxlint enforces); primary
+- `ui-adherence.md` → "no raw hex/px/inline style — tokens only (hex is gated); primary
   actions near-black, accent #5A4BFF for focus/links/selection only, never a button fill;
   compose from the component indexes — creating what exists is a defect; 44px targets;
   375px works; four states (loading/empty/error/offline) are part of done; Hindi renders."
@@ -294,7 +294,7 @@ without five bespoke prompts drifting.
   create a new migration"). New files pass.
 - **edit-checks.sh** (PostToolUse, exit 0 + `additionalContext`): after any Edit/Write —
   warn if the file now exceeds 450 lines (split guidance); warn on raw hex/px literals in
-  UI paths (instant feedback; oxlint in CI is the hard gate).
+  UI paths (instant feedback; `scripts/check-adherence.sh` in `pnpm lint` is the hard gate).
 
 Three hooks, all sub-second, all deterministic. Everything heavier belongs in CI (§5), not
 in the editing loop.
@@ -378,7 +378,7 @@ re-injects; path-scoped rules re-attach on next matching read).
 |---|---|---|
 | contracts z.enum ↔ db pgEnum parity | ~50-line invariant in `tests/invariants` (static parse or pg_enum introspection — no import, so `db-no-upward` stands) | CI test |
 | tenant_id presence on NEW tables | inverse scan in `tenancy-rls.ts`: every public table has tenant_id OR is on an explicit global allowlist | CI test |
-| UI token adherence (no raw hex/px/inline style) + 450-line cap | **oxlint** wired into `pnpm lint` using the vendored `_adherence.oxlintrc.json` intents (`no-restricted-syntax`, `max-lines`) — resurrects the dead config | lint |
+| UI token adherence (no raw hex) + 450-line cap + no test files | `scripts/check-adherence.sh` in `pnpm lint`. **Superseded 2026-07-30:** oxlint was installed for this and removed — it implements only a subset of ESLint rules and has no `no-restricted-syntax`, which was the entire reason to add it (`max-lines` worked; the hex ban did not). Three greps replace it. The vendored `_adherence.oxlintrc.json` stays dead config, now permanently: its 31 component-prop rules are delivered by TypeScript prop types instead (docs/10 §6). | lint |
 | web ↔ RN component API parity | types-only shared surface (`packages/ui-api` or a tsc assignability test): both platforms' exported prop types must satisfy one definition | CI typecheck |
 | API breaking-change / drift | `oasdiff breaking` main↔head on the emitted openapi.json + a freshness diff of the committed copy | CI |
 | No hand-rolled HTTP in apps | dep-cruiser rule: `axios|node-fetch|undici` (and bare `fetch` wrappers outside `lib/api-client.ts` / `src/data/`) banned from web+mobile — contract drift becomes a type error | lint |
@@ -548,7 +548,7 @@ docs/17 rebuild, dedup pass. *Verify: anchor-checker green over the whole corpus
 
 **Phase 3 — New gates (1–2 days).** §5.2 in full. *Verify: each gate proven by a deliberate
 violation (add a fake enum value → parity gate red; add a tenant-less table → scan red;
-hex literal in a screen → oxlint red; modify migration 0001 → append-only red).*
+hex literal in a screen → adherence gate red; modify migration 0001 → append-only red).*
 
 **Phase 4 — Structural dedup (2–3 days).** Create `packages/domain` (pure TS; seed: login
 flow state machine as a pure reducer consumed by both screens, phone/₹ formatters, invite/

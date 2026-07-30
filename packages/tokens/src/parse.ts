@@ -58,19 +58,24 @@ export function parseCssFile(css: string, sourceFile: string): ParsedCss {
   return result;
 }
 
+/** Longest alias chain we will follow before calling it a cycle. */
+const MAX_VAR_HOPS = 20;
+
 /** Resolve var(--x) chains against a token map (aliases → raw values). */
-export function resolveValue(value: string, map: Map<string, string>, depth = 0): string {
-  if (depth > 10) throw new Error(`var() resolution loop at: ${value}`);
+export function resolveValue(value: string, map: Map<string, string>): string {
   const re = /var\(\s*--([A-Za-z0-9-]+)\s*\)/;
   let out = value;
   let m = out.match(re);
+  // A local counter, not a parameter: the only caller never passed one, and the previous
+  // version checked two different limits (10 on entry, 20 in the loop) for one concept.
+  let hops = 0;
   while (m) {
     const target = map.get(m[1] as string);
     if (target === undefined) throw new Error(`Unresolvable var(--${m[1]}) in "${value}"`);
     out = out.replace(m[0], target);
     m = out.match(re);
-    depth += 1;
-    if (depth > 20) throw new Error(`var() resolution loop at: ${value}`);
+    hops += 1;
+    if (hops > MAX_VAR_HOPS) throw new Error(`var() resolution loop at: ${value}`);
   }
   return out;
 }

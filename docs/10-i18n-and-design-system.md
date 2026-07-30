@@ -442,14 +442,15 @@ components, and would flag the design system's own token files):
 
 | Intent (from ds-source) | Our enforcement |
 |---|---|
-| No raw hex colours in component code | error — tokens are the only colour source |
-| No raw px values in component code | error — spacing/radius/size via tokens |
-| No non-Geist `font-family` | error — Geist / Geist Mono (+ Noto Devanagari extension) only |
-| No deep component imports | import from the package index only |
-| Unknown props rejected per component | the §6 prop enums are typed — TypeScript makes violations compile errors, lint backs it up |
+| No raw hex colours in component code | **gated** — `scripts/check-adherence.sh` fails `pnpm lint`; tokens are the only colour source |
+| No deep component imports | **gated** — dependency-cruiser `package-index-only` |
+| Unknown props rejected per component | **typed** — the §6 prop enums make violations compile errors, which is stronger than the lint rule ds-source shipped |
+| No raw px values in component code | **reviewed, not gated** — unlike hex, "arbitrary px" has no syntactic tell: spacing, border and icon sizes are legitimately numeric, so a grep is mostly false positives. `ux-lens` checks it against the mockup. |
+| No non-Geist `font-family` | **reviewed, not gated** — every current declaration is either `inherit` or a theme lookup (`familyFor()`, `fam.sans`), so a gate today would be 100% exemptions and would catch nothing. Revisit if a raw family ever appears. |
 
-Implementation: Biome/GritQL rules (plus oxlint scoped to JSX source and excluding
-`packages/tokens` and `design/ds-source`, if useful). Kept from the repo plan:
+Implementation note (2026-07-30): oxlint was installed to carry the hex and px rules and
+**removed** — it implements only a subset of ESLint rules and has no `no-restricted-syntax`.
+Three greps in `scripts/check-adherence.sh` cover what is gateable. Kept from the repo plan:
 **dependency-cruiser** boundaries and the **contrast build gate** (§2.5) — the tokens
 build fails on any declared pair below floor, with ruling C's restricted-role annotations
 as the pairs metadata. `/design` renders every token as the human verification surface.
