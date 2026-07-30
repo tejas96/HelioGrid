@@ -21,7 +21,9 @@ the sha256-locked runner refuse to run at all.
 
 Every tenant-owned table needs all four things the rule lists: `tenant_id`, a composite
 index leading with it, a fail-closed RLS policy for `app_user`, and explicit grants. A
-genuinely global table is justified in writing — there is no third option.
+genuinely global table goes in `GLOBAL_TABLES` in
+`tests/invariants/src/table-tenancy-scan.ts` with its reason — there is no third option, and
+the scan fails on any table that is neither.
 
 ## 3. Mirror the Drizzle schema
 

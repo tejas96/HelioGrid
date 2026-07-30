@@ -13,7 +13,9 @@ paths:
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default
   privileges, so a forgotten grant fails closed.
-  A genuinely global table is justified in writing — there is no third option.
+  A genuinely global table goes in `GLOBAL_TABLES` in
+  `tests/invariants/src/table-tenancy-scan.ts` **with its reason** — there is no third
+  option, and the scan fails on any table that is neither.
 - Tenancy is defence in depth, all three always: guard (JWT claims) → repository filter
   (tenantId from context, never from client input) → RLS backstop.
 - Cross-tenant reads return 404, never 403 — never reveal that another tenant's row exists.
