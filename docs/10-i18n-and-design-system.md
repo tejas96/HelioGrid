@@ -81,7 +81,14 @@ packages/tokens/
    `--accent` or `--action-primary`.
 5. **`contrast.pairs.json` regenerated from ds values** with the restricted-role
    annotations of ruling C baked in (§3.2). The build recomputes WCAG ratios from resolved
-   values and **fails below floor** — contrast is computed, never eyeballed.
+   values and **fails below floor** — contrast is computed, never eyeballed. It also derives
+   COVERAGE from component usage, so a pairing nobody declared fails the build rather than
+   going unchecked (§8).
+6. **WCAG AA overrides of two ds-source colours** (owner ruling 2026-07-30) — `--danger`
+   `#E5484D`→`#D34247` and `--text-secondary` `#74787E`→`#686C71`. The ONLY extension that
+   changes a ds-source value rather than adding one, because both failed AA for text in
+   shipped components (§3.2, docs/13 UXG-A11Y-02/03). `A11Y_COLOR_OVERRIDES` in
+   `src/extensions.ts`; the build refuses an override with no ds-source token to override.
 
 ---
 
@@ -108,7 +115,7 @@ Surfaces / neutrals · text · lines:
 | Token | Value | | Token | Value |
 |---|---|---|---|---|
 | `--canvas` | `#F6F7F9` | | `--text-primary` | `#0A0A0B` (near-black, never pure black) |
-| `--canvas-sunken` | `#EEF0F3` | | `--text-secondary` | `#74787E` |
+| `--canvas-sunken` | `#EEF0F3` | | `--text-secondary` | `#686C71` — **ext 6**, was `#74787E` |
 | `--surface` | `#FFFFFF` | | `--text-tertiary` | `#A1A5AC` — **restricted, see below** |
 | `--surface-alt` | `#FAFBFC` | | `--text-disabled` | `#C7CAD0` |
 | `--hairline` | `rgba(10,10,11,0.06)` | | `--chart-gridline` | `#EEF0F3` |
@@ -134,7 +141,7 @@ Status (muted FG always paired with tinted BG):
 |---|---|---|
 | success | `#159A5B` | `#E9F7EF` |
 | warning | `#E9A23B` | `#FDF4E6` |
-| danger | `#E5484D` | `#FDECEC` |
+| danger | `#D34247` — **ext 6**, was `#E5484D` | `#FDECEC` |
 | info | `#3B82F6` | `#EAF2FE` |
 | neutral | `#74787E` | `#F0F1F3` |
 
@@ -150,19 +157,26 @@ gridline `#EEF0F3`.
   load-bearing text**. Meaning-bearing overlines use `--text-secondary`, not tertiary.
 - `--warning #E9A23B` (≈2.2:1 as bare text) — **always on its `--warning-bg #FDF4E6` chip,
   never bare foreground text**.
-- `--text-secondary #74787E` is borderline (≈4.45:1 on white) — annotated in the pairs
-  file; body text on `--surface` is `--text-primary`. **On `--canvas-sunken` it drops to
-  ≈3.89:1 and is NOT a sanctioned pairing** — ruling C covers this token on white only. The
-  AvatarGroup "+N" count used it (inherited from the ds-source reference) and now uses
-  `--text-primary` (≈17.33:1): docs/13 UXG-A11Y-01, CLOSED. The pair is deliberately absent
-  from `DECLARED_PAIRS` so the coverage gate rejects any new use.
+- `--danger` on `--danger-bg` (≈3.96:1) — the **chip only**: 13px medium always carrying a
+  label, judged as a UI component under SC 1.4.11. Never running text.
+- `--text-disabled` on `--canvas-sunken` (≈1.44:1) — compliant by WCAG 1.4.3's exemption for
+  inactive controls, not by ratio. Disabled state is never the only signal.
 
-**Open a11y finding — `--danger` fills carrying white labels (docs/13 UXG-A11Y-02):** ruling
-C sanctioned `--danger`/`--surface` at ≈3.91:1 citing the "large text / UI components ≥3:1"
-allowance. That allowance is SC 1.4.11 (non-text contrast: boundaries, graphics); a
-destructive button's **label** is text under SC 1.4.3 and needs 4.5:1 at 15px/500. Awaiting
-an owner ruling — the pair stays declared at its current floor so it cannot worsen, and the
-annotation no longer implies the label clears AA.
+**Two of ruling C's restrictions were RETIRED on 2026-07-30, not relaxed** — extension 6
+darkened the two tokens that caused them, so the caveats no longer describe anything:
+
+| Token | Was | Now | Closed |
+|---|---|---|---|
+| `--danger` | `#E5484D` — 3.91:1 as text and behind white labels | `#D34247` — **4.53:1** both ways | docs/13 UXG-A11Y-02 |
+| `--text-secondary` | `#74787E` — 4.45:1 on white ("borderline"), 3.89:1 on `--canvas-sunken` | `#686C71` — **5.29:1** and **4.63:1** | docs/13 UXG-A11Y-03 |
+
+The darkenings are 92% and 90% toward black — the danger value is arithmetically the shade
+destructive buttons already hovered to, so the palette gained no new red, and
+`--text-secondary` stays visibly lighter than `--text-primary` so the active/inactive
+hierarchy survives. Both were verified in the running browser before adoption. The AvatarGroup
+"+N" count, which had been special-cased to `--text-primary` while the token was failing
+(UXG-A11Y-01), is back on the reference value: fixing the token beat special-casing a
+component.
 
 The declared set is no longer purely hand-curated: the tokens build **derives coverage from
 component usage** and refuses to emit when a `packages/ui` rule pairs a foreground and

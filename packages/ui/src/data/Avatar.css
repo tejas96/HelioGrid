@@ -40,14 +40,11 @@
   border-radius: var(--r-pill);
   box-shadow: 0 0 0 2px var(--surface);
   background: var(--canvas-sunken);
-  /* DELIBERATE DEVIATION from the ds-source reference, which uses --text-secondary here.
-     That measures 3.89:1 on --canvas-sunken and the "+N" count is meaning-bearing text at
-     caption size, so it failed WCAG AA 4.5:1 (docs/13 UXG-A11Y-01, found by the tokens
-     coverage gate). --text-primary is ≈13:1 and already a declared pair. Ruling C's own
-     logic — meaning-bearing text uses --text-primary, not secondary — points here, and
-     packages/ui/CLAUDE.md resolves rulings over reference bugs. Do NOT "restore" the
-     reference value; the reference is the defect. */
-  color: var(--text-primary);
+  /* Back to the ds-source reference value. This briefly used --text-primary because the pair
+     measured 3.89:1 (docs/13 UXG-A11Y-01); ext 6 darkened --text-secondary itself, so the
+     reference is compliant again (≈4.62:1 on --canvas-sunken, a declared pair) and the
+     deviation has no reason to exist. Fixing the token beat special-casing one component. */
+  color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -79,3 +79,34 @@ export const ALL_EXTENSION_TOKENS: Record<string, string> = {
 };
 
 /** Ext 5 is the contrast-pairs regeneration — see contrast.ts (DECLARED_PAIRS + annotations). */
+
+/**
+ * Ext 6 — accessibility OVERRIDES of two ds-source colours (owner ruling 2026-07-30).
+ *
+ * These are overrides, not additions, so they cannot live in ALL_EXTENSION_TOKENS (which
+ * refuses to collide with ds-source by design). build.ts applies them the same way ext 1
+ * overrides --font-sans, and they are emitted under the extension marker so ds-source diffs
+ * stay clean.
+ *
+ * Both ds-source values failed WCAG AA 2.x for TEXT and the failures were live in product:
+ *
+ *   --danger #E5484D → #D34247   the destructive button's white label measured 3.91:1 at
+ *                                15px/500 (docs/13 UXG-A11Y-02). Also lifts danger-as-text on
+ *                                white, the pair ruling C had annotated as borderline. This is
+ *                                a 92% darkening — arithmetically the shade destructive buttons
+ *                                already hover to, so the palette gains no new red.
+ *   --text-secondary #74787E → #686C71
+ *                                the SegmentedControl inactive label on --canvas-sunken measured
+ *                                3.89:1 (docs/13 UXG-A11Y-03), and the same token was ≈4.45:1 on
+ *                                white — the "borderline" ruling C flagged and never fixed. A 90%
+ *                                darkening clears both while staying visibly lighter than
+ *                                --text-primary, so the active/inactive hierarchy survives.
+ *
+ * Values verified in the running browser at /design/contrast before adoption: 3.91→4.53 and
+ * 3.89→4.62. Ruling C's corresponding restrictions are retired in contrast.ts, not merely
+ * relaxed — the reason they existed is gone.
+ */
+export const A11Y_COLOR_OVERRIDES: Record<string, string> = {
+  danger: '#D34247',
+  'text-secondary': '#686C71',
+};

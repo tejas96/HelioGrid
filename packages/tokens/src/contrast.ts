@@ -48,9 +48,17 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     fg: 'text-secondary',
     bg: 'surface',
     role: 'secondary text; meaning-bearing overlines',
-    floor: 4.3,
-    restriction:
-      'Borderline ≈4.45:1 (ruling C) — body copy on surface uses --text-primary; secondary is for supporting text only.',
+    floor: 4.5,
+    // Ruling C's "borderline ≈4.45:1" restriction is RETIRED, not relaxed: ext 6 darkened the
+    // token to #686C71 (≈5.28:1), so the caveat it carried no longer describes anything.
+  },
+  {
+    fg: 'text-secondary',
+    bg: 'canvas-sunken',
+    role: 'SegmentedControl inactive label; supporting text in wells',
+    floor: 4.5,
+    // Was ≈3.89:1 and undeclared — docs/13 UXG-A11Y-03, found by hand because the background
+    // comes from an ancestor rule the coverage scan cannot see. Declared now so it is checked.
   },
   {
     fg: 'text-tertiary',
@@ -73,16 +81,18 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     fg: 'danger',
     bg: 'surface',
     role: 'error text / destructive labels',
-    floor: 3.8,
-    restriction:
-      'Measures ≈3.9:1 (ds-source value) — clears WCAG AA for large text/UI components (≥3:1), not 4.5:1 body. Error copy pairs with an icon/field ring, never colour alone.',
+    floor: 4.5,
+    // Ruling C's sub-AA annotation is RETIRED: ext 6 darkened --danger to #D34247 (≈4.53:1),
+    // so error copy now clears AA as ordinary text. It still pairs with an icon or field ring
+    // — that is the never-colour-alone rule, which is about perception, not contrast.
   },
   {
     fg: 'danger',
     bg: 'danger-bg',
     role: 'danger chip',
     floor: 3,
-    restriction: 'Measures ≈3.4:1 — chip text is 13px medium with a label, never colour alone.',
+    restriction:
+      'Measures ≈3.96:1 after ext 6 (was ≈3.41:1). Below 4.5:1, which is legitimate here and only here: chip text is 13px medium ALWAYS accompanied by a label, and SC 1.4.11 governs the chip as a UI component. Do not reuse this pair for running text.',
   },
   { fg: 'success', bg: 'success-bg', role: 'success chip', floor: 3 },
   { fg: 'info', bg: 'info-bg', role: 'info chip', floor: 3 },
@@ -108,9 +118,9 @@ export const DECLARED_PAIRS: DeclaredPair[] = [
     fg: 'surface',
     bg: 'danger',
     role: 'destructive button label (white on danger fill)',
-    floor: 3.8,
-    restriction:
-      'OPEN FINDING (docs/13 UXG-A11Y-02): measures ≈3.91:1 at 15px/500. Ruling C sanctioned this colour pair citing the "large text / UI components (≥3:1)" allowance, but that is SC 1.4.11 non-text contrast (boundaries and graphics) — a button LABEL is text under SC 1.4.3 and needs 4.5:1 at this size. The floor holds the current value so it cannot worsen while the owner rules; it is not a claim that the label clears AA.',
+    floor: 4.5,
+    // CLOSED (docs/13 UXG-A11Y-02): ext 6 took this from ≈3.91:1 to ≈4.53:1, so the label
+    // clears SC 1.4.3 as ordinary text at 15px/500 and needs no allowance to excuse it.
   },
   {
     fg: 'text-disabled',

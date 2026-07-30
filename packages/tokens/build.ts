@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { computePairs, findUndeclaredPairs } from './src/contrast';
 import { buildThemeObject, renderThemeTs } from './src/emit-theme';
 import {
+  A11Y_COLOR_OVERRIDES,
   ALL_EXTENSION_TOKENS,
   EXTENSION_MARKER,
   FONT_SANS_EXTENDED,
@@ -82,6 +83,13 @@ function main() {
   }
   // Ext 1: the sans chain gains Noto Sans Devanagari (override, marked in the CSS block below)
   baseMap.set('font-sans', FONT_SANS_EXTENDED);
+  // Ext 6: two ds-source colours darkened to clear WCAG AA for text (owner 2026-07-30).
+  // Overrides, not additions — ALL_EXTENSION_TOKENS deliberately refuses to collide.
+  for (const [name, value] of Object.entries(A11Y_COLOR_OVERRIDES)) {
+    if (!baseMap.has(name))
+      throw new Error(`a11y override --${name} has no ds-source token to override`);
+    baseMap.set(name, value);
+  }
 
   const resolved = new Map<string, string>();
   for (const [name, value] of baseMap) resolved.set(name, resolveValue(value, baseMap));
@@ -146,6 +154,8 @@ function main() {
     NOTO_FONT_FACE,
     `:root{`,
     `  --font-sans:${FONT_SANS_EXTENDED};`,
+    `/* ext 6: WCAG AA overrides of two ds-source colours (docs/13 UXG-A11Y-02/03) */`,
+    ...Object.entries(A11Y_COLOR_OVERRIDES).map(([n, v]) => `  --${n}:${v};`),
     ...Object.entries(ALL_EXTENSION_TOKENS).map(([n, v]) => `  --${n}:${v};`),
     `}`,
   ].join('\n');
@@ -167,11 +177,17 @@ function main() {
     tokens: [
       ...rootDecls.map((d) => ({
         name: d.name,
-        value: d.name === 'font-sans' ? FONT_SANS_EXTENDED : d.value,
+        value:
+          d.name === 'font-sans' ? FONT_SANS_EXTENDED : (A11Y_COLOR_OVERRIDES[d.name] ?? d.value),
         resolvedValue: resolved.get(d.name),
         sourceFile: d.sourceFile,
         kindHint: d.kindHint ?? null,
-        extension: d.name === 'font-sans' ? 'font-sans chain extended (ext 1)' : false,
+        extension:
+          d.name === 'font-sans'
+            ? 'font-sans chain extended (ext 1)'
+            : d.name in A11Y_COLOR_OVERRIDES
+              ? 'WCAG AA override (ext 6)'
+              : false,
       })),
       ...Object.entries(ALL_EXTENSION_TOKENS).map(([name, value]) => ({
         name,
