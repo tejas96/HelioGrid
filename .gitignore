@@ -47,3 +47,6 @@ test-results/
 
 # Subagent-driven-development workspace (ledger, briefs, review packages)
 .superpowers/
+
+# QA runs — plan/report/triage are COMMITTED history; only evidence blobs are ignored
+.qa/*/artifacts/
