@@ -19,4 +19,11 @@
  * invite and role invariants land with the first slice that needs them (Law 9). The package
  * existed before any of it so the purity rules were live BEFORE the code they must police.
  */
+export {
+  AUTO_VERIFY_DELAY_MS,
+  CALL_OFFER_AFTER_RESENDS,
+  DONE_DWELL_MS,
+  RESEND_SECONDS,
+} from './auth/login-policy';
 export type { LoginStep, OtpFailure } from './auth/login-state';
+export { formatPhoneNsn } from './format/phone';

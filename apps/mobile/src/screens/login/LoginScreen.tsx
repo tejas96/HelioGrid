@@ -1,5 +1,13 @@
 import { COUNTRY_CALLING_CODE, OTP_LENGTH, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
-import type { LoginStep, OtpFailure } from '@heliogrid/domain';
+import {
+  AUTO_VERIFY_DELAY_MS,
+  CALL_OFFER_AFTER_RESENDS,
+  DONE_DWELL_MS,
+  formatPhoneNsn,
+  type LoginStep,
+  type OtpFailure,
+  RESEND_SECONDS,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/tokens/theme';
 import { Trans, useLingui } from '@lingui/react';
 import { Check, CircleAlert, Phone } from 'lucide-react-native';
@@ -32,14 +40,9 @@ import { useReduceMotion } from './hooks';
 
 // ds-ref LoginFlow mobile geometry + flow timing (login.md §2/§5 component-spec constants).
 const COL_MAX = 620;
-const RESEND_SECONDS = 30;
-const AUTO_VERIFY_DELAY_MS = 140;
-const CALL_CARD_AFTER_RESENDS = 2;
 // Q9: the spec leaves the done-step dwell unspecified — brief beat, then hand off.
-const DONE_DWELL_MS = 900;
 
 /** 5+5 grouping in every locale (digits never translate). */
-const formatPhone = (p: string) => `${p.slice(0, 5)} ${p.slice(5)}`;
 
 export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
   const { i18n } = useLingui();
@@ -187,7 +190,7 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
   const secondary = theme.colors['text-secondary'];
   const phoneValue = (
     <AppText weight="500" color={theme.colors['text-primary']}>
-      {formatPhone(phone)}
+      {formatPhoneNsn(phone)}
     </AppText>
   );
 
@@ -304,7 +307,7 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
         )}
       </View>
       {sendFailed ? errorRow(<Trans id="Couldn't send the code. Try again." />) : null}
-      {resendCount >= CALL_CARD_AFTER_RESENDS ? (
+      {resendCount >= CALL_OFFER_AFTER_RESENDS ? (
         // C6: mockup radius 16 = --r-md on this compact card (logged spec conflict).
         <Card density="functional" style={styles.callCard}>
           <View style={styles.callRow}>
@@ -326,7 +329,7 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
                     values={{
                       phoneFormatted: (
                         <Small weight="500" color={theme.colors['text-primary']}>
-                          {formatPhone(phone)}
+                          {formatPhoneNsn(phone)}
                         </Small>
                       ),
                     }}

@@ -1,5 +1,5 @@
 'use client';
-import type { OtpFailure } from '@heliogrid/domain';
+import { formatPhoneNsn, type OtpFailure } from '@heliogrid/domain';
 import { Card, IconCircle, OtpInput, Spinner, TextLink } from '@heliogrid/ui';
 import { Trans, useLingui } from '@lingui/react';
 import { Phone } from 'lucide-react';
@@ -39,7 +39,7 @@ export function OtpStep({
   onCallMe,
 }: OtpStepProps) {
   const { i18n } = useLingui();
-  const phoneFormatted = `${phone.slice(0, 5)} ${phone.slice(5)}`;
+  const phoneFormatted = formatPhoneNsn(phone);
 
   return (
     <div className="lg-step" aria-busy={verifying || undefined}>

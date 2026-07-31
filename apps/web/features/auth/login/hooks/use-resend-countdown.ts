@@ -1,6 +1,6 @@
 'use client';
+import { RESEND_SECONDS } from '@heliogrid/domain';
 import { useEffect, useState } from 'react';
-import { RESEND_SECONDS } from '../constants';
 
 /** Self-contained resend countdown: restarts whenever `active` flips true or `epoch`
  *  bumps — every resend rewinds the countdown (docs/modules/auth-tenancy/specs/login.md §5). */

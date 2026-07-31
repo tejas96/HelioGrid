@@ -6,14 +6,17 @@ Light-only v1 · EN/HI/MR · ₹ Indian grouping everywhere.
 
 ## What good looks like
 
-- **Compose, don't rebuild.** `packages/ui` has 28 components; `packages/contracts` has the
-  business types; `packages/domain` has shared logic. Writing raw markup, a local enum or a
-  second formatter means you missed one. Search before you create. Lint rejects a raw
-  `button`/`input`/`a`/`select`/`textarea` in a web screen and a `Text`/`TextInput`/`Pressable`
-  imported from `react-native` in an RN screen — if one fires, the fix is to import the
-  component, or to ADD it to the shared package. Never to inline it locally.
-- **One definition per fact.** A value that exists in two places will disagree. Enums →
-  contracts. Visual values → tokens. Schema → migrations. Copy → the i18n catalog.
+- **Compose, don't rebuild.** `packages/` holds the vocabulary; app code spends it. Search
+  before you create. When a primitive you need isn't there, ADD it to the package — never
+  inline a local copy. If lint says an element or import is restricted, that is this rule.
+- **One definition per fact.** A fact both platforms need is defined in a package BEFORE
+  either screen uses it — never authored twice and reconciled later. Enums → contracts.
+  Shared logic, policy numbers and formatters → domain. Visual values → tokens. Schema →
+  migrations. Copy → the i18n catalog.
+- **Screens are the unguarded surface.** The gates check packages: their API shape, their
+  purity, who may import them. Almost nothing checks what a screen authors inline, and that
+  is where every recent defect landed. Writing a constant, type, or helper in a screen is
+  the moment to ask which package owns it.
 - **Verified means you ran it.** Green gates never prove UI work — browser for web, both
   simulators for RN (`/verify-app`), curl for api. A task is done when you have looked at it.
 - **Small and honest beats broad and hedged.** Say what you checked and what you did not.

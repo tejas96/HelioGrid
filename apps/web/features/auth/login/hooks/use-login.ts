@@ -1,15 +1,16 @@
 'use client';
 import { COUNTRY_CALLING_CODE, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
-import type { LoginStep, OtpFailure } from '@heliogrid/domain';
+import {
+  AUTO_VERIFY_DELAY_MS,
+  CALL_OFFER_AFTER_RESENDS,
+  DONE_DWELL_MS,
+  type LoginStep,
+  type OtpFailure,
+} from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '../../../../lib/auth-client';
 import { useOnline } from '../../shared/hooks/use-online';
-import {
-  AUTO_VERIFY_DELAY_MS,
-  CALL_OFFER_AFTER_RESENDS,
-  DONE_REDIRECT_DWELL_MS,
-} from '../constants';
 import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
 
@@ -47,7 +48,7 @@ export function useLogin(): LoginViewModel {
   // Done: brief dwell, then the app (session cookie already set by verify)
   useEffect(() => {
     if (step !== 'done') return;
-    const timer = setTimeout(() => router.push('/home'), DONE_REDIRECT_DWELL_MS);
+    const timer = setTimeout(() => router.push('/home'), DONE_DWELL_MS);
     return () => clearTimeout(timer);
   }, [step, router]);
 
