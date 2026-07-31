@@ -172,6 +172,59 @@
           }
         }
       }
+    },
+    {
+      "includes": ["apps/mobile/src/screens/**", "!apps/mobile/src/screens/gallery/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "react-native": {
+                    "importNames": [
+                      "Text",
+                      "TextInput",
+                      "Button",
+                      "Pressable",
+                      "TouchableOpacity",
+                      "TouchableHighlight",
+                      "Switch"
+                    ],
+                    "message": "Import AppText, Input, OtpInput, Button, IconButton, Switch, Checkbox or Radio from '../../ui' instead — apps/mobile/src/ui is the RN half of the design system and the only surface the web/RN parity contract can see (Law 5, Law 7). View, ScrollView, StyleSheet and Platform are layout and stay allowed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "apps/web/app/**",
+        "apps/web/features/**",
+        "!apps/web/features/design-reference/**"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noRestrictedElements": {
+              "level": "error",
+              "options": {
+                "elements": {
+                  "button": "Use Button or IconButton from @heliogrid/ui. A hand-rolled button loses the design system's focus ring, loading state and 44px target (Law 5).",
+                  "input": "Use Input, Checkbox, Radio, Switch or OtpInput from @heliogrid/ui (Law 5).",
+                  "a": "Use TextLink from @heliogrid/ui for text links, or next/link for navigation (Law 5).",
+                  "select": "No @heliogrid/ui equivalent exists yet — ADD one to packages/ui rather than inlining it here. Law 5: unmocked surfaces are composed from the shared vocabulary, and a control built locally is invisible to the web/RN parity contract.",
+                  "textarea": "No @heliogrid/ui equivalent exists yet — ADD one to packages/ui rather than inlining it here (Law 5, and see `select`)."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
