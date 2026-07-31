@@ -76,6 +76,7 @@ export type {
   OfflineBannerApi,
   ProgressBarApi,
   ToastApi,
+  ToastTone,
 } from './feedback.js';
 export type {
   ButtonApi,

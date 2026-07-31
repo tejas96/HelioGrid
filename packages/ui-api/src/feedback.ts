@@ -43,10 +43,13 @@ export interface ProgressBarApi {
 /**
  * Toast — title/description narrowed to `string` on web to match RN.
  */
+/** Toast tones. Narrower than `ChipTone` — a toast is never `accent`. */
+export type ToastTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+
 export interface ToastApi {
   title: string;
   description?: string;
-  tone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+  tone?: ToastTone;
   icon?: ReactNode;
   action?: ReactNode;
 }

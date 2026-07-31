@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { i18n, type Locale } from '../../i18n';
+import { i18n, LOCALES, type Locale } from '../../i18n';
 import type { RootStackParamList } from '../../navigation/routes';
 import { AppText, Button, Card, SegmentedControl } from '../../ui';
 
@@ -16,11 +16,9 @@ import { AppText, Button, Card, SegmentedControl } from '../../ui';
  */
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const LOCALE_OPTIONS: { value: Locale; label: string }[] = [
-  { value: 'en', label: 'EN' },
-  { value: 'hi', label: 'हि' },
-  { value: 'mr', label: 'मर' },
-];
+/** Keyed by the contract enum: a new UI language is a compile error here until it renders. */
+const LOCALE_LABEL: Record<Locale, string> = { en: 'EN', hi: 'हि', mr: 'मर' };
+const LOCALE_OPTIONS = LOCALES.map((value) => ({ value, label: LOCALE_LABEL[value] }));
 
 export function HomeScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();

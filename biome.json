@@ -174,7 +174,7 @@
       }
     },
     {
-      "includes": ["apps/mobile/src/screens/**", "!apps/mobile/src/screens/gallery/**"],
+      "includes": ["apps/mobile/src/screens/**"],
       "linter": {
         "rules": {
           "style": {
@@ -221,6 +221,19 @@
                   "textarea": "No @heliogrid/ui equivalent exists yet — ADD one to packages/ui rather than inlining it here (Law 5, and see `select`)."
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/mobile/src/screens/**/*Screen.tsx"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noExcessiveLinesPerFunction": {
+              "level": "error",
+              "options": { "maxLines": 80, "skipBlankLines": true }
             }
           }
         }

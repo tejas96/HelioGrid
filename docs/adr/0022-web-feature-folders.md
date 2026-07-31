@@ -61,6 +61,13 @@ not a capability.
   the move is mechanical, and it is what allows the cap to be enabled before the rebuild lands
   rather than after.
 
+**Amended 2026-07-31 — the asymmetry is LOCATION, not structure.** RN keeps
+`src/screens/<name>/`; web keeps `features/<feature>/`. Inside that folder both platforms use
+the same split: screen composes · `components/` one file each · `hooks/use-<thing>.ts` ·
+styles beside them. Reading the ADR as licence for a single-file RN screen produced a 446-line
+LoginScreen against web's 70. Structural parity is also what lets a reviewer diff the two
+platforms file-for-file.
+
 ## Alternatives rejected
 
 - **Keep route folders, add a line cap.** Caps the symptom, leaves auth scattered across three

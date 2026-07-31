@@ -4,6 +4,7 @@
  * the _ds_bundle reference implementations; every value is a token var.
  */
 
+export type { ChipTone, ToastTone } from '@heliogrid/ui-api';
 /* Auth composites (docs/modules/auth-tenancy specs) — DS compositions from the existing
    vocabulary, NOT additions to the 21-component API (login.md/whatyousell.md §4). */
 export { BloomLayer, type BloomLayerProps } from './composites/BloomLayer';

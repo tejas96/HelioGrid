@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
-/** Screen-local hooks for LoginScreen (apps/mobile/CLAUDE.md §Local conventions — screen-folder satellites). */
+/** Screen-local hook for LoginScreen (apps/mobile/CLAUDE.md §Local conventions — screen-folder satellites). */
 
 export function useReduceMotion() {
   const [reduce, setReduce] = useState(false);

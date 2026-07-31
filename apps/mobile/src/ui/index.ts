@@ -3,6 +3,8 @@
  * native implementation on @heliogrid/tokens/theme. Screens import ONLY from here.
  * AppText is the sole text primitive (Devanagari run-splitting, static font weights).
  */
+
+export type { ChipTone, ToastTone } from '@heliogrid/ui-api';
 export { AppText, type AppTextProps, type TypeRole } from './AppText';
 export { BloomLayer, type BloomLayerProps } from './composites/BloomLayer';
 export { OtpInput, type OtpInputProps } from './composites/OtpInput';

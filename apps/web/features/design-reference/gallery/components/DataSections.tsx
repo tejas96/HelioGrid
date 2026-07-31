@@ -1,9 +1,21 @@
 'use client';
-import { Avatar, AvatarGroup, Badge, Card, Chip, IconCircle } from '@heliogrid/ui';
+import { Avatar, AvatarGroup, Badge, Card, Chip, type ChipTone, IconCircle } from '@heliogrid/ui';
 import { useState } from 'react';
 import { Demo, FileTextIcon, Section, SunIcon, ZapIcon } from './GalleryChrome';
 
-const TONES = ['neutral', 'success', 'warning', 'danger', 'info', 'accent'] as const;
+/** Keyed by the shared tone type: a new tone is a compile error here until the gallery
+ * renders it. A bare `as const` array is only subset-assignable, so it would compile green
+ * while the new tone silently never appeared — and "a state not in the gallery does not
+ * exist" (packages/ui CLAUDE.md). */
+const ALL_TONES: Record<ChipTone, null> = {
+  neutral: null,
+  success: null,
+  warning: null,
+  danger: null,
+  info: null,
+  accent: null,
+};
+const TONES = Object.keys(ALL_TONES) as ChipTone[];
 const AVATAR_SIZES = [24, 32, 40, 56, 80] as const;
 
 const TEAM = [
