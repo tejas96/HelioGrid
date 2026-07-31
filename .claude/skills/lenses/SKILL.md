@@ -29,15 +29,15 @@ files — so it reviews against the spec rather than against its own taste.
 Their checklists live in `.claude/agents/`. Do not restate them here: if a lens keeps
 missing something, fix the agent, or every future review inherits the gap.
 
-## Senior-engineer lens — the USER runs this one
+## Senior-engineer lens — `superpowers:requesting-code-review`
 
-**You cannot invoke it.** `/code-review` is marked `disable-model-invocation` and refuses to
-start when an agent calls it, so "run /code-review" silently cost this step every time: four
-lenses ran, the fifth reported nothing, and the review still looked complete.
+Run it with that skill, which dispatches a reviewer subagent over the diff. Do NOT try
+`/code-review`: it is `disable-model-invocation` and refuses when an agent calls it, so for a
+long time this step silently cost nothing — four lenses ran, the fifth reported nothing, and
+the review still looked complete.
 
-Ask the user to run `/code-review` over the same diff (or `/code-review ultra` for the
-multi-agent cloud review of the branch), and say plainly in your summary that the
-senior-engineer lens is PENDING until they do. Four lenses reported is not five.
+`/code-review ultra` (the multi-agent cloud review) is the USER's to run and is billed. Offer
+it for a whole branch or a risky slice; never claim it ran when it did not.
 
 ## Product-owner lens — you run this one yourself
 

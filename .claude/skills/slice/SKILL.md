@@ -28,11 +28,13 @@ Per-package `CLAUDE.md` files and `.claude/rules/*` load themselves as you touch
 **A full-corpus read is a defect, not diligence.** Anything you needed that is missing from
 this list is a gap in the module's `specs/` — fix the spec, don't read the world.
 
-## 2. Plan, and get it approved
+## 2. Plan with `superpowers:writing-plans`
 
-You start in plan mode. Answer the working principles concretely for THIS task —
-architecture impact, what belongs in a shared package, blast radius — plus the edge cases
-you intend to handle and the ones you intend to skip. Do not edit until the plan is approved.
+Plan mode is no longer the default (`.claude/settings.json`, 2026-07-31) — enter it yourself.
+`superpowers:writing-plans` owns plan STRUCTURE and the per-task verification steps; this
+skill owns the repo specifics it cannot know. Give it: architecture impact, what belongs in a
+shared package, blast radius, and the edge cases you will and will not handle. Execute with
+`superpowers:subagent-driven-development`. Do not edit until the plan is approved.
 
 ## 3. Then work in this order
 

@@ -4,7 +4,9 @@
 The foundation described here shipped, with documented divergences: `/code-review` is
 user-invoked only (an agent cannot call it), the three lens agents hold no Bash, `/pr` is
 model-disabled, and three §5.2 gates were dropped or deferred by owner ruling (struck through
-in place). **docs/17 §5 is the live rule→mechanism matrix**; where this file and docs/17
+in place). **All three hooks, `permissions.deny` and `defaultMode: "plan"` were REMOVED
+2026-07-31** (owner ruling: zero real mistakes caught, ~5 legitimate commands blocked) — §3.6
+and the `settings.json` listings below are history, not a build target. Do not re-add them. **docs/17 §5 is the live rule→mechanism matrix**; where this file and docs/17
 disagree, docs/17 wins. This file is retained as the reasoning record and moves to
 `docs/archive/` once the auth rebuild closes the last Phase-4 item.
 

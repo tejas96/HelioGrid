@@ -6,9 +6,11 @@ disable-model-invocation: true
 
 # Shipping a slice
 
-Nothing in here runs on your own initiative. `bash-guard` blocks `git push` and
-`gh pr create` so that stays true even if you forget. Commit when the user says commit;
-branch or open a PR when the user says so, in those words.
+Nothing in here runs on your own initiative. The hooks that used to block `git push` and
+`gh pr create` were removed 2026-07-31, so **nothing mechanically stops you now** — this rule
+holds on your discipline alone. Commit when the user says commit; branch or open a PR when
+the user says so, in those words. `disable-model-invocation` keeps this skill itself
+user-only; it does not guard the underlying commands.
 
 ## Branch
 
