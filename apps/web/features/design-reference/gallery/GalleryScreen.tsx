@@ -1,10 +1,12 @@
 'use client';
 import '../design.css';
-import { AuthSections } from './components/AuthSections';
-import { DataSections } from './components/DataSections';
-import { FeedbackNavSections } from './components/FeedbackNavSections';
-import { FormsSections } from './components/FormsSections';
-import { RowsSections } from './components/RowsSections';
+import {
+  AuthSections,
+  DataSections,
+  FeedbackNavSections,
+  FormsSections,
+  RowsSections,
+} from './components';
 
 /**
  * The living component gallery (docs/10 §6 · packages/ui DoD): every component of the

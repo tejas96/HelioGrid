@@ -1,6 +1,6 @@
 'use client';
 import { Button, Card } from '@heliogrid/ui';
-import { useHome } from './use-home';
+import { useHome } from './hooks/use-home';
 import './home.css';
 
 /**

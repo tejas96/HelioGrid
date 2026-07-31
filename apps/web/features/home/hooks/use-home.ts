@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { api } from '../../lib/api-client';
+import { api } from '../../../lib/api-client';
 
 /**
  * Post-login home controller — on the TYPED client, so request/response shapes are

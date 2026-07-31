@@ -100,6 +100,25 @@ module.exports = {
       },
     },
     {
+      name: 'web-app-holds-no-components',
+      severity: 'error',
+      comment:
+        'apps/web/app is ROUTING ONLY (ADR-0022) — no component, hook, or style may live under ' +
+        'it. web-app-imports-feature-barrel-only (above) stops a page reaching INTO features/ ' +
+        'the wrong way, but says nothing about a NEW satellite file created directly under app/ ' +
+        'and imported locally — the old one-folder-per-route shape (page.tsx + components.tsx + ' +
+        'styles.css) degraded silently exactly that way once already (388-line ' +
+        'app/login/page.tsx) before this repo had a mechanism to stop it re-forming. This rule ' +
+        'is that mechanism: app/ may import from app/ ONLY the Next.js reserved files that ' +
+        'legitimately live there.',
+      from: { path: '^apps/web/app/' },
+      to: {
+        path: '^apps/web/app/',
+        pathNot:
+          '(^|/)(layout|providers|error|loading|not-found|template)\\.tsx$|(^|/)route\\.ts$|(^|/)globals\\.css$',
+      },
+    },
+    {
       name: 'web-feature-no-cross-internals',
       severity: 'error',
       comment:

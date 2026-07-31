@@ -17,7 +17,10 @@ used by: nobody
 - **`app/` ROUTES, `features/` OWNS.** A `page.tsx` body is ≤50 lines (Biome
   `noExcessiveLinesPerFunction`): read route params, call one controller hook, render one
   screen. Everything else lives in `features/<feature>/`, imported ONLY through its `index.ts`
-  barrel (dependency-cruiser). A feature is named for its module in `docs/modules/`.
+  barrel (dependency-cruiser). A feature is named for the CAPABILITY it owns; where a
+  `docs/modules/` roadmap exists for that capability, use its name (`auth` ↔ `auth-tenancy`).
+- **apps/mobile is NOT migrating to this shape** — RN keeps `src/screens/<name>/`, its own
+  equivalent; the asymmetry is deliberate (ADR-0022).
 - **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
   file per sub-component (a folder from the first one) · `hooks/use-<screen>.ts` for the
   controller · `constants.ts` for literals · `types.ts` when two files share a type ·
