@@ -10,7 +10,8 @@
 pnpm --filter @heliogrid/ui-api typecheck      # no build script — emits no JS; lint is repo-wide
 
 ## Depends on / depended on by
-uses: nothing
+uses: @heliogrid/contracts (`import type` only — business enums like `WorkflowStatus` are
+never re-typed here; the import erases at runtime, so the package still emits no JavaScript)
 used by: packages/ui (`src/api-parity.ts`), apps/mobile (`src/ui/api-parity.ts`)
 
 ## The scope statement lives in src/index.ts's header — one place

@@ -8,7 +8,8 @@
 None — JSON only. Consumers typecheck against these.
 
 ## Depends on / depended on by
-uses: nothing        used by: every package and app (devDependency)
+uses: nothing        used by: every package and app EXCEPT apps/mobile (devDependency). RN extends
+`@react-native/typescript-config` instead, which is why its strict flags are set locally.
 
 ## Local conventions
 - `node-package.json` — composite library package (dist + d.ts emit, project-reference member).

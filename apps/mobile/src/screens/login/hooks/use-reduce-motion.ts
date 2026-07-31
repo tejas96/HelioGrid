@@ -7,9 +7,12 @@ export function useReduceMotion() {
   const [reduce, setReduce] = useState(false);
   useEffect(() => {
     let mounted = true;
-    AccessibilityInfo.isReduceMotionEnabled().then((v) => {
-      if (mounted) setReduce(v);
-    });
+    // Rejection keeps the `false` default — motion stays on, which is the safe fallback.
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((v) => {
+        if (mounted) setReduce(v);
+      })
+      .catch(() => {});
     return () => {
       mounted = false;
     };

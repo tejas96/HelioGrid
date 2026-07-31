@@ -18,7 +18,8 @@
       "!apps/mobile/ios",
       "!apps/mobile/android",
       "!apps/mobile/vendor",
-      "!**/*.pbxproj"
+      "!**/*.pbxproj",
+      "!.qa"
     ]
   },
   "formatter": {
@@ -85,6 +86,9 @@
       },
       "a11y": {
         "preset": "recommended"
+      },
+      "nursery": {
+        "noFloatingPromises": "error"
       }
     }
   },

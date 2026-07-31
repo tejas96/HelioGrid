@@ -2,15 +2,18 @@
 
 ## What lives here / what must never live here
 - Screens, the /design token reference, route handlers ONLY for cookie/session BFF glue.
-- Everything domain-shaped calls apps/api through the ts-rest client. NEVER: business
-  logic, direct packages/db imports (dependency-cruiser blocks), raw hex/px values.
+- Everything domain-shaped calls apps/api through the ts-rest client. NEVER **author**
+  business logic here — shared decisions, formatters and policy constants are IMPORTED from
+  `@heliogrid/domain`; writing one inline is the defect. NEVER: direct packages/db imports
+  (dependency-cruiser blocks), raw hex/px values.
 
 ## Commands
 pnpm --filter @heliogrid/web dev      # localhost:3000 (tokens must be built first: turbo handles it)
 pnpm --filter @heliogrid/web build | typecheck
 
 ## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env
+uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env,
+@heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
 used by: nobody
 
 ## Local conventions

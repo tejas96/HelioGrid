@@ -9,7 +9,8 @@
 
 ## Commands
 pnpm --filter @heliogrid/i18n extract     # sweep web+mobile+ui for messages (CI-guarded)
-pnpm --filter @heliogrid/i18n build       # compile catalogs + tsc
+pnpm --filter @heliogrid/i18n build       # compile catalogs + tsc (compile alone: `compile`)
+pnpm --filter @heliogrid/i18n typecheck
 
 ## Depends on / depended on by
 uses: @lingui/core, @heliogrid/contracts (closed-set types, e.g. `UiLanguage` — Law 4)

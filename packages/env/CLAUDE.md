@@ -12,7 +12,7 @@
   scatters the real default across files and hides it from `.env.example`.
 
 ## Commands
-pnpm --filter @heliogrid/env typecheck
+pnpm --filter @heliogrid/env build | typecheck
 
 ## Where real values come from
 - prod: Fly secrets. local: `.env.local` (git-ignored), loaded by Node's

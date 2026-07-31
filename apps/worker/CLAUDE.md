@@ -17,8 +17,11 @@ REDIS_URL unset ⇒ boots in idle scaffold mode (no queue connection).
 uses: @heliogrid/contracts (jobs.ts), @heliogrid/db        used by: nobody
 
 ## Local conventions
-- Same layout as apps/api (docs/02 §2): `src/{config,common,modules,scripts}`, one
-  `src/modules/<m>/` per context, plus `<m>.processor.ts` (one per queue) and `<m>.scheduler.ts`.
+- **This app is still a scaffold.** `src/` holds only `main.ts`, `worker.module.ts` and
+  `config/` — there are no modules, processors or schedulers yet. The TARGET layout, adopted
+  when the first one lands, mirrors apps/api (docs/02 §2): `src/{config,common,modules,scripts}`,
+  one `src/modules/<m>/` per context, plus `<m>.processor.ts` (one per queue) and
+  `<m>.scheduler.ts`. Copy the shape from an existing `apps/api/src/modules/<m>/`.
 - **A processor holds no logic** — parse the payload schema, take the idempotency key,
   delegate to the service, return. Same db/drizzle fence as the api: `*.repository.ts` only.
 - `bullmq`/`@nestjs/bullmq` are importable only from processors, schedulers, `common/queue/`

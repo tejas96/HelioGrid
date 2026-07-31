@@ -12,7 +12,8 @@ pnpm --filter @heliogrid/contracts openapi     # emit openapi/openapi.json (afte
 
 ## Depends on / depended on by
 uses: @ts-rest/core, zod (later: packages/domain types)
-used by: apps/api, apps/worker, apps/web, apps/mobile
+used by TODAY: apps/api, apps/web, apps/mobile, packages/ui-api. apps/worker declares the
+dependency but imports nothing yet — it is still a scaffold.
 
 ## Local conventions
 - Contract FIRST: edit here before implementing any endpoint or client; the diff is the

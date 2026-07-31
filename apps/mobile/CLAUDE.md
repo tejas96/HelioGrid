@@ -5,8 +5,9 @@
   signup (Law 7 lockstep with web), invite accept. Screens land per-module in LOCKSTEP
   with web — same slice, same contract.
 - ALL data access behind `src/data/repositories.ts` — screens never see fetch/SQLite/sync.
-- NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports,
-  domain logic (webview studio + contracts only).
+- NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
+  **authoring** domain logic here — shared decisions, policy constants and formatters are
+  IMPORTED from `@heliogrid/domain`; writing one inline is the defect.
 
 ## Commands
 pnpm --filter @heliogrid/mobile start                 # metro
@@ -15,7 +16,8 @@ pnpm --filter @heliogrid/mobile typecheck
 cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 
 ## Depends on / depended on by
-uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n
+uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n,
+@heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
 nav: @react-navigation/native + native-stack + react-native-screens (ADR-0020)
 used by: nobody
 RN UI components: `src/ui` (mirror of packages/ui — Law 7). Parity with web is a TYPECHECK,
