@@ -32,8 +32,16 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
 - i18n: `@heliogrid/i18n` + runtime `<Trans id="...">` (macros banned). Intl polyfills
   in `src/i18n.ts` FIRST.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
-- Screen folders: docs/02 §2 (`<Name>Screen.tsx` + satellites). `src/` is the closed
-  set `{auth,data,hooks,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`.
+- **Inside a screen folder, structure follows need** — the same shape as web, in RN's own
+  location (ADR-0022): `<Name>Screen.tsx` composes and holds no state · `components/` one file
+  per component or coherent group · `hooks/use-<thing>.ts` for state, network and timers ·
+  `styles.ts` owns screen-level layout, component-local geometry stays with its component ·
+  `types.ts` when two files share a type. A screen component body is capped at
+  80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
+  layer instead of its job is the same defect as `*-part2`. `src/` is the closed
+  set `{auth,data,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`
+  (`hooks/` is an approved category for app-wide hooks but does not exist yet — screen
+  hooks live in their screen folder).
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
   `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
   and the validation. There is deliberately no `src/config/` — a new folder category
@@ -43,6 +51,10 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `mobile-app-entry-thin`, severity `error` since ADR-0020's navigation slice landed).
 
 ## Landmines
+- **A screen that fetches, holds state, renders and styles in one file passes every gate**
+  (2026-07-31: LoginScreen hit 446 lines, GalleryScreen 406 — both since split into
+  `components/`, `hooks/`, `styles.ts`). Only the 80-line cap catches this shape. When a
+  screen grows, extract the hook first — logic is what makes the file unreadable, not markup.
 - **Repository types are INFERRED from contracts, never re-declared.** `HealthStatus` was a
   hand-written interface duplicating the liveness 200 schema; a contract gaining a field
   drifted silently. Import the exported schema type (`Liveness`) instead.

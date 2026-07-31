@@ -19,7 +19,8 @@ paths:
 - **Primary actions are near-black** (`#0A0A0B`). Accent `#5A4BFF` is focus, links,
   selection, active tab and control fills ONLY — **never a button fill**. Iridescence is
   atmosphere, never information. Hierarchy comes from luminance and elevation, not borders.
-- **Light-only v1.** The 11px/700/uppercase/0.12em overline is the one sub-12px exception.
+- **Light-only v1.** Text is never smaller than 12px; the 11px/700/uppercase/0.12em
+  overline is the one exception (docs/10 §3).
 - Full design law and the N1–N10 interaction contracts: `docs/10-i18n-and-design-system.md`.
 
 ## Composition
@@ -42,8 +43,7 @@ A component renders. It does not also fetch, orchestrate, or hold flow logic.
   logic that both platforms need belongs in a shared package, never copied into each platform.
 
 A `.tsx` holding both a data-fetching effect chain and the markup it feeds is a review
-finding. Past ~450 lines, split by RESPONSIBILITY and name the new file for what it does —
-never `*-part2`, `*2` or `*-extra`.
+finding. File-size and split-naming law: root CLAUDE.md §Process.
 
 ## Done means
 375px and 1440px both work · loading, empty, error and offline states all designed ·

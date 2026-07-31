@@ -23,8 +23,8 @@ used by: apps/api, apps/worker, apps/web, apps/mobile
   (see `tenantClaimSchema` note). Money is a 2-dp decimal string, never a float.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
-  `ports/<capability>.ts` (provider port interface + its DI token, implemented in
-  `packages/adapters`).
+  `ports/<capability>.ts` (provider port interface + its DI token; implementations will live
+  in `packages/adapters` — NOT created yet, the first adapter lands it via its ADR).
 - **No `env.ts` here.** It existed until 2026-07-30 and moved to
   `packages/env/src/schema/fragments.ts`: contracts is the WIRE format, and deployment
   configuration is not part of the API surface. Environment shapes live in `@heliogrid/env`

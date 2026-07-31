@@ -7,7 +7,7 @@
   JavaScript — it exists so both platforms can be checked against ONE declaration.
 
 ## Commands
-pnpm --filter @heliogrid/ui-api typecheck | build      # lint is repo-wide: `pnpm lint`
+pnpm --filter @heliogrid/ui-api typecheck      # no build script — emits no JS; lint is repo-wide
 
 ## Depends on / depended on by
 uses: nothing

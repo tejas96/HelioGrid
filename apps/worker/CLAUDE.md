@@ -1,9 +1,9 @@
 # @heliogrid/worker — NestJS standalone: BullMQ processors + heavy compute
 
 ## What lives here / what must never live here
-- BullMQ processors (typed payloads from @heliogrid/contracts/jobs), repeatable jobs
-  (proposal-unopened-3d, task-overdue-2d, snooze wake, 24h-unassigned, dormant-30d,
-  partition upkeep, sync_mutations purge), worker_threads for shading + Playwright PDF.
+- BullMQ processors (typed payloads from @heliogrid/contracts/jobs — the authoritative
+  job list is `jobs.ts`, not this file), repeatable jobs (overdue/unopened nudges, snooze
+  wake, partition upkeep, purges), worker_threads for shading + Playwright PDF.
 - NEVER: an HTTP surface, business rules that belong in packages/domain, direct calls
   into another module's repositories.
 
@@ -32,8 +32,8 @@ uses: @heliogrid/contracts (jobs.ts), @heliogrid/db        used by: nobody
 ## Landmines
 - Webhook processing (Razorpay/Exotel) happens HERE, not in the api: verify → dedupe on
   provider event id → enqueue → 2xx fast is the api's job; the worker applies effects.
-- The Dockerfile gains Chromium + fonts-noto with the PDF port (Track B) — RAM budget
-  300–500 MB per render process, pooled.
+- The Dockerfile gains Chromium + fonts-noto with the PDF port (Track B — NOT landed yet;
+  no Chromium layer exists today) — RAM budget 300–500 MB per render process, pooled.
 
 ## Definition of done here
 Processor verified against a real queue (or documented scaffold-idle) · typecheck/lint

@@ -41,13 +41,13 @@ used by: nobody
 - /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
 
 ## Landmines
-- **A feature barrel must not mix a Server Component and a `'use client'` screen** (2026-08-01).
+- **A feature barrel must not mix a Server Component and a `'use client'` screen** (2026-07-31).
   Next attaches the client screen's chunk to EVERY page that reaches the barrel, used or not,
   and tree-shaking cannot remove it: `/design` shipped the entire component gallery at 147 kB
   against a 102 kB baseline. Give the client screen its own barrel
   (`features/<feature>/<screen>/index.ts`). Symptom to recognise: two routes reporting the
   IDENTICAL First Load JS — that is one bundle serving both, not a coincidence.
-- **`"sideEffects": ["**/*.css"]` in `package.json` is load-bearing** (2026-08-01). Each screen
+- **`"sideEffects": ["**/*.css"]` in `package.json` is load-bearing** (2026-07-31). Each screen
   does `import './x.css'`, which is a side effect, so without the declaration webpack keeps
   every module a barrel names — all three auth routes shipped an identical 183 kB. True today
   because every side-effect import under `apps/web` is CSS; recheck if you add a non-CSS one.
