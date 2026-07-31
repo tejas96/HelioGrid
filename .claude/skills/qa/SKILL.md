@@ -26,7 +26,7 @@ adb devices | grep -qw device || echo "MISSING booted Android emulator"
 docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc "select 1" >/dev/null 2>&1 || echo "MISSING qa_readonly role"
 node -e 'const c=require(process.env.HOME+"/.gemini/config/mcp_config.json");process.exit(Object.keys(c.mcpServers||c).includes("playwright")?0:1)' 2>/dev/null || echo "MISSING playwright MCP for agy"
 curl -sf http://localhost:3000 >/dev/null || echo "MISSING web dev server"
-curl -sf http://localhost:3001/health/live >/dev/null || echo "MISSING api dev server"
+curl -sf http://localhost:8080/health >/dev/null || echo "MISSING api dev server"
 ~/.local/bin/agy --version
 ~/.local/bin/agy -p "reply with only: ok" 2>&1 | tail -1
 ```
@@ -93,6 +93,7 @@ Render `references/runbook-template.md` into `.qa/<run-id>/runbook.md`, substitu
   --add-dir "$PWD/.qa/<run-id>" --add-dir "$PWD" \
   --output-format json \
   --json-schema .claude/skills/qa/references/report-schema.json \
+  --print-timeout 15m \
   -p "$(cat .qa/<run-id>/runbook.md)"
 ```
 
@@ -106,7 +107,10 @@ nothing at all. That is a perfect silent false pass, and it is why Phase 4 exist
 when a run did real work and when it did nothing. Only artifacts on disk prove execution.
 
 If the call exits non-zero, emits unparseable JSON, or hangs past the timeout: the whole
-run is `inconclusive`. Retry once, then escalate. **A crashed executor is never a pass.**
+run is `inconclusive`. Retry once with `--continue` on the same conversation — a plain
+retry throws away artifacts the first call already produced, and `--continue` keeps them
+instead of redoing the work. Then escalate if it still fails. **A crashed executor is
+never a pass.**
 
 Log `usage.total_tokens` from the JSON envelope into `triage.md` — the Pro subscription
 quota is real but its weekly ceiling is unpublished, so consumption must be observable.

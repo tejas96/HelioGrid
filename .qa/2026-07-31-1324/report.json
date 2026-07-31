@@ -30,9 +30,7 @@
       ],
       "expected": "HTTP 401 with error envelope {\"error\":{\"code\":\"UNAUTHENTICATED\",\"message\":...,\"requestId\":...}} matching packages/contracts errorEnvelope shape — always-on auth core: unauthenticated request to a protected route is rejected",
       "actual": "HTTP/1.1 404 Not Found with JSON body {\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"Cannot GET /me\",\"requestId\":\"19f78355-26d3-4afb-a2a5-5b3f97646be6\"}}",
-      "artifacts": [
-        "API-NEG-001.response.txt"
-      ]
+      "artifacts": ["API-NEG-001.response.txt"]
     },
     {
       "id": "AND-HAPPY-001",
@@ -45,9 +43,7 @@
       ],
       "expected": "App launches without crashing and lands on the login/phone-entry screen, fully rendered",
       "actual": "App crashed on launch displaying RedBox error screen: \"Can't find ViewManager 'RNSScreenContentWrapper' nor 'RCTRNScreenContentWrapper' in ViewManagerRegistry\"",
-      "artifacts": [
-        "AND-HAPPY-001.png"
-      ]
+      "artifacts": ["AND-HAPPY-001.png"]
     },
     {
       "id": "AND-EDGE-001",
@@ -59,9 +55,7 @@
       ],
       "expected": "The field accepts exactly 10 digits and the Send OTP control becomes enabled/active",
       "actual": "App was stuck on RedBox crash screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\"); phone input field was not rendered or interactable",
-      "artifacts": [
-        "AND-EDGE-001.png"
-      ]
+      "artifacts": ["AND-EDGE-001.png"]
     },
     {
       "id": "AND-NEG-001",
@@ -73,9 +67,7 @@
       ],
       "expected": "An inline validation error is shown, OR Send OTP stays disabled — no crash, no silent no-op",
       "actual": "App was stuck on RedBox crash screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\"); phone input field was not rendered or interactable",
-      "artifacts": [
-        "AND-NEG-001.png"
-      ]
+      "artifacts": ["AND-NEG-001.png"]
     },
     {
       "id": "AND-ADV-001",
@@ -88,9 +80,7 @@
       ],
       "expected": "Landscape layout renders without clipping, overlap, or crash — login screen content is still fully visible and usable",
       "actual": "Login screen content was not rendered; app remained on RedBox error screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\")",
-      "artifacts": [
-        "AND-ADV-001.png"
-      ]
+      "artifacts": ["AND-ADV-001.png"]
     }
   ],
   "inconclusive": []

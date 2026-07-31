@@ -18,7 +18,7 @@ anything. Your entire output is artifacts on disk plus one `report.json`.
 ## Environment
 
 - Web: `http://localhost:3000` — drive with the Playwright MCP tools.
-- API: `http://localhost:3001` — drive with `curl`.
+- API: `http://localhost:8080` — drive with `curl`.
 - Database (read-only, enforced by role):
   `docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc "<SQL>"`
 - iOS: `idb` for tap/swipe/text, `xcrun simctl` for install/launch/screenshot.
