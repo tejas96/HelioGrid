@@ -81,9 +81,9 @@ export function IconCircle({
 
 /** RN has no color-mix(): `color-mix(in srgb, color 6%, white)` computed per channel. */
 function tint6(hex: string): string {
-  const m = /^#([0-9a-fA-F]{6})$/.exec(hex);
-  if (!m) return theme.colors['accent-subtle'];
-  const n = Number.parseInt(m[1], 16);
+  const digits = /^#([0-9a-fA-F]{6})$/.exec(hex)?.[1];
+  if (!digits) return theme.colors['accent-subtle'];
+  const n = Number.parseInt(digits, 16);
   const mix = (c: number) => Math.round(c * 0.06 + 255 * 0.94);
   return `rgb(${mix((n >> 16) & 0xff)},${mix((n >> 8) & 0xff)},${mix(n & 0xff)})`;
 }
