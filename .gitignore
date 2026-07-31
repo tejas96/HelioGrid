@@ -44,3 +44,6 @@ apps/mobile/.bundle/config
 # Playwright / test artifacts
 playwright-report/
 test-results/
+
+# Subagent-driven-development workspace (ledger, briefs, review packages)
+.superpowers/
