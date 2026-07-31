@@ -76,8 +76,11 @@ Walk `references/test-matrix.md` and author `.qa/<run-id>/plan.json`. Run ID is
 }
 ```
 
-**Before handing off, count steps per (surface × quadrant). Any zero cell aborts the run
-and names the gap.** A plan may be small; it may not be lopsided.
+**Before handing off, count steps per (surface × quadrant) across every surface in the
+Phase 1 blast radius — not merely the surfaces the plan happens to contain. Any zero cell
+aborts the run and names the gap.** A surface you cannot exercise is never simply omitted:
+record it explicitly as blocked, with the reason, in both `plan.json` and `report.json`.
+A plan may be small; it may not be lopsided.
 
 Severity is decided HERE, never by the executor. Anything touching money reconciliation, tenancy
 isolation or provenance tiers is authored `blocker`.
@@ -120,8 +123,8 @@ quota is real but its weekly ceiling is unpublished, so consumption must be obse
 A fast model's failure mode is reporting a pass it did not earn. Check, do not trust:
 
 1. Every artifact path claimed in the report exists on disk and is non-empty. **A pass
-   whose artifact is missing is rewritten to `inconclusive`**, regardless of what Gemini
-   said.
+   whose artifact is missing is rewritten to `inconclusive`**, regardless of what the
+   executor reported.
 2. Read every failure artifact in full.
 3. Spot-check passes: every step whose `severity_if_failed` is `blocker`, plus three
    others at random.

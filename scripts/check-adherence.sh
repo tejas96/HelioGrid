@@ -52,7 +52,7 @@ tests_found=$(
 if [ -n "$tests_found" ]; then
   printf 'TEST FILES (owner directive 2026-07-29 — not authored in this repo):\n%s\n' "$tests_found"
   echo '  The only sanctioned checks are tests/invariants/ and on-demand scripts/.'
-  echo '  Features are verified by RUNNING them — see the /verify-app skill.'
+  echo '  Features are verified by RUNNING them — see the /qa skill.'
   fail=1
 fi
 
