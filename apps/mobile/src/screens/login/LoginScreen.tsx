@@ -9,8 +9,7 @@ import { useReduceMotion } from './hooks/use-reduce-motion';
 import { styles } from './styles';
 
 /**
- * Login — phone → OTP → done (docs/modules/auth-tenancy/specs/login.md, RN variant of
- * the mobile LoginFlow). Composition only: all state and flow logic live in useLogin
+ * Login — phone → OTP → done. Composition only: all state and flow logic live in useLogin
  * (./hooks/use-login), all markup lives in ./components. No signup on RN (module
  * ruling 1): the footer is the invite-link placeholder.
  */

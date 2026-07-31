@@ -30,7 +30,7 @@ against a 102 kB baseline until `GalleryScreen` moved to `features/design-refere
 Rule of thumb: one barrel per feature until a screen is a different rendering kind or the
 feature grows past a couple of screens, then give the screen its own.
 
-A feature is named for the MODULE that owns it (`docs/modules/<module>.md`), which keeps Law 6
+A feature is named for the MODULE that owns it (`apps/api/src/modules/<module>/`), which keeps Law 6
 traceability intact and makes "where does this go?" answerable without judgement.
 
 `lib/` is unchanged: `api-client.ts`, `auth-client.ts`, `env.ts` are app-wide infrastructure,

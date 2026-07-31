@@ -179,7 +179,7 @@ const NOT_A_PAIRING: { fg: string; bg: string; reason: string }[] = [
  * UXG-A11Y-03, found by hand). It also does not read React Native at all (apps/mobile styles
  * from theme.ts objects), and `effectiveToken` resolves `var()` fallbacks and `color-mix()`
  * by position rather than by evaluating them. A firing is therefore a genuine finding; GREEN
- * IS NOT A PROOF OF TOTAL COVERAGE, and effective-background review stays a `ux-lens` job.
+ * IS NOT A PROOF OF TOTAL COVERAGE, and effective-background review stays a review job.
  */
 /**
  * The token a declaration actually renders with — the LAST `--name` in its value.

@@ -5,7 +5,7 @@ import { DoneStep, OtpStep, PhoneStep } from './components';
 import { useLogin } from './hooks/use-login';
 import './login.css';
 
-/** Login — phone → OTP → done (docs/modules/auth-tenancy/specs/login.md is law).
+/** Login — phone → OTP → done.
  *  S1: OTP login is sendOtp → verify (verify creates the session), never signIn. */
 export function LoginScreen() {
   const { i18n } = useLingui();

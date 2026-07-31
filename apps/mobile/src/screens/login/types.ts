@@ -24,6 +24,6 @@ export interface LoginViewModel {
   onCallMe(): void;
   /** Module ruling 1: RN has no signup — the phone-step footer opens the invite link
    *  instead. Not a spec field the brief enumerated; added so PhoneStep can reach the
-   *  handler without re-declaring the TODO(auth-tenancy roadmap task 6) it carries. */
+   *  handler without re-declaring the TODO(invite-accept) it carries. */
   onOpenInvite(): void;
 }

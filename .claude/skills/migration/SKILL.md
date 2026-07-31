@@ -46,4 +46,4 @@ under CI. A skipped invariant that reports success is worse than no invariant at
 ## 5. Document
 
 Add the table to `docs/04-data-model.md` if it is not already in the frozen design, and
-note the migration in the roadmap row. Same commit (Law 8).
+note the migration in the docs it affects. Same commit (Law 8).

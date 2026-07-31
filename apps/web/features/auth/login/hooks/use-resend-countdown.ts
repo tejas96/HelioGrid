@@ -3,7 +3,7 @@ import { RESEND_SECONDS } from '@heliogrid/domain';
 import { useEffect, useState } from 'react';
 
 /** Self-contained resend countdown: restarts whenever `active` flips true or `epoch`
- *  bumps — every resend rewinds the countdown (docs/modules/auth-tenancy/specs/login.md §5). */
+ *  bumps — every resend rewinds the countdown. */
 export function useResendCountdown(active: boolean, epoch: number) {
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
 

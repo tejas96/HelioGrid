@@ -11,8 +11,8 @@ import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
 
 /**
- * Login controller — phone → OTP → done (docs/modules/auth-tenancy/specs/login.md, RN
- * variant of the mobile LoginFlow). Better Auth phone-OTP sends/verifies; the session
+ * Login controller — phone → OTP → done (RN variant of the LoginFlow).
+ * Better Auth phone-OTP sends/verifies; the session
  * cookie then flows through the keychain jar to the typed client. No signup on RN
  * (module ruling 1): the footer is the invite-link placeholder.
  */
@@ -142,13 +142,13 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
   };
 
   const onCallMe = () => {
-    // TODO(auth-tenancy roadmap task 7): voice-OTP escalation seam — no server endpoint
+    // TODO(voice-OTP): voice-OTP escalation seam — no server endpoint
     // exists yet (module ruling 4). Optimistic "calling" state only; do not invent an API.
     setCallRequested(true);
   };
 
   const onOpenInvite = () => {
-    // TODO(auth-tenancy roadmap task 6): invite accept /join flow lands here.
+    // TODO(invite-accept): invite accept /join flow lands here.
   };
 
   return {

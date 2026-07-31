@@ -16,7 +16,7 @@ async function main() {
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no
     // invariant at all — that is exactly how the tenancy gate went unexecuted for the
-    // whole of the foundation phase (docs/foundation-redesign.md F1).
+    // whole of the foundation phase, and again until 2026-07-31 because nothing loaded .env.local.
     if (env.CI) {
       throw new Error(
         'INVARIANTS NOT RUN: DATABASE_URL/DATABASE_ADMIN_URL missing under CI. ' +

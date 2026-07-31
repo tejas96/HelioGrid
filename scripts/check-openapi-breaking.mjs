@@ -16,7 +16,7 @@
  * untracked spec reads as "clean". Bytes don't lie and don't care whether you have staged.
  * CI runs this same script, so CI and local can never diverge on what "fresh" means.
  *
- * A genuinely intended break needs an owner ruling recorded in the module roadmap.
+ * A genuinely intended break needs an explicit owner ruling.
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -90,7 +90,7 @@ try {
     console.error(`\nOPENAPI BREAKING CHANGE vs ${BASE}:\n`);
     console.error((err.stdout || err.message).trim());
     console.error(
-      '\nA breaking API change needs an owner ruling recorded in the module roadmap before\n' +
+      '\nA breaking API change needs an explicit owner ruling before\n' +
         'it merges. Additive changes (new optional fields, new endpoints) are not breaking.\n',
     );
     code = 1;

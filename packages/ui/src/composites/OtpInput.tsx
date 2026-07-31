@@ -13,7 +13,7 @@ import './OtpInput.css';
 
 /**
  * Composition allowlist: length, value, onChange, onComplete, error, disabled,
- * autoFocus, label, style. Behaviours from docs/modules/auth-tenancy/specs/login.md §5:
+ * autoFocus, label, style. Behaviours from the login spec §5:
  * auto-advance, backspace walk-back, paste distributes, digits-only, digits retained on
  * error. `error` is controlled — the parent clears it in onChange (any edit clears it).
  */

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import './signup.css';
 
 /**
- * Placeholder for the SignUp flow (auth-tenancy roadmap task 3 replaces this page).
+ * Placeholder for the SignUp flow (a later slice replaces this page).
  * Exists so the login screen's "Create an account" exit never 404s (no broken exits).
  * Composed from the DS vocabulary only — no new visuals.
  */

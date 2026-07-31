@@ -55,7 +55,7 @@ nothing broke, the map is not exhaustive — make it so.
 
 Removing a field, tightening a type, renaming a key or changing a declared status code
 breaks every existing client. Additive changes — a new optional field, a new endpoint — do
-not. A genuine break needs an owner ruling recorded in the module roadmap before it merges.
+not. A genuine break needs an owner ruling, stated in the change itself, before it merges.
 
 For a mechanical second opinion, `pnpm check:openapi` diffs the emitted surface against
 `origin/main` with `oasdiff` (install it locally: `brew install oasdiff`). It is advisory,

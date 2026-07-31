@@ -81,5 +81,5 @@ wrong. Rule → mechanism matrix: docs/17 §5.
 
 Laws 1–9 and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
 path-scoped rules: `ui-adherence.md`, `contracts.md`, `db-schema.md`, `i18n.md`).
-Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings plus the
-module's `specs/` extraction. Layer law: each package's own CLAUDE.md.
+Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings and the
+docs/13 UX-gap register. Layer law: each package's own CLAUDE.md.

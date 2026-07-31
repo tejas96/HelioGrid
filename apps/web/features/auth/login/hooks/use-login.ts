@@ -14,7 +14,7 @@ import { useOnline } from '../../shared/hooks/use-online';
 import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
 
-/** Login controller — phone → OTP → done (docs/modules/auth-tenancy/specs/login.md is law).
+/** Login controller — phone → OTP → done.
  *  S1: OTP login is sendOtp → verify (verify creates the session), never signIn. */
 export function useLogin(): LoginViewModel {
   const router = useRouter();
@@ -151,7 +151,7 @@ export function useLogin(): LoginViewModel {
   };
 
   const handleCallMe = () => {
-    // TODO(docs/modules/auth-tenancy roadmap task 7): voice-call OTP delivery (Exotel)
+    // TODO(voice-OTP): voice-call OTP delivery (Exotel)
     // has no server seam yet — render the requested state optimistically, no endpoint.
     setCallRequested(true);
   };

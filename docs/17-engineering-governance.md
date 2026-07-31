@@ -42,12 +42,12 @@ never new visuals (`packages/ui/CLAUDE.md` standing law).
 
 **Law 6 — Requirement traceability.** Every slice traces to: a D-decision
 (`docs/product/product-journey.md` D1–D39, read through the docs/15 overlay), a mockup file
-(`design/mockups/` by name), and a module-roadmap task (`docs/modules/`). Nothing exists
-without a requirement; roadmaps expose implementation status per task (§3).
+(`design/mockups/` by name). Nothing exists without a requirement; §3 says where status
+is recorded now that per-module roadmaps are gone.
 
 **Law 7 — Cross-platform lockstep.** Web + RN ship in the SAME slice from the same contract,
 verified in the browser AND on both simulators. Platform drift is a violation, not a
-follow-up. **Exceptions require an owner ruling recorded in the module roadmap**; the default
+follow-up. **Exceptions require an explicit owner ruling**; the default
 is lockstep.
 
 **Law 8 — Documentation is code.** Docs are load-bearing for other agents: a change that
@@ -63,8 +63,7 @@ mandatory on first discovery.
 **The data model and API surface are NEVER implemented in one shot.**
 
 - `docs/04-data-model.md` is the FROZEN DESIGN of the whole system — the reference that keeps
-  future modules coherent (forward-compat register: `docs/modules/forward-compat.md`). It is
-  NOT a build order.
+  future modules coherent. It is NOT a build order.
 - **Tables, enums, columns, contracts and endpoints are AUTHORED only when their OWNING
   module's slice begins.** Migrations 0001–0002 carry the identity/platform spine; every
   other table lands with its owning module's FIRST migration, and every endpoint with its
@@ -80,26 +79,19 @@ An agent asked to "implement the schema" implements the CURRENT module's slice o
 
 ---
 
-## 3. Per-module roadmaps (the traceability system)
+## 3. Traceability without a roadmap system (owner ruling, 2026-07-31)
 
-Every module gets ONE roadmap file in `docs/modules/<module>.md` (template:
-`docs/modules/_template.md`), authored BEFORE its implementation begins and maintained as
-tasks complete. Each roadmap contains ALL of that module's work — **backend + web + mobile +
-UX + schema + jobs, scoped to that module only** — with per-task traceability (D-decisions,
-mockup filenames, docs/04 sections) and live status.
+Per-module roadmap files under `docs/modules/` were deleted, along with the `/roadmap`,
+`/slice`, `/lenses`, `/doc-sync` and `/pr` skills. They cost more to maintain than the
+traceability they bought, and a stale roadmap actively misleads.
 
-The module roadmap is the ONLY task list for the module. `docs/14` remains the cross-module
-plan of record (tracks and dependencies; the forward-compat register lives at
-`docs/modules/forward-compat.md`). `docs/modules/README.md` is the index with per-module
-status.
+What replaces them: **plans are authored per piece of work** under
+`docs/superpowers/plans/`, and the record of what was actually run lives in the committed
+`.qa/<run-id>/` evidence from `/qa`. `docs/14` remains the cross-module plan of record.
 
-**Task 0 of every module is specs extraction** — per-screen specs plus a `d-decisions.md`
-extraction under `docs/modules/<module>/specs/`. This is both the context-loading mechanism
-and the UX↔backend drift firewall: the spec is the reviewable contract between mockup and
-implementation. The `/roadmap` skill runs this.
-
-Status vocabulary: `todo` · `in-progress` · `blocked(reason)` · `VERIFIED`. **Never "done"
-without evidence** — a VERIFIED row records what was run, on what surface, and what was seen.
+Status vocabulary, wherever status is recorded: `todo` · `in-progress` · `blocked(reason)` ·
+`VERIFIED`. **Never "done" without evidence** — a VERIFIED claim records what was run, on
+what surface, and what was seen.
 
 ---
 
@@ -145,7 +137,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | **Screens compose from `@heliogrid/ui`** | `check:adherence` fails on `hg-*` legacy scaffold in a feature screen. Added 2026-07-31 after a screen shipped with 12 `hg-*` classes and zero UI imports past three reviews | lint | `scripts/check-adherence.sh` |
 | Screens import components, never re-make them (web) | Biome `noRestrictedElements` on `app/**` + `features/**`; design-reference exempt | lint | `biome.json` |
 | Screens import components, never re-make them (RN) | Biome `noRestrictedImports` on `screens/**` — interactive primitives may not come from `react-native`; layout ones may | lint | `biome.json` |
-| A fact both platforms need lives in a package | **Nothing enforces this.** Parity is checked at the component API; what a SCREEN authors inline is unchecked, so the same constant, type or helper gets written twice and drifts. Detecting it mechanically means comparing meaning, not text — jscpd misses it (same value, different name). Held by review and by defining shared facts before the screens | review | `/lenses`, `packages/domain` |
+| A fact both platforms need lives in a package | **Nothing enforces this.** Parity is checked at the component API; what a SCREEN authors inline is unchecked, so the same constant, type or helper gets written twice and drifts. Detecting it mechanically means comparing meaning, not text — jscpd misses it (same value, different name). Held by review and by defining shared facts before the screens | review | review, `packages/domain` |
 | Screens import only from component indexes | dependency-cruiser `package-index-only` | lint | `.dependency-cruiser.cjs` |
 | web ↔ RN component API parity | `@heliogrid/ui-api` + `satisfies` in both platforms' `api-parity.ts`; three directions (not looser, not stricter, no uncovered component) | typecheck | `packages/ui-api/` |
 | web ↔ RN parity — per PROP | `check:ui-parity` compares authored props to the contract; names props on one platform only | lint | `scripts/check-ui-parity.mjs` |
@@ -178,7 +170,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 
 | Rule | Intended mechanism | Stage |
 |---|---|---|
-| Arbitrary px / inline style in UI | Not attempted — "arbitrary px" has no stable syntactic shape; `ux-lens` reviews it | — |
+| Arbitrary px / inline style in UI | Not attempted — "arbitrary px" has no stable syntactic shape; review catches it | — |
 | Dead code / clone detection | `check:unused` (knip) · `check:dupes` (jscpd) — local hygiene, deliberately not a CI gate | local |
 | Auth path is executably verified | deferred into the auth rebuild; build it against the new flow as a `scripts/` entry, never a `.test.*` | local |
 | OpenAPI breaking-change detection | `oasdiff` via `check:openapi` — advisory, a human reads the break | local |
@@ -189,17 +181,17 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 |---|---|---|
 | No unprompted push, branch or PR | An agent's own restraint; the harness no longer blocks it (hooks removed 2026-07-31 — they caught zero real mistakes and blocked legitimate work) | `CLAUDE.md` §Process |
 | No in-place stream edits (`sed -i`) | Same. The rule stands because those edits corrupted files here; nothing enforces it | `CLAUDE.md` §Process |
-| Provenance tier on every user-visible number | No checker distinguishes a number needing provenance from an id or a count | `epc-lens` + per-screen DoD |
-| Money never renders while stale | Staleness is a product-semantic judgement about one figure's inputs | `epc-lens` |
-| Structural adequacy is NEVER computed | A negative existence claim over arbitrary code. Rated critical when found | `epc-lens` |
-| Shared before local — no duplicated business logic | jscpd finds textual clones but cannot judge whether a clone SHOULD be shared | `/lenses` + `check:dupes` |
-| Split by responsibility; never `*-part2` | No checker judges whether a filename honestly names a responsibility | `CLAUDE.md` + `/lenses` |
-| React presentation/logic separation | A cohesion judgement, not a syntactic one | `.claude/rules/ui-adherence.md` + `ux-lens` |
+| Provenance tier on every user-visible number | No checker distinguishes a number needing provenance from an id or a count | review + per-screen DoD |
+| Money never renders while stale | Staleness is a product-semantic judgement about one figure's inputs | review |
+| Structural adequacy is NEVER computed | A negative existence claim over arbitrary code. Rated critical when found | review |
+| Shared before local — no duplicated business logic | jscpd finds textual clones but cannot judge whether a clone SHOULD be shared | review + `check:dupes` |
+| Split by responsibility; never `*-part2` | No checker judges whether a filename honestly names a responsibility | `CLAUDE.md` + review |
+| React presentation/logic separation | A cohesion judgement, not a syntactic one | `.claude/rules/ui-adherence.md` + review |
 | RN hooks own logic; never a `components.tsx`/`hooks.ts` grab-bag | The 80-line cap binds only `*Screen.tsx` — a bloated hook or a layer-named file lints clean | `apps/mobile/CLAUDE.md` + review |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers | review + docs/04 |
-| Contract-first ordering · migration procedure · Law 7 lockstep · Law 8 docs-in-commit · five-lens review | Procedures, not properties — they load on demand as skills | `/slice`, `/migration`, `/contract-change`, `/lenses`, `/doc-sync` |
+| Contract-first ordering · migration procedure · Law 7 lockstep · Law 8 docs-in-commit | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/qa` |
 | Reference integrity (`docs/NN §M`, section citations, relative links) | Owner ruling 2026-07-30: greps, not a checker script. Three greps over `git ls-files`; two `docs/08 §…` citations inside sha256-locked migrations are unfixable and skipped by name | `/doc-sync` |
-| `VERIFIED` rows carry real evidence | A script can only check a cell is non-empty; evidence *quality* is a judgement | `/slice` + `/pr` + review |
+| `VERIFIED` claims carry real evidence | Evidence *quality* is a judgement no script can make | `/qa` artifact verification + review |
 
 ## Appendix A — per-package CLAUDE.md template
 

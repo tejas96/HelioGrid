@@ -9,10 +9,9 @@
    Duplicate definitions are defects, not conveniences.
 5. **Reuse before creation.** Search the component indexes and contracts first. Creating
    what exists is a defect. Unmocked surfaces are COMPOSED from existing vocabulary.
-6. **Requirement traceability.** Every slice traces to a D-decision, a mockup filename,
-   and a module-roadmap task.
-7. **Cross-platform lockstep.** Web + RN in the SAME slice from the same contract.
-   Exceptions require an owner ruling recorded in the module roadmap.
+6. **Requirement traceability.** Every change traces to a D-decision and a mockup filename.
+7. **Cross-platform lockstep.** Web + RN in the SAME change from the same contract.
+   Exceptions require an owner ruling, recorded where the decision was made.
 8. **Documentation is code.** A change that invalidates a doc updates it in the SAME commit.
 9. **Incremental schema & API growth.** Tables, enums, columns, contracts and endpoints are
    authored only when their OWNING module's slice begins. docs/04 is frozen DESIGN, not a
@@ -36,9 +35,9 @@ disagree, **the ADR wins**.
 - **Minimise blast radius.** If something small needs edits across many unrelated files, the
   architecture is wrong. Say so first.
 - **No temporary code.** No TODO implementations, no placeholder logic. If the owner asked for
-  a stub, the roadmap task records that it is one.
+  a stub, say so plainly when you present it.
 - **Self-review your own diff** before presenting it: duplication, naming, edge cases, security,
-  accessibility. `/lenses` does this formally for slices.
+  accessibility. Behaviour is proven by running it — `/qa`.
 
 ## Stop and ask the owner before
 
@@ -51,5 +50,5 @@ prevents.
 - A new architectural pattern, folder category, state approach or dependency category
   (Law 2 — ADR approved before code).
 - A layer conflict the hierarchy above does not resolve.
-- A product-shaped finding (missing business rule, UX gap, spec ambiguity) — record it in the
-  module roadmap / docs/13 / docs/15 first, then continue.
+- A product-shaped finding (missing business rule, UX gap, spec ambiguity) — record it in
+  docs/13 or docs/15 first, then continue.

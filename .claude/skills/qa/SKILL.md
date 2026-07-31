@@ -31,17 +31,15 @@ curl -sf http://localhost:8080/health >/dev/null || echo "MISSING api dev server
 ~/.local/bin/agy -p "reply with only: ok" 2>&1 | tail -1
 ```
 
-The version must report `1.1.9`-style output, **not** `Antigravity IDE` — two different
+The version must report a bare CLI version, **not** `Antigravity IDE` — two different
 programs are named `agy`, and the IDE launcher dispatches prompts into a GUI panel no
 script can read while exiting zero. Always invoke by absolute path.
 
 The last line must print `ok`. Anything else means the cached OAuth credentials have
 expired; re-authenticate with one interactive `agy` session.
 
-**Prove tools actually execute before trusting any run.** Write a scratch file via the
-shell tool and confirm it exists. Without a correct `--add-dir`, `agy` reports
-`status: SUCCESS` with `"DONE"` and does nothing whatsoever — no files, no commands, no
-error, exit zero.
+**Then prove tools actually execute**: have `agy` write a scratch file under `--add-dir`
+and confirm it lands on disk. A run that cannot write still reports success — see Phase 3.
 
 ## Phase 1 — Scope. Compute the blast radius from the diff.
 

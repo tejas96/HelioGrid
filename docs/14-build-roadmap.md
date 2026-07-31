@@ -9,7 +9,7 @@
 > What survives — and what actually governs — is the **track dependency structure**, the
 > **launch gate** and the **risk register**. Sequencing *within* a module lives in that
 > module's roadmap (`./modules/`), never here. The **forward-compatibility register** moved to
-> [`./modules/forward-compat.md`](./modules/forward-compat.md).
+> [`./forward-compat.md`](./forward-compat.md).
 >
 > The original timeline directive is recorded as SUPERSEDED in docs/15 §4 (directive 5). The
 > SCOPE commitment it carried still stands: no Launch-2, no v1.1, no "later" bucket.
@@ -237,10 +237,10 @@ platform number (or documented DLT-pending with Bolna/test evidence).
 
 ## Forward-compatibility register — MOVED
 
-> Extracted to **[`./modules/forward-compat.md`](./modules/forward-compat.md)** on
+> Extracted to **[`./forward-compat.md`](./forward-compat.md)** on
 > 2026-07-30 so it can be cited and read without loading the whole build plan, and REMOVED
-> here so there is one copy to keep current. `/roadmap` requires every module to restate its
-> row before its first migration.
+> here so there is one copy to keep current. Re-read it before authoring any module's first
+> migration.
 
 ## Risk register
 

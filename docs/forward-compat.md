@@ -9,7 +9,7 @@
 > incremental.
 >
 > Extracted verbatim from `docs/14` §4 on 2026-07-30 so it can be cited and read without
-> loading the whole build plan. `/roadmap` requires every module to restate its row.
+> loading the whole build plan. Re-read the relevant row before a module's first migration.
 
 Each register row is satisfied by its owning module's FIRST migration; migration 0001 covers
 the identity/platform spine.

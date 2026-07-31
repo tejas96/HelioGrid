@@ -4,7 +4,7 @@
   "private": true,
   "description": "The locked invariant set (CLAUDE.md \u00a7Testing) \u2014 additions require explicit owner approval",
   "scripts": {
-    "test": "tsx src/run.ts",
+    "test": "tsx --env-file-if-exists=../../.env.local src/run.ts",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

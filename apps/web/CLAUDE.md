@@ -20,8 +20,8 @@ used by: nobody
   (dependency-cruiser) — either `features/<feature>/index.ts` or a screen barrel one level
   down, `features/<feature>/<screen>/index.ts`. Nothing deeper.
   **A barrel must not re-export both a Server Component and a `'use client'` screen** — see
-  Landmines. A feature is named for the CAPABILITY it owns; where a
-  `docs/modules/` roadmap exists for that capability, use its name (`auth` ↔ `auth-tenancy`).
+  Landmines. A feature is named for the CAPABILITY it owns, matching the API module that
+  serves it (`apps/api/src/modules/<module>/`) so one name spans both sides.
 - **apps/mobile is NOT migrating to this shape** — RN keeps `src/screens/<name>/`, its own
   equivalent; the asymmetry is deliberate (ADR-0022).
 - **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
