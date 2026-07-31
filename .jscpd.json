@@ -11,7 +11,7 @@
     "**/.next/**",
     "**/*.d.ts",
     "packages/i18n/src/locales/**",
-    "apps/web/app/design/**",
+    "apps/web/features/design-reference/**",
     "apps/mobile/src/screens/gallery/**"
   ],
   "format": ["typescript", "tsx"]

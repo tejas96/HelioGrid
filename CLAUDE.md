@@ -54,6 +54,13 @@ Deliberately thin by owner decision: `tests/invariants/` (the locked set) + on-d
   `noProcessEnv` + `pnpm check:env` + the turbo `env` boundary tag. No secret literal in code.
 - **Git is manual.** Commit when the user asks. Create branches or PRs ONLY on an explicit
   user command — never open a PR or push unprompted.
+- **Mechanism order: type → lint rule → instruction → (script only by owner ruling).**
+  A script encodes today's tree and rots when the tree changes; this repo has lost real time
+  to a bash array that expanded to garbage, an unmatched zsh glob that aborted a command so
+  grep printed nothing, and an unquoted `$VAR` that filtered nothing. Prefer a Biome rule:
+  versioned with the toolchain, AST-aware, reports at the line. **Do not add new checker
+  scripts.** The existing ones stay; each new one needs an owner ruling saying why a type or
+  a lint rule cannot hold it.
 - Match surrounding style; comments only for constraints code can't express.
 
 Laws 1–9, the decision hierarchy and stop-and-ask triggers: `.claude/rules/00-laws.md`

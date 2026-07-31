@@ -14,16 +14,21 @@ uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @
 used by: nobody
 
 ## Local conventions
-- ONE FOLDER PER ROUTE: `app/<route>/` holds `page.tsx` plus satellites — `styles.css`
-  (never `<route>.css`), `components.tsx`, `hooks.ts`, `constants.ts`, overflow folders.
-  See docs/02 §2. Next.js reserved files (layout/loading/error/not-found/route…)
-  are exempt; `route.ts` is cookie/session BFF glue ONLY. Root `page.tsx` is a redirect stub.
-  A route segment is never named `components`/`hooks`/`constants`.
-  `lib/` = `*-client.ts` · `env.ts` · `hooks/` · `constants.ts` — **no `lib/format/`, no
-  `utils.ts`**; formatters belong to `packages/domain` (web and RN both need them, Law 7).
+- **`app/` ROUTES, `features/` OWNS.** A `page.tsx` body is ≤50 lines (Biome
+  `noExcessiveLinesPerFunction`): read route params, call one controller hook, render one
+  screen. Everything else lives in `features/<feature>/`, imported ONLY through its `index.ts`
+  barrel (dependency-cruiser). A feature is named for its module in `docs/modules/`.
+- **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
+  file per sub-component (a folder from the first one) · `hooks/use-<screen>.ts` for the
+  controller · `constants.ts` for literals · `types.ts` when two files share a type ·
+  `<feature>/shared/` when two SCREENS share. Two FEATURES sharing means it is not
+  feature-local: `packages/ui`, `packages/domain` or `lib/`. ADR-0022.
+- `globals.css` is the only stylesheet under `app/`. Next reserved files
+  (layout/providers/loading/error/not-found/route) stay in `app/`; `route.ts` is cookie/session
+  BFF glue ONLY. `lib/` is unchanged: `*-client.ts` · `env.ts` · `hooks/` · `constants.ts`.
 - **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout
-  via route `styles.css` with token `var()`; Tailwind = layout only (`flex`, `grid`, `min-h-dvh`).
-  No inline `style`, no new `hg-*`.
+  via a colocated `<screen>.css` in the feature folder with token `var()`; Tailwind = layout
+  only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.
 - Import UI ONLY from `@heliogrid/ui` index. Business types from `@heliogrid/contracts`;
   locale from `@heliogrid/i18n` — Law 4, no inline unions.
 - `.hg-*` scaffold is legacy — new screens use `@heliogrid/ui` only.

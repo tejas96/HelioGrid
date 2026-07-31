@@ -132,6 +132,12 @@ governance layer reached ~19.6k tokens of unenforced text.
 Stages: `hook` (tool-call time) · `lint` · `typecheck` · `build` · `invariant` (CI test) ·
 `CI` · `runtime` · `skill` · `prose`.
 
+A rule earns the LOWEST rung that can hold it, and rung 2 means a LINT RULE in preference to a
+checker script (owner directive 2026-07-31). Scripts encode the tree's current shape and fail
+open when it changes — the three silent-no-op bugs found on 2026-07-30/31 were all in scripts,
+not in lint configuration. Existing scripts stay; a NEW one needs an owner ruling recorded here
+saying why no type and no lint rule can express the rule.
+
 ### Enforced today
 
 | Rule | Mechanism | Stage | Where |

@@ -23,6 +23,9 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
 `@heliogrid/ui-api`. Drift fails THIS app's typecheck and names the component.
 
 ## Local conventions
+- **RN keeps `src/screens/<name>/` — it is NOT migrating to web's `features/` shape** (ADR-0022
+  Consequences). RN has no router-driven `app/` directory, so screen folders already are the
+  equivalent. The asymmetry is deliberate; do not "align" one to the other.
 - Theme ONLY from `@heliogrid/tokens/theme`. Import UI ONLY from `src/ui` index.
 - **Styling layers:** components own pixels (`src/ui` index only); screens own layout in the
   screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.

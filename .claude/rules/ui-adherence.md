@@ -33,12 +33,13 @@ paths:
 
 ## Presentation and logic live in different files
 A component renders. It does not also fetch, orchestrate, or hold flow logic.
-- **Container** — `<Name>Screen.tsx` (web: `page.tsx`): data via the typed client, state,
-  handlers, navigation. Returns presentational components; holds little markup.
-- **Presentational** — a `components.tsx` satellite or a `packages/ui` component: props in,
-  markup out. No data access, no navigation, no hooks beyond local UI state.
-- **Logic** — a `hooks.ts` satellite for screen-local logic; shared logic that both
-  platforms need belongs in a shared package, never copied into each platform.
+- **Container** — `<Name>Screen.tsx`: data via the typed client, state, handlers, navigation.
+  Returns presentational components; holds little markup. Web's `page.tsx` is routing only
+  (ADR-0022) — it renders the Screen, never holds container logic itself.
+- **Presentational** — a component in `apps/web/features/<feature>/` or `packages/ui`: props
+  in, markup out. No data access, no navigation.
+- **Logic** — a `use-<thing>.ts` controller hook beside it in the same feature folder; shared
+  logic that both platforms need belongs in a shared package, never copied into each platform.
 
 A `.tsx` holding both a data-fetching effect chain and the markup it feeds is a review
 finding. Past ~450 lines, split by RESPONSIBILITY and name the new file for what it does —
