@@ -42,7 +42,7 @@ custom roles (D29 excluded).
    on, and do not spend effort repairing that implementation. Known-broken and deliberately
    NOT fixed: the local dev-login OTP path fails on the simulator ("Couldn't send the code"),
    which is why any authenticated RN screen — including the dev gallery, reachable only from
-   a HomeScreen button — cannot currently be reached for `/verify-app`. Re-verify from
+   a HomeScreen button — cannot currently be reached for `/qa`. Re-verify from
    scratch during the rebuild rather than trusting the 2026-07-26 evidence.
 
 ## Tasks

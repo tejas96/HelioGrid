@@ -18,7 +18,8 @@ Light-only v1 · EN/HI/MR · ₹ Indian grouping everywhere.
   is where every recent defect landed. Writing a constant, type, or helper in a screen is
   the moment to ask which package owns it.
 - **Verified means you ran it.** Green gates never prove UI work — browser for web, both
-  simulators for RN (`/verify-app`), curl for api. A task is done when you have looked at it.
+  simulators for RN, curl for api — all of it through `/qa`. A task is done when you have
+  looked at it.
   A red probe proves nothing until you read WHY it went red: a syntax error in the probe, an
   earlier gate failing first, or a pipeline's own exit code all look exactly like a catch.
 - **Read call sites, not declarations.** Two platforms reach the same behaviour through

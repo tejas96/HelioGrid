@@ -1,14 +1,14 @@
 ---
 name: lenses
-description: Review a slice through five independent lenses — senior engineer, UX, solar-EPC domain, product owner, and QA trying to break it. Use before marking any slice complete.
+description: Review a slice through four independent lenses — senior engineer, UX, solar-EPC domain, and product owner. Use before marking any slice complete.
 ---
 
-# The Five Lenses
+# The Four Lenses
 
-Five genuinely different failure detectors, not five phrasings of one. **A lens that reports
+Four genuinely different failure detectors, not four phrasings of one. **A lens that reports
 nothing must say what it checked and why each check passed.** Silence is not a pass.
 
-## Dispatch the three specialists in parallel
+## Dispatch the two specialists in parallel
 
 Over the slice diff, run these concurrently. **Get the diff with plain `git diff` (plus
 `git diff --cached`) unless the slice is already on its own branch with commits** — this repo
@@ -21,7 +21,9 @@ a clean review. If `git diff main...HEAD --stat` is empty, use the working tree.
 |---|---|
 | `ux-lens` | mockup fidelity, design-system adherence, the four states, 375px, Hindi, a11y |
 | `epc-lens` | solar domain semantics, Indian market rules, provenance and money law |
-| `qa-breaker` | how to break it |
+
+Breaking the running app is `/qa`'s job, not a lens's — a read-only agent that has never
+opened the app cannot tell you how it breaks.
 
 Each needs the module and task number, the diff, and the paths to the module's `specs/`
 files — so it reviews against the spec rather than against its own taste.

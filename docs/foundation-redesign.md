@@ -123,7 +123,7 @@ AGENTS.md                        ● one line: "CLAUDE.md"
     lenses/SKILL.md              ● five-lens review orchestration (§7.3)
     contract-change/SKILL.md     ● contract-first procedure
     migration/SKILL.md           ● append-only migration procedure
-    verify-app/SKILL.md          ● run-and-look: browser + both simulators, four states
+    qa/SKILL.md                  ● plan in Claude, execute in Gemini, loop until clean
     doc-sync/SKILL.md            ● Law 8 same-commit doc updates + anchor check
     pr/SKILL.md                  ● branch/commit/PR preparation (§8)
   hooks/
@@ -133,7 +133,6 @@ AGENTS.md                        ● one line: "CLAUDE.md"
   agents/
     ux-lens.md                   ● UX-master reviewer subagent
     epc-lens.md                  ● solar-EPC domain reviewer subagent
-    qa-breaker.md                ● adversarial QA subagent
 apps/*/CLAUDE.md, packages/*/CLAUDE.md   keep all ten (4 stale facts fixed — §3.3)
 ```
 
@@ -164,7 +163,7 @@ nothing is compromised against it. Light-only v1 · EN/HI/MR · ₹ Indian group
 ## Commands
 pnpm turbo typecheck · pnpm lint · pnpm turbo test · pnpm turbo build · pnpm boundaries
 A task is DONE only when gates are green AND the change is verified running — browser AND
-both simulators for UI (/verify-app), curl/logs for api/worker. Green gates never prove UI work.
+both simulators for UI, curl/logs for api/worker — all through /qa. Green gates never prove UI work.
 
 ## Hard boundaries (mechanically enforced — never weaken a gate config to pass it)
 dependency-cruiser (19 rules) · turbo boundaries · biome · sherif · adherence greps ·
@@ -245,7 +244,7 @@ each) are the only permanent context cost.
 | `/lenses` | via /slice | Five-lens review orchestration: spawns the three lens subagents in parallel, runs `/code-review` for the senior-engineer lens, checks product-owner traceability itself; every lens must produce findings or say why none. |
 | `/contract-change` | model (auto, via contracts.md rule) | Edit contract → `pnpm --filter @heliogrid/contracts openapi` → enum-parity invariant → sweep typed clients (web/mobile/api) → oasdiff vs main for breaking changes. |
 | `/migration` | model (auto, via db-schema.md rule) | New migration file only; tenant_id or allowlist; RLS policy shape; `pnpm --filter @heliogrid/db migrate`; invariants run. |
-| `/verify-app` | via /slice | Run-and-look: web preview via `.claude/launch.json` + browser tools; iOS/Android via simulator tools; walk the four states, 375px, Hindi, keyboard/focus; capture evidence for the roadmap row. |
+| `/qa` | via /slice | Claude computes a diff-derived blast radius and authors a four-quadrant plan; Gemini 3.6 Flash executes it across web, API, database, iOS and Android; Claude verifies artifacts, triages, fixes, and loops until a clean certify pass or a hard stop at three rounds. |
 | `/doc-sync` | via /slice | Law 8: list docs invalidated by the diff, update in same commit; run the anchor-checker script; append docs/13 rows for UX gaps designed in-slice. |
 | `/pr` | user | §8: branch naming, commit format with VERIFIED evidence, PR body from template, changelog line in module roadmap. |
 
@@ -265,9 +264,8 @@ Bash, each pointing at the relevant specs, run in parallel by `/lenses`:
 - **epc-lens** — domain semantics: kWp vs kWh, DC/AC, DISCOM/subsidy/GST, provenance tiers,
   engineer sign-off, Indian ₹ grouping, field reality (offline, glare, gloves → big targets).
   Checks claims against `docs/product/product-journey.md` D-census + docs/15.
-- **qa-breaker** — actively attacks: empty/error/offline paths, double-submit, stale data,
-  cross-tenant probes, absurd inputs (0, negative, 10⁶ kW, emoji names, 40-char Hindi
-  labels), realistic volume. "A slice that was never attacked was never verified."
+- **`/qa`** — executes the attack surface against the running app rather than reasoning
+  about it: four quadrants (happy, edge, negative, adversarial) across five surfaces.
 
 Senior-engineer lens = the bundled `/code-review` skill over the slice diff. Product-owner
 lens = `/lenses` itself verifying the task's D-decision traceability and
@@ -492,7 +490,7 @@ and contracts; architecture check (new pattern → ADR first); risks + edge case
 approved before edits. 3. **Contract diff first** (`/contract-change`) when the API changes.
 4. **Migration** (`/migration`) only for this module's tables. 5. **Implement** web + RN in
 the same slice; wire into existing flows (no orphan screens). 6. **Gates**: typecheck,
-lint, test, build, boundaries. 7. **/verify-app**: run-and-look with evidence captured.
+lint, test, build, boundaries. 7. **/qa**: plan, execute, fix, loop until clean, with evidence captured.
 8. **/lenses** review; all critical findings resolved. 9. **/doc-sync**: same-commit doc
 updates + anchor check. 10. **Roadmap row** → VERIFIED with evidence. 11. **/pr**.
 
