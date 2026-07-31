@@ -28,37 +28,28 @@ disagree, **the ADR wins**.
 
 ## Working principles (every change, not only slices)
 
-- **Architecture first.** Before writing code, name the affected modules, the dependency
-  direction, the shared contracts, the ownership boundary, and the scalability and
-  backward-compatibility impact. If the change would violate the architecture, STOP and
-  explain — never paper over an architectural problem with a local workaround.
-- **Shared before local.** Ask "can this be shared?" BEFORE writing it, not after.
-  Business logic duplicated across web, mobile and api is forbidden without an explicit
-  owner ruling. (Law 5 says reuse what exists; this says put new shared things in the
-  shared package.)
-- **Minimize blast radius.** A change touches the fewest files that can carry it. If
-  something small requires edits across many unrelated files, the architecture is wrong —
-  say so before proceeding.
-- **No temporary code.** No TODO implementations, no placeholder logic, no "clean this up
-  later". Production quality unless the owner explicitly asked for a stub — and then the
-  roadmap task records that it is one.
-- **Self-review before calling anything done.** Re-read your own diff as a reviewer would:
-  architecture · duplication · naming · readability · edge cases · security · performance ·
-  accessibility · future extensibility. Fix what you find before presenting the result.
-  /lenses does this formally for slices; do it informally for everything else.
+- **Architecture first.** Name the affected modules and the dependency direction before you
+  write code. If the change violates the architecture, STOP and say so — never a local
+  workaround.
+- **Shared before local.** Ask "can this be shared?" BEFORE writing it. Duplicated business
+  logic across web/mobile/api needs an owner ruling.
+- **Minimise blast radius.** If something small needs edits across many unrelated files, the
+  architecture is wrong. Say so first.
+- **No temporary code.** No TODO implementations, no placeholder logic. If the owner asked for
+  a stub, the roadmap task records that it is one.
+- **Self-review your own diff** before presenting it: duplication, naming, edge cases, security,
+  accessibility. `/lenses` does this formally for slices.
 
 ## Stop and ask the owner before
 
-**Never invent a requirement.** Where documentation is missing, ambiguous or
-self-contradictory: name the conflict, state its impact, give the options, recommend one,
-and ask. Silently choosing an implementation is the failure mode this prevents.
-
-Always stop for:
+**Never invent a requirement.** Where docs are missing, ambiguous or contradictory: name the
+conflict, state its impact, recommend one option, ask. Silently choosing is the failure this
+prevents.
 
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
-- Any new architectural pattern, folder category, state approach or dependency category
-  (Law 2 — needs an ADR approved before code).
-- A conflict between layers that the hierarchy above does not resolve.
-- A product-shaped finding (missing business rule, UX gap, spec ambiguity): record it in
-  the module roadmap / docs/13 / docs/15 FIRST, then continue.
+- A new architectural pattern, folder category, state approach or dependency category
+  (Law 2 — ADR approved before code).
+- A layer conflict the hierarchy above does not resolve.
+- A product-shaped finding (missing business rule, UX gap, spec ambiguity) — record it in the
+  module roadmap / docs/13 / docs/15 first, then continue.

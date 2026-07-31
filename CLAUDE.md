@@ -1,68 +1,60 @@
 # HelioGrid — constitution
 
 Multi-tenant SaaS for Indian solar EPC companies: CRM → survey → 3D design → proposal →
-customer link → voice follow-up → projects → payments. The 3D Design Studio is the flagship;
-nothing is compromised against it. Light-only v1 · EN/HI/MR · ₹ Indian grouping everywhere.
+customer link → voice follow-up → projects → payments. The 3D Design Studio is the flagship.
+Light-only v1 · EN/HI/MR · ₹ Indian grouping everywhere.
 
-## How work happens here
-- Work exists only as a module-roadmap task (docs/modules/<module>.md). No roadmap → /roadmap.
-- Implement through /slice. It loads the task's context; do not read the docs corpus wholesale.
-- Conflicts resolve by the decision hierarchy in docs/17. When a doc and code disagree:
-  STOP, reconcile the doc first (or flag to the owner). Docs are load-bearing for other agents.
-- Stop-and-ask triggers: .claude/rules/00-laws.md (auto-loads).
+## What good looks like
+
+- **Compose, don't rebuild.** `packages/ui` has 28 components; `packages/contracts` has the
+  business types; `packages/domain` has shared logic. Writing raw markup, a local enum or a
+  second formatter means you missed one. Search before you create.
+- **One definition per fact.** A value that exists in two places will disagree. Enums →
+  contracts. Visual values → tokens. Schema → migrations. Copy → the i18n catalog.
+- **Verified means you ran it.** Green gates never prove UI work — browser for web, both
+  simulators for RN (`/verify-app`), curl for api. A task is done when you have looked at it.
+- **Small and honest beats broad and hedged.** Say what you checked and what you did not.
 
 ## Commands
-**`pnpm verify`** runs the whole gate set: lint · boundaries · typecheck · test · build.
-Individually: pnpm lint · pnpm boundaries · pnpm turbo typecheck · pnpm turbo test · pnpm turbo build
-A task is DONE only when gates are green AND the change is verified running — browser AND
-both simulators for UI (/verify-app), curl/logs for api/worker. Green gates never prove UI work.
-**Never weaken a gate config to make a change pass** — a gate that blocks you means the
-change is wrong. Rule→mechanism matrix: docs/17.
 
-## Product law (owner rulings + POC spec — port, don't reinvent)
+`pnpm verify` — lint · boundaries · typecheck · test · build. That is the gate set.
+Per package: see its own CLAUDE.md §Commands.
+
+**Never weaken a gate to make a change pass.** A gate that blocks you means the change is
+wrong. Rule → mechanism matrix: docs/17 §5.
+
+## Product law (owner rulings — port, don't reinvent)
+
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
-- Money never renders stale: design changed + quote not recomputed → figure reads provisional.
+- Money never renders stale: design changed + quote not recomputed → the figure reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ project payments reconcile to the paisa.
-- Sent proposals keep their original prices; price-book updates create new versions.
-- Structural adequacy is NEVER computed — engineer sign-off recorded (who + when), and the
+- Sent proposals keep their prices; a price-book update creates a new version.
+- Structural adequacy is NEVER computed — an engineer signs off (who + when), and the
   disclaimer travels with every structure-bearing output.
-- ₹ uses Indian grouping (lakh/crore) in every locale; kW/kWh/kWp are never translated.
-- Read + export always work regardless of billing state. Never hold data hostage.
-- Server assigns all business identifiers. No feature flags — entitlements are the only gating.
-
-## Testing
-Deliberately thin by owner decision: `tests/invariants/` (the locked set) + on-demand
-`scripts/`. Nothing else, ever, without explicit owner approval.
+- ₹ uses Indian grouping in every locale; kW/kWh/kWp are never translated.
+- Read + export work regardless of billing state. Never hold data hostage.
+- The server assigns business identifiers. No feature flags — entitlements are the only gating.
 
 ## Process
-- Edit/Write tools for ALL file changes. In-place stream edits are blocked by a hook.
-- **NO UNIT TESTS. Never create a `.test.*` or `.spec.*` file** in any app or package
-  (owner directive 2026-07-29 — a testing program comes after the product is complete).
-  The only executable checks are `tests/invariants/` and on-demand `scripts/`. Verify
-  features by RUNNING them (/verify-app). Adding any test needs an explicit owner request.
-- **Files ≲450 lines, split by RESPONSIBILITY.** The new file is named for what it does
-  (`auth.invites.service.ts`, `login.countdown.ts`) — NEVER `*-part2`, `*2`, `*-extra`,
-  `*-continued`. A split needing a numeric suffix is the wrong split.
-- **React: presentation and logic live in different files.** Container holds data, state
-  and handlers; presentational components take props and return markup. Detail:
-  `.claude/rules/ui-adherence.md`.
-- **Config comes from `@heliogrid/env`, the ONLY package that reads a raw source.** Schemas
-  live in `packages/env/src/schema/` (one per consumer: api, worker, invariants, web, mobile,
-  plus shared `fragments.ts`), reached through three entry modules — `@heliogrid/env/server`,
-  `/web`, `/native`. Each app's own env file only decides what a failure means. Adding a
-  variable edits a schema there and `.env.example` — nothing else. Enforced by Biome
-  `noProcessEnv` + `pnpm check:env` + the turbo `env` boundary tag. No secret literal in code.
-- **Git is manual.** Commit when the user asks. Create branches or PRs ONLY on an explicit
-  user command — never open a PR or push unprompted.
-- **Mechanism order: type → lint rule → instruction → (script only by owner ruling).**
-  A script encodes today's tree and rots when the tree changes; this repo has lost real time
-  to a bash array that expanded to garbage, an unmatched zsh glob that aborted a command so
-  grep printed nothing, and an unquoted `$VAR` that filtered nothing. Prefer a Biome rule:
-  versioned with the toolchain, AST-aware, reports at the line. **Do not add new checker
-  scripts.** The existing ones stay; each new one needs an owner ruling saying why a type or
-  a lint rule cannot hold it.
-- Match surrounding style; comments only for constraints code can't express.
 
-Laws 1–9, the decision hierarchy and stop-and-ask triggers: `.claude/rules/00-laws.md`
-(auto-loads, no `paths:` frontmatter) · layer law: each package's CLAUDE.md · governance:
-docs/17 · product truth: docs/15 rulings + the module's specs/ extraction.
+- **No unit tests.** Never a `.test.*` or `.spec.*` file (owner directive 2026-07-29). The only
+  executable checks are `tests/invariants/`. Verify by running the thing.
+- **Files ≲450 lines, split by responsibility.** Name the new file for what it does — never
+  `*-part2`, `*2`, `*-extra`. A split needing a number is the wrong split.
+- **Presentation and logic in different files.** Detail: `.claude/rules/ui-adherence.md`.
+- **Config comes from `@heliogrid/env`** — the only package that reads a raw source. Adding a
+  variable edits a schema there and `.env.example`, nothing else.
+- **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
+  and rots. Do not add new checker scripts; a new one needs an owner ruling saying why no type
+  and no lint rule can hold it.
+- **Git is manual.** Commit when asked. Branches and PRs only on explicit command.
+- **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
+  fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
+  happens only when the owner asks for it by name.
+- Edit/Write for all file changes. Match surrounding style; comment only what code cannot say.
+
+## Where things are
+
+Laws 1–9 and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads).
+Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings plus the
+module's `specs/` extraction. Layer law: each package's own CLAUDE.md.

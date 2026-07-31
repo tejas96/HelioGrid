@@ -213,5 +213,24 @@ if [ -n "$untranslated" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated'
+# ── 8. Screens compose from @heliogrid/ui ───────────────────────────────────
+# The rule existed in apps/web/CLAUDE.md ("Import UI ONLY from @heliogrid/ui index",
+# ".hg-* scaffold is legacy") and nothing enforced it. OnboardingScreen shipped with 12 raw
+# hg-* classes and ZERO ui imports through an implementation, a task review and a whole-branch
+# review — because every gate we had checks SHAPE (hex, line count, import graph) and none
+# checks whether the design system is actually used. That is the gap this closes.
+#
+# design-reference is exempt BY PATH: it demonstrates raw token values, which is its job.
+legacy=$(grep -rlE 'className="[^"]*\bhg-' apps/web/features --include='*.tsx' 2>/dev/null \
+         | grep -v '^apps/web/features/design-reference/')
+if [ -n "$legacy" ]; then
+  printf 'LEGACY hg-* SCAFFOLD in a feature screen — compose from @heliogrid/ui:\n'
+  for f in $legacy; do printf '  %s\n' "$f"; done
+  echo '  packages/ui has 28 components (Card, Input, Button, SegmentedControl, …). The'
+  echo '  .hg-* classes are pre-component scaffold; a screen using them is not on the design'
+  echo '  system, so a token change does not reach it. apps/web/CLAUDE.md §Local conventions.'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, screens on the design system'
 exit $fail

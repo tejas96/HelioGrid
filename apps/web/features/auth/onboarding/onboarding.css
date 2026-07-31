@@ -1,7 +1,26 @@
-/* Onboarding route layout. Screens own layout via tokens here — never inline `style`
-   (apps/web/CLAUDE.md §Local conventions — styling layers). */
-
-.ob-input {
-  margin-top: var(--sp-2);
-  font-family: var(--font-sans);
+/* Screen layout only — every visual value is a token, and every control is a
+   @heliogrid/ui component (apps/web/CLAUDE.md: hg-* scaffold is legacy). */
+.ob-shell {
+  width: 100%;
+  max-width: 28rem;
+}
+.ob-overline {
+  font: var(--f-overline);
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.ob-title {
+  font: var(--f-h1);
+  color: var(--text-primary);
+  margin-block: var(--sp-2) var(--sp-5);
+}
+.ob-field-label {
+  display: block;
+  font: var(--f-body-sm);
+  color: var(--text-secondary);
+  margin-block: var(--sp-4) var(--sp-2);
+}
+.ob-submit {
+  margin-block-start: var(--sp-6);
 }
