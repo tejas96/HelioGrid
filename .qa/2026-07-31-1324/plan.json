@@ -1,0 +1,217 @@
+{
+  "plan_id": "2026-07-31-1324",
+  "slice": "Task 6 mechanism probe — clean tree, no diff to scope from. Web is owner-accepted BLOCKED (another chat's Next.js server holds :3000, HTTP 500 on every route); this run deliberately covers api, db, ios, android only, one full four-quadrant cell each, to prove agy executes a real multi-step artifact-backed plan reliably.",
+  "blast_radius": {
+    "screens": ["mobile login (phone entry)"],
+    "endpoints": ["/health", "/health/ready", "/me", "/api/auth/phone-number/send-otp"],
+    "tables": ["tenants", "organization", "member", "user"]
+  },
+  "notes": [
+    "API is NOT on :3001 as the runbook default states. Port 3001 is a stray next-server (web) process. The real @heliogrid/api process listens on :8080 (ENV.PORT). All API steps below target :8080 and the runbook Environment block is overridden accordingly.",
+    "Money reconciliation (BOM<->proposal<->tranches) is part of the always-on core per test-matrix.md but is deliberately OUT of this modest 4-surface run: no proposal/BOM data exists in this dev DB and authoring a filler step for it would violate the brief's 'no invented filler' instruction. Recorded here as an explicit scope gap, not silently omitted."
+  ],
+  "steps": [
+    {
+      "id": "API-HAPPY-001",
+      "surface": "api",
+      "quadrant": "happy",
+      "instructions": [
+        "curl -s -i http://localhost:8080/health",
+        "save the full raw response (headers + body) to API-HAPPY-001.response.txt"
+      ],
+      "expected": "HTTP 200, JSON body {\"status\":\"ok\",\"service\":\"heliogrid-api\",\"version\":...}",
+      "artifacts_required": ["API-HAPPY-001.response.txt"],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "API-EDGE-001",
+      "surface": "api",
+      "quadrant": "edge",
+      "instructions": [
+        "curl -s -i -X POST http://localhost:8080/api/auth/phone-number/send-otp -H 'Content-Type: application/json' -d '{\"phoneNumber\":\"+919876500099\"}'",
+        "phone number carries exactly PHONE_NSN_LENGTH=10 national digits after +91, the documented boundary",
+        "save the full raw response to API-EDGE-001.response.txt"
+      ],
+      "expected": "HTTP 200, JSON body {\"message\":\"code sent\"} — the exact-length boundary is accepted",
+      "artifacts_required": ["API-EDGE-001.response.txt"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "API-NEG-001",
+      "surface": "api",
+      "quadrant": "negative",
+      "instructions": [
+        "curl -s -i http://localhost:8080/me (no Authorization header, no session cookie)",
+        "save the full raw response to API-NEG-001.response.txt"
+      ],
+      "expected": "HTTP 401 with error envelope {\"error\":{\"code\":\"UNAUTHENTICATED\",\"message\":...,\"requestId\":...}} matching packages/contracts errorEnvelope shape — always-on auth core: unauthenticated request to a protected route is rejected",
+      "artifacts_required": ["API-NEG-001.response.txt"],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "API-ADV-001",
+      "surface": "api",
+      "quadrant": "adversarial",
+      "instructions": [
+        "curl -s -i -X POST http://localhost:8080/api/auth/phone-number/send-otp -H 'Content-Type: application/json' -d '{\"phoneNumber\":\"'\"'\"'; DROP TABLE users;--\"}'",
+        "save the full raw response to API-ADV-001.response.txt",
+        "then curl -s -i http://localhost:8080/health again and save to API-ADV-001.health-after.txt to prove the server survived and did not execute the payload"
+      ],
+      "expected": "SQL-shaped adversarial input in a JSON string field is rejected as a validation error (4xx) or otherwise safely handled — never a 500, never a dropped table. The follow-up /health call still returns 200 ok, proving the server is alive and users table intact.",
+      "artifacts_required": ["API-ADV-001.response.txt", "API-ADV-001.health-after.txt"],
+      "severity_if_failed": "blocker"
+    },
+
+    {
+      "id": "DB-HAPPY-001",
+      "surface": "db",
+      "quadrant": "happy",
+      "instructions": [
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select 'tenants', count(*) from tenants union all select 'organization', count(*) from organization union all select 'member', count(*) from member union all select 'user', count(*) from \\\"user\\\"\"",
+        "save the raw output to DB-HAPPY-001.out.txt"
+      ],
+      "expected": "Four rows, one per table, each a non-negative integer count, query completes without error",
+      "artifacts_required": ["DB-HAPPY-001.out.txt"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "DB-EDGE-001",
+      "surface": "db",
+      "quadrant": "edge",
+      "instructions": [
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select count(*) from invitation where status='expired'\"",
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select id from tenants order by \\\"id\\\" desc limit 1\" (last-row boundary of the tenants table)",
+        "save both outputs, labelled, to DB-EDGE-001.out.txt"
+      ],
+      "expected": "The zero/near-zero-row query (expired invitations) returns cleanly with no error even if the count is 0; the last-row boundary query returns exactly one row",
+      "artifacts_required": ["DB-EDGE-001.out.txt"],
+      "severity_if_failed": "minor"
+    },
+    {
+      "id": "DB-NEG-001",
+      "surface": "db",
+      "quadrant": "negative",
+      "instructions": [
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"update tenants set name = name where false\" 2>&1",
+        "save the full stderr/stdout verbatim to DB-NEG-001.out.txt"
+      ],
+      "expected": "permission denied for table tenants (or equivalent) — the qa_readonly role's read-only grant is enforced by postgres, not by convention",
+      "artifacts_required": ["DB-NEG-001.out.txt"],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "DB-ADV-001",
+      "surface": "db",
+      "quadrant": "adversarial",
+      "instructions": [
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select m.id, m.\\\"organizationId\\\" from member m where m.\\\"organizationId\\\" = '019f9af9-f7af-7158-8df4-43aa0f3f404a'\"",
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select count(*) from member where \\\"organizationId\\\" = '019fa3a7-b448-7ac6-801f-d25315fa5991' and id in (select id from member where \\\"organizationId\\\" = '019f9af9-f7af-7158-8df4-43aa0f3f404a')\" (cross-tenant probe: any member row of tenant B whose id also appears under tenant A must be zero)",
+        "save both outputs to DB-ADV-001.out.txt"
+      ],
+      "expected": "Tenant A's member rows are scoped only to organizationId 019f9af9-f7af-7158-8df4-43aa0f3f404a; the cross-tenant probe count is exactly 0 — no member row is reachable under both tenants",
+      "artifacts_required": ["DB-ADV-001.out.txt"],
+      "severity_if_failed": "blocker"
+    },
+
+    {
+      "id": "IOS-HAPPY-001",
+      "surface": "ios",
+      "quadrant": "happy",
+      "instructions": [
+        "xcrun simctl terminate booted com.heliogrid.app 2>/dev/null; xcrun simctl launch booted com.heliogrid.app",
+        "wait 2s for the login screen to settle",
+        "xcrun simctl io booted screenshot IOS-HAPPY-001.png"
+      ],
+      "expected": "App launches without crashing and lands on the login/phone-entry screen, fully rendered (no blank/white screen, no error boundary)",
+      "artifacts_required": ["IOS-HAPPY-001.png"],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "IOS-EDGE-001",
+      "surface": "ios",
+      "quadrant": "edge",
+      "instructions": [
+        "on the login screen, tap the phone number field and type exactly 10 digits (the PHONE_NSN_LENGTH boundary), e.g. 9876500099, using idb ui tap + idb ui text",
+        "xcrun simctl io booted screenshot IOS-EDGE-001.png"
+      ],
+      "expected": "The field accepts exactly 10 digits and the Send OTP control becomes enabled/active — the exact-length boundary is the accept case, not the reject case",
+      "artifacts_required": ["IOS-EDGE-001.png"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "IOS-NEG-001",
+      "surface": "ios",
+      "quadrant": "negative",
+      "instructions": [
+        "clear the phone field, type a too-short number (e.g. 987), attempt to tap Send OTP",
+        "xcrun simctl io booted screenshot IOS-NEG-001.png"
+      ],
+      "expected": "An inline validation error is shown in the field's language (not a raw error code), OR Send OTP stays disabled — no crash, no silent no-op with no feedback",
+      "artifacts_required": ["IOS-NEG-001.png"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "IOS-ADV-001",
+      "surface": "ios",
+      "quadrant": "adversarial",
+      "instructions": [
+        "with the app foregrounded on the login screen, background it (xcrun simctl for home / idb ui) for 3s, then relaunch/foreground it",
+        "xcrun simctl io booted screenshot IOS-ADV-001.png"
+      ],
+      "expected": "App resumes to the same login screen state (not a crash, not a blank screen, not reset to a splash loop) after being backgrounded and foregrounded",
+      "artifacts_required": ["IOS-ADV-001.png"],
+      "severity_if_failed": "major"
+    },
+
+    {
+      "id": "AND-HAPPY-001",
+      "surface": "android",
+      "quadrant": "happy",
+      "instructions": [
+        "adb shell am force-stop com.heliogrid.app; adb shell monkey -p com.heliogrid.app -c android.intent.category.LAUNCHER 1",
+        "wait 2s for the login screen to settle",
+        "adb exec-out screencap -p > AND-HAPPY-001.png"
+      ],
+      "expected": "App launches without crashing and lands on the login/phone-entry screen, fully rendered",
+      "artifacts_required": ["AND-HAPPY-001.png"],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "AND-EDGE-001",
+      "surface": "android",
+      "quadrant": "edge",
+      "instructions": [
+        "on the login screen, tap the phone number field and type exactly 10 digits (the PHONE_NSN_LENGTH boundary), e.g. 9876500099, using adb shell input tap + adb shell input text",
+        "adb exec-out screencap -p > AND-EDGE-001.png"
+      ],
+      "expected": "The field accepts exactly 10 digits and the Send OTP control becomes enabled/active",
+      "artifacts_required": ["AND-EDGE-001.png"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "AND-NEG-001",
+      "surface": "android",
+      "quadrant": "negative",
+      "instructions": [
+        "clear the phone field, type a too-short number (e.g. 987), attempt to tap Send OTP",
+        "adb exec-out screencap -p > AND-NEG-001.png"
+      ],
+      "expected": "An inline validation error is shown, OR Send OTP stays disabled — no crash, no silent no-op",
+      "artifacts_required": ["AND-NEG-001.png"],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "AND-ADV-001",
+      "surface": "android",
+      "quadrant": "adversarial",
+      "instructions": [
+        "rotate the emulator to landscape (adb shell settings put system user_rotation 1 or equivalent), wait 1s",
+        "adb exec-out screencap -p > AND-ADV-001.png",
+        "rotate back to portrait (adb shell settings put system user_rotation 0)"
+      ],
+      "expected": "Landscape layout renders without clipping, overlap, or crash — login screen content is still fully visible and usable",
+      "artifacts_required": ["AND-ADV-001.png"],
+      "severity_if_failed": "major"
+    }
+  ]
+}

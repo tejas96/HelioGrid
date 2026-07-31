@@ -1,0 +1,97 @@
+{
+  "run_id": "2026-07-31-1324",
+  "summary": {
+    "total": 16,
+    "pass": 11,
+    "fail": 5,
+    "inconclusive": 0
+  },
+  "passes": [
+    "API-HAPPY-001",
+    "API-EDGE-001",
+    "API-ADV-001",
+    "DB-HAPPY-001",
+    "DB-EDGE-001",
+    "DB-NEG-001",
+    "DB-ADV-001",
+    "IOS-HAPPY-001",
+    "IOS-EDGE-001",
+    "IOS-NEG-001",
+    "IOS-ADV-001"
+  ],
+  "failures": [
+    {
+      "id": "API-NEG-001",
+      "surface": "api",
+      "quadrant": "negative",
+      "steps_run": [
+        "curl -s -i http://localhost:8080/me (no Authorization header, no session cookie)",
+        "save the full raw response to API-NEG-001.response.txt"
+      ],
+      "expected": "HTTP 401 with error envelope {\"error\":{\"code\":\"UNAUTHENTICATED\",\"message\":...,\"requestId\":...}} matching packages/contracts errorEnvelope shape — always-on auth core: unauthenticated request to a protected route is rejected",
+      "actual": "HTTP/1.1 404 Not Found with JSON body {\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"Cannot GET /me\",\"requestId\":\"19f78355-26d3-4afb-a2a5-5b3f97646be6\"}}",
+      "artifacts": [
+        "API-NEG-001.response.txt"
+      ]
+    },
+    {
+      "id": "AND-HAPPY-001",
+      "surface": "android",
+      "quadrant": "happy",
+      "steps_run": [
+        "adb shell am force-stop com.heliogrid.app; adb shell monkey -p com.heliogrid.app -c android.intent.category.LAUNCHER 1",
+        "wait 2s for the login screen to settle",
+        "adb exec-out screencap -p > AND-HAPPY-001.png"
+      ],
+      "expected": "App launches without crashing and lands on the login/phone-entry screen, fully rendered",
+      "actual": "App crashed on launch displaying RedBox error screen: \"Can't find ViewManager 'RNSScreenContentWrapper' nor 'RCTRNScreenContentWrapper' in ViewManagerRegistry\"",
+      "artifacts": [
+        "AND-HAPPY-001.png"
+      ]
+    },
+    {
+      "id": "AND-EDGE-001",
+      "surface": "android",
+      "quadrant": "edge",
+      "steps_run": [
+        "on the login screen, tap the phone number field and type exactly 10 digits (the PHONE_NSN_LENGTH boundary), e.g. 9876500099, using adb shell input tap + adb shell input text",
+        "adb exec-out screencap -p > AND-EDGE-001.png"
+      ],
+      "expected": "The field accepts exactly 10 digits and the Send OTP control becomes enabled/active",
+      "actual": "App was stuck on RedBox crash screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\"); phone input field was not rendered or interactable",
+      "artifacts": [
+        "AND-EDGE-001.png"
+      ]
+    },
+    {
+      "id": "AND-NEG-001",
+      "surface": "android",
+      "quadrant": "negative",
+      "steps_run": [
+        "clear the phone field, type a too-short number (e.g. 987), attempt to tap Send OTP",
+        "adb exec-out screencap -p > AND-NEG-001.png"
+      ],
+      "expected": "An inline validation error is shown, OR Send OTP stays disabled — no crash, no silent no-op",
+      "actual": "App was stuck on RedBox crash screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\"); phone input field was not rendered or interactable",
+      "artifacts": [
+        "AND-NEG-001.png"
+      ]
+    },
+    {
+      "id": "AND-ADV-001",
+      "surface": "android",
+      "quadrant": "adversarial",
+      "steps_run": [
+        "rotate the emulator to landscape (adb shell settings put system user_rotation 1 or equivalent), wait 1s",
+        "adb exec-out screencap -p > AND-ADV-001.png",
+        "rotate back to portrait (adb shell settings put system user_rotation 0)"
+      ],
+      "expected": "Landscape layout renders without clipping, overlap, or crash — login screen content is still fully visible and usable",
+      "actual": "Login screen content was not rendered; app remained on RedBox error screen (\"Can't find ViewManager 'RNSScreenContentWrapper'...\")",
+      "artifacts": [
+        "AND-ADV-001.png"
+      ]
+    }
+  ],
+  "inconclusive": []
+}
