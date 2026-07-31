@@ -1,5 +1,6 @@
 'use client';
 import { COUNTRY_CALLING_CODE, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
+import type { LoginStep, OtpFailure } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { authClient } from '../../../../lib/auth-client';
@@ -9,7 +10,7 @@ import {
   CALL_OFFER_AFTER_RESENDS,
   DONE_REDIRECT_DWELL_MS,
 } from '../constants';
-import type { LoginViewModel, OtpFailure, Step } from '../types';
+import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
 
 /** Login controller — phone → OTP → done (docs/modules/auth-tenancy/specs/login.md is law).
@@ -18,7 +19,7 @@ export function useLogin(): LoginViewModel {
   const router = useRouter();
   const online = useOnline();
 
-  const [step, setStep] = useState<Step>('phone');
+  const [step, setStep] = useState<LoginStep>('phone');
   const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(false);

@@ -1,8 +1,8 @@
 'use client';
+import type { OtpFailure } from '@heliogrid/domain';
 import { Card, IconCircle, OtpInput, Spinner, TextLink } from '@heliogrid/ui';
 import { Trans, useLingui } from '@lingui/react';
 import { Phone } from 'lucide-react';
-import type { OtpFailure } from '../types';
 import { OtpErrorRow } from './OtpErrorRow';
 
 interface OtpStepProps {

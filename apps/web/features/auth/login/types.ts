@@ -1,11 +1,8 @@
+import type { LoginStep, OtpFailure } from '@heliogrid/domain';
 import type { FormEvent } from 'react';
 
-export type Step = 'phone' | 'otp' | 'done';
-/** mismatch = INVALID_OTP family (wrong/expired, 4xx); the others are transport/server. */
-export type OtpFailure = 'mismatch' | 'verify-failed' | 'resend-failed';
-
 export interface LoginViewModel {
-  step: Step;
+  step: LoginStep;
   phone: string;
   online: boolean;
   sending: boolean;

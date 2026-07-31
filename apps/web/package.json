@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
     "@heliogrid/i18n": "workspace:*",
     "@heliogrid/tokens": "workspace:*",

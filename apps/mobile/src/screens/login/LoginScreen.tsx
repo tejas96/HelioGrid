@@ -1,4 +1,5 @@
 import { COUNTRY_CALLING_CODE, OTP_LENGTH, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
+import type { LoginStep, OtpFailure } from '@heliogrid/domain';
 import { theme } from '@heliogrid/tokens/theme';
 import { Trans, useLingui } from '@lingui/react';
 import { Check, CircleAlert, Phone } from 'lucide-react-native';
@@ -37,22 +38,19 @@ const CALL_CARD_AFTER_RESENDS = 2;
 // Q9: the spec leaves the done-step dwell unspecified — brief beat, then hand off.
 const DONE_DWELL_MS = 900;
 
-type Step = 'phone' | 'otp' | 'done';
-
 /** 5+5 grouping in every locale (digits never translate). */
 const formatPhone = (p: string) => `${p.slice(0, 5)} ${p.slice(5)}`;
 
 export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
   const { i18n } = useLingui();
   const insets = useSafeAreaInsets();
-  const [step, setStep] = useState<Step>('phone');
+  const [step, setStep] = useState<LoginStep>('phone');
   const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
   const [sendFailed, setSendFailed] = useState(false);
   const [offline, setOffline] = useState(false);
   const [otp, setOtp] = useState('');
-  // mismatch = INVALID_OTP family (wrong/expired, 4xx); transport = server/5xx (web parity).
-  const [otpFailure, setOtpFailure] = useState<'mismatch' | 'transport' | null>(null);
+  const [otpFailure, setOtpFailure] = useState<OtpFailure | null>(null);
   const [verifying, setVerifying] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [resendCount, setResendCount] = useState(0);
@@ -141,7 +139,7 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
         if (stepRef.current !== 'otp') return; // user changed number while in flight
         if (error) {
           // 4xx = wrong/expired code (digits retained); 5xx/opaque = transport (web parity)
-          setOtpFailure(error.status && error.status < 500 ? 'mismatch' : 'transport');
+          setOtpFailure(error.status && error.status < 500 ? 'mismatch' : 'verify-failed');
           return;
         }
         setStep('done');
@@ -282,7 +280,7 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
         </View>
       ) : otpFailure === 'mismatch' ? (
         errorRow(<Trans id="That code doesn’t match. Check it and try again." />)
-      ) : otpFailure === 'transport' ? (
+      ) : otpFailure === 'verify-failed' ? (
         errorRow(<Trans id="Couldn't check the code. Try again." />)
       ) : null}
       <View style={styles.resendRow}>

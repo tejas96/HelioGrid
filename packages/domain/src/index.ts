@@ -13,10 +13,10 @@
  * rules that were inert until this package existed, because they targeted a path that
  * matched nothing.
  *
- * Deliberately empty of behaviour. The login state machine was to seed it, but auth is being
- * rebuilt (auth-tenancy ruling 6), so it arrives with that rebuild; formatters and the invite
- * and role invariants land with the first slice that needs them (Law 9). The package exists
- * now so the purity rules are live BEFORE the code they must police, rather than arriving in
- * the same change.
+ * Seeded 2026-08-01 with the login flow's shared TYPES only — the two platforms had each
+ * authored their own copy and had already drifted. The login state MACHINE (reducer,
+ * transitions) still arrives with the auth rebuild (auth-tenancy ruling 6); formatters and the
+ * invite and role invariants land with the first slice that needs them (Law 9). The package
+ * existed before any of it so the purity rules were live BEFORE the code they must police.
  */
-export {};
+export type { LoginStep, OtpFailure } from './auth/login-state';

@@ -1,7 +1,7 @@
 'use client';
+import type { OtpFailure } from '@heliogrid/domain';
 import { Trans } from '@lingui/react';
 import { CircleAlert } from 'lucide-react';
-import type { OtpFailure } from '../types';
 
 interface OtpErrorRowProps {
   failure: OtpFailure | null;

@@ -32,11 +32,16 @@ A business enum both layers need is defined HERE as a pure union; contracts buil
   `package-index-only`).
 
 ## Landmines
-- The package is currently EMPTY of behaviour, and that is deliberate (ADR-0021). It exists
-  so `domain-purity-no-layers` and `domain-purity-no-frameworks` are live before the code
-  they police — until this package existed, both rules targeted a path matching nothing and
-  a green cruise proved less than it looked like it did.
-- First occupants, in order: the login state machine (arrives with the auth rebuild —
+- The package held no behaviour until 2026-08-01, and that was deliberate (ADR-0021). It
+  existed so `domain-purity-no-layers` and `domain-purity-no-frameworks` were live before the
+  code they police — until this package existed, both rules targeted a path matching nothing
+  and a green cruise proved less than it looked like it did.
+- **`auth/login-state.ts` holds TYPES only, not the machine.** It landed early because the
+  two platforms had each hand-authored the same unions and had already drifted: RN declared
+  `'mismatch' | 'transport'` under a comment claiming "web parity" while web declared
+  `'mismatch' | 'verify-failed' | 'resend-failed'`. Unifying the types does NOT close the
+  behavioural gap — RN still never produces `resend-failed` (docs/13 UXG-PAR-01).
+- Remaining occupants, in order: the login state MACHINE (arrives with the auth rebuild —
   auth-tenancy ruling 6), then `formatInr` + E.164 display, then the invite/role invariants
   currently embedded in `apps/api` services.
 
