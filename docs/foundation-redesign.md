@@ -123,7 +123,7 @@ AGENTS.md                        ● one line: "CLAUDE.md"
     lenses/SKILL.md              ● five-lens review orchestration (§7.3)
     contract-change/SKILL.md     ● contract-first procedure
     migration/SKILL.md           ● append-only migration procedure
-    qa/SKILL.md                  ● plan in Claude, execute in Gemini, loop until clean
+    qa/SKILL.md                  ● plan in Claude, execute in agy, loop until clean
     doc-sync/SKILL.md            ● Law 8 same-commit doc updates + anchor check
     pr/SKILL.md                  ● branch/commit/PR preparation (§8)
   hooks/
@@ -241,10 +241,10 @@ each) are the only permanent context cost.
 |---|---|---|
 | `/slice` | user or model | The slice loop (§7.2): context loading recipe, contract-first order, lockstep, gates, verification, lenses, doc-sync, roadmap update. |
 | `/roadmap` | user | Module kickoff (§7.1): specs extraction from mockups + d-decisions, roadmap authoring from `docs/modules/_template.md`, forward-compat register check. |
-| `/lenses` | via /slice | Five-lens review orchestration: spawns the three lens subagents in parallel, runs `/code-review` for the senior-engineer lens, checks product-owner traceability itself; every lens must produce findings or say why none. |
+| `/lenses` | via /slice | Four-lens review orchestration: spawns the two lens subagents in parallel, runs `/code-review` for the senior-engineer lens, checks product-owner traceability itself; every lens must produce findings or say why none. |
 | `/contract-change` | model (auto, via contracts.md rule) | Edit contract → `pnpm --filter @heliogrid/contracts openapi` → enum-parity invariant → sweep typed clients (web/mobile/api) → oasdiff vs main for breaking changes. |
 | `/migration` | model (auto, via db-schema.md rule) | New migration file only; tenant_id or allowlist; RLS policy shape; `pnpm --filter @heliogrid/db migrate`; invariants run. |
-| `/qa` | via /slice | Claude computes a diff-derived blast radius and authors a four-quadrant plan; Gemini 3.6 Flash executes it across web, API, database, iOS and Android; Claude verifies artifacts, triages, fixes, and loops until a clean certify pass or a hard stop at three rounds. |
+| `/qa` | via /slice | Claude computes a diff-derived blast radius and authors a four-quadrant plan; Antigravity CLI (agy) executes it across web, API, database, iOS and Android; Claude verifies artifacts, triages, fixes, and loops until a clean certify pass or a hard stop at three rounds. |
 | `/doc-sync` | via /slice | Law 8: list docs invalidated by the diff, update in same commit; run the anchor-checker script; append docs/13 rows for UX gaps designed in-slice. |
 | `/pr` | user | §8: branch naming, commit format with VERIFIED evidence, PR body from template, changelog line in module roadmap. |
 
@@ -255,7 +255,7 @@ rules can direct Claude into them mid-task. Skills that only orchestrate other t
 
 ### 3.5 Subagents (the lens panel)
 
-Three custom reviewers under `.claude/agents/` (flat `<name>.md` files), each read-only +
+Two custom reviewers under `.claude/agents/` (flat `<name>.md` files), each read-only +
 Bash, each pointing at the relevant specs, run in parallel by `/lenses`:
 
 - **ux-lens** — compares the diff against the mockup files named in the roadmap task and the
@@ -269,7 +269,7 @@ Bash, each pointing at the relevant specs, run in parallel by `/lenses`:
 
 Senior-engineer lens = the bundled `/code-review` skill over the slice diff. Product-owner
 lens = `/lenses` itself verifying the task's D-decision traceability and
-complete-but-minimal scope. This keeps five genuinely different failure-mode detectors
+complete-but-minimal scope. This keeps four genuinely different failure-mode detectors
 without five bespoke prompts drifting.
 
 ### 3.6 Hooks (deterministic, minimal, fast)

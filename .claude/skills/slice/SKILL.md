@@ -44,7 +44,7 @@ shared package, blast radius, and the edge cases you will and will not handle. E
 | Schema | `/migration` | this module's tables only (Law 9) |
 | Build | web + RN together (Law 7) | wire it into the flows that reach it — never orphan a screen |
 | Gates | the command list in `CLAUDE.md` | all green before you look at it |
-| Verify | `/qa` | plan → Gemini executes all five surfaces → fix → loop until clean; green gates never prove behaviour |
+| Verify | `/qa` | plan → agy executes all five surfaces → fix → loop until clean; green gates never prove behaviour |
 | Review | `/lenses` | resolve every critical finding |
 | Docs | `/doc-sync` | same commit as the code (Law 8) |
 | Evidence | roadmap row → `VERIFIED` | say what you ran and what you saw; a `VERIFIED` row with an empty Evidence cell is a defect a reviewer rejects |
