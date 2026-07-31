@@ -65,10 +65,11 @@ custom roles (D29 excluded).
 
 ## Carried debt — unwrapped copy (found 2026-07-31 by `pnpm check:adherence`)
 
-`apps/web/app/home/page.tsx` and `apps/web/app/onboarding/page.tsx` render user-visible English
-directly instead of through Lingui (`<Trans id="…">` / `i18n._()`), which docs/10 §7 and the
-EN/HI/MR product line forbid. They are listed in `COPY_DEBT` in `scripts/check-adherence.sh`
-so the gate stays honest rather than silent — a NEW screen with the same defect fails.
+`apps/web/features/home/HomeScreen.tsx` and `apps/web/features/auth/onboarding/OnboardingScreen.tsx`
+render user-visible English directly instead of through Lingui (`<Trans id="…">` / `i18n._()`),
+which docs/10 §7 and the EN/HI/MR product line forbid. They are listed in `COPY_DEBT` in
+`scripts/check-adherence.sh` so the gate stays honest rather than silent — a NEW screen with the
+same defect fails.
 
 They are not wrapped now because both screens are rebuilt by this module (ruling 6), and
 translating markup that is about to be deleted would add catalog entries for strings that will
