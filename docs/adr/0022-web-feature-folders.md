@@ -18,7 +18,17 @@ nothing without a satellite that belongs to neither.
 `app/` is Next.js ROUTING ONLY. A `page.tsx` is a controller of **at most 50 lines**: it reads
 route params, calls one controller hook, and renders one screen component. Everything else —
 screens, sub-components, hooks, CSS — lives in `apps/web/features/<feature>/`, exposed through
-a single `index.ts` barrel that is the only path `app/` may import.
+an `index.ts` barrel that is the only path `app/` may import.
+
+**Amended 2026-08-01 — barrels exist at TWO levels, and must not mix server and client.**
+`app/` may import `features/<feature>/index.ts` or a screen barrel one level down,
+`features/<feature>/<screen>/index.ts`. Nothing deeper: `<screen>/components/index.ts`, hooks
+and constants stay internal. The second level is not a convenience — a barrel that re-exports
+both a Server Component and a `'use client'` screen attaches the client screen's whole chunk to
+every page that reaches the barrel, and no tree-shaking removes it. That cost `/design` 147 kB
+against a 102 kB baseline until `GalleryScreen` moved to `features/design-reference/gallery/`.
+Rule of thumb: one barrel per feature until a screen is a different rendering kind or the
+feature grows past a couple of screens, then give the screen its own.
 
 A feature is named for the MODULE that owns it (`docs/modules/<module>.md`), which keeps Law 6
 traceability intact and makes "where does this go?" answerable without judgement.
@@ -35,6 +45,11 @@ not a capability.
   imports and comments do not eat the budget, and it is versioned with the toolchain.
 - A capability's files change together and now live together; auth's three screens can share
   `features/auth/shared/` without a satellite that belongs to no route.
+- `apps/web/package.json` declares `"sideEffects": ["**/*.css"]`. Every screen imports its own
+  stylesheet, and a bare `import './x.css'` is a side effect, so without this webpack must keep
+  every module a barrel names — all three auth routes shipped an identical 183 kB because each
+  pulled all three screens. The declaration is true of this app (every side-effect import under
+  `apps/web` is CSS) and must be rechecked if that ever stops being the case.
 - One more indirection: a reader following a route now opens two files instead of one. Accepted
   — it is the same trade the container/presentational split already makes, and 388 lines in a
   route folder was not actually one file's worth of reading.

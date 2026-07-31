@@ -16,8 +16,11 @@ used by: nobody
 ## Local conventions
 - **`app/` ROUTES, `features/` OWNS.** A `page.tsx` body is ≤50 lines (Biome
   `noExcessiveLinesPerFunction`): read route params, call one controller hook, render one
-  screen. Everything else lives in `features/<feature>/`, imported ONLY through its `index.ts`
-  barrel (dependency-cruiser). A feature is named for the CAPABILITY it owns; where a
+  screen. Everything else lives in `features/<feature>/`, imported ONLY through a barrel
+  (dependency-cruiser) — either `features/<feature>/index.ts` or a screen barrel one level
+  down, `features/<feature>/<screen>/index.ts`. Nothing deeper.
+  **A barrel must not re-export both a Server Component and a `'use client'` screen** — see
+  Landmines. A feature is named for the CAPABILITY it owns; where a
   `docs/modules/` roadmap exists for that capability, use its name (`auth` ↔ `auth-tenancy`).
 - **apps/mobile is NOT migrating to this shape** — RN keeps `src/screens/<name>/`, its own
   equivalent; the asymmetry is deliberate (ADR-0022).
@@ -38,6 +41,16 @@ used by: nobody
 - /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
 
 ## Landmines
+- **A feature barrel must not mix a Server Component and a `'use client'` screen** (2026-08-01).
+  Next attaches the client screen's chunk to EVERY page that reaches the barrel, used or not,
+  and tree-shaking cannot remove it: `/design` shipped the entire component gallery at 147 kB
+  against a 102 kB baseline. Give the client screen its own barrel
+  (`features/<feature>/<screen>/index.ts`). Symptom to recognise: two routes reporting the
+  IDENTICAL First Load JS — that is one bundle serving both, not a coincidence.
+- **`"sideEffects": ["**/*.css"]` in `package.json` is load-bearing** (2026-08-01). Each screen
+  does `import './x.css'`, which is a side effect, so without the declaration webpack keeps
+  every module a barrel names — all three auth routes shipped an identical 183 kB. True today
+  because every side-effect import under `apps/web` is CSS; recheck if you add a non-CSS one.
 - **Never hand-roll `fetch` for product APIs.** `lib/auth-client.ts` used to export an
   untyped `api<T>()`; the onboarding screen used it with a hand-declared response type, so
   contract drift was invisible to typecheck. `lib/api-client.ts` is the ONLY path — it

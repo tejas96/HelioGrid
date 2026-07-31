@@ -91,12 +91,20 @@ module.exports = {
       severity: 'error',
       comment:
         'apps/web/app is ROUTING ONLY (ADR-0022). A page may import a feature through its ' +
-        'index barrel — never a deep path into the feature. A deep import re-creates the ' +
-        'scattering the feature folder exists to remove, and makes the barrel a lie.',
+        'index barrel, or through a SCREEN barrel one level down — never a deep path into the ' +
+        'feature. A deep import re-creates the scattering the feature folder exists to remove, ' +
+        'and makes the barrel a lie. The screen barrel is not a loophole, it is required: a ' +
+        "barrel that re-exports both a Server Component and a 'use client' screen puts the " +
+        "client one's whole chunk into every page reaching the barrel (/design was 147 kB " +
+        'instead of 102 kB), and no tree-shaking removes it. Two levels only — ' +
+        '`<feature>/index` and `<feature>/<screen>/index`; `<screen>/components/index` and ' +
+        'anything deeper stay internal.',
       from: { path: '^apps/web/app/' },
       to: {
         path: '^apps/web/features/([^/]+)/.+',
-        pathNot: '^apps/web/features/[^/]+/index\\.(ts|tsx)$',
+        // Alternation, NOT `([^/]+/)?index` — a `+` nested inside a `?` is star-height 2 and
+        // dependency-cruiser's safe-regex check refuses to run the whole ruleset over it.
+        pathNot: '^apps/web/features/[^/]+/(index|[^/]+/index)\\.(ts|tsx)$',
       },
     },
     {
