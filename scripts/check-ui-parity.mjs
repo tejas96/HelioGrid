@@ -97,6 +97,40 @@ const PLATFORM_OWNED = new Set(['style']);
  * `unanalysable` is returned separately and FAILS the gate: a component the parser cannot read
  * must be loud, never silently empty. That distinction is the whole lesson of this rewrite.
  */
+/** Resolved, platform-own-code-only property names for one `*Props` declaration. */
+function resolvedOwnProps(checker, node) {
+  const symbol = checker.getSymbolAtLocation(node.name);
+  const type = symbol && checker.getDeclaredTypeOfSymbol(symbol);
+  const props = type ? checker.getPropertiesOfType(type) : undefined;
+  if (!props?.length) return undefined;
+  const set = new Set();
+  for (const p of props) {
+    const declFile = p.declarations?.[0]?.getSourceFile().fileName ?? '';
+    // Inherited from the platform (DOM lib, react, react-native) — not our surface.
+    if (declFile.includes('node_modules') || declFile.includes('/typescript/lib/')) continue;
+    set.add(p.getName());
+  }
+  return set;
+}
+
+/** Visits one top-level node, recording it into `byComponent`/`unanalysable` if it's a `*Props` decl. */
+function visitPropsDeclaration(node, checker, file, byComponent, unanalysable) {
+  const declName = node.name?.text;
+  if (!declName?.endsWith('Props')) return;
+  if (!ts.isInterfaceDeclaration(node) && !ts.isTypeAliasDeclaration(node)) return;
+  const component = declName.replace(/Props$/, '');
+  const resolved = resolvedOwnProps(checker, node);
+  if (!resolved) {
+    // Zero resolved properties is either a genuinely empty type or a type the checker
+    // could not resolve. Neither should silently mean "nothing to compare".
+    unanalysable.push(`${component} (${file})`);
+    return;
+  }
+  const set = byComponent.get(component) ?? new Set();
+  for (const name of resolved) set.add(name);
+  byComponent.set(component, set);
+}
+
 function authoredProps(patterns) {
   // api-parity.ts declares assertion helpers (`MissingContractProps`) that end in `Props` but
   // are not component APIs. They are the gate's own scaffolding, not part of the surface.
@@ -115,29 +149,9 @@ function authoredProps(patterns) {
   for (const file of files) {
     const sf = program.getSourceFile(file);
     if (!sf) continue;
-    ts.forEachChild(sf, (node) => {
-      const declName = node.name?.text;
-      if (!declName?.endsWith('Props')) return;
-      if (!ts.isInterfaceDeclaration(node) && !ts.isTypeAliasDeclaration(node)) return;
-      const component = declName.replace(/Props$/, '');
-      const symbol = checker.getSymbolAtLocation(node.name);
-      const type = symbol && checker.getDeclaredTypeOfSymbol(symbol);
-      const props = type ? checker.getPropertiesOfType(type) : undefined;
-      if (!props?.length) {
-        // Zero resolved properties is either a genuinely empty type or a type the checker
-        // could not resolve. Neither should silently mean "nothing to compare".
-        unanalysable.push(`${component} (${file})`);
-        return;
-      }
-      const set = byComponent.get(component) ?? new Set();
-      for (const p of props) {
-        const declFile = p.declarations?.[0]?.getSourceFile().fileName ?? '';
-        // Inherited from the platform (DOM lib, react, react-native) — not our surface.
-        if (declFile.includes('node_modules') || declFile.includes('/typescript/lib/')) continue;
-        set.add(p.getName());
-      }
-      byComponent.set(component, set);
-    });
+    ts.forEachChild(sf, (node) =>
+      visitPropsDeclaration(node, checker, file, byComponent, unanalysable),
+    );
   }
   return { byComponent, unanalysable };
 }

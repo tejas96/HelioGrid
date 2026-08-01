@@ -49,7 +49,8 @@ const TOKEN_FILES = [
   'motion.css',
 ] as const;
 
-function main() {
+/** Reads and parses every ds-source token/font-face CSS file, after checking they all exist. */
+function loadDsSourceFiles() {
   const available = readdirSync(dsTokensDir);
   for (const f of [...TOKEN_FILES, 'fonts.css', 'base.css']) {
     if (!available.includes(f)) throw new Error(`ds-source missing ${f} — refusing to emit`);
@@ -59,7 +60,7 @@ function main() {
   const rootDecls: TokenDecl[] = [];
   const reducedMotion: TokenDecl[] = [];
   const dataMode: TokenDecl[] = [];
-  let fontFaces: string[] = [];
+  const fontFaces: string[] = [];
 
   for (const file of [...TOKEN_FILES, 'fonts.css']) {
     const css = readFileSync(join(dsTokensDir, file), 'utf8');
@@ -70,8 +71,11 @@ function main() {
     dataMode.push(...parsed.dataMode);
     fontFaces.push(...parsed.fontFaces);
   }
+  return { rawByFile, rootDecls, reducedMotion, dataMode, fontFaces };
+}
 
-  // Base value map (top-level :root only — reduced-motion/data-mode overrides NEVER land here)
+/** Base value map (top-level :root only — reduced-motion/data-mode overrides NEVER land here). */
+function buildBaseMap(rootDecls: TokenDecl[]): Map<string, string> {
   const baseMap = new Map<string, string>();
   for (const d of rootDecls) {
     if (baseMap.has(d.name)) throw new Error(`duplicate token --${d.name} (${d.sourceFile})`);
@@ -90,11 +94,11 @@ function main() {
       throw new Error(`a11y override --${name} has no ds-source token to override`);
     baseMap.set(name, value);
   }
+  return baseMap;
+}
 
-  const resolved = new Map<string, string>();
-  for (const [name, value] of baseMap) resolved.set(name, resolveValue(value, baseMap));
-
-  // Ext 5: contrast gate — computed, never eyeballed; fail below floor
+/** Ext 5: contrast gate — computed, never eyeballed; fail below floor. */
+function assertContrastFloor(resolved: Map<string, string>) {
   const pairs = computePairs(resolved);
   const failing = pairs.filter((p) => !p.passes);
   if (failing.length > 0) {
@@ -105,8 +109,11 @@ function main() {
     }
     throw new Error(`${failing.length} contrast pair(s) below floor — build refused`);
   }
+  return pairs;
+}
 
-  // Ext 5b: coverage — a pairing a component USES but nobody declared is unchecked, not safe.
+/** Ext 5b: coverage — a pairing a component USES but nobody declared is unchecked, not safe. */
+function assertContrastCoverage() {
   const uiCssDir = join(repoRoot, 'packages', 'ui', 'src');
   const cssFiles = existsSync(uiCssDir)
     ? readdirSync(uiCssDir, { recursive: true })
@@ -131,6 +138,23 @@ function main() {
   console.log(
     `contrast coverage OK — ${cssFiles.length} component CSS files scanned, every per-rule fg/bg pairing declared`,
   );
+}
+
+function main() {
+  const {
+    rawByFile,
+    rootDecls,
+    reducedMotion,
+    dataMode,
+    fontFaces: parsedFontFaces,
+  } = loadDsSourceFiles();
+  const baseMap = buildBaseMap(rootDecls);
+
+  const resolved = new Map<string, string>();
+  for (const [name, value] of baseMap) resolved.set(name, resolveValue(value, baseMap));
+
+  const pairs = assertContrastFloor(resolved);
+  assertContrastCoverage();
 
   mkdirSync(join(distDir, 'fonts'), { recursive: true });
 
@@ -146,7 +170,7 @@ function main() {
   );
 
   // dist/tokens.css — near-verbatim concat (URL-rewritten faces first), extensions appended
-  fontFaces = fontFaces.map((f) => f.replaceAll('../assets/fonts/', './fonts/'));
+  const fontFaces = parsedFontFaces.map((f) => f.replaceAll('../assets/fonts/', './fonts/'));
   const rawConcat = TOKEN_FILES.map((f) => rawByFile.get(f) as string).join('\n');
   const extensionCss = [
     `/* ${EXTENSION_MARKER} — everything below is generated extension, NOT ds-source (docs/10 §2). */`,

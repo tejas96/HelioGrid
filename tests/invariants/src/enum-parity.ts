@@ -63,6 +63,36 @@ function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(`enum-parity: ${msg}`);
 }
 
+/**
+ * One mapped pair's value-for-value comparison, split out so the caller stays a flat loop.
+ * Order-insensitive: pgEnum sort order and z.enum declaration order are both arbitrary, so
+ * only the SET matters.
+ */
+function checkMappedPair(
+  typname: string,
+  options: readonly string[],
+  contract: string,
+  dbEnums: Map<string, string[]>,
+  problems: string[],
+): void {
+  const dbValues = dbEnums.get(typname);
+  if (!dbValues) {
+    problems.push(`pg enum "${typname}" is missing, but ${contract} expects it`);
+    return;
+  }
+  const inDb = [...dbValues].sort();
+  const inContract = [...options].sort();
+  const onlyDb = inDb.filter((v) => !inContract.includes(v));
+  const onlyContract = inContract.filter((v) => !inDb.includes(v));
+  if (onlyDb.length || onlyContract.length) {
+    problems.push(
+      `${typname} ↔ ${contract} DRIFT` +
+        (onlyDb.length ? `\n      only in database: ${onlyDb.join(', ')}` : '') +
+        (onlyContract.length ? `\n      only in contract: ${onlyContract.join(', ')}` : ''),
+    );
+  }
+}
+
 export async function runEnumParity(adminUrl: string) {
   const sql = postgres(adminUrl, { max: 1, onnotice: () => {} });
   try {
@@ -84,25 +114,9 @@ export async function runEnumParity(adminUrl: string) {
 
     const problems: string[] = [];
 
-    // Every mapped pair must match value-for-value. Order-insensitive: pgEnum sort order and
-    // z.enum declaration order are both arbitrary, so only the SET matters.
+    // Every mapped pair must match value-for-value.
     for (const [typname, { options, contract }] of Object.entries(MAPPED)) {
-      const dbValues = dbEnums.get(typname);
-      if (!dbValues) {
-        problems.push(`pg enum "${typname}" is missing, but ${contract} expects it`);
-        continue;
-      }
-      const inDb = [...dbValues].sort();
-      const inContract = [...options].sort();
-      const onlyDb = inDb.filter((v) => !inContract.includes(v));
-      const onlyContract = inContract.filter((v) => !inDb.includes(v));
-      if (onlyDb.length || onlyContract.length) {
-        problems.push(
-          `${typname} ↔ ${contract} DRIFT` +
-            (onlyDb.length ? `\n      only in database: ${onlyDb.join(', ')}` : '') +
-            (onlyContract.length ? `\n      only in contract: ${onlyContract.join(', ')}` : ''),
-        );
-      }
+      checkMappedPair(typname, options, contract, dbEnums, problems);
     }
 
     // A new pg enum must be consciously mapped or consciously excused.

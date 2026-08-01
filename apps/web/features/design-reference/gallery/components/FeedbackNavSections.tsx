@@ -14,6 +14,14 @@ import { Demo, PlusIcon, Section, SunIcon } from './GalleryChrome';
 const TOAST_TONES = ['success', 'warning', 'danger', 'info', 'neutral'] as const;
 const PROGRESS_VALUES = [0, 25, 67, 100] as const;
 
+const TOAST_TITLES: Record<(typeof TOAST_TONES)[number], string> = {
+  success: 'Proposal sent',
+  warning: 'Quote is provisional',
+  danger: 'Upload failed',
+  info: 'Sync complete',
+  neutral: 'Draft saved',
+};
+
 export function FeedbackNavSections() {
   const [range, setRange] = useState('week');
   const [hindiRange, setHindiRange] = useState('din');
@@ -91,17 +99,7 @@ export function FeedbackNavSections() {
             <Demo key={tone} label={tone}>
               <Toast
                 tone={tone}
-                title={
-                  tone === 'success'
-                    ? 'Proposal sent'
-                    : tone === 'warning'
-                      ? 'Quote is provisional'
-                      : tone === 'danger'
-                        ? 'Upload failed'
-                        : tone === 'info'
-                          ? 'Sync complete'
-                          : 'Draft saved'
-                }
+                title={TOAST_TITLES[tone]}
                 description={
                   tone === 'warning' ? 'Design changed — recompute before sending.' : undefined
                 }

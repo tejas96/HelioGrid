@@ -26,6 +26,39 @@ function assert(cond: unknown, msg: string): asserts cond {
 
 type ColumnRow = { table_name: string; column_name: string; is_nullable: string };
 
+/** One table's worth of the comparison — split out so the caller stays a flat loop. */
+function compareTableColumns(
+  table: string,
+  exported: unknown,
+  liveCols: Map<string, boolean>,
+  problems: string[],
+): void {
+  for (const [, col] of Object.entries(getTableColumns(exported as Table))) {
+    const liveNullable = liveCols.get(col.name);
+    if (liveNullable === undefined) {
+      problems.push(`${table}.${col.name} is in the Drizzle model but not in the database`);
+      continue;
+    }
+    // Drizzle's `notNull` is the model's claim; attnotnull is the database's.
+    if (col.notNull === liveNullable) {
+      problems.push(
+        `${table}.${col.name} nullability disagrees — model says ${
+          col.notNull ? 'NOT NULL' : 'nullable'
+        }, database says ${liveNullable ? 'nullable' : 'NOT NULL'}`,
+      );
+    }
+  }
+  // The other direction: a column the migration added and the model never learned about.
+  const modelCols = new Set(
+    Object.values(getTableColumns(exported as Table)).map((c) => (c as { name: string }).name),
+  );
+  for (const name of liveCols.keys()) {
+    if (!modelCols.has(name)) {
+      problems.push(`${table}.${name} is in the database but not in the Drizzle model`);
+    }
+  }
+}
+
 export async function runSchemaParity(adminUrl: string) {
   const sql = (await import('postgres')).default(adminUrl, { max: 1, onnotice: () => {} });
   try {
@@ -54,30 +87,7 @@ export async function runSchemaParity(adminUrl: string) {
         problems.push(`table "${table}" is in the Drizzle model but not in the database`);
         continue;
       }
-      for (const [, col] of Object.entries(getTableColumns(exported))) {
-        const liveNullable = liveCols.get(col.name);
-        if (liveNullable === undefined) {
-          problems.push(`${table}.${col.name} is in the Drizzle model but not in the database`);
-          continue;
-        }
-        // Drizzle's `notNull` is the model's claim; attnotnull is the database's.
-        if (col.notNull === liveNullable) {
-          problems.push(
-            `${table}.${col.name} nullability disagrees — model says ${
-              col.notNull ? 'NOT NULL' : 'nullable'
-            }, database says ${liveNullable ? 'nullable' : 'NOT NULL'}`,
-          );
-        }
-      }
-      // The other direction: a column the migration added and the model never learned about.
-      const modelCols = new Set(
-        Object.values(getTableColumns(exported)).map((c) => (c as { name: string }).name),
-      );
-      for (const name of liveCols.keys()) {
-        if (!modelCols.has(name)) {
-          problems.push(`${table}.${name} is in the database but not in the Drizzle model`);
-        }
-      }
+      compareTableColumns(table, exported, liveCols, problems);
     }
 
     assert(

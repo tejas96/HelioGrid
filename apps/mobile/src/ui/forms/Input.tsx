@@ -39,6 +39,26 @@ const KEYBOARD: Record<string, KeyboardTypeOptions> = {
   tel: 'phone-pad',
 };
 
+type FieldStateArgs = {
+  isExpr: boolean;
+  radius: number;
+  stateColor: string | null;
+  focused: boolean;
+  disabled: boolean;
+};
+
+/** The field box's style array — split out so the component body stays a flat read. */
+function fieldStyle({ isExpr, radius, stateColor, focused, disabled }: FieldStateArgs) {
+  return [
+    styles.field,
+    { borderRadius: radius },
+    isExpr ? styles.fieldExpressive : styles.fieldFunctional,
+    stateColor != null && !focused && !disabled && { borderWidth: 1.5, borderColor: stateColor },
+    focused && !disabled && styles.fieldFocused,
+    disabled && styles.fieldDisabled,
+  ];
+}
+
 /**
  * Borderless input — e1 at rest, no border ever. Focus = elevation to e2 plus the
  * accent ring. RN adaptation: the web's double box-shadow ring (2px surface gap +
@@ -82,18 +102,7 @@ export function Input({
           focused && !disabled && styles.ringFocused,
         ]}
       >
-        <View
-          style={[
-            styles.field,
-            { borderRadius: radius },
-            isExpr ? styles.fieldExpressive : styles.fieldFunctional,
-            stateColor != null &&
-              !focused &&
-              !disabled && { borderWidth: 1.5, borderColor: stateColor },
-            focused && !disabled && styles.fieldFocused,
-            disabled && styles.fieldDisabled,
-          ]}
-        >
+        <View style={fieldStyle({ isExpr, radius, stateColor, focused, disabled })}>
           {leading}
           <TextInput
             nativeID={id}
