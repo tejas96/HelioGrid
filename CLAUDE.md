@@ -106,6 +106,13 @@ single unmatched pattern aborts the whole command and prints nothing, which read
 **Never weaken a gate to make a change pass.** A gate that blocks you means the change is
 wrong. Rule → mechanism matrix: docs/17 §5.
 
+**After DELETING a source file, rebuild with `pnpm turbo build --force`.** `tsc -b` never
+removes the output of a source that no longer exists, and Turborepo's cache will happily
+restore that whole stale `dist/**` on the next hit — so `turbo boundaries` and `knip`, which
+read compiled output, keep seeing a module you deleted and fail on imports it no longer has.
+This cost two separate debugging rounds on 2026-08-01/02. Deleting `dist/` alone is NOT
+enough: the very next cached build puts it back.
+
 **Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
 files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
 Biome with `--error-on-warnings`, so a warning fails the gate exactly like an error. A git

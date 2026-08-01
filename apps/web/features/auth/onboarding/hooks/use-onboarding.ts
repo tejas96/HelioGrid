@@ -12,16 +12,16 @@ export function useOnboarding() {
   const [tenantName, setTenantName] = useState('');
   const [userName, setUserName] = useState('');
   const [segment, setSegment] = useState<TenantSegment>('both');
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   /*
    * The completeOnboarding endpoint was removed with auth (owner ruling 2026-08-01), so the
    * screen advances locally and the design stays walkable. The rebuild restores the mutation
-   * HERE — `error` and `busy` already exist for it, and nothing else in this file changes.
+   * HERE, and re-adds the `error` state with it — there is deliberately none now, because a
+   * call that cannot fail cannot produce one, and an error path that can never fire reads
+   * as live code to the next person (CLAUDE.md §3).
    */
   const submit = async () => {
-    setError(null);
     setBusy(true);
     router.push('/home');
   };
@@ -30,7 +30,6 @@ export function useOnboarding() {
     tenantName,
     userName,
     segment,
-    error,
     busy,
     canSubmit: !busy && tenantName.length >= 2 && userName.length >= 1,
     onTenantNameChange: setTenantName,

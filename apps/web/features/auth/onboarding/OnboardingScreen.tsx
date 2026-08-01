@@ -44,7 +44,6 @@ export function OnboardingScreen() {
             value={vm.tenantName}
             onChange={(e) => vm.onTenantNameChange(e.target.value)}
             placeholder="e.g. Surya Solar Pune"
-            error={vm.error ?? undefined}
           />
 
           <span className="ob-field-label">Customer segment</span>
