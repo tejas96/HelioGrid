@@ -1,22 +1,26 @@
-import { COUNTRY_CALLING_CODE, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
+import { useSession } from '@heliogrid/data/react';
 import {
   AUTO_VERIFY_DELAY_MS,
-  DONE_DWELL_MS,
+  COUNTRY_CALLING_CODE,
   type LoginStep,
   type OtpFailure,
+  PHONE_NSN_LENGTH,
 } from '@heliogrid/domain';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { authClient } from '../../../auth/client';
 import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
 
 /**
- * Login controller — phone → OTP → done (RN variant of the LoginFlow).
- * Better Auth phone-OTP sends/verifies; the session
- * cookie then flows through the keychain jar to the typed client. No signup on RN
- * (module ruling 1): the footer is the invite-link placeholder.
+ * Login controller — phone → OTP → done (RN variant of the LoginFlow). The shared session
+ * store sends and verifies; this hook owns only the flow. No signup on RN (module
+ * ruling 1): the footer is the invite-link placeholder.
+ *
+ * The done-step DWELL is not here: verifying flips the session, and RootNavigator owns how
+ * long the finished login stays on screen before the stack swaps. Timers and navigation are
+ * the app's job, the decision is the store's (packages/domain/CLAUDE.md).
  */
-export function useLogin(onSignedIn: () => void): LoginViewModel {
+export function useLogin(): LoginViewModel {
+  const session = useSession();
   const [step, setStep] = useState<LoginStep>('phone');
   const [phone, setPhone] = useState('');
   const [sending, setSending] = useState(false);
@@ -37,12 +41,10 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
   const verifyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sendInFlight = useRef(false);
   const verifyInFlight = useRef(false);
-  const doneTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
     () => () => {
       if (verifyTimer.current) clearTimeout(verifyTimer.current);
-      if (doneTimer.current) clearTimeout(doneTimer.current);
     },
     [],
   );
@@ -55,10 +57,8 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
       setSendFailed(false);
       setOffline(false);
       try {
-        const { error } = await authClient.phoneNumber.sendOtp({
-          phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
-        });
-        if (error) {
+        const result = await session.requestOtp(`${COUNTRY_CALLING_CODE}${phone}`);
+        if (!result.ok) {
           setSendFailed(true);
           return;
         }
@@ -80,7 +80,7 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
         setSending(false);
       }
     },
-    [phone, restartCountdown],
+    [phone, restartCountdown, session],
   );
 
   const verify = useCallback(
@@ -90,18 +90,13 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
       setVerifying(true);
       setOffline(false);
       try {
-        const { error } = await authClient.phoneNumber.verify({
-          phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
-          code,
-        });
+        const result = await session.verifyOtp(`${COUNTRY_CALLING_CODE}${phone}`, code);
         if (stepRef.current !== 'otp') return; // user changed number while in flight
-        if (error) {
-          // 4xx = wrong/expired code (digits retained); 5xx/opaque = transport (web parity)
-          setOtpFailure(error.status && error.status < 500 ? 'mismatch' : 'verify-failed');
+        if (!result.ok) {
+          setOtpFailure(result.failure);
           return;
         }
         setStep('done');
-        doneTimer.current = setTimeout(onSignedIn, DONE_DWELL_MS);
       } catch {
         setOffline(true);
       } finally {
@@ -109,7 +104,7 @@ export function useLogin(onSignedIn: () => void): LoginViewModel {
         setVerifying(false);
       }
     },
-    [phone, onSignedIn],
+    [phone, session],
   );
 
   const onPhoneChange = (v: string) => {

@@ -1,28 +1,27 @@
+import type { TokenStorage } from '@heliogrid/data';
 import * as Keychain from 'react-native-keychain';
 
 /**
- * Better Auth `storage` adapter over react-native-keychain (docs/03 §10, verified
- * pattern): keychain tolerates Better Auth's colon-separated keys — expo-secure-store
- * does not, which is why the custom adapter is the cleaner path. NEVER AsyncStorage
- * for tokens (apps/mobile/CLAUDE.md). Consumed by the Track A auth slice + spike S1.
+ * The platform half of @heliogrid/data's TokenStorage port — the ONE piece of the data path
+ * that cannot be shared, because RN has no cookie jar and web's session is an HttpOnly
+ * cookie JavaScript may not read. Keychain, NEVER AsyncStorage, for anything
+ * credential-shaped: keychain also tolerates colon-separated keys, which is why the custom
+ * adapter beat expo-secure-store when this was first written.
  */
+const SERVICE = 'heliogrid.auth.session';
 
-const SERVICE_PREFIX = 'heliogrid.auth';
-
-export interface AuthStorage {
-  getItem(key: string): Promise<string | null>;
-  setItem(key: string, value: string): Promise<void>;
-}
-
-export const keychainStorage: AuthStorage = {
-  async getItem(key) {
-    const creds = await Keychain.getGenericPassword({ service: `${SERVICE_PREFIX}.${key}` });
+export const keychainStorage: TokenStorage = {
+  async get() {
+    const creds = await Keychain.getGenericPassword({ service: SERVICE });
     return creds === false ? null : creds.password;
   },
-  async setItem(key, value) {
+  async set(value) {
     await Keychain.setGenericPassword('heliogrid', value, {
-      service: `${SERVICE_PREFIX}.${key}`,
+      service: SERVICE,
       accessible: Keychain.ACCESSIBLE.AFTER_FIRST_UNLOCK,
     });
+  },
+  async clear() {
+    await Keychain.resetGenericPassword({ service: SERVICE });
   },
 };

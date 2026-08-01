@@ -1,7 +1,11 @@
+import { createDataLayer } from '@heliogrid/data';
+import { DataProvider } from '@heliogrid/data/react';
 import { theme } from '@heliogrid/tokens/theme';
 import { I18nProvider } from '@lingui/react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { keychainStorage } from './src/auth/keychain-storage';
+import { API_URL } from './src/env';
 import { i18n, setupI18n } from './src/i18n';
 import { RootNavigator } from './src/navigation/RootNavigator';
 
@@ -11,16 +15,23 @@ import { RootNavigator } from './src/navigation/RootNavigator';
  * It must NEVER import a screen (dependency-cruiser `mobile-app-entry-thin`). The session
  * gate and every route live in `src/navigation/`; this file used to be a
  * 216-line hand-rolled router with a screen defined inline.
+ *
+ * `storage` is the ONLY platform-specific piece of the data path — everything above it
+ * (transport, client, repositories, session) is the same code web runs.
  */
 setupI18n('en');
 
+const dataLayer = createDataLayer({ baseUrl: API_URL, storage: keychainStorage });
+
 export default function App() {
   return (
-    <I18nProvider i18n={i18n}>
-      <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
-        <RootNavigator />
-      </SafeAreaProvider>
-    </I18nProvider>
+    <DataProvider layer={dataLayer}>
+      <I18nProvider i18n={i18n}>
+        <SafeAreaProvider>
+          <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
+          <RootNavigator />
+        </SafeAreaProvider>
+      </I18nProvider>
+    </DataProvider>
   );
 }

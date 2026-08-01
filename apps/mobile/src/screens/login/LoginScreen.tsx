@@ -13,10 +13,10 @@ import { styles } from './styles';
  * (./hooks/use-login), all markup lives in ./components. No signup on RN (module
  * ruling 1): the footer is the invite-link placeholder.
  */
-export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
+export function LoginScreen() {
   const { i18n } = useLingui();
   const insets = useSafeAreaInsets();
-  const vm = useLogin(onSignedIn);
+  const vm = useLogin();
   const reduceMotion = useReduceMotion();
 
   return (

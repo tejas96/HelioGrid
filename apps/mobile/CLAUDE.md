@@ -4,7 +4,10 @@
 - Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile,
   signup, invite accept. Screens land per-module from the same contract as web; which
   platform ships a screen first is a plan decision, but `src/ui` stays in parity (Law 7).
-- ALL data access behind `src/data/repositories.ts` — screens never see fetch/SQLite/sync.
+- ALL data access behind `@heliogrid/data` — screens never see fetch/SQLite/sync, and this
+  app authors NO networking at all. `src/data/` existed until 2026-08-01 and is gone: the
+  repository interfaces it held are now shared with web, so the Track E PowerSync swap is
+  one data-layer change for both platforms instead of two.
 - NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
   **authoring** domain logic here — shared decisions, policy constants and formatters are
   IMPORTED from `@heliogrid/domain`; writing one inline is the defect.
@@ -17,6 +20,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 
 ## Depends on / depended on by
 uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n,
+@heliogrid/data (THE data path — transport, repositories, session; this app authors none),
 @heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
 nav: @react-navigation/native + native-stack + react-native-screens
 used by: nobody
@@ -40,7 +44,9 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `types.ts` when two files share a type. A screen component body is capped at
   80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
   layer instead of its job is the same defect as `*-part2`. `src/` is the closed
-  set `{auth,data,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`
+  set `{auth,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`
+  (`data` left the set on 2026-08-01 — it lives in `@heliogrid/data` now, and `auth/` holds
+  only the keychain `TokenStorage` implementation, the one thing that cannot be shared)
   (`hooks/` is an approved category for app-wide hooks but does not exist yet — screen
   hooks live in their screen folder).
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
@@ -56,12 +62,15 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   (2026-07-31: LoginScreen hit 446 lines, GalleryScreen 406 — both since split into
   `components/`, `hooks/`, `styles.ts`). Only the 80-line cap catches this shape. When a
   screen grows, extract the hook first — logic is what makes the file unreadable, not markup.
-- **Repository types are INFERRED from contracts, never re-declared.** `HealthStatus` was a
-  hand-written interface duplicating the liveness 200 schema; a contract gaining a field
-  drifted silently. Import the exported schema type (`Liveness`) instead.
-- **Protocol constants come from contracts** (`OTP_LENGTH`, `PHONE_NSN_LENGTH`,
-  `COUNTRY_CALLING_CODE`). This screen used to define its own `OTP_LEN`/`PHONE_LEN`, so a
-  server-side OTP-length change would leave the boxes rendering the old count.
+- **Repository types are INFERRED from contracts, never re-declared** (now enforced in
+  `@heliogrid/data`). `HealthStatus` was a hand-written interface duplicating the liveness
+  200 schema; a contract gaining a field drifted silently. Import the exported schema type
+  (`Liveness`) instead.
+- **Protocol constants come from `@heliogrid/domain`** (`OTP_LENGTH`, `PHONE_NSN_LENGTH`,
+  `COUNTRY_CALLING_CODE`) — they lived in contracts until 2026-08-01 and moved down a layer
+  with the auth teardown, because domain outlives a contract being deleted and rebuilt. This
+  screen used to define its own `OTP_LEN`/`PHONE_LEN`, so a server-side OTP-length change
+  would leave the boxes rendering the old count.
 - `pod install` fails with `Unicode Normalization not appropriate for ASCII-8BIT` unless the
   shell locale is UTF-8 — prefix `LANG=en_US.UTF-8` (hit 2026-07-27 adding react-native-screens).
 - **apps/mobile pins `zod` explicitly (3.25.76)** like api/worker. Without it pnpm resolved
@@ -71,8 +80,11 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `role` is a TYPOGRAPHY role (`body`/`h2`/`overline`), not an ARIA role, and RN is not the
   DOM — real RN a11y goes through `accessibilityRole`, which the components already set.
   The rule only fired on static literals, so it flagged correct code inconsistently.
-- Cookies: EVERY fetch `credentials: 'omit'` — keychain jar is the only cookie path.
-  iOS CFNetwork merges stored cookies → 401 without `absorbSetCookies` (getSetCookie).
+- Cookies: EVERY fetch `credentials: 'omit'` — the keychain jar is the only cookie path,
+  because iOS CFNetwork otherwise merges its stored copy into our manual header and the
+  server 401s. That rule now lives in `@heliogrid/data`'s transport (which sets `omit` when
+  a TokenStorage is supplied and `include` when one is not), not in this app — but it is
+  recorded here because this is the platform it bites.
 - metro.config.js: monorepo + Lingui transformer + PowerSync blockList — do not remove.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
 - Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).

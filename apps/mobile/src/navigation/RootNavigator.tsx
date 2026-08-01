@@ -1,9 +1,10 @@
+import { useSession } from '@heliogrid/data/react';
+import { DONE_DWELL_MS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/tokens/theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { api } from '../data/api-client';
 import { GalleryScreen } from '../screens/gallery/GalleryScreen';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { LoginScreen } from '../screens/login/LoginScreen';
@@ -13,30 +14,36 @@ import type { RootStackParamList } from './routes';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
- * The session gate lives HERE, not in App.tsx: while we are checking the
- * keychain-jar session we show a boot spinner, then mount exactly one of the two stacks.
- * Swapping stacks — rather than navigating — means a signed-out user has no authenticated
- * screen left in the history to go back to.
+ * The session gate lives HERE, not in App.tsx: while the session is resolving we show a
+ * boot spinner, then mount exactly one of the two stacks. Swapping stacks — rather than
+ * navigating — means a signed-out user has no authenticated screen left in the history to
+ * go back to.
+ *
+ * The gate reads the shared session store, so it needs no fetch of its own and no
+ * `onSignedIn` callback threaded down into the login screen: verifying moves the store, and
+ * this re-renders. The 'checking' branch stays because SessionStatus declares it and the
+ * Better Auth rebuild will resolve a persisted session asynchronously; the walkthrough stub
+ * has nothing to check for and starts anonymous.
+ *
+ * The swap is DELAYED by DONE_DWELL_MS. Authentication is instant, but the login screen's
+ * done step has to be visible for the design to survive — and on web the equivalent pause
+ * is a `router.push` the login controller schedules. Timing and navigation are the app's
+ * job; the store only decides whether the user is authenticated.
  */
 export function RootNavigator() {
-  const [session, setSession] = useState<'checking' | 'out' | 'in'>('checking');
-
-  const refresh = useCallback(async () => {
-    try {
-      const res = await api.auth.me.query({});
-      setSession(res.status === 200 ? 'in' : 'out');
-    } catch {
-      // Unreachable api (offline / dev server down): land on the login gate — it owns the
-      // offline treatment.
-      setSession('out');
-    }
-  }, []);
+  const { status } = useSession();
+  const [dwellElapsed, setDwellElapsed] = useState(false);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    if (status !== 'authenticated') {
+      setDwellElapsed(false);
+      return;
+    }
+    const timer = setTimeout(() => setDwellElapsed(true), DONE_DWELL_MS);
+    return () => clearTimeout(timer);
+  }, [status]);
 
-  if (session === 'checking') {
+  if (status === 'checking') {
     return (
       <View style={styles.boot}>
         <Spinner />
@@ -47,15 +54,13 @@ export function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {session === 'out' ? (
-          <Stack.Screen name="Login">
-            {() => <LoginScreen onSignedIn={() => void refresh()} />}
-          </Stack.Screen>
-        ) : (
+        {status === 'authenticated' && dwellElapsed ? (
           <>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Gallery" component={GalleryScreen} />
           </>
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
