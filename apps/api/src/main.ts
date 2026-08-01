@@ -30,7 +30,7 @@ async function bootstrap() {
     return jsonParser(req, res, next);
   });
 
-  await app.listen(ENV.PORT, '0.0.0.0');
+  await app.listen(ENV.API_PORT, '0.0.0.0');
 }
 
 void bootstrap();

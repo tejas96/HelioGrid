@@ -8,7 +8,8 @@
   (dependency-cruiser blocks), raw hex/px values.
 
 ## Commands
-pnpm --filter @heliogrid/web dev      # localhost:3000 (tokens must be built first: turbo handles it)
+pnpm --filter @heliogrid/web dev      # localhost:3002 (tokens must be built first: turbo
+                                       # handles it; kills a stale listener on that port first)
 pnpm --filter @heliogrid/web build | typecheck
 
 ## Depends on / depended on by

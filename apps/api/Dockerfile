@@ -15,5 +15,5 @@ ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build /out .
 COPY --from=build /repo/apps/api/dist ./dist
-EXPOSE 8080
+EXPOSE 8084
 CMD ["node", "dist/main.js"]

@@ -9,9 +9,13 @@ import { originSchema } from './fragments';
  * The default lives HERE, not behind a `??` at the call site. That was the defect in the old
  * apps/web/lib/env.ts: the real default was invisible to .env.example and to anyone reading
  * the schema, and a second call site could pick a different one.
+ *
+ * The web dev-server PORT is not here: `next dev`/`next start` take it only as a `--port` CLI
+ * flag (Next has no env-var equivalent), so it is a literal in apps/web/package.json, same as
+ * almost every Next app — not a value this schema could actually drive.
  */
 export const webEnvSchema = z.object({
-  NEXT_PUBLIC_API_URL: originSchema.default('http://localhost:8080'),
+  NEXT_PUBLIC_API_URL: originSchema.default('http://localhost:8084'),
 });
 
 export type WebEnv = z.infer<typeof webEnvSchema>;

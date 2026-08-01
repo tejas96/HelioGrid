@@ -9,9 +9,10 @@
 ## Commands
 `dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load
 automatically and a REAL env var still wins (Fly secrets and CI are never overridden).
-pnpm --filter @heliogrid/api dev         # tsx watch (PORT=8080 default)
+pnpm --filter @heliogrid/api dev         # tsx watch (API_PORT=8084 default; kills a stale
+                                          # listener on that port first)
 pnpm --filter @heliogrid/api build | typecheck
-curl localhost:8080/health               # liveness · /health/ready = readiness
+curl localhost:8084/health               # liveness · /health/ready = readiness
 
 ## Depends on / depended on by
 uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP)

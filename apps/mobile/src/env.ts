@@ -17,10 +17,10 @@ import { Platform } from 'react-native';
  */
 const ENV = loadNativeEnv({
   API_URL: Platform.select({
-    android: 'http://10.0.2.2:8080',
-    default: 'http://localhost:8080',
+    android: 'http://10.0.2.2:8084',
+    default: 'http://localhost:8084',
   }),
 });
 
-/** Validated origin of apps/api. Never `?? 'http://localhost:8080'` at a call site. */
+/** Validated origin of apps/api. Never `?? 'http://localhost:8084'` at a call site. */
 export const API_URL = ENV.API_URL;

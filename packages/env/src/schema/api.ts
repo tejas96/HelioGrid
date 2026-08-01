@@ -18,14 +18,14 @@ import {
  */
 export const apiEnvSchema = z.object({
   NODE_ENV: nodeEnvSchema,
-  PORT: portSchema,
+  API_PORT: portSchema.default(8084),
 
   DATABASE_URL: databaseUrlSchema,
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,
 
   BETTER_AUTH_SECRET: secretSchema,
-  BETTER_AUTH_URL: originSchema.default('http://localhost:8080'),
-  WEB_ORIGIN: originSchema.default('http://localhost:3000'),
+  BETTER_AUTH_URL: originSchema.default('http://localhost:8084'),
+  WEB_ORIGIN: originSchema.default('http://localhost:3002'),
 
   /* MSG91 is optional: absent ⇒ the OTP port logs codes to the console (dev adapter). */
   MSG91_AUTH_KEY: z.string().optional(),
