@@ -1,0 +1,389 @@
+{
+  "plan_id": "2026-08-02-0042",
+  "slice": "auth teardown to greenfield + packages/data frontend SDK (ADR-0023, ADR-0024)",
+  "blast_radius": {
+    "screens": [
+      "web /login",
+      "web /onboarding",
+      "web /home",
+      "web /signup",
+      "web /design/gallery",
+      "ios Login",
+      "ios Home",
+      "android Login"
+    ],
+    "endpoints": [
+      "GET /health",
+      "GET /health/ready",
+      "GET /api/auth/* (must be gone)"
+    ],
+    "tables": []
+  },
+  "notes": [
+    "Auth is INTENTIONALLY absent (ADR-0024). Both login flows run on createWalkthroughSession(): no server, any correctly shaped phone, any 6-digit code.",
+    "packages/db is greenfield \u2014 zero application tables. Ports: web 3002, api 8084 (NOT the 3000/8080 in the stale runbook template).",
+    "RE-RUN of 2026-08-02-0011, which was escalated as UNTRUSTED: AND-HAPPY-017 was reported as a pass against a screenshot showing a blank 'Loading from 10.0.2.2:8081' frame. Every mobile step below now waits for the JS bundle before capturing."
+  ],
+  "steps": [
+    {
+      "id": "WEB-LOGIN-001",
+      "surface": "web",
+      "quadrant": "happy",
+      "instructions": [
+        "navigate to http://localhost:3002/login",
+        "type 9876543210 into the phone field",
+        "click Continue",
+        "wait for the OTP step heading 'Enter your code'",
+        "type 1 2 3 4 5 6 into the six OTP boxes, one digit per box",
+        "wait up to 5s for navigation"
+      ],
+      "expected": "OTP step renders exactly 6 input boxes; after the 6th digit the flow auto-verifies and the URL becomes /home showing 'Namaste, Walkthrough' and 'WALKTHROUGH WORKSPACE'",
+      "artifacts_required": [
+        "WEB-LOGIN-001.otp.png",
+        "WEB-LOGIN-001.home.png"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "WEB-LOGIN-002",
+      "surface": "web",
+      "quadrant": "happy",
+      "instructions": [
+        "navigate to http://localhost:3002/onboarding",
+        "screenshot the segment control",
+        "read the text of every segment option"
+      ],
+      "expected": "exactly three options render: Homes, Commercial & industrial, Both (driven by TENANT_SEGMENTS in @heliogrid/domain)",
+      "artifacts_required": [
+        "WEB-LOGIN-002.segments.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "WEB-EDGE-003",
+      "surface": "web",
+      "quadrant": "edge",
+      "instructions": [
+        "navigate to http://localhost:3002/login",
+        "type 9876543210999 (13 digits) into the phone field",
+        "read back the field value with document.querySelector('input[type=tel]').value"
+      ],
+      "expected": "the field holds exactly 10 digits '9876543210' \u2014 PHONE_NSN_LENGTH caps it; the extra 3 are discarded",
+      "artifacts_required": [
+        "WEB-EDGE-003.value.json"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "WEB-EDGE-004",
+      "surface": "web",
+      "quadrant": "edge",
+      "instructions": [
+        "resize the viewport to 375x812 and navigate to http://localhost:3002/login, screenshot",
+        "resize to 1440x900, reload, screenshot",
+        "at 375px confirm no element overflows the viewport horizontally via document.documentElement.scrollWidth"
+      ],
+      "expected": "login renders without horizontal overflow at 375px and at 1440px; scrollWidth <= 375 at the small size",
+      "artifacts_required": [
+        "WEB-EDGE-004.375.png",
+        "WEB-EDGE-004.1440.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "WEB-NEG-005",
+      "surface": "web",
+      "quadrant": "negative",
+      "instructions": [
+        "navigate to http://localhost:3002/login",
+        "enter 9876543210 and click Continue to reach the OTP step",
+        "enter only 3 digits (1 2 3) and wait 3 seconds",
+        "screenshot"
+      ],
+      "expected": "no navigation occurs and no success state renders \u2014 an incomplete code must not verify",
+      "artifacts_required": [
+        "WEB-NEG-005.incomplete.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "WEB-NEG-006",
+      "surface": "web",
+      "quadrant": "negative",
+      "instructions": [
+        "navigate to http://localhost:3002/home directly, without completing login",
+        "screenshot and capture the visible body text"
+      ],
+      "expected": "the page renders its 'Could not load your workspace.' state rather than crashing or showing another user's data \u2014 the session store reports anonymous",
+      "artifacts_required": [
+        "WEB-NEG-006.anon.png"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "WEB-ADV-007",
+      "surface": "web",
+      "quadrant": "adversarial",
+      "instructions": [
+        "navigate to http://localhost:3002/login",
+        "enter 9876543210",
+        "start capturing network requests",
+        "click Continue twice within 200ms",
+        "save the captured network log"
+      ],
+      "expected": "the double tap does not produce two flow advances or a crash; the in-flight guard holds. Record every request observed verbatim (the walkthrough stub reaches no server, so zero network calls is the expected observation)",
+      "artifacts_required": [
+        "WEB-ADV-007.network.json"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "WEB-ADV-008",
+      "surface": "web",
+      "quadrant": "adversarial",
+      "instructions": [
+        "navigate to http://localhost:3002/login",
+        "enter the absurd input string: +++0000000000 followed by the emoji \ud83d\ude42 and the text ' OR 1=1--'",
+        "read back the field value",
+        "screenshot"
+      ],
+      "expected": "non-digits are stripped; the field holds only digits and at most 10 of them; no crash, no raw error surfaced",
+      "artifacts_required": [
+        "WEB-ADV-008.absurd.json",
+        "WEB-ADV-008.absurd.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "API-HAPPY-009",
+      "surface": "api",
+      "quadrant": "happy",
+      "instructions": [
+        "curl -s -i http://localhost:8084/health",
+        "curl -s -i http://localhost:8084/health/ready",
+        "save both raw responses"
+      ],
+      "expected": "/health returns 200 with body {\"status\":\"ok\",\"service\":\"heliogrid-api\",\"version\":...}; /health/ready returns 200 with checks.database = ok",
+      "artifacts_required": [
+        "API-HAPPY-009.health.json",
+        "API-HAPPY-009.ready.json"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "API-EDGE-010",
+      "surface": "api",
+      "quadrant": "edge",
+      "instructions": [
+        "curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/",
+        "curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/health/",
+        "save both status codes"
+      ],
+      "expected": "an unmapped root path returns 404; record the exact code observed for /health/ verbatim rather than assuming",
+      "artifacts_required": [
+        "API-EDGE-010.codes.json"
+      ],
+      "severity_if_failed": "minor"
+    },
+    {
+      "id": "API-NEG-011",
+      "surface": "api",
+      "quadrant": "negative",
+      "instructions": [
+        "curl -s -i http://localhost:8084/api/auth/session",
+        "curl -s -i -X POST http://localhost:8084/api/auth/phone-number/send-otp -H 'content-type: application/json' -d '{\"phoneNumber\":\"+919876543210\"}'",
+        "curl -s -i -X POST http://localhost:8084/api/auth/phone-number/verify -H 'content-type: application/json' -d '{\"phoneNumber\":\"+919876543210\",\"code\":\"123456\"}'",
+        "save all three raw responses"
+      ],
+      "expected": "all three return 404 \u2014 the Better Auth handler is gone (ADR-0024). Any 200/401/500 means auth is still mounted somewhere",
+      "artifacts_required": [
+        "API-NEG-011.auth-routes.json"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "API-ADV-012",
+      "surface": "api",
+      "quadrant": "adversarial",
+      "instructions": [
+        "curl -s -i -X POST http://localhost:8084/health -H 'content-type: application/json' -d '{\"a\":1}'",
+        "curl -s -i 'http://localhost:8084/health?x=%27%20OR%201%3D1--'",
+        "curl -s -i http://localhost:8084/../../etc/passwd",
+        "save all raw responses"
+      ],
+      "expected": "no 5xx and no stack trace or file contents in any body; a wrong method returns 404 or 405, the SQL-shaped query string is ignored",
+      "artifacts_required": [
+        "API-ADV-012.probes.json"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "IOS-HAPPY-013",
+      "surface": "ios",
+      "quadrant": "happy",
+      "instructions": [
+        "relaunch com.heliogrid.app on the booted simulator with xcrun simctl",
+        "after launching, poll with screenshots every 2s (max 30s) until the frame is no longer blank and shows app content; only then capture the declared artifact",
+        "screenshot the login screen",
+        "tap the phone field, type 9876543210, tap Continue",
+        "screenshot the OTP step and count the input boxes",
+        "type 123456",
+        "wait 4s and screenshot"
+      ],
+      "expected": "login renders with the +91 prefix; the OTP step shows exactly 6 boxes; after the 6th digit the navigator swaps to the Home stack showing 'Foundations ready'",
+      "artifacts_required": [
+        "IOS-HAPPY-013.login.png",
+        "IOS-HAPPY-013.otp.png",
+        "IOS-HAPPY-013.home.png"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "IOS-EDGE-014",
+      "surface": "ios",
+      "quadrant": "edge",
+      "instructions": [
+        "on the Home screen tap the '\u0939\u093f' segment of the locale control",
+        "screenshot",
+        "tap '\u092e\u0930' and screenshot"
+      ],
+      "expected": "Devanagari renders without clipping or tofu in both HI and MR \u2014 AppText run-splitting works; text expansion does not break the card layout",
+      "artifacts_required": [
+        "IOS-EDGE-014.hi.png",
+        "IOS-EDGE-014.mr.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "IOS-NEG-015",
+      "surface": "ios",
+      "quadrant": "negative",
+      "instructions": [
+        "relaunch the app to reach the login screen",
+        "after launching, poll with screenshots every 2s (max 30s) until the frame is no longer blank and shows app content; only then capture the declared artifact",
+        "tap the phone field and type only 98765 (5 digits)",
+        "screenshot the Continue button state"
+      ],
+      "expected": "Continue is disabled below PHONE_NSN_LENGTH digits \u2014 the flow cannot advance on a short number",
+      "artifacts_required": [
+        "IOS-NEG-015.short.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "IOS-ADV-016",
+      "surface": "ios",
+      "quadrant": "adversarial",
+      "instructions": [
+        "relaunch the app, enter 9876543210 and reach the OTP step",
+        "after launching, poll with screenshots every 2s (max 30s) until the frame is no longer blank and shows app content; only then capture the declared artifact",
+        "tap 'Change number'",
+        "screenshot",
+        "note whether the previously entered number is still in the field"
+      ],
+      "expected": "returns to the phone step with the entered number preserved, no crash; the resend countdown does not continue running on the phone step",
+      "artifacts_required": [
+        "IOS-ADV-016.change-number.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "AND-HAPPY-017",
+      "surface": "android",
+      "quadrant": "happy",
+      "instructions": [
+        "relaunch com.heliogrid.app on the emulator with adb",
+        "after launching, poll with `adb exec-out screencap -p` every 2s (max 30s) until the frame no longer shows the 'Loading from' Metro banner and app content is visible; only then capture the declared artifact. A loading frame is `inconclusive`, never a pass",
+        "screenshot the login screen with adb exec-out screencap"
+      ],
+      "expected": "login renders identically to iOS: HelioGrid wordmark, 'Welcome back', +91 prefix, disabled Continue, invite link footer",
+      "artifacts_required": [
+        "AND-HAPPY-017.login.png"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "AND-EDGE-018",
+      "surface": "android",
+      "quadrant": "edge",
+      "instructions": [
+        "tap the phone field with adb shell input tap",
+        "adb shell input text 9876543210999",
+        "screenshot"
+      ],
+      "expected": "the field holds exactly 10 digits \u2014 the same PHONE_NSN_LENGTH cap as web and iOS; Continue becomes enabled",
+      "artifacts_required": [
+        "AND-EDGE-018.capped.png"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "AND-NEG-019",
+      "surface": "android",
+      "quadrant": "negative",
+      "instructions": [
+        "force-stop and relaunch com.heliogrid.app",
+        "after launching, poll with `adb exec-out screencap -p` every 2s (max 30s) until the frame no longer shows the 'Loading from' Metro banner and app content is visible; only then capture the declared artifact. A loading frame is `inconclusive`, never a pass",
+        "screenshot immediately after launch"
+      ],
+      "expected": "the app boots to the Login stack, not Home \u2014 the walkthrough session starts anonymous and nothing is persisted across a relaunch",
+      "artifacts_required": [
+        "AND-NEG-019.relaunch.png"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "AND-ADV-020",
+      "surface": "android",
+      "quadrant": "adversarial",
+      "instructions": [
+        "reach the login screen",
+        "tap Continue rapidly 5 times within one second with adb shell input tap",
+        "screenshot",
+        "adb logcat -d | tail -50 and save it"
+      ],
+      "expected": "no crash and no red box; the log contains no unhandled exception from the app package",
+      "artifacts_required": [
+        "AND-ADV-020.rapid.png",
+        "AND-ADV-020.logcat.txt"
+      ],
+      "severity_if_failed": "major"
+    },
+    {
+      "id": "CORE-TENANCY-021",
+      "surface": "api",
+      "quadrant": "negative",
+      "instructions": [
+        "docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc \"select count(*) from pg_tables where schemaname='public'\"",
+        "save the output"
+      ],
+      "expected": "BLOCKED, and this step exists to prove the block rather than let it be silently omitted. Cross-tenant isolation CANNOT be exercised: packages/db is greenfield (ADR-0024) so there are zero application tables and no tenants to isolate. The expected observation is a count of 0. Record it and mark the step blocked, not passed.",
+      "artifacts_required": [
+        "CORE-TENANCY-021.tablecount.txt"
+      ],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "CORE-MONEY-022",
+      "surface": "api",
+      "quadrant": "happy",
+      "instructions": [
+        "no action \u2014 record this step as blocked with the stated reason"
+      ],
+      "expected": "BLOCKED. Money reconciliation (BOM \u2194 proposal \u2194 tranches) has no surface in this slice: no money endpoints, screens or tables exist yet. Recorded explicitly so its absence is not read as a pass.",
+      "artifacts_required": [],
+      "severity_if_failed": "blocker"
+    },
+    {
+      "id": "CORE-AUTH-023",
+      "surface": "api",
+      "quadrant": "negative",
+      "instructions": [
+        "no action beyond API-NEG-011 \u2014 record this step as blocked with the stated reason"
+      ],
+      "expected": "BLOCKED. 'An unauthenticated request to a protected route is rejected' cannot be tested: there are no protected routes. The global deny-by-default SessionGuard was removed with auth (ADR-0024), so every route is currently public BY DESIGN. API-NEG-011 proves the auth routes are gone; it does not and cannot prove authorisation.",
+      "artifacts_required": [],
+      "severity_if_failed": "blocker"
+    }
+  ]
+}

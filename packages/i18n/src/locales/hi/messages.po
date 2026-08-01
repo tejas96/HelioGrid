@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:74
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:78
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:63
 msgid "6-digit code"
 msgstr "6-अंकों का कोड"
@@ -36,7 +36,7 @@ msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
 msgstr "आपके कोड के साथ +91 {phoneFormatted} पर अभी कॉल कर रहे हैं। फ़ोन पास रखें।"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:63
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:67
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:57
 msgid "Change number"
 msgstr "नंबर बदलें"
@@ -72,13 +72,13 @@ msgid "Create an account"
 msgstr "खाता बनाएँ"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:57
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:61
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
 msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
 msgstr "+91 {phoneFormatted} पर भेजा गया 6-अंकों का कोड डालें।"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:54
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:58
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:47
 msgid "Enter your code"
 msgstr "अपना कोड डालें"
@@ -115,13 +115,13 @@ msgid "Open my day"
 msgstr "मेरा दिन खोलें"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:100
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:104
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:78
 msgid "Resend code"
 msgstr "कोड फिर से भेजें"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:87
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:91
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:82
 msgid "Resend code in {time}"
 msgstr "{time} में कोड फिर से भेजें"
