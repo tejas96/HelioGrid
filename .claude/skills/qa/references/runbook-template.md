@@ -17,12 +17,21 @@ anything. Your entire output is artifacts on disk plus one `report.json`.
 
 ## Environment
 
-- Web: `http://localhost:3000` — drive with the Playwright MCP tools.
-- API: `http://localhost:8080` — drive with `curl`.
+- Web: `http://localhost:3002` — drive with the Playwright MCP tools.
+- API: `http://localhost:8084` — drive with `curl`.
+  (These are the ports this repo actually uses — `apps/web` runs 3002, `apps/api` 8084. The
+  template said 3000/8080 until 2026-08-02; unsubstituted, every web and API step hits
+  nothing and can be reported as a pass against a connection error.)
 - Database (read-only, enforced by role):
   `docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc "<SQL>"`
 - iOS: `idb` for tap/swipe/text, `xcrun simctl` for install/launch/screenshot.
 - Android: `adb shell input tap`, `adb exec-out screencap -p > file.png`, `adb install`.
+
+**After ANY app launch or relaunch on either mobile platform, wait for the JS bundle before
+you screenshot.** A debug build fetches it from Metro on every cold start, so an immediate
+capture yields a blank screen with a `Loading from …:8081` banner. Poll until the frame
+stops being blank, then capture. A screenshot of a loading screen is `inconclusive`, never a
+pass — reporting one as a rendered screen is what invalidated run 2026-08-02-0011 entirely.
 
 ## Artifacts
 

@@ -171,9 +171,10 @@ fi
 # the reference harder to check against the design source. They are excluded by path.
 #
 # COPY_DEBT lists product screens that are NOT yet wrapped, each with a reason and an owner.
-# They are being rebuilt with auth (auth-tenancy ruling 6), so wrapping them now would be
-# translating markup that is about to be deleted — but the debt is LISTED rather than invisible,
-# and a NEW screen gets no such grace.
+# Both survived the 2026-08-01 auth teardown (ADR-0024) with their designs intact but their
+# data paths stubbed, and both get their real content back with the auth rebuild — wrapping
+# copy that is about to change would be translating twice. The debt is LISTED rather than
+# invisible, and a NEW screen gets no such grace.
 COPY_DEBT='apps/web/features/home/HomeScreen.tsx|apps/web/features/auth/onboarding/OnboardingScreen.tsx'
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
          apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \

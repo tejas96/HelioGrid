@@ -48,8 +48,13 @@ test-results/
 # Subagent-driven-development workspace (ledger, briefs, review packages)
 .superpowers/
 
-# QA runs — plan/report/triage are COMMITTED history; only evidence blobs are ignored
+# QA runs — plan/report/triage are COMMITTED history; only evidence blobs are ignored.
+# Do NOT widen this to `.qa`: the /qa executor did exactly that on 2026-08-02, which would
+# have silently excluded every plan, report and triage the skill requires to be committed.
 .qa/*/artifacts/
+
+# Playwright MCP scratch (console logs, traces) written by the /qa executor
+.playwright-mcp/
 
 # graphify — generated knowledge-graph cache, never committed
 graphify-out/
