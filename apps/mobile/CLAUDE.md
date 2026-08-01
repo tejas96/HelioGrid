@@ -2,8 +2,8 @@
 
 ## What lives here / what must never live here
 - Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile,
-  signup (Law 7 lockstep with web), invite accept. Screens land per-module in LOCKSTEP
-  with web — same slice, same contract.
+  signup, invite accept. Screens land per-module from the same contract as web; which
+  platform ships a screen first is a plan decision, but `src/ui` stays in parity (Law 7).
 - ALL data access behind `src/data/repositories.ts` — screens never see fetch/SQLite/sync.
 - NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
   **authoring** domain logic here — shared decisions, policy constants and formatters are
@@ -18,15 +18,14 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 ## Depends on / depended on by
 uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n,
 @heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
-nav: @react-navigation/native + native-stack + react-native-screens (ADR-0020)
+nav: @react-navigation/native + native-stack + react-native-screens
 used by: nobody
 RN UI components: `src/ui` (mirror of packages/ui — Law 7). Parity with web is a TYPECHECK,
 not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
 `@heliogrid/ui-api`. Drift fails THIS app's typecheck and names the component.
 
 ## Local conventions
-- **RN keeps `src/screens/<name>/` — it is NOT migrating to web's `features/` shape** (ADR-0022
-  Consequences). RN has no router-driven `app/` directory, so screen folders already are the
+- **RN keeps `src/screens/<name>/` — it is NOT migrating to web's `features/` shape.** RN has no router-driven `app/` directory, so screen folders already are the
   equivalent. The asymmetry is deliberate; do not "align" one to the other.
 - Theme ONLY from `@heliogrid/tokens/theme`. Import UI ONLY from `src/ui` index.
 - **Styling layers:** components own pixels (`src/ui` index only); screens own layout in the
@@ -35,7 +34,7 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   in `src/i18n.ts` FIRST.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
 - **Inside a screen folder, structure follows need** — the same shape as web, in RN's own
-  location (ADR-0022): `<Name>Screen.tsx` composes and holds no state · `components/` one file
+  location: `<Name>Screen.tsx` composes and holds no state · `components/` one file
   per component or coherent group · `hooks/use-<thing>.ts` for state, network and timers ·
   `styles.ts` owns screen-level layout, component-local geometry stays with its component ·
   `types.ts` when two files share a type. A screen component body is capped at
@@ -47,10 +46,10 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
   `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
   and the validation. There is deliberately no `src/config/` — a new folder category is a
-  plan-time call, not something to add mid-diff (Law 2).
+  plan-time call, not something to add mid-diff.
 - Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
   `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
-  `mobile-app-entry-thin`, severity `error` since ADR-0020's navigation slice landed).
+  `mobile-app-entry-thin`, severity `error` since the navigation slice landed).
 
 ## Landmines
 - **A screen that fetches, holds state, renders and styles in one file passes every gate**

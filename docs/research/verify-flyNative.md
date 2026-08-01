@@ -1,4 +1,4 @@
-> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0006, ADR-0007 and ADR-0008; spikes S2/S4 supersede it operationally.
+> **HISTORICAL EVIDENCE** — its conclusions are already promoted into the authority named below. Cite that, not this file. Promoted into ADR-0007 and ADR-0008; spikes S2/S4 supersede it operationally.
 
 # VERDICT
 

@@ -34,7 +34,7 @@ dependency but imports nothing yet — it is still a scaffold.
 - Every closed business set is ONE `z.enum` here, defined once (shared sets in
   `common.ts`), with its inferred type exported (`export type UiLanguage = z.infer<…>`)
   from the index. Consumers — api services, web, mobile, i18n — import the type; an
-  inline literal union anywhere downstream is a defect (Law 4 — CLAUDE.md).
+  inline literal union anywhere downstream is a defect — one definition per fact (CLAUDE.md §1).
 
 ## Landmines
 - Zod is pinned 3.25.x; `zod/v4` subpath exists in the package but is BANNED (S3: ts-rest

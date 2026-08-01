@@ -8,7 +8,7 @@ Owner directives that shaped these choices: docs/15 §4.
 Evidence: `./research/backend.md`, `./research/fly.md`, `./research/sync.md`,
 `./research/geo3d.md`, `./research/calc.md` — but note that `backend.md` and `fly.md`
 recommended stacks (Hono/oRPC/Graphile/S3) that were **later overturned** by
-ADR-0002/0003/0006/0007/0008. Read them as considered alternatives, never as guidance.
+ADR-0003/0007/0008. Read them as considered alternatives, never as guidance.
 
 ---
 

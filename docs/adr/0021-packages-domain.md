@@ -38,7 +38,7 @@ importable — a package cycle. Owner ruling 2026-07-30.
 
 **Where business enums live under this rule.** A value both layers need is defined HERE as a
 pure TypeScript union, and `packages/contracts` builds its `z.enum` from it. Validation still
-belongs to contracts (Law 4), and the value still has exactly one definition — at the bottom,
+belongs to contracts, and the value still has exactly one definition — at the bottom,
 where both layers can reach it.
 
 **It may never import:** NestJS, React, React Native, any storage, any fetch client, any

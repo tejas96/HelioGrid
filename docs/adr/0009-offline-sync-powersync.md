@@ -19,7 +19,7 @@ Field surveyors work offline for hours or days (basements, rural sites), capturi
 ## Consequences
 
 - We own the connector's idempotency, tenant checks and versioning — deliberately: that is where an agent can read and test the write semantics.
-- One more stateful Fly service (`powersync` process group) reading Postgres WAL (`wal_level=logical`) — it joins the postgres-flex ops surface we already own (ADR-0006).
+- One more stateful Fly service (`powersync` process group) reading Postgres WAL (`wal_level=logical`) — it joins the postgres-flex ops surface we already own.
 - LWW on designs is safe only while single-editor holds; if collaborative editing lands, this conflict policy must be revisited before, not after.
 - Open Edition is source-available and free; PowerSync Cloud exists as fallback but would need an India-residency check.
 

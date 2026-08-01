@@ -90,7 +90,7 @@ module.exports = {
       name: 'web-app-imports-feature-barrel-only',
       severity: 'error',
       comment:
-        'apps/web/app is ROUTING ONLY (ADR-0022). A page may import a feature through its ' +
+        'apps/web/app is ROUTING ONLY. A page may import a feature through its ' +
         'index barrel, or through a SCREEN barrel one level down — never a deep path into the ' +
         'feature. A deep import re-creates the scattering the feature folder exists to remove, ' +
         'and makes the barrel a lie. The screen barrel is not a loophole, it is required: a ' +
@@ -111,7 +111,7 @@ module.exports = {
       name: 'web-app-holds-no-components',
       severity: 'error',
       comment:
-        'apps/web/app is ROUTING ONLY (ADR-0022) — no component, hook, or style may live under ' +
+        'apps/web/app is ROUTING ONLY — no component, hook, or style may live under ' +
         'it. web-app-imports-feature-barrel-only (above) stops a page reaching INTO features/ ' +
         'the wrong way, but says nothing about a NEW satellite file created directly under app/ ' +
         'and imported locally — the old one-folder-per-route shape (page.tsx + components.tsx + ' +
@@ -130,7 +130,7 @@ module.exports = {
       name: 'web-feature-no-cross-internals',
       severity: 'error',
       comment:
-        "One feature may not reach INTO another (ADR-0022). Import the other feature's index " +
+        "One feature may not reach INTO another. Import the other feature's index " +
         'barrel, or — if the thing is genuinely shared — move it to packages/ui (visual), ' +
         'packages/domain (logic) or apps/web/lib (app infrastructure).',
       // `pathNot` carries the $1 backreference, NOT a lookahead inside `path`. This mirrors the
@@ -272,7 +272,7 @@ module.exports = {
       name: 'mobile-app-entry-thin',
       severity: 'error',
       comment:
-        'App.tsx composes providers and renders RootNavigator — it never imports a screen. This single rule permanently stops App.tsx regrowing a hand-rolled router (ADR-0020).',
+        'App.tsx composes providers and renders RootNavigator — it never imports a screen. This single rule permanently stops App.tsx regrowing a hand-rolled router.',
       from: { path: '^apps/mobile/App\\.tsx$' },
       to: { path: '^apps/mobile/src/screens/' },
     },

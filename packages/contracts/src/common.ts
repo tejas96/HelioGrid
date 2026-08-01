@@ -49,7 +49,7 @@ export type RolePreset = z.infer<typeof rolePresetSchema>;
 /**
  * The customer-journey pipeline status shared by leads, proposals and projects, and by
  * every surface that renders one (StatusChip on both platforms, list filters, reports).
- * Lives here — not in a UI package — because Law 4 makes this the only definition; the
+ * Lives here — not in a UI package — because this is the only definition — one definition per fact; the
  * owning module's migration adds the matching pgEnum from THIS list.
  */
 export const workflowStatusSchema = z.enum([

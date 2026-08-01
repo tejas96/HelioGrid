@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
  * Vocabulary shared across component APIs.
  *
  * These unions were written out identically in both implementations. Hoisting them here is
- * Law 4 applied to the component layer: one definition, imported by both platforms, so a new
+ * One definition per fact, applied to the component layer: imported by both platforms, so a new
  * member cannot land on web and be silently missing on RN.
  *
  * `ChipTone` is the clearest case — web declared the union literally while RN derived it with

@@ -1,5 +1,5 @@
 /**
- * Login flow state — the one definition both platforms use (Law 4, Law 7).
+ * Login flow state — the one definition both platforms use, held in parity (Law 7).
  *
  * Each platform had authored its own copy, and they had already drifted: mobile declared
  * `'mismatch' | 'transport'` inline under a comment claiming "web parity" while web declared

@@ -188,8 +188,8 @@ The binding directives from the original planning session, preserved here becaus
 FIRST and the superseded wording is marked as such** — the archived file interleaved them,
 which let an agent quote stale law from above a correction.
 
-1. **Backend: NestJS.** (ADR-0002.)
-2. **Fly-native storage/services only initially — no AWS.** (ADR-0006/0007/0008.)
+1. **Backend: NestJS.**
+2. **Fly-native storage/services only initially — no AWS.** (ADR-0007/0008.)
 3. **Mobile: bare React Native, NO Expo**, iOS + Android from day one. (ADR-0011.)
 4. **Payments, subscriptions, billing, entitlements, usage tracking and gateway integration
    are IN the initial product** — supersedes D38. Trial-only, no free tier. (docs/16, ADR-0013.)
@@ -215,7 +215,7 @@ which let an agent quote stale law from above a correction.
    "`sendDtmf()`/`onDtmf()` over AgentStream" — both contradicted by S5. Do not implement.*
 8. **No feature-flag system.** Features ship enabled when merged; no flag infrastructure, no
    dark launches. The ONLY runtime gating is billing entitlements. Incomplete work does not
-   merge. (ADR-0016.)
+   merge.
 9. **The 3D Design Studio is THE flagship — nothing is compromised against it.** The tool
    census is the binding acceptance checklist for the port: every tool and every computed
    output survives, refactored to the design system, touch-first. The scale program is
@@ -247,4 +247,4 @@ Reslink · tests: thin safety net · two-tier catalog: yes · pricing: trial-onl
 tier · voice v1: Exotel + Sarvam · final review: NestJS, Fly-native storage
 (Tigris/Upstash, no AWS), bare React Native (no Expo), billing/entitlements/payments in v1 ·
 DB: Fly unmanaged postgres-flex (owner choice; deprecation risk accepted with mandatory
-mitigations and documented escape hatches — ADR-0006).
+mitigations and documented escape hatches).

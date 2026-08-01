@@ -1,5 +1,5 @@
 /**
- * The route map — the single source of truth for RN navigation (ADR-0020).
+ * The route map — the single source of truth for RN navigation.
  *
  * `RootStackParamList` makes a wrong route name or wrong params a COMPILE ERROR, which is
  * what replaces the prop-callback chain the app used before. A screen's props are its route

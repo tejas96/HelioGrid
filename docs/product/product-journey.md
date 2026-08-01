@@ -2,7 +2,7 @@
 >
 > This is the master product specification (D1–D39 census, the nine-stage journey, the
 > customer journey C1–C13, roles and permissions). It is the root requirement source for
-> Law 6 traceability.
+> traceability: every change traces back to a D-decision here.
 >
 > **Roughly 40% of the decision text below is SUPERSEDED.** `docs/15-spec-resolutions.md`
 > carries the conformance table (HONORED / SUPERSEDED / PARTIAL) and is the only safe way

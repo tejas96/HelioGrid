@@ -24,7 +24,7 @@ HelioGrid serves many Indian solar EPC tenants at high volume (residential + C&I
 ## Alternatives rejected
 
 - **Schema-per-tenant** — migration fan-out across hundreds of schemas, PowerSync/Drizzle tooling friction, connection-pool fragmentation; complexity grows linearly with tenant count for isolation we can enforce logically.
-- **Database-per-tenant** — strongest isolation, absurd ops burden at this tenant profile on unmanaged Fly postgres-flex (ADR-0006).
+- **Database-per-tenant** — strongest isolation, absurd ops burden at this tenant profile on unmanaged Fly postgres-flex.
 - **RLS as the only layer** — puts all trust in session-variable hygiene; a missing `SET LOCAL` fails open in some pooling modes. App scoping stays primary.
 
 ## Sources

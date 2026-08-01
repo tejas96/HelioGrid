@@ -1,5 +1,5 @@
 /**
- * The ONLY import surface `app/` may use for auth (ADR-0022, enforced by
+ * The ONLY import surface `app/` may use for auth (enforced by
  * dependency-cruiser `web-app-imports-feature-barrel-only`).
  */
 export { LoginScreen } from './login/LoginScreen';

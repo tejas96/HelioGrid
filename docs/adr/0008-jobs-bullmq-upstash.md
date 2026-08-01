@@ -4,7 +4,7 @@ Date: 2026-07-24
 
 ## Context
 
-Job load: shading simulations at scale, Playwright PDF renders, CSV imports, voice-agent post-processing, and repeatable cron triggers (proposal-unopened-3d, task-overdue-2d, snooze wake-ups, dormant sweep). The original research pick was Graphile Worker (Postgres-native, no Redis). Two later binding directives changed the calculus: the backend is NestJS (ADR-0002) and infrastructure is Fly-native (ADR-0006/0007) — where Upstash Redis is the blessed extension, available in `bom`.
+Job load: shading simulations at scale, Playwright PDF renders, CSV imports, voice-agent post-processing, and repeatable cron triggers (proposal-unopened-3d, task-overdue-2d, snooze wake-ups, dormant sweep). The original research pick was Graphile Worker (Postgres-native, no Redis). Two later binding directives changed the calculus: the backend is NestJS and infrastructure is Fly-native (ADR-0007) — where Upstash Redis is the blessed extension, available in `bom`.
 
 ## Decision
 

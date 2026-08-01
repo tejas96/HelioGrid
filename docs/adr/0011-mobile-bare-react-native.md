@@ -11,7 +11,7 @@ The product owner issued a binding directive: **pure/bare React Native, no Expo,
 **Bare React Native for `apps/mobile`** — field-first app (My Day, leads, quick-add, offline surveys, visits, notifications); the studio opens as an authenticated WebView (ADR-0017). Verified stack on bare RN:
 
 - **PowerSync**: supported via `@op-engineering/op-sqlite` (New Architecture OK); requires the metro inline-requires blockList and WebSocket transport (ADR-0009).
-- **Better Auth**: framework-agnostic client + custom `react-native-keychain` storage adapter (ADR-0010).
+- **Better Auth**: framework-agnostic client + custom `react-native-keychain` storage adapter.
 - **Lingui v5**: `@lingui/metro-transformer` works without Expo on RN ≥0.73 (ADR-0015).
 - **Push**: Notifee + react-native-firebase, FCM/APNs direct (no Expo Push).
 

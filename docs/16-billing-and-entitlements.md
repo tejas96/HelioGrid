@@ -17,7 +17,7 @@ Two money systems live here and they never mix:
 
 **Prices, caps and bundle sizes are defined ONCE in
 [`./01-business-model.md`](./01-business-model.md)** — restating them here would create a
-drift vector (Law 4). This document fixes the billing MECHANICS only.
+drift vector — one definition per fact. This document fixes the billing MECHANICS only.
 
 Shape (owner directive, docs/15 §4): org-level and capacity-tiered — **never per-seat**
 (Indian EPCs employ many low-cost designers; ARKA and Reslink both price per-org —

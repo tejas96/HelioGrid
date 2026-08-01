@@ -7,7 +7,8 @@ import './onboarding.css';
 /**
  * Segment copy keyed by the contract enum: adding a segment to `tenantSegmentSchema` is a
  * compile error HERE until this screen renders it. The old `as const` array was merely
- * subset-assignable, so a new segment shipped silently unselectable (Law 4 / UX drift).
+ * subset-assignable, so a new segment shipped silently unselectable (one definition
+ * per fact / UX drift).
  */
 const SEGMENT_LABEL: Record<TenantSegment, string> = {
   residential: 'Homes',

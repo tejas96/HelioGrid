@@ -13,7 +13,7 @@ import type { RootStackParamList } from './routes';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
- * The session gate lives HERE, not in App.tsx (ADR-0020): while we are checking the
+ * The session gate lives HERE, not in App.tsx: while we are checking the
  * keychain-jar session we show a boot spinner, then mount exactly one of the two stacks.
  * Swapping stacks — rather than navigating — means a signed-out user has no authenticated
  * screen left in the history to go back to.

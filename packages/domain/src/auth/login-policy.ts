@@ -1,5 +1,6 @@
 /**
- * OTP login policy — the behavioural numbers both platforms obey (Law 4, Law 7).
+ * OTP login policy — the behavioural numbers both platforms obey. One definition, held
+ * in parity across web and RN (Law 7).
  *
  * Each platform had authored its own copy from the same spec. Where the spec was explicit the
  * two agreed; where it was open they diverged, which is what a duplicated fact always does

@@ -29,14 +29,15 @@ export type TenantStatus = z.infer<typeof tenantStatusSchema>;
 export const inviteStatusSchema = z.enum(['pending', 'accepted', 'expired', 'revoked']);
 export type InviteStatus = z.infer<typeof inviteStatusSchema>;
 
-/** Membership lifecycle of a user inside a tenant (Law 4: named, never inline). */
+/** Membership lifecycle of a user inside a tenant — named, never inline. */
 export const memberStatusSchema = z.enum(['invited', 'active', 'deactivated']);
 export type MemberStatus = z.infer<typeof memberStatusSchema>;
 
 /**
  * Phone-OTP protocol constants. These describe the WIRE, so both clients and the Better
  * Auth server config must derive from them — a server-side change to OTP length that
- * leaves the inputs rendering the old box count is the exact drift Law 4 exists to stop.
+ * leaves the inputs rendering the old box count is the exact drift one definition per
+ * fact exists to stop.
  */
 export const OTP_LENGTH = 6;
 /** Better Auth `expiresIn` (seconds) — surfaced so client countdowns cannot disagree. */

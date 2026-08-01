@@ -11,15 +11,14 @@ loads into every session. Neither restates this document, and it restates neithe
 
 ## 1. The Laws (non-negotiable)
 
-Laws 1–9 bind every agent and every change. Conflicts resolve by §4's hierarchy. The
-always-loaded one-line digest is `.claude/rules/00-laws.md`.
+These bind every agent and every change. Conflicts resolve by §4's hierarchy. The
+always-loaded one-line digest is `.claude/rules/00-laws.md`. Numbers are stable ids, never
+reused or renumbered — a gap is a law that was removed (2, 4 and 6 on 2026-08-01; CLAUDE.md
+§1–2 carries what they said).
 
 **Law 1 — Foundation before features.** Feature modules build ONLY on the landed
 foundation (tokens → components → contracts → guards). Module work proceeds via per-module
 roadmaps (§3).
-
-**Law 2 — Architecture changes at plan time, not mid-diff.** Better fit found while coding →
-say so; never switch silently.
 
 **Law 3 — Contracts before code.** The immutable order:
 requirements (docs + D-census) → domain model (docs/04 + `packages/domain`) →
@@ -27,29 +26,19 @@ API contracts (`packages/contracts`) → shared types (from contracts/tokens —
 re-declared) → database migration (`packages/db`, owning module's slice) →
 implementation → verification-by-running → documentation. Never in reverse.
 
-**Law 4 — Single source of truth.** Business enums/validation → `packages/contracts`.
-Visual values → `packages/tokens` (generated). Schema → docs/04 + migrations. Money
-formatting → `formatInr()` (`packages/domain`, once it lands). i18n strings →
-`packages/i18n` catalog. Duplicate definitions are defects, not conveniences.
-
 **Law 5 — Reuse before creation.** Before creating any component/util/service/contract:
 search the component indexes (`packages/ui`, `apps/mobile/src/ui`), `packages/contracts`,
 and the owning module. Surfaces without a mockup are COMPOSED from the existing vocabulary —
 never new visuals (`packages/ui/CLAUDE.md` standing law).
 
-**Law 6 — Requirement traceability.** Every slice traces to: a D-decision
-(`docs/product/product-journey.md` D1–D39, read through the docs/15 overlay), a mockup file
-(`design/mockups/` by name). Nothing exists without a requirement; §3 says where status
-is recorded now that per-module roadmaps are gone.
+**Law 7 — Shared component APIs stay in parity.** A prop or component authored on one
+platform only is a defect — `@heliogrid/ui-api` plus `check:ui-parity` enforce it in both
+directions. WHICH screens each platform ships is a plan decision, not a law: the two screen
+sets already differ deliberately.
 
-**Law 7 — Cross-platform lockstep.** Web + RN ship in the SAME slice from the same contract,
-verified in the browser AND on both simulators. Platform drift is a violation, not a
-follow-up. **Exceptions require an explicit owner ruling**; the default
-is lockstep.
-
-**Law 8 — Documentation is code.** Docs are load-bearing for other agents: a change that
-invalidates a doc updates that doc in the SAME commit. Per-package CLAUDE.md landmines are
-mandatory on first discovery.
+**Law 8 — Fix the docs your change made wrong** — in the same commit, because docs are
+load-bearing for the next agent. Docs that are merely adjacent or related are not your
+problem. Per-package CLAUDE.md landmines are mandatory on first discovery.
 
 **Law 9 — Incremental schema & API growth.** Detail in §2.
 
@@ -186,7 +175,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | React presentation/logic separation | A cohesion judgement, not a syntactic one | `.claude/rules/ui-adherence.md` + review |
 | RN hooks own logic; never a `components.tsx`/`hooks.ts` grab-bag | The 80-line cap binds only `*Screen.tsx` — a bloated hook or a layer-named file lints clean | `apps/mobile/CLAUDE.md` + review |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers | review + docs/04 |
-| Contract-first ordering · migration procedure · Law 7 lockstep · Law 8 docs-in-commit | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/qa` |
+| Contract-first ordering · migration procedure · Law 8 docs-in-commit | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/qa` |
 | Reference integrity (`docs/NN §M`, section citations, relative links) | Owner ruling 2026-07-30: greps, not a checker script. Three greps over `git ls-files`; two `docs/08 §…` citations inside sha256-locked migrations are unfixable and skipped by name | `/doc-sync` |
 | `VERIFIED` claims carry real evidence | Evidence *quality* is a judgement no script can make | `/qa` artifact verification + review |
 

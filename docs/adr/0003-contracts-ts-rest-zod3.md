@@ -4,7 +4,7 @@ Date: 2026-07-24
 
 ## Context
 
-One contract source of truth must yield (a) end-to-end typed clients for Next.js and bare React Native, and (b) an emitted OpenAPI 3.1 document for public customer-link endpoints, webhooks and a future public API — with no codegen drift. The host framework is NestJS (ADR-0002), which is CommonJS-shaped in practice.
+One contract source of truth must yield (a) end-to-end typed clients for Next.js and bare React Native, and (b) an emitted OpenAPI 3.1 document for public customer-link endpoints, webhooks and a future public API — with no codegen drift. The host framework is NestJS, which is CommonJS-shaped in practice.
 
 ## Decision
 

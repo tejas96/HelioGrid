@@ -23,7 +23,7 @@ import { styles } from './styles';
  */
 
 /**
- * Props are the ROUTE's props — no `onBack` callback (ADR-0020). Going back is
+ * Props are the ROUTE's props — no `onBack` callback. Going back is
  * `navigation.goBack()`, which also gives the native swipe gesture for free.
  */
 type GalleryScreenProps = NativeStackScreenProps<RootStackParamList, 'Gallery'>;

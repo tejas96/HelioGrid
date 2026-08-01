@@ -1,19 +1,18 @@
 # The Laws (docs/17) — one line each
 
+Numbers are stable ids, never reused or renumbered — same rule as ADRs and migrations. A gap
+means that law was removed; 2, 4 and 6 went on 2026-08-01 (CLAUDE.md §1–2 says it better).
+
 1. **Foundation before features.** Feature modules build only on landed foundation.
-2. **Architecture changes at plan time, not mid-diff.** Better fit found while coding → say
-   so; never switch silently.
 3. **Contracts before code.** requirements → domain model → API contract → shared types →
    migration → implementation → verification → docs. Never in reverse.
-4. **Single source of truth.** Business enums/validation → contracts. Visual values →
-   tokens (generated). Schema → docs/04 + migrations. i18n → the one catalog.
-   Duplicate definitions are defects, not conveniences.
 5. **Reuse before creation.** Search the component indexes and contracts first. Creating
    what exists is a defect. Unmocked surfaces are COMPOSED from existing vocabulary.
-6. **Requirement traceability.** Every change traces to a D-decision and a mockup filename.
-7. **Cross-platform lockstep.** Web + RN in the SAME change from the same contract.
-   Exceptions require an owner ruling, recorded where the decision was made.
-8. **Documentation is code.** A change that invalidates a doc updates it in the SAME commit.
+7. **Shared component APIs stay in parity.** A prop or component on one platform only is a
+   defect — `@heliogrid/ui-api` and `check:ui-parity` enforce it. WHICH screens each platform
+   ships is a plan decision, not a law.
+8. **Fix the docs your change made wrong** — in the same commit. Docs that are merely
+   related are not your problem.
 9. **Incremental schema & API growth.** Tables, enums, columns, contracts and endpoints are
    authored only when their OWNING module's slice begins. docs/04 is frozen DESIGN, not a
    build order. Asked to "implement the schema" → implement the CURRENT module's slice.

@@ -363,7 +363,7 @@ Safe-area via `react-native-safe-area-context`; reduced motion via
 `fontVariant:['tabular-nums']` — verify rendered output, not config.
 
 `/design` (screen in `apps/web/features/design-reference`, routed via the 6-line
-`apps/web/app/design/page.tsx` stub — ADR-0022) remains the living reference and the Tailwind
+`apps/web/app/design/page.tsx` stub) remains the living reference and the Tailwind
 content-scan surface: generated from `dist/tokens.json`, it renders every token and every
 component state — a new token appears automatically and an unrendered token is impossible.
 "Add a token → it renders at `/design` or nobody can verify it" carries over as law.

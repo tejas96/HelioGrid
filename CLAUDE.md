@@ -39,6 +39,10 @@ but never skip §1's "you ran it" for anything a user can see.
 - **A simpler approach exists → say so.** Push back when warranted; a recommendation you
   withheld is a decision you made on the owner's behalf without telling them.
 - **Unclear → stop.** Name what is confusing, then ask. Never invent a requirement.
+- **Architecture shifts at plan time.** Better fit found while coding → say so; never switch
+  silently.
+- **Every change traces to something asked for** — a docs/product D-decision or a mockup
+  file. Don't build what nobody requested.
 
 ## 3. Simplicity first
 
@@ -152,10 +156,12 @@ committing with `--no-verify`; fix the diagnostic.
 
 ## 9. Where things are
 
-Laws 1–9 and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
+The Laws and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
 path-scoped rules: `ui-adherence.md`, `contracts.md`, `db-schema.md`, `i18n.md`).
 Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings and the
-docs/13 UX-gap register. Layer law: each package's own CLAUDE.md.
+docs/13 UX-gap register. Layer law: each package's own CLAUDE.md. `docs/adr/` is reference
+only — never a gate, never write one before building; replaced architecture deletes the old
+file.
 
 **Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
 piece of work under `docs/superpowers/plans/`; what was actually run is the committed

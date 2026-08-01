@@ -11,7 +11,7 @@ import { AppText, Button, Card, SegmentedControl } from '../../ui';
 /**
  * Post-login placeholder surface until My Day lands with the CRM module. It used to be an
  * inline component inside App.tsx built from raw Pressable/Text — a `src/ui` violation;
- * moving it into a screen folder (ADR-0020) was also the fix, so every visual here now
+ * moving it into a screen folder was also the fix, so every visual here now
  * comes from the component index.
  */
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;

@@ -321,7 +321,7 @@ Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | Doc | Covers |
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
-| [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) | The 9 Laws + when to stop and ask the owner before proceeding |
+| [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) | The Laws + when to stop and ask the owner before proceeding |
 | `docs/00-vision-and-scope.md` | Product vision, v1 scope, non-goals |
 | `docs/02-system-architecture.md` | Full system design |
 | `docs/03-tech-stack.md` | Every technology choice, pinned and justified |

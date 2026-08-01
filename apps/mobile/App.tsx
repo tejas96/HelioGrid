@@ -9,7 +9,7 @@ import { RootNavigator } from './src/navigation/RootNavigator';
  * App entry: composes providers and renders the navigator — nothing else.
  *
  * It must NEVER import a screen (dependency-cruiser `mobile-app-entry-thin`). The session
- * gate and every route live in `src/navigation/` (ADR-0020); this file used to be a
+ * gate and every route live in `src/navigation/`; this file used to be a
  * 216-line hand-rolled router with a screen defined inline.
  */
 setupI18n('en');

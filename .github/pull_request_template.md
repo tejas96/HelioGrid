@@ -15,7 +15,8 @@ Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.m
       committed OpenAPI was re-emitted — or: no contract change
 - [ ] **Schema**: migration is a NEW append-only file; forward-compat register
       (`docs/forward-compat.md`) re-read and satisfied — or: no schema change
-- [ ] **Lockstep** (Law 7): web AND RN ship together — or an owner ruling, stated here
+- [ ] **Parity** (Law 7): `check:ui-parity` green. Screen shipping on one platform only —
+      say which and why
 - [ ] **Docs in the same commit** (Law 8): per-package `CLAUDE.md` landmines and `docs/*`
 - [ ] Loading / empty / error / offline states · 375 and 1440 · light theme · Hindi render
 - [ ] Provenance tier on every user-visible number; money never renders stale; ₹ in Indian

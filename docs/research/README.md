@@ -20,7 +20,7 @@ content first.
 | `uxAL.md` · `uxMZ.md` | docs/13 — the only interpretation layer over 80 raw mockups |
 | `ds-usage.md` | docs/10, docs/15 R19 — empirical ground truth for which component specs are real |
 | `calc.md` | docs/05 (calculation audit), docs/04 (spec shapes verbatim) |
-| `geo3d.md` | docs/05, docs/02, docs/03, ADR-0014, ADR-0017 |
+| `geo3d.md` | docs/05, docs/02, docs/03, ADR-0017 |
 | `market.md` | docs/01 (the price ladder rests on its INR correction), docs/12, ADR-0013 |
 
 `calc.md` and `geo3d.md` stay until the Track D studio port completes — the POC code they
@@ -40,8 +40,8 @@ wrong architecture.** Retained only as considered-alternatives evidence for the 
 
 | File | Recommends | Actually shipped |
 |---|---|---|
-| `backend.md` | Hono + oRPC + Graphile; rejects NestJS | NestJS + ts-rest + BullMQ (ADR-0002/0003/0008) |
-| `fly.md` | Crunchy Bridge + AWS S3; rejects Tigris | Fly postgres-flex + Tigris `sin` + Upstash (ADR-0006/0007/0008) |
+| `backend.md` | Hono + oRPC + Graphile; rejects NestJS | NestJS + ts-rest + BullMQ (ADR-0003/0008) |
+| `fly.md` | Crunchy Bridge + AWS S3; rejects Tigris | Fly postgres-flex + Tigris `sin` + Upstash (ADR-0007/0008) |
 
 ## HISTORICAL EVIDENCE — cite the ADR, not the file (14)
 

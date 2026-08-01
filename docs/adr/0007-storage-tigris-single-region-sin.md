@@ -8,7 +8,7 @@ Object storage holds survey photos, proposal PDFs, DEM tiles and database backup
 
 ## Decision
 
-**Tigris (Fly-native, S3-compatible) with a single-region bucket pinned to `sin`.** Presigned URLs and multipart uploads are verified and carry the PowerSync Attachments flow (offline photo capture → resumable presigned PUT) and the pgBackRest/`pg_dump` backup targets (ADR-0006). Placement is controlled via bucket location config / `X-Tigris-Regions`; confirming the exact single-region pin flags through `fly storage create` is a listed week-1 spike.
+**Tigris (Fly-native, S3-compatible) with a single-region bucket pinned to `sin`.** Presigned URLs and multipart uploads are verified and carry the PowerSync Attachments flow (offline photo capture → resumable presigned PUT) and the pgBackRest/`pg_dump` backup targets. Placement is controlled via bucket location config / `X-Tigris-Regions`; confirming the exact single-region pin flags through `fly storage create` is a listed week-1 spike.
 
 **Compliance position, recorded**: DB (and therefore all phone PII and relational personal data) stays in India; object storage in `sin` is lawful under the DPDP negative-list default; RBI payment-data localisation is satisfied because Razorpay (an Indian licensed PA) holds payment instruments, not us (ADR-0013).
 

@@ -1,4 +1,4 @@
-> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/05 delegates its geometry-purity audit; docs/02, docs/03, ADR-0014 and ADR-0017 cite specific sections. Keep until the studio port and scale program land.
+> **NORMATIVE** — still binding: a live document delegates authority to this file. Do not archive it without promoting its content first. docs/05 delegates its geometry-purity audit; docs/02, docs/03 and ADR-0017 cite specific sections. Keep until the studio port and scale program land.
 
 I now have a comprehensive understanding of the entire geometry/3D half. Compiling the audit.
 

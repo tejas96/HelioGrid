@@ -13,7 +13,7 @@ pnpm --filter @heliogrid/i18n build       # compile catalogs + tsc (compile alon
 pnpm --filter @heliogrid/i18n typecheck
 
 ## Depends on / depended on by
-uses: @lingui/core, @heliogrid/contracts (closed-set types, e.g. `UiLanguage` — Law 4)
+uses: @lingui/core, @heliogrid/contracts (closed-set types, e.g. `UiLanguage` — one definition per fact)
 used by: apps/web, apps/mobile (packages/ui stays string-free)
 
 ## THE CONVENTION (until the swc-plugin note below is resolved)

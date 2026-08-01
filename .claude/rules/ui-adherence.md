@@ -36,7 +36,7 @@ paths:
 A component renders. It does not also fetch, orchestrate, or hold flow logic.
 - **Container** — `<Name>Screen.tsx`: data via the typed client, state, handlers, navigation.
   Returns presentational components; holds little markup. Web's `page.tsx` is routing only
-  (ADR-0022) — it renders the Screen, never holds container logic itself.
+  — it renders the Screen, never holds container logic itself.
 - **Presentational** — a component in `apps/web/features/<feature>/` or `packages/ui`: props
   in, markup out. No data access, no navigation.
 - **Logic** — a `use-<thing>.ts` controller hook beside it in the same feature folder; shared
@@ -49,4 +49,4 @@ finding. File-size and split-naming law: root CLAUDE.md §Process.
 375px and 1440px both work · loading, empty, error and offline states all designed ·
 keyboard reachable with visible focus · touch targets ≥44px · no hover-only meaning ·
 Hindi renders without clipping (allow 20–30% expansion) · numbers carry provenance ·
-web and RN shipped together (Law 7).
+shared component APIs in parity (Law 7).

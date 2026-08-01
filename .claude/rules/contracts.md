@@ -8,7 +8,7 @@ paths:
 - **The contract diff comes FIRST.** Change `packages/contracts` before implementing an
   endpoint or a client. The diff IS the API review (Law 3).
 - `tenant_id` NEVER travels in a request body — it comes from verified session claims.
-- **One `z.enum` per business set** (Law 4), exported with its inferred type. Consumers
+- **One `z.enum` per business set** — one definition per fact — exported with its inferred type. Consumers
   import the type; they never re-declare the values. UI status/variant maps are
   `Record<TheEnum, …>` so a new value fails to compile rather than rendering blank.
 - pgEnum values in `packages/db` hand-mirror these lists and `db-no-upward` forbids the

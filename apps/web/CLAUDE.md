@@ -24,15 +24,20 @@ used by: nobody
   (dependency-cruiser) — either `features/<feature>/index.ts` or a screen barrel one level
   down, `features/<feature>/<screen>/index.ts`. Nothing deeper.
   **A barrel must not re-export both a Server Component and a `'use client'` screen** — see
-  Landmines. A feature is named for the CAPABILITY it owns, matching the API module that
+  Landmines. Rule of thumb: ONE barrel per feature until a screen is a different rendering
+  kind, or the feature grows past a couple of screens — then give that screen its own.
+  A feature is named for the CAPABILITY it owns, matching the API module that
   serves it (`apps/api/src/modules/<module>/`) so one name spans both sides.
 - **apps/mobile is NOT migrating to this shape** — RN keeps `src/screens/<name>/`, its own
-  equivalent; the asymmetry is deliberate (ADR-0022).
+  equivalent; the asymmetry is deliberate. **It is LOCATION, not structure:** inside the
+  folder both platforms use the same split (screen composes · `components/` one file each ·
+  `hooks/use-<thing>.ts` · styles beside them). Reading the asymmetry as licence for a
+  single-file RN screen once produced a 446-line LoginScreen against web's 70.
 - **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
   file per sub-component (a folder from the first one) · `hooks/use-<screen>.ts` for the
   controller · `constants.ts` for literals · `types.ts` when two files share a type ·
   `<feature>/shared/` when two SCREENS share. Two FEATURES sharing means it is not
-  feature-local: `packages/ui`, `packages/domain` or `lib/`. ADR-0022.
+  feature-local: `packages/ui`, `packages/domain` or `lib/`.
 - `globals.css` is the only stylesheet under `app/`. Next reserved files
   (layout/providers/loading/error/not-found/route) stay in `app/`; `route.ts` is cookie/session
   BFF glue ONLY. `lib/` is unchanged: `*-client.ts` · `env.ts` · `hooks/` · `constants.ts`.
@@ -40,7 +45,7 @@ used by: nobody
   via a colocated `<screen>.css` in the feature folder with token `var()`; Tailwind = layout
   only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.
 - Import UI ONLY from `@heliogrid/ui` index. Business types from `@heliogrid/contracts`;
-  locale from `@heliogrid/i18n` — Law 4, no inline unions.
+  locale from `@heliogrid/i18n` — one definition per fact, no inline unions.
 - `.hg-*` scaffold is legacy — new screens use `@heliogrid/ui` only.
 - /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
 
