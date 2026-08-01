@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@heliogrid/config/tsconfig/node-package.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    // DOM is required, not cosmetic: this package runs in a browser and in React Native,
+    // both of which provide fetch/Headers. Without it `Headers` is unknown AND ts-rest's
+    // FetchOptions (derived from globalThis.Request) collapses to never, which silently
+    // types every fetch option as `undefined`.
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@heliogrid/data",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The frontend SDK — the ONLY data path for apps/web and apps/mobile (ADR-0023)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
+    "@ts-rest/core": "3.52.1",
+    "zod": "3.25.76"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "5.101.4",
+    "react": "19.2.3"
+  },
+  "devDependencies": {
+    "@heliogrid/config": "workspace:*",
+    "@tanstack/react-query": "5.101.4",
+    "@types/react": "19.2.17",
+    "react": "19.2.3",
+    "typescript": "5.8.3"
+  }
+}

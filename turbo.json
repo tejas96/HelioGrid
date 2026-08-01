@@ -40,6 +40,11 @@
           "allow": ["contracts", "domain", "config"]
         }
       },
+      "data": {
+        "dependencies": {
+          "allow": ["data", "contracts", "domain", "config"]
+        }
+      },
       "db": {
         "dependencies": {
           "allow": ["db", "domain", "config"]
@@ -65,6 +70,7 @@
           "allow": [
             "app",
             "contracts",
+            "data",
             "domain",
             "db",
             "tokens",
