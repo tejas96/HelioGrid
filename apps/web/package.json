@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/data": "workspace:*",
     "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
     "@heliogrid/i18n": "workspace:*",
@@ -23,9 +24,6 @@
     "@lingui/core": "5.9.5",
     "@lingui/react": "5.9.5",
     "@tanstack/react-query": "5.101.4",
-    "@ts-rest/core": "3.52.1",
-    "@ts-rest/react-query": "3.52.1",
-    "better-auth": "1.6.25",
     "lucide-react": "1.27.0",
     "next": "15.5.21",
     "react": "19.2.3",

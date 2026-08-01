@@ -1,15 +1,16 @@
 'use client';
-import { COUNTRY_CALLING_CODE, PHONE_NSN_LENGTH } from '@heliogrid/contracts';
+import { useSession } from '@heliogrid/data/react';
 import {
   AUTO_VERIFY_DELAY_MS,
   CALL_OFFER_AFTER_RESENDS,
+  COUNTRY_CALLING_CODE,
   DONE_DWELL_MS,
   type LoginStep,
   type OtpFailure,
+  PHONE_NSN_LENGTH,
 } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { authClient } from '../../../../lib/auth-client';
 import { useOnline } from '../../shared/hooks/use-online';
 import type { LoginViewModel } from '../types';
 import { useResendCountdown } from './use-resend-countdown';
@@ -19,6 +20,7 @@ import { useResendCountdown } from './use-resend-countdown';
 export function useLogin(): LoginViewModel {
   const router = useRouter();
   const online = useOnline();
+  const session = useSession();
 
   const [step, setStep] = useState<LoginStep>('phone');
   const [phone, setPhone] = useState('');
@@ -53,15 +55,9 @@ export function useLogin(): LoginViewModel {
   }, [step, router]);
 
   const requestCode = useCallback(async () => {
-    try {
-      const { error } = await authClient.phoneNumber.sendOtp({
-        phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
-      });
-      return !error;
-    } catch {
-      return false;
-    }
-  }, [phone]);
+    const result = await session.requestOtp(`${COUNTRY_CALLING_CODE}${phone}`);
+    return result.ok;
+  }, [phone, session]);
 
   const handleContinue = async (event: FormEvent) => {
     event.preventDefault();
@@ -89,25 +85,15 @@ export function useLogin(): LoginViewModel {
       verifyInFlight.current = true;
       setVerifying(true);
       setFailure(null);
-      try {
-        const { error } = await authClient.phoneNumber.verify({
-          phoneNumber: `${COUNTRY_CALLING_CODE}${phone}`,
-          code,
-        });
-        if (error) {
-          // 4xx = INVALID_OTP (wrong or expired) → spec copy; digits retained for editing
-          setFailure(error.status && error.status < 500 ? 'mismatch' : 'verify-failed');
-          return;
-        }
-        setStep('done');
-      } catch {
-        setFailure('verify-failed');
-      } finally {
-        verifyInFlight.current = false;
-        setVerifying(false);
-      }
+      // No try/catch: OtpResult carries the wrong-code vs transport distinction in the
+      // return type, so there is no throw left to swallow.
+      const result = await session.verifyOtp(`${COUNTRY_CALLING_CODE}${phone}`, code);
+      if (result.ok) setStep('done');
+      else setFailure(result.failure);
+      verifyInFlight.current = false;
+      setVerifying(false);
     },
-    [phone],
+    [phone, session],
   );
 
   const handleOtpChange = (value: string) => {

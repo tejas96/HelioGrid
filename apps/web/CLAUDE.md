@@ -14,6 +14,7 @@ pnpm --filter @heliogrid/web build | typecheck
 
 ## Depends on / depended on by
 uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env,
+@heliogrid/data (THE data path — transport, repositories, session; this app authors none),
 @heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
 used by: nobody
 
@@ -60,14 +61,16 @@ used by: nobody
   does `import './x.css'`, which is a side effect, so without the declaration webpack keeps
   every module a barrel names — all three auth routes shipped an identical 183 kB. True today
   because every side-effect import under `apps/web` is CSS; recheck if you add a non-CSS one.
-- **Never hand-roll `fetch` for product APIs.** `lib/auth-client.ts` used to export an
-  untyped `api<T>()`; the onboarding screen used it with a hand-declared response type, so
-  contract drift was invisible to typecheck. `lib/api-client.ts` is the ONLY path — it
-  rejects on non-2xx, so a resolved value is always the declared success body. Read error
-  copy with `envelopeMessage(err)`, never by re-declaring `{ error: { message } }`.
-- **Enum-driven pickers/labels are `Record<TheEnum, …>` and iterate `schema.options`.**
-  Onboarding's `SEGMENTS` was an `as const` array — merely subset-assignable, so a new
-  `tenantSegmentSchema` value compiled green while being unselectable in the UI.
+- **Never hand-roll `fetch` for product APIs.** `lib/auth-client.ts` once exported an untyped
+  `api<T>()`; the onboarding screen used it with a hand-declared response type, so contract
+  drift was invisible to typecheck. Both `lib/*-client.ts` files are gone (2026-08-01):
+  `@heliogrid/data` is the ONLY path, its repositories throw a typed `ApiError` on non-2xx,
+  and `apps-never-touch-the-wire` makes importing `@ts-rest/*` here a build failure.
+- **Enum-driven pickers/labels are `Record<TheEnum, …>` and iterate the CANONICAL list** —
+  `schema.options` for a contract enum, the exported tuple for a domain one (onboarding
+  iterates `TENANT_SEGMENTS`). Onboarding's `SEGMENTS` was once a LOCAL `as const` array,
+  merely subset-assignable, so a new segment value compiled green while being unselectable
+  in the UI. What matters is that the list is not authored in the screen.
 - **`lib/env.ts` must write `process.env.NEXT_PUBLIC_*` out LITERALLY.** Next inlines those
   at build time by textual substitution; `process.env[key]` or a spread is not substituted
   and reads `undefined` in the browser, silently falling back to the schema default — a
