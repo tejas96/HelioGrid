@@ -105,6 +105,7 @@ apps/
 packages/
   domain/     ported studio engines — pure TS, rules/catalog INJECTED
   contracts/  ts-rest contract + Zod 3.x schemas (single API source of truth)
+  data/       frontend SDK — the ONLY data path for web and mobile (ADR-0023)
   adapters/   provider adapters implementing the ports in 07-integrations.md
   db/         Drizzle schema + migrations
   ui/         web components (design system)
@@ -128,6 +129,13 @@ packages/
   adapters.
 - `packages/ui` → web only. `packages/tokens` → ui, web, mobile. `packages/i18n` → web,
   mobile.
+- `packages/data` is the ONLY data path for web and mobile: `apps/{web,mobile}` →
+  `packages/data` → `packages/contracts` → `packages/domain`. Neither app may import
+  `@ts-rest/*` or an auth client directly (`apps-never-touch-the-wire`), and `initClient` is
+  called exactly once in the whole repository. The package itself may not import
+  db/ui/ui-api/tokens/i18n/adapters or any app (`data-lean`), and React plus React Query are
+  confined to `packages/data/src/react/` (`data-core-is-framework-free`) so the query library
+  stays replaceable without touching a repository or a screen.
 
 **NestJS modules in `apps/api`** (one per bounded context): `auth`, `tenancy`, `crm`,
 `survey`, `design`, `proposal`, `customer-link`, `projects`, `billing` (payments,

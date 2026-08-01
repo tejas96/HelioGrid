@@ -44,7 +44,8 @@ authoritative doc for that layer; this table is only the index.
 | `apps/mobile` | Bare React Native (iOS + Android), no Expo — field-first app | [apps/mobile/CLAUDE.md](apps/mobile/CLAUDE.md) |
 | `apps/worker` | NestJS standalone worker — BullMQ processors, heavy compute (scaffold stage) | [apps/worker/CLAUDE.md](apps/worker/CLAUDE.md) |
 | `packages/contracts` | ts-rest + Zod API contracts — the single source of truth for the API surface | [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) |
-| `packages/db` | Drizzle schema + append-only SQL migrations + RLS/tenancy | [packages/db/CLAUDE.md](packages/db/CLAUDE.md) |
+| `packages/data` | Frontend SDK — the **only** data path for web + mobile: transport, ts-rest client, repositories, session, React Query adapter | [packages/data/CLAUDE.md](packages/data/CLAUDE.md) |
+| `packages/db` | Drizzle schema + append-only SQL migrations + RLS/tenancy — **greenfield since 2026-08-01**, awaiting the auth+tenancy rebuild's `0001` | [packages/db/CLAUDE.md](packages/db/CLAUDE.md) |
 | `packages/domain` | Pure, isomorphic domain logic (formatters, policy, invariants) — bottom of the graph | [packages/domain/CLAUDE.md](packages/domain/CLAUDE.md) |
 | `packages/env` | The **only** package allowed to read a raw environment source | [packages/env/CLAUDE.md](packages/env/CLAUDE.md) |
 | `packages/i18n` | One Lingui catalog (EN/HI/MR) shared by web + mobile | [packages/i18n/CLAUDE.md](packages/i18n/CLAUDE.md) |
@@ -81,11 +82,13 @@ docker run --rm -d --name heliogrid-db \
   -e POSTGRES_DB=heliogrid -p 5432:5432 postgres:16
 
 cp .env.example .env.local                # then fill in:
-#   DATABASE_URL / DATABASE_ADMIN_URL  -> the container above
-#   BETTER_AUTH_SECRET                 -> openssl rand -hex 16   (>=32 chars, no default)
+#   DATABASE_ADMIN_URL -> the container above (owner/superuser: runs migrations)
+#   DATABASE_URL       -> the app_runtime role, NOT a superuser. The api refuses to boot
+#                         on a SUPERUSER/BYPASSRLS role because RLS would silently no-op.
 
-pnpm --filter @heliogrid/db migrate       # schema + roles
-pnpm --filter @heliogrid/api auth:migrate # Better Auth's own tables
+pnpm --filter @heliogrid/db migrate       # roles + schema. NOTE: greenfield since
+                                          # 2026-08-01 (ADR-0024) — there are no migrations
+                                          # to apply until the auth+tenancy rebuild lands.
 pnpm verify                               # lint · boundaries · typecheck · test · build
 ```
 
@@ -273,8 +276,7 @@ none of them error on a dangling reference, they just silently rot:
   `packages/db` by path (not a glob) — if you ever remove one of those two specific packages,
   edit this by hand.
 - `.github/workflows/ci.yml` has a few package-specific steps by name (`@heliogrid/db migrate`,
-  `@heliogrid/api auth:migrate`, `@heliogrid/i18n extract`) — only relevant if you're removing
-  one of those three.
+  `@heliogrid/i18n extract`) — only relevant if you're removing one of those two.
 
 ## Code quality gates & pre-commit hook
 

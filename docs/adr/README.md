@@ -21,5 +21,7 @@ Reference only — why each architecture choice was made, for whoever wants to l
 | [0018](0018-fly-one-app-per-service.md) | Fly topology — one app per service (web/api/worker/voice/powersync + pg + log-shipper) |
 | [0019](0019-telephony-platform-capability-framework.md) | Telephony — provider-agnostic capability framework: port family, control plane, tenant routing policies, capability-declared transfers/DTMF/conference/monitoring |
 | [0021](0021-packages-domain.md) | `packages/domain` — pure isomorphic domain layer; makes two inert dependency-cruiser purity rules live and gives shared decision logic a home instead of accreting in api services and duplicated screens |
+| [0023](0023-packages-data-frontend-sdk.md) | `packages/data` — the frontend SDK: one data path for web and RN, two entry points so React Query stays swappable, repository interfaces for the PowerSync swap, `TokenStorage` optional and RN-only |
+| [0024](0024-auth-removal-to-greenfield.md) | Auth removed to greenfield — backend, contract, client and migrations `0001`–`0006`; what it costs (tenancy unproven, login on a stub) and what the rebuild must restore |
 
 Filename `NNNN-short-slug.md`. Keep it short: what we chose, why, what it costs, what we rejected.

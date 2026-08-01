@@ -27,6 +27,6 @@ the identity/platform spine.
 | customer_links | Full A–F lifecycle + label + contact_id + otp_required from Day 7 (named links now in scope, used at launch). |
 | catalog | Single resolver fixed/tested before proposal consumes it. |
 | notifications | Full type enum seeded Day 3 incl. agent_escalation, design_returned. |
-| mobile | ALL data access behind repository interfaces — Day 17 swap is a data-layer change only. |
+| mobile | ALL data access behind repository interfaces — Day 17 swap is a data-layer change only. **Satisfied since 2026-08-01 for BOTH platforms**: the interfaces live in `@heliogrid/data` (ADR-0023), so the PowerSync swap is one change, not one per platform. Web previously had no repositories at all. |
 | domain subset | Pure TS + injected contexts from the first module; kernels dual-runtime (browser Worker + node worker_thread). |
 | audit/files/jobs | audit_log from first mutation; one files table; BullMQ names namespaced. |

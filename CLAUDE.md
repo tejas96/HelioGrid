@@ -163,6 +163,13 @@ docs/13 UX-gap register. Layer law: each package's own CLAUDE.md. `docs/adr/` is
 only — never a gate, never write one before building; replaced architecture deletes the old
 file.
 
+**The frontend data path is `@heliogrid/data` and nothing else** (ADR-0023): screens call
+hooks, hooks call repositories, repositories call the one ts-rest client. Neither app may
+import `@ts-rest/*` or an auth client — that is a build failure, not a review note.
+**Auth is currently absent** (ADR-0024, docs/15 R19): `packages/db` is greenfield, tenancy is
+unproven, and both login flows run on a deliberate walkthrough stub in
+`packages/data/src/session/walkthrough.ts` that the rebuild deletes.
+
 **Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
 piece of work under `docs/superpowers/plans/`; what was actually run is the committed
 `.qa/<run-id>/` evidence from `/qa`; `docs/14` is the cross-module plan of record; design

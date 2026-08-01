@@ -229,6 +229,28 @@ which let an agent quote stale law from above a correction.
     in scope or quality: the census gate, DS-refactor targets and scale program are
     unchanged. Until offline lands, mobile is online-first behind a repository abstraction.
 
+### R19 — Auth removed to greenfield, overriding append-only migrations (2026-08-01)
+
+**Asked:** how far "remove all backend integration" reaches, given that migrations are
+append-only by hard rule (CLAUDE.md §6, enforced by a sha256 lock in the runner and a CI
+diff check), and that the identity spine cannot be removed surgically — `files`,
+`audit_log`, `usage_events`, `tenant_phone_numbers` and `sync_mutations` all carry
+`tenant_id` foreign keys to `tenants`, and `files.uploaded_by` references `users`.
+
+**Ruled:** full database reset. Delete migrations `0001`–`0006` and the entire Drizzle
+schema; `packages/db` keeps only `client.ts`, `migrate.ts`, `uuid.ts`. The auth + tenancy
+module authors a fresh `0001` when its slice begins (Law 9), reading the `auth/tenancy` row
+of `docs/forward-compat.md` first.
+
+**Cost, accepted knowingly:** all four invariants have nothing left to compare. They now
+report that out loud — the runner prints `INVARIANTS VACUOUS: 0 application tables` and each
+invariant states what it did and did not verify — so a green run can never again be read as
+"tenancy is proven". `oasdiff` reports 9 breaking API removals; the enforced freshness half
+of `check:openapi` passes. Both login flows run on a deliberate walkthrough stub.
+
+**Not precedent.** This is the only sanctioned override of the append-only rule. A future
+schema change adds a new numbered file. Detail: ADR-0024.
+
 ### Earlier owner decisions (still binding)
 
 Thin test safety net only — strict typecheck/lint gates plus the locked invariant set; no

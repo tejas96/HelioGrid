@@ -115,7 +115,8 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 
 | Rule | Mechanism | Stage | Where |
 |---|---|---|---|
-| Dependency direction & layer purity | dependency-cruiser, 24 rules, all `error` | lint | `.dependency-cruiser.cjs` |
+| Dependency direction & layer purity | dependency-cruiser, 27 rules, all `error` | lint | `.dependency-cruiser.cjs` |
+| Web and mobile never touch the database | `web-no-db` / `mobile-no-db`. **Both were silently inert until 2026-08-02** — they matched only `^packages/db/`, but neither app declares the dependency, so an import cannot resolve and stays a bare `@heliogrid/db` specifier the pattern never saw. Now matched in both forms, `uuid` still exempt. A dependency-cruiser rule is only real once you have injected the violation it names | lint | `.dependency-cruiser.cjs` |
 | Package encapsulation | Turborepo Boundaries tags — in each package's own `turbo.json`, never `package.json` | lint | per-package `turbo.json` |
 | Only apps read the environment | Biome `noProcessEnv` + `check:env` + the `env` boundary tag; 3 audited exceptions | lint | `packages/env/`, `scripts/check-env-access.mjs` |
 | apps/web pages route, features own the capability | `noExcessiveLinesPerFunction` (50) on `app/**/page.tsx` + cruiser `web-app-imports-feature-barrel-only`, `web-app-holds-no-components`, `web-feature-no-cross-internals` | lint | `biome.json`, `.dependency-cruiser.cjs` |
@@ -131,6 +132,9 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | Module public surface | dependency-cruiser `api-module-boundary` | lint | `.dependency-cruiser.cjs` |
 | db/drizzle only in `*.repository.ts` | dependency-cruiser `db-access-in-repositories-only` | lint | `.dependency-cruiser.cjs` |
 | No third-party HTTP client in apps | dependency-cruiser `no-raw-http-clients`, exemptions fully anchored | lint | `.dependency-cruiser.cjs` |
+| Apps reach the network ONLY through `@heliogrid/data` | dependency-cruiser `apps-never-touch-the-wire` — `@ts-rest/*` and auth clients are unimportable from `apps/{web,mobile}`; `initClient` is called once in the repo | lint | `.dependency-cruiser.cjs` |
+| `packages/data` stays an SDK, not a God package | dependency-cruiser `data-lean` — db/ui/ui-api/tokens/i18n/adapters/apps all unimportable. Matches the bare workspace SPECIFIER as well as the on-disk path: an undeclared dependency cannot resolve, so a path-only pattern would miss the exact case the rule guards | lint | `.dependency-cruiser.cjs` |
+| React Query stays swappable | dependency-cruiser `data-core-is-framework-free` — react/react-query importable only under `packages/data/src/react/`. Directory prefix, not a filename pattern, so it cannot rot | lint | `.dependency-cruiser.cjs` |
 | Zod 4 ban · no `console.log` · no `process.env` outside config | Biome rules | lint | `biome.json` |
 | Files ≲450 lines · no `.test.*`/`.spec.*` · no raw colour in UI · copy wrapped + translated · tenant pin is transaction-local | `check:adherence`, 8 greps | lint | `scripts/check-adherence.sh` |
 | Dependency version drift | sherif | lint | lint chain |

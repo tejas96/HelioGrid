@@ -92,6 +92,14 @@ offline phase so Track E starts warm).
 
 **Depends on:** Track F. **Blocks:** B, C, M (everything tenant-scoped).
 
+> **Status 2026-08-01:** auth was built, then REMOVED to greenfield on an owner ruling
+> (ADR-0024, docs/15 R19) so it can be rebuilt on a new architecture. Gone: the api module,
+> the session guard, the auth contract, both frontend clients, and migrations `0001`–`0006`
+> with the whole Drizzle schema. Kept: both platforms' screens, the login policy in
+> `@heliogrid/domain`, and the tenancy precondition. The rebuild implements `SessionStore`
+> from `packages/data/src/session/types.ts` and authors a fresh `0001`; until then the login
+> flows run on a deliberate walkthrough stub and tenancy is unproven.
+
 - **auth + tenancy** (first in track): Better Auth (organization/phoneNumber/jwt), MSG91 OTP
   (test route until DLT), signup/invites/roles (6 presets, OR-across, widest visibility),
   JWT claims, RLS backstop live. UX: Login/LoginFlow/SignUp/SignUpFlow/WhatYouSell/
