@@ -1,13 +1,18 @@
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema';
 
 export type Db = ReturnType<typeof createDb>['db'];
 
+/**
+ * No `schema` argument: the greenfield reset of 2026-08-01 (ADR-0024) deleted the Drizzle
+ * models, so there is nothing to describe and the relational query API (`db.query.*`) has
+ * no tables to build. The auth + tenancy module re-adds `src/schema/` with its first
+ * migration and passes it back in here.
+ */
 export function createDb(databaseUrl: string, options: { max?: number } = {}) {
   const client = postgres(databaseUrl, { max: options.max ?? 10, prepare: false });
-  const db = drizzle(client, { schema });
+  const db = drizzle(client);
   return { db, client };
 }
 

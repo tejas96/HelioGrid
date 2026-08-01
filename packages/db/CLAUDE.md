@@ -1,5 +1,13 @@
 # @heliogrid/db — Drizzle schema + append-only migrations + RLS plumbing
 
+> **GREENFIELD since 2026-08-01.** Migrations `0001`–`0006` and all of `src/schema/` were
+> deleted on an explicit owner ruling that overrode the append-only law (ADR-0024, docs/15
+> R19) — the identity spine could not be removed surgically because every platform table
+> foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
+> migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
+> `docs/forward-compat.md` before writing it. Everything below describes how this package
+> works and is what the rebuild must satisfy — it is not a description of today's contents.
+
 ## What lives here / what must never live here
 - Drizzle schema (`src/schema/*`), the connection factory + `withTenantTransaction`
   (SET LOCAL app.tenant_id), the migration runner, and `migrations/*.sql`.
@@ -46,7 +54,9 @@ uses: drizzle-orm, postgres        used by: apps/api, apps/worker, tests/invaria
   overflow meanwhile.
 - usage_events dedupe is `(idempotency_key, period_key)` — producers MUST derive
   period_key from occurred_at ('YYYY-MM') or retries stop being no-ops.
-- Better Auth owns its own tables via its migrator — never author or query them here.
+- Better Auth's tables were owned by ITS migrator, never authored here — and were dropped
+  with the 2026-08-01 teardown. Whatever identity provider the rebuild picks, the same rule
+  holds: a provider's own tables are not this package's business.
 - `tenants` INSERT is deliberately NOT granted to app_user — signup crosses tenancy and
   runs on the explicit admin path (Track A wires it).
 
