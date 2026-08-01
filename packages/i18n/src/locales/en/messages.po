@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:276
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:74
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:63
 msgid "6-digit code"
 msgstr "6-digit code"
@@ -24,19 +24,19 @@ msgid "Back to sign in"
 msgstr "Back to sign in"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:343
+#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:49
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:112
 msgid "Call me with the code instead"
 msgstr "Call me with the code instead"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:326
+#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:32
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:99
 msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
 msgstr "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:265
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:63
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:57
 msgid "Change number"
 msgstr "Change number"
@@ -47,20 +47,20 @@ msgid "Company sign-up opens here"
 msgstr "Company sign-up opens here"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:244
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:63
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:60
 msgid "Continue"
 msgstr "Continue"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:286
+#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:42
 #: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:18
 msgid "Couldn't check the code. Try again."
 msgstr "Couldn't check the code. Try again."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:226
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:308
+#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:47
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:45
 #: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:20
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:48
 msgid "Couldn't send the code. Try again."
@@ -72,34 +72,34 @@ msgid "Create an account"
 msgstr "Create an account"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:259
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:57
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
 msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
 msgstr "Enter the 6-digit code sent to +91 {phoneFormatted}."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:256
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:54
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:47
 msgid "Enter your code"
 msgstr "Enter your code"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:44
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:42
 msgid "Field-first CRM, surveys and design for solar EPCs."
 msgstr "Field-first CRM, surveys and design for solar EPCs."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:39
 msgid "Foundations ready"
 msgstr "Foundations ready"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:248
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:67
 msgid "Joining a team? Open your invite link"
 msgstr "Joining a team? Open your invite link"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:215
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:37
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:36
 msgid "Mobile number"
 msgstr "Mobile number"
@@ -110,42 +110,42 @@ msgid "New company?"
 msgstr "New company?"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:49
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:47
 msgid "Open my day"
 msgstr "Open my day"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:304
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:100
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:78
 msgid "Resend code"
 msgstr "Resend code"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:291
+#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:87
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:82
 msgid "Resend code in {time}"
 msgstr "Resend code in {time}"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:225
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:44
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:47
 msgid "Sent by SMS to your registered number."
 msgstr "Sent by SMS to your registered number."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:211
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:33
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:32
 msgid "Sign in with your phone number. No password — we'll text you a one-time code."
 msgstr "Sign in with your phone number. No password — we'll text you a one-time code."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:340
+#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:46
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:109
 msgid "Still no code after two tries?"
 msgstr "Still no code after two tries?"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:284
+#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:38
 #: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:16
 msgid "That code doesn’t match. Check it and try again."
 msgstr "That code doesn’t match. Check it and try again."
@@ -156,25 +156,25 @@ msgid "This part of HelioGrid is being finished right now. Sign in, or check bac
 msgstr "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:208
+#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:30
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:29
 msgid "Welcome back"
 msgstr "Welcome back"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:363
+#: ../../apps/mobile/src/screens/login/components/DoneStep.tsx:20
 #: ../../apps/web/features/auth/login/components/DoneStep.tsx:14
 msgid "Welcome back. Taking you to your day."
 msgstr "Welcome back. Taking you to your day."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:390
+#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:44
 #: ../../apps/web/features/auth/login/LoginScreen.tsx:27
 msgid "You're offline — check your connection and try again."
 msgstr "You're offline — check your connection and try again."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:360
+#: ../../apps/mobile/src/screens/login/components/DoneStep.tsx:17
 #: ../../apps/web/features/auth/login/components/DoneStep.tsx:11
 msgid "You're signed in"
 msgstr "You're signed in"
