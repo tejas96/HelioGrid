@@ -1,8 +1,15 @@
 /**
  * Layer rules from CLAUDE.md, enforced as config-as-code (docs/03 §3).
- * Dependency direction: apps/* → packages/contracts → packages/domain.
+ * Dependency direction: apps/{web,mobile} → packages/data → packages/contracts →
+ * packages/domain. apps/{api,worker} skip data and reach contracts directly — data is the
+ * FRONTEND SDK, and the server implements the contract rather than consuming it.
  * packages/domain is pure TS — it imports nothing from db/api/ui/react/nest.
  * Do not weaken these rules; a needed new edge is a conscious decision + commit note.
+ *
+ * A rule here is only real once you have injected the violation it names and watched it
+ * fail. Match the RESOLVED node_modules path for installed packages AND the bare specifier
+ * for ones the importer does not declare — a pattern covering only one form is inert in
+ * exactly the case it exists to catch. Four rules in this file were inert on that basis.
  */
 module.exports = {
   forbidden: [

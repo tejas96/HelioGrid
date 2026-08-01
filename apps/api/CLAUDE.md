@@ -15,7 +15,8 @@ pnpm --filter @heliogrid/api build | typecheck
 curl localhost:8084/health               # liveness · /health/ready = readiness
 
 ## Depends on / depended on by
-uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP)
+uses: @heliogrid/contracts, @heliogrid/db, @heliogrid/domain, @heliogrid/env
+used by: web, mobile (over HTTP, through @heliogrid/data — never a client they author)
 
 ## Local conventions
 - Layout is the closed set in docs/02 §2: `src/{config,common,modules,scripts}`;
@@ -30,9 +31,13 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
   behaviour belongs in `packages/domain` instead. Register globals via `APP_*` providers.
 - Every non-2xx response is the canonical envelope (EnvelopeExceptionFilter).
 - pino structured logs with requestId; phone numbers redacted (DPDP hygiene).
-- Tenancy defense in depth: guard (JWT claims) → repository filter → RLS
-  `withTenantTransaction`. Auth + tenancy E2E-verified 2026-07-26.
-- Decorators: `@Public()`, `@CurrentClaims()` (session claims incl. tenantId, userId, roles).
+- Tenancy defense in depth is THREE layers: guard (session claims) → repository filter →
+  RLS `withTenantTransaction`. **Only the third exists right now** — the guard went with the
+  auth teardown (ADR-0024) and the repository layer has no tables to filter. Restoring
+  layers one and two belongs to the auth + tenancy rebuild; a module landing before then
+  must not assume any of them protects it.
+- `@Public()` and `@CurrentClaims()` **no longer exist** — deleted with the guard they served
+  (ADR-0024). Do not reach for them; they come back with the rebuild.
 
 ## Landmines
 - **A route whose contract declares a NON-base error code must throw `ContractException`
@@ -47,12 +52,17 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
   `errorHttpStatusByCode[code]`, but that map holds only BASE codes — `ALREADY_ONBOARDED`
   missed it and silently returned **500 with the right code in the body**. Typecheck was
   green; only an end-to-end curl caught it (2026-07-27). Always pass `HttpStatus.*`.
-- **Deny-by-default guard**: `SessionGuard` is `APP_GUARD` in `app.module.ts`. A new
-  controller is authenticated automatically; `@Public()` is the only opt-out and is
-  LOAD-BEARING on health (without it Fly's probes 401 and the machine fails its checks).
-- Guard depends on the `SessionResolver` PORT (`contracts/src/ports/session.ts`), never on
-  the auth module. It is bound in `app.module.ts`, not `CommonModule` — Nest resolves a
-  provider's deps in the module that DECLARES it, so declaring it in `common/` fails at boot.
+- **THERE IS NO GUARD. EVERY ROUTE IS UNAUTHENTICATED** since the auth teardown
+  (ADR-0024) — a new controller ships public, and nothing warns you. Treat that as the
+  single most important fact about this app until the rebuild lands, and do not "fix" it
+  locally: the guard is the rebuild's job.
+  What must come back with it, because each one was learned the hard way:
+  `SessionGuard` bound as `APP_GUARD` in `app.module.ts` — NOT `CommonModule`, because Nest
+  resolves a provider's dependencies in the module that DECLARES it, and the guard needs
+  `SESSION_RESOLVER` from the auth module, so declaring it in `common/` fails at boot;
+  the `SessionResolver` PORT in contracts, so the guard never imports a module directly;
+  and `@Public()` on `HealthController`, which is LOAD-BEARING — without it Fly's probes
+  401 and the machine fails its health checks.
 - **DB pools live in `common/db/`**, provided globally; `ADMIN_DB` sits alone in
   `admin.token.ts` so `admin-pool-fenced` can restrict it to `*.admin.repository.ts`.
   `@heliogrid/db/uuid` is exempt from the db fence — `uuidv7` is pure `randomBytes`.

@@ -132,6 +132,11 @@ Sources: [./research/sync.md](./research/sync.md) · [./research/verify-bareRn.m
 
 ## 10. Auth
 
+> **STATUS 2026-08-01: not installed.** `better-auth` was removed from every manifest with
+> the auth teardown (ADR-0024). The choices below still stand as the decision the rebuild
+> executes — that is why they are recorded here — but nothing in this section is currently
+> in the dependency tree or the running system.
+
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
 | Auth | **Better Auth 1.6.x** (verified 1.6.24, 22 Jul 2026), self-hosted on our `bom` Postgres, plugins **`organization` + `phoneNumber` + `jwt`** | Phone PII never leaves India (it is a TS library on OUR DB, not a US SaaS); orgs/members/invites + `createAccessControl()` map to the 6 stackable preset roles; `jwt` plugin mints short-lived JWKS-served tokens with `{tenant_id, roles[]}` for Nest guards + RLS `SET LOCAL` backstop | Clerk (US-resident phone PII = DPDP liability; scales to ~$1,025/mo) · WorkOS (enterprise-SSO shape, not phone-OTP-first) · Supabase Auth (couples hosting/regions) · Auth.js v5 (no orgs, no phone OTP, perpetual beta) · custom JWT+OTP (rebuilds orgs/sessions/JWKS for nothing) |

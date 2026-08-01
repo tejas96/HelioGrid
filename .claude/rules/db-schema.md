@@ -8,7 +8,9 @@ paths:
 
 - **Migrations are append-only** and sha256-locked by the runner. Editing an applied file
   makes `migrate` refuse to run (a PreToolUse hook also blocks the edit). Add a new
-  numbered file instead.
+  numbered file instead. This was overridden EXACTLY ONCE, by owner ruling, to delete
+  `0001`–`0006` in the auth teardown (docs/15 R19, ADR-0024) — recorded there as explicitly
+  not precedent. `migrations/` is empty today; the next file is a fresh `0001`.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default
@@ -30,6 +32,10 @@ paths:
   what stops one side moving alone. (This bullet used to say nothing checked them, while
   packages/db/CLAUDE.md and docs/17 both said the opposite — and all three load into the
   same turn.)
+  **It proves nothing today**: with zero tables and zero pg enums it runs VACUOUSLY and
+  says so out loud. The `tenant_status` / `user_status` / `invite_status` mappings were
+  dropped with the auth contract and must be re-added alongside the first migration that
+  re-creates those enums — the invariant cannot warn you about a mapping nobody wrote.
 - Schema grows module-wise only (Law 9). docs/04 is frozen design, not a build order — a
   table belonging to a module that has not started is a violation, so stop and ask.
 

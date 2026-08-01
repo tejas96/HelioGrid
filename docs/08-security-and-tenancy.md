@@ -29,6 +29,13 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 
 ## 2. Authentication
 
+> **STATUS 2026-08-01: none of this section is built.** Auth was removed to greenfield on an
+> owner ruling (ADR-0024, docs/15 R19) — the api module, the session guard, the auth contract
+> and the identity tables are all gone, every API route is currently unauthenticated, and
+> both login screens run on a walkthrough stub. What follows is the DESIGN the rebuild
+> implements, not a description of the running system. Read it as the target; read ADR-0024
+> for what must be restored and in what order.
+
 **Better Auth self-hosted** (v1.6.x) on our `bom` Postgres — phone PII stays in India ([`./research/auth.md`](./research/auth.md); [Better Auth 1.6](https://better-auth.com/blog/1-6)). Plugins: `organization` (tenants, members, phone invites), `phoneNumber` (OTP), `jwt` (JWKS).
 
 ### Phone-OTP flow (web and RN — one server flow)
