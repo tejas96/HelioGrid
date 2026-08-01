@@ -27,11 +27,37 @@ async function main() {
     console.warn('SKIP invariants: DATABASE_URL/DATABASE_ADMIN_URL not set (local run only)');
     return;
   }
+  const empty = await isGreenfield(url);
+  if (empty) {
+    // Not a gate — the database is LEGITIMATELY empty after the 2026-08-01 teardown
+    // (ADR-0024). But a green run below must never read as "tenancy is proven", which is
+    // exactly how the tenancy gate went unexecuted for the whole foundation phase.
+    console.warn(
+      '\n  INVARIANTS VACUOUS: 0 application tables. Tenancy, table scoping, enum parity and\n' +
+        '  schema parity all have nothing to compare, so their passing below means NOTHING.\n' +
+        "  Real coverage returns with the auth + tenancy module's first migration.\n",
+    );
+  }
   await runTenancyInvariants(url);
   await runTableTenancyScan(url);
   await runEnumParity(url);
   await runSchemaParity(url);
-  console.log('invariants green');
+  console.log(empty ? 'invariants green (vacuously — see the banner above)' : 'invariants green');
+}
+
+/** Application tables only: the migration ledger is bookkeeping, not schema. */
+async function isGreenfield(url: string): Promise<boolean> {
+  const sql = (await import('postgres')).default(url, { max: 1, onnotice: () => {} });
+  try {
+    const [row] = await sql<{ n: number }[]>`
+      select count(*)::int as n from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind in ('r', 'p')
+        and c.relname <> 'schema_migrations'`;
+    return (row?.n ?? 0) === 0;
+  } finally {
+    await sql.end();
+  }
 }
 
 main().catch((err) => {

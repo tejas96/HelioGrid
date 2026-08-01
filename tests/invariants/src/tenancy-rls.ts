@@ -63,6 +63,31 @@ export async function runTenancyInvariants(adminUrl: string) {
         );
       });
 
+    /*
+     * GREENFIELD GUARD (2026-08-01, ADR-0024). The auth teardown deleted every migration,
+     * so `tenants` and `users` do not exist and nothing below can seed or exercise them.
+     * The catalog half would still "pass" over zero tables, which is worse than useless —
+     * it would report tenancy as proven when nothing was proven at all.
+     *
+     * What IS still meaningful, and asserted above: the roles survived the schema drop with
+     * the right privileges, and the connecting role can still become app_user. That is the
+     * platform the rebuild binds to. Everything else waits for its first migration.
+     */
+    const [tableCount] = await sql<{ n: number }[]>`
+      select count(*)::int as n from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind in ('r', 'p')
+        and c.relname <> 'schema_migrations'`;
+    if ((tableCount?.n ?? 0) === 0) {
+      console.log(
+        'tenancy invariants VACUOUS — 0 application tables (greenfield since 2026-08-01). ' +
+          'Verified only that app_user exists without BYPASSRLS/superuser and that the ' +
+          'connecting role can SET ROLE app_user. CROSS-TENANT ISOLATION IS UNPROVEN until ' +
+          'the auth + tenancy module lands its first migration.',
+      );
+      return;
+    }
+
     // Seed two tenants + one user each (admin context)
     await sql`insert into tenants (id, name, slug) values
       (${tenantA}, 'Invariant A', ${`inv-a-${suffix}`}),

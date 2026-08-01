@@ -1,12 +1,5 @@
-import {
-  inviteStatusSchema,
-  memberStatusSchema,
-  rolePresetSchema,
-  tenantSegmentSchema,
-  tenantStatusSchema,
-  uiLanguageSchema,
-  unitsPrefSchema,
-} from '@heliogrid/contracts';
+import { rolePresetSchema, uiLanguageSchema, unitsPrefSchema } from '@heliogrid/contracts';
+import { TENANT_SEGMENTS } from '@heliogrid/domain';
 import postgres from 'postgres';
 
 /**
@@ -24,13 +17,14 @@ import postgres from 'postgres';
 
 /** pg enum type name → the contract schema whose values it must match, exactly. */
 const MAPPED: Record<string, { options: readonly string[]; contract: string }> = {
-  tenant_segment: { options: tenantSegmentSchema.options, contract: 'tenantSegmentSchema' },
-  tenant_status: { options: tenantStatusSchema.options, contract: 'tenantStatusSchema' },
+  tenant_segment: { options: TENANT_SEGMENTS, contract: 'TENANT_SEGMENTS (@heliogrid/domain)' },
   ui_language: { options: uiLanguageSchema.options, contract: 'uiLanguageSchema' },
   unit_pref: { options: unitsPrefSchema.options, contract: 'unitsPrefSchema' },
-  user_status: { options: memberStatusSchema.options, contract: 'memberStatusSchema' },
   role_preset: { options: rolePresetSchema.options, contract: 'rolePresetSchema' },
-  invite_status: { options: inviteStatusSchema.options, contract: 'inviteStatusSchema' },
+  // tenant_status, user_status and invite_status were mapped to contract enums that the
+  // 2026-08-01 auth teardown deleted (ADR-0024). The pg enums go with the greenfield reset,
+  // so there is nothing on EITHER side to compare; the rebuild re-authors both halves and
+  // re-adds the rows here. Leaving stale entries would fail on a database that is correct.
 };
 
 /**
@@ -110,7 +104,28 @@ export async function runEnumParity(adminUrl: string) {
       list.push(r.enumlabel);
       dbEnums.set(r.typname, list);
     }
-    assert(dbEnums.size > 0, 'found pg enums in public (is the database migrated?)');
+    if (dbEnums.size === 0) {
+      /*
+       * This guard exists to catch "you pointed the invariants at an unmigrated database",
+       * which used to be indistinguishable from a passing run. After the 2026-08-01
+       * greenfield reset (ADR-0024) zero enums is the CORRECT state — but only if there are
+       * also zero tables. Enums missing while tables exist is still the original defect.
+       */
+      const [tables] = await sql<{ n: number }[]>`
+        select count(*)::int as n from pg_class c
+        join pg_namespace n on n.oid = c.relnamespace
+        where n.nspname = 'public' and c.relkind in ('r', 'p')
+          and c.relname <> 'schema_migrations'`;
+      assert(
+        (tables?.n ?? 0) === 0,
+        `no pg enums in public, but ${tables?.n} table(s) exist — is the database migrated?`,
+      );
+      console.log(
+        'enum parity VACUOUS — no pg enums and no tables (greenfield since 2026-08-01). ' +
+          'Contract↔database enum drift is UNCHECKED until the first migration lands.',
+      );
+      return;
+    }
 
     const problems: string[] = [];
 

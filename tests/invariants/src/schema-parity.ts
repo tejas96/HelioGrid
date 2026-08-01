@@ -1,5 +1,17 @@
-import { schema as dbSchema } from '@heliogrid/db';
 import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
+
+/**
+ * GREENFIELD (2026-08-01, ADR-0024): `@heliogrid/db` exports no `schema` right now, so there
+ * is no Drizzle model to compare and `dbSchema` below is empty. The comparison code is kept
+ * INTACT — the auth + tenancy module re-adds `packages/db/src/schema/` with its first
+ * migration, and this import comes back as `import { schema as dbSchema } from '@heliogrid/db'`
+ * on that day.
+ *
+ * Meanwhile the run is not vacuous: with no model, the database must be empty too. A table
+ * that exists with nothing modelling it is exactly the drift this file was written to catch,
+ * and it is MORE likely during a rebuild, not less.
+ */
+const dbSchema: Record<string, unknown> = {};
 
 /**
  * Drizzle model ↔ migrated database parity.
@@ -100,6 +112,22 @@ export async function runSchemaParity(adminUrl: string) {
     );
 
     const modelled = Object.values(dbSchema).filter((t) => is(t, Table)).length;
+    if (modelled === 0) {
+      // The greenfield direction: nothing modelled, so nothing may exist.
+      const orphans = [...liveByTable.keys()].filter((t) => t !== 'schema_migrations');
+      assert(
+        orphans.length === 0,
+        `no Drizzle model exists, but the database holds ${orphans.length} table(s): ` +
+          `${orphans.join(', ')}. Either the model was deleted without the tables, or a ` +
+          'migration ran that nothing models. Both are the drift this invariant exists for.',
+      );
+      console.log(
+        'schema parity VACUOUS — no Drizzle model and no tables (greenfield since ' +
+          '2026-08-01). Proves nothing about column parity; only that the two are ' +
+          'consistently empty.',
+      );
+      return;
+    }
     console.log(
       `schema parity OK — ${modelled} Drizzle tables match the migrated database ` +
         '(names + nullability; types are out of scope)',

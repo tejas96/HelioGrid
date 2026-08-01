@@ -10,6 +10,7 @@
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/db": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
     "drizzle-orm": "0.44.7",
     "postgres": "3.4.9"
