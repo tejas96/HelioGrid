@@ -50,3 +50,6 @@ test-results/
 
 # QA runs — plan/report/triage are COMMITTED history; only evidence blobs are ignored
 .qa/*/artifacts/
+
+# graphify — generated knowledge-graph cache, never committed
+graphify-out/
