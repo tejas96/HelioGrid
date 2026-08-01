@@ -1,0 +1,86 @@
+# Dependency and build noise graphify should never graph.
+# .gitignore is respected automatically, so node_modules/dist/build/.next/out/.turbo
+# are already excluded — listed again below for explicitness/defense-in-depth (e.g.
+# if graphify is ever run with --no-gitignore) — plus entries for noise that IS
+# tracked in git but still isn't source for the knowledge graph.
+
+# Already covered by .gitignore; restated explicitly
+node_modules/
+
+# Lockfiles and package manager internals
+pnpm-lock.yaml
+**/Gemfile.lock
+**/package-lock.json
+**/yarn.lock
+
+# Native mobile platform projects — pure build scaffolding (Xcode/Gradle config,
+# generated bootstrap files), no product logic. App logic lives in apps/mobile/src/.
+# Verified: everything git-tracked under these two folders is scaffolding/config
+# (Podfile, xcodeproj/xcworkspace, AppDelegate.swift, Info.plist, gradlew, Manifest,
+# MainActivity.kt/MainApplication.kt stubs, font/icon binaries) — no business logic.
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/vendor/
+
+# Process/historical docs — investigation and planning artifacts, not product
+# truth (product truth is docs/15 rulings + docs/13 UX-gap register per CLAUDE.md).
+# Superseded once the work they describe lands; noise for an agent reasoning about
+# the current system.
+docs/research/
+docs/spikes/
+docs/ops/
+docs/superpowers/
+
+# QA run evidence (plan/report/triage per run under .qa/<run-id>/) — committed
+# history of what was tested, not product logic.
+.qa/
+
+# Generated design-system bundle (compiled/serialized component metadata) —
+# not hand-authored, no signal beyond what design/ds-source/tokens/*.css already has.
+design/ds-source/_ds_bundle.js
+
+# ---------------------------------------------------------------------------
+# Build/tool configuration — measured 2026-08-01 against the first full graph.
+# These 55 files produced 1,121 of 3,460 nodes (32%) and 1,070 edges, but only
+# TWO edges crossed from the whole block to the rest of the graph: a disconnected
+# island. The nodes are JSON keys, not entities — "$schema", "bracketSpacing",
+# "dom.iterable", "noEmit", "!**/dist". apps/mobile/package.json alone was the
+# single largest file in the graph (96 nodes); biome.json (88) outweighed
+# docs/04-data-model.md (42). They also created ~12 of the top-30 "communities"
+# (Worker Package Manifest, Knip Dead-Code Config, ...), displacing real subsystems.
+# Note the workspace dep graph is NOT lost by this: it was never captured — the
+# @heliogrid/* deps became isolated nodes inside each manifest's own community,
+# which is what the 2-edge connectivity number proves.
+# ---------------------------------------------------------------------------
+#package.json
+tsconfig*.json
+packages/config/tsconfig/
+turbo.json
+biome.json
+knip.json
+.jscpd.json
+#apps/mobile/app.json
+.claude/settings.json
+.claude/launch.json
+design/ds-source/_adherence.oxlintrc.json
+design/ds-source/_ds_manifest.json
+
+# JSON Schema for /qa run reports — 77 nodes, 3rd largest file in the graph, and
+# almost all of them are JSON Schema keywords (additionalProperties, minItems,
+# required, enum). The QA knowledge worth graphing lives in the prose:
+# .claude/skills/qa/SKILL.md and references/test-matrix.md, both kept.
+.claude/skills/qa/references/report-schema.json
+
+# Emitted OpenAPI — derived from packages/contracts/src, which is already graphed.
+# Duplicate truth; biome.json excludes it from linting for the same reason.
+packages/contracts/openapi/
+
+# DELIBERATELY NOT IGNORED, so a future sweep does not "tidy" them away:
+#   .github/workflows/ci.yml   — 11 nodes, and they are real: the xcodebuild
+#     pipefail lane, build-before-boundaries, the RN bundle step and the
+#     better-auth migrate step all feed the "gates that reported green while
+#     proving nothing" hyperedge. Config by extension, product knowledge in fact.
+#   pnpm-workspace.yaml        — 1 node, defines the workspace itself.
+
+# graphify's own output
+graphify-out/
