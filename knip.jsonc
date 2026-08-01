@@ -1,0 +1,66 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+
+  // JSONC, not JSON, deliberately: every entry below is an allowlist, and this repo's rule
+  // is that an allowlist carries its written reason (docs/17 — the tenancy scan's lists do
+  // the same). A suppression nobody can justify is how a tool stops being read.
+  //
+  // Knip is LOCAL HYGIENE, never a CI gate (docs/17 §5). Its value is entirely
+  // signal-to-noise. On 2026-08-02 it reported 20 "unused dependencies" and 79 "unused
+  // exported types", most of them false: half the workspaces had no config at all, and
+  // apps/web's `project` glob excluded `features/` — where nearly all web code lives. The
+  // fix was to make it CORRECT, not to silence it; the true positives it still reports are
+  // left visible on purpose.
+  //
+  // Keep this file minimal. Knip infers entry points from package.json `exports`/`main` and
+  // from framework plugins, and it reports a redundant entry as a configuration hint — if
+  // you add one and knip calls it redundant, delete it rather than leaving noise behind.
+
+  "ignoreWorkspaces": ["packages/config"],
+
+  "workspaces": {
+    "packages/tokens": { "entry": ["build.ts"], "project": "src/**/*.ts" },
+
+    // These two are RUN by package.json scripts, and knip cannot infer either: the openapi
+    // script invokes the BUILT `dist/scripts/emit-openapi.js`, and migrate is a tsx entry.
+    // Dropping them made both files report as dead code.
+    "packages/contracts": { "entry": ["src/scripts/*.ts"], "project": "src/**/*.ts" },
+    "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
+
+    // api-parity.ts is imported by NOTHING on purpose — tsc checks every file under src/,
+    // so its `satisfies` assertions run on typecheck regardless. An entry, not dead code.
+    // (src/index.ts is NOT listed: knip infers it from package.json `exports`.)
+    "packages/ui": { "entry": ["src/api-parity.ts"], "project": "src/**/*.{ts,tsx}" },
+
+    // `features/**` was missing until 2026-08-02, so knip saw roughly a tenth of this app
+    // and duly reported @heliogrid/ui, @heliogrid/domain, @heliogrid/contracts and
+    // lucide-react as unused while 25 files imported them.
+    //
+    // app/providers.tsx is deliberately NOT an entry: layout.tsx imports it, and listing it
+    // would mark its exports public and hide the genuinely-dead `useLocale`.
+    "apps/web": { "project": "{app,features,lib}/**/*.{ts,tsx}" },
+
+    // src/ui/index.ts is this app's component API — the RN mirror of packages/ui's public
+    // surface — so its exported Props types are surface, not orphans. Without it knip
+    // reported ~70 of them.
+    "apps/mobile": { "entry": ["App.tsx", "src/ui/index.ts"], "project": "src/**/*.{ts,tsx}" },
+
+    "tests/invariants": { "entry": ["src/run.ts"], "project": "src/**/*.ts" },
+
+    // The gate scripts are RUN by package.json and lint-all.sh, never imported — entries,
+    // not orphans. Listing them is what stopped knip calling three live gates dead code.
+    ".": { "entry": ["scripts/*.mjs"], "project": "scripts/*.mjs" }
+  },
+
+  "ignore": [
+    // Same role as packages/ui/src/api-parity.ts above; RN has no barrel entry to hang it on.
+    "apps/mobile/src/ui/api-parity.ts",
+    // Read by the lingui CLI (`extract`/`compile`), never imported by TypeScript.
+    "packages/i18n/lingui.config.js"
+  ],
+
+  "ignoreDependencies": [
+    // tsconfig/biome presets — resolved by path from config files, never imported.
+    "@heliogrid/config"
+  ]
+}

@@ -41,9 +41,6 @@ importers:
       '@heliogrid/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@heliogrid/domain':
-        specifier: workspace:*
-        version: link:../../packages/domain
       '@heliogrid/env':
         specifier: workspace:*
         version: link:../../packages/env
@@ -62,18 +59,12 @@ importers:
       '@ts-rest/nest':
         specifier: 3.52.1
         version: 3.52.1(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.28)(@ts-rest/core@3.52.1(@types/node@22.20.1)(zod@3.25.76))(rxjs@7.8.2)(zod@3.25.76)
-      drizzle-orm:
-        specifier: 0.44.7
-        version: 0.44.7(@types/pg@8.20.0)(kysely@0.29.4)(pg@8.22.0)(postgres@3.4.9)
       express:
         specifier: 5.2.1
         version: 5.2.1
       nestjs-pino:
         specifier: 4.6.1
         version: 4.6.1(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@11.0.0)(pino@9.14.0)(rxjs@7.8.2)
-      pg:
-        specifier: 8.22.0
-        version: 8.22.0
       pino:
         specifier: 9.14.0
         version: 9.14.0
@@ -99,9 +90,6 @@ importers:
       '@types/node':
         specifier: 22.20.1
         version: 22.20.1
-      '@types/pg':
-        specifier: 8.20.0
-        version: 8.20.0
       kill-port:
         specifier: 2.0.1
         version: 2.0.1
@@ -365,9 +353,6 @@ importers:
 
   packages/contracts:
     dependencies:
-      '@heliogrid/domain':
-        specifier: workspace:*
-        version: link:../domain
       '@ts-rest/core':
         specifier: 3.52.1
         version: 3.52.1(@types/node@22.20.1)(zod@3.25.76)
@@ -8437,6 +8422,7 @@ snapshots:
       '@types/node': 22.20.1
       pg-protocol: 1.15.0
       pg-types: 2.2.0
+    optional: true
 
   '@types/qs@6.15.1': {}
 
@@ -10323,15 +10309,19 @@ snapshots:
   pg-cloudflare@1.4.0:
     optional: true
 
-  pg-connection-string@2.14.0: {}
+  pg-connection-string@2.14.0:
+    optional: true
 
-  pg-int8@1.0.1: {}
+  pg-int8@1.0.1:
+    optional: true
 
   pg-pool@3.14.0(pg@8.22.0):
     dependencies:
       pg: 8.22.0
+    optional: true
 
-  pg-protocol@1.15.0: {}
+  pg-protocol@1.15.0:
+    optional: true
 
   pg-types@2.2.0:
     dependencies:
@@ -10340,6 +10330,7 @@ snapshots:
       postgres-bytea: 1.0.1
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
+    optional: true
 
   pg@8.22.0:
     dependencies:
@@ -10350,10 +10341,12 @@ snapshots:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.4.0
+    optional: true
 
   pgpass@1.0.5:
     dependencies:
       split2: 4.2.0
+    optional: true
 
   picocolors@1.1.1: {}
 
@@ -10420,15 +10413,19 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postgres-array@2.0.0: {}
+  postgres-array@2.0.0:
+    optional: true
 
-  postgres-bytea@1.0.1: {}
+  postgres-bytea@1.0.1:
+    optional: true
 
-  postgres-date@1.0.7: {}
+  postgres-date@1.0.7:
+    optional: true
 
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
+    optional: true
 
   postgres@3.4.9: {}
 
@@ -11282,7 +11279,8 @@ snapshots:
 
   ws@7.5.13: {}
 
-  xtend@4.0.2: {}
+  xtend@4.0.2:
+    optional: true
 
   y18n@4.0.3: {}
 
