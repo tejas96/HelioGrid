@@ -83,26 +83,11 @@ export function paginated<T extends z.ZodTypeAny>(item: T) {
 
 /**
  * Tenancy convention: tenant_id NEVER travels in request bodies or params — it comes from
- * the verified JWT claim on the request context (guard → repository filter → RLS backstop).
- * Contracts therefore never declare a tenantId input field on tenant-scoped routes.
+ * the verified session claim on the request context (guard → repository filter → RLS
+ * backstop). Contracts therefore never declare a tenantId input field on tenant-scoped
+ * routes. The rule outlives the auth teardown; it constrains every module still to come.
+ *
+ * `tenantClaimSchema` and `sessionClaimsSchema` lived here until 2026-08-01 and existed
+ * solely for the session guard, which was deleted with auth (ADR-0024). The rebuild
+ * re-authors them alongside the guard that consumes them.
  */
-export const tenantClaimSchema = z.object({
-  tenantId: uuidSchema,
-  userId: uuidSchema,
-  roles: z.array(rolePresetSchema).min(1),
-});
-export type TenantClaim = z.infer<typeof tenantClaimSchema>;
-
-/**
- * What the session guard puts on the request. Lives here — not in the api — because it is
- * the shape every controller signature depends on, and the guard that produces it now sits
- * in `common/` while the module that resolves it sits in `modules/auth/`; a single owner
- * keeps those two from drifting. `tenantId` is null until onboarding/accept-invite completes.
- */
-export const sessionClaimsSchema = z.object({
-  userId: z.string(),
-  phoneE164: z.string(),
-  tenantId: z.string().nullable(),
-  roles: z.array(rolePresetSchema),
-});
-export type SessionClaims = z.infer<typeof sessionClaimsSchema>;
