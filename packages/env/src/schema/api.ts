@@ -5,7 +5,6 @@ import {
   nodeEnvSchema,
   originSchema,
   portSchema,
-  secretSchema,
 } from './fragments';
 
 /**
@@ -23,13 +22,13 @@ export const apiEnvSchema = z.object({
   DATABASE_URL: databaseUrlSchema,
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,
 
-  BETTER_AUTH_SECRET: secretSchema,
-  BETTER_AUTH_URL: originSchema.default('http://localhost:8084'),
   WEB_ORIGIN: originSchema.default('http://localhost:3002'),
 
-  /* MSG91 is optional: absent ⇒ the OTP port logs codes to the console (dev adapter). */
-  MSG91_AUTH_KEY: z.string().optional(),
-  MSG91_OTP_TEMPLATE_ID: z.string().optional(),
+  /*
+   * BETTER_AUTH_SECRET / BETTER_AUTH_URL / MSG91_* were removed on 2026-08-01 with the auth
+   * teardown (ADR-0024). The rebuild declares whatever it needs HERE and in .env.example —
+   * Law 9: a variable is authored when its owning module's slice begins.
+   */
 
   /* Injected by the platform, not by us. */
   FLY_MACHINE_VERSION: z.string().default('0.0.1'),
