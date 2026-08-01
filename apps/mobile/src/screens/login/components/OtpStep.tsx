@@ -1,5 +1,9 @@
-import { OTP_LENGTH } from '@heliogrid/contracts';
-import { CALL_OFFER_AFTER_RESENDS, formatPhoneNsn, type OtpFailure } from '@heliogrid/domain';
+import {
+  CALL_OFFER_AFTER_RESENDS,
+  formatPhoneNsn,
+  OTP_LENGTH,
+  type OtpFailure,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/tokens/theme';
 import { Trans, useLingui } from '@lingui/react';
 import { View } from 'react-native';

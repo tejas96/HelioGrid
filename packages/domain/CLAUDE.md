@@ -18,8 +18,10 @@ pnpm --filter @heliogrid/domain typecheck | build
 
 ## Depends on / depended on by
 uses: NOTHING in the workspace — this is the BOTTOM layer (owner ruling 2026-07-30, ADR-0021)
-used by TODAY: apps/web, apps/mobile. Allowed consumers as slices land: packages/contracts,
-apps/api, apps/worker — no such import exists yet; do not assume the edge is live.
+used by TODAY: apps/web, apps/mobile, packages/ui, packages/contracts, packages/data, apps/api.
+The contracts and api edges went LIVE on 2026-08-01 when the OTP protocol constants and
+`TENANT_SEGMENTS` moved down here ahead of the auth teardown — this line previously said no
+such import existed, so do not read it as still inert. apps/worker remains a scaffold.
 A business enum both layers need is defined HERE as a pure union; contracts then builds its
 `z.enum` from it. Importing contracts from here is a package cycle, and both gates say so.
 

@@ -1,14 +1,15 @@
 'use client';
-import { type TenantSegment, tenantSegmentSchema } from '@heliogrid/contracts';
+import { TENANT_SEGMENTS, type TenantSegment } from '@heliogrid/domain';
 import { Button, Card, Input, SegmentedControl } from '@heliogrid/ui';
 import { useOnboarding } from './hooks/use-onboarding';
 import './onboarding.css';
 
 /**
- * Segment copy keyed by the contract enum: adding a segment to `tenantSegmentSchema` is a
- * compile error HERE until this screen renders it. The old `as const` array was merely
- * subset-assignable, so a new segment shipped silently unselectable (one definition
- * per fact / UX drift).
+ * Segment copy keyed by the domain enum: adding a segment to `TENANT_SEGMENTS` is a
+ * compile error HERE until this screen renders it. The old `as const` array declared
+ * LOCALLY was merely subset-assignable, so a new segment shipped silently unselectable
+ * (one definition per fact / UX drift) — the canonical list living one layer down is what
+ * keeps the Record exhaustive.
  */
 const SEGMENT_LABEL: Record<TenantSegment, string> = {
   residential: 'Homes',
@@ -16,7 +17,7 @@ const SEGMENT_LABEL: Record<TenantSegment, string> = {
   both: 'Both',
 };
 
-const SEGMENT_OPTIONS = tenantSegmentSchema.options.map((value) => ({
+const SEGMENT_OPTIONS = TENANT_SEGMENTS.map((value) => ({
   value,
   label: SEGMENT_LABEL[value],
 }));

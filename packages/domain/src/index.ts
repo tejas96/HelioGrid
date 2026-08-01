@@ -26,4 +26,12 @@ export {
   RESEND_SECONDS,
 } from './auth/login-policy';
 export type { LoginStep, OtpFailure } from './auth/login-state';
+export {
+  COUNTRY_CALLING_CODE,
+  OTP_EXPIRY_SECONDS,
+  OTP_LENGTH,
+  PHONE_NSN_LENGTH,
+} from './auth/otp';
 export { formatPhoneNsn } from './format/phone';
+export type { TenantSegment } from './tenancy/segment';
+export { TENANT_SEGMENTS } from './tenancy/segment';

@@ -18,8 +18,11 @@ paths:
 - Every non-2xx response uses the canonical envelope (`error.ts` + `errorHttpStatusByCode`).
   A route declaring a NON-base error code needs `ContractException` with that literal on
   the server, or the wire silently carries the wrong code with a green typecheck.
-- Protocol constants clients need (`OTP_LENGTH`, `PHONE_NSN_LENGTH`, …) are exported here
-  so no client hard-codes them.
+- Protocol constants clients need (`OTP_LENGTH`, `PHONE_NSN_LENGTH`, `COUNTRY_CALLING_CODE`)
+  live in `@heliogrid/domain`, not here (moved 2026-08-01 with the auth teardown). Domain is
+  the bottom layer, so a contract that needs one IMPORTS it — that direction survives the
+  contract being deleted and rebuilt, which is exactly what happened to auth. Never
+  hard-code one in a client.
 - Zod is pinned at 3.x and `zod/v4` is Biome-banned (ts-rest Zod-4 support is still RC —
   spike S3). Do not lift the pin.
 

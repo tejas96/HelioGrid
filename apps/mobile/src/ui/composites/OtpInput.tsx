@@ -1,4 +1,4 @@
-import { OTP_LENGTH } from '@heliogrid/contracts';
+import { OTP_LENGTH } from '@heliogrid/domain';
 import { theme } from '@heliogrid/tokens/theme';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View, type ViewStyle } from 'react-native';

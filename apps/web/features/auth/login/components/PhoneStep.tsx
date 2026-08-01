@@ -1,5 +1,5 @@
 'use client';
-import { PHONE_NSN_LENGTH } from '@heliogrid/contracts';
+import { PHONE_NSN_LENGTH } from '@heliogrid/domain';
 import { Button, Input, TextLink } from '@heliogrid/ui';
 import { Trans, useLingui } from '@lingui/react';
 import type { FormEvent } from 'react';

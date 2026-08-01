@@ -20,7 +20,8 @@
 pnpm --filter @heliogrid/ui typecheck      # no build — ships source; lint is repo-wide: `pnpm lint`
 
 ## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts (business sets), @heliogrid/ui-api (parity contract)
+uses: @heliogrid/tokens, @heliogrid/contracts (business sets), @heliogrid/ui-api (parity
+contract), @heliogrid/domain (protocol constants — `OtpInput` sizes itself from `OTP_LENGTH`)
 used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
 
 ## Conventions (locked by the Button exemplar)

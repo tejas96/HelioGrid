@@ -11,7 +11,8 @@ pnpm --filter @heliogrid/contracts build       # tsc -b (composite)
 pnpm --filter @heliogrid/contracts openapi     # emit openapi/openapi.json (after build)
 
 ## Depends on / depended on by
-uses: @ts-rest/core, zod (later: packages/domain types)
+uses: @ts-rest/core, zod, @heliogrid/domain (canonical business lists — `z.enum(TENANT_SEGMENTS)`
+builds the schema from domain's tuple; the import direction is contracts → domain, never back)
 used by TODAY: apps/api, apps/web, apps/mobile, packages/ui-api. apps/worker declares the
 dependency but imports nothing yet — it is still a scaffold.
 

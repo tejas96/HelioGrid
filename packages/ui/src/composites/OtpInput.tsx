@@ -1,5 +1,5 @@
 'use client';
-import { OTP_LENGTH } from '@heliogrid/contracts';
+import { OTP_LENGTH } from '@heliogrid/domain';
 import {
   type ChangeEvent,
   type ClipboardEvent,
