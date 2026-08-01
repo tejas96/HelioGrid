@@ -106,12 +106,8 @@ single unmatched pattern aborts the whole command and prints nothing, which read
 **Never weaken a gate to make a change pass.** A gate that blocks you means the change is
 wrong. Rule → mechanism matrix: docs/17 §5.
 
-**After DELETING a source file, rebuild with `pnpm turbo build --force`.** `tsc -b` never
-removes the output of a source that no longer exists, and Turborepo's cache will happily
-restore that whole stale `dist/**` on the next hit — so `turbo boundaries` and `knip`, which
-read compiled output, keep seeing a module you deleted and fail on imports it no longer has.
-This cost two separate debugging rounds on 2026-08-01/02. Deleting `dist/` alone is NOT
-enough: the very next cached build puts it back.
+**Deleted a source file? `pnpm turbo build --force`.** `tsc -b` leaves its output behind and
+turbo's cache restores it, so `boundaries` and `knip` keep failing on a module you removed.
 
 **Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
 files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
@@ -140,6 +136,10 @@ committing with `--no-verify`; fix the diagnostic.
   executable checks are `tests/invariants/`. Verify by running the thing (§5).
 - **Files ≲450 lines, split by responsibility.** Name the new file for what it does — never
   `*-part2`, `*2`, `*-extra`. A split needing a number is the wrong split.
+- **An instruction earns its length.** Rules load every turn; a long one gets skimmed, which
+  makes it worse than no rule. State the rule, its cost, and the fix — 1–3 lines. The war
+  story belongs in the commit or the ADR, not here. Before adding one, check whether it
+  replaces an existing rule instead of stacking beside it.
 - **Presentation and logic in different files.** Detail: `.claude/rules/ui-adherence.md`.
 - **Config comes from `@heliogrid/env`** — the only package that reads a raw source. Adding a
   variable edits a schema there and `.env.example`, nothing else. The allowlist in
@@ -170,12 +170,9 @@ docs/13 UX-gap register. Layer law: each package's own CLAUDE.md. `docs/adr/` is
 only — never a gate, never write one before building; replaced architecture deletes the old
 file.
 
-**The frontend data path is `@heliogrid/data` and nothing else** (ADR-0023): screens call
-hooks, hooks call repositories, repositories call the one ts-rest client. Neither app may
-import `@ts-rest/*` or an auth client — that is a build failure, not a review note.
-**Auth is currently absent** (ADR-0024, docs/15 R19): `packages/db` is greenfield, tenancy is
-unproven, and both login flows run on a deliberate walkthrough stub in
-`packages/data/src/session/walkthrough.ts` that the rebuild deletes.
+**Frontend data path is `@heliogrid/data`, nothing else** (ADR-0023) — an app importing
+`@ts-rest/*` or an auth client is a build failure. **Auth is absent** (ADR-0024): db is
+greenfield, tenancy unproven, both logins on a walkthrough stub the rebuild deletes.
 
 **Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
 piece of work under `docs/superpowers/plans/`; what was actually run is the committed

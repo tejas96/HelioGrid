@@ -1,20 +1,10 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
-  // JSONC, not JSON, deliberately: every entry below is an allowlist, and this repo's rule
-  // is that an allowlist carries its written reason (docs/17 — the tenancy scan's lists do
-  // the same). A suppression nobody can justify is how a tool stops being read.
-  //
-  // Knip is LOCAL HYGIENE, never a CI gate (docs/17 §5). Its value is entirely
-  // signal-to-noise. On 2026-08-02 it reported 20 "unused dependencies" and 79 "unused
-  // exported types", most of them false: half the workspaces had no config at all, and
-  // apps/web's `project` glob excluded `features/` — where nearly all web code lives. The
-  // fix was to make it CORRECT, not to silence it; the true positives it still reports are
-  // left visible on purpose.
-  //
-  // Keep this file minimal. Knip infers entry points from package.json `exports`/`main` and
-  // from framework plugins, and it reports a redundant entry as a configuration hint — if
-  // you add one and knip calls it redundant, delete it rather than leaving noise behind.
+  // JSONC so every allowlist entry carries its reason — a suppression nobody can justify
+  // is how a tool stops being read. Knip is local hygiene, never a CI gate (docs/17 §5),
+  // so its only value is signal: true positives stay VISIBLE, never suppressed.
+  // Keep this minimal — knip infers most entries and flags redundant ones as hints.
 
   "ignoreWorkspaces": ["packages/config"],
 

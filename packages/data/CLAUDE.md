@@ -31,30 +31,18 @@ used by: apps/web, apps/mobile. Nothing else may consume it.
   not exported — re-exporting the client hands apps back the raw wire.
 
 ## Landmines
-- **`zod` must stay pinned to `3.25.76`.** Without the explicit pin pnpm resolves
-  `@ts-rest/core`'s peer to the transitive zod 4 and the typed client silently collapses to
-  `never` — every `api.*` call becomes a type error (hit 2026-07-27 on apps/mobile).
-- **`credentials` belongs to the TRANSPORT, not the client**, because the platforms need
-  OPPOSITE values: `include` on web (browser attaches the HttpOnly cookie cross-origin),
-  `omit` on RN (the keychain jar is the only cookie path; with native handling on, iOS
-  CFNetwork merges its own copy into our manual header and the server rejects the session).
-  One value for both re-introduces a 401 that took a day to find.
-- **`tsconfig.json` sets `lib: ["ES2023", "DOM"]` and this is load-bearing.** The shared
-  `node-package` preset has no DOM, and without it `Headers` is unknown AND ts-rest's
-  `FetchOptions` (derived from `globalThis.Request`) collapses to `never`, which silently
-  types every fetch option as `undefined`.
-- **Metro resolves the `./react` subpath export with no config change** on RN 0.86 /
-  Metro 0.84 (package exports are on by default since Metro 0.82). If a future RN downgrade
-  breaks it, the fix is `unstable_enablePackageExports: true` in `apps/mobile/metro.config.js`.
-- **`src/session/walkthrough.ts` is a DELIBERATE STUB** (owner ruling 2026-08-01): it reaches
-  no server and accepts any 6-digit code, so both login designs stay walkable while auth is
-  greenfield. The rebuild DELETES it and implements `SessionStore` — it is not a starting
-  point to extend.
-- The three gates that fence this package (`data-lean`, `data-core-is-framework-free`,
-  `apps-never-touch-the-wire`) each match the **resolved** module path for installed packages
-  and the **bare specifier** for unresolvable ones. Two of them were silently inert on first
-  authoring for exactly this reason. If you add a rule here, prove it fires by injecting the
-  violation it names.
+- **`zod` pinned to `3.25.76`.** Without it pnpm resolves ts-rest's peer to zod 4 and the
+  typed client silently collapses to `never` (hit 2026-07-27).
+- **`credentials` lives in the TRANSPORT, not the client** — platforms need opposite values:
+  `include` on web, `omit` on RN or iOS CFNetwork merges its own cookie and the server 401s.
+- **`lib: ["ES2023", "DOM"]` in tsconfig is load-bearing.** Without DOM, `Headers` is unknown
+  and ts-rest's `FetchOptions` collapses to `never`, typing every fetch option `undefined`.
+- **Metro resolves `./react` with no config change** on RN 0.86 / Metro 0.84. If a downgrade
+  breaks it: `unstable_enablePackageExports: true` in metro.config.js.
+- **`session/walkthrough.ts` is a deliberate stub** (owner ruling 2026-08-01) — no server,
+  accepts any 6-digit code. The rebuild DELETES it; do not extend it.
+- The three gates fencing this package match the resolved path AND the bare specifier. Two
+  were inert on first authoring. Add a rule here → prove it fires by injecting the violation.
 
 ## Definition of done here
 `pnpm turbo build typecheck lint` green · consumed by BOTH platforms (Law 7) · the surface

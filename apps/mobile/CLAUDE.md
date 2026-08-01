@@ -4,10 +4,8 @@
 - Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile,
   signup, invite accept. Screens land per-module from the same contract as web; which
   platform ships a screen first is a plan decision, but `src/ui` stays in parity (Law 7).
-- ALL data access behind `@heliogrid/data` — screens never see fetch/SQLite/sync, and this
-  app authors NO networking at all. `src/data/` existed until 2026-08-01 and is gone: the
-  repository interfaces it held are now shared with web, so the Track E PowerSync swap is
-  one data-layer change for both platforms instead of two.
+- ALL data access behind `@heliogrid/data` — this app authors no networking. The repository
+  interfaces are shared with web, so the Track E PowerSync swap is one change, not two.
 - NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
   **authoring** domain logic here — shared decisions, policy constants and formatters are
   IMPORTED from `@heliogrid/domain`; writing one inline is the defect.
@@ -45,8 +43,7 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
   layer instead of its job is the same defect as `*-part2`. `src/` is the closed
   set `{auth,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`
-  (`data` left the set on 2026-08-01 — it lives in `@heliogrid/data` now, and `auth/` holds
-  only the keychain `TokenStorage` implementation, the one thing that cannot be shared)
+  (`data` left 2026-08-01 for `@heliogrid/data`; `auth/` holds only the keychain adapter)
   (`hooks/` is an approved category for app-wide hooks but does not exist yet — screen
   hooks live in their screen folder).
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
@@ -80,10 +77,8 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `role` is a TYPOGRAPHY role (`body`/`h2`/`overline`), not an ARIA role, and RN is not the
   DOM — real RN a11y goes through `accessibilityRole`, which the components already set.
   The rule only fired on static literals, so it flagged correct code inconsistently.
-- Cookies: EVERY fetch `credentials: 'omit'` — the keychain jar is the only cookie path,
-  because iOS CFNetwork otherwise merges its stored copy into our manual header and the
-  server 401s. That rule now lives in `@heliogrid/data`'s transport (which sets `omit` when
-  a TokenStorage is supplied and `include` when one is not), not in this app — but it is
+- Cookies: `credentials: 'omit'`, keychain jar only — iOS CFNetwork otherwise merges its
+  copy into our header and the server 401s. Enforced in `@heliogrid/data`'s transport;
   recorded here because this is the platform it bites.
 - metro.config.js: monorepo + Lingui transformer + PowerSync blockList — do not remove.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
