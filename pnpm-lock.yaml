@@ -23,6 +23,9 @@ importers:
       sherif:
         specifier: 1.13.0
         version: 1.13.0
+      simple-git-hooks:
+        specifier: 2.13.1
+        version: 2.13.1
       turbo:
         specifier: 2.10.7
         version: 2.10.7
@@ -99,6 +102,9 @@ importers:
       '@types/pg':
         specifier: 8.20.0
         version: 8.20.0
+      kill-port:
+        specifier: 2.0.1
+        version: 2.0.1
       tsx:
         specifier: 4.23.1
         version: 4.23.1
@@ -302,6 +308,9 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
+      kill-port:
+        specifier: 2.0.1
+        version: 2.0.1
       tailwindcss:
         specifier: 4.3.3
         version: 4.3.3
@@ -4183,6 +4192,9 @@ packages:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
 
+  get-them-args@1.3.2:
+    resolution: {integrity: sha512-LRn8Jlk+DwZE4GTlDbT3Hikd1wSHgLMme/+7ddlqKd7ldwR6LjJgTVWzBnR01wnYGe4KgrXjg287RaI22UHmAw==}
+
   get-tsconfig@4.14.0:
     resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
 
@@ -4478,6 +4490,10 @@ packages:
 
   jstransformer@1.0.0:
     resolution: {integrity: sha512-C9YK3Rf8q6VAPDCCU9fnqo3mAfOH6vUGnMcP4AQAYIEpWtfGLpwOTmZ+igtdK5y+VvI2n3CyYSzy4Qh34eq24A==}
+
+  kill-port@2.0.1:
+    resolution: {integrity: sha512-e0SVOV5jFo0mx8r7bS29maVWp17qGqLBZ5ricNSajON6//kmb7qqqNnml4twNE8Dtj97UQD+gNFOaipS/q1zzQ==}
+    hasBin: true
 
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
@@ -5459,6 +5475,9 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
+  shell-exec@1.0.2:
+    resolution: {integrity: sha512-jyVd+kU2X+mWKMmGhx4fpWbPsjvD53k9ivqetutVW/BQ+WIZoDoP4d8vUMGezV6saZsiNoW2f9GIhg9Dondohg==}
+
   shell-quote@1.10.0:
     resolution: {integrity: sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==}
     engines: {node: '>= 0.4'}
@@ -5533,6 +5552,10 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-git-hooks@2.13.1:
+    resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
+    hasBin: true
 
   simple-swizzle@0.2.4:
     resolution: {integrity: sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==}
@@ -9704,6 +9727,8 @@ snapshots:
 
   get-stream@6.0.1: {}
 
+  get-them-args@1.3.2: {}
+
   get-tsconfig@4.14.0:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -9987,6 +10012,11 @@ snapshots:
     dependencies:
       is-promise: 2.2.2
       promise: 7.3.1
+
+  kill-port@2.0.1:
+    dependencies:
+      get-them-args: 1.3.2
+      shell-exec: 1.0.2
 
   kleur@3.0.3: {}
 
@@ -11167,6 +11197,8 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
+  shell-exec@1.0.2: {}
+
   shell-quote@1.10.0: {}
 
   sherif-darwin-arm64@1.13.0:
@@ -11235,6 +11267,8 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
+
+  simple-git-hooks@2.13.1: {}
 
   simple-swizzle@0.2.4:
     dependencies:

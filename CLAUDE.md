@@ -102,6 +102,15 @@ single unmatched pattern aborts the whole command and prints nothing, which read
 **Never weaken a gate to make a change pass.** A gate that blocks you means the change is
 wrong. Rule → mechanism matrix: docs/17 §5.
 
+**Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
+files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
+Biome with `--error-on-warnings`, so a warning fails the gate exactly like an error. A git
+pre-commit hook (`simple-git-hooks`, installed via `prepare`) additionally runs
+`pnpm precommit` (`biome check --error-on-warnings --no-errors-on-unmatched --staged .` +
+`pnpm turbo typecheck`) scoped to staged files, so this is caught before it ever reaches CI.
+Don't work around either by dropping `--error-on-warnings`, narrowing what you stage, or
+committing with `--no-verify`; fix the diagnostic.
+
 ## 7. Product law (owner rulings — port, don't reinvent)
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.

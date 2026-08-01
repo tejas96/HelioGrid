@@ -18,7 +18,7 @@ run() { # run <label> <command...>
   if "$@"; then :; else failed+=("$label"); fi
 }
 
-run 'biome (format + lint)'   pnpm exec biome check .
+run 'biome (format + lint)'   pnpm exec biome check --error-on-warnings .
 run 'dependency-cruiser'      pnpm exec dependency-cruiser --config .dependency-cruiser.cjs apps packages tests
 run 'sherif (dep drift)'      pnpm exec sherif
 run 'repo adherence'          bash scripts/check-adherence.sh

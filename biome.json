@@ -19,7 +19,8 @@
       "!apps/mobile/android",
       "!apps/mobile/vendor",
       "!**/*.pbxproj",
-      "!.qa"
+      "!.qa",
+      "!graphify-out"
     ]
   },
   "formatter": {
