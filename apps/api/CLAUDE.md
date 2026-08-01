@@ -40,8 +40,9 @@ uses: @heliogrid/contracts, @heliogrid/db        used by: web, mobile (over HTTP
   status→code, so a bare `ConflictException` on `completeOnboarding` emitted `CONFLICT`
   while the contract promised `ALREADY_ONBOARDED` — both sides compiled, the wire was wrong.
   Base codes (`NOT_FOUND`, `FORBIDDEN`…) may still use the plain Nest exceptions.
-- Protocol values shared with clients (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) live in contracts
-  and are imported here — never a literal in the Better Auth config.
+- Protocol values shared with clients (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) live in
+  `@heliogrid/domain` (moved out of contracts 2026-08-01) and are imported here — never a
+  literal in a provider config.
 - **`ContractException` takes an EXPLICIT status.** It used to default from
   `errorHttpStatusByCode[code]`, but that map holds only BASE codes — `ALREADY_ONBOARDED`
   missed it and silently returned **500 with the right code in the body**. Typecheck was

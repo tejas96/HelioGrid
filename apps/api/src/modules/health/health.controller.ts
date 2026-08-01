@@ -1,7 +1,6 @@
 import { healthContract } from '@heliogrid/contracts';
 import { Controller, Inject } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
-import { Public } from '../../common/decorators/public.decorator';
 import { ENV } from '../../config/env';
 import { HealthRepository } from './health.repository';
 
@@ -9,10 +8,11 @@ const SERVICE = 'heliogrid-api';
 const VERSION = ENV.FLY_MACHINE_VERSION;
 
 /**
- * @Public is LOAD-BEARING: SessionGuard is global deny-by-default, so without it Fly's
- * liveness/readiness probes would 401 and the machine would fail its health checks.
+ * Carried `@Public()` until 2026-08-01, where it was LOAD-BEARING against the global
+ * deny-by-default SessionGuard — without it Fly's probes 401'd and the machine failed its
+ * health checks. The guard and the decorator went with the auth teardown (ADR-0024). When
+ * the guard returns, THIS controller needs the opt-out back or deployment breaks.
  */
-@Public()
 @Controller()
 export class HealthController {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
