@@ -57,6 +57,18 @@ used by: nobody
   against a 102 kB baseline. Give the client screen its own barrel
   (`features/<feature>/<screen>/index.ts`). Symptom to recognise: two routes reporting the
   IDENTICAL First Load JS — that is one bundle serving both, not a coincidence.
+- **NEVER run `pnpm turbo build`, `pnpm verify` or `rm -rf */dist` while `next dev` is
+  running** (2026-08-02). `next dev` and `next build` share `apps/web/.next`, so a build
+  replaces the dev-mode chunks the live server is still serving from. The symptom is
+  alarming and looks like a code bug: every chunk 404s (`layout.css`, `page.css`,
+  `main-app.js`, `layout.js`, `page.js`), the page renders as unstyled raw HTML, and
+  webpack throws `Cannot read properties of undefined (reading 'call')` — a module factory
+  that no longer exists. Deleting workspace `dist/` under a live server does the same to
+  `@heliogrid/data` and `@heliogrid/i18n`, which resolve through it.
+  Recovery: `lsof -ti:3002 | xargs -r kill -9 && rm -rf apps/web/.next` then `dev` again.
+  The dev server's console buffer KEEPS these errors across restarts, so verify recovery
+  with `curl -s localhost:3002/login | grep -c 'rel="stylesheet"'` rather than by reading
+  the console.
 - **`"sideEffects": ["**/*.css"]` in `package.json` is load-bearing** (2026-07-31). Each screen
   does `import './x.css'`, which is a side effect, so without the declaration webpack keeps
   every module a barrel names — all three auth routes shipped an identical 183 kB. True today
