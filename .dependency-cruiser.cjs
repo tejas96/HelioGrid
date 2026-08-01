@@ -59,6 +59,56 @@ module.exports = {
       to: { path: '^(packages/(contracts|ui|adapters)|apps)/' },
     },
     {
+      name: 'data-lean',
+      severity: 'error',
+      comment:
+        'packages/data is the frontend SDK, not a dumping ground: it owns transport, the ts-rest client, repositories, session and cache and NOTHING else. Blocking the visual and persistence layers structurally is what stops "it is shared, put it in data" turning it into a God package — the failure mode this architecture is most likely to die of.',
+      from: { path: '^packages/data/' },
+      /*
+       * BOTH the workspace SPECIFIER and the on-disk path. A package data does not depend
+       * on cannot resolve, so it sits in the graph as the bare `@heliogrid/ui` string and a
+       * `^packages/ui/` pattern never sees it — which is precisely the case this rule
+       * guards (someone reaching for a layer that is not a declared dependency yet).
+       * Verified by probe: matching the path alone left this rule inert.
+       */
+      to: {
+        path: [
+          '^@heliogrid/(db|ui|ui-api|tokens|i18n|adapters)',
+          '^(packages/(db|ui|ui-api|tokens|i18n|adapters)|apps)/',
+        ].join('|'),
+      },
+    },
+    {
+      name: 'data-core-is-framework-free',
+      severity: 'error',
+      comment:
+        'React Query is an ADAPTER over the repositories, confined to packages/data/src/react. Repositories that know no framework are what let the query library be replaced without touching a repository or a screen. The boundary is a DIRECTORY prefix on purpose — a filename pattern would rot.',
+      from: { path: '^packages/data/src/', pathNot: '^packages/data/src/react/' },
+      /*
+       * Matches the RESOLVED node_modules path, like `no-raw-http-clients` above — not the
+       * bare specifier. Two ways this rule was silently inert before it was probed:
+       * `dependencyTypes: ['npm']` skipped React Query (a dev + peer dependency here), and
+       * `'^@tanstack/react-query$'` never matches an INSTALLED package, whose graph path is
+       * the file it resolved to. A rule that matches nothing is worse than no rule.
+       */
+      to: { path: '(^|/)node_modules/(react|react-dom|@tanstack/react-query)/' },
+    },
+    {
+      name: 'apps-never-touch-the-wire',
+      severity: 'error',
+      comment:
+        'Screens reach the network through @heliogrid/data and nothing else. One screen calling the ts-rest client or an auth client directly "just this once" is how a layered data architecture erodes — so it is a build failure, not a review note. initClient is called exactly ONCE in this repository, in packages/data/src/client/client.ts.',
+      from: { path: '^apps/(web|mobile)/' },
+      /*
+       * BOTH forms on purpose. These packages are no longer in either app's manifest, so an
+       * import resolves to nothing and appears in the graph as the bare specifier — that is
+       * the `^(@ts-rest/|better-auth)` half. If one is ever re-added to a manifest it would
+       * resolve to a real file instead, which only the node_modules half catches. Matching
+       * one form alone leaves the rule inert in exactly the case that matters.
+       */
+      to: { path: '(^|/)node_modules/(@ts-rest|better-auth)/|^(@ts-rest/|better-auth)' },
+    },
+    {
       name: 'tokens-standalone',
       severity: 'error',
       comment: 'tokens is generated from design/ds-source and depends on nothing in the workspace',
@@ -82,9 +132,18 @@ module.exports = {
       severity: 'error',
       comment: 'apps/web is frontend only — no direct db access, everything through contracts',
       from: { path: '^apps/web/' },
-      // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
-      // connection, so importing it is not database access.
-      to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
+      /*
+       * BOTH the bare workspace specifier and the on-disk path. apps/web does not declare
+       * @heliogrid/db, so an import of it CANNOT resolve and sits in the graph as the
+       * literal string `@heliogrid/db` — a `^packages/db/` pattern never sees it. Verified
+       * by probe on 2026-08-02: this rule had been inert since it was written.
+       * `@heliogrid/db/uuid` stays exempt in both forms: uuidv7 is a pure randomBytes
+       * helper with no connection, so importing it is not database access.
+       */
+      to: {
+        path: '^@heliogrid/db|^packages/db/',
+        pathNot: '(^|/)uuid\\.|^@heliogrid/db/uuid$',
+      },
     },
     {
       name: 'web-app-imports-feature-barrel-only',
@@ -149,9 +208,12 @@ module.exports = {
       severity: 'error',
       comment: 'apps/mobile data access goes through repository interfaces, never packages/db',
       from: { path: '^apps/mobile/' },
-      // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
-      // connection, so importing it is not database access.
-      to: { path: '^packages/db/', pathNot: '(^|/)uuid\\.' },
+      // Same two-form match and the same uuid exemption as `web-no-db` above — and this
+      // rule was inert for the same reason until 2026-08-02.
+      to: {
+        path: '^@heliogrid/db|^packages/db/',
+        pathNot: '(^|/)uuid\\.|^@heliogrid/db/uuid$',
+      },
     },
     {
       name: 'no-raw-http-clients',
@@ -194,6 +256,7 @@ module.exports = {
         path: [
           '^packages/(ui|db|i18n|domain|adapters)/src/(?!index)',
           '^packages/contracts/src/(?!index|jobs)',
+          '^packages/data/src/(?!index|react/index)',
           '^apps/mobile/src/ui/(?!index)',
         ].join('|'),
       },
