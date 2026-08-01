@@ -1,7 +1,8 @@
 # 02 — System Architecture
 
-Binding sources: **the ADRs (`./adr/`) + `./03-tech-stack.md`**. This document is the
-canonical architecture record; where it and an ADR disagree, the ADR wins (it is dated).
+This document is the canonical architecture record; `./03-tech-stack.md` pins the stack and
+`./adr/` explains why each choice was made. Where two of them disagree, the later-dated one
+wins.
 Owner directives that shaped these choices: docs/15 §4.
 
 Evidence: `./research/backend.md`, `./research/fly.md`, `./research/sync.md`,

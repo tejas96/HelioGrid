@@ -6,7 +6,8 @@ recommendation, the row says so — the directive wins, the research stays cited
 
 **Pin policy.** pnpm with `save-prefix=''` — exact versions in every `package.json`; the
 lockfile is the single authority. Pins below are the July-2026-verified baselines; the
-scaffold PR locks the exact patch and any later major bump requires an ADR in `docs/adr/`.
+scaffold PR locks the exact patch; a later major bump is a plan-time decision, logged in
+`docs/adr/` once taken.
 `sherif` fails CI on cross-package version drift, so one version of everything, everywhere.
 
 Binding context: BLUEPRINT.md final-review directives — NestJS backend; Fly-native services

@@ -1,7 +1,6 @@
 # ADR-0017: Studio primacy — the phase-10 tool census is the port acceptance gate; WebView studio on mobile
 
-Status: Accepted (amended 2026-07-24 rev 2 — build order)
-Date: 2026-07-24
+Date: 2026-07-24 (amended same day, rev 2 — build order)
 
 ## Context
 

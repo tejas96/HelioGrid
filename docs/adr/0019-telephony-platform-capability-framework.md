@@ -1,8 +1,8 @@
 # ADR-0019 — Telephony as a platform capability framework (provider-agnostic, capability-negotiated)
 
-**Status:** Accepted (owner directive, 2026-07-26) · **Supersedes:** the monolithic
-`TelephonyProvider` interface of docs/07 §4 (v1 draft) and the BYO-porting/DTMF-send
-wording of BLUEPRINT directive 7 (see §Compliance-with-reality below).
+Date: 2026-07-26 (owner directive). Replaces the monolithic `TelephonyProvider` interface of
+docs/07 §4 (v1 draft) and the BYO-porting/DTMF-send wording of BLUEPRINT directive 7 (see
+§Compliance-with-reality below).
 
 ## Context
 

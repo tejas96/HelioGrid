@@ -18,11 +18,8 @@ always-loaded one-line digest is `.claude/rules/00-laws.md`.
 foundation (tokens → components → contracts → guards). Module work proceeds via per-module
 roadmaps (§3).
 
-**Law 2 — Architecture is fixed; features extend, never redefine.** No new architectural
-patterns, folder categories, state approaches, API styles or dependency categories without
-an ADR approved before implementation (`docs/adr/`). Enforced mechanically:
-dependency-cruiser layer rules, Turborepo Boundaries tags, Biome restricted imports, and
-the pinned stack in docs/03.
+**Law 2 — Architecture changes at plan time, not mid-diff.** Better fit found while coding →
+say so; never switch silently.
 
 **Law 3 — Contracts before code.** The immutable order:
 requirements (docs + D-census) → domain model (docs/04 + `packages/domain`) →
@@ -98,19 +95,19 @@ what surface, and what was seen.
 ## 4. Decision hierarchy (conflict resolution)
 
 1. Repository Laws (§1–2) → 2. Product requirements (`docs/product/` D-census + docs/15
-rulings) → 3. Architecture (ADRs + docs/02 + docs/03) → 4. Shared domain (docs/04 + domain
+rulings) → 3. Architecture (docs/02 + docs/03) → 4. Shared domain (docs/04 + domain
 purity rules) → 5. API contracts (`packages/contracts`) → 6. UX specification
 (`design/mockups/` by filename + the interaction law in docs/10 §11) → 7. Design system
 (`design/ds-source` via `packages/tokens` + the component API) → 8. Existing repo standards
 (`CLAUDE.md`, per-package `CLAUDE.md`) → 9. Implementation detail.
 
-Never invent at level N what a higher level already defines. Two tiebreakers:
+Don't re-declare at level N what a higher level already defines. Two tiebreakers:
 
 - Where a cross-cutting rule and a **per-package `CLAUDE.md`** disagree, the per-package file
   wins — it is closer to the code and has historically always been the accurate one.
-- Where a prose doc and a **dated ADR** disagree, the ADR wins.
+- Where two records disagree, the **later-dated** one wins.
 
-When a doc and code disagree: STOP, reconcile the doc first, or flag it to the owner.
+When a doc and code disagree: reconcile the doc, or flag it to the owner.
 
 ---
 

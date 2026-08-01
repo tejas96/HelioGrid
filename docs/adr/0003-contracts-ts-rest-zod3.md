@@ -1,6 +1,5 @@
 # ADR-0003: API contracts — ts-rest with Zod pinned to 3.x
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

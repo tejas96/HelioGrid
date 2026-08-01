@@ -1,7 +1,8 @@
 # The Laws (docs/17) — one line each
 
 1. **Foundation before features.** Feature modules build only on landed foundation.
-2. **Architecture is fixed; features extend, never redefine.** New pattern → ADR first.
+2. **Architecture changes at plan time, not mid-diff.** Better fit found while coding → say
+   so; never switch silently.
 3. **Contracts before code.** requirements → domain model → API contract → shared types →
    migration → implementation → verification → docs. Never in reverse.
 4. **Single source of truth.** Business enums/validation → contracts. Visual values →
@@ -19,17 +20,16 @@
 
 ## Decision hierarchy
 
-Defined once, in **docs/17 §4** — read it when layers actually conflict. Never invent at
+Defined once, in **docs/17 §4** — read it when layers actually conflict. Don't re-declare at
 level N what a higher level already defines. Two tiebreakers that live only here: where a
-cross-cutting rule and a per-package CLAUDE.md disagree, **the per-package file wins** (it
-is closer to the code and has always been the accurate one); where a doc and a dated ADR
-disagree, **the ADR wins**.
+cross-cutting rule and a per-package CLAUDE.md disagree, **the per-package file wins**; where
+two records disagree, **the later-dated one wins**.
 
 ## Working principles (every change, not only slices)
 
 - **Architecture first.** Name the affected modules and the dependency direction before you
-  write code. If the change violates the architecture, STOP and say so — never a local
-  workaround.
+  write code. If the change needs the architecture to move, say so and take it to the plan —
+  never a local workaround.
 - **Shared before local.** Ask "can this be shared?" BEFORE writing it. Duplicated business
   logic across web/mobile/api needs an owner ruling.
 - **Minimise blast radius.** If something small needs edits across many unrelated files, the
@@ -47,8 +47,6 @@ prevents.
 
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
-- A new architectural pattern, folder category, state approach or dependency category
-  (Law 2 — ADR approved before code).
 - A layer conflict the hierarchy above does not resolve.
 - A product-shaped finding (missing business rule, UX gap, spec ambiguity) — record it in
   docs/13 or docs/15 first, then continue.

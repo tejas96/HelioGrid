@@ -1,6 +1,5 @@
 # ADR-0007: Object storage — Tigris, single-region pin `sin`
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

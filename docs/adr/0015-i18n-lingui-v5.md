@@ -1,6 +1,5 @@
 # ADR-0015: i18n — Lingui v5, one catalog for Next.js and bare React Native
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

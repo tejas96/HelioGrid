@@ -1,6 +1,5 @@
 # ADR-0018: Fly topology — one app per service
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

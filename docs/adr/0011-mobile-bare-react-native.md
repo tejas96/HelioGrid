@@ -1,6 +1,5 @@
 # ADR-0011: Mobile — bare React Native (no Expo), iOS + Android from day one
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

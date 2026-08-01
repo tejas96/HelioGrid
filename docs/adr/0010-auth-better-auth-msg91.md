@@ -1,6 +1,5 @@
 # ADR-0010: Auth — Better Auth self-hosted + MSG91 phone OTP
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

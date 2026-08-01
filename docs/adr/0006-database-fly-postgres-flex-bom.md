@@ -1,6 +1,5 @@
 # ADR-0006: Database — Fly postgres-flex (unmanaged) in `bom`, deprecation risk accepted with mandatory mitigations
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

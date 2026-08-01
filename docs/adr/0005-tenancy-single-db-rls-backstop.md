@@ -1,6 +1,5 @@
 # ADR-0005: Multi-tenancy — single database, `tenant_id` everywhere, app-scoping primary, RLS backstop
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

@@ -1,6 +1,5 @@
 # ADR-0022: apps/web feature folders — pages route, features own the capability
 
-**Status:** Accepted (owner request 2026-07-31)
 **Date:** 2026-07-31
 
 ## Context

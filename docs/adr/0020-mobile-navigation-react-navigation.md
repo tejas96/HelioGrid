@@ -1,6 +1,5 @@
 # ADR-0020: Mobile navigation — React Navigation (native-stack) on bare RN
 
-Status: Accepted
 Date: 2026-07-27
 
 ## Context
@@ -16,9 +15,6 @@ proposal, customer-link, projects, billing, catalog, agent, notifications, admin
 shipping RN screens in lockstep with web (Law 7). A boolean-per-screen router does not survive
 that, and it has no answer for the two things the product already requires: **deep links** for
 the customer-link module and **notification taps** for the notifications module.
-
-Adding a navigation library is a new dependency *and* a new architectural pattern, so Law 2
-requires this ADR before implementation.
 
 ## Decision
 

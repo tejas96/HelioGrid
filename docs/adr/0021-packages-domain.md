@@ -1,6 +1,5 @@
 # ADR-0021 — packages/domain: the pure isomorphic domain layer
 
-**Status:** Accepted (owner approval 2026-07-29)
 **Date:** 2026-07-29
 
 ## Context

@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 /**
  * apps/mobile's view of the environment. A ROOT file beside `i18n.ts`, deliberately not
  * `src/config/env.ts`: CLAUDE.md fixes `src/` as the closed set {auth,data,hooks,navigation,
- * push,screens,ui} plus root files, and a new folder category would need an ADR (Law 2).
+ * push,screens,ui} plus root files, and a new folder category is a plan-time call (Law 2).
  *
  * This is the ONLY place the app decides where raw configuration comes from — bare RN has no
  * runtime `process.env`, so `@heliogrid/env/native` takes the source as a parameter and does

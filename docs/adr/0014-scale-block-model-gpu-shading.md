@@ -1,6 +1,5 @@
 # ADR-0014: Scale program — block/table/zone model, GPU shadow-map shading, per-site UTM/ENU origin
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

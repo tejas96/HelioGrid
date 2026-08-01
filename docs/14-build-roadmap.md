@@ -257,4 +257,4 @@ platform number (or documented DLT-pending with Bolna/test evidence).
 | Single-executor serialization | H×H | Track ownership is exclusive; docs are load-bearing; a module open >2 days (was 4) → split or scope-cut within it. |
 
 Review daily at the 20-day cadence; triggered rows get dated notes; architecture-changing
-responses get an ADR.
+responses get logged in `docs/adr/` once decided.

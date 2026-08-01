@@ -333,7 +333,7 @@ Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | `docs/15-spec-resolutions.md` | Owner rulings on spec ambiguities — check before re-deciding something already decided |
 | `docs/17-engineering-governance.md` | Governance and the rule → mechanism matrix (which rule is enforced by which type/lint/instruction/script) |
 | `docs/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
-| `docs/adr/` | Architecture decision records — a new architectural pattern needs one of these before code |
+| `docs/adr/` | Why each architecture choice was made — reference only |
 | `docs/research/` | Market + technology research backing the decisions above |
 | `docs/superpowers/plans/` | Per-piece-of-work implementation plans |
 | `.claude/skills/` | `/contract-change`, `/migration`, `/qa` — see [above](#schema-contract--cross-cutting-changes) |

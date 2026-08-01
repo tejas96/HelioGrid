@@ -46,8 +46,8 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   hooks live in their screen folder).
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
   `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
-  and the validation. There is deliberately no `src/config/` — a new folder category
-  would need an ADR (Law 2).
+  and the validation. There is deliberately no `src/config/` — a new folder category is a
+  plan-time call, not something to add mid-diff (Law 2).
 - Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
   `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
   `mobile-app-entry-thin`, severity `error` since ADR-0020's navigation slice landed).

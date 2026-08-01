@@ -1,6 +1,5 @@
 # ADR-0016: No feature-flag system — entitlements-only gating, trunk discipline
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

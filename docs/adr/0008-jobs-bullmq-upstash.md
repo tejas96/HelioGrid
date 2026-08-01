@@ -1,6 +1,5 @@
 # ADR-0008: Background jobs — BullMQ + @nestjs/bullmq on Upstash Redis (fixed plan, eviction off)
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

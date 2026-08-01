@@ -17,7 +17,8 @@ dependency but imports nothing yet — it is still a scaffold.
 
 ## Local conventions
 - Contract FIRST: edit here before implementing any endpoint or client; the diff is the
-  API review. Breaking change ⇒ versioned route (/v2/...) + ADR; prefer additive.
+  API review. Breaking change ⇒ versioned route (/v2/...), settled in the plan and logged;
+  prefer additive.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are
   UPPER_SNAKE. HTTP mapping is `errorHttpStatusByCode` — do not invent new mappings.
 - tenant_id NEVER appears in request bodies/params — it comes from the JWT claim
@@ -25,7 +26,7 @@ dependency but imports nothing yet — it is still a scaffold.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
   `ports/<capability>.ts` (provider port interface + its DI token; implementations will live
-  in `packages/adapters` — NOT created yet, the first adapter lands it via its ADR).
+  in `packages/adapters` — NOT created yet; the first adapter lands the package).
 - **No `env.ts` here.** It existed until 2026-07-30 and moved to
   `packages/env/src/schema/fragments.ts`: contracts is the WIRE format, and deployment
   configuration is not part of the API surface. Environment shapes live in `@heliogrid/env`

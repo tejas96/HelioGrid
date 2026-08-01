@@ -1,6 +1,5 @@
 # ADR-0012: Voice agent — Exotel + Sarvam behind a thin orchestrator; ComplianceGate is ours
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

@@ -1,6 +1,5 @@
 # ADR-0001: Monorepo on pnpm workspaces + Turborepo + TypeScript project references
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

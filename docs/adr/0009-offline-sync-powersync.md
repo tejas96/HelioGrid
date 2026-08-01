@@ -1,6 +1,5 @@
 # ADR-0009: Offline sync — PowerSync self-hosted; the write path is our connector
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

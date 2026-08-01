@@ -1,6 +1,5 @@
 # ADR-0013: Billing — Razorpay Subscriptions + in-house entitlements/usage on Postgres; trial-only; BYO-Razorpay for tenant collections
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context

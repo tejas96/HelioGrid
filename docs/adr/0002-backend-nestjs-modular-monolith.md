@@ -1,6 +1,5 @@
 # ADR-0002: Backend framework — NestJS modular monolith
 
-Status: Accepted
 Date: 2026-07-24
 
 ## Context
