@@ -54,15 +54,51 @@ Author these assuming the implementation is wrong until proven otherwise.
   wall-clock or interval based? Rotation. Locale switched mid-flow. Session expiring
   mid-flow.
 
-## Pixel precision — measure, do not eyeball
+## Assert on text, not on pixels — on EVERY surface
 
-Never ask the model whether a gap is 12px or 16px; it will confidently guess.
+Never ask the model whether a gap is 12px, or whether a screenshot "shows the login
+screen". It will confidently guess, and it guesses in the direction of a pass. On
+2026-08-02 a blank `Loading from …:8081` frame was reported as "wordmark, Welcome back,
++91 prefix, disabled Continue" — because the step's criterion was a picture.
 
-- **Exact values** come from the DOM. Playwright reads `getComputedStyle`, and the step
-  asserts the computed string against `packages/tokens/dist/tokens.json`. Deterministic,
-  no model judgement.
-- **Vision** is used only for what it is good at: clipping, overlap, truncation, broken
-  Devanagari run-splitting, and layout collapse at 375px.
+**Every surface has a machine-readable view tree. Use it as the criterion:**
+
+| Surface | Read the tree with | Assert |
+|---|---|---|
+| web | Playwright DOM · `getComputedStyle` | exact strings, exact computed values |
+| iOS | `idb ui describe-all` | accessibility tree contains the exact label |
+| Android | `adb shell uiautomator dump` → XML | `text="…"` attributes match exactly |
+| api | `curl -i` | status line and body bytes |
+| db | `psql -U qa_readonly -tAc` | the scalar returned |
+
+A step whose `expected` cannot be written as a string comparison is not yet a step —
+rewrite it until it can. "Renders correctly" is not a criterion; `text="Welcome back"`
+present and `text="Loading from"` absent is.
+
+**Screenshots stay, in a smaller role:** evidence a human can look at, and mandatory on
+failure. They are never the thing that decides pass or fail. This is also the cheapest
+change available — a view-tree dump greps to a few lines, where a 300 KB PNG must be
+vision-decoded by the executor and again by the verifier.
+
+**Vision is still right for what only vision catches:** clipping, overlap, truncation,
+broken Devanagari run-splitting, layout collapse at 375px. Those steps say so explicitly.
+
+## Parity — the test this repo needs most, and the one easiest to forget
+
+Web and RN ship the same behaviour from the same shared code (Law 7, `@heliogrid/data`).
+So the highest-value assertion is not "each surface works" — it is **that they agree**.
+
+Checking the 10-digit phone cap three times, once per surface, proves three things
+separately and the important thing not at all: a shared constant could change on one
+platform and every per-surface step would still pass.
+
+Author parity as **explicit merge steps**: each surface records an observed VALUE, and one
+step afterwards compares them. Candidates in any slice touching shared code — OTP box
+count, input length caps, error copy for the same failure, the enum options a picker
+renders, the formatted phone string.
+
+This is exactly what a per-surface split makes easy: the surfaces already return values;
+the merge step is a comparison, not another device interaction.
 
 ## Always-on core, regardless of blast radius
 

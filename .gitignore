@@ -49,11 +49,11 @@ test-results/
 .superpowers/
 
 # QA runs — plan/report/triage are COMMITTED history; only evidence blobs are ignored.
-# Do NOT widen this to `.qa`: the /qa executor did exactly that on 2026-08-02, which would
-# have silently excluded every plan, report and triage the skill requires to be committed.
+# Do NOT widen this to `.qa`: that excludes every plan, report and triage the /qa skill
+# requires to be kept, and the loss is silent — the files simply stop appearing in commits.
 .qa/*/artifacts/
 
-# Playwright MCP scratch (console logs, traces) written by the /qa executor
+# Playwright MCP scratch (console logs, traces), written during /qa runs
 .playwright-mcp/
 
 # graphify — generated knowledge-graph cache, never committed

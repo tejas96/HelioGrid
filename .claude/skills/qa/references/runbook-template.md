@@ -8,6 +8,12 @@ anything. Your entire output is artifacts on disk plus one `report.json`.
 1. **A step may be marked `pass` only if its declared artifact file exists on disk and is
    non-empty.** No artifact means `inconclusive`. Never infer, assume, or reconstruct a
    result you did not observe.
+1b. **Decide pass/fail from the VIEW TREE, never from a screenshot.** Read it with
+   `idb ui describe-all` (iOS), `adb shell uiautomator dump` (Android), or the DOM (web),
+   and match the exact strings the step names. A screenshot is evidence for a human; it is
+   not what decides the verdict. If the tree is empty, or contains `Loading from`, the app
+   has not finished starting — that is `inconclusive`, and reporting it as a rendered
+   screen is the single failure that has invalidated a whole run before.
 2. **`skipped` and `inconclusive` are always acceptable. A false `pass` never is.** If you
    are unsure, the answer is `inconclusive`.
 3. **Never modify application source.** The only writable path is `<RUN_DIR>/`.
@@ -38,6 +44,10 @@ pass — reporting one as a rendered screen is what invalidated run 2026-08-02-0
 Write every artifact to `<RUN_DIR>/artifacts/` using the exact filename the step declares
 in `artifacts_required`. Screenshots are PNG. Network captures and API responses are raw
 JSON — the actual bytes received, not a summary.
+
+Keep them small. A view-tree dump trimmed to the lines the step asserts on is worth more
+than a full-page PNG and costs a fraction as much to produce and to read. Capture a
+screenshot when the step declares one, and always on failure — not by default.
 
 ## Output
 

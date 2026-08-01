@@ -25,10 +25,20 @@ xcrun simctl list devices booted | grep -q Booted || echo "MISSING booted iOS si
 adb devices | grep -qw device || echo "MISSING booted Android emulator"
 docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -tAc "select 1" >/dev/null 2>&1 || echo "MISSING qa_readonly role"
 node -e 'const c=require(process.env.HOME+"/.gemini/config/mcp_config.json");process.exit(Object.keys(c.mcpServers||c).includes("playwright")?0:1)' 2>/dev/null || echo "MISSING playwright MCP for agy"
-curl -sf http://localhost:3000 >/dev/null || echo "MISSING web dev server"
-curl -sf http://localhost:8080/health >/dev/null || echo "MISSING api dev server"
+curl -sf -m 5 http://localhost:3002/login >/dev/null || echo "MISSING web dev server (3002)"
+curl -sf -m 5 http://localhost:8084/health >/dev/null || echo "MISSING api dev server (8084)"
 ~/.local/bin/agy --version
 ~/.local/bin/agy -p "reply with only: ok" 2>&1 | tail -1
+
+# PRE-WARM both apps and prove their view tree is readable. A debug build fetches its JS
+# bundle from Metro on every cold start, so a step that launches and screenshots captures
+# a blank "Loading from …:8081" frame — which an executor WILL report as a rendered
+# screen. Warming here means no step ever meets a loading screen.
+xcrun simctl launch booted com.heliogrid.app >/dev/null 2>&1
+adb shell monkey -p com.heliogrid.app -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+sleep 15
+idb ui describe-all 2>/dev/null | grep -q . || echo "MISSING iOS view tree (app not warm)"
+adb shell uiautomator dump /sdcard/w.xml >/dev/null 2>&1 && adb shell cat /sdcard/w.xml | grep -q 'text="' || echo "MISSING Android view tree (app not warm)"
 ```
 
 The version must report a bare CLI version, **not** `Antigravity IDE` — two different
@@ -51,6 +61,28 @@ which reads exactly like a clean run.
 From the diff, list what the change can reach: touched screens, endpoints, tables, and —
 for a `packages/ui` or `packages/domain` change — every consumer of the changed symbol.
 Add the always-on core from `references/test-matrix.md`: tenancy, money, auth.
+
+**Derive the surface list mechanically, then read it — do not hand-author from memory.**
+A hand-picked list is how a plan silently omits a surface the change reached:
+
+```bash
+git diff --name-only; git diff --cached --name-only   # both — git is manual here
+```
+
+Map each changed path to the surfaces it can reach:
+
+| Changed path | Surfaces in the blast radius |
+|---|---|
+| `apps/web/**` | web |
+| `apps/mobile/**` | ios, android |
+| `apps/api/**`, `packages/contracts/**` | api, and every client of the changed route |
+| `packages/db/**`, `migrations/**` | api, db |
+| `packages/data/**` | web, ios, android — it is the ONE data path, so all of them |
+| `packages/ui/**`, `packages/tokens/**` | web (+ RN if the RN mirror moved) |
+| `packages/domain/**`, `packages/i18n/**` | web, ios, android |
+
+For a shared-code path, grep the actual consumers rather than assuming — the symbol may be
+imported somewhere the table above does not predict.
 
 ## Phase 2 — Plan. Four quadrants, no empty cells.
 
@@ -83,20 +115,40 @@ A plan may be small; it may not be lopsided.
 Severity is decided HERE, never by the executor. Anything touching money reconciliation, tenancy
 isolation or provenance tiers is authored `blocker`.
 
-## Phase 3 — Execute. One command, no wrapper.
+## Phase 3 — Execute. One executor PER SURFACE, all at once.
 
-Render `references/runbook-template.md` into `.qa/<run-id>/runbook.md`, substituting
-`<RUN_DIR>`, `<REPORT_SCHEMA>` and `<STEPS>`. Then:
+The four surfaces share no state: web drives a browser, iOS drives one simulator, Android
+drives another, and api/db is `curl` plus a read-only `psql`. Running them in one serial
+conversation makes wall clock the SUM of four independent things — measured at ~8 and ~10
+minutes across two runs, with two physical devices idle most of that time.
+
+Render one runbook per surface — `runbook.web.md`, `runbook.ios.md`, `runbook.android.md`,
+`runbook.api.md` — each containing only that surface's steps, then launch all four
+concurrently and wait:
 
 ```bash
-~/.local/bin/agy \
-  --dangerously-skip-permissions \
-  --add-dir "$PWD/.qa/<run-id>" --add-dir "$PWD" \
-  --output-format json \
-  --json-schema .claude/skills/qa/references/report-schema.json \
-  --print-timeout 15m \
-  -p "$(cat .qa/<run-id>/runbook.md)"
+for S in web ios android api; do
+  ~/.local/bin/agy \
+    --dangerously-skip-permissions \
+    --add-dir "$PWD/.qa/<run-id>" --add-dir "$PWD" \
+    --output-format json \
+    --json-schema .claude/skills/qa/references/report-schema.json \
+    --print-timeout 15m \
+    -p "$(cat .qa/<run-id>/runbook.$S.md)" \
+    > ".qa/<run-id>/report.$S.json" 2>&1 &
+done
+wait
 ```
+
+Then merge the four fragments into `report.json`. A fragment that is missing, empty or
+unparseable makes THAT surface `inconclusive` — never the whole run, and never a pass.
+
+**Order each surface's steps so state flows** — login → OTP → home → locale → back — and
+relaunch the app only where a cold start IS the test. Relaunching per step costs a full
+Metro bundle fetch each time and was most of the mobile wall clock.
+
+**One surface must not wait on another.** If a step needs a value another surface produced,
+it does not belong in either runbook: it belongs in the parity check (Phase 4½).
 
 **`--add-dir` is mandatory and covers every path the plan touches.** Omit it and the run
 reports `status: SUCCESS` with `"DONE"`, consumes tokens, takes ~26 seconds, and does
@@ -131,6 +183,19 @@ A fast model's failure mode is reporting a pass it did not earn. Check, do not t
 
 Join each failure back to its `severity_if_failed` in `plan.json` by step ID. The report
 carries no severity field.
+
+## Phase 4½ — Compare the surfaces against each other.
+
+The per-surface runbooks each recorded an observed VALUE. Now assert they AGREE — this is
+the check the split makes cheap and the one a per-surface plan structurally cannot make.
+
+Web, iOS and Android run the same shared code (`@heliogrid/data`, `@heliogrid/domain`,
+`@heliogrid/ui-api`), so a divergence here means a platform re-implemented something that
+was supposed to be imported — the exact defect Law 7 exists to prevent, and one that every
+individual surface reports as a pass.
+
+A mismatch is a **blocker**, not a curiosity. Record both values verbatim; do not
+average, round, or pick the one that looks right.
 
 ## Phase 5 — Triage into four buckets.
 
