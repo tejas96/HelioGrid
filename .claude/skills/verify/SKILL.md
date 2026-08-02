@@ -12,7 +12,12 @@ The durable record is the `## Verification` section `/finish` puts in the PR.
 
 ## 1. Blast radius
 
-`git diff --name-only` plus `--cached` (work here is often uncommitted). Map paths → surfaces:
+`git diff --name-only` plus `--cached` (work here is often uncommitted). **First drop every
+path that cannot change runtime behaviour** — `*.md`, `.claude/**`, `docs/**`, `turbo.json`,
+lint/boundary configs. A `CLAUDE.md` inside `apps/web/` is not a web change; mapping by
+directory alone would boot a browser to verify a comment.
+
+Map what remains, paths → surfaces:
 
 | Changed path | Surfaces |
 |---|---|
