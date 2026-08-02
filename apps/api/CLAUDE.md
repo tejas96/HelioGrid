@@ -29,11 +29,17 @@ used by: web, mobile (over HTTP, through @heliogrid/data — never a client they
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - `common/` is framework plumbing 2+ modules need; it may never import a module, and business
   behaviour belongs in `packages/domain` instead. Register globals via `APP_*` providers.
-- Every non-2xx response is the canonical envelope (EnvelopeExceptionFilter).
+- Every non-2xx response is the canonical envelope (EnvelopeExceptionFilter). The filter
+  emits no `details[]` today: the first request-validating endpoint adds them, and each
+  `path` must be the SCHEMA FIELD path (`phone`, never `body.phone`) — clients feed it
+  straight to `applyServerErrors`, where an unmatched path renders nothing at all.
 - pino structured logs with requestId; phone numbers redacted (DPDP hygiene).
 - Tenancy is three layers: guard → repository filter → RLS `withTenantTransaction`. **Only
   RLS exists today** (ADR-0024); a module landing before the rebuild must assume no
   protection. `@Public()` / `@CurrentClaims()` are deleted — do not reach for them.
+- List endpoints: `orderBy(<sort key> DESC, id DESC)` (stable order, id tiebreaker),
+  limit/offset from `paginationQuerySchema`, `totalCount` counted with the SAME `where` —
+  never a divergent count query. Recipe: foundation-dx spec §4.2.
 
 ## Landmines
 - **A route whose contract declares a NON-base error code must throw `ContractException`
