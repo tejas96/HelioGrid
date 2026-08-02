@@ -208,7 +208,7 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 
 ## 9. DPDP compliance posture
 
-DPDP Act 2023 + DPDP Rules 2025. Position: **we are Data Fiduciary for tenant users' PII** (phones, names) and **Data Processor for the EPC's customer data** (the tenant is the fiduciary for their customers) — the DPA terms ride in our subscription agreement.
+DPDP Act 2023 + DPDP Rules 2025 — **the IN market's determination**; onboarding any new market requires that jurisdiction's own privacy/residency determination BEFORE tenants exist there (forward-compat "Market & money"). Position: **we are Data Fiduciary for tenant users' PII** (phones, names) and **Data Processor for the EPC's customer data** (the tenant is the fiduciary for their customers) — the DPA terms ride in our subscription agreement.
 
 - **Residency**: primary DB (all PII, phone numbers via self-hosted Better Auth) on Fly `bom` — in India. Payment instruments never touch us (Razorpay, an Indian PA, holds them → RBI localisation satisfied).
 - **Cross-border (Tigris `sin`)**: object storage (photos, PDFs, DEM tiles, backups) pinned single-region Singapore. DPDP Rules 2025 use a **negative-list model — transfer permitted by default unless the destination is blocklisted**; Singapore is not. Compliant today; the S3-compatible API gives a documented migration path to India-region storage if the list changes (BLUEPRINT §Database & infra). Decision recorded in `adr/` with review trigger "negative-list amendment".
@@ -216,7 +216,7 @@ DPDP Act 2023 + DPDP Rules 2025. Position: **we are Data Fiduciary for tenant us
 - **Data-principal rights**:
   - *Access/export*: tenant-level export always works regardless of billing state (product law). Individual data-principal export: support-backed workflow, JSON/CSV of all rows keyed to the principal, 30-day SLA.
   - *Correction*: in-app (lead/customer edit).
-  - *Erasure*: verified request → **anonymisation, not row deletion** — PII fields overwritten (name → "Erased", phone → keyed hash for dedupe integrity), while financial/tax records (proposals, invoices, payments) are retained for statutory periods (GST: 6+ years). User accounts follow deactivate-never-delete; erasure applies the same anonymisation.
+  - *Erasure*: verified request → **anonymisation, not row deletion** — PII fields overwritten (name → "Erased", phone → keyed hash for dedupe integrity), while financial/tax records (proposals, invoices, payments) are retained for the market pack's statutory period (IN: GST, 6+ years). User accounts follow deactivate-never-delete; erasure applies the same anonymisation.
 - **Breach duty**: notify the Data Protection Board and affected principals; runbook in [`./09`](./09-observability-and-ops.md). Grievance contact published in-app.
 - Voice recordings: 90-day retention then hard delete (ComplianceGate), transcript retained on the timeline.
 

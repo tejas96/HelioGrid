@@ -265,7 +265,9 @@ draining queues.
 | `webhooks` | Razorpay/Exotel/MSG91 event processing + reconciliation | idempotent by provider event id |
 | `notifications` | Push (Notifee → FCM/APNs), in-app fan-out, OTP-adjacent messaging | per-tenant metered |
 
-**Repeatable jobs** (BullMQ repeatables, registered on their owning queue; times IST):
+**Repeatable jobs** (BullMQ repeatables, registered on their owning queue). User-facing
+schedules are tenant-timezone-aware by law (forward-compat "Market & money"); v1 tenants are
+all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clock:
 
 | Job | Queue | Schedule | Purpose |
 |---|---|---|---|
@@ -377,10 +379,10 @@ design by making them injected.
 
 | Component | Contents |
 |---|---|
-| RulesContext | electrical ladders (IEC 62548 factors, MCB/MCCB rungs), design-temp bands, setbacks, wind zones, subsidy model, tax model (GST v1), net-metering conventions, compliance calendar (calling hours, DND semantics) |
+| RulesContext | electrical ladders (IEC 62548 factors, MCB/MCCB rungs), design-temp bands, setbacks, wind zones, subsidy/incentive model, tax model (scheme + strategy `per_line_rate` \| `document_level`; per-line GST is the IN instance), net-metering conventions, project-stage labels + skippable stages, document checklists, payment-mode vocabulary, phone spec (calling code, NSN length, display grouping), certification schemes (ALMM/DCR for IN), compliance ruleset + calendar (calling hours, DND semantics) |
 | CatalogContext | platform-catalog scope for the market, price-book currency + defaults (two-tier resolution unchanged: tenant-override → tenant-item → platform-item) |
 | Templates | proposal/PDF/SLD templates, standards labels ("IS/IEC 62548 · CEA" for IN), document boilerplate |
-| Locale data | Lingui catalog, default units, currency formatting (₹ Indian grouping is per-market data), holiday calendar |
+| Locale data | Lingui catalog, default units, currency display rules (per-market grouping — lakh/crore for INR), holiday calendar |
 
 **Injection, not resolution.** `RulesContext`/`CatalogContext` are resolved once per
 request (api), per job (worker) and per call session (voice) from

@@ -23,7 +23,8 @@ dependency but imports nothing yet — it is still a scaffold.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are
   UPPER_SNAKE. HTTP mapping is `errorHttpStatusByCode` — do not invent new mappings.
 - tenant_id NEVER appears in request bodies/params — it comes from the JWT claim
-  (see `tenantClaimSchema` note). Money is a 2-dp decimal string, never a float.
+  (see `tenantClaimSchema` note). Money is a decimal string scaled to the currency's minor
+  unit (INR: 2 dp), never a float; money-bearing payloads carry a document-level `currency_code`.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
   `ports/<capability>.ts` (provider port interface + its DI token; implementations will live

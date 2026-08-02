@@ -91,9 +91,10 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   (`Liveness`) instead.
 - **Protocol constants come from `@heliogrid/domain`** (`OTP_LENGTH`, `PHONE_NSN_LENGTH`,
   `COUNTRY_CALLING_CODE`) — they lived in contracts until 2026-08-01 and moved down a layer
-  with the auth teardown, because domain outlives a contract being deleted and rebuilt. This
-  screen used to define its own `OTP_LEN`/`PHONE_LEN`, so a server-side OTP-length change
-  would leave the boxes rendering the old count.
+  with the auth teardown, because domain outlives a contract being deleted and rebuilt. The
+  phone pair is the IN market's spec and becomes injected market-pack config when packs land
+  (global ruling 2026-08-02). This screen used to define its own `OTP_LEN`/`PHONE_LEN`, so a
+  server-side OTP-length change would leave the boxes rendering the old count.
 - `pod install` fails with `Unicode Normalization not appropriate for ASCII-8BIT` unless the
   shell locale is UTF-8 — prefix `LANG=en_US.UTF-8` (hit 2026-07-27 adding react-native-screens).
 - **apps/mobile pins `zod` explicitly (3.25.76)** like api/worker. Without it pnpm resolved

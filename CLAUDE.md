@@ -1,8 +1,8 @@
 # HelioGrid — constitution
 
-Multi-tenant SaaS for Indian solar EPC companies: CRM → survey → 3D design → proposal →
-customer link → voice follow-up → projects → payments. The 3D Design Studio is the flagship.
-Light-only v1 · EN/HI/MR · ₹ Indian grouping everywhere.
+Multi-tenant SaaS for solar EPC companies — India primary, global-capable backend: CRM →
+survey → 3D design → proposal → customer link → voice follow-up → projects → payments. The
+3D Design Studio is the flagship. Light-only v1 · EN/HI/MR UI · tenant-currency money (INR v1).
 
 **Tradeoff:** these rules bias toward caution over speed. For a trivial change, use judgment —
 but never skip §1's "you ran it" for anything a user can see.
@@ -122,11 +122,16 @@ committing with `--no-verify`; fix the diagnostic.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale: design changed + quote not recomputed → the figure reads provisional.
-- One money path: BOM ↔ proposal ↔ tranches ↔ project payments reconcile to the paisa.
+- One money path: BOM ↔ proposal ↔ tranches ↔ project payments reconcile to the minor unit
+  of the tenant's currency (paisa for INR).
+- Every tenant belongs to ONE market (country) and ONE currency. Market facts — tax scheme,
+  stage labels, document checklists, payment rails, phone spec, compliance rules — resolve
+  from versioned market packs (docs/02 §10), never hard-coded.
 - Sent proposals keep their prices; a price-book update creates a new version.
 - Structural adequacy is NEVER computed — an engineer signs off (who + when), and the
   disclaimer travels with every structure-bearing output.
-- ₹ uses Indian grouping in every locale; kW/kWh/kWp are never translated.
+- Money renders with the tenant currency's market grouping in every locale (INR: lakh/crore,
+  never a locale-default separator); kW/kWh/kWp are never translated.
 - Read + export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 

@@ -46,8 +46,10 @@ A business enum both layers need is defined HERE as a pure union; contracts then
   narrows where drift can hide; it does not tell you what each side actually does.
 - Landed so far: login flow types + behavioural constants (`auth/login-state.ts`,
   `auth/login-policy.ts`) and phone NSN display (`format/phone.ts`). Still to come, in order:
-  the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6), `formatInr`,
-  then the invite/role invariants currently embedded in `apps/api` services.
+  the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6),
+  `formatMoney(amount, currency, locale)` (market grouping per currency — lakh/crore for INR;
+  global ruling 2026-08-02 renamed the planned `formatInr` before it was built), then the
+  invite/role invariants currently embedded in `apps/api` services.
 
 ## Definition of done here
 Pure (cruiser purity rules green) · consumed by BOTH platforms where a mobile surface

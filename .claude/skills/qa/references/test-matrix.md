@@ -4,6 +4,10 @@ Every surface in the blast radius gets steps in **all four** quadrants. A plan m
 small; it may not be lopsided. `SKILL.md` counts steps per (surface × quadrant) before
 handing off, and a zero cell aborts the run naming the gap.
 
+> **Test data derives from the tenant's market pack.** v1 tenants are IN, so examples in
+> this matrix use +91 phones, Devanagari strings and paisa-level reconciliation; a future
+> market's runs derive the equivalents (phone spec, scripts, minor unit) from its pack.
+
 The two files this replaced each had one half of this: `/verify-app` walked states and
 never attacked, `qa-breaker` attacked and never confirmed the feature worked.
 
@@ -105,7 +109,8 @@ the merge step is a comparison, not another device interaction.
 Every run includes at least one step for each:
 
 - Tenancy isolation — a cross-tenant read returns 404.
-- Money reconciliation — BOM ↔ proposal ↔ tranches agree to the paisa.
+- Money reconciliation — BOM ↔ proposal ↔ tranches agree to the minor unit of the tenant's
+  currency (paisa for IN).
 - Auth — an unauthenticated request to a protected route is rejected.
 
 ## Evidence standard

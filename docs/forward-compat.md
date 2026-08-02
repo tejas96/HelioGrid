@@ -30,3 +30,27 @@ the identity/platform spine.
 | mobile | ALL data access behind repository interfaces — Day 17 swap is a data-layer change only. **Satisfied since 2026-08-01 for BOTH platforms**: the interfaces live in `@heliogrid/data` (ADR-0023), so the PowerSync swap is one change, not one per platform. Web previously had no repositories at all. |
 | domain subset | Pure TS + injected contexts from the first module; kernels dual-runtime (browser Worker + node worker_thread). |
 | audit/files/jobs | audit_log from first mutation; one files table; BullMQ names namespaced. |
+
+## Market & money — binding on EVERY module's first migration (2026-08-02)
+
+The backend is global-capable with India the only launch market
+(`docs/superpowers/specs/2026-08-02-global-backend-design.md`). Unlike the per-module rows
+above, this block applies to every module. Each first migration and contract must satisfy:
+
+- **Money**: columns are `numeric(14,3)` named `*_amount` — never `*_inr`/`*_paise`; the
+  money-bearing document root stamps `currency_code` at creation; sums reconcile to the
+  currency's minor unit. Wire money is `amountSchema` + a document-level `currency_code`.
+- **Tax**: fields are scheme-generic (`tax_pct`, `taxes[]`/`tax_breakdown`,
+  `tax_registrations`) — never GST-named columns; statutory extras (IRN/SAC) live in
+  scheme-tagged JSONB (`e_invoicing`).
+- **Market vocabularies**: paperwork sets (document checklists, payment modes, mandate
+  types) are `text` + Zod validated against the tenant market's pack — never closed pg
+  enums. Canonical state machines stay pg enums with market-neutral value names; labels
+  come from the pack.
+- **Providers**: gateway/vendor refs are `provider` + `external_id` column pairs — never
+  provider-named columns.
+- **Scheduling**: user-facing repeatable jobs are tenant-timezone-aware, never fixed IST
+  (platform-internal sweeps may stay fixed-clock).
+- **New market onboarding** requires a privacy/residency determination for that
+  jurisdiction BEFORE tenants are created there (docs/08 §9 is the IN determination), and
+  selling subscriptions there needs a supplier-of-record decision (owner-blocked).

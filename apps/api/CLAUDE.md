@@ -33,7 +33,8 @@ used by: web, mobile (over HTTP, through @heliogrid/data — never a client they
   emits no `details[]` today: the first request-validating endpoint adds them, and each
   `path` must be the SCHEMA FIELD path (`phone`, never `body.phone`) — clients feed it
   straight to `applyServerErrors`, where an unmatched path renders nothing at all.
-- pino structured logs with requestId; phone numbers redacted (DPDP hygiene).
+- pino structured logs with requestId; phone numbers redacted (privacy hygiene — DPDP for
+  IN; each market's regime as markets are added).
 - Tenancy is three layers: guard → repository filter → RLS `withTenantTransaction`. **Only
   RLS exists today** (ADR-0024); a module landing before the rebuild must assume no
   protection. `@Public()` / `@CurrentClaims()` are deleted — do not reach for them.

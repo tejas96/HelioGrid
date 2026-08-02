@@ -16,18 +16,19 @@ The spec uses all three; Indian EPCs say "quotation".
 
 ### R2 — Project state machine: short vs full chain
 D9's shorthand (Won → Ordered → Installed → Commissioned → Handed over) vs Stage 8's full chain.
-**RULING: the FULL 9-stage chain is the canonical state machine; the D9 shorthand is deprecated and appears nowhere.** `WON → MATERIAL_ORDERED → DISPATCHED → INSTALLATION → ELECTRICAL_METERING → DISCOM_INSPECTION → COMMISSIONED → SUBSIDY_CLAIMED → HANDED_OVER`, plus `CANCELLED` (reason required; revenue stops counting immediately). Blocker sub-states (waiting on DISCOM/customer/material/us) ride on any stage.
+**AMENDED 2026-08-02 (global-backend ruling):** two stages carry market-neutral enum names — `UTILITY_INSPECTION` (was DISCOM_INSPECTION) and `INCENTIVE_CLAIMED` (was SUBSIDY_CLAIMED); the blocker party `utility` replaces `discom`. Stage LABELS are market-pack data ("DISCOM inspection" / "Subsidy claimed" are the IN pack's labels); skippable stages are pack data. The machine itself — one canonical chain, same transitions — is unchanged.
+**RULING: the FULL 9-stage chain is the canonical state machine; the D9 shorthand is deprecated and appears nowhere.** `WON → MATERIAL_ORDERED → DISPATCHED → INSTALLATION → ELECTRICAL_METERING → UTILITY_INSPECTION → COMMISSIONED → INCENTIVE_CLAIMED → HANDED_OVER`, plus `CANCELLED` (reason required; revenue stops counting immediately). Blocker sub-states (waiting on utility/customer/material/us) ride on any stage.
 **Consequence:** enum in docs/04-data-model.md; projects board columns, tranche `due_on_stage` mapping, customer-link stage display, and days-in-stage metrics all use the 9-stage chain. Residential deals may pass through stages quickly; they still pass through them.
 
 ### R3 — Voice vendor
 Journey fully specifies agent behaviour but names no vendor.
 **RULING: Exotel (telephony, AgentStream bidirectional WS, DLT/TRAI ops) + Sarvam AI (Saarika STT / Bulbul TTS / Sarvam LLM) behind our `TelephonyProvider`/`SpeechProvider` ports; thin NestJS orchestrator in `apps/voice`. Bolna is the documented Plan B behind the same ports; LiveKit self-host is v2.** Decided — see ./research/voice.md ([Exotel AgentStream](https://docs.exotel.com/exotel-agentstream/bidirectional-streaming), [Sarvam pricing](https://www.sarvam.ai/api-pricing)).
-**Consequence:** agent languages (6) remain independent of UI languages (3) — the sets never converge by accident. ≈₹2.5–4/min all-in metered to the tenant usage ledger. Number provisioning + IVR per BLUEPRINT directive 7 and docs/07.
+**Consequence:** agent languages (6) remain independent of UI languages (3) — the sets never converge by accident. ≈₹2.5–4/min all-in metered to the tenant usage ledger. Number provisioning + IVR per BLUEPRINT directive 7 and docs/07. (IN-market ruling: the vendors stand behind their ports; another market adds adapters — the ruling is unchanged.)
 
 ### R4 — Payment gateway
 C9 names "payment link"; no gateway chosen; platform billing was deferred.
 **RULING: Razorpay, both roles, decided.** Platform SaaS billing = Razorpay Subscriptions (UPI AutoPay primary, card e-mandate fallback, native trials); tenant customer-collections = BYO-Razorpay payment links per tenant via `PaymentLinkPort` — platform never touches tenant funds (no PA licence needed). Detail in docs/16-billing-and-entitlements.md; verification in ./research/verify-billing.md ([Subscriptions webhooks](https://razorpay.com/docs/webhooks/subscriptions/)).
-**Consequence:** D38's deferral is dead (see §2); pricing model is defined in docs/01-business-model.md; RBI payment-data localization satisfied because Razorpay holds instruments.
+**Consequence:** D38's deferral is dead (see §2); pricing model is defined in docs/01-business-model.md; RBI payment-data localization satisfied because Razorpay holds instruments. (IN-market ruling: Razorpay is the IN rail behind `SubscriptionBillingPort`/`PaymentLinkPort`; billing schema is provider-neutral per docs/04 §9. Selling outside India needs a supplier-of-record decision — owner-blocked.)
 
 ### R5 — PVGIS vs Google Solar source of truth
 Journey implies Google Solar drives the roof; phase-10 says PVGIS drives energy and Google Solar is an enhancement.
@@ -36,7 +37,7 @@ Journey implies Google Solar drives the roof; phase-10 says PVGIS drives energy 
 
 ### R6 — D33 single customer link (C&I risk)
 Anyone holding the link can accept a ₹92L order.
-**RULING (amended by the 20-day everything-in directive, 2026-07-24): named links + OTP-at-accept SHIP IN the 20-day build** (Track B, docs/14) — per-contact labelled links, per-link open attribution, and an MSG91 OTP challenge on Accept above a tenant-set value threshold. The `customer_links` entity carries `label` and nullable `contact_id` (docs/08); D33's accepted risk is closed at launch, not later.
+**RULING (amended by the 20-day everything-in directive, 2026-07-24): named links + OTP-at-accept SHIP IN the 20-day build** (Track B, docs/14) — per-contact labelled links, per-link open attribution, and an OTP challenge on Accept (via `OtpPort` — MSG91 is the IN rail) above a tenant-set value threshold denominated in the tenant's currency. The `customer_links` entity carries `label` and nullable `contact_id` (docs/08); D33's accepted risk is closed at launch, not later.
 **Consequence:** acceptance records capture full attribution (link id, contact, OTP verification, IP, user agent) from day one; UXG-11 in docs/13 is in-scope, not deferred.
 
 ### R7 — Phantom step 5
@@ -83,6 +84,7 @@ Proposed (steps 1/3/8/10) but never locked.
 ### R13 — Catalog duplication in tenant config
 Catalog listed twice; catalog/price-book overlap.
 **RULING: the two-tier catalog resolves it.** One catalog surface: platform master catalog (curated, ALMM/DCR-flagged) + tenant own catalog + tenant catalog overrides; resolution order tenant-override → tenant-item → platform-item. Catalog rate history is the versioned rate history on tenant items/overrides; **`price_book_versions` exists as a separate table for non-catalog rates** (docs/04 is canon); sent proposals keep the rate version they were built with.
+**AMENDED 2026-08-02 (global-backend ruling):** ALMM/DCR are the IN entries of a scheme-keyed `certifications` structure on catalog specs; the market pack declares which schemes a market requires. The two-tier resolution is unchanged.
 **Consequence:** tables `platform_catalog_items` (with `kind` column), `tenant_catalog_*`, `tenant_catalog_overrides`, plus `price_book_versions` for non-catalog rates (docs/04 is canon); the settings screen shows one catalog with a rates panel; the duplicate row in the old spec table is void.
 
 ### R14 — Offline scope boundary
@@ -156,7 +158,7 @@ Status legend: **HONORED** (implemented as decided) · **SUPERSEDED** (by what, 
 | D33 | C&I same single link, no per-contact links/OTP | SUPERSEDED — R6-amended 2026-07-24: named links + OTP-at-accept ship in the 20-day build (Track B) |
 | D34 | No discount approval; only arithmetic guard | HONORED — payable ≤ ₹0 blocks Generate; below-cost warns |
 | D35 | Survey photos = reference, not measurement | HONORED — no LiDAR/AR/auto-measure; drone-as-imagery ok |
-| D36 | Agent fully tenant-configurable, India defaults | PARTIAL — config fully tenant-owned; the statutory floor (DND scrub, 9am–9pm, DLT series, opt-out, recording retention) is enforced by our non-swappable `ComplianceGate`, not merely surfaced. Tenants configure within the law, not around it |
+| D36 | Agent fully tenant-configurable, India defaults | PARTIAL — config fully tenant-owned; the statutory floor is enforced by our non-swappable `ComplianceGate`, not merely surfaced. AMENDED 2026-08-02: the gate's MECHANISM is non-swappable; its statutory RULESET is per-market data from the market pack (TRAI/DLT — DND scrub, 9am–9pm, DLT series, opt-out, recording retention — is the IN ruleset). A market with no voice ruleset cannot enable outbound voice. Tenants configure within the law, not around it |
 | D37 | Dashboards = honest periodic decision tool | HONORED — read-only, forecast never in won totals, correlation-not-attribution |
 | D38 | Billing & subscription deferred | **SUPERSEDED — product-owner override 2026-07-24: payments, subscriptions, billing, entitlements, usage tracking and gateway integration are IN v1** (Razorpay, trial-only, no free tier — docs/16). Pre-commitment kept: read + export always work regardless of billing state |
 | D39 | Studio kept & refactored; new repo, shared TS domain, Fly.io | HONORED — this repo; tool census (./research/phases710.md §2) is the studio acceptance checklist |
@@ -269,4 +271,7 @@ Reslink · tests: thin safety net · two-tier catalog: yes · pricing: trial-onl
 tier · voice v1: Exotel + Sarvam · final review: NestJS, Fly-native storage
 (Tigris/Upstash, no AWS), bare React Native (no Expo), billing/entitlements/payments in v1 ·
 DB: Fly unmanaged postgres-flex (owner choice; deprecation risk accepted with mandatory
-mitigations and documented escape hatches).
+mitigations and documented escape hatches) · global backend 2026-08-02: global-ready with
+India-only launch; one currency per tenant; global-safe billing schema, India-only rails;
+target regions Gulf/MENA, SEA/Africa, EU/UK/AU, US
+(spec: docs/superpowers/specs/2026-08-02-global-backend-design.md).

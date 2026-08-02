@@ -33,7 +33,8 @@ uses: @heliogrid/contracts (jobs.ts), @heliogrid/db        used by: nobody
   fixed plan) — these are binding (docs/03 §7).
 
 ## Landmines
-- Webhook processing (Razorpay/Exotel) happens HERE, not in the api: verify → dedupe on
+- Provider webhook processing (payment/telephony adapters — Razorpay/Exotel today) happens
+  HERE, not in the api: verify → dedupe on
   provider event id → enqueue → 2xx fast is the api's job; the worker applies effects.
 - The Dockerfile gains Chromium + fonts-noto with the PDF port (Track B — NOT landed yet;
   no Chromium layer exists today) — RAM budget 300–500 MB per render process, pooled.

@@ -10,12 +10,15 @@ export const phoneE164Schema = z
   .regex(/^\+[1-9]\d{6,14}$/, 'must be E.164, e.g. +919876543210');
 
 /**
- * Money travels as a decimal STRING with exactly two fraction digits (numeric(14,2) INR
- * in the DB) — never a float. Rendering uses formatInr() (Indian grouping) exclusively.
+ * Money travels as a decimal STRING scaled to the currency's minor unit (INR: exactly 2
+ * fraction digits; numeric(14,3) in the DB) — never a float. A money-bearing payload
+ * carries ONE document-level currency_code; the route's object schema refines the scale
+ * against it. Rendering uses formatMoney(amount, currency, locale) exclusively — market
+ * grouping per currency (lakh/crore for INR).
  */
-export const inrAmountSchema = z
+export const amountSchema = z
   .string()
-  .regex(/^-?\d{1,12}\.\d{2}$/, 'INR amount as decimal string with 2 fraction digits');
+  .regex(/^-?\d{1,12}(\.\d{1,3})?$/, 'amount as decimal string scaled to the currency minor unit');
 
 /** Percentages: numeric(5,2) as string, 0.00–100.00. */
 export const percentSchema = z

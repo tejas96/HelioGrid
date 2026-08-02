@@ -55,7 +55,7 @@ feeds results into pure domain functions. Sources: [./research/integrations.md](
    ```
 
    Emits an append-only `usage_events` row (`tenant_id, metric, quantity, unit, provider_ref,
-   cost_estimate_paise, occurred_at`) via a fire-and-forget BullMQ enqueue — metering never
+   cost_estimate_minor, occurred_at`) via a fire-and-forget BullMQ enqueue — metering never
    blocks or fails the request. Billable metrics (`voice_minutes`, `ai_detections`, `otp_sms`
    (fair-use, NOT billed v1), `storage_gb`) run the entitlement soft-block check first
    (`16-billing-and-entitlements.md`). Non-billable observability metrics (`solar_data_fetch`,
@@ -299,6 +299,14 @@ list; 9 am–9 pm promotional window + holiday calendar; 1600 (transactional) vs
 (promotional) series routing; keypress opt-out honoured ≤24 h; 90-day recording retention
 via `retentionSweep` (delete from Tigris + tombstone the ledger row).
 
+**AMENDED 2026-08-02 (global-backend ruling; docs/15 D36):** the MECHANISM above is what is
+non-swappable — every outbound dial passes this gate, no override flag, no alternate adapter.
+The statutory RULESET the gate enforces is per-market data from the market pack; everything
+in this section (DND scrub, 9am–9pm window, 1600/140x series, ≤24 h opt-out, 90-day
+retention) is the IN ruleset (TRAI/DLT). A market with no voice ruleset in its pack cannot
+enable outbound voice. This resolves the prior tension with docs/02 §10, which places the
+compliance calendar in RulesContext.
+
 **Fail-closed:** DND scrub data older than 24 h → promotional dialing pauses (reason
 `scrub_stale`, alert fires); transactional continues. There is no override flag.
 
@@ -335,7 +343,7 @@ tenant's own WABA billing; we meter counts for dashboards and fair-use only.
 
 ```ts
 interface PaymentLinkPort {
-  createLink(tenantId: string, req: { amountPaise: number; purpose: string;
+  createLink(tenantId: string, req: { amountMinor: number; currency: string; purpose: string;
     customerRef: string; expiry?: ISODate }): Promise<PortResult<{ url: string; providerRef: string }>>;
   getStatus(tenantId: string, providerRef: string): Promise<PortResult<PaymentStatus>>;
   handleWebhook(tenantId: string, payload: unknown, sig: string): PaymentEvent; // idempotent, per-tenant secret

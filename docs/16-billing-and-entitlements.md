@@ -23,7 +23,9 @@ Shape (owner directive, docs/15 §4): org-level and capacity-tiered — **never 
 (Indian EPCs employ many low-cost designers; ARKA and Reslink both price per-org —
 [`./research/market.md`](./research/market.md)), priced below both.
 
-What this document owns is the mandate route each tier's price band requires:
+What this document owns is the mandate route each tier's price band requires — IN-market
+policy (derived from RBI/NPCI rules), living in the Razorpay adapter layer above
+`SubscriptionBillingPort`, never in generic domain:
 
 | Tier band | Mandate route (monthly) |
 |---|---|
@@ -32,7 +34,7 @@ What this document owns is the mandate route each tier's price band requires:
 | **Any yearly variant** — totals incl. 18% GST all exceed ₹15k | Single Razorpay payment link/invoice per year, **no mandate needed**; renewal is a fresh invoice (card e-mandate / e-NACH optional for auto-renew) |
 
 - **Unlimited users on every tier.** Capacity/usage differentiates tiers — never features (owner-confirmed): single-design kW ceiling, **proposal-creation cap per month + Starter active-project cap (owner directive; counts in 01: 30/300/1,500/unlimited proposals; Starter 10 active projects)**, voice-minute bundle, AI-detection bundle, storage GB — values in 01.
-- Every tier exists as **two Razorpay Plan objects (monthly + yearly)** mirrored 1:1 by rows in our `plans` table (`billing_cycle` column: monthly/yearly); our table is the source of truth for entitlements, Razorpay's for money. Cycle switches (monthly → yearly) follow the same upgrade mechanics as tier changes (§10): immediate entitlements, prorated delta, new subscription at boundary.
+- Every tier exists as **two Razorpay Plan objects (monthly + yearly)** mirrored 1:1 by `plan_prices` rows (per-currency monthly + yearly prices and the provider-neutral gateway ref — docs/04 §9); our tables are the source of truth for entitlements, the gateway's for money. Cycle switches (monthly → yearly) follow the same upgrade mechanics as tier changes (§10): immediate entitlements, prorated delta, new subscription at boundary.
 
 **Trial (the only non-paying state):** 14 days, **every tier capability**, within the Trial caps defined in [`./01-business-model.md`](./01-business-model.md) — the single source (25 AI detections / 15 voice minutes / 5 GB storage). No card/mandate required to start — signup stays phone+OTP+company (Stage 0). One 7-day extension available to support. Trial is modelled **in-app only** (state on `subscriptions`), not as a Razorpay object; the Razorpay subscription is created at conversion with `start_at = now` ([`./research/verify-billing.md`](./research/verify-billing.md): model free access as in-app state, not a gateway plan).
 
@@ -96,7 +98,7 @@ Product law (CLAUDE.md): **read + export ALWAYS work.** Journey law: **never pun
 
 Per [`./research/verify-billing.md`](./research/verify-billing.md) (verified July 2026): [Subscriptions + UPI AutoPay guide](https://razorpay.com/blog/master-recurring-payments-upi-autopay-guide/), [UPI AutoPay vs card e-mandates](https://razorpay.com/blog/upi-autopay-vs-card-e-mandates/), [webhook events](https://razorpay.com/docs/webhooks/subscriptions/), [best practices](https://razorpay.com/docs/webhooks/best-practices/).
 
-- **Mandate ladder:** UPI AutoPay primary (**₹15,000/debit cap** — every monthly tier fits; ~0.5% + 18% GST, cheapest + highest-converting) → card e-mandate fallback (~2% gateway + 0.99% subscription fee + GST) → e-NACH for Enterprise (up to ₹10L/debit). Annual = one-shot invoice, no mandate (§1).
+- **Mandate ladder (IN rails):** UPI AutoPay primary (**₹15,000/debit cap** — every monthly tier fits; ~0.5% + 18% GST, cheapest + highest-converting) → card e-mandate fallback (~2% gateway + 0.99% subscription fee + GST) → e-NACH for Enterprise (up to ₹10L/debit). Annual = one-shot invoice, no mandate (§1).
 - **Pre-debit notifications** (mandatory 24–48h before each charge) are Razorpay's job — we build nothing, but our dunning copy references them (§10).
 - Checkout: hosted Razorpay flow from the billing screen. We never see payment instruments — RBI localisation stays Razorpay's problem ([`./08`](./08-security-and-tenancy.md) §9).
 
@@ -162,7 +164,7 @@ Append-only `usage_events` — the ledger is the bill; no other counter exists:
 
 ```
 usage_events(id, tenant_id, metric, quantity numeric, unit text, subject_type, subject_id,
-             provider_ref nullable, cost_estimate_paise nullable, idempotency_key, occurred_at, period_key)
+             provider_ref nullable, cost_estimate_minor nullable, idempotency_key, occurred_at, period_key)
 metric ∈ billable { voice_minutes, ai_detections, otp_sms (fair-use, NOT billed v1), storage_gb }
        ∪ non-billable observability { solar_data_fetch, map_tile_fetch, dem_tile_fetch, push_sent, document_rendered }
 ```
@@ -175,16 +177,20 @@ Every writer supplies an `idempotency_key` (unique index) so a retried job or du
 - **storage_gb**: gauge, not counter — nightly worker job sums the tenant's Tigris prefix and writes a snapshot event.
 - `usage_period_rollups(tenant_id, metric, period_key, total)` recomputed by a nightly BullMQ job **and** incrementally on write; a rollup is always reproducible from the ledger (append-only ⇒ auditability; same discipline as the money path).
 
-**Tenant-visible usage screen honesty** (agent-performance "Usage" screen and billing): shows exactly the rollups we enforce and bill from — same query, same numbers, no smoothing, labelled with the period and "measured" provenance. If a bundle is 80% consumed, the screen says so before the gate ever fires. Overage (voice minutes, AI detections beyond bundle): billed at published per-unit rates via **Razorpay add-ons on the next subscription invoice**; the usage screen shows accruing overage in ₹ (Indian grouping) as it happens.
+**Tenant-visible usage screen honesty** (agent-performance "Usage" screen and billing): shows exactly the rollups we enforce and bill from — same query, same numbers, no smoothing, labelled with the period and "measured" provenance. If a bundle is 80% consumed, the screen says so before the gate ever fires. Overage (voice minutes, AI detections beyond bundle): billed at published per-unit rates via **Razorpay add-ons on the next subscription invoice**; the usage screen shows accruing overage in the tenant's currency with its market grouping (₹ lakh/crore for IN) as it happens.
 
 ---
 
 ## 7. GST invoicing (platform billing)
 
+> GST is the IN market's tax scheme. The canonical invoice row is scheme-neutral —
+> `currency_code`, `subtotal_amount`/`tax_amount`/`total_amount`, `tax_breakdown`,
+> scheme-tagged `e_invoicing` JSONB (docs/04 §9); everything below is the IN instance.
+
 - **We are the supplier of record** — Razorpay is a gateway, not merchant-of-record ([`./research/integrations.md`](./research/integrations.md)). Our GSTIN, our GST remittance, our liability.
 - **Razorpay Invoices** auto-generates a GST-compliant invoice per billing cycle (subscription-linked) with our GSTIN, the tenant's GSTIN (captured at conversion — B2B tenants need it for ITC), place-of-supply logic (intra-state CGST+SGST / inter-state IGST), and SAC code.
 - **SAC: 998434** (cloud/SaaS software service, 18% GST). Single ruling for all tiers and overage add-ons; confirm with the CA before the first live invoice — a SAC change is config, not code.
-- **e-invoicing (IRN)**: not applicable until our turnover crosses the ₹5-crore threshold. Razorpay does NOT file IRNs for us (research nuance). Path when crossed: invoice rows already carry nullable `irn`, `ack_no`, `ack_date`, `qr_payload`; integrate a GSP/IRP API then, backfill nothing. Validation of the threshold sits with the CA at each FY close.
+- **e-invoicing (IRN)**: not applicable until our turnover crosses the ₹5-crore threshold. Razorpay does NOT file IRNs for us (research nuance). Path when crossed: the invoice row's `e_invoicing` JSONB carries `{irn, ack_no, ack_date, qr_payload}`; integrate a GSP/IRP API then, backfill nothing. Validation of the threshold sits with the CA at each FY close.
 - **Razorpay's own fees carry 18% GST** — Razorpay issues its own fee invoice; tracked as a separate expense ledger line monthly and claimed as ITC. Never mixed with tenant-facing invoice data.
 - Invoices are exportable by the tenant in every billing state (read+export law).
 
@@ -198,13 +204,13 @@ For C9 "pay the advance" and project tranches, the EPC's customer pays the **EPC
 - `PaymentLinkPort.createLink(tenantId, tranche)` mints a Razorpay Payment Link **on the tenant's account**; funds settle directly to the tenant's bank. `handleWebhook(tenantId, payload, sig)` verifies with the tenant's own webhook secret, idempotent on event id, marks the tranche received and attaches the receipt.
 - **The platform never touches funds → no RBI Payment Aggregator licence required.** This is the load-bearing regulatory line ([`./research/integrations.md`](./research/integrations.md); [Razorpay Route](https://razorpay.com/route/) context).
 - **Razorpay Route (split-settlement, us as master merchant) is REJECTED for now** and documented only as an alternate adapter behind the same port: it would make us the KYC-bearing master merchant with escrow obligations — wrong trade for v1. Revisit only if a marketplace revenue model ever appears.
-- Tenants without a Razorpay account: manual modes stand (record UPI/NEFT/cheque + attach receipt) — the port is an accelerator, not a dependency. Tranche math stays on the one money path (BOM ↔ proposal ↔ tranches ↔ project payments, to the paisa).
+- Tenants without a Razorpay account: manual modes stand (record a market payment mode — IN pack: UPI/NEFT/cheque — and attach the receipt) — the port is an accelerator, not a dependency. Tranche math stays on the one money path (BOM ↔ proposal ↔ tranches ↔ project payments, to the currency's minor unit).
 
 ---
 
 ## 9. Dunning
 
-Razorpay retries failed charges on its own backoff for the mandate; our layer is communication + the 7-day grace clock. Channels: in-app banner (owner + managers), push (Notifee), SMS via MSG91 (DLT-registered templates), WhatsApp utility template via MSG91 where the owner opted in (platform→tenant messaging is ours; D32 only constrains tenant→customer messaging).
+Razorpay retries failed charges on its own backoff for the mandate; our layer is communication + the 7-day grace clock. Channels are the IN market pack's stack: in-app banner (owner + managers), push (Notifee), SMS via MSG91 (DLT-registered templates), WhatsApp utility template via MSG91 where the owner opted in (platform→tenant messaging is ours; D32 only constrains tenant→customer messaging). A future market's pack names its own channel stack.
 
 | Day (from first failure) | Action | Template |
 |---|---|---|

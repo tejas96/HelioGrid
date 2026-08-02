@@ -7,7 +7,7 @@
 - Shared cross-platform copy modules in `src/copy/` — enum-keyed `Record` of static
   `<Trans id>`, extractor-swept. Screen-specific copy stays in its screen.
 - NEVER: app copy hard-coded elsewhere, per-app catalogs, agent/WhatsApp templates
-  (tenant DATA — docs/10 §7 · .claude/rules/i18n.md), raw Intl currency (formatInr when domain lands).
+  (tenant DATA — docs/10 §7 · .claude/rules/i18n.md), raw Intl currency (formatMoney when domain lands).
 
 ## Commands
 pnpm --filter @heliogrid/i18n extract     # sweep web+mobile+ui for messages (CI-guarded)

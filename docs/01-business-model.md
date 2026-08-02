@@ -2,6 +2,10 @@
 
 Status: approved · Sources: `./research/market.md` (competitor pricing, firm for India tools), `./research/voice.md`, `./research/auth.md`, `./research/fly.md`, `./research/verify-billing.md` · Billing mechanics: `16-billing-and-entitlements.md`
 
+> **Market scope (2026-08-02):** every price, benchmark and mandate mechanic in this
+> document is the IN market's price book (INR). Global pricing arrives per-market as
+> `plan_prices` rows (docs/04 §9); nothing here is the generic model.
+
 ## Who pays
 
 **The EPC organisation pays. Nobody else.** One subscription per tenant, owner-administered, covering every employee — no per-seat pricing, ever. Indian EPCs employ many low-cost designers and field reps; per-seat pricing (Aurora: $159–259/user/mo) punishes exactly the behaviour we want — putting the whole company on the platform. India-native incumbents already price per-org (ARKA 360 ₹7,500–16,500/mo) or per-capacity (Reslink India: ₹60k/85k/1.2L per year — INR page, authoritative; see calibration note below); we do the same, priced under both at every rung, with more in the box.

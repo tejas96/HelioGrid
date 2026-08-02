@@ -12,7 +12,7 @@ Three convictions shape everything:
 
 1. **The 3D Design Studio is the flagship. Nothing is compromised against it.** Every studio tool and computed output from the validated engineering core survives the port (phase-10 tool census is the acceptance gate), touch-first, at full parity on every surface including 375 px mobile.
 2. **Honesty is a feature.** Every user-visible number carries a provenance tier (measured / derived / estimated / assumed); money never renders while stale; structural adequacy is never computed — an engineer signs off. Competitors sell certainty; we sell trustworthy numbers.
-3. **India-first, global-ready.** GST-native money path, PM Surya Ghar subsidy slabs, DISCOM-aware project states, TRAI-compliant voice calling, ₹ in lakh/crore grouping, EN/HI/MR UI — built on a market-config layer that is injected, not hard-coded, so new markets are configuration.
+3. **India-first, global-ready.** GST-native money path, PM Surya Ghar subsidy slabs, DISCOM-aware project states, TRAI-compliant voice calling, ₹ in lakh/crore grouping, EN/HI/MR UI — built on a market-config layer that is injected, not hard-coded, so new markets are configuration (binding since 2026-08-02: the "Market & money" block in docs/forward-compat.md).
 
 Who buys: the EPC organisation (owner signs up self-serve, phone + OTP). Residential **and** C&I, both high volume (D1); deal values span ₹4.5L to ₹92L+.
 

@@ -17,7 +17,10 @@ are not restated per-table; the deltas that matter:
 - Every tenant-owned table: `tenant_id uuid not null → tenants.id`, composite indexes starting
   with `tenant_id`, and an RLS policy `USING (tenant_id = current_setting('app.tenant_id')::uuid)`
   for the `app_user` role. RLS is the backstop; the tenant-scoped repository layer is primary.
-- Money `numeric(14,2)` INR. Percentages `numeric(5,2)`. Coordinates `numeric(9,6)`.
+- Money `numeric(14,3)` `*_amount`, scaled to the tenant currency's minor unit (INR: 2 dp;
+  per-currency scale enforced in contracts/domain — `numeric` cannot vary scale per row).
+  Money-bearing document roots stamp `currency_code` at creation; line items inherit it.
+  Percentages `numeric(5,2)`. Coordinates `numeric(9,6)`.
 - Postgres enums for closed sets migrations own; `text` + Zod refinement where tenants extend.
 - State-machine columns change **only** through service-layer transition functions.
 - Append-only tables have no UPDATE/DELETE grants (census in §12).
@@ -55,11 +58,12 @@ Better Auth (organization + phoneNumber + jwt plugins) owns and migrates: `user`
 | name, slug | text | slug unique |
 | segment | enum `tenant_segment` | `residential` / `ci` / `both` (Stage-0 "what do you sell") |
 | typical_system_kw | numeric(8,2) | seeds first-quote defaults |
-| gstin | text | validated format; nullable until first proposal |
+| tax_registrations | jsonb | `[{scheme, value, validated_at}]`, Zod per scheme; v1 accepts only `IN_GST`; empty until first proposal |
 | address | jsonb | line1/line2/city/state_code/pincode |
 | bank_details | jsonb | account/IFSC/UPI for proposal step 11 |
 | logo_file_id | uuid → files | |
-| country_code, state_code | text | drives `market_rules_packs` resolution; India-first, global-ready |
+| country_code, state_code | text | drives `market_rules_packs` resolution; v1: `'IN'` only |
+| currency_code | text | ISO 4217, server-assigned from the market at tenant creation; v1: `'INR'` only |
 | status | enum `tenant_status` | `active` / `suspended` / `churned` |
 
 ### `users` — TENANT (domain profile, 1:1 with auth user)
@@ -154,9 +158,9 @@ Index `(tenant_id, phone_e164)` — dedupe also checks contacts.
 | stage_entered_at | timestamptz | |
 | stage_before_close | enum `lead_stage`, nullable | restore point for reopen |
 | snoozed_until | timestamptz, nullable | orthogonal to stage; hidden from My Day until wake (worker resurfaces) |
-| estimated_value_inr | numeric(14,2) | weighted-pipeline input (forecast ≠ revenue) |
-| qualification | jsonb | monthly bill ₹, roof ownership, roof type, shading, timeline, decision-maker — form snapshot, Zod-schema'd |
-| monthly_bill_inr | numeric(10,2) | mirrored from qualification for sorting/filtering |
+| estimated_value_amount | numeric(14,3) | weighted-pipeline input (forecast ≠ revenue) |
+| qualification | jsonb | monthly bill (tenant currency), roof ownership, roof type, shading, timeline, decision-maker — form snapshot, Zod-schema'd |
+| monthly_bill_amount | numeric(10,2) | mirrored from qualification for sorting/filtering |
 | disqualify_reason | enum `disqualify_reason` | `renting`/`budget`/`not_interested`/`unreachable`/`already_installed`/`wrong_number` |
 | lost_reason | enum `lost_reason` | `price`/`competitor`/`postponed`/`not_reachable`/`roof_unsuitable`/`financing_failed` |
 | reopened_count | int default 0 | |
@@ -232,8 +236,9 @@ All TENANT. **Surveys are versioned-append: a revisit inserts a new version row;
 ### `sites` — the physical roof/building
 
 `id` · `tenant_id` · `customer_id → customers` · `address text` · `lat, lng numeric(9,6)` ·
-`state_code, discom_code text` (tariff resolution most-specific-first: DISCOM → state → default,
-per ./research/calc.md §6) · `site_type` enum (`residential`/`commercial`) ·
+`state_code, utility_code text` (tariff resolution most-specific-first: utility → state →
+default; "DISCOM" is the IN pack's label for the utility tier, per ./research/calc.md §6) ·
+`site_type` enum (`residential`/`commercial`) ·
 `sanctioned_load_kw numeric(8,2)` (from meter photo; design overrun = real approval blocker) ·
 `roof_type text` · `utm_epsg int` (per-site UTM/ENU origin for the scale program). Index
 `(tenant_id, customer_id)`.
@@ -306,7 +311,7 @@ All TENANT. The studio is the flagship; this group carries the POC's honesty mac
 | kwp | numeric(8,2) | mirror |
 | panel_count | int | mirror |
 | annual_kwh | int | mirror |
-| price_total_inr | numeric(14,2) | mirror of BOM total |
+| price_total_amount | numeric(14,3) | mirror of BOM total |
 | health_score | int | mirror |
 | irradiance_source | enum | `pvgis` / `estimate` — provenance surfaced on every energy figure |
 | design_fp, solar_access_fp | text | ported 5-layer fingerprint heads; staleness = compare, not flag-flipping |
@@ -383,7 +388,7 @@ Staleness is **derived, never stored**: latest version's pinned `design_fp` vs l
 | tenant_id | uuid | |
 | proposal_id | uuid → proposals | |
 | version_no | int | server-assigned; unique `(proposal_id, version_no)` |
-| snapshot | jsonb | full 11-step field set + computed money block (cost ex/incl GST, GST %, battery + battery GST %, subsidy ₹, discount %⇄₹, payable) + narrative facts |
+| snapshot | jsonb | full 11-step field set + computed money block (`currency_code`, cost ex/incl tax, per-line tax %, document-level `taxes[]` breakdown `[{scheme, label, rate_pct?, amount}]`, battery + battery tax %, incentive amount, discount %⇄amount, payable) + narrative facts. Tax strategy comes from the market pack: `per_line_rate` (IN) or `document_level` (reserved for jurisdiction-computed markets, e.g. US sales tax) |
 | catalog_version, price_book_version | text | **pinned — sent proposals keep original prices forever** (packages/db/CLAUDE.md) |
 | design_fp | text, nullable | pinned design state (Path A) |
 | pdf_file_id | uuid → files | Playwright-rendered |
@@ -393,7 +398,7 @@ Staleness is **derived, never stored**: latest version's pinned `design_fp` vs l
 Ruling: the version snapshot is **JSONB** — a commercial document frozen at send time; it is read
 whole, rendered whole, and must never drift when catalogs move. Components are relational
 (below) because the mandatory-gate and BOM reconciliation query them. Money guard at Generate:
-`payable ≤ ₹0` blocks — the only hard discount guard (D34); no approval tables exist.
+payable ≤ 0 (tenant currency) blocks — the only hard discount guard (D34); no approval tables exist.
 
 ### `proposal_components` — per version, the mandatory gate
 
@@ -401,8 +406,8 @@ whole, rendered whole, and must never drift when catalogs move. Components are r
 `component_category` (`panel`/`inverter`/`structure`/`electrical`/`bos`/`battery`/`other`) ·
 resolution provenance: `source_tier` enum `catalog_source` (`tenant_override`/`tenant_item`/
 `platform_item`/`custom`) + `platform_item_id?` + `tenant_item_id?` · snapshot fields
-`name`, `spec jsonb`, `qty numeric(12,3)`, `unit text`, `rate_inr numeric(14,2)`,
-`gst_pct numeric(5,2)`, `line_total_inr numeric(14,2)` · `provenance` enum `provenance_tier`
+`name`, `spec jsonb`, `qty numeric(12,3)`, `unit text`, `rate_amount numeric(14,3)`,
+`tax_pct numeric(5,2)`, `line_total_amount numeric(14,3)` · `provenance` enum `provenance_tier`
 (`measured`/`derived`/`estimated`/`assumed`). Gate: all five categories present (+`battery`
 mandatory for offgrid/hybrid — no-battery hard block). Rows are immutable with their version.
 Index `(tenant_id, proposal_version_id)`.
@@ -423,7 +428,7 @@ Platform seeds 10/60/20/10 and 30/60/10 at tenant creation.
 | project_id | uuid → projects, nullable | set when Won — same rows become the collection schedule |
 | seq, label | int / text | |
 | pct | numeric(5,2) | Σ per version = 100.00 (service-enforced + locked money invariant test) |
-| amount_inr | numeric(14,2) | Σ = payable **to the paisa** (BOM ↔ proposal ↔ tranches ↔ payments reconcile) |
+| amount | numeric(14,3) | Σ = payable **to the currency's minor unit** (BOM ↔ proposal ↔ tranches ↔ payments reconcile) |
 | due_on_stage | enum `project_stage`, nullable | stage completion makes the tranche due |
 | status | enum `tranche_status` | `upcoming → due → part_received → received`; `waived` terminal |
 
@@ -479,7 +484,7 @@ All TENANT. Light by design (D9): status + documents + money.
 | project_number | text | server-assigned; unique `(tenant_id, project_number)` |
 | stage | enum `project_stage` | see machine below |
 | stage_entered_at | timestamptz | days-in-stage is the primary board metric |
-| final_value_inr | numeric(14,2) | set at Mark Won |
+| final_value_amount | numeric(14,3) | set at Mark Won |
 | expected_install_date | date | |
 | cancel_reason, cancelled_at | text / timestamptz | cancelled projects stop counting as revenue immediately |
 | handed_over_at | timestamptz | |
@@ -487,27 +492,30 @@ All TENANT. Light by design (D9): status + documents + money.
 **Project state machine** (`project_stage`) — the full 9-stage chain is canonical (ruling on
 journey ambiguity #2; the D9 5-stage chain is a display grouping, not the model):
 `won → material_ordered → dispatched → installation → electrical_and_metering →
-discom_inspection → commissioned → subsidy_claimed → handed_over`, plus terminal `cancelled`
-(reason mandatory) reachable from any stage. `subsidy_claimed` is skipped (transition allowed
-commissioned → handed_over) for non-residential/no-subsidy projects. Transitions via service
-function only; stage completion marks matching tranches due.
+utility_inspection → commissioned → incentive_claimed → handed_over`, plus terminal `cancelled`
+(reason mandatory) reachable from any stage. Stage LABELS are market-pack data ("DISCOM
+inspection" / "Subsidy claimed" are the IN pack's labels); `incentive_claimed` is skippable
+(transition allowed commissioned → handed_over) per pack rule and for no-incentive projects.
+Transitions via service function only; stage completion marks matching tranches due.
 
 Indexes: `(tenant_id, stage, stage_entered_at)` (board + aged cards).
 
-### `project_documents` — the 8-item checklist
+### `project_documents` — the handover checklist (market-pack data)
 
-`id` · `tenant_id` · `project_id → projects` · `doc_type` enum `project_doc_type` —
-`signed_proposal` / `advance_receipt` / `net_metering_application` / `discom_approval` /
-`subsidy_application_and_sanction` / `commissioning_certificate` / `warranty_documents` /
-`handover_pack` · `status` enum `document_status` (`pending` / `uploaded` / `verified`) ·
-`file_id → files, nullable` · `verified_by → users` · `verified_at`. Unique
-`(project_id, doc_type)`; 8 rows seeded at project creation (subsidy row omitted for
-commercial). Handover = all rows past `pending` + pack shared on the link.
+`id` · `tenant_id` · `project_id → projects` · `doc_type text` + Zod — validated against the
+tenant market's pack checklist (IN pack: `signed_proposal` / `advance_receipt` /
+`net_metering_application` / `discom_approval` / `subsidy_application_and_sanction` /
+`commissioning_certificate` / `warranty_documents` / `handover_pack`) · `status` enum
+`document_status` (`pending` / `uploaded` / `verified`) · `file_id → files, nullable` ·
+`verified_by → users` · `verified_at`. Unique `(project_id, doc_type)`; the pack's rows are
+seeded at project creation (IN: 8 rows, incentive row omitted for commercial). Handover = all
+rows past `pending` + pack shared on the link.
 
 ### `blockers` — who waits on whom
 
 `id` · `tenant_id` · `project_id → projects` · `waiting_on` enum `blocker_party`
-(`discom` / `customer` / `material` / `us`) · `reason text` · `started_at` ·
+(`utility` / `customer` / `material` / `us` — "DISCOM" is the IN pack's label for `utility`) ·
+`reason text` · `started_at` ·
 `expected_until date, nullable` (customer link renders "applied 15 Aug, typically 3–6 weeks") ·
 `resolved_at, resolved_by`. Active = `resolved_at is null`; partial index
 `(tenant_id, project_id) where resolved_at is null`. The product's job is to make waiting
@@ -516,8 +524,9 @@ visible and attributable, not faster.
 ### `project_payments` — append-only receipts ledger
 
 `id` · `tenant_id` · `project_id → projects` · `tranche_id → tranches` ·
-`amount_inr numeric(14,2)` · `mode` enum `payment_mode` (`upi`/`neft`/`cheque`/`cash`/
-`payment_link`) · `reference text` · `receipt_file_id → files` · `received_at` ·
+`amount numeric(14,3)` · `mode text` + Zod — validated against the market pack's
+payment-mode list (IN pack: `upi`/`neft`/`cheque`/`cash`/`payment_link`) · `reference text` ·
+`receipt_file_id → files` · `received_at` ·
 `recorded_by → users` · `reverses_payment_id → project_payments, nullable`.
 Ruling: **append-only with reversal rows** (negative amount + pointer), never edited — this is
 the received side of the money path and feeds the locked money-invariant test. Tranche `status`
@@ -547,7 +556,7 @@ delete: removed products keep serving old proposals (packages/db/CLAUDE.md).
 | id | uuid PK | |
 | kind | enum `catalog_kind` | `panel` / `inverter` / `battery` / `structure` / `electrical` / `bos` / `service` |
 | brand, model, sku | text | brand+model never translated |
-| spec | jsonb | typed per kind — `PanelSpec` (Voc/Vmp/Isc/Imp/temp-coeffs/ALMM/DCR/dims/warranty), `InverterSpec` (acKw/phases/MPPT windows/maxDcV/efficiency) — the POC shapes verbatim (./research/calc.md §4) |
+| spec | jsonb | typed per kind — `PanelSpec` (Voc/Vmp/Isc/Imp/temp-coeffs/dims/warranty + `certifications` keyed by scheme — IN: ALMM, DCR; the pack declares which schemes a market requires), `InverterSpec` (acKw/phases/MPPT windows/maxDcV/efficiency) — the POC shapes verbatim (./research/calc.md §4) |
 | provenance | enum `catalog_provenance` | `manufacturer_datasheet` / `installer_pricebook` / `mock_representative` |
 | status | enum | `active` / `archived` |
 
@@ -567,13 +576,13 @@ release publish self-stales every design fingerprint that pinned an older label.
 ### `tenant_catalog_items` — TENANT (own SKUs)
 
 `id` · `tenant_id` · `kind` enum `catalog_kind` · `brand, model, sku` · `spec jsonb` (same typed
-shapes) · `default_rate_inr numeric(14,2)` · `gst_pct numeric(5,2)` · `status`
+shapes) · `default_rate_amount numeric(14,3)` · `tax_pct numeric(5,2)` · `status`
 (`active`/`archived`) · `created_by`. Index `(tenant_id, kind, status)`.
 
 ### `tenant_catalog_overrides` — TENANT (price/visibility over platform items)
 
-`id` · `tenant_id` · `platform_item_id → platform_catalog_items` · `rate_inr numeric(14,2),
-nullable` · `gst_pct numeric(5,2), nullable` · `visibility` enum (`visible`/`hidden`) ·
+`id` · `tenant_id` · `platform_item_id → platform_catalog_items` · `rate_amount numeric(14,3),
+nullable` · `tax_pct numeric(5,2), nullable` · `visibility` enum (`visible`/`hidden`) ·
 `is_preferred boolean`. **Unique `(tenant_id, platform_item_id)`.** Null field = fall through to
 platform value (override is sparse).
 
@@ -665,7 +674,7 @@ consumes it.
 | escalated_to_user_id, escalation_reason | uuid / text | |
 | agent_config_version | int | version actually used |
 | cost_breakdown | jsonb | per-leg: telephony secs, STT secs, TTS chars, LLM tokens in/out (all four natively metered) |
-| total_cost_inr | numeric(14,2) | mirror; also emitted as a `voice_minutes` usage_event |
+| total_cost_amount | numeric(14,3) | mirror (platform ledger currency, INR v1); also emitted as a `voice_minutes` usage_event |
 
 Indexes: `(tenant_id, lead_id, started_at desc)` · `(tenant_id, started_at desc)` (call log).
 
@@ -738,26 +747,34 @@ hostage.
 ### `plans` — PLATFORM
 
 `id` · `code text unique` (`starter` / `growth` / `pro` / `enterprise`) · `name` ·
-`price_monthly_inr, price_annual_inr numeric(14,2)` · `razorpay_plan_id text` ·
 `trial_days int` · `bundles jsonb` — included quotas: `voice_minutes`, `ai_detections`,
 `otp_sms` (fair-use cap — not billed v1), `storage_gb`, `seats` (reserved — always unlimited in
 v1, no per-seat pricing); plan capacity ceilings (`design_kw_ceiling` etc.) also live here in
 the JSONB, NOT in the `entitlement_key` enum (org-level capacity tiers, priced under
 ARKA/Reslink per BLUEPRINT) · `status` (`active`/`retired`).
 
+### `plan_prices` — PLATFORM (per-currency price list)
+
+`id` · `plan_id → plans` · `currency_code text` · `price_monthly, price_annual numeric(14,3)`
+· `provider text` + `external_plan_id text` (provider-neutral gateway ref; v1: `razorpay`) ·
+unique `(plan_id, currency_code)`. v1 rows are INR/Razorpay only — a new market adds rows,
+zero schema change.
+
 ### `subscriptions` — TENANT
 
 `id` · `tenant_id` (partial unique: one non-terminal subscription per tenant) ·
-`plan_id → plans` · `razorpay_subscription_id text unique` · `status` enum
+`plan_id → plans` · `provider text` + `external_subscription_id text` (unique
+`(provider, external_subscription_id)`; v1: `razorpay`) · `status` enum
 `subscription_status`: `trialing → active → past_due → halted`; `cancelled`, `expired` terminal
-(mapped from Razorpay states; `subscription.charged` webhook is the entitlement grant trigger) ·
-`current_period_start/end` · `trial_ends_at` · `cancel_at_period_end boolean` ·
-`mandate_type` enum (`upi_autopay` / `card_emandate`).
+(v1 mapping is Razorpay's states; `subscription.charged` webhook is the entitlement grant
+trigger) · `current_period_start/end` · `trial_ends_at` · `cancel_at_period_end boolean` ·
+`mandate_type text` + Zod — valid set per provider/market pack (IN/Razorpay:
+`upi_autopay` / `card_emandate`).
 
 ### `subscription_events` — TENANT, append-only
 
 `id` · `tenant_id` · `subscription_id` · `event_type text` (Razorpay event or internal
-transition) · `razorpay_event_id text unique nullable` (domain-level dedupe; transport-level
+transition) · `provider_event_id text unique nullable` (domain-level dedupe; transport-level
 dedupe is `webhook_events`) · `payload jsonb` · `processed_at`. The reconciliation backstop
 (API polling) writes synthetic events here too.
 
@@ -783,7 +800,7 @@ enum — the enum stays metered-quota-only.
 | unit | text | `minutes` / `count` / `gb` — makes the ledger self-describing |
 | subject_type, subject_id | text / uuid | provenance: the call, survey detection, OTP send, rendered document |
 | provider_ref | text, nullable | upstream provider reference (call SID, message id, fetch request id) |
-| cost_estimate_paise | bigint, nullable | internal unit-economics estimate; never customer-facing |
+| cost_estimate_minor | bigint, nullable | internal unit-economics estimate in the platform ledger currency's minor units (INR v1); never customer-facing |
 | idempotency_key | text unique | producer-supplied; duplicate emits are no-ops |
 | occurred_at | timestamptz | |
 | period_key | text | billing-period bucket (e.g. `2026-07`); partition/rollup alignment |
@@ -794,12 +811,14 @@ job, derived, safe to rebuild) serves the usage screen; the ledger is the truth.
 
 ### `invoices` — TENANT (platform → tenant; we are supplier of record)
 
-`id` · `tenant_id` · `subscription_id` · `razorpay_invoice_id text unique` ·
-`invoice_number text` · `period_start/end` · `amount_ex_gst_inr, gst_pct, gst_amount_inr,
-total_inr numeric(14,2)` · `irn text, nullable` (e-invoicing IRN — ours to validate) ·
-`status` enum (`issued`/`paid`/`failed`/`refunded`) · `pdf_file_id → files` · `issued_at,
-paid_at`. Razorpay generates the GST invoice per cycle with our GSTIN/SAC; this row is our
-ledger mirror.
+`id` · `tenant_id` · `subscription_id` · `provider text` + `external_invoice_id text unique`
+(v1: `razorpay`) · `invoice_number text` · `period_start/end` · `currency_code text` ·
+`subtotal_amount, tax_amount, total_amount numeric(14,3)` · `tax_breakdown jsonb`
+(`[{scheme, label, rate_pct?, amount}]`; IN: the single GST line) · `e_invoicing jsonb,
+nullable` (scheme-tagged statutory extras; IN: `{irn, ack_no, ack_date, qr_payload}` + SAC —
+ours to validate) · `status` enum (`issued`/`paid`/`failed`/`refunded`) · `pdf_file_id →
+files` · `issued_at, paid_at`. On the IN rail, Razorpay generates the GST invoice per cycle
+with our GSTIN/SAC; this row is our ledger mirror.
 
 ### `tenant_integration_credentials` — TENANT (BYO integration secrets: Razorpay now, WABA later)
 
@@ -839,7 +858,7 @@ supply for the rep's manual WhatsApp flow (D32 — the app never sends).
 
 `id` · `tenant_id` · `scope` enum `target_scope` (`tenant` / `user`) · `user_id → users,
 nullable` (null when scope = `tenant`) · `period_month date` (first of month) ·
-`value_inr numeric(14,2)` · `created_by → users` · `created_at, updated_at`.
+`value_amount numeric(14,3)` · `created_by → users` · `created_at, updated_at`.
 **Unique `(tenant_id, scope, user_id, period_month)`.** Consumed by the Track C dashboards —
 "set a monthly target" (journey Stage 9). Stores the goal only; actuals derive from
 proposals/payments at read time.
@@ -856,9 +875,13 @@ audited; no UPDATE/DELETE grants for anyone.
 ### `market_rules_packs` — PLATFORM, versioned
 
 `id` · `country_code text` · `state_code text, nullable` (state overlays country) ·
-`version_no int` · `rules jsonb` — the POC `MarketRules` shape whole: GST rates, PM Surya Ghar
-subsidy slabs, design-temp latitude bands, DC/AC sizing ladders, wind zones, financing terms,
-defaults, tariff directory (STATE/DISCOM tariffs ride inside the pack) ·
+`version_no int` · `rules jsonb` — the market's facts whole: tax scheme + rates (strategy
+`per_line_rate` | `document_level`; per-line GST is the IN instance), incentive/subsidy
+models (PM Surya Ghar for IN), project-stage labels + skippable stages, document checklists,
+payment-mode vocabulary, phone spec (calling code, NSN length, display grouping), compliance
+rulesets/calendar, certification schemes (ALMM/DCR for IN), currency display rules
+(lakh/crore for INR), design-temp latitude bands, DC/AC sizing ladders, wind zones,
+financing terms, defaults, tariff directory (state/utility tariffs ride inside the pack) ·
 `status` (`draft`/`published`) · `effective_from`. Unique
 `(country_code, state_code, version_no)`. Injected into domain `resolveRules(ctx)` — the
 module-level global dies (BLUEPRINT monorepo note). Designs pin `rules_pack_version`; publishing
@@ -908,7 +931,7 @@ across tenants; cache misses emit non-billable `solar_data_fetch` usage_events.
 | `surveys.captured` / `.detection` | **JSONB** | Offline-synced form documents written atomically by PowerSync upload queue |
 | `proposal_versions.snapshot` | **JSONB** | Immutable commercial document — must never drift when reference data moves |
 | `proposal_components` | **Relational** | Mandatory-gate validation, BOM reconciliation and category queries need rows |
-| `tranches`, `project_payments` | **Relational** | The money path — summed, reconciled to the paisa, invariant-tested |
+| `tranches`, `project_payments` | **Relational** | The money path — summed, reconciled to the currency's minor unit, invariant-tested |
 | `price_book_versions.rates` | **JSONB** | Immutable snapshot read whole by the BOM engine; no per-rate queries |
 | Catalog item `spec` | **JSONB** | Typed per-kind shapes (PanelSpec/InverterSpec) consumed whole by domain; brand/model/kind columns serve search |
 | `design_blocks` / `design_tables` | **Relational** | Server-side query surface at 100 MW; jobs must not hydrate the payload; panel instances never persisted |
@@ -916,8 +939,8 @@ across tenants; cache misses emit non-billable `solar_data_fetch` usage_events.
 | `activities.payload`, `notifications` subject | **JSONB / polymorphic** | One rendered stream; Zod discriminated unions keep them typed |
 | `market_rules_packs.rules` | **JSONB** | `MarketRules` consumed whole by injected `resolveRules(ctx)` |
 | `entitlements` | **Relational** | Hot-path soft-block lookups per key |
-| `leads.qualification`, `tenants.address/bank_details`, `tenant_settings.*` | **JSONB** | Form/config snapshots; mirrors (e.g. `monthly_bill_inr`) where lists sort |
-| `calls.cost_breakdown` | **JSONB** | Per-leg unit economics; `total_cost_inr` mirrored numeric + usage_event |
+| `leads.qualification`, `tenants.address/bank_details`, `tenant_settings.*` | **JSONB** | Form/config snapshots; mirrors (e.g. `monthly_bill_amount`) where lists sort |
+| `calls.cost_breakdown` | **JSONB** | Per-leg unit economics; `total_cost_amount` mirrored numeric + usage_event |
 
 ## 12. Append-only census (no UPDATE/DELETE grants)
 
@@ -936,7 +959,7 @@ the head row).
 | Machine | Values |
 |---|---|
 | `lead_stage` | new → contacted → qualified → survey → design → proposal → negotiating → won · lost / disqualified / junk / dormant (+ `snoozed_until` orthogonal, reopen via `stage_before_close`) |
-| `project_stage` | won → material_ordered → dispatched → installation → electrical_and_metering → discom_inspection → commissioned → subsidy_claimed → handed_over · cancelled |
+| `project_stage` | won → material_ordered → dispatched → installation → electrical_and_metering → utility_inspection → commissioned → incentive_claimed → handed_over · cancelled |
 | `signoff_status` | draft → awaiting_review → approved / returned (edit after approval ⇒ draft) |
 | `proposal_status` | draft → shared → accepted / declined · superseded |
 | `tranche_status` | upcoming → due → part_received → received · waived |
