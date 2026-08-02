@@ -9,24 +9,31 @@ but never skip §1's "you ran it" for anything a user can see.
 
 ## 1. What good looks like
 
+- **Architecture decides placement, not habit.** Before writing a new file, constant, type
+  or helper, run `docs/architecture.md` §4 — it names the owning package. §2 says what each
+  package may hold and may import; §3 says what is web-only, RN-only, or shared.
 - **Compose, don't rebuild.** `packages/` holds the vocabulary; app code spends it. Search
   before you create. When a primitive you need isn't there, ADD it to the package — never
   inline a local copy. If lint says an element or import is restricted, that is this rule.
 - **One definition per fact.** A fact both platforms need is defined in a package BEFORE
-  either screen uses it — never authored twice and reconciled later. Enums → contracts.
-  Shared logic, policy numbers and formatters → domain. Visual values → tokens. Schema →
-  migrations. Copy → the i18n catalog.
+  either screen uses it (Law 11) — never authored twice and reconciled later. Enums →
+  contracts. Shared logic, policy numbers and formatters → domain. Visual values → tokens.
+  Schema → migrations. Copy → the i18n catalog.
 - **Screens are the unguarded surface.** The gates check packages: their API shape, their
   purity, who may import them. Almost nothing checks what a screen authors inline, and that
   is where every recent defect landed. Writing a constant, type, or helper in a screen is
   the moment to ask which package owns it.
-- **Verified means you ran it.** Green gates never prove UI work — browser for web, both
-  simulators for RN, curl for api — all of it through `/qa`. A task is done when you have
-  looked at it.
+- **Verified means you ran it.** Green gates never prove UI work — browser for web,
+  simulator for iOS, adb for Android, curl for api — all of it through `/verify`. A task is
+  done when you have looked at it.
   A red probe proves nothing until you read WHY it went red: a syntax error in the probe, an
   earlier gate failing first, or a pipeline's own exit code all look exactly like a catch.
+  A GREEN gate proves nothing until you know it could have gone red — inject the violation
+  once and watch it fail.
 - **Read call sites, not declarations.** Two platforms reach the same behaviour through
   differently-named state. Comparing what each side DECLARES produces confident, wrong findings.
+- **Minimise blast radius.** If something small needs edits across many unrelated files, the
+  architecture is wrong. Say so before writing the workaround.
 - **Small and honest beats broad and hedged.** Say what you checked and what you did not.
 
 ## 2. Think before coding
@@ -72,23 +79,29 @@ primitive every time; do not *invent* a new one to serve a single caller.
 
 Edit/Write for all file changes; comment only what the code cannot say.
 
-## 5. Goal-driven execution
+## 5. The loop — every piece of work
 
-**Define success criteria, then loop until they hold.**
+**Brainstorm → plan → implement → `/verify` → `/finish`.**
 
-Turn the task into something checkable before starting. **This repo has no unit tests (§8),
-so the criterion is never "write a test" — it is running the thing:**
+1. **Brainstorm** (superpowers) — a spec under `docs/superpowers/specs/`. Skip only for a
+   change whose shape is not in question.
+2. **Plan** (superpowers) — a plan under `docs/superpowers/plans/`. Every plan carries two
+   mandatory sections: **Architecture Placement** (each new file's owning package per
+   `docs/architecture.md` §4, decided BEFORE code) and **Verification Plan** (which surfaces
+   `/verify` will drive and what proves each step).
+3. **Implement** — the plan's tasks in order, each ending in a working state.
+4. **`/verify`** — the QA loop. This repo has NO unit tests (§8); running the thing is the
+   only proof.
+5. **`/finish`** — gates, architecture review, then the PR proposal.
 
-- "Add validation" → drive the invalid inputs through `/qa`; read the error envelope and the
-  status the contract declares.
+Turn the task into something checkable before starting:
+
+- "Add validation" → drive the invalid inputs through `/verify`; read the error envelope and
+  the status the contract declares.
 - "Fix the bug" → reproduce it on the real surface first, then show those same steps passing.
-- "Refactor X" → gates green before and after, plus the screen actually walked in `/qa`.
-- Schema or tenancy work → `pnpm turbo test` runs `tests/invariants/`; that is the proof.
-
-For multi-step work, state the plan first, with one verification per step:
-
-1. [step] → verify: [the command or surface that proves it]
-2. [step] → verify: [...]
+- "Refactor X" → gates green before and after, plus the screen actually walked.
+- Schema or tenancy work → `pnpm turbo test` runs `tests/invariants/`; that is the proof —
+  and read its output, because an invariant over an empty schema announces itself VACUOUS.
 
 Weak criteria ("make it work") force constant clarification. Strong ones let you finish
 without asking.
@@ -109,7 +122,10 @@ single unmatched pattern aborts the whole command and prints nothing, which read
 wrong. Rule → mechanism matrix: docs/17 §5.
 
 **Deleted a source file? `pnpm turbo build --force`.** `tsc -b` leaves its output behind and
-turbo's cache restores it, so `boundaries` and `knip` keep failing on a module you removed.
+turbo's cache restores it, so `boundaries` keeps failing on a module you removed. (`knip`
+and `jscpd` are on-demand hygiene, not gates — `pnpm check:unused` / `check:dupes`.)
+Deleting also triggers Law 8's **deletion sweep**: grep `.claude/`, `docs/`, configs and
+`.env.example` for the dead paths in the same change.
 
 **Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
 files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
@@ -120,7 +136,7 @@ pre-commit hook (`simple-git-hooks`, installed via `prepare`) additionally runs
 Don't work around either by dropping `--error-on-warnings`, narrowing what you stage, or
 committing with `--no-verify`; fix the diagnostic.
 
-## 7. Product law (owner rulings — port, don't reinvent)
+## 7. Product law — digest of docs/15 (owner rulings; docs/15 is canonical)
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale: design changed + quote not recomputed → the figure reads provisional.
@@ -148,17 +164,23 @@ committing with `--no-verify`; fix the diagnostic.
   story belongs in the commit or the ADR, not here. Before adding one, check whether it
   replaces an existing rule instead of stacking beside it.
 - **Presentation and logic in different files.** Detail: `.claude/rules/ui-adherence.md`.
-- **Config comes from `@heliogrid/env`** — the only package that reads a raw source. Adding a
-  variable edits a schema there and `.env.example`, nothing else. The allowlist in
-  `scripts/check-env-access.mjs` is the authority: `apps/web/lib/env.ts` is a deliberate
-  exception (Next inlines `NEXT_PUBLIC_*` only in code it compiles), so do not "fix" it.
+- **Repo law beats a plugin skill.** Installed skills may trigger on work this repo governs
+  differently; where they disagree, this file wins. Named: the test-driven-development skill
+  never applies here — there are no unit tests, and `/verify` is the verification mechanism.
+- **Config comes from `@heliogrid/env`.** Adding a variable edits a schema there and
+  `.env.example`, nothing else. Who else may read a raw source: `docs/architecture.md` §2 env
+  (the `scripts/check-env-access.mjs` allowlist is the authority).
 - **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
   and rots. Do not add new checker scripts; a new one needs an owner ruling saying why no type
   and no lint rule can hold it.
-- **Git is manual.** Commit only when asked for a commit, in those words. Finishing the work
-  is not a trigger, and neither is "fix it" — that authorises the fix, not the commit. Leave
-  changes in the working tree and say what is there. When asked, prefer several small commits
-  over one sweep: the diff is what the owner reads. Branches, pushes and PRs only on explicit command.
+- **Git: work on a branch, propose the PR, never push unasked.** Every piece of work ends
+  PR-ready via `/finish`, which proposes the branch name, the commit batching (one commit
+  per task by default; for a multi-task flow it offers same-branch-one-commit-per-task vs a
+  PR per task) and the PR body carrying the verification record. **Committing, pushing and
+  opening the PR each need an explicit owner yes at that moment** (owner ruling 2026-08-03).
+  `main` is PR-only — the append-only-migration guard and CODEOWNERS review live in that
+  lane. Never `--no-verify`. Prefer several small commits over one sweep: the diff is what
+  the owner reads.
 - **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
   fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
   happens only when the owner asks for it by name.
@@ -170,21 +192,27 @@ committing with `--no-verify`; fix the diagnostic.
 
 ## 9. Where things are
 
+**Architecture is `docs/architecture.md`** — §1 module map, §2 package registry (what each
+package owns, may import, and may never hold), §3 platform rules (RN · Next.js · shared),
+§4 the placement procedure. Read §4 before creating any file. docs/02 and docs/03 are design
+records: intent, not current contents.
+
 The Laws and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
-path-scoped rules: `ui-adherence.md`, `contracts.md`, `db-schema.md`, `i18n.md`).
-Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings and the
-docs/13 UX-gap register. Layer law: each package's own CLAUDE.md. `docs/adr/` is reference
-only — never a gate, never write one before building; replaced architecture deletes the old
-file.
+path-scoped rules: `web-platform.md`, `mobile-platform.md`, `cross-platform.md`,
+`ui-adherence.md`, `contracts.md`, `db-schema.md`, `i18n.md`). Governance, the decision
+hierarchy and the rule → mechanism matrix: docs/17 — read the matrix's **Holds** column
+before trusting a rule to be mechanically enforced. Product truth: docs/15 rulings and the
+docs/13 UX-gap register. Package-local conventions and landmines: each package's own
+CLAUDE.md. `docs/adr/` is reference only — never a gate, never write one before building;
+replaced architecture deletes the old file.
 
-**Frontend data path is `@heliogrid/data`, nothing else** (ADR-0023) — an app importing
-`@ts-rest/*` or an auth client is a build failure. **Auth is absent** (ADR-0024): db is
-greenfield, tenancy unproven, both logins on a walkthrough stub the rebuild deletes.
+**Frontend data path is `@heliogrid/data`, nothing else** (ADR-0023) — a frontend app
+importing `@ts-rest/*` or an auth client fails the lint gate. **Auth is absent** (ADR-0024):
+db is greenfield, tenancy unproven, both logins on a walkthrough stub the rebuild deletes.
 
-**Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
-piece of work under `docs/superpowers/plans/`; what was actually run is the `.qa/<run-id>/`
-evidence from `/qa` — **local only, never committed** (owner ruling 2026-08-02, all of `.qa/`
-is gitignored), so a verification claim must be restated in the PR or the plan, because the
-repo carries no proof of it; `docs/14` is the cross-module plan of record; design constraints
-that must be honoured early are `docs/forward-compat.md`. Three skills exist —
-`/contract-change`, `/migration`, `/qa`.
+**Where work lives:** a spec per piece of work under `docs/superpowers/specs/`, a plan under
+`docs/superpowers/plans/`, and the verification record in the PR body — `/verify` writes
+nothing to the working tree. `docs/14` is the cross-module plan of record; design constraints
+that must be honoured early are `docs/forward-compat.md`.
+
+**Skills:** `/contract-change`, `/migration`, `/verify`, `/finish`.
