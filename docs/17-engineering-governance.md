@@ -40,6 +40,12 @@ sets already differ deliberately.
 load-bearing for the next agent. Docs that are merely adjacent or related are not your
 problem. Per-package CLAUDE.md landmines are mandatory on first discovery.
 
+**The deletion sweep.** A change that DELETES or MOVES a file, package, script or skill
+greps for its dead paths across `.claude/`, `docs/`, config files and `.env.example` in the
+same change. Deletions are where this law fails: ADR-0023 and ADR-0024 each updated the
+rules and package docs and each missed `.claude/skills/`, leaving both skills pointing at
+files that no longer existed.
+
 **Law 9 — Incremental schema & API growth.** Detail in §2.
 
 **Law 10 — Platform purity.** A shared package is platform-agnostic: no DOM, no React
@@ -84,10 +90,11 @@ Per-module roadmap files under `docs/modules/` were deleted, along with the `/ro
 traceability they bought, and a stale roadmap actively misleads.
 
 What replaces them: **plans are authored per piece of work** under
-`docs/superpowers/plans/`. `/qa` evidence under `.qa/<run-id>/` is **local-only and
-gitignored** (owner ruling 2026-08-02) — a VERIFIED claim must be restated in the PR or the
-plan, because the repo carries no proof of it. `docs/14` remains the cross-module plan of
-record.
+`docs/superpowers/plans/`, and the record of what was actually run is the verification
+section `/verify` produces and `/finish` embeds in the pull request. Nothing is written to
+the working tree: QA artifacts live in the session scratchpad and are deleted when the run
+finishes (owner ruling 2026-08-03, superseding the 2026-08-02 ruling that merely gitignored
+`.qa/`). `docs/14` remains the cross-module plan of record.
 
 Status vocabulary, wherever status is recorded: `todo` · `in-progress` · `blocked(reason)` ·
 `VERIFIED`. **Never "done" without evidence** — a VERIFIED claim records what was run, on
@@ -98,7 +105,7 @@ what surface, and what was seen.
 ## 4. Decision hierarchy (conflict resolution)
 
 1. Repository Laws (§1–2) → 2. Product requirements (`docs/product/` D-census + docs/15
-rulings) → 3. Architecture (docs/02 + docs/03) → 4. Shared domain (docs/04 + domain
+rulings) → 3. Architecture (`docs/architecture.md` — the spine) → 4. Shared domain (docs/04 + domain
 purity rules) → 5. API contracts (`packages/contracts`) → 6. UX specification
 (`design/mockups/` by filename + the interaction law in docs/10 §11) → 7. Design system
 (`design/ds-source` via `packages/tokens` + the component API) → 8. Existing repo standards
@@ -110,7 +117,41 @@ Don't re-declare at level N what a higher level already defines. Two tiebreakers
   wins — it is closer to the code and has historically always been the accurate one.
 - Where two records disagree, the **later-dated** one wins.
 
+These two tiebreakers live HERE and nowhere else. `.claude/rules/00-laws.md` points at this
+section; a second copy is what let them drift with a false "live only here" claim.
+
 When a doc and code disagree: reconcile the doc, or flag it to the owner.
+
+Level 3 (Architecture) is `docs/architecture.md` — the spine. docs/02 and docs/03 are design
+records: read them for intent, never for what the repo contains today.
+
+## 4a. Changing governance
+
+- **One canonical home per fact** (`docs/architecture.md` §2 for inter-package facts, this
+  file for laws and mechanisms, the package `CLAUDE.md` for intra-package ones). Every other
+  mention is a pointer `file §section`. A second copy of a fact is a defect, not redundancy.
+- **A digest is declared on both ends.** `.claude/rules/00-laws.md` digests §1 and says so;
+  §1 names it. An undeclared restatement is a copy.
+- **No hand-maintained counts or consumer lists** anywhere in governance prose. They rot
+  fastest: "27 rules" and "21-component" were both wrong within days, and two
+  "used by (TODAY)" lists went stale inside 48 hours. State the rule; let `package.json`,
+  `turbo.json` and `.dependency-cruiser.cjs` carry the graph.
+- **Target-state prose carries a status banner** naming what is not built yet
+  (`packages/db/CLAUDE.md` is the pattern — the only doc that survived the auth teardown
+  accurate).
+- **A rule names the mechanism that holds it** (§5) — and a rule may not claim a mechanism
+  that does not exist. Prefer, in order: type → lint rule → instruction → script.
+
+## 4b. Governed surfaces outside this document
+
+- `AGENTS.md` is a symlink to `CLAUDE.md`, giving the constitution a second name for
+  non-Claude agents. Renaming or splitting `CLAUDE.md` orphans it — check the symlink in the
+  same change.
+- `docs/research/` carries its own NORMATIVE tier. It is binding ONLY where a live doc
+  delegates to it by name (docs/08 and docs/16 do); otherwise it is background, and two of
+  its files recommend a stack this repo rejected.
+- `.superpowers/` and any other local-only agent scratch tree is gitignored working state,
+  not a record. Nothing may cite it as evidence.
 
 ---
 
