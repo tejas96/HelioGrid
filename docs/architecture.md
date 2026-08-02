@@ -25,12 +25,9 @@ Layers, top to bottom — imports point strictly downward:
   initClient call in the repo lives there.
 - db is backend-only, except the @heliogrid/db/uuid subpath (app-side id generation — see
   its caveat in §2 db).
-- dependency-cruiser is the authoritative boundary enforcer. Turbo tags are coarse cover
-  and are not equivalent: some edges they cannot express (the shared `app` tag allows
-  web→db, which only dep-cruiser's web-no-db forbids), and some they permit that policy
-  forbids (the `app` tag allows apps/api → ui/tokens/i18n/data — §2 marks those POLICY
-  ONLY). Where a §2 block and a tag disagree, the block is the policy and dep-cruiser is
-  the enforcement; a tag is never evidence that a rule is held.
+- **A §2 block is the policy; it is not a claim that something enforces it.** What each
+  mechanism can actually hold — and where turbo tags are broader or narrower than policy —
+  is docs/17 §5's Holds column. A tag is never evidence that a rule is held.
 
 ## §2 Package registry
 

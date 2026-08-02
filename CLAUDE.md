@@ -97,9 +97,9 @@ dependency-cruiser resolves workspace edges through `dist/`, so linting an unbui
 is partially blind. `test` is only `tests/invariants/`. Per package: its own §Commands.
 
 Needs a live postgres (`DATABASE_URL`): without one the invariants skip loudly, so a green
-run has NOT proven tenancy — and read their output, since an invariant over an empty schema
-announces itself VACUOUS. Enumerate files with `git ls-files`, never a bare glob — in zsh one
-unmatched pattern aborts the command and prints nothing, which reads as "clean".
+run has NOT proven tenancy. **Read gate output, never just its exit code.** Enumerate files
+with `git ls-files`, never a bare glob — in zsh one unmatched pattern aborts the command and
+prints nothing, which reads as "clean".
 
 **Never weaken a gate to make a change pass.** A gate that blocks you means the change is
 wrong. What each gate can actually hold: docs/17 §5.
