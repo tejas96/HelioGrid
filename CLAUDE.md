@@ -9,27 +9,19 @@ but never skip §1's "you ran it" for anything a user can see.
 
 ## 1. What good looks like
 
-- **Architecture decides placement, not habit.** Before writing a new file, constant, type
-  or helper, run `docs/architecture.md` §4 — it names the owning package. §2 says what each
-  package may hold and may import; §3 says what is web-only, RN-only, or shared.
-- **Compose, don't rebuild.** `packages/` holds the vocabulary; app code spends it. Search
-  before you create. When a primitive you need isn't there, ADD it to the package — never
-  inline a local copy. If lint says an element or import is restricted, that is this rule.
-- **One definition per fact.** A fact both platforms need is defined in a package BEFORE
-  either screen uses it (Law 11) — never authored twice and reconciled later. Enums →
-  contracts. Shared logic, policy numbers and formatters → domain. Visual values → tokens.
-  Schema → migrations. Copy → the i18n catalog.
-- **Screens are the unguarded surface.** The gates check packages: their API shape, their
-  purity, who may import them. Almost nothing checks what a screen authors inline, and that
-  is where every recent defect landed. Writing a constant, type, or helper in a screen is
-  the moment to ask which package owns it.
-- **Verified means you ran it.** Green gates never prove UI work — browser for web,
-  simulator for iOS, adb for Android, curl for api — all of it through `/verify`. A task is
-  done when you have looked at it.
-  A red probe proves nothing until you read WHY it went red: a syntax error in the probe, an
-  earlier gate failing first, or a pipeline's own exit code all look exactly like a catch.
-  A GREEN gate proves nothing until you know it could have gone red — inject the violation
-  once and watch it fail.
+- **Architecture decides placement, not habit.** Run `docs/architecture.md` §4 before writing
+  any new file, constant, type or helper — it names the owning package.
+- **Compose, don't rebuild.** `packages/` holds the vocabulary; app code spends it. When a
+  primitive you need isn't there, ADD it to the package — never inline a local copy. If lint
+  says an element or import is restricted, that is this rule.
+- **One definition per fact** (Law 11). A fact both platforms need is defined in a package
+  BEFORE either screen uses it — never authored twice and reconciled later.
+- **Screens are the unguarded surface.** The gates check packages; almost nothing checks what
+  a screen authors inline, and that is where every recent defect landed. Writing a constant,
+  type or helper in a screen is the moment to ask which package owns it.
+- **Verified means you ran it** — `/verify`, on the real surface. A task is done when you
+  have looked at it. A red probe proves nothing until you read WHY it went red; a GREEN gate
+  proves nothing until you have seen it go red on an injected violation.
 - **Read call sites, not declarations.** Two platforms reach the same behaviour through
   differently-named state. Comparing what each side DECLARES produces confident, wrong findings.
 - **Minimise blast radius.** If something small needs edits across many unrelated files, the
@@ -94,47 +86,31 @@ Edit/Write for all file changes; comment only what the code cannot say.
    only proof.
 5. **`/finish`** — gates, architecture review, then the PR proposal.
 
-Turn the task into something checkable before starting:
-
-- "Add validation" → drive the invalid inputs through `/verify`; read the error envelope and
-  the status the contract declares.
-- "Fix the bug" → reproduce it on the real surface first, then show those same steps passing.
-- "Refactor X" → gates green before and after, plus the screen actually walked.
-- Schema or tenancy work → `pnpm turbo test` runs `tests/invariants/`; that is the proof —
-  and read its output, because an invariant over an empty schema announces itself VACUOUS.
-
-Weak criteria ("make it work") force constant clarification. Strong ones let you finish
-without asking.
+Turn the task into something checkable before starting — "fix the bug" means reproduce it on
+the real surface first, then show those steps passing. Weak criteria ("make it work") force
+constant clarification. Strong ones let you finish without asking.
 
 ## 6. Commands
 
-`pnpm verify` — build · lint · boundaries · typecheck · test. That is the gate set. Build
-runs first: dependency-cruiser resolves workspace edges through `dist/`, so linting an
-unbuilt checkout is partially blind (proven 2026-07-31, see ci.yml).
-(`test` runs only `tests/invariants/` — there are no unit tests anywhere.)
-Per package: see its own CLAUDE.md §Commands.
+`pnpm verify` — build · lint · boundaries · typecheck · test. Build runs FIRST:
+dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout
+is partially blind. `test` is only `tests/invariants/`. Per package: its own §Commands.
 
 Needs a live postgres (`DATABASE_URL`): without one the invariants skip loudly, so a green
-run has NOT proven tenancy. Enumerate files with `git ls-files`, never a bare glob — in zsh a
-single unmatched pattern aborts the whole command and prints nothing, which reads as "clean".
+run has NOT proven tenancy — and read their output, since an invariant over an empty schema
+announces itself VACUOUS. Enumerate files with `git ls-files`, never a bare glob — in zsh one
+unmatched pattern aborts the command and prints nothing, which reads as "clean".
 
 **Never weaken a gate to make a change pass.** A gate that blocks you means the change is
-wrong. Rule → mechanism matrix: docs/17 §5.
+wrong. What each gate can actually hold: docs/17 §5.
 
-**Deleted a source file? `pnpm turbo build --force`.** `tsc -b` leaves its output behind and
-turbo's cache restores it, so `boundaries` keeps failing on a module you removed. (`knip`
-and `jscpd` are on-demand hygiene, not gates — `pnpm check:unused` / `check:dupes`.)
-Deleting also triggers Law 8's **deletion sweep**: grep `.claude/`, `docs/`, configs and
-`.env.example` for the dead paths in the same change.
+**Deleted a source file? `pnpm turbo build --force`** — `tsc -b` leaves its output behind and
+turbo's cache restores it, so `boundaries` keeps failing on a module you removed. (Deleting
+also triggers Law 8's deletion sweep. `knip`/`jscpd` are on-demand, not gates.)
 
-**Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
-files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
-Biome with `--error-on-warnings`, so a warning fails the gate exactly like an error. A git
-pre-commit hook (`simple-git-hooks`, installed via `prepare`) additionally runs
-`pnpm precommit` (`biome check --error-on-warnings --no-errors-on-unmatched --staged .` +
-`pnpm turbo typecheck`) scoped to staged files, so this is caught before it ever reaches CI.
-Don't work around either by dropping `--error-on-warnings`, narrowing what you stage, or
-committing with `--no-verify`; fix the diagnostic.
+**Zero Biome warnings and zero typecheck errors, repo-wide** — `--error-on-warnings` makes a
+warning fail exactly like an error. The pre-commit hook runs biome on staged files and
+typecheck on the whole repo. Fix the diagnostic; never widen the gate or use `--no-verify`.
 
 ## 7. Product law — digest of docs/15 (owner rulings; docs/15 is canonical)
 
@@ -173,14 +149,10 @@ committing with `--no-verify`; fix the diagnostic.
 - **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
   and rots. Do not add new checker scripts; a new one needs an owner ruling saying why no type
   and no lint rule can hold it.
-- **Git: work on a branch, propose the PR, never push unasked.** Every piece of work ends
-  PR-ready via `/finish`, which proposes the branch name, the commit batching (one commit
-  per task by default; for a multi-task flow it offers same-branch-one-commit-per-task vs a
-  PR per task) and the PR body carrying the verification record. **Committing, pushing and
-  opening the PR each need an explicit owner yes at that moment** (owner ruling 2026-08-03).
-  `main` is PR-only — the append-only-migration guard and CODEOWNERS review live in that
-  lane. Never `--no-verify`. Prefer several small commits over one sweep: the diff is what
-  the owner reads.
+- **Git: branch, propose, never push unasked.** `/finish` proposes the branch, commit
+  batching and PR body; **committing, pushing and opening the PR each need an explicit yes**.
+  `main` is PR-only. Never `--no-verify`. Small commits over one sweep — the diff is what the
+  owner reads.
 - **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
   fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
   happens only when the owner asks for it by name.
@@ -192,10 +164,8 @@ committing with `--no-verify`; fix the diagnostic.
 
 ## 9. Where things are
 
-**Architecture is `docs/architecture.md`** — §1 module map, §2 package registry (what each
-package owns, may import, and may never hold), §3 platform rules (RN · Next.js · shared),
-§4 the placement procedure. Read §4 before creating any file. docs/02 and docs/03 are design
-records: intent, not current contents.
+**`docs/architecture.md`** — §1 module map · §2 package registry · §3 platform rules ·
+§4 placement. docs/02 and docs/03 are design records: intent, not current contents.
 
 The Laws and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
 path-scoped rules: `web-platform.md`, `mobile-platform.md`, `cross-platform.md`,
