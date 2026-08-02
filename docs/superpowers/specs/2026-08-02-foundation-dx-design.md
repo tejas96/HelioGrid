@@ -123,7 +123,7 @@ no React** — added to the Lingui extractor sweep (one scoped include line in
   `@heliogrid/data` dependency.
 - Each platform keeps a small presentational `ApiErrorText` wrapper (web:
   `apps/web/lib/ApiErrorText.tsx` + colocated css; RN:
-  `apps/mobile/src/ui-copy/ApiErrorText.tsx` — NOT `src/ui/`, it is not a parity-checked
+  `apps/mobile/src/lib/ApiErrorText.tsx` — NOT `src/ui/`, it is not a parity-checked
   _ds component) rendering `<Trans id={apiErrorMessageId(code)} />` with **its own**
   `@lingui/react`. Zero copy in either wrapper.
 
@@ -251,7 +251,7 @@ Gates: `pnpm verify` green repo-wide; the new forms fence proven by injecting a 
 | `packages/data` | `ApiError` +code/details/requestId; `react/`: `usePaginatedList`, `usePagedList` |
 | `packages/i18n` | NEW `src/copy/api-error.ts` (COPY ids + `apiErrorMessageId`/`apiErrorRef`, no React); extractor include; CLAUDE.md line |
 | `apps/web` | `lib/ApiErrorText.tsx` (presentation wrapper); gallery demo sections; CLAUDE.md lines |
-| `apps/mobile` | `src/ui-copy/ApiErrorText.tsx` (presentation wrapper); gallery demo sections; CLAUDE.md lines |
+| `apps/mobile` | `src/lib/ApiErrorText.tsx` (presentation wrapper); gallery demo sections; CLAUDE.md lines |
 | `apps/api` | nothing lands; CLAUDE.md recipe line only |
 | lint config | forms fence (apps must import `@heliogrid/forms`, never react-hook-form) |
 

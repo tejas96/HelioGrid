@@ -1009,7 +1009,7 @@ Expected: all green, all behaviors observed.
 
 **Files:**
 - Modify: `apps/mobile/package.json` (add `"@heliogrid/forms": "workspace:*"` to dependencies)
-- Create: `apps/mobile/src/ui-copy/ApiErrorText.tsx`
+- Create: `apps/mobile/src/lib/ApiErrorText.tsx`
 - Create: `apps/mobile/src/screens/gallery/components/PatternsSections.tsx`
 - Modify: `apps/mobile/src/screens/gallery/components/index.ts`,
   `apps/mobile/src/screens/gallery/GalleryScreen.tsx`
@@ -1018,7 +1018,7 @@ Expected: all green, all behaviors observed.
 **Interfaces:**
 - Consumes: same as Task 7. Mobile `Input` uses `onChangeText`; copy Task 7's
   `PatternsSections` structure with RN primitives.
-- Produces: `ApiErrorText({ error: ApiError })` in `src/ui-copy/` (NOT `src/ui/` — app
+- Produces: `ApiErrorText({ error: ApiError })` in `src/lib/` (NOT `src/ui/` — app
   copy wrapper, not a parity-checked _ds component).
 
 - [ ] **Step 1: Read the local idioms** —
@@ -1027,7 +1027,7 @@ Expected: all green, all behaviors observed.
   `apps/mobile/src/screens/login/components/OtpErrorRow.tsx` for the exact `AppText`
   props used for danger-toned copy. Mirror both exactly.
 
-- [ ] **Step 2: `src/ui-copy/ApiErrorText.tsx`**
+- [ ] **Step 2: `src/lib/ApiErrorText.tsx`**
 
 ```tsx
 import type { ApiError } from '@heliogrid/data';
@@ -1053,14 +1053,14 @@ with the `AppText` props replaced by the exact ones Step 1 found.
     VirtualizedLists errors. Render `items.map(…)` into `AppText` rows + the same
     load-more / Prev-Next buttons as web. The FlatList idiom lives in the CLAUDE.md line.
   - Error section: identical to web's, with the mobile `ApiErrorText` import
-    (`../../../ui-copy/ApiErrorText`).
+    (`../../../lib/ApiErrorText`).
 
 - [ ] **Step 4: Wire into the gallery** — export from `components/index.ts`, render
   `<PatternsSections />` in `GalleryScreen.tsx` with the existing sections.
 
 - [ ] **Step 5: Instruction lines** — append to `apps/mobile/CLAUDE.md` the same three
   lines as Task 7 Step 5, with two mobile adjustments: `ApiErrorText` path is
-  `src/ui-copy/ApiErrorText.tsx`, and the forms line ends with: "Paginated screens:
+  `src/lib/ApiErrorText.tsx`, and the forms line ends with: "Paginated screens:
   `FlatList` + `usePaginatedList` (`onEndReached={fetchNextPage}`) — never inside a ScrollView."
 
 - [ ] **Step 6: Verify on both simulators** — `pnpm install`, build and launch the app on

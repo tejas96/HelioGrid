@@ -3,8 +3,8 @@ import { ApiError } from '@heliogrid/data';
 import { usePagedList, usePaginatedList } from '@heliogrid/data/react';
 import { applyServerErrors, Controller, useZodForm, z } from '@heliogrid/forms';
 import { useState } from 'react';
+import { ApiErrorText } from '../../../lib/ApiErrorText';
 import { AppText, Button, Input } from '../../../ui';
-import { ApiErrorText } from '../../../ui-copy/ApiErrorText';
 import { Row, Section } from './GalleryChrome';
 
 /**
