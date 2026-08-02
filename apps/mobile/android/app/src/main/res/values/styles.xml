@@ -1,9 +1,22 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <!--
+      Base application theme.
+
+      NOT DayNight. This product is light-only v1 (docs/10), there are no values-night
+      resources, and a DayNight parent was wrong by declaration even though it was inert.
+
+      `windowBackground` IS the splash on API 24–30. From API 31 the system owns the splash
+      and ignores this attribute entirely — see values-v31/styles.xml. minSdk is 24 and
+      targetSdk 36, so both ranges ship and both get tested.
+
+      @color/splash_canvas is GENERATED from design/ds-source by packages/tokens/build.ts.
+      Never hardcode a hex here (docs/13 UXG-26).
+    -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:windowBackground">@color/splash_canvas</item>
     </style>
 
 </resources>

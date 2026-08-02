@@ -1,0 +1,26 @@
+<resources>
+
+    <!--
+      API 31+ (Android 12 and later) ONLY.
+
+      From API 31 the SYSTEM owns the splash screen: `android:windowBackground` no longer
+      controls it, so the values/ theme alone would leave Android 12+ devices on the platform
+      default while API 24–30 got the canvas. Two files, one per range, is the whole reason
+      this directory exists.
+
+      No androidx.core:core-splashscreen dependency: setting the platform attribute directly
+      does the same job for a static colour and adds nothing to the build.
+
+      ACCEPTED DIVERGENCE (owner ruling 2026-08-02, docs/13 UXG-26): the system also centres
+      the launcher icon here, while iOS shows plain canvas. Forcing parity needs a transparent
+      windowSplashScreenAnimatedIcon, which fights the platform and breaks on OS updates.
+
+      @color/splash_canvas is GENERATED — never hardcode a hex.
+    -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:windowBackground">@color/splash_canvas</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_canvas</item>
+    </style>
+
+</resources>
