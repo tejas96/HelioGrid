@@ -32,10 +32,15 @@ surface is a lie told to every reader of it. CI enforces this half on every PR.
 ## 3. If you touched a `z.enum` the database also stores
 
 The pgEnum changes in the same slice, through `/migration` — never by editing an applied
-file. `db-no-upward` forbids importing contracts into `packages/db`, so nothing checks this
-for you: diff `packages/db/src/schema/enums.ts` against the contract value-for-value and
-say so in the commit. A value on one side only is a silent production defect — rows the API
-can never return, or API values the database rejects at insert.
+file. `db-no-upward` forbids importing contracts into `packages/db`, so the two sides are
+hand-mirrored — but they are not unchecked:
+`tests/invariants/src/enum-parity.ts` PROVES pgEnum ↔ z.enum parity (live pg_enum against
+the contract schemas, both directions) via `pnpm turbo test` — needs `DATABASE_URL`
+locally; CI fails closed. Change both sides in the same slice via `/migration`.
+`packages/db/src/schema/` returns with the first greenfield migration.
+
+A value on one side only is a silent production defect — rows the API can never return, or
+API values the database rejects at insert.
 
 ## 4. Sweep the typed clients
 
@@ -44,9 +49,9 @@ pnpm turbo typecheck
 ```
 
 Web and mobile consume the ts-rest contract, so a shape change surfaces as a compile error
-at every call site. **A call site that did NOT break where you expected it to is
-hand-rolling HTTP** — fix it to use the typed client (`apps/web/lib/api-client.ts`,
-`apps/mobile/src/data/api-client.ts`).
+at every call site. The sole typed client lives in `packages/data/src/client/client.ts`
+(ADR-0023 — the only `initClient` call in the repo). **A call site that did NOT break where
+you expected it to is hand-rolling HTTP**: find it and route it through `@heliogrid/data`.
 
 Adding an enum value must also break every `Record<TheEnum, …>` map that renders it. If
 nothing broke, the map is not exhaustive — make it so.
