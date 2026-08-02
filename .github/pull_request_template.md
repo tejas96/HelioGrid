@@ -8,7 +8,7 @@ Traces to: D<n> · Mockup: `<Name>.dc.html`
 
 Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.md`.
 
-- [ ] `pnpm verify` green (lint · boundaries · typecheck · test · build)
+- [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test)
 - [ ] **Run-and-look** (`/qa`): behaviour proven on every surface the change reaches, with
       artifacts on disk. Green gates never prove behaviour.
 - [ ] **Contract first** (Law 3): the `packages/contracts` diff is in this PR and the
@@ -17,6 +17,8 @@ Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.m
       (`docs/forward-compat.md`) re-read and satisfied — or: no schema change
 - [ ] **Parity** (Law 7): `check:ui-parity` green. Screen shipping on one platform only —
       say which and why
+- [ ] **Flows authored once** (Law 11): what the gates do NOT cover — hook/state naming,
+      behavioural guards, loading and offline affordances, msgid identity across platforms
 - [ ] **Docs in the same commit** (Law 8): per-package `CLAUDE.md` landmines and `docs/*`
 - [ ] Loading / empty / error / offline states · 375 and 1440 · light theme · Hindi render
 - [ ] Provenance tier on every user-visible number; money never renders stale; ₹ in Indian

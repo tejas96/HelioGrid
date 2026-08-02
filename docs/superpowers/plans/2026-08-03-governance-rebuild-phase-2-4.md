@@ -1534,6 +1534,12 @@ Run:
 git ls-files | xargs grep -ln '/qa\b\|\.qa/' 2>/dev/null | grep -v '^docs/superpowers/plans/'
 ```
 
+Swept 2026-08-03 — the live citers are: `.claude/skills/qa/**`, `.github/pull_request_template.md`
+(rows 12 and 31), `.gitignore`, `.graphifyignore`, `README.md`, `docs/17` (§3's historical
+sentence only — leave it), `docs/adr/0024-auth-removal-to-greenfield.md`, and
+`scripts/check-adherence.sh:55` (a failure message pointing at the skill). **The last two
+were NOT in this plan's original list** — re-run the grep rather than trusting this one.
+
 For each file the sweep names, replace the citation:
 
 - `CLAUDE.md` — already done in Task 25 (expect no hits).
