@@ -95,7 +95,9 @@ without asking.
 
 ## 6. Commands
 
-`pnpm verify` — lint · boundaries · typecheck · test · build. That is the gate set.
+`pnpm verify` — build · lint · boundaries · typecheck · test. That is the gate set. Build
+runs first: dependency-cruiser resolves workspace edges through `dist/`, so linting an
+unbuilt checkout is partially blind (proven 2026-07-31, see ci.yml).
 (`test` runs only `tests/invariants/` — there are no unit tests anywhere.)
 Per package: see its own CLAUDE.md §Commands.
 
@@ -156,7 +158,7 @@ committing with `--no-verify`; fix the diagnostic.
 - **Git is manual.** Commit only when asked for a commit, in those words. Finishing the work
   is not a trigger, and neither is "fix it" — that authorises the fix, not the commit. Leave
   changes in the working tree and say what is there. When asked, prefer several small commits
-  over one sweep: the diff is what the owner reads. Branches and PRs only on explicit command.
+  over one sweep: the diff is what the owner reads. Branches, pushes and PRs only on explicit command.
 - **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
   fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
   happens only when the owner asks for it by name.
