@@ -29,6 +29,9 @@ used by: apps/web, apps/mobile. Nothing else may consume it.
 - `createDataLayer` is the ONLY construction entry an app gets. `createApiClient`,
   `createTransport`, `createHealthRepository` and `createWalkthroughSession` are deliberately
   not exported — re-exporting the client hands apps back the raw wire.
+- Paginated screens use `usePaginatedList` (accumulating: infinite scroll / load-more,
+  dedupes by id) or `usePagedList` (numbered pager, keepPreviousData) from `./react` —
+  never hand-wire `useInfiniteQuery` or pagination `useQuery` in an app.
 
 ## Landmines
 - **`zod` pinned to `3.25.76`.** Without it pnpm resolves ts-rest's peer to zod 4 and the

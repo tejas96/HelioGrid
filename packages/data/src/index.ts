@@ -11,6 +11,7 @@
 export { queryKeys } from './cache/keys';
 export type { DataLayer, DataLayerConfig, Repositories } from './data-layer';
 export { createDataLayer } from './data-layer';
+export type { ApiErrorDetail } from './errors/errors';
 export { ApiError, UnauthorizedError } from './errors/errors';
 export type { HealthRepository } from './health/repository';
 export type {
