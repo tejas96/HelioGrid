@@ -25,16 +25,11 @@ paths:
   inserts must supply ids.
 - Append-only ledgers (`audit_log`, `usage_events`, `sync_mutations`) get no UPDATE or
   DELETE grants.
-- **pgEnum values mirror the contracts `z.enum`s, and `tests/invariants/src/enum-parity.ts`
-  PROVES it** — live `pg_enum` against the contract schemas, both directions, plus a check
-  that a new pg enum is either mapped or listed in `NO_CONTRACT_YET`. `db-no-upward` still
-  forbids importing contracts here, so change both sides in the same slice; the invariant is
-  what stops one side moving alone. (This bullet used to say nothing checked them, while
-  packages/db/CLAUDE.md and docs/17 both said the opposite — and all three load into the
-  same turn.)
-  **Vacuous today** (zero tables, zero enums) and says so. `tenant_status`/`user_status`/
-  `invite_status` mappings were dropped with the auth contract — re-add them with the
-  migration that re-creates those enums; the invariant cannot flag a mapping nobody wrote.
+- **pgEnum values mirror the contracts `z.enum`s**; `tests/invariants/src/enum-parity.ts`
+  proves both directions and flags an unmapped enum. `db-no-upward` forbids importing
+  contracts here, so change both sides in the same slice. The invariant is **vacuous while
+  the schema is empty** and says so when it runs — re-add the dropped auth enum mappings
+  with the migration that re-creates them (`packages/db/CLAUDE.md`).
 - Schema grows module-wise only (Law 9). docs/04 is frozen design, not a build order — a
   table belonging to a module that has not started is a violation, so stop and ask.
 

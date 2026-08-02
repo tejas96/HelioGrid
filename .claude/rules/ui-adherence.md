@@ -29,8 +29,8 @@ paths:
 - A surface the mockups don't cover is COMPOSED from the existing vocabulary — never new
   visuals. Log the composition decision as a module ruling.
 - Copy props are required, never optional-with-an-English-fallback.
-- Status/variant → visual maps are `Record<TheEnum, …>` so a new contract value fails to
-  compile here rather than rendering blank.
+- Status/variant → visual maps are `Record<TheEnum, …>` (`.claude/rules/contracts.md` — the
+  enum is the definition; this is why the map must be exhaustive).
 
 ## Presentation and logic live in different files
 A component renders. It does not also fetch, orchestrate, or hold flow logic.
@@ -40,7 +40,8 @@ A component renders. It does not also fetch, orchestrate, or hold flow logic.
 - **Presentational** — a component in `apps/web/features/<feature>/` or `packages/ui`: props
   in, markup out. No data access, no navigation.
 - **Logic** — a `use-<thing>.ts` controller hook beside it in the same feature folder; shared
-  logic that both platforms need belongs in a shared package, never copied into each platform.
+  logic that both platforms need belongs in a shared package (Law 11 —
+  `.claude/rules/cross-platform.md`), never copied into each platform.
 
 A `.tsx` holding both a data-fetching effect chain and the markup it feeds is a review
 finding. File-size and split-naming law: root CLAUDE.md §Process.
@@ -48,5 +49,5 @@ finding. File-size and split-naming law: root CLAUDE.md §Process.
 ## Done means
 375px and 1440px both work · loading, empty, error and offline states all designed ·
 keyboard reachable with visible focus · touch targets ≥44px · no hover-only meaning ·
-Hindi renders without clipping (allow 20–30% expansion) · numbers carry provenance ·
-shared component APIs in parity (Law 7).
+Hindi renders without clipping (`.claude/rules/cross-platform.md`) · numbers carry
+provenance · shared component APIs in parity (Law 7).
