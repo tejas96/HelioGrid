@@ -23,6 +23,7 @@ against code before recording them. Findings below cite file:line where load-bea
 | G-5 | **QA executors run on Sonnet** (`model: sonnet` in agent frontmatter): qa-web, qa-mobile, qa-api, qa-parity. Orchestration (blast radius, plan, triage, root cause) stays on the session model. arch-reviewer inherits the session model. |
 | G-6 | **Architecture chosen: spine rebuild + mechanical cheap wins** (approach B+C-lite) over repair-in-place and full mechanization. |
 | G-8 | **One branch for the whole rebuild** (2026-08-03). All five phases commit to `governance/rebuild`, cut once from main — not a branch or PR per phase, and no intermediate merges. One PR at the end. Consequence accepted: the branch is internally inconsistent mid-flight (Phase 2 cites `/verify` and `/finish`, which land in Phase 3) — acceptable within one branch, and the reason the phases are not separately mergeable. |
+| G-9 | **`/verify` is lean by default** (2026-08-03). It runs on every task, so its size is a permanent tax. Dispatch one agent per surface ACTUALLY in the diff — a web-only change spawns one agent, not four. No parity pass unless the change touches shared code or both apps. No certify re-run unless the owner asks. Docs/config-only changes skip QA entirely. The four-quadrant matrix still governs what a step asserts; it does not mandate how many agents run. |
 | G-7 | **No unit tests stands.** The 2026-07-29 directive is unchanged; verification is running the thing via `/verify`. The superpowers TDD skill trigger is explicitly overridden by repo law. |
 
 ---
@@ -230,21 +231,22 @@ of SKILL.md and 0.8M–3.5M external tokens/run).
 
 1. **Scope** — blast radius from `git diff` (+ `--cached`): path→surface mapping table,
    grep-actual-consumers for shared packages, zero-cell abort. Minimum effective regression
-   scope: surfaces and quadrants derive from the diff, never "run everything."
+   scope: surfaces and quadrants derive from the diff, never "run everything." **A surface
+   not in the blast radius gets no agent** (G-9); a docs/config-only diff ends the run here.
 2. **Plan** — four quadrants (happy / negative / edge / regression) × affected surfaces,
    plan-time severity, market-pack-derived test data. Plan lives in the session scratchpad.
    The plan is immutable during the run (never edited to make a failure disappear).
-3. **Execute** — one agent per surface, all in parallel (web ∥ mobile ∥ api). Artifact-or-
-   inconclusive: evidence (view trees, curl outputs, logs) captured to the scratchpad and
-   cited; a claim without evidence is inconclusive, not a pass. Structured findings returned,
-   never transcripts.
-4. **Parity** — qa-parity merges surface reports against both implementations (Law 11 check,
-   msgid identity, divergence correctness).
+3. **Execute** — one agent per surface **in the blast radius**, in parallel when there is
+   more than one. Typical change: ONE agent (G-9). Artifact-or-inconclusive: evidence (view
+   trees, curl outputs, logs) captured to the scratchpad and cited; a claim without evidence
+   is inconclusive, not a pass. Structured findings returned, never transcripts.
+4. **Parity** — qa-parity runs ONLY when the change touches a shared package or both app
+   trees (G-9); otherwise skipped. Law 11 check, msgid identity, divergence correctness.
 5. **Triage & loop** — four buckets (bug / product-question / false-positive / environment;
    environment doesn't consume a round). Root cause before any fix; product-shaped findings
    stop and ask (docs/13 / docs/15 first, per standing law). Fix rounds re-run only the
-   failing scope + a fresh blast radius of the fix. Hard stop at 3 rounds; one certify pass in
-   fresh context.
+   failing scope + a fresh blast radius of the fix. Hard stop at 3 rounds. The full certify
+   re-run is opt-in, not automatic (G-9).
 
 **Output & hygiene (G-3, G-4, G-5):** structured verdict per surface + parity, embedded by
 `/finish` into the PR body — the durable verification record. Then: scratchpad evidence

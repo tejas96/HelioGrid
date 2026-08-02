@@ -1433,8 +1433,10 @@ surfaces:
 For a shared-code path, **grep the actual consumers** rather than trusting the table — the
 symbol may be imported somewhere it does not predict.
 
-**Minimum effective scope:** the surfaces in the blast radius, not every surface. A web-only
-CSS change does not boot two simulators.
+**Minimum effective scope (G-9):** the surfaces in the blast radius, not every surface. A
+web-only CSS change does not boot two simulators — it runs ONE agent. A diff touching only
+docs, plans, or governance files ends the run here with "no runnable surface", which is a
+complete and valid result, not a skip.
 
 ## Phase 2 — Plan: four quadrants, no empty cells
 
@@ -1452,10 +1454,11 @@ tenancy isolation or provenance tiers is `blocker`.
 Always-on core regardless of blast radius: a cross-tenant read returns 404 · money reconciles
 to the currency's minor unit · an unauthenticated request to a protected route is rejected.
 
-## Phase 3 — Execute: all surfaces in parallel
+## Phase 3 — Execute: only the surfaces in the blast radius
 
-Dispatch in ONE message so they run concurrently — `qa-web`, `qa-mobile`, `qa-api` — each
-with only its own steps. They share no state.
+Dispatch ONE agent per surface Phase 1 named — no more (G-9). Most changes name one. When
+there are several, dispatch them in ONE message so they run concurrently; they share no
+state.
 
 **Order each surface's steps so state flows** (login → OTP → home → locale → back). Relaunch
 the app only where a cold start IS the test.
@@ -1472,13 +1475,14 @@ a pass, and never the whole run.
 4. **A spot-check that contradicts the report makes the whole run untrusted** — re-run it.
    Do not quietly correct one row.
 
-## Phase 4½ — Parity
+## Phase 4½ — Parity (only when the change can cause drift)
 
-Dispatch `qa-parity` with the feature's web and mobile paths plus every observed value the
-surface agents recorded for the same quantity. A value mismatch is a **blocker**: a platform
-re-implemented something that was supposed to be imported (Law 11).
+Run this ONLY when the diff touches a shared package or both app trees (G-9). A
+single-platform change skips it — say so in the report rather than running it for form.
 
-Skip only when the change touches one platform and no shared package.
+When it applies: dispatch `qa-parity` with the feature's web and mobile paths plus every
+observed value the surface agents recorded for the same quantity. A value mismatch is a
+**blocker**: a platform re-implemented something that was supposed to be imported (Law 11).
 
 ## Phase 5 — Triage into four buckets
 
@@ -1497,8 +1501,10 @@ normal edit flow — the QA agents never edit source.
 Each round re-runs the failed steps **plus a fresh blast radius for the code the fix
 touched**, so a fix that breaks something adjacent is caught in the same round.
 
-When a round returns clean, do one **full** re-run of the original plan in fresh context.
-That is the certify pass.
+A clean fix round ends the loop. The full re-run of the original plan in fresh context — the
+certify pass — is **opt-in** (G-9): offer it, and run it only when the owner asks or the
+change touches money, tenancy or auth. It doubles the run's cost, and the previous system
+already skipped it under cost pressure, which is worse than never promising it.
 
 **Hard stop after three fix rounds** — escalate to the owner rather than grinding.
 
