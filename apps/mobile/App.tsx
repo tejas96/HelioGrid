@@ -8,7 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
 import { formsValidationMessage, i18n, setupI18n } from './src/i18n';
-import { RootNavigator } from './src/navigation/RootNavigator';
+import { AppNavigation } from './src/navigation';
 
 /**
  * App entry: composes providers and renders the navigator — nothing else.
@@ -31,7 +31,7 @@ export default function App() {
       <I18nProvider i18n={i18n}>
         <SafeAreaProvider>
           <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
-          <RootNavigator />
+          <AppNavigation />
         </SafeAreaProvider>
       </I18nProvider>
     </DataProvider>

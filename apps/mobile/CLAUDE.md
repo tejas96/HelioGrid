@@ -62,11 +62,25 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
   and the validation. There is deliberately no `src/config/` — a new folder category is a
   plan-time call, not something to add mid-diff.
-- Navigation by typed route name from `src/navigation/routes.ts` — never prop callbacks.
-  `App.tsx` renders `RootNavigator` and never imports a screen (dep-cruiser
-  `mobile-app-entry-thin`, severity `error` since the navigation slice landed).
+- **Navigation is React Navigation 7's STATIC config.** `src/navigation/root.tsx` holds the
+  one route map and the param list is INFERRED — there is no `RootStackParamList` to write.
+  Adding a screen is ONE entry in `src/navigation/routes/<module>.ts`; its param type, deep
+  link and auth gate all follow. Screens receive `route` ONLY — navigation comes from
+  `useNavigation()`, never a prop; params come from the screen's own `StaticScreenProps<…>`.
+  `App.tsx` renders `AppNavigation` and never imports a screen (dep-cruiser
+  `mobile-app-entry-thin`, severity `error`).
 
 ## Landmines
+- **Navigation groups are keyed by CAPABILITY, never by role.** Roles are stackable
+  (`role_preset[]`, OR-across, widest visibility), so a role-keyed group declares a shared
+  screen twice — and a duplicate route name is a hard THROW, not a warning. The OR-across
+  resolution belongs in `@heliogrid/domain`, defined once.
+- **The tab bar lives in `src/navigation/`, never `src/ui/`.** The component index is checked
+  against `@heliogrid/ui-api`; an RN-only component fails `UncoveredComponents` (Law 7).
+- **The root navigator must never be empty.** Every group is `if`-gated, so a `Boot` route
+  sits ungrouped to guarantee one screen always renders — an empty navigator throws.
+  `src/navigation/phase.tsx` computes ONE phase value for this reason: per-guard timers can
+  disagree for a frame and leave zero screens mounted.
 - **A screen that fetches, holds state, renders and styles in one file passes every gate**
   (2026-07-31: LoginScreen hit 446 lines, GalleryScreen 406 — both since split into
   `components/`, `hooks/`, `styles.ts`). Only the 80-line cap catches this shape. When a

@@ -1,11 +1,10 @@
 import { theme } from '@heliogrid/tokens/theme';
 import { Trans } from '@lingui/react';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { i18n, LOCALES, type Locale } from '../../i18n';
-import type { RootStackParamList } from '../../navigation/routes';
 import { AppText, Button, Card, SegmentedControl } from '../../ui';
 
 /**
@@ -14,13 +13,13 @@ import { AppText, Button, Card, SegmentedControl } from '../../ui';
  * moving it into a screen folder was also the fix, so every visual here now
  * comes from the component index.
  */
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 /** Keyed by the contract enum: a new UI language is a compile error here until it renders. */
 const LOCALE_LABEL: Record<Locale, string> = { en: 'EN', hi: 'हि', mr: 'मर' };
 const LOCALE_OPTIONS = LOCALES.map((value) => ({ value, label: LOCALE_LABEL[value] }));
 
-export function HomeScreen({ navigation }: Props) {
+export function HomeScreen() {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [locale, setLocale] = useState<Locale>('en');
 

@@ -15,9 +15,9 @@ import { useResendCountdown } from './use-resend-countdown';
  * store sends and verifies; this hook owns only the flow. No signup on RN (module
  * ruling 1): the footer is the invite-link placeholder.
  *
- * The done-step DWELL is not here: verifying flips the session, and RootNavigator owns how
- * long the finished login stays on screen before the stack swaps. Timers and navigation are
- * the app's job, the decision is the store's (packages/domain/CLAUDE.md).
+ * The done-step DWELL is not here: verifying flips the session, and `navigation/phase.tsx`
+ * owns how long the finished login stays on screen before the groups swap. Timers and
+ * navigation are the app's job, the decision is the store's (packages/domain/CLAUDE.md).
  */
 export function useLogin(): LoginViewModel {
   const session = useSession();

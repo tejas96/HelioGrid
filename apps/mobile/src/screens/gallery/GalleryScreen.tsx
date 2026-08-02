@@ -1,8 +1,7 @@
 import { theme } from '@heliogrid/tokens/theme';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { RootStackParamList } from '../../navigation/routes';
 import { AppText, IconButton } from '../../ui';
 import {
   AuthSections,
@@ -24,12 +23,12 @@ import { styles } from './styles';
  */
 
 /**
- * Props are the ROUTE's props — no `onBack` callback. Going back is
- * `navigation.goBack()`, which also gives the native swipe gesture for free.
+ * No `onBack` callback prop. Going back is `navigation.goBack()`, which also gives the native
+ * swipe gesture for free. Under the static config a screen receives only `route`, so
+ * navigation comes from the hook.
  */
-type GalleryScreenProps = NativeStackScreenProps<RootStackParamList, 'Gallery'>;
-
-export function GalleryScreen({ navigation }: GalleryScreenProps) {
+export function GalleryScreen() {
+  const navigation = useNavigation();
   const onBack = () => navigation.goBack();
   const insets = useSafeAreaInsets();
 

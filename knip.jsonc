@@ -56,6 +56,9 @@
   "ignore": [
     // Same role as packages/ui/src/api-parity.ts above; RN has no barrel entry to hang it on.
     "apps/mobile/src/ui/api-parity.ts",
+    // Same role again: asserts root.tsx's module augmentation landed, so `useNavigation()`
+    // stays typed. Checked by tsc (which reads every file under src/), imported by nothing.
+    "apps/mobile/src/navigation/route-typing.ts",
     // Read by the lingui CLI (`extract`/`compile`), never imported by TypeScript.
     "packages/i18n/lingui.config.js"
   ],
