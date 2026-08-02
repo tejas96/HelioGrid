@@ -3,6 +3,7 @@ import { runEnumParity } from './enum-parity';
 import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTenancyInvariants } from './tenancy-rls';
+import { runTenantIdInBody } from './tenant-id-in-body';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), enum parity (live), money (lands with the
@@ -11,6 +12,7 @@ import { runTenancyInvariants } from './tenancy-rls';
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
 async function main() {
+  runTenantIdInBody(); // static — needs no database, must never be skipped
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
