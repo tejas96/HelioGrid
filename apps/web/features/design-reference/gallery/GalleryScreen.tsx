@@ -5,6 +5,7 @@ import {
   DataSections,
   FeedbackNavSections,
   FormsSections,
+  PatternsSections,
   RowsSections,
 } from './components';
 
@@ -34,6 +35,7 @@ export function GalleryScreen() {
       <RowsSections />
       <FeedbackNavSections />
       <AuthSections />
+      <PatternsSections />
     </main>
   );
 }

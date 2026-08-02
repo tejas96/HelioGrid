@@ -1,7 +1,8 @@
 'use client';
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider } from '@heliogrid/data/react';
-import { type Locale, setupI18n } from '@heliogrid/i18n';
+import { installFormsErrorMap } from '@heliogrid/forms';
+import { formsValidationMessage, type Locale, setupI18n } from '@heliogrid/i18n';
 import { I18nProvider } from '@lingui/react';
 import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 import { API_URL } from '../lib/env';
@@ -12,6 +13,7 @@ import { API_URL } from '../lib/env';
  * No `storage`: the browser owns the session cookie (see TokenStorage in @heliogrid/data).
  */
 const i18nInstance = setupI18n('en');
+installFormsErrorMap(formsValidationMessage);
 
 const LocaleContext = createContext<{ locale: Locale; setLocale: (l: Locale) => void }>({
   locale: 'en',

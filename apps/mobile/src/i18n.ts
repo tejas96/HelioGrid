@@ -6,4 +6,4 @@ import '@formatjs/intl-pluralrules/locale-data/hi';
 import '@formatjs/intl-pluralrules/locale-data/mr';
 
 /** ONE shared catalog (packages/i18n) — compiled messages, no runtime parser. */
-export { i18n, LOCALES, type Locale, setupI18n } from '@heliogrid/i18n';
+export { formsValidationMessage, i18n, LOCALES, type Locale, setupI18n } from '@heliogrid/i18n';

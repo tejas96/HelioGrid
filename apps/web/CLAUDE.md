@@ -47,6 +47,13 @@ used by: nobody
   only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.
 - Import UI ONLY from `@heliogrid/ui` index. Business types from `@heliogrid/contracts`;
   locale from `@heliogrid/i18n` — one definition per fact, no inline unions.
+- Forms: `useZodForm(<contract schema>)` from `@heliogrid/forms`; wire fields with its
+  `Controller`; map server rejections with `applyServerErrors`. react-hook-form directly
+  is a lint failure. Live example: design-reference gallery, Patterns sections.
+- API failures render `<ApiErrorText error={e} />` (lib/ApiErrorText.tsx) — never a
+  hand-written failure string. Forms branch VALIDATION_FAILED through applyServerErrors first.
+- Copy BOTH platforms need lives in `packages/i18n/src/copy` (extractor-swept, enum-keyed
+  Record). Screen-specific copy stays in its screen. Platform files hold presentation only.
 - `.hg-*` scaffold is legacy — new screens use `@heliogrid/ui` only.
 - /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
 

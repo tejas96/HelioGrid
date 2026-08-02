@@ -11,6 +11,7 @@ import {
   DevanagariSection,
   FeedbackNavSections,
   FormsSections,
+  PatternsSections,
   RowsSections,
 } from './components';
 import { styles } from './styles';
@@ -53,6 +54,7 @@ export function GalleryScreen({ navigation }: GalleryScreenProps) {
         <RowsSections />
         <FeedbackNavSections />
         <AuthSections />
+        <PatternsSections />
         <DevanagariSection />
       </ScrollView>
     </View>

@@ -16,6 +16,7 @@
     "@heliogrid/data": "workspace:*",
     "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
+    "@heliogrid/forms": "workspace:*",
     "@heliogrid/i18n": "workspace:*",
     "@heliogrid/tokens": "workspace:*",
     "@heliogrid/ui-api": "workspace:*",

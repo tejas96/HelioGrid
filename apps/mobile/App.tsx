@@ -1,12 +1,13 @@
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider } from '@heliogrid/data/react';
+import { installFormsErrorMap } from '@heliogrid/forms';
 import { theme } from '@heliogrid/tokens/theme';
 import { I18nProvider } from '@lingui/react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
-import { i18n, setupI18n } from './src/i18n';
+import { formsValidationMessage, i18n, setupI18n } from './src/i18n';
 import { RootNavigator } from './src/navigation/RootNavigator';
 
 /**
@@ -20,6 +21,7 @@ import { RootNavigator } from './src/navigation/RootNavigator';
  * (transport, client, repositories, session) is the same code web runs.
  */
 setupI18n('en');
+installFormsErrorMap(formsValidationMessage);
 
 const dataLayer = createDataLayer({ baseUrl: API_URL, storage: keychainStorage });
 

@@ -34,6 +34,14 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.
 - i18n: `@heliogrid/i18n` + runtime `<Trans id="...">` (macros banned). Intl polyfills
   in `src/i18n.ts` FIRST.
+- Forms: `useZodForm(<contract schema>)` from `@heliogrid/forms`; wire fields with its
+  `Controller`; map server rejections with `applyServerErrors`. react-hook-form directly
+  is a lint failure. Live example: gallery Patterns sections.
+- API failures render `<ApiErrorText error={e} />` (src/ui-copy/ApiErrorText.tsx) — never a
+  hand-written failure string. Paginated screens: `FlatList` + `usePaginatedList`
+  (`onEndReached={fetchNextPage}`) — never inside a ScrollView.
+- Copy BOTH platforms need lives in `packages/i18n/src/copy` (extractor-swept, enum-keyed
+  Record). Screen-specific copy stays in its screen. Platform files hold presentation only.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
 - **Inside a screen folder, structure follows need** — the same shape as web, in RN's own
   location: `<Name>Screen.tsx` composes and holds no state · `components/` one file
@@ -42,7 +50,9 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   `types.ts` when two files share a type. A screen component body is capped at
   80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
   layer instead of its job is the same defect as `*-part2`. `src/` is the closed
-  set `{auth,navigation,push,screens,ui}` + root files `i18n.ts` and `env.ts`
+  set `{auth,navigation,push,screens,ui,ui-copy}` + root files `i18n.ts` and `env.ts`
+  (`ui-copy/` added 2026-08-02, foundation-dx spec §3.2: presentation wrappers over
+  `packages/i18n/src/copy` — it is NOT a second component library)
   (`data` left 2026-08-01 for `@heliogrid/data`; `auth/` holds only the keychain adapter)
   (`hooks/` is an approved category for app-wide hooks but does not exist yet — screen
   hooks live in their screen folder).
