@@ -128,12 +128,16 @@ concurrently and wait:
 
 ```bash
 for S in web ios android api; do
+  # Mobile gets 2× the ceiling — measured 2026-08-02: web finished 4 steps in ~4m,
+  # Android ~12m, iOS blew a flat 15m with half its steps left. A flat timeout treats
+  # very different surfaces identically.
+  case $S in ios|android) T=30m ;; *) T=15m ;; esac
   ~/.local/bin/agy \
     --dangerously-skip-permissions \
     --add-dir "$PWD/.qa/<run-id>" --add-dir "$PWD" \
     --output-format json \
     --json-schema .claude/skills/qa/references/report-schema.json \
-    --print-timeout 15m \
+    --print-timeout $T \
     -p "$(cat .qa/<run-id>/runbook.$S.md)" \
     > ".qa/<run-id>/report.$S.json" 2>&1 &
 done
@@ -147,6 +151,23 @@ unparseable makes THAT surface `inconclusive` — never the whole run, and never
 relaunch the app only where a cold start IS the test. Relaunching per step costs a full
 Metro bundle fetch each time and was most of the mobile wall clock.
 
+**Every runbook carries three executor obligations** (each exists because its absence
+produced a false or lost result on 2026-08-02):
+
+1. **Progress ledger.** After EACH step, append one JSON line `{"id","verdict","artifact"}`
+   to `.qa/<run-id>/progress.$S.jsonl`. A timeout then loses only the unfinished steps —
+   rebuild the fragment from ledger + artifacts, and the retry names exactly the steps the
+   ledger lacks. It is also the only live signal a running executor emits (`num_turns`
+   read 1 for real work and for nothing alike).
+2. **Verbatim verdicts.** `expected` strings are LITERAL: pass only if the artifact
+   contains the exact string; anything else is fail-with-evidence, never "close enough".
+   Left to interpret, two independent executors both judged "Required" ≈
+   "Name is required" as a pass.
+3. **Filtered view trees (mobile).** Give tap/type/grep command recipes; never let the
+   executor page whole view trees into context. `idb describe-all` returns every
+   OFF-SCREEN element too (~190 on the gallery), and re-reading it per action is what
+   pushed iOS to 1.08M tokens and past its timeout while web finished on 358k.
+
 **One surface must not wait on another.** If a step needs a value another surface produced,
 it does not belong in either runbook: it belongs in the parity check (Phase 4½).
 
@@ -159,11 +180,16 @@ nothing at all. That is a perfect silent false pass, and it is why Phase 4 exist
 **Never treat `status: SUCCESS` or `num_turns` as evidence.** `num_turns` reported `1` both
 when a run did real work and when it did nothing. Only artifacts on disk prove execution.
 
-If the call exits non-zero, emits unparseable JSON, or hangs past the timeout: the whole
-run is `inconclusive`. Retry once with `--continue` on the same conversation — a plain
-retry throws away artifacts the first call already produced, and `--continue` keeps them
-instead of redoing the work. Then escalate if it still fails. **A crashed executor is
-never a pass.**
+If the call exits non-zero, emits unparseable JSON, or hangs past the timeout: that
+surface is `inconclusive`. **Check the file content, not the exit code** — agy exits ZERO
+after some crashes (a bubbletea `/dev/tty` error printed where the report belongs,
+2026-08-02), so only a parsed fragment counts as a completed call. Retry once with
+`--conversation <id>` (the `conversation_id` from the failed fragment) plus `-p` and the
+same flags — a plain retry throws away artifacts the first call already produced, and
+resuming the conversation keeps them; tell it exactly which step ids `progress.$S.jsonl`
+already records so nothing is redone. NOT `--continue`: it takes no id, opens interactive
+mode, and dies on `/dev/tty` in a pipeline (proven 2026-08-02). Then escalate if it still
+fails. **A crashed executor is never a pass.**
 
 Log `usage.total_tokens` from the JSON envelope into `triage.md` — the Pro subscription
 quota is real but its weekly ceiling is unpublished, so consumption must be observable.
