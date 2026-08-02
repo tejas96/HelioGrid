@@ -164,51 +164,59 @@ accumulating again.
 Rows are one line. The reasoning behind a mechanism lives in the gate file's own comments and
 in git history, not here — this table exists to answer "what actually stops this?" at a glance.
 
-Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `runtime` · `skill` · `prose`.
+Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `runtime` · `hook` ·
+`skill` · `prose`.
+
+**Holds** answers a question "what enforces this?" hides: can the mechanism express the WHOLE
+rule (`full`), only part of it (`partial`, with what escapes), or is it redundant cover for a
+rule another mechanism actually holds (`cover`)? A `partial` row is not a failure — it is the
+row telling the truth about where review still carries the weight.
 
 ### Enforced today
 
-| Rule | Mechanism | Stage | Where |
-|---|---|---|---|
-| Dependency direction & layer purity | dependency-cruiser, all rules `error` | lint | `.dependency-cruiser.cjs` |
-| Web and mobile never touch the database | `web-no-db` / `mobile-no-db`. **Both were silently inert until 2026-08-02** — they matched only `^packages/db/`, but neither app declares the dependency, so an import cannot resolve and stays a bare `@heliogrid/db` specifier the pattern never saw. Now matched in both forms, `uuid` still exempt. A dependency-cruiser rule is only real once you have injected the violation it names | lint | `.dependency-cruiser.cjs` |
-| Package encapsulation | Turborepo Boundaries tags — in each package's own `turbo.json`, never `package.json` | lint | per-package `turbo.json` |
-| Only apps read the environment | Biome `noProcessEnv` + `check:env` + the `env` boundary tag; 3 audited exceptions | lint | `packages/env/`, `scripts/check-env-access.mjs` |
-| apps/web pages route, features own the capability | `noExcessiveLinesPerFunction` (50) on `app/**/page.tsx` + cruiser `web-app-imports-feature-barrel-only`, `web-app-holds-no-components`, `web-feature-no-cross-internals` | lint | `biome.json`, `.dependency-cruiser.cjs` |
-| RN screen composition component stays small | Biome `noExcessiveLinesPerFunction` (80) on `screens/**/*Screen.tsx` only — no cap on hooks or other screen-folder files | lint | `biome.json` |
-| **Screens compose from `@heliogrid/ui`** | `check:adherence` fails on `hg-*` legacy scaffold in a feature screen. Added 2026-07-31 after a screen shipped with 12 `hg-*` classes and zero UI imports past three reviews | lint | `scripts/check-adherence.sh` |
-| Screens import components, never re-make them (web) | Biome `noRestrictedElements` on `app/**` + `features/**`; design-reference exempt | lint | `biome.json` |
-| Screens import components, never re-make them (RN) | Biome `noRestrictedImports` on `screens/**` — interactive primitives may not come from `react-native`; layout ones may | lint | `biome.json` |
-| A fact both platforms need lives in a package | **Nothing enforces this.** Parity is checked at the component API; what a SCREEN authors inline is unchecked, so the same constant, type or helper gets written twice and drifts. Detecting it mechanically means comparing meaning, not text — jscpd misses it (same value, different name). Held by review and by defining shared facts before the screens | review | review, `packages/domain` |
-| Screens import only from component indexes | dependency-cruiser `package-index-only` | lint | `.dependency-cruiser.cjs` |
-| web ↔ RN component API parity | `@heliogrid/ui-api` + `satisfies` in both platforms' `api-parity.ts`; three directions (not looser, not stricter, no uncovered component) | typecheck | `packages/ui-api/` |
-| web ↔ RN parity — per PROP | `check:ui-parity` compares authored props to the contract; names props on one platform only | lint | `scripts/check-ui-parity.mjs` |
-| Domain purity — no clock, randomness or I/O | `check:adherence` grep + cruiser `domain-purity-*` (3 rules, incl. `dependencyTypes: core`) | lint | `scripts/check-adherence.sh`, `.dependency-cruiser.cjs` |
-| Module public surface | dependency-cruiser `api-module-boundary` | lint | `.dependency-cruiser.cjs` |
-| db/drizzle only in `*.repository.ts` | dependency-cruiser `db-access-in-repositories-only` | lint | `.dependency-cruiser.cjs` |
-| No third-party HTTP client in apps | dependency-cruiser `no-raw-http-clients`, exemptions fully anchored | lint | `.dependency-cruiser.cjs` |
-| Apps reach the network ONLY through `@heliogrid/data` | dependency-cruiser `apps-never-touch-the-wire` — `@ts-rest/*` and auth clients are unimportable from `apps/{web,mobile}`; `initClient` is called once in the repo | lint | `.dependency-cruiser.cjs` |
-| `packages/data` stays an SDK, not a God package | dependency-cruiser `data-lean` — db/ui/ui-api/tokens/i18n/adapters/apps all unimportable. Matches the bare workspace SPECIFIER as well as the on-disk path: an undeclared dependency cannot resolve, so a path-only pattern would miss the exact case the rule guards | lint | `.dependency-cruiser.cjs` |
-| React Query stays swappable | dependency-cruiser `data-core-is-framework-free` — react/react-query importable only under `packages/data/src/react/`. Directory prefix, not a filename pattern, so it cannot rot | lint | `.dependency-cruiser.cjs` |
-| Zod 4 ban · no `console.log` · no `process.env` outside config | Biome rules | lint | `biome.json` |
-| Files ≲450 lines · no `.test.*`/`.spec.*` · no raw colour in UI · copy wrapped + translated · tenant pin is transaction-local | `check:adherence`, 8 greps | lint | `scripts/check-adherence.sh` |
-| Dependency version drift | sherif | lint | lint chain |
-| Exact dependency pins | `.npmrc save-prefix=` + `--frozen-lockfile` | install + CI | `.npmrc`, `ci.yml` |
-| The gate set runs as ONE command, reporting all failures | `pnpm lint` runs six gates and aggregates — no `&&` short-circuit | lint | `scripts/lint-all.sh` |
-| Tenant isolation (cross-tenant read/write, fail-closed, append-only ledgers) | `tenancy-rls.ts` + `rls-armed.ts`: catalog assertions (enabled · FORCEd · canonical policy expression · no partition-child grants · no RLS-bypassing view or SECURITY DEFINER) plus behavioural proof on seeded tables | invariant | `tests/invariants/src/` |
-| `tenant_id` on every table · unique keys lead with it | `table-tenancy-scan.ts`, allowlists carry written reasons | invariant | `tests/invariants/src/` |
-| contracts `z.enum` ↔ db `pgEnum` parity | `enum-parity.ts`, both directions + unmapped-enum check | invariant | `tests/invariants/src/` |
-| Drizzle model ↔ migrated database | `schema-parity.ts`, names + nullability, both directions | invariant | `tests/invariants/src/` |
-| Invariants cannot silently skip | turbo `test` env list + fail-closed runner under `CI` | invariant | `turbo.json`, `run.ts` |
-| Runtime DB role cannot bypass tenancy | boot precondition — the app refuses to start | runtime | `apps/api/src/common/db/tenancy-precondition.ts` |
-| Concurrent migrators are serialised | `pg_advisory_lock` taken BEFORE the ledger table is created | runtime | `packages/db/src/migrate.ts` |
-| Migrations are append-only | sha256 lock in the runner + CI `git diff --diff-filter=MDR --no-renames` | runtime + CI | `migrate.ts`, `ci.yml` |
-| Token contrast floors (WCAG) + coverage | `DECLARED_PAIRS` gate and `findUndeclaredPairs` refuse to emit; `tokens#build` declares its out-of-package inputs | build | `packages/tokens/` |
-| Docker build context excludes secrets | `.dockerignore` — 6.5 GB → 27 MB, `.env.local` excluded | build | `.dockerignore` |
-| The RN JavaScript actually resolves | `pnpm bundle` in CI — `assembleDebug` does not bundle JS | CI | `ci.yml` |
-| i18n catalogs fresh AND translated | CI `lingui extract` + `git diff --exit-code` (deterministic via `orderBy: 'messageId'`); `check:adherence` counts empty `msgstr` | CI + lint | `ci.yml`, `scripts/check-adherence.sh` |
-| Committed OpenAPI matches the contract | `check:openapi` builds, re-emits, byte-compares. Blind to Zod `.refine()` — prefer expressible Zod on the wire | CI + local | `scripts/check-openapi-breaking.mjs` |
-| No committed secrets | gitleaks over full history | CI | `ci.yml` |
+| Rule | Mechanism | Stage | Holds | Where |
+|---|---|---|---|---|
+| Dependency direction & layer purity | dependency-cruiser, all rules `error` — the authoritative boundary enforcer | lint | full | `.dependency-cruiser.cjs` |
+| Web and mobile never touch the database | `web-no-db` / `mobile-no-db`. **Both were silently inert until 2026-08-02** — they matched only `^packages/db/`, but neither app declares the dependency, so an import cannot resolve and stays a bare `@heliogrid/db` specifier the pattern never saw. Now matched in both forms, `uuid` still exempt. A dependency-cruiser rule is only real once you have injected the violation it names | lint | full | `.dependency-cruiser.cjs` |
+| Package encapsulation | Turborepo Boundaries tags — in each package's own `turbo.json`, never `package.json` | lint | cover — coarser than the documented bans: the shared `app` tag permits `web→db` (dep-cruiser holds that) and permits api/worker→frontend layers, which policy forbids and nothing enforces | per-package `turbo.json` |
+| Only apps read the environment | Biome `noProcessEnv` + `check:env` + the `env` boundary tag; 3 audited exceptions | lint | full | `packages/env/`, `scripts/check-env-access.mjs` |
+| apps/web pages route, features own the capability | `noExcessiveLinesPerFunction` (50) on `app/**/page.tsx` + cruiser `web-app-imports-feature-barrel-only`, `web-app-holds-no-components`, `web-feature-no-cross-internals` | lint | full | `biome.json`, `.dependency-cruiser.cjs` |
+| RN screen composition component stays small | Biome `noExcessiveLinesPerFunction` (80) on `screens/**/*Screen.tsx` only — no cap on hooks or other screen-folder files | lint | partial — hooks and non-Screen files in the same folder are uncapped | `biome.json` |
+| **Screens compose from `@heliogrid/ui`** | `check:adherence` fails on `hg-*` legacy scaffold in a feature screen. Added 2026-07-31 after a screen shipped with 12 `hg-*` classes and zero UI imports past three reviews | lint | partial — catches the known legacy prefix, not every hand-rolled component | `scripts/check-adherence.sh` |
+| Screens import components, never re-make them (web) | Biome `noRestrictedElements` on `app/**` + `features/**`; design-reference exempt | lint | full | `biome.json` |
+| Screens import components, never re-make them (RN) | Biome `noRestrictedImports` on `screens/**` — interactive primitives may not come from `react-native`; layout ones may | lint | partial — scoped to `src/screens/**`, so `src/lib` and `src/navigation` may use raw primitives unchecked | `biome.json` |
+| Flows are authored once (Law 11) | `qa-parity` compares both implementations per feature — state vocabulary, behavioural guards, loading/offline affordances, msgid identity. No static mechanism exists: detecting it means comparing MEANING, not text (jscpd misses same-value-different-name) | skill | partial — catches drift in what a run exercises; a flow nobody verifies is held only by review | `.claude/agents/qa-parity.md` (Phase 3), review |
+| Screens import only from component indexes | dependency-cruiser `package-index-only` | lint | full | `.dependency-cruiser.cjs` |
+| web ↔ RN component API parity | `@heliogrid/ui-api` + `satisfies` in both platforms' `api-parity.ts`; three directions (not looser, not stricter, no uncovered component) | typecheck | full | `packages/ui-api/` |
+| web ↔ RN parity — per PROP | `check:ui-parity` compares authored props to the contract; names props on one platform only | lint | full | `scripts/check-ui-parity.mjs` |
+| Domain purity — no clock, randomness or I/O | `check:adherence` grep + cruiser `domain-purity-*` (3 rules, incl. `dependencyTypes: core`) | lint | full | `scripts/check-adherence.sh`, `.dependency-cruiser.cjs` |
+| Module public surface | dependency-cruiser `api-module-boundary` | lint | full | `.dependency-cruiser.cjs` |
+| db/drizzle only in `*.repository.ts` | dependency-cruiser `db-access-in-repositories-only` | lint | full | `.dependency-cruiser.cjs` |
+| No third-party HTTP client in apps | dependency-cruiser `no-raw-http-clients` — no exemptions; matches the bare specifier as well as the resolved path, and carries no `dependencyTypes` filter, because an uninstalled client resolves to `unknown` and a filtered rule drops exactly the case it guards (probed 2026-08-03) | lint | partial — a hand-rolled `fetch` has no import for the graph to see | `.dependency-cruiser.cjs` |
+| Apps reach the network ONLY through `@heliogrid/data` | dependency-cruiser `apps-never-touch-the-wire` — `@ts-rest/*` and auth clients are unimportable from `apps/{web,mobile}`; `initClient` is called once in the repo | lint | full | `.dependency-cruiser.cjs` |
+| `packages/data` stays an SDK, not a God package | dependency-cruiser `data-lean` — db/ui/ui-api/tokens/i18n/adapters/apps all unimportable, with NO uuid exemption (that exists only for the two apps). Matches the bare workspace SPECIFIER as well as the on-disk path: an undeclared dependency cannot resolve, so a path-only pattern would miss the exact case the rule guards | lint | full | `.dependency-cruiser.cjs` |
+| React Query stays swappable | dependency-cruiser `data-core-is-framework-free` — react/react-query importable only under `packages/data/src/react/`. Directory prefix, not a filename pattern, so it cannot rot | lint | full | `.dependency-cruiser.cjs` |
+| Zod 4 ban · `@lingui/macro` ban · no `console.log` · no `process.env` outside config | Biome rules. The macro ban is declared in the base block AND both app overrides: Biome overrides REPLACE rule options rather than merging, so a base-only entry is invisible in exactly the trees where `<Trans>` is authored (probed 2026-08-03) | lint | full | `biome.json` |
+| Files ≲450 lines · no `.test.*`/`.spec.*` · no raw colour in UI · copy wrapped + translated · tenant pin is transaction-local | `check:adherence`, 8 greps | lint | partial — the copy gate scans app screen trees only, so unwrapped English inside `packages/ui` passes | `scripts/check-adherence.sh` |
+| Dependency version drift | sherif | lint | full | lint chain |
+| Exact dependency pins | `.npmrc save-prefix=` + `--frozen-lockfile` | install + CI | full | `.npmrc`, `ci.yml` |
+| The gate set runs as ONE command, reporting all failures | `pnpm lint` runs six gates and aggregates — no `&&` short-circuit | lint | full | `scripts/lint-all.sh` |
+| Boundary rules see workspace edges at all | `pnpm verify` builds BEFORE linting, as CI does — dep-cruiser resolves workspace imports through `dist/`, so linting an unbuilt checkout is partially blind (proven 2026-07-31) | lint | full | `package.json`, `ci.yml` |
+| Tenant isolation (cross-tenant read/write, fail-closed, append-only ledgers) | `tenancy-rls.ts` + `rls-armed.ts`: catalog assertions (enabled · FORCEd · canonical policy expression · no partition-child grants · no RLS-bypassing view or SECURITY DEFINER) plus behavioural proof on seeded tables | invariant | partial — VACUOUS while the schema is greenfield, and says so when it runs | `tests/invariants/src/` |
+| `tenant_id` on every table · unique keys lead with it | `table-tenancy-scan.ts`, allowlists carry written reasons | invariant | partial — vacuous on an empty schema | `tests/invariants/src/` |
+| `tenant_id` never crosses the wire in a body or query | `tenant-id-in-body.ts` walks `apiContract`, unwraps Zod wrappers, rejects `tenant_id`/`tenantId`. Static — runs before the DATABASE_URL check, so it never skips. Job envelopes are out of scope and legitimately carry `tenantId` | invariant | partial — vacuous until a route declares a body or query schema, and says so | `tests/invariants/src/` |
+| contracts `z.enum` ↔ db `pgEnum` parity | `enum-parity.ts`, both directions + unmapped-enum check | invariant | partial — vacuous on an empty schema | `tests/invariants/src/` |
+| Drizzle model ↔ migrated database | `schema-parity.ts`, names + nullability, both directions | invariant | partial — vacuous on an empty schema | `tests/invariants/src/` |
+| Invariants cannot silently skip | turbo `test` env list + fail-closed runner under `CI` | invariant | full | `turbo.json`, `run.ts` |
+| Runtime DB role cannot bypass tenancy | boot precondition — the app refuses to start | runtime | full | `apps/api/src/common/db/tenancy-precondition.ts` |
+| Concurrent migrators are serialised | `pg_advisory_lock` taken BEFORE the ledger table is created | runtime | full | `packages/db/src/migrate.ts` |
+| Migrations are append-only | sha256 lock in the runner + CI `git diff --diff-filter=MDR --no-renames` | runtime + CI | partial — the CI guard runs on pull_request only, so a direct push to main skips it; the runner still refuses to apply | `migrate.ts`, `ci.yml` |
+| Token contrast floors (WCAG) + coverage | `DECLARED_PAIRS` gate and `findUndeclaredPairs` refuse to emit; `tokens#build` declares its out-of-package inputs | build | full | `packages/tokens/` |
+| Docker build context excludes secrets | `.dockerignore` — 6.5 GB → 27 MB, `.env.local` excluded | build | full | `.dockerignore` |
+| The RN JavaScript actually resolves | `pnpm bundle` in CI — `assembleDebug` does not bundle JS | CI | full | `ci.yml` |
+| i18n catalogs fresh AND translated | CI `lingui extract` + `git diff --exit-code` (deterministic via `orderBy: 'messageId'`); `check:adherence` counts empty `msgstr` | CI + lint | partial — checks freshness, NOT cross-platform msgid identity; a one-character edit forks a shared string and still passes | `ci.yml`, `scripts/check-adherence.sh` |
+| Committed OpenAPI matches the contract | `check:openapi` builds, re-emits, byte-compares. Blind to Zod `.refine()` — prefer expressible Zod on the wire | CI + local | partial — `.refine()` predicates never reach the spec | `scripts/check-openapi-breaking.mjs` |
+| No committed secrets | gitleaks over full history | CI | full | `ci.yml` |
 
 ### Planned — NOT yet enforced
 
@@ -223,8 +231,13 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 
 | Rule | Why no mechanism | Enforced by |
 |---|---|---|
-| No unprompted push, branch or PR | An agent's own restraint; the harness no longer blocks it (hooks removed 2026-07-31 — they caught zero real mistakes and blocked legitimate work) | `CLAUDE.md` §Process |
-| No in-place stream edits (`sed -i`) | Same. The rule stands because those edits corrupted files here; nothing enforces it | `CLAUDE.md` §4 (Edit/Write for all file changes) |
+| Push and PR need an explicit owner yes | An agent's own restraint — the harness cannot tell an approved push from an unapproved one | `CLAUDE.md` §Git, `/finish` |
+| No in-place stream edits (`sed -i`) | Those edits corrupted files here; a Bash pattern ban would also block legitimate read-only `sed` | `CLAUDE.md` §4 (Edit/Write for all file changes) |
+| Market facts resolve from versioned packs, never hard-coded | No checker distinguishes a market-specific literal from a legitimate constant; `+91` is hard-coded at four screen sites today | review + `docs/architecture.md` §2 (domain) |
+| Sent proposals keep their prices | A versioning semantic over rows that do not exist yet — lands with the proposals module's invariant | review |
+| Money renders with the tenant currency's market grouping; kW/kWh/kWp never translated | The unit half becomes a lint-able string ban once a formatter exists; the grouping half is a rendering judgement | review + `.claude/rules/cross-platform.md` |
+| Read + export work regardless of billing state | A negative existence claim over every gated surface | review + docs/16 |
+| One money path — BOM ↔ proposal ↔ tranches ↔ payments reconcile | Cross-module arithmetic; becomes an invariant when the money tables land | review + `/verify` always-on core |
 | Provenance tier on every user-visible number | No checker distinguishes a number needing provenance from an id or a count | review + per-screen DoD |
 | Money never renders while stale | Staleness is a product-semantic judgement about one figure's inputs | review |
 | Structural adequacy is NEVER computed | A negative existence claim over arbitrary code. Rated critical when found | review |
@@ -233,9 +246,9 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | React presentation/logic separation | A cohesion judgement, not a syntactic one | `.claude/rules/ui-adherence.md` + review |
 | RN hooks own logic; never a `components.tsx`/`hooks.ts` grab-bag | The 80-line cap binds only `*Screen.tsx` — a bloated hook or a layer-named file lints clean | `apps/mobile/CLAUDE.md` + review |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers | review + docs/04 |
-| Contract-first ordering · migration procedure · Law 8 docs-in-commit | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/qa` |
+| Contract-first ordering · migration procedure · verification · task close-out | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/verify`, `/finish` (the last two land in Phase 3) |
 | Reference integrity (`docs/NN §M`, section citations, relative links) | Owner ruling 2026-07-30: greps, not a checker script. Three greps over `git ls-files`; two `docs/08 §…` citations inside sha256-locked migrations are unfixable and skipped by name | unowned since the 2026-07-31 skill deletion — returns as an arch-reviewer check (governance rebuild Phase 3) |
-| `VERIFIED` claims carry real evidence | Evidence *quality* is a judgement no script can make | `/qa` artifact verification + review |
+| `VERIFIED` claims carry real evidence | Evidence *quality* is a judgement no script can make | `/verify` artifact discipline + review |
 
 ## Appendix A — per-package CLAUDE.md template
 
