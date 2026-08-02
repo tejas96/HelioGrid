@@ -6,9 +6,9 @@ paths:
 
 # Database — append-only, tenant-scoped, fail-closed
 
-- **Migrations are append-only** and sha256-locked by the runner. Editing an applied file
-  makes `migrate` refuse to run, and CI's `git diff --diff-filter=MDR` guard rejects the
-  PR (no pre-edit hook exists — deleted 2026-07-31). Add a new numbered file instead.
+- **Migrations are append-only.** A PreToolUse hook refuses the edit, the runner's sha256
+  lock refuses to apply, and CI's `git diff --diff-filter=MDR` guard rejects the PR. Add a
+  new numbered file instead.
   Overridden once, by owner ruling, in the auth teardown (docs/15
   R19) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index

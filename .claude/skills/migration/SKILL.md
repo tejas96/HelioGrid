@@ -14,8 +14,8 @@ Schema law â€” what every table needs, tenancy defence in depth, Law 9 scoping â
 ls packages/db/migrations/
 ```
 
-Number one above the highest. Editing an applied file makes the sha256-locked runner refuse
-to run at all, and CI's append-only guard (`git diff --diff-filter=MDR`) rejects the PR.
+Number one above the highest. A PreToolUse hook refuses an edit to a committed migration,
+the sha256-locked runner refuses to apply one, and CI's append-only guard rejects the PR.
 
 ## 2. Write the DDL
 

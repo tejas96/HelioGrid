@@ -217,6 +217,9 @@ row telling the truth about where review still carries the weight.
 | i18n catalogs fresh AND translated | CI `lingui extract` + `git diff --exit-code` (deterministic via `orderBy: 'messageId'`); `check:adherence` counts empty `msgstr` | CI + lint | partial — checks freshness, NOT cross-platform msgid identity; a one-character edit forks a shared string and still passes | `ci.yml`, `scripts/check-adherence.sh` |
 | Committed OpenAPI matches the contract | `check:openapi` builds, re-emits, byte-compares. Blind to Zod `.refine()` — prefer expressible Zod on the wire | CI + local | partial — `.refine()` predicates never reach the spec | `scripts/check-openapi-breaking.mjs` |
 | No committed secrets | gitleaks over full history | CI | full | `ci.yml` |
+| Migrations are append-only — at EDIT time | PreToolUse hook refuses Edit/Write on a migration already in `HEAD`. **Review 2026-09-03:** if it has caught nothing by then, delete it — the 2026-07-31 removal was for exactly that reason | hook | full | `.claude/hooks/block-applied-migration-edit.sh` |
+| No `.test.*` / `.spec.*` file is ever created | PreToolUse hook refuses the Write. Complements `check:adherence`, which only catches files already on disk. **Review 2026-09-03** | hook | full | `.claude/hooks/block-test-files.sh` |
+| `git commit --no-verify` is never used | PreToolUse hook refuses the Bash call. Matches the flag as an ARGUMENT, not a mention — everything from the first `-m` or heredoc onward is treated as message body, so a commit that discusses the flag still lands. **Review 2026-09-03** | hook | full | `.claude/hooks/block-no-verify.sh` |
 
 ### Planned — NOT yet enforced
 
