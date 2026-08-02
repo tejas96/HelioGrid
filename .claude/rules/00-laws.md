@@ -1,46 +1,31 @@
-# The Laws (docs/17) — one line each
+# The Laws — one line each (digest of docs/17 §1)
 
-Numbers are stable ids, never reused or renumbered — same rule as ADRs and migrations. A gap
-means that law was removed; 2, 4 and 6 went on 2026-08-01 (CLAUDE.md §1–2 says it better).
+This is the always-loaded digest. Canonical text: `docs/17-engineering-governance.md` §1,
+which names this file as its digest. Numbers are stable ids, never reused or renumbered — a
+gap is a law that was removed (2, 4 and 6 went on 2026-08-01).
 
 1. **Foundation before features.** Feature modules build only on landed foundation.
 3. **Contracts before code.** requirements → domain model → API contract → shared types →
    migration → implementation → verification → docs. Never in reverse.
-5. **Reuse before creation.** Search the component indexes and contracts first. Creating
-   what exists is a defect. Unmocked surfaces are COMPOSED from existing vocabulary.
+5. **Reuse before creation.** Search first; creating what exists is a defect. Unmocked
+   surfaces are COMPOSED from existing vocabulary.
 7. **Shared component APIs stay in parity.** A prop or component on one platform only is a
-   defect — `@heliogrid/ui-api` and `check:ui-parity` enforce it. WHICH screens each platform
-   ships is a plan decision, not a law.
-8. **Fix the docs your change made wrong** — in the same commit. Docs that are merely
-   related are not your problem.
+   defect — `@heliogrid/ui-api` and `check:ui-parity` enforce it.
+8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES
+   files greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, columns, contracts and endpoints are
-   authored only when their OWNING module's slice begins. docs/04 is frozen DESIGN, not a
-   build order. Asked to "implement the schema" → implement the CURRENT module's slice.
+   authored only when their OWNING module's slice begins.
 10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API
-   outside a declared server entry. Platform work lives in the owning app behind an adapter.
+    outside a declared server entry. Platform work lives in the owning app behind an adapter.
 11. **Flows are authored once.** Shared state vocabulary and view-model types are defined in
-   a shared package before either screen consumes them. Screens render; they don't hold policy.
+    a shared package before either screen consumes them. Screens render; they don't hold policy.
 
-## Decision hierarchy
+## Where the answer lives
 
-Defined once, in **docs/17 §4** — read it when layers actually conflict. Don't re-declare at
-level N what a higher level already defines. Two tiebreakers that live only here: where a
-cross-cutting rule and a per-package CLAUDE.md disagree, **the per-package file wins**; where
-two records disagree, **the later-dated one wins**.
-
-## Working principles (every change, not only slices)
-
-- **Architecture first.** Name the affected modules and the dependency direction before you
-  write code. If the change needs the architecture to move, say so and take it to the plan —
-  never a local workaround.
-- **Shared before local.** Ask "can this be shared?" BEFORE writing it. Duplicated business
-  logic across web/mobile/api needs an owner ruling.
-- **Minimise blast radius.** If something small needs edits across many unrelated files, the
-  architecture is wrong. Say so first.
-- **No temporary code.** No TODO implementations, no placeholder logic. If the owner asked for
-  a stub, say so plainly when you present it.
-- **Self-review your own diff** before presenting it: duplication, naming, edge cases, security,
-  accessibility. Behaviour is proven by running it — `/qa`.
+- **"Where does this code go?"** → `docs/architecture.md` §4 (placement), §2 (registry).
+- **"May X import Y?"** → `docs/architecture.md` §2. **"Is this web-only / RN-only?"** → §3.
+- **"What enforces this rule?"** → `docs/17` §5 matrix — and read its Holds column before
+  trusting a rule to be mechanically held. **Layer conflict?** → `docs/17` §4.
 
 ## Stop and ask the owner before
 
@@ -50,6 +35,7 @@ prevents.
 
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
-- A layer conflict the hierarchy above does not resolve.
+- A layer conflict `docs/17` §4 does not resolve.
 - A product-shaped finding (missing business rule, UX gap, spec ambiguity) — record it in
   docs/13 or docs/15 first, then continue.
+- Committing, pushing a branch, or opening a PR (`/finish` proposes; you approve).
