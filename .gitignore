@@ -48,15 +48,14 @@ test-results/
 # Subagent-driven-development workspace (ledger, briefs, review packages)
 .superpowers/
 
-# QA runs — ENTIRELY local (owner ruling 2026-08-02). Plans, reports, triage and evidence
-# all stay out of git; QA output is for the person running it, not for sharing.
-# This REPLACES the earlier rule that kept plan/report/triage as committed history — that
-# rule's warning comment ("do not widen this to .qa") is superseded, not overlooked.
-# Consequence, stated because it is silent otherwise: the repo no longer carries a record of
-# what was verified. A slice's evidence lives only in the working tree of whoever ran it.
+# QA writes nothing to the tree (owner ruling 2026-08-03): /verify keeps its artifacts in the
+# session scratchpad and deletes them when the run ends. The verification record lives in the
+# PR body.
+# These two entries are legacy guards, not live conventions — the retired /qa system left
+# local artifacts on machines that ran it. Keeping them ignored stops a stale run being
+# committed, and keeps Biome (vcs.useIgnoreFile) from linting generated JSON. Delete the
+# directories when convenient; nothing recreates them.
 .qa/
-
-# Playwright MCP scratch (console logs, traces), written during /qa runs
 .playwright-mcp/
 
 # graphify — generated knowledge-graph cache, never committed

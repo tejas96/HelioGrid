@@ -31,10 +31,6 @@ docs/spikes/
 docs/ops/
 docs/superpowers/
 
-# QA run evidence (plan/report/triage per run under .qa/<run-id>/) — committed
-# history of what was tested, not product logic.
-.qa/
-
 # Generated design-system bundle (compiled/serialized component metadata) —
 # not hand-authored, no signal beyond what design/ds-source/tokens/*.css already has.
 design/ds-source/_ds_bundle.js
@@ -64,12 +60,6 @@ knip.json
 .claude/launch.json
 design/ds-source/_adherence.oxlintrc.json
 design/ds-source/_ds_manifest.json
-
-# JSON Schema for /qa run reports — 77 nodes, 3rd largest file in the graph, and
-# almost all of them are JSON Schema keywords (additionalProperties, minItems,
-# required, enum). The QA knowledge worth graphing lives in the prose:
-# .claude/skills/qa/SKILL.md and references/test-matrix.md, both kept.
-.claude/skills/qa/references/report-schema.json
 
 # Emitted OpenAPI — derived from packages/contracts/src, which is already graphed.
 # Duplicate truth; biome.json excludes it from linting for the same reason.

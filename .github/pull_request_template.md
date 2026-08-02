@@ -9,8 +9,8 @@ Traces to: D<n> · Mockup: `<Name>.dc.html`
 Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.md`.
 
 - [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test)
-- [ ] **Run-and-look** (`/qa`): behaviour proven on every surface the change reaches, with
-      artifacts on disk. Green gates never prove behaviour.
+- [ ] **Run-and-look** (`/verify`): behaviour proven on every surface the change reaches.
+      Green gates never prove behaviour.
 - [ ] **Contract first** (Law 3): the `packages/contracts` diff is in this PR and the
       committed OpenAPI was re-emitted — or: no contract change
 - [ ] **Schema**: migration is a NEW append-only file; forward-compat register
@@ -30,7 +30,8 @@ Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.m
 
 <!-- Specifics, not adjectives: "browser 375+1440 happy/wrong-code/send-error; iPhone
      relaunch restores session; curl 409 ALREADY_ONBOARDED" — never just "tested".
-     Cite `/qa` step IDs and observed values. Say plainly what could NOT be run. -->
+     Paste the `## Verification` section `/verify` produced — this is the ONLY record that
+     the work was run. Say plainly what could NOT be run. -->
 
 ## Review findings & known limitations
 

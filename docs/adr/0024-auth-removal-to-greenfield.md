@@ -52,7 +52,7 @@ whole or not at all.
   not proven.
 - **The login flows run on a stub.** `createWalkthroughSession()` in
   `packages/data/src/session/walkthrough.ts` accepts any correctly shaped phone number and
-  any 6-digit code, reaches no server, and exists so both designs stay walkable in `/qa`. It
+  any 6-digit code, reaches no server, and exists so both designs stay walkable in QA. It
   is authored ONCE so neither app invents its own, and it is **deleted — not adapted —** by
   the rebuild.
 - **`oasdiff` reports 9 breaking API removals.** Correct: the auth paths are gone. The

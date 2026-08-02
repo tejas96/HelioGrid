@@ -309,7 +309,8 @@ it is how drift enters the repo silently:
 | `packages/contracts` (any endpoint, schema, or type) | `/contract-change` | Re-emits `packages/contracts/openapi/openapi.json`, sweeps every typed client (`apps/web`, `apps/mobile`) for breakage via typecheck, and judges whether the change is breaking |
 | `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
 | A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
-| Any feature/bugfix slice, before calling it done | `/qa` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/qa` drives the real app — web browser, both mobile simulators, curl against the API — and loops until clean |
+| Any feature/bugfix slice, before calling it done | `/verify` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/verify` drives the real app — browser for web, simulator for iOS, adb for Android, curl for the API — across only the surfaces the change reaches, and loops until clean |
+| A completed task, before review | `/finish` | Gates, an architecture review of the diff, then a proposed branch/commits/PR carrying the verification record. Nothing is committed or pushed without an explicit yes |
 
 ## Git workflow
 
@@ -338,7 +339,8 @@ Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | `docs/adr/` | Why each architecture choice was made — reference only |
 | `docs/research/` | Market + technology research backing the decisions above |
 | `docs/superpowers/plans/` | Per-piece-of-work implementation plans |
-| `.claude/skills/` | `/contract-change`, `/migration`, `/qa` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
 
 ## Per-package gotchas index
 
