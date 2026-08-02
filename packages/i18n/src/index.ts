@@ -21,4 +21,8 @@ export function setupI18n(locale: Locale = 'en') {
   return i18n;
 }
 
+export type { ApiErrorLike } from './copy/api-error';
+export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
+export type { ValidationIssueLike } from './copy/validation';
+export { formsValidationMessage } from './copy/validation';
 export { i18n };

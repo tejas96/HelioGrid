@@ -72,6 +72,11 @@ msgid "Create an account"
 msgstr "खाता बनाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/validation.ts:12
+msgid "Enter a valid value."
+msgstr "मान्य मान दर्ज करें।"
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:61
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
 msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
@@ -139,10 +144,30 @@ msgid "Sign in with your phone number. No password — we'll text you a one-time
 msgstr "अपने फ़ोन नंबर से साइन इन करें। कोई पासवर्ड नहीं — हम आपको SMS से वन-टाइम कोड भेजेंगे।"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:14
+msgid "Some fields need attention. Check the form and retry."
+msgstr "कुछ फ़ील्ड्स पर ध्यान देना ज़रूरी है। फ़ॉर्म जाँचकर फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:19
+msgid "Someone changed this while you were editing. Refresh and retry."
+msgstr "आपके संपादन के दौरान किसी और ने इसे बदल दिया। रीफ़्रेश करके फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:22
+msgid "Something went wrong on our side. Try again."
+msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:46
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:109
 msgid "Still no code after two tries?"
 msgstr "दो बार भेजने पर भी कोड नहीं मिला?"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:20
+msgid "That change isn't allowed here."
+msgstr "यह बदलाव यहाँ मान्य नहीं है।"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:38
@@ -151,9 +176,34 @@ msgid "That code doesn’t match. Check it and try again."
 msgstr "यह कोड मेल नहीं खाता। जाँचकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:18
+msgid "That record isn't available."
+msgstr "वह रिकॉर्ड उपलब्ध नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:11
+msgid "This field is required."
+msgstr "यह फ़ील्ड ज़रूरी है।"
+
+#. js-lingui-explicit-id
 #: ../../apps/web/features/auth/signup/SignupScreen.tsx:21
 msgid "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
 msgstr "HelioGrid का यह हिस्सा अभी तैयार हो रहा है। साइन इन करें, या थोड़ी देर में देखें।"
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:14
+msgid "This value is too large."
+msgstr "यह मान बहुत बड़ा है।"
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:13
+msgid "This value is too small."
+msgstr "यह मान बहुत छोटा है।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:21
+msgid "Too many attempts. Wait a moment and retry."
+msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:30
@@ -168,6 +218,11 @@ msgid "Welcome back. Taking you to your day."
 msgstr "वापसी पर स्वागत है। आपको आपके दिन पर ले जा रहे हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:16
+msgid "You don't have access to do that."
+msgstr "आपके पास यह करने की अनुमति नहीं है।"
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:44
 #: ../../apps/web/features/auth/login/LoginScreen.tsx:27
 msgid "You're offline — check your connection and try again."
@@ -178,3 +233,13 @@ msgstr "आप ऑफ़लाइन हैं — कनेक्शन जा�
 #: ../../apps/web/features/auth/login/components/DoneStep.tsx:11
 msgid "You're signed in"
 msgstr "आप साइन इन हो गए हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:15
+msgid "You're signed out. Sign in to continue."
+msgstr "आप साइन आउट हैं। जारी रखने के लिए साइन इन करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:17
+msgid "Your current plan doesn't include this."
+msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"

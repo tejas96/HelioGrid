@@ -72,6 +72,11 @@ msgid "Create an account"
 msgstr "Create an account"
 
 #. js-lingui-explicit-id
+#: src/copy/validation.ts:12
+msgid "Enter a valid value."
+msgstr "Enter a valid value."
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:61
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
 msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
@@ -139,10 +144,30 @@ msgid "Sign in with your phone number. No password — we'll text you a one-time
 msgstr "Sign in with your phone number. No password — we'll text you a one-time code."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:14
+msgid "Some fields need attention. Check the form and retry."
+msgstr "Some fields need attention. Check the form and retry."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:19
+msgid "Someone changed this while you were editing. Refresh and retry."
+msgstr "Someone changed this while you were editing. Refresh and retry."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:22
+msgid "Something went wrong on our side. Try again."
+msgstr "Something went wrong on our side. Try again."
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:46
 #: ../../apps/web/features/auth/login/components/OtpStep.tsx:109
 msgid "Still no code after two tries?"
 msgstr "Still no code after two tries?"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:20
+msgid "That change isn't allowed here."
+msgstr "That change isn't allowed here."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:38
@@ -151,9 +176,34 @@ msgid "That code doesn’t match. Check it and try again."
 msgstr "That code doesn’t match. Check it and try again."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:18
+msgid "That record isn't available."
+msgstr "That record isn't available."
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:11
+msgid "This field is required."
+msgstr "This field is required."
+
+#. js-lingui-explicit-id
 #: ../../apps/web/features/auth/signup/SignupScreen.tsx:21
 msgid "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
 msgstr "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:14
+msgid "This value is too large."
+msgstr "This value is too large."
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:13
+msgid "This value is too small."
+msgstr "This value is too small."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:21
+msgid "Too many attempts. Wait a moment and retry."
+msgstr "Too many attempts. Wait a moment and retry."
 
 #. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:30
@@ -168,6 +218,11 @@ msgid "Welcome back. Taking you to your day."
 msgstr "Welcome back. Taking you to your day."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:16
+msgid "You don't have access to do that."
+msgstr "You don't have access to do that."
+
+#. js-lingui-explicit-id
 #: ../../apps/mobile/src/screens/login/LoginScreen.tsx:44
 #: ../../apps/web/features/auth/login/LoginScreen.tsx:27
 msgid "You're offline — check your connection and try again."
@@ -178,3 +233,13 @@ msgstr "You're offline — check your connection and try again."
 #: ../../apps/web/features/auth/login/components/DoneStep.tsx:11
 msgid "You're signed in"
 msgstr "You're signed in"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:15
+msgid "You're signed out. Sign in to continue."
+msgstr "You're signed out. Sign in to continue."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:17
+msgid "Your current plan doesn't include this."
+msgstr "Your current plan doesn't include this."

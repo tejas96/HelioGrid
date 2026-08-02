@@ -27,6 +27,8 @@ module.exports = {
         '<rootDir>/../../apps/mobile/src',
         '<rootDir>/../../apps/mobile/App.tsx',
         '<rootDir>/../../packages/ui/src',
+        // Scoped to copy/ so the compiled locale catalogs are never swept.
+        '<rootDir>/src/copy',
       ],
       exclude: ['**/node_modules/**', '**/dist/**'],
     },
