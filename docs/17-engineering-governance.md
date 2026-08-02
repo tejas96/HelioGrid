@@ -17,8 +17,8 @@ reused or renumbered — a gap is a law that was removed (2, 4 and 6 on 2026-08-
 §1–2 carries what they said).
 
 **Law 1 — Foundation before features.** Feature modules build ONLY on the landed
-foundation (tokens → components → contracts → guards). Module work proceeds via per-module
-roadmaps (§3).
+foundation (tokens → components → contracts → guards). Module work proceeds via plans
+under `docs/superpowers/plans/` (§3).
 
 **Law 3 — Contracts before code.** The immutable order:
 requirements (docs + D-census) → domain model (docs/04 + `packages/domain`) →
@@ -72,8 +72,10 @@ Per-module roadmap files under `docs/modules/` were deleted, along with the `/ro
 traceability they bought, and a stale roadmap actively misleads.
 
 What replaces them: **plans are authored per piece of work** under
-`docs/superpowers/plans/`, and the record of what was actually run lives in the committed
-`.qa/<run-id>/` evidence from `/qa`. `docs/14` remains the cross-module plan of record.
+`docs/superpowers/plans/`. `/qa` evidence under `.qa/<run-id>/` is **local-only and
+gitignored** (owner ruling 2026-08-02) — a VERIFIED claim must be restated in the PR or the
+plan, because the repo carries no proof of it. `docs/14` remains the cross-module plan of
+record.
 
 Status vocabulary, wherever status is recorded: `todo` · `in-progress` · `blocked(reason)` ·
 `VERIFIED`. **Never "done" without evidence** — a VERIFIED claim records what was run, on
@@ -115,7 +117,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 
 | Rule | Mechanism | Stage | Where |
 |---|---|---|---|
-| Dependency direction & layer purity | dependency-cruiser, 27 rules, all `error` | lint | `.dependency-cruiser.cjs` |
+| Dependency direction & layer purity | dependency-cruiser, all rules `error` | lint | `.dependency-cruiser.cjs` |
 | Web and mobile never touch the database | `web-no-db` / `mobile-no-db`. **Both were silently inert until 2026-08-02** — they matched only `^packages/db/`, but neither app declares the dependency, so an import cannot resolve and stays a bare `@heliogrid/db` specifier the pattern never saw. Now matched in both forms, `uuid` still exempt. A dependency-cruiser rule is only real once you have injected the violation it names | lint | `.dependency-cruiser.cjs` |
 | Package encapsulation | Turborepo Boundaries tags — in each package's own `turbo.json`, never `package.json` | lint | per-package `turbo.json` |
 | Only apps read the environment | Biome `noProcessEnv` + `check:env` + the `env` boundary tag; 3 audited exceptions | lint | `packages/env/`, `scripts/check-env-access.mjs` |
@@ -154,7 +156,6 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | i18n catalogs fresh AND translated | CI `lingui extract` + `git diff --exit-code` (deterministic via `orderBy: 'messageId'`); `check:adherence` counts empty `msgstr` | CI + lint | `ci.yml`, `scripts/check-adherence.sh` |
 | Committed OpenAPI matches the contract | `check:openapi` builds, re-emits, byte-compares. Blind to Zod `.refine()` — prefer expressible Zod on the wire | CI + local | `scripts/check-openapi-breaking.mjs` |
 | No committed secrets | gitleaks over full history | CI | `ci.yml` |
-| Review lenses cannot mutate what they review | the three lens agents hold `Read, Grep, Glob` and not Bash | subagent config | `.claude/agents/*.md` |
 
 ### Planned — NOT yet enforced
 
@@ -170,7 +171,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | Rule | Why no mechanism | Enforced by |
 |---|---|---|
 | No unprompted push, branch or PR | An agent's own restraint; the harness no longer blocks it (hooks removed 2026-07-31 — they caught zero real mistakes and blocked legitimate work) | `CLAUDE.md` §Process |
-| No in-place stream edits (`sed -i`) | Same. The rule stands because those edits corrupted files here; nothing enforces it | `CLAUDE.md` §Process |
+| No in-place stream edits (`sed -i`) | Same. The rule stands because those edits corrupted files here; nothing enforces it | `CLAUDE.md` §4 (Edit/Write for all file changes) |
 | Provenance tier on every user-visible number | No checker distinguishes a number needing provenance from an id or a count | review + per-screen DoD |
 | Money never renders while stale | Staleness is a product-semantic judgement about one figure's inputs | review |
 | Structural adequacy is NEVER computed | A negative existence claim over arbitrary code. Rated critical when found | review |
@@ -180,7 +181,7 @@ Stages: `lint` · `typecheck` · `build` · `invariant` (CI test) · `CI` · `ru
 | RN hooks own logic; never a `components.tsx`/`hooks.ts` grab-bag | The 80-line cap binds only `*Screen.tsx` — a bloated hook or a layer-named file lints clean | `apps/mobile/CLAUDE.md` + review |
 | Server assigns all business identifiers | Requires knowing which values are business identifiers | review + docs/04 |
 | Contract-first ordering · migration procedure · Law 8 docs-in-commit | Procedures, not properties — they load on demand as skills | `/contract-change`, `/migration`, `/qa` |
-| Reference integrity (`docs/NN §M`, section citations, relative links) | Owner ruling 2026-07-30: greps, not a checker script. Three greps over `git ls-files`; two `docs/08 §…` citations inside sha256-locked migrations are unfixable and skipped by name | `/doc-sync` |
+| Reference integrity (`docs/NN §M`, section citations, relative links) | Owner ruling 2026-07-30: greps, not a checker script. Three greps over `git ls-files`; two `docs/08 §…` citations inside sha256-locked migrations are unfixable and skipped by name | unowned since the 2026-07-31 skill deletion — returns as an arch-reviewer check (governance rebuild Phase 3) |
 | `VERIFIED` claims carry real evidence | Evidence *quality* is a judgement no script can make | `/qa` artifact verification + review |
 
 ## Appendix A — per-package CLAUDE.md template
@@ -220,6 +221,5 @@ Authoring rules:
 - Never repeat Law N prose — reference it by number.
 - Line budget: **≤50 lines default, ≤70 for api/mobile/db/env** — LANDMINES DO NOT COUNT.
   They are the healthiest part of this corpus and capping them would delete the incident
-  record. The earlier ≤40/≤65 was exceeded by half the files it governed. (which carry standing law and the
-  most incident history).
+  record. The earlier ≤40/≤65 was exceeded by half the files it governed.
 - Where this file and a cross-cutting rule disagree, this file wins (§4).
