@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/tokens/theme';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { PlatformPressable } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
@@ -28,11 +28,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 /** docs/10 §iconography: 24px default · 20px functional · **28px bottom nav**. */
 const BOTTOM_NAV_ICON = 28;
 
+/**
+ * Matches React Navigation's own BottomTabItem rather than inventing our own semantics:
+ * `tab` everywhere except iOS, where their source carries a FIXME that role:'tab' does not
+ * behave as expected. Replacing the default bar must not mean replacing its accessibility.
+ */
+const TAB_ROLE = Platform.select({ ios: 'button', default: 'tab' } as const);
+
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
 
   return (
     <View
+      role="tablist"
       style={[
         styles.bar,
         { height: theme.layout['bottomnav-h'] + insets.bottom, paddingBottom: insets.bottom },
@@ -62,8 +70,8 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           <PlatformPressable
             key={route.key}
             onPress={onPress}
-            accessibilityRole="button"
-            accessibilityState={{ selected: focused }}
+            role={TAB_ROLE}
+            aria-selected={focused}
             style={styles.item}
           >
             {tabBarIcon?.({ focused, color, size: BOTTOM_NAV_ICON })}

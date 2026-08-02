@@ -11,7 +11,7 @@ import { createContext, type ReactNode, useContext, useEffect, useState } from '
  * ("Couldn't find any screens for the navigator"). Computing one value makes the partition
  * exhaustive by construction rather than by three hooks agreeing.
  */
-export type NavigationPhase = 'booting' | 'signedOut' | 'signedIn';
+type NavigationPhase = 'booting' | 'signedOut' | 'signedIn';
 
 const NavigationPhaseContext = createContext<NavigationPhase>('booting');
 
