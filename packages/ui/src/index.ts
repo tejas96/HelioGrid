@@ -1,12 +1,14 @@
 /**
- * The 21-component _ds public API (docs/10 §6) — import ONLY from this index.
+ * The _ds public API (docs/10 §6) — import ONLY from this index. The component census
+ * lives in @heliogrid/ui-api's scope header and is never restated here (a numeral in this
+ * comment drifted twice).
  * Prop enums come from design/ds-source/_adherence.oxlintrc.json; visual truth from
  * the _ds_bundle reference implementations; every value is a token var.
  */
 
 export type { ChipTone, ToastTone } from '@heliogrid/ui-api';
 /* Auth composites — DS compositions from the existing
-   vocabulary, NOT additions to the 21-component API (login.md/whatyousell.md §4). */
+   vocabulary, NOT additions to the component API (login.md/whatyousell.md §4). */
 export { BloomLayer, type BloomLayerProps } from './composites/BloomLayer';
 export { OtpInput, type OtpInputProps } from './composites/OtpInput';
 export { RadioCard, type RadioCardOption, type RadioCardProps } from './composites/RadioCard';

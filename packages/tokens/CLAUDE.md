@@ -15,10 +15,9 @@
 pnpm --filter @heliogrid/tokens build      # tsx build.ts && tsc -p tsconfig.emit.json
 pnpm --filter @heliogrid/tokens typecheck
 
-## Depends on / depended on by
-uses: nothing in the workspace
-used by: apps/web, apps/mobile, packages/ui
-(tokens-standalone: zero workspace imports)
+## Dependency policy
+docs/architecture.md §2 tokens. Zero workspace imports at runtime (`tokens-standalone`);
+`@heliogrid/config` is a dev-only devDependency.
 
 ## Local conventions
 - Web consumes `tokens.css`; RN consumes `theme.ts` — same token names, different emit.

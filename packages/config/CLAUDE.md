@@ -7,9 +7,12 @@
 ## Commands
 None — JSON only. Consumers typecheck against these.
 
-## Depends on / depended on by
-uses: nothing        used by: every package and app EXCEPT apps/mobile (devDependency). RN extends
-`@react-native/typescript-config` instead, which is why its strict flags are set locally.
+## Dependency policy
+docs/architecture.md §2 config. Two things the presets do NOT cover: apps/web,
+packages/ui and packages/tokens extend `tsconfig.base.json` directly (no browser/react
+preset exists), and apps/mobile deliberately skips this package for
+`@react-native/typescript-config`, which is why its strict flags are set locally — a new
+base strictness flag must be copied there by hand.
 
 ## Local conventions
 - `node-package.json` — composite library package (dist + d.ts emit, project-reference member).
