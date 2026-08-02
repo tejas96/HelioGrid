@@ -14,9 +14,9 @@ pnpm --filter @heliogrid/api dev         # tsx watch (API_PORT=8084 default; kil
 pnpm --filter @heliogrid/api build | typecheck
 curl localhost:8084/health               # liveness · /health/ready = readiness
 
-## Depends on / depended on by
-uses: @heliogrid/contracts, @heliogrid/db, @heliogrid/domain, @heliogrid/env
-used by: web, mobile (over HTTP, through @heliogrid/data — never a client they author)
+## Dependency policy
+docs/architecture.md §2 apps/api. Web and mobile reach it over HTTP through
+`@heliogrid/data` — never a client they author.
 
 ## Local conventions
 - Layout is the closed set in docs/02 §2: `src/{config,common,modules,scripts}`;
@@ -49,8 +49,9 @@ used by: web, mobile (over HTTP, through @heliogrid/data — never a client they
   while the contract promised `ALREADY_ONBOARDED` — both sides compiled, the wire was wrong.
   Base codes (`NOT_FOUND`, `FORBIDDEN`…) may still use the plain Nest exceptions.
 - Protocol values shared with clients (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) live in
-  `@heliogrid/domain` (moved out of contracts 2026-08-01) and are imported here — never a
-  literal in a provider config.
+  `@heliogrid/domain` (moved out of contracts 2026-08-01). This app declares no dependency
+  on domain today — the auth teardown removed its only consumer — so the rebuild re-adds
+  both the dependency and the import. Never a literal in a provider config.
 - **`ContractException` takes an EXPLICIT status.** It used to default from
   `errorHttpStatusByCode[code]`, but that map holds only BASE codes — `ALREADY_ONBOARDED`
   missed it and silently returned **500 with the right code in the body**. Typecheck was

@@ -12,16 +12,17 @@ pnpm --filter @heliogrid/web dev      # localhost:3002 (tokens must be built fir
                                        # handles it; kills a stale listener on that port first)
 pnpm --filter @heliogrid/web build | typecheck
 
-## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env,
-@heliogrid/data (THE data path — transport, repositories, session; this app authors none),
-@heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
-used by: nobody
+## Dependency policy
+docs/architecture.md §2 apps/web; platform rules §3 (Next.js). `@heliogrid/data` is THE
+data path — transport, repositories, session; this app authors none. Shared login types,
+policy constants and formatters are imported from `@heliogrid/domain`, never re-authored
+(Law 11).
 
 ## Local conventions
 - **`app/` ROUTES, `features/` OWNS.** A `page.tsx` body is ≤50 lines (Biome
-  `noExcessiveLinesPerFunction`): read route params, call one controller hook, render one
-  screen. Everything else lives in `features/<feature>/`, imported ONLY through a barrel
+  `noExcessiveLinesPerFunction`): read route params and render one screen — routing only.
+  The controller hook belongs to the SCREEN, not the page (`.claude/rules/ui-adherence.md`,
+  which every page follows today). Everything else lives in `features/<feature>/`, imported ONLY through a barrel
   (dependency-cruiser) — either `features/<feature>/index.ts` or a screen barrel one level
   down, `features/<feature>/<screen>/index.ts`. Nothing deeper.
   **A barrel must not re-export both a Server Component and a `'use client'` screen** — see
@@ -41,7 +42,8 @@ used by: nobody
   feature-local: `packages/ui`, `packages/domain` or `lib/`.
 - `globals.css` is the only stylesheet under `app/`. Next reserved files
   (layout/providers/loading/error/not-found/route) stay in `app/`; `route.ts` is cookie/session
-  BFF glue ONLY. `lib/` is unchanged: `*-client.ts` · `env.ts` · `hooks/` · `constants.ts`.
+  BFF glue ONLY. `lib/` holds `ApiErrorText.tsx` + `api-error-text.css` + `env.ts` — NO
+  `*-client.ts`: those were deleted by ADR-0023 (see the fetch landmine below).
 - **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout
   via a colocated `<screen>.css` in the feature folder with token `var()`; Tailwind = layout
   only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.

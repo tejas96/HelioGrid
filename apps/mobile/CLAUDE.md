@@ -16,12 +16,12 @@ pnpm --filter @heliogrid/mobile ios | android         # run on simulator/emulato
 pnpm --filter @heliogrid/mobile typecheck
 cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 
-## Depends on / depended on by
-uses: @heliogrid/tokens (theme), @heliogrid/contracts, @heliogrid/i18n,
-@heliogrid/data (THE data path — transport, repositories, session; this app authors none),
-@heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
-nav: @react-navigation/native + native-stack + react-native-screens
-used by: nobody
+## Dependency policy
+docs/architecture.md §2 apps/mobile; platform rules §3 (React Native). `@heliogrid/data` is
+THE data path — transport, repositories, session; this app authors none. Shared login
+types, policy constants and formatters are imported from `@heliogrid/domain`, never
+re-authored (Law 11).
+nav: @react-navigation/native + native-stack + bottom-tabs + elements + react-native-screens
 RN UI components: `src/ui` (mirror of packages/ui — Law 7). Parity with web is a TYPECHECK,
 not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
 `@heliogrid/ui-api`. Drift fails THIS app's typecheck and names the component.
@@ -107,7 +107,10 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
 - Cookies: `credentials: 'omit'`, keychain jar only — iOS CFNetwork otherwise merges its
   copy into our header and the server 401s. Enforced in `@heliogrid/data`'s transport;
   recorded here because this is the platform it bites.
-- metro.config.js: monorepo + Lingui transformer + PowerSync blockList — do not remove.
+- metro.config.js holds monorepo resolution only (`watchFolders` + `nodeModulesPaths` for
+  pnpm workspace packages) plus a note that PowerSync (Track E) WILL add an inline-requires
+  blockList — do not remove either. There is no Lingui transformer: the runtime
+  `<Trans id>` convention needs none.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
 - Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).
   Devanagari via `<AppText>` run-splitting — verify on BOTH simulators.
