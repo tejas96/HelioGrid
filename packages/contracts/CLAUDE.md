@@ -36,6 +36,8 @@ dependency but imports nothing yet — it is still a scaffold.
   `common.ts`), with its inferred type exported (`export type UiLanguage = z.infer<…>`)
   from the index. Consumers — api services, web, mobile, i18n — import the type; an
   inline literal union anywhere downstream is a defect — one definition per fact (CLAUDE.md §1).
+- Pagination is offset + totalCount (`paginationQuerySchema` / `paginated()` /
+  `Paginated<T>`). A cursor-based route needs an owner ruling (spec 2026-08-02 §4).
 
 ## Landmines
 - Zod is pinned 3.25.x; `zod/v4` subpath exists in the package but is BANNED (S3: ts-rest

@@ -64,22 +64,31 @@ export const workflowStatusSchema = z.enum([
 export type WorkflowStatus = z.infer<typeof workflowStatusSchema>;
 
 /**
- * Pagination convention: cursor-based, tenant-scoped, stable order.
- * `cursor` is an opaque server-issued token; `limit` defaults to 25, max 100.
+ * Pagination convention: offset-based, tenant-scoped, STABLE order (indexed sort key +
+ * id tiebreaker — repository recipe in apps/api/CLAUDE.md). Offset over cursor is a
+ * 2026-08-02 owner decision (specs/2026-08-02-foundation-dx-design.md §4): per-tenant CRM
+ * volumes never hit offset's deep-page cost, and counts / jump-to-page / column sorting
+ * are product needs. A hot endpoint may go cursor-based per-route ONLY with an owner ruling.
  */
+export const DEFAULT_PAGE_LIMIT = 25;
+export const MAX_PAGE_LIMIT = 100;
+
 export const paginationQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(25),
-  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(MAX_PAGE_LIMIT).default(DEFAULT_PAGE_LIMIT),
+  page: z.coerce.number().int().min(1).default(1),
 });
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
 
 export function paginated<T extends z.ZodTypeAny>(item: T) {
   return z.object({
     items: z.array(item),
-    /** Absent when there is no further page. */
-    nextCursor: z.string().optional(),
+    /** Rows matching the SAME filters — `page × limit < totalCount` derives hasNextPage. */
+    totalCount: z.number().int().nonnegative(),
   });
 }
+
+/** Wire shape of `paginated()` — keep the two in step (one fact, two artefacts). */
+export type Paginated<T> = { items: T[]; totalCount: number };
 
 /**
  * Tenancy convention: tenant_id NEVER travels in request bodies or params — it comes from
