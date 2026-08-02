@@ -16,6 +16,10 @@ means that law was removed; 2, 4 and 6 went on 2026-08-01 (CLAUDE.md §1–2 say
 9. **Incremental schema & API growth.** Tables, enums, columns, contracts and endpoints are
    authored only when their OWNING module's slice begins. docs/04 is frozen DESIGN, not a
    build order. Asked to "implement the schema" → implement the CURRENT module's slice.
+10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API
+   outside a declared server entry. Platform work lives in the owning app behind an adapter.
+11. **Flows are authored once.** Shared state vocabulary and view-model types are defined in
+   a shared package before either screen consumes them. Screens render; they don't hold policy.
 
 ## Decision hierarchy
 

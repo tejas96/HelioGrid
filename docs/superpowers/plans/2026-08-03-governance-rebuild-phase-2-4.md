@@ -110,7 +110,11 @@ rules and package docs and each missed `.claude/skills/`, leaving both skills po
 files that no longer existed.
 ```
 
-- [ ] **Step 3: Add Laws 10 and 11 after Law 9**
+- [x] **Step 3: Add Laws 10 and 11 after Law 9** — DONE IN PHASE 1 (2026-08-03). Pulled
+forward because the spine cites both laws and `00-laws.md` reads a missing number as a
+REMOVED law, so publishing the spine first would have made those citations resolve to
+"deleted". Both are already in `docs/17` §1 and the `00-laws.md` digest; verify rather than
+re-add. The Law 8 deletion-sweep amendment (Step 2) is still outstanding.
 
 Insert after the `**Law 9 — Incremental schema & API growth.** Detail in §2.` line:
 

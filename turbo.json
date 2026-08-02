@@ -47,7 +47,7 @@
       },
       "db": {
         "dependencies": {
-          "allow": ["db", "domain", "config"]
+          "allow": ["db", "config"]
         }
       },
       "tokens": {

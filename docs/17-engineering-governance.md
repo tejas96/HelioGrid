@@ -42,6 +42,18 @@ problem. Per-package CLAUDE.md landmines are mandatory on first discovery.
 
 **Law 9 — Incremental schema & API growth.** Detail in §2.
 
+**Law 10 — Platform purity.** A shared package is platform-agnostic: no DOM, no React
+Native, no Node-only API outside a declared server entry point. Platform-specific work
+lives in the owning app behind an adapter. Which package may hold what:
+`docs/architecture.md` §2; the platform rules themselves: `docs/architecture.md` §3.
+
+**Law 11 — Flows are authored once.** A flow's state vocabulary and view-model type that
+both platforms need is defined in a shared package BEFORE either screen consumes it;
+screens render, they do not hold policy. Copy both platforms show lives in
+`packages/i18n/src/copy`. The login flow proved the cost: one controller authored twice
+drifted into five renamed state fields, an inverted `online`/`offline` polarity, and an
+unreachable offline banner.
+
 ---
 
 ## 2. LAW 9 — INCREMENTAL SCHEMA & API GROWTH (owner directive, 2026-07-26)

@@ -19,18 +19,189 @@ Layers, top to bottom — imports point strictly downward:
       ↓
     config
 
-- Packages NEVER import apps. Lower layers never import higher ones.
+- Packages NEVER import apps. Imports point downward, or WITHIN a layer where a §2 block
+  declares the edge (contracts → domain, ui → ui-api are both legal and both intra-layer).
 - The only wire path for frontend apps is @heliogrid/data (ADR-0023) — the sole
   initClient call in the repo lives there.
-- db is backend-only, except the @heliogrid/db/uuid subpath (app-side id generation).
-- dependency-cruiser is the authoritative boundary enforcer; turbo tags are redundant
-  coarse cover (they cannot express data↛ui-api or web↛db — dep-cruiser holds those).
+- db is backend-only, except the @heliogrid/db/uuid subpath (app-side id generation — see
+  its caveat in §2 db).
+- dependency-cruiser is the authoritative boundary enforcer. Turbo tags are coarse cover
+  and are not equivalent: some edges they cannot express (the shared `app` tag allows
+  web→db, which only dep-cruiser's web-no-db forbids), and some they permit that policy
+  forbids (the `app` tag allows apps/api → ui/tokens/i18n/data — §2 marks those POLICY
+  ONLY). Where a §2 block and a tag disagree, the block is the policy and dep-cruiser is
+  the enforcement; a tag is never evidence that a rule is held.
 
 ## §2 Package registry
 
-<!-- One block per package/app — Tasks 11 and 12. Block shape:
-     purpose · owns · allowed deps (policy) · forbidden (the notable ones) ·
-     platform scope · belongs here / never here · extension points -->
+Every block carries seven fields: **purpose** (the heading) · **owns** · **allowed deps**
+(policy — the workspace packages it MAY import) · **never** · **platform scope** ·
+**belongs/never here** · **extension point**. A block missing one is incomplete. Anything
+not built yet carries a STATUS line, per this file's header.
+
+### config — shared tsconfig presets
+Owns: tsconfig presets (node-package, nest-app) and nothing else. Allowed deps: none.
+Platform scope: all. Belongs: a new compiler preset. Never: runtime code, lint config
+(biome.json is root-owned). Extension point: a new preset per new runtime class — note
+that apps/web, packages/ui, packages/tokens and tests/invariants extend tsconfig.base.json
+directly (no browser preset exists yet; tests/invariants needs neither composite emit nor
+decorators), and apps/mobile deliberately skips config to extend
+@react-native/typescript-config, hand-mirroring base strictness flags.
+
+### env — the only raw environment reader
+Owns: env schemas + loaders (server/web/native); the .env.example contract. Allowed deps:
+config. Platform scope: shared (per-runtime entry points). Belongs: every new variable, as
+a schema edit + .env.example line. Never: business logic; a raw process.env read outside
+the audited allowlist in scripts/check-env-access.mjs — today packages/env/src/, plus
+apps/web/lib/env.ts (Next inlines NEXT_PUBLIC_* only in code IT compiles, so the literal
+read cannot live in a pre-built package — do not "fix" it) and
+scripts/check-openapi-breaking.mjs (a dev tool). Extension point: a new loader per new
+runtime.
+
+### contracts — the wire truth
+Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, and
+typed BullMQ job payloads (jobs.ts, published as the `./jobs` subpath — dep-cruiser's
+package-index-only permits exactly index and jobs as entry points). Emits the committed
+openapi/openapi.json, gated by scripts/check-openapi-breaking.mjs. Allowed deps: domain
+(for z.enum over domain constants — returns with the auth rebuild), config. Platform
+scope: shared. Belongs: anything crossing HTTP. Never: tenant_id in an HTTP body/query
+schema (tests/invariants/src/tenant-id-in-body.ts walks apiContract and enforces it) —
+job envelopes DO carry tenantId, because a queued job has no session to derive it from;
+implementation; storage shapes. Extension points: a feature module mounts its router into
+apiContract (Law 3: contract before implementation); ports/<capability>.ts re-lands with
+its consumer.
+
+### domain — pure business truth
+Owns: business logic, policy numbers, protocol constants, formatters, flow view-model
+types shared by platforms (Law 11). Allowed deps: config. Platform scope: shared, pure TS
+— no react, no node builtins, no clock/randomness/I-O (domain-purity gates). Belongs: a
+constant two screens read; a flow state machine. Never: fetch, storage, rendering.
+Extension point: one folder per module slice (auth/, tenancy/, format/ today).
+
+### db — schema mirror, migrations, backend client
+**STATUS: greenfield since 2026-08-01 (ADR-0024).** `src/schema/` and migrations 0001–0006
+were deleted; the auth + tenancy slice re-authors them and the next migration is a fresh
+0001. Today the package is client.ts + migrate.ts + uuid.ts.
+Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
+the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
+plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
+The admin/runtime pool PAIR is not here — apps/api constructs it (admin-pool-fenced).
+Allowed deps: config. Platform scope: backend only — EXCEPT @heliogrid/db/uuid, which
+web-no-db/mobile-no-db exempt for app-side id generation. **Caveat: uuid.ts currently
+imports node:crypto, which neither Metro nor a browser bundle resolves, so the first
+frontend consumer needs a crypto shim or a platform-safe RNG — no app imports it yet.**
+Belongs: DDL for the current module's slice (Law 9).
+Never: contracts imports (db-no-upward — the enum-parity invariant is the seam that keeps
+pgEnum ↔ z.enum honest); business logic. Extension point: /migration authors the next
+numbered file.
+
+### data — the ONLY frontend wire path (ADR-0023)
+Owns: the typed client (sole initClient), repositories, session store, react-query
+adapters under src/react/ only. Allowed deps: contracts, domain, config. Platform scope:
+shared frontend (core framework-free; react confined to src/react/). Belongs: every new
+endpoint's repository + hook. Never (all held by data-lean): db — INCLUDING the uuid
+subpath, which is exempted only for the two apps, not for data — ui, ui-api, tokens, i18n,
+adapters, and any app; a second client; platform APIs. Extension point: one repository per
+contract router.
+
+### forms — the fenced form layer
+Owns: useZodForm, applyServerErrors (server VALIDATION_FAILED → field errors), the
+translated zod error map (installFormsErrorMap), and the re-exports apps must use instead
+of the raw libraries — `z`, Controller/useFieldArray/useWatch and the react-hook-form
+types. Allowed deps: config (react-hook-form/zod are its third-party internals).
+Platform scope: shared frontend. Belongs: form-state wiring. Never: schemas themselves
+(contracts) or copy (i18n). Extension point: new form primitives, exported through the
+index only.
+
+### i18n — catalogs and shared copy
+Owns: Lingui catalogs (compiled messages committed), LOCALES derived from contracts'
+uiLanguageSchema (never restated), src/copy/ shared-copy modules (React-free /*i18n*/
+descriptors — JSX is banned there for the dual-instance ESM/CJS hazard). Allowed deps:
+contracts, domain (the money/format helpers when domain's money slice lands — the turbo
+i18n tag already permits this edge), config. Platform scope: shared frontend. Belongs:
+copy both platforms render (Law 11). Never: macro imports (lint-banned); locale-default
+number formats for money
+(CLAUDE.md §7: tenant-currency grouping). Extension point: new copy modules keyed by
+contract enums where applicable.
+
+### tokens — the design-token emitter
+Owns: parsing design/ds-source into tokens.css (web) + theme.ts (RN) + the committed
+native splash canvas; the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config
+dev-only). Platform scope: shared. Belongs: every visual value. Never: hand-edited
+outputs (CI freshness-guards them); workspace imports. Extension point: ds-source is the
+input; emit targets grow here.
+
+### ui — the web half of the design system
+Owns: web components (React DOM), their css, the web api-parity.ts assertion. Allowed
+deps: ui-api, contracts, domain, tokens, config. Platform scope: web only. Belongs: a new
+shared visual component (with its RN twin + ui-api entry, same change — Law 7). Never:
+screens/routes; data access; RN imports; raw colour (adherence gate). Extension point:
+component families under src/<family>/.
+
+### ui-api — the types-only parity contract
+Owns: component API types both platforms satisfy (import type react/contracts only — no
+runtime emit). Allowed deps: contracts, config (type-only). Platform scope: shared
+frontend types. Turbo tag: ui-api (own tag; importable by ui and apps only — data may
+not). Belongs: the prop contract for every shared component. Never: runtime code, styles,
+defaults. Extension point: scope header records the component census (the single count
+source).
+
+### apps/web — Next.js
+Owns: routes (app/ — routing only), features/ (capability owners), web screens, and lib/
+(app infrastructure: ApiErrorText + its css, and env.ts — the allowlisted literal
+NEXT_PUBLIC_* read; see §2 env). Allowed deps: contracts, data, domain, env, forms, i18n,
+tokens, ui, config. Platform scope: web (browser + Next server runtime). Belongs: screen
+composition, web-only hooks (DOM APIs) under features/*/shared/. Never: db (web-no-db;
+uuid subpath exempt), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
+no-raw-http-clients), react-hook-form/zod directly (forms is the fence), RN imports.
+Extension point: a new capability is a new features/<capability>/ folder with an index
+barrel — app/ may import it only through that barrel
+(web-app-imports-feature-barrel-only). Platform rules: §3.
+
+### apps/mobile — React Native
+Owns: src/ as a CLOSED set — src/screens, src/ui (the RN design-system half, parity-locked
+to ui-api), src/navigation, src/push, src/lib, src/auth (the keychain TokenStorage adapter)
+— plus the root files env.ts and i18n.ts. A new src/ category is a plan-time call. Allowed
+deps: contracts, data, domain, env, forms, i18n, tokens, ui-api. Deliberately NOT config
+(extends @react-native/typescript-config; hand-mirrors base strictness flags — a new base
+flag must be copied here). Platform scope: native only (iOS + Android, bare React Native —
+no Expo, no DOM). Belongs: screen composition and the native adapters the screens consume;
+anything both platforms need belongs in a package instead (Law 11). Never: @heliogrid/ui
+(web half), db (uuid exempt), wire/form internals (same fences as web), expo/EAS/
+AsyncStorage (owner rulings). Extension point: a new screen is a new src/screens/<screen>/
+folder. Platform rules: §3.
+
+### apps/api — NestJS BFF
+Owns: API modules (health today; feature modules land per slice), the ContractException
+error envelope, the tenancy runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
+common/db (fenced by admin-pool-fenced — db provides the factory, this app builds the
+pair). Allowed deps: contracts, db, env, config (+ domain when the rebuild re-adds its
+consumer). Platform scope: backend only (Node). Belongs: the HTTP edge and its
+repositories. Never: ui/tokens/i18n/data (frontend layers) — **POLICY ONLY, unenforced
+today: the shared `app` turbo tag permits them and no dep-cruiser rule fences it**; raw
+process.env (env owns it). Extension point: one Nest module per contract router,
+repositories fenced by db-access-in-repositories-only.
+
+### apps/worker — queue processors
+**STATUS: scaffold.** No processor or scheduler exists yet — src/ holds main.ts,
+worker.module.ts and config/ only.
+Owns: BullMQ binding config (today just the root connection in worker.module.ts).
+Processors and their queues land with their owning modules. Allowed deps: contracts, db,
+env, config. Platform scope: backend only (Node, no HTTP surface). Belongs: work that must
+outlive a request. Never: HTTP handlers (api owns the edge); frontend layers — **POLICY
+ONLY, unenforced today, same shared `app` tag as apps/api**. Extension point: one
+`<m>.processor.ts` per queue inside its owning `src/modules/<m>/` (the apps/api module
+shape); worker.module.ts registers ONLY the root connection (bullmq-fenced).
+
+### tests/invariants — the proof layer
+Owns: executable invariants (tenancy/RLS, table scoping, enum parity, schema parity,
+tenant-id-in-body) run by pnpm turbo test; fail-closed under CI, loud-skip locally
+without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
+the wire and the schema is the POINT: an invariant proves the seam between them. Platform
+scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven
+mechanically against the live schema or contracts. Never: unit tests (owner directive
+2026-07-29); anything needing a mock. Extension point: one file per invariant + a run.ts
+call.
 
 ## §3 Platform rules — React Native · Next.js · shared
 
@@ -41,7 +212,8 @@ Layers, top to bottom — imports point strictly downward:
 - No web-only dependencies, no DOM APIs. No expo, no EAS, no AsyncStorage (owner rulings;
   see apps/mobile/CLAUDE.md landmines for the dated reasons).
 - Platform APIs (camera, storage, notifications, keychain) stay isolated in dedicated
-  modules under apps/mobile/src/ (today: push/; adapter packages land with their modules).
+  modules under apps/mobile/src/ (today: push/ and auth/; adapter packages land with their
+  modules).
 - Navigation is React Navigation static config; navigation state derives from shared
   session/domain state, never duplicated into screens.
 - Metro is the bundler: RN debug builds serve JS lazily — a screen "running" on a
@@ -60,11 +232,14 @@ Layers, top to bottom — imports point strictly downward:
 
 ### Shared (packages/*)
 - Platform-agnostic by law (Law 10): no DOM, no react-native, no Node-only APIs outside
-  declared server entries (env/server, db, data's client is isomorphic-fetch).
-- Business logic, policy numbers, protocol constants → domain. Flow view-models shared by
-  both platforms → authored once in domain/data BEFORE either screen consumes them
-  (Law 11). Copy both platforms need → packages/i18n/src/copy. Visual values → tokens.
-  Wire shapes → contracts. Form state → forms.
+  declared server entries (env/server, db, data's client is isomorphic-fetch). The one
+  known breach is @heliogrid/db/uuid, which §2 db exempts for frontends but which imports
+  node:crypto — the caveat is recorded there and no app imports it yet.
+- Business logic, policy numbers, protocol constants → domain. Flow view-model TYPES and
+  policy shared by both platforms → domain, authored once BEFORE either screen consumes
+  them (Law 11); the store or repository that fills them → data. Copy both platforms need
+  → packages/i18n/src/copy. Visual values → tokens. Wire shapes → contracts. Form state →
+  forms.
 - Platform-specific implementations are injected via app-side modules (adapter packages
   land per-module; the fences for them already exist in dep-cruiser and turbo tags —
   deliberate pre-landing, per admin-pool-fenced's pattern).
@@ -90,7 +265,8 @@ section records the answer per new file.
    (Law 7).
 9. Is it screen composition/rendering for one platform? → that app's screens/features
    tree, composing the layers above. Screens hold rendering, not policy.
-10. Is it environment/config? → a schema in packages/env + .env.example (never a raw
-    process.env read elsewhere).
+10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
+    read anywhere else needs an entry in scripts/check-env-access.mjs's audited allowlist
+    (§2 env lists today's three).
 11. None of the above fits → STOP. Name the mismatch to the owner before creating a new
     package or directory (00-laws.md stop-and-ask).
