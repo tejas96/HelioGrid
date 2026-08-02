@@ -13,7 +13,7 @@
     "lint": "bash scripts/lint-all.sh",
     "lint:fix": "biome check --write .",
     "boundaries": "turbo boundaries",
-    "verify": "pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test && pnpm turbo build",
+    "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test",
     "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck",
     "check:adherence": "bash scripts/check-adherence.sh",
     "check:openapi": "node scripts/check-openapi-breaking.mjs",
