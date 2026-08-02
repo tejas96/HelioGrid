@@ -7,8 +7,9 @@ paths:
 # Database — append-only, tenant-scoped, fail-closed
 
 - **Migrations are append-only** and sha256-locked by the runner. Editing an applied file
-  makes `migrate` refuse to run (a PreToolUse hook also blocks the edit). Add a new
-  numbered file instead. Overridden once, by owner ruling, in the auth teardown (docs/15
+  makes `migrate` refuse to run, and CI's `git diff --diff-filter=MDR` guard rejects the
+  PR (no pre-edit hook exists — deleted 2026-07-31). Add a new numbered file instead.
+  Overridden once, by owner ruling, in the auth teardown (docs/15
   R19) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via

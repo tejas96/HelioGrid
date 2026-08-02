@@ -14,8 +14,8 @@ Schema law â€” what every table needs, tenancy defence in depth, Law 9 scoping â
 ls packages/db/migrations/
 ```
 
-Number one above the highest. Editing an applied file is blocked by a hook, and would make
-the sha256-locked runner refuse to run at all.
+Number one above the highest. Editing an applied file makes the sha256-locked runner refuse
+to run at all, and CI's append-only guard (`git diff --diff-filter=MDR`) rejects the PR.
 
 ## 2. Write the DDL
 
