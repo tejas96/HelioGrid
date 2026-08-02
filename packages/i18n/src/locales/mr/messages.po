@@ -89,12 +89,12 @@ msgid "Enter your code"
 msgstr "तुमचा कोड टाका"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:42
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
 msgid "Field-first CRM, surveys and design for solar EPCs."
 msgstr "सोलर EPC साठी फील्ड-फर्स्ट CRM, सर्वेक्षण आणि डिझाइन."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:39
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:38
 msgid "Foundations ready"
 msgstr "पाया तयार आहे"
 
@@ -110,12 +110,17 @@ msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
+#: ../../apps/mobile/src/navigation/tabs.tsx:28
+msgid "My Day"
+msgstr "माझा दिवस"
+
+#. js-lingui-explicit-id
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:64
 msgid "New company?"
 msgstr "नवीन कंपनी?"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:47
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:46
 msgid "Open my day"
 msgstr "माझा दिवस उघडा"
 

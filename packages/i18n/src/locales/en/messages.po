@@ -89,12 +89,12 @@ msgid "Enter your code"
 msgstr "Enter your code"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:42
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
 msgid "Field-first CRM, surveys and design for solar EPCs."
 msgstr "Field-first CRM, surveys and design for solar EPCs."
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:39
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:38
 msgid "Foundations ready"
 msgstr "Foundations ready"
 
@@ -110,12 +110,17 @@ msgid "Mobile number"
 msgstr "Mobile number"
 
 #. js-lingui-explicit-id
+#: ../../apps/mobile/src/navigation/tabs.tsx:28
+msgid "My Day"
+msgstr "My Day"
+
+#. js-lingui-explicit-id
 #: ../../apps/web/features/auth/login/components/PhoneStep.tsx:64
 msgid "New company?"
 msgstr "New company?"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:47
+#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:46
 msgid "Open my day"
 msgstr "Open my day"
 
