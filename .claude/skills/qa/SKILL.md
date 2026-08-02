@@ -248,13 +248,19 @@ pressure will eventually rationalize deleting a step.
 
 ## Phase 7 — Retention and evidence.
 
-`plan.json`, `runbook.md`, `report.json` and `triage.md` are committed history. Only
-`artifacts/` is gitignored.
+**Nothing under `.qa/` is committed** — the whole directory is gitignored (owner ruling
+2026-08-02, superseding the earlier rule that kept plan/report/triage as history). QA output
+is for whoever ran it.
 
-- **Clean certify pass** — delete `.qa/<run-id>/artifacts/`. The report records what they
-  proved.
-- **Escalated, or any run left with failures** — **keep the artifacts.** That is exactly
-  the run somebody needs to look at.
+The consequence is load-bearing: **the repo holds no record that a slice was verified.** So
+the run's conclusions must be restated wherever the work is reviewed — the plan, the PR, or
+the message to the owner — citing step IDs and observed values. "QA passed" with no numbers is
+now unfalsifiable, because there is no committed artifact to check it against.
+
+- **Clean certify pass** — delete `.qa/<run-id>/artifacts/`; keep plan/report/triage locally
+  until the work ships.
+- **Escalated, or any run left with failures** — **keep everything.** That is exactly the run
+  somebody needs to look at, and it exists nowhere else.
 
 The roadmap Evidence cell needs specifics, not adjectives. Cite step IDs and observed
 values. If a surface could not be run, say so plainly rather than letting the omission

@@ -175,7 +175,9 @@ file.
 greenfield, tenancy unproven, both logins on a walkthrough stub the rebuild deletes.
 
 **Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
-piece of work under `docs/superpowers/plans/`; what was actually run is the committed
-`.qa/<run-id>/` evidence from `/qa`; `docs/14` is the cross-module plan of record; design
-constraints that must be honoured early are `docs/forward-compat.md`. Three skills exist —
+piece of work under `docs/superpowers/plans/`; what was actually run is the `.qa/<run-id>/`
+evidence from `/qa` — **local only, never committed** (owner ruling 2026-08-02, all of `.qa/`
+is gitignored), so a verification claim must be restated in the PR or the plan, because the
+repo carries no proof of it; `docs/14` is the cross-module plan of record; design constraints
+that must be honoured early are `docs/forward-compat.md`. Three skills exist —
 `/contract-change`, `/migration`, `/qa`.
