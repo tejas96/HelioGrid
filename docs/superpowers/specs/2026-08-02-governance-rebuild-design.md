@@ -12,19 +12,21 @@ against code before recording them. Findings below cite file:line where load-bea
 
 ---
 
-## 0. Decision log — owner rulings made in this session (2026-08-02)
+## 0. Decision log — owner rulings made in this session (2026-08-02/03)
 
-| ID | Ruling |
+An INDEX, not a rule store: one line per ruling, pointing at where the rule is authored.
+
+| ID | Ruling | Rule lives in |
 |---|---|
-| G-1 | **PR workflow with approval gates** (revised same-day from "full PR autonomy"). Every completed task drives toward a PR: work happens on a feature branch and ends PR-ready, but **committing and raising the PR require owner approval**. At finish time the agent presents a git plan — branch name, commit batching, PR title/body with the verification record — as options with a recommendation. For multi-task flows, the agent proposes the batching that fits the work (e.g. one branch/PR with one commit per task, vs. a PR per task) and the owner picks. Main becomes PR-only (owner enables branch protection on GitHub). Supersedes "Git is manual… branches and PRs only on explicit command": the flow now always proposes the PR, but nothing is committed or pushed without a yes. |
-| G-2 | **Minimal deterministic hooks return.** Three zero-intelligence hooks (see §5.4). Consciously revisits the 2026-07-31 "hooks caught zero real mistakes" removal; if these also catch nothing by their matrix review date, they die again. |
-| G-3 | **QA runtimes.** iOS = iOS Simulator (MCP). Android = adb against an emulator/device (no simulator panel exists for Android). Web = Claude Code's built-in browser pane on the dev server. API/db = curl + read-only psql (`qa_readonly`). **Db checks run against the existing local postgres container** (`heliogrid-pg-local`, postgres:16, host port 5544) — QA never creates a container or clones a database for testing; connection details come from env, never hardcoded in the skill or agents. |
-| G-4 | **QA hygiene.** QA cleans up after completion: scratchpad evidence deleted after the report is finalized, processes QA started are stopped, repo tree untouched (QA never edits source). No `.qa/` directory, no artifact archive, no screenshots unless explicitly requested. Retires the 2026-08-02 ".qa/ local-only" ruling by removing `.qa/` entirely. |
-| G-5 | **QA executors run on Sonnet** (`model: sonnet` in agent frontmatter): qa-web, qa-mobile, qa-api, qa-parity. Orchestration (blast radius, plan, triage, root cause) stays on the session model. arch-reviewer inherits the session model. |
-| G-6 | **Architecture chosen: spine rebuild + mechanical cheap wins** (approach B+C-lite) over repair-in-place and full mechanization. |
-| G-8 | **One branch for the whole rebuild** (2026-08-03). All five phases commit to `governance/rebuild`, cut once from main — not a branch or PR per phase, and no intermediate merges. One PR at the end. Consequence accepted: the branch is internally inconsistent mid-flight (Phase 2 cites `/verify` and `/finish`, which land in Phase 3) — acceptable within one branch, and the reason the phases are not separately mergeable. |
-| G-9 | **`/verify` is lean by default** (2026-08-03). It runs on every task, so its size is a permanent tax. Dispatch one agent per surface ACTUALLY in the diff — a web-only change spawns one agent, not four. No parity pass unless the change touches shared code or both apps. No certify re-run unless the owner asks. Docs/config-only changes skip QA entirely. The four-quadrant matrix still governs what a step asserts; it does not mandate how many agents run. |
-| G-7 | **No unit tests stands.** The 2026-07-29 directive is unchanged; verification is running the thing via `/verify`. The superpowers TDD skill trigger is explicitly overridden by repo law. |
+| G-1 | PR workflow with approval gates — nothing commits, pushes or opens a PR without a yes | CLAUDE.md §8 Git · `/finish` |
+| G-2 | Three deterministic hooks return, revisiting the 2026-07-31 removal | §5.4 · docs/17 §5 (with review date) |
+| G-3 | QA runtimes: iOS simulator · Android adb · browser pane · curl + read-only psql on the EXISTING `heliogrid-pg-local` container | §7 · the four agent files |
+| G-4 | QA cleans up and writes nothing to the tree — no `.qa/`, no artifact archive | §7 Phase 7 · `/verify` |
+| G-5 | QA executors run on Sonnet; orchestration and review stay on the session model | agent frontmatter |
+| G-6 | Architecture: spine rebuild + mechanical cheap wins (B + C-lite) | §3 |
+| G-7 | No unit tests stands; the TDD skill is overridden by repo law | CLAUDE.md §8 |
+| G-8 | One branch for the whole rebuild, one PR at the end. **Execution-scoped: expires when this branch merges.** | the two plans' Global Constraints |
+| G-9 | `/verify` is lean by default — agents only for surfaces in the diff, parity only when drift is possible, certify opt-in | §7 · `/verify` |
 
 ---
 
