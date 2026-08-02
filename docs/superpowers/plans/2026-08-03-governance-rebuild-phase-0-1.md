@@ -23,11 +23,10 @@ Turborepo 2.10.7 boundaries · tests/invariants (tsx, postgres) · pnpm 10.34.5.
   not a test.
 - **Zero Biome warnings/errors repo-wide** after every task: `pnpm lint` must stay green.
 - **Edit/Write tools only** — never `sed -i` or shell stream edits.
-- **Git protocol (spec G-1):** at execution start, propose to the owner: branch
-  `governance/phase-0` (commit 1 = the spec + this plan; then one commit per task), PR at
-  Phase 0's end; then branch `governance/phase-1` off main after PR 1 merges, one commit per
-  task, PR at Phase 1's end. One owner approval covers the flow's commits; **push and PR
-  creation each need an explicit yes at that moment.** Commit messages below are the
+- **Git protocol (spec G-1, owner ruling 2026-08-03):** ALL phases share ONE branch,
+  `governance/rebuild`, cut from main — not a branch per phase. One commit per task, one PR
+  at the end of the whole rebuild. One owner approval covers the flow's commits; **push and
+  PR creation each need an explicit yes at that moment.** Commit messages below are the
   proposals.
 - **Surgical diffs:** every changed line traces to a numbered fix in this plan or the spec's
   Appendix A. Do not reformat, re-wrap, or "improve" adjacent prose.
@@ -37,7 +36,7 @@ Turborepo 2.10.7 boundaries · tests/invariants (tsx, postgres) · pnpm 10.34.5.
 
 ---
 
-# PHASE 0 — Stop the lies (branch `governance/phase-0`, one PR)
+# PHASE 0 — Stop the lies (on `governance/rebuild`)
 
 ### Task 1: Purge the false PreToolUse-hook claims
 
@@ -611,13 +610,14 @@ deletion" cell (those describe the deletion; they do not claim the skill exists)
 
 - [ ] **Step 3: Propose push + PR to the owner (G-1 gate)**
 
-Present: branch `governance/phase-0`, the commit list, and a PR body containing: summary of
+Report to the owner: the commit list on `governance/rebuild` and, for the eventual PR body,
+a summary of
 the nine fixes, the probe evidence from Tasks 4-7 (gate fired on injected violation), and
 `pnpm verify` green. **Wait for an explicit yes, then** push and open the PR against main.
 
 ---
 
-# PHASE 1 — The spine (branch `governance/phase-1` off main after PR 1 merges)
+# PHASE 1 — The spine (continues on `governance/rebuild`)
 
 ### Task 10: Author docs/architecture.md — skeleton, §1 map, §3 platform rules, §4 placement
 
@@ -1187,6 +1187,6 @@ counts, no consumer lists, no version pins. Fix inline anything missing.
 
 - [ ] **Step 4: Propose push + PR to the owner (G-1 gate)**
 
-Present: branch `governance/phase-1`, commit list, PR body summarizing the spine +
+Report: commit list on `governance/rebuild`, and for the eventual PR body a summary of the spine +
 15 slimmed files + banners, with `pnpm verify` green stated. **Wait for an explicit yes,
 then** push and open the PR.

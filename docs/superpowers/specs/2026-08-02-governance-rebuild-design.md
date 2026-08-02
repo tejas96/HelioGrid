@@ -22,6 +22,7 @@ against code before recording them. Findings below cite file:line where load-bea
 | G-4 | **QA hygiene.** QA cleans up after completion: scratchpad evidence deleted after the report is finalized, processes QA started are stopped, repo tree untouched (QA never edits source). No `.qa/` directory, no artifact archive, no screenshots unless explicitly requested. Retires the 2026-08-02 ".qa/ local-only" ruling by removing `.qa/` entirely. |
 | G-5 | **QA executors run on Sonnet** (`model: sonnet` in agent frontmatter): qa-web, qa-mobile, qa-api, qa-parity. Orchestration (blast radius, plan, triage, root cause) stays on the session model. arch-reviewer inherits the session model. |
 | G-6 | **Architecture chosen: spine rebuild + mechanical cheap wins** (approach B+C-lite) over repair-in-place and full mechanization. |
+| G-8 | **One branch for the whole rebuild** (2026-08-03). All five phases commit to `governance/rebuild`, cut once from main — not a branch or PR per phase, and no intermediate merges. One PR at the end. Consequence accepted: the branch is internally inconsistent mid-flight (Phase 2 cites `/verify` and `/finish`, which land in Phase 3) — acceptable within one branch, and the reason the phases are not separately mergeable. |
 | G-7 | **No unit tests stands.** The 2026-07-29 directive is unchanged; verification is running the thing via `/verify`. The superpowers TDD skill trigger is explicitly overridden by repo law. |
 
 ---

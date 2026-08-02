@@ -27,9 +27,10 @@ the existing `heliogrid-pg-local` container.
   `tests/invariants/` is the only executable check layer. Verification is running the thing.
 - **Zero Biome warnings/errors repo-wide** after every task: `pnpm lint` stays green.
 - **Edit/Write tools only** — never `sed -i` or shell stream edits.
-- **Git protocol (spec G-1):** work on a branch per phase — `governance/phase-2`,
-  `governance/phase-3`, `governance/phase-4`, each cut from `main` after the previous phase's
-  PR merges. One commit per task. **Push and PR creation each need an explicit owner yes at
+- **Git protocol (spec G-1, owner ruling 2026-08-03):** ALL phases share ONE branch,
+  `governance/rebuild`, cut from main — not a branch per phase, and no intermediate merges.
+  Phases 2–4 continue committing onto the branch Phase 0 started. One commit per task, one PR
+  at the end of the whole rebuild. **Push and PR creation each need an explicit owner yes at
   that moment**; commit messages below are proposals, not authorizations.
 - **Surgical diffs:** every changed line traces to a numbered task step here or to the spec's
   Appendix A. Do not reformat, re-wrap, or "improve" adjacent prose.
@@ -46,7 +47,7 @@ the existing `heliogrid-pg-local` container.
 
 ---
 
-# PHASE 2 — Rules & laws (branch `governance/phase-2`, one PR)
+# PHASE 2 — Rules & laws (continues on `governance/rebuild`)
 
 Phase 1 created `docs/architecture.md` with fixed section numbering: **§1** module map &
 dependency direction, **§2** package registry, **§3** platform rules (RN · Next.js · shared),
@@ -1001,15 +1002,16 @@ Run: `pnpm verify`
 Expected: PASS end to end. (Needs `DATABASE_URL` pointing at `heliogrid-pg-local` for the
 invariants to run rather than skip; without it the run is green but has NOT proven tenancy.)
 
-- [ ] **Step 4: Propose the PR (owner approval required before push)**
+- [ ] **Step 4: Report Phase 2 to the owner**
 
-Present: branch `governance/phase-2`, the commit list, and a PR body summarizing the rewrite
-plus the note that `/verify` and `/finish` are cited here and land in Phase 3. Wait for the
-explicit yes, then push and open it.
+Report the commit list on `governance/rebuild` and note for the eventual PR body that
+`/verify` and `/finish` are cited by Phase 2's files and land in Phase 3 — the branch is
+internally inconsistent until then, which is fine on one branch and would not have been
+across separate PRs. Continue to Phase 3; the single PR comes after Phase 4.
 
 ---
 
-# PHASE 3 — Agents & workflow (branch `governance/phase-3`, one PR)
+# PHASE 3 — Agents & workflow (continues on `governance/rebuild`)
 
 ### Task 27: Author the four QA surface agents
 
@@ -1856,13 +1858,13 @@ Expected: PASS.
 
 - [ ] **Step 3: Propose the PR (owner approval required)**
 
-Present branch `governance/phase-3`, the commit list, and a PR body naming what the owner must
-do outside the repo: **enable branch protection on `main`** (require a PR, require the CI
-checks) so the append-only-migration guard and CODEOWNERS review stop being skippable.
+Report the commit list on `governance/rebuild`, and record for the eventual PR body what the
+owner must do outside the repo: **enable branch protection on `main`** (require a PR, require
+the CI checks) so the append-only-migration guard and CODEOWNERS review stop being skippable.
 
 ---
 
-# PHASE 4 — Perimeter sweep (branch `governance/phase-4`, one PR)
+# PHASE 4 — Perimeter sweep (continues on `governance/rebuild`)
 
 Runs any time after Phase 2. Every item here is a surface the audit found unowned or stale.
 
@@ -2199,8 +2201,9 @@ Expected: no output.
 Run: `pnpm verify`
 Expected: PASS.
 
-Present branch `governance/phase-4` and its commits for the owner's approval to push and open
-the PR.
+This is the last task of the rebuild. Present the whole `governance/rebuild` branch — every
+phase's commits — and the assembled PR body, for the owner's approval to push and open the
+single PR.
 
 ---
 
