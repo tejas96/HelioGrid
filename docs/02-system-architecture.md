@@ -1,5 +1,11 @@
 # 02 — System Architecture
 
+> **STATUS (2026-08-03): design record, not repo state.** Sections describe the TARGET
+> system in present tense; large parts (voice, PowerSync, the module/queue tables, the
+> auth request path) are unbuilt, and §2's package layout predates env/forms/ui-api.
+> Current architectural truth — package registry, platform rules, placement — lives in
+> `docs/architecture.md` (the spine). Where the two disagree, the spine wins.
+
 This document is the canonical architecture record; `./03-tech-stack.md` pins the stack and
 `./adr/` explains why each choice was made. Where two of them disagree, the later-dated one
 wins.

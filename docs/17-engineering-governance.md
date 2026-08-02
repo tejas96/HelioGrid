@@ -199,8 +199,9 @@ that don't apply. **This is the only copy of this template.**
 ## Commands
 pnpm --filter <name> typecheck | lint | test | dev
 
-## Depends on / depended on by
-uses: <packages>        used by: <apps/packages>
+## Dependency policy
+Dependency policy: docs/architecture.md §2 <name>. (Never a hand-maintained consumer
+list — two rotted within 48 hours of ADR-0024.)
 
 ## Local conventions
 <package-specific only — layer-wide law belongs in .claude/rules/ or docs/02 §2>
