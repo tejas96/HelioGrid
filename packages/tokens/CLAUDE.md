@@ -3,6 +3,11 @@
 ## What lives here / what must never live here
 - `build.ts` + `src/` parse `design/ds-source/tokens/*.css` and emit `dist/` (tokens.css,
   base.css, theme.ts, tokens.json, contrast.pairs.json, fonts/).
+- **Plus ONE emit outside `dist/`:** the native splash canvas, written into
+  `apps/mobile/android/…/values/colors.xml` and `apps/mobile/ios/…/SplashCanvas.colorset/`,
+  **committed** (not gitignored) because xcodebuild and Gradle cannot import this package.
+  Deliberate exception to "uses: nothing in the workspace" — this package still imports
+  nothing, but it does WRITE into apps/mobile. Rationale: docs/13 UXG-26.
 - Extensions in `src/extensions.ts` only — each under `@heliogrid-extension` marker.
 - NEVER: hand-transcribed values, hand-edited `dist/`, reading `_ds_manifest.json`.
 
@@ -30,6 +35,12 @@ used by: apps/web, apps/mobile, packages/ui
   `dist/` is gitignored so nothing surfaced the drift. `$TURBO_DEFAULT$` keeps the normal
   in-package inputs; `dependsOn`/`outputs` are restated because a package task definition
   REPLACES the root's rather than merging with it.
+- **The native splash files are NOT in turbo `outputs`** — turbo tracks outputs inside the
+  package only, so a cached `turbo build` does not rewrite them. Anything checking their
+  freshness must call `pnpm --filter @heliogrid/tokens build` directly, never through turbo,
+  or it replays a green gate over a stale value — the same shape as the cache landmine above.
+  CI also uses `git status --porcelain`, not `git diff`: diff is blind to untracked files, so
+  a deleted-and-committed file would regenerate as untracked and pass.
 - Noto Sans Devanagari woff2 vendored — Geist has zero Devanagari coverage.
 - RN: static TTF 400/500/600/700 bundled in `apps/mobile/assets/fonts/` via
   `react-native.config.js`. Verify Devanagari via `<AppText>` rendering on both sims.

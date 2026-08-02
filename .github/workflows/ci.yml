@@ -89,6 +89,25 @@ jobs:
         run: |
           pnpm --filter @heliogrid/i18n extract
           git diff --exit-code packages/i18n/src/locales
+      - name: Native splash colour freshness (docs/13 UXG-26)
+        # The package script, NOT `turbo build`: turbo only tracks outputs inside a package,
+        # so these two files are not in its `outputs` and a cache hit would skip rewriting
+        # them — replaying a green gate over a stale value, the landmine this package
+        # already carries once.
+        #
+        # `git status --porcelain`, NOT `git diff --exit-code`: diff is blind to untracked
+        # files, so deleting a generated file and committing that would regenerate it as
+        # untracked and PASS. status catches modified and untracked alike.
+        run: |
+          pnpm --filter @heliogrid/tokens build
+          CHANGED=$(git status --porcelain -- \
+            apps/mobile/android/app/src/main/res/values/colors.xml \
+            apps/mobile/ios/HelioGridMobile/Images.xcassets/SplashCanvas.colorset)
+          if [ -n "$CHANGED" ]; then
+            echo "Native splash colour is stale or missing — run: pnpm --filter @heliogrid/tokens build"
+            echo "$CHANGED"
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: openapi
