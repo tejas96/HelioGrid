@@ -11,8 +11,11 @@
 ## What lives here / what must never live here
 - Drizzle schema (`src/schema/*`), the connection factory + `withTenantTransaction`
   (SET LOCAL app.tenant_id), the migration runner, and `migrations/*.sql`.
+- The `./uuid` subpath export exists for app-side id generation and is the ONE thing
+  frontends may import from here.
 - NEVER: business logic, contract imports, app imports. Never a table/column that is not
-  in docs/04 or a migration.
+  in docs/04 or a migration. web and mobile may import nothing here but `./uuid`
+  (`web-no-db` / `mobile-no-db` exempt exactly that subpath).
 
 ## Commands
 pnpm --filter @heliogrid/db build        # tsc -b
@@ -22,8 +25,8 @@ pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
                                          # takes the URL, so it stays reusable and testable.
 pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
-## Depends on / depended on by
-uses: drizzle-orm, postgres        used by: apps/api, apps/worker, tests/invariants
+## Dependency policy
+docs/architecture.md §2 db.
 
 ## Local conventions
 - Migrations are append-only, filename-ordered, sha256-locked by the runner — editing an

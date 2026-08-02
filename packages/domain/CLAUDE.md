@@ -16,12 +16,10 @@
 ## Commands
 pnpm --filter @heliogrid/domain typecheck | build
 
-## Depends on / depended on by
-uses: NOTHING in the workspace — this is the BOTTOM layer (owner ruling 2026-07-30, ADR-0021)
-used by TODAY: apps/web, apps/mobile, packages/ui, packages/contracts, packages/data, apps/api.
-The contracts and api edges went LIVE on 2026-08-01 when the OTP protocol constants and
-`TENANT_SEGMENTS` moved down here ahead of the auth teardown — this line previously said no
-such import existed, so do not read it as still inert. apps/worker remains a scaffold.
+## Dependency policy
+docs/architecture.md §2 domain. This is the BOTTOM layer — it imports nothing in the
+workspace (owner ruling 2026-07-30, ADR-0021). The contracts and apps/api edges were
+removed by the same-day ADR-0024 teardown and return with the auth rebuild.
 A business enum both layers need is defined HERE as a pure union; contracts then builds its
 `z.enum` from it. Importing contracts from here is a package cycle, and both gates say so.
 
@@ -45,7 +43,8 @@ A business enum both layers need is defined HERE as a pure union; contracts then
   outcome through a differently-named variable, so it looked absent and was not. Unifying a type
   narrows where drift can hide; it does not tell you what each side actually does.
 - Landed so far: login flow types + behavioural constants (`auth/login-state.ts`,
-  `auth/login-policy.ts`) and phone NSN display (`format/phone.ts`). Still to come, in order:
+  `auth/login-policy.ts`), the OTP protocol constants (`auth/otp.ts`), `TENANT_SEGMENTS`
+  (`tenancy/segment.ts`) and phone NSN display (`format/phone.ts`). Still to come, in order:
   the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6),
   `formatMoney(amount, currency, locale)` (market grouping per currency — lakh/crore for INR;
   global ruling 2026-08-02 renamed the planned `formatInr` before it was built), then the

@@ -23,12 +23,9 @@ pnpm --filter @heliogrid/env build | typecheck
 - This package is the source of truth for WHICH variables exist and their shape;
   `.env.example` documents them; neither ever holds a real secret.
 
-## Depends on / depended on by
-uses: zod (pinned 3.25.76)
-used by: apps/api, apps/worker, tests/invariants (via `./server`); apps/web via `./web`
-(`apps/web/lib/env.ts`); apps/mobile via `./native` (`apps/mobile/src/env.ts`).
-NOT packages/db — its migrator takes the URL as a parameter — and NOT packages/domain, which
-may never read the environment and imports nothing in the workspace at all (ADR-0021).
+## Dependency policy
+docs/architecture.md §2 env. Two deliberate non-consumers: packages/db (its migrator takes
+the URL as a parameter) and packages/domain (may never read the environment — ADR-0021).
 
 ## Local conventions
 - Adding a variable means editing a schema HERE and `.env.example`, and nothing else.
