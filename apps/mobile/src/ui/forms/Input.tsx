@@ -11,14 +11,19 @@ import {
 import { AppText } from '../AppText';
 
 /**
- * _adherence allowlist: label, value, onChange, placeholder, type, density, error,
- * success, helper, disabled, mono, leading, trailing, id, style.
+ * _adherence allowlist: label, value, onChange, onBlur, placeholder, type, density, error,
+ * success, helper, disabled, mono, leading, trailing, id, style. `onBlur` joined the
+ * allowlist on 2026-08-02 (owner ruling): web accepted it all along via
+ * InputHTMLAttributes, so RN lacking it was a hidden Law 7 gap that left `useZodForm`'s
+ * `mode: 'onTouched'` unable to validate on blur here.
  */
 export interface InputProps {
   label?: string;
   value?: string;
   /** RN adaptation: receives the new text (web passes the change event). */
   onChange?: (text: string) => void;
+  /** RN adaptation: zero-arg (web inherits the DOM FocusEventHandler). Forms validate on blur. */
+  onBlur?: () => void;
   placeholder?: string;
   type?: 'text' | 'email' | 'password' | 'number' | 'tel';
   density?: 'expressive' | 'functional';
@@ -70,6 +75,7 @@ export function Input({
   label,
   value,
   onChange,
+  onBlur,
   placeholder,
   type = 'text',
   density = 'expressive',
@@ -116,7 +122,10 @@ export function Input({
             secureTextEntry={type === 'password'}
             autoCapitalize={type === 'email' || type === 'password' ? 'none' : undefined}
             onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
+            onBlur={() => {
+              setFocused(false);
+              onBlur?.();
+            }}
             style={[
               styles.text,
               { fontFamily: mono ? fam.mono['400'] : fam.sans['400'] },

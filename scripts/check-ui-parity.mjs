@@ -60,6 +60,9 @@ const NOT_SHARED = {
   ),
   'Input.onChange':
     'web inherits ChangeEventHandler<HTMLInputElement>, RN declares (text: string) => void.',
+  'Input.onBlur':
+    'web inherits FocusEventHandler<HTMLInputElement>, RN declares () => void — added ' +
+    '2026-08-02 so useZodForm mode:onTouched can validate on blur on RN too.',
   'Input.value':
     'web inherits value from InputHTMLAttributes (string | number | readonly string[]); RN ' +
     'declares string. The DOM union is wider than anything RN can accept.',

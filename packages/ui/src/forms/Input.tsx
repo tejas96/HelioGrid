@@ -3,8 +3,10 @@ import { type CSSProperties, type InputHTMLAttributes, type ReactNode, useId } f
 import './Input.css';
 
 /**
- * _adherence allowlist: label, value, onChange, placeholder, type, density, error,
- * success, helper, disabled, mono, leading, trailing, id, style.
+ * _adherence allowlist: label, value, onChange, onBlur, placeholder, type, density, error,
+ * success, helper, disabled, mono, leading, trailing, id, style. `onBlur` is inherited
+ * from InputHTMLAttributes here; it joined the allowlist on 2026-08-02 when RN declared
+ * its own zero-arg mirror (owner ruling) so both platforms validate on blur.
  */
 export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'style'> {

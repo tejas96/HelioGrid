@@ -95,8 +95,8 @@
         "message": "<IconButton> variant must be one of 'surface' | 'dark' | 'ghost'."
       },
       {
-        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|onChange|placeholder|type|density|error|success|helper|disabled|mono|leading|trailing|id|style|key|ref|className|style|children)$/]",
-        "message": "<Input> doesn't accept that prop. Declared props: label, value, onChange, placeholder, type, density, error, success, helper, disabled, mono, leading, trailing, id, style."
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|onChange|onBlur|placeholder|type|density|error|success|helper|disabled|mono|leading|trailing|id|style|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label, value, onChange, onBlur, placeholder, type, density, error, success, helper, disabled, mono, leading, trailing, id, style."
       },
       {
         "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:expressive|functional)$/]",
