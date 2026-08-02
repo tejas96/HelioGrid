@@ -52,8 +52,8 @@
           "level": "error",
           "options": {
             "paths": {
-              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 \u00a74, spike S3). Import from 'zod' only.",
-              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 \u00a74, spike S3). Import from 'zod' only."
+              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only."
             }
           }
         },
@@ -172,7 +172,10 @@
           "complexity": {
             "noExcessiveLinesPerFunction": {
               "level": "error",
-              "options": { "maxLines": 50, "skipBlankLines": true }
+              "options": {
+                "maxLines": 50,
+                "skipBlankLines": true
+              }
             }
           }
         }
@@ -198,7 +201,12 @@
                       "Switch"
                     ],
                     "message": "Import AppText, Input, OtpInput, Button, IconButton, Switch, Checkbox or Radio from '../../ui' instead — apps/mobile/src/ui is the RN half of the design system and the only surface the web/RN parity contract can see (Law 5, Law 7). View, ScrollView, StyleSheet and Platform are layout and stay allowed."
-                  }
+                  },
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
+                  "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
+                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it (hit 2026-08-02). Real schemas live in @heliogrid/contracts."
                 }
               }
             }
@@ -238,7 +246,31 @@
           "complexity": {
             "noExcessiveLinesPerFunction": {
               "level": "error",
-              "options": { "maxLines": 80, "skipBlankLines": true }
+              "options": {
+                "maxLines": 80,
+                "skipBlankLines": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/**", "apps/mobile/**", "!apps/mobile/src/screens/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
+                  "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
+                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it (hit 2026-08-02). Real schemas live in @heliogrid/contracts."
+                }
+              }
             }
           }
         }

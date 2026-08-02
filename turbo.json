@@ -65,6 +65,11 @@
           "allow": ["ui", "contracts", "domain", "tokens", "config"]
         }
       },
+      "forms": {
+        "dependencies": {
+          "allow": ["forms", "config"]
+        }
+      },
       "app": {
         "dependencies": {
           "allow": [
@@ -76,6 +81,7 @@
             "tokens",
             "ui",
             "i18n",
+            "forms",
             "adapters",
             "config",
             "env"

@@ -28,12 +28,23 @@
     //
     // app/providers.tsx is deliberately NOT an entry: layout.tsx imports it, and listing it
     // would mark its exports public and hide the genuinely-dead `useLocale`.
-    "apps/web": { "project": "{app,features,lib}/**/*.{ts,tsx}" },
+    // `zod` stays in both app manifests WITHOUT being imported: the explicit pin is what
+    // stops pnpm resolving @ts-rest's peer to the transitive zod 4 (mobile CLAUDE.md
+    // landmine, hit 2026-07-27), while direct app imports are Biome-banned — the bundler's
+    // zod is a different instance from the one installFormsErrorMap configures (2026-08-02).
+    "apps/web": {
+      "project": "{app,features,lib}/**/*.{ts,tsx}",
+      "ignoreDependencies": ["zod"]
+    },
 
     // src/ui/index.ts is this app's component API — the RN mirror of packages/ui's public
     // surface — so its exported Props types are surface, not orphans. Without it knip
     // reported ~70 of them.
-    "apps/mobile": { "entry": ["App.tsx", "src/ui/index.ts"], "project": "src/**/*.{ts,tsx}" },
+    "apps/mobile": {
+      "entry": ["App.tsx", "src/ui/index.ts"],
+      "project": "src/**/*.{ts,tsx}",
+      "ignoreDependencies": ["zod"]
+    },
 
     "tests/invariants": { "entry": ["src/run.ts"], "project": "src/**/*.ts" },
 

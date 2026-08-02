@@ -116,6 +116,16 @@ module.exports = {
       to: { path: '(^|/)node_modules/(@ts-rest|better-auth)/|^(@ts-rest/|better-auth)' },
     },
     {
+      name: 'forms-through-heliogrid-forms',
+      severity: 'error',
+      comment:
+        'Screens build form state through @heliogrid/forms and nothing else (foundation-dx spec §2.2). A screen importing react-hook-form directly re-opens per-screen form wiring — the drift the package exists to end. Both match forms for the same reason as apps-never-touch-the-wire.',
+      from: { path: '^apps/(web|mobile)/' },
+      to: {
+        path: '(^|/)node_modules/(react-hook-form|@hookform)/|^(react-hook-form($|/)|@hookform/)',
+      },
+    },
+    {
       name: 'tokens-standalone',
       severity: 'error',
       comment: 'tokens is generated from design/ds-source and depends on nothing in the workspace',
