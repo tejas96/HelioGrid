@@ -10,7 +10,9 @@ write to the database.
 
 **API** — dev server on port 8084. `curl -i`; assert on the status line and body bytes.
 **Database** — the ALREADY RUNNING `heliogrid-pg-local` container (postgres:16, host port
-5544), read-only role, `SELECT` only.
+5544) as `qa_readonly`, `SELECT` only. Tenant tables are RLS-FORCEd: a query without
+`SET LOCAL app.tenant_id` inside a transaction returns zero rows by design. **Zero rows
+without a tenant pin is `inconclusive`, never a pass** — see `infra/README.md`.
 
 **Never create a container, clone a database, run a migration, or write a row.** If the
 container is not running, report `inconclusive` naming it — do not start one.
