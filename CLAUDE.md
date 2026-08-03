@@ -1,188 +1,204 @@
 # HelioGrid — constitution
 
-Multi-tenant SaaS for solar EPC companies — India primary, global-capable backend: CRM →
-survey → 3D design → proposal → customer link → voice follow-up → projects → payments. The
-3D Design Studio is the flagship. Light-only v1 · EN/HI/MR UI · tenant-currency money (INR v1).
+Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM → survey →
+3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
+Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
-**Tradeoff:** these rules bias toward caution over speed. For a trivial change, use judgment —
-but never skip §1's "you ran it" for anything a user can see.
+This file and `docs/architecture.md` are the two you must know. Everything else loads when
+it applies.
 
-## 1. What good looks like
+## 1. Core principles
 
-- **Compose, don't rebuild.** `packages/` holds the vocabulary; app code spends it. Search
-  before you create. When a primitive you need isn't there, ADD it to the package — never
-  inline a local copy. If lint says an element or import is restricted, that is this rule.
-- **One definition per fact.** A fact both platforms need is defined in a package BEFORE
-  either screen uses it — never authored twice and reconciled later. Enums → contracts.
-  Shared logic, policy numbers and formatters → domain. Visual values → tokens. Schema →
-  migrations. Copy → the i18n catalog.
-- **Screens are the unguarded surface.** The gates check packages: their API shape, their
-  purity, who may import them. Almost nothing checks what a screen authors inline, and that
-  is where every recent defect landed. Writing a constant, type, or helper in a screen is
-  the moment to ask which package owns it.
-- **Verified means you ran it.** Green gates never prove UI work — browser for web, both
-  simulators for RN, curl for api — all of it through `/qa`. A task is done when you have
-  looked at it.
-  A red probe proves nothing until you read WHY it went red: a syntax error in the probe, an
-  earlier gate failing first, or a pipeline's own exit code all look exactly like a catch.
-- **Read call sites, not declarations.** Two platforms reach the same behaviour through
-  differently-named state. Comparing what each side DECLARES produces confident, wrong findings.
-- **Small and honest beats broad and hedged.** Say what you checked and what you did not.
+**Architecture decides ownership.** Run `docs/architecture.md` §4 before creating any file,
+constant, type or helper — it names the owning package. §2 says what each package may hold
+and import; §3 what is web-only, RN-only or shared.
 
-## 2. Think before coding
+**Never duplicate a definition.** A fact both platforms need lives in a package before
+either screen uses it. Enums → contracts. Logic, policy numbers, formatters → domain. Visual
+values → tokens. Schema → migrations. Copy → i18n. Compose from `packages/`; if a primitive
+is missing, add it there rather than inlining a copy.
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+**Screens are the unguarded surface.** Gates check packages; almost nothing checks what a
+screen writes inline, and that is where every recent defect landed.
 
-- **State your assumptions** before you implement. If uncertain, ask.
-- **Two readings of the request → present both.** Choosing one silently is the failure the
-  stop-and-ask triggers in `.claude/rules/00-laws.md` exist to prevent.
-- **A simpler approach exists → say so.** Push back when warranted; a recommendation you
-  withheld is a decision you made on the owner's behalf without telling them.
-- **Unclear → stop.** Name what is confusing, then ask. Never invent a requirement.
-- **Architecture shifts at plan time.** Better fit found while coding → say so; never switch
-  silently.
-- **Every change traces to something asked for** — a docs/product D-decision or a mockup
-  file. Don't build what nobody requested.
+**Think before coding.** State assumptions. Two readings of a request → present both.
+Unclear → stop and ask; never invent a requirement.
 
-## 3. Simplicity first
+**Found a better approach? Propose it, with an example.** Show what it would look like in
+*this* codebase — the shape of the code or the file it would live in — and what it costs to
+switch. A recommendation you withheld is a decision you made on the owner's behalf without
+telling them. Two limits: only when you have actually found one (a manufactured alternative
+wastes their attention), and never switch to it silently — propose, then follow the answer.
 
-**The minimum code that solves the problem. Nothing speculative.**
+**Keep changes minimal.** Solve the requested problem only. No speculative abstraction, no
+error handling for impossible states, no refactoring what isn't broken. Match surrounding
+style. Remove what your change orphaned; mention unrelated dead code, don't delete it. Every
+changed line traces to the request.
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or configurability nobody requested.
-- No error handling for states that cannot occur.
-- Wrote 200 lines where 50 would do? Rewrite it.
-- The test: would a senior engineer call this overcomplicated? Then it is.
+**Verify reality.** `/verify` on the real surface — a task is done when you have looked at
+it. Read failures, not exit codes: a red probe proves nothing until you know why it went
+red, and a green gate proves nothing until you have seen it go red on an injected violation.
+Read call sites, not declarations — two platforms reach the same behaviour through
+differently-named state.
 
-This does not contradict "compose, don't rebuild" (§1). Reach for an existing package
-primitive every time; do not *invent* a new one to serve a single caller.
+**Don't move to the next task or to-do until you are 99% confident the current one is
+complete and correct.**
 
-## 4. Surgical changes
+**Minimise blast radius.** If something small needs edits across many unrelated files, the
+architecture is wrong. Say so before writing the workaround.
 
-**Touch only what you must. Clean up only your own mess.**
+**Cross-cutting concerns are built in from day one, never retrofitted.** Anything that will
+reach every module later — permissions/RBAC, tenancy, money, audit, i18n, offline — is
+provisioned by the first slice that could carry it, even while nothing consumes it yet, and
+behind ONE enforcement seam rather than per-handler checks. `docs/forward-compat.md` is the
+register: read your module's row before its first migration or contract, and add a row when
+you find a new such concern. Retrofitting one of these is a repo-wide sweep — exactly the
+blast radius the rule above tells you to refuse.
 
-- Don't "improve" adjacent code, comments or formatting.
-- Don't refactor what isn't broken.
-- Match the surrounding style, even where you would do it differently.
-- Spot unrelated dead code → mention it, don't delete it.
-- Remove the imports, variables and helpers that YOUR change orphaned — the no-unused-symbols
-  rule in §8 fails on them anyway.
-- The test: every changed line traces to the request.
+## 2. The Laws
 
-Edit/Write for all file changes; comment only what the code cannot say.
+Stable ids — never reused or renumbered; a gap is a law that was removed. Each is held by a different
+mechanism — some by lint or types, some only by review (§7).
 
-## 5. Goal-driven execution
+1. **Foundation before features.** Feature modules build only on landed foundation.
+3. **Contracts before code.** requirements → domain model → contract → shared types →
+   migration → implementation → verification → docs. Never in reverse.
+5. **Reuse before creation.** Search first; creating what exists is a defect.
+7. **Shared component APIs stay in parity.** A prop on one platform only is a defect.
+8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES
+   files greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
+9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored
+   only when their owning module's slice begins.
+10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API
+    outside a declared server entry.
+11. **Flows are authored once.** Shared state vocabulary and view-model types live in a
+    shared package before either screen consumes them. Screens render; they don't hold policy.
 
-**Define success criteria, then loop until they hold.**
+## 3. Workflow
 
-Turn the task into something checkable before starting. **This repo has no unit tests (§8),
-so the criterion is never "write a test" — it is running the thing:**
+**Understand → build → `/verify` → `/finish`.**
 
-- "Add validation" → drive the invalid inputs through `/qa`; read the error envelope and the
-  status the contract declares.
-- "Fix the bug" → reproduce it on the real surface first, then show those same steps passing.
-- "Refactor X" → gates green before and after, plus the screen actually walked in `/qa`.
-- Schema or tenancy work → `pnpm turbo test` runs `tests/invariants/`; that is the proof.
+Before writing code, know two things and say them: **which package owns each new file**
+(`docs/architecture.md` §4) and **what will prove it works**. Anything whose shape is still in
+question gets settled with the owner first — never invent a requirement.
 
-For multi-step work, state the plan first, with one verification per step:
+Turn the task into something checkable — "fix the bug" means reproduce it on the real surface,
+then show those steps passing.
 
-1. [step] → verify: [the command or surface that proves it]
-2. [step] → verify: [...]
+## 4. Stop and ask the owner before
 
-Weak criteria ("make it work") force constant clarification. Strong ones let you finish
-without asking.
+- Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
+- Schema or API work outside the current module (Law 9).
+- A layer conflict §7 does not resolve.
+- A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in docs/13 or
+  docs/15 first, then continue.
+- **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An
+  instruction to do work is never approval to commit it, and one approval never carries to
+  the next. `main` is PR-only; never `--no-verify`.
 
-## 6. Commands
+## 5. Commands
 
-`pnpm verify` — lint · boundaries · typecheck · test · build. That is the gate set.
-(`test` runs only `tests/invariants/` — there are no unit tests anywhere.)
-Per package: see its own CLAUDE.md §Commands.
+`pnpm verify` — build · lint · boundaries · typecheck · test. Build runs FIRST: dep-cruiser
+resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind.
 
-Needs a live postgres (`DATABASE_URL`): without one the invariants skip loudly, so a green
-run has NOT proven tenancy. Enumerate files with `git ls-files`, never a bare glob — in zsh a
-single unmatched pattern aborts the whole command and prints nothing, which reads as "clean".
+- Needs a live postgres (`DATABASE_URL`) or the invariants skip — a green run has NOT proven
+  tenancy. **Read gate output, not exit codes**; an invariant over an empty schema says VACUOUS.
+- Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
+- Enumerate files with `git ls-files`, never a bare glob: in zsh one unmatched pattern aborts
+  the command and prints nothing, which reads as "clean".
+- **Never weaken a gate to make a change pass.** Not every rule is mechanically held — see §7.
 
-**Never weaken a gate to make a change pass.** A gate that blocks you means the change is
-wrong. Rule → mechanism matrix: docs/17 §5.
+## 6. File and folder structure
 
-**Deleted a source file? `pnpm turbo build --force`.** `tsc -b` leaves its output behind and
-turbo's cache restores it, so `boundaries` and `knip` keep failing on a module you removed.
+**Never invent a folder.** Every tree below is a closed set — a new category is a plan-time
+decision, not something to create mid-task. Put the file where the pattern already puts it.
 
-**Zero Biome warnings, zero Biome errors, zero typecheck errors — repo-wide, not just on
-files you touch.** `pnpm lint` (`scripts/lint-all.sh`, part of `pnpm verify` and CI) runs
-Biome with `--error-on-warnings`, so a warning fails the gate exactly like an error. A git
-pre-commit hook (`simple-git-hooks`, installed via `prepare`) additionally runs
-`pnpm precommit` (`biome check --error-on-warnings --no-errors-on-unmatched --staged .` +
-`pnpm turbo typecheck`) scoped to staged files, so this is caught before it ever reaches CI.
-Don't work around either by dropping `--error-on-warnings`, narrowing what you stage, or
-committing with `--no-verify`; fix the diagnostic.
+| Where | Shape |
+|---|---|
+| `apps/web` | `app/<route>/page.tsx` routes only · `features/<capability>/` owns the work: `<Name>Screen.tsx` composes · `components/` one file per component · `hooks/use-<thing>.ts` · `constants.ts` · `types.ts` · `shared/` when two screens in the feature share · `lib/` for app infrastructure |
+| `apps/mobile` | `src/{auth,lib,navigation,push,screens,ui}` + root `env.ts`, `i18n.ts` · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
+| `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
+| `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
+| `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |
 
-## 7. Product law (owner rulings — port, don't reinvent)
+**Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one
+file each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the
+location and a few filenames differ.
+
+**Naming.** A file is named for what it does. Never `*-part2`, `*2`, `*-extra`, and never for
+its layer — a `components.tsx` or `hooks.ts` grab-bag is the same defect as `*-part2`. If a
+split needs a number, it is the wrong split.
+
+The full per-package registry — what each package owns, may import, and may never hold —
+is `docs/architecture.md` §2. Read §4 before creating any file.
+
+## 7. When rules conflict
+
+Higher wins, and don't re-declare at a lower level what a higher one already fixed:
+
+**owner rulings (docs/15, docs/13) → architecture (`docs/architecture.md`) → contracts →
+design system → this file → package `CLAUDE.md` → implementation detail.**
+
+Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the
+code and has historically been the accurate one; and between two records, the **later-dated**
+one wins. If a doc and the code disagree, fix the doc or ask.
+
+**A rule is not enforced just because it is written.** Before trusting one, check whether a
+type, a lint rule or an invariant actually holds it — several here are held only by review,
+and a few are narrower than they read.
+
+## 8. Repository rules
+
+- **No unit tests** — never a `.test.*`/`.spec.*` file. `tests/invariants/` is the only
+  executable check layer; behaviour is proven by running it.
+- **Files ≲300 lines**, split by responsibility. Never `*-part2`, `*2`, `*-extra`.
+- **Style never lives in the component file** — `<Name>.css` on web, `styles.ts` on RN.
+- **An instruction earns its length.** State the rule, its cost, the fix — 1–3 lines. The war
+  story belongs in the commit. Before adding a rule, check whether it REPLACES an existing
+  one rather than stacking beside it.
+- **Presentation and logic in different files** (`.claude/rules/ui-adherence.md`).
+- **Config comes from `@heliogrid/env`** — a variable is a schema edit plus `.env.example`.
+  Who else may read a raw source: `scripts/check-env-access.mjs`'s allowlist.
+- **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
+  and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it.
+- **One review per change.** Findings get fixed and the work ships; multi-round adversarial
+  review only when asked for by name.
+- **Repo law beats a plugin skill.** Named: the test-driven-development skill never applies
+  here.
+- **Write to the gates.** 2-space · LF · width 100 · semicolons · single quotes (JSX double) ·
+  trailing commas · organised imports · `import type` · no `any`/`!`/`==`/`console.log`/unused
+  symbols · `noUncheckedIndexedAccess`. Then `pnpm exec biome check --write <files>`.
+
+## 9. Product law
+
+Digest of `docs/15`, which is canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
-- Money never renders stale: design changed + quote not recomputed → the figure reads provisional.
-- One money path: BOM ↔ proposal ↔ tranches ↔ project payments reconcile to the minor unit
-  of the tenant's currency (paisa for INR).
-- Every tenant belongs to ONE market (country) and ONE currency. Market facts — tax scheme,
-  stage labels, document checklists, payment rails, phone spec, compliance rules — resolve
-  from versioned market packs (docs/02 §10), never hard-coded.
+- Money never renders stale — design changed and quote not recomputed reads provisional.
+- One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
+- One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone
+  spec) resolve from versioned market packs, never hard-coded.
 - Sent proposals keep their prices; a price-book update creates a new version.
-- Structural adequacy is NEVER computed — an engineer signs off (who + when), and the
-  disclaimer travels with every structure-bearing output.
-- Money renders with the tenant currency's market grouping in every locale (INR: lakh/crore,
-  never a locale-default separator); kW/kWh/kWp are never translated.
-- Read + export work regardless of billing state. Never hold data hostage.
+- Structural adequacy is NEVER computed — an engineer signs off, and the disclaimer travels
+  with every structure-bearing output.
+- Money renders in the tenant currency's grouping in every locale (INR: lakh/crore);
+  kW/kWh/kWp are never translated.
+- Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 
-## 8. Process
+## 10. Where things are
 
-- **No unit tests.** Never a `.test.*` or `.spec.*` file (owner directive 2026-07-29). The only
-  executable checks are `tests/invariants/`. Verify by running the thing (§5).
-- **Files ≲450 lines, split by responsibility.** Name the new file for what it does — never
-  `*-part2`, `*2`, `*-extra`. A split needing a number is the wrong split.
-- **An instruction earns its length.** Rules load every turn; a long one gets skimmed, which
-  makes it worse than no rule. State the rule, its cost, and the fix — 1–3 lines. The war
-  story belongs in the commit or the ADR, not here. Before adding one, check whether it
-  replaces an existing rule instead of stacking beside it.
-- **Presentation and logic in different files.** Detail: `.claude/rules/ui-adherence.md`.
-- **Config comes from `@heliogrid/env`** — the only package that reads a raw source. Adding a
-  variable edits a schema there and `.env.example`, nothing else. The allowlist in
-  `scripts/check-env-access.mjs` is the authority: `apps/web/lib/env.ts` is a deliberate
-  exception (Next inlines `NEXT_PUBLIC_*` only in code it compiles), so do not "fix" it.
-- **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
-  and rots. Do not add new checker scripts; a new one needs an owner ruling saying why no type
-  and no lint rule can hold it.
-- **Git is manual.** Commit only when asked for a commit, in those words. Finishing the work
-  is not a trigger, and neither is "fix it" — that authorises the fix, not the commit. Leave
-  changes in the working tree and say what is there. When asked, prefer several small commits
-  over one sweep: the diff is what the owner reads. Branches and PRs only on explicit command.
-- **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
-  fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
-  happens only when the owner asks for it by name.
-- **Write to the gates, don't lint after the fact.** 2-space · LF · width 100 · semicolons ·
-  single quotes (JSX double) · trailing commas · organized imports · `import type` for types
-  (except apps/api|worker) · no `any` / `!` / `==` / `console.log` / unused symbols ·
-  `process.env` only where `scripts/check-env-access.mjs` allows it · indexing yields `T | undefined`
-  (noUncheckedIndexedAccess). Then `pnpm exec biome check --write <files>` before presenting.
+| | |
+|---|---|
+| `docs/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
+| `docs/15` · `docs/13` | Product rulings · UX-gap register |
+| `docs/14` · `docs/forward-compat.md` | Cross-module plan of record · early design constraints |
+| `.claude/rules/` | Path-scoped deltas — load automatically for the paths they name |
+| package `CLAUDE.md` | Local conventions and landmines |
+| `docs/adr/` | Reference only — never a gate |
 
-## 9. Where things are
+The verification record lives in the PR body — `/verify` writes nothing to the tree.
 
-The Laws and the stop-and-ask triggers: `.claude/rules/00-laws.md` (auto-loads, as do the
-path-scoped rules: `ui-adherence.md`, `contracts.md`, `db-schema.md`, `i18n.md`).
-Governance and the rule → mechanism matrix: docs/17. Product truth: docs/15 rulings and the
-docs/13 UX-gap register. Layer law: each package's own CLAUDE.md. `docs/adr/` is reference
-only — never a gate, never write one before building; replaced architecture deletes the old
-file.
+**Skills:** `/contract-change` · `/migration` · `/verify` · `/finish`.
 
-**Frontend data path is `@heliogrid/data`, nothing else** (ADR-0023) — an app importing
-`@ts-rest/*` or an auth client is a build failure. **Auth is absent** (ADR-0024): db is
-greenfield, tenancy unproven, both logins on a walkthrough stub the rebuild deletes.
-
-**Where work lives** (per-module roadmaps were deleted 2026-07-31, docs/17 §3): a plan per
-piece of work under `docs/superpowers/plans/`; what was actually run is the `.qa/<run-id>/`
-evidence from `/qa` — **local only, never committed** (owner ruling 2026-08-02, all of `.qa/`
-is gitignored), so a verification claim must be restated in the PR or the plan, because the
-repo carries no proof of it; `docs/14` is the cross-module plan of record; design constraints
-that must be honoured early are `docs/forward-compat.md`. Three skills exist —
-`/contract-change`, `/migration`, `/qa`.
+What is built and what is not: `docs/architecture.md`.

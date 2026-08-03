@@ -2,7 +2,9 @@
 
 ## What lives here / what must never live here
 - ts-rest routers + Zod schemas + shared conventions (error envelope, pagination,
-  tenancy claim, provenance/role/language enums) + typed job payloads (`jobs.ts`).
+  provenance/role/language enums) + typed job payloads (`jobs.ts`). The tenancy claim
+  schemas were deleted with auth (ADR-0024) and return with its rebuild — `common.ts`
+  records where they lived.
 - NEVER: implementations, db imports, NestJS imports, fetch clients, `zod/v4` imports
   (Biome bans them until ts-rest Zod-4 support is stable — spike S3).
 
@@ -10,11 +12,10 @@
 pnpm --filter @heliogrid/contracts build       # tsc -b (composite)
 pnpm --filter @heliogrid/contracts openapi     # emit openapi/openapi.json (after build)
 
-## Depends on / depended on by
-uses: @ts-rest/core, zod, @heliogrid/domain (canonical business lists — `z.enum(TENANT_SEGMENTS)`
-builds the schema from domain's tuple; the import direction is contracts → domain, never back)
-used by TODAY: apps/api, apps/web, apps/mobile, packages/ui-api. apps/worker declares the
-dependency but imports nothing yet — it is still a scaffold.
+## Dependency policy
+docs/architecture.md §2 contracts. The domain edge (`z.enum(TENANT_SEGMENTS)` built from
+domain's tuple) returns with the auth rebuild — `packages/domain/src/tenancy/segment.ts`
+documents it as future. The direction is contracts → domain, never back.
 
 ## Local conventions
 - Contract FIRST: edit here before implementing any endpoint or client; the diff is the
@@ -22,13 +23,17 @@ dependency but imports nothing yet — it is still a scaffold.
   prefer additive.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are
   UPPER_SNAKE. HTTP mapping is `errorHttpStatusByCode` — do not invent new mappings.
-- tenant_id NEVER appears in request bodies/params — it comes from the JWT claim
-  (see `tenantClaimSchema` note). Money is a decimal string scaled to the currency's minor
-  unit (INR: 2 dp), never a float; money-bearing payloads carry a document-level `currency_code`.
+- **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` anywhere in an HTTP
+  body or query schema, at any nesting depth; it comes from verified session claims, and
+  `tests/invariants/src/tenant-id-in-body.ts` proves it. Job envelopes in `jobs.ts` DO carry
+  `tenantId`: a queued job has no session to derive it from. (The invariant walks body and
+  query only — `pathParams` is unchecked.)
+- Money is a decimal string scaled to the currency's minor unit (INR: 2 dp), never a float;
+  money-bearing payloads carry a document-level `currency_code`.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
-  `ports/<capability>.ts` (provider port interface + its DI token; implementations will live
-  in `packages/adapters` — NOT created yet; the first adapter lands the package).
+  `ports/<capability>.ts` (provider port interface + its DI token — re-authored by the
+  rebuild that needs it; implementations will live in `packages/adapters`, NOT created yet).
 - **No `env.ts` here.** It existed until 2026-07-30 and moved to
   `packages/env/src/schema/fragments.ts`: contracts is the WIRE format, and deployment
   configuration is not part of the API surface. Environment shapes live in `@heliogrid/env`

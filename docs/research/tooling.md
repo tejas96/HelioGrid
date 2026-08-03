@@ -2,7 +2,7 @@
 
 > **Superseded 2026-07-27:** Agent rules are Claude Code only — single root `CLAUDE.md` +
 > per-package `CLAUDE.md`. No `AGENTS.md`, no `.claude/rules/`. Mobile is bare React Native
-> (no Expo). See `CLAUDE.md` and `docs/17-engineering-governance.md`.
+> (no Expo). See `CLAUDE.md`.
 
 # HelioGrid Toolchain Recommendation — Monorepo, Lint/Boundaries, i18n, Agent Rules (July 2026)
 

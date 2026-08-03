@@ -30,7 +30,7 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 ## 2. Authentication
 
 > **STATUS 2026-08-01: none of this section is built.** Auth was removed to greenfield on an
-> owner ruling (ADR-0024, docs/15 R19) — the api module, the session guard, the auth contract
+> owner ruling (ADR-0024, docs/15 R20) — the api module, the session guard, the auth contract
 > and the identity tables are all gone, every API route is currently unauthenticated, and
 > both login screens run on a walkthrough stub. What follows is the DESIGN the rebuild
 > implements, not a description of the running system. Read it as the target; read ADR-0024
@@ -108,7 +108,7 @@ Single DB, shared schema, `tenant_id` on every tenant-owned row (BLUEPRINT §Dat
 
 **Layer 1 — request guard.** `TenantContextGuard` extracts `tenant_id` from the verified JWT and binds it to request-scoped context (AsyncLocalStorage). No handler ever reads tenant from params/body.
 
-**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select()` outside a repository is a lint violation (dependency-cruiser rule + review rule in docs/17 §5 (rule → mechanism matrix)).
+**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select()` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
 
 **Layer 3 — Postgres RLS (backstop).** Every tenant-owned table:
 

@@ -8,7 +8,7 @@
 >
 > What survives — and what actually governs — is the **track dependency structure**, the
 > **launch gate** and the **risk register**. Sequencing *within* a module lives in that
-> module's roadmap (`./modules/`), never here. The **forward-compatibility register** moved to
+> module's own planning, never here. The **forward-compatibility register** moved to
 > [`./forward-compat.md`](./forward-compat.md).
 >
 > The original timeline directive is recorded as SUPERSEDED in docs/15 §4 (directive 5). The
@@ -75,7 +75,8 @@ Devanagari face, semibold, brand-wash, studio viz namespaces, contrast pairs) + 
 reference page; `packages/contracts` root (ts-rest + Zod 3 pinned, error envelope, OpenAPI
 emit in CI); `packages/db` migration 0001 (tenants, users, role_preset enum + user_roles,
 audit_log, usage_events full metric enum, tenant_phone_numbers, sync_mutations, files, RLS
-plumbing — Better Auth's own migrator runs alongside, its tables are not authored in 0001;
+plumbing — the auth library's own migrator runs alongside, its tables are not authored in
+0001 (which library is the rebuild's call — ADR-0024);
 0001 covers the identity/platform spine of the §4 register, every other table lands with
 its owning module's first migration); Fly apps up in `bom` — **one app per service**:
 heliogrid-web, heliogrid-api, heliogrid-worker, heliogrid-voice, heliogrid-powersync
@@ -93,14 +94,17 @@ offline phase so Track E starts warm).
 **Depends on:** Track F. **Blocks:** B, C, M (everything tenant-scoped).
 
 > **Status 2026-08-01:** auth was built, then REMOVED to greenfield on an owner ruling
-> (ADR-0024, docs/15 R19) so it can be rebuilt on a new architecture. Gone: the api module,
+> (ADR-0024, docs/15 R20) so it can be rebuilt on a new architecture. Gone: the api module,
 > the session guard, the auth contract, both frontend clients, and migrations `0001`–`0006`
 > with the whole Drizzle schema. Kept: both platforms' screens, the login policy in
 > `@heliogrid/domain`, and the tenancy precondition. The rebuild implements `SessionStore`
 > from `packages/data/src/session/types.ts` and authors a fresh `0001`; until then the login
 > flows run on a deliberate walkthrough stub and tenancy is unproven.
 
-- **auth + tenancy** (first in track): Better Auth (organization/phoneNumber/jwt), MSG91 OTP
+- **auth + tenancy** (first in track) — **the stack named here is superseded: ADR-0024
+  removed Better Auth on 2026-08-01 and reopened the choice; the rebuild decides it.** The
+  rest of the bullet (scope, UX, claims, RLS) still stands: Better Auth
+  (organization/phoneNumber/jwt), MSG91 OTP
   (test route until DLT), signup/invites/roles (6 presets, OR-across, widest visibility),
   JWT claims, RLS backstop live. UX: Login/LoginFlow/SignUp/SignUpFlow/WhatYouSell/
   SellFlow/YoureReady/ReadyFlow/InviteLanding/InviteFlow/YourRole/RoleFlow/TeamRoles/
@@ -264,5 +268,6 @@ platform number (or documented DLT-pending with Bolna/test evidence).
 | Razorpay live keys late | M×M | Test mode complete; trial-only launch; charge on key arrival. |
 | Single-executor serialization | H×H | Track ownership is exclusive; docs are load-bearing; a module open >2 days (was 4) → split or scope-cut within it. |
 
-Review daily at the 20-day cadence; triggered rows get dated notes; architecture-changing
+Review at each track boundary (the 20-day calendar was retired 2026-07-30 — this doc is
+DATELESS by design); triggered rows get dated notes; architecture-changing
 responses get logged in `docs/adr/` once decided.

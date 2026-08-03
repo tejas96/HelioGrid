@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
 
   // JSONC so every allowlist entry carries its reason — a suppression nobody can justify
-  // is how a tool stops being read. Knip is local hygiene, never a CI gate (docs/17 §5),
+  // is how a tool stops being read. Knip is local hygiene, never a CI gate,
   // so its only value is signal: true positives stay VISIBLE, never suppressed.
   // Keep this minimal — knip infers most entries and flags redundant ones as hints.
 

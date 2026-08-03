@@ -68,7 +68,7 @@ jobs:
       # "no dependency violations found" without it, on the identical offending file.
       - run: pnpm turbo build
       - run: pnpm turbo lint
-      - name: Package boundaries (turbo tags — docs/17 Law 2)
+      - name: Package boundaries (turbo tags — coarse cover; dependency-cruiser is authoritative)
         run: pnpm boundaries
       - run: pnpm turbo typecheck
       - name: Apply migrations (CI database)

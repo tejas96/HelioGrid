@@ -12,10 +12,9 @@
 ## Commands
 pnpm --filter @heliogrid/data build | typecheck     # tsc -b (composite; emits dist/)
 
-## Depends on / depended on by
-uses: @heliogrid/contracts (the wire), @heliogrid/domain (OtpFailure, OTP constants),
-@ts-rest/core, zod. react + @tanstack/react-query are PEER deps, used only in `src/react/`.
-used by: apps/web, apps/mobile. Nothing else may consume it.
+## Dependency policy
+docs/architecture.md §2 data. react + @tanstack/react-query are PEER deps, confined to
+`src/react/` by `data-core-is-framework-free` — a directory prefix, not a filename pattern.
 
 ## Local conventions
 - **Repositories are interfaces with factories**, and their types are INFERRED from the
@@ -23,12 +22,12 @@ used by: apps/web, apps/mobile. Nothing else may consume it.
   change for both platforms at once (`docs/forward-compat.md`, `mobile` row).
 - **Every hook lives in `src/react/`**, including feature hooks — `use-health.ts`, not
   `health/hooks.ts`. Colocation reads better, but the lint boundary would then need a
-  filename pattern instead of a directory prefix, and docs/17 says a fuzzy mechanism rots.
+  filename pattern instead of a directory prefix, and a fuzzy mechanism rots.
 - The session is a **store** (`subscribe`/`getSnapshot`), read via `useSyncExternalStore`.
   A plain object with a `status` field cannot re-render a screen.
 - `createDataLayer` is the ONLY construction entry an app gets. `createApiClient`,
-  `createTransport`, `createHealthRepository` and `createWalkthroughSession` are deliberately
-  not exported — re-exporting the client hands apps back the raw wire.
+  the internals listed in `src/index.ts`'s header are deliberately not exported — that
+  header is the one authoring of the list; re-exporting the client hands apps back the raw wire.
 - Paginated screens use `usePaginatedList` (accumulating: infinite scroll / load-more,
   dedupes by id) or `usePagedList` (numbered pager, keepPreviousData) from `./react` —
   never hand-wire `useInfiniteQuery` or pagination `useQuery` in an app.

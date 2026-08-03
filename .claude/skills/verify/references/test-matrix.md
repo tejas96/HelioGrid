@@ -8,9 +8,6 @@ handing off, and a zero cell aborts the run naming the gap.
 > this matrix use +91 phones, Devanagari strings and paisa-level reconciliation; a future
 > market's runs derive the equivalents (phone spec, scripts, minor unit) from its pack.
 
-The two files this replaced each had one half of this: `/verify-app` walked states and
-never attacked, `qa-breaker` attacked and never confirmed the feature worked.
-
 ## Quadrant 1 — happy path (does it do the job?)
 
 - The complete designed flow, start to finish, with valid input and no interference.
@@ -69,11 +66,11 @@ screen". It will confidently guess, and it guesses in the direction of a pass. O
 
 | Surface | Read the tree with | Assert |
 |---|---|---|
-| web | Playwright DOM · `getComputedStyle` | exact strings, exact computed values |
-| iOS | `idb ui describe-all` | accessibility tree contains the exact label |
+| web | `read_page` (accessibility tree) · `javascript_tool` for computed values | exact strings, exact computed values |
+| iOS | Simulator MCP — accessibility tree | the tree contains the exact label |
 | Android | `adb shell uiautomator dump` → XML | `text="…"` attributes match exactly |
 | api | `curl -i` | status line and body bytes |
-| db | `psql -U qa_readonly -tAc` | the scalar returned |
+| db | read-only `psql -tAc` against `heliogrid-pg-local` | the scalar returned |
 
 A step whose `expected` cannot be written as a string comparison is not yet a step —
 rewrite it until it can. "Renders correctly" is not a criterion; `text="Welcome back"`

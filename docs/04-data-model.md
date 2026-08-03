@@ -1,5 +1,10 @@
 # 04 — Data Model (full multi-tenant schema)
 
+> **STATUS (2026-08-03): frozen DESIGN (Law 9), not repo state.** The database is
+> greenfield since ADR-0024 (migrations/ is empty); auth-era references (Better Auth)
+> describe a design superseded by the pending auth rebuild. Tables land only with their
+> owning module's slice.
+
 > **LAW 9 — this is FROZEN DESIGN, not a build order.** Every table below is the reference
 > that keeps future modules coherent. Tables, enums and columns are AUTHORED only when their
 > OWNING module's slice begins. An agent asked to "implement the schema" implements the

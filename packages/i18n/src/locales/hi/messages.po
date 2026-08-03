@@ -110,7 +110,7 @@ msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/navigation/tabs.tsx:28
+#: ../../apps/mobile/src/navigation/tabs.tsx:31
 msgid "My Day"
 msgstr "मेरा दिन"
 

@@ -2,7 +2,7 @@
 
 > **GREENFIELD since 2026-08-01.** Migrations `0001`–`0006` and all of `src/schema/` were
 > deleted on an explicit owner ruling that overrode the append-only law (ADR-0024, docs/15
-> R19) — the identity spine could not be removed surgically because every platform table
+> R20) — the identity spine could not be removed surgically because every platform table
 > foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
 > migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
 > `docs/forward-compat.md` before writing it. Everything below describes how this package
@@ -11,8 +11,11 @@
 ## What lives here / what must never live here
 - Drizzle schema (`src/schema/*`), the connection factory + `withTenantTransaction`
   (SET LOCAL app.tenant_id), the migration runner, and `migrations/*.sql`.
+- The `./uuid` subpath export exists for app-side id generation and is the ONE thing
+  frontends may import from here.
 - NEVER: business logic, contract imports, app imports. Never a table/column that is not
-  in docs/04 or a migration.
+  in docs/04 or a migration. web and mobile may import nothing here but `./uuid`
+  (`web-no-db` / `mobile-no-db` exempt exactly that subpath).
 
 ## Commands
 pnpm --filter @heliogrid/db build        # tsc -b
@@ -22,8 +25,8 @@ pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
                                          # takes the URL, so it stays reusable and testable.
 pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
-## Depends on / depended on by
-uses: drizzle-orm, postgres        used by: apps/api, apps/worker, tests/invariants
+## Dependency policy
+docs/architecture.md §2 db.
 
 ## Local conventions
 - Migrations are append-only, filename-ordered, sha256-locked by the runner — editing an

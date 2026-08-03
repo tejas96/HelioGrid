@@ -236,31 +236,30 @@ module.exports = {
       name: 'no-raw-http-clients',
       severity: 'error',
       comment:
-        'apps/web and apps/mobile reach the API through the typed ts-rest client ONLY ' +
-        '(apps/web/lib/api-client.ts, apps/mobile/src/data/api-client.ts). A third-party ' +
+        'apps/web and apps/mobile reach the API through @heliogrid/data ONLY — the sole ' +
+        'initClient call is packages/data/src/client/client.ts (ADR-0023). A third-party ' +
         'HTTP client bypasses the contract, so contract drift stops being a compile error ' +
         'and becomes a runtime surprise. Complements — does NOT replace — the prose rule ' +
         'in apps/web/CLAUDE.md: that landmine was a native fetch() via an untyped api<T>(), ' +
-        'which has no import for a bundler graph to catch. Auth clients are exempt: Better ' +
-        'Auth owns its own transport.',
+        'which has no import for a bundler graph to catch. No exemptions: the four app-local ' +
+        'client files this rule once anchored were deleted by ADR-0023/0024 (better-auth is ' +
+        'banned outright by apps-never-touch-the-wire, not exempt).',
       from: {
         path: '^apps/(web|mobile)/',
-        // FULLY ANCHORED to the four real files. As unanchored substrings these matched any
-        // path CONTAINING them — `apps/web/app/auth/client.tsx` (the App Router convention
-        // for a route's client component, which the auth rebuild will land under an `auth/`
-        // segment) was silently exempt from the whole rule, as was any `api-client.*.ts` in
-        // any `lib/` directory.
-        pathNot:
-          '^(apps/web/lib/api-client\\.ts|apps/mobile/src/data/api-client\\.ts|' +
-          'apps/web/lib/auth-client\\.ts|apps/mobile/src/auth/client\\.ts)$',
       },
       to: {
-        // 'npm-dev' for the same reason as domain-purity-no-frameworks: a devDependency import
-        // is still an import, and 'npm' alone silently ignores it.
-        dependencyTypes: ['npm', 'npm-dev'],
-        // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/… —
-        // always anchor on the node_modules segment (see domain-purity-no-frameworks).
-        path: '(^|/)node_modules/(axios|node-fetch|undici|superagent|got|ky)/',
+        // NO dependencyTypes filter, exactly like apps-never-touch-the-wire. None of these
+        // clients is installed, so the import cannot resolve and dependency-cruiser types it
+        // `unknown` — a ['npm','npm-dev'] filter drops precisely the case this rule exists to
+        // catch. Probed 2026-08-03: with the filter, an injected `import axios from 'axios'`
+        // in apps/web cruised clean.
+        //
+        // BOTH path forms for the same reason: an unresolvable import stays a bare specifier
+        // the node_modules half never sees, while an installed one resolves to
+        // node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/… and only the first half sees it.
+        path:
+          '(^|/)node_modules/(axios|node-fetch|undici|superagent|got|ky)/' +
+          '|^(axios|node-fetch|undici|superagent|got|ky)($|/)',
       },
     },
     {

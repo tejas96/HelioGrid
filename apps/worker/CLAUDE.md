@@ -13,8 +13,8 @@ automatically and a REAL env var still wins (Fly secrets and CI are never overri
 pnpm --filter @heliogrid/worker dev | build | typecheck
 REDIS_URL unset ⇒ boots in idle scaffold mode (no queue connection).
 
-## Depends on / depended on by
-uses: @heliogrid/contracts (jobs.ts), @heliogrid/db        used by: nobody
+## Dependency policy
+docs/architecture.md §2 apps/worker.
 
 ## Local conventions
 - **This app is still a scaffold.** `src/` holds only `main.ts`, `worker.module.ts` and

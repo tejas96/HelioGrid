@@ -8,7 +8,8 @@
   inline `style` in our code, new visual patterns, app/business logic, data fetching.
 
 ## The correctness chain (every component cites its sources)
-1. API: `design/ds-source/_adherence.oxlintrc.json` prop allowlists — TypeScript makes
+1. API: `design/ds-source/_adherence.oxlintrc.json` prop allowlists — a DATA file consumed
+   by hand into TS unions (oxlint itself was removed 2026-07-30), so TypeScript makes
    violations compile errors.
 2. Pixels: the `_ds_bundle.js` reference implementation (session split: scratchpad
    ds-ref/*.ref.jsx; re-split from the bundle when needed) — spec to implement, NEVER code
@@ -19,14 +20,15 @@
 ## Commands
 pnpm --filter @heliogrid/ui typecheck      # no build — ships source; lint is repo-wide: `pnpm lint`
 
-## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts (business sets), @heliogrid/ui-api (parity
-contract), @heliogrid/domain (protocol constants — `OtpInput` sizes itself from `OTP_LENGTH`)
-used by: apps/web (index); RN mirror: apps/mobile/src/ui (Law 7)
+## Dependency policy
+docs/architecture.md §2 ui. The RN mirror is `apps/mobile/src/ui`, parity-locked by
+`@heliogrid/ui-api` (Law 7).
 
 ## Conventions (locked by the Button exemplar)
-- One file pair per component: `src/<family>/<Name>.tsx` + `<Name>.css` (imported by the
+- One file pair per component FAMILY: `src/<family>/<Name>.tsx` + `<Name>.css` (imported by the
   component). Class prefix `ui-<name>`; variants via `data-*` attributes. `'use client'`.
+  Co-located pairs are deliberate: Badge in `Chip.tsx`, AvatarGroup in `Avatar.tsx`,
+  IconCircle in `Card.tsx`.
 - Focus rings come from base.css `:focus-visible` — never remove; inputs use the
   elevation focus treatment instead (no outline).
 - a11y contracts: icon-only controls REQUIRE `label` (typed, not optional); status never

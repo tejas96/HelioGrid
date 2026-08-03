@@ -68,7 +68,7 @@ Screen → useSession() / use<Thing>()   ← @heliogrid/data/react
   re-introduces a defect that took a day to find in 2026-07.
 - Every React hook lives under `src/react/`, including feature hooks. Colocating
   `health/hooks.ts` beside `health/repository.ts` reads better, but then the lint boundary
-  needs a filename pattern instead of a directory prefix, and docs/17 is explicit that a
+  needs a filename pattern instead of a directory prefix, and a
   fuzzy mechanism rots.
 - The session is a **store** (`subscribe` / `getSnapshot`), read through
   `useSyncExternalStore`. A plain object with a `status` field could never re-render a screen.

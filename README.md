@@ -12,7 +12,7 @@ package, touch a shared schema) so the rest of the repo doesn't silently drift. 
 deliberately does not repeat what's already documented elsewhere; it tells you where that is.
 
 For the rules AI agents (and humans) follow when changing this codebase, see
-[`CLAUDE.md`](CLAUDE.md) and [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) — read
+[`CLAUDE.md`](CLAUDE.md) — read
 those before your first non-trivial change, not after.
 
 ## Contents
@@ -183,7 +183,7 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, web↔RN prop parity. Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
-| `pnpm verify` | The full local gate: `lint && boundaries && typecheck && test && build`. This is what "green" means before you call something done |
+| `pnpm verify` | The full local gate: `build && lint && boundaries && typecheck && test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
 | `pnpm precommit` | The subset of `verify` the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck |
 | `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) |
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
@@ -309,23 +309,24 @@ it is how drift enters the repo silently:
 | `packages/contracts` (any endpoint, schema, or type) | `/contract-change` | Re-emits `packages/contracts/openapi/openapi.json`, sweeps every typed client (`apps/web`, `apps/mobile`) for breakage via typecheck, and judges whether the change is breaking |
 | `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
 | A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
-| Any feature/bugfix slice, before calling it done | `/qa` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/qa` drives the real app — web browser, both mobile simulators, curl against the API — and loops until clean |
+| Any feature/bugfix slice, before calling it done | `/verify` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/verify` drives the real app — browser for web, simulator for iOS, adb for Android, curl for the API — across only the surfaces the change reaches, and loops until clean |
+| A completed task, before review | `/finish` | Gates, an architecture review of the diff, then a proposed branch/commits/PR carrying the verification record. Nothing is committed or pushed without an explicit yes |
 
 ## Git workflow
 
-**Git is manual.** Nothing in this repo auto-commits. Commit only when explicitly asked, in
-those words — finishing a task or "fix it" authorizes the fix, not a commit. When asked,
-prefer several small commits over one sweep. Branches and PRs only on explicit instruction.
-Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
+Work happens on a branch and ends PR-ready via `/finish`, which proposes the branch, the
+commits and the PR body. **Committing, pushing and opening the PR each need an explicit
+yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 
 ## Where to find things
 
 | Doc | Covers |
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
-| [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) | The Laws + when to stop and ask the owner before proceeding |
+| [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
 | `docs/00-vision-and-scope.md` | Product vision, v1 scope, non-goals |
-| `docs/02-system-architecture.md` | Full system design |
+| [`docs/architecture.md`](docs/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
+| `docs/02-system-architecture.md` | System design record — intent and target state, not current contents (see the spine) |
 | `docs/03-tech-stack.md` | Every technology choice, pinned and justified |
 | `docs/04-data-model.md` | Full multi-tenant Postgres schema |
 | `docs/08-security-and-tenancy.md` | Security & tenancy model |
@@ -333,12 +334,11 @@ Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | `docs/13-ux-gap-register.md` | Known UX gaps, tracked deliberately rather than silently patched |
 | `docs/14-build-roadmap.md` | The build plan: tracks, dependencies, launch gate |
 | `docs/15-spec-resolutions.md` | Owner rulings on spec ambiguities — check before re-deciding something already decided |
-| `docs/17-engineering-governance.md` | Governance and the rule → mechanism matrix (which rule is enforced by which type/lint/instruction/script) |
 | `docs/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/adr/` | Why each architecture choice was made — reference only |
 | `docs/research/` | Market + technology research backing the decisions above |
-| `docs/superpowers/plans/` | Per-piece-of-work implementation plans |
-| `.claude/skills/` | `/contract-change`, `/migration`, `/qa` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
 
 ## Per-package gotchas index
 

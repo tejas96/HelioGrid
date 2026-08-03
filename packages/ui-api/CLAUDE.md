@@ -3,16 +3,17 @@
 ## What lives here / what must never live here
 - One `*Api` interface per component, grouped by family (`common/forms/data/feedback/
   navigation/composites`), re-exported through `src/index.ts` as `ComponentApiSurface`.
-- NEVER: runtime code, a React import, a style, a default value. This package emits no
-  JavaScript — it exists so both platforms can be checked against ONE declaration.
+- NEVER: runtime code, a RUNTIME import, a style, a default value — `react` and
+  `@heliogrid/contracts` are `import type` only, which erases at emit. This package ships no
+  JavaScript; it exists so both platforms can be checked against ONE declaration.
 
 ## Commands
 pnpm --filter @heliogrid/ui-api typecheck      # no build script — emits no JS; lint is repo-wide
 
-## Depends on / depended on by
-uses: @heliogrid/contracts (`import type` only — business enums like `WorkflowStatus` are
-never re-typed here; the import erases at runtime, so the package still emits no JavaScript)
-used by: packages/ui (`src/api-parity.ts`), apps/mobile (`src/ui/api-parity.ts`)
+## Dependency policy
+docs/architecture.md §2 ui-api. Turbo tag: `ui-api` (its own since 2026-08-03) — importable
+by `ui` and the apps only; `data` may not. Every import here is `import type`, so it erases
+at emit and the package still ships no JavaScript.
 
 ## The scope statement lives in src/index.ts's header — one place
 It records which props are IN the contract and the two categories deliberately absent

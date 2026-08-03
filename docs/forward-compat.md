@@ -16,7 +16,7 @@ the identity/platform spine.
 
 | Module | Build in NOW |
 |---|---|
-| auth/tenancy | Stackable roles M:N; JWT claims = PowerSync stream params; long-lived refresh for offline; E.164; deactivate-never-delete. |
+| auth/tenancy | Stackable roles M:N; RBAC through ONE deny-by-default guard — a route declares the capability it needs, the guard resolves it from roles (D27 OR-across, D28 no per-person grants); never an inline `if role ===` in a handler, or every new role becomes a repo-wide sweep. JWT claims = PowerSync stream params; long-lived refresh for offline; E.164; deactivate-never-delete. |
 | tenants | Per-user language; settings JSONB w/ branding/agent/IVR/holiday room; tenant_phone_numbers from migration 0001. |
 | voice/telephony | ADR-0019 seams honoured by earlier tracks: users carry presence-compatible identity (user_presence keys on users), notifications enum already includes agent_escalation, call_handoffs summaries deep-link into the Track A timeline; Track C's first migration owns ring_groups/routing_policies/call_handoffs/user_presence + call_queue callback fields + `transferred` outcome. |
 | billing | usage_events full metric enum from day 1; entitlement guard is a decorator; proposal/project caps read COUNT over cycle window; read+export exemption in the guard. |
@@ -34,7 +34,7 @@ the identity/platform spine.
 ## Market & money — binding on EVERY module's first migration (2026-08-02)
 
 The backend is global-capable with India the only launch market
-(`docs/superpowers/specs/2026-08-02-global-backend-design.md`). Unlike the per-module rows
+(global-backend ruling, 2026-08-02). Unlike the per-module rows
 above, this block applies to every module. Each first migration and contract must satisfy:
 
 - **Money**: columns are `numeric(14,3)` named `*_amount` — never `*_inr`/`*_paise`; the

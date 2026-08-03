@@ -10,6 +10,20 @@ paths:
 
 # UI — tokens only, compose don't invent, separate rendering from logic
 
+## Where a component goes
+
+```
+packages/ui/src/<family>/<Name>.tsx + <Name>.css     web half   (family: forms, data, feedback, navigation, composites)
+apps/mobile/src/ui/<family>/<Name>.tsx               RN half
+packages/ui-api/src/<family>.ts                      the shared prop contract
+```
+
+All three land in the SAME change (Law 7). Paired components may share a file where they are
+genuinely one idea (Badge in `Chip.tsx`, AvatarGroup in `Avatar.tsx`) — deliberate, not a
+licence to bundle unrelated components.
+
+## Rules
+
 ## Visual values
 - **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
   `@heliogrid/tokens`, which is GENERATED from `design/ds-source` — never hand-transcribed.
@@ -29,8 +43,8 @@ paths:
 - A surface the mockups don't cover is COMPOSED from the existing vocabulary — never new
   visuals. Log the composition decision as a module ruling.
 - Copy props are required, never optional-with-an-English-fallback.
-- Status/variant → visual maps are `Record<TheEnum, …>` so a new contract value fails to
-  compile here rather than rendering blank.
+- Status/variant → visual maps are `Record<TheEnum, …>` (`.claude/rules/contracts.md` — the
+  enum is the definition; this is why the map must be exhaustive).
 
 ## Presentation and logic live in different files
 A component renders. It does not also fetch, orchestrate, or hold flow logic.
@@ -40,7 +54,8 @@ A component renders. It does not also fetch, orchestrate, or hold flow logic.
 - **Presentational** — a component in `apps/web/features/<feature>/` or `packages/ui`: props
   in, markup out. No data access, no navigation.
 - **Logic** — a `use-<thing>.ts` controller hook beside it in the same feature folder; shared
-  logic that both platforms need belongs in a shared package, never copied into each platform.
+  logic that both platforms need belongs in a shared package (Law 11 —
+  `.claude/rules/cross-platform.md`), never copied into each platform.
 
 A `.tsx` holding both a data-fetching effect chain and the markup it feeds is a review
 finding. File-size and split-naming law: root CLAUDE.md §Process.
@@ -48,5 +63,5 @@ finding. File-size and split-naming law: root CLAUDE.md §Process.
 ## Done means
 375px and 1440px both work · loading, empty, error and offline states all designed ·
 keyboard reachable with visible focus · touch targets ≥44px · no hover-only meaning ·
-Hindi renders without clipping (allow 20–30% expansion) · numbers carry provenance ·
-shared component APIs in parity (Law 7).
+Hindi renders without clipping (`.claude/rules/cross-platform.md`) · numbers carry
+provenance · shared component APIs in parity (Law 7).

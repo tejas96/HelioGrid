@@ -47,7 +47,7 @@
       },
       "db": {
         "dependencies": {
-          "allow": ["db", "domain", "config"]
+          "allow": ["db", "config"]
         }
       },
       "tokens": {
@@ -62,7 +62,12 @@
       },
       "ui": {
         "dependencies": {
-          "allow": ["ui", "contracts", "domain", "tokens", "config"]
+          "allow": ["ui", "ui-api", "contracts", "domain", "tokens", "config"]
+        }
+      },
+      "ui-api": {
+        "dependencies": {
+          "allow": ["contracts", "config"]
         }
       },
       "forms": {
@@ -80,6 +85,7 @@
             "db",
             "tokens",
             "ui",
+            "ui-api",
             "i18n",
             "forms",
             "adapters",

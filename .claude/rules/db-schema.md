@@ -4,12 +4,25 @@ paths:
   - "packages/db/migrations/*.sql"
 ---
 
-# Database — append-only, tenant-scoped, fail-closed
+# packages/db — append-only, tenant-scoped, fail-closed
 
-- **Migrations are append-only** and sha256-locked by the runner. Editing an applied file
-  makes `migrate` refuse to run (a PreToolUse hook also blocks the edit). Add a new
-  numbered file instead. Overridden once, by owner ruling, in the auth teardown (docs/15
-  R19) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
+## Where files go
+
+```
+migrations/NNNN_<what>.sql  four-digit, zero-padded, one above the highest; NEVER edited
+src/schema/<area>.ts        the Drizzle mirror of what the migrations built
+src/client.ts               connection factory + withTenantTransaction
+src/migrate.ts              the sha256-locked runner
+src/uuid.ts                 the ./uuid subpath — the one thing frontends may import
+```
+
+A migration is named for what it does (`0002_lead_capture.sql`), never `0002_update.sql`.
+
+## Rules
+
+- **Migrations are append-only.** A PreToolUse hook refuses the edit, the runner's sha256
+  lock refuses to apply, and CI's `git diff --diff-filter=MDR` guard rejects the PR. Add a
+  new numbered file instead. Only an explicit owner ruling overrides this.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default
@@ -24,16 +37,11 @@ paths:
   inserts must supply ids.
 - Append-only ledgers (`audit_log`, `usage_events`, `sync_mutations`) get no UPDATE or
   DELETE grants.
-- **pgEnum values mirror the contracts `z.enum`s, and `tests/invariants/src/enum-parity.ts`
-  PROVES it** — live `pg_enum` against the contract schemas, both directions, plus a check
-  that a new pg enum is either mapped or listed in `NO_CONTRACT_YET`. `db-no-upward` still
-  forbids importing contracts here, so change both sides in the same slice; the invariant is
-  what stops one side moving alone. (This bullet used to say nothing checked them, while
-  packages/db/CLAUDE.md and docs/17 both said the opposite — and all three load into the
-  same turn.)
-  **Vacuous today** (zero tables, zero enums) and says so. `tenant_status`/`user_status`/
-  `invite_status` mappings were dropped with the auth contract — re-add them with the
-  migration that re-creates those enums; the invariant cannot flag a mapping nobody wrote.
+- **pgEnum values mirror the contracts `z.enum`s**; `tests/invariants/src/enum-parity.ts`
+  proves both directions and flags an unmapped enum. `db-no-upward` forbids importing
+  contracts here, so change both sides in the same slice. The invariant is **vacuous while
+  the schema is empty** and says so when it runs — re-add the dropped auth enum mappings
+  with the migration that re-creates them (`packages/db/CLAUDE.md`).
 - Schema grows module-wise only (Law 9). docs/04 is frozen design, not a build order — a
   table belonging to a module that has not started is a violation, so stop and ask.
 

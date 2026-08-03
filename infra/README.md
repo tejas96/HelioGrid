@@ -28,6 +28,38 @@ DATABASE_ADMIN_URL=postgres://heliogrid:heliogrid@localhost:5544/heliogrid_dev \
 docker run -d --name heliogrid-redis-local -p 6379:6379 redis:7 --maxmemory-policy noeviction
 ```
 
+### QA read-only role
+
+`/verify`'s `qa-api` agent reads database state through a role that cannot write, against
+the ALREADY RUNNING container above — never a new container, never a clone (owner ruling
+2026-08-03). Create it once:
+
+```bash
+docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -c \
+  "CREATE ROLE qa_readonly LOGIN PASSWORD 'qa_readonly';
+   GRANT CONNECT ON DATABASE heliogrid_dev TO qa_readonly;
+   GRANT USAGE ON SCHEMA public TO qa_readonly;
+   GRANT SELECT ON ALL TABLES IN SCHEMA public TO qa_readonly;
+   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO qa_readonly;
+   GRANT app_user TO qa_readonly;"
+```
+
+**The `GRANT app_user` line is load-bearing, and the reason is a trap worth understanding.**
+Every tenant table is RLS ENABLED and FORCEd (`tests/invariants/src/tenancy-rls.ts` asserts
+it), and the policies are written for `app_user`. A read-only role with no applicable policy
+therefore reads **zero rows from every tenant table** — and an agent would report those empty
+results as observed values, producing a confident green that proves nothing. That is exactly
+the vacuous-pass failure this repo's invariants exist to prevent.
+
+So `qa_readonly` inherits `app_user`'s policies but holds no write grants of its own, and a
+tenant-scoped query must set the tenant first:
+
+```sql
+SET LOCAL app.tenant_id = '<uuid>';   -- inside a transaction; without it, fail-closed = 0 rows
+```
+
+A db step that returns zero rows without a tenant pin is `inconclusive`, never a pass.
+
 ## One-command provisioning (run top-to-bottom AFTER the card is added)
 
 ```bash

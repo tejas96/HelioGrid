@@ -14,8 +14,8 @@ Schema law â€” what every table needs, tenancy defence in depth, Law 9 scoping â
 ls packages/db/migrations/
 ```
 
-Number one above the highest. Editing an applied file is blocked by a hook, and would make
-the sha256-locked runner refuse to run at all.
+Number one above the highest. A PreToolUse hook refuses an edit to a committed migration,
+the sha256-locked runner refuses to apply one, and CI's append-only guard rejects the PR.
 
 ## 2. Write the DDL
 

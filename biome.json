@@ -19,7 +19,6 @@
       "!apps/mobile/android",
       "!apps/mobile/vendor",
       "!**/*.pbxproj",
-      "!.qa",
       "!graphify-out"
     ]
   },
@@ -53,7 +52,9 @@
           "options": {
             "paths": {
               "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
-              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only."
+              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+              "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
+              "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26)."
             }
           }
         },
@@ -204,6 +205,8 @@
                   },
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
+                  "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
                   "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it (hit 2026-08-02). Real schemas live in @heliogrid/contracts."
@@ -266,6 +269,8 @@
                 "paths": {
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
+                  "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
                   "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it (hit 2026-08-02). Real schemas live in @heliogrid/contracts."

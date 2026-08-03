@@ -2,38 +2,31 @@
 
 ## What lives here / what must never live here
 - Screens, the /design token reference, route handlers ONLY for cookie/session BFF glue.
-- Everything domain-shaped calls apps/api through the ts-rest client. NEVER **author**
-  business logic here — shared decisions, formatters and policy constants are IMPORTED from
-  `@heliogrid/domain`; writing one inline is the defect. NEVER: direct packages/db imports
-  (dependency-cruiser blocks), raw hex/px values.
+- NEVER: authored business logic (import it — Law 11), direct packages/db imports, raw
+  hex/px values.
 
 ## Commands
 pnpm --filter @heliogrid/web dev      # localhost:3002 (tokens must be built first: turbo
                                        # handles it; kills a stale listener on that port first)
 pnpm --filter @heliogrid/web build | typecheck
 
-## Depends on / depended on by
-uses: @heliogrid/tokens, @heliogrid/contracts, @heliogrid/ui, @heliogrid/i18n, @heliogrid/env,
-@heliogrid/data (THE data path — transport, repositories, session; this app authors none),
-@heliogrid/domain (shared login types, policy constants, formatters — imported, never re-authored)
-used by: nobody
+## Dependency policy
+docs/architecture.md §2 apps/web; platform rules §3 (Next.js). `@heliogrid/data` is THE
+data path — transport, repositories, session; this app authors none. Shared login types,
+policy constants and formatters are imported from `@heliogrid/domain`, never re-authored
+(Law 11).
 
 ## Local conventions
-- **`app/` ROUTES, `features/` OWNS.** A `page.tsx` body is ≤50 lines (Biome
-  `noExcessiveLinesPerFunction`): read route params, call one controller hook, render one
-  screen. Everything else lives in `features/<feature>/`, imported ONLY through a barrel
-  (dependency-cruiser) — either `features/<feature>/index.ts` or a screen barrel one level
-  down, `features/<feature>/<screen>/index.ts`. Nothing deeper.
-  **A barrel must not re-export both a Server Component and a `'use client'` screen** — see
-  Landmines. Rule of thumb: ONE barrel per feature until a screen is a different rendering
-  kind, or the feature grows past a couple of screens — then give that screen its own.
-  A feature is named for the CAPABILITY it owns, matching the API module that
-  serves it (`apps/api/src/modules/<module>/`) so one name spans both sides.
-- **apps/mobile is NOT migrating to this shape** — RN keeps `src/screens/<name>/`, its own
-  equivalent; the asymmetry is deliberate. **It is LOCATION, not structure:** inside the
-  folder both platforms use the same split (screen composes · `components/` one file each ·
-  `hooks/use-<thing>.ts` · styles beside them). Reading the asymmetry as licence for a
-  single-file RN screen once produced a 446-line LoginScreen against web's 70.
+- **`app/` ROUTES, `features/` OWNS.** `page.tsx` reads route params and renders one screen
+  — routing only, ≤50 lines (Biome); the controller hook belongs to the SCREEN. Everything
+  else lives in `features/<feature>/`, imported ONLY through `features/<feature>/index.ts`
+  or a screen barrel one level down. Nothing deeper.
+- A feature is named for the CAPABILITY it owns, matching the API module that serves it
+  (`apps/api/src/modules/<module>/`) so one name spans both sides. One barrel per feature
+  until a screen is a different rendering kind — then give that screen its own (see the
+  bundle landmine).
+- **Same structure as mobile, different location and names.** `features/<capability>/` is
+  RN's `src/screens/<name>/`; only the path and a few filenames differ, never the shape.
 - **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
   file per sub-component (a folder from the first one) · `hooks/use-<screen>.ts` for the
   controller · `constants.ts` for literals · `types.ts` when two files share a type ·
@@ -41,19 +34,15 @@ used by: nobody
   feature-local: `packages/ui`, `packages/domain` or `lib/`.
 - `globals.css` is the only stylesheet under `app/`. Next reserved files
   (layout/providers/loading/error/not-found/route) stay in `app/`; `route.ts` is cookie/session
-  BFF glue ONLY. `lib/` is unchanged: `*-client.ts` · `env.ts` · `hooks/` · `constants.ts`.
+  BFF glue ONLY. `lib/` holds `ApiErrorText.tsx` + `api-error-text.css` + `env.ts` — NO
+  `*-client.ts`: those were deleted by ADR-0023 (see the fetch landmine below).
 - **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout
   via a colocated `<screen>.css` in the feature folder with token `var()`; Tailwind = layout
   only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.
-- Import UI ONLY from `@heliogrid/ui` index. Business types from `@heliogrid/contracts`;
-  locale from `@heliogrid/i18n` — one definition per fact, no inline unions.
-- Forms: `useZodForm(<contract schema>)` from `@heliogrid/forms`; wire fields with its
-  `Controller`; map server rejections with `applyServerErrors`. react-hook-form directly
-  is a lint failure. Live example: design-reference gallery, Patterns sections.
-- API failures render `<ApiErrorText error={e} />` (lib/ApiErrorText.tsx) — never a
-  hand-written failure string. Forms branch VALIDATION_FAILED through applyServerErrors first.
-- Copy BOTH platforms need lives in `packages/i18n/src/copy` (extractor-swept, enum-keyed
-  Record). Screen-specific copy stays in its screen. Platform files hold presentation only.
+- Where UI, data, forms, shared copy and shared types come from:
+  `.claude/rules/cross-platform.md` (both apps) — not restated here.
+- API failures render `<ApiErrorText error={e} />` (lib/), never a hand-written string;
+  forms branch VALIDATION_FAILED through `applyServerErrors` first.
 - `.hg-*` scaffold is legacy — new screens use `@heliogrid/ui` only.
 - /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
 
