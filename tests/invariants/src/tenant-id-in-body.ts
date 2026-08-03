@@ -11,9 +11,17 @@ import { apiContract } from '@heliogrid/contracts';
  */
 const BANNED_KEYS = ['tenant_id', 'tenantId'];
 
-type ZodLike = { _def?: { typeName?: string; schema?: ZodLike; innerType?: ZodLike } } & {
-  shape?: Record<string, unknown>;
-};
+type ZodLike = {
+  _def?: {
+    typeName?: string;
+    schema?: ZodLike;
+    innerType?: ZodLike;
+    /** Array element / record value, across Zod 3 minor versions. */
+    type?: ZodLike;
+    element?: ZodLike;
+    valueType?: ZodLike;
+  };
+} & { shape?: Record<string, unknown> | (() => Record<string, unknown>) };
 
 function unwrap(schema: ZodLike | undefined): ZodLike | undefined {
   let current = schema;
@@ -29,16 +37,37 @@ function isRoute(node: Record<string, unknown>): boolean {
   return typeof node.method === 'string' && typeof node.path === 'string';
 }
 
+/**
+ * Banned keys anywhere in a schema, including nested objects and array members — a
+ * `tenant_id` two levels down travels on the wire exactly as freely as one at the top.
+ * (The first version checked only the top level; arch-reviewer caught it 2026-08-03.)
+ */
+function schemaProblems(schema: ZodLike | undefined, path: string, depth = 0): string[] {
+  if (depth > 8) return [];
+  const node = unwrap(schema);
+  if (!node) return [];
+
+  const element = node._def?.type ?? node._def?.element ?? node._def?.valueType;
+  if (element) return schemaProblems(element as ZodLike, `${path}[]`, depth + 1);
+
+  const shape = typeof node.shape === 'function' ? node.shape() : node.shape;
+  if (!shape) return [];
+
+  return Object.entries(shape).flatMap(([key, child]) =>
+    BANNED_KEYS.includes(key)
+      ? [`${path}.${key}`]
+      : schemaProblems(child as ZodLike, `${path}.${key}`, depth + 1),
+  );
+}
+
 /** The banned keys one route declares, across its body and query schemas. */
 function routeProblems(node: Record<string, unknown>, prefix: string): string[] {
   const where = `${String(node.method)} ${String(node.path)}`;
-  return (['body', 'query'] as const).flatMap((part) => {
-    const shape = unwrap(node[part] as ZodLike | undefined)?.shape;
-    if (!shape) return [];
-    return Object.keys(shape)
-      .filter((key) => BANNED_KEYS.includes(key))
-      .map((key) => `${prefix}.${part} declares "${key}" (${where})`);
-  });
+  return (['body', 'query'] as const).flatMap((part) =>
+    schemaProblems(node[part] as ZodLike | undefined, `${prefix}.${part}`).map(
+      (at) => `${at} declares tenant identity (${where})`,
+    ),
+  );
 }
 
 /** Pure walker, exported so the gate can be probed against a fabricated router. */
