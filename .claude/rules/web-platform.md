@@ -24,7 +24,7 @@ lib/                        app infrastructure (ApiErrorText, env.ts)
 ```
 
 Two features sharing something means it is not feature-local — it belongs in a package
-(`docs/architecture.md` §4). A new top-level folder under `apps/web` is a plan-time decision.
+(`docs/architecture.md` §4).
 
 ## Rules
 
@@ -38,7 +38,6 @@ Two features sharing something means it is not feature-local — it belongs in a
   module scope runs on the server during SSR and will crash the render.
 - **Server-only work stays server-only.** Route handlers, server actions and secrets never
   become imports of shared UI: `@heliogrid/env/server` is unimportable from a client file.
-- Data reaches a screen through `@heliogrid/data` only (`apps-never-touch-the-wire`, lint).
 - `lib/env.ts` writes `process.env.NEXT_PUBLIC_*` out LITERALLY and is allowlisted in both
   env enforcers — Next inlines those only in code IT compiles, so the read cannot move into
   a pre-built package. Do not "fix" it.

@@ -10,7 +10,7 @@ Architecture: `docs/architecture.md` §2 apps/mobile · §3 platform rules.
 ## Where files go
 
 `src/` is a CLOSED set — `{auth, lib, navigation, push, screens, ui}` plus root `env.ts` and
-`i18n.ts`. **A new category is a plan-time decision, never created mid-task.**
+`i18n.ts`.
 
 ```
 src/screens/<name>/         same shape as web's feature, in RN's location
@@ -24,9 +24,6 @@ src/navigation/             React Navigation static config
 src/auth/ · src/push/       native adapters — one folder per capability
 src/lib/                    app-level helpers that are NOT design-system primitives; no copy
 ```
-
-Never a `components.tsx` or `hooks.ts` grab-bag — a file named for its layer instead of its
-job is the same defect as `*-part2`.
 
 ## Rules
 
@@ -43,8 +40,6 @@ job is the same defect as `*-part2`.
   directly. Adding an Expo module is a plan-time decision, not an implementation one.
 - **RN suspends timers when backgrounded** — any countdown or elapsed-time calculation is
   wall-clock (timestamp math), never an interval decrement.
-- `src/` is a CLOSED set of folder categories (`docs/architecture.md` §2 apps/mobile); a new
-  one is a plan-time call.
 - apps/mobile deliberately skips `@heliogrid/config` and extends
   `@react-native/typescript-config`, hand-mirroring the base strictness flags — a new flag in
   `tsconfig.base.json` must be copied here by hand or it silently does not apply.

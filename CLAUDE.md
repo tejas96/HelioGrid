@@ -41,8 +41,19 @@ red, and a green gate proves nothing until you have seen it go red on an injecte
 Read call sites, not declarations — two platforms reach the same behaviour through
 differently-named state.
 
+**Don't move to the next task or to-do until you are 99% confident the current one is
+complete and correct.**
+
 **Minimise blast radius.** If something small needs edits across many unrelated files, the
 architecture is wrong. Say so before writing the workaround.
+
+**Cross-cutting concerns are built in from day one, never retrofitted.** Anything that will
+reach every module later — permissions/RBAC, tenancy, money, audit, i18n, offline — is
+provisioned by the first slice that could carry it, even while nothing consumes it yet, and
+behind ONE enforcement seam rather than per-handler checks. `docs/forward-compat.md` is the
+register: read your module's row before its first migration or contract, and add a row when
+you find a new such concern. Retrofitting one of these is a repo-wide sweep — exactly the
+blast radius the rule above tells you to refuse.
 
 ## 2. The Laws
 
