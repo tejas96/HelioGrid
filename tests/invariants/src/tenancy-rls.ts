@@ -35,10 +35,39 @@ export async function runTenancyInvariants(adminUrl: string) {
   const suffix = tenantA.slice(0, 8);
 
   try {
-    // app_user must not hold BYPASSRLS or superuser
+    const [tableCount] = await sql<{ n: number }[]>`
+      select count(*)::int as n from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind in ('r', 'p')
+        and c.relname <> 'schema_migrations'`;
+    const tables = tableCount?.n ?? 0;
+
     const roleRow =
       await sql`select rolbypassrls, rolsuper from pg_roles where rolname = 'app_user'`;
-    assert(roleRow.length === 1, 'app_user role exists');
+
+    /*
+     * A database that was NEVER migrated has neither tables nor roles — `app_user` was
+     * created by 0004, which the auth teardown deleted (ADR-0024). That is CI on every run
+     * since 2026-08-01: the service container is fresh, `migrate` applies an empty
+     * directory, and asserting the role fails on an artifact of a migration that no longer
+     * exists. A long-lived local database still carries the role from before the teardown,
+     * which is why this passed locally and went red only in CI (main red 2026-08-01→08-03).
+     *
+     * Fail CLOSED where it still means something: tables without roles is a broken database,
+     * not a greenfield one.
+     */
+    if (roleRow.length === 0) {
+      assert(tables === 0, 'app_user role exists (schema is present, so the role must be too)');
+      console.warn(
+        'tenancy invariants VACUOUS — the database was never migrated: 0 application tables ' +
+          'and no app_user role (greenfield since 2026-08-01, ADR-0024). NOTHING about ' +
+          'tenancy is proven. Real coverage returns with the auth + tenancy module’s first ' +
+          'migration, which re-creates the roles it asserts.',
+      );
+      return;
+    }
+
+    // The role exists, so its properties are still worth proving.
     assert(
       !roleRow[0]?.rolbypassrls && !roleRow[0]?.rolsuper,
       'app_user has no BYPASSRLS/superuser',
@@ -69,17 +98,12 @@ export async function runTenancyInvariants(adminUrl: string) {
      * The catalog half would still "pass" over zero tables, which is worse than useless —
      * it would report tenancy as proven when nothing was proven at all.
      *
-     * What IS still meaningful, and asserted above: the roles survived the schema drop with
-     * the right privileges, and the connecting role can still become app_user. That is the
-     * platform the rebuild binds to. Everything else waits for its first migration.
+     * This branch is the roles-survived case: a database migrated before the teardown still
+     * carries app_user, so the assertions above ran and mean something. A never-migrated
+     * database returned earlier, above.
      */
-    const [tableCount] = await sql<{ n: number }[]>`
-      select count(*)::int as n from pg_class c
-      join pg_namespace n on n.oid = c.relnamespace
-      where n.nspname = 'public' and c.relkind in ('r', 'p')
-        and c.relname <> 'schema_migrations'`;
-    if ((tableCount?.n ?? 0) === 0) {
-      console.log(
+    if (tables === 0) {
+      console.warn(
         'tenancy invariants VACUOUS — 0 application tables (greenfield since 2026-08-01). ' +
           'Verified only that app_user exists without BYPASSRLS/superuser and that the ' +
           'connecting role can SET ROLE app_user. CROSS-TENANT ISOLATION IS UNPROVEN until ' +
