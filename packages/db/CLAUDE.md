@@ -2,7 +2,7 @@
 
 > **GREENFIELD since 2026-08-01.** Migrations `0001`–`0006` and all of `src/schema/` were
 > deleted on an explicit owner ruling that overrode the append-only law (ADR-0024, docs/15
-> R19) — the identity spine could not be removed surgically because every platform table
+> R20) — the identity spine could not be removed surgically because every platform table
 > foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
 > migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
 > `docs/forward-compat.md` before writing it. Everything below describes how this package

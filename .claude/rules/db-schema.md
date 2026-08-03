@@ -10,7 +10,7 @@ paths:
   lock refuses to apply, and CI's `git diff --diff-filter=MDR` guard rejects the PR. Add a
   new numbered file instead.
   Overridden once, by owner ruling, in the auth teardown (docs/15
-  R19) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
+  R20) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default

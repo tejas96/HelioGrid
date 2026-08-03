@@ -231,7 +231,12 @@ which let an agent quote stale law from above a correction.
     in scope or quality: the census gate, DS-refactor targets and scale program are
     unchanged. Until offline lands, mobile is online-first behind a repository abstraction.
 
-### R19 — Auth removed to greenfield, overriding append-only migrations (2026-08-01)
+### R20 — Auth removed to greenfield, overriding append-only migrations (2026-08-01)
+
+> **Renumbered 2026-08-03.** This ruling was authored as "R19", colliding with the
+> design-system rulings R19-A…E above. Ids are stable and never reused (`.claude/rules/
+> 00-laws.md`), so the LATER ruling moved to the next free number. Citations of "docs/15 R19"
+> written before this date and referring to the auth teardown mean R20.
 
 **Asked:** how far "remove all backend integration" reaches, given that migrations are
 append-only by hard rule (CLAUDE.md §6, enforced by a sha256 lock in the runner and a CI
