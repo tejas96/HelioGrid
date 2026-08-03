@@ -183,7 +183,7 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, web↔RN prop parity. Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
-| `pnpm verify` | The full local gate: `lint && boundaries && typecheck && test && build`. This is what "green" means before you call something done |
+| `pnpm verify` | The full local gate: `build && lint && boundaries && typecheck && test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
 | `pnpm precommit` | The subset of `verify` the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck |
 | `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) |
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
@@ -314,10 +314,9 @@ it is how drift enters the repo silently:
 
 ## Git workflow
 
-**Git is manual.** Nothing in this repo auto-commits. Commit only when explicitly asked, in
-those words — finishing a task or "fix it" authorizes the fix, not a commit. When asked,
-prefer several small commits over one sweep. Branches and PRs only on explicit instruction.
-Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
+Work happens on a branch and ends PR-ready via `/finish`, which proposes the branch, the
+commits and the PR body. **Committing, pushing and opening the PR each need an explicit
+yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 
 ## Where to find things
 
@@ -326,7 +325,8 @@ Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) | The Laws + when to stop and ask the owner before proceeding |
 | `docs/00-vision-and-scope.md` | Product vision, v1 scope, non-goals |
-| `docs/02-system-architecture.md` | Full system design |
+| [`docs/architecture.md`](docs/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
+| `docs/02-system-architecture.md` | System design record — intent and target state, not current contents (see the spine) |
 | `docs/03-tech-stack.md` | Every technology choice, pinned and justified |
 | `docs/04-data-model.md` | Full multi-tenant Postgres schema |
 | `docs/08-security-and-tenancy.md` | Security & tenancy model |

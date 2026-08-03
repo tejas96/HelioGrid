@@ -28,6 +28,25 @@ DATABASE_ADMIN_URL=postgres://heliogrid:heliogrid@localhost:5544/heliogrid_dev \
 docker run -d --name heliogrid-redis-local -p 6379:6379 redis:7 --maxmemory-policy noeviction
 ```
 
+### QA read-only role
+
+`/verify`'s `qa-api` agent reads database state through a role that cannot write, against
+the ALREADY RUNNING container above — never a new container, never a clone (owner ruling
+2026-08-03). Create it once:
+
+```bash
+docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -c \
+  "CREATE ROLE qa_readonly LOGIN PASSWORD 'qa_readonly';
+   GRANT CONNECT ON DATABASE heliogrid_dev TO qa_readonly;
+   GRANT USAGE ON SCHEMA public TO qa_readonly;
+   GRANT SELECT ON ALL TABLES IN SCHEMA public TO qa_readonly;
+   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO qa_readonly;"
+```
+
+Deliberately NOT `app_user`: the RLS policies are written for that role, so querying as it
+would mask the tenancy defects the invariants exist to catch. `qa_readonly` sees rows as an
+outside observer, which is what a verification read should be.
+
 ## One-command provisioning (run top-to-bottom AFTER the card is added)
 
 ```bash
