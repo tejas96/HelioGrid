@@ -29,7 +29,32 @@ async function main() {
     console.warn('SKIP invariants: DATABASE_URL/DATABASE_ADMIN_URL not set (local run only)');
     return;
   }
-  const empty = await isGreenfield(url);
+  const { tables, hasRlsSubjectRole } = await inspectDatabase(url);
+  const empty = tables === 0;
+
+  /*
+   * NEVER MIGRATED — no tables AND no `app_user`. Every db-backed invariant below reaches for
+   * that role by name (`pg_has_role(…, 'app_user', …)` in three files), and postgres raises
+   * 42704 when it does not exist, so they cannot run at all rather than running vacuously.
+   *
+   * This is CI on a fresh service container: the teardown (ADR-0024) deleted migration 0004,
+   * which created the role. Roles are CLUSTER-wide, so a long-lived dev database still has it
+   * and this whole condition is invisible locally — which is why main went red on 2026-08-01
+   * and stayed red while local runs looked green.
+   *
+   * Tables WITHOUT the role is a different thing entirely — a broken database, not a
+   * greenfield one — and `runTenancyInvariants` still fails closed on it.
+   */
+  if (empty && !hasRlsSubjectRole) {
+    console.warn(
+      '\n  INVARIANTS NOT RUN: the database was never migrated — 0 application tables and no\n' +
+        '  app_user role (greenfield since 2026-08-01, ADR-0024). NOTHING is proven here:\n' +
+        '  not tenancy, not table scoping, not enum or schema parity. Real coverage returns\n' +
+        "  with the auth + tenancy module's first migration, which re-creates the role.\n",
+    );
+    return;
+  }
+
   if (empty) {
     // Not a gate — the database is LEGITIMATELY empty after the 2026-08-01 teardown
     // (ADR-0024). But a green run below must never read as "tenancy is proven", which is
@@ -47,8 +72,14 @@ async function main() {
   console.log(empty ? 'invariants green (vacuously — see the banner above)' : 'invariants green');
 }
 
-/** Application tables only: the migration ledger is bookkeeping, not schema. */
-async function isGreenfield(url: string): Promise<boolean> {
+/**
+ * What this database actually has, before anything assumes it. Application tables only —
+ * the migration ledger is bookkeeping, not schema — plus whether the RLS-subject role the
+ * invariants query by name exists at all.
+ */
+async function inspectDatabase(
+  url: string,
+): Promise<{ tables: number; hasRlsSubjectRole: boolean }> {
   const sql = (await import('postgres')).default(url, { max: 1, onnotice: () => {} });
   try {
     const [row] = await sql<{ n: number }[]>`
@@ -56,7 +87,9 @@ async function isGreenfield(url: string): Promise<boolean> {
       join pg_namespace n on n.oid = c.relnamespace
       where n.nspname = 'public' and c.relkind in ('r', 'p')
         and c.relname <> 'schema_migrations'`;
-    return (row?.n ?? 0) === 0;
+    const [role] = await sql<{ n: number }[]>`
+      select count(*)::int as n from pg_roles where rolname = 'app_user'`;
+    return { tables: row?.n ?? 0, hasRlsSubjectRole: (role?.n ?? 0) > 0 };
   } finally {
     await sql.end();
   }
