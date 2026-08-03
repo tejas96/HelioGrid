@@ -39,21 +39,17 @@ not built yet carries a STATUS line, per this file's header.
 ### config — shared tsconfig presets
 Owns: tsconfig presets (node-package, nest-app) and nothing else. Allowed deps: none.
 Platform scope: all. Belongs: a new compiler preset. Never: runtime code, lint config
-(biome.json is root-owned). Extension point: a new preset per new runtime class — note
-that apps/web, packages/ui, packages/tokens and tests/invariants extend tsconfig.base.json
-directly (no browser preset exists yet; tests/invariants needs neither composite emit nor
-decorators), and apps/mobile deliberately skips config to extend
-@react-native/typescript-config, hand-mirroring base strictness flags.
+(biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
+extends `tsconfig.base.json` directly; apps/mobile extends `@react-native/typescript-config`
+and hand-mirrors the base strictness flags (`packages/config/CLAUDE.md`).
 
 ### env — the only raw environment reader
 Owns: env schemas + loaders (server/web/native); the .env.example contract. Allowed deps:
 config. Platform scope: shared (per-runtime entry points). Belongs: every new variable, as
-a schema edit + .env.example line. Never: business logic; a raw process.env read outside
-the audited allowlist in scripts/check-env-access.mjs — today packages/env/src/, plus
-apps/web/lib/env.ts (Next inlines NEXT_PUBLIC_* only in code IT compiles, so the literal
-read cannot live in a pre-built package — do not "fix" it) and
-scripts/check-openapi-breaking.mjs (a dev tool). Extension point: a new loader per new
-runtime.
+a schema edit + .env.example line. Never: business logic; a raw process.env read outside the
+audited allowlist — `scripts/check-env-access.mjs`'s ALLOWED array is the authority and
+carries each exception's reason (do not "fix" an entry you find there). Extension point: a
+new loader per new runtime.
 
 ### contracts — the wire truth
 Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, and
@@ -61,9 +57,8 @@ typed BullMQ job payloads (jobs.ts, published as the `./jobs` subpath — dep-cr
 package-index-only permits exactly index and jobs as entry points). Emits the committed
 openapi/openapi.json, gated by scripts/check-openapi-breaking.mjs. Allowed deps: domain
 (for z.enum over domain constants — returns with the auth rebuild), config. Platform
-scope: shared. Belongs: anything crossing HTTP. Never: tenant_id in an HTTP body/query
-schema (tests/invariants/src/tenant-id-in-body.ts walks apiContract and enforces it) —
-job envelopes DO carry tenantId, because a queued job has no session to derive it from;
+scope: shared. Belongs: anything crossing HTTP. Never: tenant identity on the wire
+(`packages/contracts/CLAUDE.md` carries the rule, its invariant and the jobs carve-out);
 implementation; storage shapes. Extension points: a feature module mounts its router into
 apiContract (Law 3: contract before implementation); ports/<capability>.ts re-lands with
 its consumer.
@@ -156,9 +151,9 @@ barrel — app/ may import it only through that barrel
 (web-app-imports-feature-barrel-only). Platform rules: §3.
 
 ### apps/mobile — React Native
-Owns: src/ as a CLOSED set — src/screens, src/ui (the RN design-system half, parity-locked
-to ui-api), src/navigation, src/push, src/lib, src/auth (the keychain TokenStorage adapter)
-— plus the root files env.ts and i18n.ts. A new src/ category is a plan-time call. Allowed
+Owns: screens, the RN half of the design system (parity-locked to ui-api), navigation, native
+adapters, and app-level helpers. `src/` is a CLOSED set of folder categories, enumerated in
+`apps/mobile/CLAUDE.md`; a new one is a plan-time call. Allowed
 deps: contracts, data, domain, env, forms, i18n, tokens, ui-api. Deliberately NOT config
 (extends @react-native/typescript-config; hand-mirrors base strictness flags — a new base
 flag must be copied here). Platform scope: native only (iOS + Android, bare React Native —

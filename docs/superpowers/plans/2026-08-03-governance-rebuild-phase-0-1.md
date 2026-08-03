@@ -25,9 +25,9 @@ Turborepo 2.10.7 boundaries · tests/invariants (tsx, postgres) · pnpm 10.34.5.
 - **Edit/Write tools only** — never `sed -i` or shell stream edits.
 - **Git protocol (spec G-1, owner ruling 2026-08-03):** ALL phases share ONE branch,
   `governance/rebuild`, cut from main — not a branch per phase. One commit per task, one PR
-  at the end of the whole rebuild. One owner approval covers the flow's commits; **push and
-  PR creation each need an explicit yes at that moment.** Commit messages below are the
-  proposals.
+  at the end of the whole rebuild. **Each commit, each push and the PR needs its own yes** —
+  no approval is carried forward, and "start phase N" is not approval to commit phase N.
+  Commit messages below are proposals to present, never authorizations.
 - **Surgical diffs:** every changed line traces to a numbered fix in this plan or the spec's
   Appendix A. Do not reformat, re-wrap, or "improve" adjacent prose.
 - Two files this plan edits are also owned by later phases (CLAUDE.md, docs/17). Phase 0

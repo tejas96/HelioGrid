@@ -23,10 +23,13 @@ documents it as future. The direction is contracts → domain, never back.
   prefer additive.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are
   UPPER_SNAKE. HTTP mapping is `errorHttpStatusByCode` — do not invent new mappings.
-- tenant_id NEVER appears in request bodies/params — it comes from verified session
-  claims, and `tests/invariants/src/tenant-id-in-body.ts` proves it. Money is a decimal
-  string scaled to the currency's minor
-  unit (INR: 2 dp), never a float; money-bearing payloads carry a document-level `currency_code`.
+- **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` anywhere in an HTTP
+  body or query schema, at any nesting depth; it comes from verified session claims, and
+  `tests/invariants/src/tenant-id-in-body.ts` proves it. Job envelopes in `jobs.ts` DO carry
+  `tenantId`: a queued job has no session to derive it from. (The invariant walks body and
+  query only — `pathParams` is unchecked.)
+- Money is a decimal string scaled to the currency's minor unit (INR: 2 dp), never a float;
+  money-bearing payloads carry a document-level `currency_code`.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
   `ports/<capability>.ts` (provider port interface + its DI token — re-authored by the

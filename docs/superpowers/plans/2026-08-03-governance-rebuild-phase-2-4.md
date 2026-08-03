@@ -30,8 +30,9 @@ the existing `heliogrid-pg-local` container.
 - **Git protocol (spec G-1, owner ruling 2026-08-03):** ALL phases share ONE branch,
   `governance/rebuild`, cut from main — not a branch per phase, and no intermediate merges.
   Phases 2–4 continue committing onto the branch Phase 0 started. One commit per task, one PR
-  at the end of the whole rebuild. **Push and PR creation each need an explicit owner yes at
-  that moment**; commit messages below are proposals, not authorizations.
+  at the end of the whole rebuild. **Each commit, each push and the PR needs its own yes** —
+  no approval carries forward, and "start phase N" is not approval to commit phase N. Commit
+  messages below are proposals to present, never authorizations.
 - **Surgical diffs:** every changed line traces to a numbered task step here or to the spec's
   Appendix A. Do not reformat, re-wrap, or "improve" adjacent prose.
 - **Rule brevity law (CLAUDE.md §8):** an instruction earns its length — state the rule, its

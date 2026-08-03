@@ -7,9 +7,9 @@ paths:
 
 Platform law: `docs/architecture.md` §3. This file is what that law means at edit time.
 
-- **Server by default; `'use client'` is a decision.** A route is a Client Component only
-  when it needs state, effects, or browser events. Push the directive as far DOWN the tree as
-  it goes: a `'use client'` at the route level opts every child in.
+- **Server/Client boundary: `docs/architecture.md` §3** — that section states where the
+  directive belongs; this file does not restate it. What it means at edit time: a
+  `'use client'` at the route level opts every child in, so know which level you are on.
 - **`page.tsx` routes and nothing else** — it renders the Screen; container logic lives in
   the feature's Screen and its `use-*.ts` hook (`.claude/rules/ui-adherence.md`).
 - **DOM-only APIs (`window`, `document`, `navigator`, `localStorage`) never appear in a

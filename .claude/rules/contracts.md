@@ -7,9 +7,8 @@ paths:
 
 - **The contract diff comes FIRST.** Change `packages/contracts` before implementing an
   endpoint or a client. The diff IS the API review (Law 3).
-- `tenant_id` NEVER travels in an HTTP request body or query — it comes from verified
-  session claims, and `tests/invariants/src/tenant-id-in-body.ts` proves it. (Job envelopes
-  in `jobs.ts` DO carry `tenantId`: a queued job has no session to derive it from.)
+- **Tenant identity never travels on the wire** — `packages/contracts/CLAUDE.md` carries the
+  rule, the invariant that proves it, and the jobs carve-out.
 - **One `z.enum` per business set** — one definition per fact — exported with its inferred type. Consumers
   import the type; they never re-declare the values. UI status/variant maps are
   `Record<TheEnum, …>` so a new value fails to compile rather than rendering blank.

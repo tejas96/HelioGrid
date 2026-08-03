@@ -149,10 +149,12 @@ typecheck on the whole repo. Fix the diagnostic; never widen the gate or use `--
 - **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
   and rots. Do not add new checker scripts; a new one needs an owner ruling saying why no type
   and no lint rule can hold it.
-- **Git: branch, propose, never push unasked.** `/finish` proposes the branch, commit
-  batching and PR body; **committing, pushing and opening the PR each need an explicit yes**.
-  `main` is PR-only. Never `--no-verify`. Small commits over one sweep — the diff is what the
-  owner reads.
+- **Git: nothing is committed or pushed without being asked, every time.** `/finish` proposes
+  the branch, commit batching and PR body; **each commit, each push and the PR needs its own
+  yes.** An instruction to DO work — "start phase 3", "fix it", "go ahead" — is never approval
+  to commit it; approval for one commit or push never carries to the next. Leave the work in
+  the tree and say what is there. `main` is PR-only. Never `--no-verify`. Small commits over
+  one sweep — the diff is what the owner reads.
 - **One review per change.** Findings get fixed and the change ships. A bug that reaches main is
   fixed as a bug — it does not trigger an audit of the audit. Multi-round adversarial review
   happens only when the owner asks for it by name.

@@ -5,7 +5,9 @@ description: Close out a piece of work — full gates, architecture review, then
 
 # `/finish` — gates, review, then propose the PR
 
-Nothing here commits, pushes or opens anything without an explicit yes.
+Nothing here commits, pushes or opens anything without being asked — **every time, for every
+action.** No approval carries forward: a yes to one commit is not a yes to the next, and an
+instruction to do the work is never approval to commit it.
 
 ## 1. Gates
 
@@ -40,9 +42,10 @@ Present, and wait for an explicit yes before running anything:
 
 ## 4. Execute what was approved
 
-Commit, push and open the PR — each only after the yes that covers it. End commit messages
-with the `Co-Authored-By` trailer. If the owner approves the commits but not the push, stop
-there and say what is staged.
+Commit, push and open the PR — each only after the yes that covers **that** action. End
+commit messages with the `Co-Authored-By` trailer. If the owner approves the commits but not
+the push, stop there and say what is staged. If they approve nothing, leave the work in the
+tree and say what is there — that is a complete and correct outcome.
 
 Never push or open a PR on your own initiative. Never `--no-verify`. Never commit a QA
 scratchpad or artifact directory — `/verify` deletes its own; anything left is a bug in the

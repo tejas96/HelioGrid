@@ -18,7 +18,7 @@ An INDEX, not a rule store: one line per ruling, pointing at where the rule is a
 
 | ID | Ruling | Rule lives in |
 |---|---|
-| G-1 | PR workflow with approval gates — nothing commits, pushes or opens a PR without a yes | CLAUDE.md §8 Git · `/finish` |
+| G-1 | PR workflow with approval gates — each commit, each push and the PR needs its OWN yes; no approval carries forward | CLAUDE.md §8 Git · `/finish` |
 | G-2 | Three deterministic hooks return, revisiting the 2026-07-31 removal | §5.4 · docs/17 §5 (with review date) |
 | G-3 | QA runtimes: iOS simulator · Android adb · browser pane · curl + read-only psql on the EXISTING `heliogrid-pg-local` container | §7 · the four agent files |
 | G-4 | QA cleans up and writes nothing to the tree — no `.qa/`, no artifact archive | §7 Phase 7 · `/verify` |
