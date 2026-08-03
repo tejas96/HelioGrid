@@ -3,7 +3,21 @@ paths:
   - "packages/contracts/**/*.ts"
 ---
 
-# Contracts — the API review surface
+# packages/contracts — the API review surface
+
+## Where files go
+
+```
+src/<area>.ts               one router per feature area, mounted in src/index.ts
+src/common.ts               shared sets and schemas
+src/error.ts                the canonical error envelope
+src/jobs.ts                 typed BullMQ payloads — the ./jobs subpath export
+src/ports/<capability>.ts   provider port interface + its DI token
+src/index.ts                the only entry consumers import (jobs is the one exception)
+openapi/openapi.json        emitted, committed, gate-checked — never hand-edited
+```
+
+## Rules
 
 - **The contract diff comes FIRST.** Change `packages/contracts` before implementing an
   endpoint or a client. The diff IS the API review (Law 3).
@@ -21,9 +35,8 @@ paths:
   A route declaring a NON-base error code needs `ContractException` with that literal on
   the server, or the wire silently carries the wrong code with a green typecheck.
 - Protocol constants clients need (`OTP_LENGTH`, `PHONE_NSN_LENGTH`, `COUNTRY_CALLING_CODE`)
-  live in `@heliogrid/domain`, not here. Domain is the bottom layer, so a contract that needs
-  one IMPORTS it — that direction survives the contract being deleted and rebuilt, which is
-  exactly what happened to auth. Never hard-code one in a client.
+  live in `@heliogrid/domain`, not here — domain is the bottom layer, so a contract that
+  needs one IMPORTS it. Never hard-code one in a client.
 - Zod is pinned at 3.x and `zod/v4` is Biome-banned (ts-rest Zod-4 support is still RC —
   spike S3). Do not lift the pin.
 

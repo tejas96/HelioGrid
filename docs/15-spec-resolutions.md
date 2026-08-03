@@ -235,7 +235,7 @@ which let an agent quote stale law from above a correction.
 
 > **Renumbered 2026-08-03.** This ruling was authored as "R19", colliding with the
 > design-system rulings R19-A…E above. Ids are stable and never reused (`.claude/rules/
-> 00-laws.md`), so the LATER ruling moved to the next free number. Citations of "docs/15 R19"
+> CLAUDE.md` §2), so the LATER ruling moved to the next free number. Citations of "docs/15 R19"
 > written before this date and referring to the auth teardown mean R20.
 
 **Asked:** how far "remove all backend integration" reaches, given that migrations are
@@ -279,4 +279,4 @@ DB: Fly unmanaged postgres-flex (owner choice; deprecation risk accepted with ma
 mitigations and documented escape hatches) · global backend 2026-08-02: global-ready with
 India-only launch; one currency per tenant; global-safe billing schema, India-only rails;
 target regions Gulf/MENA, SEA/Africa, EU/UK/AU, US
-(spec: docs/superpowers/specs/2026-08-02-global-backend-design.md).
+(global-backend ruling, 2026-08-02).

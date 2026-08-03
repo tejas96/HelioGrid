@@ -8,8 +8,7 @@
 >
 > What survives — and what actually governs — is the **track dependency structure**, the
 > **launch gate** and the **risk register**. Sequencing *within* a module lives in that
-> module's plan under `docs/superpowers/plans/` (per-module roadmaps were deleted 2026-07-31,
-> docs/17 §3), never here. The **forward-compatibility register** moved to
+> module's own planning, never here. The **forward-compatibility register** moved to
 > [`./forward-compat.md`](./forward-compat.md).
 >
 > The original timeline directive is recorded as SUPERSEDED in docs/15 §4 (directive 5). The

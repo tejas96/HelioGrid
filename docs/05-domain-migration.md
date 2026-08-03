@@ -7,7 +7,7 @@ module-by-module port plan into `packages/domain` (`@heliogrid/domain`).
 
 Sources: [./research/geo3d.md](./research/geo3d.md) (geometry purity audit),
 [./research/calc.md](./research/calc.md) (calculation/data audit),
-`CLAUDE.md` (hard rules) + `.claude/rules/00-laws.md` (the Laws). The binding purity
+`CLAUDE.md` (hard rules + the Laws). The binding purity
 contract for the ported domain layer is stated in this document, §2 below.
 POC root: `/Volumes/works-space/Solar-App-POC/src/features/solar-studio/`.
 

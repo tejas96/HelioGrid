@@ -10,6 +10,20 @@ paths:
 
 # UI — tokens only, compose don't invent, separate rendering from logic
 
+## Where a component goes
+
+```
+packages/ui/src/<family>/<Name>.tsx + <Name>.css     web half   (family: forms, data, feedback, navigation, composites)
+apps/mobile/src/ui/<family>/<Name>.tsx               RN half
+packages/ui-api/src/<family>.ts                      the shared prop contract
+```
+
+All three land in the SAME change (Law 7). Paired components may share a file where they are
+genuinely one idea (Badge in `Chip.tsx`, AvatarGroup in `Avatar.tsx`) — deliberate, not a
+licence to bundle unrelated components.
+
+## Rules
+
 ## Visual values
 - **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
   `@heliogrid/tokens`, which is GENERATED from `design/ds-source` — never hand-transcribed.

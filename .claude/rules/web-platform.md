@@ -3,9 +3,30 @@ paths:
   - "apps/web/**"
 ---
 
-# apps/web — Next.js platform boundary
+# apps/web — Next.js
 
-Platform law: `docs/architecture.md` §3. This file is what that law means at edit time.
+Architecture: `docs/architecture.md` §2 apps/web · §3 platform rules.
+
+## Where files go
+
+```
+app/<route>/page.tsx        routing only — reads params, renders one screen
+app/                        layout · providers · loading · error · not-found · route (BFF glue)
+features/<capability>/      the work lives here, named for the capability, matching the
+  <Name>Screen.tsx          api module that serves it
+  components/<Part>.tsx     one file per component
+  hooks/use-<thing>.ts      the controller hook belongs to the SCREEN, never the page
+  <screen>.css              screen layout, token var() only
+  constants.ts · types.ts   literals · types two files in the feature share
+  shared/                   only when two SCREENS in this feature share
+  index.ts                  the barrel — app/ imports through it and nothing deeper
+lib/                        app infrastructure (ApiErrorText, env.ts)
+```
+
+Two features sharing something means it is not feature-local — it belongs in a package
+(`docs/architecture.md` §4). A new top-level folder under `apps/web` is a plan-time decision.
+
+## Rules
 
 - **Server/Client boundary: `docs/architecture.md` §3** — that section states where the
   directive belongs; this file does not restate it. What it means at edit time: a

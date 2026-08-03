@@ -6,7 +6,7 @@ Traces to: D<n> · Mockup: `<Name>.dc.html`
 
 ## Checklist
 
-Delete rows that genuinely don't apply. Law numbers are `.claude/rules/00-laws.md`.
+Delete rows that genuinely don't apply. Law numbers are `CLAUDE.md` §2.
 
 - [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test)
 - [ ] **Run-and-look** (`/verify`): behaviour proven on every surface the change reaches.

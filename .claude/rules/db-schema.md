@@ -4,13 +4,25 @@ paths:
   - "packages/db/migrations/*.sql"
 ---
 
-# Database — append-only, tenant-scoped, fail-closed
+# packages/db — append-only, tenant-scoped, fail-closed
+
+## Where files go
+
+```
+migrations/NNNN_<what>.sql  four-digit, zero-padded, one above the highest; NEVER edited
+src/schema/<area>.ts        the Drizzle mirror of what the migrations built
+src/client.ts               connection factory + withTenantTransaction
+src/migrate.ts              the sha256-locked runner
+src/uuid.ts                 the ./uuid subpath — the one thing frontends may import
+```
+
+A migration is named for what it does (`0002_lead_capture.sql`), never `0002_update.sql`.
+
+## Rules
 
 - **Migrations are append-only.** A PreToolUse hook refuses the edit, the runner's sha256
   lock refuses to apply, and CI's `git diff --diff-filter=MDR` guard rejects the PR. Add a
-  new numbered file instead.
-  Overridden once, by owner ruling, in the auth teardown (docs/15
-  R20) — not precedent. `migrations/` is empty; the next file is a fresh `0001`.
+  new numbered file instead. Only an explicit owner ruling overrides this.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index
   leading with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default

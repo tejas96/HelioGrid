@@ -5,7 +5,7 @@
 #
 #   1. no test files            — owner directive: no .test.*/.spec.* until a testing
 #                                 program is commissioned
-#   2. source files ≲450 lines  — split by RESPONSIBILITY, never `*-part2`
+#   2. source files ≲300 lines  — split by RESPONSIBILITY, never `*-part2`
 #   3. no raw hex in UI paths   — every visual value comes from @heliogrid/tokens
 #
 # Each check prints its violations and the script exits 1 if any fired.
@@ -56,17 +56,17 @@ if [ -n "$tests_found" ]; then
   fail=1
 fi
 
-# ── 2. Source files over ~450 lines ──────────────────────────────────────────
+# ── 2. Source files over ~300 lines ──────────────────────────────────────────
 oversize=$(find $SRC_DIRS -type f \
   \( -name '*.ts' -o -name '*.tsx' -o -name '*.mts' -o -name '*.cts' \
      -o -name '*.js' -o -name '*.jsx' -o -name '*.mjs' -o -name '*.cjs' -o -name '*.css' \) \
   "${PRUNE[@]}" -not -name '*.d.ts' 2>/dev/null \
   | while IFS= read -r f; do
       n=$(wc -l < "$f" | tr -d ' ')
-      if [ "$n" -gt 450 ]; then printf '  %5s  %s\n' "$n" "$f"; fi
+      if [ "$n" -gt 300 ]; then printf '  %5s  %s\n' "$n" "$f"; fi
     done)
 if [ -n "$oversize" ]; then
-  printf 'OVER 450 LINES — split by RESPONSIBILITY (never *-part2 / *2 / *-extra):\n%s\n' "$oversize"
+  printf 'OVER 300 LINES — split by RESPONSIBILITY (never *-part2 / *2 / *-extra):\n%s\n' "$oversize"
   fail=1
 fi
 

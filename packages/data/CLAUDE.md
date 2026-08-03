@@ -22,7 +22,7 @@ docs/architecture.md §2 data. react + @tanstack/react-query are PEER deps, conf
   change for both platforms at once (`docs/forward-compat.md`, `mobile` row).
 - **Every hook lives in `src/react/`**, including feature hooks — `use-health.ts`, not
   `health/hooks.ts`. Colocation reads better, but the lint boundary would then need a
-  filename pattern instead of a directory prefix, and docs/17 says a fuzzy mechanism rots.
+  filename pattern instead of a directory prefix, and a fuzzy mechanism rots.
 - The session is a **store** (`subscribe`/`getSnapshot`), read via `useSyncExternalStore`.
   A plain object with a `status` field cannot re-render a screen.
 - `createDataLayer` is the ONLY construction entry an app gets. `createApiClient`,

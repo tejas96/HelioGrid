@@ -17,13 +17,13 @@ Before writing a constant, type, hook or copy string in a screen, ask which pack
   raw HTTP client, no `fetch` wrapper of your own (`apps-never-touch-the-wire`, lint).
 - **Form state comes from `@heliogrid/forms`** — `useZodForm`, `Controller`, and `z`. The
   app bundler's own `zod` is a different instance, so schemas built with it never get the
-  translated error map (hit 2026-08-02).
+  translated error map.
 - **Copy both platforms show lives in `packages/i18n/src/copy`**, imported by both. A msgid
   authored inline in two screens forks on a one-character edit and the extract guard passes
-  green — it checks freshness, not cross-platform identity (docs/17 §5).
+  green — it checks freshness, not cross-platform identity.
 - **Never mix macro `<Trans>` and explicit-id usage for the same string** — the extractor
-  forks them into duplicate `.po` entries. Cost real translations on 2026-07-26. Biome bans
-  the macro import; the diagnostic names the fix.
+  forks them into duplicate `.po` entries and translations are lost. Biome bans the macro
+  import; the diagnostic names the fix.
 - **Never translate:** kW, kWh, kWp, brand names, utility/DISCOM proper nouns. Money renders
   with the tenant currency's market grouping in every locale (INR: lakh/crore) — never a
   locale-default separator.

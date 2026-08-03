@@ -37,7 +37,6 @@ hand-mirrored — but they are not unchecked:
 `tests/invariants/src/enum-parity.ts` PROVES pgEnum ↔ z.enum parity (live pg_enum against
 the contract schemas, both directions) via `pnpm turbo test` — needs `DATABASE_URL`
 locally; CI fails closed. Change both sides in the same slice via `/migration`.
-`packages/db/src/schema/` returns with the first greenfield migration.
 
 A value on one side only is a silent production defect — rows the API can never return, or
 API values the database rejects at insert.
@@ -49,9 +48,9 @@ pnpm turbo typecheck
 ```
 
 Web and mobile consume the ts-rest contract, so a shape change surfaces as a compile error
-at every call site. The sole typed client lives in `packages/data/src/client/client.ts`
-(ADR-0023 — the only `initClient` call in the repo). **A call site that did NOT break where
-you expected it to is hand-rolling HTTP**: find it and route it through `@heliogrid/data`.
+at every call site. The sole typed client lives in `packages/data/src/client/client.ts` —
+the only `initClient` call in the repo. **A call site that did NOT break where you expected
+it to is hand-rolling HTTP**: find it and route it through `@heliogrid/data`.
 
 Adding an enum value must also break every `Record<TheEnum, …>` map that renders it. If
 nothing broke, the map is not exhaustive — make it so.

@@ -2,7 +2,7 @@
 
 The single canonical home for inter-package facts: what each package owns, what it may
 depend on, its platform scope, and where new code goes. Other documents POINT here; none
-restates it (spec: docs/superpowers/specs/2026-08-02-governance-rebuild-design.md §3).
+restates it.
 This file states POLICY. The current dependency graph lives in package.json files;
 enforcement lives in .dependency-cruiser.cjs (authoritative) and turbo boundaries tags
 (coarse cover). Anything describing unbuilt design carries a STATUS banner.
@@ -27,7 +27,7 @@ Layers, top to bottom — imports point strictly downward:
   its caveat in §2 db).
 - **A §2 block is the policy; it is not a claim that something enforces it.** What each
   mechanism can actually hold — and where turbo tags are broader or narrower than policy —
-  is docs/17 §5's Holds column. A tag is never evidence that a rule is held.
+  is the enforcing config itself. A tag is never evidence that a rule is held.
 
 ## §2 Package registry
 
@@ -261,4 +261,4 @@ section records the answer per new file.
     read anywhere else needs an entry in scripts/check-env-access.mjs's audited allowlist
     (§2 env lists today's three).
 11. None of the above fits → STOP. Name the mismatch to the owner before creating a new
-    package or directory (00-laws.md stop-and-ask).
+    package or directory (CLAUDE.md §4 stop-and-ask).

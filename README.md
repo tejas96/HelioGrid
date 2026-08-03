@@ -12,7 +12,7 @@ package, touch a shared schema) so the rest of the repo doesn't silently drift. 
 deliberately does not repeat what's already documented elsewhere; it tells you where that is.
 
 For the rules AI agents (and humans) follow when changing this codebase, see
-[`CLAUDE.md`](CLAUDE.md) and [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) — read
+[`CLAUDE.md`](CLAUDE.md) — read
 those before your first non-trivial change, not after.
 
 ## Contents
@@ -323,7 +323,7 @@ yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | Doc | Covers |
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
-| [`.claude/rules/00-laws.md`](.claude/rules/00-laws.md) | The Laws + when to stop and ask the owner before proceeding |
+| [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
 | `docs/00-vision-and-scope.md` | Product vision, v1 scope, non-goals |
 | [`docs/architecture.md`](docs/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
 | `docs/02-system-architecture.md` | System design record — intent and target state, not current contents (see the spine) |
@@ -334,11 +334,9 @@ yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | `docs/13-ux-gap-register.md` | Known UX gaps, tracked deliberately rather than silently patched |
 | `docs/14-build-roadmap.md` | The build plan: tracks, dependencies, launch gate |
 | `docs/15-spec-resolutions.md` | Owner rulings on spec ambiguities — check before re-deciding something already decided |
-| `docs/17-engineering-governance.md` | Governance and the rule → mechanism matrix (which rule is enforced by which type/lint/instruction/script) |
 | `docs/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/adr/` | Why each architecture choice was made — reference only |
 | `docs/research/` | Market + technology research backing the decisions above |
-| `docs/superpowers/plans/` | Per-piece-of-work implementation plans |
 | `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
 | `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
 

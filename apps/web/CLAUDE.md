@@ -25,10 +25,8 @@ policy constants and formatters are imported from `@heliogrid/domain`, never re-
   (`apps/api/src/modules/<module>/`) so one name spans both sides. One barrel per feature
   until a screen is a different rendering kind — then give that screen its own (see the
   bundle landmine).
-- **apps/mobile keeps `src/screens/<name>/`** — the asymmetry is LOCATION, not structure:
-  inside the folder both platforms use the same split (screen composes · `components/` one
-  file each · `hooks/use-<thing>.ts` · styles beside them). Reading it as licence for a
-  single-file RN screen once produced a 446-line LoginScreen against web's 70.
+- **Same structure as mobile, different location and names.** `features/<capability>/` is
+  RN's `src/screens/<name>/`; only the path and a few filenames differ, never the shape.
 - **Inside a feature, structure follows need:** `<Screen>.tsx` composes · `components/` one
   file per sub-component (a folder from the first one) · `hooks/use-<screen>.ts` for the
   controller · `constants.ts` for literals · `types.ts` when two files share a type ·
