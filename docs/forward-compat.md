@@ -34,7 +34,7 @@ the identity/platform spine.
 ## Market & money — binding on EVERY module's first migration (2026-08-02)
 
 The backend is global-capable with India the only launch market
-(`docs/superpowers/specs/2026-08-02-global-backend-design.md`). Unlike the per-module rows
+(global-backend ruling, 2026-08-02). Unlike the per-module rows
 above, this block applies to every module. Each first migration and contract must satisfy:
 
 - **Money**: columns are `numeric(14,3)` named `*_amount` — never `*_inr`/`*_paise`; the

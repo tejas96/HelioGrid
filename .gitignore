@@ -45,16 +45,17 @@ apps/mobile/.bundle/config
 playwright-report/
 test-results/
 
-# Subagent-driven-development workspace (ledger, briefs, review packages)
+# Planning-plugin working files (its own briefs, specs and plans). Plugin-internal process
+# state, not repo documentation — the code and the PR carry what the repo needs to know.
 .superpowers/
+docs/superpowers/
 
 # QA writes nothing to the tree (owner ruling 2026-08-03): /verify keeps its artifacts in the
 # session scratchpad and deletes them when the run ends. The verification record lives in the
 # PR body.
-# These two entries are legacy guards, not live conventions — the retired /qa system left
-# local artifacts on machines that ran it. Keeping them ignored stops a stale run being
-# committed, and keeps Biome (vcs.useIgnoreFile) from linting generated JSON. Delete the
-# directories when convenient; nothing recreates them.
+# These entries are legacy guards only — the retired /qa system wrote here, and its leftovers
+# were deleted from this machine on 2026-08-03. Nothing recreates either path; they stay
+# ignored so a stale checkout elsewhere cannot commit one or make Biome lint generated JSON.
 .qa/
 .playwright-mcp/
 
