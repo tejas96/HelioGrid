@@ -18,8 +18,6 @@
     "@heliogrid/env": "workspace:*",
     "@heliogrid/forms": "workspace:*",
     "@heliogrid/i18n": "workspace:*",
-    "@heliogrid/tokens": "workspace:*",
-    "@heliogrid/ui-api": "workspace:*",
     "@lingui/core": "5.9.5",
     "@lingui/react": "5.9.5",
     "@notifee/react-native": "9.1.8",

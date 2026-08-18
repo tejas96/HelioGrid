@@ -23,13 +23,12 @@ run 'dependency-cruiser'      pnpm exec dependency-cruiser --config .dependency-
 run 'sherif (dep drift)'      pnpm exec sherif
 run 'repo adherence'          bash scripts/check-adherence.sh
 run 'env centralisation'      node scripts/check-env-access.mjs
-run 'web↔RN prop parity'      node scripts/check-ui-parity.mjs
 
 if [ ${#failed[@]} -gt 0 ]; then
-  printf '\n%s of 6 lint gates FAILED:\n' "${#failed[@]}"
+  printf '\n%s of 5 lint gates FAILED:\n' "${#failed[@]}"
   for f in "${failed[@]}"; do printf '  ✗ %s\n' "$f"; done
   printf '\nEvery gate above ran — this is the complete list, not the first failure.\n'
   exit 1
 fi
 
-printf '\nall 6 lint gates green\n'
+printf '\nall 5 lint gates green\n'

@@ -32,7 +32,7 @@ module.exports = {
         'packages/domain is pure isomorphic TS: no db, no contracts, no apps, no ui (CLAUDE.md hard rule)',
       from: { path: '^packages/domain/' },
       to: {
-        path: '^(packages/(db|contracts|ui|i18n|adapters|tokens)|apps)/',
+        path: '^(packages/(db|contracts|ui|i18n|adapters|theme)|apps)/',
       },
     },
     {
@@ -80,8 +80,8 @@ module.exports = {
        */
       to: {
         path: [
-          '^@heliogrid/(db|ui|ui-api|tokens|i18n|adapters)',
-          '^(packages/(db|ui|ui-api|tokens|i18n|adapters)|apps)/',
+          '^@heliogrid/(db|ui|theme|i18n|adapters)',
+          '^(packages/(db|ui|theme|i18n|adapters)|apps)/',
         ].join('|'),
       },
     },
@@ -126,16 +126,20 @@ module.exports = {
       },
     },
     {
-      name: 'tokens-standalone',
+      name: 'theme-standalone',
       severity: 'error',
-      comment: 'tokens is generated from design/ds-source and depends on nothing in the workspace',
-      from: { path: '^packages/tokens/' },
+      comment:
+        'theme is GENERATED from the live design system (docs/17 §6) and depends on nothing in the workspace. Renamed from tokens-standalone 2026-08-19; the v1 packages/tokens was deleted with the v1 design system.',
+      from: { path: '^packages/theme/' },
       // `[^/]+` after the lookahead is load-bearing. The obvious `^(packages/(?!tokens)|apps)/`
       // is DEAD: its first branch already ends in `/`, so the trailing `/` demanded
       // `packages//` and the rule matched nothing for years. Unlike its sibling layer rules
       // this one lists no package names — "depends on nothing in the workspace" must keep
       // holding for packages that do not exist yet.
-      to: { path: '^(packages/(?!tokens/)[^/]+|apps)/' },
+      //
+      // INERT until packages/theme exists. A rule matching nothing reads GREEN — that is the
+      // exact failure recorded above. Re-probe it the day the package lands.
+      to: { path: '^(packages/(?!theme/)[^/]+|apps)/' },
     },
     {
       name: 'no-app-to-app',
@@ -266,14 +270,13 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/02 §2). Generalises the former ui-index-only. tokens is omitted deliberately: every one of its entry points is a declared subpath export.',
-      from: { path: '^apps/', pathNot: '^apps/mobile/src/ui/' },
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export.',
+      from: { path: '^apps/' },
       to: {
         path: [
-          '^packages/(ui|db|i18n|domain|adapters)/src/(?!index)',
+          '^packages/(ui|theme|db|i18n|domain|adapters)/src/(?!index)',
           '^packages/contracts/src/(?!index|jobs)',
           '^packages/data/src/(?!index|react/index)',
-          '^apps/mobile/src/ui/(?!index)',
         ].join('|'),
       },
     },

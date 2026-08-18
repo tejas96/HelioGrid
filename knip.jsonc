@@ -9,22 +9,18 @@
   "ignoreWorkspaces": ["packages/config"],
 
   "workspaces": {
-    "packages/tokens": { "entry": ["build.ts"], "project": "src/**/*.ts" },
-
     // These two are RUN by package.json scripts, and knip cannot infer either: the openapi
     // script invokes the BUILT `dist/scripts/emit-openapi.js`, and migrate is a tsx entry.
     // Dropping them made both files report as dead code.
     "packages/contracts": { "entry": ["src/scripts/*.ts"], "project": "src/**/*.ts" },
     "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
 
-    // api-parity.ts is imported by NOTHING on purpose — tsc checks every file under src/,
-    // so its `satisfies` assertions run on typecheck regardless. An entry, not dead code.
-    // (src/index.ts is NOT listed: knip infers it from package.json `exports`.)
-    "packages/ui": { "entry": ["src/api-parity.ts"], "project": "src/**/*.{ts,tsx}" },
+    // packages/theme and packages/ui get their entries here when they land
+    // (docs/17-ui-architecture-v2.md §5). The v1 entries were deleted with the v1 packages.
 
-    // `features/**` was missing until 2026-08-02, so knip saw roughly a tenth of this app
-    // and duly reported @heliogrid/ui, @heliogrid/domain, @heliogrid/contracts and
-    // lucide-react as unused while 25 files imported them.
+    // `features/**` stays listed though the folder is currently EMPTY: it was missing until
+    // 2026-08-02 and knip then saw roughly a tenth of this app, reporting four live
+    // dependencies as unused. Re-created feature folders must be covered from day one.
     //
     // app/providers.tsx is deliberately NOT an entry: layout.tsx imports it, and listing it
     // would mark its exports public and hide the genuinely-dead `useLocale`.
@@ -37,11 +33,11 @@
       "ignoreDependencies": ["zod"]
     },
 
-    // src/ui/index.ts is this app's component API — the RN mirror of packages/ui's public
-    // surface — so its exported Props types are surface, not orphans. Without it knip
-    // reported ~70 of them.
+    // src/ui/index.ts was this app's component API until 2026-08-19. The V2 design system
+    // is ONE package (packages/ui) holding both platforms, so RN has no local mirror and
+    // no second entry here.
     "apps/mobile": {
-      "entry": ["App.tsx", "src/ui/index.ts"],
+      "entry": ["App.tsx"],
       "project": "src/**/*.{ts,tsx}",
       "ignoreDependencies": ["zod"]
     },
@@ -54,9 +50,7 @@
   },
 
   "ignore": [
-    // Same role as packages/ui/src/api-parity.ts above; RN has no barrel entry to hang it on.
-    "apps/mobile/src/ui/api-parity.ts",
-    // Same role again: asserts root.tsx's module augmentation landed, so `useNavigation()`
+    // Asserts root.tsx's module augmentation landed, so `useNavigation()`
     // stays typed. Checked by tsc (which reads every file under src/), imported by nothing.
     "apps/mobile/src/navigation/route-typing.ts",
     // Read by the lingui CLI (`extract`/`compile`), never imported by TypeScript.

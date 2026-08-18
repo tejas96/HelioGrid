@@ -1,10 +1,9 @@
 import { createStaticNavigation, type StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BootScreen } from '../screens/boot/BootScreen';
-import { useIsBooting, useIsDevBuild, useIsSignedIn, useIsSignedOut } from './guards';
+import { useIsBooting, useIsSignedIn, useIsSignedOut } from './guards';
 import { appScreens } from './routes/app';
 import { authScreens } from './routes/auth';
-import { devScreens } from './routes/dev';
 
 /**
  * THE route map. One config object; the param list is INFERRED from it, never hand-written —
@@ -27,7 +26,6 @@ const RootStack = createNativeStackNavigator({
   groups: {
     Auth: { if: useIsSignedOut, screens: authScreens },
     App: { if: useIsSignedIn, screens: appScreens },
-    Dev: { if: useIsDevBuild, screens: devScreens },
   },
 });
 

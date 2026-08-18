@@ -1,7 +1,6 @@
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
-import { theme } from '@heliogrid/tokens/theme';
 import { I18nProvider } from '@lingui/react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -30,7 +29,7 @@ export default function App() {
     <DataProvider layer={dataLayer}>
       <I18nProvider i18n={i18n}>
         <SafeAreaProvider>
-          <StatusBar barStyle="dark-content" backgroundColor={theme.colors.canvas} />
+          <StatusBar barStyle="dark-content" />
           <AppNavigation />
         </SafeAreaProvider>
       </I18nProvider>

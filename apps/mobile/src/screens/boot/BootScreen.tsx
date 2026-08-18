@@ -1,27 +1,6 @@
-import { theme } from '@heliogrid/tokens/theme';
-import { StyleSheet, View } from 'react-native';
-import { Wordmark } from '../../ui';
+import { PlaceholderScreen } from '../placeholder/PlaceholderScreen';
 
-/**
- * Held while the session resolves. Matches the native launch screen's canvas exactly, so the
- * native → JS handoff has nothing to flash.
- *
- * The wordmark is the only branded element docs/10 sanctions — no logo exists and none is
- * invented here.
- */
+/** Placeholder — see PlaceholderScreen. Replaced when the real Boot screen is designed. */
 export function BootScreen() {
-  return (
-    <View style={styles.screen}>
-      <Wordmark />
-    </View>
-  );
+  return <PlaceholderScreen name="Boot" />;
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: theme.colors.canvas,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

@@ -6,7 +6,7 @@
 #   1. no test files            — owner directive: no .test.*/.spec.* until a testing
 #                                 program is commissioned
 #   2. source files ≲300 lines  — split by RESPONSIBILITY, never `*-part2`
-#   3. no raw hex in UI paths   — every visual value comes from @heliogrid/tokens
+#   3. no raw hex in UI paths   — every visual value comes from @heliogrid/theme
 #
 # Each check prints its violations and the script exits 1 if any fired.
 set -uo pipefail
@@ -29,7 +29,9 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-UI_DIRS="packages/ui/src apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib apps/web/features"
+# packages/ui/src and packages/theme/src are ABSENT until the V2 design system lands
+# (docs/17-ui-architecture-v2.md); add both here in the same change that creates them.
+UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib"
 for d in $UI_DIRS; do
   [ -e "$d" ] || { printf 'CONFIG ROT: UI_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
 done
@@ -90,7 +92,7 @@ fi
 # skips a rule whose fg/bg are literals rather than var(), so nothing saw them at all.
 # `color-mix()` over TOKENS is house style (packages/ui/CLAUDE.md) so it is not matched here;
 # it resolves to tokens, which is the point. For the same reason `rgb(`/`hsl(` must be followed
-# by a DIGIT to count: `rgb(${mix(r)},…)` in apps/mobile/src/ui/data/Card.tsx is RN's
+# by a DIGIT to count: a `rgb(${mix(r)},…)` call is RN's
 # hand-rolled color-mix — RN has no such function — and it computes from a token, so it is not
 # a raw value. A literal colour always starts with a number.
 # ONE pattern, used by both passes. It was defined twice before, and only the first copy was
@@ -108,9 +110,9 @@ hex=$(for f in $(grep -rlE "$COLOUR" $UI_DIRS --include='*.ts' --include='*.tsx'
           | grep -vE '^[0-9]+:[[:space:]]*(//|\*)' | sed "s|^|$f:|"
       done)
 if [ -n "$hex" ]; then
-  printf 'RAW COLOUR in a UI path — use a token from @heliogrid/tokens:\n%s\n' "$hex"
-  echo '  Tokens are GENERATED from design/ds-source; see docs/10 §3 and'
-  echo '  .claude/rules/ui-adherence.md. packages/tokens and design/ds-source are exempt.'
+  printf 'RAW COLOUR in a UI path — use a token from @heliogrid/theme:\n%s\n' "$hex"
+  echo '  Tokens come from @heliogrid/theme, which is GENERATED from the live design'
+  echo '  system (docs/17 §6). packages/theme is exempt. See .claude/rules/ui-adherence.md.'
   echo '  color-mix() OVER TOKENS is fine — a literal colour in any notation is not.'
   fail=1
 fi
@@ -175,12 +177,13 @@ fi
 # data paths stubbed, and both get their real content back with the auth rebuild — wrapping
 # copy that is about to change would be translating twice. The debt is LISTED rather than
 # invisible, and a NEW screen gets no such grace.
-COPY_DEBT='apps/web/features/home/HomeScreen.tsx|apps/web/features/auth/onboarding/OnboardingScreen.tsx'
+# EMPTY since 2026-08-19: both debt screens were deleted with the v1 UI. A new screen
+# gets no grace — wrap its copy when you write it.
+COPY_DEBT='__none__'
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
          apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
-       | grep -vE "^(apps/web/features/design-reference/|apps/mobile/src/screens/gallery/)" \
        | grep -vE "^($COPY_DEBT):")
 if [ -n "$copy" ]; then
   printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — docs/10 §7):\n%s\n' "$copy"
@@ -214,24 +217,11 @@ if [ -n "$untranslated" ]; then
   fail=1
 fi
 
-# ── 8. Screens compose from @heliogrid/ui ───────────────────────────────────
-# The rule existed in apps/web/CLAUDE.md ("Import UI ONLY from @heliogrid/ui index",
-# ".hg-* scaffold is legacy") and nothing enforced it. OnboardingScreen shipped with 12 raw
-# hg-* classes and ZERO ui imports through an implementation, a task review and a whole-branch
-# review — because every gate we had checks SHAPE (hex, line count, import graph) and none
-# checks whether the design system is actually used. That is the gap this closes.
-#
-# design-reference is exempt BY PATH: it demonstrates raw token values, which is its job.
-legacy=$(grep -rlE 'className="[^"]*\bhg-' apps/web/features --include='*.tsx' 2>/dev/null \
-         | grep -v '^apps/web/features/design-reference/')
-if [ -n "$legacy" ]; then
-  printf 'LEGACY hg-* SCAFFOLD in a feature screen — compose from @heliogrid/ui:\n'
-  for f in $legacy; do printf '  %s\n' "$f"; done
-  echo '  packages/ui has 28 components (Card, Input, Button, SegmentedControl, …). The'
-  echo '  .hg-* classes are pre-component scaffold; a screen using them is not on the design'
-  echo '  system, so a token change does not reach it. apps/web/CLAUDE.md §Local conventions.'
-  fail=1
-fi
+# ── 8. (retired 2026-08-19) Screens compose from @heliogrid/ui ──────────────
+# Checked that no feature screen used the pre-component `.hg-*` scaffold instead of the
+# design system. Both sides of that comparison are gone: the v1 packages/ui was deleted and
+# globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
+# called, if there is one — in the change that creates packages/ui (docs/17 §5 step 2).
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, screens on the design system'
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated'
 exit $fail

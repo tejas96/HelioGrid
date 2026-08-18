@@ -26,7 +26,7 @@ Map what remains, paths → surfaces:
 | `apps/api/**`, `apps/worker/**`, `packages/db/**` | api |
 | `packages/contracts/**` | api + every consuming surface |
 | `packages/data/**` | web, ios, android — it is the ONE data path |
-| `packages/ui/**`, `packages/tokens/**` | web (+ mobile if the RN mirror moved) |
+| `packages/ui/**`, `packages/theme/**` | web AND mobile — one package holds both platforms |
 | `packages/domain/**`, `packages/i18n/**`, `packages/forms/**` | web, ios, android |
 
 For a shared-code path, **grep the actual consumers** — the symbol may be imported somewhere
