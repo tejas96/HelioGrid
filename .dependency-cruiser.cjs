@@ -137,9 +137,15 @@ module.exports = {
       // this one lists no package names — "depends on nothing in the workspace" must keep
       // holding for packages that do not exist yet.
       //
-      // INERT until packages/theme exists. A rule matching nothing reads GREEN — that is the
-      // exact failure recorded above. Re-probe it the day the package lands.
-      to: { path: '^(packages/(?!theme/)[^/]+|apps)/' },
+      // Probed 2026-08-19, the day the package landed — and the single-form pattern WAS
+      // inert for the likely violation: an import of a workspace package theme does not
+      // declare cannot resolve, so it sits in the graph as the bare `@heliogrid/…` specifier
+      // the packages/ pattern never sees (the same class data-lean documents). Both forms,
+      // like every proven rule in this file. @heliogrid/config stays a dev-only tsconfig
+      // preset — resolved by `extends`, never imported, so it needs no exemption here.
+      to: {
+        path: ['^@heliogrid/(?!theme($|/))', '^(packages/(?!theme/)[^/]+|apps)/'].join('|'),
+      },
     },
     {
       name: 'no-app-to-app',

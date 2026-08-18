@@ -1,0 +1,32 @@
+/* HelioGrid — elevation. Wide blur, minimal Y-offset, very low opacity.
+   Shadows felt, not seen. Never hard/dark. Canvas -> card(e2) -> control(e4) -> overlay(e5). */
+:root{
+  --e0:none; /* @kind shadow */
+  --e1:0 1px 2px rgba(16,24,40,0.04);
+  --e2:0 2px 8px rgba(16,24,40,0.05);
+  --e3:0 8px 24px rgba(16,24,40,0.06);
+  --e4:0 16px 48px rgba(16,24,40,0.08);
+  --e5:0 24px 72px rgba(16,24,40,0.10);
+
+  /* The three edges FIELD MODE needs and nothing else uses. They are `none` here, which is the
+     no-borders law of F7-15, and tokens/field-mode.css is the only file that sets them.
+     They exist because overriding --e1…--e5 cannot reach three cases:
+       --control-edge  a control the stylesheet rule cannot win against or cannot match at all.
+                       Two shapes of that: a control that sets box-shadow:none INLINE
+                       (Button/IconButton ghost — an inline none beats a stylesheet rule, so the
+                       lowest-contrast control in the system got no edge in field mode), and a
+                       control whose visible part is not the control (Switch's track is a <span>;
+                       the real input is visually hidden, so no semantic selector reaches it).
+                       All three read this token instead of hardcoding none.
+       --surface-edge  a resting surface that floats on nothing (ListRow at rest). Its only edge
+                       used to be its hover shadow, and nothing in this system is hover-only.
+       --track-edge    A TRACK IS THINNER THAN AN INSET EDGE CAN AFFORD. Slider's unfilled track and
+                       RangeField's rail are 6px tall, and --control-edge's 1.5px INSET ring would
+                       leave a 3px core inside a dark outline — an EMPTY slider would read as a
+                       FULL one, which is worse than the missing edge. So a track takes an OUTSET
+                       hairline instead: it rings the rail from outside, the interior keeps saying
+                       --canvas-sunken, and empty still reads empty. Same reason, opposite geometry. */
+  --control-edge:none; /* @kind shadow */
+  --surface-edge:none; /* @kind shadow */
+  --track-edge:none; /* @kind shadow */
+}

@@ -1,0 +1,100 @@
+/* HelioGrid — colour tokens.
+   Neutrals are the product (95%). Iridescence is ambient only.
+   Primary action is near-black, never coloured.
+
+   THE CONTRAST FLOOR (P0 — measured, not eyeballed).
+   Every token that sets WORDS clears 4.5:1 on BOTH #FFFFFF and #F6F7F9.
+   The canvas is the harder background; a text colour has to pass on both.
+   AND A THIRD BACKGROUND IS A THIRD MEASUREMENT: --canvas-sunken (#EEF0F3) and the state tints are
+   neither of the two above. --text-tertiary measures 4.48 on both of them — UNDER the floor — so on
+   sunken and on any state tint, quiet text steps up to --text-secondary. Measured in
+   guidelines/color-contrast.card.html, on all four backgrounds.
+   Ratios below are white / canvas. Do not lighten these — the users are on
+   mid-range Android phones on a roof in direct sunlight.
+   Semantic colours are MARKS (dots, bars, fills, tints). Their -text
+   partners are the only ones allowed to set words, and each also clears
+   4.5:1 on its own tinted background. */
+:root{
+  /* Neutrals — three text steps, all legible. text-tertiary is a TEXT colour, not decoration. */
+  --canvas:#F6F7F9;
+  --canvas-sunken:#EEF0F3;
+  --surface:#FFFFFF;
+  --surface-alt:#FAFBFC;
+  --text-primary:#0A0A0B;   /* 19.79 / 18.46 */
+  --text-secondary:#54565B; /*  7.34 /  6.85 — AAA */
+  --text-tertiary:#6B6E74;  /*  5.11 /  4.77 — AA  */
+  --text-disabled:#C7CAD0;  /*  1.64 /  1.53 — WCAG-exempt (inactive controls). Never words a user must read. */
+  --text-inverse:#FFFFFF;   /* words on a dark or accent fill: 19.79 on --action-primary, 5.41 on --accent.
+                               Always fully opaque — an alpha white composites down and drops under the floor. */
+  --hairline:rgba(10,10,11,0.06);
+  /* A non-text mark that still carries meaning — a meta separator, an inactive tick, a rule that
+     groups rather than decorates. WCAG's non-text floor is 3:1, so this is the quietest a
+     meaningful mark is allowed to be: 3.57 on white, 3.33 on canvas. Quieter than
+     --text-tertiary on purpose, so it never competes with the words it separates. Purely
+     decorative lines take --hairline; disabled controls take --text-disabled. */
+  --mark-subtle:#83888E;     /*  3.57 /  3.33 */
+
+  /* Brand iridescence — ambient only (gradients, glows, icon washes, nav object, AI) */
+  --iris-violet:#7B5CFF;
+  --iris-blue:#3B82F6;
+  --iris-magenta:#E85CBE;
+  --gradient-brand:linear-gradient(135deg,#7B5CFF 0%,#3B82F6 45%,#E85CBE 100%); /* @kind other */
+  --glow-brand:radial-gradient(circle,rgba(123,92,255,0.22) 0%,rgba(59,130,246,0.14) 40%,rgba(255,255,255,0) 72%); /* @kind other */
+
+  /* Interactive accent — focus, links, selected, active tab, control fill. 5.41 / 5.04 as text. */
+  --accent:#5A4BFF;
+  --accent-hover:#4A3BF0;
+  --accent-subtle:#EEECFF;
+
+  /* Actions — primary is near-black. Non-negotiable identity marker. */
+  --action-primary:#0A0A0B;
+  --action-primary-hover:#26262A;
+  --action-primary-pressed:#000000;
+
+  /* Semantic — muted, never neon. The plain token is the MARK; -text sets words.
+     -text ratios are white / canvas / own tint.
+
+     A MARK HAS ITS OWN MEASURED FLOOR — 3:1, WCAG's non-text minimum — and it is measured on every
+     background a mark of that tone actually lands on: white, canvas, canvas-sunken, and its own tint
+     (a chip's dot sits on the tint, not on the page). Measured, not eyeballed:
+
+       mark          white  canvas  sunken  own tint
+       --success      3.62   3.37    3.17    3.28   PASSES
+       --danger       3.91   3.65    3.43    3.43   PASSES
+       --info         3.68   3.43    3.22    3.26   PASSES
+       --neutral      4.44   4.14    3.89    3.93   PASSES
+       --mark-subtle  3.57   3.33    3.13     —     PASSES
+       --warning      2.17   2.02    1.90    1.99   FAILS EVERYWHERE
+
+     SO --warning IS NOT A MARK, AND NEVER WAS. #E9A23B is a light amber: there is no background in
+     this system it clears 3:1 on, and a white glyph inside it measures 2.17 as well. Two components
+     shipped a warning dot and a warning bar that could not be seen, on exactly the screens where the
+     band is the point. EVERY WARNING MARK IN THIS SYSTEM TAKES --warning-text (6.53 on its own tint,
+     7.12 on white, 6.23 on sunken) — the same partner StatusChip's dot and VersionDiff already use.
+     --warning survives only as a TINT BENEATH TEXT (that is --warning-bg's job) or a wash no reading
+     depends on. If you are drawing a dot, a bar, a rule, a glyph or a fill that carries the state,
+     use --warning-text. The other four marks are legal as marks and are left alone. */
+  --success:#159A5B;   --success-bg:#E9F7EF;   --success-text:#0D6B3E;   /* 6.58 / 6.14 / 5.96 */
+  --warning:#E9A23B;   --warning-bg:#FDF4E6;   --warning-text:#7A4F0B;   /* 7.12 / 6.64 / 6.53 */
+  --danger:#E5484D;    --danger-bg:#FDECEC;    --danger-text:#B32226;    /* 6.62 / 6.17 / 5.79 */
+  --info:#3B82F6;      --info-bg:#EAF2FE;      --info-text:#175AC4;      /* 6.37 / 5.94 / 5.65 */
+  --neutral:#74787E;   --neutral-bg:#F0F1F3;   --neutral-text:#585B60;   /* 6.82 / 6.36 / 6.05 */
+
+  /* Chart palette — ordered, colourblind-safe, sampled from iridescence.
+     Series fills, never text. Every chart labels its series in words as well as colour. */
+  --chart-1:#5A4BFF; --chart-2:#3B82F6; --chart-3:#E85CBE; --chart-4:#159A5B;
+  --chart-5:#E9A23B; --chart-6:#7B5CFF; --chart-7:#14B8C4; --chart-8:#A1A5AC;
+  --chart-gridline:#EEF0F3;
+
+  /* Semantic aliases */
+  --bg-page:var(--canvas);
+  --bg-well:var(--canvas-sunken);
+  --surface-card:var(--surface);
+  --surface-row-alt:var(--surface-alt);
+  --text-body:var(--text-secondary);
+  --text-heading:var(--text-primary);
+  --text-meta:var(--text-tertiary);
+  --focus-ring:var(--accent);
+  --link:var(--accent);
+  --link-hover:var(--accent-hover);
+}

@@ -1,0 +1,23 @@
+/* HelioGrid — spacing. 4px base. */
+:root{
+  --sp-0:0; /* @kind spacing */
+  --sp-0-5:2px; --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+  --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px; --sp-12:48px;
+  --sp-16:64px; --sp-20:80px; --sp-24:96px;
+
+  /* Layout */
+  --screen-pad-mobile:20px;   --screen-pad-desktop:32px;      /* expressive */
+  --screen-pad-mobile-fn:16px; --screen-pad-desktop-fn:24px;  /* functional */
+  /* The rail, not a sidebar. These tokens used to describe a 260px labelled sidebar that this
+     system has never shipped — the desktop shell is AppRail, a 72px icon rail, and it is the
+     pattern every template and screen actually uses. The tokens were the wrong half of the pair,
+     so they now describe what exists. Each of the three has an implementer: AppRail defaults its
+     width from --rail-w, AppHeader reads --header-h and MobileTopBar --topbar-h-mobile. A token
+     nothing reads is the defect the rename was raised about, so --rail-w is not left as one. */
+  --rail-w:72px;
+  --header-h:64px; --topbar-h-mobile:56px; --bottomnav-h:72px;
+  --content-max:1440px;
+
+  /* Grid gutters */
+  --gutter-mobile:16px; --gutter-tablet:20px; --gutter-desktop:24px;
+}
