@@ -13,6 +13,7 @@
       "!**/node_modules",
       "!design/mockups",
       "!packages/contracts/openapi",
+      "!packages/theme/src/_generated",
       "!packages/i18n/src/locales/**/messages.ts",
       "!apps/mobile/ios",
       "!apps/mobile/android",

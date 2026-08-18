@@ -29,9 +29,12 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-# packages/ui/src and packages/theme/src are ABSENT until the V2 design system lands
-# (docs/17-ui-architecture-v2.md); add both here in the same change that creates them.
-UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib"
+# packages/ui/src is ABSENT until the V2 component layer lands
+# (docs/17-ui-architecture-v2.md); add it here in the same change that creates it.
+# packages/theme/src is scanned, EXCEPT src/_generated — that is the pulled design-system
+# source itself (ds:pull, docs/17 §6), raw colour by definition; the --exclude-dir below
+# keeps the gate on the HAND-WRITTEN theme source without firing on the DS it enforces.
+UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib packages/theme/src"
 for d in $UI_DIRS; do
   [ -e "$d" ] || { printf 'CONFIG ROT: UI_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
 done
@@ -105,14 +108,15 @@ COLOUR='#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|lab)\([[:space:]]*[0-9.]|(color
 # gate teaches people to ignore it.
 hex=$(for f in $(grep -rlE "$COLOUR" $UI_DIRS --include='*.ts' --include='*.tsx' \
                    --include='*.mts' --include='*.cts' --include='*.jsx' --include='*.css' \
-                   2>/dev/null); do
+                   --exclude-dir='_generated' 2>/dev/null); do
         perl -0pe 's{/\*.*?\*/}{}gs' "$f" | grep -nE "$COLOUR" \
           | grep -vE '^[0-9]+:[[:space:]]*(//|\*)' | sed "s|^|$f:|"
       done)
 if [ -n "$hex" ]; then
   printf 'RAW COLOUR in a UI path — use a token from @heliogrid/theme:\n%s\n' "$hex"
   echo '  Tokens come from @heliogrid/theme, which is GENERATED from the live design'
-  echo '  system (docs/17 §6). packages/theme is exempt. See .claude/rules/ui-adherence.md.'
+  echo '  system (docs/17 §6). Only packages/theme/src/_generated — the pulled DS source'
+  echo '  itself — is exempt. See .claude/rules/ui-adherence.md.'
   echo '  color-mix() OVER TOKENS is fine — a literal colour in any notation is not.'
   fail=1
 fi

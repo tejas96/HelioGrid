@@ -15,7 +15,11 @@
     "packages/contracts": { "entry": ["src/scripts/*.ts"], "project": "src/**/*.ts" },
     "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
 
-    // packages/theme and packages/ui get their entries here when they land
+    // build.ts is RUN by the package build script (tsx), never imported; src/index.ts is the
+    // package entry. src/_generated is data (css/json), outside the project glob.
+    "packages/theme": { "entry": ["build.ts", "src/index.ts"], "project": "src/**/*.ts" },
+
+    // packages/ui gets its entry here when it lands
     // (docs/17-ui-architecture-v2.md §5). The v1 entries were deleted with the v1 packages.
 
     // `features/**` stays listed though the folder is currently EMPTY: it was missing until

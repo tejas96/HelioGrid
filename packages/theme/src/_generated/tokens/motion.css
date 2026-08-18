@@ -1,0 +1,19 @@
+/* HelioGrid — motion. Overlays BLUR + fade to white, never darken. */
+:root{
+  --dur-micro:120ms; /* @kind other */
+  --dur-standard:200ms; /* @kind other */
+  --dur-emphasised:320ms; /* @kind other */
+  --dur-ambient:500ms; /* @kind other */
+  --ease-standard:cubic-bezier(0.4,0,0.2,1); /* @kind other */
+  --ease-enter:cubic-bezier(0,0,0.2,1); /* @kind other */
+  --ease-exit:cubic-bezier(0.4,0,1,1); /* @kind other */
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1); /* @kind other */
+}
+@media (prefers-reduced-motion:reduce){
+  :root{
+    --dur-micro:1ms; /* @kind other */
+    --dur-standard:1ms; /* @kind other */
+    --dur-emphasised:1ms; /* @kind other */
+    --dur-ambient:1ms; /* @kind other */
+  }
+}
