@@ -19,8 +19,7 @@
     "check:openapi": "node scripts/check-openapi-breaking.mjs",
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:unused": "knip",
-    "check:env": "node scripts/check-env-access.mjs",
-    "check:ui-parity": "node scripts/check-ui-parity.mjs"
+    "check:env": "node scripts/check-env-access.mjs"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit"

@@ -50,9 +50,9 @@
           "allow": ["db", "config"]
         }
       },
-      "tokens": {
+      "theme": {
         "dependencies": {
-          "allow": ["tokens", "config"]
+          "allow": ["theme", "config"]
         }
       },
       "i18n": {
@@ -62,12 +62,7 @@
       },
       "ui": {
         "dependencies": {
-          "allow": ["ui", "ui-api", "contracts", "domain", "tokens", "config"]
-        }
-      },
-      "ui-api": {
-        "dependencies": {
-          "allow": ["contracts", "config"]
+          "allow": ["ui", "contracts", "domain", "theme", "config"]
         }
       },
       "forms": {
@@ -83,9 +78,8 @@
             "data",
             "domain",
             "db",
-            "tokens",
+            "theme",
             "ui",
-            "ui-api",
             "i18n",
             "forms",
             "adapters",

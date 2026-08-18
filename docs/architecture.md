@@ -13,14 +13,14 @@ Layers, top to bottom — imports point strictly downward:
 
     apps (web · mobile · api · worker)  +  tests/invariants
       ↓
-    feature-facing packages: data · forms · i18n · ui · ui-api
+    feature-facing packages: data · forms · i18n · ui
       ↓
-    foundation packages: contracts · domain · tokens · db · env
+    foundation packages: contracts · domain · theme · db · env
       ↓
     config
 
 - Packages NEVER import apps. Imports point downward, or WITHIN a layer where a §2 block
-  declares the edge (contracts → domain, ui → ui-api are both legal and both intra-layer).
+  declares the edge (contracts → domain is legal and intra-layer).
 - The only wire path for frontend apps is @heliogrid/data (ADR-0023) — the sole
   initClient call in the repo lives there.
 - db is backend-only, except the @heliogrid/db/uuid subpath (app-side id generation — see
@@ -92,7 +92,7 @@ Owns: the typed client (sole initClient), repositories, session store, react-que
 adapters under src/react/ only. Allowed deps: contracts, domain, config. Platform scope:
 shared frontend (core framework-free; react confined to src/react/). Belongs: every new
 endpoint's repository + hook. Never (all held by data-lean): db — INCLUDING the uuid
-subpath, which is exempted only for the two apps, not for data — ui, ui-api, tokens, i18n,
+subpath, which is exempted only for the two apps, not for data — ui, theme, i18n,
 adapters, and any app; a second client; platform APIs. Extension point: one repository per
 contract router.
 
@@ -116,27 +116,26 @@ number formats for money
 (CLAUDE.md §7: tenant-currency grouping). Extension point: new copy modules keyed by
 contract enums where applicable.
 
-### tokens — the design-token emitter
-Owns: parsing design/ds-source into tokens.css (web) + theme.ts (RN) + the committed
-native splash canvas; the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config
-dev-only). Platform scope: shared. Belongs: every visual value. Never: hand-edited
-outputs (CI freshness-guards them); workspace imports. Extension point: ds-source is the
-input; emit targets grow here.
+### theme — tokens, the semantic layer and the provider  (NOT BUILT YET — docs/17)
+Owns: `src/_generated/` pulled from the LIVE design system (`pnpm ds:pull`), the semantic
+role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
+the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
+scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (the v1
+package was hand-copied and drifted in days — docs/17 §1); workspace imports. Extension
+point: emit targets grow here. Replaces the v1 `tokens` package, deleted 2026-08-19.
 
-### ui — the web half of the design system
-Owns: web components (React DOM), their css, the web api-parity.ts assertion. Allowed
-deps: ui-api, contracts, domain, tokens, config. Platform scope: web only. Belongs: a new
-shared visual component (with its RN twin + ui-api entry, same change — Law 7). Never:
-screens/routes; data access; RN imports; raw colour (adherence gate). Extension point:
-component families under src/<family>/.
+### ui — the design system, BOTH platforms  (NOT BUILT YET — docs/17)
+Owns: `primitives/` (the ~8 atoms, two of which hold product law — 44px targets and
+status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` is the one
+prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,
+domain, theme, config. Platform scope: BOTH. Belongs: a new shared visual component — one
+folder, three files, one change (Law 7). Never: screens/routes; data access; navigation;
+raw colour (adherence gate). Extension point: a folder under `src/components/`.
 
-### ui-api — the types-only parity contract
-Owns: component API types both platforms satisfy (import type react/contracts only — no
-runtime emit). Allowed deps: contracts, config (type-only). Platform scope: shared
-frontend types. Turbo tag: ui-api (own tag; importable by ui and apps only — data may
-not). Belongs: the prop contract for every shared component. Never: runtime code, styles,
-defaults. Extension point: scope header records the component census (the single count
-source).
+Replaces the v1 split of `packages/ui` (web) + `apps/mobile/src/ui` (RN) +
+`packages/ui-api` (types), all deleted 2026-08-19. That arrangement stated one prop list
+three times and needed `check-ui-parity.mjs` to compare them; the shared `.types.ts` makes
+divergence a type error instead.
 
 ### apps/web — Next.js
 Owns: routes (app/ — routing only), features/ (capability owners), web screens, and lib/
@@ -151,15 +150,16 @@ barrel — app/ may import it only through that barrel
 (web-app-imports-feature-barrel-only). Platform rules: §3.
 
 ### apps/mobile — React Native
-Owns: screens, the RN half of the design system (parity-locked to ui-api), navigation, native
+Owns: screens, navigation, native
 adapters, and app-level helpers. `src/` is a CLOSED set of folder categories, enumerated in
 `apps/mobile/CLAUDE.md`; a new one is a plan-time call. Allowed
-deps: contracts, data, domain, env, forms, i18n, tokens, ui-api. Deliberately NOT config
+deps: contracts, data, domain, env, forms, i18n, theme, ui. Deliberately NOT config
 (extends @react-native/typescript-config; hand-mirrors base strictness flags — a new base
 flag must be copied here). Platform scope: native only (iOS + Android, bare React Native —
 no Expo, no DOM). Belongs: screen composition and the native adapters the screens consume;
-anything both platforms need belongs in a package instead (Law 11). Never: @heliogrid/ui
-(web half), db (uuid exempt), wire/form internals (same fences as web), expo/EAS/
+anything both platforms need belongs in a package instead (Law 11). Never: a local
+component mirror (the RN half lives in @heliogrid/ui as `.native.tsx`), db (uuid exempt),
+wire/form internals (same fences as web), expo/EAS/
 AsyncStorage (owner rulings). Extension point: a new screen is a new src/screens/<screen>/
 folder. Platform rules: §3.
 
@@ -198,9 +198,9 @@ call.
 ## §3 Platform rules — React Native · Next.js · shared
 
 ### React Native (apps/mobile)
-- UI composes from apps/mobile/src/ui ONLY — the RN half of the design system,
-  parity-locked to @heliogrid/ui-api. Interactive RN primitives (Text, Pressable,
-  TextInput…) are lint-banned in screens; layout primitives (View, ScrollView) allowed.
+- UI composes from @heliogrid/ui ONLY — its RN half is the `.native.tsx` file in each
+  component folder (docs/17 §2). Interactive RN primitives (Text, Pressable, TextInput…)
+  are lint-banned in screens; layout primitives (View, ScrollView) allowed.
 - No web-only dependencies, no DOM APIs. No expo, no EAS, no AsyncStorage (owner rulings;
   see apps/mobile/CLAUDE.md landmines for the dated reasons).
 - Platform APIs (camera, storage, notifications, keychain) stay isolated in dedicated
@@ -216,7 +216,7 @@ call.
   features/). app/ routes; features/ own capability; page.tsx never holds logic.
 - Server/Client boundary: product screens are client components ("use client" at the
   screen/feature level, not sprinkled per-widget); server components are the default only
-  for pure-render routes (today: /design). DOM-only APIs (window, navigator) live in
+  for pure-render routes. DOM-only APIs (window, navigator) live in
   hooks under features/*/shared/, never in shared packages, never at module top level
   (SSR executes it).
 - No React Native imports of any kind. Web-specific optimization (SSR/RSC/caching)
@@ -250,10 +250,10 @@ section records the answer per new file.
    src/react/).
 5. Is it form state/validation wiring? → packages/forms.
 6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy.
-7. Is it a visual value (color, spacing, type scale)? → design/ds-source via
-   packages/tokens — never a literal in a screen.
-8. Is it a reusable visual component? → the design system pair: packages/ui (web) +
-   apps/mobile/src/ui (RN) + its @heliogrid/ui-api contract entry, all in one change
+7. Is it a visual value (color, spacing, type scale)? → the live design system via
+   packages/theme (`pnpm ds:pull`) — never a literal in a screen, never hand-transcribed.
+8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared
+   `<Name>.types.ts` plus `<Name>.tsx` (web) and `<Name>.native.tsx` (RN), one change
    (Law 7).
 9. Is it screen composition/rendering for one platform? → that app's screens/features
    tree, composing the layers above. Screens hold rendering, not policy.

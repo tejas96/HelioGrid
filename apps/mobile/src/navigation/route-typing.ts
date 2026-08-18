@@ -2,7 +2,7 @@
  * Proves root.tsx's module augmentation landed.
  *
  * Imported by NOTHING — tsc checks every file under src/, so this runs on typecheck
- * regardless. Same role and same idiom as src/ui/api-parity.ts, and listed in knip.jsonc for
+ * regardless. Listed in knip.jsonc for
  * the same reason.
  *
  * Its own file on purpose: deleting the augmentation in root.tsx then breaks a DIFFERENT

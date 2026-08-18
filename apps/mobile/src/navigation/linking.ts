@@ -1,7 +1,7 @@
 /**
  * Container-level deep linking.
  *
- * PATHS THEMSELVES LIVE ON EACH ROUTE (`linking: 'gallery'` in `routes/dev.ts`), so a route
+ * PATHS THEMSELVES LIVE ON EACH ROUTE (`linking: 'leads/:leadId'` on the route), so a route
  * and its URL are one edit and cannot drift apart. Only the prefixes are global, and they
  * belong here rather than in `App.tsx` — the entry file composes providers and knows nothing
  * about routes.

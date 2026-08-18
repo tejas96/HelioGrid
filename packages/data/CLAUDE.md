@@ -5,7 +5,7 @@
   repository interfaces + their online-first implementations · the session store · query
   keys · error normalisation · `createDataLayer` · the React Query adapter under `src/react/`.
 - NEVER: UI, navigation, screens, business logic (that is `@heliogrid/domain`), an
-  environment read (`baseUrl` is passed IN), or an import of db/ui/ui-api/tokens/i18n/apps.
+  environment read (`baseUrl` is passed IN), or an import of db/ui/theme/i18n/apps.
 - **Two entry points.** `@heliogrid/data` is framework-free and usable from a Next server
   component. `@heliogrid/data/react` is the only place React or React Query may appear.
 

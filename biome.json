@@ -11,7 +11,6 @@
       "!**/dist",
       "!**/.next",
       "!**/node_modules",
-      "!design/ds-source",
       "!design/mockups",
       "!packages/contracts/openapi",
       "!packages/i18n/src/locales/**/messages.ts",
@@ -125,7 +124,7 @@
     },
     {
       "includes": [
-        "packages/tokens/build.ts",
+        "packages/theme/build.ts",
         "packages/db/src/migrate.ts",
         "tests/invariants/**",
         "**/*.config.{js,ts,mjs,cjs}",
@@ -183,7 +182,7 @@
       }
     },
     {
-      "includes": ["apps/mobile/src/screens/**"],
+      "includes": ["apps/mobile/src/screens/**", "!apps/mobile/src/screens/placeholder/**"],
       "linter": {
         "rules": {
           "style": {
@@ -201,7 +200,7 @@
                       "TouchableHighlight",
                       "Switch"
                     ],
-                    "message": "Import AppText, Input, OtpInput, Button, IconButton, Switch, Checkbox or Radio from '../../ui' instead — apps/mobile/src/ui is the RN half of the design system and the only surface the web/RN parity contract can see (Law 5, Law 7). View, ScrollView, StyleSheet and Platform are layout and stay allowed."
+                    "message": "Import the equivalent from '@heliogrid/ui' instead — one package holds both platforms, RN via the .native.tsx half (docs/17-ui-architecture-v2.md §2). View, ScrollView, StyleSheet and Platform are layout and stay allowed. INERT until packages/ui lands; screens/placeholder is excluded because it predates it."
                   },
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
@@ -218,11 +217,7 @@
       }
     },
     {
-      "includes": [
-        "apps/web/app/**",
-        "apps/web/features/**",
-        "!apps/web/features/design-reference/**"
-      ],
+      "includes": ["apps/web/app/**", "apps/web/features/**"],
       "linter": {
         "rules": {
           "correctness": {
@@ -230,11 +225,11 @@
               "level": "error",
               "options": {
                 "elements": {
-                  "button": "Use Button or IconButton from @heliogrid/ui. A hand-rolled button loses the design system's focus ring, loading state and 44px target (Law 5).",
+                  "button": "Use Button or IconButton from @heliogrid/ui. A hand-rolled button loses the design system's focus ring, loading state and 44px target (Law 5). The Pressable primitive owns the 44px floor (docs/17 §4).",
                   "input": "Use Input, Checkbox, Radio, Switch or OtpInput from @heliogrid/ui (Law 5).",
-                  "a": "Use TextLink from @heliogrid/ui for text links, or next/link for navigation (Law 5).",
-                  "select": "No @heliogrid/ui equivalent exists yet — ADD one to packages/ui rather than inlining it here. Law 5: unmocked surfaces are composed from the shared vocabulary, and a control built locally is invisible to the web/RN parity contract.",
-                  "textarea": "No @heliogrid/ui equivalent exists yet — ADD one to packages/ui rather than inlining it here (Law 5, and see `select`)."
+                  "a": "Use TextAction from @heliogrid/ui for text links, or next/link for navigation (Law 5).",
+                  "select": "Use Select from @heliogrid/ui; if it is not built yet, BUILD it there rather than inlining one here (Law 5).",
+                  "textarea": "Use Textarea from @heliogrid/ui; if it is not built yet, BUILD it there rather than inlining one here (Law 5)."
                 }
               }
             }
