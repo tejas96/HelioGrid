@@ -1,0 +1,5 @@
+# Sitting 9 rulings — Step 9 BOM (2026-08-05)
+S9-1 (.28/.151/.153/.154/.155/.156/.157 — F1 pack law): FULLY PACK-DRIVEN — price book, tax rates + category mapping (incl. per-line exceptions), subsidy slabs/eligibility, compliance-checklist content, wind tables and engineering constants (slack, drops, reach, earthing) all become market-pack DATA; the existing single-market resolver becomes multi-market; IN pack ships today's exact values. Owner ruled 2026-08-05.
+S9-2 (.41, POC-DEFECT): Flat project discount applied ONCE to the project total and shown ALLOCATED proportionally across sections — section figures always reconcile to the customer total; percentage discounts unchanged. Owner ruled 2026-08-05.
+S9-3 (remaining 3): (1) wind/site conditions stated on the disclaimer for EVERY site, not only high-wind states (.24); (2) discount controls re-sync on external state changes (undo/redo/restore) (.39); (3) derivation formulas readable on touch + by screen readers, not title-attribute only (.71).
+SITTING 9 CLOSED 2026-08-05 — 3 rulings covering all defects + the F1 pack-law flags, zero open items.
