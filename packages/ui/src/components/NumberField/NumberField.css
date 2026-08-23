@@ -1,0 +1,120 @@
+/* NumberField — typed dimensions in the display unit, committed ONCE on blur or Enter.
+
+   THE DANGER RING AND THE FOCUS RING ARE TWO CHANNELS, NOT ONE SLOT. A refusal clears on focus, so
+   ordering it before focus only ever cost a frame; an `error` is cleared by nobody but the caller,
+   so the same ordering made a focused errored field pixel-identical to an unfocused one — on the
+   exact screen `error` exists for (M06-22 jumps to a step with SEVERAL failing fields and the
+   keyboard user has to see which one holds the caret). Focus therefore ADDS the accent ring on top
+   of the inset danger ring instead of losing to it. */
+
+.hg-number-field-label {
+  display: block;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.hg-number-field-box {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-number-field-box[data-density="functional"] {
+  height: 40px;
+  border-radius: var(--r-input-functional);
+}
+
+/* With steppers the buttons own the horizontal padding, so the box gives it up. */
+.hg-number-field-box[data-steppers="true"] {
+  padding: 0;
+}
+
+.hg-number-field-box[data-disabled="true"] {
+  background: var(--canvas-sunken);
+}
+
+.hg-number-field-box[data-focus="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-number-field-box[data-danger="true"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    var(--e1);
+}
+
+.hg-number-field-box[data-danger="true"][data-focus="true"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    0 0 0 2px var(--accent);
+}
+
+.hg-number-field-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  align-self: stretch;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  padding: 0;
+}
+
+/* With steppers the figure sits between them; without, it right-aligns like every other figure. */
+.hg-number-field-input[data-steppers="true"] {
+  text-align: center;
+}
+
+.hg-number-field-step.hg-pressable {
+  width: 44px;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: var(--r-input-expressive);
+  color: var(--text-secondary);
+}
+
+.hg-number-field-unit {
+  padding-right: var(--sp-1);
+  font-size: var(--fs-body-sm);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.hg-number-field-slot {
+  margin: var(--sp-2) 2px 0;
+}
+
+.hg-number-field-provenance {
+  margin: 6px 2px 0;
+}
+
+.hg-number-field-message {
+  margin: 6px 2px 0;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-number-field-message[data-kind="refusal"],
+.hg-number-field-message[data-kind="error"] {
+  color: var(--danger-text);
+}
+
+.hg-number-field-message[data-kind="correction"] {
+  color: var(--warning-text);
+}

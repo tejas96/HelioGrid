@@ -13,140 +13,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:78
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:63
-msgid "6-digit code"
-msgstr "6-अंकों का कोड"
-
-#. js-lingui-explicit-id
-#: ../../apps/web/features/auth/signup/SignupScreen.tsx:26
-msgid "Back to sign in"
-msgstr "साइन इन पर वापस जाएं"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:49
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:112
-msgid "Call me with the code instead"
-msgstr "कोड के लिए मुझे कॉल करें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:32
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:99
-msgid "Calling +91 {phoneFormatted} now with your code. Keep the phone nearby."
-msgstr "आपके कोड के साथ +91 {phoneFormatted} पर अभी कॉल कर रहे हैं। फ़ोन पास रखें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:67
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:57
-msgid "Change number"
-msgstr "नंबर बदलें"
-
-#. js-lingui-explicit-id
-#: ../../apps/web/features/auth/signup/SignupScreen.tsx:20
-msgid "Company sign-up opens here"
-msgstr "कंपनी साइन-अप यहां खुलेगा"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:63
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:60
-msgid "Continue"
-msgstr "जारी रखें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:42
-#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:18
-msgid "Couldn't check the code. Try again."
-msgstr "कोड की जाँच नहीं हो सकी। फिर से कोशिश करें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:47
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:45
-#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:20
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:48
-msgid "Couldn't send the code. Try again."
-msgstr "कोड भेजा नहीं जा सका। फिर से कोशिश करें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:66
-msgid "Create an account"
-msgstr "खाता बनाएँ"
-
-#. js-lingui-explicit-id
 #: src/copy/validation.ts:12
 msgid "Enter a valid value."
 msgstr "मान्य मान दर्ज करें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:61
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:50
-msgid "Enter the 6-digit code sent to +91 {phoneFormatted}."
-msgstr "+91 {phoneFormatted} पर भेजा गया 6-अंकों का कोड डालें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:58
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:47
-msgid "Enter your code"
-msgstr "अपना कोड डालें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:41
-msgid "Field-first CRM, surveys and design for solar EPCs."
-msgstr "सोलर EPC के लिए फ़ील्ड-फ़र्स्ट CRM, सर्वेक्षण और डिज़ाइन।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:38
-msgid "Foundations ready"
-msgstr "आधार तैयार है"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:67
-msgid "Joining a team? Open your invite link"
-msgstr "किसी टीम से जुड़ रहे हैं? अपना आमंत्रण लिंक खोलें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:37
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:36
-msgid "Mobile number"
-msgstr "मोबाइल नंबर"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/navigation/tabs.tsx:31
-msgid "My Day"
-msgstr "मेरा दिन"
-
-#. js-lingui-explicit-id
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:64
-msgid "New company?"
-msgstr "नई कंपनी?"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/home/HomeScreen.tsx:46
-msgid "Open my day"
-msgstr "मेरा दिन खोलें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:104
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:78
-msgid "Resend code"
-msgstr "कोड फिर से भेजें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpStep.tsx:91
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:82
-msgid "Resend code in {time}"
-msgstr "{time} में कोड फिर से भेजें"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:44
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:47
-msgid "Sent by SMS to your registered number."
-msgstr "आपके पंजीकृत नंबर पर SMS से भेजा जाएगा।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:33
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:32
-msgid "Sign in with your phone number. No password — we'll text you a one-time code."
-msgstr "अपने फ़ोन नंबर से साइन इन करें। कोई पासवर्ड नहीं — हम आपको SMS से वन-टाइम कोड भेजेंगे।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:14
@@ -164,21 +33,9 @@ msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/CallOfferCard.tsx:46
-#: ../../apps/web/features/auth/login/components/OtpStep.tsx:109
-msgid "Still no code after two tries?"
-msgstr "दो बार भेजने पर भी कोड नहीं मिला?"
-
-#. js-lingui-explicit-id
 #: src/copy/api-error.ts:20
 msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/OtpErrorRow.tsx:38
-#: ../../apps/web/features/auth/login/components/OtpErrorRow.tsx:16
-msgid "That code doesn’t match. Check it and try again."
-msgstr "यह कोड मेल नहीं खाता। जाँचकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:18
@@ -189,11 +46,6 @@ msgstr "वह रिकॉर्ड उपलब्ध नहीं है।"
 #: src/copy/validation.ts:11
 msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
-
-#. js-lingui-explicit-id
-#: ../../apps/web/features/auth/signup/SignupScreen.tsx:21
-msgid "This part of HelioGrid is being finished right now. Sign in, or check back shortly."
-msgstr "HelioGrid का यह हिस्सा अभी तैयार हो रहा है। साइन इन करें, या थोड़ी देर में देखें।"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:14
@@ -211,33 +63,9 @@ msgid "Too many attempts. Wait a moment and retry."
 msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/PhoneStep.tsx:30
-#: ../../apps/web/features/auth/login/components/PhoneStep.tsx:29
-msgid "Welcome back"
-msgstr "वापसी पर स्वागत है"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/DoneStep.tsx:20
-#: ../../apps/web/features/auth/login/components/DoneStep.tsx:14
-msgid "Welcome back. Taking you to your day."
-msgstr "वापसी पर स्वागत है। आपको आपके दिन पर ले जा रहे हैं।"
-
-#. js-lingui-explicit-id
 #: src/copy/api-error.ts:16
 msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/LoginScreen.tsx:44
-#: ../../apps/web/features/auth/login/LoginScreen.tsx:27
-msgid "You're offline — check your connection and try again."
-msgstr "आप ऑफ़लाइन हैं — कनेक्शन जाँचकर फिर से कोशिश करें।"
-
-#. js-lingui-explicit-id
-#: ../../apps/mobile/src/screens/login/components/DoneStep.tsx:17
-#: ../../apps/web/features/auth/login/components/DoneStep.tsx:11
-msgid "You're signed in"
-msgstr "आप साइन इन हो गए हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:15

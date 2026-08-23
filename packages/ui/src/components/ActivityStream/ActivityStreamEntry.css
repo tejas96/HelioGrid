@@ -1,0 +1,160 @@
+/* ActivityStream — one entry: the kind's mark, the kind's word, the clock, the summary and the
+   actor class. See ActivityStream.css for the stream frame and the states. */
+
+/* ── an entry ────────────────────────────────────────────────────────────────── */
+
+.hg-stream-entry {
+  display: grid;
+  grid-template-columns: var(--hg-stream-circle) 1fr;
+  column-gap: var(--sp-3);
+  align-items: start;
+}
+
+.hg-stream-mark {
+  width: var(--hg-stream-circle);
+  height: var(--hg-stream-circle);
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+}
+
+.hg-stream-mark[data-tone="neutral"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+.hg-stream-mark[data-tone="accent"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.hg-stream-mark[data-tone="success"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-stream-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.hg-stream-mark[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-stream-mark[data-tone="info"] {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+.hg-stream-agent-object {
+  display: block;
+  border-radius: var(--r-pill);
+  background: var(--gradient-brand);
+}
+
+.hg-stream-body {
+  min-width: 0;
+  padding-bottom: 18px;
+}
+
+.hg-stream[data-density="functional"] .hg-stream-body {
+  padding-bottom: 14px;
+}
+
+.hg-stream-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+/* The kind is a word on the entry, not a colour on the mark. */
+.hg-stream-kind {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-tertiary);
+}
+
+.hg-stream-time {
+  font-size: var(--fs-caption);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.hg-stream-summary-row {
+  margin-top: 2px;
+}
+
+.hg-stream-summary {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-stream[data-density="functional"] .hg-stream-summary {
+  font-size: 14px;
+}
+
+.hg-stream-summary-button {
+  display: block;
+  width: 100%;
+  /* 44px, not 24px: this is the entry's own tap target and owes the same floor every other
+     control in the package takes from the Pressable primitive (docs/17 §4). At 24px plus
+     padding it measured 43.3px in the browser — short by design, not by rounding. */
+  min-height: 44px;
+  padding: 10px 0;
+  margin: -10px 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-wrap: pretty;
+}
+
+.hg-stream[data-density="functional"] .hg-stream-summary-button {
+  font-size: 14px;
+}
+
+.hg-stream-summary-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-stream-detail {
+  margin: 4px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.hg-stream-actor {
+  margin-top: 6px;
+}
+
+.hg-stream-marks {
+  margin-top: var(--sp-2);
+}
+
+.hg-stream-tier {
+  margin-top: 6px;
+}
+
+.hg-stream-content {
+  margin-top: 10px;
+}
+
+.hg-stream-action {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  min-height: 44px;
+}

@@ -1,0 +1,98 @@
+/* ComplianceFloor — "nobody can do this, ever, because the law says so."
+
+   TWO VARIANTS, ONE SENTENCE, and the split is about WHEN the reader meets it.
+
+   variant="line"     PERSISTENT, on the row or the date it is about. NEUTRAL — a floor is not a
+                      fault, and it is true before anyone touches anything. This is where the fact
+                      lives, and it is why the delete control is not rendered at all.
+   variant="refusal"  THE SAVE THAT WAS REFUSED (SCR-M07-05's floor-blocked-save). Warning tint,
+                      because an act was just attempted and did not happen. WORDS TAKE
+                      --warning-text, never the mark token: plain --warning measures 2.17:1 on white
+                      and carries no word in this system.
+
+   The 6/10/14px gaps and paddings are the DS source's own; the 4px scale has no step for them. */
+
+/* ── variant="line" ─────────────────────────────────────────────────────────── */
+
+.hg-compliance-floor {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: var(--sp-0-5) 0;
+  font-family: var(--font-sans);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-compliance-floor[data-size="12"] {
+  font-size: var(--fs-caption);
+}
+.hg-compliance-floor[data-size="13"] {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-compliance-floor-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--text-tertiary);
+}
+
+.hg-compliance-floor-words {
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+.hg-compliance-floor-head {
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-compliance-floor-named {
+  color: var(--text-tertiary);
+}
+
+/* ── variant="refusal" ──────────────────────────────────────────────────────── */
+
+.hg-compliance-floor-refusal {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--r-sm);
+  background: var(--warning-bg);
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+.hg-compliance-floor-refusal-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--warning-text);
+}
+
+.hg-compliance-floor-refusal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hg-compliance-floor-refusal-head {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  line-height: 1.45;
+  color: var(--warning-text);
+  text-wrap: pretty;
+}
+
+.hg-compliance-floor-refusal-note {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}

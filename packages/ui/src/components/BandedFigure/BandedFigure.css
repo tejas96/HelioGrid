@@ -1,0 +1,249 @@
+/* BandedFigure — a figure and the named band it lands in, with the remedy attached to the fault.
+   The band is a WORD, then a MARK, then a tint (F7-12) — never a tint on its own.
+
+   The mark is measured on the tint it sits on against WCAG's 3:1 non-text floor: success 3.28 ·
+   danger 3.43 · info 3.26 · neutral 3.93 pass, and --warning measures 1.99 on --warning-bg, so the
+   warning mark takes --warning-text (6.53 on tint). */
+
+.hg-band-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: var(--hg-band-chip-h);
+  padding: 0 var(--hg-band-chip-px);
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: var(--hg-band-chip-fs);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.005em;
+}
+
+.hg-band-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.hg-band-chip[data-tone="success"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-band-chip[data-tone="success"] .hg-band-chip-dot {
+  background: var(--success);
+}
+.hg-band-chip[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.hg-band-chip[data-tone="warning"] .hg-band-chip-dot {
+  background: var(--warning-text);
+}
+.hg-band-chip[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-band-chip[data-tone="danger"] .hg-band-chip-dot {
+  background: var(--danger);
+}
+.hg-band-chip[data-tone="info"] {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+.hg-band-chip[data-tone="info"] .hg-band-chip-dot {
+  background: var(--info);
+}
+.hg-band-chip[data-tone="neutral"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+.hg-band-chip[data-tone="neutral"] .hg-band-chip-dot {
+  background: var(--neutral);
+}
+
+/* ── the line variant ────────────────────────────────────────────────────────── */
+
+.hg-banded-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  font-family: var(--font-sans);
+}
+
+.hg-banded-line-label {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-banded-line-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-banded-line-remedy {
+  flex-basis: 100%;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* ── the card and the inspector's box ────────────────────────────────────────── */
+
+.hg-banded {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  position: relative;
+  overflow: hidden;
+}
+
+.hg-banded[data-variant="card"] {
+  padding: 22px;
+  box-shadow: var(--e2);
+  gap: 9px;
+}
+
+.hg-banded[data-variant="box"] {
+  padding: 26px;
+  box-shadow: var(--e3);
+  gap: var(--sp-3);
+}
+
+/* The inspector's box reads as one instrument: a tint band down its leading edge is the only
+   non-word channel it adds, and the word still carries the verdict. */
+.hg-banded-edge {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+}
+
+.hg-banded[data-tone="success"] .hg-banded-edge {
+  background: var(--success);
+}
+.hg-banded[data-tone="warning"] .hg-banded-edge {
+  background: var(--warning-text);
+}
+.hg-banded[data-tone="danger"] .hg-banded-edge {
+  background: var(--danger);
+}
+.hg-banded[data-tone="info"] .hg-banded-edge {
+  background: var(--info);
+}
+.hg-banded[data-tone="neutral"] .hg-banded-edge {
+  background: var(--neutral);
+}
+
+.hg-banded-label {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-banded[data-variant="box"] .hg-banded-label {
+  font-size: var(--fs-caption);
+}
+
+.hg-banded-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-banded-figure-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-banded-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.hg-banded-value {
+  font-size: 32px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-display);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+
+.hg-banded[data-variant="box"] .hg-banded-value {
+  font-family: var(--font-mono);
+  font-size: 44px;
+}
+
+.hg-banded-unit {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+}
+
+.hg-banded[data-variant="box"] .hg-banded-unit {
+  font-size: 18px;
+}
+
+.hg-banded-bound {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+/* The remedy: a sentence, in the fault's own block, never a tint on its own. */
+.hg-banded-remedy {
+  margin: 0;
+  display: flex;
+  gap: var(--sp-2);
+  align-items: flex-start;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  font-weight: var(--fw-medium);
+  text-wrap: pretty;
+}
+
+.hg-banded[data-variant="box"] .hg-banded-remedy {
+  font-size: 14px;
+}
+
+.hg-banded[data-tone="success"] .hg-banded-remedy {
+  color: var(--success-text);
+}
+.hg-banded[data-tone="warning"] .hg-banded-remedy {
+  color: var(--warning-text);
+}
+.hg-banded[data-tone="danger"] .hg-banded-remedy {
+  color: var(--danger-text);
+}
+.hg-banded[data-tone="info"] .hg-banded-remedy {
+  color: var(--info-text);
+}
+.hg-banded[data-tone="neutral"] .hg-banded-remedy {
+  color: var(--neutral-text);
+}
+
+.hg-banded-remedy-glyph {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.hg-banded-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}

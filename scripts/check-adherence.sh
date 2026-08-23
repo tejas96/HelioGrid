@@ -6,7 +6,7 @@
 #   1. no test files            — owner directive: no .test.*/.spec.* until a testing
 #                                 program is commissioned
 #   2. source files ≲300 lines  — split by RESPONSIBILITY, never `*-part2`
-#   3. no raw hex in UI paths   — every visual value comes from @heliogrid/tokens
+#   3. no raw hex in UI paths   — every visual value comes from @heliogrid/theme
 #
 # Each check prints its violations and the script exits 1 if any fired.
 set -uo pipefail
@@ -29,7 +29,16 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-UI_DIRS="packages/ui/src apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib apps/web/features"
+# packages/ui/src landed 2026-08-19 (V2 primitives, docs/17 §4) and is scanned from day one,
+# per the rule that used to sit here. The 95-component layer landed into the same tree the same
+# day and is covered by that entry — a component folder is not a separate opt-in.
+# packages/theme/src is scanned, EXCEPT src/_generated — that is the pulled design-system
+# source itself (ds:pull, docs/17 §6), raw colour by definition; the --exclude-dir below
+# keeps the gate on the HAND-WRITTEN theme source without firing on the DS it enforces.
+# Being the token package is NOT itself an exemption, and the whole tree is not dropped to buy
+# one: _generated is the exempt part, and it is excluded by path so the hand-written source
+# beside it stays covered. That distinction is the reason --exclude-dir exists here.
+UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib packages/theme/src packages/ui/src"
 for d in $UI_DIRS; do
   [ -e "$d" ] || { printf 'CONFIG ROT: UI_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
 done
@@ -90,7 +99,7 @@ fi
 # skips a rule whose fg/bg are literals rather than var(), so nothing saw them at all.
 # `color-mix()` over TOKENS is house style (packages/ui/CLAUDE.md) so it is not matched here;
 # it resolves to tokens, which is the point. For the same reason `rgb(`/`hsl(` must be followed
-# by a DIGIT to count: `rgb(${mix(r)},…)` in apps/mobile/src/ui/data/Card.tsx is RN's
+# by a DIGIT to count: a `rgb(${mix(r)},…)` call is RN's
 # hand-rolled color-mix — RN has no such function — and it computes from a token, so it is not
 # a raw value. A literal colour always starts with a number.
 # ONE pattern, used by both passes. It was defined twice before, and only the first copy was
@@ -101,16 +110,46 @@ COLOUR='#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|lab)\([[:space:]]*[0-9.]|(color
 # A per-line filter cannot see that line 3 of a 5-line /* ... */ is inside a comment, so a
 # reference palette written across several lines produced false positives — and noise is how a
 # gate teaches people to ignore it.
+#
+# TWO MORE THINGS ARE NOT STYLING VALUES, and both were firing. The gate's job is "no raw colour
+# as a STYLING value", so each is stripped by SHAPE — never by path, which would blind the file:
+#
+#   · A HEX INSIDE A SENTENCE. `helper='Enter a 6-digit hex colour, e.g. #1F5FA9'` is UI copy
+#     DEMONSTRATING the format the field accepts; there is no token for it because it is not a
+#     colour, it is a word. The strip is deliberately narrow: the quoted string must start
+#     sentence-cased (`[A-Z][a-z]`) AND contain a space. No CSS or RN colour value has that
+#     shape — `'#ff0000'`, `'2px solid #ff0000'`, `'bg-[#ff0000]'`, `'0 1px 2px #00ff00'` and
+#     every template literal all still fire, so `color: '#ff0000'` is as caught as it ever was.
+#
+#   · A FULLY TRANSPARENT STOP. `rgba(255,255,255,0)` at alpha ZERO carries no colour — it is the
+#     "nothing here" end of a gradient, and the design system's own --glow-brand spells it exactly
+#     that way (ds tokens/colors.css). `transparent` is NOT a substitute: it means rgba(0,0,0,0),
+#     which interpolates through grey and fringes the gradient. Only a literal zero alpha is
+#     stripped; rgba(...,0.22) still fires.
+COLOUR_PROSE='s{"[A-Z][a-z][^"\n]*[ ][^"\n]*"}{}g; s{\x27[A-Z][a-z][^\x27\n]*[ ][^\x27\n]*\x27}{}g'
+COLOUR_ZERO_ALPHA='s{\b(?:rgba|hsla)\([^()\n]*,[[:space:]]*0(?:\.0+)?[[:space:]]*\)}{}g'
+# The ONE path exemption, and it is a whole file that holds nothing but data. BrandColorField's
+# preset swatches are the starting points an operator picks their OWN company's colour from —
+# tenant data, not our styling — so @heliogrid/theme cannot hold them: it is GENERATED from the
+# design system (ds:pull) and never hand-transcribed. Keeping them in a file of their own is what
+# makes the exemption narrow: every styling line in BrandColorField beside it stays covered.
+# One exact path per line; `grep -vxF` drops whole lines, so a near-miss path exempts nothing.
+COLOUR_DATA_FILES='packages/ui/src/components/BrandColorField/brand-swatches.ts'
+for d in $COLOUR_DATA_FILES; do
+  [ -e "$d" ] || { printf 'CONFIG ROT: COLOUR_DATA_FILES names "%s", which does not exist.\n' "$d"; fail=1; }
+done
 hex=$(for f in $(grep -rlE "$COLOUR" $UI_DIRS --include='*.ts' --include='*.tsx' \
                    --include='*.mts' --include='*.cts' --include='*.jsx' --include='*.css' \
-                   2>/dev/null); do
-        perl -0pe 's{/\*.*?\*/}{}gs' "$f" | grep -nE "$COLOUR" \
+                   --exclude-dir='_generated' 2>/dev/null \
+                 | grep -vxF "$COLOUR_DATA_FILES"); do
+        perl -0pe "s{/\*.*?\*/}{}gs; $COLOUR_PROSE; $COLOUR_ZERO_ALPHA" "$f" | grep -nE "$COLOUR" \
           | grep -vE '^[0-9]+:[[:space:]]*(//|\*)' | sed "s|^|$f:|"
       done)
 if [ -n "$hex" ]; then
-  printf 'RAW COLOUR in a UI path — use a token from @heliogrid/tokens:\n%s\n' "$hex"
-  echo '  Tokens are GENERATED from design/ds-source; see docs/10 §3 and'
-  echo '  .claude/rules/ui-adherence.md. packages/tokens and design/ds-source are exempt.'
+  printf 'RAW COLOUR in a UI path — use a token from @heliogrid/theme:\n%s\n' "$hex"
+  echo '  Tokens come from @heliogrid/theme, which is GENERATED from the live design'
+  echo '  system (docs/17 §6). Only packages/theme/src/_generated — the pulled DS source'
+  echo '  itself — is exempt. See .claude/rules/ui-adherence.md.'
   echo '  color-mix() OVER TOKENS is fine — a literal colour in any notation is not.'
   fail=1
 fi
@@ -175,15 +214,16 @@ fi
 # data paths stubbed, and both get their real content back with the auth rebuild — wrapping
 # copy that is about to change would be translating twice. The debt is LISTED rather than
 # invisible, and a NEW screen gets no such grace.
-COPY_DEBT='apps/web/features/home/HomeScreen.tsx|apps/web/features/auth/onboarding/OnboardingScreen.tsx'
+# EMPTY since 2026-08-19: both debt screens were deleted with the v1 UI. A new screen
+# gets no grace — wrap its copy when you write it.
+COPY_DEBT='__none__'
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
          apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
-       | grep -vE "^(apps/web/features/design-reference/|apps/mobile/src/screens/gallery/)" \
        | grep -vE "^($COPY_DEBT):")
 if [ -n "$copy" ]; then
-  printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — docs/10 §7):\n%s\n' "$copy"
+  printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — prd/foundations/F3-localization.md):\n%s\n' "$copy"
   echo '  Wrap it: <Trans id="…"> in a component, i18n._() where a string is needed. The i18n'
   echo '  CI guard only proves catalogs are FRESH — a literal that was never extracted has no'
   echo '  catalog entry to go stale, so nothing else sees it.'
@@ -207,31 +247,18 @@ for po in packages/i18n/src/locales/*/messages.po; do
   [ "$n" -gt 0 ] && untranslated="${untranslated}  ${po}: ${n} untranslated\n"
 done
 if [ -n "$untranslated" ]; then
-  printf 'UNTRANSLATED MESSAGES (docs/10 §7 — EN/HI/MR):\n'
+  printf 'UNTRANSLATED MESSAGES (prd/foundations/F3-localization.md — EN/HI/MR):\n'
   printf "$untranslated"
   echo '  `lingui extract` only proves catalogs are FRESH. An empty msgstr survives it, and'
   echo '  compiles, and renders English to a Hindi or Marathi user.'
   fail=1
 fi
 
-# ── 8. Screens compose from @heliogrid/ui ───────────────────────────────────
-# The rule existed in apps/web/CLAUDE.md ("Import UI ONLY from @heliogrid/ui index",
-# ".hg-* scaffold is legacy") and nothing enforced it. OnboardingScreen shipped with 12 raw
-# hg-* classes and ZERO ui imports through an implementation, a task review and a whole-branch
-# review — because every gate we had checks SHAPE (hex, line count, import graph) and none
-# checks whether the design system is actually used. That is the gap this closes.
-#
-# design-reference is exempt BY PATH: it demonstrates raw token values, which is its job.
-legacy=$(grep -rlE 'className="[^"]*\bhg-' apps/web/features --include='*.tsx' 2>/dev/null \
-         | grep -v '^apps/web/features/design-reference/')
-if [ -n "$legacy" ]; then
-  printf 'LEGACY hg-* SCAFFOLD in a feature screen — compose from @heliogrid/ui:\n'
-  for f in $legacy; do printf '  %s\n' "$f"; done
-  echo '  packages/ui has 28 components (Card, Input, Button, SegmentedControl, …). The'
-  echo '  .hg-* classes are pre-component scaffold; a screen using them is not on the design'
-  echo '  system, so a token change does not reach it. apps/web/CLAUDE.md §Local conventions.'
-  fail=1
-fi
+# ── 8. (retired 2026-08-19) Screens compose from @heliogrid/ui ──────────────
+# Checked that no feature screen used the pre-component `.hg-*` scaffold instead of the
+# design system. Both sides of that comparison are gone: the v1 packages/ui was deleted and
+# globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
+# called, if there is one — in the change that creates packages/ui (docs/17 §5 step 2).
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, screens on the design system'
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated'
 exit $fail

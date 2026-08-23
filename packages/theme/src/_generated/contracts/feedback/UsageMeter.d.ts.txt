@@ -1,0 +1,115 @@
+import React from "react";
+
+import { ProvenanceTierSpec, ProvenanceStanding } from "../data/Provenance";
+import { SurfaceState } from "./UnavailableNote";
+
+/**
+ * The billing situations `SCR-M12-04` sits inside, plus the ordinary case — **and the shared surface
+ * states the component used to lack.**
+ *
+ * `loading`, `error` and `unavailable` are the system's `SurfaceState` names and mean here exactly what
+ * they mean everywhere else; `ready` is accepted as a synonym of this component's own `ok`, so a screen
+ * threading one `state` through several surfaces needs no translation. **`empty` is deliberately not in
+ * the union**: zero consumption is a real, resolved figure with a real denominator, not an absence, and
+ * a meter that read "empty" would be hiding a number `BM-27` requires it to show.
+ *
+ * The non-reporting states are mutually exclusive with the billing ones — a meter is either reporting a
+ * resolved rollup or it is not reporting at all — and they are **checked in that order**: `error` and
+ * `unavailable` first (in both there is definitionally no value, so the documented call passes no
+ * `value`), then `loading`/unresolved, then the billing states. `SCR-M12-04` rules the first two
+ * explicitly — *"loading: rollups not yet resolved; never a placeholder number presented as a rollup"*
+ * and *"error: this screen may only ever show the enforced/billed numbers, so no fallback or approximate
+ * figures"*.
+ */
+export type UsageState =
+  | "ok"
+  | "ready"
+  | "overage-accruing"
+  | "tracked-seats-accruing"
+  | "cap-reached-grace"
+  | "creations-paused"
+  | Extract<SurfaceState, "loading" | "error" | "unavailable">;
+
+export interface UsageMeterProps {
+  /** What is metered — "Proposal sends", "AI designs", "Tracked seats". */
+  label: string;
+  /**
+   * Consumption so far. May exceed `limit`: overage accrues visibly (`M12-35`).
+   *
+   * **A non-finite or missing value renders as unresolved**, whatever the caller passed — the label,
+   * a shimmer in the figure's footprint and the period, and no numeral. There is no default of 0,
+   * because a zero presented as a rollup is the failure `SCR-M12-04` names.
+   */
+  value?: number;
+  /**
+   * The bundle's allowance — the denominator (`BM-27`). **Defaults to `null`, not 0.** A meter with
+   * no positive limit is **unmetered**, not zero-capped: it renders the count alone, with no " of ",
+   * **no track**, and one line saying there is no bundle to measure against. Overage, the threshold
+   * tick and the percentage all derive from a rate, so none of them is drawn without one.
+   */
+  limit?: number | null;
+  unit?: string;
+  /** The billing period these numbers belong to — "1–31 Aug 2026". BM-27 requires it. */
+  period?: string;
+  /**
+   * Provenance tier for the number (N7 / F8-01) — rendered as a visible word beside the period.
+   * **Open vocabulary**: M12-34 reserves "measured" for engineering and survey data and forbids it
+   * on this screen, so pass this screen's own word — `"Actual usage"`.
+   */
+  provenance?: ProvenanceTierSpec;
+  /** How far the figure can be relied on as final. See `Provenance`. */
+  standing?: ProvenanceStanding;
+  /** The bundle this consumption is shown against — "Growth bundle" (BM-27). */
+  bundleName?: string;
+  /** Default `"ok"` (`"ready"` is accepted as its synonym). See `UsageState` for the precedence. */
+  state?: UsageState;
+  /** Warning threshold, drawn as a tick on the track. Default 80 (BM-34). */
+  thresholdPercent?: number;
+  /** Days left in the 7-day grace window. Used by `cap-reached-grace` (M12-30). */
+  graceDaysLeft?: number;
+  note?: string;
+  /** The unmetered line's words. Say the commercial rule if you know it — "Billed per send". */
+  noLimitNote?: string;
+  /** The unresolved line's words, shown beside the period while `loading`. */
+  loadingNote?: string;
+  /** `error`'s sentence. It never quotes a figure, not even the last good one. */
+  errorMessage?: string;
+  /** Draws the retry under `error`. No other state offers one. */
+  onRetry?: () => void;
+  /** `unavailable`: this meter does not apply to this plan. No bar, no figure, no retry. */
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * A billing meter for `SCR-M12-04` Usage — the same numbers the product enforces and bills from,
+ * with no smoothing (`BM-27`).
+ *
+ * Deliberately **not** a richer `ProgressBar`: that one reports how far along a single operation is
+ * and is used across the product for uploads and renders, which must never carry billing
+ * semantics. This one has a denominator, a period, a provenance tier, a threshold tick, a scale
+ * that continues past 100%, and the billing states.
+ *
+ * **Three rules govern every figure in it, and they run before any billing logic:**
+ * 1. **No figure without a resolved value.** `loading` (or a non-finite `value`) renders a shimmer
+ *    in the figure's own footprint — never "0 of 0", and never `role="progressbar"`, because a bar
+ *    with no value is a claim.
+ * 2. **No denominator without a rate.** No positive `limit` means unmetered: a count, no track, and
+ *    a line saying so. It used to mean `limit = 0`, which drew the whole track as info-blue overage
+ *    against a zero bundle — "1,240 of 0".
+ * 3. **An error shows no numbers.** Not the last good figure, not an approximation.
+ *
+ * **`error` and `unavailable` are tested before the resolved-value guard.** Both mean there is no
+ * figure to wait for, and the documented calls pass no `value` at all — checked after rule 1 they were
+ * unreachable, rendering the loading shimmer with the retry nowhere. No dummy `value={0}` is ever
+ * needed to reach a state.
+ *
+ * **No scary meters** (`M12-36`). It reports and never alarms: 80% is amber (`--warning-text` — plain
+ * `--warning` measures 2.17:1 as a mark, below the 3:1 non-text floor), overage is info-blue
+ * because it is expected billable behaviour rather than a fault, and a paused meter goes grey with
+ * the severity in words. At 100% a `Banner` appears (`BM-34`) — the banner is the alarm; a meter
+ * that shouted too would double it.
+ */
+export function UsageMeter(props: UsageMeterProps): JSX.Element;

@@ -1,0 +1,27 @@
+import React from "react";
+
+export interface BreadcrumbItem {
+  key?: string;
+  label: string;
+  onClick?: () => void;
+}
+
+export interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+  /** Longer trails collapse in the middle; root and current page always stay. */
+  maxItems?: number;
+  onNavigate?: (item: BreadcrumbItem) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Desktop-only location trail. On a phone the back affordance is the sheet or top bar.
+ *
+ * **The target and the visible line are two different rectangles** — `FilterBar`'s treatment, stated
+ * here so the next 44px sweep does not re-flag it. Each crumb is a **44px-tall button** whose extra
+ * height is taken back as negative margin (`-10px`), so the rendered trail stays a 24px line while the
+ * hit area clears the floor. It was measured, not assumed: before this the crumb was `minHeight: 32`
+ * with a `-4px` pad and measured **47×32 / 48×32** in the browser — the right shape, 12px short. A
+ * negative margin borrows layout space back; it does not enlarge a hit box.
+ */
+export function Breadcrumb(props: BreadcrumbProps): JSX.Element;

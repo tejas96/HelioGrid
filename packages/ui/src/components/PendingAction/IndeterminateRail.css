@@ -1,0 +1,33 @@
+/* IndeterminateRail — an operation whose end is not known: a segment travelling the track. The
+   22×3px default is the 6px operation rail at one sixth scale, because "in progress" in this
+   system is a rail and a spinner is what F4-27 forbids a wall of.
+
+   REDUCED MOTION IS READ, NOT IGNORED. A segment frozen at 34% would read as a determinate third,
+   so under the query the rail becomes a STATIC, DIMMED, FULL-WIDTH fill instead. */
+
+.hg-indeterminate-rail {
+  display: block;
+  width: var(--hg-indeterminate-rail-width, 22px);
+  height: var(--hg-indeterminate-rail-thickness, 3px);
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  overflow: hidden;
+}
+
+.hg-indeterminate-rail-segment {
+  display: block;
+  height: 100%;
+  width: 34%;
+  border-radius: var(--r-pill);
+  background: var(--hg-indeterminate-rail-tone, var(--accent));
+  animation: hg-indeterminate 1.15s var(--ease-standard) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-indeterminate-rail-segment {
+    width: 100%;
+    opacity: 0.55;
+    animation: none;
+  }
+}

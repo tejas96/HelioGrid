@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface SwitchProps {
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  disabled?: boolean;
+  /**
+   * **The caller's validation failure** — a required consent or confirmation flag that is why a send
+   * refused. Danger ring on the track, danger words **under** the label (never inside it: a sentence
+   * inside the `<label>` would toggle the switch when tapped), `aria-invalid` on the input, described
+   * rather than announced. With an error present the control renders inside a column wrapper and
+   * `style` lands on that wrapper.
+   */
+  error?: React.ReactNode;
+  id?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * 52x32 switch, spring thumb. Track `--canvas-sunken` when off, `--accent` when on.
+ *
+ * The track declares `--control-edge` (`none` in the base scope, the sanctioned hairline in field
+ * mode) because `tokens/field-mode.css`'s blanket rule cannot reach it: the track is a presentational
+ * `<span>` — the real control is the visually hidden `<input role="switch">` — so an OFF switch in
+ * field mode was a `#E9ECF0` track on white, about 1.15:1, including `FieldModeToggle`'s own.
+ */
+export function Switch(props: SwitchProps): JSX.Element;

@@ -1,0 +1,145 @@
+import React from "react";
+
+/**
+ * One inline run. `b` bold, `i` italic, `href` link — **the whole inline mark set**. Nothing else is
+ * representable, which is what guarantees every mark has a read-only rendering.
+ */
+export interface RichTextSpan { text: string; b?: boolean; i?: boolean; href?: string }
+
+/** `p` paragraph · `h` heading · `ul`/`ol` lists · `logo` the inline logo placement. */
+export type RichTextBlock =
+  | { type: "p" | "h"; spans: RichTextSpan[] }
+  | { type: "ul" | "ol"; items: RichTextSpan[][]; start?: number }
+  | { type: "logo" };
+
+/**
+ * **A block list, not HTML.** It round-trips into the tenant's template set (`M01-51`) and is the
+ * same content type `SCR-M01-19`'s authored T&C body uses, rather than being local to the proposal
+ * builder. HTML would carry whatever the browser felt like emitting.
+ */
+export interface RichTextValue { version: 1; blocks: RichTextBlock[] }
+
+export interface RichTextMetrics {
+  chars: number;
+  words: number;
+  blocks: number;
+  headings: number;
+  listItems: number;
+  hasLogo: boolean;
+}
+
+export interface RichTextProps {
+  value?: RichTextValue;
+  /** Live — fires per edit, which is what makes the character count real. */
+  onChange?: (value: RichTextValue) => void;
+  /** Once, on blur. The value a template save or a persist should read. */
+  onCommit?: (value: RichTextValue) => void;
+  label?: string;
+  helper?: string;
+  placeholder?: string;
+  /** Editor height floor. Design at the cap: `M06-15` allows three pages, not a two-line box. */
+  minHeight?: number;
+  /**
+   * Hard character stop. **Not a pagination budget** and it never pretends to be one — see
+   * `pageEstimate`.
+   */
+  maxLength?: number;
+  disabled?: boolean;
+  /** `M06-15`'s add-logo toggle. Reflected in the value as a `logo` block; `onLogoChange` reports it. */
+  logo?: boolean;
+  onLogoChange?: (on: boolean, value: RichTextValue) => void;
+  logoSrc?: string;
+  /** The tenant's template set (`M01-51`) — the round trip in and out. */
+  templates?: { id: string; name: string }[];
+  onLoadTemplate?: (id: string) => void;
+  onSaveAsTemplate?: (value: RichTextValue, metrics: RichTextMetrics) => void;
+  saveTemplateLabel?: string;
+  /**
+   * **The seam left for `M06-15`'s "≈ PDF page estimate" — now filled from the other side.**
+   *
+   * An estimate can only be computed against a paged document surface, and that surface is
+   * `PagedDocument`. The slot is unchanged: still *supplied by the caller*, still rendered in the
+   * footer beside the character count, still **nothing** when empty — the editor never prints "≈ 1
+   * page" it cannot stand behind. What fills it is `PageEstimate` (exported from
+   * `components/print/PagedDocument.jsx`), fed by `RichText.measure(value)` and computed against that
+   * module's own `PAGE_GEOMETRY`, so the editor's estimate and the document's pages cannot come from
+   * two different ideas of a page. Pass `measured={cut.pagesOf("terms")}` from `PagedDocument`'s
+   * `onCut` and the "≈" drops — **`pagesOf(sectionId)`, not `sheets`**, which is the whole document.
+   */
+  pageEstimate?: React.ReactNode;
+  /** Called with fresh metrics after every edit — the input side of the same seam. */
+  onMeasure?: (metrics: RichTextMetrics) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Rich-text authoring for `M06-15` step 9** (Terms & Conditions, up to 3 pages) — and it ships with
+ * its renderer, because `M06-51`'s *"one computed value set feeds the document, the link and every
+ * export"* means this content is read in three places the author never sees.
+ *
+ * **The mark set is closed and small:** bold · italic · heading · bulleted list · numbered list ·
+ * link · inline logo. No colours, no fonts, no sizes, no alignment, no tables — a tenant editing
+ * their terms may not break the document's type system. The whitelist is **enforced by the
+ * serialiser**, so a paste from Word cannot smuggle a font into a customer's document, and every
+ * mark the toolbar can produce has a defined rendering in `RichTextView`.
+ */
+export function RichText(props: RichTextProps): JSX.Element;
+
+export interface RichTextViewProps {
+  value?: RichTextValue;
+  /** Fills a `logo` block. Without it, the block draws a labelled placeholder slot. */
+  logoSrc?: string;
+  logoLabel?: string;
+  /** Base size. 14 on screen, 11 inside a `DocumentPreview` sheet. Never below 12 on screen. */
+  fontSize?: number;
+  color?: string;
+  muted?: string;
+  /** What to say when there is no content. Omit and nothing renders. */
+  emptyText?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The read-only rendering of every mark the editor produces** — one implementation for the
+ * document, the customer link page and every export, so the three cannot drift. Links take
+ * `--link`, which inside a `CustomerSurface` is the tenant's contrast-gated ink.
+ *
+ * **It declares its flow rows**, so a page surface can cut it: every paragraph, heading, logo and
+ * list *item* carries `data-flow-row`, and a paragraph directly under a heading carries
+ * `data-flow-row-note` so the two stay on one sheet. Without those attributes a terms section
+ * declared as `rows` measured **zero** rows and was dropped from the document, and declared as
+ * `content` it was one atom, so pages 2 and 3 of a 3-page terms body were clipped.
+ */
+export function RichTextView(props: RichTextViewProps): JSX.Element | null;
+
+/** One flow row: a paragraph, a heading with the block under it, or a single list item. */
+export interface RichTextRow { blocks: RichTextBlock[] }
+
+/**
+ * **The value as flow rows** — what goes in a `PagedDocument` section's `rows`. `M06-15` budgets the
+ * terms in *pages* (up to three), so this content must break across sheets, and a `rows` section is
+ * the only shape `PagedDocument` cuts:
+ *
+ * ```jsx
+ * { id: "terms", rows: RichText.rows(terms),
+ *   renderRows: (chunk) => RichText.renderRows(chunk, { fontSize: 16 }) }
+ * ```
+ */
+export function richTextRows(value?: RichTextValue): RichTextRow[];
+
+/** Renders a chunk of rows — adjacent list rows fold back into one list with numbering intact. */
+export function renderRichTextRows(rows: RichTextRow[], props?: Omit<RichTextViewProps, "value">): JSX.Element | null;
+
+/** Metrics from the **value**, never the DOM: what a paged surface reads to compute pages. */
+export function measure(value?: RichTextValue): RichTextMetrics;
+
+export const EMPTY_RICH_TEXT: RichTextValue;
+
+export namespace RichText {
+  const View: typeof RichTextView;
+  const measure: typeof measure;
+  /** The cuttable shape for a `PagedDocument` `rows` section. */
+  const rows: typeof richTextRows;
+  const renderRows: typeof renderRichTextRows;
+  const EMPTY: RichTextValue;
+}

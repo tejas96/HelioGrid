@@ -1,0 +1,115 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { NamedGapSpec } from "./NamedGap";
+import { BandSpec } from "./BandedFigure";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export interface StatCardProps {
+  /** uppercase overline micro-label */
+  label: string;
+  /**
+   * The number. Pass a **number** and the market pack formats it (`F1` / `F3-20`); pass a string
+   * only when the caller genuinely owns the text.
+   */
+  value: string | number;
+  unit?: string;
+  /** Format the value as currency in the active market's currency and grouping. */
+  money?: boolean;
+  /** Use the pack's compact form — "4.52 lakh" under the IN pack (`M06-07`). */
+  compact?: boolean;
+  /**
+   * **The figure is absent, and this names what is missing** — `M02-03`'s named gaps, `M08-21`,
+   * `M11-15`, `MS7-14`. Rendered by `NamedGap` in the value's own footprint on an otherwise **ready**
+   * card, which is a different statement from `state="empty"` (where the whole card has nothing to
+   * say). A gap **suppresses the delta and the provenance slot**: a delta of an absent value is
+   * arithmetic on nothing, and a tier answers *how a figure was arrived at*, which has no answer when
+   * there is no figure.
+   */
+  gap?: React.ReactNode | NamedGapSpec;
+  /** delta chip text, e.g. "12%" */
+  delta?: string;
+  /**
+   * **Which way the figure moved, and nothing more.** Carried by the arrow glyph; `flat` draws a
+   * horizontal bar, because a delta of zero has no direction.
+   */
+  /**
+   * **Defaults to `up`**, so a card that passes a `delta` and no direction renders an up arrow and an
+   * sr-only "Up" the caller never asserted. State it. (The default exists because `delta` was a
+   * rising-figure prop before direction and sentiment were split; only the good/bad inference was
+   * removed, and direction inference is the same class of claim.)
+   */
+  deltaDir?: "up" | "down" | "flat";
+  /**
+   * **Whether that movement is good news — a separate fact, because the component cannot infer it.**
+   * `SCR-M13-01` puts four figures on the owner's home screen and roughly half are ones where up is
+   * bad: won/signed value (`M13-14`, up is good) beside the overdue total (`M13-16`), payments overdue
+   * and leads unassigned past 24 hours (`M13-15`). This used to be resolved *from* `deltaDir`, so a
+   * rising overdue total rendered green with an up arrow and read as success.
+   *
+   * Sentiment is carried by the tint **and by a word** — `F7-12` forbids a good/bad reading resting on
+   * colour alone — the same two-channel rule `StatusChip` and `Provenance` follow.
+   *
+   * **Default `neutral`, deliberately.** A caller that passes only `deltaDir` gets the neutral tint,
+   * the arrow, and no good/bad claim: the direction still reads and nothing lies. `neutral` is also how
+   * *"neither good nor bad"* is said outright — a headcount, a version number, a period with no change.
+   */
+  deltaSentiment?: "good" | "bad" | "neutral";
+  /** Replaces the sentiment word ("better" / "worse") with the figure's own: "behind", "over budget". */
+  sentimentLabel?: string;
+  /**
+   * **The band the figure itself lands in** — "Good", "Fair", "Poor", "Healthy" (`M05-06`, `M05-40`).
+   * A separate axis from `deltaSentiment`, which judges the *delta*: a band is absolute, named, and
+   * open-ended. Rendered by `BandChip` on the value's own line — the same pill `BandedFigure` uses, so
+   * there is one treatment for a verdict word and two axes that use it. A `gap` suppresses it, as it
+   * does the delta and the tier. For the prominent inspector's box or a threshold table, use
+   * `BandedFigure`.
+   */
+  band?: BandSpec | string | React.ReactNode;
+  /**
+   * **Where a tier goes on a headline number.** Renders directly under the value, above the delta
+   * and above `children`. A spec object, a bare tier string, or a ready `<Provenance>` node.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /** Makes the whole card a button — the tappable preview counts on SCR-M02-05 / SCR-M01-17. */
+  onClick?: () => void;
+  ariaLabel?: string;
+  /**
+   * e.g. a sparkline node bleeding to card edges. **Never the provenance** — its adjacency is
+   * unspecified here on purpose, which is why the tier has its own slot.
+   */
+  children?: React.ReactNode;
+  /**
+   * **An unresolved stat never renders a numeral.** `loading` puts a shimmer in the value's own
+   * footprint (nothing reflows when the figure lands), `error` says the figure couldn't be read and
+   * offers the retry, `unavailable` says there is no such figure here and offers none. Never a zero,
+   * never a dash dressed as a value, never the last figure it happened to hold.
+   */
+  state?: SurfaceState;
+  emptyMessage?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * KPI/stat card: overline label, big tabular value, provenance line, semantic delta chip.
+ *
+ * The adjacency rule for a tier on a non-table number, stated once: **it renders in the
+ * component's own `provenance` slot, directly under the value it qualifies, above the delta and
+ * above `children` — never in `children`.**
+ *
+ * **States, and the figure rule.** `loading` / `empty` / `error` / `unavailable` all render the
+ * label and no numeral: a placeholder number presented as a real one is the exact failure `F8-01`
+ * exists to prevent. An absent figure on an otherwise ready card is `gap` — a named absence, never a
+ * dash.
+ *
+ * **Direction and sentiment are two facts** (`deltaDir` / `deltaSentiment`), because half the figures
+ * on the owner's home screen are ones where up is bad. Sentiment defaults to `neutral`, so a caller
+ * that states only a direction makes no good/bad claim at all — while **direction itself defaults to
+ * `up`**, so a `delta` with no `deltaDir` draws an arrow nobody asserted. Pass both.
+ *
+ * @startingPoint section="Data display" subtitle="KPI stat card with provenance and delta" viewport="700x240"
+ */
+export function StatCard(props: StatCardProps): JSX.Element;

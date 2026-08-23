@@ -1,0 +1,75 @@
+/* HelioGrid — THE PRINT SURFACE.
+
+   tokens/ had no print file and base.css carried no @media print rule of any kind, so nothing in
+   this system knew what paper was. Two halves live here: the page GEOMETRY every sheet reads, and
+   the small set of print rules that make one DOM render identically on screen and on paper
+   (M06-50, SCR-M06-15: "pixel-for-content identical to what the customer's rendering will show").
+
+   THE TYPE ON PAPER IS NOT THE TYPE ON SCREEN. Screen tokens are px at 96dpi; a sheet is real
+   paper, so these are stated in pt as well and the reading floor is 12pt. 96dpi → 1pt = 1.333px.
+     --doc-fs        16px = 12pt   reading copy: the body of a proposal, a term, a table cell
+     --doc-fs-small  14px = 10.5pt title-block metadata, the foot of a sheet, a legend row
+     --doc-fs-figure 22px = 16.5pt a money figure a customer looks for first
+   Nothing on a sheet goes below --doc-fs-small, and DocumentPreview's 9–11px are a SCALED preview
+   of a 480px design, not paper. */
+:root{
+  /* 96dpi paper. A4 210×297mm → 794×1123px · Letter 8.5×11in → 816×1056px. */
+  --page-w-a4:794px; --page-h-a4:1123px;
+  --page-w-letter:816px; --page-h-letter:1056px;
+  /* 12.7mm / 0.5in all round, and the tighter drawing-sheet frame. */
+  --page-margin:48px; --page-margin-tight:32px;
+  --sheet-gap:24px; --sheet-radius:4px;
+  --doc-fs:16px; --doc-lh:1.5 /* @kind other */; --doc-fs-small:14px; --doc-fs-figure:22px;
+  --doc-rule:rgba(10,10,11,0.10);
+}
+
+/* PRINT SCOPING RUNS IN BOTH DIRECTIONS, and this is the whole contract (SCR-M06-13's details that
+   "save but will not print"; MS9-16's staleness warning that prints and is never print-suppressed).
+     data-print="screen-only"  saved, on screen, never on paper
+     data-print="print-only"   on paper only — a print-only clone, a continuation note
+     data-print="always"       must print wherever it sits (Disclosure carries this)
+   `always` cannot beat an ANCESTOR's display:none — CSS has no such thing — which is why
+   PrintScope hoists a registered Disclosure into a print-only clone beside the suppressed region
+   rather than trusting this declaration. The declaration is the floor; the hoist is the guard. */
+[data-print="print-only"]{display:none}
+
+/* THE PAGE BOX. `@page` is the one piece of print geometry no element can set: it is document-level,
+   it does not cascade from a subtree, and without it the browser chooses BOTH paper size and paper
+   margins. A .hg-sheet sized to A4 then lands inside a smaller printable area and either shrinks or
+   breaks — the exact outcome the measure-then-emit architecture exists to prevent, and MS8-02's
+   "paper size consistent across every sheet" has nowhere else to live.
+
+   This is the DEFAULT, so a page that renders sheets without declaring paper still prints on the paper
+   this system's geometry assumes (A4 at 96dpi = 794×1123px, which is what --page-w-a4 above says).
+   margin: 0 because every sheet pads INSIDE the page box; a page margin here would be counted twice.
+   A component that knows its own paper restates this rule from its own geometry — PagedDocument and
+   DrawingSheetGroup both do, through components/print/page-size.js, which owns the injected <style>. */
+@page{size:A4 portrait;margin:0}
+
+@media print{
+  /* The brand band and semantic tints are content on a proposal, not decoration. */
+  html,body{background:#FFFFFF}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  [data-print="screen-only"]{display:none!important}
+  [data-print="print-only"]{display:revert}
+  [data-print="always"]{display:block!important}
+  /* Operator chrome — rail, header, bottom nav, toolbars — is never part of a customer artefact. */
+  [data-print-chrome]{display:none!important}
+
+  /* One sheet, one page. The cut is computed in JS and emitted as explicit sheets, so the browser
+     has nothing left to decide; break-after on the LAST sheet is exactly what produces MS9-02's
+     forbidden trailing blank page, so the last sheet never carries one. */
+  .hg-sheet{box-shadow:none!important;border-radius:0!important;margin:0!important;break-after:page;break-inside:avoid}
+  .hg-sheet:last-of-type{break-after:auto}
+  .hg-sheet-stack{gap:0!important;background:transparent!important;padding:0!important}
+
+  /* The atoms of "what must not break across a page" — a BOM line, a figure and its provenance
+     label, a disclosure, an image and its caption, a total. */
+  [data-keep-together],figure,tr,li{break-inside:avoid}
+  /* A caption and header that repeat on every continuation page, for the print engine's own
+     fragmentation as well as the JS cut. */
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group;break-inside:avoid;break-before:avoid}
+  h1,h2,h3,p{orphans:2;widows:2}
+  a{text-decoration:none;color:inherit}
+}

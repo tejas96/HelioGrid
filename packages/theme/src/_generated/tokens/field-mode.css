@@ -1,0 +1,146 @@
+/* HelioGrid — high-contrast field mode (F7-16, P1).
+
+   A sanctioned, opt-in escape hatch for working in sunlight. It is a PRODUCT-VISIBLE CAPABILITY,
+   not a styling variant: the user turns it on, and turning it on is the one condition under which
+   the no-borders law of F7-15 yields.
+
+   It is NOT a dark theme and NOT a per-tenant theme. F7-04 still holds — the product is light-only,
+   and this is the same light product with every contrast decision pushed up.
+
+   HOW IT REACHES INLINE-STYLED COMPONENTS WITHOUT !important.
+   Every component in this system reads its colours and its elevation from custom properties. So
+   the mode overrides the PROPERTIES, and the components inherit the change with no per-component
+   prop, no field-mode branch and no specificity fight:
+
+     · colour tokens  — the three text steps, the semantic -text partners and the accent all darken.
+     · elevation      — --e1…--e5 gain a hairline ring. That single change is what puts a visible
+                        edge on every card, row, input, chip and sheet in the product, because all
+                        of them already say box-shadow: var(--e2). This is where the borders come
+                        from, and why they arrive everywhere at once.
+
+   THE THIRD CASE, which the first version of this file missed. A control that sets
+   box-shadow:none INLINE — Button and IconButton's ghost variants — beat the un-!important rule at
+   the bottom of this file, so the ghost button, transparent and --text-secondary, was the
+   lowest-contrast control in the system and the only one that gained nothing here. Same for a
+   resting ListRow, whose only edge was its hover shadow, which readme.md forbids outright. Both now
+   read a TOKEN that is `none` in the base scope — --control-edge and --surface-edge, declared in
+   tokens/elevation.css — so this file fills them in and no component has an inline none left to win
+   with. The blanket rule below stays for controls that set no shadow at all (nav items, rail tiles).
+
+   THE FOURTH CASE, which the blanket rule cannot reach by any selector: a control whose visible
+   part is not the control. Switch's track is a presentational <span> — the real control is the
+   visually hidden <input role="switch"> beside it — so it is neither a button nor a [role=*], and
+   an OFF track in this mode was #E9ECF0 on #FFFFFF, about 1.15:1, with no edge. On a roof that is
+   invisible, and the switch it was most true of was FieldModeToggle's own. Switch.jsx declares
+   --control-edge on the track for the same reason the ghosts do.
+
+   THE FIFTH CASE, where the answer above would be WORSE THAN NOTHING: a track is thinner than the
+   edge. Slider's unfilled track and RangeField's rail are 6px tall, and --control-edge is a 1.5px
+   INSET ring — on 6px that leaves a 3px core inside a dark outline, so an EMPTY slider would read as
+   a FULL one. A wrong value is worse than a faint one. Tracks therefore take --track-edge, an OUTSET
+   hairline: it rings the rail from outside, the interior keeps saying --canvas-sunken, and empty
+   still reads empty. Slider declares it in its stylesheet (a range track is only reachable through
+   vendor pseudo-elements); RangeField declares it inline on the rail span.
+
+   The selector is the ATTRIBUTE, not :root — the product sets it on <html>, and a specimen or a
+   preview pane can set it on a subtree to show both modes at once. Same rules either way. Because
+   custom properties inherit, a subtree cannot un-inherit the mode by silence, so there is an
+   explicit [data-field-mode="off"] scope at the bottom of this file that restores the base values.
+   That is what lets field-mode.card.html show both modes side by side while the page's own <html>
+   is switched on.
+
+   Ratios below are against the mode's own canvas (#FFFFFF) and its sunken surface (#E9ECF0). */
+[data-field-mode="on"]{
+  /* Surfaces separate harder: the canvas drops away from white instead of sitting 3% off it. */
+  --canvas:#FFFFFF;
+  --canvas-sunken:#E9ECF0;
+  --surface:#FFFFFF;
+  --surface-alt:#F4F6F8;
+
+  /* Text: secondary and tertiary both clear 9:1. Nothing a user must read stays grey. */
+  --text-primary:#000000;   /* 21.00 */
+  --text-secondary:#2B2D31; /* 13.86 */
+  --text-tertiary:#35383D;  /* 11.73 */
+  --text-disabled:#8E9299;  /*  3.09 — still WCAG-exempt, but now visibly present */
+  --hairline:rgba(10,10,11,0.22);
+  --mark-subtle:#4E5257;    /*  8.14 */
+
+  /* The accent darkens so it clears the floor as a word AND as a fill under white text. */
+  --accent:#2E1FD6;         /*  9.75 on white; white on it 9.75 */
+  --accent-hover:#241799;
+  --accent-subtle:#E2DEFF;
+
+  /* Semantic words go darker still; the MARK tokens keep their hue so a dot stays recognisable. */
+  --success-text:#07542C;
+  --warning-text:#5C3A05;
+  --danger-text:#8E1519;
+  --info-text:#0F4199;
+  --neutral-text:#3A3D42;
+
+  /* The sanctioned edge. F7-15 yields only here. */
+  --field-edge:#5B6069;
+
+  /* THE BORDER LAW YIELDING, in five lines: every elevation gains a hairline ring, so every
+     surface that floats by shadow now also has an edge a surveyor can find in direct sun. */
+  --e1:0 0 0 1px var(--field-edge), 0 1px 2px rgba(16,24,40,0.10);
+  --e2:0 0 0 1px var(--field-edge), 0 2px 6px rgba(16,24,40,0.10);
+  --e3:0 0 0 1px var(--field-edge), 0 6px 16px rgba(16,24,40,0.12);
+  --e4:0 0 0 1px var(--field-edge), 0 10px 28px rgba(16,24,40,0.14);
+  --e5:0 0 0 1.5px var(--field-edge), 0 18px 44px rgba(16,24,40,0.18);
+
+  /* The three edges the elevation override cannot reach: a control that inline-sets none, a resting
+     surface that floats on nothing, and a track too thin for an inset ring. See
+     tokens/elevation.css for why each exists. */
+  --control-edge:inset 0 0 0 1.5px var(--field-edge); /* @kind shadow */
+  --surface-edge:0 0 0 1px var(--field-edge); /* @kind shadow */
+  --track-edge:0 0 0 1px var(--field-edge); /* @kind shadow */
+
+  /* Atmosphere is decoration, and decoration competes with legibility in sunlight. */
+  --glow-brand:none; /* @kind other */
+}
+
+/* Controls that set NO shadow of their own — nav items, rail tiles, shell buttons — get the edge
+   from here. Ghost buttons and Switch are NOT covered by this rule and must not be: they read
+   --control-edge inline, which is `none` in the base scope, so there is no inline none left for
+   this rule to lose to. Anything that sets its own box-shadow keeps it, already ringed above. */
+[data-field-mode="on"] :is(button,[role="tab"],[role="button"]):not(:disabled):not([data-field-mode="off"] *){
+  box-shadow:var(--control-edge);
+}
+/* Focus stays the loudest thing on screen. */
+[data-field-mode="on"] :focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+
+/* THE OFF SCOPE. Custom properties inherit, so a subtree inside a switched-on page cannot return to
+   the default by saying nothing — the "Default" pane of a comparison would silently become a second
+   field-mode pane the moment the card's own switch was flipped. This restores the base values, and
+   it is the only duplication in the token layer: keep it in step with tokens/colors.css and
+   tokens/elevation.css. Setting it on <html> is also how FieldModeToggle spells "off". */
+[data-field-mode="off"]{
+  --canvas:#F6F7F9;
+  --canvas-sunken:#EEF0F3;
+  --surface:#FFFFFF;
+  --surface-alt:#FAFBFC;
+  --text-primary:#0A0A0B;
+  --text-secondary:#54565B;
+  --text-tertiary:#6B6E74;
+  --text-disabled:#C7CAD0;
+  --hairline:rgba(10,10,11,0.06);
+  --mark-subtle:#83888E;
+  --accent:#5A4BFF;
+  --accent-hover:#4A3BF0;
+  --accent-subtle:#EEECFF;
+  --success-text:#0D6B3E;
+  --warning-text:#7A4F0B;
+  --danger-text:#B32226;
+  --info-text:#175AC4;
+  --neutral-text:#585B60;
+  --field-edge:transparent;
+  --e1:0 1px 2px rgba(16,24,40,0.04);
+  --e2:0 2px 8px rgba(16,24,40,0.05);
+  --e3:0 8px 24px rgba(16,24,40,0.06);
+  --e4:0 16px 48px rgba(16,24,40,0.08);
+  --e5:0 24px 72px rgba(16,24,40,0.10);
+  --control-edge:none; /* @kind shadow */
+  --surface-edge:none; /* @kind shadow */
+  --track-edge:none; /* @kind shadow */
+  --glow-brand:radial-gradient(circle,rgba(123,92,255,0.22) 0%,rgba(59,130,246,0.14) 40%,rgba(255,255,255,0) 72%); /* @kind other */
+}

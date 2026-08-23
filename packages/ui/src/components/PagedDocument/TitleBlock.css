@@ -1,0 +1,128 @@
+/* TitleBlock (MS9-01) and PageEstimate — the two named surfaces the PagedDocument folder also
+   exports. Split from PagedDocument.css for size; PagedDocument.css @imports this, so the one
+   `<Name>.css` the stylesheet references still carries the whole folder. */
+
+.hg-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hg-title-block-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.hg-title-block-identity {
+  min-width: 0;
+}
+
+.hg-title-block-overline {
+  margin: 0;
+  font-size: var(--doc-fs-small);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* 26px: the document heading. No --fs-* token states a paper heading size — the doc scale stops
+   at --doc-fs-figure (22px) — so this is the one stated size on the sheet. */
+.hg-title-block-name {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+/* The named gap: the product does not invent a project name, and it says so in words. NamedGap
+   owns its own scale and colour — this only places it. */
+.hg-title-block-gap {
+  margin-top: 6px;
+}
+
+.hg-title-block-customer,
+.hg-title-block-internal,
+.hg-title-block-line,
+.hg-title-block-person {
+  font-size: var(--doc-fs-small);
+  line-height: var(--doc-lh);
+  color: var(--text-secondary);
+}
+
+.hg-title-block-customer {
+  margin: 6px 0 0;
+}
+
+.hg-title-block-customer-name {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-title-block-internal {
+  margin: 6px 0 0;
+  color: var(--warning-text);
+}
+
+.hg-title-block-prepared {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.hg-title-block-company {
+  margin: 0;
+  font-size: var(--doc-fs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-title-block-line,
+.hg-title-block-person {
+  margin: var(--sp-1) 0 0;
+}
+
+.hg-title-block-line + .hg-title-block-line {
+  margin-top: var(--sp-0-5);
+}
+
+.hg-title-block-fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--doc-rule);
+}
+
+.hg-title-block-value {
+  margin: 3px 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--doc-fs-small);
+  color: var(--text-primary);
+}
+
+/* ── the page estimate ────────────────────────────────────────────────────────────────────── */
+
+.hg-page-estimate {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: inherit;
+}
+
+.hg-page-estimate[data-over="true"] {
+  color: var(--warning-text);
+}
+
+/* `basis` states the arithmetic in words for a screen reader — visible to assistive tech only. */
+.hg-page-estimate-basis {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

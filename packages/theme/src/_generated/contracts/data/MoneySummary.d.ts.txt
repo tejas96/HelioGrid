@@ -1,0 +1,94 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+
+export interface MoneyLine {
+  key?: string;
+  label: string;
+  /**
+   * A **magnitude** — `kind` carries the sign. `null` means *not resolved yet*, which renders as those
+   * words in the amount's own footprint and suppresses the payable; it is never counted as zero.
+   */
+  amount: number | null;
+  /** `add` (default) — cost, battery, tax. `deduct` — incentive, subsidy, discount. */
+  kind?: "add" | "deduct";
+  /** A second line under the label — "PM Surya Ghar, credited by the National Portal". */
+  note?: React.ReactNode;
+  strong?: boolean;
+}
+
+export interface MoneyReconcileSpec {
+  /** What the other figure is — "Bill of materials". */
+  label: string;
+  amount: number;
+  /** The line key it must equal. Defaults to the first `add` line. */
+  against?: string;
+  /** Currency units. Default 0.5 — half a rupee. */
+  tolerance?: number;
+}
+
+export interface MoneySummaryProps {
+  /** The equation's members, in reading order: cost · battery · tax · incentive · discount. */
+  lines: MoneyLine[];
+  /** `SCR-M06-14`'s other figure — the BOM total this summary must agree with. */
+  reconcile?: MoneyReconcileSpec;
+  payableLabel?: string;
+  overline?: string;
+  /** `screen` — a quote screen or a phone card. `document` — on a sheet, at document type. */
+  surface?: "screen" | "document";
+  /** The payable's tier or standing — law 3's headline-figure slot, directly under the value. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  note?: React.ReactNode;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+export interface ResolvedMoney {
+  lines: MoneyLine[];
+  gross: number;
+  deductions: number;
+  /** The part of the deductions the gross could absorb. */
+  applied: number;
+  /** What did not fit. Named on screen, never dropped, never a negative payable. */
+  unapplied: number;
+  payable: number;
+  overDeducted: boolean;
+  unresolved: string[];
+  reconciliation: { label: string; amount: number; againstLabel: string; target: number; delta: number; agrees: boolean } | null;
+  /** No unresolved line and no failed reconciliation — may this document state a price? */
+  payableStandsUp: boolean;
+}
+
+/**
+ * **What the forty lines add up to.** `M06-35` (P0) / `SCR-M06-05`: *"cost + battery − incentive −
+ * discount = payable, **recomputing on every change**"* — an **itemised equation**, not a single stat.
+ * `SCR-M06-17` names the members: system cost, tax, incentive/subsidy amount, discount, payable.
+ *
+ * A `StatCard` would render the answer and drop the four figures a customer argues with;
+ * `DataTable.totalRow` is the one line a *table of lines* adds up to. Both exist, both run through
+ * `money-lines.js`, and they cannot disagree about a payable, a floor or a failed reconciliation.
+ *
+ * **Zero never renders negative, and the excess is named.** A discount larger than the cost is a real
+ * input, so the payable floors at zero *and* the part that did not fit is stated — *"₹12,400 is
+ * unapplied — it is not a refund."* Clamping in silence prints a payable the arithmetic does not
+ * support; −₹12,400 promises a refund nobody agreed to. (The **entry** side of the same problem is
+ * `NumberField outOfRange="refuse"`.)
+ *
+ * **A failed reconciliation prints no price.** `SCR-M06-14`: *"**a disagreement is a defect, not a
+ * display difference**."* The lines still render; in place of the payable the block names the gap.
+ * That is `UsageMeter`'s ruling one surface over — no figure without a resolved value — and an
+ * unresolved line does the same thing. `MoneySummary.stands(spec)` is the same test as a boolean, so a
+ * send path can refuse to send.
+ *
+ * **It survives a page break** (`§1` item 5): `data-keep-together` keeps the equation whole,
+ * `PagedDocument`'s `keepWithLast` keeps it with real lines rather than alone on a last sheet.
+ *
+ * @startingPoint section="Data display" subtitle="The money summary — an itemised equation, floored at zero" viewport="900x620"
+ */
+export function MoneySummary(props: MoneySummaryProps): JSX.Element;
+
+export namespace MoneySummary {
+  /** May this document state a price? No unresolved line, no failed reconciliation. */
+  function stands(spec: { lines?: MoneyLine[]; reconcile?: MoneyReconcileSpec }): boolean;
+  /** The resolved arithmetic, for a caller that needs the numbers as well as the rendering. */
+  function resolve(spec: { lines?: MoneyLine[]; reconcile?: MoneyReconcileSpec }): ResolvedMoney;
+}

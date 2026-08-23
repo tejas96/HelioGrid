@@ -1,0 +1,210 @@
+/* AppRail — the 72px desktop icon rail. The active item is an accent-subtle tile, never a
+   border and never a left accent bar. BottomNav — the phone counterpart, four destinations
+   around a raised near-black FAB under one parabolic top edge that the content rides. */
+
+.hg-app-rail {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  box-sizing: border-box;
+  width: var(--hg-app-rail-width, var(--rail-w, 72px));
+  height: 100%;
+  padding: var(--sp-4) 0;
+  background: var(--surface);
+}
+
+.hg-app-rail-brand {
+  margin-bottom: var(--sp-3);
+}
+
+.hg-app-rail-spacer {
+  flex: 1;
+}
+
+.hg-app-rail-avatar {
+  margin-top: var(--sp-2);
+}
+
+.hg-app-rail-button {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-app-rail-button:hover:not([data-active="true"]) {
+  background: var(--neutral-bg);
+}
+
+.hg-app-rail-button[data-active="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.hg-app-rail-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-app-rail-badge {
+  position: absolute;
+  top: var(--sp-0-5);
+  right: 0;
+}
+
+/* ── BottomNav ─────────────────────────────────────────────────────────────────────────── */
+
+.hg-bottom-nav {
+  position: relative;
+}
+
+/* The lift under the bar. There is no drop-shadow token, so the ink is --hairline — the DS's
+   own near-black at 6%, the closest token to the drawn 5% and the only one that is a LINE. */
+.hg-bottom-nav-bar {
+  position: relative;
+  height: var(--hg-bottom-nav-height, var(--bottomnav-h));
+  filter: drop-shadow(0 -1px 8px var(--hairline));
+}
+
+svg.hg-bottom-nav-plate {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+div.hg-bottom-nav-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: var(--surface);
+}
+
+/* A mask reads the ALPHA channel only — --text-primary is simply the opaque token that keeps a
+   raw colour out of the gradient. The concave alternative to the parabolic sweep. */
+div.hg-bottom-nav-plate[data-shape="notch"] {
+  mask-image: radial-gradient(
+    circle var(--hg-bottom-nav-notch-radius) at 50% 0,
+    transparent 0 var(--hg-bottom-nav-notch-radius),
+    var(--text-primary) calc(var(--hg-bottom-nav-notch-radius) + 0.5px)
+  );
+}
+
+/* Equal 1fr slots — the FAB's slot is exactly as wide as the rest, so all the centres are
+   evenly spaced. A fixed-width spacer for the FAB threw the others off centre. */
+.hg-bottom-nav-slots {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--hg-bottom-nav-slots, 5), 1fr);
+  height: 100%;
+}
+
+.hg-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hg-bottom-nav-icon-gap);
+  height: 100%;
+  border: none;
+  padding-top: calc(var(--hg-bottom-nav-icon-top) + var(--hg-bottom-nav-drop, 0px));
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-bottom-nav-item[data-active="true"] {
+  color: var(--accent);
+}
+
+.hg-bottom-nav-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-bottom-nav-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: var(--hg-bottom-nav-icon-box);
+}
+
+.hg-bottom-nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -14px;
+}
+
+.hg-bottom-nav-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: 14px;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  white-space: nowrap;
+}
+
+/* The FAB's own label hangs 6px above the others' line because it has no icon box above it. */
+.hg-bottom-nav-fab-slot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: calc(var(--hg-bottom-nav-label-top) - 6px + var(--hg-bottom-nav-drop, 0px));
+}
+
+.hg-bottom-nav-fab-slot .hg-bottom-nav-label {
+  color: var(--text-secondary);
+}
+
+/* 23 of the FAB's 56 sits proud of the peak; the rest sits inside the bar. */
+.hg-bottom-nav-fab {
+  position: absolute;
+  top: calc(-1 * var(--hg-bottom-nav-fab-offset));
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+}
+
+/* ── Fab ───────────────────────────────────────────────────────────────────────────────── */
+
+.hg-fab {
+  display: grid;
+  place-items: center;
+  width: var(--hg-fab-size, 56px);
+  height: var(--hg-fab-size, 56px);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--e5);
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform var(--dur-micro) var(--ease-spring);
+}
+
+.hg-fab:active {
+  transform: scale(0.94);
+}
+
+.hg-fab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-fab-glyph {
+  width: 24px;
+  height: 24px;
+}

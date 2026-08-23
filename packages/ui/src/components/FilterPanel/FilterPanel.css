@@ -1,0 +1,153 @@
+/* FilterSet / FilterPanel — ONE filter body, both sizes.
+
+   THE BODY IS THE COMPONENT; THE FRAME IS EditorSurface'S JOB. FilterSet renders no chrome, no
+   title and no backdrop — it is a block of labelled dimensions. FilterPanel is that body inside an
+   EditorSurface, so the sheet-below-720 / panel-at-or-above law serves filtering too and nobody
+   answers that question a second time.
+
+   NOTHING IS STAGED: a change writes through immediately, and the footer's "Show 24 results" is a
+   labelled DISMISS, not an apply.
+
+   The 10/14/28px values below have no step on the 4px scale — they are the DS's own filter-body
+   rhythm; 44px is MIN_TOUCH_TARGET, which no CSS token carries. */
+
+.hg-filter-set {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-filter-set-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: var(--sp-6);
+}
+
+.hg-filter-set-count {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-filter-set-clear {
+  min-height: 44px;
+  padding: 0 14px;
+  margin-right: -14px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.hg-filter-set-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-5);
+}
+
+.hg-filter-set-grid[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-6) 28px;
+}
+
+/* ── one dimension ────────────────────────────────────────────────────────── */
+
+.hg-filter-dimension {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hg-filter-dimension-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hg-filter-dimension-label {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-filter-dimension-summary {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The label row is the target, and it is 44px tall: a filter body is touched on a roof. */
+.hg-filter-dimension-flag {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  width: 100%;
+}
+
+.hg-filter-dimension-hint {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+/* ── the panel's footer ───────────────────────────────────────────────────── */
+
+.hg-filter-panel-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-filter-panel-clear {
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-filter-panel-clear:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* A LABELLED DISMISS, never an apply — the filters are already on. Primary actions are
+   near-black; accent is never a button fill. */
+.hg-filter-panel-done {
+  flex: 1;
+  min-height: 48px;
+  padding: 0 var(--sp-5);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+
+.hg-filter-panel-done:hover {
+  background: var(--action-primary-hover);
+}
+
+.hg-filter-panel-done:active {
+  background: var(--action-primary-pressed);
+}

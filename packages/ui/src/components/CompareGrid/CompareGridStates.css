@@ -1,0 +1,140 @@
+/* CompareGrid — the footer (where the reader is, and how to move) and the blocked states.
+   Split out of CompareGrid.css, which @imports it, so no file runs past 300 lines. */
+
+/* ── the footer: where the reader is, and how to move ─────────────────────── */
+
+.hg-compare-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px var(--sp-4) var(--sp-3);
+}
+
+.hg-compare-readout {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  text-wrap: pretty;
+}
+
+.hg-compare-steps {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.hg-compare-step {
+  width: var(--hg-compare-touch);
+  height: var(--hg-compare-touch);
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-compare-step:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hg-compare-step:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-compare-provenance-foot {
+  padding: 0 var(--sp-4) 14px;
+}
+
+/* ── blocked states ───────────────────────────────────────────────────────── */
+
+.hg-compare-skeleton {
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-compare-shimmer {
+  display: block;
+  width: 100%;
+  height: var(--sp-3);
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-compare-shimmer[data-lead="true"] {
+  width: 60%;
+  height: var(--sp-4);
+}
+
+.hg-compare-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: 48px var(--sp-6);
+}
+
+.hg-compare-message-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--sp-1);
+  background: var(--neutral-bg);
+  color: var(--text-tertiary);
+}
+
+.hg-compare-message-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-compare-message-mark > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.hg-compare-message-title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-compare-message-body {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  max-width: 340px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.hg-compare-retry {
+  margin-top: 10px;
+  min-height: var(--hg-compare-touch);
+  padding: 0 var(--sp-5);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+}

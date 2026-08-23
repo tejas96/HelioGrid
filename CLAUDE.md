@@ -15,7 +15,8 @@ and import; §3 what is web-only, RN-only or shared.
 
 **Never duplicate a definition.** A fact both platforms need lives in a package before
 either screen uses it. Enums → contracts. Logic, policy numbers, formatters → domain. Visual
-values → tokens. Schema → migrations. Copy → i18n. Compose from `packages/`; if a primitive
+values → theme. Schema → migrations. Copy → i18n. **Product behaviour → `prd/`, never a doc
+under `docs/`** — `docs/` describes how this repo is built, `prd/` describes what it does. Compose from `packages/`; if a primitive
 is missing, add it there rather than inlining a copy.
 
 **Screens are the unguarded surface.** Gates check packages; almost nothing checks what a
@@ -65,6 +66,8 @@ mechanism — some by lint or types, some only by review (§7).
    migration → implementation → verification → docs. Never in reverse.
 5. **Reuse before creation.** Search first; creating what exists is a defect.
 7. **Shared component APIs stay in parity.** A prop on one platform only is a defect.
+   Held by a TYPE, not a script: both platform files import the one `<Name>.types.ts`
+   (docs/17 §2). The v1 three-list arrangement and `check-ui-parity.mjs` are gone.
 8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES
    files greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored
@@ -90,8 +93,8 @@ then show those steps passing.
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
-- A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in docs/13 or
-  docs/15 first, then continue.
+- A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
+  `prd/registers/open-questions.md` or `prd/registers/conflicts.md` first, then continue.
 - **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An
   instruction to do work is never approval to commit it, and one approval never carries to
   the next. `main` is PR-only; never `--no-verify`.
@@ -116,10 +119,14 @@ decision, not something to create mid-task. Put the file where the pattern alrea
 | Where | Shape |
 |---|---|
 | `apps/web` | `app/<route>/page.tsx` routes only · `features/<capability>/` owns the work: `<Name>Screen.tsx` composes · `components/` one file per component · `hooks/use-<thing>.ts` · `constants.ts` · `types.ts` · `shared/` when two screens in the feature share · `lib/` for app infrastructure |
-| `apps/mobile` | `src/{auth,lib,navigation,push,screens,ui}` + root `env.ts`, `i18n.ts` · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
+| `apps/mobile` | `src/{auth,lib,navigation,push,screens}` + root `env.ts`, `i18n.ts` · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
 | `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
 | `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
 | `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |
+| `prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `registers/` (screens, traceability, conflicts, open-questions) · `_process/` |
+| `tasks/` | one file per module, written to as tasks complete |
+| `ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
+| `design/` | the design-system gap register and the round prompts that closed it |
 
 **Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one
 file each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the
@@ -136,7 +143,8 @@ is `docs/architecture.md` §2. Read §4 before creating any file.
 
 Higher wins, and don't re-declare at a lower level what a higher one already fixed:
 
-**owner rulings (docs/15, docs/13) → architecture (`docs/architecture.md`) → contracts →
+**owner rulings (`prd/registers/open-questions.md`, `conflicts.md`) → the product spec (`prd/`)
+→ architecture (`docs/architecture.md`) → contracts →
 design system → this file → package `CLAUDE.md` → implementation detail.**
 
 Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the
@@ -171,7 +179,7 @@ and a few are narrower than they read.
 
 ## 9. Product law
 
-Digest of `docs/15`, which is canonical.
+Digest of `prd/registers/open-questions.md` and the foundations `F1`–`F8`, which are canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale — design changed and quote not recomputed reads provisional.
@@ -191,8 +199,12 @@ Digest of `docs/15`, which is canonical.
 | | |
 |---|---|
 | `docs/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
-| `docs/15` · `docs/13` | Product rulings · UX-gap register |
-| `docs/14` · `docs/forward-compat.md` | Cross-module plan of record · early design constraints |
+| `START-HERE.md` | **Designing a screen** — the one file a design session starts from |
+| `prd/registers/screens.md` | The screen register — 150 screens, 99 locked to V1 |
+| `prd/registers/open-questions.md` · `conflicts.md` | Owner rulings · contradictions and their resolutions |
+| `docs/17` | **UI architecture V2** — the design system, theme and component layer |
+| `BUILD-ORDER.md` · `tasks/` | Build order · per-module tasks |
+| `docs/forward-compat.md` | What each module's first migration must satisfy |
 | `.claude/rules/` | Path-scoped deltas — load automatically for the paths they name |
 | package `CLAUDE.md` | Local conventions and landmines |
 | `docs/adr/` | Reference only — never a gate |

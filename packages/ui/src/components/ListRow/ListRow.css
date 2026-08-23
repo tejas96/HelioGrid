@@ -1,0 +1,86 @@
+/* ListRow — circular leading, two-line text, trailing action. Rows separate by luminance and gap,
+   NEVER a divider line.
+
+   IT IS NOT HOVER-ONLY. At rest the row floats on nothing and its only edge used to be the hover
+   shadow — and nothing in this system is hover-only. It reads --surface-edge, which is `none` in
+   the base scope (the no-borders law) and the sanctioned hairline in field mode. This is the
+   densest repeated surface on a phone, so it is the one that most needed the edge in sun.
+
+   The 44px functional floor is MIN_TOUCH_TARGET (Pressable.types.ts); no CSS token carries it.
+   The 6/10px paddings have no step on the 4px scale — they are the DS's own row rhythm. */
+
+.hg-list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--sp-16);
+  padding: 10px var(--sp-4);
+  background: transparent;
+  border-radius: var(--r-md);
+  box-shadow: var(--surface-edge);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-list-row[data-density="functional"] {
+  min-height: 44px;
+  padding: 6px var(--sp-3);
+  border-radius: var(--rf-md);
+}
+
+.hg-list-row:hover {
+  background: var(--surface);
+  box-shadow: var(--e2);
+}
+
+.hg-list-row[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.hg-list-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-list-row-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-list-row[data-density="functional"] .hg-list-row-title {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-list-row-subtitle {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* AN ABSENT SUBTITLE IS A NAMED GAP, NOT A BLANK LINE — and it REPLACES the subtitle rather than
+   joining it: there is one value, and it is absent. */
+.hg-list-row-gap {
+  margin-top: 1px;
+}
+
+.hg-list-row-marks {
+  margin-top: var(--sp-1);
+}
+
+.hg-list-row-attribution,
+.hg-list-row-provenance {
+  margin-top: var(--sp-0-5);
+}
+
+/* AN ACT IN FLIGHT IS A LINE, NOT A DIM: the row stays visibly pending AND operable. */
+.hg-list-row-pending {
+  margin-top: var(--sp-1);
+}

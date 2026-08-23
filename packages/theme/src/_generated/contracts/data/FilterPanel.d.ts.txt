@@ -1,0 +1,96 @@
+import React from "react";
+import { FilterOption } from "./FilterBar";
+
+/**
+ * A filter dimension. Four kinds, each rendered by a control that already exists in the system —
+ * a filter body is an arrangement, not a new look.
+ */
+export type FilterDimension =
+  | {
+      key: string; label: string; kind: "facet";
+      /** Several values at once — `M01-38`'s certification schemes, `M07-57`'s ten outcomes. */
+      options: FilterOption[]; counts?: Record<string, number>; hint?: string;
+    }
+  | {
+      key: string; label: string; kind: "one-of";
+      options: FilterOption[]; counts?: Record<string, number>; hint?: string;
+      /** The value that means "no filter". Defaults to the first option. */
+      allValue?: string;
+    }
+  | {
+      key: string; label: string; kind: "range";
+      min: number; max: number; step?: number; unit?: string;
+      format?: (v: number) => string; anyLabel?: string; hint?: string;
+    }
+  | { key: string; label: string; kind: "flag"; optionLabel?: string; hint?: string };
+
+/** `{ [dimension key]: string[] | string | [number, number] | boolean | null }`. */
+export type FilterValue = Record<string, any>;
+
+export interface FilterSetProps {
+  dimensions: FilterDimension[];
+  value: FilterValue;
+  onChange?: (value: FilterValue) => void;
+  /** 1 or 2 columns. A panel has room for two; a sheet does not. `FilterPanel` sets this for you. */
+  columns?: 1 | 2;
+  /** Overrides the built-in reset. Without it, "Clear all" writes `FilterSet.cleared(dimensions)`. */
+  onClear?: () => void;
+  showClear?: boolean;
+  /** The "3 of 6 filters on" line. Drop it when the host already says so. */
+  header?: boolean;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The one filter body, and it renders no chrome** — no title, no backdrop, no frame. That is what
+ * lets the same body serve the mobile sheet, the desktop side panel and an inline settings block
+ * without a second implementation. `M01-38` needs six dimensions at once and `M07-57` five; the
+ * system had one-active-value chips and a `FiltersButton` whose contents were not a component.
+ *
+ * **Nothing is staged.** A change writes through `onChange` immediately and the list behind updates.
+ * An Apply button would need a draft model, a discard-on-close rule and an answer for what a live
+ * result count means while a draft is unapplied — three inventions to save one gesture.
+ */
+export function FilterSet(props: FilterSetProps): JSX.Element;
+
+export namespace FilterSet {
+  /** How many dimensions are doing something. Feed this to `FiltersButton`'s `count`. */
+  function countActive(dimensions: FilterDimension[], value: FilterValue): number;
+  /** Every dimension at its inactive value — the one place that knows what "off" means per kind. */
+  function cleared(dimensions: FilterDimension[]): FilterValue;
+  function isActive(dimension: FilterDimension, value: any): boolean;
+}
+
+export interface FilterPanelProps {
+  open?: boolean;
+  onClose?: () => void;
+  dimensions: FilterDimension[];
+  value: FilterValue;
+  onChange?: (value: FilterValue) => void;
+  onClear?: () => void;
+  title?: string;
+  /** Shown on the footer button — "Show 24 results". Omit it and the button reads "Done". */
+  resultCount?: number;
+  resultNoun?: string;
+  /** Layer width at or above which the body opens as a side panel instead of a sheet. */
+  panelAbove?: number;
+  width?: number;
+  inset?: boolean;
+  zIndex?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * `FilterSet` inside an `EditorSurface`: **a sheet below 720px of the layer's own width, a side
+ * panel at or above it.** Filtering inherits `F7-21`'s switch instead of answering it a second time,
+ * which is why `FiltersButton` is no longer a phone-only affordance.
+ *
+ * The footer's primary action is a **labelled dismiss** ("Show 24 results"), never an apply — the
+ * filters are already on.
+ */
+export function FilterPanel(props: FilterPanelProps): JSX.Element | null;
+
+export namespace FilterPanel {
+  const Set: typeof FilterSet;
+  const countActive: typeof FilterSet.countActive;
+}

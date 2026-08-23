@@ -1,0 +1,78 @@
+/* Radio — 20px box, 44px target. The <label> is the hit box and the real <input type="radio">
+   is visually hidden inside it, so the control keeps native radio semantics (group by `name`,
+   arrow-key walk, form participation) while the drawn box carries the DS treatment.
+
+   The input sits FIRST in the DOM so `:focus-visible + .hg-radio-box` can draw the focus ring —
+   an invisible input with no visible focus is the one thing the reference markup could not do,
+   and "keyboard reachable with visible focus" is done-means law (ui-adherence). */
+
+.hg-radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.hg-radio[data-labelled="true"] {
+  justify-content: flex-start;
+}
+
+.hg-radio[data-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.hg-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.hg-radio-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-micro) var(--ease-standard);
+}
+
+.hg-radio-box[data-checked="true"] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.hg-radio-box[data-disabled="true"] {
+  box-shadow: none;
+}
+
+.hg-radio-input:focus-visible + .hg-radio-box {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.hg-radio-box[data-disabled="true"] .hg-radio-dot {
+  background: var(--text-disabled);
+}
+
+.hg-radio-label {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+
+.hg-radio[data-disabled="true"] .hg-radio-label {
+  color: var(--text-disabled);
+}

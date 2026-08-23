@@ -11,8 +11,9 @@ export const useIsBooting = () => useNavigationPhase() === 'booting';
 export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
 
-/**
- * Gates the Dev group; independent of session phase. Note this hides the route, it does not
- * strip the screen from the bundle — routes/dev.ts still imports it statically.
+/*
+ * `useIsDevBuild` lived here and gated the Dev group. Removed 2026-08-19 with the v1
+ * component gallery, which was the group's only member. It comes back
+ * with the group and its `routes/dev.ts` map, not before — an exported hook nothing calls
+ * is what knip exists to catch.
  */
-export const useIsDevBuild = () => __DEV__;

@@ -1,0 +1,54 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { NamedGapSpec } from "./NamedGap";
+import { PendingActionSpec } from "../feedback/PendingAction";
+
+export interface ListRowProps {
+  /** icon node rendered inside a circular IconCircle */
+  icon?: React.ReactNode;
+  iconColor?: string;
+  /** use instead of icon for an avatar leading element */
+  avatar?: React.ReactNode;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  /**
+   * **The subtitle's value is absent, and this names what is missing** — "no city yet" (`M02-03`).
+   * Rendered by `NamedGap` in the subtitle's place, and it **replaces** the subtitle rather than
+   * joining it: there is one value, and it is absent. Never a blank line, never a dash.
+   */
+  gap?: React.ReactNode | NamedGapSpec;
+  /** Marks this row carries — nodes, rendered through `MarkRow`, under the subtitle. */
+  marks?: React.ReactNode | React.ReactNode[];
+  /**
+   * Which layer supplied this row's value (`SCR-M01-15`) — `ValueSource`. Sits above the provenance
+   * line. Mutually exclusive with an override: an overridden value speaks through `FieldOverride`.
+   */
+  attribution?: React.ReactNode | "own" | "inherited" | "unmarked" | Record<string, any>;
+  /**
+   * The provenance tier for a figure in this row (`F8-01` / `F8-07`). **The slot is the third line
+   * of the text column, under the subtitle** — the row's number usually sits in `trailing`, and a
+   * tier wedged in there competes with the action. Never fold it into `subtitle`: readme.md states
+   * the slot for every host so six rows don't answer it six ways.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /**
+   * **An act on this row is in flight** (`M02-67`, `F8-36`) — rendered by `PendingAction` as the row's
+   * last line, under everything the row says about its values. It never dims the row and never
+   * disables `trailing`: a pending row is visibly pending **and still operable**. A failure comes back
+   * as `{state: "returned", reason}` and the row is already back to what it was.
+   */
+  pending?: PendingActionSpec | React.ReactNode;
+  /** trailing action / chevron / chip */
+  trailing?: React.ReactNode;
+  density?: "expressive" | "functional";
+  onClick?: (e: React.MouseEvent) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * List row: circular leading, two-line text, provenance slot, trailing action. No divider lines.
+ *
+ * At rest it reads `--surface-edge` — `none` in the base scope, the sanctioned hairline in
+ * high-contrast field mode. Its edge is **not** hover-only; nothing in this system is.
+ */
+export function ListRow(props: ListRowProps): JSX.Element;

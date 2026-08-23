@@ -1,0 +1,253 @@
+/* DrawingSheet — the drafting sheet. NO SHEET BORDER: a drafting frame is the convention and it
+   is still a structural border, which this system does not have. The sheet separates from the
+   canvas by luminance and shadow, the drawing area is very slightly sunken, and the title block is
+   a band rather than a ruled box. `hg-sheet` / `hg-sheet-stack` are @heliogrid/theme/print.css's
+   own hooks (one sheet, one page) and keep those exact names. Sheet geometry arrives inline from
+   page-geometry.ts — it is computed data, not a design value. */
+
+.hg-drawing-sheet-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hg-drawing-sheet-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sheet-gap);
+}
+
+.hg-drawing-sheet {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: var(--sheet-radius);
+  box-shadow: var(--e3);
+  font-family: var(--font-sans);
+  font-size: var(--doc-fs);
+  line-height: var(--doc-lh);
+  color: var(--text-primary);
+}
+
+.hg-drawing-sheet-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: var(--sp-4);
+}
+
+/* Sunken rather than ruled. */
+.hg-drawing-sheet-canvas {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--surface-alt);
+  border-radius: var(--rf-xs);
+}
+
+.hg-drawing-sheet-canvas[data-filled="true"] {
+  place-items: stretch;
+}
+
+.hg-drawing-sheet-drawing {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+}
+
+/* THE RESERVATION — deliberately visible in both renderings: an unfinished sheet must not be
+   mistakable for a finished one. */
+.hg-drawing-sheet-reservation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--sp-6);
+  text-align: center;
+}
+
+.hg-drawing-sheet-reservation-name {
+  font-family: var(--font-mono);
+  font-size: var(--doc-fs-small);
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.hg-drawing-sheet-reservation-meta {
+  font-size: var(--doc-fs-small);
+  color: var(--text-tertiary);
+}
+
+.hg-drawing-sheet-north {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  color: var(--text-primary);
+}
+
+.hg-drawing-sheet-north-mark {
+  display: block;
+}
+
+.hg-drawing-sheet-block {
+  width: 236px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-drawing-sheet-overline {
+  margin: 0;
+  font-size: var(--doc-fs-small);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-drawing-sheet-title {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.hg-drawing-sheet-subtitle,
+.hg-drawing-sheet-client {
+  font-size: var(--doc-fs-small);
+  line-height: var(--lh-table);
+  color: var(--text-secondary);
+}
+
+.hg-drawing-sheet-subtitle {
+  margin: var(--sp-1) 0 0;
+}
+
+.hg-drawing-sheet-client {
+  margin: 6px 0 0;
+}
+
+.hg-drawing-sheet-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--doc-rule);
+}
+
+.hg-drawing-sheet-value {
+  margin: var(--sp-0-5) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--doc-fs-small);
+  color: var(--text-primary);
+}
+
+/* ── the legend (MS8-17) ──────────────────────────────────────────────────────────────────── */
+
+.hg-drawing-sheet-legend {
+  list-style: none;
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hg-drawing-sheet-legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--doc-fs-small);
+  color: var(--text-primary);
+}
+
+.hg-drawing-sheet-legend-glyph {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.hg-drawing-sheet-legend-mark {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--text-primary);
+  opacity: 0.75;
+}
+
+.hg-drawing-sheet-legend-mark[data-shape="circle"] {
+  border-radius: 50%;
+}
+
+.hg-drawing-sheet-legend-code {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--doc-fs-small);
+  color: var(--text-secondary);
+}
+
+.hg-drawing-sheet-legend-label {
+  min-width: 0;
+}
+
+/* ── the foot: the travelling disclaimer, and the counted numbering ───────────────────────── */
+
+.hg-drawing-sheet-foot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-5);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--doc-rule);
+}
+
+.hg-drawing-sheet-disclaimer {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-drawing-sheet-count {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--doc-fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+/* ── zoom: screen only, because a zoom control has no meaning once the sheet is paper ─────── */
+
+.hg-drawing-sheet-zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-drawing-sheet-zoom-button {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  color: var(--text-primary);
+}
+
+.hg-drawing-sheet-zoom-value {
+  min-width: 52px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}

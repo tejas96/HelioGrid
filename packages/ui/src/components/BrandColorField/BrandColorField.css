@@ -1,0 +1,203 @@
+/* BrandColorField — the tenant's brand colour, measured at entry.
+
+   The only colours this file cannot express as tokens are the tenant's own hex values, which are
+   DATA and land inline on the swatches and the specimen. Nothing here writes a token, and nothing
+   here restyles an ancestor: F7-07 makes the operator app identical for every tenant. */
+
+.hg-brand-color {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.hg-brand-color-title {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-2);
+}
+
+.hg-brand-color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* 44×44, so a gloved thumb on a 375px phone has a target. */
+.hg-brand-color-swatch {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-brand-color-swatch[aria-checked="true"] {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent),
+    var(--e2);
+}
+
+.hg-brand-color-swatch:disabled {
+  cursor: not-allowed;
+}
+
+.hg-brand-color-swatch:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The hex field's leading dot. Empty of a valid colour it falls back to the sunken canvas. */
+.hg-brand-color-chip {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--canvas-sunken);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.hg-brand-color-overline {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--sp-2);
+}
+
+.hg-brand-color-specimen {
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--e1);
+}
+
+.hg-brand-color-specimen-band,
+.hg-brand-color-specimen-body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-brand-color-specimen-band {
+  padding: var(--sp-3) 14px;
+  font-family: var(--font-sans);
+}
+
+.hg-brand-color-specimen-name {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+}
+
+.hg-brand-color-specimen-kind {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-medium);
+  opacity: 0.85;
+}
+
+.hg-brand-color-specimen-body {
+  padding: var(--sp-2) 14px;
+  background: var(--surface);
+}
+
+.hg-brand-color-specimen-line {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-brand-color-specimen-figure {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-brand-color-verdicts {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* A word plus a glyph — the verdict is never carried by the tint alone (F7-12). */
+.hg-brand-color-verdict {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  text-wrap: pretty;
+}
+
+.hg-brand-color-verdict > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hg-brand-color-verdict[data-kind="pass"] {
+  color: var(--success-text);
+}
+
+.hg-brand-color-verdict[data-kind="warn"] {
+  color: var(--warning-text);
+}
+
+.hg-brand-color-verdict[data-kind="info"] {
+  color: var(--text-secondary);
+}
+
+.hg-brand-color-fix {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-0-5);
+}
+
+.hg-brand-color-fix-button {
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.hg-brand-color-fix-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-brand-color-fix-note {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-brand-color-helper {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}

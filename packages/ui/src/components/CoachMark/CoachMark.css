@@ -1,0 +1,141 @@
+/* CoachMark — M01-16 (P1) and MS1-08 (P1). First-run guidance layered OVER a live screen.
+
+   "maximum three, on the screen they actually landed on, dismissible. Never a carousel."
+   "coach marks over the live screen (search -> confirm -> next), shown once, dismissable forever,
+    reachable from Help."
+
+   So this is deliberately NOT a tour: there is no backdrop, no scrim, no focus trap and no
+   full-screen slide. The screen underneath stays fully usable while a mark is up — the mark
+   anchors to the real control and rings it with the system's own 2px accent ring.
+
+   The ring's second halo is the accent at 10%, the one place iridescence is allowed to bloom
+   around a control. Everything else is surface, e4 and the type scale.
+
+   The 14/16/18px values and the 292px card are the DS source's own. */
+
+.hg-coach-mark {
+  box-sizing: border-box;
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--e4);
+  outline: none;
+  font-family: var(--font-sans);
+  z-index: 80;
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+}
+
+/* Unanchored is a legitimate variant: it parks at the bottom rather than inventing a target. */
+.hg-coach-mark:not([data-anchored="true"]) {
+  position: fixed;
+  left: 50%;
+  bottom: var(--sp-6);
+  transform: translateX(-50%);
+}
+
+.hg-coach-mark-ring {
+  z-index: 79;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 0 10px var(--accent-subtle);
+}
+
+.hg-coach-mark-arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--surface);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.hg-coach-mark-arrow[data-side="bottom"] {
+  top: -5px;
+}
+
+.hg-coach-mark-arrow[data-side="top"] {
+  bottom: -5px;
+}
+
+.hg-coach-mark-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+.hg-coach-mark-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-coach-mark-counter {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-coach-mark-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+}
+
+.hg-coach-mark-title[data-counted="true"] {
+  margin-top: 6px;
+}
+
+.hg-coach-mark-dismiss {
+  margin: -12px -12px 0 0;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  color: var(--text-tertiary);
+}
+
+.hg-coach-mark-body {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-coach-mark-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hg-coach-mark-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hg-coach-mark-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  transition: width var(--dur-standard) var(--ease-standard);
+}
+
+.hg-coach-mark-dot[data-current="true"] {
+  width: 18px;
+  background: var(--accent);
+}
+
+/* Near-black, because a primary action is never coloured. */
+.hg-coach-mark-next {
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+}

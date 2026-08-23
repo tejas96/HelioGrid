@@ -1,0 +1,243 @@
+/* Sheet — the system's primary overlay surface (≈180 screens). Springs from the bottom edge on a
+   spring easing, 32px top corners (16px functional), e5. The backdrop BLURS the layer behind and
+   FADES IT TOWARD WHITE — never a dark scrim; that inversion is a signature of the system.
+
+   The shared chrome (close button, footer action row, empty/error bodies) lives in
+   OverlayShared.css so Modal and DetailPanel render the same classes. */
+
+@import "./OverlayShared.css";
+
+/* ── the backdrop ──────────────────────────────────────────────────────────── */
+
+.hg-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--hg-sheet-z, 40);
+  background: color-mix(in srgb, var(--canvas) 35%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: hg-sheet-fade var(--dur-standard) var(--ease-enter);
+}
+
+.hg-sheet-backdrop[data-inset="true"] {
+  position: absolute;
+}
+
+/* ── the panel ─────────────────────────────────────────────────────────────── */
+
+.hg-sheet {
+  /* The density ladder, one declaration each. --hg-sheet-pad-top has no spacing token at 10px. */
+  --hg-sheet-radius: var(--r-sheet-top);
+  --hg-sheet-pad-x: var(--sp-5);
+  --hg-sheet-pad-top: var(--sp-3);
+  --hg-sheet-pad-bottom: var(--sp-6);
+  --hg-sheet-title: var(--fs-h3);
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--hg-sheet-z, 40) + 1);
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  background: var(--surface);
+  border-radius: var(--hg-sheet-radius) var(--hg-sheet-radius) 0 0;
+  box-shadow: var(--e5);
+  max-height: 92%;
+  transform: translateY(var(--hg-sheet-drag, 0px));
+  transition: transform var(--dur-emphasised) var(--ease-spring);
+  animation: hg-sheet-in var(--dur-emphasised) var(--ease-spring);
+}
+
+.hg-sheet[data-density="functional"] {
+  --hg-sheet-radius: var(--rf-xl);
+  --hg-sheet-pad-x: var(--sp-4);
+  --hg-sheet-pad-top: 10px;
+  --hg-sheet-pad-bottom: var(--sp-4);
+  --hg-sheet-title: var(--fs-h4);
+}
+
+.hg-sheet[data-inset="true"] {
+  position: absolute;
+}
+
+.hg-sheet[data-size="half"] {
+  height: 56%;
+}
+
+.hg-sheet[data-size="full"] {
+  height: 92%;
+}
+
+/* Mid-drag the finger owns the transform: no transition to fight it, no entry animation to
+   restart. Both come back the moment the drag ends. */
+.hg-sheet[data-dragging="true"] {
+  transition: none;
+}
+
+.hg-sheet[data-dragged="true"] {
+  animation: none;
+}
+
+/* ── the grab handle ───────────────────────────────────────────────────────── */
+
+.hg-sheet-handle {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding-top: var(--sp-5);
+  padding-bottom: 6px;
+  cursor: default;
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.hg-sheet-handle[data-header="true"] {
+  padding-bottom: var(--sp-5);
+}
+
+.hg-sheet-handle[data-grab="true"] {
+  cursor: grab;
+}
+
+.hg-sheet-handle-bar {
+  width: 36px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+/* ── the header ────────────────────────────────────────────────────────────── */
+
+.hg-sheet-header {
+  flex-shrink: 0;
+  padding: var(--hg-sheet-pad-top) var(--hg-sheet-pad-x) var(--sp-3);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  background: var(--surface);
+  position: relative;
+  z-index: 1;
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-sheet-header[data-handle="true"] {
+  padding-top: 0;
+}
+
+/* A scroll shadow, not a divider line — the family separates by luminance, never by rules. The
+   shadow colour has no token of its own, so it is --text-primary carried at the same 10%. */
+.hg-sheet-header[data-scrolled="true"] {
+  box-shadow: 0 12px 16px -12px color-mix(in srgb, var(--text-primary) 10%, transparent);
+}
+
+.hg-sheet-heading {
+  min-width: 0;
+}
+
+.hg-sheet-overline {
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.hg-sheet-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--hg-sheet-title);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.hg-sheet-subtitle {
+  margin-top: var(--sp-0-5);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+/* ── the body ──────────────────────────────────────────────────────────────── */
+
+.hg-sheet-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--hg-sheet-pad-top) var(--hg-sheet-pad-x) var(--hg-sheet-pad-bottom);
+  flex: 1 1 auto;
+}
+
+.hg-sheet-body[data-header="true"] {
+  padding-top: 0;
+}
+
+.hg-sheet-body[data-footer="true"] {
+  padding-bottom: var(--sp-2);
+}
+
+.hg-sheet[data-size="auto"] .hg-sheet-body {
+  flex: 0 1 auto;
+}
+
+.hg-sheet-unavailable {
+  padding: var(--sp-3) 0 var(--sp-5);
+}
+
+/* ── the footer ────────────────────────────────────────────────────────────── */
+
+.hg-sheet-footer {
+  flex-shrink: 0;
+  position: relative;
+  padding: var(--sp-3) var(--hg-sheet-pad-x) var(--hg-sheet-pad-bottom);
+  background: var(--surface);
+}
+
+/* A luminance fade above the sticky footer, never a divider line. */
+.hg-sheet-footer-fade {
+  position: absolute;
+  top: calc(-1 * var(--sp-5));
+  left: 0;
+  right: 0;
+  height: var(--sp-5);
+  background: linear-gradient(to top, var(--surface), transparent);
+  pointer-events: none;
+}
+
+/* ── the `loading` skeleton ────────────────────────────────────────────────── */
+
+.hg-sheet-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding-top: var(--sp-1);
+}
+
+.hg-sheet-skeleton[data-density="functional"] {
+  gap: var(--sp-3);
+}
+
+.hg-sheet-skeleton-pair {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.hg-sheet-skeleton-bar {
+  width: var(--hg-skeleton-w);
+  height: var(--hg-skeleton-h);
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}

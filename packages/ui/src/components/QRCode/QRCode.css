@@ -1,0 +1,77 @@
+/* QRCode — the code, its caption and the link text under it. The link is never dropped: it is the
+   fallback path when the camera won't focus and the thing a customer reads out on a call.
+
+   The quiet zone takes --surface, which IS #FFFFFF — a scanner needs a white ground, and the token
+   that means "white surface" in this system is the one that carries it. */
+
+.hg-qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-qrcode-svg {
+  display: block;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 0;
+  max-width: 100%;
+}
+
+.hg-qrcode-quiet {
+  fill: var(--surface);
+}
+
+.hg-qrcode-module {
+  fill: var(--text-primary);
+}
+
+/* Fails VISIBLY (MS9-14): a named panel in the code's own footprint, never an empty square. */
+.hg-qrcode-failed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--warning-bg);
+  border-radius: var(--r-md);
+  color: var(--warning-text);
+  max-width: 100%;
+}
+
+.hg-qrcode-failed-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-qrcode-note {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-qrcode-caption {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-qrcode-link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  word-break: break-all;
+  text-align: center;
+}

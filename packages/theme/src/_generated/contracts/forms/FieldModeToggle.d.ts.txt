@@ -1,0 +1,57 @@
+import React from "react";
+
+export interface FieldModeToggleProps {
+  label?: string;
+  /** Says what the mode does to the interface. Omit only if the surrounding copy already does. */
+  hint?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The switch behind **high-contrast field mode** (`F7-16`) — a sanctioned, opt-in escape hatch for
+ * working in sunlight, and the one condition under which the no-borders law of `F7-15` yields.
+ *
+ * In one sentence: **field mode darkens every text step and gives every elevation a hairline edge,
+ * so a card, a row, an input and a chip all gain a visible outline on a phone in direct sun.**
+ *
+ * It is global (one attribute on `<html>`), persisted, and reaches every component through the
+ * token layer — no component takes a field-mode prop. It is not a dark theme and not a per-tenant
+ * theme; `F7-04`'s light-only law is untouched.
+ *
+ * Three token groups carry it, and the last two exist because overriding elevation cannot reach
+ * every case: `--e1`…`--e5` gain a hairline ring, `--surface-edge` gives a **resting** surface
+ * (`ListRow`) an edge that isn't hover-only, `--control-edge` reaches the controls the
+ * stylesheet cannot: the ghosts, which used to hardcode `box-shadow: none` inline and beat it, and
+ * `Switch`'s track, which no selector could match at all — a `<span>`, with the real
+ * `<input role="switch">` visually hidden — so an OFF switch in field mode was a `#E9ECF0` track on
+ * white, about 1.15:1, **including this row's own switch** — and `--track-edge` rings a 6px `Slider`
+ * or `RangeField` track from **outside**, because an inset ring on a 6px rail makes an empty slider
+ * read as a full one. The switch writes `"on"` or
+ * `"off"` — `tokens/field-mode.css` has a real `[data-field-mode="off"]` scope, so a subtree can
+ * un-inherit the mode and a specimen can show both at once.
+ *
+ * It reaches a real screen in `templates/mobile-field-app/`: the sun button in the top bar, which is
+ * the surveyor's one-tap route, plus this row in settings.
+ *
+ * **One store, so two consumers on one screen cannot disagree.** `useFieldMode` subscribes to a
+ * module-level store rather than holding a private `useState` copy: tapping the sun button re-renders
+ * the settings switch, `FieldModeToggle.set` re-renders both, and a change made in another tab or by
+ * writing the `<html>` attribute directly (a deep link, a QA harness) is picked up too.
+ *
+ * @startingPoint section="Forms" subtitle="High-contrast field mode switch" viewport="520x160"
+ */
+export function FieldModeToggle(props: FieldModeToggleProps): JSX.Element;
+
+export namespace FieldModeToggle {
+  /**
+   * `const [on, setOn] = FieldModeToggle.useFieldMode()`. Subscribes to the shared store, so every
+   * mounted caller holds the same answer — there is no per-caller copy to go stale.
+   */
+  function useFieldMode(): [boolean, (on: boolean) => void];
+  /** Set the mode without the switch — a settings screen, a deep link, a QA harness. Every mounted
+      consumer re-renders with it. */
+  function set(on: boolean): void;
+}
+
+/** Source-level import of the same hook — the same shared store, not a second one. */
+export function useFieldMode(): [boolean, (on: boolean) => void];

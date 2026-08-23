@@ -1,0 +1,75 @@
+import React from "react";
+
+export interface ChipGroupProps {
+  /** The chips themselves — `Chip`, `Badge`, `StatusChip`, in the caller's order. */
+  children?: React.ReactNode;
+  /** How many render whole before the rest collapse behind one "+N". `0` never collapses. */
+  max?: number;
+  /** The group's noun — "roles", "schemes". Becomes the accessible name and the "+N" label. */
+  label?: string;
+  /**
+   * What zero chips renders. Nothing by default, and **never an error** (`M01-34`). Two answers, and a
+   * hand-rolled grey line is neither: `null` where the law says no badges at all, or
+   * `<NamedGap scale="cell" gap="No flags" />` where the absence should be **named** — that is the
+   * system's one treatment for an absent cell value, and it is what the app-layout template passes.
+   */
+  empty?: React.ReactNode;
+  /** `false` where the rest must not be reachable (a print band). The count still shows. */
+  expandable?: boolean;
+  defaultExpanded?: boolean;
+  density?: "expressive" | "functional";
+  gap?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Several labels in one cell, row or header, with one defined behaviour.** `F2-10`'s team list
+ * shows *all* roles a person holds — several of twelve preset chips at once — and `M01-34` badges
+ * compliance per scheme on every picker row. `Chip` and `Badge` are single pills, and until this the
+ * system's only grouped token was `AvatarGroup` — which takes **people, not labels**.
+ *
+ * **The overflow rule:**
+ * 1. **By count, never by pixels.** The first `max` chips render whole, the rest collapse behind one
+ *    "+N". A chip is never ellipsised, shrunk or cut off at a cell edge.
+ * 2. **"+N" is a real control** — 44px target around a chip-height pill, `aria-expanded`, revealing
+ *    the rest **in place**. Never a tooltip: a touch user never sees one.
+ * 3. **Expanded, the chips wrap.** No horizontal scroller; the row grows (`DataTable`'s `rowH` is a
+ *    floor, not a cap) and the stacked card wraps identically.
+ * 4. **An empty set renders `empty` and is not an error** (`M01-34`) — `null`, or `NamedGap` when the
+ *    absence is worth naming. Never an improvised line of grey text.
+ *
+ * At 375px a cell of twelve chips is three plus "+9", one line tall; tapping wraps all twelve down
+ * the card. A `DataTable` column holding one of these sets `wrap: true`.
+ *
+ * @startingPoint section="Data display" subtitle="Several chips in one cell, with an overflow rule" viewport="720x260"
+ */
+export function ChipGroup(props: ChipGroupProps): JSX.Element | null;
+
+export interface MarkRowProps {
+  children?: React.ReactNode;
+  gap?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Two facts are two chips, never one merged badge** (`SCR-M06-19`). Where a row carries conditions
+ * that can be true at the same time and "must stay separately readable", they go here: no collapse,
+ * because a mark a row needs is never hidden behind a "+N". This is what every `marks` slot in the
+ * system renders — `RecordCard`, `AccordionItem`, `MenuItem`, `Tabs`, `SegmentedControl`,
+ * `OptionCardGroup`, `ListRow`.
+ *
+ * **Plain spans, not a list**, because half its hosts are controls — an `AccordionItem` header, a tab, a
+ * menu item and an option card are all `<button>`, and a `<ul>` inside a button is invalid content. Which
+ * is also why marks in those hosts must be **non-interactive**: `Badge` or `StatusChip`, never a clickable
+ * `Chip` (which renders its own button) — the host is already the target. In a cell or a row, where the
+ * host is not a control, use `ChipGroup`: it gets list semantics, a name and a count.
+ */
+export function MarkRow(props: MarkRowProps): JSX.Element | null;
+
+/** What every `marks` host prop runs through: a ready node, or an array of nodes in a `MarkRow`. */
+export function renderMarks(marks?: React.ReactNode | React.ReactNode[], extra?: Partial<MarkRowProps>): React.ReactNode;
+
+export namespace ChipGroup {
+  const Marks: typeof MarkRow;
+  const renderMarks: typeof renderMarks;
+}

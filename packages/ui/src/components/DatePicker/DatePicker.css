@@ -1,0 +1,100 @@
+/* DatePicker — the borderless field and the e4 popover that holds the Calendar.
+
+   Below its own width the popover anchors full-width under the field, so it works the same on a
+   375px phone; the native half renders the calendar inline for that reason. The trigger is
+   borderless like every other field: --e1 at rest, a 2px ring open, a 2px danger ring on error. */
+
+.hg-date-picker {
+  position: relative;
+  min-width: 0;
+}
+
+.hg-date-picker-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-1);
+}
+
+.hg-date-picker-trigger {
+  width: 100%;
+  min-height: var(--sp-12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-date-picker-trigger[data-density="functional"] {
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-input-functional);
+}
+
+.hg-date-picker-trigger[data-empty="true"] {
+  color: var(--text-tertiary);
+}
+
+.hg-date-picker-trigger[data-open="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-date-picker-trigger[data-error="true"] {
+  box-shadow: 0 0 0 2px var(--danger);
+}
+
+.hg-date-picker-trigger:disabled {
+  background: var(--canvas-sunken);
+  cursor: not-allowed;
+}
+
+.hg-date-picker-trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-date-picker-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-date-picker-glyph {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.hg-date-picker-note {
+  margin: var(--sp-1) var(--sp-0-5) 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-date-picker-note[data-error="true"] {
+  color: var(--danger-text);
+}
+
+/* Below its own width the popover is full-width under the field, so a 375px phone behaves. */
+.hg-date-picker-popover {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--sp-2));
+  left: 0;
+  min-width: 296px;
+  max-width: 100%;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--e4);
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+}

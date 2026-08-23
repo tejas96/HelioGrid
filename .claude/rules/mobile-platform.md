@@ -19,7 +19,6 @@ src/screens/<name>/         same shape as web's feature, in RN's location
   hooks/use-<thing>.ts      state, network, timers
   styles.ts                 screen-level layout; component geometry stays with its component
   types.ts                  when two files here share a type
-src/ui/                     the RN design-system half, parity-locked to @heliogrid/ui-api
 src/navigation/             React Navigation static config
 src/auth/ · src/push/       native adapters — one folder per capability
 src/lib/                    app-level helpers that are NOT design-system primitives; no copy
@@ -27,11 +26,12 @@ src/lib/                    app-level helpers that are NOT design-system primiti
 
 ## Rules
 
-- **Interactive primitives come from `apps/mobile/src/ui`, never `react-native`** —
-  AppText, Input, OtpInput, Button, IconButton, Switch, Checkbox, Radio. `View`,
-  `ScrollView`, `StyleSheet` and `Platform` are layout and stay allowed. Biome enforces this
-  under `src/screens/**`; the rule binds everywhere in `src/`, including `src/lib` and
-  `src/navigation`, which lint does not reach.
+- **Interactive primitives come from `@heliogrid/ui`, never `react-native`** — its RN half
+  is the `.native.tsx` file in the same component folder (docs/17 §2). `View`, `ScrollView`,
+  `StyleSheet` and `Platform` are layout and stay allowed. Biome enforces this under
+  `src/screens/**`; the rule binds everywhere in `src/`, including `src/lib` and
+  `src/navigation`, which lint does not reach. **INERT until packages/ui lands** —
+  `src/screens/placeholder/` is excluded by path and is not a pattern to copy.
 - **No web-only dependency.** Anything reaching for `document`, `window` or a DOM library
   fails at runtime on device, not at build (Law 10).
 - **Native capability (camera, storage, notifications, keychain) is isolated** in its own

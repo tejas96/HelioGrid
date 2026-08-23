@@ -1,0 +1,163 @@
+/* LanguageSwitcher — which languages are actually written, on the switcher itself.
+
+   Three channels per item and none of them is a colour (F7-12 / N6): the NAME, a FRACTION, and a
+   per-state GLYPH. The 44px target wraps a 34px pill the FilterBar way, so six languages stay dense
+   with nothing under the touch floor. */
+
+.hg-language-switcher {
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.hg-language-switcher-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+
+.hg-language-switcher-overline {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-language-switcher-summary {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-language-switcher-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  overflow-x: visible;
+}
+
+/* Functional density keeps the strip on one line and scrolls it — it never shrinks a target. */
+.hg-language-switcher-strip[data-density="functional"] {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hg-language-switcher-target {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.hg-language-switcher-target:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -4px;
+  border-radius: var(--r-pill);
+}
+
+.hg-language-switcher-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  box-shadow: var(--e1);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  white-space: nowrap;
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-language-switcher-pill[data-active="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-language-switcher-glyph {
+  flex-shrink: 0;
+}
+
+/* A filled mark = authored; a hollow ring = nothing written. */
+.hg-language-switcher-glyph[data-state="authored"],
+.hg-language-switcher-glyph[data-state="empty"] {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.hg-language-switcher-glyph[data-state="authored"] {
+  background: var(--accent);
+}
+
+.hg-language-switcher-glyph[data-state="empty"] {
+  box-shadow: inset 0 0 0 1.5px var(--text-tertiary);
+}
+
+.hg-language-switcher-glyph[data-state="inherited"] {
+  color: var(--text-tertiary);
+}
+
+.hg-language-switcher-glyph[data-active="true"][data-state="authored"] {
+  background: var(--text-inverse);
+}
+
+.hg-language-switcher-glyph[data-active="true"][data-state="empty"] {
+  box-shadow: inset 0 0 0 1.5px var(--text-inverse);
+}
+
+.hg-language-switcher-glyph[data-active="true"][data-state="inherited"] {
+  color: var(--text-inverse);
+}
+
+.hg-language-switcher-primary {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  color: var(--text-tertiary);
+}
+
+.hg-language-switcher-pill[data-active="true"] .hg-language-switcher-primary {
+  color: var(--text-inverse);
+}
+
+.hg-language-switcher-fraction {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-language-switcher-fraction[data-state="empty"] {
+  color: var(--text-tertiary);
+}
+
+.hg-language-switcher-pill[data-active="true"] .hg-language-switcher-fraction {
+  color: var(--text-inverse);
+}
+
+.hg-language-switcher-sentence {
+  margin: var(--sp-2) var(--sp-0-5) 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}

@@ -1,0 +1,138 @@
+/* Box — the spacing scale only. Every value is a --sp-* token and the data attributes are
+   the whole prop surface, so an arbitrary px cannot enter through this primitive.
+   Axis padding uses logical properties (inline/block) so RTL locales come free.
+   data-px / data-py sit after data-p so the axis override wins by cascade.
+   Stack (same folder, same idea) carries its flow rules in Stack.css. */
+
+.hg-box {
+  min-width: 0;
+}
+
+.hg-box[data-p="0"] {
+  padding: var(--sp-0);
+}
+.hg-box[data-p="0-5"] {
+  padding: var(--sp-0-5);
+}
+.hg-box[data-p="1"] {
+  padding: var(--sp-1);
+}
+.hg-box[data-p="2"] {
+  padding: var(--sp-2);
+}
+.hg-box[data-p="3"] {
+  padding: var(--sp-3);
+}
+.hg-box[data-p="4"] {
+  padding: var(--sp-4);
+}
+.hg-box[data-p="5"] {
+  padding: var(--sp-5);
+}
+.hg-box[data-p="6"] {
+  padding: var(--sp-6);
+}
+.hg-box[data-p="8"] {
+  padding: var(--sp-8);
+}
+.hg-box[data-p="10"] {
+  padding: var(--sp-10);
+}
+.hg-box[data-p="12"] {
+  padding: var(--sp-12);
+}
+.hg-box[data-p="16"] {
+  padding: var(--sp-16);
+}
+.hg-box[data-p="20"] {
+  padding: var(--sp-20);
+}
+.hg-box[data-p="24"] {
+  padding: var(--sp-24);
+}
+
+.hg-box[data-px="0"] {
+  padding-inline: var(--sp-0);
+}
+.hg-box[data-px="0-5"] {
+  padding-inline: var(--sp-0-5);
+}
+.hg-box[data-px="1"] {
+  padding-inline: var(--sp-1);
+}
+.hg-box[data-px="2"] {
+  padding-inline: var(--sp-2);
+}
+.hg-box[data-px="3"] {
+  padding-inline: var(--sp-3);
+}
+.hg-box[data-px="4"] {
+  padding-inline: var(--sp-4);
+}
+.hg-box[data-px="5"] {
+  padding-inline: var(--sp-5);
+}
+.hg-box[data-px="6"] {
+  padding-inline: var(--sp-6);
+}
+.hg-box[data-px="8"] {
+  padding-inline: var(--sp-8);
+}
+.hg-box[data-px="10"] {
+  padding-inline: var(--sp-10);
+}
+.hg-box[data-px="12"] {
+  padding-inline: var(--sp-12);
+}
+.hg-box[data-px="16"] {
+  padding-inline: var(--sp-16);
+}
+.hg-box[data-px="20"] {
+  padding-inline: var(--sp-20);
+}
+.hg-box[data-px="24"] {
+  padding-inline: var(--sp-24);
+}
+
+.hg-box[data-py="0"] {
+  padding-block: var(--sp-0);
+}
+.hg-box[data-py="0-5"] {
+  padding-block: var(--sp-0-5);
+}
+.hg-box[data-py="1"] {
+  padding-block: var(--sp-1);
+}
+.hg-box[data-py="2"] {
+  padding-block: var(--sp-2);
+}
+.hg-box[data-py="3"] {
+  padding-block: var(--sp-3);
+}
+.hg-box[data-py="4"] {
+  padding-block: var(--sp-4);
+}
+.hg-box[data-py="5"] {
+  padding-block: var(--sp-5);
+}
+.hg-box[data-py="6"] {
+  padding-block: var(--sp-6);
+}
+.hg-box[data-py="8"] {
+  padding-block: var(--sp-8);
+}
+.hg-box[data-py="10"] {
+  padding-block: var(--sp-10);
+}
+.hg-box[data-py="12"] {
+  padding-block: var(--sp-12);
+}
+.hg-box[data-py="16"] {
+  padding-block: var(--sp-16);
+}
+.hg-box[data-py="20"] {
+  padding-block: var(--sp-20);
+}
+.hg-box[data-py="24"] {
+  padding-block: var(--sp-24);
+}

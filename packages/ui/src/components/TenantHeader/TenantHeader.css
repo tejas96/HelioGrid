@@ -1,0 +1,122 @@
+/* TenantHeader / TenantMark — the lockup that says WHOSE HelioGrid this is.
+
+   IDENTITY, NEVER THEME. F7-07 lets a tenant configure a logo and a brand colour and forbids
+   restyling the OPERATOR application per tenant. The fallback monogram is what keeps that
+   honest: it fills with --tenant-mark, a token that exists only inside a CustomerSurface. On a
+   customer link page it takes the tenant's colour with no prop; in the operator top bar the
+   token is unset, so the neutral fallback below applies and the chrome is identical for every
+   tenant. It reads --tenant-mark and not --tenant-brand because a monogram is a fill WITH
+   LETTERS ON IT, and CustomerSurface has already gated that pair on the contrast floor.
+
+   `--hg-tenant-mark-*` are per-instance numbers set from the `size`/`radius` props. */
+
+.hg-tenant-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-tenant-mark-logo {
+  display: block;
+  flex-shrink: 0;
+  height: var(--hg-tenant-mark-size);
+  width: auto;
+  max-width: var(--hg-tenant-mark-logo-max);
+  object-fit: contain;
+}
+
+.hg-tenant-mark-node {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hg-tenant-mark-monogram {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--hg-tenant-mark-size);
+  height: var(--hg-tenant-mark-size);
+  border-radius: var(--hg-tenant-mark-radius);
+  background: var(--tenant-mark, var(--neutral-bg));
+  color: var(--tenant-mark-on, var(--neutral-text));
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--hg-tenant-mark-type);
+  letter-spacing: var(--tr-h2);
+}
+
+.hg-tenant-mark-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-tenant-mark-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-tenant-mark-meta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.hg-tenant-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  border-radius: var(--r-lg);
+  font-family: var(--font-sans);
+}
+
+.hg-tenant-header[data-align="center"] {
+  justify-content: center;
+}
+
+.hg-tenant-header-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-tenant-header-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-tenant-header-name {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+}
+
+.hg-tenant-header-caption {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-tenant-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-shrink: 0;
+}

@@ -1,0 +1,36 @@
+import React from "react";
+import { ActionReasonSpec } from "../feedback/ActionReason";
+
+export interface ButtonProps {
+  children?: React.ReactNode;
+  /** primary = near-black (default, the identity marker); never make it coloured */
+  variant?: "primary" | "secondary" | "ghost" | "destructive";
+  size?: "lg" | "md" | "sm";
+  disabled?: boolean;
+  /**
+   * **Why it is off** — `MS4-15`'s *"when unavailable the control **STATES THE REASON**"*. Rendered by
+   * `ActionReason` directly under the pill, so the button becomes a column (`style` still lands on
+   * the pill). Renders only when `disabled` is also true: an available act has no reason.
+   *
+   * With a reason the button is `aria-disabled` and **stays focusable**, activation suppressed — a
+   * native `disabled` leaves the tab order, and a description on an unreachable element is never
+   * announced. Where the act is *absent* rather than off, render no button and let the surface carry
+   * a `ScopeNote`.
+   */
+  disabledReason?: React.ReactNode | ActionReasonSpec;
+  /** replaces the label with a spinner, keeps width fixed */
+  loading?: boolean;
+  /** leading icon node (Lucide, 20px, 1.5 stroke) */
+  icon?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  fullWidth?: boolean;
+  style?: React.CSSProperties;
+  onClick?: (e: React.MouseEvent) => void;
+}
+
+/**
+ * Pill-shaped action button. Primary fill is near-black (#0A0A0B), never coloured.
+ * Scales to 0.97 on press; raises to e2 shadow on hover. Min 44px touch target.
+ * @startingPoint section="Forms" subtitle="Pill buttons — primary near-black, secondary, ghost, destructive" viewport="700x200"
+ */
+export function Button(props: ButtonProps): JSX.Element;

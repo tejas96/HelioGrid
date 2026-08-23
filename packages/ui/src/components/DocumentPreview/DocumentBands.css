@@ -1,0 +1,170 @@
+/* The document's bands — items, sections, tranches, terms. Design-space geometry of a 480px
+   sheet; see DocumentPreview.css. Each band opens with the brand rule, whose opacity is set by
+   the component from the non-text mark floor. */
+
+.hg-doc-body {
+  padding: 20px 28px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+}
+
+.hg-doc-rule {
+  height: 2px;
+  background: var(--hg-doc-brand);
+  opacity: var(--hg-doc-rule-opacity);
+  border-radius: 2px;
+}
+
+.hg-doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.hg-doc-table[data-tight="true"] {
+  margin-top: 8px;
+}
+
+.hg-doc-cell {
+  padding: 7px 0;
+  font-size: 11px;
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.hg-doc-amount {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The total IS the sum of the lines and the payable IS the total less the subsidy — neither is
+   a literal, which is why nothing here can be styled into disagreeing with the arithmetic. */
+.hg-doc-total-row {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hg-doc-total-label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.hg-doc-total-value {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--hg-doc-ink);
+}
+
+.hg-doc-subsidy {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.hg-doc-section-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hg-doc-section-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.hg-doc-section-index {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.hg-doc-section-label {
+  flex: 1;
+}
+
+.hg-doc-section-meta {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.hg-doc-tranche-index {
+  padding: 8px 0;
+  vertical-align: top;
+  width: 18px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+}
+
+.hg-doc-tranche-cell {
+  padding: 8px 0;
+  font-size: 11px;
+  vertical-align: top;
+}
+
+.hg-doc-tranche-label {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.hg-doc-tranche-when {
+  display: block;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.hg-doc-tranche-share {
+  padding: 8px 0;
+  font-size: 10px;
+  text-align: right;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.hg-doc-tranche-amount {
+  padding: 8px 0;
+  font-size: 11px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  vertical-align: top;
+  font-weight: var(--fw-bold);
+}
+
+/* ── the authored terms body ───────────────────────────────────────────────────
+   The body itself is RichTextView's — one read-only renderer for the document and the customer
+   link page (M06-51) — so its type, lists and logo are styled by RichText.css. What is left here
+   is what belongs to the SHEET: where the band sits, and the fact that a link on a document takes
+   the tenant's gated ink rather than the operator app's link colour. */
+.hg-doc-terms {
+  margin-top: 8px;
+}
+
+.hg-doc-terms .hg-rich-text-link {
+  color: var(--hg-doc-ink);
+}

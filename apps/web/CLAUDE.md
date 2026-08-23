@@ -34,17 +34,16 @@ policy constants and formatters are imported from `@heliogrid/domain`, never re-
   feature-local: `packages/ui`, `packages/domain` or `lib/`.
 - `globals.css` is the only stylesheet under `app/`. Next reserved files
   (layout/providers/loading/error/not-found/route) stay in `app/`; `route.ts` is cookie/session
-  BFF glue ONLY. `lib/` holds `ApiErrorText.tsx` + `api-error-text.css` + `env.ts` — NO
+  BFF glue ONLY. `lib/` holds `env.ts` — NO
   `*-client.ts`: those were deleted by ADR-0023 (see the fetch landmine below).
 - **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout
   via a colocated `<screen>.css` in the feature folder with token `var()`; Tailwind = layout
-  only (`flex`, `grid`, `min-h-dvh`). No inline `style`, no new `hg-*`.
+  only (`flex`, `grid`, `min-h-dvh`). No inline `style`.
 - Where UI, data, forms, shared copy and shared types come from:
   `.claude/rules/cross-platform.md` (both apps) — not restated here.
-- API failures render `<ApiErrorText error={e} />` (lib/), never a hand-written string;
-  forms branch VALIDATION_FAILED through `applyServerErrors` first.
-- `.hg-*` scaffold is legacy — new screens use `@heliogrid/ui` only.
-- /design renders dist/tokens.json — a token that doesn't render there doesn't exist.
+- API failures render a shared error component, never a hand-written string; forms branch
+  VALIDATION_FAILED through `applyServerErrors` first. **`lib/ApiErrorText.tsx` was deleted
+  with the v1 UI (2026-08-19) — rebuild it in `packages/ui` so both platforms share one.**
 
 ## Landmines
 - **A feature barrel must not mix a Server Component and a `'use client'` screen** (2026-07-31).
@@ -53,6 +52,7 @@ policy constants and formatters are imported from `@heliogrid/domain`, never re-
   against a 102 kB baseline. Give the client screen its own barrel
   (`features/<feature>/<screen>/index.ts`). Symptom to recognise: two routes reporting the
   IDENTICAL First Load JS — that is one bundle serving both, not a coincidence.
+  (Measured on `/design`, the v1 component gallery, since deleted.)
 - **Never run `turbo build`, `pnpm verify` or `rm -rf */dist` while `next dev` is live**
   (2026-08-02). Both share `apps/web/.next`: every chunk 404s → unstyled raw HTML plus
   webpack `undefined (reading 'call')`. Looks like a code bug, isn't. Fix: kill 3002,

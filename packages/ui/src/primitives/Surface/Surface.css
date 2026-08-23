@@ -1,0 +1,68 @@
+/* Surface — elevation, radius, background. Shadows are felt, not seen; hierarchy comes
+   from luminance and elevation, never borders (the --e* tokens also carry field mode's
+   hairline ring, which is why a Surface never hardcodes its shadow). Radius resolves
+   through the density mode: expressive takes --r-*, functional takes --rf-*. */
+
+.hg-surface[data-background="surface"] {
+  background: var(--surface);
+}
+.hg-surface[data-background="surface-alt"] {
+  background: var(--surface-alt);
+}
+.hg-surface[data-background="canvas"] {
+  background: var(--canvas);
+}
+.hg-surface[data-background="canvas-sunken"] {
+  background: var(--canvas-sunken);
+}
+
+.hg-surface[data-elevation="e0"] {
+  box-shadow: var(--e0);
+}
+.hg-surface[data-elevation="e1"] {
+  box-shadow: var(--e1);
+}
+.hg-surface[data-elevation="e2"] {
+  box-shadow: var(--e2);
+}
+.hg-surface[data-elevation="e3"] {
+  box-shadow: var(--e3);
+}
+.hg-surface[data-elevation="e4"] {
+  box-shadow: var(--e4);
+}
+.hg-surface[data-elevation="e5"] {
+  box-shadow: var(--e5);
+}
+
+.hg-surface[data-density="expressive"][data-radius="xs"] {
+  border-radius: var(--r-xs);
+}
+.hg-surface[data-density="expressive"][data-radius="sm"] {
+  border-radius: var(--r-sm);
+}
+.hg-surface[data-density="expressive"][data-radius="md"] {
+  border-radius: var(--r-md);
+}
+.hg-surface[data-density="expressive"][data-radius="lg"] {
+  border-radius: var(--r-lg);
+}
+.hg-surface[data-density="expressive"][data-radius="xl"] {
+  border-radius: var(--r-xl);
+}
+
+.hg-surface[data-density="functional"][data-radius="xs"] {
+  border-radius: var(--rf-xs);
+}
+.hg-surface[data-density="functional"][data-radius="sm"] {
+  border-radius: var(--rf-sm);
+}
+.hg-surface[data-density="functional"][data-radius="md"] {
+  border-radius: var(--rf-md);
+}
+.hg-surface[data-density="functional"][data-radius="lg"] {
+  border-radius: var(--rf-lg);
+}
+.hg-surface[data-density="functional"][data-radius="xl"] {
+  border-radius: var(--rf-xl);
+}

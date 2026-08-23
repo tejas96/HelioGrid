@@ -1,7 +1,15 @@
-'use client';
-import { HomeScreen } from '../../features/home';
-
-/** Route only — the screen lives in features/home. */
+/**
+ * Placeholder route. The v1 UI was removed on 2026-08-19
+ * (docs/17-ui-architecture-v2.md) and the real screen is not built yet.
+ *
+ * Plain elements ONLY — no design system, no tokens, no component library.
+ * Replaced when the screen is designed; do not build on it.
+ */
 export default function HomePage() {
-  return <HomeScreen />;
+  return (
+    <main>
+      <h1>{'Home'}</h1>
+      <p>{'Placeholder route. The screen is not built yet.'}</p>
+    </main>
+  );
 }

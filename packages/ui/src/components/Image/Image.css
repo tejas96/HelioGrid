@@ -1,0 +1,223 @@
+/* Image / Thumbnail — MS9-23 (P0). Three states, ONE footprint.
+
+   loading · present · permanently missing. The frame is sized from `ratio`/`height` BEFORE
+   anything loads, and every state paints into that same box: the proposal document paginates for
+   print (SCR-M06-17), so a layout shift here is a correctness bug, not a polish issue.
+
+   The caller's width, radius, fit and position arrive as custom properties on the outermost
+   element — they are per-instance values, so they cannot live as declarations here, but every
+   COLOUR, type step and duration below is a token. */
+
+.hg-image {
+  margin: 0;
+  width: var(--hg-image-w);
+  break-inside: avoid;
+}
+
+/* The click target: a sibling of nothing, wrapping the whole figure, exactly as the frame reads
+   as one thing. Never hover-only meaning — the lift is decoration on an already-obvious target. */
+.hg-image-button {
+  display: block;
+  width: var(--hg-image-w);
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: calc(var(--hg-image-radius) + 2px);
+  break-inside: avoid;
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-image-button:hover {
+  transform: translateY(-1px);
+}
+
+/* THE FOOTPRINT. Fixed the moment this renders — never derived from the image. */
+.hg-image-frame {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: var(--hg-image-radius);
+  background: var(--canvas-sunken);
+}
+
+.hg-image[data-sized="ratio"] .hg-image-frame {
+  aspect-ratio: var(--hg-image-ratio);
+}
+
+.hg-image[data-sized="height"] .hg-image-frame {
+  height: var(--hg-image-h);
+}
+
+/* Masked photo, subtle inner top highlight — never a border, never a colour filter.
+   color-mix on --text-inverse rather than a raw rgba: the white is the token, the alpha is the
+   effect. */
+.hg-image-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-inverse) 45%, transparent);
+  pointer-events: none;
+}
+
+/* ── missing ──────────────────────────────────────────────────────────────── */
+
+.hg-image-missing {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  text-align: center;
+  background: var(--canvas-sunken);
+  color: var(--text-tertiary);
+}
+
+.hg-image-missing[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-image[data-compact="true"] .hg-image-missing {
+  gap: var(--sp-1);
+}
+
+/* The glyph-and-words mark: the node `role="img"` names, and NOTHING else. Same column and the
+   same gap as the panel, so nesting it changes nothing a sighted reader sees. */
+.hg-image-missing-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-image[data-compact="true"] .hg-image-missing-mark {
+  gap: var(--sp-1);
+}
+
+.hg-image-missing-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+}
+
+.hg-image-missing[data-tone="warning"] .hg-image-missing-label {
+  color: var(--text-primary);
+}
+
+.hg-image[data-compact="true"] .hg-image-missing-label {
+  font-size: var(--fs-caption);
+}
+
+.hg-image-missing-detail {
+  max-width: 260px;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
+.hg-image-retry {
+  margin-top: var(--sp-0-5);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* ── loading and present ──────────────────────────────────────────────────── */
+
+/* The skeleton sits UNDER the image and is revealed by its opacity, so the box is never empty. */
+.hg-image-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--canvas-sunken) 0%,
+    var(--canvas) 50%,
+    var(--canvas-sunken) 100%
+  );
+  background-size: 640px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-image-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: var(--hg-image-fit);
+  object-position: var(--hg-image-position);
+  opacity: 0;
+  transition: opacity var(--dur-standard) var(--ease-standard);
+}
+
+.hg-image-img[data-state="present"] {
+  opacity: 1;
+}
+
+/* ── reference-only badge (M05-29) ────────────────────────────────────────── */
+
+.hg-image-ref {
+  position: absolute;
+  left: var(--sp-2);
+  bottom: var(--sp-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: var(--sp-6);
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.hg-image-glyph {
+  flex-shrink: 0;
+}
+
+/* ── caption ──────────────────────────────────────────────────────────────── */
+
+.hg-image-caption {
+  margin-top: var(--sp-2);
+  font-family: var(--font-sans);
+}
+
+.hg-image[data-density="functional"] .hg-image-caption {
+  margin-top: 6px;
+}
+
+.hg-image-caption-text {
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-image-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-0-5) var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-image-meta[data-after-caption="true"] {
+  margin-top: 3px;
+}

@@ -1,0 +1,68 @@
+import React from "react";
+
+export interface NamedGapSpec {
+  /**
+   * The sentence, and it names **what** is missing: "No city yet", "No schedule yet", "No survey
+   * date yet". Never a dash, never "N/A", never an empty string dressed as a value.
+   */
+  gap?: React.ReactNode;
+  /**
+   * `headline` — a stat's value footprint (15px). `field` — under a label (13px). `cell` — a table
+   * cell (13px). Never the value's own 32px: a gap states, it does not shout.
+   */
+  scale?: "headline" | "field" | "cell";
+  align?: "left" | "center" | "right";
+  /** Optional act that fills it. `M02-03` forbids inventing the value, not asking for it. */
+  onFill?: () => void;
+  fillLabel?: string;
+  /** Named in the action's accessible label, so a screen reader hears which field it fills. */
+  fieldName?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **An absent value, rendered honestly, at the scale of the value it replaces.** `M02-03`: *"the
+ * missing fields are shown as **named gaps** on the record — 'no name yet', 'no city yet'… **nothing
+ * is invented to fill a gap**"*; `M08-21`: *"its absence is shown as absence rather than as an empty
+ * date"*; `M11-15`: an absent schedule *"does not invent rows, distribute the payable evenly,
+ * back-fill a template, or show a projection where an amount owed belongs"*; `MS7-14`: *"no undefined
+ * placeholders."*
+ *
+ * **Why this is a component and not an em-dash.** An em-dash says *nothing here*; these rows require
+ * the product to say **what** is missing. "—" and "no city yet" are not the same statement, and
+ * `M02-03` requires the second. A lead captured from a phone call routinely has neither a name nor a
+ * city, and the record still has to be honest about which.
+ *
+ * **Three scales of one honesty, and nothing improvises between them.** `EmptyState` is the centred
+ * full-region bloom for a screen with nothing on it. `Block`'s empty state is one quiet sentence
+ * inside a section frame. This is one **value's** footprint — a header field, a stat's value, a table
+ * cell — left-aligned at field or cell type size.
+ *
+ * **It takes no provenance tier.** A tier answers *how a figure was arrived at*; there is no figure,
+ * so measured / derived / estimated are all false of "no city yet". Hosts **drop** the provenance
+ * slot when the value is a gap rather than qualifying an absence. That is consistent with `M05-52`,
+ * not against it: a deliberate absence being *stated* rather than silent is exactly the distinction
+ * `tier="unmarked"` and `level="unmarked"` already draw.
+ *
+ * The words are read, so they take `--text-secondary` and never `--text-disabled`. A hollow ring is
+ * the second, non-colour channel — "a value belongs here and is missing", without being a dash.
+ *
+ * Hosts with a caller-facing gap prop, and the law names four: `StatCard` (`gap`, in the value's
+ * footprint), `ListRow` (`gap`, in place of the subtitle), `DataTable` (`column.gap`, per row) and
+ * `CompareGrid` (`attribute.gapLabel`, per cell, falling back to "Not stated"). `VersionDiff` is a
+ * fifth of the same shape (`row.gapLabel`, else `removedLabel`, for a field that the later version
+ * removed). Two components render one without asking the caller: `Transcript` ("Language not
+ * recorded") and `PagedDocument` (a document with no project name yet). This list said *three* for two
+ * rounds after `CompareGrid` gained its own gap, which is exactly the drift a screen author cannot
+ * see: they read the component's own doc and conclude the grid has no honest absence.
+ *
+ * @startingPoint section="Data display" subtitle="A named gap — what is missing, not a dash" viewport="760x280"
+ */
+export function NamedGap(props: NamedGapSpec): JSX.Element | null;
+
+/** What every `gap` host prop runs through: a sentence, a spec, or a ready node. */
+export function renderGap(spec?: React.ReactNode | NamedGapSpec, extra?: Partial<NamedGapSpec>): React.ReactNode;
+
+export namespace NamedGap {
+  const render: typeof renderGap;
+}

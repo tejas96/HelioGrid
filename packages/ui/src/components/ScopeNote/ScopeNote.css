@@ -1,0 +1,88 @@
+/* ScopeNote — the act is absent, and this says whose it is. It renders IN THE ACTION ROW, the
+   exact place the absent acts would have been.
+
+   Not a disabled button: a greyed control still advertises a capability. The control is not
+   rendered at all, and this takes the space it would have had.
+
+   The mark is a PERSON, not a lock — the screen is not locked and the reader is not shut out of
+   anything they can see. Type size arrives from the caller (13 default, 12 floor) as
+   --hg-scope-note-size; 10px, 14px, 16px, 18px and the 6px line gap below have no scale step of their own. */
+
+.hg-scope-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-sans);
+}
+
+.hg-scope-note[data-variant="line"] {
+  padding: var(--sp-0-5) 0;
+}
+
+.hg-scope-note[data-variant="panel"] {
+  padding: 14px;
+  border-radius: var(--r-sm);
+  background: var(--neutral-bg);
+  box-sizing: border-box;
+}
+
+.hg-scope-note[data-align="left"] {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.hg-scope-note[data-align="center"] {
+  justify-content: center;
+  text-align: center;
+}
+
+.hg-scope-note-mark {
+  color: var(--text-tertiary);
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hg-scope-note-mark > svg {
+  width: 16px;
+  height: 16px;
+}
+
+.hg-scope-note[data-variant="panel"] .hg-scope-note-mark > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.hg-scope-note-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hg-scope-note[data-align="left"] .hg-scope-note-lines {
+  align-items: flex-start;
+}
+
+.hg-scope-note[data-align="center"] .hg-scope-note-lines {
+  align-items: center;
+}
+
+.hg-scope-note-line {
+  margin: 0;
+  font-size: var(--hg-scope-note-size, var(--fs-body-sm));
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  line-height: var(--lh-table);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-scope-note-message {
+  margin: 0;
+  font-size: var(--hg-scope-note-size, var(--fs-body-sm));
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}

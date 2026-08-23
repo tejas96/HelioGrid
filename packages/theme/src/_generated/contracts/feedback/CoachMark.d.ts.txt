@@ -1,0 +1,69 @@
+import React from "react";
+
+/** Never more than three marks on one screen (M01-16). The cap is enforced, not advisory. */
+export const MAX_STEPS: 3;
+
+export interface CoachMarkStep {
+  /** The live control this mark points at: a ref, an element, or a CSS selector. Omit for an
+   *  unanchored mark, which parks at the bottom of the screen rather than pointing at nothing. */
+  anchor?: React.RefObject<HTMLElement> | HTMLElement | string;
+  /** Position inside this scrolling container instead of the viewport (studio canvas, phone
+   *  shell, detail panel). Ref, element or selector; must be positioned. */
+  within?: React.RefObject<HTMLElement> | HTMLElement | string;
+  title: string;
+  body?: string;
+  placement?: "auto" | "top" | "bottom";
+  nextLabel?: string;
+}
+
+export interface CoachMarkProps extends CoachMarkStep {
+  open?: boolean;
+  step?: number;
+  total?: number;
+  /** Ring inset around the anchor. The ring is the system's 2px accent ring — there is no scrim. */
+  padding?: number;
+  width?: number;
+  dismissLabel?: string;
+  onNext?: () => void;
+  /** Dismissing is forever ("shown once") — pair it with `useCoachMarks().dismiss`. */
+  onDismiss?: () => void;
+  /** Fired when an anchored mark can't find its anchor. A sequence uses this to skip the step. */
+  onAnchorMissing?: () => void;
+  /** Moves focus to the mark so a keyboard user finds it. It does NOT trap focus — this is
+   *  guidance over a working screen, not a dialog. */
+  autoFocus?: boolean;
+  ring?: boolean;
+  style?: React.CSSProperties;
+}
+
+/** One persistent mark anchored to a live control. Escape dismisses; the screen stays usable. */
+export function CoachMark(props: CoachMarkProps): JSX.Element | null;
+
+export interface CoachMarkSequenceProps {
+  /** Ordered. Sliced to MAX_STEPS — never a carousel, never a modal tour. */
+  steps: CoachMarkStep[];
+  open?: boolean;
+  within?: React.RefObject<HTMLElement> | HTMLElement | string;
+  onDismiss?: () => void;
+  onFinish?: () => void;
+  autoFocus?: boolean;
+}
+
+/** An ordered run of at most three marks (search → confirm → next). Steps whose anchor isn't on
+ *  this screen are resolved out before the run starts, so it opens on the first mark it can
+ *  anchor and the counter numbers only the marks that will be shown. */
+export function CoachMarkSequence(props: CoachMarkSequenceProps): JSX.Element | null;
+
+export interface CoachMarksState {
+  open: boolean;
+  seen: boolean;
+  /** Records the dismissal under `hg.coachmark.<id>` — shown once, dismissed forever. */
+  dismiss: () => void;
+  /** Reopens on demand. This is what the Help menu calls (MS1-08). */
+  replay: () => void;
+}
+
+/** Per-screen first-run state, persisted under its own localStorage key and nothing else.
+ *  From the compiled bundle reach it as `CoachMark.useCoachMarks(id)` — only capitalised exports
+ *  land on the window namespace. */
+export function useCoachMarks(id: string, opts?: { enabled?: boolean }): CoachMarksState;

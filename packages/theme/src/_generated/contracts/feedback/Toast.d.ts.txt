@@ -1,0 +1,15 @@
+import React from "react";
+
+export interface ToastProps {
+  tone?: "success" | "warning" | "danger" | "info" | "neutral";
+  title: string;
+  description?: string;
+  /** override the default semantic icon */
+  icon?: React.ReactNode;
+  /** trailing action node */
+  action?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/** White toast card (16px radius, e5) with a leading semantic icon in a circular tint. One at a time. */
+export function Toast(props: ToastProps): JSX.Element;

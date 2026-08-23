@@ -1,0 +1,53 @@
+import React from "react";
+
+export interface CustomerSurfaceProps {
+  /** The tenant's primary brand colour, "#RRGGBB". Without a valid one, nothing is re-tinted. */
+  brandColor?: string;
+  /**
+   * Recorded as `data-tenant` — useful in review and in QA, **never rendered**. The visible
+   * identity is `TenantHeader` (or `TenantMark`), mounted inside this scope: this component is the
+   * colour's boundary, not the lockup.
+   */
+  tenantName?: string;
+  /** Element to render. Default `div`; `main` or `body`-level wrapper on a real link page. */
+  as?: keyof JSX.IntrinsicElements;
+  fullHeight?: boolean;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}
+
+/**
+ * The scope a tenant's brand colour reaches — **the other half of `F7-07`**.
+ *
+ * `F7-07` brands two surfaces: the generated proposal document *and* the tokenised customer-link
+ * pages. The link page is not a document — `F5-39` makes the web page the path of record and
+ * `MS9-11` says branding there is the tenant's — so it is a live page of ordinary components
+ * (`Button`, `StatusChip`, `Timeline`, `Charts`) that must re-tint without a prop each.
+ *
+ * **The scope is this element and its subtree**: bigger than one frame, smaller than the app. The
+ * brand tokens are set as inline custom properties on its own node, so everything inside re-tints
+ * and nothing outside can — a custom property set on an element cannot escape it. **The
+ * operator-app prohibition is enforced by CSS scoping rather than by convention**, and mounting
+ * this is a deliberate act on a customer-facing route: there is no global switch that could turn
+ * tenant branding on by accident.
+ *
+ * **The contrast obligation travels with the scope** (`N4` / `F7-11`). The raw colour is never
+ * given to anything that carries words: `--accent` receives the same hue darkened until it clears
+ * 4.5:1 on paper, which also makes white honest on a filled button. The raw colour stays available
+ * as `--tenant-brand` for large decorative fills.
+ *
+ * **That includes the monogram**, which is a fill with letters on it. `--tenant-mark` /
+ * `--tenant-mark-on` — the pair `TenantMark` reads — are the brand colour only when
+ * `bestTextOn(brand).passes`; otherwise they fall back to `ink` with white on it. `#006FFF`, in
+ * this system's own picker, measures 4.45:1 against both white and near-black and so takes the
+ * fallback. The gate lives here, beside the numbers, because `TenantMark` cannot measure a CSS
+ * variable — and because `DocumentPreview` already guards the same colour the same way.
+ *
+ * @startingPoint section="Brand" subtitle="Tenant-branded customer link page scope" viewport="900x600"
+ */
+export function CustomerSurface(props: CustomerSurfaceProps): JSX.Element;
+
+export namespace CustomerSurface {
+  /** The resolved custom properties, for a surface that needs the values directly. */
+  function tokens(brandColor: string): Record<string, string> | null;
+}

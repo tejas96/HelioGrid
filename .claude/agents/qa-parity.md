@@ -31,7 +31,7 @@ divergence in these classes:
    the values are identical. A mismatch is a **blocker**: record both values verbatim, never
    average, round, or pick the one that looks right.
 
-A divergence recorded in `docs/13-ux-gap-register.md` as a UXG-PAR row is intentional —
+A divergence recorded in `prd/registers/conflicts.md` is intentional —
 report it `documented` and cite the row. A divergence with no row is drift, however
 deliberate it looks.
 

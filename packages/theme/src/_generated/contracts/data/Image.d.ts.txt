@@ -1,0 +1,72 @@
+import React from "react";
+
+export type ImageStatus = "auto" | "loading" | "present" | "missing";
+export type ImageMissingReason = "not-captured" | "unavailable";
+
+export interface ImageProps {
+  src?: string;
+  /** Accessible name. Also folded into the missing state's label, so a screen reader is told
+   *  WHICH photo is absent, not just that something is. */
+  alt?: string;
+  /** Force a state for specimens and print proofs. Default "auto": no src → missing,
+   *  load error → missing (reason "unavailable"), decoded → present, otherwise loading. */
+  status?: ImageStatus;
+  /** Footprint. "photo" 4:3 · "wide" 16:9 · "square" · "portrait" 3:4, or any CSS aspect-ratio.
+   *  Reserved before the image loads — this is what keeps print pagination stable. */
+  ratio?: "photo" | "wide" | "square" | "portrait" | string;
+  width?: number | string;
+  /** Fixed height instead of a ratio. One of ratio/height always applies; never neither. */
+  height?: number | string;
+  fit?: "cover" | "contain";
+  position?: string;
+  radius?: number;
+  caption?: string;
+  /** Who took it — the shadow set captions each shot with a name and a date/hour. */
+  credit?: string;
+  /**
+   * @deprecated Use `credit`. `attribution` is the system's `ValueSource` slot (which layer supplied an
+   * un-overridden value) and an image frame has no such fact; passing it here warns.
+   */
+  attribution?: string;
+  meta?: string;
+  /** Suppressed while the image is missing: shortfall reports before age (MS11-11). */
+  staleAt?: string;
+  /** M05-29: survey photographs are reference and are never measured from. Shows in all three
+   *  states — the law doesn't lapse because the photo hasn't loaded. */
+  referenceOnly?: boolean;
+  referenceLabel?: string;
+  referenceNote?: string;
+  /** "not-captured" (nobody took it — permanent, neutral) vs "unavailable" (the fetch failed —
+   *  warning tint, retryable). Set automatically to "unavailable" on a load error. */
+  missingReason?: ImageMissingReason;
+  missingLabel?: string;
+  missingDetail?: string;
+  onRetry?: () => void;
+  retryLabel?: string;
+  onClick?: () => void;
+  /** Default false. Lazy images that haven't loaded when print fires paginate an empty frame. */
+  lazy?: boolean;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * Three-state photo surface: loading · present · permanently missing, all in one footprint that
+ * is fixed before anything loads. Missing is a resting state, not an error.
+ *
+ * NAME COLLISION: `Image` shadows the browser's native constructor, so a top-level
+ * `const { Image } = window.HelioGridDesignSystem_c8aa43` breaks `new Image()` for every script
+ * on the page. **Use `ImageFrame`** — the identical component under a collision-free name.
+ * `Image` remains exported for code already written against it.
+ */
+export function Image(props: ImageProps): JSX.Element;
+
+/** The same component as `Image`, under a name that cannot shadow `window.Image`. Prefer this. */
+export const ImageFrame: typeof Image;
+
+export interface ThumbnailProps extends Omit<ImageProps, "width"> {
+  size?: number;
+}
+
+/** Small square Image. Below 140px the icon carries the state and the accessible name the words. */
+export function Thumbnail(props: ThumbnailProps): JSX.Element;

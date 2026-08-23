@@ -1,0 +1,18 @@
+import React from "react";
+
+export interface WordmarkProps {
+  size?: number;
+  /** default = near-black with iridescent "Grid" · onDark = white + iridescent · mono = flat. */
+  tone?: "default" | "onDark" | "mono";
+  style?: React.CSSProperties;
+}
+/** The HelioGrid wordmark. Geist Bold, −0.03em, iridescence on "Grid" only. No logo mark exists. */
+export function Wordmark(props: WordmarkProps): JSX.Element;
+
+export interface LogoTileProps {
+  size?: number;
+  radius?: number;
+  style?: React.CSSProperties;
+}
+/** Gradient app tile carrying the "H" — the rail and launcher form of the mark. */
+export function LogoTile(props: LogoTileProps): JSX.Element;

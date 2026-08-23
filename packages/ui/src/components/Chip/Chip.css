@@ -1,0 +1,131 @@
+/* Chip / Badge — fully-pill label, filter chip and tinted semantic badge.
+
+   THE TARGET AND THE PILL ARE TWO DIFFERENT RECTANGLES. An interactive chip's <button> is the
+   44px floor (Pressable owns it) and the pill drawn inside keeps its own height — 28px
+   expressive, 24px functional. The difference is transparent padding owned by the target, taken
+   back as negative margin so no row grows. Neither the pill height nor the 44px floor has a
+   spacing token, so both are named local custom properties rather than loose numbers. */
+
+.hg-chip,
+.hg-badge,
+.hg-chip-target {
+  /* The DS pill heights, the dot and the product's touch floor. No token carries any of them,
+     so they are named here and scoped to this component rather than left as loose numbers. */
+  --hg-chip-h-expressive: 28px;
+  --hg-chip-h-functional: 24px;
+  --hg-chip-dot: 6px;
+  --hg-chip-gap: 6px;
+  --hg-chip-touch: 44px;
+}
+
+.hg-chip,
+.hg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hg-chip-gap);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.hg-chip[data-density="expressive"],
+.hg-badge[data-density="expressive"] {
+  height: var(--hg-chip-h-expressive);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-chip[data-density="functional"],
+.hg-badge[data-density="functional"] {
+  height: var(--hg-chip-h-functional);
+  font-size: var(--fs-caption);
+}
+
+/* ── Chip ─────────────────────────────────────────────────────────────────── */
+
+.hg-chip {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--e1);
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-chip[data-active="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-chip-dot {
+  width: var(--hg-chip-dot);
+  height: var(--hg-chip-dot);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.hg-chip[data-tone="neutral"] .hg-chip-dot {
+  background: var(--neutral-text);
+}
+.hg-chip[data-tone="success"] .hg-chip-dot {
+  background: var(--success-text);
+}
+.hg-chip[data-tone="warning"] .hg-chip-dot {
+  background: var(--warning-text);
+}
+.hg-chip[data-tone="danger"] .hg-chip-dot {
+  background: var(--danger-text);
+}
+.hg-chip[data-tone="info"] .hg-chip-dot {
+  background: var(--info-text);
+}
+.hg-chip[data-tone="accent"] .hg-chip-dot {
+  background: var(--accent);
+}
+
+.hg-chip[data-active="true"] .hg-chip-dot {
+  background: var(--text-inverse);
+}
+
+/* ── the 44px target around the pill ──────────────────────────────────────── */
+
+.hg-chip-target {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+}
+
+.hg-chip-target--expressive {
+  margin: calc((var(--hg-chip-h-expressive) - var(--hg-chip-touch)) / 2) 0;
+}
+
+.hg-chip-target--functional {
+  margin: calc((var(--hg-chip-h-functional) - var(--hg-chip-touch)) / 2) 0;
+}
+
+/* ── Badge — the -text partner sets the words, the -bg sets the tint ──────── */
+
+.hg-badge[data-tone="neutral"] {
+  color: var(--neutral-text);
+  background: var(--neutral-bg);
+}
+.hg-badge[data-tone="success"] {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+.hg-badge[data-tone="warning"] {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+.hg-badge[data-tone="danger"] {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+.hg-badge[data-tone="info"] {
+  color: var(--info-text);
+  background: var(--info-bg);
+}
+/* --accent stays plain: it measures 4.65:1 on --accent-subtle and clears the floor unaided. */
+.hg-badge[data-tone="accent"] {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}

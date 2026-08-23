@@ -26,7 +26,7 @@ Map what remains, paths → surfaces:
 | `apps/api/**`, `apps/worker/**`, `packages/db/**` | api |
 | `packages/contracts/**` | api + every consuming surface |
 | `packages/data/**` | web, ios, android — it is the ONE data path |
-| `packages/ui/**`, `packages/tokens/**` | web (+ mobile if the RN mirror moved) |
+| `packages/ui/**`, `packages/theme/**` | web AND mobile — one package holds both platforms |
 | `packages/domain/**`, `packages/i18n/**`, `packages/forms/**` | web, ios, android |
 
 For a shared-code path, **grep the actual consumers** — the symbol may be imported somewhere
@@ -83,7 +83,8 @@ something that was supposed to be imported (Law 11).
 
 - **bug** — fix it.
 - **product-question** — a missing business rule or spec ambiguity. **Never invent a
-  requirement:** record it in `docs/13` or `docs/15` and ask the owner. Does not block a clean
+  requirement:** record it in `prd/registers/open-questions.md` or `conflicts.md` and ask the
+  owner. Does not block a clean
   run.
 - **false-positive** — justify with evidence. Not waved off.
 - **environment** — emulator down, server down. Fix and re-run; does not consume a round.

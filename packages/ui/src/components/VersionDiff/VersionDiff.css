@@ -1,0 +1,251 @@
+/* VersionDiff — one thing at two times. PHONE WIDTH IS THE DESIGN, NOT A FALLBACK: no columns at
+   any width, one block per field, the before line above the after line, each stamped with its own
+   version. Vertical adjacency beats a gutter and the stamp survives scrolling.
+
+   Each state is a WORD in its own pill (F7-12) — the dot is the second channel, never the carrier. */
+
+.hg-version-diff {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.hg-version-diff-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-version-diff-caption {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-version-diff-title {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-version-diff-to {
+  color: var(--text-tertiary);
+  font-weight: var(--fw-regular);
+}
+
+.hg-version-diff-sides {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-version-diff-summary {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-version-diff-change-note {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+}
+
+.hg-version-diff-change-note-body {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+
+.hg-version-diff-empty {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-version-diff-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-version-diff-group-name {
+  margin: 6px 0 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-version-diff-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── one row ───────────────────────────────────────────────────────────────── */
+
+.hg-version-diff-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--sp-3) 0;
+  list-style: none;
+  box-shadow: inset 0 1px 0 var(--canvas-sunken);
+}
+
+.hg-version-diff-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hg-version-diff-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.hg-version-diff-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 var(--sp-2);
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.hg-version-diff-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: currentColor;
+}
+
+.hg-version-diff-pill[data-state="changed"] {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+.hg-version-diff-pill[data-state="unchanged"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+.hg-version-diff-pill[data-state="added"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-version-diff-pill[data-state="removed"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-version-diff-side {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.hg-version-diff-stamp {
+  min-width: 26px;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.hg-version-diff-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}
+
+.hg-version-diff-figure[data-strong="true"] {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+
+.hg-version-diff-unit {
+  font-weight: var(--fw-regular);
+  color: var(--text-tertiary);
+}
+
+.hg-version-diff-tier-only {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-version-diff-tier-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.hg-version-diff-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.hg-version-diff-moved {
+  display: flex;
+  align-items: flex-start;
+}
+
+.hg-version-diff-arrow-down {
+  margin: 1px 0 1px 6px;
+}
+
+.hg-version-diff-moved-side {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-version-diff-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body-sm);
+  color: var(--text-tertiary);
+}
+
+/* ── the unchanged collapse ────────────────────────────────────────────────── */
+
+.hg-version-diff-toggle-row {
+  display: flex;
+}
+
+/* The Pressable primitive: the 44px floor, the reset, the cursor and the focus ring are
+   `hg-pressable`'s. Only this collapse's own bleed and words are stated here. */
+.hg-version-diff-toggle {
+  padding: 0 14px;
+  margin: 0 -14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+}

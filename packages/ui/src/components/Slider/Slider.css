@@ -1,0 +1,199 @@
+/* Slider — MS12-26 / MS3-27. Stepper buttons flank the track because a gloved thumb cannot land a
+   1 degree change on a roof.
+
+   THE TRACK'S FIELD-MODE EDGE IS OUTSET, AND THAT IS WHY THE RAIL IS A SPAN (F7-16). --control-edge
+   is a 1.5px INSET ring, and on a 6px track that leaves a 3px core inside a dark outline, so an
+   EMPTY slider would read as a FULL one. The rail therefore reads --track-edge, an OUTSET hairline
+   that rings it from outside, and an empty track still reads empty.
+
+   The rail and the fill are SPANS behind a transparent-track input, because a vendor pseudo-element
+   is not a place to put an edge you have to trust: ::-webkit-slider-runnable-track's box-shadow
+   support is not something a design system should bet a legibility rule on. The input keeps its own
+   pointer events, so click-to-jump and drag are unchanged; only the painting moved. */
+
+.hg-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.hg-slider-head[data-density="functional"] {
+  margin-bottom: 6px;
+}
+
+.hg-slider-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-slider-value {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-slider-value[data-disabled="true"] {
+  color: var(--text-disabled);
+}
+
+.hg-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hg-slider-step {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-slider-step:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hg-slider-step:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The row is 44 tall and the rail is 6px inside it: the input covers the whole 44px band, so a
+   thumb on a roof is grabbable anywhere in it. */
+.hg-slider-track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+}
+
+.hg-slider-rail,
+.hg-slider-fill {
+  position: absolute;
+  top: 19px;
+  height: 6px;
+  border-radius: var(--r-pill);
+}
+
+.hg-slider-rail {
+  left: 0;
+  right: 0;
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+}
+
+.hg-slider-fill {
+  left: 0;
+  background: var(--accent);
+}
+
+.hg-slider-fill[data-disabled="true"] {
+  background: var(--text-disabled);
+}
+
+/* Range thumbs can only be reached through vendor pseudo-elements. The TRACK is deliberately
+   transparent: the rail, the fill and the field-mode edge are spans underneath, where an outset
+   shadow is certain to paint. */
+.hg-slider-range {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  margin: 0;
+}
+
+.hg-slider-range:focus {
+  outline: none;
+}
+
+.hg-slider-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: transparent;
+}
+
+.hg-slider-range::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: transparent;
+}
+
+.hg-slider-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow:
+    var(--e3),
+    0 0 0 1.5px var(--accent) inset;
+  cursor: grab;
+}
+
+.hg-slider-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow:
+    var(--e3),
+    0 0 0 1.5px var(--accent) inset;
+  cursor: grab;
+}
+
+.hg-slider-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    var(--e3),
+    0 0 0 2px var(--accent);
+}
+
+.hg-slider-range:focus-visible::-moz-range-thumb {
+  box-shadow:
+    var(--e3),
+    0 0 0 2px var(--accent);
+}
+
+.hg-slider-range:disabled::-webkit-slider-thumb {
+  box-shadow:
+    var(--e1),
+    0 0 0 1.5px var(--text-disabled) inset;
+  cursor: not-allowed;
+}
+
+.hg-slider-range:disabled::-moz-range-thumb {
+  box-shadow:
+    var(--e1),
+    0 0 0 1.5px var(--text-disabled) inset;
+  cursor: not-allowed;
+}
+
+.hg-slider-provenance,
+.hg-slider-hint {
+  margin: var(--sp-2) 2px 0;
+}
+
+.hg-slider-hint {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}

@@ -1,0 +1,13 @@
+/* MapSurface — the map frame for field workforce: routes, day playback, geofences, address
+   confirmation. This is the SHELL, not a tile provider.
+
+   Two honesty rules are styled in and must not be worked around: a live position never looks
+   like a stale one, and missing tiles are stated — `error` (warning tone, a retry) for a fetch
+   that failed, `unavailable` (neutral, never a retry) for an area with no coverage.
+
+   The pulse keyframe lives here rather than being injected into document.head at runtime, and
+   it is dropped under prefers-reduced-motion. Split by responsibility, one @import per part. */
+
+@import "./MapFrame.css";
+@import "./MapMarkers.css";
+@import "./MapControls.css";

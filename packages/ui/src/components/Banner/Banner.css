@@ -1,0 +1,161 @@
+/* Banner — the in-page statement of a fact about what's on screen: this needs review, this is
+   overdue, this is below cost, this is preliminary.
+
+   The banner never covers content and never blocks interaction, and it disappears when the fact
+   stops being true rather than being dismissed into silence. The tint is the MARK and the words
+   are the message: every tone pairs a -text token with its -bg partner, and the kind's glyph is
+   the second channel, so no state is carried by hue alone (F7-12).
+
+   The 10/14/17px paddings and gaps are the DS source's own; the 4px scale has no step for them. */
+
+.hg-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+.hg-banner[data-density="expressive"] {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+}
+
+.hg-banner[data-density="functional"] {
+  padding: 10px 12px;
+  border-radius: var(--rf-lg);
+}
+
+.hg-banner-glyph {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hg-banner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-banner-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+}
+
+/* Without a title the body IS the statement, so it keeps the tone colour and a heavier weight.
+   Under a title it steps back to --text-secondary at 400: the title is the fact, this is detail. */
+.hg-banner-body {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-banner-body[data-has-title="true"] {
+  margin-top: var(--sp-0-5);
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+
+.hg-banner-action-slot {
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+
+/* 44px of target, borrowed back as negative margin so a banner does not grow to gain one. */
+.hg-banner-dismiss {
+  margin: -12px -12px -12px 0;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  color: inherit;
+  opacity: 0.7;
+}
+
+/* ── the tone pairs ─────────────────────────────────────────────────────────── */
+
+.hg-banner[data-tone="danger"],
+.hg-banner-pill[data-tone="danger"] {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+.hg-banner[data-tone="warning"],
+.hg-banner-pill[data-tone="warning"] {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+.hg-banner[data-tone="info"],
+.hg-banner-pill[data-tone="info"] {
+  color: var(--info-text);
+  background: var(--info-bg);
+}
+.hg-banner[data-tone="success"],
+.hg-banner-pill[data-tone="success"] {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+.hg-banner[data-tone="accent"],
+.hg-banner-pill[data-tone="accent"] {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+.hg-banner[data-tone="neutral"],
+.hg-banner-pill[data-tone="neutral"] {
+  color: var(--text-secondary);
+  background: var(--neutral-bg);
+}
+
+/* ── variant="pill": the compact inline statement, inside a row or a toolbar ─── */
+
+.hg-banner-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 32px;
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  box-shadow: var(--e1);
+}
+
+/* ── BannerAction: 44px target, 32px pill ───────────────────────────────────── */
+
+.hg-banner-action {
+  margin: -6px 0;
+  padding: 0 var(--sp-0-5);
+  flex-shrink: 0;
+  /* The rectangle is invisible on purpose: field mode's blanket control rule would otherwise ring
+     44px of empty air. The visible edge belongs to the pill, which carries --e1. */
+  box-shadow: none;
+  background: transparent;
+}
+
+.hg-banner-action-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── BannerStack ────────────────────────────────────────────────────────────── */
+
+.hg-banner-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hg-banner-stack-more {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  padding-left: var(--sp-1);
+}

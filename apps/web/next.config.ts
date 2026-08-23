@@ -6,7 +6,8 @@ import type { NextConfig } from 'next';
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@heliogrid/ui'],
+  // transpilePackages: re-add '@heliogrid/ui' and '@heliogrid/theme' when the screens land
+  // (they ship SOURCE, not dist). docs/17-ui-architecture-v2.md; docs/harness/README.md.
 };
 
 export default nextConfig;

@@ -1,0 +1,86 @@
+import React from "react";
+
+/** A market pack — the data a market supplies. Every field is replaceable. */
+export interface MarketPack {
+  id?: string;
+  /** BCP-47 tag driving grouping: "en-IN" groups 4,52,471; "en-US" groups 452,471. */
+  locale?: string;
+  currency?: string;
+  /** Explicit symbol wins over Intl's currency display — "₹" rather than "INR". */
+  currencySymbol?: string | null;
+  symbolPosition?: "before" | "after";
+  currencyFractionDigits?: number;
+  clock?: "24h" | "12h";
+  /** What a customer document calls the tax number — "GSTIN", "VAT number". */
+  taxIdLabel?: string;
+  /** Compact notation is pack data, not styling (M06-07 / F1-46): "1.2 lakh" is an IN fact. */
+  compact?: (n: number, locale?: string) => string;
+  /**
+   * ISO-numbered first day of the week: 1 = Monday … 7 = Sunday. A market fact, not a calendar
+   * preference — the India pack declares **7 (Sunday)**. Omit it and the locale's CLDR answer is
+   * used, with Monday as the last-resort fallback.
+   */
+  firstDayOfWeek?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+}
+
+export interface MarketFormat {
+  pack: MarketPack;
+  number: (n: number | string, opts?: Intl.NumberFormatOptions) => string;
+  money: (n: number | string, opts?: { fractionDigits?: number }) => string;
+  /**
+   * **The resolved symbol** — the pack's explicit `currencySymbol` if it has one, else Intl's for the
+   * locale, else the ISO code. `NumberField` renders a money field's symbol from this, which is how no
+   * component ends up owning a currency; `useFormat()` is the only way to reach it, so it is declared.
+   */
+  currencySymbol: string;
+  /** Which side that symbol sits on. `NumberField` places it leading or trailing from here. */
+  symbolPosition: "before" | "after";
+  compact: (n: number | string) => string;
+  compactMoney: (n: number | string) => string;
+  /** "17:00" → "17:00" or "5:00 PM" by the pack's clock. Storage stays 24-hour. */
+  time: (hhmm: string) => string;
+  /** A date in the pack's language and field order — "12 Mar 2026" under the India pack. */
+  date: (value: string | Date) => string;
+  /** A calendar heading — "March 2026", in the pack's language and order. */
+  monthYear: (value: string | Date) => string;
+  /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
+  firstDayOfWeek: number;
+  /** 12 month names in calendar order, in the pack's language. */
+  monthNames: (style?: "long" | "short" | "narrow") => string[];
+  /** 7 weekday names **starting at `firstDayOfWeek`** — a calendar grid's column order. */
+  weekdayNames: (style?: "narrow" | "short" | "long") => string[];
+  /** Strips grouping and symbols so a typed amount parses back to a number. */
+  parseNumber: (input: string | number) => number | null;
+}
+
+export interface MarketProviderProps {
+  /** A partial pack; the India pack fills any gaps. */
+  pack?: MarketPack;
+  /** A pre-built format, if the app already has one. Wins over `pack`. */
+  format?: MarketFormat;
+  children?: React.ReactNode;
+}
+
+/**
+ * Supplies currency, grouping, clock, compact rules **and dates** to every component that renders
+ * a figure or a date (`F1`, `F3-20`, `F3-22`). Wrap the app once; `Charts`, `UsageMeter`, `StatCard`,
+ * `NumberField`, `TimeField`, `Calendar`/`DatePicker`, `Block`'s count and `DocumentPreview` all read
+ * from it.
+ *
+ * A date carries three market facts, and a component owns none of them: the **month and day names**
+ * (language), the **field order** (`03/04` is two different days in two markets), and the **first day
+ * of the week** — which the calendar grid hardcoded as Monday while the shipped India pack starts
+ * Sunday.
+ *
+ * The default is the **India pack**, not an empty one — the product is India-first, so a component
+ * used outside a provider still renders correct Indian figures. A market overrides by supplying a
+ * pack here, never by editing a component.
+ */
+export function MarketProvider(props: MarketProviderProps): JSX.Element;
+
+/** Read the active format inside a component. Also `MarketProvider.useFormat()`. */
+export function useFormat(): MarketFormat;
+
+export function createFormat(pack?: MarketPack): MarketFormat;
+export const IN_PACK: MarketPack;
+export const GENERIC_PACK: MarketPack;

@@ -29,5 +29,6 @@ Before writing a constant, type, hook or copy string in a screen, ask which pack
   locale-default separator.
 - **Hindi and Marathi need 20–30% more width than English.** A layout that only fits English
   is not done.
-- A behaviour that is deliberately different per platform is recorded in `docs/13` as a
+- A behaviour that is deliberately different per platform is recorded in
+  `prd/registers/conflicts.md` as a
   UXG-PAR row. Undocumented divergence is drift.

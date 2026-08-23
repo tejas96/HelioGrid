@@ -3,7 +3,8 @@
 ## What lives here / what must never live here
 - Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile,
   signup, invite accept. Screens land per-module from the same contract as web; which
-  platform ships a screen first is a plan decision, but `src/ui` stays in parity (Law 7).
+  platform ships a screen first is a plan decision, but the prop contract stays in parity
+  (Law 7).
 - NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
   authored domain logic (import it — Law 11).
 
@@ -19,20 +20,23 @@ THE data path — transport, repositories, session; this app authors none. Share
 types, policy constants and formatters are imported from `@heliogrid/domain`, never
 re-authored (Law 11).
 nav: @react-navigation/native + native-stack + bottom-tabs + elements + react-native-screens
-RN UI components: `src/ui` (mirror of packages/ui — Law 7). Parity with web is a TYPECHECK,
-not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
-`@heliogrid/ui-api`. Drift fails THIS app's typecheck and names the component.
+RN UI components: `@heliogrid/ui` — ONE package holds both platforms, RN via the
+`.native.tsx` half (docs/17-ui-architecture-v2.md §2). Parity is a TYPE, not a script: both
+platform files import the same `<Name>.types.ts`, so divergence cannot compile. The v1
+`src/ui` mirror and its `api-parity.ts` were deleted 2026-08-19.
 
 ## Local conventions
 - **Same structure as web, different location and names.** `src/screens/<name>/` is web's
   `features/<capability>/`; only the path and a few filenames differ, never the shape.
 - Where UI, data, forms, shared copy and shared types come from:
   `.claude/rules/cross-platform.md` (both apps) — not restated here. RN specifics: theme
-  ONLY from `@heliogrid/tokens/theme`, UI ONLY from the `src/ui` index, Intl polyfills in
+  ONLY from `@heliogrid/theme`, UI ONLY from `@heliogrid/ui`, Intl polyfills in
   `src/i18n.ts` FIRST.
-- **Styling layers:** components own pixels (`src/ui` index only); screens own layout in the
-  screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.
-- API failures render `<ApiErrorText error={e} />` (src/lib/), never a hand-written string.
+- **Styling layers:** components own pixels (`@heliogrid/ui` only); screens own layout in
+  the screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.
+- API failures render a shared error component, never a hand-written string.
+  **`src/lib/ApiErrorText.tsx` was deleted with the v1 UI (2026-08-19) — rebuild it in
+  `packages/ui` so both platforms share one.**
   Paginated screens: `FlatList` + `usePaginatedList` (`onEndReached={fetchNextPage}`) —
   never inside a ScrollView.
 - Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
@@ -63,8 +67,9 @@ not a gallery comparison: `src/ui/api-parity.ts` asserts this platform against
   (`role_preset[]`, OR-across, widest visibility), so a role-keyed group declares a shared
   screen twice — and a duplicate route name is a hard THROW, not a warning. The OR-across
   resolution belongs in `@heliogrid/domain`, defined once.
-- **The tab bar lives in `src/navigation/`, never `src/ui/`.** The component index is checked
-  against `@heliogrid/ui-api`; an RN-only component fails `UncoveredComponents` (Law 7).
+- **Navigation chrome lives in `src/navigation/`, never in `@heliogrid/ui`.** A component
+  that knows route names is not a design-system component. The V2 shell (`AppShell`,
+  `BottomNav`, `AppRail`) takes items as PROPS and stays route-blind.
 - **The root navigator must never be empty.** Every group is `if`-gated, so a `Boot` route
   sits ungrouped to guarantee one screen always renders — an empty navigator throws.
   `src/navigation/phase.tsx` computes ONE phase value for this reason: per-guard timers can

@@ -1,0 +1,298 @@
+/* Transcript — what the agent and the customer actually said, turn by turn. It outlives the
+   recording (M07-38), so nothing here depends on the audio being present: with the recording purged
+   the offsets stay as legible text and the document is complete.
+
+   The agent's turn sits on --surface with the card's own e1; the customer's on --canvas-sunken. The
+   turn being played takes --accent-subtle, which is the one place the accent carries state here —
+   and the offset beside it turns accent and bold, so "playing" is never colour alone. */
+
+.hg-transcript {
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.hg-transcript-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.hg-transcript-title {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-transcript-meta {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-transcript-language {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-transcript-globe {
+  display: inline-flex;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.hg-transcript-retained {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-transcript-count {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+/* ── the turns ─────────────────────────────────────────────────────────────── */
+
+.hg-transcript-turns {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-transcript-turns[data-density="expressive"] {
+  gap: 10px;
+}
+.hg-transcript-turns[data-density="functional"] {
+  gap: var(--sp-2);
+}
+
+/* The switch is marked in the flow, at the turn where it happened, so a reader in the middle of a
+   long call knows which language they are reading. */
+.hg-transcript-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-0-5) 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  list-style: none;
+}
+
+.hg-transcript-turn {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+  list-style: none;
+}
+
+.hg-transcript-offset-spacer {
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.hg-transcript-offset {
+  width: 44px;
+  flex-shrink: 0;
+  padding-top: 3px;
+  text-align: end;
+}
+
+.hg-transcript-offset-face {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-transcript-offset-face[data-current="true"] {
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}
+
+/* The offset is a real 44px seek target while the recording is playable — M07-38's "aim at a
+   moment in a call", reached from the words rather than a 4px scrubber. */
+.hg-pressable.hg-transcript-seek {
+  width: 44px;
+  flex-shrink: 0;
+  margin-block: -8px;
+  border-radius: var(--r-sm);
+}
+
+.hg-transcript-bubble {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-transcript-bubble[data-density="expressive"] {
+  padding: 14px;
+}
+.hg-transcript-bubble[data-density="functional"] {
+  padding: 11px;
+  border-radius: var(--r-card-functional);
+}
+
+.hg-transcript-bubble[data-party="agent"] {
+  box-shadow: var(--e1);
+}
+
+.hg-transcript-bubble[data-party="customer"] {
+  background: var(--canvas-sunken);
+}
+
+.hg-transcript-bubble[data-current="true"] {
+  background: var(--accent-subtle);
+  box-shadow: none;
+}
+
+.hg-transcript-speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-transcript-speaker-glyph {
+  display: grid;
+  place-items: center;
+}
+
+.hg-transcript-speaker[data-party="agent"] .hg-transcript-speaker-glyph {
+  color: var(--info);
+}
+.hg-transcript-speaker[data-party="customer"] .hg-transcript-speaker-glyph {
+  color: var(--accent);
+}
+
+.hg-transcript-words {
+  margin: var(--sp-1) 0 0;
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-transcript-words[data-density="expressive"] {
+  font-size: var(--fs-body);
+}
+.hg-transcript-words[data-density="functional"] {
+  font-size: 14px;
+}
+
+.hg-transcript-marks {
+  margin-top: var(--sp-2);
+}
+
+/* ── states ────────────────────────────────────────────────────────────────── */
+
+.hg-transcript-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-transcript-skeleton[data-density="expressive"] {
+  gap: 10px;
+}
+.hg-transcript-skeleton[data-density="functional"] {
+  gap: var(--sp-2);
+}
+
+.hg-transcript-skeleton-bar {
+  height: 44px;
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-transcript-skeleton-bar[data-tall="true"] {
+  height: 62px;
+}
+
+.hg-transcript-skeleton-bar[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+}
+
+.hg-transcript-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--warning-bg);
+}
+
+.hg-transcript-error[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+}
+
+.hg-transcript-error-body {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--warning-text);
+}
+
+.hg-transcript-empty {
+  padding: var(--sp-5);
+  border-radius: var(--r-md);
+  background: var(--canvas-sunken);
+}
+
+.hg-transcript-empty[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+}
+
+.hg-transcript-empty-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-transcript-empty-body {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-transcript-more {
+  display: flex;
+  margin-top: var(--sp-3);
+}
+
+.hg-pressable.hg-transcript-plain {
+  padding-inline: 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}

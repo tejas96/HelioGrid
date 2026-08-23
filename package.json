@@ -20,7 +20,8 @@
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:unused": "knip",
     "check:env": "node scripts/check-env-access.mjs",
-    "check:ui-parity": "node scripts/check-ui-parity.mjs"
+    "ds:check": "node scripts/ds-check.mjs",
+    "ds:contract": "node scripts/ds-contract.mjs"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit"

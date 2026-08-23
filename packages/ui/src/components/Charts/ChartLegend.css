@@ -1,0 +1,60 @@
+/* ChartLegend — the series key, plus the eight palette slots every plot paints through.
+   Imported by Charts.css. */
+
+/* ── legend ─────────────────────────────────────────────────────────────── */
+.hg-charts-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-charts-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-charts-legend-dot {
+  flex-shrink: 0;
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: calc(var(--rf-xs) / 2);
+}
+
+.hg-charts-legend-value {
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+/* ── the palette, one rule per slot ─────────────────────────────────────── */
+.hg-charts-slot[data-slot="1"] {
+  background: var(--chart-1);
+}
+.hg-charts-slot[data-slot="2"] {
+  background: var(--chart-2);
+}
+.hg-charts-slot[data-slot="3"] {
+  background: var(--chart-3);
+}
+.hg-charts-slot[data-slot="4"] {
+  background: var(--chart-4);
+}
+.hg-charts-slot[data-slot="5"] {
+  background: var(--chart-5);
+}
+.hg-charts-slot[data-slot="6"] {
+  background: var(--chart-6);
+}
+.hg-charts-slot[data-slot="7"] {
+  background: var(--chart-7);
+}
+.hg-charts-slot[data-slot="8"] {
+  background: var(--chart-8);
+}

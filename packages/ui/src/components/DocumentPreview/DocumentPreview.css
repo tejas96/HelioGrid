@@ -1,0 +1,61 @@
+/* DocumentPreview — what the customer receives, drawn with the tenant's brand (M01-50 / F7-07).
+
+   TWO VOCABULARIES LIVE IN THESE FILES, on purpose.
+
+   The FRAME around the sheet is app chrome and takes app tokens: radius, elevation, the caption's
+   type and the warning colour.
+
+   The SHEET is a DOCUMENT, drawn at a fixed 480px design width and then scaled as a whole. Its
+   type sizes (8–17px) and its paddings (20/28px) are print geometry measured against that design
+   width, not the app's 4px spacing scale or its 12px type floor — a document's letterhead is not
+   a card. Those values stay literal because no token describes them; every COLOUR still comes
+   from a token, and the tenant's own colour arrives as `--hg-doc-brand` from the component AFTER
+   the contrast gate has run.
+
+   Split across three files for the 300-line rule; the two below are pulled in here so the
+   component keeps ONE stylesheet entry point. */
+
+@import "./DocumentSheet.css";
+@import "./DocumentBands.css";
+
+.hg-doc {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: var(--hg-doc-width);
+}
+
+.hg-doc-window {
+  width: var(--hg-doc-width);
+  height: var(--hg-doc-window-height, auto);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--e3);
+  background: var(--surface);
+}
+
+.hg-doc-sheet {
+  width: var(--hg-doc-design-width);
+  height: var(--hg-doc-sheet-height, auto);
+  transform: scale(var(--hg-doc-scale));
+  transform-origin: top left;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+
+/* The caption is app chrome, not paper. */
+.hg-doc-caption {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-doc-caption-note {
+  display: block;
+  color: var(--warning-text);
+}

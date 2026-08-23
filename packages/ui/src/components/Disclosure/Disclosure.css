@@ -1,0 +1,70 @@
+/* Disclosure — THE MANDATORY HONESTY LINE, IN THE READING FLOW, AT THE WEIGHT OF THE FIGURES IT
+   QUALIFIES. M06-04 (P0) / SCR-M06-17.
+
+   WHY THIS IS NOT A BANNER, in the way that shows here: a tinted, glyphed strip is the wrong
+   weight. The brief asks for the reading flow at the weight of the figures, not an alert above
+   them. So: no tint, no icon, no pill, no rule — a paragraph in --text-primary with a 700 lead-in
+   clause and the body's own measure.
+
+   THE WEIGHT IS MEASURED AGAINST THE FIGURE, NOT AGAINST BODY COPY. On a sheet the money figure is
+   --doc-fs-figure (22px = 16.5pt), so the lead clause is set at exactly that size and 700 and the
+   sentence under it at --doc-fs (12pt reading copy). ON SCREEN the line is --fs-body-lg (17px),
+   the top of the prose scale, so a bare <Disclosure> is already at or above the copy it qualifies
+   — surface="document" is not needed to escape fine print. THE PROSE WEIGHT IS 400: readme law
+   keeps 500 for buttons, tabs and table headers, and the emphasis is the 700 lead.
+
+   AND IT PRINTS. data-print="always" is the declaration (tokens/print.css); the document colours
+   are the --text-primary / --text-secondary tokens, which are the same two values the sheet
+   hardcoded. */
+
+.hg-disclosure {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+.hg-disclosure[data-surface="screen"] {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+}
+
+.hg-disclosure[data-surface="document"] {
+  font-size: var(--doc-fs);
+  line-height: var(--doc-lh);
+}
+
+.hg-disclosure-lead {
+  font-weight: var(--fw-bold);
+}
+
+/* On a sheet the lead is the figure's own size and stands on its own line. */
+.hg-disclosure[data-surface="document"] .hg-disclosure-lead {
+  display: block;
+  font-size: var(--doc-fs-figure);
+  line-height: 1.25;
+  margin-bottom: var(--sp-0-5);
+}
+
+.hg-disclosure-detail {
+  display: block;
+  margin-top: var(--sp-1);
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+
+/* DisclosureSet — every member, always. No mode, no max, no precedence. */
+.hg-disclosure-set {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-disclosure-set[data-surface="screen"] {
+  gap: 12px;
+}
+
+.hg-disclosure-set[data-surface="document"] {
+  gap: 10px;
+}

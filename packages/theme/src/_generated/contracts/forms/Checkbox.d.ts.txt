@@ -1,0 +1,18 @@
+import React from "react";
+
+export interface CheckboxProps {
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  disabled?: boolean;
+  id?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * 20px checkbox, 6px radius. Checked = accent fill + white check.
+ *
+ * **A control, not an item.** A list of steps someone ticks off — number, title, detail, materials,
+ * who ticked it, and a tick that is a server write — is `Checklist` (law 23), never rows of these.
+ */
+export function Checkbox(props: CheckboxProps): JSX.Element;

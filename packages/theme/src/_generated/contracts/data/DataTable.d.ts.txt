@@ -1,0 +1,304 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { FieldOverrideSpec } from "./FieldOverride";
+import { ValueSourceSpec } from "./ValueSource";
+import { NamedGapSpec } from "./NamedGap";
+import { PendingActionSpec } from "../feedback/PendingAction";
+import { SurfaceState } from "../feedback/UnavailableNote";
+import { MoneyReconcileSpec } from "./MoneySummary";
+
+export interface DataTableTotalRow {
+  /** The row's own name — "Bill of materials total", "Tranches". */
+  label: string;
+  /** By column key. A number is formatted by the market pack; a node is rendered as given. */
+  values?: Record<string, React.ReactNode | number>;
+  /** The sum this row states, as a number — required for `reconcile` to mean anything. */
+  amount?: number;
+  /** The other figure this must equal (`SCR-M06-14`). A disagreement renders as a defect. */
+  reconcile?: MoneyReconcileSpec;
+  /** Overrides the automatic "all 40 lines" scope line under the label. */
+  scope?: React.ReactNode;
+  /** The total's own tier or standing. Rendered under the row, both forms. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  note?: React.ReactNode;
+}
+
+export interface DataTableColumn<Row = any> {
+  key: string;
+  label: string;
+  /** Right-aligns, uses Geist Mono and tabular-nums. */
+  numeric?: boolean;
+  mono?: boolean;
+  align?: "left" | "right" | "center";
+  width?: number | string;
+  muted?: boolean;
+  strong?: boolean;
+  /** Becomes the card title when the table stacks. Defaults to the first column. */
+  primary?: boolean;
+  /** Sits under the title when stacked. */
+  secondary?: boolean;
+  /** Sits on the title row, right-aligned, when stacked — usually the value. */
+  trailing?: boolean;
+  hideStacked?: boolean;
+  sortable?: boolean;
+  sortValue?: (row: Row) => string | number;
+  render?: (row: Row) => React.ReactNode;
+  /**
+   * Provenance for this column's numbers — rendered as a **visible word** in the header and in the
+   * stacked card (F8-07), with the dot as a second channel only. Takes a bare tier or a full spec.
+   * A column whose tier matches the table-wide `provenance` does not repeat it.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  /**
+   * **This row's figure, in this column, has its own standing** — the per-record resolver `M11-42`
+   * needs: *"money the tenant's account confirmed and money a person says arrived are visibly
+   * different things, **on every surface**… The product never drops the distinction to make a screen
+   * tidier."* One row "Confirmed · Razorpay settlement", the next "Reported · Recorded by Priya
+   * Sharma", in the same column.
+   *
+   * `provenance` above is column-**wide** and lands in the header; a column-wide
+   * `standing: "provisional"` brands all forty rows, which is why the payments ledger — the screen the
+   * standing axis was built for — could not be expressed before this. Same shape as `gap` and
+   * `rowActions`: a function of the row, so the caller owns the fact and the table owns the slot
+   * (directly under the value, above the validation message) on **both** forms.
+   *
+   * A cell showing a **named gap** drops it: there is no figure to qualify (law 10).
+   */
+  provenanceFor?: (row: Row) => ProvenanceProps | ProvenanceTierSpec | null;
+  /**
+   * Makes this column's cells editable **in place** (`M01-41`: *"rows with problems are fixed inline
+   * in the preview, not bounced to a failed file"*). Requires the table's `onCellCommit` — two hands
+   * on the switch, so no column becomes editable by accident.
+   */
+  editable?: boolean;
+  /**
+   * `text` (default), `number`, or `select` with `options`.
+   *
+   * All three take the **column header as their accessible name** — a cell has no room for a visible
+   * `<label>`, so the text and number editors carry `aria-label` and the select is passed `ariaLabel`.
+   * A select's listbox measures the space inside the table shell and opens upward or shortens when
+   * there is no room below, rather than being clipped away in the lower rows.
+   */
+  editor?: "text" | "number" | "select";
+  options?: { value: string; label: string }[] | string[];
+  /** The raw value the editor edits, when `render` produces something richer than the value. */
+  editValue?: (row: Row) => string | number | undefined;
+  /**
+   * The one override treatment for this cell (`MS10-18`'s eleven editable BOM columns). Return a
+   * `FieldOverrideSpec` or null; `FieldOverride` renders marker → superseded value → reset under the
+   * cell's value.
+   */
+  override?: (row: Row) => FieldOverrideSpec | null;
+  /**
+   * **Which layer supplied this cell's value** (`SCR-M01-15`), rendered by `ValueSource`. Mutually
+   * exclusive with `override` — the cell renders the override line for an overridden value and this for
+   * an un-overridden one, never both.
+   */
+  attribution?: (row: Row) => ValueSourceSpec | null;
+  /**
+   * **This row has no value for this column, and the cell says what is missing** — `M02-03`'s named
+   * gaps, `M08-21`'s absence-as-absence, `M11-15`'s absent schedule. Return the sentence ("No city
+   * yet") or `null` where the value is present; `NamedGap` renders it in the cell. Never an em-dash:
+   * "—" says *nothing here*, and these rows require the product to say **what**.
+   *
+   * A gap **suppresses `override` and `attribution`** — nothing was superseded, and no layer supplied a
+   * value that does not exist — but not the editor: on an `editable` column the editor is how the gap
+   * gets filled.
+   */
+  gap?: (row: Row) => React.ReactNode | NamedGapSpec | null;
+  /**
+   * **The cell may take more than one line.** The rule a `ChipGroup` column needs: the chips wrap, the
+   * row grows (`rowH` is a floor, not a cap), and the column takes the **full width** of the stacked
+   * card with its label above rather than beside it. Overflow inside the cell is still by count — a
+   * cell never clips a chip at its edge.
+   *
+   * **It wins over the card's slots.** A `wrap` column also marked `secondary` or `trailing` is
+   * rendered in the stacked card's detail list, not in that slot: the full-width label-above treatment
+   * only exists there, and so does the `pointerEvents: auto` a wrap cell needs — on a row with
+   * `onRowClick` the content wrapper is `pointerEvents: none`, so without it the "+N" control would be
+   * untappable on the phone. A `wrap` `primary` stays the card's title and takes the taps back.
+   */
+  wrap?: boolean;
+}
+
+export interface DataTableProps<Row = any> {
+  columns: DataTableColumn<Row>[];
+  rows: Row[];
+  /** Property name or getter for the row key. */
+  rowKey?: string | ((row: Row) => string | number);
+  selectable?: boolean;
+  /** Controlled selection (array of row keys). */
+  selected?: (string | number)[];
+  onSelectionChange?: (keys: (string | number)[]) => void;
+  /** Nodes shown in the floating pill bar while rows are selected. */
+  bulkActions?: React.ReactNode;
+  sortable?: boolean;
+  sort?: { key: string; dir: "asc" | "desc" } | null;
+  onSortChange?: (sort: { key: string; dir: "asc" | "desc" }) => void;
+  onRowClick?: (row: Row) => void;
+  /**
+   * The stacked card's whole-card target is a real button, so it needs an accessible name. Defaults
+   * to the primary column's raw value; pass this when that column renders a node rather than text.
+   */
+  rowLabel?: (row: Row) => string;
+  /**
+   * Trailing per-row actions (call, message, overflow). **Rendered in both forms**, and told which
+   * one it is: `form.stacked` is true on the phone card, false in the table row. That is how the
+   * readme's one in-row exception stays honest — a 32px pointer-only pill inside a 48px table row,
+   * and full-size targets on the card, where a thumb is the only input. They used never to be passed
+   * to the card at all, which removed the single-tap decision `SCR-M02-02` and `SCR-M07-01` are built
+   * around, on exactly the screens that are used one-handed on a phone.
+   */
+  rowActions?: (row: Row, form: { stacked: boolean }) => React.ReactNode;
+  /**
+   * Dim a row without hiding it — snoozed leads, cancelled jobs. **This is not a problem marker:**
+   * dimming reads as done-and-inactive. A broken row takes `rowIssue`. Reaches the stacked card too.
+   */
+  isRowMuted?: (row: Row) => boolean;
+  /**
+   * **This row's act has left the device and the server has not confirmed it** — the third thing a row
+   * can say, after "done" and "not done" (`M02-67` P0, `SCR-M02-02`; `F8-36`: the product *"does not
+   * silently queue, partially apply, or display an optimistic result"*). Return a `PendingActionSpec`
+   * or null; `PendingAction` renders it on **the row's own line under the cells**, in both forms.
+   *
+   * **It is not one of the three row states above, and it changes nothing else about the row.** No
+   * tint (that is `rowIssue`, and nothing is wrong), no opacity (that is `isRowMuted`, which reads
+   * done-and-inactive — the opposite fact), no disabling and no overlay: `assign-waiting` requires the
+   * row **stay operable**, so its click target, checkbox, editors and actions all keep working and a
+   * second act can start while the first is in flight. The row takes `aria-busy`, never `aria-invalid`.
+   *
+   * **A failure returns the row and names the reason:** `{state: "returned", reason}`. The row is
+   * already back to what it was — nothing was optimistically applied — and the line says why in
+   * warning words with an optional retry. It does not become an error surface.
+   */
+  rowPending?: (row: Row) => PendingActionSpec | null;
+  /**
+   * **The needs-attention row state** (`M01-41`'s `needs-attention-inline-fix`). Return the sentence
+   * that says what is wrong with this row, or null. The row takes the warning tint and grows a line
+   * under its cells carrying that sentence — so a 400-row import with twelve broken rows says which
+   * twelve, in words, where they are.
+   */
+  rowIssue?: (row: Row) => string | null;
+  /**
+   * The row the caller has accepted as fixed — success tint and a confirming line. Return a string
+   * to set that line's words. **The table never decides this itself:** it commits a cell and re-reads
+   * `cellIssue` / `rowIssue` from the caller, because a grid that cleared its own warning would be
+   * claiming to have validated something it cannot see.
+   */
+  rowResolved?: (row: Row) => boolean | string;
+  /** Per-cell validation message. Renders under the cell and rings its editor in danger. */
+  cellIssue?: (row: Row, columnKey: string) => string | null;
+  /**
+   * **The commit path for a cell.** Fires once — blur or Enter, never per keystroke; Escape reverts;
+   * empty never commits (the last good value is restored), exactly like `NumberField` and
+   * `Input commitOnBlur`. Required for any `editable` column.
+   */
+  onCellCommit?: (row: Row, columnKey: string, value: string | number) => void;
+  /** Trailing node on a flagged row's line — "Skip this row", "Use platform product". */
+  rowIssueAction?: (row: Row) => React.ReactNode;
+  /** The line above the rows — `M01-41`'s "N rows · M match · K new · E rows need attention". Caller's words. */
+  summary?: React.ReactNode;
+  state?: SurfaceState;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  emptyAction?: React.ReactNode;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  /** `unavailable`: these records were never going to be here. Neutral, and no retry. */
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  /**
+   * Overline caption above the records (`F7-27` requires one on every data table). **It renders in
+   * both forms and in every state** — it sits in the table's shell, not inside the `<table>`, and
+   * both the table and the stacked list take their accessible name from it. It used to be a
+   * `<caption>` element, which meant it disappeared along with the `<table>` on every phone.
+   */
+  caption?: string;
+  /**
+   * **A continuation of the same table on a later page.** The caption and the header repeat on every
+   * continuation page and the caption says which it is — "Bill of materials (continued)" — which is
+   * the repeat-on-break `caption` alone could not express (`§1` item 5). `PagedDocument` passes it in
+   * through `renderRows(chunk, { continued })`; nothing else should set it.
+   */
+  continued?: boolean;
+  /**
+   * **What the lines add up to** (`SCR-M06-14`: *"**BOM total ↔ proposal price** — reconciles under the
+   * locked invariants… **a disagreement is a defect, not a display difference**"*).
+   *
+   * It lives in `<tfoot>`, which is what makes the three prohibitions structural rather than
+   * remembered: **it cannot sort** (sorting only ever touches `rows`), **it cannot paginate away** (it
+   * is not a member of `rows`), and **it cannot stack away** (the same fact renders after the cards —
+   * `F7-31`). On a paged table it states what it covers — "all 40 lines" — because a total under ten
+   * visible rows that sums forty is a lie by adjacency.
+   *
+   * Give `reconcile` the other figure and its own `amount`, and a disagreement renders in danger words
+   * naming the gap. The row still prints its own sum: the sum of the lines above is verifiable by
+   * reading them, and it is the **price** that must not go out looking right — which is why
+   * `MoneySummary` withholds the payable instead.
+   */
+  totalRow?: DataTableTotalRow;
+  /**
+   * One provenance statement for the whole table — "all figures: derived · PVGIS". Columns that
+   * agree with it stop repeating it; a column that differs always states its own. This is the only
+   * legitimate compression of F8-07, because the fact is still on screen, stated once.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  /**
+   * **The standing of the whole record** — rendered under the **primary cell** in the row and under the
+   * name on the stacked card, so a provisional record reads as provisional wherever it is read. Use
+   * `column.provenanceFor` instead when it is one *figure* that is confirmed or reported rather than
+   * the record; use both only when they are genuinely two facts.
+   */
+  rowProvenance?: (row: Row) => ProvenanceProps | ProvenanceTierSpec | null;
+  /** Own-width (not viewport) px below which the table becomes a list of record cards. */
+  stackBelow?: number;
+  /**
+   * **The breakpoint this table owns, published** (law 4: a component that owns a breakpoint has to
+   * publish it). Fires with `{stacked, width}` whenever the answer changes, so a screen arranging
+   * content around the table reads the table's own measurement instead of running a second observer
+   * over the same element. The per-row `rowActions(row, {stacked})` argument is the same fact reaching
+   * one slot; this is the fact reaching the caller. Same callback shape as `Kanban.onFormChange`.
+   */
+  onFormChange?: (form: { stacked: boolean; width: number }) => void;
+  /** Zero-based page index. Pass to show the pager. */
+  page?: number;
+  pageSize?: number;
+  /**
+   * **How many records exist** — the pager's denominator, and nothing to do with money. It was called
+   * `total` while `total` was also the obvious name for the one row forty lines add up to; that row is
+   * `totalRow` and this is `rowCount`.
+   */
+  rowCount?: number;
+  onPageChange?: (page: number) => void;
+  /** Row rhythm. `comfortable` (default) = 64px rows / 14px cells / 24px edges. `compact` = the old 48px grid, dense admin only. */
+  density?: "comfortable" | "compact";
+  style?: React.CSSProperties;
+}
+
+/**
+ * Data table — zebra rows, sticky canvas-grey header, no borders. Comfortable 64px rows by default.
+ * Below `stackBelow` px of its OWN width it becomes one card per record; it never scrolls
+ * horizontally. Ships loading, empty and error states.
+ *
+ * **Three row states, and they are not the same thing.** `rowIssue` says a row is **broken** and is
+ * fixed where it stands; `rowResolved` says the caller accepted the fix; `isRowMuted` says
+ * done-and-inactive. Everything a flagged row grows — the warning tint, the sentence, the inline
+ * editor, the cell message, the override line — reaches the stacked card too.
+ *
+ * **And `rowPending` is a fourth signal that is none of the three**: an act in flight. It adds one
+ * line and no tint, no dim and no disable, because a pending row has to be visibly pending **and
+ * still operable**.
+ *
+ * **`totalRow` is the one row that is not a record.** It renders in `<tfoot>` and again after the
+ * stacked cards, so the figure the lines add up to cannot be sorted, paginated or stacked away.
+ *
+ * **The two forms have the same capabilities** (`F7-31`: no capability present at one viewport and
+ * absent at the other). Row actions, dimming, the caption, selection, provenance, the inline editor
+ * and the row note are all on the card as well as in the row. The card's whole-card target is an
+ * overlay `<button>` **beside** the content rather than a `role="button"` wrapper around it, so a
+ * real action button inside it is valid markup and a tap on the action does not also fire the row.
+ */
+export function DataTable<Row = any>(props: DataTableProps<Row>): JSX.Element;
+
+/* `ProvenanceTier` now lives in ./Provenance — it was never a table-only concern. */

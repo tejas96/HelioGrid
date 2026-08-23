@@ -1,0 +1,65 @@
+import React from "react";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+/**
+ * **Why there is no recording.** Same state (`unavailable`), two sentences that must never look
+ * alike: `consent-declined` (no recording ever existed) and `purged-retention` (it existed and was
+ * deleted on schedule). The reason stays local to this component because the difference between
+ * those two facts is a business fact an auditor reads at a glance, not a tone a shared state could
+ * carry.
+ */
+export type AudioUnavailableReason = "consent-declined" | "purged-retention";
+
+export interface AudioPlayerProps {
+  /**
+   * The system's state vocabulary. **The old `status` union is gone** —
+   * `"available" | "consent-declined" | "purged-retention"` was this component's private spelling of
+   * the fourth state, parallel to `MapSurface`'s `tiles-unavailable`. Now: `ready` plays,
+   * `unavailable` + `reason` states why there is no audio, and `loading` / `error` cover the fetch.
+   * Neither unavailable reason is an error and neither shows a disabled play button.
+   */
+  state?: SurfaceState;
+  /** Required when `state="unavailable"`. Without it the player states the absence generically. */
+  reason?: AudioUnavailableReason;
+  /** Required for state="ready". */
+  src?: string;
+  /** Known length in seconds, used until the audio reports its own metadata. */
+  duration?: number;
+  title?: string;
+  meta?: string;
+  /** "12 Mar 2026, 4:12 pm" — shown as consent provenance (available) or the decline date. */
+  consentAt?: string;
+  /** "10 Jun 2026" — the pack's retention bound while the recording is still playable. */
+  retentionUntil?: string;
+  /** "14 Jun 2026" — when the recording was actually deleted. */
+  purgedAt?: string;
+  /** The rule in words, e.g. "Growth pack · 90-day retention". Names WHY, not just when. */
+  retentionBound?: string;
+  /** `error`'s sentence — the fetch failed, which is not the same as there being no recording. */
+  errorMessage?: string;
+  onRetry?: () => void;
+  /** The transcript survives in every state — always give it somewhere to point, and what it points
+      at is `Transcript`, in an `EditorSurface` (`SCR-M07-13` / `SCR-M07-19`). */
+  onOpenTranscript?: () => void;
+  transcriptLabel?: string;
+  speeds?: number[];
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * Call-recording player whose states are governed by consent and retention law, not playback.
+ * Transport: play centred between the two skips at every width, track + times + speed below.
+ * 44×44 targets, keyboard seek (arrows ±5s, page keys ±60s, Home/End), ±10s/30s skip because a
+ * full sales call on a phone is seconds-per-pixel. One layout — nothing reflows at any width.
+ *
+ * **The scrubber's rail is a span, and its field-mode edge is outset.** The track is 4px — thinner
+ * than `Slider`'s 6px — so `--control-edge`'s 1.5px *inset* ring would leave a 1px core and an empty
+ * scrubber would read as a played one. It reads `--track-edge` instead, and the rail cannot live on
+ * `::-webkit-slider-runnable-track`: that vendor pseudo-element reports `box-shadow: none` when
+ * probed, and a legibility rule must not rest on it. Rail and fill are therefore spans behind a
+ * transparent-track input; pointer events, drag and keyboard seek are unchanged. `M07-38` requires a
+ * rep to reach a specific moment in a call, and a scrubber whose track is invisible in sunlight is a
+ * control you cannot aim.
+ */
+export function AudioPlayer(props: AudioPlayerProps): JSX.Element;

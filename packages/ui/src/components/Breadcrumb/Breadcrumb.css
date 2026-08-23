@@ -1,0 +1,61 @@
+/* Breadcrumb — desktop location trail. The crumb is a 44px TARGET around a 24px LINE:
+   the button is 44 tall and the 12px it gains is taken back as negative margin (-10px),
+   so the rendered trail stays a 24px line and no header grew. A negative margin borrows
+   layout space back; it does not enlarge a hit box, which is why the height is real. */
+
+.hg-breadcrumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hg-breadcrumb-separator {
+  color: var(--text-disabled);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-breadcrumb-static {
+  color: var(--text-tertiary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+}
+
+/* The current page: the one crumb that is not a link, and the only bold one. */
+.hg-breadcrumb-static[data-current="true"] {
+  color: var(--text-primary);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+}
+
+.hg-breadcrumb-link {
+  min-height: 44px;
+  /* The floor is two-dimensional. A short crumb ("Leads") measured 42px wide with the height
+     rule alone, so the target failed on the axis nobody checked. */
+  min-width: 44px;
+  margin: -10px -6px;
+  border: none;
+  border-radius: var(--r-xs);
+  padding: 0 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  cursor: pointer;
+}
+
+.hg-breadcrumb-link:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

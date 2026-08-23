@@ -1,0 +1,95 @@
+import React from "react";
+
+/**
+ * The four things a long-form explanation can be, plus `note`.
+ *
+ * - `formula` — `M05-72`'s *formula in words*.
+ * - `assumption` — `MS6-47`'s "nominal — engineer to confirm".
+ * - `boundary` — `MS7-22`'s model boundary, *stated in the surface that uses it*.
+ * - `exclusion` — what the figure leaves out.
+ */
+export type DerivationKind = "formula" | "assumption" | "boundary" | "exclusion" | "note";
+
+export interface DerivationPart {
+  kind: DerivationKind;
+  text: React.ReactNode;
+  /** Overrides the kind's own heading. */
+  label?: string;
+}
+
+export interface DerivationProps {
+  /** What number this explains — "Mounting rail · line 12". Also its key in the print appendix. */
+  label?: React.ReactNode;
+  /** The trigger words. Short by obligation: it sits on a table line forty times. */
+  summary?: React.ReactNode;
+  parts: DerivationPart[];
+  /** `cell` (default) — a 12px trigger under a value. `block` — a section under a headline figure. */
+  variant?: "cell" | "block";
+  open?: boolean;
+  defaultOpen?: boolean;
+  onToggle?: (open: boolean) => void;
+  id?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The long-form explanation of a read-only computed number** — `MS10-19` / `SCR-MS-12`
+ * (*"readable on touch and by screen readers — not tooltip-only"*), `M05-72`, `MS7-22`, `MS6-47`,
+ * `MS12-09`.
+ *
+ * **Where the line is with `Provenance`, stated so no caller has to guess.** `Provenance` answers
+ * *whose authority and how far to trust* — four fixed facts (tier · standing · source · projection),
+ * one line, **always visible, never opened**: a **label**. `Derivation` answers *how this number was
+ * arrived at, what it assumes, where the model stops, what it leaves out* — sentences, more than one:
+ * an **argument**. The test is mechanical: **one of the four facts, fitting on the line beside the
+ * number without being opened → `Provenance`; a sentence, or more than one part → `Derivation`.** So
+ * *"PVGIS, 2020–2023 average"* is a `source`; *"1,412 kWh/kWp × 8.2 kWp × 0.84 system losses, on the
+ * 2020–2023 PVGIS average"* is a `formula`.
+ *
+ * **They are not alternatives.** A figure with a `Derivation` still carries its `Provenance` line —
+ * which is why this component has **no `tier` prop**: passing one would let a caller retire a
+ * persistent label behind a disclosure, the exact thing `F8-07` forbids.
+ *
+ * **Not a `Tooltip`** (which rules itself out for anything that exists in only one place), **not
+ * `Accordion`** (section-level; it cannot attach to a cell), **not `hint` / `helper`** (single strings,
+ * on form controls, and every figure here is read-only).
+ *
+ * @dsCard components/data/derivation.card.html
+ * @startingPoint section="Data display" subtitle="A read-only figure that explains itself — forty of them on one BOM" viewport="960x680"
+ */
+export function Derivation(props: DerivationProps): JSX.Element;
+
+export interface DerivationGroupProps {
+  children?: React.ReactNode;
+  /**
+   * `single` (default) — one open at a time, so forty lines can never become forty panels.
+   *
+   * `many` — each panel owns itself. **For the two-or-three-explanation surfaces**: `SCR-MS-10`'s model
+   * boundary, `SCR-MS-03`'s provenance footer, where comparing the explanations side by side *is* the
+   * reading and the 40-line constraint that motivates single-open is not present. Opt-in, per group.
+   *
+   * Neither mode is an `openAll`: there is no control that opens a panel the reader did not open.
+   */
+  mode?: "single" | "many";
+  /**
+   * `appendix` (default) — on paper the explanations leave the lines and print **once**, as a numbered
+   * appendix keyed to each `label`; the inline panels become screen-only. `inline` prints them in place.
+   */
+  printAs?: "appendix" | "inline";
+  appendixTitle?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **What makes forty derivations on one BOM survivable.** Single-open by default (opening the fortieth
+ * closes the thirty-ninth, so at most one panel exists at a time — `mode="many"` opts a small set out
+ * of that, and neither mode is an `openAll`), and on
+ * paper it prints one numbered appendix instead of forty interleaved panels, because dropping the
+ * explanations from print would make the paper less honest than the screen.
+ */
+export function DerivationGroup(props: DerivationGroupProps): JSX.Element;
+
+export namespace Derivation {
+  const Group: typeof DerivationGroup;
+  const kinds: Record<DerivationKind, { label: string }>;
+}

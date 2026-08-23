@@ -1,0 +1,290 @@
+@import "./DataTableCell.css";
+@import "./DataTableCards.css";
+@import "./DataTableChrome.css";
+
+/* DataTable — zebra rows, sticky header, no borders anywhere.
+
+   Rows are COMFORTABLE by default (64px rows, 14px cells, 20px gutters, 24px edges, 52px header).
+   Functional density is about removing chrome, not squeezing air out of a row — a rep scanning
+   forty leads needs the row to be a target, not a line of text. `compact` restores the 48px/13px
+   grid, and is only for genuinely dense admin surfaces.
+
+   IT NEVER SCROLLS SIDEWAYS. Below `stackBelow` px of its OWN width it becomes one card per
+   record, and the two forms have the same capabilities (F7-31).
+
+   The density numbers are the design system's own grid and are not on the 4px scale, so they are
+   named here and switched by [data-density]. */
+
+.hg-dt {
+  --hg-dt-touch: 44px;
+  --hg-dt-row-h: 64px;
+  --hg-dt-cell-font: var(--fs-body);
+  --hg-dt-gutter: 20px;
+  --hg-dt-edge: 24px;
+  --hg-dt-head-h: 52px;
+  --hg-dt-head-pad-t: 18px;
+  --hg-dt-head-pad-b: 14px;
+  --hg-dt-sel-w: 56px;
+  --hg-dt-act-w: 108px;
+
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e2);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.hg-dt[data-density="compact"] {
+  --hg-dt-row-h: 48px;
+  --hg-dt-cell-font: var(--fs-body-sm);
+  --hg-dt-gutter: 12px;
+  --hg-dt-edge: 20px;
+  --hg-dt-head-h: 44px;
+  --hg-dt-head-pad-t: 13px;
+  --hg-dt-head-pad-b: 11px;
+  --hg-dt-sel-w: 44px;
+  --hg-dt-act-w: 96px;
+}
+
+.hg-dt-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The caption lives in the SHELL, not inside the <table> — as a <caption> element it rendered
+   only when the table did, so it vanished on every phone and in every narrow panel. */
+.hg-dt-caption {
+  padding: 14px var(--sp-4) 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-dt-provenance,
+.hg-dt-summary {
+  padding: 14px var(--hg-dt-edge) 0;
+}
+
+.hg-dt-summary {
+  padding-bottom: 14px;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-wrap: pretty;
+}
+
+.hg-dt-provenance[data-stacked="true"],
+.hg-dt-summary[data-stacked="true"] {
+  padding-left: var(--sp-4);
+  padding-right: var(--sp-4);
+}
+
+.hg-dt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+
+/* ── header ───────────────────────────────────────────────────────────────── */
+
+.hg-dt-th {
+  padding: 0;
+  vertical-align: middle;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  background: var(--surface);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.hg-dt-th--select {
+  width: var(--hg-dt-sel-w);
+  padding: 0 var(--sp-2) 0 var(--hg-dt-edge);
+  height: var(--hg-dt-head-h);
+}
+
+.hg-dt-th--actions {
+  width: var(--hg-dt-act-w);
+  padding-right: var(--hg-dt-edge);
+}
+
+/* The header cell carries NO padding: its child does — a child of a table cell can never fill it,
+   so the padding lives on the button/span and the whole header cell is the hit target. */
+.hg-dt-th-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: var(--hg-dt-head-h);
+  padding: var(--hg-dt-head-pad-t) var(--hg-dt-gutter) var(--hg-dt-head-pad-b);
+  box-sizing: border-box;
+}
+
+.hg-dt-th[data-first="true"] .hg-dt-th-inner {
+  padding-left: var(--hg-dt-edge);
+}
+
+.hg-dt-th[data-last="true"] .hg-dt-th-inner {
+  padding-right: var(--hg-dt-edge);
+}
+
+.hg-dt-th[data-align="right"] .hg-dt-th-inner {
+  justify-content: flex-end;
+}
+
+.hg-dt-th[data-align="center"] .hg-dt-th-inner {
+  justify-content: center;
+}
+
+.hg-dt-th-button {
+  border: none;
+  background: none;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.hg-dt-th-button[data-active="true"] {
+  color: var(--text-primary);
+}
+
+.hg-dt-th-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-dt-sort-glyph {
+  width: var(--sp-3);
+  height: var(--sp-3);
+  flex-shrink: 0;
+  opacity: 0.35;
+}
+
+.hg-dt-sort-glyph[data-active="true"] {
+  opacity: 1;
+}
+
+/* ── rows ─────────────────────────────────────────────────────────────────── */
+
+.hg-dt-row,
+.hg-dt-row-line {
+  background: var(--surface);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+
+.hg-dt-row[data-zebra="true"],
+.hg-dt-row-line[data-zebra="true"] {
+  background: var(--surface-alt);
+}
+
+.hg-dt-row[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.hg-dt-row[data-clickable="true"]:hover:not([data-selected="true"]):not([data-issue="true"]):not(
+  [data-fixed="true"]
+) {
+  background: var(--neutral-bg);
+}
+
+/* `rowIssue` says BROKEN; `rowResolved` says the caller accepted the fix. Selection wins over
+   both, and a MUTED row is dimmed — done-and-inactive, which is not a problem marker. */
+.hg-dt-row[data-issue="true"],
+.hg-dt-row-line[data-issue="true"] {
+  background: var(--warning-bg);
+}
+
+.hg-dt-row[data-fixed="true"],
+.hg-dt-row-line[data-fixed="true"] {
+  background: var(--success-bg);
+}
+
+.hg-dt-row[data-selected="true"],
+.hg-dt-row-line[data-selected="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-dt-row[data-muted="true"] {
+  opacity: 0.55;
+}
+
+.hg-dt-cell-shell {
+  padding: 0 var(--hg-dt-gutter);
+  height: var(--hg-dt-row-h);
+  font-size: var(--hg-dt-cell-font);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.hg-dt-cell-shell[data-first="true"] {
+  padding-left: var(--hg-dt-edge);
+}
+
+.hg-dt-cell-shell[data-last="true"] {
+  padding-right: var(--hg-dt-edge);
+}
+
+/* rowH is a FLOOR, not a cap: a roomy cell grows the row and the rest still centres. */
+.hg-dt-cell-shell[data-roomy="true"] {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.hg-dt-cell-shell[data-wrap="true"] {
+  white-space: normal;
+}
+
+.hg-dt-cell-shell[data-align="right"] {
+  text-align: right;
+}
+
+.hg-dt-cell-shell[data-align="center"] {
+  text-align: center;
+}
+
+.hg-dt-cell-shell[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-dt-cell-shell[data-numeric="true"] {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-cell-shell[data-strong="true"] {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.hg-dt-cell-shell[data-muted="true"] {
+  color: var(--text-secondary);
+}
+
+.hg-dt-cell-shell--select {
+  width: var(--hg-dt-sel-w);
+  padding-left: var(--hg-dt-edge);
+  padding-right: var(--sp-2);
+}
+
+.hg-dt-cell-shell--actions {
+  padding-right: var(--hg-dt-edge);
+  text-align: right;
+}
+
+.hg-dt-row-line > td {
+  padding: 0 var(--hg-dt-edge) var(--sp-3);
+}

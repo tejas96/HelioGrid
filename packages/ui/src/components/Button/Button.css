@@ -1,0 +1,138 @@
+/* Button — pill-shaped action. Primary fill is near-black (--action-primary), NEVER coloured:
+   the accent is focus, links, selection and control fills only. Hover raises to --e2; press
+   scales to 0.97. 44px is the touch floor (Pressable owns the same constant on native).
+
+   Ghost carries no shadow of its own — but it must not hardcode `none`, or an inline none beats
+   field mode's rule and the lowest-contrast control in the system is the one control with no edge
+   in sunlight. --control-edge is `none` in the base scope and the field edge in field mode. */
+
+.hg-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 44px; /* the product's touch floor — see primitives/Pressable */
+  margin: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  line-height: 1;
+  white-space: nowrap;
+  width: auto;
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-button[data-full-width="true"] {
+  width: 100%;
+}
+
+.hg-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-button[data-size="lg"] {
+  height: var(--sp-12);
+  padding: 0 var(--sp-6);
+  font-size: var(--fs-button);
+}
+
+.hg-button[data-size="md"] {
+  height: var(--sp-10);
+  padding: 0 var(--sp-5);
+  font-size: var(--fs-button);
+}
+
+.hg-button[data-size="sm"] {
+  height: var(--sp-8);
+  padding: 0 var(--sp-4);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-button[data-variant="primary"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-button[data-variant="secondary"] {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--e1);
+}
+
+.hg-button[data-variant="ghost"] {
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: var(--control-edge);
+}
+
+.hg-button[data-variant="destructive"] {
+  background: var(--danger-text);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--action-primary-hover);
+  box-shadow: var(--e2);
+}
+
+.hg-button[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  box-shadow: var(--e2);
+}
+
+.hg-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--neutral-bg);
+}
+
+/* The DS spells this hover as a raw lighter red; --danger is the DS token in that direction. */
+.hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--danger);
+  box-shadow: var(--e2);
+}
+
+.hg-button:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.97);
+}
+
+.hg-button:disabled,
+.hg-button[aria-disabled="true"] {
+  background: var(--canvas-sunken);
+  color: var(--text-disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Loading replaces the label with a spinner and keeps the width fixed. */
+.hg-button-spinner {
+  width: var(--sp-4);
+  height: var(--sp-4);
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--text-inverse) 35%, transparent);
+  border-top-color: var(--text-inverse);
+  display: inline-block;
+  animation: hg-spin 0.7s linear infinite;
+}
+
+/* With a stated reason the button becomes a column: pill, then the sentence. */
+.hg-button-column {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  width: auto;
+}
+
+.hg-button-column[data-full-width="true"] {
+  width: 100%;
+}
+
+/* The sentence itself is ActionReason's — including the rule that the control may be grey while the
+   words explaining it are not (--text-secondary, never --text-disabled). Nothing to restate here. */

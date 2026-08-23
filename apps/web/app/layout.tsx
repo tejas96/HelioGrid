@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import '@heliogrid/tokens/tokens.css';
-import '@heliogrid/tokens/base.css';
 import './globals.css';
 import { Providers } from './providers';
 

@@ -1,7 +1,0 @@
-/* Mirrors .lg-error's text treatment (login.css) without depending on a feature's CSS. */
-.api-error-text {
-  margin: 0;
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--danger);
-}
