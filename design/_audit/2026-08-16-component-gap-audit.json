@@ -1,0 +1,1498 @@
+{
+ "rawCount": 186,
+ "merged": [
+  {
+   "need": "A provenance tier rendered as a visible word beside the number, by default — and the system law that currently says the opposite",
+   "mode": "present-but-wrong",
+   "component": "ProvenanceTier (exported from components/data/DataTable), and readme.md's fourth V2 law",
+   "screens": [
+    "every screen in the run that displays a number",
+    "SCR-M12-01",
+    "SCR-M12-02",
+    "SCR-M12-03",
+    "SCR-M12-04",
+    "SCR-M11-01",
+    "SCR-M11-02",
+    "SCR-M11-03",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M08-03",
+    "SCR-M08-04",
+    "SCR-M08-05",
+    "SCR-M08-06",
+    "SCR-M02-02",
+    "SCR-M02-03",
+    "SCR-M02-04",
+    "SCR-M02-05",
+    "SCR-SHELL-06",
+    "SCR-M07-19",
+    "SCR-M13-01",
+    "SCR-M01-15",
+    "SCR-M01-16",
+    "SCR-M01-17",
+    "SCR-MS-12",
+    "SCR-M06-14",
+    "SCR-M06-17",
+    "SCR-F5-01"
+   ],
+   "rows": [
+    "N7",
+    "F8-01",
+    "F8-07"
+   ],
+   "evidence": "BRIEF (restated in every brief in every slice, e.g. SCR-M08-01): \"Every user-visible number carries its F8 provenance tier (measured / derived / estimated / assumed) in the design\", and F8-07 forbids \"a tooltip, a hover, colour alone or a footnote\". LIVE, read this pass in DataTable.jsx: `function Tier({tier, withLabel})` returns `<span title={t[0]}>` + `<span aria-hidden=\"true\" style={{width:5,height:5,borderRadius:\"50%\",background:t[1]}}/>` + `{withLabel ? t[0] : <span style={{position:\"absolute\",width:1,height:1,clip:\"rect(0 0 0 0)\"}}>{t[0]}</span>}`. Both call sites omit withLabel — the header `<th>` renders `{c.provenance && <Tier tier={c.provenance} />}` and the stacked `<dt>` renders the same. So in every table in the product the tier is a 5px colour-coded dot (measured=success, derived=info, estimated=warning, assumed=tertiary) whose only visible carrier is a native `title` tooltip, plus sr-only text: colour alone plus a hover, the exact pair F8-07 names, on screens read on a phone where `title` never fires. This is not an implementation slip — readme.md states it as law: \"3. **Provenance.** `DataTable` columns and every chart take a tier — measured / derived / estimated / assumed — **rendered as a muted dot with an accessible label**.\" The same readme says of Tooltip \"by rule never holds information that exists nowhere else, since a touch user will not see it\", so the system contradicts itself in its own file. ChartFrame and UsageMeter both render the word visibly (UsageMeter.jsx renders `{tier[0]}` as plain text), so there are already two answers shipping. This is the cheapest entry on the list to fix and the most expensive to discover at screen sixty, because it is one default and one readme sentence that every number-bearing screen inherits.",
+   "severity": "blocker"
+  },
+  {
+   "need": "An open provenance vocabulary: per-surface wording, tier names the four-value union does not contain, and a second slot beside the tier for the source label, the projection label and its assumptions",
+   "mode": "present-but-wrong",
+   "component": "`ProvenanceTierName` — declared identically in DataTable.d.ts, UsageMeter.d.ts and Charts.d.ts, with a hard-coded TIERS table in each of the three .jsx files and no label-override prop anywhere",
+   "screens": [
+    "SCR-M12-01",
+    "SCR-M12-02",
+    "SCR-M12-03",
+    "SCR-M12-04",
+    "SCR-SHELL-06",
+    "SCR-M01-15",
+    "SCR-M01-16",
+    "SCR-M01-17",
+    "SCR-MS-04",
+    "SCR-MS-07",
+    "SCR-MS-09",
+    "SCR-MS-10",
+    "SCR-MS-11",
+    "SCR-MS-12",
+    "SCR-MS-14",
+    "SCR-M06-06",
+    "SCR-M06-07",
+    "SCR-M06-15",
+    "SCR-M06-17",
+    "SCR-F5-01",
+    "SCR-F5-02"
+   ],
+   "rows": [
+    "M12-34",
+    "BM-27",
+    "BM-41",
+    "F8-08",
+    "F8-09",
+    "F8-23",
+    "M01-35",
+    "MS4-07",
+    "M05-54",
+    "MS7-14",
+    "MS8-23",
+    "F5-36",
+    "F5-37",
+    "F5-42",
+    "M06-10",
+    "M06-11"
+   ],
+   "evidence": "Four separate briefs need something the closed union cannot say. (a) FORBIDDEN WORDING: SCR-M12-04, SCR-M12-02 and SCR-SHELL-06 all rule \"plain 'actual usage' language; the provenance word 'measured' is reserved for engineering/survey data and does not appear on this screen (M12-34)\" — and UsageMeter, the component built expressly for SCR-M12-04, hard-codes `const TIERS = { measured: [\"Measured\", …] }` and renders `{tier[0]}` visibly, so on its own screen it can print only the forbidden word or omit the tier and break N7. (b) DIFFERENT VOCABULARIES ENTIRELY: SCR-M01-15's M01-35 needs verified-datasheet / tenant-provided / representative; SCR-MS-07's MS4-07 (P0) needs \"manufacturer-datasheet / installer-pricebook / tenant-provided, with effective-from where present\"; SCR-M12-01's BM-41 needs a claim traceable to a recorded benchmark. None of the four canonical names expresses any of these. (c) A SECOND LABEL: F8 keeps tier and source deliberately separate — the tier says how a figure was arrived at, \"while the source label answers *what data* it was produced from. Losing either one loses information the reader needs.\" SCR-M06-06: \"The energy source label rides every generation figure: 'Real · PVGIS ({database})' vs 'Built-in estimate ±10%'\"; SCR-MS-09's M05-54 fixes the copy verbatim and adds \"never silently switched\"; SCR-MS-09's M05-52 requires the geometric access numbers to carry NO marker and says \"that absence is itself required\". (d) A THIRD: F5-37 and F8-23 put \"the projection label with its assumptions on every multi-year financial figure\" — 25-year horizon, ~6% inflation — as persistent adjacent content. LIVE: `export type ProvenanceTierName = \"measured\" | \"derived\" | \"estimated\" | \"assumed\"` and `ProvenanceTier(props: { tier: ProvenanceTierName; withLabel?: boolean })`. One enum, one boolean, no free text, no second field. `withLabel` renders the tier's own word, not a source. The only free-text neighbour in the system is ChartFrame's `note?: string`, one string for a whole chart.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A qualifier axis on a figure that is orthogonal to its tier — confirmed-by-the-account versus hand-recorded, provisional-while-stale, and not-yet-computed — that cannot be dropped to tidy a screen",
+   "mode": "absent",
+   "screens": [
+    "SCR-M11-01",
+    "SCR-M11-02",
+    "SCR-M11-03",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M06-14",
+    "SCR-M06-18",
+    "SCR-M06-19",
+    "SCR-F5-02",
+    "SCR-MS-03",
+    "SCR-MS-08",
+    "SCR-MS-09",
+    "SCR-MS-10",
+    "SCR-MS-12",
+    "SCR-MS-14",
+    "SCR-M13-01"
+   ],
+   "rows": [
+    "M11-42",
+    "M11-54",
+    "M11-15",
+    "M08-16",
+    "M13-38",
+    "M06-41",
+    "F8-12",
+    "F5-59",
+    "M05-06",
+    "MS12-06",
+    "MS7-14",
+    "MS7-40",
+    "MS6-52",
+    "M13-16"
+   ],
+   "evidence": "Three modules and two blocks demand the same thing in the same words. SCR-M11-02 (M11-42, P0): \"Money the tenant's account confirmed and money a person says arrived are visibly different things, on every surface… The product never… drops the distinction to make a screen tidier\", closing its Numbers list \"Qualifiers that ride every figure: confirmed-by-account vs hand-recorded (M11-42 — never dropped), never final while stale.\" SCR-M06-14 closes its Numbers section \"**Stale money renders provisional, never final.**\" SCR-M06-18: \"any money shown from a stale version renders provisional, never final (M06-41's law rides every money render)\". SCR-F5-02 (F5-59, P0): \"a figure that cannot be reconciled at display time renders provisional rather than final (F8-12)\" — state `receipt-pending-confirmation`, \"provisional, never final, never nothing\". SCR-MS-03 (M05-06): \"While shading recalculates, Design Health shows a provisional state — it never presents a stale score as current\", and MS12-06 adds \"a neutral placeholder before any score exists\". LIVE: the only figure-qualifier vocabulary in the system is ProvenanceTierName, a different axis — a derived figure from a stale version is still derived and still provisional. Across the whole inventory the state vocabulary is `\"ready\"|\"loading\"|\"empty\"|\"error\"` (DataTable, ChartFrame, Sheet, DetailPanel, Timeline, MapSurface): loading means no value yet; nothing means \"here is a value and it is being superseded\". StatCard `{label,value,unit,delta,deltaDir,children}`, ListRow `{title,subtitle,trailing}`, RecordCard `{name,chip,meta[],action,muted}`, KanbanCardItem and DataTable cells all render money with nowhere for the qualifier. The only near-carriers are colour and dimming — `isRowMuted` sets `opacity:0.55`, Banner tints — and F7-12 forbids a state carried by colour alone. Note the system already solved this for photographs: Image has `staleAt`. Nothing solved it for numbers.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Somewhere for a provenance tier to live on a number that is not inside a table or a chart — a headline figure, an editable field, a list row, a section header",
+   "mode": "present-but-wrong",
+   "component": "StatCard (no `provenance`, only `children` documented for a sparkline); NumberField and Slider (label/unit/hint all typed `string`, no node slot at all); Select (`label`/`helper`/`error` strings); Accordion (`meta?: string`); ListRow and RecordCard (no slot)",
+   "screens": [
+    "SCR-M11-01",
+    "SCR-M12-04",
+    "SCR-M08-03",
+    "SCR-M08-04",
+    "SCR-M08-05",
+    "SCR-M08-06",
+    "SCR-M02-05",
+    "SCR-M01-14",
+    "SCR-M01-16",
+    "SCR-M01-17",
+    "SCR-SHELL-02",
+    "SCR-SHELL-03",
+    "SCR-M13-01",
+    "SCR-M07-01",
+    "SCR-M07-02",
+    "SCR-MS-04",
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-07",
+    "SCR-MS-08",
+    "SCR-MS-09",
+    "SCR-MS-11",
+    "SCR-MS-12",
+    "SCR-M06-05",
+    "SCR-M06-06",
+    "SCR-M06-07",
+    "SCR-F5-01"
+   ],
+   "rows": [
+    "N7",
+    "F8-01",
+    "F8-07",
+    "M11-54",
+    "M13-38",
+    "M01-41",
+    "M01-21",
+    "M01-40",
+    "M06-35",
+    "F5-32",
+    "F5-36",
+    "MS1-01",
+    "MS1-05",
+    "M05-14",
+    "MS10-18",
+    "M02-19"
+   ],
+   "evidence": "DataTable columns, ChartFrame and UsageMeter each take a `provenance` prop. The entire forms folder takes none, and the one component whose whole purpose is a single headline number takes none. BRIEF (SCR-M11-01): \"Every user-visible number carries its F8 provenance tier in the design… Receipts waiting to be recorded (count and their amounts). The period's collections figure.\" SCR-M08-03: \"The '*n* of *m* verified' count at the top\"; SCR-M01-17: \"The preview's three counts plus total — 'N rows · M match platform products · K new products · E rows need attention'\", each tiered; SCR-M02-05: \"Preview counts… each count **tappable** to see the rows behind it\". And the tier is owed on EDITABLE values too, which a previous pass wrongly cleared as 'a value a person typed is recorded': SCR-M01-16's extracted spec values were produced by an extraction engine from a PDF and are \"presented for review and correction before the item is created\"; MS1-01 requires \"Every pre-filled field stays editable and carries a provenance hint ('from survey, {date}' / 'from lead')\"; MS1-05's tariff carries \"representative rate; edit to match your actual bill\". LIVE, verified: StatCardProps is `{label, value: string|number, unit?, delta?, deltaDir?, children?, style?}` — `children` IS a ReactNode, so a tier CAN be placed, but the slot is specified \"e.g. a sparkline node bleeding to card edges\", so the adjacency is unspecified and six blocks will each answer it differently; `value` is not a node; there is no state and no onClick, so SCR-M02-05's tappable counts have no affordance either. NumberFieldProps is `{value,onCommit,min,max,step,precision,label,unit,hint,disabled,density,correctionMessage,style}` — every descriptive slot is a string. SliderProps likewise (`hint` is a 'Role-aware line under the track', a string). Accordion's `meta?: string` cannot hold a tier at all, which is where a previous pass parked SCR-SHELL-02's and SCR-SHELL-03's group counts. F8-07 forbids the tooltip/footnote fallback, so improvisation is not available.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A system-wide high-contrast field mode a user can switch on, that every component honours",
+   "mode": "absent",
+   "component": "Nothing implements it, and readme.md plus Dropzone.d.ts both assert it exists",
+   "screens": [
+    "SCR-M01-11",
+    "every screen a field persona reaches"
+   ],
+   "rows": [
+    "F7-16",
+    "F7-15"
+   ],
+   "evidence": "BRIEF (SCR-M01-11, F7-16, P1): \"A high-contrast field mode exists as a sanctioned, opt-in escape hatch for working in sunlight. **It is a product-visible capability, not a styling variant** … turning it on is the one condition under which the no-borders law of F7-15 yields\", with two named states `field-mode-off` and `field-mode-on`, and a Context of use that makes it load-bearing: \"Field personas reach for the high-contrast field mode here while working outdoors on a phone in direct sun.\" LIVE, verified this pass: readme.md's closing section asserts it — \"There are exactly two exceptions, and both are deliberate: **`Dropzone`'s dashed edge** … and the opt-in **high-contrast field mode**. Anything else with a border is a bug.\" But tokens/colors.css, read end to end, is a single `:root` block with no second scope and no mode selector of any kind; tokens/base.css sets `color-scheme:light` and resets; readme.md's own foundations say \"The system is **light-only**\"; `_ds_manifest.json` lists exactly one theme, `:root[data-mode=\"expressive\"]`; and no component in the 54 takes a field-mode prop or reads a field-mode attribute. `Switch` can draw the toggle; there is nothing behind it. This is a token-layer capability all 99 screens inherit — the cheapest on this list to close now and among the most expensive to retrofit, because every component's contrast decisions are made once, in tokens/colors.css, and there is no second set.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Money, dates, times and large numbers rendered and entered in the active market pack's formats — the currency's own symbol and the market's own grouping",
+   "mode": "present-but-wrong",
+   "component": "The only formatters the system ships are market-baked: `inr(n)` and `num(n)` in Charts.jsx, `fmt` in UsageMeter.jsx, `formatDate` in DatePicker.d.ts, `TimeString` 24-hour-only in TimeField.d.ts, a hard-coded `gstin` and pre-formatted `lineItems` in DocumentPreview.d.ts — and readme.md makes it a content fundamental",
+   "screens": [
+    "SCR-M12-01",
+    "SCR-M12-02",
+    "SCR-M12-03",
+    "SCR-M12-04",
+    "SCR-M11-01",
+    "SCR-M11-02",
+    "SCR-M11-03",
+    "SCR-M02-02",
+    "SCR-M02-03",
+    "SCR-M02-04",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M07-02",
+    "SCR-M13-01",
+    "SCR-M06-05",
+    "SCR-M06-07",
+    "SCR-M06-09",
+    "SCR-M06-12",
+    "SCR-M06-14",
+    "SCR-M06-17",
+    "SCR-M06-18",
+    "SCR-M06-19",
+    "SCR-F5-01",
+    "SCR-F5-02",
+    "SCR-MS-04",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "BM-41",
+    "BM-09",
+    "M12-35",
+    "BM-27",
+    "M02-40",
+    "F3-20",
+    "F3-19",
+    "F3-22",
+    "F1-46",
+    "M06-09",
+    "M06-11",
+    "M06-16",
+    "M07-62",
+    "M13-17"
+   ],
+   "evidence": "BRIEF (SCR-M12-01, Context of use): \"amounts render in the tenant's/market's currency with the market's grouping\" — a public per-market surface. SCR-M12-04 (M12-35/BM-27): \"Accruing overage is shown in the tenant's currency with the market's grouping as it happens.\" SCR-M02-03 (M02-40): \"renders through the money implementation with the pack's symbol and grouping (F3-20, F1-21).\" SCR-M06-07: \"the source's compact 'lakhs' figure is **the IN pack's number format**, F1-46 via F3-20\" — i.e. the compact form is pack data, not a product fact. SCR-M06-12: \"Date and Time generated — record facts of the proposal, rendered per the pack's formats (F3-20/F3-22)\". LIVE, verified: Charts.jsx `export const inr = (n) => \"₹\" + Number(n).toLocaleString(\"en-IN\", …)` AND `const num = (n) => Number(n).toLocaleString(\"en-IN\", …)`, where `num` is the DEFAULT `format` for BarChart, LineChart, DonutChart and FunnelChart — so even non-money chart values are grouped en-IN. UsageMeter.jsx `const fmt = (n) => Number(n).toLocaleString(\"en-IN\")`, not a prop, used for every value, limit and overage figure. DocumentPreview requires `[description, amount]` pairs \"pre-formatted in Indian grouping\" and carries a `gstin` prop. TimeField's `TimeString` is \"'HH:MM' on a **24-hour clock**\", so a 12-hour pack cannot render M06-16's \"Time generated\". NumberField has `unit?: string` — a trailing suffix — and no currency, symbol-placement or grouping concept at all, so a tenant-currency amount cannot be ENTERED in its own format. And readme.md fixes it as a system fundamental: \"currency in Indian grouping (₹4,52,471)\". One currency and one grouping are baked in below the component layer, so every non-IN market is left to twenty-six screens to format by hand.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Tenant branding scoped onto a customer-facing link page — the tenant's logo and brand colour reaching a whole page of ordinary components, not only a document frame",
+   "mode": "present-but-wrong",
+   "component": "DocumentPreview.d.ts (\"the visible boundary of F7-07: everything inside the frame may be tenant-branded, everything outside it is the operator app and never is\"), BrandColorField.d.ts (\"**It never restyles the app.** … This control writes no token and touches no ancestor style\"), and tokens/colors.css, which has no tenant or brand-colour hook",
+   "screens": [
+    "SCR-F5-01",
+    "SCR-F5-02",
+    "SCR-F5-03",
+    "SCR-F5-04",
+    "SCR-F5-05",
+    "SCR-M06-17",
+    "SCR-M06-15",
+    "SCR-M01-18"
+   ],
+   "rows": [
+    "F7-07",
+    "MS9-11",
+    "MS9-03",
+    "M06-50",
+    "M06-51",
+    "F5-39",
+    "M01-50"
+   ],
+   "evidence": "Verified against the PRD in the repo, not the brief alone. prd/foundations/F7-design-language.md line 124, F7-07 (P0), verbatim: \"**Tenant branding applies to customer-facing documents and link pages only**; the operator application is never restyled per tenant. A tenant supplies a logo and a primary brand colour that appear on the generated proposal document **and the tokenised customer-link pages**.\" BRIEF (SCR-M06-17 / SCR-F5-01, MS9-11, P0): \"The link opens the customer's own surface — not the operator's editor chrome: no operator-only alerts, tool rails, or internal instructions; **branding is the tenant's**.\" F5-39 makes the web page, not the PDF, the path of record — \"The customer link always renders the proposal as web — PDF is an artifact, never the only path to the number\" — so the branded artefact is a live page of ordinary components (Button, StatusChip, Timeline, Charts, ProgressBar, Sheet), not an A4 mock. LIVE: the design system's documentation forbids exactly this. DocumentPreview declares everything outside its own scaled frame to be the operator app; BrandColorField \"writes no token and touches no ancestor style\" and its `helper` \"Defaults to the F7-07 statement: **documents only**, the app is never restyled\"; readme.md repeats it twice; and tokens/colors.css defines `--accent:#5A4BFF` as a fixed product value with no tenant hook, no theme scope and no branded-surface wrapper anywhere in the 54. Five customer-facing screens plus the document and its preview carry a P0 branding obligation the design system's own written law forbids satisfying. Named the same rule, half the scope — the Stepper failure shape exactly, and at the token layer.",
+   "severity": "blocker"
+  },
+  {
+   "need": "An application top bar the shell owns on both platforms — the product mark, the tenant's name, the one global search entry, the notification bell and the account control",
+   "mode": "absent",
+   "component": "components/navigation ships AppRail, BottomNav, Fab, Breadcrumb, SegmentedControl and Tabs — no header among the 54",
+   "screens": [
+    "SCR-SHELL-01",
+    "SCR-SHELL-02",
+    "SCR-SHELL-03",
+    "every screen in the run, since the shell is the permanent chrome"
+   ],
+   "rows": [
+    "F7-22",
+    "MS12-19",
+    "F6-20",
+    "F6-17"
+   ],
+   "evidence": "BRIEF (SCR-SHELL-01, F7-22, P0): \"Desktop uses the sidebar-and-header shell. **Both shells are part of the design system rather than per-module inventions.**\" BRIEF (MS12-19, P0): \"brand and tenant identity appear in the top bar\". BRIEF (SCR-SHELL-02, F6-20, P0): \"One box in the app shell on web and mobile\". BRIEF (SCR-SHELL-03, F6-17, P0): \"the bell in the web header, bell in the mobile shell\". LIVE, verified: AppRail.d.ts is a \"72px desktop icon rail\" with `items`/`footer`/`avatar`/`brand`/`width` — the sidebar half only; BottomNavProps is the parabolic arc bar (`items`/`shape`/`curveHeight`/`fabOffset`) with no slot for a search box or a bell; readme.md's navigation list is exactly `SegmentedControl, Tabs, Breadcrumb, AppRail, BottomNav, Fab`. The one place the system documents a header, it is hand-written per-page markup: templates/app-layout/app.jsx — which readme.md calls \"**the layout standard**: Start here for any new screen\" — has a desktop `<header>` of raw markup holding `<h1>Leads</h1>`, a count line and an Add button, a mobile top of a bare `<h1>` plus an inline `<Avatar name=\"Amit Rane\" size={34} />`, the `SearchField` inside the page content rather than the shell, and the bell as `footer={[{key:\"alerts\", …, badge:true}]}` on the rail. That is precisely the per-module invention F7-22 forbids. Meanwhile tokens/spacing.css names geometry nothing implements — `--header-h:64px`, `--topbar-h-mobile:56px`, `--sidebar-w:260px`, `--sidebar-w-collapsed:68px` — and the 260px sidebar those tokens describe is not the 72px rail that ships. 23 shell-bearing screens would each invent it, and every other screen inherits whatever they invent.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A notification affordance in the shell that can show how many are unread, in words as well as a mark",
+   "mode": "present-but-wrong",
+   "component": "AppRail / BottomNav — `RailItem.badge?: boolean`",
+   "screens": [
+    "SCR-SHELL-01",
+    "SCR-SHELL-03"
+   ],
+   "rows": [
+    "F6-17",
+    "F7-12",
+    "N7",
+    "F8-01"
+   ],
+   "evidence": "BRIEF (SCR-SHELL-03, F6-17, P0): \"One notification centre: the bell, the badge, the list. **The badge counts unread from the record** (never from push state)\"; its state `unread-badge` — \"badge counting unread from the record, matching the list\"; and its Numbers-carrying-provenance list opens with \"The unread badge count — derived from the records\". LIVE, verified in AppRail.d.ts, the only badge slot in either shell: `/** Red dot for unread notifications. */ badge?: boolean;`. A boolean renders a dot, not a count, so the badge cannot match the list and has nowhere for the F8 tier the brief assigns it. It also fails F7-12 (\"status is never conveyed by colour alone — always a label plus a mark\") on the one surface every other screen copies: a red dot alone is the mark with the word removed. The same boolean is the only badge the studio's tool rail could reach for when MS6-06 asks for live COUNT badges on electrical buttons.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Touch targets of 44x44 on every control a person actually taps, including the four sites the system's own written exception does not reach",
+   "mode": "present-but-wrong",
+   "component": "Kanban MoveControls (32), DataTable SelectionBar clear (32), Menu's default trigger (32), Banner's dismiss (32)",
+   "screens": [
+    "SCR-M08-01",
+    "SCR-M02-02",
+    "SCR-M02-03",
+    "SCR-M02-04",
+    "SCR-M11-02",
+    "SCR-SHELL-06",
+    "SCR-M07-01",
+    "SCR-M07-12",
+    "every records screen that hangs per-row actions on an overflow button"
+   ],
+   "rows": [
+    "N2",
+    "F7-29",
+    "F7-32",
+    "M08-10",
+    "M02-24"
+   ],
+   "evidence": "Cross-cutting law N2/F7-29/F7-32: targets >= 44x44. readme.md permits exactly one exception and it reaches none of these four: \"a pointer-only affordance *inside* a data row (the call / message buttons in a leads table): those sit at 32px inside a 48px row where the whole row is the primary target **and the same action is repeated at full size in the record's detail panel**.\" (1) Kanban.jsx MoveControls, `width: 32, height: 32`, whose own header comment states the opposite of pointer-only — \"These two 32px buttons are always visible (never hover-only), so a technician on an Android tablet and a keyboard user get the same capability as a dragger\" — and SCR-M08-01's Context of use is \"phone on site for stage moves\". (2) DataTable.jsx SelectionBar's clear-selection button, verified this pass at `width: 32, height: 32`, not inside a row. (3) Menu.d.ts: \"Custom trigger element. **Defaults to a 32px overflow button**\" — the control every records screen hangs its per-row actions on. (4) Banner.jsx's dismiss button, 32, on the shell banner of SCR-SHELL-06. The escape clause also fails on its own terms at SCR-M02-02, where M02-24 rules that everything beyond triage waits for the detail screen, so there is no full-size repeat to fall back on. FilterBar already solves this correctly and says so — \"each control's `<button>` is 44px (the target) and the pill drawn inside it keeps its own height… expressed once, in the component, rather than left to twenty records screens to remember\" — so the pattern exists and four components do not use it.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A status mark-plus-label vocabulary that reaches past the sales-and-delivery pipeline — with a tone that can be set independently of a borrowed stage",
+   "mode": "present-but-wrong",
+   "component": "StatusChip — `SolarStatus` is a closed 17-value union, it is the prop that selects the tone and the dot, and StatusChip.jsx falls back silently: `const s = STATUS[status] || STATUS.lead`",
+   "screens": [
+    "SCR-M01-12",
+    "SCR-M01-07",
+    "SCR-SHELL-02",
+    "SCR-M11-01",
+    "SCR-M11-02",
+    "SCR-M11-04",
+    "SCR-M08-01",
+    "SCR-M08-03",
+    "SCR-M12-02",
+    "SCR-M07-01",
+    "SCR-M07-12",
+    "SCR-M07-13",
+    "SCR-M07-14",
+    "SCR-M07-19",
+    "SCR-MS-05",
+    "SCR-MS-08",
+    "SCR-MS-10",
+    "SCR-MS-11",
+    "SCR-MS-12",
+    "SCR-MS-13",
+    "SCR-MS-16",
+    "SCR-M06-16",
+    "SCR-M06-18",
+    "SCR-M06-19",
+    "SCR-M06-20",
+    "SCR-F5-02"
+   ],
+   "rows": [
+    "F7-12",
+    "M01-19",
+    "M01-12",
+    "F6-23",
+    "M08-31",
+    "M11-52",
+    "M11-19",
+    "M12-55",
+    "M07-38",
+    "M07-30",
+    "MS8-04",
+    "M05-58",
+    "MS11-07",
+    "M06-45",
+    "F5-59"
+   ],
+   "evidence": "Eight distinct vocabularies are required and not one value of any of them is in the union. Invite lifecycle — SCR-M01-07 (M01-12, P0): \"Invite states are pending / accepted / expired / revoked, with an expiry\". Membership — SCR-M01-12 (M01-19, P0): \"status (invited / active / deactivated)\". Junk — SCR-SHELL-02 (F6-23, P0). Document checklist — SCR-M08-03 (M08-31, P0): \"Each row has exactly three states — pending · uploaded · verified\", drawn \"label plus mark, never colour alone\". Payment tranche — SCR-M11-02: due, part-received, awaiting-confirmation, received, superseded, waived, reversed. Billing — SCR-M12-02: trialing / active / past-due / halted / expired / cancelled. Connection — SCR-M11-04, whose whole point is a state \"stated in the same words on every surface that depends on it\". Calling — SCR-M07-13 (M07-38, P0): \"interested · callback requested · not interested · no answer · busy · wrong number · voicemail · escalated · transferred · opted out\", plus M07-30's pre-dial verdicts. Proposal/link/receipt — SCR-M06-19's \"draft → shared → accepted / declined, with superseded\", SCR-M06-20's active/revoked, SCR-F5-02's confirmed-vs-hand-recorded. Studio — MS8-04's pending→verified, M05-58's ready / needs attention / blocking, MS2-12's locked. LIVE, verified: `SolarStatus = \"lead\"|\"survey-scheduled\"|\"design-in-progress\"|\"approved\"|\"installing\"|\"commissioned\"|\"on-hold\"|\"new-lead\"|\"contacted\"|\"qualified\"|\"site-visit\"|\"designing\"|\"proposal-sent\"|\"negotiating\"|\"won\"|\"lost\"|\"snoozed\"`. `label` overrides the WORD only; there is no `tone` prop, so \"Awaiting confirmation\" must be dressed as `negotiating` and \"Overdue\" as `lost`, and an unrecognised status renders as a grey \"Lead\". Kanban.d.ts imports the same union (\"Drives the header StatusChip\"), confirming it is the system's one status registry. Honest scoping: Chip takes `dot` + `tone` + children, so F7-12's label-plus-mark floor IS reachable by hand — what is missing is the shared vocabulary, and eight modules each choosing their own borrow is the cost.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A section/block frame: a titled in-page container with an overline, a summary count, its own action, and its own loading / empty / error states — the unit a foreign role's today-work is composed into and the unit a project screen is assembled from",
+   "mode": "absent",
+   "component": "Card is the only in-page container and its whole API is `{children, density, interactive, selected, style, onClick}`; Accordion is collapsible-only with a string `meta`; EmptyState is a full-region centred bloom",
+   "screens": [
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M08-05",
+    "SCR-M11-01",
+    "SCR-M12-02",
+    "SCR-M07-01",
+    "SCR-M13-01",
+    "SCR-M07-12",
+    "SCR-M07-14",
+    "SCR-MS-02",
+    "SCR-MS-03",
+    "SCR-MS-04",
+    "SCR-MS-07",
+    "SCR-MS-08",
+    "SCR-MS-09",
+    "SCR-MS-10",
+    "every role home in the product"
+   ],
+   "rows": [
+    "M13-10",
+    "M08-16",
+    "M13-38",
+    "M13-34",
+    "M13-14",
+    "M13-20",
+    "M07-02",
+    "M07-03",
+    "PS-11",
+    "PS-21",
+    "MS1-23",
+    "M05-17",
+    "M05-58",
+    "MS12-09",
+    "MS4-32",
+    "MS6-48",
+    "MS6-05"
+   ],
+   "evidence": "Three separate blocks arrive at the same missing unit. (a) COMPOSED HOMES — SCR-M08-01, SCR-M08-05, SCR-M11-01, SCR-M07-01 and SCR-M13-01 all carry M13-10 (P0) verbatim: \"that preset's *today-work* is composed into THIS screen as a block rather than sent to a second home… **Design the block seams**: this screen must be able to host one or more foreign today-blocks without the layout breaking or the screen's own purpose being buried.\" A block composed into two homes must match itself, which is exactly what hand-rolled chrome cannot do. (b) COMPOSED OBJECTS — SCR-M08-02 (M08-16, P0): \"One screen holds the whole project: the stage timeline, the approved design, the accepted proposal, the payments, the documents, the blockers and the activity… Each block is a view onto the object that owns it\", with state **normal** requiring \"each naming the object it reads and the version in force\" and **empty-blocks-say-so** requiring \"blocks with nothing in them say so ('No blockers — nothing is waiting on anyone') rather than disappearing\". (c) NAMED CARDS — block 7 names at least ten card types with their own headers and their own states: MS1-23's \"Site Intelligence card: loading, no-coverage and unreachable states… provider badge, imagery-quality badge, stats grid and the honest footer\", M05-58's readiness card with its verdict, MS12-09's per-category cards with a provenance footer, MS4-32's decision cards, MS6-48's in-scene structure card, MS6-05's suggestion cards. LIVE, verified: Card.d.ts has no title, no overline, no meta row, no footer, no action slot and no `state`, while DataTable, ChartFrame, Sheet, DetailPanel, Timeline and MapSurface all carry one. Accordion's item is `{key, title, meta?: string, content}` — collapsible-only, no per-section state. EmptyState.jsx hardcodes `padding: '48px 24px'`, a 72px circular icon over a 180px `--glow-brand` bloom and a 20px `<h3>`; SCR-M07-01 needs up to four quiet blocks on one 375px screen (\"the agent made no calls last night\", \"Nothing overdue — you're ahead\", \"never a blank region\"), which is roughly 900px of centred bloom on a home whose own law is \"it opens on work\". The overline+title+action header exists in the system — Sheet, DetailPanel and ChartFrame all have it — but never as an in-page section.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A shared way to say \"this is unavailable, and that is not an error\", plus the three base states on the containers that lack them",
+   "mode": "present-but-wrong",
+   "component": "The state vocabulary is `\"ready\"|\"loading\"|\"empty\"|\"error\"` on DataTable, ChartFrame, Sheet, DetailPanel, Timeline and MapSurface; Card and StatCard have none; UsageMeter's union is billing-only",
+   "screens": [
+    "SCR-MS-04",
+    "SCR-MS-05",
+    "SCR-MS-07",
+    "SCR-MS-09",
+    "SCR-M12-04",
+    "SCR-M08-02",
+    "and every surface with a fourth honest state"
+   ],
+   "rows": [
+    "M05-18",
+    "MS1-23",
+    "M05-17",
+    "MS2-38",
+    "MS6-33",
+    "MS4-09",
+    "BM-27",
+    "M12-34",
+    "F8-33",
+    "M12-30"
+   ],
+   "evidence": "Two halves of the same hole. (a) A FOURTH STATE: SCR-MS-04 (M05-18, P0): \"Site Intelligence is an asynchronous enhancement with **four honest states — loading / unavailable / unreachable / ok** — and never a dependency… its absence is stated, not styled as an error\", with `solar-no-coverage` and `solar-unreachable` as separate named states. SCR-MS-05's `detection-denied-honest`; SCR-MS-09's `structure-card-unavailable-explains-why` and \"an access result that cannot be produced renders as unavailable rather than as a plausible tint\"; MS4-09's market that declares no schemes. The system has hit this wall twice and patched it privately each time — MapSurface adds a fifth member `\"tiles-unavailable\"`, AudioPlayer adds `status?: \"available\"|\"consent-declined\"|\"purged-retention\"` — and neither is reusable. (b) STATES MISSING OUTRIGHT, against readme.md's own first V2 law (\"Every composite ships loading, empty and error states — no surface is allowed to have only a happy path\"): Card has no state, StatCard has no state, and UsageMeter — the component built for SCR-M12-04 — has `\"ok\"|\"overage-accruing\"|\"tracked-seats-accruing\"|\"cap-reached-grace\"|\"creations-paused\"` with no loading and no error, while that brief rules \"loading: rollups not yet resolved; **never a placeholder number presented as a rollup**\" and \"error: this screen may only ever show the enforced/billed numbers, so no fallback or approximate figures\". Verified in UsageMeter.jsx: `limit = 0` by default and the markup renders `<strong>{fmt(value)}</strong><span> of {fmt(limit)}{unit}</span>` unconditionally, so an unresolved meter renders \"0 of 0\" at full confidence — and the `v2-meter-activity-no-rate` case a previous pass explicitly cleared prints \"1,240 of 0\" with `scaleMax = Math.max(limit,value) || 1` → value, `usedPct` → 0 and `overPct` → 100, drawing the whole bar as the info-blue OVERAGE segment against a zero bundle. That is the invented rate BM-27 forbids, produced by the component the row was written for.",
+   "severity": "blocker"
+  },
+  {
+   "need": "One overlay grammar the component resolves — a sheet on mobile, a side panel on desktop — including a non-modal variant that leaves the surface it edits visible and interactive",
+   "mode": "present-but-wrong",
+   "component": "Sheet and DetailPanel are two independent components with matching props, no shared switch, and identical blur-and-trap backdrops; there is no responsive wrapper in components/overlays",
+   "screens": [
+    "SCR-M01-12",
+    "SCR-M01-15",
+    "SCR-M01-16",
+    "SCR-M01-17",
+    "SCR-SHELL-02",
+    "SCR-M02-01",
+    "SCR-M02-02",
+    "SCR-M02-04",
+    "SCR-M02-05",
+    "SCR-M02-06",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M11-02",
+    "SCR-M11-03",
+    "SCR-SHELL-06",
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-08",
+    "SCR-MS-09"
+   ],
+   "rows": [
+    "F7-21",
+    "F7-31",
+    "MS2-31",
+    "MS2-32",
+    "MS3-27",
+    "MS3-30",
+    "MS6-19",
+    "MS6-20",
+    "MS6-48",
+    "M05-47",
+    "M05-53"
+   ],
+   "evidence": "F7-21 (P0): \"**One sheet grammar** serves every editor in the product: a sheet on mobile, a side panel on desktop — sheets, not pages.\" A previous pass cleared this on prop parity alone; parity of props is not the law, the law is a behaviour, and nothing performs it. LIVE: components/overlays holds only Sheet, DetailPanel, Modal and Menu; neither Sheet nor DetailPanel exposes the width it measures or names a viewport rule. Every other responsive law in this system is owned by the component and readme.md says so — \"**Own-width, never viewport.** `DataTable` becomes one card per record below 640px of *its own* width, `Kanban` stacks below 720px, and `SheetActions` stacks below 320px\" — and of FilterBar, \"This is expressed once, in the component, rather than left to twenty records screens to remember.\" The sheet/panel switch is the one law left to the callers, across at least nineteen surfaces (the dedupe sheet, assign picker, disqualify sheet, book-visit sheet, set-blocker sheet, cancel confirm, waive dialog, reversal confirm, record-payment sheet, typed denial sheet, the catalog editor, the studio's ~12 inspectors). SECOND HALF: the studio needs a NON-MODAL variant and the system's own docs forbid it. Sheet.d.ts: \"Backdrop **blurs the layer behind** and fades it toward white at 0.35… **Traps focus**\"; DetailPanel.d.ts: \"**Same backdrop law as Sheet**\"; neither takes a modal/backdrop/no-trap prop. Meanwhile Slider.d.ts says of `onInput`: \"Live signal — fires continuously during a drag. **Wire this to the preview**\" — and MS2-31's usable-area preview \"cached for 60 Hz drags\", MS3-27's \"setback slider 0–3 m **with live ring redraw**\", MS3-30's live clearance hint and MS6-19's \"live section previews\" all need the geometry behind the panel to repaint while the panel is open. The system tells you to wire the preview and then blurs it.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Full parity for a records list at the phone breakpoint — per-row actions, per-row dimming and the table's caption must survive the stacked form, on both of the system's documented phone answers",
+   "mode": "present-but-wrong",
+   "component": "DataTable — `rowActions`, `isRowMuted` and `caption` are never passed to `StackedRows`; and RecordCard, readme.md's other documented phone form, wraps the whole card in `role=\"button\"` and has no click-isolated action slot",
+   "screens": [
+    "SCR-M02-02",
+    "SCR-M02-03",
+    "SCR-M02-05",
+    "SCR-M11-02",
+    "SCR-M12-02",
+    "SCR-M08-03",
+    "SCR-M07-01",
+    "SCR-M07-12",
+    "SCR-M07-14",
+    "SCR-M07-19",
+    "SCR-M13-01"
+   ],
+   "rows": [
+    "M02-24",
+    "M02-28",
+    "M02-67",
+    "M11-52",
+    "M12-55",
+    "M08-31",
+    "M07-01",
+    "M07-02",
+    "M07-35",
+    "F7-27",
+    "F7-31",
+    "N2",
+    "F7-29"
+   ],
+   "evidence": "BRIEF (SCR-M02-02, M02-24, P0): \"Triage is one decision per lead — assign or bin — and the surface is built for under three seconds each… both decisions are **single-tap**\", on a screen whose Context of use is \"the owner's morning screen — often a phone over breakfast\", and which explicitly refuses the escape route: \"Everything else about the lead waits for the lead detail.\" BRIEF (SCR-M07-01): \"every row deep-links to its lead **and one tap starts the action** — call, open proposal, open visit\" on a screen whose context is \"phone in hand, in the field, often one-handed\". F7-31 forbids a capability at one viewport and absent at the other; F7-27 requires every data table to carry a caption. LIVE, verified line by line in DataTable.jsx: `stacked ? <StackedRows rows={sorted} columns={columns} keyOf={keyOf} onRowClick={onRowClick} selectable={selectable} sel={sel} toggle={toggle} /> : <table…>` — `rowActions`, `isRowMuted` and `caption` are never passed and StackedRows' signature does not accept them; the `<caption>` element sits inside the `<table>`, which renders only when `!stacked`. So below 640px of its own width (every phone, and every table inside a 480px DetailPanel) the assign and mark-junk taps, the ledger row's collect actions, the invoice row's PDF action, the checklist row's upload/verify actions, the queued-entry cancel and the caption all disappear — and the caption prop's doc (\"Overline caption above the table\") gives no hint that it vanishes. The other documented phone form is no better: readme.md's records pattern says \"**Mobile.** … a list of `RecordCard`s… The card *is* the table row — same fields, same order, same words\", and RecordCard.jsx wraps the WHOLE card in `role={onClick ? \"button\"}` with tabIndex and an Enter/Space handler, while its `action` slot is documented \"Bottom line — usually a NextAction\" (a muted dot plus plain text) and is rendered with no stopPropagation — so a Button placed there is an interactive element nested inside a role=button whose tap also fires the row's deep link.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Free navigation to any step of a wizard, including a step never yet entered",
+   "mode": "present-but-wrong",
+   "component": "components/forms/Stepper — the `onStepClick` contract, `StepList` (\"Same clickability rule as Stepper\"), `resolveSteps`'s returned `reachable` flag, and readme.md, which restates the rule as system law",
+   "screens": [
+    "SCR-M06-02",
+    "SCR-M06-03",
+    "SCR-M06-04",
+    "SCR-M06-05",
+    "SCR-M06-06",
+    "SCR-M06-07",
+    "SCR-M06-08",
+    "SCR-M06-09",
+    "SCR-M06-10",
+    "SCR-M06-11",
+    "SCR-M06-12",
+    "SCR-M06-13"
+   ],
+   "rows": [
+    "M06-21",
+    "M06-22",
+    "M06-24"
+   ],
+   "evidence": "BRIEF (SCR-M06-02, M06-22, P0, whose title is \"Free navigation everywhere; validation at Generate ONLY; the Next-disabled rule is killed\"): the source's gating \"is **superseded by ruling and never ships**: Back/Next always navigate, every chip always jumps, and no step ever blocks another.\" M06-21: \"A chip rail (top) carries eleven jump chips, one per step — tap any chip to jump to any step **in any order**.\" Every one of the eleven step briefs repeats it verbatim in Entry & exit. LIVE, read this pass: `onStepClick?: (index: number) => void` — \"**A step is clickable once it has been entered** — done, in-progress and errors are all reachable; **not-started never is**. An errored step must be reachable (that is the point of marking it), and a not-started one must not be, **so nobody skips ahead of work the flow depends on**.\" `resolveSteps` hard-codes it as a returned `reachable` flag, `StepList` inherits it, and readme.md restates it as system law. On SCR-M06-02's own Empty state — \"a fresh Path B proposal: nothing pre-filled beyond lead/tenant data; every chip incomplete\" — all eleven steps are `not-started`, so exactly one chip is clickable. The rule M06-22 killed by ruling is reintroduced one component down, as chip-disabled instead of Next-disabled, on \"the most-used screen in the product. Every deal passes through it.\" This is the same failure shape the round-ten rebuild was for, in the same component: the round-ten fix correctly closed M05-03's four states and the studio's rail/indicator arrangements, and left this contract untouched. It needs a per-flow opt-out or an explicit `reachable` override, not a second Stepper.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A multi-dimension filter set — several dimensions active at once, more than one value inside a dimension, numeric range dimensions, visible applied filters with a clear — with one body serving the mobile sheet and its desktop counterpart",
+   "mode": "present-but-wrong",
+   "component": "FilterBar.FilterChips (`value?: string` / `onChange?: (value: string) => void`, `role=\"tablist\"` with `aria-selected`), FiltersButton (`onClick` + `count` only, opening a sheet whose contents are not a component), and Slider (single `value`, no second thumb)",
+   "screens": [
+    "SCR-M01-15",
+    "SCR-M01-16",
+    "SCR-M07-19",
+    "SCR-M07-12",
+    "SCR-M07-14"
+   ],
+   "rows": [
+    "M01-38",
+    "M01-34",
+    "M07-57",
+    "M07-35",
+    "F7-21",
+    "F7-31"
+   ],
+   "evidence": "Cleared twice by earlier passes on the 44px target law alone; the filtering itself was never checked. BRIEF (SCR-M01-15, M01-38, P0): \"One search over the platform slice + own SKUs together, with filters: source (platform / own), component kind, **key spec ranges** (e.g. wattage, technology), **certification-scheme badges** (per the market's declared schemes), preferred, archived. Search behaviour is shared with the picker (DD12) — the picker searches this catalog, with these filters.\" BRIEF (SCR-M07-19, M07-57, P0): \"every call — customer, duration, outcome, language, config version — filterable\", where outcome is a ten-value vocabulary and language six, at \"hundreds of calls per month… with filters doing the narrowing work\". LIVE, verified: `FilterChipsProps` is `{options, value?: string, onChange?: (value: string) => void, counts?, scroll?}` — one active value per row; FilterBar.jsx renders `role=\"tablist\"` buttons with `aria-selected={v === value}` and a roving-tabindex arrow handler that also CHANGES the selection, i.e. it is a one-of-N stage strip, not a filter set, so M01-34's multi-scheme certification badges cannot be selected as a set. `FiltersButtonProps` is `{onClick?, count?, label?}`, documented \"White pill that opens the full filter Sheet **on mobile**\" — the sheet's CONTENTS are not a component at all and no desktop counterpart is named, so the six-dimension set has no desktop home and fails F7-31. And Slider.d.ts, read in full, is a single `value` with `onInput`/`onCommit` — there is no range control anywhere in the 54, so \"key spec ranges (wattage 300–600 W)\" has no input. This vocabulary is explicitly shared with the DD12 picker used by the proposal builder and the studio, so whatever is improvised on the first catalog screen sets the answer for every list screen after it.",
+   "severity": "blocker"
+  },
+  {
+   "need": "An editable data surface: rows that can be flagged as needing attention and corrected in place, cells that commit, and fields that know they are a human override of a derived default — showing the override state, a per-field reset, and the value they have drifted from",
+   "mode": "present-but-wrong",
+   "component": "DataTable (per-row state is only `isRowMuted`, which dims; `state` is whole-table; `render` returns a node but the table owns no editing model); NumberField and Input (no overridden flag, no reset, no way to show the engine's value beside the human's)",
+   "screens": [
+    "SCR-M01-17",
+    "SCR-M01-15",
+    "SCR-MS-12",
+    "SCR-MS-11",
+    "SCR-MS-04",
+    "SCR-M02-05"
+   ],
+   "rows": [
+    "M01-41",
+    "M01-37",
+    "M05-72",
+    "MS10-17",
+    "MS10-18",
+    "MS10-13",
+    "MS10-20",
+    "M05-65",
+    "MS8-21",
+    "MS1-05"
+   ],
+   "evidence": "BRIEF (SCR-M01-17, M01-41, P0): \"rows with problems are **fixed inline** in the preview, not bounced to a failed file\", with the named state `needs-attention-inline-fix` and a preview line that counts them — \"N rows · M match platform products · K new products · **E rows need attention**\" — at a ruled volume of \"rows in the hundreds… dense, scrollable working grids\". BRIEF (SCR-MS-12, M05-72): \"**per-field reset (appears next to overridden values; changes appearance when the design has moved on)**… A user-entered override takes measured provenance\"; MS10-18 names eleven editable columns (item, spec, brand, quantity, unit, waste %, rate, GST %) with amounts read-only; MS10-13's staleness banner \"names the field, the item and both values, with a one-tap 'take the new value'\" against a figure list of \"**Stale-field pairs: 'yours X · design now Y' — both values shown**\"; M05-65 needs \"Edit ratings (with a count of overrides)… Reset to auto (disabled when nothing overridden)\"; MS1-05: \"Manual edits always override auto-fill.\" LIVE, verified: the only per-row signal in DataTableProps is `isRowMuted?: (row) => boolean` — \"Dim a row without hiding it\" — and dimming reads as done-and-inactive, not as broken; `state` is whole-table and its error value replaces the table entirely; there is no needs-attention row state, no per-cell validation message and no commit path. NumberFieldProps and InputProps have no overridden flag, no reset affordance and no second-value slot. A 400-row import with twelve broken rows has nowhere in the API to say which twelve; a 40-line BOM at eleven columns would improvise the override treatment roughly 440 times.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A findings list: an ordered set of issues each carrying a severity status, plain-language text, an action that takes the reader to the thing at fault and sometimes an inline one-tap fix, with a worst-of verdict across the set — and, for a gate, a counted list that cannot rank or suppress a true failure",
+   "mode": "absent",
+   "component": "Banner is one statement with one `action`; BannerStack \"Orders banners by precedence\" with `mode: \"single\"` (\"the broadest true fact speaks\") and a `max`; Timeline's `content` slot can hold a jump button but no item has an onClick and there is no status between done and blocked",
+   "screens": [
+    "SCR-M06-02",
+    "SCR-M06-13",
+    "SCR-M06-17",
+    "SCR-MS-03",
+    "SCR-MS-08",
+    "SCR-MS-10",
+    "SCR-MS-12",
+    "SCR-MS-13",
+    "SCR-MS-16"
+   ],
+   "rows": [
+    "M06-22",
+    "M06-23",
+    "MS6-27",
+    "M05-49",
+    "M05-58",
+    "MS7-11",
+    "MS11-07",
+    "MS11-08",
+    "MS12-09",
+    "MS10-10",
+    "MS10-13",
+    "MS9-06"
+   ],
+   "evidence": "Nine screens across two blocks need one shape, and it was cleared in block 8 as \"one actioned banner per failure\". BRIEF (SCR-M06-02, M06-23, P0, titled \"The Generate gate — one checklist, one place\"): Generate runs six check families in one pass, and the state `generate-failure-list` is \"'Fix N issues to share': every failure a tappable jump landing on the exact step **with failing fields highlighted**; back returns to the remaining failures; the gate is idempotent\" — with the Data volume explicitly refusing the easy case: \"must be designed at **multiple simultaneous failures spanning the checklist's six check families (a)–(f) plus the below-cost warning** — not just the 'Fix 2 issues' happy case.\" BRIEF (SCR-MS-08, MS6-27): \"every issue card is tap-to-locate; unstrung-panel and MPPT-capacity cards carry an inline 'Auto-string now'\"; M05-49: \"Every entry taps to LOCATE (centres + selects the faulty panels)\"; M05-58: \"Each checked item shows status (ready / needs attention / blocking), its meaning in plain language, and **a jump button to the fixing step**\"; MS11-07: \"four ordered items… each with the step that can fix it, three statuses, and **a worst-of verdict**\". LIVE: an instrument built to RANK AND SUPPRESS cannot be the one that promises to list every failure — seven stacked tinted strips is not a counted checklist, and `mode: \"single\"` plus `max` can hide a true blocking failure. Timeline is the nearest structure and its rail actively misreads a severity-ranked set (\"lit to the current step, dim beyond it\"), its items have no click handler, and it has no needs-attention status.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A verbatim mandatory-disclosure passage that sits in the customer's reading flow at the weight of the figures it qualifies, cannot be dismissed or suppressed, and prints",
+   "mode": "present-but-wrong",
+   "component": "Banner — `kind: \"disclaimer\" | \"preliminary\"`, `dismissible`, `variant: \"block\"|\"pill\"`, and BannerStack's `mode`/`max`",
+   "screens": [
+    "SCR-M06-15",
+    "SCR-M06-17",
+    "SCR-M06-18",
+    "SCR-F5-01"
+   ],
+   "rows": [
+    "M06-04",
+    "M06-51",
+    "MS9-11",
+    "MS9-16",
+    "MS9-17",
+    "MS9-18",
+    "F5-37"
+   ],
+   "evidence": "BRIEF (SCR-M06-17, M06-04, P0): \"*'A proposal built without a design must say so. Not in fine print — visibly, on the document'*: every Path B document renders the fixed line, **verbatim**\", drawn as the state `indicative-disclaimer-path-b` — \"the verbatim indicative line on every Path B document, **in the reading flow at the same visual weight as the figures it qualifies**\" — and the row frames it as \"*a genuine competitive advantage, not a disclaimer*\". Three siblings share the obligation: the remote-survey basis line, MS9-17's structure disclaimer \"wherever structure or mounting is quoted\", and MS9-16's staleness warning which \"**PRINTS (never print-suppressed)**\". LIVE, verified in Banner.d.ts: `dismissible` is \"Opt-in only. **Ignored for validation, data-integrity and below-cost** — those three don't stop being true because a user tapped the cross\" — the exemption list does not include `disclaimer`, `state`, `dunning` or `cap`, so a disclaimer banner is dismissible by design and Banner.jsx's `NEVER_DISMISSIBLE = [\"validation\",\"data-integrity\",\"below-cost\"]` is the guard, not the default. BannerStack's `mode: \"single\"` is \"the broadest true fact speaks\" and `max` caps the rest, i.e. a mechanism that can suppress a true mandatory statement. Banner is also the operator app's alert instrument, which MS9-11 bans from this surface outright: \"The link opens the customer's own surface — not the operator's editor chrome: **no operator-only alerts**\". A tinted, glyphed, dismissible, precedence-ranked, suppressible strip is the wrong instrument for the product's flagship honesty line — and separately, the same exemption list must grow to cover the billing kinds, since SCR-SHELL-06 renders its banner \"whenever the tenant is in a trial countdown, a post-expiry soft block, past_due grace, cap-ladder or halted state\" and BM-32 makes it \"the guaranteed way back\".",
+   "severity": "blocker"
+  },
+  {
+   "need": "An append-only activity stream: entries typed by kind, with an actor CLASS, filterable by kind, date-grouped and legible at hundreds of entries",
+   "mode": "present-but-wrong",
+   "component": "Timeline — a step sequence, not a stream",
+   "screens": [
+    "SCR-M02-04",
+    "SCR-M08-02",
+    "SCR-M12-02",
+    "SCR-M11-02"
+   ],
+   "rows": [
+    "M02-35",
+    "M02-32",
+    "M08-17",
+    "M12-55"
+   ],
+   "evidence": "BRIEF (SCR-M02-04, M02-35, P0): \"One append-only timeline per lead and customer, rendered as a single stream. Its **kinds** include notes, logged calls, agent calls, stage changes, assignments, proposal events, link opens, survey submissions, design events, sign-off events, payments, documents, task events and system events; its **actor may be a person, the agent, the system or the customer**\", at a Data volume of \"dozens to hundreds of append-only entries across 13+ kinds… **filtering by kind must be usable at that depth**\" (state: `timeline-filtered`). SCR-M08-02 (M08-17) demands the same one stream directly beneath the nine-stage stage timeline; SCR-M12-02 needs it twice — \"a dunning history that can be long — the ladder runs day 0/2/4/6/7 then post-halt weekly x 4 then monthly, indefinitely\" and \"an append-only subscription history of every state entered, when and why\"; SCR-M11-02 needs it for the reversal-pair history. LIVE: `TimelineItem { id?, label, meta?, description?, actor?: string, content?, status?: \"done\"|\"current\"|\"upcoming\"|\"blocked\"|\"failed\" }` and TimelineProps `{items, variant, density, state, empty/error, onRetry}` — no `kind`, no actor CLASS (actor is a free string, so \"the agent\", \"the system\" and \"the customer\" are indistinguishable from a person), no filter, no date grouping, no load-more. The docstring states the mismatch outright: \"A continuous rail runs through the nodes — lit to the current step, dim beyond it — so it reads as **a sequence, not a list of dots**.\" In a 300-entry append-only stream every entry is \"done\" and the rail lights nothing. Timeline correctly serves the stage timeline and cannot serve the activity block sitting directly beneath it — the two must not be the same component.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A machine-versus-human attribution mark on an entry or an act — one shared way for the product to say \"a machine did this, not a person\"",
+   "mode": "present-but-wrong",
+   "component": "Timeline's `actor?: string` — \"Who did it — renders with a small person glyph\" — the only attribution slot in all 54 components; Avatar is `{src, name, size}` with an initials fallback",
+   "screens": [
+    "SCR-M07-01",
+    "SCR-M07-04",
+    "SCR-M07-12",
+    "SCR-M07-13",
+    "SCR-M02-04",
+    "SCR-M08-02"
+   ],
+   "rows": [
+    "M07-03",
+    "M07-06",
+    "M07-25",
+    "M07-35",
+    "M07-64",
+    "M02-35"
+   ],
+   "evidence": "BRIEF (SCR-M07-01, M07-03, P0): \"Agent activity is a separate block, never mixed with the rep's own tasks… **each entry marked as the agent's**… '*Blurring that line is how people stop trusting the automation.*'\" BRIEF (SCR-M07-04, state `auto-resurfaced-postponed`): \"**the design must distinguish a human reopen from an automatic resurface on the timeline**.\" Two more rows need the same mark: M07-06 (\"a rep always sees WHY a task exists\" — rule-created vs person-created) and SCR-M07-13's `rep-corrected` state, where the rep's read must be visibly the rep's while the agent's original stays in history. And M02-35 puts four actor classes — person, agent, system, customer — into one stream. LIVE: `actor?: string; /** Who did it — renders with a small person glyph. */` is the only slot, so an automatic resurface, an agent call and an agent-created follow-up task all render behind a person glyph, which is the exact opposite of the requirement. Nothing else expresses it: StatusChip's union is workflow stages, Chip and Badge carry a tone only, and readme.md's single word on machine identity is visual and unattached to any component — \"Brand/AI features use a gradient-filled object, not an outlined icon.\"",
+   "severity": "blocker"
+  },
+  {
+   "need": "A numeric readout that states the band it falls in — the number, the verdict word for its band, and a mark — so a threshold result is never carried by colour",
+   "mode": "absent",
+   "component": "StatCard's `delta`/`deltaDir` is a change against a previous value, not a band; UsageMeter is walled off by readme.md as billing-only; StatusChip's union holds no band value",
+   "screens": [
+    "SCR-MS-03",
+    "SCR-MS-07",
+    "SCR-MS-08",
+    "SCR-MS-10",
+    "SCR-MS-11",
+    "SCR-MS-14"
+   ],
+   "rows": [
+    "M05-06",
+    "MS12-06",
+    "M05-40",
+    "M05-48",
+    "M05-64",
+    "MS8-11",
+    "M05-50",
+    "MS6-29",
+    "M05-45",
+    "F7-12"
+   ],
+   "evidence": "The same shape is law on six screens and two rows say the quiet part in as many words. (SCR-MS-03, M05-06): \"Design Health: a score /100 with **band Good / Fair / Poor** across energy, electrical and roof-utilisation\"; (SCR-MS-07, M05-40): \"live DC/AC ratio health — >1.35 high (clipping risk), <0.90 low (oversized), 0.90–1.35 healthy\"; (SCR-MS-08, M05-48): \"running cold-weather string voltage **coloured** over-limit / under-MPPT-floor / fine\"; (SCR-MS-11, M05-64): \"The MAXIMUM SYSTEM VOLTAGE compliance box is prominent… within = passing, over = fault + 'shorten the string'. It is the figure an electrical inspector checks and must read as such\", with MS8-11 adding \"with **pass/fail styling**\"; (MS6-29) \"Status pill shows enabled panels and achieved-vs-target kWp\". The two rows that say \"coloured\" and \"styling\" are exactly why F7-12 — status is never colour alone, always a label plus a mark — has to be satisfied by a component rather than by six designers. LIVE: StatCardProps in full is `{label, value, unit, delta, deltaDir?: \"up\"|\"down\", children, style}`, with `delta` documented \"delta chip text, e.g. '12%'\" — no threshold, no band name, no verdict. readme.md refuses UsageMeter for this job explicitly (\"separate from ProgressBar on purpose: it carries a denominator, a period… ProgressBar stays a 6px operation bar with no billing semantics\"). Nothing in the 54 pairs a figure with the band it lands in.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A field-level before/after comparison of two immutable snapshots, including a per-field provenance-tier change",
+   "mode": "absent",
+   "component": "Nothing. DataTable is one row-set with per-column configuration — no changed/unchanged or added/removed notion, no before→after pairing, and its provenance is per column so no cell can read `estimated → derived`",
+   "screens": [
+    "SCR-M06-16",
+    "SCR-M06-18"
+   ],
+   "rows": [
+    "M06-42",
+    "M06-47",
+    "F8-05",
+    "M06-56"
+   ],
+   "evidence": "BRIEF (SCR-M06-16, M06-42, P0): \"Each version snapshots the **full eleven-step field set plus the computed money block**… Each version carries a change note — 'what changed and why.' The versions screen shows **v1 vs v2 with what changed, and why**\", with a Data volume of \"design the v1-vs-v2 comparison at that snapshot size, **at phone width**\" and a Numbers section adding \"Changed money figures in the diff — each figure shows at the provenance tier its own version pinned\". BRIEF (SCR-M06-18, M06-47, P0): the Path B upgrade \"offers to upgrade the numbers from `estimated`/`assumed` to `derived`, **showing the differences before anything commits** (F8-05 — a tier change is shown, never silent)\", drawn as the state `upgrade-offered-diff`. LIVE: I walked all six component folders for a comparison carrier — no comparison, diff or compare component exists. Two P0 screens are entirely a comparison, and the same capability is what SCR-M06-15 and SCR-F5-01 lean on wherever a designer added variants (M06-56 / F5-35), so improvising it produces three different answers to \"what does changed look like\".",
+   "severity": "blocker"
+  },
+  {
+   "need": "A side-by-side comparison of 2–N whole options that stays a comparison at 375px — attribute rows staying aligned across options as the reader moves between them",
+   "mode": "present-but-wrong",
+   "component": "DataTable — \"Below `stackBelow` px of its OWN width it becomes one card per record; **it never scrolls horizontally**\", and readme.md states the prohibition at system level",
+   "screens": [
+    "SCR-MS-14",
+    "SCR-MS-07",
+    "SCR-MS-01",
+    "SCR-M12-03"
+   ],
+   "rows": [
+    "M05-79",
+    "M05-41",
+    "MS4-30",
+    "M05-78",
+    "M12-55"
+   ],
+   "evidence": "BRIEF (SCR-MS-14, M05-79): \"Compare 2–4 variants side by side: kWp, annual generation, price, payback, health score… **Mobile renders horizontal snap cards (dual-breakpoint contract)**\", with the brief's own framing — \"the row's dual-breakpoint contract makes the phone rendering (horizontal snap cards) **a first-class form, not a squeezed table**\" — and the volume note \"the snap-card rendering must hold four cards\". BRIEF (SCR-MS-07, MS4-30): \"The 11 comparison columns, each computed per candidate\", with the current selection always included. LIVE: one card per record stacked vertically is exactly the form M05-79 rules out — you cannot compare payback across four variants with one variant on screen — and readme.md fixes the alternative as system law: \"**There is no horizontally-scrolling table in this system.**\" This is the one entry on the list that needs a ruling before it needs a component: either the law gets a named exception for a comparison surface, or the snap-card form becomes a distinct component that is not a table. A screen cannot quietly opt out of a system-level prohibition, and three screens plus the plan chooser need the answer.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A live preview that can show whichever part of the customer-facing output the setting on screen actually affects",
+   "mode": "present-but-wrong",
+   "component": "DocumentPreview — one fixed A4 proposal sheet whose docstring contradicts its own prop list",
+   "screens": [
+    "SCR-M01-18",
+    "SCR-M01-19",
+    "SCR-M01-20"
+   ],
+   "rows": [
+    "M01-50",
+    "M01-51",
+    "M01-52",
+    "M01-54"
+   ],
+   "evidence": "Three settings screens each carry a live-preview state and each needs a different part of the document. SCR-M01-18 `live-preview`: \"the preview shows the actual proposal cover **and customer-link header** with the tenant's logo and derived-compliant colours before saving\", and M01-50 names four inputs — \"logo, **letterhead**, brand colour, company details\". SCR-M01-19 `live-preview`: \"live preview of the affected customer document before saving\" for a cover, an included-sections list and a default T&C body. SCR-M01-20 `live-customer-preview`: \"a live preview shows **the tranches** as the customer will see them\". LIVE: DocumentPreview is one A4 proposal sheet (`brandColor`, `companyName`, `logoSrc`, `logoLabel`, `gstin`, `address`, `phone`, `customerName`, `customerMeta`, `docTitle`, `docNumber`, `docDate`, `lineItems?: [string,string][]`, `total`, `subsidyNote`, `width`), and its prompt.md scopes it to \"the live preview beside SCR-M01-18 Branding Settings\". Its own docstring claims it \"previews all of M01-50 (logo, letterhead, company details and colour)\" — and there is no letterhead prop of any kind, so the documentation contradicts the API on the very screen it was built for. There is no customer-link-page form, no sections list, no T&C body and no tranche schedule; `lineItems` is `[description, amount]` pairs. Two of the three screens would fake their preview with line items, and the customer-link header named in M01-18's state cannot be drawn at all.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A speaker-attributed conversation transcript — a two-party call rendered turn by turn, labelled with the language it is in, readable at full-call length on a phone, reachable from the recording player",
+   "mode": "absent",
+   "component": "AudioPlayer declares the door (`onOpenTranscript`) and nothing renders what is behind it; Timeline is a step sequence with no language slot",
+   "screens": [
+    "SCR-M07-13",
+    "SCR-M07-19",
+    "SCR-M07-09"
+   ],
+   "rows": [
+    "M07-38",
+    "M07-57",
+    "M07-25",
+    "M07-21"
+   ],
+   "evidence": "BRIEF (SCR-M07-13, States): \"`transcript-on-tap` — the full transcript open, **in the call's language, labelled**\"; Data volume: \"Design the transcript for **a full conversation's length on a phone**.\" BRIEF (SCR-M07-19): \"`transcript-open` — a call's transcript open on tap, in the call's language, labelled.\" M07-38 makes the transcript the artefact that SURVIVES the recording (\"Recording is purged at the pack's retention bound; the transcript is retained\"), so it is not optional chrome. LIVE: AudioPlayer.d.ts is the door with nothing behind it — `onOpenTranscript?: () => void` plus \"The transcript survives in all three states — **always give it somewhere to point**\" — and AudioPlayer.jsx renders that as a TextAction whose target is the caller's problem. No component renders turns. Timeline is the nearest and is wrong on its API rather than its name: `{label, meta, description, actor, content, status?: \"done\"|\"current\"|\"upcoming\"|\"blocked\"|\"failed\"}` under a docstring about a rail \"lit to the current step\" — a conversation has no current step, no completion and no alternating speakers, and TimelineItem has no language slot.",
+   "severity": "blocker"
+  },
+  {
+   "need": "An editable list of rules the user can add to, edit and delete, where named rows are locked against deletion because law requires them",
+   "mode": "absent",
+   "screens": [
+    "SCR-M07-05"
+   ],
+   "rows": [
+    "M07-11",
+    "M01-57"
+   ],
+   "evidence": "BRIEF (SCR-M07-05, M07-11, P0): \"Hand-over rules are a list the owner **edits, adds to or removes** — price questions · angry customer · asks for the owner · a question it can't answer · asks to stop — each with what the agent says as it hands over. Sensible defaults, none forced — **except 'asks to stop', which is the statutory opt-out and cannot be removed**\"; state `floor-blocked-save`: \"deleting 'asks to stop' refuses the save with the floor named.\" LIVE: nothing in the inventory is a row editor. DataTable takes `rows: Row[]` read-only with `rowActions` and has no add, no per-row edit and no deletability flag (and per the phone-parity gap, those actions vanish on a phone anyway). Accordion takes a fixed `items: AccordionItem[]` with static `content`. Menu offers `destructive?: boolean` on one action — a delete affordance, not a row lifecycle. No component anywhere expresses \"this row of the list may not be deleted\", which is a compliance floor, not a preference.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A review comment anchored to a specific object or step, and the marker on the host surface that shows where a comment lives and moves the view to its subject when tapped",
+   "mode": "absent",
+   "screens": [
+    "SCR-MS-16",
+    "SCR-MS-03",
+    "SCR-MS-08"
+   ],
+   "rows": [
+    "M05-86",
+    "MS11-14"
+   ],
+   "evidence": "BRIEF (SCR-MS-16, M05-86): \"**Return with comments requires at least one comment pinned to the thing it refers to — an object or a step, never a loose note.** The design goes back to the designer with a notification and **pinned markers in the studio** at each commented object/step\", with the entry-and-exit note \"markers behave like validation locate entries: tap → centre and select the commented thing\" and two named states, `return-refused-no-comment` (\"a return with zero pinned comments is refused; the requirement is stated\") and `pinned-comment-markers`. LIVE: there is no comment, annotation, note or marker component in the 54. The only thing called a marker is MapSurface's `MapMarker` (`x`/`y` percent, `tone`, `live`, `lastSeen`, `label`, `onClick`) — a live-position pin for the field workforce, with no author, no timestamp, no body, no thread and no attachment to a domain object or a wizard step. Textarea holds the words; nothing pins them.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Pin placement on a map that is honest on touch — tap the surface to place, drag the pin itself, hold a pending-versus-confirmed distinction, and set a zoom level",
+   "mode": "present-but-wrong",
+   "component": "MapSurface — the right component for this screen, but its markers are display-only, the surface has no click handler and the zoom controls carry no level",
+   "screens": [
+    "SCR-MS-04"
+   ],
+   "rows": [
+    "MS1-14",
+    "MS1-15",
+    "MS1-16",
+    "MS1-18",
+    "MS1-21",
+    "M05-16"
+   ],
+   "evidence": "The one screen MapSurface actually serves, and earlier passes read MapSurface only as a candidate for the drawing canvas. BRIEF (SCR-MS-04, MS1-16, P0): \"Pin interaction: pointer users keep drag-map-under-fixed-pin with the 'Drag map to adjust' pill; **TOUCH adds tap-to-place (pin jumps) and direct pin drag** (census SC.10-2.16 directive).\" (MS1-18) \"Confirm Location (**disabled until a pin pends**)\" — so a pending pin and a confirmed pin must be different things on the surface. (MS1-15) \"satellite, **zoom 20 on first pin**, user zoom preserved on re-centre\"; (M05-16) \"The imagery tile the design is traced on is **pinned at capture**: it never changes underneath the design.\" LIVE, MapSurfaceProps in full: `children, height, radius, markers, route, geofences, accuracy, state, emptyTitle, emptyMessage, tilesTitle, tilesMessage, errorTitle, errorMessage, onRetry, controls, onZoomIn, onZoomOut, onRecenter, overlay, attribution, style`. There is no onMapClick, no onPlace and no onPinMove. MapMarker is `{id, x, y, tone, live, lastSeen, label, onClick}` — onClick only, no `draggable`, no drag callback, no pending/confirmed state; `live` and `lastSeen` are field-workforce semantics (\"Live positions pulse and are filled; last-known are hollow rings\"), not pin confirmation. The zoom controls are three bare callbacks with no level in or out, so \"zoom 20 on first pin, user zoom preserved on re-centre\" cannot be expressed either.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A canvas / drawing viewport and a 3D scene — the known gap, specified",
+   "mode": "absent",
+   "component": "Nothing named Canvas, Scene, Viewport, Model* or Studio* exists. MapSurface is the nearest precedent and carries over only its frame",
+   "screens": [
+    "SCR-MS-04",
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-08",
+    "SCR-MS-09",
+    "SCR-MS-11",
+    "SCR-F5-05",
+    "SCR-F5-01",
+    "SCR-M06-17"
+   ],
+   "rows": [
+    "MS1-29",
+    "MS1-30",
+    "MS2-03",
+    "MS2-05",
+    "MS2-07",
+    "MS2-15",
+    "MS2-16",
+    "MS2-17",
+    "MS2-39",
+    "MS3-01",
+    "MS3-03",
+    "MS3-17",
+    "MS3-22",
+    "MS6-06",
+    "MS6-12",
+    "MS6-14",
+    "MS6-30",
+    "MS6-49",
+    "M05-16",
+    "M05-22",
+    "M05-24",
+    "M05-28",
+    "M05-30",
+    "M05-51",
+    "M05-55",
+    "F5-33"
+   ],
+   "evidence": "FIVE THINGS IT MUST DO, from the rows rather than from the phrase '3D surface'. (1) A 2D VIEWPORT WITH A METRIC TRANSFORM: MS1-29 fixes the gesture contract — \"wheel x1.12 cursor-anchored, buttons x1.25, clamps 0.55–5.0 with live % readout and Fit view; middle-drag always pans; >=3 px = drag; **clicks never fire from pans; tools capture gestures exclusively**\"; MS2-03 adds \"pinch-zoom anchored between fingers, two-finger pan\"; MS1-30 requires \"north badge pointing TRUE north per calibration… **scale bar computed from the SAME px/m as hit-testing (can never disagree with geometry)**… honest pixelation above zoom 2.2\"; M05-16 requires the pinned capture tile and \"Tile fetch failure still opens the studio — blank canvas plus manual calibration — it never blocks\". MapSurface gives the frame, the four honest states including tiles-unavailable, the overlay slot and 44px controls, and nothing else — and its 0–100 percent coordinate space cannot represent MS2-05's 0.15 m minimum edge or a 0.3 m setback at all. (2) A VECTOR GEOMETRY LAYER: tap-corner tracing with live edge labels; CAD snapping (angle-relative, object-snap, guide rays, right-angle marks, visible snap on/off); close-shape confirm; **hit-testing against the TRUE shape bounds, topmost at the tap**; select, marquee, move, rotate with 15-degree snap, insert/delete/move vertex, lock; and four visibly distinct kinds — committed, uncommitted draft, AI-suggested ghost (\"pre-selected, tap to include/exclude… +/-0.5 m nudge arrows\"), and locked (\"desaturated with a badge\"). Nothing in the 54 takes geometry as input; the only positional API is MapSurface's percent markers and circular geofences. (3) CONSTANT-SCREEN-SIZE OVERLAY CHROME: per-object ID chips (\"WT1\"), per-edge dimension labels \"outside-the-edge chips (concave-correct side), constant screen size, **never upside-down, hidden <0.5 m or <30 px**\", drag handles, and a floating selection context bar that follows the selection and holds up to nine simultaneously-visible 44px actions with a count. Chip has no anchoring and no scale invariance; Menu opens from a trigger and closes on select, the opposite of a bar living for the life of a selection. Note the labels are user-visible numbers, so a 30px chip must also solve where its tier goes. (4) A MODE TOOL RAIL: four labelled groups, every button labelled AND stateful, mixing one-of-many modes with independent toggles (ortho-snap, show-all-measurements) beside exclusive modes, live COUNT badges, disabled-with-a-reason, and re-tapping the active tool returning to Select. IconButton has no pressed/active and no badge; SegmentedControl's option is `{value,label}` with a single required value that cannot express a resting no-tool state; AppRail's badge is a boolean dot. (5) A 3D SCENE: full-screen inspection with a **VISIBLE control cluster (orbit nudges, zoom +/-, reset) so nothing is gesture- or keyboard-only**, three presets Top/Isometric/Front, never below the horizon, object picking that opens an edit card for the picked thing, blocker-to-camera swing, member click highlighting — and FOUR states of its own (assets-loading, empty-at-zero-panels, procedural fallback so \"a 404 never crashes the scene\", structure-card-unavailable-explains-why). Plus a customer read-only mode that is part of the component and not a screen choice: F5-33 requires the live view \"read-only, **with every control absent**\" and M05-55 \"the read-only share state hides all edit controls **and the share button itself**\"; it is EMBEDDED behind a 'View in 3D' button with \"**no second link**\" and no separate customer URL; and degradation to capture stills is a RESTING state (`empty / captures-fallback`, \"the customer is never shown a void where the roof should be\") distinct from `error`. Volume throughout: the 221-panel design on a phone-class device over a slow connection.",
+   "severity": "blocker"
+  },
+  {
+   "need": "A paged document and print surface — the known gap, specified",
+   "mode": "absent",
+   "component": "DocumentPreview is the nearest name and is a branded quotation specimen; tokens/ has no print file and tokens/base.css contains no `@media print` rule of any kind",
+   "screens": [
+    "SCR-M06-17",
+    "SCR-M06-15",
+    "SCR-M06-14",
+    "SCR-F5-01",
+    "SCR-F5-03",
+    "SCR-MS-11",
+    "SCR-MS-17",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "MS9-01",
+    "MS9-02",
+    "MS9-03",
+    "MS9-04",
+    "MS9-05",
+    "MS9-16",
+    "MS9-25",
+    "M06-50",
+    "M06-51",
+    "M06-17",
+    "F5-39",
+    "M05-62",
+    "MS8-02",
+    "MS8-08",
+    "MS8-17",
+    "MS8-19",
+    "M05-67",
+    "MS11-33",
+    "MS11-34",
+    "M05-74"
+   ],
+   "evidence": "NINE THINGS IT MUST DO, beyond 'page geometry, title block, sheet numbering'. (1) PAGE GEOMETRY IDENTICAL ON SCREEN AND PAPER — M06-50 makes preview \"exactly what the customer will see\" and SCR-M06-15's volume says \"multi-page pagination — **pixel-for-content identical** to what the customer's rendering will show\". (2) TITLE BLOCK — MS9-01: \"proposal number, issue date, version/revision, validity period, prepared-by with company identity, and the **CUSTOMER-facing project name — never the internal design or variant name**.\" (3) COUNTED SHEET NUMBERING — MS9-02: \"Pagination is **counted, not hardcoded**: sequential unique page numbers, no duplicates, and **no trailing blank page in the PDF**.\" (4) DELIBERATE BREAKS AND PRINT/SCREEN SCOPING IN BOTH DIRECTIONS — SCR-M06-13's \"details save but **will not print**\" (a print-suppressed region) against MS9-16's staleness warning that \"**PRINTS (never print-suppressed)**\". (5) WHAT MUST NOT BREAK ACROSS A PAGE — a BOM line (SCR-M06-14's forty of them: item, spec, qty, unit, rate, tax, total); a table's caption AND header repeated on every continuation page, which DataTable cannot do (`caption` is one \"Overline caption above the table\", no repeat-on-break); a figure and the provenance label F8-07 requires beside it; the verbatim disclosure lines; an image and its caption — Image's `ratio` + `lazy:false` already hold that footprint and the page surface must not undo it. (6) OPTIONAL AND CONDITIONAL PAGES — MS9-25: \"the SLD page is **offered only when a real SLD exists**\"; MS9-03's drawings pages. (7) AUDIENCE VARIANTS OF THE SAME PAGES — MS9-04 customer vs internal, \"the internal view is **never the default** for a customer artefact\". (8) ONE CONTENT, TWO RENDERINGS — F5-39: \"*The customer link always renders the proposal as web — PDF is an artifact, never the only path to the number*\"; M06-51: \"the link renders the same content as web\" — so the surface must degrade to a continuous web page carrying identical content, not a second authored document. (9) TWO KINDS OF SHEET, NOT ONE — the drawing sheets need \"**zoom either works or is not advertised**; paper size, scale and sheet numbering consistent across every sheet and title block\" (MS8-02), \"the structural disclaimer travels on **EVERY** sheet\" (MS8-08), \"the legend lists **only symbols the sheet actually renders**\" (MS8-17), and exports SVG/PNG/DXF/Print-PDF server-rendered and failing fast (M05-67), with export still working in the read-only role; and MS11-34 needs the same surface for an ordinary product screen — \"**Print is a designed output: page setup, printable header, and margins that survive real printing**\" — for a tick-off work order, not a drawing. Volume: MS9-03's full structure at a 40-line BOM and the 221-panel design. LIVE: DocumentPreview is `brandColor…lineItems?: [string,string][], total, subsidyNote, width`, fixed to a quotation's shape and explicitly the F7-07 tenant-branding boundary, which is the wrong side of that boundary for an inspector's drawing.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Rich-text authoring and its matching read-only rendering, budgeted in pages — the known gap, specified",
+   "mode": "absent",
+   "component": "Textarea — `value` · `onChange` · `label` · `placeholder` · `rows` · `maxLength` · `helper` · `error` · `name`, \"Multi-line field\"",
+   "screens": [
+    "SCR-M06-11",
+    "SCR-M06-15",
+    "SCR-M06-17",
+    "SCR-F5-01",
+    "SCR-M01-19"
+   ],
+   "rows": [
+    "M06-15",
+    "M06-51",
+    "M01-51",
+    "F5-39",
+    "F3-16",
+    "F3-18"
+   ],
+   "evidence": "SIX THINGS IT MUST DO, beyond 'an editor exists'. BRIEF (SCR-M06-11, M06-15, P0): \"**Step 9 · Terms & Conditions (optional, up to 3 pages):** Add / Skip choice. When added: add-logo toggle · **rich-text toolbar + textarea** · **'Save as template'** (round-trips into the tenant's template set, M01-51) · char count · **≈ PDF page estimate**.\" (1) THE CAP IS PAGES, NOT CHARACTERS — the row's cap is \"up to 3 pages\" and the readout is \"char count · ≈ PDF page estimate\", both live; Textarea's only counter is `maxLength`, \"Shows a counter that warns before it blocks\", a hard character stop that cannot express a pagination budget. (2) IT IS COUPLED TO THE PAGE SURFACE — the page estimate can only be computed against the paged document above, so these two gaps must be closed together or the estimate is a guess. (3) DESIGN AT THE CAP — the brief's Data volume: \"a full **three pages** of rich text in the editor, with the char count and the ≈ PDF page estimate both live at that volume — **not a two-line placeholder**.\" (4) A RENDERER, NOT ONLY AN EDITOR — the same content renders read-only inside the document and on the customer page under M06-51's \"one computed value set feeds the document, the link and every export\" and F5-39's web-is-the-path-of-record, so every mark the toolbar produces needs a defined read-only rendering that also obeys the page surface's break rules. (5) AN INLINE LOGO PLACEMENT inside the content (the \"add-logo toggle\"). (6) A TEMPLATE ROUND-TRIP — storable to and reloadable from the tenant's template set (M01-51), so the content type is shared with M01's settings surfaces and SCR-M01-19's authored T&C body, not local to this step. Translation expansion applies at full volume: \"the builder is one of F3's five densest checked surfaces (F3-16/F3-18)\".",
+   "severity": "blocker"
+  },
+  {
+   "need": "Token-level treatments for canvas geometry semantics — committed vs draft vs AI-ghost vs locked vs selected geometry, constraint boundaries, and transient snap guidance",
+   "mode": "absent",
+   "component": "tokens/ — no constraint-boundary, ghost, locked or snap-guidance token, and no stroke width or dash pattern anywhere across base, colors, elevation, fonts, keyframes, motion, radius, spacing and typography",
+   "screens": [
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-08"
+   ],
+   "rows": [
+    "M05-23",
+    "M05-30",
+    "MS2-06",
+    "MS2-12",
+    "MS2-31",
+    "MS3-02",
+    "MS3-04"
+   ],
+   "evidence": "Listed separately from the canvas because it is a token-layer decision with a different owner and a different cost curve — and because the briefs name the design system as the authority for a treatment it does not define. (SCR-MS-06, MS3-04): \"_(Superseded visual fact — do not transcribe: 'red-dashed' is the POC's code fact; **the keep-out ring takes the design system's constraint-boundary treatment per F7-03**.)_\"; (SCR-MS-05, MS2-06): \"'cyan' is the POC's code fact, not a design instruction… **The binding behaviour is that guide rays and right-angle marks read as transient snap guidance, distinct from committed geometry; their treatment comes from `design/ds-source`.**\"; (MS2-31): \"the usable-area preview takes **the design system's constraint-boundary treatment** per F7-03\"; (MS2-12): \"locked roofs render desaturated with a badge\". LIVE, tokens/colors.css read end to end this pass: neutrals + --hairline + --mark-subtle, iridescence, --accent trio, --action-primary trio, five semantic mark/-text/-bg triples, --chart-1 through --chart-8 + --chart-gridline, and semantic aliases. Nothing else. F7-03 forbids raw colour literals (\"every visual value reaches a screen through the design system, never by transcription\"), so three canvas screens would each have to invent a treatment the law says they may not invent.",
+   "severity": "blocker"
+  },
+  {
+   "need": "Displaying a document the user uploaded, readable beside the form being filled from it",
+   "mode": "absent",
+   "screens": [
+    "SCR-M01-16"
+   ],
+   "rows": [
+    "M01-40"
+   ],
+   "evidence": "BRIEF (SCR-M01-16, M01-40, P0): \"Upload a manufacturer datasheet; the product extracts the typed spec fields for that component kind and presents them **for review and correction before the item is created**\", with the state `pdf-extraction-review` — \"extracted fields shown in the same typed form as manual entry, each field editable, **with the datasheet preview alongside**\" — and a Data volume of \"every extracted field for that component kind **alongside the PDF**.\" LIVE: Dropzone shows a supplied file only as `DropzoneFile.url` for a thumbnail; Image / ImageFrame / Thumbnail are documented for \"every **photograph** in the product\" (`src`, `ratio`, `fit`, `missingReason`, `referenceOnly`); DocumentPreview draws the tenant's own generated proposal. Nothing in the 54 renders a user-supplied source document for reading. Distinct from the paged-document gap, which is about PRODUCING page geometry — here the product must show back a file the user handed it so the reviewer can check the extraction against the source.",
+   "severity": "defect"
+  },
+  {
+   "need": "Header, row and item slots typed as plain strings where the system's own laws need a node, a mark or a second fact",
+   "mode": "present-but-wrong",
+   "component": "Accordion (`meta?: string`, no per-item state), Menu (`MenuItem.meta?: string`, no selected/checked state), RecordCard (one singular `chip`, `meta` as mono middot-joined parts), OptionCardGroup (`description?: string`, no children/render slot, no current-plan marker), Tabs and SegmentedControl (`{value,label}`, no badge, count or per-item state)",
+   "screens": [
+    "SCR-M07-09",
+    "SCR-M07-05",
+    "SCR-MS-07",
+    "SCR-MS-12",
+    "SCR-M06-10",
+    "SCR-M06-19",
+    "SCR-M06-16",
+    "SCR-M06-20",
+    "SCR-SHELL-01",
+    "SCR-M01-11",
+    "SCR-M12-01",
+    "SCR-M12-02",
+    "SCR-M12-03"
+   ],
+   "rows": [
+    "M07-19",
+    "M07-16",
+    "M07-11",
+    "M13-10",
+    "F3-03",
+    "MS4-01",
+    "MS4-02",
+    "M05-37",
+    "M05-71",
+    "MS10-11",
+    "MS10-35",
+    "M06-27",
+    "M06-45",
+    "M06-46",
+    "M05-13",
+    "M12-55",
+    "M12-49",
+    "BM-07",
+    "BM-05",
+    "F7-12"
+   ],
+   "evidence": "One shape, six components, and the failures differ only in what could not fit. (a) A COLLAPSED SECTION CANNOT SHOW IT IS THE BROKEN ONE — SCR-M07-09 (M07-19, P0): \"A knowledge base that contradicts itself is **flagged on save**… before the agent can speak either\", across eight fixed sections in a KB \"that has grown for weeks\". Accordion.jsx renders `{it.meta && <span style={{fontSize:12,color:\"var(--text-tertiary)\"}}>{it.meta}</span>}` — one tertiary-grey string, no tone, no mark, no aria-invalid, no way to force a section open. This is the Stepper failure one component over: the system can refuse the save and then hide which of eight sections to fix. Stepper was rebuilt for exactly this (`state:\"errors\"`, `errorCount` \"Shown as '3 to fix'\"); Accordion was not. (b) A SECTION HEADER CANNOT CARRY ITS DONE-STATE, ITS TOTAL AND ITS ACTION — MS4-01's per-section done-state summaries, M05-71's \"name, 'N of M included', **own total**, and **Refresh-from-design**\", M06-27's Selected/Empty per section (F7-12 needs a label PLUS a mark, and `meta` is a string). (c) A MENU CANNOT MARK THE CURRENT OPTION — SCR-SHELL-01 (M13-10, P0): \"the person **can switch** — a switcher lists the home of every held preset\", with `single-preset-trivial` only reading as trivial if the one entry is visibly current; MenuItem has no selected/checked state and its nearest slot is `meta?: string` — \"a shortcut, a count\". Every later picker (language, tenant, saved view) copies whatever the shell does. (d) A PHONE ROW CANNOT CARRY TWO FACTS — SCR-M06-19's `design-survey-review-needed`: \"**Both conditions can be true on the same row at once and must stay separately readable — two different facts, never merged into one badge**\", on rows that also carry a lifecycle status and a provisional marker; RecordCard gives the phone row exactly one `chip`, so facts two and three get typed into a mono meta string. (e) A PLAN CARD CANNOT CARRY ITS PUBLISHED CAPS — SCR-M12-03 (M12-55, P0): \"current plan and cycle **with the book's published caps/bundles**\" at \"~a dozen values per tier\", where BM-07 makes every cap legally publishable; OptionCardItem's `description` is a plain string with no children slot and no current-plan or scheduled-downgrade marker. (f) A LANGUAGE SWITCHER CANNOT SHOW WHICH LANGUAGES ARE AUTHORED — SCR-M07-09's `language-fallback` requires \"the design must show which language a section's content actually comes from\" across six agent languages; Tabs and SegmentedControl items are `{value,label}` with no badge, count or state.",
+   "severity": "defect"
+  },
+  {
+   "need": "An action or control that is unavailable and says why — either the act absent with the screen naming whose act it is, or the control disabled with the reason travelling beside it",
+   "mode": "absent",
+   "component": "Button (`disabled?: boolean` and nothing else), MenuItem.disabled, SelectOption.disabled, IconButton.disabled, OptionCardItem.disabled — five disabled flags and not one reason slot; Tooltip is documented as never the only place information exists",
+   "screens": [
+    "SCR-M12-02",
+    "SCR-M11-02",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M02-06",
+    "SCR-SHELL-06",
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-07",
+    "SCR-MS-09",
+    "SCR-MS-11"
+   ],
+   "rows": [
+    "M12-56",
+    "M12-55",
+    "M11-52",
+    "M08-10",
+    "M08-16",
+    "M02-63",
+    "MS2-01",
+    "MS2-21",
+    "M05-25",
+    "MS3-32",
+    "M05-35",
+    "MS4-15",
+    "MS4-20",
+    "MS4-27",
+    "MS8-07",
+    "M05-53"
+   ],
+   "evidence": "Sixteen P0 rows across eleven screens ask for the same sentence in the same place. THE PERMISSION HALF: SCR-M12-02 (M12-56): \"the state is visible, the acts are not; **the screen says whose act it is**\" (state `non-owner-read-only`); SCR-M11-02's reader-read-only: \"**every act that writes money is absent**… The screen says whose act the absent ones are rather than hiding the money it is showing\"; SCR-M02-06's `scope-blocked`: \"merge is unavailable **and says why**\"; SCR-SHELL-06's `no-amounts-for-employees`. THE PRECONDITION HALF: SCR-MS-07 (MS4-15): \"when unavailable the control **STATES THE REASON** ('draw a roof first' / 'choose a panel first')\"; MS4-20: \"phase-incompatible units carry **a badge stating why they cannot serve this site**\"; MS8-07: \"disabled with a stated reason until panel + inverter + enabled panels exist\"; M05-53: \"options taller than clearance unavailable with a reason\"; MS2-21: \"disabled options explain WHY inline\". LIVE: a greyed control is neither an absence nor an explanation. OptionCardItem's `description` is the option's standing explanation, so overloading it silently changes what a description means. Tooltip is ruled out by its own doc — \"Never the only place a piece of information exists — touch users will not see it\" — and by F8-07 where a number is involved. Banner is per-surface, not per-action-cluster.",
+   "severity": "defect"
+  },
+  {
+   "need": "A value slot that renders a named absence as content — \"no name yet\", \"no city yet\", \"no blockers\", \"no payment terms\" — rather than a blank or an em-dash",
+   "mode": "absent",
+   "screens": [
+    "SCR-M02-01",
+    "SCR-M02-04",
+    "SCR-M08-01",
+    "SCR-M08-02",
+    "SCR-M11-02",
+    "SCR-M12-02",
+    "SCR-MS-10"
+   ],
+   "rows": [
+    "M02-03",
+    "M08-21",
+    "M08-16",
+    "M11-15",
+    "F8-23",
+    "MS7-14"
+   ],
+   "evidence": "Four P0 rows in four modules demand the same treatment. M02-03: \"the missing fields are shown as **named gaps** on the record — 'no name yet', 'no city yet'… **nothing is invented to fill a gap**\" (states `gaps-on-save`, `field-gaps`). M08-21: \"its absence is **shown as absence rather than as an empty date**.\" M08-16 via SCR-M08-02's `empty-blocks-say-so`: \"blocks with nothing in them say so ('No blockers — nothing is waiting on anyone') rather than disappearing\", plus `no-design-reference` and `empty-payment-schedule`. M11-15: \"an absent schedule renders as absent… it does not invent rows, distribute the payable evenly, back-fill a template, or show a projection where an amount owed belongs.\" MS7-14 adds \"no undefined placeholders\". LIVE: EmptyState is a centred full-surface bloom — wrong scale for a header field or a table cell. StatCard's `value` is `string | number`, so the honest absence has to be typed as literal text per screen. DataTable cells render whatever `render` returns. DatePicker's `placeholder` covers the date case only. Seven screens, four modules, no shared answer — which is how half of them end up drawing an em-dash.",
+   "severity": "defect"
+  },
+  {
+   "need": "Showing a resolved value together with the value it superseded and which layer supplied it",
+   "mode": "absent",
+   "screens": [
+    "SCR-M01-15",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "M01-32",
+    "M01-37",
+    "MS10-13"
+   ],
+   "evidence": "BRIEF (SCR-M01-15) state `rates-panel-tier-attribution`: \"the rates panel shows, per item, which tier supplied each field (**platform value struck under an override**, own-SKU values plain) so an owner can always answer 'why is this price showing'\", against M01-32's resolution order \"tenant override → tenant own item → platform item\" and M01-37's sparse override where \"an unset field falls through to the platform value\". The same shape returns as MS10-13's stale-field pair — \"'yours X · design now Y' — both values shown\". LIVE: no component expresses inheritance. A DataTable cell holds one rendered value; Input and NumberField hold one value plus `helper`/`hint` prose; Chip and Badge are labels. tokens/typography.css, read in full, carries two weights, a scale and tracking, and no strikethrough or superseded-value role. Every field on that panel would get whatever strikethrough the drawing designer improvises, and the override-vs-inherited display recurs wherever a tenant overrides a platform default.",
+   "severity": "defect"
+  },
+  {
+   "need": "Reordering the items of an authored list by direct manipulation, operable by keyboard and by thumb",
+   "mode": "absent",
+   "component": "Timeline is display-only with no callbacks; Kanban's `onMove(id, toColumnKey, fromColumnKey)` carries no index and is documented \"Enables drag **between columns**\"; DataTable's `sortable` is a view order, not an authored one",
+   "screens": [
+    "SCR-M01-19",
+    "SCR-M06-08",
+    "SCR-M06-09",
+    "SCR-M06-10"
+   ],
+   "rows": [
+    "M01-51",
+    "M01-52",
+    "M06-12",
+    "M06-13",
+    "M06-27"
+   ],
+   "evidence": "BRIEF (SCR-M06-08, M06-12, P0): \"**Step 6 · Project Timeline: reorderable phase rows (⌃ / ⌄ arrows, 🗑 delete)**, each with Title * (char count) + Description * (char count) · ↺ Reset to System Default · ＋ Add Step\", with the context line \"fully workable at 375 px (D2, F7-30) — **reordering must work with touch**\", a Data volume of \"a realistic template-length list that still reorders comfortably at 375 px\", and `reordering` as a named screen state. BRIEF (SCR-M01-19, M01-52, P1): \"Project-timeline template: default phases and descriptions, **editable and reorderable**, consumed as the builder's timeline step default\" — so the same list is authored in settings and consumed in the builder, and both need the same answer. LIVE: no component in the 54 reorders a list within itself, and nothing owns the move-up/move-down affordance, its 44x44 targets, what happens to focus after a row moves, or what is announced when the order changes. The sibling editable-row groups without the reorder half (SCR-M06-09's \"tranche rows (label + % + ✕) · ＋ Add tranche\", SCR-M06-10's \"brand rows (✎ edit / ✕ remove)\") will copy whatever is improvised at step 6.",
+   "severity": "defect"
+  },
+  {
+   "need": "A required field that can render a validation failure — the state the Generate gate's jump lands on",
+   "mode": "present-but-wrong",
+   "component": "NumberField (no `error` prop — only `hint` and `correctionMessage`), SegmentedControl (no `error`, no `label`), OptionCardGroup, Switch and TimeField (no `error`)",
+   "screens": [
+    "SCR-M06-02",
+    "SCR-M06-03",
+    "SCR-M06-05",
+    "SCR-M06-06",
+    "SCR-M06-07",
+    "SCR-M06-08",
+    "SCR-M06-09",
+    "SCR-M06-10",
+    "SCR-M06-12"
+   ],
+   "rows": [
+    "M06-22",
+    "M06-23",
+    "M06-09",
+    "M06-10",
+    "M06-11",
+    "M06-13",
+    "M06-16"
+   ],
+   "evidence": "A false clearance: an earlier pass cleared NumberField for the builder's ranges (capacity 0.5–7000, battery 1–100 kWh, PR 50–100, dip 0–50, EMI 0–100%, tariff 1–50) and never asked whether the field can show a failure. BRIEF (SCR-M06-02, M06-22, P0): \"Generate lists every failure as a tappable jump ('Fix 2 issues to share') — **tapping a failure opens the exact step, with the failing fields highlighted**\", restated as `generate-failure-list`. BRIEF (SCR-M06-05, Entry & exit): \"payable floor, battery validity and required-field failures land here **highlighted**.\" Because M06-22 kills the Next-disabled rule, this highlight is the ONLY validation rendering the eleven-step builder has. LIVE: Input has \"error?: string — error message — inset 1.5px danger ring + text below\", and Select, Textarea, DatePicker and OtpInput all have `error`. NumberField has none; its `correctionMessage` is documented for clamping (\"Overrides the generated 'Rounded up to the 0.3 m minimum.' correction line\"), which is a correction, not a failure. SegmentedControl has neither `error` nor `label`. The required (*) fields the gate checks are overwhelmingly these components — step 3's capacity, tariff and ONGRID/OFFGRID/HYBRID control; step 4's PR %, seasonal dip %, units per kW/day; step 5's savings, payback, lifetime, inflation %; step 7's tranche percentages. The system's own numeric field cannot say it is the reason Generate refused.",
+   "severity": "defect"
+  },
+  {
+   "need": "An in-flight treatment on a single row or card — the act shown as in progress and never as done, light and in place, with the row still operable and a failure that returns it naming the reason",
+   "mode": "absent",
+   "screens": [
+    "SCR-M02-02",
+    "SCR-M02-06",
+    "SCR-M08-01"
+   ],
+   "rows": [
+    "M02-67",
+    "M02-24",
+    "M08-14",
+    "F8-36",
+    "F4-27"
+   ],
+   "evidence": "BRIEF (SCR-M02-02, M02-67, P0): \"until it confirms, the row shows the action **in progress, never as done**… the pending treatment is **light and in-row, never a blocking overlay or a spinner wall** (F4-27)\", with M02-24's three-second bar still binding and `assign-waiting` requiring the row stay operable. SCR-M08-01: \"`move-waiting-server` — the move waits visibly until it reaches the server.\" SCR-M02-06: \"Merge completes on the server and is never applied on a device.\" LIVE, verified across all four row/card forms: DataTable has no per-row busy state (`isRowMuted` only sets `opacity: dim ? 0.55 : 1`, which reads as done-and-inactive); ListRow is `{icon, avatar, title, subtitle, trailing, onClick}` with no state; RecordCard's only state is `muted`; Kanban's `onMove` is fire-and-forget with no card-level state field. The nearest affordance is Button's `loading`, which \"replaces the label with a spinner\" — it deletes the label of the act being awaited, is per-button not per-row, and on the phone lives inside the row actions the stacked form drops entirely.",
+   "severity": "defect"
+  },
+  {
+   "need": "Progress for work that outlives the moment — a computation that narrates its stage and can be cancelled, and a background job whose progress survives the person leaving the screen",
+   "mode": "present-but-wrong",
+   "component": "ProgressBar — `value?: number` and `gradient?: boolean` and nothing else; Toast auto-dismisses; Banner is per-surface",
+   "screens": [
+    "SCR-M02-05",
+    "SCR-MS-05",
+    "SCR-MS-08",
+    "SCR-MS-09"
+   ],
+   "rows": [
+    "M02-21",
+    "M02-18",
+    "F8-36",
+    "MS2-38",
+    "MS6-10",
+    "M05-45",
+    "M05-91"
+   ],
+   "evidence": "BRIEF (SCR-M02-05, M02-21, P0): \"The import runs as a **background job with visible progress** and a failure report… **The person who started it may leave the screen**; progress is visible while it runs and the finished import produces a report naming every rejected row and why\", with `importing-progress`: \"the person may leave and return to progress or the finished report; a connection drop mid-import continues server-side and the person is told where it got to.\" BRIEF (SCR-MS-05, MS2-38): \"detection progress **narrates three steps**\"; (M05-45) \"'Computing solar access… X%' progress\"; (MS6-10) the irradiance heatmap is \"**cancellable**\". LIVE: ProgressBar.d.ts in full is `value?: number /* 0–100 */`, `gradient?: boolean`, `style` — \"6px pill progress track; accent fill, or brand gradient for AI / long-running operations.\" Its own doc names long-running AI operations as its use and gives them no label, no determinate/indeterminate distinction, no \"n of m\", no stage, no cancel and no destination. Toast auto-dismisses (\"Older ones drop rather than piling up\"); Banner is \"In-page statement of a fact about what's on screen\"; UsageMeter is walled off as billing-only; Dropzone's `progress` is upload-specific. There is no tray, chip or shell slot for work happening elsewhere, so the one thing M02-21 promises — that you can walk away — has nowhere to live at the ruled 400-row volume.",
+   "severity": "defect"
+  },
+  {
+   "need": "A tick-off checklist: items grouped under phase headings, each tappable to done and remembered, with step-count progress whose meaning is stated and per-tick attribution",
+   "mode": "absent",
+   "component": "Checkbox is a single control `{checked, onChange, label, disabled, id}`; Timeline has close to the right item shape and no onClick or onToggle on any item",
+   "screens": [
+    "SCR-MS-17",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "M05-76",
+    "MS11-28",
+    "MS11-29",
+    "MS11-30",
+    "MS11-35",
+    "MS10-10"
+   ],
+   "evidence": "BRIEF (SCR-MS-17, M05-76): \"Progress indicator + '**done of total steps**'; each step a **tick-off item (number, title, detail, materials needed; tap toggles done, remembered)**; **phase headings**; Print\"; (MS11-35) \"step-count progress **with its meaning stated**; ticks PERSIST per project (not device-local) and carry R16 attribution — **who ticked, optional 'done by'**\"; (MS11-30) \"phase headings that do not repeat misleadingly\"; (MS10-10) a compliance checklist \"with live evidence links where the design can prove an item\". LIVE: Checkbox has no item structure, no detail line, no materials list, no attribution. Timeline has the fields (label, meta, description, `actor` \"Who did it — renders with a small person glyph\", content, status) and is documented as \"a sequence… lit to the current step\" with no toggle on any item — it reports what already happened rather than letting a coordinator tick one off on a roof. ProgressBar is `{value, gradient}` with no label, so \"12 of 47 steps done\" has nowhere to live. Note this checklist is also the non-drawing document the print surface must serve.",
+   "severity": "defect"
+  },
+  {
+   "need": "An explanation attached to a single value — how it was derived, what it assumes, what it excludes — readable by touch and by a screen reader as adjacent content rather than as a hover",
+   "mode": "present-but-wrong",
+   "component": "Tooltip, which the design system itself and F8-07 both rule out for this job, with no replacement offered",
+   "screens": [
+    "SCR-MS-03",
+    "SCR-MS-08",
+    "SCR-MS-09",
+    "SCR-MS-10",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "MS10-19",
+    "M05-72",
+    "MS12-09",
+    "MS7-22",
+    "MS7-51",
+    "MS6-46",
+    "MS6-47"
+   ],
+   "evidence": "BRIEF (SCR-MS-12, MS10-19): \"**Derivation explanations are readable on touch and by screen readers — not tooltip-only** (S9-3.3 fixes `.71`)\"; (M05-72) \"derivation explanation (**the formula in words**)\" as a per-line field of the 11-column BOM; (SCR-MS-10, MS7-22) \"**model boundaries stated in the surfaces that use it, not only in code**\"; (SCR-MS-09, MS6-47) \"per-kind assemblies and quantities marked ASSUMED… with the '**nominal — engineer to confirm**' note\"; (SCR-MS-03, MS12-09) \"a **provenance footer explaining how the total is computed**\". LIVE: Tooltip.d.ts — \"Near-black label for a control whose meaning isn't obvious… **Never the only place a piece of information exists — touch users will not see it.**\" The system has ruled itself out and offers no replacement: Accordion is section-level and cannot attach to a cell or a figure; `hint`/`helper` on Slider, NumberField, Input and Select are single strings on form controls only, with no disclosure and nothing available on a read-only computed value.",
+   "severity": "defect"
+  },
+  {
+   "need": "An itemised money block that ends in a computed total — a table or list whose lines sum to a stated figure",
+   "mode": "present-but-wrong",
+   "component": "DataTable has `caption`, `rowActions` and `page`/`pageSize`/`total` (a pager record count, not a money total) and no footer, summary or total-row concept; DocumentPreview's `lineItems`+`total` is the branding-settings A4 mock",
+   "screens": [
+    "SCR-M06-14",
+    "SCR-M06-05",
+    "SCR-M06-17",
+    "SCR-M06-15",
+    "SCR-F5-01",
+    "SCR-MS-12"
+   ],
+   "rows": [
+    "M06-35",
+    "M06-39",
+    "MS9-29",
+    "MS9-19",
+    "F5-32",
+    "M05-71"
+   ],
+   "evidence": "An earlier pass cleared DataTable for M06-39's 40-line BOM on caption + stackBelow + pager and never asked what the forty lines add up to. BRIEF (SCR-M06-14, Numbers): \"**BOM total ↔ proposal price** — reconciles under the locked invariants (margin below tax, discounts pro-rated pre-tax, BOM ↔ proposal reconciliation); **a disagreement is a defect, not a display difference**\" — so the total is load-bearing content on the same surface as the lines, at \"a 40-line BOM… at phone width, without a wide table\", where the stacked card form has nowhere to put it. BRIEF (SCR-M06-05, M06-35, P0): \"cost + battery − incentive − discount = payable, recomputing on every change\" — an itemised equation, not a single stat. BRIEF (SCR-M06-17): \"**Money summary: system cost, tax, incentive/subsidy amount, discount, payable**… **zero never renders negative**.\" LIVE: DataTable's `total` is the pager's record count; there is no footer row, no sum slot and no way to mark a row as the total, so the one row that must not sort, must not stack away and must not paginate has no expression. Six screens across two modules need this block.",
+   "severity": "defect"
+  },
+  {
+   "need": "A period-over-period delta whose good/bad reading is stated by the caller, not inferred from the arrow's direction",
+   "mode": "present-but-wrong",
+   "component": "StatCard — `deltaDir` conflates direction with sentiment, in the implementation as well as the type",
+   "screens": [
+    "SCR-M13-01",
+    "SCR-M11-01",
+    "SCR-M12-04"
+   ],
+   "rows": [
+    "M13-14",
+    "M13-15",
+    "M13-16"
+   ],
+   "evidence": "BRIEF (SCR-M13-01) puts \"the overdue total\" (M13-16) and the attention list's \"payments overdue\" and \"leads unassigned past 24 hours\" (M13-15) on the same dashboard as \"won/signed value vs last period, vs target if set\" (M13-14). LIVE: StatCard.d.ts documents only `deltaDir?: \"up\" | \"down\"`, and StatCard.jsx resolves direction AS sentiment — `const good = deltaDir === \"up\";` then `background: good ? \"var(--success-bg)\" : \"var(--danger-bg)\", color: good ? \"var(--success-text)\" : \"var(--danger-text)\"` with a matching arrow path. A rising overdue total renders green with an up arrow and reads as success; overdue falling renders red. On the owner's home screen roughly half the figures are ones where up is bad.",
+   "severity": "defect"
+  },
+  {
+   "need": "A money-amount entry field in the tenant's currency that refuses an out-of-range value and names the honest path, rather than correcting it to a value the person did not type",
+   "mode": "present-but-wrong",
+   "component": "NumberField",
+   "screens": [
+    "SCR-M11-03",
+    "SCR-M02-04",
+    "SCR-M07-02",
+    "SCR-M13-01"
+   ],
+   "rows": [
+    "M11-38",
+    "M11-34",
+    "M11-46",
+    "M02-40",
+    "F3-20",
+    "M07-62",
+    "M13-17",
+    "F1-46"
+   ],
+   "evidence": "BRIEF (SCR-M11-03, state `Amount-non-positive-refused`): \"save is **refused** with the constraint stated in place, no entry is created, and the refusal names the honest path — **a wrong amount is not edited and not typed negative, it is recorded and then reversed**\", with the amount \"defaulted to the tranche's outstanding, always editable\". LIVE: NumberField documents the opposite behaviour — \"Commits once on blur or Enter; empty or invalid never commits (the last good value is restored); **a clamped value says so rather than snapping silently**\", with `correctionMessage` overriding the generated correction line. Clamp-and-announce is not refuse-and-name-reversal. It also has no currency affordance (`unit` is a trailing string; the only formatter in the system is `inr`/en-IN, display-only, living in the Charts namespace), and its `step`/stepper buttons are the wrong grammar for a payment amount. Input has a `leading` slot but disclaims the job: \"onCommit… Always a string — numeric entry with clamping and correction **belongs to NumberField**.\" The system already knows how to do this correctly one component over — readme.md on TimeField: \"A time outside `min`/`max` is **refused with the window named, never clamped**\" — so money entry needs the TimeField pattern, not a new idea.",
+   "severity": "defect"
+  },
+  {
+   "need": "An allocation meter against a required total that states the remainder in words and can render an over-allocation",
+   "mode": "present-but-wrong",
+   "component": "ProgressBar — a bare 0–100 `value`",
+   "screens": [
+    "SCR-M06-09"
+   ],
+   "rows": [
+    "M06-13",
+    "M06-23"
+   ],
+   "evidence": "BRIEF (SCR-M06-09, M06-13, P0): \"tranche rows (label + % + ✕) · ＋ Add tranche · **progress bar + validation: 'Total allocation must = 100%'** — post-R12 this is a Generate-time block, shown live as feedback and enforced only at Generate **with the remainder stated ('12% unallocated')**\", drawn as `allocation-incomplete-remainder`, with a Data volume requiring \"the progress bar and remainder line **always visible at 375 px**\". LIVE: ProgressBar has no label, no target, no remainder slot, and no way to render a total above 100% when the rep's rows over-allocate — which is half the failure the live feedback exists to catch. UsageMeter is mechanically closer (denominator, a scale past 100%, a note) and readme.md walls it off: \"A billing meter for SCR-M12-04… ProgressBar stays a 6px operation bar with no billing semantics.\" A proposal's tranche split is not a billing period against a bundle, and borrowing the billing meter is the wrong-instrument failure this audit exists to catch.",
+   "severity": "defect"
+  },
+  {
+   "need": "A held-on-device capture queue that shows how many files are waiting and offers a retry, on the capture surface itself",
+   "mode": "present-but-wrong",
+   "component": "Dropzone — `heldOnDevice?: boolean`",
+   "screens": [
+    "SCR-M11-03",
+    "SCR-M08-03"
+   ],
+   "rows": [
+    "M11-37",
+    "F4-21"
+   ],
+   "evidence": "BRIEF (SCR-M11-03, M11-37, P0): \"A photograph captured in the field is held and uploaded when the connection returns, **with its waiting count and a retry shown on the capture screen itself** (F4-21) — but the money entry is a server write.\" LIVE: Dropzone carries `heldOnDevice?: boolean` documented as \"These photos are held on the device and upload once there's a connection. **The one place in the product where anything is kept back**\", alongside `state?: \"idle\"|\"uploading\"|\"error\"`, `errorMessage`, per-file `progress` and batch `progress` — and there is no waiting/queued count and no `onRetry` anywhere on the component. The one prop that acknowledges the held queue is a bare boolean, so the two things M11-37 requires the capture screen to show are the two things the capture component cannot show.",
+   "severity": "defect"
+  },
+  {
+   "need": "A stage board whose phone form is one column with a stage filter, not every column stacked",
+   "mode": "present-but-wrong",
+   "component": "Kanban — `stackBelow`",
+   "screens": [
+    "SCR-M08-01"
+   ],
+   "rows": [
+    "M08-10",
+    "M13-34",
+    "PS-21",
+    "F7-31"
+   ],
+   "evidence": "BRIEF (SCR-M08-01, M08-10, P0): \"Desktop shows the full board; **mobile shows one column with a stage filter**\", with the named states `mobile-single-column-filter` / `mobile-single-column (stage filter)`. LIVE: Kanban.jsx computes `const stacked = own !== null && own < stackBelow;` then `flexDirection: stacked ? \"column\" : \"row\"` over `columns.map(...)` — every one of the nine stage columns renders full width, one after another; at the ruled 200-project volume that is the whole portfolio in one scroll. The prop's own doc sells the wrong answer as the phone form: \"Own-width px below which columns **stack vertically** instead of scrolling sideways.\" The obvious workaround does not close it: a screen could pass a single column with FilterChips above, but Kanban measures its own width with a private ResizeObserver and exposes neither the measurement nor a callback, so the screen cannot know WHEN to switch without duplicating the observer. The component owns the breakpoint and answers it wrongly.",
+   "severity": "defect"
+  },
+  {
+   "need": "A bounded group of labelled chips with an overflow affordance, for a cell or row that holds several at once",
+   "mode": "present-but-wrong",
+   "component": "Chip and Badge are single pills; AvatarGroup is the system's only grouped-token component and it takes people, not labels",
+   "screens": [
+    "SCR-M01-12",
+    "SCR-M01-15",
+    "SCR-M01-16"
+   ],
+   "rows": [
+    "F2-10",
+    "M01-19",
+    "M01-34"
+   ],
+   "evidence": "BRIEF (SCR-M01-12, F2-10, P0): \"The team list shows **all** roles a person holds as chips\", with a Data volume of \"each person may carry **several of the twelve preset chips at once** plus a status and a last-active value.\" BRIEF (SCR-M01-15, M01-34, P0): \"every picker and search result badges compliance per those schemes\" — several badges per row — and \"An empty scheme set means no badges, never an error.\" LIVE: Chip and Badge are single pills with no grouping, no cap and no overflow; the only grouped-token export is AvatarGroup. DataTable has no per-cell wrap or truncation rule and stacks to one card per record below 640px of its own width, so a cell holding up to twelve role chips has no defined behaviour at either size, and every list screen carrying multi-valued tags decides it again.",
+   "severity": "defect"
+  },
+  {
+   "need": "Authoring one piece of content across several languages, showing per language whether it is authored here or inherited from the primary",
+   "mode": "absent",
+   "screens": [
+    "SCR-M07-09",
+    "SCR-M07-05"
+   ],
+   "rows": [
+    "M07-09",
+    "M07-15",
+    "M07-16"
+   ],
+   "evidence": "BRIEF (SCR-M07-09, state `language-fallback`): \"content is editable per agent language where the owner wants distinct wording; a section answered in one language falls back to the tenant's primary agent language rather than silence — **the design must show which language a section's content actually comes from**\"; Data volume: \"Eight fixed sections… each holding owner-written content, potentially per agent language (**up to the six agent languages**, M07-15), with fallback to the tenant's primary.\" LIVE, narrowed honestly: the per-section statement is half-expressible — Textarea has `helper` and could carry \"Falling back to Hindi\". The switcher half is not: Tabs items are `{value, label}` and SegmentedControl's are `{value, label}` with no badge, count, tone or per-item state, so a six-language switcher cannot show which languages are authored and which are inherited, and the owner cannot see the shape of the work. Accordion's `meta?: string` sits on the SECTION, not on the language.",
+   "severity": "defect"
+  },
+  {
+   "need": "A set of dates the tenant maintains, where each date shows whether the market pack supplied it or the tenant added it, and only the tenant's own can be removed",
+   "mode": "present-but-wrong",
+   "component": "DatePicker — `mode?: \"single\" | \"range\"`, `markers` display-only, and a DayMarker whose origin lives in a tooltip",
+   "screens": [
+    "SCR-M07-06"
+   ],
+   "rows": [
+    "M07-12",
+    "F1-48"
+   ],
+   "evidence": "BRIEF (SCR-M07-06, state `holiday-calendar`): \"the market's **pack-supplied** holiday calendar plus **tenant-added** extra holidays\"; Numbers carrying provenance: \"Holiday dates — pack-supplied market holidays (data from F1-48) plus tenant-added dates\"; M07-12 permits \"narrower windows and extra holidays only, never wider\". LIVE: `mode?: \"single\" | \"range\"` — a set of unrelated dates cannot be held, added to or removed at all; `markers?: Record<string, DayMarker>` is display-only and DayMarker is `{tone?: \"present\"|\"absent\"|\"leave\"|\"holiday\"|\"scheduled\"|\"neutral\"; label?: string /** Read out by screen readers and used as the tooltip. */}`. Both origins collapse onto the single `holiday` tone, their only differentiator is the tooltip F8-07 rules out for exactly this kind of provenance, and nothing says which dates the tenant is permitted to delete.",
+   "severity": "defect"
+  },
+  {
+   "need": "A scrubbable period track with transport — play/pause over a continuous or twelve-stop domain — driving a live recompute of the surface beside it, identical in the 2D canvas and the 3D scene",
+   "mode": "absent",
+   "component": "AudioPlayer is the only transport in the system and is governed by consent and retention law, not playback; Slider has no playing state and no transport",
+   "screens": [
+    "SCR-MS-08",
+    "SCR-MS-09"
+   ],
+   "rows": [
+    "M05-45",
+    "M05-51",
+    "MS6-10",
+    "MS6-31",
+    "MS6-36"
+   ],
+   "evidence": "BRIEF (SCR-MS-08, M05-45): \"irradiance heatmap (legend Poor→Excellent 0/50/100%, **Jan–Dec month scrubber recolouring instantly**, current-month avg access %…)\"; (SCR-MS-09, M05-51) \"**Play/Pause sun animation; time-of-day 5 AM–7 PM**; sunrise/sunset; sun-position read-out\"; (MS6-31) \"play/pause animation, time slider, sunrise/sunset readouts, sun-position widget and sun-path arc\"; (MS6-36) \"month track, optional kWh layer when measured weather exists, and **2D-canvas parity**\" — the parity clause is what makes this shared rather than screen-specific. LIVE: SliderProps in full is `value, onInput, onCommit, min, max, step, label, unit, hint, format, steppers, disabled, density, id, style` — no playing state, no play/pause, no per-stop domain, no loop. AudioPlayer is \"a call-recording player whose states are governed by consent and retention law, not playback\", with `status?: \"available\"|\"consent-declined\"|\"purged-retention\"` — not a simulation clock.",
+   "severity": "defect"
+  },
+  {
+   "need": "A continuous colour-ramp scale with a legend that names its metric and states its floor — for a surface tinted by a value rather than split into named series",
+   "mode": "present-but-wrong",
+   "component": "ChartLegend takes discrete items only; tokens/colors.css has eight categorical chart series and no sequential ramp",
+   "screens": [
+    "SCR-MS-08",
+    "SCR-MS-09"
+   ],
+   "rows": [
+    "M05-45",
+    "M05-52",
+    "MS6-33",
+    "MS6-36"
+   ],
+   "evidence": "BRIEF (SCR-MS-08, M05-45): \"**legend Poor→Excellent 0/50/100%**\"; (SCR-MS-09, MS6-36) \"geometric-access metric **with its floor stated in the legend**\"; (M05-52) \"Solar-access view (tints each panel by actual sun)\". LIVE: `ChartLegend(props: { items: { label: string; value?: React.ReactNode; color?: string }[] })`, rendered as 8x8 square swatches plus labels — a flat list of discrete stops, with no continuous scale, no min/mid/max and no metric-floor line. tokens/colors.css, read in full this pass, ships \"/* Chart palette — ordered, colourblind-safe, sampled from iridescence. Series fills, never text. */ --chart-1…--chart-8\" and `--chart-gridline`: eight categorical series and not one sequential ramp, so a designer drawing Poor→Excellent must invent it, which F7-03 forbids.",
+   "severity": "defect"
+  },
+  {
+   "need": "A mode instruction strip: a persistent, politely-announced line stating what the active tool expects and how to cancel it, living for the duration of the mode rather than a timeout",
+   "mode": "present-but-wrong",
+   "component": "Toast / ToastHost — an auto-dismissing notification queue, wrong lifetime and wrong role",
+   "screens": [
+    "SCR-MS-05",
+    "SCR-MS-06",
+    "SCR-MS-08"
+   ],
+   "rows": [
+    "MS2-04",
+    "MS2-10",
+    "MS3-13",
+    "MS6-11",
+    "M05-32",
+    "M05-45"
+   ],
+   "evidence": "BRIEF (SCR-MS-05, MS2-10): \"Draft affordances: crosshair glyph at snapped point, pan disabled while drawing, **live status hint bar (aria-live)**\"; (SCR-MS-06, MS3-13) \"Placement: pick → **hint bar** → one click drops ONE object at defaults, exits placement, auto-selects; Esc cancels\"; (M05-32) \"a cancellable touch placement mode **with on-screen instruction**\"; (SCR-MS-08, MS6-11) \"Measure tool and **per-tool instruction hints**; transient notices with accessible roles; **banner stacking never covers the rails**.\" LIVE: Toast is \"White toast card (16px radius, e5) with a leading semantic icon in a circular tint. **One at a time**\", props `tone, title, description, icon, action` — a notification about something that happened, with no role or politeness prop; ToastHost adds `position, max, duration, offset` and \"stacks, auto-dismisses, pauses while the pointer is over it\". A caller could pass a very large `duration` — the honest escape hatch — and still get a floating card in a dismissal queue rather than an aria-live status BAR bound to a mode's lifetime. Banner, the persistent alternative, is \"In-page statement of a fact about what's on screen\" whose stacking the brief itself warns must never cover the rails.",
+   "severity": "defect"
+  }
+ ],
+ "verdict": [
+  "DROPS — 2 capabilities dropped, covering 8 raw rows. (1) 'Per-row provenance inside one DataTable column' (raised as a blocker in block1 twice, block2-5 twice, and as a nit in block7 and block8): REFUTED by its own slice and re-verified by me in the live file. DataTable.jsx ends `export { Tier as ProvenanceTier }` and DataTableColumn carries `render?: (row) => React.ReactNode`, so `render: row => <ProvenanceTier tier={row.tier} withLabel />` places a per-row tier with the shipped API. What survives is not this — it is the primitive's default rendering, which is gap 1. (2) 'AudioPlayer would assert consent/retention facts that do not exist' (block6): REFUTED — AudioPlayer.jsx builds each footnote line conditionally and gates the whole row, so with status defaulted and consentAt/retentionUntil omitted it asserts nothing. What remains is ergonomics, which is a look-and-arrangement matter and not a gap.",
+  "NARROWED, not dropped — StatCard. Two slices claimed the tier 'cannot be placed anywhere' on StatCard. StatCard.d.ts types `children?: React.ReactNode`, so a tier CAN be dropped in. The claim is narrowed to what is irreducible and still a blocker: the slot is documented 'e.g. a sparkline node bleeding to card edges', so the adjacency is unspecified and six blocks each pick their own; and StatCard has no `state`, no `onClick` and no band, so freshness, tappable counts and pass/fail verdicts have no expression at all.",
+  "DEDUP — roughly 185 raw rows arrived (five slices, each a first pass plus an adversarial refutation, so nearly every finding appeared at least twice). Merged to 46 distinct capabilities. The heaviest merges, which are the ones that change the shape of the problem: the provenance-tier slot was reported 11 times across all five slices under six different names and is now three entries (rendering default, vocabulary, slot); the 44x44 breach was reported from block2-5 and block7 and is one entry naming four sites; DataTable's stacked branch dropping rowActions, isRowMuted and caption arrived from block2-5, block6 and block7 as three findings and is one; the section/block frame arrived from block2-5, block6 and block7 as 'block seams', 'composable home block' and 'titled section card' and is one; StatusChip's closed union arrived from four slices with four different missing vocabularies and is one. A capability reported by five slices is a token- or law-layer problem; a capability reported by one is a surface.",
+  "BLOCK 1 VERDICT — NO. The design run cannot start on block 1 today, and blocks 1-6 were NOT clean before this audit. Nine blockers land on block 1's own screens: no application top bar at all (SCR-SHELL-01/02/03, and tokens/spacing.css names --header-h:64px and a --sidebar-w:260px that is not the 72px rail that ships); AppRail's `badge?: boolean` cannot count unread (SCR-SHELL-03); the high-contrast field mode readme.md asserts exists has no implementation in tokens/colors.css, which is a single :root with no second scope (SCR-M01-11); DataTable has no needs-attention row state and no cell commit path for the 400-row inline-fix import (SCR-M01-17); FilterBar.FilterChips is `value?: string`, one-of-N, with no filter-panel body and no range control anywhere in the 54, so M01-38's six dimensions cannot be expressed (SCR-M01-15/16); DocumentPreview is one fixed A4 proposal sheet whose own docstring claims it 'previews all of M01-50 (logo, letterhead, ...)' with no letterhead prop of any kind (SCR-M01-18/19/20); and the three provenance blockers ride every number on every one of those screens. The first block that CAN be drawn is none of them — the provenance, formatting, status-vocabulary and 44px entries are inherited by all 99 screens, so no block is clean until the token- and law-layer entries (gaps 1-11) are closed.",
+  "COVERAGE TRACED AND CLEARED — round ten's five fixes were re-opened and each holds for what these briefs need, with two scope limits noted as gaps rather than regressions: Stepper ships the four states including `errors` with `errorCount` ('3 to fix'), plus `rail`/`indicator` and `StepList`, which fully covers M05-03 — its clickability rule is a separate collision with M06-22 and is gap 16, not a re-report. FilterBar's 44px-target-around-a-32-36px-pill law is real and expressed in the component ('Callers get the floor for free and cannot opt out of it') — it is the pattern Kanban, Menu, Banner and SelectionBar should copy and do not. TimeField refuses an out-of-window time with the window named rather than clamping, which is exactly the pattern money entry needs and does not have. BrandColorField measures contrast, answers both directions separately, offers a darkened shade instead of refusing, and renders every verdict as a word plus a glyph — its F7-07 scope statement is gap 7. UsageMeter's denominator, period, tier, 80% tick and past-100% scale all hold for a sold bundle; the no-rate case and the missing loading/error states are gap 13.",
+  "ALSO CLEARED against the live files, so the holes are legible against real coverage: DataTable's sorting, pagination, selection band, own-width stacking, loading/empty/error and exported ProvenanceTier; Image/ImageFrame/Thumbnail's three-state footprint fixed before the fetch, plus `referenceOnly` and `staleAt` (which covers SCR-F5-05's captures-fallback and is the precedent numbers lack); AudioPlayer's consent-declined and purged-retention as separate non-error states; ChartFrame's `provenance` marked 'Required on anything user-facing' and its four states; MapSurface's four honest states including tiles-unavailable, its overlay slot and 44px controls; NoConnection as the one full-screen state rather than a per-surface one; CoachMark, Toast/ToastHost, Modal, Dropzone's upload states, Checkbox/Radio/Switch, SearchField, OtpInput, QRCode, Breadcrumb, Avatar/AvatarGroup, Wordmark/LogoTile; Kanban's always-visible move buttons as the keyboard-and-touch answer to HTML5 drag (right intent, wrong target size); Calendar/DatePicker markers; and the contrast floor itself, which is measured, tokenised and genuinely enforceable — tokens/colors.css carries white/canvas/own-tint ratios per token and the marks-vs-words split is real."
+ ],
+ "perSlice": [
+  {
+   "slice": "Block 1 — shell, entry and tenant (23 screens)",
+   "firstPass": 13,
+   "afterRefute": 17,
+   "checked": 69
+  },
+  {
+   "slice": "Blocks 2–5 — billing, CRM, projects, payments (21 screens)",
+   "firstPass": 17,
+   "afterRefute": 23,
+   "checked": 32
+  },
+  {
+   "slice": "Block 6 — sales execution, calling core, owner home (12 screens)",
+   "firstPass": 12,
+   "afterRefute": 18,
+   "checked": 37
+  },
+  {
+   "slice": "Block 7 — the 3D design studio (18 screens)",
+   "firstPass": 22,
+   "afterRefute": 30,
+   "checked": 55
+  },
+  {
+   "slice": "Block 8 — proposals and the customer link (25 screens)",
+   "firstPass": 14,
+   "afterRefute": 20,
+   "checked": 52
+  }
+ ]
+}
