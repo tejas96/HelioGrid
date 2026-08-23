@@ -83,7 +83,8 @@ something that was supposed to be imported (Law 11).
 
 - **bug** — fix it.
 - **product-question** — a missing business rule or spec ambiguity. **Never invent a
-  requirement:** record it in `docs/13` or `docs/15` and ask the owner. Does not block a clean
+  requirement:** record it in `prd/registers/open-questions.md` or `conflicts.md` and ask the
+  owner. Does not block a clean
   run.
 - **false-positive** — justify with evidence. Not waved off.
 - **environment** — emulator down, server down. Fix and re-run; does not consume a round.
