@@ -5,7 +5,7 @@ Zero-trust verification of the PRD / briefs / tasks suite. Ground truth is deriv
 from the live PRD every run, never from a cached snapshot, so a gate cannot pass by
 agreeing with a stale baseline.
 
-Run:  python3 gates.py [--repo /Volumes/works-space/heliogrid_v2_prd] [-v]
+Run:  python3 gates.py [--repo <path>] [-v]   # defaults to this script's own repo
 Exit: 0 all gates pass, 1 otherwise.
 """
 
@@ -17,7 +17,11 @@ import re
 import sys
 from collections import defaultdict
 
-REPO_DEFAULT = "/Volumes/works-space/heliogrid_v2_prd"
+# Derived from the script's own location, never a hard-coded absolute path: this file used to
+# name /Volumes/works-space/heliogrid_v2_prd, so after the spec moved into this repo it kept
+# reading — and passing against — the OLD folder. It only surfaced when that folder was deleted
+# and every count dropped to zero. next-screen.py had it right; this matches it.
+REPO_DEFAULT = os.path.dirname(os.path.abspath(__file__))
 
 # A requirement row id: F4-04, M09-52, MS12-19, BM-21, OV-39, PS-24 — and MS7-24b, the one
 # letter-suffixed row in the suite. It is a distinct P0 row sitting beside MS7-24, and a
