@@ -1,0 +1,75 @@
+/* IconButton — a perfect circle. The `size` prop is the VISUAL diameter and lands inline; the
+   44px minimum target is this file's, so a caller cannot shrink the hit box below the floor.
+
+   The ghost variant reads --control-edge rather than hardcoding `none`: an inline none beats field
+   mode's blanket rule, which would leave the lowest-contrast control in the system without an edge
+   in sunlight. --control-edge is `none` in the base scope. */
+
+.hg-icon-button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-icon-button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-icon-button[data-variant="surface"] {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--e1);
+}
+
+.hg-icon-button[data-variant="dark"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-icon-button[data-variant="ghost"] {
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: var(--control-edge);
+}
+
+.hg-icon-button[data-variant="surface"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  box-shadow: var(--e2);
+}
+
+.hg-icon-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--neutral-bg);
+}
+
+.hg-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.94);
+}
+
+.hg-icon-button:disabled,
+.hg-icon-button[aria-disabled="true"] {
+  background: var(--canvas-sunken);
+  color: var(--text-disabled);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* With a stated reason the control becomes a column: circle, then the sentence. */
+.hg-icon-button-column {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+}
+
+/* The sentence itself is ActionReason's — including the rule that the control may be grey while the
+   words explaining it are not (--text-secondary, never --text-disabled). Nothing to restate here. */

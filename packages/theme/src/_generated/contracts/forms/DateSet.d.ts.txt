@@ -1,0 +1,80 @@
+import React from "react";
+import { ISODate } from "./DatePicker";
+import { ComplianceFloorSpec } from "../feedback/ComplianceFloor";
+
+/** Where the date came from. **Data, not a display choice** — `F1-48` supplies the pack half. */
+export type DateOrigin = "pack" | "tenant";
+
+export interface DateSetEntry {
+  date: ISODate;
+  /** "Diwali", "Gudi Padwa", "Founder's day" — the holiday's name, not a tooltip. */
+  name?: string;
+  origin: DateOrigin;
+  /** Tenant rows only — "Added by Priya Menon, 12 Feb 2026". Rendered after the origin word. */
+  addedBy?: string;
+}
+
+export interface DateSetProps {
+  entries: DateSetEntry[];
+  /** A date was added. Only ever a tenant addition — `M07-12` permits extra holidays, not fewer. */
+  onAdd?: (date: ISODate) => void;
+  /** A **tenant** date was removed. A pack date never reaches this. */
+  onRemove?: (date: ISODate) => void;
+  /** The pack's name in the owner's words — "India market pack". */
+  packName?: string;
+  /** The floor a pack-supplied date carries. Composed from `packName` when not given. */
+  floor?: ComplianceFloorSpec;
+  label?: string;
+  listLabel?: string;
+  addLabel?: string;
+  emptyMessage?: string;
+  min?: ISODate;
+  max?: ISODate;
+  /** The visible month. **Pass `onMonthChange` with it** — a pinned month draws no month arrows, since
+      arrows that write to state the view ignores are controls that lie. */
+  month?: ISODate;
+  onMonthChange?: (month: ISODate) => void;
+  /** The 640px breakpoint this component owns, published (law 4) — `{stacked, width}`, the same
+      callback shape `Kanban`, `DataTable` and `SheetActions` use. */
+  onFormChange?: (form: { stacked: boolean; width: number }) => void;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Two kinds of holiday, and only one of them is the tenant's to delete** — `SCR-M07-06`'s
+ * `holiday-calendar`: *"the market's **pack-supplied** holiday calendar plus **tenant-added** extra
+ * holidays."* `M07-12` permits *"narrower windows and extra holidays only, **never wider**"*, so the
+ * tenant may add, may remove their own, and may never remove a pack-supplied one — deleting it widens
+ * the calling window past what the market allows.
+ *
+ * **Three things this carries, because `DatePicker` could hold none of them.**
+ *
+ * 1. **A set.** `mode` was `"single" | "range"` — one date or a span. Unrelated dates had no
+ *    expression: `markers` is display-only, so nothing could be added to it or removed from it at all.
+ *    `Calendar mode="set"` is the new mode and this is its editor.
+ * 2. **Origin as persistent content.** Both origins collapsed onto the single `holiday` tone, whose
+ *    only differentiator was `DayMarker.label` — documented *"read out by screen readers and used as
+ *    the tooltip"*. `F8-07` rules a tooltip out for exactly this kind of provenance, and a tooltip
+ *    never fires on the phone this screen is configured from. So origin is a **word on the row**,
+ *    rendered by the component the system already has for which-layer-supplied-this: `ValueSource` —
+ *    `inherited` · "India market pack" against `own` · "Added by you". The rates panel's pairing,
+ *    applied to dates instead of prices; no new vocabulary.
+ * 3. **Deletability following origin.** A tenant row has a 44px delete. A pack row has **no delete**
+ *    and a `ComplianceFloor` line in its place — the third class of unavailable, because
+ *    `ActionReason` would promise *"not yet"* and `ScopeNote` would promise *"not yours"* (false: the
+ *    owner cannot do it either).
+ *
+ * **What a tenant sees when they try to remove a pack date.** In the list there is nothing to try —
+ * the row states the floor permanently and carries no delete. In the grid the date is a real cell, so
+ * it is `aria-disabled` and **stays focusable** (law 9's mechanical ruling) and activating it renders
+ * the refusal in words under the calendar, naming the date and the floor, and announces it politely.
+ * The attempt is answered where it was made; it is never silently ignored, and never a tooltip.
+ *
+ * **Own-width, never viewport** (law 4): grid and list side by side above 640px of *this component's*
+ * width, stacked below — so a holiday calendar in a 480px `DetailPanel` behaves as it does on a phone.
+ * The answer is published through `onFormChange`, as every owned breakpoint in the system is.
+ *
+ * @startingPoint section="Forms" subtitle="A date set whose origin decides what is deletable" viewport="1100x760"
+ */
+export function DateSet(props: DateSetProps): JSX.Element;

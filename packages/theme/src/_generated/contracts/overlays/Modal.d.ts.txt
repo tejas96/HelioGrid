@@ -1,0 +1,41 @@
+import React from "react";
+
+export interface ModalProps {
+  open?: boolean;
+  onClose?: () => void;
+  title?: string;
+  /** One or two sentences. For errors, state the problem and the fix. */
+  description?: string;
+  overline?: string;
+  children?: React.ReactNode;
+  /** sm 400 · md 520 · lg 720 (capped at 100%). */
+  size?: "sm" | "md" | "lg";
+  density?: "expressive" | "functional";
+  /** Draws the leading circular icon tint. neutral = no icon unless `icon` is given. */
+  tone?: "neutral" | "danger" | "warning" | "success";
+  icon?: React.ReactNode;
+  footer?: React.ReactNode;
+  showClose?: boolean;
+  /** false for decisions that must be answered by an action. */
+  dismissible?: boolean;
+  inset?: boolean;
+  zIndex?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Centred dialog for decisions. Springs in with a 12px rise and 0.97 scale over the same
+ * white-fading blurred backdrop as Sheet. It is the **desktop** form; the phone answer is a `Sheet`.
+ *
+ * **A decision reached from a screen mounts `EditorSurface` with `desktop="modal"`, not this.** That
+ * component performs `F7-21`'s switch off the layer's own width and renders this as the desktop half, so
+ * no screen has to remember to swap a Modal for a Sheet at 720px. Mount `Modal` directly only where you
+ * own the switch yourself.
+ *
+ * **There is deliberately no `modal={false}` here.** `Sheet` and `DetailPanel` have one because an editor's
+ * subject can be the thing behind it; a decision that must be answered cannot be — so this component is
+ * always `aria-modal`, always backdropped, always scroll-locked.
+ */
+export function Modal(props: ModalProps): JSX.Element | null;
+
+export { SheetActions as ModalActions } from "./Sheet";

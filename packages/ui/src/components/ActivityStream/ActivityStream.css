@@ -1,0 +1,171 @@
+/* ActivityStream — M02-35 / SCR-M02-04's append-only stream, and NOT `Timeline`: in a 300-entry
+   stream every entry is done, so a lit rail says nothing and there is no current step to be beyond.
+
+   THE MARK'S TINT AND ITS GLYPH ARE BOTH CERTIFIED TOKENS, not an ad-hoc mix: the mark takes the
+   tone's own -bg and the glyph the tone's -text (5.96 / 6.53 / 5.79 / 5.65 / 6.05 on tint), and
+   warning takes --warning-text because --warning as a glyph cannot be seen.
+
+   The entry row lives in ActivityStreamEntry.css, imported here so the assemble step still needs
+   exactly one @import for this folder. */
+@import "./ActivityStreamEntry.css";
+
+.hg-stream {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--sp-4);
+}
+
+.hg-stream[data-density="functional"] {
+  gap: var(--sp-3);
+}
+
+.hg-stream-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+/* The count always states the whole, so a window never reads as the total. */
+.hg-stream-count {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-stream-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.hg-stream-day {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+  padding: 6px 0 10px;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ── states, and the window's own control ────────────────────────────────────── */
+
+.hg-stream-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-stream-skeleton-row {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  column-gap: var(--sp-3);
+}
+
+.hg-stream-skeleton-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+.hg-stream-skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-stream-shimmer {
+  display: block;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+  width: var(--hg-stream-shimmer-w);
+  height: var(--hg-stream-shimmer-h);
+}
+
+.hg-stream-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: 40px var(--sp-4);
+}
+
+.hg-stream-message-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--neutral-bg);
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.hg-stream-message-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-stream-message-title {
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-stream-message-text {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.hg-stream-message-extra {
+  margin-top: 10px;
+}
+
+.hg-stream-button {
+  margin-top: 10px;
+  min-height: 44px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-stream-more {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-stream-more .hg-stream-button {
+  margin-top: 0;
+}
+
+.hg-stream-button[data-busy="true"] {
+  opacity: 0.6;
+  cursor: default;
+}

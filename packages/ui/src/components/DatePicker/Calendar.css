@@ -1,0 +1,215 @@
+/* Calendar / DatePicker — no borders, luminance-only hierarchy, 44px touch targets, accent for
+   selection, muted semantic tints for markers.
+
+   44 AT BOTH DENSITIES. Functional density means removing chrome, not squeezing air out of a
+   target, and the grid's own min-width is seven 44px cells plus the 2px gaps — a day cell cannot be
+   squeezed under the floor by a narrow caller. */
+
+.hg-calendar {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+
+.hg-calendar[data-density="functional"] {
+  border-radius: var(--rf-xl);
+  padding: var(--sp-3);
+}
+
+.hg-calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-2);
+}
+
+.hg-calendar-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+  color: var(--text-primary);
+}
+
+/* A pinned view draws no arrows, so its heading takes the whole row. */
+.hg-calendar-title[data-pinned="true"] {
+  flex: 1;
+  text-align: center;
+}
+
+.hg-calendar-nav {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hg-calendar-nav[data-dir="prev"] > svg {
+  transform: rotate(180deg);
+}
+
+.hg-calendar-nav:hover {
+  background: var(--neutral-bg);
+}
+
+.hg-calendar-nav:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-calendar-weekdays,
+.hg-calendar-grid,
+.hg-calendar-skeleton {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  min-width: 320px;
+}
+
+.hg-calendar-weekdays {
+  margin-bottom: var(--sp-0-5);
+}
+
+.hg-calendar-grid,
+.hg-calendar-skeleton {
+  gap: 2px;
+}
+
+.hg-calendar-weekday {
+  height: var(--sp-6);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.hg-calendar-cell {
+  height: 44px;
+  min-width: 44px;
+  position: relative;
+  border: none;
+  padding: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+
+.hg-calendar-cell[data-today="true"] {
+  font-weight: var(--fw-bold);
+  box-shadow: inset 0 0 0 1.5px var(--canvas-sunken);
+}
+
+.hg-calendar-cell[data-between="true"] {
+  border-radius: 0;
+  background: var(--accent-subtle);
+}
+
+.hg-calendar-cell[data-selected="true"] {
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: var(--fw-bold);
+  box-shadow: none;
+}
+
+.hg-calendar-cell:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hg-calendar-cell:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/* A locked set member's second channel: a BAR, not a tone and not a tooltip. The origin itself is
+   persistent content in the list beside the grid (DateSet). */
+.hg-calendar-lock-bar {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sp-1);
+  transform: translateX(-50%);
+  width: 14px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--text-tertiary);
+}
+
+.hg-calendar-cell[data-selected="true"] .hg-calendar-lock-bar {
+  background: var(--text-inverse);
+}
+
+.hg-calendar-marker {
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+/* A marker's label is read out with the date, so the tone is never the only channel. --warning is
+   not a legal mark anywhere in this system; a leave dot takes --warning-text. */
+.hg-calendar-marker[data-tone="present"] {
+  background: var(--success-text);
+}
+.hg-calendar-marker[data-tone="absent"] {
+  background: var(--danger-text);
+}
+.hg-calendar-marker[data-tone="leave"] {
+  background: var(--warning-text);
+}
+.hg-calendar-marker[data-tone="holiday"] {
+  background: var(--info-text);
+}
+.hg-calendar-marker[data-tone="scheduled"] {
+  background: var(--accent);
+}
+.hg-calendar-marker[data-tone="neutral"] {
+  background: var(--text-tertiary);
+}
+
+.hg-calendar-cell[data-selected="true"] .hg-calendar-marker {
+  background: var(--text-inverse);
+}
+
+.hg-calendar-empty {
+  margin: 0;
+  padding: var(--sp-8) var(--sp-2);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-calendar-skeleton-cell {
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-calendar-footer {
+  margin-top: var(--sp-3);
+}

@@ -1,0 +1,43 @@
+import React from "react";
+
+export interface Tab {
+  value: string;
+  label: string;
+  /** A numeral in a neutral pill — the `CountBadge` idiom without the unread red. "99+" above 99. */
+  count?: number;
+  /** Anything that is not a count — a needs-attention `Badge`. Nodes, through `MarkRow`. */
+  marks?: React.ReactNode | React.ReactNode[];
+  /**
+   * A tab that leads nowhere yet is a real state; hiding it would rename the tab set. Which is why the
+   * label stays **readable**: an off tab is `--text-tertiary` and its count `--neutral-text`, never
+   * `--text-disabled` (which colors.css rules never carries a word a user must read).
+   */
+  disabled?: boolean;
+  /**
+   * Why it leads nowhere — law 9's slot. With a reason the tab is `aria-disabled` and **still
+   * focusable** (activation suppressed in the component), and the sentence renders under the strip,
+   * tied to the tab by `aria-describedby`: a natively `disabled` button leaves the tab order, so the
+   * sentence would exist for everyone except the keyboard user who most needs it. Without a reason the
+   * native attribute stays, because there is nothing to go and hear.
+   */
+  disabledReason?: React.ReactNode | { reason: React.ReactNode };
+}export interface TabsProps {
+  tabs: (Tab | string)[];
+  value: string;
+  onChange?: (value: string) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Underline tabs (desktop). 2px accent indicator slides between tabs; no border rule.
+ *
+ * A tab carries a **count** and **marks**: `{value, label}` alone forced screens to fold "Proposals 12"
+ * into the label string, where nothing keeps the numeral tabular or the separator consistent.
+ *
+ * **And that is as far as per-item goes.** `count`, `marks` and `disabled` describe a **destination**.
+ * The state of the **content at** the destination — *"5 of 8 sections written here, 3 fall back to
+ * Hindi"* (`SCR-M07-09`) — is a total plus a fallback relationship *between* two items, and it belongs
+ * to `LanguageSwitcher`, not to a third prop here: a content-fallback relationship in the navigation
+ * layer would be carried by every unrelated tab set in the product.
+ */
+export function Tabs(props: TabsProps): JSX.Element;

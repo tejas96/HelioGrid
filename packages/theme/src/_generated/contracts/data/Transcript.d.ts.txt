@@ -1,0 +1,121 @@
+import React from "react";
+import { ActorClassName } from "./ActorClass";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+/** The two fixed participants. Not `ActorClassName`'s four: a third speaker in a call transcript is
+    a data error, not a fifth class. The *words and glyphs* are `ActorClass`'s. */
+export type TranscriptParty = "agent" | "customer";
+
+export interface TranscriptTurn {
+  id?: string | number;
+  party: TranscriptParty;
+  /** What was said. One turn, however long — never pre-truncated by the caller. */
+  text: React.ReactNode;
+  /** Seconds into the call. Rendered mono/tabular; a real 44px seek control when `onSeek` is given. */
+  at?: number;
+  /**
+   * The language of **this** turn. Only needed where the call's language actually changed mid-call — the
+   * component derives the switch points from it and renders one marker at the change. It is **never**
+   * printed on every turn: the label is per transcript.
+   */
+  language?: string;
+  /** Facts true of one turn — a `Badge` for "handed over here", "flagged by the owner". Nodes. */
+  marks?: React.ReactNode;
+}
+
+export interface LanguageSwitch {
+  to: string;
+  /** Seconds into the call, so the header sentence can say "switched to English at 2:38". */
+  at?: number;
+}
+
+export interface TranscriptProps {
+  turns: TranscriptTurn[];
+  /** The call's language. A string or `{name}`. **Per transcript, not per turn.** */
+  language?: string | { name: string; code?: string } | null;
+  /** A mid-call language change, stated outright (no row permits one; §M07.7's "labelled" forbids
+      asserting one language about a call that changed). Derived from the turns' `language` when absent. */
+  switches?: LanguageSwitch[];
+  /** The participants' names. `agentName` is the tenant's agent, not the class word. */
+  agentName?: string;
+  customerName?: string;
+  title?: string;
+  /** The call's identity line — "12 Mar 2026, 4:12 pm · 4 min 12 sec · outbound". */
+  meta?: string;
+  /** Why the words are here when the audio is not: "Recording deleted 14 Jun 2026 · transcript retained". */
+  retainedNote?: string;
+  /** Seconds currently playing — marks the turn, so the words and the audio stay in step. */
+  currentAt?: number;
+  /** Given **only** while the recording is playable. Absent, the offsets stay as legible text. */
+  onSeek?: (seconds: number) => void;
+  /** Chronological window from the **first** turn (default 40) — the opposite end from `ActivityStream`. */
+  visibleCount?: number;
+  step?: number;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
+  /** The whole call's turn count when only a page was handed over. The count line states the whole. */
+  total?: number;
+  state?: SurfaceState;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **What the agent and the customer said, turn by turn** — the document behind `AudioPlayer`'s
+ * `onOpenTranscript` door (`SCR-M07-13` `transcript-on-tap`, `SCR-M07-19` `transcript-open`).
+ *
+ * **It is the artefact that outlives the recording.** `M07-38`: *"Recording is purged at the pack's
+ * retention bound; the transcript is retained."* On any call older than the pack's window this is the
+ * only record of what the agent said to a customer — so it is the primary document, not a nicer view
+ * of the audio, and it renders in full with no audio present.
+ *
+ * **Its own component, reusing `ActorClass`'s vocabulary — not a mode of `ActivityStream`.** The two
+ * share one idea (turns attributed to a class rather than a name) and disagree about everything the
+ * stream is built from: a turn has no `kind`; a transcript filters by nothing, because half a
+ * conversation is not readable; its second axis is an **offset into the call** (2:38), not a date, so
+ * day grouping has nothing to group; it reads **oldest first**, where an append-only stream reads
+ * newest first; and it has exactly **two fixed participants that alternate**, where the stream's four
+ * classes appear in any mix. Composing them would have meant a `kind` every turn leaves empty, a
+ * filter to suppress, a grouping to switch off and a sort to invert — four props whose only job is to
+ * disable the host. What **is** shared is the speaker vocabulary: the agent's gradient object and the
+ * customer's accent mark are `ActorClass`'s own, so a rep learns one set of marks. `Timeline` is wrong
+ * on its API (a rail lit to a current step; a conversation has no current step, no completion, and
+ * `TimelineItem` has no language slot).
+ *
+ * **The language label is per transcript and never asserts one language falsely.** One language reads
+ * *"In Hindi"*; a call whose language changed reads *"In Hindi, switched to English at 2:38"*; an
+ * unlabelled call renders a `NamedGap` — *"Language not recorded"* — never a guess and never silence.
+ * The switch is **also** marked in the flow at the turn where it happened, because a reader in the
+ * middle of a long call needs to know which language they are reading; that marker is what `language`
+ * on a turn is for, and it is the only thing it is for.
+ *
+ * **The offset is a seek while the audio exists.** `onSeek` makes every timestamp a 44px control —
+ * `M07-38`'s "aim at a moment in a call", reached from the words instead of a 4px scrubber — and
+ * `currentAt` marks the turn being played. With the recording purged, the same offsets stay as text:
+ * *when* in the call something was said is exactly what an auditor asks.
+ *
+ * **Volume** (`SCR-M07-13`: *"a full conversation's length on a phone"*): a chronological window of
+ * `visibleCount` turns with a real 44px "Show the rest of the call", plus `onLoadMore` / `hasMore` for
+ * a server. The count line always states the whole call.
+ *
+ * **It is also the KB preview.** `SCR-M07-09`'s `live-preview` state (`M07-21`) needs the owner to see
+ * *the agent using the knowledge, so a tone or knowledge mismatch is caught before it goes live* — so
+ * the preview is a `Transcript` of the agent speaking the sections, with no `onSeek` and no `at`,
+ * because nothing was recorded. A page of `Textarea`s cannot show a mismatch that only appears when
+ * two sections are heard in one conversation.
+ *
+ * **`M07-25` is not this component's row.** *The rep's assessment always wins* is answered on the
+ * lead's own fields (`FieldOverride` / `ValueSource` over the agent's read of outcome, interest signal
+ * and summary). A transcript is the record of what was said; editing the words is the one thing it
+ * must never offer.
+ *
+ * @startingPoint section="Data display" subtitle="Call transcript — two parties, offsets, one language label" viewport="900x820"
+ */
+export function Transcript(props: TranscriptProps): JSX.Element;

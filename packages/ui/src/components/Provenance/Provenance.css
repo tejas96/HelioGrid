@@ -1,0 +1,151 @@
+/* Provenance — the line beside a number that says how much to trust it (F8-01 / F8-07).
+   The WORD is the carrier; the dot is the second, non-colour channel (N6). Every colour here is
+   a semantic token, and the mark tokens are addressed by name through data-token so a caller's
+   tier object can borrow one without ever naming a raw colour. */
+
+.hg-provenance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px var(--sp-2);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body-sm);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-tertiary);
+}
+
+.hg-provenance[data-inline="true"] {
+  display: inline-flex;
+  gap: var(--sp-2);
+}
+
+.hg-provenance[data-align="left"] {
+  justify-content: flex-start;
+}
+.hg-provenance[data-align="center"] {
+  justify-content: center;
+}
+.hg-provenance[data-align="right"] {
+  justify-content: flex-end;
+}
+
+.hg-provenance[data-size="12"] {
+  font-size: var(--fs-caption);
+}
+.hg-provenance[data-size="13"] {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-provenance-part,
+.hg-provenance-standing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  white-space: nowrap;
+}
+
+/* Standing is the fact that outranks the tier, so it carries the semantic -text weight. */
+.hg-provenance-standing {
+  font-weight: var(--fw-medium);
+}
+
+.hg-provenance-sep {
+  color: var(--mark-subtle);
+}
+
+/* The tier on its own — same word-first grammar, usable inside a diff cell or a table row. */
+.hg-provenance-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  color: var(--text-tertiary);
+}
+
+.hg-provenance-tier[data-size="12"] {
+  font-size: var(--fs-caption);
+}
+.hg-provenance-tier[data-size="13"] {
+  font-size: var(--fs-body-sm);
+}
+
+/* The 5px dot. A mark, never the carrier — the word beside it already says the meaning. */
+.hg-provenance-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  background: var(--text-tertiary);
+}
+
+.hg-provenance-dot[data-token="success"] {
+  background: var(--success);
+}
+.hg-provenance-dot[data-token="success-text"] {
+  background: var(--success-text);
+}
+.hg-provenance-dot[data-token="info"] {
+  background: var(--info);
+}
+.hg-provenance-dot[data-token="info-text"] {
+  background: var(--info-text);
+}
+/* --warning is not a mark in this system (it clears 3:1 on no background); a warning mark
+   always takes --warning-text. The token is mapped so a caller naming it still lands legible. */
+.hg-provenance-dot[data-token="warning"],
+.hg-provenance-dot[data-token="warning-text"] {
+  background: var(--warning-text);
+}
+.hg-provenance-dot[data-token="danger"] {
+  background: var(--danger);
+}
+.hg-provenance-dot[data-token="danger-text"] {
+  background: var(--danger-text);
+}
+.hg-provenance-dot[data-token="neutral"] {
+  background: var(--neutral);
+}
+.hg-provenance-dot[data-token="neutral-text"] {
+  background: var(--neutral-text);
+}
+.hg-provenance-dot[data-token="accent"] {
+  background: var(--accent);
+}
+.hg-provenance-dot[data-token="text-secondary"] {
+  background: var(--text-secondary);
+}
+.hg-provenance-dot[data-token="mark-subtle"] {
+  background: var(--mark-subtle);
+}
+
+/* Words that colour the standing itself. */
+.hg-provenance-standing[data-token="success-text"] {
+  color: var(--success-text);
+}
+.hg-provenance-standing[data-token="warning-text"] {
+  color: var(--warning-text);
+}
+.hg-provenance-standing[data-token="danger-text"] {
+  color: var(--danger-text);
+}
+.hg-provenance-standing[data-token="info-text"] {
+  color: var(--info-text);
+}
+.hg-provenance-standing[data-token="text-tertiary"] {
+  color: var(--text-tertiary);
+}
+
+.hg-provenance-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

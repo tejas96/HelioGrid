@@ -1,0 +1,300 @@
+/* Timeline — a sequence. The rail is continuous, lit up to the current step and dim beyond it, so
+   the eye reads a progression rather than a list of dots. Status is never colour alone: every state
+   carries its own glyph inside the node, and `upcoming` is hollow, which is its own shape.
+
+   The node ladder (28 page / 20 compact) is the DS's own, and the type scale has no 16px step, so
+   the page label's 16px is written out here rather than borrowed from a wrong token. */
+
+.hg-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+.hg-timeline[data-variant="compact"] {
+  gap: 10px;
+}
+
+.hg-timeline-step {
+  display: grid;
+  position: relative;
+  min-width: 0;
+}
+
+.hg-timeline[data-variant="page"] .hg-timeline-step {
+  grid-template-columns: 28px 1fr;
+  column-gap: var(--sp-4);
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-step {
+  grid-template-columns: 20px 1fr;
+  column-gap: var(--sp-3);
+}
+
+.hg-timeline-rail-cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.hg-timeline-rail {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--canvas-sunken);
+}
+
+.hg-timeline[data-variant="page"] .hg-timeline-rail {
+  top: 28px;
+  bottom: 0;
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-rail {
+  top: 20px;
+  bottom: -10px;
+}
+
+.hg-timeline-rail[data-lit="true"] {
+  background: var(--success);
+  opacity: 0.35;
+}
+
+/* ── the node ── */
+.hg-timeline-node {
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  color: var(--text-inverse);
+}
+
+.hg-timeline[data-variant="page"] .hg-timeline-node {
+  width: 28px;
+  height: 28px;
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-node {
+  width: 20px;
+  height: 20px;
+}
+
+.hg-timeline-node[data-status="done"] {
+  background: var(--success);
+}
+.hg-timeline-node[data-status="blocked"] {
+  background: var(--warning-text);
+}
+.hg-timeline-node[data-status="failed"] {
+  background: var(--danger);
+}
+.hg-timeline-node[data-status="upcoming"] {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--canvas-sunken);
+}
+
+/* Current is a white node with an accent core in a soft ring — the one lit step. */
+.hg-timeline[data-variant="page"] .hg-timeline-node[data-status="current"] {
+  box-shadow: 0 0 0 5px var(--accent-subtle);
+}
+.hg-timeline[data-variant="compact"] .hg-timeline-node[data-status="current"] {
+  box-shadow: 0 0 0 4px var(--accent-subtle);
+}
+
+.hg-timeline-node-core {
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  width: 13px;
+  height: 13px;
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-node-core {
+  width: 9px;
+  height: 9px;
+}
+
+/* ── the body ──────────────────────────────────────────────────────────────── */
+
+.hg-timeline-body {
+  min-width: 0;
+}
+
+.hg-timeline[data-variant="page"] .hg-timeline-step:not([data-last="true"]) .hg-timeline-body {
+  padding-bottom: 26px;
+}
+
+.hg-timeline[data-variant="page"][data-density="functional"]
+  .hg-timeline-step:not([data-last="true"])
+  .hg-timeline-body {
+  padding-bottom: 18px;
+}
+
+.hg-timeline-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: 24px;
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-head {
+  min-height: 20px;
+}
+
+.hg-timeline-label {
+  /* The DS's page step is 16px and the type scale has no 16 — see the file header. */
+  font-size: 16px;
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  color: var(--text-primary);
+}
+
+.hg-timeline[data-variant="compact"] .hg-timeline-label {
+  font-size: var(--fs-body);
+}
+
+.hg-timeline-label[data-current="true"] {
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+}
+
+.hg-timeline-label[data-status="upcoming"] {
+  color: var(--text-tertiary);
+}
+
+.hg-timeline-meta {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-timeline-description {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+  max-width: 62ch;
+}
+
+.hg-timeline-actor {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-timeline-content {
+  margin-top: 10px;
+}
+
+/* ── loading ───────────────────────────────────────────────────────────────── */
+
+.hg-timeline-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.hg-timeline-skeleton-row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: var(--sp-4);
+}
+
+.hg-timeline-skeleton-node {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+.hg-timeline-skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-timeline-skeleton-bar {
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-timeline-skeleton-bar[data-bar="title"] {
+  width: 46%;
+  height: 14px;
+}
+.hg-timeline-skeleton-bar[data-bar="meta"] {
+  width: 70%;
+  height: 11px;
+}
+
+/* ── empty / error ─────────────────────────────────────────────────────────── */
+
+.hg-timeline-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: var(--sp-10) var(--sp-4);
+  font-family: var(--font-sans);
+}
+
+.hg-timeline-message-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--sp-1);
+  background: var(--neutral-bg);
+  color: var(--text-tertiary);
+}
+
+.hg-timeline-message-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-timeline-message-title {
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-timeline-message-body {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  max-width: 300px;
+  line-height: var(--lh-body-sm);
+}
+
+.hg-pressable.hg-timeline-retry {
+  margin-top: 10px;
+  padding-inline: var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}

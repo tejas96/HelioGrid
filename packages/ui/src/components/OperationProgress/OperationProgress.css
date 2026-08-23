@@ -1,0 +1,212 @@
+/* OperationProgress — work that takes time, with its name, its shape and an honest cancel.
+   ProgressBar is the right drawing and none of the information; this draws with that rail and adds
+   the label, the stage narration, the "n of m", the cancel and the destination.
+
+   THE CANCEL SENTENCE IS NOT OPTIONAL CHROME — it is the difference between a cancel and a lie, so
+   it sits beside the button and never wraps away from it.
+
+   13px marks, the 7px waiting dot and the pill's 16px inline padding are the component's own
+   dimensions; every colour, radius, type size and duration below is a token. */
+
+.hg-operation-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-sans);
+}
+
+.hg-operation-progress[data-size="inline"] {
+  gap: var(--sp-2);
+}
+
+.hg-operation-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-operation-progress-label {
+  min-width: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-operation-progress[data-size="inline"] .hg-operation-progress-label {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-operation-progress-figure {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-operation-progress-indeterminate {
+  display: block;
+}
+
+.hg-operation-progress-narration {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-operation-progress-narration-words {
+  min-width: 0;
+}
+
+.hg-operation-progress-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+/* ── the narrated steps ────────────────────────────────────────────────────── */
+
+.hg-operation-progress-stages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hg-operation-progress-stage {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-operation-progress-stage[data-state="waiting"] {
+  color: var(--text-tertiary);
+}
+
+.hg-operation-progress-stage-check {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  color: var(--success-text);
+}
+
+.hg-operation-progress-stage-rail {
+  flex-shrink: 0;
+}
+
+.hg-operation-progress-stage-dot {
+  width: 13px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.hg-operation-progress-stage-dot > span {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
+}
+
+.hg-operation-progress-stage-label {
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+/* The state IN WORDS for a screen reader — the glyph is only the second channel. */
+.hg-operation-progress-stage-state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── the closing lines and the action row ──────────────────────────────────── */
+
+.hg-operation-progress-leave {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-operation-progress-message {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-operation-progress-message[data-state="failed"] {
+  color: var(--warning-text);
+}
+
+.hg-operation-progress-message[data-state="done"] {
+  color: var(--success-text);
+}
+
+.hg-operation-progress-message-mark {
+  flex-shrink: 0;
+  margin-top: var(--sp-0-5);
+  display: inline-flex;
+}
+
+.hg-operation-progress-message-mark > svg {
+  width: 15px;
+  height: 15px;
+}
+
+.hg-operation-progress-message-words {
+  min-width: 0;
+}
+
+.hg-operation-progress-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The 44px floor comes from Pressable; this is the pill profile on top of it. */
+.hg-operation-progress-pill.hg-pressable {
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-operation-progress-cancel-note {
+  min-width: 0;
+  flex: 1 1 140px;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-operation-progress-destination {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+}

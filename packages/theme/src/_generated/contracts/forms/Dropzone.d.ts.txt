@@ -1,0 +1,95 @@
+import React from "react";
+
+export interface DropzoneFile {
+  id?: string | number;
+  name?: string;
+  /** Object URL or remote URL for the thumbnail. */
+  url?: string;
+  /** 0–100 while this file is uploading. */
+  progress?: number;
+}
+
+export interface DropzoneProps {
+  label?: string;
+  hint?: string;
+  accept?: string;
+  multiple?: boolean;
+  /** "environment" opens the rear camera on Android — use for roof photos. */
+  capture?: "user" | "environment";
+  files?: DropzoneFile[];
+  onFiles?: (files: File[]) => void;
+  onRemove?: (file: DropzoneFile, index: number) => void;
+  maxSizeMB?: number;
+  state?: "idle" | "uploading" | "error";
+  /** State the problem and the fix. */
+  errorMessage?: string;
+  /** 0–100 for the whole batch. */
+  progress?: number | null;
+  /** What was captured is held on the device and uploads once there's a connection. The one place in
+   *  the product where anything is kept back. Not an app-wide connection state: for that, see
+   *  `NoConnection`. The noun is `heldNoun`'s, not always "photo" — `SCR-M08-03`'s checklist rows
+   *  hold PDFs. */
+  heldOnDevice?: boolean;
+  /**
+   * **How many are waiting** (`M11-37` P0 / `SCR-M11-03`: *"with its waiting count and a retry shown
+   * on the capture screen itself"*, `F4-21`). Defaults to `files.length`; pass it when the device
+   * queue is longer than the thumbnails on screen, which it usually is — a queue outlives this
+   * mount. This is not a status line: photographs are the **one** thing in the product held back,
+   * `F4-21` is *"nothing captured is unrecoverable"*, and a surveyor on a roof with no signal needs
+   * to see that their eleven photos still exist. The count is a promise being kept.
+   */
+  heldCount?: number;
+  /**
+   * **The retry `M11-37` requires, on the capture surface** — attempt the held queue now. It sits
+   * beside the count at 44px and **keeps its label while it works** (a spinner beside the words, never
+   * instead of them).
+   *
+   * **It reports what actually happened**, the same contract `NoConnection.onRetry` has and for the
+   * same reason: a flush attempted on a roof with no signal used to return in silence. Return `false`
+   * or reject to say it failed and the block says so; a retry that never answers is stopped at
+   * `retryTimeout` rather than spinning under someone who thinks it is still working. Any other
+   * outcome says nothing — a success is never claimed unobserved.
+   */
+  onRetry?: () => void | boolean | Promise<any>;
+  retryLabel?: string;
+  /** The words when a flush reports failure. */
+  failedMessage?: string;
+  /** The words when a flush never answers within `retryTimeout`. */
+  timeoutMessage?: string;
+  /** Milliseconds before a non-answering flush is called one. Default 10000. */
+  retryTimeout?: number;
+  /**
+   * Overrides the generated held-queue **sentence**. The count and the retry stay — literally: the
+   * count is its own element above the sentence, so this can no longer take the number with it. That
+   * used to be false, and it mattered most on `SCR-M08-03`, where the generated wording was wrong for
+   * a PDF and `heldMessage` was the only fix.
+   */
+  heldMessage?: React.ReactNode;
+  /** What is waiting, singular — "photo" (default for an image `accept`), "document", "file". */
+  heldNoun?: string;
+  /** Its plural, when adding "s" is wrong. */
+  heldNounPlural?: string;
+  density?: "expressive" | "functional";
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}
+
+/**
+ * File / photo capture area.
+ *
+ * BORDER EXCEPTION — the 1.5px dashed edge is one of only two legal exceptions to the
+ * system's no-borders rule (the other is the opt-in high-contrast field mode). It is the
+ * affordance, not a container border: it is what says "this area accepts a drop". Do not
+ * replace it with a shadow or a tint.
+ *
+ * **One tab stop, and it is the input.** The visible surface is the file input's `<label>` — no
+ * `role="button"`, no `tabIndex`, no click or keydown handler of its own. It used to be a
+ * `role="button"` div wrapping a focusable visually-hidden input: **two** tab stops, the second
+ * invisible, so a keyboard user landed on something with no focus ring and no way to know where they
+ * were. The focus ring is now drawn on the label from the input's own focus, which puts it on the
+ * rectangle the eye is already on. This is the conventional route rather than `RecordCard`'s overlay
+ * button: there is nothing inside the surface to protect from the target, and the native control
+ * already owns click, Enter/Space, the file dialog and the disabled state. The drop handlers stay on
+ * the label, so the drop target is still one rectangle.
+ */
+export function Dropzone(props: DropzoneProps): JSX.Element;

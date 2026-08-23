@@ -1,0 +1,67 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+
+/**
+ * The same vocabulary `Stepper` uses one component over (`M05-03`): the state is a word, not a colour.
+ * `errors` shows "N to fix" from `errorCount`, sets `aria-invalid` on the header, tints the section,
+ * and **opens the section** — a system that refuses a save must not then hide which of eight sections
+ * to fix (`M07-19`). A tinted section steps its quiet lines (`meta`, the chevron) up to
+ * `--text-secondary`, because `--text-tertiary` measures 4.48 on `--danger-bg`: a state tint never
+ * costs the reader a word.
+ */
+export type AccordionItemState = "default" | "done" | "empty" | "errors";
+
+export interface AccordionItem {
+  key: string;
+  title: string;
+  /** Right-aligned micro text — a count, a status ("12 items"). **Not a tier**, and not a total. */
+  meta?: string;
+  /**
+   * The sum this section's own lines come to (`M05-71`'s *own total*) — mono, tabular, right of the
+   * meta. Law 16's rule holds here: `total` is a **sum of the parts shown**, never a denominator, a
+   * target or a record count.
+   */
+  total?: React.ReactNode;
+  /**
+   * Marks the header carries — `Badge`, `StatusChip`, a compliance `ChipGroup`. `F7-12` needs a label
+   * **plus** a mark, and a string slot cannot hold one. Rendered through `MarkRow`, so several marks
+   * stay separately readable.
+   */
+  marks?: React.ReactNode | React.ReactNode[];
+  /** A header action — `M05-71`'s "Refresh from design". A **sibling** of the toggle, never inside it. */
+  action?: React.ReactNode;
+  state?: AccordionItemState;
+  /** `errors` → "3 to fix". */
+  errorCount?: number;
+  /** Replaces the state's default word, for a section vocabulary of the screen's own (`M06-27`'s Selected / Empty). */
+  stateLabel?: string;
+  /**
+   * The tier for a figure this section header summarises (`F8-01` / `F8-07`) — beside the meta, which
+   * is where the figure already is. Keeps tiers out of `meta` as free text.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  content: React.ReactNode;
+}
+
+export interface AccordionProps {
+  items: AccordionItem[];
+  /** Controlled: a key (single) or array of keys (multiple). */
+  value?: string | string[] | null;
+  onChange?: (value: string | string[] | null) => void;
+  multiple?: boolean;
+  defaultOpen?: string[];
+  /** A section that **becomes** errored opens itself; the user may collapse it again. Default true. */
+  openWithErrors?: boolean;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * Collapsible sections for long forms and settings. Arrow keys move between headers.
+ *
+ * The header holds four things and not one string: `meta` (a count or status), `total` (a figure, mono),
+ * `marks` (nodes) and `action` (a node, sibling of the toggle). **The chevron leads** rather than
+ * trails — with four facts on the right of the header, a trailing chevron sat between the total and the
+ * action.
+ */
+export function Accordion(props: AccordionProps): JSX.Element;

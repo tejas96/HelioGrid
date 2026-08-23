@@ -1,0 +1,45 @@
+import React from "react";
+
+export interface BrandColorFieldProps {
+  /** "#RRGGBB". Accepts "#RGB" and a missing hash on entry; always reports "#RRGGBB". */
+  value?: string;
+  /** Fires only with a valid, normalised hex — an unparseable draft never commits. */
+  onChange?: (hex: string) => void;
+  label?: string;
+  /**
+   * Defaults to the `F7-07` statement, naming **both** surfaces the brand colour rides: *"Used on the
+   * proposal PDF and the customer link page. The HelioGrid app itself is never restyled."*
+   */
+  helper?: string;
+  /**
+   * Curated starting colours. Deliberately a short list of document-safe darks rather than a
+   * free spectrum — a tenant who needs their exact brand hex types it.
+   */
+  presets?: string[];
+  specimenLabel?: string;
+  /** Name drawn in the document specimen. */
+  companyName?: string;
+  /** Offer a darkened shade when no text colour clears the floor. Default true. */
+  showSuggestion?: boolean;
+  disabled?: boolean;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * The tenant's primary brand colour (M01-50 / F7-07).
+ *
+ * **It never restyles the operator app.** F7-07 makes the operator application identical for every
+ * tenant, so this control writes no token and touches no ancestor style — it previews inside a
+ * document specimen only. The colour reaches two surfaces once saved: the generated proposal
+ * (`DocumentPreview`) and the tokenised customer-link pages (`CustomerSurface`), and nothing else.
+ *
+ * **It measures contrast and says what is wrong** (N4 / F7-11), answering two separate questions:
+ * whether text can sit *on* the colour (and which of white / near-black the document will use),
+ * and whether the colour can *be* text on white paper. A colour that fails is not refused — the
+ * control names the failure and offers the same hue darkened until it passes.
+ *
+ * **Every verdict is a word plus a glyph, never a colour** (F7-12), because this is the control
+ * other screens are most likely to copy.
+ */
+export function BrandColorField(props: BrandColorFieldProps): JSX.Element;

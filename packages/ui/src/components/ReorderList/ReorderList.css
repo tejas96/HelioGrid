@@ -1,0 +1,172 @@
+/* ReorderList — an authored order. Arrows, not drag: HTML5 drag fires on neither a keyboard nor a
+   touch screen, and this list's stated home is 375px. Three 44×44 targets per row, stacked in a
+   column on the phone and in a row at functional density. Nothing is hover-only.
+
+   The 44px floor lives here because the controls are raw <button>s, and what keeps them raw is the
+   REF: ReorderList moves focus onto a named control after every move and delete, so it must hold
+   the real element to call `.focus()` on it, and the Pressable primitive forwards no ref. (The end
+   arrows are ARIA-disabled rather than natively disabled — a native disabled button fires no click,
+   so the "already first" sentence would be unreachable — but the primitive carries that too now:
+   `accessibilityState.disabled` alone announces off without going inert.) Same floor, stated in
+   the one file that can keep it. */
+
+.hg-reorder-list {
+  font-family: var(--font-sans);
+}
+
+.hg-reorder-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hg-reorder-empty {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.hg-reorder-empty[data-density="expressive"] {
+  padding: 14px 0;
+}
+.hg-reorder-empty[data-density="functional"] {
+  padding: 10px 0;
+}
+
+.hg-reorder-empty:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-reorder-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.hg-reorder-rows[data-density="expressive"] {
+  gap: 10px;
+}
+.hg-reorder-rows[data-density="functional"] {
+  gap: var(--sp-2);
+}
+
+.hg-reorder-rows:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── one row ───────────────────────────────────────────────────────────────── */
+
+.hg-reorder-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  background: var(--surface);
+  box-shadow: var(--e1);
+  transition: background var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-reorder-row[data-stack="true"] {
+  align-items: flex-start;
+}
+
+.hg-reorder-row[data-density="expressive"] {
+  padding: 14px;
+  border-radius: var(--r-md);
+}
+
+.hg-reorder-row[data-density="functional"] {
+  padding: 10px;
+  border-radius: var(--r-card-functional);
+}
+
+/* The moved row flashes once, so the eye can follow what the announcement just said. */
+.hg-reorder-row[data-flash="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-reorder-position {
+  flex-shrink: 0;
+  width: 22px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-reorder-position[data-stack="true"] {
+  padding-top: var(--sp-3);
+}
+
+.hg-reorder-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-reorder-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-0-5);
+  flex-shrink: 0;
+}
+
+.hg-reorder-controls[data-stack="true"] {
+  flex-direction: column;
+}
+
+/* ── the control ───────────────────────────────────────────────────────────── */
+
+.hg-reorder-control {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+
+.hg-reorder-control[data-tone="danger"] {
+  color: var(--danger-text);
+}
+
+.hg-reorder-control:hover {
+  background: var(--neutral-bg);
+}
+
+.hg-reorder-control[data-tone="danger"]:hover {
+  background: var(--danger-bg);
+}
+
+/* ARIA-disabled, not disabled: it keeps its place in the tab order and says why it cannot act. */
+.hg-reorder-control[aria-disabled="true"] {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.hg-reorder-control:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

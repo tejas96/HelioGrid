@@ -1,0 +1,60 @@
+/* ToastHost — the queue container. Stacks at most `max`, auto-dismisses, pauses under the pointer,
+   and clears the bottom nav through `offset`. The stack itself is pointer-transparent; each toast
+   takes its own events back, so a toast never blocks the screen under it.
+
+   The dismiss is 44×44 (Pressable's floor) and takes the extra 12px back as negative margin, so no
+   toast grew. -6px has no spacing token: it is the negative half of that correction. */
+
+.hg-toast-host {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+
+.hg-toast-host[data-position="bottom-center"] {
+  bottom: var(--hg-toast-host-offset, 96px);
+  left: var(--sp-4);
+  right: var(--sp-4);
+  align-items: center;
+}
+
+.hg-toast-host[data-position="bottom-right"] {
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  align-items: flex-end;
+}
+
+.hg-toast-host[data-position="top-center"] {
+  top: var(--sp-6);
+  left: var(--sp-4);
+  right: var(--sp-4);
+  align-items: center;
+}
+
+.hg-toast-host-item {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 420px;
+  animation: hg-modal-in var(--dur-emphasised) var(--ease-spring);
+}
+
+.hg-toast-host-card {
+  width: 100%;
+}
+
+.hg-toast-host-dismiss.hg-pressable {
+  width: 44px;
+  height: 44px;
+  margin: -6px -6px -6px 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-tertiary);
+}
+
+.hg-toast-host-dismiss > svg {
+  width: 15px;
+  height: 15px;
+}

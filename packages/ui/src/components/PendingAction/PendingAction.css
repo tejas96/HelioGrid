@@ -1,0 +1,83 @@
+/* PendingAction — the row's third answer: "this is being done".
+
+   VISIBLY PENDING AND STILL OPERABLE. It adds a line and changes nothing else about the row: no
+   opacity (that is isRowMuted, which reads done-and-inactive), no row tint (that is rowIssue, and
+   nothing is wrong), no disable, no pointer-events change, no overlay.
+
+   The words are the carrier; the 22×3px travelling rail is the second channel. A RETURNED act
+   takes --warning-text and a return glyph — never a danger tint, never an error surface.
+
+   Type size arrives from the caller (12 floor) as --hg-pending-action-size. The rail's top offset
+   is 0.62 of that size, which is where the DS sits it against the first line of words. */
+
+.hg-pending-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--hg-pending-action-size, var(--fs-caption));
+  line-height: var(--lh-table);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-pending-action[data-state="returned"] {
+  color: var(--warning-text);
+}
+
+.hg-pending-action[data-align="left"] {
+  justify-content: flex-start;
+}
+
+.hg-pending-action[data-align="right"] {
+  justify-content: flex-end;
+}
+
+.hg-pending-action-rail {
+  margin-top: var(--hg-pending-action-rail-offset, 8px);
+}
+
+.hg-pending-action-glyph {
+  flex-shrink: 0;
+  margin-top: var(--sp-0-5);
+  width: var(--hg-pending-action-glyph-size, 13px);
+  height: var(--hg-pending-action-glyph-size, 13px);
+}
+
+.hg-pending-action-words {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.hg-pending-action-slow {
+  display: block;
+  color: var(--text-tertiary);
+}
+
+.hg-pending-action-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The 44px floor comes from Pressable; this is the pill profile on top of it. 14px of inline
+   padding sits between --sp-3 and --sp-4 and has no token of its own. */
+.hg-pending-action-pill.hg-pressable {
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-pending-action-pill-ghost.hg-pressable {
+  background: transparent;
+  box-shadow: var(--control-edge);
+  color: var(--text-secondary);
+}

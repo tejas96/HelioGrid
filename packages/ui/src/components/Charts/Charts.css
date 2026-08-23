@@ -1,0 +1,11 @@
+/* Charts — bar, line, donut and funnel. Colour comes ONLY from --chart-1 … --chart-8 and
+   --chart-gridline; never invent one here. Every chart states its provenance in words under
+   the headline value (F8-01 / F8-07) and ships loading / empty / error / not-enough-data
+   states through the shared frame. Geometry that is shape rather than scale — a 10px track,
+   a 30px funnel bar, a 5px provenance dot — stays in px; everything on a scale is a token.
+
+   Split by responsibility, one @import per part, so no stylesheet in the folder runs long. */
+
+@import "./ChartFrame.css";
+@import "./ChartLegend.css";
+@import "./ChartPlots.css";

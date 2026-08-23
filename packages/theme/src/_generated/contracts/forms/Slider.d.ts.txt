@@ -1,0 +1,45 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "../data/Provenance";
+
+export interface SliderProps {
+  value?: number;
+  /**
+   * Live signal — fires continuously during a drag. **Wire this to the preview** — and open the
+   * editor holding this slider as `EditorSurface modal={false}`, which has no backdrop at all, so
+   * the geometry behind it actually repaints while the drag happens (`MS3-27`, `MS3-30`, `MS6-19`).
+   * A blurred backdrop over a live preview is the one combination this system used to prescribe and
+   * cannot mean.
+   */
+  onInput?: (value: number) => void;
+  /** Commit signal — fires ONCE when the drag/keypress ends. Wire this to state and undo. */
+  onCommit?: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  label?: string;
+  /** Displayed after the value; the unit toggle itself is a SegmentedControl. */
+  unit?: string;
+  /** Role-aware line under the track. */
+  hint?: string;
+  /** Custom value formatter — overrides value + unit. */
+  format?: (value: number) => string;
+  /** 44px minus/plus buttons either side. On by default (MS12-26). */
+  steppers?: boolean;
+  disabled?: boolean;
+  density?: "expressive" | "functional";
+  id?: string;
+  /** Provenance for the value, directly under the track and above the hint. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Slider with stepper buttons. Step-wide law (MS3-27): a drag reports live via `onInput` and
+ * commits exactly once via `onCommit`, so one drag is one undo entry.
+ *
+ * **In field mode the track's edge is OUTSET, not inset.** The unfilled track is 6px of
+ * `--canvas-sunken`; `--control-edge`'s 1.5px inset ring — `Switch`'s answer — would leave a 3px core
+ * inside a dark outline and an empty slider would read as a full one. The track reads `--track-edge`
+ * instead: a 1px hairline *around* the rail, so it is findable in sunlight and still visibly empty.
+ */
+export function Slider(props: SliderProps): JSX.Element;

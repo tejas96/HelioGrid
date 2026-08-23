@@ -1,0 +1,180 @@
+/* AllocationMeter — parts of a whole that must reach EXACTLY a target, with the shortfall or the
+   excess stated IN WORDS (M06-13 P0 / SCR-M06-09).
+
+   THE REMAINDER IS IN WORDS, NOT A GAP IN A BAR. "12% unallocated" is content — M06-13 quotes it —
+   and inferring it from an unfilled tail asks the reader to measure a picture.
+
+   THE OVER MARK AND THE OVER BAR TAKE --warning-text. Plain --warning measures 2.17:1 on white and
+   1.90 on the track — under WCAG's 3:1 non-text floor, so the mark that says "over" could not be
+   seen and the excess segment was carried by hue alone. tokens/colors.css has the measured table.
+
+   The 7/10px gaps and the 8/10px track are the DS source's own; the 4px scale has no step for them. */
+
+.hg-allocation-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+}
+
+.hg-allocation-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-allocation-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-allocation-figure {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-allocation-denominator {
+  font-weight: var(--fw-regular);
+  color: var(--text-tertiary);
+}
+
+.hg-allocation-target-label {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
+/* ── the track ──────────────────────────────────────────────────────────────── */
+
+.hg-allocation-track {
+  position: relative;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+  display: flex;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.hg-allocation-track[data-density="expressive"] {
+  height: 10px;
+}
+
+.hg-allocation-track[data-density="functional"] {
+  height: 8px;
+}
+
+.hg-allocation-span {
+  min-width: 3px;
+  background: var(--accent);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-allocation-span[data-over="true"] {
+  background: var(--warning-text);
+}
+
+.hg-allocation-tick {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--warning-text);
+}
+
+/* ── the words, which are the point ─────────────────────────────────────────── */
+
+.hg-allocation-words {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  font-weight: var(--fw-medium);
+  text-wrap: pretty;
+}
+
+.hg-allocation-words[data-state="under"] {
+  color: var(--text-secondary);
+}
+.hg-allocation-words[data-state="met"] {
+  color: var(--success-text);
+}
+.hg-allocation-words[data-state="over"] {
+  color: var(--warning-text);
+}
+
+.hg-allocation-mark {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  color: var(--text-inverse);
+}
+
+.hg-allocation-mark[data-state="under"] {
+  width: 10px;
+  height: 10px;
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
+}
+
+.hg-allocation-mark[data-state="met"] {
+  width: 14px;
+  height: 14px;
+  background: var(--success);
+}
+
+.hg-allocation-mark[data-state="over"] {
+  width: 14px;
+  height: 14px;
+  background: var(--warning-text);
+}
+
+/* ── legend, off by default: at 375px the bar and the words come first ──────── */
+
+.hg-allocation-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) 14px;
+}
+
+.hg-allocation-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-allocation-swatch {
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: 2px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.hg-allocation-legend-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-allocation-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}

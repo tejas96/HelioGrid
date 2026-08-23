@@ -1,0 +1,182 @@
+/* OptionCardGroup — a card-shaped radiogroup. One tab stop, arrow keys move the selection.
+   Selection reads as a 2px accent ring PLUS a tint PLUS a filled dot, so it is never carried by
+   colour alone. `current` is a different fact from selected and takes a word in a neutral pill
+   (StatusMark), never the accent. */
+
+.hg-option-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-option-card-group-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+/* 6px of padding taken straight back as -6px of margin, so an errored group occupies the same
+   box as a valid one and nothing on the step shifts when the gate speaks. */
+.hg-option-card-group-list {
+  display: grid;
+  grid-template-columns: repeat(var(--hg-option-card-columns, 1), minmax(0, 1fr));
+  gap: 10px;
+  padding: 6px;
+  margin: -6px;
+  border-radius: var(--r-lg);
+}
+
+.hg-option-card-group-list[data-error="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--danger);
+}
+
+.hg-option-card-group-error {
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--danger-text);
+  text-wrap: pretty;
+}
+
+/* ── the card ─────────────────────────────────────────────────────────────── */
+
+.hg-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-4);
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-option-card[data-density="functional"] {
+  padding: 14px;
+  border-radius: var(--r-card-functional);
+}
+
+.hg-option-card[data-selected="true"] {
+  background: var(--accent-subtle);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-option-card[data-off="true"] {
+  background: var(--canvas-sunken);
+  cursor: not-allowed;
+}
+
+.hg-option-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-option-card-dot {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--text-disabled);
+}
+
+.hg-option-card-dot[data-selected="true"] {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.hg-option-card-dot-fill {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-inverse);
+}
+
+.hg-option-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-option-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hg-option-card-titles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-option-card-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-option-card-price {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.hg-option-card[data-off="true"] .hg-option-card-title,
+.hg-option-card[data-off="true"] .hg-option-card-price {
+  color: var(--text-disabled);
+}
+
+.hg-option-card-description {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Its own line, under the description — never inside it. */
+.hg-option-card-reason {
+  display: block;
+  margin-top: 5px;
+}
+
+.hg-option-card-content {
+  display: block;
+  margin-top: 10px;
+}
+
+.hg-option-card-meta {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-option-card-icon {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+.hg-option-card[data-selected="true"] .hg-option-card-icon {
+  color: var(--accent);
+}

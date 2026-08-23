@@ -1,0 +1,15 @@
+import React from "react";
+
+export interface RadioProps {
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  name?: string;
+  value?: string;
+  disabled?: boolean;
+  id?: string;
+  style?: React.CSSProperties;
+}
+
+/** 20px radio. Checked = 2px accent ring + accent dot. */
+export function Radio(props: RadioProps): JSX.Element;

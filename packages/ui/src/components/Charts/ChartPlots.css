@@ -1,0 +1,240 @@
+/* The four plots — bar, line, donut, funnel. Imported by Charts.css. */
+
+/* ── bar ────────────────────────────────────────────────────────────────── */
+.hg-charts-bar-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-charts-bar-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 26%) 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-charts-bar-row-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-charts-bar-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+.hg-charts-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-charts-bar-row-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-charts-bar-plot {
+  position: relative;
+}
+
+.hg-charts-bar-grid {
+  position: absolute;
+  inset: 0 0 22px 0;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+}
+
+.hg-charts-bar-rule {
+  height: 1px;
+  background: var(--chart-gridline);
+}
+
+.hg-charts-bar-columns {
+  position: absolute;
+  inset: 0 0 22px 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hg-charts-bar-column {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.hg-charts-bar-bar {
+  border-radius: var(--rf-sm) var(--rf-sm) var(--rf-xs) var(--rf-xs);
+  transition: height var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-charts-bar-axis {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.hg-charts-bar-tick {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+/* ── line ───────────────────────────────────────────────────────────────── */
+.hg-charts-line-plot {
+  position: relative;
+}
+
+.hg-charts-line-svg {
+  display: block;
+  overflow: visible;
+}
+
+.hg-charts-line-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--sp-2);
+}
+
+.hg-charts-line-tick {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+/* ── donut ──────────────────────────────────────────────────────────────── */
+.hg-charts-donut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+.hg-charts-donut-ring {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.hg-charts-donut-svg {
+  transform: rotate(-90deg);
+}
+
+.hg-charts-donut-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.hg-charts-donut-total {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-charts-donut-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-charts-donut-legend {
+  flex: 1 1 160px;
+  min-width: 0;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: var(--sp-3);
+}
+
+/* ── funnel ─────────────────────────────────────────────────────────────── */
+.hg-charts-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-charts-funnel-row {
+  display: grid;
+  grid-template-columns: minmax(84px, 28%) 1fr auto;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-charts-funnel-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-charts-funnel-track {
+  position: relative;
+  min-width: 0;
+  height: 30px;
+  overflow: hidden;
+  border-radius: var(--rf-md);
+  background: var(--surface-alt);
+}
+
+.hg-charts-funnel-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rf-md);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-charts-funnel-value {
+  min-width: 56px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-charts-funnel-conversion {
+  display: flex;
+  justify-content: flex-end;
+  padding: 3px 62px 3px 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-charts-funnel-conversion [data-low="true"] {
+  color: var(--warning-text);
+}

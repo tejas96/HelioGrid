@@ -1,0 +1,80 @@
+/* SearchField — borderless search input. e1 at rest, 2px accent ring on focus, NEVER a border.
+   44px tall so it clears the touch-target floor on a phone; functional density drops the box to
+   40px but the min-height keeps the target at 44. */
+
+.hg-search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  background: var(--surface);
+  border-radius: var(--r-input-expressive);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-search-field[data-density="functional"] {
+  height: 40px;
+  border-radius: var(--r-input-functional);
+}
+
+.hg-search-field[data-disabled="true"] {
+  background: var(--canvas-sunken);
+}
+
+/* The ring is the focus state of the INPUT, not of the box — the clear button carries its own
+   focus ring from .hg-pressable, exactly as the reference does. */
+.hg-search-field[data-focus="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-search-field-glyph {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* alignSelf stretch: the box is 44+ tall, so the input must be too — it measured 244x19. */
+.hg-search-field-input {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  padding: 0;
+}
+
+/* 44px target, 28px pill: the two rectangles again. The negative margin takes the extra width
+   back out of the row so the box geometry is unchanged. */
+.hg-search-field-clear {
+  width: 44px;
+  height: 44px;
+  margin: 0 -12px 0 -8px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--r-pill);
+}
+
+.hg-search-field-clear:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-search-field-clear-pill {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--neutral-bg);
+  color: var(--text-secondary);
+}

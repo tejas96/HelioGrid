@@ -1,0 +1,53 @@
+/* Tooltip — a near-black label for a control whose meaning isn't obvious. Opens on hover AND on
+   keyboard focus (nothing in this system is hover-only) and closes on Escape. It follows that a
+   touch user may never see it, so nothing that exists nowhere else belongs here.
+
+   The bubble is --text-primary on --text-inverse: the near-black is the label's ground, which is
+   the one place the system inverts. 6px/10px are the bubble's own padding — the spacing scale has
+   no 6px or 10px step. */
+
+.hg-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-tooltip-bubble {
+  position: absolute;
+  z-index: 70;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: var(--r-xs);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-h4);
+  box-shadow: var(--e3);
+  animation: hg-pop-in var(--dur-micro) var(--ease-enter);
+}
+
+.hg-tooltip-bubble[data-placement="top"] {
+  bottom: calc(100% + var(--sp-2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hg-tooltip-bubble[data-placement="bottom"] {
+  top: calc(100% + var(--sp-2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hg-tooltip-bubble[data-placement="left"] {
+  right: calc(100% + var(--sp-2));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hg-tooltip-bubble[data-placement="right"] {
+  left: calc(100% + var(--sp-2));
+  top: 50%;
+  transform: translateY(-50%);
+}

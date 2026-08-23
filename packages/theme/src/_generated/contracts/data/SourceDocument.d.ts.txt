@@ -1,0 +1,114 @@
+import React from "react";
+
+export interface SourceDocumentPage {
+  url: string;
+  /** Natural page size, used for the aspect ratio. Defaults to A4 portrait. */
+  width?: number;
+  height?: number;
+  /** A page caption — "Page 2 · Electrical characteristics". */
+  label?: string;
+}
+
+export interface SourceDocumentProps {
+  /** The file as the user knows it — its own name, in mono, never renamed by the product. */
+  name?: string;
+  /** Beside the name: "PDF · 2.4 MB · uploaded 12 Mar 2026". The caller's words. */
+  meta?: string;
+  /** One entry per page, in document order. */
+  pages?: SourceDocumentPage[];
+  page?: number;
+  onPageChange?: (page: number) => void;
+  /**
+   * `loading` · `ready` · `unsupported` (this kind has no preview — neutral and permanent, **not** an
+   * error) · `failed` (the fetch failed — warning, retry) · `empty`. `auto` reads `pages`.
+   *
+   * **Local by ruling, not by drift** (law 1): these are the states of **a file the user handed over**,
+   * and the two that differ from `SurfaceState` are the reason — `unsupported` is *this kind of file
+   * has no rendering*, which is `unavailable`'s idea about a **format** rather than about content, and
+   * `failed` names the fetch that did not land. The surface hosting this still takes the five.
+   */
+  state?: "auto" | "loading" | "ready" | "unsupported" | "failed" | "empty";
+  /** Reading-area height in px. `ReadAlongside` sets this for the stacked arrangement. */
+  height?: number;
+  fit?: "width" | "page";
+  onFitChange?: (fit: "width" | "page") => void;
+  /**
+   * Opening the real file is available in **every state that can offer it** — `ready` puts it in the
+   * header; `unsupported`, `empty` and `failed` put it in the panel, `failed` beside "Try again",
+   * because the state where the preview is gone is the state that most needs the source. A preview is
+   * never the only way to see a file.
+   */
+  originalUrl?: string;
+  onOpenOriginal?: () => void;
+  openLabel?: string;
+  onRetry?: () => void;
+  unsupportedTitle?: string;
+  unsupportedMessage?: string;
+  failedTitle?: string;
+  failedMessage?: string;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  label?: string;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **A file the user handed the product, rendered for reading.** `M01-40` (P0)'s
+ * `pdf-extraction-review`: extracted fields in the same typed form as manual entry, each editable,
+ * *"with the datasheet preview alongside"*.
+ *
+ * **Its own component, not a mode of `ImageFrame` and not a `PreviewFrame`.** It *uses* `ImageFrame`
+ * per page, inheriting the loading / present / permanently-missing footprint law rather than restating
+ * it, and adds what a photograph never has: a page count, a page you can move through, a file
+ * identity, and a "no preview for this kind" state. `PreviewFrame` is the near-opposite of this — a
+ * *picture* of customer-facing output: readable, but nothing inside operable. A source document is
+ * **read and operated**: the reviewer is checking an extracted number against the sheet it came from,
+ * so its pages stay reachable by keyboard and it is never `aria-hidden`. `DocumentPreview` draws the
+ * tenant's own *generated* output;
+ * `Dropzone` only ever showed a supplied file as a thumbnail URL.
+ *
+ * **Paged, not a continuous scroll** — a reviewer on a phone needs a stable target and a page number
+ * that means something; a continuous scroller's indicator is always approximately wrong.
+ *
+ * @startingPoint section="Data display" subtitle="A user-supplied document, read beside the form" viewport="1180x620"
+ */
+export function SourceDocument(props: SourceDocumentProps): JSX.Element;
+
+export interface ReadAlongsideProps {
+  /** The `SourceDocument`. */
+  document: React.ReactNode;
+  /** The form. */
+  children?: React.ReactNode;
+  /** Switch measured on **its own width**, never the viewport (law 4). */
+  breakpoint?: number;
+  documentWidth?: number | string;
+  stackedHeight?: number;
+  expandedHeight?: number;
+  expandLabel?: string;
+  collapseLabel?: string;
+  gap?: number;
+  label?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The arrangement**, so nineteen review screens don't each answer it. "Alongside" is a layout claim
+ * and on a 375px phone there is no alongside — the same shape of problem `EditorSurface` solved for
+ * sheet-versus-panel, and solved the same way: one component measures **the layer it mounts into** and
+ * performs the switch.
+ *
+ * - **≥ `breakpoint` of its own width** — two columns, the document sticky so it stays beside the field
+ *   being checked however far the form scrolls.
+ * - **< `breakpoint`** — stacked, **document first** at a reading height with an expand toggle. Document
+ *   first because the source is the reference, and a reference under 40 fields is one nobody scrolls
+ *   back to.
+ *
+ * The document is never dropped on the phone and never demoted to a thumbnail: "check this number
+ * against the sheet" is the whole task, and a task that only works on a desktop is not shipped.
+ */
+export function ReadAlongside(props: ReadAlongsideProps): JSX.Element;
+
+export namespace SourceDocument {
+  const Alongside: typeof ReadAlongside;
+}

@@ -1,0 +1,146 @@
+import React from "react";
+
+export interface CountBadgeProps {
+  /**
+   * The number of unread items, read **from the record** (`F6-17`) — never from push state, so it
+   * always matches the list it opens. `true` falls back to a bare dot for the rare case where a
+   * count genuinely isn't known; prefer a number.
+   */
+  count?: number | boolean;
+  /** Above this it reads "99+". Default 99. */
+  max?: number;
+  /**
+   * The NOUN only — "notifications", "alerts" — used to build **this badge's own** screen-reader
+   * text, "3 unread notifications".
+   *
+   * On every call site in this system that text is never announced. `RailButton`, `NavItem` and
+   * `ShellAction` each put `aria-label="Notifications, 7 unread"` on the host **button**, and an
+   * `aria-label` wins over element contents in the accessible name computation — so the badge's
+   * span is suppressed and the host's wording is what a screen reader says. `label` therefore
+   * matters only for a `CountBadge` mounted **outside** a labelled host (a tab, a menu row, a
+   * heading), where its own words are the only ones present. Never write the count into it: the
+   * number comes from `count`, and both spellings say it once.
+   */
+  label?: string;
+  /**
+   * Which semantic pair the pill uses. Default "danger". The numeral is **words**, so the fill is
+   * the `-bg` tint and the digits the `-text` partner — never the plain mark token, which no tone
+   * clears 4.5:1 against white. Measured, fill vs digits: danger 5.79, warning 6.53, success 5.96,
+   * info 5.65, neutral 6.03, accent 4.65.
+   */
+  tone?: "danger" | "accent" | "warning" | "info" | "success" | "neutral";
+  style?: React.CSSProperties;
+}
+
+/**
+ * The unread count. A **numeral**, not a red dot: a dot is the mark with the word removed — it can't
+ * match the list it stands for, and it fails `F7-12` on the surface every other screen copies.
+ * Renders nothing at zero.
+ *
+ * **A shell counter carries no provenance tier, and that is a stated exception** (`readme.md` law 3,
+ * beside `Block`'s footer exception) rather than a missing prop. The badge is a wayfinder, not a
+ * reported figure: a 16px pill riding a 44px icon has no line of its own, so none of the slot rule's
+ * shapes is available on it — and `SCR-SHELL-03`'s `derived` reading belongs on the destination, the
+ * notifications list, where every record already carries its own tier. What the badge owes instead is
+ * that it match that list exactly, which is why `count` is read **from the record** (`F6-17`) and
+ * never from push state. There is deliberately no `provenance` or `tier` prop here.
+ *
+ * The numeral itself carries two obligations the first version broke. It is **12px**
+ * (`--fs-caption`, the type floor — 11px is the overline role only, and `readme.md` names counters
+ * in the list of things that stay >= 12). And it takes a `-text` colour on a `-bg` fill, the way
+ * `Badge` does: white on `--danger` measured **3.91:1**, under the floor; `--danger-text` on
+ * `--danger-bg` measures **5.79:1**. A `true` badge still draws a bare dot, which stays legal
+ * because it carries no words.
+ */
+export function CountBadge(props: CountBadgeProps): JSX.Element | null;
+
+export interface ShellActionProps {
+  label: string;
+  icon?: React.ReactNode;
+  /** A count (or `true`) rides the corner as a `CountBadge`. */
+  badge?: number | boolean;
+  onClick?: () => void;
+  active?: boolean;
+  style?: React.CSSProperties;
+}
+/** A 44×44 shell button with an optional count badge. */
+export function ShellAction(props: ShellActionProps): JSX.Element;
+
+export interface AppHeaderProps {
+  title?: string;
+  subtitle?: string;
+  /**
+   * The **product** mark. **Omit it when an `AppRail` is showing the mark** — the rail and the
+   * header are one shell, and drawing the tile in both puts the logo on screen twice. Use it when
+   * there is no rail: a phone, a focused flow, a settings shell.
+   */
+  brand?: React.ReactNode;
+  /**
+   * The **tenant's** identity — a `TenantMark` (`MS12-19`). The other half of the pair, and a
+   * different job: the product mark says which application this is, the tenant mark says whose.
+   * Pass it even when `brand` is omitted, which is the desktop case — the rail carries the product
+   * mark and the header carries the tenant's, so the top bar is never identity-less.
+   *
+   * Identity, never theme: `F7-07` still forbids restyling the operator app per tenant, and
+   * `TenantMark`'s monogram enforces it by reading `--tenant-mark`, a token that exists only
+   * inside `CustomerSurface` — which gates it on contrast before handing it over.
+   */
+  tenant?: React.ReactNode;
+  /** The **global** search box (`F6-20`) — one box, in the shell. A list filter is not this. */
+  search?: React.ReactNode;
+  actions?: React.ReactNode;
+  /**
+   * **Work the person walked away from** — a `JobTray`. It lives in the shell because that is the
+   * only layer that outlives the screen which started it, which is exactly what `M02-21` promises:
+   * *"the person who started it may leave the screen"*. Rendered **before** the bell: the bell says
+   * something happened while you were elsewhere, the tray says something is still happening while
+   * you are elsewhere.
+   */
+  jobs?: React.ReactNode;
+  /** Unread count for the bell. Read from the record. */
+  notifications?: number | boolean;
+  onNotificationsClick?: () => void;
+  avatar?: React.ReactNode;
+  breadcrumb?: React.ReactNode;
+  sticky?: boolean;
+  style?: React.CSSProperties;
+}
+/**
+ * The desktop top bar — the header half of `F7-22`'s sidebar-and-header shell. Height is
+ * `--header-h`.
+ * @startingPoint section="Navigation" subtitle="Application header with global search and bell" viewport="1200x120"
+ */
+export function AppHeader(props: AppHeaderProps): JSX.Element;
+
+export interface MobileTopBarProps {
+  title?: string;
+  /** The product mark. The phone has no rail, so **this** is where it rides. */
+  brand?: React.ReactNode;
+  /** The tenant's `TenantMark`. With a title present pass `showName={false}` — one set of words. */
+  tenant?: React.ReactNode;
+  /** Opens the global search sheet — the phone's half of `F6-20`. */
+  onSearchClick?: () => void;
+  /** The `JobTray`, same slot and same position as on the desktop header. */
+  jobs?: React.ReactNode;
+  notifications?: number | boolean;
+  onNotificationsClick?: () => void;
+  avatar?: React.ReactNode;
+  /** Back button or menu, before the title. */
+  leading?: React.ReactNode;
+  actions?: React.ReactNode;
+  sticky?: boolean;
+  style?: React.CSSProperties;
+}
+/** The phone top bar — `--topbar-h-mobile`, with the same search and bell obligations. */
+export function MobileTopBar(props: MobileTopBarProps): JSX.Element;
+
+export interface AppShellProps {
+  /** `<AppRail />`. */
+  rail?: React.ReactNode;
+  /** `<AppHeader />`. */
+  header?: React.ReactNode;
+  children?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+/** Rail on the left, header on top, scrolling content below — the whole desktop shell. */
+export function AppShell(props: AppShellProps): JSX.Element;

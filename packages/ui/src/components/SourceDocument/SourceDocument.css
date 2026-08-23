@@ -1,0 +1,282 @@
+/* SourceDocument — a file the user handed the product, rendered for reading. It is READ and
+   OPERATED, never a picture of itself: nothing here is aria-hidden and every control is reachable.
+
+   The paging and fit controls are the Pressable primitive, so the 44×44 floor, the reset and the
+   focus ring come from `hg-pressable`; `aria-pressed` is the primitive's own
+   `accessibilityState.selected`. What this file states is each control's frame and its tints. */
+
+.hg-source-doc {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--e2);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.hg-source-doc[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+}
+
+.hg-source-doc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px var(--sp-2) 6px var(--sp-4);
+  min-width: 0;
+}
+
+.hg-source-doc-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The file as the user knows it — its own name, in mono, never renamed by the product. */
+.hg-source-doc-name {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-source-doc-meta {
+  display: block;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-source-doc-chrome {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+}
+
+.hg-source-doc-count {
+  min-width: 62px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+/* The Pressable primitive: the 44px floor, the reset, the cursor, the disabled ink and the focus
+   ring are `hg-pressable`'s. What stays is this control's own square, its pill and its tints. */
+.hg-source-doc-icon-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  touch-action: manipulation;
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+
+.hg-source-doc-icon-btn:hover:not(:disabled) {
+  background: var(--neutral-bg);
+}
+
+.hg-source-doc-icon-btn[aria-pressed="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* Off outranks in-force: the primitive's disabled ink is a single class, so the tint above would
+   otherwise win on order. Only the two the tint sets are restated. */
+.hg-source-doc-icon-btn:disabled {
+  background: transparent;
+  color: var(--text-disabled);
+}
+
+.hg-source-doc-open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ── the reading area ──────────────────────────────────────────────────────── */
+
+.hg-source-doc-body {
+  position: relative;
+  overflow: auto;
+  padding: var(--sp-3);
+  box-sizing: border-box;
+  background: var(--canvas-sunken);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.hg-source-doc-body[data-fit="page"] {
+  align-items: center;
+}
+
+.hg-source-doc-body > * {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.hg-source-doc-shimmer {
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    var(--canvas-sunken) 0%,
+    var(--surface-alt) 50%,
+    var(--canvas-sunken) 100%
+  );
+  background-size: 640px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-source-doc-footer {
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+/* ── the state panel ───────────────────────────────────────────────────────── */
+
+.hg-source-doc-message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-6);
+  text-align: center;
+  background: var(--canvas-sunken);
+}
+
+.hg-source-doc-message[data-tone="warning"] {
+  background: var(--warning-bg);
+}
+
+.hg-source-doc-message-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--text-tertiary);
+  box-shadow: var(--e1);
+}
+
+.hg-source-doc-message[data-tone="warning"] .hg-source-doc-message-mark {
+  color: var(--warning-text);
+}
+
+.hg-source-doc-message-title {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-source-doc-message-body {
+  max-width: 300px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-source-doc-message[data-tone="warning"] .hg-source-doc-message-body {
+  color: var(--warning-text);
+}
+
+.hg-source-doc-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.hg-source-doc-plain {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hg-source-doc-plain:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── ReadAlongside ─────────────────────────────────────────────────────────── */
+
+.hg-read-alongside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.hg-read-alongside[data-side="true"] {
+  flex-direction: row;
+}
+
+.hg-read-alongside-doc {
+  order: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Two columns: the document is sticky, so it stays beside the field being checked. */
+.hg-read-alongside[data-side="true"] .hg-read-alongside-doc {
+  order: 2;
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--sp-4);
+}
+
+.hg-read-alongside-form {
+  order: 2;
+  width: 100%;
+  min-width: 0;
+}
+
+.hg-read-alongside[data-side="true"] .hg-read-alongside-form {
+  order: 1;
+  flex: 1;
+  width: auto;
+}
+
+/* The Pressable primitive: the 44px floor, the reset, the cursor and the focus ring are
+   `hg-pressable`'s, so only this toggle's own frame and words are stated here. */
+.hg-read-alongside-toggle {
+  margin-top: var(--sp-1);
+  padding: 0 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+}

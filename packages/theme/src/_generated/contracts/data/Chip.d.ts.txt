@@ -1,0 +1,33 @@
+import React from "react";
+
+export interface ChipProps {
+  children?: React.ReactNode;
+  /** filter chip active state — near-black fill, white text */
+  active?: boolean;
+  /** With a handler the chip is a button inside a 44px target; without one it is a plain span. */
+  onClick?: (e: React.MouseEvent) => void;
+  /** show a leading status dot */
+  dot?: boolean;
+  tone?: "neutral" | "success" | "warning" | "danger" | "info" | "accent";
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+export interface BadgeProps {
+  children?: React.ReactNode;
+  tone?: "neutral" | "success" | "warning" | "danger" | "info" | "accent";
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * Fully-pill filter chip. Active = near-black fill.
+ *
+ * **With `onClick` it is a `<button>` with a 44×44 hit box around the 28px (24px functional) pill** —
+ * the two-rectangles rule, with the extra height taken back as negative margin so no row grows.
+ * **Without `onClick` it is a `<span>`**: it used to render a `<button>` either way, so a decorative
+ * label was a tab stop announced as a button and measured as a 28px interactive element. `style`
+ * lands on the pill in both forms.
+ */
+export function Chip(props: ChipProps): JSX.Element;
+/** Tinted semantic badge (pill). Never interactive — always a span. */
+export function Badge(props: BadgeProps): JSX.Element;

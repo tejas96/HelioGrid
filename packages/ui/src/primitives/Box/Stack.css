@@ -1,0 +1,84 @@
+/* Stack — Box's flow half: direction, scale-stepped gap, alignment. Same law as Box.css:
+   every value is a token, the data attributes are the whole prop surface. */
+
+.hg-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-stack[data-direction="row"] {
+  flex-direction: row;
+}
+
+.hg-stack[data-gap="0"] {
+  gap: var(--sp-0);
+}
+.hg-stack[data-gap="0-5"] {
+  gap: var(--sp-0-5);
+}
+.hg-stack[data-gap="1"] {
+  gap: var(--sp-1);
+}
+.hg-stack[data-gap="2"] {
+  gap: var(--sp-2);
+}
+.hg-stack[data-gap="3"] {
+  gap: var(--sp-3);
+}
+.hg-stack[data-gap="4"] {
+  gap: var(--sp-4);
+}
+.hg-stack[data-gap="5"] {
+  gap: var(--sp-5);
+}
+.hg-stack[data-gap="6"] {
+  gap: var(--sp-6);
+}
+.hg-stack[data-gap="8"] {
+  gap: var(--sp-8);
+}
+.hg-stack[data-gap="10"] {
+  gap: var(--sp-10);
+}
+.hg-stack[data-gap="12"] {
+  gap: var(--sp-12);
+}
+.hg-stack[data-gap="16"] {
+  gap: var(--sp-16);
+}
+.hg-stack[data-gap="20"] {
+  gap: var(--sp-20);
+}
+.hg-stack[data-gap="24"] {
+  gap: var(--sp-24);
+}
+
+.hg-stack[data-align="start"] {
+  align-items: flex-start;
+}
+.hg-stack[data-align="center"] {
+  align-items: center;
+}
+.hg-stack[data-align="end"] {
+  align-items: flex-end;
+}
+.hg-stack[data-align="stretch"] {
+  align-items: stretch;
+}
+
+.hg-stack[data-justify="start"] {
+  justify-content: flex-start;
+}
+.hg-stack[data-justify="center"] {
+  justify-content: center;
+}
+.hg-stack[data-justify="end"] {
+  justify-content: flex-end;
+}
+.hg-stack[data-justify="between"] {
+  justify-content: space-between;
+}
+
+.hg-stack[data-wrap="true"] {
+  flex-wrap: wrap;
+}

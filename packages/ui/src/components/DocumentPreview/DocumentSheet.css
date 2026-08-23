@@ -1,0 +1,185 @@
+/* The sheet's letterhead, cover and foot. Design-space geometry of a 480px sheet — see
+   DocumentPreview.css for why these px are literal and every colour is not. */
+
+/* ── the brand band ──────────────────────────────────────────────────────────
+   The header takes the brand fill ONLY if something can be read on it. Otherwise the document
+   keeps a white header with a brand rule — the honest consequence, previewed rather than a
+   flattering mock. */
+.hg-doc-band {
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hg-doc-band[data-band-ok="true"] {
+  background: var(--hg-doc-brand);
+  color: var(--hg-doc-band-text);
+}
+
+.hg-doc-band[data-band-ok="false"] {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--hg-doc-brand);
+}
+
+.hg-doc-band-words {
+  min-width: 0;
+}
+
+.hg-doc-company {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+}
+
+.hg-doc-tagline {
+  margin: 2px 0 0;
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+}
+
+.hg-doc-address {
+  margin: 3px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.hg-doc-lines {
+  margin: 2px 0 0;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.hg-doc-letterhead-node {
+  margin-top: 4px;
+}
+
+.hg-doc-band[data-band-ok="true"] .hg-doc-tagline {
+  opacity: 0.9;
+}
+.hg-doc-band[data-band-ok="false"] .hg-doc-tagline {
+  opacity: 0.7;
+}
+.hg-doc-band[data-band-ok="true"] .hg-doc-address {
+  opacity: 0.85;
+}
+.hg-doc-band[data-band-ok="false"] .hg-doc-address {
+  opacity: 0.6;
+}
+.hg-doc-band[data-band-ok="true"] .hg-doc-lines {
+  opacity: 0.8;
+}
+.hg-doc-band[data-band-ok="false"] .hg-doc-lines {
+  opacity: 0.55;
+}
+
+.hg-doc-logo {
+  height: 34px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* The logo is a labelled placeholder slot until logoSrc arrives — a missing asset is shown as
+   a missing asset, never as an empty gap the tenant reads as "nothing to configure". */
+.hg-doc-slot {
+  width: 90px;
+  height: 34px;
+  border-radius: var(--rf-sm);
+  background: var(--hairline);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.hg-doc-slot-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ── the cover ─────────────────────────────────────────────────────────────── */
+.hg-doc-cover {
+  padding: 22px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.hg-doc-overline {
+  margin: 0;
+  font-size: 9px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-doc-overline[data-spaced="true"] {
+  margin-top: 12px;
+}
+
+.hg-doc-customer-name {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.hg-doc-customer-meta {
+  margin: 2px 0 0;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.hg-doc-meta-block {
+  text-align: right;
+}
+
+.hg-doc-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--hg-doc-ink);
+}
+
+.hg-doc-number {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.hg-doc-date {
+  margin: 2px 0 0;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* ── the foot ──────────────────────────────────────────────────────────────── */
+.hg-doc-footer {
+  padding: 14px 28px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 9px;
+  color: var(--text-tertiary);
+}
+
+.hg-doc-tax {
+  font-family: var(--font-mono);
+}
+
+.hg-doc-footer-note {
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+}

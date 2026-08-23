@@ -1,0 +1,86 @@
+/* PreviewFrame — the frame every settings screen that previews customer-facing output inherits.
+
+   NON-INTERACTIVE, AND READABLE. `pointer-events: none` here is half the guarantee; the other
+   half is tabindex="-1" on every focusable inside, applied by the component. `inert` is
+   deliberately NOT used: it removes the subtree from the accessibility tree, and on SCR-M01-18
+   the preview IS the thing being judged.
+
+   The subject draws at its natural design width and is scaled from the top left, so a crop cuts
+   the sheet where a letterhead is. `--hg-preview-*` are per-instance numbers set by the
+   component from the measured own-width. */
+
+.hg-preview-frame {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-preview-frame-window {
+  width: 100%;
+  height: var(--hg-preview-box-height, auto);
+  overflow: hidden;
+}
+
+.hg-preview-frame-window[data-surface="sheet"] {
+  background: var(--surface);
+  box-shadow: var(--e3);
+  border-radius: var(--r-lg);
+}
+
+.hg-preview-frame-window[data-surface="page"] {
+  background: var(--canvas);
+  box-shadow: var(--e2);
+  border-radius: var(--r-lg);
+}
+
+.hg-preview-frame-window[data-surface="band"] {
+  background: var(--surface);
+  box-shadow: var(--e1);
+  border-radius: var(--r-md);
+}
+
+.hg-preview-frame-subject {
+  width: var(--hg-preview-design-width);
+  height: var(--hg-preview-design-height, auto);
+  transform: scale(var(--hg-preview-scale));
+  transform-origin: top left;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hg-preview-frame-caption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-preview-frame-words {
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+.hg-preview-frame-line {
+  display: block;
+}
+
+.hg-preview-frame-note {
+  color: var(--warning-text);
+}
+
+.hg-preview-frame-action {
+  flex-shrink: 0;
+}
+
+.hg-preview-frame-group {
+  display: grid;
+  gap: var(--hg-preview-group-gap);
+  grid-template-columns: repeat(var(--hg-preview-group-columns), minmax(0, 1fr));
+  align-items: start;
+}

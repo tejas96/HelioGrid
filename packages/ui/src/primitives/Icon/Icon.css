@@ -1,0 +1,35 @@
+/* Icon — the sizing ladder. The px values ARE the ladder (ICON_SIZE in Icon.types.ts is
+   the same five numbers for the native half); they are steps, not magic. The glyph
+   inherits currentColor from its context — an icon never sets its own palette. */
+
+.hg-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.hg-icon > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hg-icon[data-size="xs"] {
+  width: 12px;
+  height: 12px;
+}
+.hg-icon[data-size="sm"] {
+  width: 16px;
+  height: 16px;
+}
+.hg-icon[data-size="md"] {
+  width: 20px;
+  height: 20px;
+}
+.hg-icon[data-size="lg"] {
+  width: 24px;
+  height: 24px;
+}
+.hg-icon[data-size="xl"] {
+  width: 32px;
+  height: 32px;
+}

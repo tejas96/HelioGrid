@@ -1,0 +1,280 @@
+/* Kanban — sunken grey columns holding floating functional cards, StatusChip column headers,
+   count (or n/limit) on the right. Functional density only.
+
+   THE PHONE FORM IS ONE COLUMN WITH A STAGE FILTER, AND IT USED TO BE NINE COLUMNS STACKED.
+   M08-10 (P0) / SCR-M08-01. Below `stackBelow` of its OWN width the board renders a FilterChips
+   stage strip with a count per stage, and the one selected column beneath it.
+
+   Moving a card is MoveControls, not drag: HTML5 drag fires on neither a keyboard nor a touch
+   screen, and on the phone form the destination column is not even on screen. The buttons are
+   always visible — never hover-only — and 44×44, because a thumb on a phone is their primary
+   caller.
+
+   The 10/12px paddings have no step on the 4px scale; 44px is MIN_TOUCH_TARGET, which no CSS
+   token carries. Column width is a per-instance value and rides in as a custom property. */
+
+.hg-kanban {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+
+.hg-kanban[data-stacked="true"] {
+  flex-direction: column;
+  gap: 10px;
+  overflow-x: visible;
+  padding-bottom: 0;
+}
+
+.hg-kanban-loading {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+/* The stage strip needs a name, and the overline IS that name: the visible line and the
+   accessible name are THE SAME STRING, which `aria-labelledby` points the tablist at. Words on
+   the sunken track take --text-secondary; --text-tertiary measures 4.48 there, under the floor. */
+.hg-kanban-stage-label {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── column ───────────────────────────────────────────────────────────────── */
+
+.hg-kanban-column {
+  width: var(--hg-kanban-column-w);
+  flex-shrink: 0;
+  background: var(--canvas-sunken);
+  border-radius: var(--r-card-functional);
+  padding: 10px;
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-kanban-column[data-stacked="true"] {
+  width: 100%;
+}
+
+.hg-kanban-column[data-over="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-kanban-column-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-1) 6px 10px;
+}
+
+.hg-kanban-column-name {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-kanban-column-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-kanban-column-count[data-over-limit="true"] {
+  color: var(--warning-text);
+}
+
+.hg-kanban-column-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 56px;
+}
+
+.hg-kanban-column-empty {
+  margin: 0;
+  padding: var(--sp-4) var(--sp-2);
+  text-align: center;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+/* ── card ─────────────────────────────────────────────────────────────────── */
+
+.hg-kanban-card {
+  position: relative;
+}
+
+.hg-kanban-card[data-draggable="true"] {
+  cursor: grab;
+}
+
+.hg-kanban-card[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.hg-kanban-card[data-dragging="true"] {
+  opacity: 0.5;
+}
+
+/* The board's card is tighter than the functional Card default; the descendant selector wins
+   over the primitive's own density padding regardless of stylesheet order. */
+.hg-kanban-card .hg-card {
+  padding: var(--sp-3);
+}
+
+.hg-kanban-card-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.hg-kanban-card-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-kanban-card-meta {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-kanban-card-value {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The tier under the figure it qualifies (F8-01 / F8-07) — persistent words, not a hover. */
+.hg-kanban-card-provenance {
+  margin-top: 6px;
+}
+
+/* The move waits VISIBLY, and the card is not dimmed, not disabled and not covered. */
+.hg-kanban-card-pending {
+  margin: 6px var(--sp-1) 0;
+}
+
+.hg-kanban-move {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-0-5);
+  margin: -6px var(--sp-0-5) 0;
+}
+
+.hg-kanban-move-button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.hg-kanban-move-button:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* ── board-level states ───────────────────────────────────────────────────── */
+
+.hg-kanban-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: 56px var(--sp-6);
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e2);
+}
+
+.hg-kanban-message-mark {
+  width: var(--sp-12);
+  height: var(--sp-12);
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--neutral-bg);
+  color: var(--text-tertiary);
+  margin-bottom: var(--sp-1);
+}
+
+.hg-kanban-message-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-kanban-message-title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-kanban-message-text {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.hg-kanban-message-retry {
+  margin-top: 10px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-kanban-skeleton {
+  width: var(--hg-kanban-column-w);
+  flex-shrink: 0;
+  background: var(--canvas-sunken);
+  border-radius: var(--r-card-functional);
+  padding: 10px;
+}
+
+.hg-kanban-skeleton[data-stacked="true"] {
+  width: 100%;
+}
+
+.hg-kanban-skeleton-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-kanban-skeleton-bar {
+  border-radius: var(--rf-lg);
+  background: linear-gradient(90deg, var(--canvas) 25%, var(--surface) 50%, var(--canvas) 75%);
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-kanban-skeleton-head {
+  height: var(--sp-5);
+  width: 50%;
+  margin: var(--sp-1) 6px var(--sp-3);
+}
+
+.hg-kanban-skeleton-card {
+  height: 62px;
+}

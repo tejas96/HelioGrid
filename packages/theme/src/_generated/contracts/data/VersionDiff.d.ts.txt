@@ -1,0 +1,103 @@
+import React from "react";
+import { ProvenanceTierSpec } from "./Provenance";
+
+export type DiffState = "changed" | "unchanged" | "added" | "removed";
+
+export interface DiffRow {
+  key?: string;
+  /** The field's name — "Capacity", "Payable", "Tranche 2". Held still at the top of the block. */
+  label: string;
+  /** Optional heading rows are grouped under, in the order given — "Step 3 · System", "Money". */
+  group?: string;
+  /** State it when you know it. Otherwise derived: absence on either side is `added` / `removed`. */
+  state?: DiffState;
+  /** The value in the earlier version. `null`/absent means the field did not exist there. */
+  before?: React.ReactNode;
+  /** The value in the later version. `null`/absent means it is gone from there. */
+  after?: React.ReactNode;
+  /**
+   * **The tier the EARLIER version pinned** (`M06-42`: *"each figure shows at the provenance tier its
+   * own version pinned"*). Separate from `afterTier` on purpose — a cell reads `estimated → derived`.
+   */
+  beforeTier?: ProvenanceTierSpec;
+  /** The tier the later version pinned. */
+  afterTier?: ProvenanceTierSpec;
+  unit?: string;
+  /** Overrides `removedLabel` for this row — what its absence is called. */
+  gapLabel?: string;
+  /** A quiet line under the pair. Per-field detail, not the version's change note. */
+  note?: React.ReactNode;
+}
+
+export interface VersionSide {
+  /** "v1", "v2", "Now", "Upgraded". */
+  label?: string;
+  /** A shorter stamp for the per-line prefix, if the label is long. Defaults to `label`. */
+  stamp?: string;
+  /** When it was taken, who took it — "12 Aug, Priya". */
+  note?: string;
+}
+
+export interface VersionDiffProps {
+  /** Overline above the pair. */
+  caption?: string;
+  before?: VersionSide;
+  after?: VersionSide;
+  rows: DiffRow[];
+  /** `M06-42`'s *"what changed and why"* — the version's own note, not a per-field one. */
+  changeNote?: React.ReactNode;
+  changeNoteLabel?: string;
+  /**
+   * Force unchanged rows visible (or hidden). Left undefined, the component renders the moved rows and
+   * a real 44px control that **counts** the unchanged ones — they are never silently dropped.
+   */
+  showUnchanged?: boolean;
+  /** What a removed field's absence is called on the later side. Default "Not in this version". */
+  removedLabel?: string;
+  /** A quiet line under every added row — "New in this version". */
+  addedLabel?: React.ReactNode;
+  /**
+   * `versions` (default) — `SCR-M06-16`'s v1-vs-v2. `upgrade` — `SCR-M06-18`'s `upgrade-offered-diff`,
+   * which only changes the default side labels to "Now" / "Upgraded". **The component renders no commit
+   * control in either mode:** *"showing the differences before anything commits"* means the accept and
+   * the cancel belong to the surface that owns the write.
+   */
+  mode?: "versions" | "upgrade";
+  emptyMessage?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **One thing at two times** — two immutable snapshots of the same record, field by field (`M06-42` P0
+ * / `SCR-M06-16`; `M06-47` P0 / `SCR-M06-18`).
+ *
+ * **Four states, not two.** `changed` · `unchanged` · `added` · `removed`, each a **word** in its own
+ * pill (`F7-12`: never colour alone). `unchanged` is first-class rather than an omission: on an
+ * eleven-step field set, a reader who cannot tell *same* from *not shown* has not been shown a diff.
+ *
+ * **Each figure carries the tier its own version pinned** — `beforeTier` and `afterTier` are two
+ * props, so a cell reads `estimated → derived`. When the value is unchanged and only the tier moved,
+ * the value prints **once** and the tier pair is the content, which is exactly what `SCR-M06-18` is
+ * asking the reader to agree to (`F8-05`: a tier change is shown, never silent). Tiers are compared
+ * **resolved through `resolveTier`** — an object tier (`{tone,label,color}`) compares by what a reader
+ * sees, not by `String()`, which would make every object equal to every other and hide the upgrade.
+ *
+ * **Phone width is the design, not a fallback.** Two columns are not available at 375px on a full
+ * eleven-step field set, so there are no columns at **any** width: one block per field, the before line
+ * above the after line, each line stamped with its own version. Vertical adjacency is closer than
+ * across a gutter, the stamp survives scrolling, and there is no width switch to get wrong.
+ *
+ * **Why it is neither adjacent component.** `CompareGrid` compares 2–4 **whole options** the reader is
+ * *choosing* between — a column per option, a select per column, a "Best" mark per row; here there is
+ * nothing to choose, "best" is meaningless, the two sides are not peers (v2 is the subject, v1 the
+ * reference), and it cannot express a field absent from one side. `FieldOverride` is the right *shape*
+ * for one field and the wrong subject: a human override of a derived default **in the live record**,
+ * with a reset and a "take the new value" — acts a frozen snapshot does not offer — and it has no
+ * across-a-set notion, no per-side tier and no change note.
+ *
+ * @startingPoint section="Data display" subtitle="Two snapshots compared field by field, at phone width" viewport="420x760"
+ */
+export function VersionDiff(props: VersionDiffProps): JSX.Element;
+
+/** The state of one row when the caller hasn't stated it. Also `VersionDiff.resolveRow`. */
+export function resolveDiffRow(row: DiffRow): DiffState;

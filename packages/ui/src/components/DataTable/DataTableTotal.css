@@ -1,0 +1,141 @@
+/* DataTable — the total row, in both forms. The one row that is not a record: it cannot sort,
+   cannot paginate away and cannot stack away. Split out of DataTableCards.css, which @imports it. */
+
+/* ── the total row, in both forms ─────────────────────────────────────────── */
+
+.hg-dt-total-cell {
+  padding: 14px var(--hg-dt-gutter);
+  font-size: var(--hg-dt-cell-font);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  background: var(--surface);
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.hg-dt-total-cell[data-first="true"] {
+  padding-left: var(--hg-dt-edge);
+  text-align: left;
+  letter-spacing: -0.01em;
+  white-space: normal;
+}
+
+.hg-dt-total-cell[data-last="true"] {
+  padding-right: var(--hg-dt-edge);
+}
+
+.hg-dt-total-cell[data-align="right"] {
+  text-align: right;
+}
+
+.hg-dt-total-cell[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-dt-total-cell[data-numeric="true"] {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-total-cell--select {
+  padding-left: var(--hg-dt-edge);
+  padding-right: var(--sp-2);
+}
+
+.hg-dt-total-cell--actions {
+  padding-right: var(--hg-dt-edge);
+}
+
+.hg-dt-total-scope {
+  display: block;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+
+.hg-dt-total-notes {
+  padding: 0 var(--hg-dt-edge) 14px;
+  background: var(--surface);
+}
+
+.hg-dt-total-defect {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  color: var(--danger-text);
+  text-wrap: pretty;
+}
+
+.hg-dt-total-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-dt-total-foot {
+  padding: var(--sp-1) var(--sp-4) var(--sp-4);
+}
+
+.hg-dt-total-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--e1);
+}
+
+.hg-dt-total-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-dt-total-block-label {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-dt-total-block-figure {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.hg-dt-total-block-scope {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-dt-total-block-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--sp-4);
+  row-gap: var(--sp-1);
+}
+
+.hg-dt-total-block-pair {
+  display: contents;
+}
+
+.hg-dt-total-block-pair dt {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-dt-total-block-pair dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,88 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+
+export type BandTone = "success" | "warning" | "danger" | "info" | "neutral";
+
+export interface BandSpec {
+  /** **The band's name — the carrier.** "Good", "Fair", "Poor", "Healthy", "Passing", "Fault". */
+  label: string;
+  tone?: BandTone;
+  /**
+   * **What to do about it, where the band is a fault** — `M05-64`'s *"shorten the string"*. It lives
+   * on the band, not on the host, because a passing band carries none: rendered as a sentence in the
+   * figure's own block, never a banner elsewhere on the screen.
+   */
+  remedy?: React.ReactNode;
+  /** Threshold, in a `bands` table. `min` inclusive, `max` exclusive, either may be omitted. */
+  min?: number;
+  max?: number;
+}
+
+export interface BandedFigureProps {
+  label: string;
+  value: string | number;
+  unit?: string;
+  /** Ordered threshold table — the component names the band. First match wins. */
+  bands?: BandSpec[];
+  /** A resolved band, when the caller has already decided. Wins over `bands`. */
+  band?: BandSpec | string;
+  /** Overrides the band's own remedy. */
+  remedy?: React.ReactNode;
+  /** The rule the figure is read against — "Maximum system voltage · 1000 V · IEC 62548". */
+  bound?: React.ReactNode;
+  /**
+   * `line` — figure and band in a row, inside a panel. `card` (default) — the standalone block.
+   * `box` — `M05-64`'s prominent compliance box, *"the figure an electrical inspector checks"*.
+   */
+  variant?: "line" | "card" | "box";
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  note?: React.ReactNode;
+  compact?: boolean;
+  money?: boolean;
+  ariaLabel?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}
+
+/**
+ * **A figure and the named band it lands in** — `M05-06`'s score with Good / Fair / Poor, `M05-40`'s
+ * DC/AC ratio health, `M05-48`'s cold-weather string voltage, `M05-64` + `MS8-11`'s maximum-system-
+ * voltage compliance box.
+ *
+ * **The band is its own axis, not `deltaSentiment` generalised.** `deltaSentiment` judges the
+ * **delta** and needs a previous value; a band judges the **figure**, from thresholds, and is
+ * *named* and open-ended (four or five names on some screens) where sentiment is a closed triple with
+ * fixed words. A 64/100 score has a band and may have no delta at all.
+ *
+ * **What they do share is the rendering, and they share it literally** — one verdict pill: word,
+ * mark, then tint (`F7-12`). `BandChip` is that pill, and `StatCard.band` renders the same one, so
+ * there is exactly one way a figure carries a verdict word and two axes that use it for two facts.
+ *
+ * **The mark is measured against the 3:1 non-text floor on the tint it sits on**, which is where the
+ * `warning` tone had failed: plain `--warning` is 1.99:1 on `--warning-bg` and 2.17 on white, so on
+ * *Fair*, *High — clipping risk*, *Low — oversized* and *Under the MPPT floor* the band was carried by a
+ * word and a tint with no legible mark — the `F7-12` failure this component exists to close. The warning
+ * mark is `--warning-text` (6.53 on tint). success 3.28 · danger 3.43 · info 3.26 · neutral 3.93 pass and
+ * are unchanged; `tokens/colors.css` carries the table.
+ *
+ * @dsCard components/data/banded-figure.card.html
+ * @startingPoint section="Data display" subtitle="A score with its band, and the inspector's pass/fail box with a remedy" viewport="980x420"
+ */
+export function BandedFigure(props: BandedFigureProps): JSX.Element;
+
+/** The verdict pill on its own — word, mark, tint. What `StatCard.band` renders. */
+export function BandChip(props: { band?: BandSpec | string; size?: number; style?: React.CSSProperties }): JSX.Element | null;
+
+/** Picks the band a value falls in. `min` inclusive, `max` exclusive; first match wins. */
+export function resolveBand(value: number | string, bands?: BandSpec[], explicit?: BandSpec | string): BandSpec | null;
+
+/** What every host's `band` prop runs through: a spec, a bare word, or a ready node. */
+export function renderBand(spec?: BandSpec | string | React.ReactNode, extra?: { size?: number }): React.ReactNode;
+
+export const BAND_TONES: Record<BandTone, { fg: string; bg: string; mark: string }>;
+
+export namespace BandedFigure {
+  const resolve: typeof resolveBand;
+  const Chip: typeof BandChip;
+  const tones: typeof BAND_TONES;
+}

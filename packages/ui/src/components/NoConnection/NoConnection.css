@@ -1,0 +1,182 @@
+/* NoConnection — the product's ONE full-screen no-connection state.
+
+   IT NEVER MENTIONS SYNC: nothing is queued, nothing uploads later, there is no last-synced time.
+   RETRY CANNOT LIE, and the outcome line below keeps its height whether or not it has words, so
+   the screen never jumps when a retry comes back.
+
+   The mark is a cloud drifting over the sun — the one piece of charm in the system, and the only
+   screen that earns it. Circles and pills only, no drawn artwork, and it HOLDS STILL under
+   prefers-reduced-motion.
+
+   The mark's geometry is the DS's 132px drawing scaled by --hg-nc-s, so every part keeps its
+   proportion at any mark size. */
+
+.hg-no-connection {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-8) var(--sp-6);
+  background: var(--canvas);
+  font-family: var(--font-sans);
+  text-align: center;
+}
+
+.hg-no-connection[data-inset="false"] {
+  position: relative;
+  min-height: 100%;
+}
+
+.hg-no-connection[data-inset="true"] {
+  position: absolute;
+  inset: 0;
+}
+
+.hg-no-connection-title {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h1);
+  color: var(--text-primary);
+}
+
+.hg-no-connection-message {
+  margin: 0;
+  max-width: 380px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-no-connection-retry {
+  margin-top: var(--sp-5);
+}
+
+.hg-no-connection-outcome {
+  margin: var(--sp-3) 0 0;
+  min-height: 18px;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-medium);
+  color: transparent;
+}
+
+.hg-no-connection-outcome[data-failed="true"] {
+  color: var(--danger-text);
+}
+
+.hg-no-connection-children {
+  margin-top: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── the mark ──────────────────────────────────────────────────────────────── */
+
+.hg-no-connection-mark {
+  --hg-nc-size: 132px;
+  --hg-nc-s: calc(var(--hg-nc-size) / 132);
+  position: relative;
+  width: var(--hg-nc-size);
+  height: var(--hg-nc-size);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.hg-no-connection-glow {
+  position: absolute;
+  width: calc(var(--hg-nc-size) * 1.55);
+  height: calc(var(--hg-nc-size) * 1.55);
+  border-radius: var(--r-pill);
+  background: var(--glow-brand);
+  pointer-events: none;
+  animation: hg-nc-breathe 8s var(--ease-standard) infinite;
+}
+
+.hg-no-connection-sun {
+  position: absolute;
+  width: calc(82px * var(--hg-nc-s));
+  height: calc(82px * var(--hg-nc-s));
+  border-radius: var(--r-pill);
+  background: var(--gradient-brand);
+  box-shadow: var(--e2);
+}
+
+/* The DS draws this shadow with a literal rgba; --hairline is the system's own soft-black wash and
+   stands in for it, so no raw colour enters the repo. */
+.hg-no-connection-cloud {
+  position: absolute;
+  top: calc(62px * var(--hg-nc-s));
+  left: calc(6px * var(--hg-nc-s));
+  width: calc(118px * var(--hg-nc-s));
+  height: calc(46px * var(--hg-nc-s));
+  filter: drop-shadow(0 8px 20px var(--hairline));
+  animation: hg-nc-drift 9s var(--ease-standard) infinite alternate;
+}
+
+.hg-no-connection-cloud > span {
+  position: absolute;
+  background: var(--surface);
+  border-radius: var(--r-pill);
+}
+
+.hg-no-connection-cloud-base {
+  left: 0;
+  bottom: 0;
+  width: calc(118px * var(--hg-nc-s));
+  height: calc(30px * var(--hg-nc-s));
+}
+
+.hg-no-connection-cloud-lobe-a {
+  left: calc(14px * var(--hg-nc-s));
+  top: 0;
+  width: calc(46px * var(--hg-nc-s));
+  height: calc(46px * var(--hg-nc-s));
+}
+
+.hg-no-connection-cloud-lobe-b {
+  left: calc(54px * var(--hg-nc-s));
+  top: calc(8px * var(--hg-nc-s));
+  width: calc(36px * var(--hg-nc-s));
+  height: calc(36px * var(--hg-nc-s));
+}
+
+.hg-no-connection-mark[data-animate="false"] .hg-no-connection-glow,
+.hg-no-connection-mark[data-animate="false"] .hg-no-connection-cloud {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-no-connection-glow,
+  .hg-no-connection-cloud {
+    animation: none;
+  }
+}
+
+@keyframes hg-nc-drift {
+  from {
+    transform: translateX(-34px);
+  }
+  to {
+    transform: translateX(34px);
+  }
+}
+
+@keyframes hg-nc-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+}

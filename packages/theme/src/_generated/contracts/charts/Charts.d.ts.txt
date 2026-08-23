@@ -1,0 +1,128 @@
+import React from "react";
+
+import { ProvenanceProps, ProvenanceTierSpec, ProvenanceStanding } from "../data/Provenance";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export interface ChartFrameProps {
+  overline?: string;
+  title?: string;
+  /**
+   * Headline figure above the plot. **Format it through the market pack**, not with a baked-in rupee
+   * string: `const mkt = useFormat()` → `value={mkt.money(12400000)}`. A literal `"₹1,24,00,000"` is
+   * an India-only chart (`F1` / `F3-20`).
+   */
+  value?: React.ReactNode;
+  /**
+   * Provenance for the numbers in this chart — a **visible word** under the value (F8-07), never a
+   * dot alone. Required on anything user-facing (F8-01). Takes a bare tier or a full spec.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  /** How far the figure can be relied on as final. See `Provenance`. */
+  standing?: ProvenanceStanding;
+  /** What data it came from — "Real · PVGIS (SARAH3)" (M05-54). Kept separate from the tier. */
+  source?: string;
+  /** Assumptions a multi-year figure rides on (F8-23 / F5-37). */
+  projection?: string;
+  note?: string;
+  legend?: React.ReactNode;
+  action?: React.ReactNode;
+  state?: SurfaceState;
+  height?: number;
+  /** Renders "Not enough data" instead of the plot. Charts set this themselves. */
+  insufficient?: boolean;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  insufficientMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  children?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/** Shared chart shell: caption, provenance tier, legend, and the loading/empty/error/
+ *  not-enough-data states. Wrap a custom plot in this rather than inventing states. */
+export function ChartFrame(props: ChartFrameProps): JSX.Element;
+
+export interface ChartDatum { label: string; value: number; color?: string }
+export interface LinePoint { x: string | number; y: number }
+export interface LineSeries { name?: string; color?: string; points: LinePoint[] }
+
+export interface BarChartProps extends Omit<ChartFrameProps, "children" | "insufficient"> {
+  data: ChartDatum[];
+  /**
+   * **An override, not the source of formatting.** Omit it and the axis/labels use the active market
+   * pack's `number` (`useFormat().number` — the India pack outside a provider). Pass it only when this
+   * chart's figures need something the pack does not say: money (`mkt.money`), a unit (`n => n+" kWh"`),
+   * a percentage. Never to hardcode a currency — that is what the pack is for (`F1` / `F3-20`).
+   */
+  format?: (n: number) => string;
+  /** Below this many values the chart refuses to draw. Default 1. */
+  minPoints?: number;
+  color?: string;
+  gridlines?: number;
+  /** Horizontal bars — better for long category names on a phone. */
+  horizontal?: boolean;
+}
+/** Vertical or horizontal bars on --chart-gridline rules. */
+export function BarChart(props: BarChartProps): JSX.Element;
+
+export interface LineChartProps extends Omit<ChartFrameProps, "children" | "insufficient"> {
+  /** One or more series; a bare LinePoint[] is treated as a single series. */
+  series: LineSeries[] | LinePoint[];
+  /** Override for the pack's `number` — see `BarChartProps.format`. */
+  format?: (n: number) => string;
+  /** Default 2 — a single point cannot show a trend. */
+  minPoints?: number;
+  area?: boolean;
+  gridlines?: number;
+}
+/** Trend line with a soft area wash on single series; last point carries the dot. */
+export function LineChart(props: LineChartProps): JSX.Element;
+
+export interface DonutChartProps extends Omit<ChartFrameProps, "children" | "insufficient"> {
+  data: ChartDatum[];
+  size?: number;
+  thickness?: number;
+  /** Override for the pack's `number` — see `BarChartProps.format`. */
+  format?: (n: number) => string;
+  centerLabel?: string;
+  /** The centred total. Format it through the pack — `mkt.compactMoney(12400000)`, not `"₹1.24 Cr"`. */
+  centerValue?: React.ReactNode;
+  minPoints?: number;
+}
+/** Composition donut with a centred total and a value legend. */
+export function DonutChart(props: DonutChartProps): JSX.Element;
+
+export interface FunnelChartProps extends Omit<ChartFrameProps, "children" | "insufficient"> {
+  stages: ChartDatum[];
+  /** Override for the pack's `number` — see `BarChartProps.format`. */
+  format?: (n: number) => string;
+  /** Default 2 — a funnel needs at least two stages. */
+  minPoints?: number;
+}
+/** Pipeline funnel; shows the carried-forward percentage between stages. */
+export function FunnelChart(props: FunnelChartProps): JSX.Element;
+
+export function ChartLegend(props: { items: { label: string; value?: React.ReactNode; color?: string }[]; style?: React.CSSProperties }): JSX.Element;
+
+/**
+ * **Number formatting is market-pack data, not this file's** (`F1` / `F3-20`). Every chart reads
+ * `useFormat()` and formats with the pack's `number` unless a `format` override is passed; a money
+ * chart passes the pack's own money formatter (`useFormat().money` / `.compactMoney`), never a
+ * hardcoded rupee function. Wrap the app in `MarketProvider` to change markets; the India pack is the
+ * default, so a chart outside a provider still renders Indian grouping.
+ *
+ * `inr` is the **India pack's money shortcut**, for a call site that genuinely means rupees and is not
+ * inside a component (a static label, a test). It is not the route to formatted money in a chart:
+ * passing it pins that chart to one market.
+ */
+export function inr(n: number): string;
+
+/** All chart components as one namespace object. */
+export const Charts: {
+  ChartFrame: typeof ChartFrame; ChartLegend: typeof ChartLegend;
+  BarChart: typeof BarChart; LineChart: typeof LineChart;
+  DonutChart: typeof DonutChart; FunnelChart: typeof FunnelChart;
+  inr: typeof inr;
+};

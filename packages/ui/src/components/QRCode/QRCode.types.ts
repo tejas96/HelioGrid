@@ -1,0 +1,17 @@
+export interface QRCodeProps {
+  /**
+   * The URL to encode. Up to 213 bytes / ASCII characters (QR version 10, EC level M).
+   * Beyond that the component fails visibly rather than drawing an unscannable square.
+   */
+  value: string;
+  size?: number;
+  /** Accessible name. Defaults to "QR code for <value>". */
+  label?: string;
+  caption?: string;
+  /** Quiet-zone modules around the code. 4 is the spec minimum — don't go lower. */
+  quietZone?: number;
+  /** Show the link as text under the code. Keep it on: it is the fallback path. */
+  showValue?: boolean;
+  errorTitle?: string;
+  errorMessage?: string;
+}

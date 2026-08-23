@@ -1,0 +1,153 @@
+/* Markers and the location pin. A LIVE POSITION NEVER LOOKS LIKE A STALE ONE: live is filled
+   and pulses, last-known is a hollow ring with the time it was seen. Imported by MapSurface.css. */
+
+/* The tone lands once, on the marker, so the pulse and the dot cannot disagree. `warning` takes
+   --warning-text because --warning clears WCAG's 3:1 non-text floor on no background here. */
+.hg-map-surface-marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  transform: translate(-50%, -50%);
+}
+
+.hg-map-surface-marker[data-tone="accent"] {
+  --hg-map-tone: var(--accent);
+}
+.hg-map-surface-marker[data-tone="success"] {
+  --hg-map-tone: var(--success);
+}
+.hg-map-surface-marker[data-tone="warning"] {
+  --hg-map-tone: var(--warning-text);
+}
+.hg-map-surface-marker[data-tone="danger"] {
+  --hg-map-tone: var(--danger);
+}
+.hg-map-surface-marker[data-tone="info"] {
+  --hg-map-tone: var(--info);
+}
+.hg-map-surface-marker[data-tone="neutral"] {
+  --hg-map-tone: var(--text-secondary);
+}
+
+.hg-map-surface-marker-hit {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+}
+
+.hg-map-surface-pulse {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-pill);
+  background: var(--hg-map-tone);
+  animation: hg-map-pulse 2s var(--ease-standard) infinite;
+}
+
+.hg-map-surface-dot {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 2.5px var(--hg-map-tone),
+    0 0 0 3px var(--surface),
+    var(--e2);
+}
+
+.hg-map-surface-dot[data-live="true"] {
+  width: 16px;
+  height: 16px;
+  background: var(--hg-map-tone);
+  box-shadow:
+    0 0 0 3px var(--surface),
+    var(--e2);
+}
+
+.hg-map-surface-chip {
+  padding: var(--sp-0-5) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-map-surface-chip[data-stale="true"] {
+  color: var(--text-secondary);
+}
+
+/* ── the location pin — not a marker ────────────────────────────────────── */
+.hg-map-surface-pin {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+/* The word carries the state; StatusMark supplies the glyph and the tint. The elevation is
+   this component's, because the pill floats over imagery. */
+.hg-map-surface-pin-label {
+  box-shadow: var(--e2);
+}
+
+.hg-map-surface-pin-hit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.hg-map-surface-pin-hit[data-draggable="true"] {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.hg-map-surface-pin-hit[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.hg-map-surface-pin-halo {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  opacity: 0.16;
+}
+
+@keyframes hg-map-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes hg-map-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.35;
+    }
+  }
+}

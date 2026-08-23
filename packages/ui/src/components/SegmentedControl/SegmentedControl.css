@@ -1,0 +1,113 @@
+/* SegmentedControl — pill container on --canvas-sunken, active is a white pill (e2) that
+   springs between positions.
+
+   THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. --canvas-sunken is not
+   one of the two backgrounds colors.css certifies text tokens on, and --text-tertiary lands at
+   4.48 there — under the floor — so the count takes --text-secondary. A disabled segment's
+   label is information too, so it keeps --text-secondary rather than --text-disabled (1.44 on
+   this track); off-ness is carried by the circle-minus GLYPH instead of a colour step. */
+
+.hg-segmented-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.hg-segmented-control-pill {
+  position: relative;
+  display: inline-flex;
+  gap: 0;
+  border-radius: var(--r-pill);
+  padding: var(--sp-1);
+  background: var(--canvas-sunken);
+}
+
+.hg-segmented-control-pill[data-error="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--danger);
+}
+
+.hg-segmented-control-indicator {
+  position: absolute;
+  top: var(--sp-1);
+  bottom: var(--sp-1);
+  left: calc(
+    var(--sp-1) +
+    var(--hg-segmented-control-index) *
+    (100% - calc(2 * var(--sp-1))) /
+    var(--hg-segmented-control-count)
+  );
+  width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  transition: left var(--dur-emphasised) var(--ease-spring);
+}
+
+/* The 44px target around the 32px pill: the extra 12px is borrowed back as negative margin,
+   so the control still renders 40px tall and the indicator above is untouched. */
+.hg-segmented-control-segment {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 44px;
+  margin: -6px 0;
+  border: none;
+  border-radius: var(--r-pill);
+  padding: 0 18px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-segmented-control-segment[data-active="true"] {
+  color: var(--text-primary);
+}
+
+.hg-segmented-control-segment[aria-disabled="true"],
+.hg-segmented-control-segment:disabled {
+  cursor: not-allowed;
+}
+
+.hg-segmented-control-segment:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-segmented-control-off-glyph {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+
+.hg-segmented-control-count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-segmented-control-label {
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-segmented-control-error {
+  color: var(--danger-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* Marks are ChipGroup's MarkRow and the sentence under the control is ActionReason — both own
+   their own treatment, so nothing about either is restated here. */

@@ -1,0 +1,84 @@
+import React from "react";
+
+export type BannerKind =
+  | "state" | "review-needed" | "validation" | "suggestion" | "dunning"
+  | "data-integrity" | "orphan-override" | "below-cost"
+  | "preliminary"
+  /** @deprecated Use `Disclosure`. A mandatory honesty line is document content in the reading flow, not a dismissible operator strip. */
+  | "disclaimer"
+  | "cap" | "bundle";
+
+export interface BannerProps {
+  /** Picks the tone, glyph, ARIA role and precedence rank. */
+  kind?: BannerKind;
+  /** Bold first line. Omit for a single-line banner. */
+  title?: string;
+  /** Body copy. Omit for a title-only banner. */
+  children?: React.ReactNode;
+  /** Trailing action — use `BannerAction`. */
+  action?: React.ReactNode;
+  onDismiss?: () => void;
+  /**
+   * Opt-in only. **Ignored for seven kinds** — `validation`, `data-integrity`, `below-cost`, and the
+   * billing/lifecycle three, `state`, `dunning` and `cap`, plus the superseded `disclaimer`. None of
+   * them stops being true because a user tapped the cross, and `SCR-SHELL-06`'s banner is `BM-32`'s
+   * **guaranteed way back** — a dismissible way back is not one.
+   */
+  dismissible?: boolean;
+  /** Override the kind's tone. Rarely right. */
+  tone?: "danger" | "warning" | "info" | "success" | "accent" | "neutral";
+  /** block = full-width strip (default) · pill = compact inline chip. */
+  variant?: "block" | "pill";
+  density?: "expressive" | "functional";
+  icon?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * In-page statement of a fact about what's on screen: needs review, overdue, below cost,
+ * preliminary. Never covers content, never blocks interaction, and disappears when the fact
+ * stops being true rather than being dismissed into silence.
+ *
+ * **Not the home of a mandatory disclosure.** `kind="disclaimer"` is superseded by `Disclosure`:
+ * `M06-04`'s verbatim line belongs *in the reading flow at the weight of the figures it qualifies*,
+ * on the customer's own surface, where `MS9-11` bans operator alerts. It still renders and is never
+ * dismissible, and it warns in the console.
+ */
+export function Banner(props: BannerProps): JSX.Element;
+
+/**
+ * Inline pill action inside a banner. Never a filled primary button.
+ *
+ * **44px target, 32px pill.** A banner is a mobile surface and this is where "Pay now" lives, so the
+ * button clears the touch floor while the visible pill stays 32 — the target and the pill are two
+ * different rectangles, as in `FilterBar`. The 6px it borrows per side comes back as negative
+ * margin, so adding the target does not make the banner taller. `style` applies to the pill.
+ */
+export function BannerAction(props: { children: React.ReactNode; onClick?: () => void; style?: React.CSSProperties }): JSX.Element;
+
+export interface BannerStackProps {
+  children?: React.ReactNode;
+  /** stack = show all (up to `max`) · single = the broadest true fact speaks. */
+  mode?: "stack" | "single";
+  /** Caps the **dismissible** banners only. A never-dismissible kind is never capped away. */
+  max?: number;
+  gap?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Orders banners by precedence and applies the surface's one-or-many rule.
+ *
+ * **Neither `mode` nor `max` may hide a mandatory banner.** They are arrangements for facts that can
+ * speak for one another, and a never-dismissible kind cannot: a tenant's way back (`BM-32`) is not
+ * less true because a below-cost warning outranks it. Every `NEVER_DISMISSIBLE` child renders, and
+ * the cap applies to the rest.
+ *
+ * **And it is never the gate.** A set that must list *every* failure, counted, each with a jump to the
+ * step that fixes it, is `FindingList` (law 20): ranking and capping are this component's job and the
+ * opposite of that promise.
+ */
+export function BannerStack(props: BannerStackProps): JSX.Element | null;
+
+/** The kind table: tone, precedence rank, ARIA role and default label per kind. */
+export const BANNER_KINDS: Record<BannerKind, { tone: string; rank: number; role: string; icon: string; label: string }>;

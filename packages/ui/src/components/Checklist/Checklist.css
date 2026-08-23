@@ -1,0 +1,245 @@
+/* Checklist — the list a coordinator ticks off on a roof.
+
+   A tick is a SERVER WRITE, not a checkbox flip: the box holds its previous state while the write
+   is in flight, and nothing here flips optimistically (F8-36). The toggle is a 44px target around
+   a 22px box — the two-rectangles rule again — and `surface="document"` drops the affordance and
+   prints an empty box, because a paper checklist is ticked with a pen.
+
+   Values off the 4px spacing scale (5, 7, 10, 11, 14, 22) are the design system's own; no token
+   carries them, so they are named at the root rather than left loose. */
+
+.hg-checklist {
+  --hg-checklist-touch: 44px;
+  --hg-checklist-box: 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border-radius: var(--r-card-expressive);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-family: var(--font-sans);
+}
+
+.hg-checklist-head {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* The overline role — the one sanctioned appearance below the 12px floor is 11px; this heading
+   sits at the caption step with the same treatment, exactly as the design system draws it. */
+.hg-checklist-overline {
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-checklist-count {
+  margin: 0;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* The progress rail is ProgressBar's own drawing — 6px pill, accent fill, nothing else. */
+
+.hg-checklist-detail {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-checklist-detail--warning {
+  color: var(--warning-text);
+}
+
+.hg-checklist-micro {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
+/* ── phases: one heading per group, so it cannot repeat ───────────────────── */
+
+.hg-checklist-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-checklist-phase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+
+.hg-checklist-phase-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-checklist-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── one step ─────────────────────────────────────────────────────────────── */
+
+.hg-checklist-row {
+  display: flex;
+  gap: var(--sp-1);
+  align-items: flex-start;
+}
+
+.hg-checklist-row--document {
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+}
+
+/* The toggle IS the Pressable primitive: the 44px floor, the centring, the focus ring and the
+   resets all come from `.hg-pressable`, and re-declaring any of them here would be a second answer
+   to a question the primitive already owns. Only the row-level fact is left. */
+.hg-checklist-toggle {
+  flex-shrink: 0;
+}
+
+.hg-checklist-row-body {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 0;
+}
+
+.hg-checklist-box {
+  width: var(--hg-checklist-box);
+  height: var(--hg-checklist-box);
+  border-radius: 7px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  box-shadow:
+    var(--e1),
+    inset 0 0 0 1.5px var(--mark-subtle);
+  color: var(--text-inverse);
+}
+
+.hg-checklist-box[data-done="true"] {
+  background: var(--success);
+  box-shadow: none;
+}
+
+.hg-checklist-box[data-disabled="true"] {
+  opacity: 0.55;
+}
+
+.hg-checklist-box > svg {
+  width: 13px;
+  height: 13px;
+}
+
+.hg-checklist-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hg-checklist-title-row {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: baseline;
+}
+
+.hg-checklist-number {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-checklist-title {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-checklist-materials-label {
+  font-weight: 600;
+}
+
+.hg-checklist-evidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: var(--hg-checklist-touch);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.hg-checklist-attribution {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── the non-ready states ─────────────────────────────────────────────────── */
+
+.hg-checklist-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+.hg-checklist-state-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.hg-checklist-retry {
+  min-height: var(--hg-checklist-touch);
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-checklist-skeleton {
+  height: 90px;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}

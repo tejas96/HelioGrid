@@ -1,0 +1,168 @@
+/* MoneySummary — WHAT THE FORTY LINES ADD UP TO.
+
+   THIS IS THE EQUATION, NOT A STAT (M06-35 P0 / SCR-M06-05). It survives a page break: the
+   `data-keep-together` attributes pair with tokens/print.css's `[data-keep-together]{
+   break-inside:avoid}` so the equation is never split across two sheets.
+
+   Two sizes have no type token and are the design system's own figures: the 14px line and the
+   26px payable. Everything else — every colour, rule, radius and duration — is a token, and the
+   `document` surface swaps the screen steps for the print ones (--doc-fs*, --doc-rule). */
+
+.hg-money-summary {
+  font-family: var(--font-sans);
+}
+
+.hg-money-summary-overline {
+  margin: 0 0 6px;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-money-summary[data-surface="document"] .hg-money-summary-overline {
+  font-size: var(--doc-fs-small);
+}
+
+/* ── one line of the equation ─────────────────────────────────────────────── */
+
+.hg-money-summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 7px 0;
+}
+
+.hg-money-summary[data-density="functional"] .hg-money-summary-row {
+  padding: 5px 0;
+}
+
+.hg-money-summary-label {
+  min-width: 0;
+  font-size: 14px;
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-money-summary-line-note {
+  display: block;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-money-summary-amount {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.hg-money-summary-amount[data-strong="true"] {
+  font-weight: var(--fw-bold);
+}
+
+/* An unresolved line is NOT a zero. It says so, in its own footprint. */
+.hg-money-summary-unresolved {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+/* ── the total block ──────────────────────────────────────────────────────── */
+
+.hg-money-summary-total {
+  margin-top: 10px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--neutral-bg);
+}
+
+.hg-money-summary[data-surface="document"] .hg-money-summary-total {
+  border-top-color: var(--doc-rule);
+}
+
+.hg-money-summary-payable {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.hg-money-summary-payable-label {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-money-summary-payable-value {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* A DISAGREEMENT IS A DEFECT, NOT A DISPLAY DIFFERENCE (SCR-M06-14) — so no price is printed and
+   the sentence names the gap instead of leaving a reader to spot it. */
+.hg-money-summary-defect {
+  margin: 0;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  color: var(--danger-text);
+  text-wrap: pretty;
+}
+
+/* ZERO NEVER RENDERS NEGATIVE — and what did not fit is named rather than dropped. */
+.hg-money-summary-unapplied {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  color: var(--warning-text);
+  text-wrap: pretty;
+}
+
+.hg-money-summary-provenance {
+  margin-top: 6px;
+}
+
+.hg-money-summary-reconciled {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-money-summary-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* The document surface is print copy: the reading steps come from tokens/print.css. */
+.hg-money-summary[data-surface="document"] .hg-money-summary-label,
+.hg-money-summary[data-surface="document"] .hg-money-summary-amount,
+.hg-money-summary[data-surface="document"] .hg-money-summary-payable-label,
+.hg-money-summary[data-surface="document"] .hg-money-summary-defect {
+  font-size: var(--doc-fs);
+}
+
+.hg-money-summary[data-surface="document"] .hg-money-summary-line-note,
+.hg-money-summary[data-surface="document"] .hg-money-summary-unresolved,
+.hg-money-summary[data-surface="document"] .hg-money-summary-unapplied,
+.hg-money-summary[data-surface="document"] .hg-money-summary-reconciled,
+.hg-money-summary[data-surface="document"] .hg-money-summary-note {
+  font-size: var(--doc-fs-small);
+}
+
+.hg-money-summary[data-surface="document"] .hg-money-summary-payable-value {
+  font-size: var(--doc-fs-figure);
+}

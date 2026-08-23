@@ -1,0 +1,247 @@
+/* PagedDocument — the print surface. Type on paper is not type on screen, so every reading size
+   here is a --doc-* token, never the screen scale. `hg-sheet` / `hg-sheet-stack` are
+   @heliogrid/theme/print.css's own hooks (one sheet, one page) and keep those exact names.
+   Sheet geometry — width, height, margins, head and foot heights, the flow gap — is computed data
+   and arrives inline from page-geometry.ts, so the layout and the cut's arithmetic cannot drift.
+
+   NO SHEET BORDER: the sheet separates from the canvas by luminance and shadow, like every other
+   surface in this system. */
+
+/* The folder's other two named surfaces. Nested so the one `<Name>.css` src/styles.css references
+   still carries the whole folder. */
+@import "./TitleBlock.css";
+
+.hg-paged-document-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sheet-gap);
+  font-family: var(--font-sans);
+}
+
+/* The hidden layout the cut is read from. It exists only while a cut is pending. */
+.hg-paged-document-measurer {
+  position: absolute;
+  top: 0;
+  left: -10000px;
+  visibility: hidden;
+  pointer-events: none;
+  font-size: var(--doc-fs);
+  line-height: var(--doc-lh);
+  color: var(--text-primary);
+}
+
+.hg-paged-document-sheet {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: var(--sheet-radius);
+  box-shadow: var(--e3);
+  font-size: var(--doc-fs);
+  line-height: var(--doc-lh);
+  color: var(--text-primary);
+}
+
+.hg-paged-document-head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font-size: var(--doc-fs-small);
+  color: var(--text-tertiary);
+}
+
+.hg-paged-document-head-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hg-paged-document-head-internal {
+  flex-shrink: 0;
+  color: var(--warning-text);
+  font-weight: var(--fw-bold);
+}
+
+.hg-paged-document-flow {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-paged-document-foot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-top: 10px;
+  font-size: var(--doc-fs-small);
+  color: var(--text-tertiary);
+}
+
+.hg-paged-document-foot-note {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hg-paged-document-foot-number {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the web rendering: the same sections, the cut turned off ─────────────────────────────── */
+
+.hg-paged-document-web {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  font-family: var(--font-sans);
+  font-size: var(--doc-fs);
+  line-height: var(--doc-lh);
+  color: var(--text-primary);
+}
+
+/* ── the required atom, and the band that never prints ────────────────────────────────────── */
+
+.hg-print-scope-hoist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-paged-document-annotations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-paged-document-annotation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 18px;
+  background: var(--canvas-sunken);
+  border-radius: var(--r-md);
+}
+
+.hg-paged-document-annotation-label {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-paged-document-stamp {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--warning-text);
+}
+
+.hg-paged-document-stamp[data-web="true"] {
+  margin: var(--sp-2) 0 0;
+}
+
+/* ── loading, error, unavailable ──────────────────────────────────────────────────────────── */
+
+.hg-paged-document-centre {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-paged-document-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border-radius: var(--sheet-radius);
+  box-shadow: var(--e3);
+}
+
+.hg-paged-document-skeleton-bar {
+  flex-shrink: 0;
+  height: 12px;
+  border-radius: var(--rf-xs);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-paged-document-skeleton-bar[data-bar="title"] {
+  width: 46%;
+  height: 26px;
+}
+.hg-paged-document-skeleton-bar[data-bar="a"] {
+  width: 70%;
+}
+.hg-paged-document-skeleton-bar[data-bar="b"] {
+  width: 62%;
+}
+.hg-paged-document-skeleton-bar[data-bar="c"] {
+  width: 66%;
+}
+.hg-paged-document-skeleton-bar[data-bar="foot"] {
+  width: 28%;
+}
+
+.hg-paged-document-skeleton-spacer {
+  flex: 1;
+}
+
+.hg-paged-document-card {
+  max-width: 100%;
+  padding: var(--sp-10);
+  text-align: center;
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e2);
+}
+
+.hg-paged-document-card-title {
+  margin: 0;
+  font-size: var(--doc-fs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-paged-document-card-body {
+  margin: 6px 0 0;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-paged-document-retry {
+  margin-top: 14px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+}
+
+.hg-paged-document-unavailable {
+  padding: var(--sp-6);
+  background: var(--surface);
+  border-radius: var(--r-card-functional);
+  box-shadow: var(--e2);
+}

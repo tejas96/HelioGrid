@@ -1,0 +1,187 @@
+/* FilterBar — the list-screen filtering vocabulary: scope toggle, stage chips, facet chips,
+   sort pills, Filters button. The same parts on 375 and 1440; only the arrangement changes.
+
+   THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
+   The BUTTON is 44 and the pill drawn inside it is not:
+
+       .hg-filter-target   min-height/width 44        ← the target
+         .hg-filter-pill   height 36 / 34 / 32        ← what you see
+
+   The gap is transparent padding belonging to the target, expressed here once rather than left
+   to twenty screens to remember. The pill heights are the design system's own and are not on the
+   4px spacing scale, so no token carries them. Never set a pill height above the touch floor —
+   the button would grow. */
+
+.hg-filter-target,
+.hg-filter-pill {
+  --hg-filter-touch: 44px;
+  --hg-filter-h-scope: 36px;
+  --hg-filter-h-chip: 34px;
+  --hg-filter-h-sort: 32px;
+  --hg-filter-h-filters: 36px;
+  --hg-filter-gap: 6px;
+}
+
+.hg-filter-target {
+  min-height: var(--hg-filter-touch);
+  min-width: var(--hg-filter-touch);
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  border-radius: var(--r-pill);
+}
+
+.hg-filter-target:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hg-filter-gap);
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+/* Scope — active is the near-black pill, matching the primary-action marker. */
+.hg-filter-pill[data-pill="scope"] {
+  height: var(--hg-filter-h-scope);
+  padding: 0 var(--sp-4);
+  background: transparent;
+  font-size: var(--fs-body);
+}
+
+.hg-filter-pill[data-pill="scope"][data-active="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+/* Stage and facet chips — active is accent fill; the rest separate by shadow, not outlines. */
+.hg-filter-pill[data-pill="chip"] {
+  height: var(--hg-filter-h-chip);
+  padding: 0 14px;
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-filter-pill[data-pill="chip"][data-active="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+/* A ticked facet chip gives the tick its room back on the leading edge. */
+.hg-filter-pill[data-pill="chip"][data-ticked="true"] {
+  padding: 0 var(--sp-3) 0 10px;
+}
+
+.hg-filter-pill[data-pill="sort"] {
+  height: var(--hg-filter-h-sort);
+  padding: 0 14px;
+  background: transparent;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-filter-pill[data-pill="sort"][data-active="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.hg-filter-pill[data-pill="filters"] {
+  height: var(--hg-filter-h-filters);
+  padding: 0 14px;
+  gap: var(--sp-2);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  color: var(--text-primary);
+  font-size: var(--fs-body);
+}
+
+.hg-filter-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-filter-pill[data-active="true"] .hg-filter-count {
+  color: var(--text-inverse);
+}
+
+.hg-filters-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the four rows ────────────────────────────────────────────────────────── */
+
+.hg-scope-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-filter-chips {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  overflow-x: visible;
+  scrollbar-width: none;
+}
+
+.hg-filter-chips[data-scroll="true"] {
+  overflow-x: auto;
+}
+
+/* <fieldset> is the native role="group"; these four lines undo its default box. */
+.hg-facet-chips {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  overflow-x: visible;
+  scrollbar-width: none;
+}
+
+.hg-facet-chips[data-scroll="true"] {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.hg-sort-pills {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-sort-pills-label {
+  margin-right: var(--sp-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}

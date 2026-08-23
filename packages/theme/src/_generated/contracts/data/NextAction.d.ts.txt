@@ -1,0 +1,104 @@
+import React from "react";
+import { ActorClassSpec } from "./ActorClass";
+import { FieldOverrideSpec } from "./FieldOverride";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { PendingActionSpec } from "../feedback/PendingAction";
+
+export interface NextActionProps {
+  label: string;
+  /** Appended after a middot — a date or a countdown. */
+  meta?: string;
+  /** overdue is the only red case, so red keeps meaning something. */
+  tone?: "due" | "overdue" | "soon" | "scheduled" | "snoozed" | "done";
+  muted?: boolean;
+  /**
+   * **Why this task exists** — `M07-06` (P0): *"a rep always sees **why a task exists**"*, and
+   * `M07-03`: *"agent activity is a separate block, **never mixed with the rep's own tasks**… each
+   * entry marked as the agent's"*. Rendered by `ActorClass` in its `origin` form, under the task:
+   * "Created by a rule · No contact in 3 days", "Created by Amit Rane, ops".
+   *
+   * `verb` is how `SCR-M07-04` distinguishes **a human reopen from an automatic resurface** — "Reopened
+   * by Priya Sharma" against "Resurfaced by a rule" — in words, never as a shade of one glyph.
+   *
+   * The marker is half the law: the agent's tasks are also their **own block**. This slot does not
+   * license mixing them into the rep's list.
+   */
+  origin?: ActorClassSpec;
+  /**
+   * **The rep corrected the agent, and both readings stay visible** — `SCR-M07-13`'s `rep-corrected`:
+   * the rep's read is the current value *and* the agent's original is still in history. That is a
+   * superseded value, so it takes the system's one superseded-value treatment: a `FieldOverride` spec
+   * (marker · the agent's original · the reset that names what it restores), rendered under `origin`.
+   * The agent's own entry stays in the record's `ActivityStream`; this line is the value's half.
+   */
+  correction?: FieldOverrideSpec;
+  size?: number;
+  style?: React.CSSProperties;
+}
+/** "What happens next" cell — muted semantic dot + plain text, plus a task's attribution. */
+export function NextAction(props: NextActionProps): JSX.Element;
+
+export interface RecordCardProps {
+  name: string;
+  /** Defaults to the initials of `name`. */
+  initials?: string;
+  /** Colour of the initials circle tint. */
+  avatarTone?: string;
+  /**
+   * The row's **one lifecycle state** — usually a `StatusChip`. What the record *is*. Singular on
+   * purpose; facts the record *has* go in `marks`.
+   */
+  chip?: React.ReactNode;
+  /**
+   * Marks that can be true at the same time — `SCR-M06-19`: *"both conditions can be true on the same
+   * row at once and must stay separately readable — two different facts, never merged into one badge"*.
+   * Rendered through `MarkRow`: no collapse, no merge, wraps.
+   */
+  marks?: React.ReactNode | React.ReactNode[];
+  /** Mono meta parts, joined by middots: ["Nashik", "8.2 kWp", "₹4,52,000"]. */
+  meta?: React.ReactNode[];
+  /**
+   * Bottom line — usually a `NextAction`, and **it may hold real buttons**: "Call", "Collect",
+   * "Upload WCR". The whole-card target is an overlay `<button>` **beside** the content rather than a
+   * `role="button"` wrapper around it, so a control here is valid markup, separately tabbable, and a
+   * tap on it fires only itself — never the row as well.
+   */
+  action?: React.ReactNode;
+  onClick?: () => void;
+  /** The row target's accessible name. Defaults to `name`. */
+  ariaLabel?: string;
+  /**
+   * **This record's own standing and tier** — `M11-42` (P0): *"money the tenant's account confirmed and
+   * money a person says arrived are visibly different things, **on every surface**"*, and the ledger is
+   * read on a phone. Rendered under the mono `meta` line, above `action`: the figures are in `meta`, so
+   * the qualification sits directly under them. This is the card's half of `DataTable.rowProvenance`.
+   *
+   * A record whose value is a **named gap** takes none — a gap is not a figure (law 10).
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
+  /**
+   * **An act on this card is in flight** — `M02-67` (P0) / `SCR-M02-02`: *"until it confirms, the row
+   * shows the action in progress, never as done"*, with the treatment *"light and in-row, never a
+   * blocking overlay or a spinner wall"* (`F4-27`). Rendered by `PendingAction` **directly above
+   * `action`**, which is where the act was taken and where the reader's eye already is.
+   *
+   * The card is **not** dimmed (`muted` is a different fact) and `action` is **not** disabled:
+   * `assign-waiting` requires the row stay operable, and this triage screen's whole design is one tap
+   * under three seconds. `{state: "returned", reason}` says a failure returned it, in warning words,
+   * with an optional retry — never an error surface.
+   */
+  pending?: PendingActionSpec | React.ReactNode;
+  muted?: boolean;
+  /** Radius and padding follow the density: 24px card on a phone, 12px inside a data screen. */
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+/**
+ * The phone form of a table row: initials circle, name + chip, mono meta, next action.
+ *
+ * **The row is a sibling button, not a wrapper.** With `onClick`, an absolutely-positioned
+ * `<button>` sits under the content and the content is `pointer-events: none` except in the slots
+ * that can hold controls (`chip`, `marks`, `action`). That is what lets the `action` slot carry a
+ * real button: as a `role="button"` wrapper it was invalid nesting, and a tap fired both.
+ */
+export function RecordCard(props: RecordCardProps): JSX.Element;

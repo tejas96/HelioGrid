@@ -1,0 +1,69 @@
+import React from "react";
+
+/**
+ * **The system's one surface-state vocabulary.** Five members, and the fifth is the fourth *idea*:
+ *
+ * - `ready` — has content.
+ * - `loading` — content is coming. Never a placeholder value presented as a real one.
+ * - `empty` — there is none **yet**, and there could be. Encouraging voice, often an action that
+ *   creates the first one.
+ * - `error` — something went wrong. Warning tint, and a **retry**, because trying again may work.
+ * - `unavailable` — **this was never going to be here, and that is fine.** Neutral, no alarm, and
+ *   **no retry, ever**: no coverage for this pin, no provider in this market, a market that
+ *   declares no schemes, a result that cannot be produced (`M05-18`, `SCR-MS-04`, `SCR-MS-09`,
+ *   `SCR-MS-05`, `MS4-09`). Rendered by `UnavailableNote`.
+ *
+ * Every surface in the system takes this union, so nobody spells the fourth state privately again
+ * (`MapSurface`'s `tiles-unavailable` and `AudioPlayer`'s `status` union both folded into it).
+ */
+export type SurfaceState = "ready" | "loading" | "empty" | "error" | "unavailable";
+
+export interface UnavailableNoteProps {
+  /** The sentence's subject — "No tile coverage here", "This market declares no schemes". */
+  title?: string;
+  /** What is true and why, in the product's plain voice. Never blames, never apologises. */
+  message?: string;
+  /** A quiet third line: a scope, a date, a rule that was applied. */
+  detail?: React.ReactNode;
+  /** Replaces the slashed-circle mark. Keep it neutral — never the warning glyph. */
+  icon?: React.ReactNode;
+  /**
+   * One **forward** action, and it is never a retry: "Open the checklist", "See covered areas". A
+   * retry would claim that trying again could change the answer.
+   */
+  action?: React.ReactNode;
+  /** `note` (default) — a quiet line inside a frame. `region` — the centred body of a whole surface. */
+  variant?: "note" | "region";
+  align?: "start" | "center";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The fourth state, and the one renderer of it.** An error says *something went wrong*;
+ * unavailable says *this was never going to be here, and that is fine* — a different sentence, a
+ * different tone and **no retry**.
+ *
+ * Neutral by construction: `--neutral-bg` mark, `--text-secondary` words, no warning tint and a
+ * slashed circle rather than the exclamation `error` uses, so the absence is **stated, not styled
+ * as a fault** (`M05-18`). It is also not `empty` — empty means "none yet", which invites; this
+ * never invites.
+ *
+ * Where a component has two unavailable *reasons* that must not look alike (`AudioPlayer`'s
+ * declined consent versus a scheduled purge), the **state** is shared and the **reason** stays a
+ * local prop with its own words and glyph.
+ *
+ * @startingPoint section="Feedback" subtitle="The unavailable state — stated, not styled as an error" viewport="720x260"
+ */
+export function UnavailableNote(props: UnavailableNoteProps): JSX.Element;
+
+export namespace UnavailableNote {
+  /** `["ready","loading","empty","error","unavailable"]`. */
+  const states: SurfaceState[];
+  /** True for every state whose surface must not draw content — or a number. */
+  function isBlockedState(state?: SurfaceState | string): boolean;
+}
+
+/** `["ready","loading","empty","error","unavailable"]`. */
+export const SURFACE_STATES: SurfaceState[];
+/** True for every state whose surface must not draw content — or a number. */
+export function isBlockedState(state?: SurfaceState | string): boolean;

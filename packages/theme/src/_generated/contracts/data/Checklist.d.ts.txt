@@ -1,0 +1,93 @@
+import React from "react";
+import { ActorClassSpec } from "./ActorClass";
+import { PendingActionSpec } from "../feedback/PendingAction";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export interface ChecklistItem {
+  id?: string | number;
+  /** Overrides the counted position. Rarely right — the count is the numbering. */
+  number?: number | string;
+  title: React.ReactNode;
+  /** What the step actually involves. */
+  detail?: React.ReactNode;
+  /** Materials needed (`M05-76`) — rendered as one quiet line, never a nested list. */
+  materials?: string[];
+  /** Which phase it belongs to. Grouped, so a heading can never appear twice. */
+  phase?: string;
+  /** **The confirmed truth from the server, never an optimistic flip.** */
+  done?: boolean;
+  /**
+   * **Who ticked it** (`MS11-35`) — an `ActorClass` spec, so a person, the agent, the system and the
+   * customer read as they do everywhere else. Not a second person-glyph.
+   */
+  doneBy?: ActorClassSpec;
+  doneAt?: React.ReactNode;
+  /** `MS10-10` — where the design can prove the item, the proof is a real link. */
+  evidence?: { label?: React.ReactNode; href?: string; onOpen?: (e: React.MouseEvent) => void };
+  /**
+   * **The write in flight.** A tick persists per project, so it is a server write: the box keeps its
+   * previous state and this line names the act (`PendingAction`). `state="returned"` says why it
+   * came back.
+   */
+  pending?: PendingActionSpec | React.ReactNode;
+}
+
+export interface ChecklistPhase {
+  id?: string;
+  label: string;
+  /** A line under the heading — what this phase is for, or what it depends on. */
+  note?: React.ReactNode;
+}
+
+export interface ChecklistProps {
+  items: ChecklistItem[];
+  /** Fixes phase order and lets a phase carry a note. Omitted, order is first appearance. */
+  phases?: ChecklistPhase[];
+  onToggle?: (item: ChecklistItem, next: boolean) => void;
+  label?: React.ReactNode;
+  /** **The meaning of the count, stated** (`MS11-35`). A percentage says how far, never what. */
+  progressNote?: React.ReactNode;
+  /** Replaces the composed "12 of 47 steps done". The numbers still come from the items. */
+  countWords?: React.ReactNode;
+  noun?: string;
+  /**
+   * `screen` (default) · `document` — `SCR-MS-17`'s Print: pen tick boxes, no toggle affordance, the
+   * progress line and the attribution of what is already done still printed as content.
+   */
+  surface?: "screen" | "document";
+  state?: SurfaceState;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  note?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The list a coordinator ticks off on a roof** — `M05-76` / `SCR-MS-17`, `MS11-30`, `MS11-35`,
+ * `MS10-10`.
+ *
+ * **Not `Checkbox`** (a control with no item structure — no number, no detail, no materials, no
+ * attribution), **not `Timeline`** (right fields, no toggle on any item: it reports what happened,
+ * with a rail lit to a current step this list does not have), **not `ProgressBar`** (`value` and
+ * `gradient`, so "12 of 47 steps done" has nowhere to live).
+ *
+ * **A tick is a server write, not a checkbox flip.** Ticks persist per project rather than per device,
+ * and `F8-36` forbids showing an optimistic result — so the box holds its previous state, the row
+ * shows a `PendingAction` line naming the act, the row stays operable, and only confirmed data flips
+ * it. A returned write names the reason and offers a retry.
+ *
+ * **A phase heading cannot repeat** (`MS11-30`): items are grouped by phase in a stable order and each
+ * heading is rendered once from its group — not by a change-detector walking a flat list.
+ *
+ * **Numbering is counted.** The number is the item's position in the whole list, so no second count
+ * can disagree with it.
+ *
+ * @dsCard components/data/checklist.card.html
+ * @startingPoint section="Data display" subtitle="Tick-off steps with phases, materials, attribution and a server-confirmed tick" viewport="900x820"
+ */
+export function Checklist(props: ChecklistProps): JSX.Element;

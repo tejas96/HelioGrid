@@ -1,0 +1,182 @@
+/* Accordion — long forms and settings, split into sections you can collapse. Sections separate by
+   surface luminance and an 8px gap, NEVER a divider line. The chevron LEADS: with four facts on the
+   right of the header (marks, state word, meta, total, tier) a trailing chevron sat between the
+   total and the action. */
+
+.hg-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-accordion-item {
+  background: var(--surface);
+  box-shadow: var(--e1);
+  overflow: hidden;
+  border-radius: var(--r-md);
+}
+
+.hg-accordion[data-density="functional"] .hg-accordion-item {
+  border-radius: var(--r-card-functional);
+}
+
+/* A tinted section is a THIRD background: --text-tertiary measures 4.48 on --danger-bg, under the
+   floor, so on a tinted section every quiet line steps up to --text-secondary. */
+.hg-accordion-item[data-state="errors"] {
+  background: var(--danger-bg);
+}
+
+.hg-accordion-head {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.hg-accordion-heading {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+}
+
+.hg-accordion-toggle {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  text-align: left;
+  color: inherit;
+  padding: 18px;
+}
+
+.hg-accordion[data-density="functional"] .hg-accordion-toggle {
+  padding: 14px;
+}
+
+.hg-accordion-toggle[data-has-action="true"] {
+  padding-right: var(--sp-2);
+}
+
+.hg-accordion-toggle:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-accordion-chevron {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-accordion-item[data-state="errors"] .hg-accordion-chevron {
+  color: var(--text-secondary);
+}
+
+.hg-accordion-chevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+.hg-accordion-title-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-accordion-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* The word carries the state; the dot is the second, non-colour channel. */
+.hg-accordion-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  color: var(--text-tertiary);
+}
+
+.hg-accordion-item[data-state="errors"] .hg-accordion-state {
+  color: var(--danger-text);
+}
+.hg-accordion-item[data-state="done"] .hg-accordion-state {
+  color: var(--success-text);
+}
+.hg-accordion-item[data-state="empty"] .hg-accordion-state {
+  color: var(--text-tertiary);
+}
+
+.hg-accordion-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.hg-accordion-item[data-state="errors"] .hg-accordion-dot {
+  background: var(--danger);
+}
+.hg-accordion-item[data-state="done"] .hg-accordion-dot {
+  background: var(--success);
+}
+.hg-accordion-item[data-state="empty"] .hg-accordion-dot {
+  background: var(--neutral);
+}
+
+.hg-accordion-meta {
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+.hg-accordion-item[data-state="errors"] .hg-accordion-meta {
+  color: var(--text-secondary);
+}
+
+/* A total is a figure, never prose — mono and tabular. */
+.hg-accordion-total {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hg-accordion-tier {
+  flex-shrink: 0;
+}
+
+/* A SIBLING of the toggle, never inside it — a button inside a button is invalid. */
+.hg-accordion-action {
+  flex-shrink: 0;
+  padding-right: 18px;
+}
+
+.hg-accordion[data-density="functional"] .hg-accordion-action {
+  padding-right: 14px;
+}
+
+.hg-accordion-panel {
+  padding: 0 18px 18px;
+  animation: hg-sheet-fade var(--dur-standard) var(--ease-enter);
+}
+
+.hg-accordion[data-density="functional"] .hg-accordion-panel {
+  padding: 0 14px 14px;
+}

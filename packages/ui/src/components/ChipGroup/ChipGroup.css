@@ -1,0 +1,87 @@
+/* ChipGroup — several labels in one cell, and the one behaviour they all get.
+
+   The "+N" is a REAL control: a 44px target around a chip-height pill (the two-rectangles rule
+   Chip and FilterBar use), never a tooltip. Expanded, the chips WRAP — there is no horizontal
+   scroller anywhere in this system, so the row grows instead. */
+
+.hg-chip-group,
+.hg-mark-row,
+.hg-chip-group-more {
+  /* The DS pill heights and the touch floor. No token carries either. */
+  --hg-chip-group-h-expressive: 28px;
+  --hg-chip-group-h-functional: 24px;
+  --hg-chip-group-touch: 44px;
+}
+
+.hg-chip-group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hg-chip-group-gap);
+}
+
+.hg-chip-group-item {
+  display: inline-flex;
+  min-width: 0;
+}
+
+/* The target is the outer rectangle; the count pill drawn inside keeps its own height, with the
+   extra taken back as negative margin so a dense row keeps its line height. */
+/* The "+N" is the Pressable primitive, so the 44px floor, the focus ring, the reset and the
+   pressed treatment all come from `hg-pressable`. What stays here is what this control alone
+   wants: the pill radius over the primitive's default, and the negative margin that pulls the
+   44px target back to the chip's own height — which is what `--hg-chip-group-touch` is for. */
+.hg-chip-group-more {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+}
+
+.hg-chip-group[data-density="expressive"] .hg-chip-group-more {
+  margin: calc((var(--hg-chip-group-h-expressive) - var(--hg-chip-group-touch)) / 2) 0;
+}
+
+.hg-chip-group[data-density="functional"] .hg-chip-group-more {
+  margin: calc((var(--hg-chip-group-h-functional) - var(--hg-chip-group-touch)) / 2) 0;
+}
+
+.hg-chip-group-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-chip-group[data-density="expressive"] .hg-chip-group-count {
+  height: var(--hg-chip-group-h-expressive);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-chip-group[data-density="functional"] .hg-chip-group-count {
+  height: var(--hg-chip-group-h-functional);
+  font-size: var(--fs-caption);
+}
+
+/* ── MarkRow — no collapse, no list semantics: half its hosts are <button>. ── */
+
+.hg-mark-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  gap: var(--hg-chip-group-gap);
+}
+
+.hg-mark-row-item {
+  display: inline-flex;
+  min-width: 0;
+}

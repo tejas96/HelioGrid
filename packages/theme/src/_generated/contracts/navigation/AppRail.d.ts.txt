@@ -1,0 +1,69 @@
+import React from "react";
+
+export interface RailItem {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  /** Filled variant, shown only while this item is active — the one place this system mixes
+   *  filled and outlined icons. Falls back to `icon`. */
+  activeIcon?: React.ReactNode;
+  /**
+   * Unread count, read **from the record** (`F6-17`) so it always matches the list it opens.
+   * Renders the numeral via `CountBadge` — "99+" above 99, nothing at zero. `true` still draws a
+   * bare dot for the rare case where a count isn't known; prefer a number.
+   */
+  badge?: number | boolean;
+  onClick?: () => void;
+}
+
+export interface AppRailProps {
+  items: RailItem[];
+  value?: string;
+  onChange?: (key: string) => void;
+  /** Utility buttons pinned above the avatar (notifications, settings). */
+  footer?: RailItem[];
+  avatar?: React.ReactNode;
+  /**
+   * Rail width. Defaults to `var(--rail-w, 72px)` — the token is the source of the number, the way
+   * `AppShell` reads `--header-h`. Pass a number to override it.
+   */
+  width?: number | string;
+  /** Defaults to <LogoTile />. */
+  brand?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+/** 72px desktop icon rail. Active item = accent-subtle tile, never a border or accent bar. */
+export function AppRail(props: AppRailProps): JSX.Element;
+
+export interface BottomNavProps {
+  /** Use `{ key, fab: true, label }` to reserve the centre slot; the label sits under the FAB. */
+  items: (RailItem | { key: string; fab: true; label?: string })[];
+  value?: string;
+  onChange?: (key: string) => void;
+  fab?: React.ReactNode;
+  /** curve = one parabolic sweep across the full width, icons and labels riding it (default,
+   *  the signature of the phone shell) · notch = concave cut · flat = plain bar. */
+  shape?: "curve" | "notch" | "flat";
+  /** Depth of the arc: how far the edges sit below the centre peak. 21 is the drawn spec —
+   *  changing it moves the icons and labels with the curve, since they ride it. */
+  curveHeight?: number;
+  /** Bar height measured from the centre peak down. Matches --bottomnav-h. */
+  height?: number;
+  /** Radius of the concave cut when shape="notch". */
+  notchRadius?: number;
+  /** How far the FAB rides above the peak. 23 of its 56 sits proud, the rest inside the bar. */
+  fabOffset?: number;
+  style?: React.CSSProperties;
+}
+/** Phone navigation bar — four destinations around a raised FAB under one parabolic edge. */
+export function BottomNav(props: BottomNavProps): JSX.Element;
+
+export interface FabProps {
+  label?: string;
+  icon?: React.ReactNode;
+  onClick?: () => void;
+  size?: number;
+  style?: React.CSSProperties;
+}
+/** Raised near-black action button, 56px, scales to 0.94 on press. */
+export function Fab(props: FabProps): JSX.Element;

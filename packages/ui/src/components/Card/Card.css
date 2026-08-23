@@ -1,0 +1,132 @@
+/* Card — the floating white surface. No border: it separates by luminance and a soft shadow.
+   e2 at rest, e3 + a 1px lift on hover when interactive, and the accent ring when selected. */
+
+.hg-card {
+  background: var(--surface);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-standard) var(--ease-standard);
+  box-shadow: var(--e2);
+  cursor: default;
+}
+
+.hg-card[data-density="expressive"] {
+  border-radius: var(--r-card-expressive);
+  padding: var(--sp-6);
+}
+
+.hg-card[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+  padding: var(--sp-4);
+}
+
+.hg-card[data-interactive="true"] {
+  cursor: pointer;
+}
+
+.hg-card[data-interactive="true"]:hover {
+  box-shadow: var(--e3);
+  transform: translateY(-1px);
+}
+
+/* Selected wins over hover — the ring is the state, the lift is only the pointer. */
+.hg-card[data-selected="true"],
+.hg-card[data-selected="true"]:hover {
+  box-shadow:
+    var(--e2),
+    0 0 0 2px var(--accent);
+  transform: none;
+}
+
+.hg-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── body states ─────────────────────────────────────────────────────────────── */
+
+.hg-card-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-card-shimmer {
+  display: block;
+  height: 12px;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-card-shimmer[data-w="70"] {
+  width: 70%;
+}
+.hg-card-shimmer[data-w="92"] {
+  width: 92%;
+}
+.hg-card-shimmer[data-w="54"] {
+  width: 54%;
+}
+
+.hg-card-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hg-card-message-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-card-message-text[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-card-message-title {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-card-message-text[data-tone="warning"] .hg-card-message-title {
+  color: var(--warning-text);
+}
+
+.hg-card-retry {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* ── IconCircle ──────────────────────────────────────────────────────────────── */
+
+.hg-icon-circle {
+  width: var(--hg-icon-circle-size);
+  height: var(--hg-icon-circle-size);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hg-icon-circle-color);
+  /* --surface IS the white card this circle sits on; the tint is 6% of the colour over it. */
+  background: color-mix(in srgb, var(--hg-icon-circle-color) 6%, var(--surface));
+}

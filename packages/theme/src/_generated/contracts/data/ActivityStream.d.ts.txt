@@ -1,0 +1,148 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { FilterDimension, FilterValue } from "./FilterPanel";
+import { ActorClassName } from "./ActorClass";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+/* WHO DID IT, AS A CLASS RATHER THAN A NAME — and the vocabulary now lives in ./ActorClass, because
+   the law it serves is not about this surface. M07-03 states it ("blurring that line is how people
+   stop trusting the automation") and it is answered on the rep's home screen, where the things being
+   marked are TASKS (NextAction.origin), not entries. SCR-M07-04 requires that a human reopen be
+   distinguishable from an automatic resurface, which ActorClass's `origin` form says in words.
+
+   Timeline.actor was a free string, so "the agent", "the system" and "the customer" were
+   indistinguishable from a person's name. Here the class is structural and its word is always
+   rendered: a person shows their name; agent, system and customer each state the class in words even
+   when a name sits beside it, with a distinct glyph as the second, non-colour channel (the agent's is
+   the brand gradient object, per the iconography rule). */
+
+export interface ActivityEntry {
+  id?: string | number;
+  /**
+   * What kind of thing happened. **An open vocabulary** — the default registry covers `SCR-M02-04`'s
+   * thirteen (`note`, `call`, `agent-call`, `stage`, `assignment`, `proposal`, `link-open`, `survey`,
+   * `design`, `sign-off`, `payment`, `document`, `task`, `system`) plus `dunning` and `reversal`, and
+   * an unknown kind renders with a neutral mark and a humanised label. Extend it through `kinds`
+   * rather than editing the component.
+   */
+  kind: string;
+  /** When it happened — a `Date`, an ISO string or an epoch. Drives day grouping and the clock. */
+  at: string | number | Date;
+  actorClass: ActorClassName;
+  /** The person's or customer's name; for `agent` / `system`, the specific agent or job. */
+  actor?: string;
+  /** One line: what happened. The stream's primary text. */
+  summary: React.ReactNode;
+  /** A second line where the entry needs one — a note's body, a stage change's reason. */
+  detail?: React.ReactNode;
+  /** Facts that are true at the same time, rendered by `MarkRow` (never merged into one badge). */
+  marks?: React.ReactNode | React.ReactNode[];
+  /** A tier for a figure inside the entry — a payment amount, a generation estimate. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /** A node under the entry: a photo strip, a `StatCard` pair, a document row. */
+  content?: React.ReactNode;
+  /** Real controls belonging to this entry — "Collect", "Open proposal", "Retry the call". */
+  action?: React.ReactNode;
+  /** Makes the summary the target that opens the thing this entry is about. */
+  onOpen?: () => void;
+}
+
+export interface ActivityKindSpec {
+  label: string;
+  tone?: "neutral" | "accent" | "success" | "warning" | "danger" | "info";
+  /** A glyph name from the built-in set: note, phone, flag, user, doc, link, clipboard, grid, check, rupee, cog, bell, undo, dot. */
+  glyph?: string;
+}
+
+export interface ActivityStreamProps {
+  entries: ActivityEntry[];
+  /** Extra or overriding kind specs, keyed by kind. Merged over the default registry. */
+  kinds?: Record<string, ActivityKindSpec>;
+  /** The unfiltered, unwindowed total. Without it the count states the entries it was given. */
+  total?: number;
+  /** Newest first by default — an append-only stream is read from the top. */
+  order?: "newest" | "oldest";
+  /** Day grouping is what makes hundreds of entries legible without reading them. `none` to drop it. */
+  groupBy?: "day" | "none";
+  /** How many entries the window starts at. Default 25. Changing it resets the window. */
+  visibleCount?: number;
+  /** How many more each "Show more" reveals. Default 25. */
+  step?: number;
+  /**
+   * For server paging: there are more entries than were handed over. **Append to `entries` and the
+   * window follows the append** — a page arriving raises the window to cover what was handed over, so
+   * the caller does not have to raise `visibleCount` too. A `entries` array that gets *shorter* (a
+   * filter narrowing the set) resets the window instead.
+   */
+  hasMore?: boolean;
+  /** Called by "Show more" once the local window has run out. */
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
+  /**
+   * `SCR-M02-04`'s `timeline-filtered`. It changes the empty sentence: a filtered stream with no
+   * matches says *the filters* are narrow, not that the record has no activity, and its action clears
+   * the filters rather than offering to add anything.
+   */
+  filtered?: boolean;
+  onClearFilters?: () => void;
+  /** Header-right slot — where the screen's `FiltersButton` and `FacetChips` go. */
+  toolbar?: React.ReactNode;
+  /** The noun in the count line. Default "entries". */
+  countLabel?: string;
+  /** Copy, not market-pack data: the day headings for today and yesterday. */
+  todayLabel?: string;
+  yesterdayLabel?: string;
+  state?: SurfaceState;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  filteredEmptyTitle?: string;
+  filteredEmptyDescription?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The append-only activity stream** (`M02-35` / `SCR-M02-04`) — one stream per lead and customer,
+ * 13+ kinds, four actor classes, dozens to hundreds of entries. Also `SCR-M08-02` (directly beneath
+ * the stage timeline), `SCR-M12-02` (the dunning ladder *and* the subscription history) and
+ * `SCR-M11-02` (reversal pairs).
+ *
+ * **Not `Timeline`, and `SCR-M08-02` is the proof rather than the argument:** that screen needs the
+ * stage timeline *and* this stream, one directly beneath the other, so they cannot be one component.
+ * `Timeline`'s design is a continuous rail lit to the current step — *"a sequence, not a list of
+ * dots"* — which is right for nine stages and meaningless here, where every entry is done and there
+ * is no current step. `Timeline` is unchanged.
+ *
+ * **It renders no filter UI.** A kind filter over 13 values is a *set*, and `FilterSet` / `FacetChips`
+ * already ship that: call `ActivityStream.filterDimensions(entries)`, feed the result to a
+ * `FilterPanel` (which inherits the sheet-or-panel switch), and filter with
+ * `ActivityStream.applyFilter`. Both helpers are pure.
+ *
+ * **At depth**, three things carry the volume: day grouping, a window of `visibleCount` with a real
+ * 44px "Show more" (`onLoadMore` + `hasMore` hand it to a server for `SCR-M12-02`'s indefinite
+ * ladder), and the filter above. The count line always states the **whole**, so a window never reads
+ * as a total.
+ *
+ * @startingPoint section="Data display" subtitle="Append-only activity stream with kinds and actor classes" viewport="900x760"
+ */
+export function ActivityStream(props: ActivityStreamProps): JSX.Element;
+
+export namespace ActivityStream {
+  /**
+   * The kind and actor-class dimensions for a `FilterSet` / `FilterPanel`, with live counts — both
+   * `facet` kinds, because these are sets and a tablist would lie to a screen reader.
+   */
+  function filterDimensions(
+    entries: ActivityEntry[],
+    options?: { kinds?: Record<string, ActivityKindSpec>; includeActors?: boolean; kindLabel?: string; actorLabel?: string }
+  ): FilterDimension[];
+  /** Applies a `FilterValue` from those dimensions. Pure, so a screen can filter before paging. */
+  function applyFilter(entries: ActivityEntry[], value: FilterValue): ActivityEntry[];
+  /** The default kind registry, so a screen can extend rather than replace it. */
+  const kinds: Record<string, ActivityKindSpec>;
+}

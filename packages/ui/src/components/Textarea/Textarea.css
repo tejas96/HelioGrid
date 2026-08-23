@@ -1,0 +1,93 @@
+/* Textarea — the Input's multi-line sibling. No border at rest (e1), 2px accent ring on focus.
+   The character counter only appears once `maxLength` is set, and it turns warning before it turns
+   danger, so a rep writing a site note is warned before the field stops accepting text. */
+
+.hg-textarea-label {
+  display: block;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.hg-textarea-input {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 88px;
+  padding: var(--sp-3) var(--sp-4);
+  border: none;
+  outline: none;
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-textarea-input[data-density="functional"] {
+  padding: 10px var(--sp-3);
+  border-radius: var(--r-input-functional);
+}
+
+.hg-textarea-input:disabled {
+  background: var(--canvas-sunken);
+}
+
+.hg-textarea-input:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Both rings when both are true: an error nobody but the caller clears must not delete the focus
+   ring on a screen the gate jumped you to. Danger inside, accent outside. */
+.hg-textarea-input[data-error="true"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    var(--e1);
+}
+
+.hg-textarea-input[data-error="true"]:focus {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    0 0 0 2px var(--accent);
+}
+
+/* Attribution sits UNDER the field and ABOVE helper/error, so a validation message appearing
+   does not displace it. */
+.hg-textarea-attribution {
+  margin: 6px 2px 0;
+}
+
+.hg-textarea-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: 6px 2px 0;
+}
+
+.hg-textarea-message {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-textarea-message[data-error="true"] {
+  color: var(--danger-text);
+}
+
+.hg-textarea-count {
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-textarea-count[data-level="near"] {
+  color: var(--warning-text);
+}
+
+.hg-textarea-count[data-level="full"] {
+  color: var(--danger-text);
+}

@@ -1,0 +1,35 @@
+/* Pressable — the interaction floor lives HERE (docs/17 §4).
+   44px is the product's minimum touch target (WCAG 2.5.5); MIN_TOUCH_TARGET in
+   Pressable.types.ts is the same constant for the native half. Focus ring, pressed
+   scale and disabled treatment are owned here too — components compose, never re-answer. */
+
+.hg-pressable {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  border-radius: var(--rf-md);
+  cursor: pointer;
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-pressable:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-pressable:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.hg-pressable:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}

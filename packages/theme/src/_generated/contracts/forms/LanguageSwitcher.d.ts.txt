@@ -1,0 +1,81 @@
+import React from "react";
+
+/** `authored` — written in this language. `inherited` — some sections fall through to the tenant's
+    primary (`SCR-M07-09`). `empty` — nothing written, everything falls back. Derived from `written`
+    against the section total when not stated. */
+export type LanguageContentState = "authored" | "inherited" | "empty";
+
+export interface AgentLanguage {
+  /** The tenant's language code — "hi", "mr", "bn". Identity, not display. */
+  code: string;
+  /** The language's name as the owner reads it — "Hindi", "Marathi". */
+  label: string;
+  /** How many of the section set are authored in this language. Drives the fraction and the state. */
+  written?: number;
+  /** Per-language section total, where it differs. `sections` on the switcher is the usual answer. */
+  of?: number;
+  /** Stated outright; otherwise derived from `written` against the total. */
+  state?: LanguageContentState;
+  /** The tenant's primary agent language — the one everything else falls back to. */
+  primary?: boolean;
+}
+
+export interface LanguageSwitcherProps {
+  /** The tenant's **enabled** agent languages (`M07-15`: up to six). Not every language HelioGrid has. */
+  languages: AgentLanguage[];
+  value: string;
+  onChange?: (code: string) => void;
+  /** How many sections the fraction is out of — `SCR-M07-09`'s eight. */
+  sections?: number;
+  /** The noun in every sentence — "sections" (default), "rules", "templates". */
+  sectionNoun?: string;
+  /** Overline above the strip. */
+  label?: string;
+  /** Replaces the composed summary line. */
+  summary?: string;
+  /** Drop the fractions where the caller has no per-language counts; the sentence stays. */
+  showCounts?: boolean;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **A switcher that shows which languages are actually written** — `SCR-M07-09`'s `language-fallback`:
+ * *"a section answered in one language falls back to the tenant's primary agent language rather than
+ * silence — the design must show **which language a section's content actually comes from**."*
+ *
+ * **The gap it fills.** `Tabs` and `SegmentedControl` took `count` and `disabled` last round and
+ * **neither has per-item state**, so a six-language switcher could not distinguish *authored here* from
+ * *inherited*. `Accordion`'s `meta` sits on the **section**, not on the language. The owner writes
+ * agent copy in six languages across eight sections — **48 cells** — and needs the shape of the work
+ * before starting: which languages are done, which are empty, which ride on the fallback.
+ *
+ * **What each item carries, and not one of them is a colour** (`F7-12` / `N6`): the language's name; a
+ * **fraction** (5/8) that turns 48 invisible cells into a legible shape and stays legible in sunlight
+ * on a mid-range Android; and a per-state **glyph** — a filled mark for authored, `ValueSource`'s own
+ * layers glyph for inherited, a hollow ring for nothing written. The selected language then gets a full
+ * **sentence** under the strip — *"Marathi · 5 of 8 sections written here · 3 fall back to Hindi"* —
+ * because a fraction says how much and only words say what. Every item's accessible name spells the
+ * same sentence out.
+ *
+ * **One-of-N by construction**, so it is `FilterChips` exactly: `role="tablist"`, `aria-selected`, a
+ * roving tabindex, and arrow keys that **select as they move** — in a one-of-N strip moving the
+ * highlight *is* choosing. The 44px target wraps a 34px pill the `FilterBar` way, so six languages stay
+ * dense with nothing under the floor.
+ *
+ * **Not `Tabs` with a third prop.** `count` and `disabled` describe a *destination*; this describes the
+ * state of the **content at** the destination, against a total, plus a fallback relationship between
+ * two items (this language rides on that one). Growing it inside `Tabs` would put a content-fallback
+ * relationship in the navigation layer and make every unrelated tab set carry it.
+ *
+ * **The per-section half is not this, and it is not `helper` text either.** *"This section's wording
+ * comes from Hindi"* is precisely which-layer-supplied-this, so it is `ValueSource` in `Textarea`'s
+ * `attribution` slot: one renderer, one wording, and the same layers glyph this strip uses for
+ * `inherited`. `helper` is free prose that eight sections would spell eight ways.
+ *
+ * Used in at least two places on one screen pair: `SCR-M07-09`'s eight sections and `SCR-M07-05`'s
+ * hand-over rules, whose responses are also per language.
+ *
+ * @startingPoint section="Forms" subtitle="Six agent languages, each stating whether it is written" viewport="860x300"
+ */
+export function LanguageSwitcher(props: LanguageSwitcherProps): JSX.Element;

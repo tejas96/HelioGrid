@@ -1,0 +1,66 @@
+import React from "react";
+
+export interface TenantMarkProps {
+  /** The tenant's logo: a URL string, or a ready node. Omit and the monogram renders. */
+  logo?: string | React.ReactNode;
+  /** The tenant's name. Also the monogram source and the image's accessible name. */
+  name: string;
+  /** Mark height in px. 32 in a top bar, 40–48 on a page. */
+  size?: number;
+  /** Set false for the mark alone — a phone bar that already carries a screen title. */
+  showName?: boolean;
+  /** One line of micro text under the name — a plan, a city, a reference. */
+  meta?: string;
+  radius?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The tenant identity lockup: mark + name, on one line.
+ *
+ * **Identity, never theme.** `F7-07` lets a tenant configure a logo and a brand colour, and forbids
+ * restyling the **operator** application per tenant. This renders the identity and nothing else, and
+ * the fallback monogram is what keeps that boundary honest: it fills with `--tenant-mark`, a token
+ * that exists **only inside `CustomerSurface`**. On a customer link page it takes the tenant's
+ * colour with no prop; in the operator top bar the token is unset, so it falls back to neutral and
+ * the operator chrome looks the same for every tenant.
+ *
+ * It reads `--tenant-mark` rather than the raw `--tenant-brand` because the monogram is a fill
+ * **with letters on it**. `CustomerSurface` gates that pair on `bestTextOn(brand).passes` and hands
+ * over the darkened `ink` when the raw colour can't carry text — `#006FFF` measures 4.45:1 either
+ * way — so this component never has to decide, and never disagrees with `DocumentPreview`.
+ *
+ * A logo is optional on purpose — most pilot tenants have no usable asset, and an identity that only
+ * works with a file is an identity that is missing on most screens.
+ */
+export function TenantMark(props: TenantMarkProps): JSX.Element;
+
+export interface TenantHeaderProps {
+  logo?: string | React.ReactNode;
+  name: string;
+  /** What this page is, in the customer's words — "Your solar proposal · 8.4 kWp". */
+  caption?: string;
+  size?: number;
+  actions?: React.ReactNode;
+  align?: "left" | "center";
+  as?: keyof JSX.IntrinsicElements;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The page-level identity band for a **customer link page** — the header `CustomerSurface`'s
+ * canonical example promised and the system did not have.
+ *
+ * `F5-39` makes the link page the path of record, so those five screens (`SCR-F5-01`…`-05`) are
+ * whole pages of ordinary components rather than documents; `DocumentPreview`'s A4 frame was the
+ * only place a tenant logo could appear. Mount this inside `CustomerSurface` and the tenant's
+ * colour arrives through the token scope with no prop.
+ *
+ * @startingPoint section="Brand" subtitle="Tenant identity band for a customer link page" viewport="720x200"
+ */
+export function TenantHeader(props: TenantHeaderProps): JSX.Element;
+
+export namespace TenantHeader {
+  /** The inline lockup, for a top bar. Same component as `TenantMark`. */
+  const Mark: typeof TenantMark;
+}

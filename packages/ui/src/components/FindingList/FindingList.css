@@ -1,0 +1,194 @@
+/* FindingList — THE GATE THAT MUST LIST EVERY FAILURE, which is why it is not a BannerStack.
+
+   M06-23 (P0) / SCR-M06-02's generate-failure-list, MS6-27's tap-to-locate issue cards, M05-58's
+   status + plain meaning + jump, MS11-07's ordered items with a worst-of verdict.
+
+   THE COUNT IS THE WHOLE AND IS NOT A PROP — it is derived from `findings` every render, so
+   "Fix 5 issues to share" cannot disagree with the list beneath it. The only fold is `readyMode`,
+   it reaches READY items only, and they stay counted in the header in every mode.
+
+   The status word beside each check is the StatusMark primitive with `mark={false}`: the row's own
+   circle already carries the non-colour channel, so the pill keeps the words and drops the glyph.
+
+   The 14/19/22px values are the DS source's own; the scales have no step for them. */
+
+.hg-finding-list {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-sans);
+  box-sizing: border-box;
+}
+
+.hg-finding-list[data-density="expressive"] {
+  padding: var(--sp-6);
+}
+
+.hg-finding-list[data-density="functional"] {
+  padding: 18px;
+}
+
+.hg-finding-list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hg-finding-list-heading {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+}
+
+.hg-finding-list-verdict {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+}
+
+.hg-finding-list-count {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-finding-list-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The ready fold. A real control, never a hover affordance — and it never reaches a finding that
+   needs work. It is the Pressable primitive, so the 44px floor, the reset, the cursor and the
+   focus ring are `hg-pressable`'s; only this fold's own frame and words are stated here. */
+.hg-finding-list-ready-toggle {
+  align-self: flex-start;
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-pill);
+  box-shadow: var(--control-edge);
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-finding-list-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body-sm);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+/* ── one finding ────────────────────────────────────────────────────────────── */
+
+.hg-finding-row {
+  display: flex;
+  gap: var(--sp-3);
+  padding: 14px 0;
+  align-items: flex-start;
+}
+
+.hg-finding-mark {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  color: var(--text-inverse);
+  margin-top: 1px;
+}
+
+.hg-finding-mark[data-status="blocking"] {
+  background: var(--danger);
+}
+/* The warning MARK takes --warning-text: plain --warning measures 2.17:1 on white. */
+.hg-finding-mark[data-status="attention"] {
+  background: var(--warning-text);
+}
+.hg-finding-mark[data-status="ready"] {
+  background: var(--success);
+}
+
+.hg-finding-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hg-finding-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-finding-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-finding-status {
+  font-size: var(--fs-caption);
+  padding: 0 9px;
+  min-height: 22px;
+}
+
+.hg-finding-meaning {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-finding-family {
+  margin: 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-finding-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-0-5);
+}
+
+.hg-finding-jump,
+.hg-finding-fix {
+  gap: 7px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+}
+
+.hg-finding-jump {
+  background: var(--surface);
+  box-shadow: var(--e1);
+  color: var(--text-primary);
+}
+
+.hg-finding-fix {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}

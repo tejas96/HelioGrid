@@ -1,0 +1,18 @@
+import React from "react";
+
+export interface OtpInputProps {
+  length?: number;
+  value?: string;
+  onChange?: (value: string) => void;
+  /** Fired once the full code is entered. */
+  onComplete?: (value: string) => void;
+  label?: string;
+  helper?: string;
+  error?: string;
+  disabled?: boolean;
+  autoFocus?: boolean;
+  style?: React.CSSProperties;
+}
+
+/** Verification-code field: mono digits in 48x56 boxes, auto-advance, paste fills the code. */
+export function OtpInput(props: OtpInputProps): JSX.Element;

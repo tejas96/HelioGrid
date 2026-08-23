@@ -1,0 +1,58 @@
+/** The four actor classes — `person | agent | system | customer`. */
+export type ActorClassName = "person" | "agent" | "system" | "customer";
+
+export interface ActorClassProps {
+  actorClass?: ActorClassName;
+  /** The name, where there is one. A person is a name; every other class still states its class. */
+  actor?: string;
+  /**
+   * `stream` — what happened and who by ("HelioGrid agent", "Automatic"): the `ActivityStream` form.
+   * `origin` — why a task exists ("Created by a rule · no contact in 3 days"): the task form.
+   */
+  form?: "stream" | "origin";
+  /** The act, in `origin` form: "Created by", "Reopened by", "Resurfaced by" (SCR-M07-04). */
+  verb?: string;
+  /** The rule's own name — M07-06's "a rep always sees WHY a task exists". */
+  rule?: string;
+  size?: number;
+  color?: string;
+  style?: React.CSSProperties;
+}
+
+/** A spec object, a bare class name, or a ready node — what every host's attribution prop takes. */
+export type ActorClassSpec = ActorClassName | ActorClassProps | JSX.Element;
+
+/**
+ * **Who or what did this, in words, with a glyph as the second channel** — `person` | `agent` |
+ * `system` | `customer`.
+ *
+ * This vocabulary used to live inside `ActivityStream`, and the law it serves is not about one
+ * surface: `M07-03` (P0) — *"Agent activity is a separate block, **never mixed with the rep's own
+ * tasks**… each entry marked as the agent's"*, because *"blurring that line is how people stop
+ * trusting the automation"* — and `M07-06`, *"a rep always sees **why a task exists**"*. A stream
+ * entry is a thing that **happened**; a task is a thing to be **done**, and `NextAction` had no
+ * attribution slot at all. So one vocabulary now serves three hosts: `ActivityStream.entry.actorClass`,
+ * `NextAction.origin`, and `Transcript`'s turns — where `agent` and `customer` are the call's two fixed
+ * participants and the words and glyphs are these, not a second set.
+ *
+ * `form="origin"` plus `verb` is how `SCR-M07-04`'s *"a human reopen must be distinguishable from an
+ * automatic resurface"* is said in words — "Reopened by Priya Sharma" against "Resurfaced by a rule"
+ * — never two shades of one glyph.
+ *
+ * It is **not** a correction. `SCR-M07-13`'s `rep-corrected` needs both readings visible, which is a
+ * superseded value, and the system has exactly one treatment for that: `FieldOverride`. A corrected
+ * task carries this line for the current reading and a `FieldOverride` line for what it replaced.
+ *
+ * @dsCard components/data/task-attribution.card.html
+ */
+export function ActorClass(props: ActorClassProps): JSX.Element;
+
+/** The class's glyph on its own — the agent's is a gradient object, not an outlined icon. */
+export function ActorGlyph(props: { actorClass?: ActorClassName; size?: number }): JSX.Element;
+
+export declare namespace ActorClass {
+  /** `FilterSet` options for the four classes, in one order, so every host filters alike. */
+  function options(): { value: ActorClassName; label: string }[];
+  const classes: Record<ActorClassName, { label: string; glyph: string; tone: string }>;
+  const Glyph: typeof ActorGlyph;
+}

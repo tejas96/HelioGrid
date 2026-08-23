@@ -1,0 +1,56 @@
+import React from "react";
+
+export interface ScopeNoteSpec {
+  /**
+   * Whose act it is — named, not a role code: "the owner", "Priya Menon (owner)", "your manager".
+   * "You don't have permission" tells a rep nothing they can act on; a name tells them who to call.
+   */
+  holder?: string;
+  /** The absent acts as lowercase verb phrases: `["approve pricing", "record a payment"]`. */
+  acts?: string | string[];
+  /** Replaces the composed first sentence outright. */
+  title?: string;
+  /** What the reader still has — "Everything on this screen stays readable." */
+  message?: string;
+  /** One forward action, and never a retry of the absent act: "Ask Priya to approve". */
+  action?: React.ReactNode;
+  /** `line` in an action row; `panel` (a flat `--neutral-bg` block) where it replaces a whole action bar. */
+  variant?: "line" | "panel";
+  align?: "left" | "center";
+  /** 13 (default) or 12. Never below 12 — the type floor. */
+  size?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The act is absent, and this says whose it is.** `M12-56` / `SCR-M12-02`'s `non-owner-read-only`:
+ * *"the state is visible, the acts are not; **the screen says whose act it is**"*. `SCR-M11-02`'s
+ * `reader-read-only`: *"**every act that writes money is absent**… The screen says whose act the
+ * absent ones are rather than hiding the money it is showing."* Plus `SCR-M02-06`'s `scope-blocked`
+ * and `SCR-SHELL-06`'s `no-amounts-for-employees`.
+ *
+ * **Why this is not a disabled button.** A greyed control still advertises a capability — *"this act
+ * is yours, just not yet"* — which is false for a reader on someone else's ledger and invites a tap
+ * that can never succeed. The control is therefore **not rendered**, and this takes the space it
+ * would have had. The precondition case, where the act *is* the reader's and something must happen
+ * first, is `ActionReason` on a control that stays. The **compliance** case, where nobody holds the
+ * act because a statute or a market pack forbids it (`M07-11`, `M07-12`), is `ComplianceFloor`: this
+ * component's sentence names a holder, and there is no holder to name.
+ *
+ * **Where it renders: in the action row** — the exact place the absent acts would have been (a
+ * surface's action slot, a card footer, a sheet's action bar).
+ * - Not `Banner`: per-surface, so it cannot say which of four buttons it means — and these surfaces
+ *   are not in an alarm state, they are working normally, for a reader.
+ * - Not `UnavailableNote`: that is about **content** that was never going to be here. Here the
+ *   content is fully present and readable — `SCR-M11-02` is explicit that the money stays on screen.
+ *
+ * @startingPoint section="Feedback" subtitle="The act is absent — whose act it is" viewport="760x300"
+ */
+export function ScopeNote(props: ScopeNoteSpec): JSX.Element | null;
+
+/** Accepts a `scope` host prop — a spec object or a ready node. */
+export function renderScopeNote(spec?: ScopeNoteSpec | React.ReactNode, extra?: Partial<ScopeNoteSpec>): React.ReactNode;
+
+export namespace ScopeNote {
+  const render: typeof renderScopeNote;
+}

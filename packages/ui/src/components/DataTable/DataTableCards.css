@@ -1,0 +1,187 @@
+@import "./DataTableTotal.css";
+
+/* DataTable — the stacked (card) form, the total row's two renderings, and the shell chrome
+   (selection band, pager, skeleton, blocked-state message). Split out of DataTable.css, which
+   @imports it.
+
+   THE ROW TARGET IS A SIBLING, NOT AN ANCESTOR. The whole-card target is an absolutely positioned
+   <button> UNDER the content; the content sits above it with pointer events off, re-enabled only
+   on the parts that are themselves operable. Nothing nests, no handler needs stopPropagation, and
+   both the row and each action are separately reachable by keyboard.
+
+   `pointer-events: auto` on the interactive wrappers is doing real work — remove it and the
+   editors inside a flagged import row, and a ChipGroup's "+N" in a wrap cell, stop taking taps. */
+
+.hg-dt-cards {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-dt-card {
+  position: relative;
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+}
+
+.hg-dt-card[data-issue="true"] {
+  background: var(--warning-bg);
+}
+
+.hg-dt-card[data-fixed="true"] {
+  background: var(--success-bg);
+}
+
+.hg-dt-card[data-selected="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-dt-card[data-muted="true"] {
+  opacity: 0.55;
+}
+
+.hg-dt-card-target {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.hg-dt-card-target:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-dt-card-body {
+  position: relative;
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  min-height: var(--hg-dt-touch);
+}
+
+.hg-dt-card-body[data-inert="true"] {
+  pointer-events: none;
+}
+
+.hg-dt-tappable,
+.hg-dt-card-title[data-tappable="true"],
+.hg-dt-card-trailing[data-tappable="true"],
+.hg-dt-card-secondary[data-tappable="true"],
+.hg-dt-card-pair dd[data-tappable="true"] {
+  pointer-events: auto;
+}
+
+.hg-dt-card-select {
+  padding-top: 2px;
+}
+
+.hg-dt-card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-dt-card-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-dt-card-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-dt-card-trailing {
+  flex-shrink: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-card-secondary {
+  margin-top: 2px;
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-dt-card-standing {
+  margin-top: 6px;
+}
+
+.hg-dt-card-list {
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--sp-4);
+  row-gap: var(--sp-2);
+  align-items: center;
+}
+
+.hg-dt-card-pair {
+  display: contents;
+}
+
+.hg-dt-card-pair dt {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.hg-dt-card-pair dd {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.hg-dt-card-pair dd[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-dt-card-pair dd[data-numeric="true"] {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-card-pair dd[data-editable="true"] {
+  text-align: left;
+}
+
+/* A `wrap` column takes the FULL card width — twelve role chips in a 1fr value column would be
+   twelve lines. The label sits above it, not beside it. */
+.hg-dt-card-pair[data-wrap="true"] dt,
+.hg-dt-card-pair[data-wrap="true"] dd {
+  grid-column: 1 / -1;
+  text-align: left;
+}
+
+.hg-dt-card-pending,
+.hg-dt-card-note,
+.hg-dt-card-actions {
+  margin-top: var(--sp-3);
+}
+
+.hg-dt-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--hg-dt-touch);
+}

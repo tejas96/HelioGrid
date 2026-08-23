@@ -1,0 +1,294 @@
+/* Dropzone — photo and document capture.
+
+   ⚠ BORDER EXCEPTION — DO NOT "FIX" THIS. The system's governing rule is: no structural borders,
+   hierarchy comes from luminance and soft shadow. The dashed edge here is one of only TWO legal
+   exceptions in the entire system (the other is the opt-in high-contrast field mode). It is not a
+   container border — it is the affordance itself: it says "this area accepts a drop". Replacing it
+   with a shadow or a tint removes the only signal that the region is a target. Keep it dashed.
+
+   ONE TAB STOP, AND IT IS THE ONE THE EYE IS ON: the surface is the input's <label>, and the focus
+   ring is drawn here from the input's own focus. */
+
+.hg-dropzone {
+  min-width: 0;
+}
+
+.hg-dropzone-surface {
+  border: 1.5px dashed var(--text-disabled);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+  padding: var(--sp-8);
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--text-tertiary);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    border-color var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-dropzone-surface[data-density="functional"] {
+  border-radius: var(--rf-xl);
+  padding: var(--sp-5);
+}
+
+.hg-dropzone-surface[data-over="true"] {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.hg-dropzone-surface[data-error="true"] {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.hg-dropzone-surface[data-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* The ring lands on the rectangle the eye is already looking at. */
+.hg-dropzone-surface:has(.hg-dropzone-input:focus-visible) {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-dropzone-glyph {
+  color: var(--text-tertiary);
+}
+
+.hg-dropzone-surface[data-over="true"] .hg-dropzone-glyph {
+  color: var(--accent);
+}
+
+.hg-dropzone-surface[data-error="true"] .hg-dropzone-glyph {
+  color: var(--danger-text);
+}
+
+.hg-dropzone-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+  color: var(--text-primary);
+}
+
+.hg-dropzone-surface[data-disabled="true"] .hg-dropzone-label {
+  color: var(--text-disabled);
+}
+
+.hg-dropzone-line {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+/* The real control. Visually hidden, still focusable, still the thing that owns click, Enter/Space,
+   the file dialog and the disabled state. */
+.hg-dropzone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hg-dropzone-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--canvas-sunken);
+  border-top-color: var(--accent);
+  display: inline-block;
+  animation: hg-spin 0.7s linear infinite;
+}
+
+.hg-dropzone-track,
+.hg-dropzone-thumb-track {
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.hg-dropzone-track {
+  margin-top: var(--sp-2);
+  height: 6px;
+  background: var(--canvas-sunken);
+}
+
+.hg-dropzone-fill,
+.hg-dropzone-thumb-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width var(--dur-standard) var(--ease-standard);
+}
+
+.hg-dropzone-error {
+  margin: var(--sp-2) var(--sp-0-5) 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  color: var(--danger-text);
+}
+
+/* THE WAITING COUNT AND THE RETRY (M11-37 P0 / SCR-M11-03, F4-21). The count is its OWN element
+   above the sentence, so `heldMessage` replaces the wording and never the number. Warning, not
+   danger: nothing has failed — the photos exist and are waiting. Only what a flush REPORTED is
+   danger.
+
+   The 10px offset and gap are the DS source's own values; the 4px spacing scale has no step at 10,
+   the same reason ActionReason keeps its 6px gap raw. */
+.hg-dropzone-held {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hg-dropzone-held-words {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.hg-dropzone-held-count,
+.hg-dropzone-held-line,
+.hg-dropzone-held-failure {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  text-wrap: pretty;
+}
+
+.hg-dropzone-held-count {
+  font-weight: var(--fw-bold);
+  color: var(--warning-text);
+}
+
+.hg-dropzone-held-line {
+  color: var(--warning-text);
+}
+
+.hg-dropzone-held-count + .hg-dropzone-held-line {
+  margin-top: var(--sp-0-5);
+}
+
+.hg-dropzone-held-failure {
+  margin-top: var(--sp-1);
+  font-weight: var(--fw-medium);
+  color: var(--danger-text);
+}
+
+/* 44px, and the label survives the wait — the spinner sits beside the words, never in place. */
+.hg-dropzone-retry {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-dropzone-retry:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hg-dropzone-retry-spinner {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--canvas-sunken);
+  border-top-color: var(--accent);
+  display: inline-block;
+  animation: hg-spin 0.7s linear infinite;
+}
+
+.hg-dropzone-thumbs {
+  list-style: none;
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: var(--sp-2);
+}
+
+.hg-dropzone-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--canvas-sunken);
+}
+
+.hg-dropzone-thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hg-dropzone-thumb-glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-tertiary);
+}
+
+.hg-dropzone-thumb-track {
+  position: absolute;
+  left: var(--sp-1);
+  right: var(--sp-1);
+  bottom: var(--sp-1);
+  height: 4px;
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+
+.hg-dropzone-thumb-fill {
+  display: block;
+}
+
+/* 44px target around the 28px circle — the two-rectangles rule, on a control whose only caller is
+   a surveyor deleting a photo on a roof. */
+.hg-dropzone-thumb-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hg-dropzone-thumb-remove:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -6px;
+}
+
+.hg-dropzone-thumb-remove-circle {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  color: var(--text-secondary);
+}

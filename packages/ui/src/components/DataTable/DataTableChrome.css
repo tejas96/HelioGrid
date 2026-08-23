@@ -1,0 +1,228 @@
+/* DataTable — the shell chrome: the selection band, the tick control, the pager, the loading
+   skeleton and the blocked-state message. Split out of DataTable.css, which @imports it. */
+
+/* Selection sits at the TOP of the table, above the column headers — an accent-tinted band that
+   pushes the rows down instead of covering them. It is never a floating overlay. */
+.hg-dt-selection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px var(--sp-5);
+  background: var(--accent-subtle);
+  min-height: 60px;
+}
+
+/* 44×44: the selection bar is not inside a row, so the in-row exception never reached it — and
+   clearing a 40-row selection by mistake is expensive. */
+.hg-dt-selection-clear {
+  width: var(--hg-dt-touch);
+  height: var(--hg-dt-touch);
+  margin-left: -10px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hg-dt-selection-clear > svg {
+  width: var(--sp-4);
+  height: var(--sp-4);
+}
+
+.hg-dt-selection-count {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-selection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+/* THE TICK IS THE SYSTEM `Checkbox`, named and not labelled. A checkbox in a grid has no room for a
+   visible `<label>` — the same problem the cell editors solve with `aria-label` — but it still has
+   to say WHICH row it selects, so the name rides on `Checkbox`'s own `ariaLabel`. Nothing is
+   rendered beside the box, so nothing has to be hidden again here and the box keeps the centred
+   bare-box layout the component already draws. */
+
+/* The 44px target overhangs its 20px box by 10px on every side — the two-rectangles rule — so the
+   pull-back keeps the visible box flush with the 24px edge and the selection column at 56px. */
+.hg-dt-tick.hg-checkbox {
+  margin: -10px;
+}
+
+/* ── pager ────────────────────────────────────────────────────────────────── */
+
+.hg-dt-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-4) 10px var(--sp-6);
+  background: var(--surface);
+}
+
+.hg-dt-pagination-readout {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-dt-pagination-steps {
+  display: flex;
+  align-items: center;
+}
+
+.hg-dt-page {
+  width: var(--hg-dt-touch);
+  height: var(--hg-dt-touch);
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.hg-dt-page:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.hg-dt-page > svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── loading and blocked states ───────────────────────────────────────────── */
+
+.hg-dt-skeleton[data-stacked="true"] {
+  padding: var(--sp-2);
+}
+
+.hg-dt-skeleton-head {
+  height: var(--hg-dt-touch);
+  background: var(--canvas);
+}
+
+.hg-dt-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  height: var(--hg-dt-row-h);
+  padding: 0 var(--hg-dt-edge);
+  background: var(--surface);
+}
+
+.hg-dt-skeleton-row:nth-child(even) {
+  background: var(--surface-alt);
+}
+
+.hg-dt-skeleton[data-stacked="true"] .hg-dt-skeleton-row {
+  height: 76px;
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-2);
+  border-radius: var(--r-md);
+  background: var(--surface-alt);
+}
+
+.hg-dt-skeleton-spacer {
+  flex: 1;
+}
+
+.hg-dt-shimmer {
+  display: block;
+  height: var(--sp-3);
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-dt-shimmer[data-w="lead"] {
+  width: 28%;
+}
+.hg-dt-shimmer[data-w="mid"] {
+  width: 18%;
+}
+.hg-dt-shimmer[data-w="tail"] {
+  width: 14%;
+}
+
+.hg-dt-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-2);
+  padding: 56px var(--sp-6);
+}
+
+.hg-dt-message-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--sp-1);
+  background: var(--neutral-bg);
+  color: var(--text-tertiary);
+}
+
+.hg-dt-message-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-dt-message-mark > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.hg-dt-message-title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-dt-message-body {
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.hg-dt-message-action {
+  margin-top: 10px;
+}
+
+.hg-dt-retry {
+  margin-top: 10px;
+  min-height: var(--hg-dt-touch);
+  padding: 0 var(--sp-5);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+}

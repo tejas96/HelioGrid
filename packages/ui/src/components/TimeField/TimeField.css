@@ -1,0 +1,166 @@
+/* TimeField / TimeRangeField — time of day, 24-hour. Commit-once on blur or Enter, never per
+   keystroke; Escape cancels.
+
+   A time outside the permitted window is REFUSED, and the refusal names the window. It is never
+   clamped: silently turning 21:00 into 19:00 would hand an EPC a calling window they never chose
+   and believe they did, and the consequence is a regulatory breach rather than a wrong-sized part.
+
+   AND THE DANGER RING DOES NOT EAT THE FOCUS RING. A refusal clears on focus, so ordering it first
+   only cost a frame; `error`/`invalid` are cleared by nobody but the caller, so the same ordering
+   made a focused errored box pixel-identical to an unfocused one — and a window is TWO boxes, so a
+   keyboard user could not tell which half held the caret. Focus adds the accent ring on top of the
+   inset danger ring. */
+
+.hg-time-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-time-field-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-time-field-box {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 48px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-time-field-box[data-density="functional"] {
+  height: 40px;
+  border-radius: var(--r-input-functional);
+}
+
+.hg-time-field-box[data-disabled="true"] {
+  background: var(--canvas-sunken);
+}
+
+.hg-time-field-box[data-focus="true"] {
+  box-shadow:
+    var(--e2),
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent);
+}
+
+.hg-time-field-box[data-danger="true"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    var(--e1);
+}
+
+.hg-time-field-box[data-danger="true"][data-focus="true"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent);
+}
+
+.hg-time-field-glyph {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+.hg-time-field-input {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-time-field-input:disabled {
+  color: var(--text-disabled);
+}
+
+.hg-time-field-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-time-field-preset {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.hg-time-field-preset[data-active="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-time-field-preset:disabled {
+  cursor: not-allowed;
+}
+
+.hg-time-field-preset:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-time-field-message {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-time-field-message[data-danger="true"] {
+  color: var(--danger-text);
+}
+
+/* TimeRangeField — one sentence under the PAIR, describing both boxes. The ring is drawn on each
+   half and the reason is drawn once, so `describedBy` carries that one id into both boxes. */
+.hg-time-range {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-time-range-legend {
+  padding: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-time-range-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hg-time-range-half {
+  flex: 1;
+  min-width: 0;
+}
