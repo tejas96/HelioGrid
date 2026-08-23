@@ -1,0 +1,140 @@
+/* Modal — the centred member of the Sheet family. Same backdrop law: blur + fade toward white,
+   never a dark scrim. Springs in with a 12px rise and a 0.97 scale (hg-modal-in). The close
+   button, the footer action row and the backdrop are the family's shared chrome — see
+   Sheet/OverlayShared.css and Sheet.css. */
+
+.hg-modal-layer {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--hg-modal-z, 60) + 1);
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  pointer-events: none;
+}
+
+.hg-modal-layer[data-inset="true"] {
+  position: absolute;
+}
+
+.hg-modal {
+  /* 28 has no spacing token — it is the reference's own expressive padding. */
+  --hg-modal-pad: 28px;
+  --hg-modal-radius: var(--r-xl);
+  --hg-modal-title: var(--fs-h3);
+  --hg-modal-width: 520px;
+
+  pointer-events: auto;
+  width: min(var(--hg-modal-width), 100%);
+  max-height: 88%;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  background: var(--surface);
+  border-radius: var(--hg-modal-radius);
+  box-shadow: var(--e5);
+  animation: hg-modal-in var(--dur-emphasised) var(--ease-spring);
+}
+
+.hg-modal[data-density="functional"] {
+  --hg-modal-pad: var(--sp-6);
+  --hg-modal-radius: var(--rf-xl);
+  /* 18px has no type token — --fs-h4 is 17 and --fs-h3 is 20. It is the reference's value. */
+  --hg-modal-title: 18px;
+}
+
+.hg-modal[data-size="sm"] {
+  --hg-modal-width: 400px;
+}
+
+.hg-modal[data-size="lg"] {
+  --hg-modal-width: 720px;
+}
+
+/* ── the header ────────────────────────────────────────────────────────────── */
+
+.hg-modal-header {
+  flex-shrink: 0;
+  padding: var(--hg-modal-pad) var(--hg-modal-pad) 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+/* The circular tint. neutral is the fallback pair for a caller-supplied icon with no tone. */
+.hg-modal-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--neutral-bg);
+  color: var(--text-secondary);
+}
+
+.hg-modal-mark[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-modal-mark[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-modal-mark[data-tone="success"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-modal-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-modal-overline {
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+}
+
+.hg-modal-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--hg-modal-title);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* 14px has no type token — --fs-body-sm is 13 and --fs-body is 15. It is the reference's value. */
+.hg-modal-description {
+  margin: 6px 0 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ── the body and the footer ───────────────────────────────────────────────── */
+
+.hg-modal-body {
+  overflow-y: auto;
+  padding: var(--sp-4) var(--hg-modal-pad) 0;
+}
+
+.hg-modal-footer {
+  flex-shrink: 0;
+  padding: var(--sp-4) var(--hg-modal-pad) var(--hg-modal-pad);
+}
+
+/* With a body or a description above it the footer takes the roomier top gap. */
+.hg-modal-footer[data-roomy="true"] {
+  padding-top: var(--sp-5);
+}

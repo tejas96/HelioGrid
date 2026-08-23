@@ -1,0 +1,77 @@
+import React from "react";
+
+/**
+ * `overridden` — a person replaced the derived default. `stale` — the derived default has moved on
+ * since they did (`M05-72`'s *"changes appearance when the design has moved on"*, `MS10-13`'s
+ * stale-field pair). `none` renders nothing.
+ */
+export type FieldOverrideState = "none" | "overridden" | "stale";
+
+export interface FieldOverrideSpec {
+  state?: FieldOverrideState;
+  /**
+   * The figure the reset restores, as a display string — `"4.2 kWp"`, `"₹68,400"`.
+   *
+   * Under `overridden` that is the **superseded** derived default (rendered *"was 4.2 kWp"*). Under
+   * `stale` it is the **user's own** figure — the *"yours"* side of `MS10-13`'s pair, and what "Keep
+   * mine" keeps; the design's current figure is `newValue` in that state, never this.
+   */
+  autoValue?: React.ReactNode;
+  /**
+   * Which layer the superseded value came from — "platform", "your SKU". `SCR-M01-15` wants the platform
+   * value named under an override, and with a sparse override (`M01-37`) the superseded value *is* the
+   * platform's. One extra word in this line, not a second treatment: attribution for an **un**-overridden
+   * value is `ValueSource`'s, and the two never render together.
+   */
+  autoSource?: string;
+  /** What the derived default has since become. Required by `stale`. */
+  newValue?: React.ReactNode;
+  /** Named in the buttons' accessible labels, so a screen reader hears which field it restores. */
+  fieldName?: string;
+  onReset?: () => void;
+  /** `MS10-13`'s one-tap "take the new value". Only rendered by `stale`. */
+  onTake?: () => void;
+  /** The word before the superseded value. Default "was". */
+  autoLabel?: string;
+  /** 12 (default) or 13. Never below 12 — the type floor. */
+  size?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The one override treatment**, stated as a rule: an overridden value renders three things, in
+ * this order, in one line under the value it qualifies.
+ *
+ * 1. **The marker** — a word ("Edited", "Design moved on"), never a colour or a dot alone.
+ * 2. **The superseded value** — what it would be without the override, and under `stale` *both*
+ *    values ("yours 4.2 kWp · design now 5.1 kWp"), because one of them is what the user is
+ *    deciding against.
+ * 3. **The reset** — "Reset to 4.2 kWp", a 44px target that **names what it restores**, in both its
+ *    visible words and its accessible name, which contains them (WCAG 2.5.3). Under `stale` the visible
+ *    word is "Keep mine" and it announces the **user's own** figure — the thing it keeps — not the
+ *    design's, which is what the button beside it takes. A bare circular-arrow glyph is a guess.
+ *
+ * `stale` tints warning, changes the marker's word, names both values, and puts the one-tap "Take
+ * the new value" **beside** the reset rather than replacing it — the user may still want their own
+ * number.
+ *
+ * **Provenance is a different axis and keeps its own slot.** `M05-72`'s *"a user-entered override
+ * takes measured provenance"* is satisfied by the host's `provenance` prop, not by this line: this
+ * says who last wrote the value and what it was before, `Provenance` says how far it can be trusted.
+ *
+ * **Attribution is a third axis.** *Which layer* supplied an un-overridden value is `ValueSource`
+ * (`SCR-M01-15`) — a separate, mutually exclusive slot, because nothing was superseded there and there
+ * is nothing to reset. The only overlap is `autoSource`, which names the layer of the value this line
+ * has already superseded.
+ *
+ * Hosts: `NumberField`, `Input`, and `DataTable` via `column.override` — `MS10-18`'s eleven editable
+ * BOM columns get one treatment instead of 440 improvisations.
+ */
+export function FieldOverride(props: FieldOverrideSpec): JSX.Element | null;
+
+/** Renders a spec object, a ready node, or nothing. What every host prop runs through. */
+export function renderOverride(spec?: FieldOverrideSpec | React.ReactNode, extra?: Partial<FieldOverrideSpec>): React.ReactNode;
+
+export namespace FieldOverride {
+  const render: typeof renderOverride;
+}

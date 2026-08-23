@@ -1,0 +1,35 @@
+import React from "react";
+
+export interface ToastItem {
+  id: number | string;
+  tone?: "success" | "warning" | "danger" | "info" | "neutral";
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+  action?: React.ReactNode;
+  /** Overrides the host duration for this one toast. */
+  duration?: number;
+}
+
+export interface ToastHostProps {
+  toasts: ToastItem[];
+  onDismiss?: (id: number | string) => void;
+  position?: "bottom-center" | "bottom-right" | "top-center";
+  /** Most toasts on screen at once. Older ones drop rather than piling up. */
+  max?: number;
+  duration?: number;
+  /** Distance from the bottom — clear the bottom nav on a phone. */
+  offset?: number;
+  style?: React.CSSProperties;
+}
+
+/** Toast queue container: stacks, auto-dismisses, pauses while the pointer is over it. */
+export function ToastHost(props: ToastHostProps): JSX.Element | null;
+
+/** `const { toasts, push, dismiss } = useToasts()` — the queue state for ToastHost.
+ *  Also reachable as `ToastHost.useToasts` (the window namespace only carries capitalised names). */
+export function useToasts(): {
+  toasts: ToastItem[];
+  push: (toast: Omit<ToastItem, "id">) => number;
+  dismiss: (id: number | string) => void;
+};

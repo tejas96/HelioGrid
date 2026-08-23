@@ -1,0 +1,159 @@
+/* Derivation — the long-form explanation of a read-only computed number.
+
+   The accessibility difference from a tooltip is not the styling: the trigger is a real button,
+   announced expandable, tappable at the 44px floor, and its content lands IN THE FLOW beneath its
+   own row rather than in a floating layer a touch user never sees.
+
+   `data-print` is the print surface's own contract: the panels go screen-only when the enclosing
+   group prints its appendix, and the appendix is print-only. */
+
+.hg-derivation {
+  --hg-derivation-touch: 44px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  font-family: var(--font-sans);
+}
+
+.hg-derivation-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: var(--hg-derivation-touch);
+  padding: 0;
+  border: none;
+  border-radius: var(--rf-md);
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hg-derivation-trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-derivation[data-variant="cell"] .hg-derivation-trigger {
+  font-size: var(--fs-caption);
+}
+
+.hg-derivation[data-variant="block"] .hg-derivation-trigger {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-derivation-chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-derivation-chevron[data-open="true"] {
+  transform: rotate(90deg);
+}
+
+.hg-derivation-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: var(--r-md);
+  background: var(--canvas-sunken);
+}
+
+.hg-derivation[data-variant="cell"] .hg-derivation-panel {
+  padding: var(--sp-3) 14px;
+}
+
+.hg-derivation[data-variant="block"] .hg-derivation-panel {
+  padding: 14px var(--sp-4);
+}
+
+.hg-derivation-panel-label {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── the parts ────────────────────────────────────────────────────────────── */
+
+.hg-derivation-parts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-derivation-part {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* The overline role — the system's one sanctioned appearance below the 12px floor. */
+.hg-derivation-part-label {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-derivation-part-text {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-derivation-parts[data-size="xs"] .hg-derivation-part-text {
+  font-size: var(--fs-caption);
+}
+
+.hg-derivation-parts[data-size="sm"] .hg-derivation-part-text {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-derivation-parts[data-size="md"] .hg-derivation-part-text {
+  font-size: var(--fs-body);
+}
+
+/* ── the group and its print appendix ─────────────────────────────────────── */
+
+.hg-derivation-appendix {
+  margin-top: 18px;
+  font-family: var(--font-sans);
+}
+
+.hg-derivation-appendix-title {
+  margin: 0 0 10px;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-derivation-appendix-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-derivation-appendix-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  break-inside: avoid;
+}
+
+.hg-derivation-appendix-label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}

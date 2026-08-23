@@ -1,0 +1,57 @@
+/* ActionReason — the precondition answer to "why is this off". The control is there, it is off,
+   and the sentence that says why sits beside it, in words, permanently.
+
+   THE TREATMENT. A word is the carrier and the glyph is the second channel — the same rule
+   Provenance, StatusChip and UnavailableNote follow. Neutral, never a warning tint: a precondition
+   is not a fault. The words take --text-secondary and NEVER --text-disabled, which by the contrast
+   law never carries a word a user must read — the control may be grey, the sentence explaining it
+   is not. The glyph is one step quieter at --text-tertiary, because it is the second channel and
+   not the message.
+
+   The 6px gap and the 1.45 leading are the DS source's own values; the 4px spacing scale has no
+   step at 6 and the type scale no leading at 1.45. */
+
+.hg-action-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* 12 (default) or 13. Never below 12 — the type floor. */
+.hg-action-reason[data-size="12"] {
+  font-size: var(--fs-caption);
+}
+.hg-action-reason[data-size="13"] {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-action-reason[data-align="left"] {
+  justify-content: flex-start;
+  text-align: left;
+}
+.hg-action-reason[data-align="center"] {
+  justify-content: center;
+  text-align: center;
+}
+.hg-action-reason[data-align="right"] {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.hg-action-reason-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: var(--sp-0-5);
+  color: var(--text-tertiary);
+}
+
+.hg-action-reason-words {
+  min-width: 0;
+}

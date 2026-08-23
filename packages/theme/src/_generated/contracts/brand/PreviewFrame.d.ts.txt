@@ -1,0 +1,88 @@
+import React from "react";
+
+export interface PreviewFrameProps {
+  /** Overline above the frame — "PROPOSAL COVER", "CUSTOMER LINK PAGE". */
+  label?: string;
+  /** The line under it. Naming the surface as customer-facing is the caption's job — keep it. */
+  caption?: string;
+  /** An extra line for an honest consequence the subject reported (a colour that can't carry text). */
+  note?: string;
+  /** The subject's natural width in px. The frame scales from this. */
+  designWidth?: number;
+  /** The subject's natural height, where it has one (an A4 sheet). Live pages leave it unset. */
+  designHeight?: number;
+  /**
+   * Refuse to scale below this and crop instead. **Default 0.82 ≈ 9px ÷ 11px** — the scale at which the
+   * subject's 11px body copy stops reading as type. The old 0.62 could never fire at 375px (see below).
+   */
+  minScale?: number;
+  /** Cap on rendered height. Omitted, a cropped subject is cut to the footprint a fitted sheet would have had. */
+  maxHeight?: number;
+  /** `sheet` = white paper, `page` = a live page on canvas, `band` = one band of either. */
+  surface?: "sheet" | "page" | "band";
+  /** A control beside the caption — "Open full preview". Sits **outside** the non-interactive subject. */
+  action?: React.ReactNode;
+  /** The subject: the real component that draws the customer-facing output. */
+  children?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The rule every settings screen inherits, and it is a frame, not a component per preview:**
+ *
+ * > A preview is a **framed, scaled, non-interactive window onto customer-facing output**. The frame
+ * > is `PreviewFrame`. The subject is the real component that draws that output — `DocumentPreview`
+ * > for the proposal, a `CustomerSurface` subtree for a link page, one band of either. A settings
+ * > screen never draws a preview of its own.
+ *
+ * **Why a frame.** The subjects have nothing in common but being customer-facing: an A4 sheet, a live
+ * page of ordinary components, one band of a page. A single component taking `subject="document" |
+ * "page" | "band"` would import all of them and grow a branch per settings screen — the same failure
+ * as six hosts answering the provenance question six ways. The frame owns what is common (scale,
+ * crop, caption, the non-interactive guarantee) and knows nothing about what is inside it.
+ *
+ * `SCR-M01-18` is the case that forced it: Branding previews the proposal cover **and** the
+ * customer-link header, both reacting live to the same colour and logo. Two frames in a
+ * `PreviewFrameGroup` — with one preview component that would have been a mode.
+ *
+ * **Non-interactive, and readable — deliberately not `inert`.** `inert` removes a subtree from the
+ * **accessibility tree**, so the earlier "inert but not aria-hidden" pairing hid the preview from a
+ * screen reader anyway. On `SCR-M01-18` the preview *is the thing being judged* — a person choosing
+ * their company's colour and letterhead must be able to check what it shows — so the subject stays in
+ * the accessibility tree and is made unoperable instead: `pointer-events: none` for the pointer and
+ * `tabindex="-1"` on every focusable inside for the keyboard, re-applied as the subject redraws.
+ * Nothing inside is reachable; everything inside is readable. Do not reintroduce `inert`.
+ *
+ * **375px, honestly — and the first version of this guard could not fire.** With `minScale = 0.62` and
+ * a 480px design, a 335–343px phone frame scales to `raw = 0.698`–`0.715`, *above* 0.62 — so `cropped`
+ * was false on exactly the width the crop exists for, and 11px document type rendered at 7.7–7.9px: the
+ * size these docs called unacceptable, by the mechanism these docs said prevented it.
+ *
+ * The floor is now derived from the type. `minScale = 0.82 ≈ 9px ÷ 11px` (11px is `DocumentPreview`'s
+ * body copy; 9px is the smallest a preview's type may render and still read as type). At a 343px frame
+ * `raw = 0.715 < 0.82`, so the frame **crops**: the subject draws at 0.82, its body copy lands at
+ * **9.0px**, and the caption says *"Showing the top left, at a size you can read."* Above ~394px of own
+ * width nothing crops.
+ *
+ * **And the crop cuts.** Scaling to 0.82 in a 343px frame makes the subject 394px wide — the right edge
+ * goes to overflow — but with no height cap the sheet still ran its full length, which is a wide sheet
+ * with a trimmed edge, not "the top of the output". The window is the footprint a *fitted* sheet would
+ * have had (`designHeight × raw`), so the frame takes the space it always would have and the subject is
+ * cut at that boundary, anchored top-left — where a letterhead is. `maxHeight` still wins when given.
+ */
+export function PreviewFrame(props: PreviewFrameProps): JSX.Element;
+
+export interface PreviewFrameGroupProps {
+  children?: React.ReactNode;
+  /** Own-width (never viewport) px below which the frames stack. Default 560. */
+  stackBelow?: number;
+  gap?: number;
+  style?: React.CSSProperties;
+}
+
+/** Two subjects, one state — `SCR-M01-18`'s document and link page side by side, stacking on a phone. */
+export function PreviewFrameGroup(props: PreviewFrameGroupProps): JSX.Element;
+
+export namespace PreviewFrame {
+  const Group: typeof PreviewFrameGroup;
+}

@@ -1,0 +1,48 @@
+import React from "react";
+
+/** The canonical pipeline vocabulary. **Not a boundary** — `status` accepts any string. */
+export type SolarStatus =
+  /* delivery */
+  | "lead" | "survey-scheduled" | "design-in-progress"
+  | "approved" | "installing" | "commissioned" | "on-hold"
+  /* V2 sales stages */
+  | "new-lead" | "contacted" | "qualified" | "site-visit" | "designing"
+  | "proposal-sent" | "negotiating" | "won" | "lost" | "snoozed";
+
+export type StatusTone = "neutral" | "info" | "success" | "warning" | "danger" | "accent";
+
+export interface StatusChipProps {
+  /**
+   * A canonical status, or **any string** — the eight other lifecycle vocabularies (invite,
+   * membership, document checklist, payment tranche, billing, calling outcome, proposal & link,
+   * studio) pass their own values here. An unknown status renders under its own words in the
+   * neutral tone; it is never silently re-labelled as something else.
+   */
+  status?: SolarStatus | string;
+  /** Override the word. */
+  label?: string;
+  /**
+   * The meaning. Supply it whenever `status` is outside the canonical set — that is how a word the
+   * registry has never heard of gets the right colour instead of borrowing a wrong one.
+   */
+  tone?: StatusTone;
+  density?: "expressive" | "functional";
+  /** Status dot. Turn off inside a table where a NextAction dot already sits in the row. */
+  dot?: boolean;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The product's status chip and its one status registry — **label plus mark, never colour alone**
+ * (`F7-12`). The canonical pipeline values carry their own tones; every other lifecycle vocabulary
+ * supplies `status` + `tone` and keeps its own words.
+ *
+ * Use this for a **lifecycle state** — something a record *is*, that changes over time. Use `Chip`
+ * for a tag, a facet or a filter token, which is something a record *has*.
+ */
+export function StatusChip(props: StatusChipProps): JSX.Element;
+
+export namespace StatusChip {
+  /** The canonical pipeline statuses, for a caller that wants to render the set. */
+  const statuses: SolarStatus[];
+}

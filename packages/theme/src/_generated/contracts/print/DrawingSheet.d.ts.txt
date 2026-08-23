@@ -1,0 +1,94 @@
+import React from "react";
+import { Paper } from "./PagedDocument";
+import { DisclosureSpec } from "../feedback/Disclosure";
+
+export interface SheetSymbol {
+  /** The drafting code — "PV", "INV", "ACDB". Mono, beside the mark. */
+  code?: string;
+  label: string;
+  /** A node for a real symbol; otherwise a 12px mark in `mark`'s colour. */
+  glyph?: React.ReactNode;
+  mark?: string;
+  shape?: "square" | "circle";
+}
+
+export interface DrawingTitleBlock {
+  project?: string;
+  drawingTitle?: string;
+  drawingNumber?: string;
+  revision?: string;
+  issueDate?: string | Date;
+  drawnBy?: string;
+  checkedBy?: string;
+  client?: string;
+}
+
+export interface DrawingSheetProps {
+  paper?: Paper;
+  /** Landscape by default — a roof plan is wider than it is tall. */
+  orientation?: "portrait" | "landscape";
+  margin?: number;
+  /** The drawn scale, in the title block **and** on the foot (`MS8-02`). */
+  scale?: string;
+  sheet?: number;
+  sheets?: number;
+  titleBlock?: DrawingTitleBlock;
+  /**
+   * **The slot left for the drawing, the same shape `pageEstimate` was left in.** The canvas — roof
+   * outline, array, strings, dimensions — is a later round. An empty slot renders a **named
+   * reservation at the drawing's own footprint**, with the scale and paper size, so the sheet does
+   * not reflow when the drawing arrives and an unfinished sheet is not mistakable for a finished one.
+   */
+  drawing?: React.ReactNode;
+  /** What belongs in the slot — "Single-line diagram", "Roof layout". Used by the reservation. */
+  drawingLabel?: string;
+  /**
+   * `MS8-17`: *"the legend lists **only symbols the sheet actually renders**"* — enforced, not
+   * remembered: this is read **only when `drawing` exists**, so an empty slot produces no legend.
+   */
+  symbols?: SheetSymbol[];
+  /**
+   * `MS8-08`: *"the structural disclaimer travels on **every** sheet."* This replaces the **words**
+   * (a `Disclosure` spec), never the presence — there is no `disclaimer={false}`, and `null` renders
+   * the structure line.
+   */
+  disclaimer?: DisclosureSpec | React.ReactNode;
+  north?: boolean;
+  /**
+   * `MS8-02`: *"zoom either works or is not advertised."* The controls render **only** when
+   * `onChange` is supplied, and they are screen-only.
+   */
+  zoom?: { value?: number; levels?: number[]; onChange: (v: number) => void };
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The second kind of sheet** (`MS9-03`, `MS8-02`) — a drafting sheet, not a proposal page with a
+ * picture on it: paper size, scale and counted numbering in the title block, a legend of exactly what
+ * is drawn, and the structural disclaimer on every sheet.
+ *
+ * **No sheet border.** A drafting frame is the convention and it is still a structural border, which
+ * this system does not have (the two exceptions are `Dropzone`'s dashed edge and field mode). The
+ * sheet separates from the canvas by luminance and shadow like every other surface; the drawing area
+ * is very slightly sunken; the title block is a band, not a ruled box.
+ *
+ * @startingPoint section="Print" subtitle="A drawing sheet — title block, legend, disclaimer, and the drawing left as a slot" viewport="1200x900"
+ */
+export function DrawingSheet(props: DrawingSheetProps): JSX.Element;
+
+/**
+ * **The set, and the reason `MS8-02`'s consistency is not a caller's discipline.** It counts its
+ * children and hands each one the group's paper, orientation, scale, shared title-block fields and
+ * travelling disclaimer, plus its own counted `sheet` against the group's total. No sheet states its
+ * own total, so no two sheets can disagree about how many there are.
+ */
+export function DrawingSheetGroup(props: {
+  children?: React.ReactNode;
+  paper?: Paper; orientation?: "portrait" | "landscape"; scale?: string;
+  titleBlock?: DrawingTitleBlock; disclaimer?: DisclosureSpec | React.ReactNode;
+  gap?: number | string; style?: React.CSSProperties;
+}): JSX.Element;
+
+export namespace DrawingSheet {
+  const Group: typeof DrawingSheetGroup;
+}

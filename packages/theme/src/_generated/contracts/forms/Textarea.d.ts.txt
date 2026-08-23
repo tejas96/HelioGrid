@@ -1,0 +1,28 @@
+import React from "react";
+import { ValueSourceSpec, ValueSourceLevel } from "../data/ValueSource";
+
+export interface TextareaProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  label?: string;
+  placeholder?: string;
+  rows?: number;
+  /** Shows a counter that warns before it blocks. */
+  maxLength?: number;
+  /**
+   * **Which layer supplied this wording** — `ValueSource`, in the declared field slot: under the
+   * field, above `helper`/`error`, so it survives a validation message appearing. `SCR-M07-09`'s
+   * per-language sections are the case: *"Falling back to Hindi"* is which-layer-supplied-this, not
+   * free prose in `helper`. Mutually exclusive with an override line, as in `Input`.
+   */
+  attribution?: ValueSourceSpec | ValueSourceLevel | React.ReactNode;
+  density?: "expressive" | "functional";
+  disabled?: boolean;
+  helper?: string;
+  error?: string;
+  name?: string;
+  style?: React.CSSProperties;
+}
+
+/** Multi-line field. No border at rest (e1); 2px accent ring on focus. */
+export function Textarea(props: TextareaProps): JSX.Element;

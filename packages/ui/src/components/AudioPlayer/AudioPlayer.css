@@ -1,0 +1,158 @@
+/* AudioPlayer — the call recording. Its states come from consent and retention law, not from
+   playback mechanics. Transport centres on the play button at EVERY width, so a rep sees the same
+   shape on a 320px phone and in a 900px panel and nothing reflows out from under them.
+
+   The transport and the scrubber live in AudioTransport.css, imported here so the assemble step
+   still needs exactly one @import for this folder. */
+@import "./AudioTransport.css";
+
+.hg-audio {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  gap: 10px;
+}
+
+.hg-audio[data-density="functional"] {
+  gap: var(--sp-2);
+}
+
+.hg-audio-title {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-audio-meta {
+  margin-top: 2px;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-audio-element {
+  display: none;
+}
+
+/* ── the door to the transcript, and the states ──────────────────────────────── */
+
+.hg-audio-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hg-audio-footnote {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-audio-text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 var(--sp-4) 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-audio-skeleton {
+  height: 96px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-audio[data-density="functional"] .hg-audio-skeleton {
+  border-radius: var(--rf-lg);
+}
+
+.hg-audio-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  box-sizing: border-box;
+  border-radius: var(--r-sm);
+}
+
+.hg-audio[data-density="functional"] .hg-audio-panel {
+  border-radius: var(--rf-lg);
+}
+
+.hg-audio-panel[data-tone="error"] {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  background: var(--warning-bg);
+}
+
+.hg-audio-panel[data-tone="consent-declined"] {
+  background: var(--neutral-bg);
+  color: var(--text-secondary);
+}
+
+.hg-audio-panel[data-tone="purged-retention"] {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.hg-audio-panel-error-text {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--warning-text);
+  text-wrap: pretty;
+}
+
+.hg-audio-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hg-audio-panel-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-audio-panel-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-audio-panel-text {
+  margin-top: 3px;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-audio-panel-note {
+  margin-top: 6px;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-audio-panel-door {
+  display: flex;
+  margin-top: var(--sp-3);
+}

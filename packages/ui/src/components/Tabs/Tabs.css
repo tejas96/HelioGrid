@@ -1,0 +1,93 @@
+/* Tabs — underline tabs; a 2px accent indicator slides between tabs, no border rule.
+   An OFF tab is --text-tertiary, never --text-disabled: hiding it would rename the tab set,
+   so the label is information the reader must have. Off-ness is carried by the absent
+   indicator, the weight, aria-disabled and the reason — never by an unreadable word. */
+
+.hg-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-tabs-strip {
+  position: relative;
+  display: flex;
+  gap: 28px;
+}
+
+.hg-tabs-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  border: none;
+  padding: 0 0 var(--sp-3);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-tabs-tab[data-active="true"] {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+.hg-tabs-tab[data-off="true"] {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.hg-tabs-tab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-tabs-count {
+  display: inline-flex;
+  align-items: center;
+  height: var(--sp-5);
+  border-radius: var(--r-pill);
+  padding: 0 7px;
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-tabs-tab[data-active="true"] .hg-tabs-count {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* An off tab's count keeps --neutral-text even when it is the active one. */
+.hg-tabs-tab[data-off="true"] .hg-tabs-count {
+  color: var(--neutral-text);
+}
+
+.hg-tabs-indicator {
+  position: absolute;
+  bottom: 0;
+  left: var(--hg-tabs-indicator-left, 0);
+  width: var(--hg-tabs-indicator-width, 0);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transition:
+    left var(--dur-emphasised) var(--ease-standard),
+    width var(--dur-emphasised) var(--ease-standard);
+}
+
+/* Marks are ChipGroup's MarkRow and the sentence under the strip is ActionReason — both own their
+   own treatment, so the strip only owns the column the sentences stack in. */
+
+.hg-tabs-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}

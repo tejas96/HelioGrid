@@ -1,0 +1,57 @@
+/* ValueSource — attribution, not a marker. No pill, no tint: the treatment must not look like
+   FieldOverride's, because the two say opposite things about whether anything happened to the
+   value. `inherited` reads one step quieter than `own` — it is not the tenant's value. */
+
+.hg-value-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-family: var(--font-sans);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-value-source[data-size="12"] {
+  font-size: var(--fs-caption);
+}
+.hg-value-source[data-size="13"] {
+  font-size: var(--fs-body-sm);
+}
+
+.hg-value-source[data-level="own"] {
+  color: var(--text-secondary);
+}
+.hg-value-source[data-level="inherited"] {
+  color: var(--text-tertiary);
+}
+
+.hg-value-source-layer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  white-space: nowrap;
+}
+
+.hg-value-source-word {
+  font-weight: var(--fw-medium);
+}
+
+.hg-value-source-from {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The one action attribution ever carries. It is a Pressable, so the 44px floor is the
+   primitive's; only the words' treatment and the optical outdent are here. */
+.hg-pressable.hg-value-source-action {
+  margin-inline: 0 calc(var(--sp-2) * -1);
+  padding-inline: var(--sp-2);
+  margin-inline-start: auto;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  white-space: nowrap;
+}

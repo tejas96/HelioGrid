@@ -1,0 +1,51 @@
+/* ActorClass — who or what did this, in words, with a glyph as the second channel.
+   The type size is a numeric prop (hosts render it at 12 and 13), so it rides in as a
+   custom property; every colour is a token. */
+
+.hg-actor-class {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--hg-actor-fs);
+  line-height: 1.4;
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  text-transform: none;
+  min-width: 0;
+}
+
+.hg-actor-class-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.hg-actor-class-mark[data-tone="neutral"] {
+  color: var(--text-secondary);
+}
+.hg-actor-class-mark[data-tone="accent"] {
+  color: var(--accent);
+}
+.hg-actor-class-mark[data-tone="info"] {
+  color: var(--info);
+}
+
+.hg-actor-class-words {
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+.hg-actor-glyph {
+  flex-shrink: 0;
+}
+
+/* Brand/AI features take a gradient-filled object rather than an outlined icon. */
+.hg-actor-glyph-agent {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  width: var(--hg-actor-glyph-size);
+  height: var(--hg-actor-glyph-size);
+  background: var(--gradient-brand);
+}

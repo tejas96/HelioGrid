@@ -1,0 +1,126 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export interface CompareAttribute<Opt = any> {
+  key: string;
+  /** The row label, pinned at the left edge. This is the thing the reader holds still. */
+  label: string;
+  /** Second line under the label — "years", "kWp", "₹ per kWh". */
+  unit?: string;
+  /** Reads the value off an option when it isn't in `option.values`. */
+  value?: (option: Opt) => React.ReactNode | number;
+  /** Formats a numeric value. Otherwise the market pack does (`money` / `compact` / `numberOptions`). */
+  format?: (v: number) => string;
+  money?: boolean;
+  compact?: boolean;
+  numberOptions?: Intl.NumberFormatOptions;
+  numeric?: boolean;
+  mono?: boolean;
+  strong?: boolean;
+  /**
+   * Which direction is better, and the **only** thing that marks a row's best value — with the word
+   * "Best", never colour alone. Numbers only, and a tie marks nothing: guessing which of two equal
+   * values wins is the confident nonsense law 2 forbids.
+   */
+  better?: "higher" | "lower";
+  /** A tier for this row's figures, rendered under the label. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /**
+   * **What this row's absence is called**, when an option has no value for it — "Not included",
+   * "Not measured on this variant". Rendered by `NamedGap` in the cell; the fallback is "Not stated",
+   * a statement about the *data* that invents nothing about the option. This row used to render an
+   * em-dash, which says *nothing here* and leaves the reader guessing which kind of nothing.
+   */
+  gapLabel?: string;
+}
+
+export interface CompareOption {
+  key: string;
+  /** The column heading — "Variant B", "Growth plan". */
+  name: string;
+  subtitle?: string;
+  /**
+   * **The option in force.** Not the same fact as selected — you choose the one you are moving *to* —
+   * so it is a word in its own pill (`SCR-MS-07`: the current selection is always included;
+   * `SCR-M12-03`: the plan you are on).
+   */
+  current?: boolean;
+  /** Facts that can be true together, rendered by `MarkRow`. */
+  marks?: React.ReactNode | React.ReactNode[];
+  /** `{ [attribute key]: value }` — a number the pack formats, or a ready node. */
+  values?: Record<string, React.ReactNode | number>;
+}
+
+export interface CompareGridProps<Opt = CompareOption> {
+  /** The rows. `MS4-30`'s eleven computed comparison columns are eleven of these. */
+  attributes: CompareAttribute<Opt>[];
+  /** The columns — 2 to 4 options, and the snap rendering holds four. */
+  options: Opt[];
+  selectedKey?: string;
+  onSelect?: (key: string) => void;
+  selectLabel?: string;
+  selectedLabel?: string;
+  currentLabel?: string;
+  /** Overline above the grid, and the accessible name of the matrix. */
+  caption?: string;
+  /** One provenance statement for the whole comparison, in the footer. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /** A quiet footer line beside the position readout. */
+  note?: string;
+  /**
+   * Option column width. Default 196.
+   *
+   * **The arithmetic at 375px, because this used to claim two columns and two do not fit.** The pinned
+   * label column takes `labelWidth` (128), leaving a `375 − 128 = 247px` option track: **one whole
+   * column and a 51px sliver of the next**. Two columns want `128 + 2 × 196 = 520px`, which is a tablet.
+   * The sliver is not a shortfall — it is what makes the snap readable: a variant is visibly *arriving*,
+   * and the label it lines up against never moves. If two whole columns on a phone matter more than a
+   * legible money figure, the caller narrows the pair (`columnWidth={110} labelWidth={112}` fits two in
+   * 332px); the component will not make that trade on its own.
+   */
+  columnWidth?: number;
+  /** Pinned attribute-column width. Default 128 — see `columnWidth` for what that leaves at 375px. */
+  labelWidth?: number;
+  state?: SurfaceState;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Compare 2–4 options attribute by attribute, at every width** (`M05-79` / `SCR-MS-14`,
+ * `MS4-30` / `SCR-MS-07`, and `SCR-M12-03`'s plan chooser).
+ *
+ * **Why this is not a horizontally-scrolling table.** Law 4's prohibition protects one reader from
+ * one harm: a `DataTable`'s rows are *records* and its columns are *fields*, so scrolling it
+ * sideways hides fields of the record you are reading. A comparison transposes both axes — **the
+ * record is the column and the attribute is the row** — so scrolling sideways moves *between
+ * records*, the same act as scrolling a records list, and hides nothing about any record on screen:
+ * every attribute row stays rendered, stays aligned, and keeps its label, because the attribute
+ * column is **pinned**. The prohibition's own remedy would be the harm here: stacking to one card
+ * per record puts one variant on screen at a time, which is the form `M05-79` rules out.
+ *
+ * **The boundary:** this is the one component in the system with a horizontal scroller, it scrolls
+ * its **option** axis only, its attribute axis is complete at every width, and it is **never used
+ * for records**. A list of leads is a `DataTable` and stacks.
+ *
+ * **Alignment is structural, which is the whole design.** One table, not N cards: a row *is* a row,
+ * so payback cannot drift between variants however long a name is, and its label is sticky at the
+ * left edge. A carousel of independent cards fails exactly here. `th scope="row"` / `th scope="col"`
+ * mean a screen reader announces "Payback · Variant B · 5.8 years" for any cell — which is what a
+ * comparison is for.
+ *
+ * **It never stacks**, so there is no `stackBelow`. And the option axis is operable without a touch
+ * screen: the scroller takes arrow keys and carries real 44px previous/next controls, the same
+ * reason `Kanban` has always-visible move buttons.
+ *
+ * @startingPoint section="Data display" subtitle="Compare 2–4 options with a pinned attribute column" viewport="900x620"
+ */
+export function CompareGrid<Opt = CompareOption>(props: CompareGridProps<Opt>): JSX.Element;

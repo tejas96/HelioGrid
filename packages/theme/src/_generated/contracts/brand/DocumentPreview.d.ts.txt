@@ -1,0 +1,123 @@
+import React from "react";
+import { RichTextValue } from "../forms/RichText";
+
+/** The letterhead: the band's extra lines and the note along the foot of every page (`M01-50`). */
+export interface DocumentLetterhead {
+  /** One line under the company name — "Rooftop solar since 2011". */
+  tagline?: string;
+  /** Registration numbers, email, website. Printed as a single dot-separated line in the band. */
+  lines?: string[];
+  /** The line that runs along the bottom of every page. */
+  footerNote?: string;
+}
+
+/** One entry of `SCR-M01-20`'s tranche schedule, as the customer will see it. */
+export interface DocumentTranche {
+  label: string;
+  /** When it falls due — "On signing", "Before dispatch", "On commissioning". */
+  when?: string;
+  /** The share, already worded — "30%". */
+  share?: string;
+  amount: number | string;
+}
+
+export interface DocumentPreviewProps {
+  /** The tenant's primary brand colour, "#RRGGBB". */
+  brandColor?: string;
+  companyName?: string;
+  /** Tenant logo. Without it, a labelled placeholder slot is drawn. */
+  logoSrc?: string;
+  logoLabel?: string;
+  /** The tenant's tax number. */
+  taxId?: string;
+  /** What that number is called — defaults to the market pack ("GSTIN" here, "VAT number" elsewhere). */
+  taxIdLabel?: string;
+  address?: string;
+  phone?: string;
+  /**
+   * **The letterhead** (`M01-50`) — a spec object, or a node for a caller that owns the markup. This
+   * file used to claim it previewed "logo, letterhead, company details and colour" while having no
+   * letterhead input at all; the band and the foot are its authorable parts, so these are the props.
+   */
+  letterhead?: DocumentLetterhead | React.ReactNode;
+  customerName?: string;
+  customerMeta?: string;
+  docTitle?: string;
+  docNumber?: string;
+  docDate?: string;
+  /**
+   * **Which bands to draw, always in document order.** Three settings screens each preview a
+   * different piece of this one document, and each band drawn is the real one:
+   *
+   * - `SCR-M01-18` Branding → `["cover","items"]`
+   * - `SCR-M01-19` Proposal template → `["cover","sections","terms"]`
+   * - `SCR-M01-20` Payment terms → `["tranches"]` (with `fit="content"`)
+   *
+   * Without this, two of the three would have faked their preview with `[description, amount]` line
+   * items — a schedule pretending to be a price list.
+   */
+  parts?: ("cover" | "items" | "sections" | "tranches" | "terms")[];
+  /**
+   * `[description, amount]` pairs. Amounts are **numbers**, formatted by the active market pack
+   * (`F1` / `F3-20`); a string passes through untouched for a caller that owns the text.
+   */
+  lineItems?: [string, number | string][];
+  /**
+   * **An assertion, not the printed figure.** The total printed is the **sum of `lineItems`** — the
+   * band runs through `money-lines.js`, the same module `MoneySummary` and `DataTable.totalRow` read.
+   * Pass this only to have it reconciled: a disagreement warns and the computed sum is what prints
+   * (`SCR-M06-14` — a disagreement is a defect, not a display difference). Omit it in normal use.
+   */
+  total?: number | string;
+  /** Deducted under the total; the payable in the subsidy line is **computed** from it, never stated. */
+  subsidyAmount?: number;
+  subsidyLabel?: string;
+  /** Overrides the whole generated subsidy sentence — including its computed payable. */
+  subsidyNote?: string;
+  /** `SCR-M01-19`'s included-sections list. `included: false` entries are left out, as the print would. */
+  sections?: ({ label: string; included?: boolean; meta?: string } | string)[];
+  sectionsTitle?: string;
+  /**
+   * `SCR-M01-19`'s default T&C body — a `RichText` value, rendered through `RichTextView`, the one
+   * read-only renderer. The document and the customer link page therefore cannot render the same
+   * marks differently (`M06-51`).
+   */
+  terms?: RichTextValue;
+  termsTitle?: string;
+  /** `SCR-M01-20`'s tranche schedule. */
+  tranches?: DocumentTranche[];
+  tranchesTitle?: string;
+  /** `a4` keeps the sheet's proportion (default). `content` hugs the bands drawn — a one-band preview. */
+  fit?: "a4" | "content";
+  /** Rendered width in px for standalone use. **Inside a `PreviewFrame`, the frame scales it.** */
+  width?: number;
+  /** Set to "" to drop the caption — do that inside a `PreviewFrame`, which carries its own. */
+  caption?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The customer-facing document, drawn with the tenant's brand — the subject a settings screen's
+ * `PreviewFrame` hosts.
+ *
+ * Separate from `BrandColorField` on purpose: it previews all of `M01-50` — logo, **letterhead**,
+ * company details *and* colour.
+ *
+ * It is **one of the two surfaces `F7-07` brands**, not the boundary of tenant branding. The other
+ * is the customer-link page, which is a live page of ordinary components scoped by
+ * `CustomerSurface`. What both have in common is that the operator application is never restyled.
+ *
+ * **Framing is not its job.** `width` still works standalone, but the scaling, cropping, caption and
+ * non-interactive guarantee of a preview belong to `PreviewFrame` — one rule for every settings
+ * screen. Pass `caption=""` inside one.
+ *
+ * It shares `color-contrast.js` with the colour field, so the two never disagree about which text
+ * colour the header takes — and when a colour can't carry text, it previews the honest
+ * consequence (white header, brand rule) instead of a flattering mock.
+ */
+export function DocumentPreview(props: DocumentPreviewProps): JSX.Element;
+
+export namespace DocumentPreview {
+  /** True when this colour forces the white-header consequence — for a frame's `note`. */
+  function bandFails(brandColor: string): boolean;
+}

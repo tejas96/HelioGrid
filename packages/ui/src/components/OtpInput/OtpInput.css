@@ -1,0 +1,58 @@
+/* OtpInput — the login / verification code field. Separate boxes, mono digits, large enough to
+   hit with a thumb on a roof. 48x56 is the drawn size; 44 is the floor the target may never
+   cross (Pressable's law, applied here to a text box that cannot BE a Pressable). */
+
+.hg-otp-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-2);
+}
+
+.hg-otp-boxes {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.hg-otp-box {
+  width: 48px;
+  height: 56px;
+  min-width: 44px;
+  text-align: center;
+  border: none;
+  outline: none;
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  caret-color: var(--accent);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-otp-box:disabled {
+  background: var(--canvas-sunken);
+}
+
+.hg-otp-box:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* The danger ring survives focus — an unverified code is still unverified while you retype it. */
+.hg-otp-box[data-error="true"],
+.hg-otp-box[data-error="true"]:focus {
+  box-shadow: 0 0 0 2px var(--danger);
+}
+
+.hg-otp-message {
+  margin: var(--sp-2) 2px 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-otp-message[data-error="true"] {
+  color: var(--danger-text);
+}

@@ -1,0 +1,70 @@
+/* Checkbox — 20px box, 6px radius. Unchecked = --surface + e1, checked = accent fill + a white
+   tick. The visible box is 20px and the TARGET is 44: two rectangles, the FilterBar rule. The
+   <label> is the hit box, because the real control is the visually hidden input. */
+
+.hg-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  gap: var(--sp-2);
+  cursor: pointer;
+}
+
+/* A labelled box starts at the left edge; a bare one centres itself in its target. */
+.hg-checkbox[data-labelled="true"] {
+  justify-content: flex-start;
+}
+
+.hg-checkbox[data-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.hg-checkbox-box {
+  width: var(--sp-5);
+  height: var(--sp-5);
+  border-radius: var(--rf-sm);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  box-shadow: var(--e1);
+  color: var(--text-inverse);
+  transition: background var(--dur-micro) var(--ease-standard);
+}
+
+.hg-checkbox[data-checked="true"] .hg-checkbox-box {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.hg-checkbox[data-disabled="true"] .hg-checkbox-box {
+  background: var(--canvas-sunken);
+  box-shadow: none;
+  color: var(--text-disabled);
+}
+
+/* The real control: visually hidden, still focusable, still the thing the label points at. */
+.hg-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.hg-checkbox:has(.hg-checkbox-input:focus-visible) .hg-checkbox-box {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-checkbox-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+
+.hg-checkbox[data-disabled="true"] .hg-checkbox-label {
+  color: var(--text-disabled);
+}

@@ -1,0 +1,119 @@
+/* Text — the DS type scale. Values are typography tokens only. 12px is the floor;
+   overline (11px/700/uppercase/0.12em) is the one sanctioned exception. */
+
+.hg-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+}
+
+.hg-text[data-variant="display"] {
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  font-weight: var(--fw-bold);
+}
+
+.hg-text[data-variant="h1"] {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  font-weight: var(--fw-bold);
+}
+
+.hg-text[data-variant="h2"] {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+  font-weight: var(--fw-bold);
+}
+
+.hg-text[data-variant="h3"] {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  font-weight: var(--fw-bold);
+}
+
+.hg-text[data-variant="h4"] {
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--tr-h4);
+  font-weight: var(--fw-bold);
+}
+
+.hg-text[data-variant="body-lg"] {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+}
+
+.hg-text[data-variant="body"] {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.hg-text[data-variant="body-sm"] {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-text[data-variant="caption"] {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-text[data-variant="overline"] {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+}
+
+.hg-text[data-variant="mono"] {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-text[data-color="primary"] {
+  color: var(--text-primary);
+}
+.hg-text[data-color="secondary"] {
+  color: var(--text-secondary);
+}
+.hg-text[data-color="tertiary"] {
+  color: var(--text-tertiary);
+}
+.hg-text[data-color="disabled"] {
+  color: var(--text-disabled);
+}
+.hg-text[data-color="inverse"] {
+  color: var(--text-inverse);
+}
+.hg-text[data-color="accent"] {
+  color: var(--accent);
+}
+.hg-text[data-color="success"] {
+  color: var(--success-text);
+}
+.hg-text[data-color="warning"] {
+  color: var(--warning-text);
+}
+.hg-text[data-color="danger"] {
+  color: var(--danger-text);
+}
+.hg-text[data-color="info"] {
+  color: var(--info-text);
+}
+
+.hg-text[data-align="start"] {
+  text-align: start;
+}
+.hg-text[data-align="center"] {
+  text-align: center;
+}
+.hg-text[data-align="end"] {
+  text-align: end;
+}

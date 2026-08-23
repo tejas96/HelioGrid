@@ -16,11 +16,21 @@
     "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
 
     // build.ts is RUN by the package build script (tsx), never imported; src/index.ts is the
-    // package entry. src/_generated is data (css/json), outside the project glob.
+    // package entry. src/_generated is data (css/json, plus the DS typings as .d.ts.txt —
+    // see that folder's README for why the contracts carry a .txt suffix), so the whole
+    // folder sits outside the `src/**/*.ts` project glob and needs no exclusion here.
     "packages/theme": { "entry": ["build.ts", "src/index.ts"], "project": "src/**/*.ts" },
 
-    // packages/ui gets its entry here when it lands
-    // (docs/17-ui-architecture-v2.md §5). The v1 entries were deleted with the v1 packages.
+    // ONE package, both platforms (docs/17 §2). src/index.ts is inferred from the manifest;
+    // the .native.tsx halves are extra ENTRIES because Metro substitutes them for the .tsx
+    // halves at bundle time, so from the web entry alone knip would call them dead files.
+    // react-dom is an optional peer the WEB half references (Portal.tsx createPortal);
+    // Metro never resolves that file, which is exactly why the peer is optional.
+    "packages/ui": {
+      "entry": ["src/**/*.native.tsx"],
+      "project": "src/**/*.{ts,tsx}",
+      "ignoreDependencies": ["react-dom"]
+    },
 
     // `features/**` stays listed though the folder is currently EMPTY: it was missing until
     // 2026-08-02 and knip then saw roughly a tenth of this app, reporting four live

@@ -1,0 +1,108 @@
+import React from "react";
+
+/* THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
+
+   All four parts appear unchanged on a 375px phone, so every one clears 44×44 — but a 44px-tall
+   pill turns a dense desktop filter row into a toolbar of buttons. So each control's <button> is
+   44px (the target) and the pill drawn inside it keeps its own height: scope 36, chips 34, sort 32,
+   filters 36. The difference is transparent padding owned by the target.
+
+   This is expressed once, in the component, rather than left to twenty records screens to
+   remember. Callers get the floor for free and cannot opt out of it. */
+
+export type FilterOption = string | { value: string; label: string };
+
+export interface ScopeToggleProps {
+  options: FilterOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  style?: React.CSSProperties;
+}
+/** Two-or-three-way scope switch ("My leads" / "All"). Active = near-black 36px pill in a 44px target. */
+export function ScopeToggle(props: ScopeToggleProps): JSX.Element;
+
+export interface FilterChipsProps {
+  options: FilterOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  /** Optional count per option key, shown inside the chip. */
+  counts?: Record<string, number>;
+  /** Horizontal scroll for the phone row. */
+  scroll?: boolean;
+  /**
+   * **The tablist's accessible name** — "Stage", "Outcome". A tablist with no name is what Kanban's
+   * phone form was until now, on the one form where the strip *is* the navigation. Its sibling
+   * `FacetChips` has always taken this.
+   */
+  label?: string;
+  /** Id of a name already visible on the screen — preferred over `label` whenever one exists (Kanban
+      points this at its own visible overline, so one string does both jobs). */
+  labelledBy?: string;
+  style?: React.CSSProperties;
+}
+/**
+ * Stage chips (All / New / Contacted / Qualified …). Active = accent fill; 34px pill in a 44px target.
+ *
+ * **One-of-N by construction.** `role="tablist"` + `aria-selected`, and its arrow keys change the
+ * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension
+ * that holds **several** values takes `FacetChips`; this component cannot express a set without
+ * lying to a screen reader about it.
+ */
+export function FilterChips(props: FilterChipsProps): JSX.Element;
+
+export interface FacetChipsProps {
+  options: FilterOption[];
+  /** Every selected value. A set, not a value. */
+  values?: string[];
+  onChange?: (values: string[]) => void;
+  counts?: Record<string, number>;
+  /** Accessible name for the group — "Certification scheme", "Outcome". */
+  label?: string;
+  /** Single scrolling row instead of wrapping. */
+  scroll?: boolean;
+  style?: React.CSSProperties;
+}
+/**
+ * **Multi-select chips — how a dimension holds several values** (`M01-38`'s certification schemes,
+ * `M07-57`'s ten outcomes and six languages). Selected chips take the accent fill *and a tick*, so
+ * a set is readable without hue. 34px pill in a 44px target, like every other part here.
+ *
+ * **The keyboard differs from `FilterChips` deliberately:** `role="group"` with `aria-pressed`,
+ * arrows move focus and change nothing, Space/Enter toggles. In a set, moving and choosing are
+ * different acts — an arrow that toggled would make the fourth chip unreachable without selecting
+ * the second and third on the way.
+ */
+export function FacetChips(props: FacetChipsProps): JSX.Element;
+
+export interface SortPillsProps {
+  options: FilterOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  label?: string;
+  style?: React.CSSProperties;
+}
+/** "Sort" label + inline pills. Active = accent fill; 32px pill in a 44px target. */
+export function SortPills(props: SortPillsProps): JSX.Element;
+
+export interface FiltersButtonProps {
+  onClick?: () => void;
+  /** Number of active filters — shown as an accent counter. */
+  count?: number;
+  label?: string;
+  style?: React.CSSProperties;
+}
+/**
+ * White pill that opens the filter body — `FilterPanel`, **at every width**. Not a phone
+ * affordance: on desktop the same body opens as a side panel, because a six-dimension set has no
+ * room in a toolbar row at either size (`F7-31`). 36px pill in a 44px target.
+ *
+ * Feed `count` from `FilterSet.countActive(dimensions, value)` so the counter and the body can
+ * never disagree.
+ */
+export function FiltersButton(props: FiltersButtonProps): JSX.Element;
+
+/** All filter controls as one namespace object. */
+export const FilterBar: {
+  ScopeToggle: typeof ScopeToggle; FilterChips: typeof FilterChips; FacetChips: typeof FacetChips;
+  SortPills: typeof SortPills; FiltersButton: typeof FiltersButton;
+};

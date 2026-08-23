@@ -1,0 +1,123 @@
+import React from "react";
+import { SheetProps } from "./Sheet";
+import { DetailPanelProps } from "./DetailPanel";
+import { ModalProps } from "./Modal";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+/**
+ * `F7-21`'s **one sheet grammar**, performed rather than described: *"a sheet on mobile, a side
+ * panel on desktop — sheets, not pages."*
+ *
+ * `Sheet` and `DetailPanel` had matching props, but prop parity is not the law — the law is the
+ * **switch**, and nothing performed it. Every editor in the product mounts this instead of picking
+ * a form: the dedupe sheet, the assign picker, the disqualify sheet, the book-visit sheet, the
+ * set-blocker sheet, the record-payment sheet, the catalog editor and the studio inspectors.
+ *
+ * **A decision takes the same switch with a different desktop form** — `desktop="modal"` renders a
+ * centred `Modal` above the breakpoint and the same `Sheet` below it, because nothing is being browsed
+ * beside a confirm. That is the route for the cancel confirm, the waive dialog, the reversal confirm and
+ * the typed denial; mount `Modal` directly only where you own the switch yourself.
+ *
+ * **The measurement is the width of the layer the editor mounts into, never `window.innerWidth`** —
+ * a zero-height probe in the overlay's own coordinate space (fixed, or absolute under `inset`). So
+ * a 375px device frame on a 1440px desktop gets the sheet, and the rule reads like the rest of the
+ * system: own width, not viewport. Before the first measurement nothing renders, so the editor is
+ * never drawn in the wrong form and swapped.
+ */
+export interface EditorSurfaceProps {
+  open?: boolean;
+  onClose?: () => void;
+  /** Layer width (px) at or above which the editor is a side panel. Below it, a bottom sheet. Default 720. */
+  panelAbove?: number;
+  title?: string;
+  subtitle?: string;
+  overline?: string;
+  /**
+   * The editor's content. A function child receives `{panel, layerWidth}` for content that has to
+   * arrange itself around the answer — not to redraw the frame, which is this component's job.
+   */
+  children?: React.ReactNode | ((ctx: { panel: boolean; layerWidth: number }) => React.ReactNode);
+  footer?: React.ReactNode;
+  /**
+   * **The non-modal variant** (`modal={false}`) — required by `MS2-31`, `MS3-27`, `MS3-30` and
+   * `MS6-19`, where `Slider`'s live `onInput` repaints geometry *behind* the editor. It moves three
+   * things together, because they are one decision:
+   *
+   * - **No backdrop at all** — not a lighter one. The layer behind stays sharp, un-faded and
+   *   interactive; separation comes from `e5` and the canvas gap, as it does for every other
+   *   floating surface here.
+   * - **No focus trap** — focus still moves in on open and is restored on close, but Tab reaches
+   *   the page, because the page is part of the same task. `role="dialog"` with no `aria-modal`.
+   * - **No scroll lock** — only the editor's body scrolls.
+   *
+   * Esc closes either variant. A non-modal editor may **never** be a decision that must be
+   * answered: destructive confirms, waivers, reversals and typed denials stay modal, because there
+   * is no correct behaviour for "cancel this job?" while the job is clickable behind it.
+   */
+  modal?: boolean;
+  /**
+   * The **desktop** form. `"panel"` (default) is an edge `DetailPanel` — the editor case, where the
+   * record or canvas beside it stays in view. `"modal"` is a centred `Modal` — the decision case (cancel
+   * confirm, waive, reversal, typed denial), where nothing is being browsed alongside. The mobile half is
+   * the same `Sheet` either way: `F7-21`'s phone answer does not change.
+   *
+   * `modal={false}` is not honoured under `desktop="modal"` — a decision that must be answered cannot
+   * have a live page behind it.
+   */
+  desktop?: "panel" | "modal";
+  side?: "right" | "left";
+  /** Panel width in px when it is a panel. */
+  width?: number;
+  /** Sheet height when it is a sheet. A non-modal sheet defaults to `half` so its subject stays visible. */
+  size?: SheetProps["size"];
+  density?: "expressive" | "functional";
+  /**
+   * The system's five (`SurfaceState`), passed straight to whichever form is rendering. An editor
+   * is a surface: `unavailable` is the record no market pack covers — neutral, no retry — and it is
+   * not `error`, which offers one (law 1).
+   */
+  state?: SurfaceState;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  emptyAction?: React.ReactNode;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  unavailableAction?: React.ReactNode;
+  showClose?: boolean;
+  dismissible?: boolean;
+  /** Panel-only header extras (a panel has room for them; a sheet header does not). */
+  leading?: React.ReactNode;
+  meta?: React.ReactNode;
+  /** Position inside the nearest positioned ancestor — device frames, specimen cards. The probe follows. */
+  inset?: boolean;
+  zIndex?: number;
+  /** Escape hatches for props only one of the three forms has. `modalProps` carries `Modal`'s own
+      chrome — `tone`, `icon`, `size` — for a decision. */
+  sheetProps?: Partial<SheetProps>;
+  panelProps?: Partial<DetailPanelProps>;
+  modalProps?: Partial<ModalProps>;
+  style?: React.CSSProperties;
+}
+
+export function EditorSurface(props: EditorSurfaceProps): JSX.Element | null;
+
+/**
+ * The switch alone, for a surface that arranges its own content around the answer (a filter body
+ * that wants two columns in a panel and one in a sheet). Spread `probeStyle` on a zero-height
+ * `<div ref={ref}>` in the layer being measured; `panel` is `null` until the first measurement.
+ */
+export function useEditorForm(opts?: { panelAbove?: number; inset?: boolean }): {
+  ref: React.RefObject<HTMLDivElement>;
+  layerWidth: number | null;
+  panel: boolean | null;
+  probeStyle: React.CSSProperties;
+};
+
+export namespace EditorSurface {
+  /** `SheetActions` under the family name — the footer row, stacking below 320px of its own width. */
+  const Actions: typeof import("./Sheet").SheetActions;
+  const useEditorForm: typeof useEditorForm;
+}

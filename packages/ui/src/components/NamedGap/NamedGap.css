@@ -1,0 +1,83 @@
+/* NamedGap — AN ABSENT VALUE, RENDERED HONESTLY, AT THE SCALE OF THE VALUE IT REPLACES.
+
+   THE WORDS ARE READ, so they take --text-secondary and never --text-disabled, which by the
+   contrast law never carries a word a user must read. The hollow ring is the second, non-colour
+   channel: it says "a value belongs here and is missing" without being a dash.
+
+   The 6/7/9px ring and gap values have no step on the 4px spacing scale — they are the design
+   system's own sub-step sizing for a mark that must not outweigh the sentence beside it. */
+
+.hg-named-gap {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-named-gap[data-scale="headline"] {
+  gap: 7px;
+  font-size: var(--fs-body);
+}
+
+.hg-named-gap[data-scale="field"],
+.hg-named-gap[data-scale="cell"] {
+  gap: 6px;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-named-gap[data-align="left"] {
+  justify-content: flex-start;
+}
+
+.hg-named-gap[data-align="center"] {
+  justify-content: center;
+}
+
+.hg-named-gap[data-align="right"] {
+  justify-content: flex-end;
+}
+
+.hg-named-gap-ring {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
+}
+
+.hg-named-gap[data-scale="headline"] .hg-named-gap-ring {
+  width: 9px;
+  height: 9px;
+}
+
+.hg-named-gap[data-scale="field"] .hg-named-gap-ring {
+  width: var(--sp-2);
+  height: var(--sp-2);
+}
+
+.hg-named-gap[data-scale="cell"] .hg-named-gap-ring {
+  width: 7px;
+  height: 7px;
+}
+
+.hg-named-gap-words {
+  min-width: 0;
+}
+
+/* The act that fills the gap. Never required — M02-03 forbids inventing the value, not asking
+   for it. The negative margin pulls the 44px target back flush with the sentence. */
+.hg-named-gap-fill {
+  min-width: 0;
+  padding: 0 10px;
+  margin: 0 -10px;
+  border-radius: var(--rf-md);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  white-space: nowrap;
+}

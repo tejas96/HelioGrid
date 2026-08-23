@@ -1,0 +1,61 @@
+import React from "react";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export interface DetailPanelProps {
+  open?: boolean;
+  onClose?: () => void;
+  side?: "right" | "left";
+  /** Panel width in px; caps at 100% of its container. */
+  width?: number;
+  title?: string;
+  /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
+  subtitle?: string;
+  overline?: string;
+  /** Leading node in the header, usually an IconCircle or Avatar. */
+  leading?: React.ReactNode;
+  /** Node between header and body — a StatusChip row, provenance marker, etc. */
+  meta?: React.ReactNode;
+  children?: React.ReactNode;
+  density?: "expressive" | "functional";
+  footer?: React.ReactNode;
+  showClose?: boolean;
+  dismissible?: boolean;
+  /**
+   * **Modal by default.** `false` drops backdrop, focus trap and scroll lock together — see
+   * `EditorSurface`. The lock is skipped under `inset` too: an inset panel lives in a specimen card or a
+   * device frame, not in the document.
+   */
+  modal?: boolean;
+  state?: SurfaceState;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  /** `empty` means none **yet** — the words invite, and `emptyAction` makes the first one. */
+  emptyTitle?: string;
+  emptyMessage?: string;
+  emptyAction?: React.ReactNode;
+  /** `unavailable` renders through `UnavailableNote`: neutral, and **no retry, ever**. */
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  unavailableAction?: React.ReactNode;
+  inset?: boolean;
+  zIndex?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Right-edge master-detail drawer (480px default). Same backdrop law as Sheet — blurs the
+ * layer behind and fades it toward white, never a dark scrim. Slides from the edge, e5.
+ *
+ * **An editor mounts `EditorSurface`, not this.** That component performs `F7-21`'s
+ * sheet-on-mobile / panel-on-desktop switch off the layer's own width and renders this as the
+ * desktop half. Mount `DetailPanel` directly for a drawer that is a drawer at every width — the
+ * records master-detail. `modal={false}` drops backdrop, focus trap and scroll lock together.
+ *
+ * **Its states are the system's five** (`SurfaceState`) — the same correction `Sheet` took: a panel
+ * is a surface, so `unavailable` is a state it can be in (neutral, no retry) rather than an error
+ * dressed with a button that cannot change the answer (law 1).
+ */
+export function DetailPanel(props: DetailPanelProps): JSX.Element | null;
+
+export { SheetActions as PanelActions } from "./Sheet";

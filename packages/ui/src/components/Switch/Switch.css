@@ -1,0 +1,101 @@
+/* Switch — 52x32 track, 24px thumb, spring easing. Track --canvas-sunken -> --accent.
+
+   THE TRACK DECLARES --control-edge, and it has to be here rather than in field-mode.css. In field
+   mode an OFF track is #E9ECF0 on a #FFFFFF surface — 1.15:1, invisible in direct sun — and the
+   blanket rule in the token layer cannot reach it: that rule keys on CONTROL semantics (button,
+   [role="button"], [role="tab"]) and this track is a presentational <span>, because the real control
+   is the visually hidden <input role="switch"> beside it. --control-edge is `none` in the base
+   scope, so the declaration costs nothing until the mode is on. Disabled tracks are excluded, the
+   same exclusion the blanket rule makes. */
+
+.hg-switch {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: var(--sp-3);
+  cursor: pointer;
+}
+
+.hg-switch[data-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.hg-switch-track {
+  width: 52px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  position: relative;
+  background: var(--canvas-sunken);
+  box-shadow: var(--control-edge);
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-switch[data-checked="true"] .hg-switch-track {
+  background: var(--accent);
+}
+
+.hg-switch[data-disabled="true"] .hg-switch-track {
+  background: var(--canvas-sunken);
+  box-shadow: none;
+}
+
+.hg-switch[data-error="true"] .hg-switch-track {
+  box-shadow: inset 0 0 0 1.5px var(--danger);
+}
+
+/* The real control is 0x0 and invisible, so the browser's own focus ring lands on nothing. The
+   track borrows it — the one addition to the reference markup, made because a control a keyboard
+   user cannot see focus on is a defect the repo's a11y floor does not allow. */
+.hg-switch-track:has(~ .hg-switch-input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-switch-thumb {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  transition: left var(--dur-standard) var(--ease-spring);
+}
+
+.hg-switch[data-checked="true"] .hg-switch-thumb {
+  left: var(--sp-6);
+}
+
+.hg-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.hg-switch-label {
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+
+.hg-switch[data-disabled="true"] .hg-switch-label {
+  color: var(--text-disabled);
+}
+
+/* With an error the whole thing becomes a column: the sentence sits UNDER the label, never inside
+   the <label>, because a sentence inside it would toggle the switch when tapped. */
+.hg-switch-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+}
+
+.hg-switch-error {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--danger-text);
+  text-wrap: pretty;
+}

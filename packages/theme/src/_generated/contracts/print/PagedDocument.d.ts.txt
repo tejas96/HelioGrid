@@ -1,0 +1,256 @@
+import React from "react";
+import { RichTextMetrics } from "../forms/RichText";
+import { DisclosureKind, DisclosureSpec } from "../feedback/Disclosure";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+export type Paper = "a4" | "letter";
+
+export interface PageGeometry {
+  paper: Paper;
+  orientation: "portrait" | "landscape";
+  /** "A4 · 210 × 297 mm" — printed in a drawing sheet's title block. */
+  label: string;
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  contentW: number;
+  contentH: number;
+  /** Content height less the running head and the foot — what the cut actually fills. */
+  flowH: number;
+}
+
+/** 96dpi paper, matching `tokens/print.css`. Landscape is derived, never a separate entry. */
+export const PAGE_GEOMETRY: Record<Paper, { w: number; h: number; label: string }>;
+
+export function pageGeometry(opts?: {
+  paper?: Paper;
+  orientation?: "portrait" | "landscape";
+  margin?: number | Partial<PageGeometry["margin"]>;
+}): PageGeometry;
+
+export interface DocumentSection<Row = any> {
+  /** Stable id. Used by `disclosuresAfter`, by the cut and by the annotation band. */
+  id: string;
+  /**
+   * The section's content. **Atomic**: it is measured whole and placed whole, which is how a figure
+   * and its provenance label, an image and its caption, and a disclosure are guaranteed not to break
+   * across a page (item 5). A section taller than one page keeps its own sheet and is reported
+   * through `onCut`'s `oversized`.
+   */
+  content?: React.ReactNode;
+  /**
+   * **The one thing that must break** — a 40-line BOM (`SCR-M06-14`). Declare the rows and the engine
+   * cuts *between* them.
+   */
+  rows?: Row[];
+  /**
+   * Renders one chunk of `rows`. `continued` is true on every page after the first, which is how a
+   * table's **caption and header repeat on a continuation page** — the thing `DataTable.caption`
+   * could not do, and done in **both** renderings rather than only in print's `table-header-group`.
+   * `last` is true on the chunk that carries the total, so the total is rendered once, at the end.
+   *
+   * The engine reads per-row heights from the rendered chunk: mark rows `data-flow-row` (a row's own
+   * note line is `data-flow-row-note` and rides with it) and the total `data-flow-foot`. `DataTable`
+   * sets all three; `tbody tr` / `tfoot` are the fallback.
+   */
+  renderRows?: (chunk: Row[], ctx: { continued: boolean; first: boolean; last: boolean; from: number; to: number; count: number }) => React.ReactNode;
+  /**
+   * **The total never lands alone.** If the footer will not fit under the last chunk, rows are pushed
+   * forward so it prints *with* them — never fewer than this many. Default 2.
+   */
+  keepWithLast?: number;
+  /** Starts a fresh sheet — a drawing page, a terms page, an annexure. */
+  startsPage?: boolean;
+  /**
+   * **Conditional pages** (`MS9-25`: the SLD page is *"offered only when a real SLD exists"*).
+   * `false` drops the section **before** packing, so the numbering counts what remains and no page
+   * renders empty.
+   */
+  when?: boolean;
+  /** `both` (default) · `customer` · `internal` — `MS9-04`'s audience variants of the same pages. */
+  audience?: "customer" | "internal" | "both";
+  /**
+   * `SCR-M06-13`'s details that *"save but **will not print**"*. A screen-only section renders in the
+   * **annotation band beside the sheets**, never on one: content that vanishes on paper cannot sit
+   * inside a sheet whose whole claim is that screen and paper are identical.
+   */
+  screenOnly?: boolean;
+  /** The band's own overline — "Internal notes", "Costing workings". */
+  label?: string;
+  /** Adds `data-keep-together` in the web rendering too. */
+  keepTogether?: boolean;
+}
+
+export interface TitleBlockSpec {
+  /**
+   * **The customer-facing project name — never the internal design or variant name** (`MS9-01`).
+   * Absent renders a `NamedGap`; it never falls back to the design's name.
+   */
+  projectName?: string;
+  /** Rendered **only** under `audience="internal"`. A separate prop, so it cannot leak. */
+  internalName?: string;
+  customer?: { name: string; meta?: string };
+  proposalNumber?: string;
+  issueDate?: string | Date;
+  /** Version / revision — "Rev C", "v3". */
+  version?: string;
+  /** The validity period's end. Formatted by the market pack. */
+  validUntil?: string | Date;
+  /** Prepared-by **with company identity**: `{company, lines, person, role}`. */
+  preparedBy?: { company?: string; lines?: string[]; person?: string; role?: string };
+  docTitle?: string;
+}
+
+/** `MS9-01`'s title block. The customer-facing name is a different prop from the internal one. */
+export function TitleBlock(props: TitleBlockSpec & { audience?: "customer" | "internal" }): JSX.Element;
+
+export interface PagedDocumentProps<Row = any> {
+  paper?: Paper;
+  orientation?: "portrait" | "landscape";
+  margin?: number | Partial<PageGeometry["margin"]>;
+  /**
+   * `paged` — real sheets at real paper size. `web` — **the same section list with the cut turned
+   * off** (`F5-39`: *"the customer link always renders the proposal as web — PDF is an artifact,
+   * never the only path to the number"*; `M06-51`: *"the link renders the same content as web"*).
+   * Not a second authored document: one `sections` array, one order, one set of disclosures.
+   */
+  rendering?: "paged" | "web";
+  /** `MS9-04`: **never internal by default** on a customer artefact. Internal stamps every sheet. */
+  audience?: "customer" | "internal";
+  titleBlock?: TitleBlockSpec;
+  sections?: DocumentSection<Row>[];
+  /**
+   * The mandatory lines (`Disclosure`). **A required flow atom, not a section** — there is no prop
+   * that hides it, it cannot be marked `screenOnly`, and it renders in the reading flow at the weight
+   * of the figures it qualifies. Presence is enforced too, not remembered: a document with
+   * `audience="customer"` and no `disclosures` **warns in the console** (`M06-04`, P0).
+   */
+  disclosures?: (DisclosureKind | DisclosureSpec)[];
+  /** Put them after this section id. Default: directly after the title block. */
+  disclosuresAfter?: string;
+  /** The letterhead's foot, on every sheet. */
+  footNote?: React.ReactNode;
+  /** The numbering words. Default `Sheet 3 of 7`. The **count is counted**, never passed in. */
+  numbering?: (sheet: number, sheets: number) => string;
+  /** Accessible name for the document and its sheets. */
+  label?: string;
+  /**
+   * Fires with the **counted** cut: `{sheets, rendering, geometry, audience, oversized}`. This is the
+   * number a `PageEstimate` stops estimating with, and the way a caller reads the page count without
+   * running a second layout pass.
+   */
+  onCut?: (info: {
+    /** The WHOLE document's counted sheets. */
+    sheets: number;
+    rendering: "paged" | "web";
+    geometry: PageGeometry;
+    audience: string;
+    /**
+     * **Per-section spans, 1-based**, keyed by section id: `{from, to, sheets}`. This — not the
+     * document total — is what a section's own `PageEstimate measured={…}` reads: a 3-page terms
+     * section inside an 11-page proposal is 3, and `sheets` would have printed 11.
+     */
+    sections: Record<string, { from: number; to: number; sheets: number }>;
+    /** `sections[id].sheets`, or 0 for a section that was dropped or never placed. */
+    pagesOf: (id: string) => number;
+    oversized: string[];
+  }) => void;
+  state?: SurfaceState;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **The paged document and print surface — one cut, consumed by two renderings.**
+ *
+ * `M06-50` makes the preview *"exactly what the customer will see"* and `SCR-M06-15` requires
+ * *"multi-page pagination — **pixel-for-content identical** to what the customer's rendering will
+ * show"*. Browser fragmentation cannot promise that (the app never learns the page count, so
+ * numbering can only be a CSS counter nothing can read, and a conditional page cannot be counted).
+ * So: **measure once, then emit explicit sheets.** The flow is laid out hidden at the exact content
+ * width, every atom is measured, the atoms are packed, and the result is real `<section>` elements at
+ * real paper size. Print has nothing left to decide — one sheet is one page (`tokens/print.css`) —
+ * and the screen is showing the same elements in the same sheets.
+ *
+ * - **Counted numbering** (`MS9-02`): `sheets.length` *is* the count, so there is no second number to
+ *   disagree with, and an empty trailing sheet cannot exist because a sheet is only created when
+ *   something is placed on it. `tokens/print.css` drops `break-after` on the last sheet, which is the
+ *   other way a trailing blank page appears.
+ * - **Print scoping both ways**: `screenOnly` sections render beside the sheets; `disclosures` are a
+ *   required atom with no off switch — and a customer document that omits them warns — and
+ *   `PrintScope` hoists a `Disclosure` that finds itself inside a suppressed region.
+ * - **The page estimate** stops being a guess: `estimatePages` / `PageEstimate` compute against this
+ *   module's geometry, and `onCut` supplies the counted number.
+ *
+ * @startingPoint section="Print" subtitle="A paged proposal — counted sheets, and the same content as web" viewport="1400x1200"
+ */
+export function PagedDocument<Row = any>(props: PagedDocumentProps<Row>): JSX.Element;
+
+/**
+ * A region that **saves but does not print** (`SCR-M06-13`), or one that only prints.
+ *
+ * And the guard that makes the other direction undefeatable: a `Disclosure` inside a screen-only
+ * region registers itself, and the scope renders it again in a **print-only copy beside the
+ * suppressed block** — because `display:block !important` cannot beat an ancestor's `display:none`,
+ * so the CSS declaration on its own would have left a suppressible mandatory statement.
+ */
+export function PrintScope(props: { only?: "screen" | "print" | "both"; children?: React.ReactNode; style?: React.CSSProperties }): JSX.Element;
+
+export interface PageEstimateResult {
+  /** 0 at zero characters — the editor never prints "≈ 0 pages". */
+  pages: number;
+  lines: number;
+  linesPerPage: number;
+  charsPerLine: number;
+  geometry: PageGeometry;
+  /** The numbers in words — "A4 · 210 × 297 mm · 12pt · 698px column · 42 lines a page". */
+  basis: string;
+}
+
+/**
+ * **What fills `RichText`'s `pageEstimate` seam.** `M06-15`'s readout is *"char count · ≈ PDF page
+ * estimate"*, and the estimate needed a paged surface to be computed against — this one.
+ *
+ * Everything it uses is geometry from `PAGE_GEOMETRY` or a stated assumption:
+ * lines a page = `floor((content height − head − foot) / (font size × line height))`;
+ * chars a line = `floor(content width / (font size × mean advance))`, the mean advance being the one
+ * figure measured from type rather than derived from geometry; lines needed = the wrapped character
+ * count or one line per block and list item, whichever is larger, plus a block gap per block, extra
+ * leading per heading and the logo's own footprint. `basis` returns those numbers so a reader can
+ * check the estimate instead of trusting it.
+ */
+export function estimatePages(metrics?: RichTextMetrics, opts?: {
+  paper?: Paper; orientation?: "portrait" | "landscape"; margin?: number | Partial<PageGeometry["margin"]>;
+  /** The band's own column, when it is narrower than the page — a terms band inside a document. */
+  contentWidth?: number;
+  fontSize?: number; lineHeight?: number;
+  /** Height taken by the surrounding document furniture. Defaults to the head + foot. */
+  reserve?: number;
+  advance?: number;
+}): PageEstimateResult;
+
+/**
+ * The node for `RichText`'s `pageEstimate` slot. Renders **nothing** at zero characters, prints
+ * `≈ 2 pages` while it is an estimate, and drops the `≈` when `measured` supplies the counted number
+ * — a counted page is not an estimate. Take that number from `onCut`'s **`pagesOf(sectionId)`**, not
+ * from `sheets`: the estimate is about one section, and `sheets` is the whole document. `max` states
+ * the cap in words: "≈ 4 pages · 1 over the 3-page limit" (`M06-15` allows up to 3).
+ */
+export function PageEstimate(props: {
+  metrics?: RichTextMetrics; measured?: number; max?: number;
+  paper?: Paper; orientation?: "portrait" | "landscape"; contentWidth?: number;
+  fontSize?: number; lineHeight?: number; reserve?: number; advance?: number;
+  style?: React.CSSProperties;
+}): JSX.Element | null;
+
+export namespace PagedDocument {
+  const geometry: typeof pageGeometry;
+  const estimate: typeof estimatePages;
+  const PageEstimate: typeof PageEstimate;
+  const TitleBlock: typeof TitleBlock;
+  const PrintScope: typeof PrintScope;
+}

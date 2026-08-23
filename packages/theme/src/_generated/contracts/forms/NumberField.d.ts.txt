@@ -1,0 +1,114 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "../data/Provenance";
+import { FieldOverrideSpec } from "../data/FieldOverride";
+import { ValueSourceSpec, ValueSourceLevel } from "../data/ValueSource";
+
+export interface NumberFieldProps {
+  value?: number;
+  /** Fires once, on blur or Enter. Never per keystroke. */
+  onCommit?: (value: number) => void;
+  min?: number;
+  max?: number;
+  /** The nudge size. Meaningless with `steppers={false}`, which is money's default. */
+  step?: number;
+  /** Decimal places applied on commit. */
+  precision?: number;
+  label?: string;
+  unit?: string;
+  hint?: string;
+  disabled?: boolean;
+  density?: "expressive" | "functional";
+  /** Overrides the generated "Rounded up to the 0.3 m minimum." correction line. */
+  correctionMessage?: string;
+  /**
+   * **The caller's validation failure — this field is why the gate refused.** Danger ring, danger
+   * words under the field, `aria-invalid`, and it survives focus: the component never sets or clears
+   * it, because a gate's verdict is only revised by re-running the gate.
+   *
+   * **Not a correction and not a refusal.** `correctionMessage` is what the field *did* with your
+   * input ("Rounded up to the 0.3 m minimum"); `outOfRange="refuse"` is what it *refused* to do with
+   * it. Both are the component talking about an act that just happened, and both are announced
+   * (`role="status"` / `role="alert"`). An `error` is about a value that may be **perfectly typeable
+   * and still be the reason Generate would not run**, so it is *described* rather than announced — it
+   * was already true when the jump landed on the field.
+   *
+   * This is the highlight `M06-22` (P0) requires: with the Next-disabled rule killed, validation
+   * happens once at Generate and *"tapping a failure opens the exact step, with the failing fields
+   * highlighted"* (`SCR-M06-05`). Precedence in the message slot: refusal → error → correction → hint.
+   */
+  error?: React.ReactNode;
+  /**
+   * Display the amount in the active market's currency and grouping (F1 / F3-20). The field is
+   * EDITED as a plain number and the committed value is always a number — formatting never leaks
+   * into it. **The pack's symbol is a leading (or trailing) adornment inside the box**, present at
+   * rest and while typing, because an amount reads as its market's money the whole time it is being
+   * entered. `unit` stays the suffix for "m" and "kWp" and is ignored here.
+   *
+   * It also **defaults `steppers` to false**: a payment is not arrived at by pressing +.
+   */
+  currency?: boolean;
+  /**
+   * **What happens to a value outside `min`/`max`.**
+   *
+   * `clamp` (default) — the dimension behaviour: the nearest legal value is committed and the field
+   * says so rather than snapping silently. Right for a measurement, where the bound obviously is
+   * what the user meant.
+   *
+   * `refuse` — **nothing is committed.** The last good value is restored, the constraint is stated in
+   * place in danger words, and `refusalPath` names the honest route. This is `SCR-M11-03`'s
+   * `Amount-non-positive-refused`, and it is the pattern `TimeField` already owns — *"refused with
+   * the window named, never clamped"* — applied to money rather than a new idea. The difference
+   * matters because of what an amount is: a **record of something that happened**, so a clamp writes
+   * a figure the person did not type into a ledger, and `M11-42`'s whole point is that the ledger
+   * says what actually occurred.
+   */
+  outOfRange?: "clamp" | "refuse";
+  /** Replaces the whole generated refusal sentence, constraint included. */
+  refusalMessage?: React.ReactNode;
+  /**
+   * **The honest path, named after the constraint** — the caller's words, because only they know the
+   * domain route: *"A wrong amount is recorded and then reversed, never edited."* The component owns
+   * the constraint clause and stops there.
+   */
+  refusalPath?: React.ReactNode;
+  /**
+   * The +/− buttons and the ArrowUp/ArrowDown nudge. Defaults to `!currency`: **`step` and stepper
+   * buttons are a dimension's grammar**, and nobody arrives at a received payment by pressing +
+   * eleven times. With them off the amount right-aligns, like every other figure in the product.
+   */
+  steppers?: boolean;
+  /**
+   * The provenance of a pre-filled value (MS1-01) — "from survey, 12 Mar", or the estimated tier on
+   * SCR-M01-16's engine-extracted specifications. Renders directly under the field, above the hint.
+   */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  /**
+   * A person replaced a derived default (`M05-72`, `MS10-13`, `M05-65`). One treatment, rendered by
+   * `FieldOverride`: the marker, the superseded value, the reset — in that order, **directly under
+   * the field and above its provenance line**, which is a different axis and keeps its own slot.
+   */
+  override?: FieldOverrideSpec | React.ReactNode;
+  /**
+   * **Which layer supplied this value** (`SCR-M01-15`) — rendered by `ValueSource` in the same place the
+   * override line uses. **Mutually exclusive with `override`, and the field enforces it:** an overridden
+   * value's own line already says "yours, not the layer's", and two markers under one number make the
+   * reader work out which is speaking.
+   */
+  attribution?: ValueSourceSpec | ValueSourceLevel | React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Number entry. Commits once on blur or Enter; empty or invalid never commits (the last good value
+ * is restored). Escape cancels the edit.
+ *
+ * **Out-of-range has two behaviours and the caller picks one.** `outOfRange="clamp"` (default) is the
+ * dimension answer — the nearest legal value is committed and the field says so rather than snapping
+ * silently. `outOfRange="refuse"` is the money answer (`SCR-M11-03`): nothing is committed, the
+ * constraint is stated in place, and `refusalPath` names the reversal. Same rule `TimeField` applies
+ * to a calling window.
+ *
+ * **Money mode is `currency` plus `outOfRange="refuse"`**, and it also drops the steppers and puts
+ * the pack's symbol on the field.
+ */
+export function NumberField(props: NumberFieldProps): JSX.Element;

@@ -1,0 +1,107 @@
+/* Input — BORDERLESS. No border ever: --e1 at rest, a 2px accent focus ring, and an inset 1.5px
+   semantic ring for error/success. Hierarchy is luminance and elevation, never an outline.
+
+   The control stretches to the shell's full height rather than sitting as a centred 21px line:
+   the field LOOKS 44–52px tall and the tap has to land anywhere inside it. */
+
+.hg-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-input-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-input-shell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px; /* the product's touch floor */
+  padding: 0 var(--sp-4);
+  background: var(--surface);
+  border-radius: var(--r-input-expressive);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-input-shell[data-density="expressive"] {
+  height: 52px;
+}
+
+.hg-input-shell[data-density="functional"] {
+  height: var(--sp-10);
+  background: var(--surface-alt);
+  border-radius: var(--r-input-functional);
+}
+
+.hg-input-shell[data-ring="error"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--danger),
+    var(--e1);
+}
+
+.hg-input-shell[data-ring="success"] {
+  box-shadow:
+    inset 0 0 0 1.5px var(--success),
+    var(--e1);
+}
+
+/* Focus wins over every ring, and it is a RING — no border ever appears. */
+.hg-input-shell[data-focus="true"] {
+  box-shadow:
+    var(--e2),
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--accent);
+}
+
+.hg-input-shell[data-disabled="true"] {
+  background: var(--canvas-sunken);
+  box-shadow: none;
+}
+
+.hg-input-control {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* IDs, readings, coordinates, invoice numbers. */
+.hg-input-control[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-input-control:disabled {
+  color: var(--text-disabled);
+}
+
+.hg-input-control::placeholder {
+  color: var(--text-tertiary);
+}
+
+.hg-input-error,
+.hg-input-helper {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-input-error {
+  color: var(--danger-text);
+}
+
+.hg-input-helper {
+  color: var(--text-tertiary);
+}

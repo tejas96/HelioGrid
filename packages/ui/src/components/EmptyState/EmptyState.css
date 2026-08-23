@@ -1,0 +1,68 @@
+/* EmptyState — centred empty/error state. A soft brand bloom behind a circular icon, a
+   headline, an encouraging description and one primary action. Never leave a screen blank.
+
+   The bloom is --glow-brand: iridescence as atmosphere, never as information. The icon well
+   is a --surface disc at --e2, so the art reads as a card floating on the page rather than a
+   drawn badge. The 180px bloom and the 72px well are off the 4px scale on purpose — they are
+   art dimensions, not layout, and the scale has no step for either. */
+
+.hg-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--sp-12) var(--sp-6);
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+}
+
+.hg-empty-state-art {
+  position: relative;
+  margin-bottom: var(--sp-3);
+  display: grid;
+  place-items: center;
+}
+
+.hg-empty-state-glow {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: var(--glow-brand);
+  border-radius: var(--r-pill);
+  pointer-events: none;
+}
+
+.hg-empty-state-icon {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  box-shadow: var(--e2);
+  color: var(--text-tertiary);
+}
+
+.hg-empty-state-title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h3);
+  color: var(--text-primary);
+}
+
+.hg-empty-state-description {
+  margin: 0;
+  max-width: 320px;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-empty-state-action {
+  margin-top: var(--sp-4);
+}

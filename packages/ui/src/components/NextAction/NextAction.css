@@ -1,0 +1,205 @@
+/* NextAction — the "what happens next" cell that carries a records list. A muted semantic dot plus
+   plain text; OVERDUE IS THE ONLY CASE THAT GOES RED, so red keeps meaning something.
+
+   RecordCard is the phone form of a table row, and THE ROW TARGET IS A SIBLING, NOT AN ANCESTOR:
+   an absolutely-positioned button sits UNDER the content, the content sits above it with
+   pointer-events:none, re-enabled on the three slots that can hold controls (chip, marks, action).
+   As a role="button" wrapper a real "Call" button there was invalid nesting, unreachable as a
+   separate control, and one tap fired both. */
+
+.hg-next-action {
+  display: inline-flex;
+  min-width: 0;
+  font-size: var(--hg-next-action-size);
+}
+
+.hg-next-action[data-stacked="true"] {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+}
+
+.hg-next-action-line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-next-action-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+}
+
+.hg-next-action[data-tone="due"] .hg-next-action-dot {
+  background: var(--success-text);
+}
+.hg-next-action[data-tone="overdue"] .hg-next-action-dot {
+  background: var(--danger-text);
+}
+/* EVERY WARNING MARK TAKES --warning-text: --warning itself clears no contrast floor. */
+.hg-next-action[data-tone="soon"] .hg-next-action-dot {
+  background: var(--warning-text);
+}
+.hg-next-action[data-tone="scheduled"] .hg-next-action-dot {
+  background: var(--accent);
+}
+.hg-next-action[data-tone="snoozed"] .hg-next-action-dot,
+.hg-next-action[data-tone="done"] .hg-next-action-dot {
+  background: var(--text-tertiary);
+}
+
+.hg-next-action-words {
+  font-size: var(--hg-next-action-size);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-next-action[data-text="overdue"] .hg-next-action-words {
+  color: var(--danger-text);
+}
+
+.hg-next-action[data-text="quiet"] .hg-next-action-words {
+  color: var(--text-tertiary);
+}
+
+/* The origin sits under the task, indented to the WORDS rather than to the dot. */
+.hg-next-action-origin,
+.hg-next-action-correction {
+  padding-left: 14px;
+}
+
+/* ── RecordCard ───────────────────────────────────────────────────────────── */
+
+.hg-record-card {
+  position: relative;
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  min-height: 44px;
+  padding: var(--sp-4);
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e2);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-record-card[data-density="functional"] {
+  padding: var(--sp-3);
+  border-radius: var(--r-card-functional);
+}
+
+/* `muted` is PARKED, and it is not the pending treatment: a card that dims while it waits reads
+   as done-and-inactive. */
+.hg-record-card[data-muted="true"] {
+  opacity: 0.6;
+}
+
+.hg-record-card[data-clickable="true"]:hover,
+.hg-record-card[data-clickable="true"]:focus-within {
+  box-shadow: var(--e3);
+  transform: translateY(-1px);
+}
+
+/* The row itself. A SIBLING of the content, so anything in a slot can be a real control. */
+.hg-record-card-target {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.hg-record-card-avatar {
+  position: relative;
+  pointer-events: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--hg-record-avatar-tone) 10%, transparent);
+  color: var(--hg-record-avatar-tone);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.02em;
+}
+
+.hg-record-card-body {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-record-card-body[data-inert="true"] {
+  pointer-events: none;
+}
+
+.hg-record-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hg-record-card-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* The three slots that can hold controls take their events back. */
+.hg-record-card-chip,
+.hg-record-card-marks,
+.hg-record-card-pending,
+.hg-record-card-action {
+  pointer-events: auto;
+}
+
+.hg-record-card-marks {
+  margin-top: 6px;
+}
+
+.hg-record-card-meta {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* The middot is a MARK, not a word: --mark-subtle sits on WCAG's 3:1 non-text floor — quieter
+   than the values it separates, and never --text-disabled, which nobody needs to read. */
+.hg-record-card-meta-sep {
+  color: var(--mark-subtle);
+}
+
+.hg-record-card-provenance {
+  margin-top: 6px;
+}
+
+.hg-record-card-pending,
+.hg-record-card-action {
+  margin-top: var(--sp-2);
+}
+
+.hg-record-card-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}

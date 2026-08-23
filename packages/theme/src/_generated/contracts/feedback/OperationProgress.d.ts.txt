@@ -1,0 +1,79 @@
+import React from "react";
+
+export interface OperationStage {
+  label: string;
+  /** `done` · `active` · `waiting`. Defaults to `active` for the first stage, `waiting` after. */
+  state?: "done" | "active" | "waiting";
+}
+
+/**
+ * **What a cancel actually stops.** Required alongside `onCancel`, and an omitted one renders no
+ * cancel at all (plus a console warning) — the same shape as `UsageMeter`'s *no denominator without
+ * a rate*. `importing-progress` states that *"a connection drop mid-import continues server-side"*,
+ * so a button labelled "Cancel" on an import is a lie about a 400-row write.
+ */
+export type CancelEffect = "stops-the-work" | "stops-watching";
+
+export interface OperationProgressProps {
+  /** The work, named. "Computing solar access", "Importing leads — Nashik list.csv". */
+  label: React.ReactNode;
+  /**
+   * 0–100. **`null` or omitted means indeterminate** and is a real distinction: the rail becomes a
+   * travelling segment, no percentage is printed, and `role="progressbar"` carries no
+   * `aria-valuenow`. A bar with an invented number on it is a claim.
+   */
+  value?: number | null;
+  /** "142 of 400 rows" — `M02-21`'s row-by-row import. Printed in mono, under the rail. */
+  count?: { done: number; total: number } | null;
+  unit?: string;
+  /** The stage in words (`M05-45`, `MS2-38`). A percentage says how far; only words say what. */
+  stage?: React.ReactNode;
+  stageIndex?: number;
+  stageTotal?: number;
+  /** `MS2-38`'s three narrated steps, when the caller has all of them, with a state each. */
+  stages?: OperationStage[];
+  /**
+   * The state of the **work**, not of a surface — deliberately not `SurfaceState`: a panel hosting
+   * this can itself be `loading` or `error` while the job inside it is `running`.
+   */
+  state?: "running" | "done" | "failed" | "cancelled";
+  /** The finishing sentence: the report line, the failure, or what a cancel left behind. */
+  message?: React.ReactNode;
+  /** `M02-21`'s promise, said where the person is — "You can leave this screen; it keeps running." */
+  leaveNote?: React.ReactNode;
+  onCancel?: () => void;
+  cancelEffect?: CancelEffect;
+  cancelLabel?: string;
+  /** Overrides the generated sentence naming what the cancel stops. Never removes it. */
+  cancelNote?: React.ReactNode;
+  onRetry?: () => void;
+  retryLabel?: string;
+  /**
+   * **Where the finished thing is** — a real control, not a word: "Open the failure report",
+   * "Open the heatmap". A watched computation may have none, because you are already looking at its
+   * subject; a job you left always does (see `JobTray`).
+   */
+  destination?: React.ReactNode;
+  /** Brand gradient fill for AI / studio computation, per the readme's one-accent-gesture rule. */
+  gradient?: boolean;
+  /** `block` (default) or `inline` — smaller label, tighter rhythm, for a tray row or a cell. */
+  size?: "block" | "inline";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **A computation you are watching** — in place, in the surface that started it, with stage
+ * narration and an honest cancel (`M05-45`, `MS2-38`, `MS6-10`, `M02-21`).
+ *
+ * `ProgressBar` in full is `value`, `gradient`, `style`, under a docstring naming this exact use.
+ * That is the right drawing and none of the information: no label, no determinate/indeterminate
+ * distinction, no "n of m", no stage, no cancel and no destination. `ProgressBar` stays the 6px rail
+ * and this component draws with it.
+ *
+ * **The other shape is `JobTray`, and they are two components sharing one spec.** Their obligations
+ * are opposite: this one may disappear when its surface does — you are watching it, you are here —
+ * while a job you left must outlive every screen and be reachable from anywhere. One component
+ * would have needed a variant that changed where it mounts, what happens when it unmounts, and
+ * whether a destination is required.
+ */
+export function OperationProgress(props: OperationProgressProps): JSX.Element;

@@ -1,0 +1,96 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { SurfaceState } from "../feedback/UnavailableNote";
+
+/**
+ * **An alias, not a second union.** A block is a surface, so its states are the system's five
+ * (law 1) — re-declaring them locally read identically and drifted the moment `SurfaceState`
+ * changed, which is the whole reason there is one vocabulary. Kept as a name because screens read
+ * `BlockState` in their own types.
+ *
+ * - `ready` — has content.
+ * - `loading` — content is coming.
+ * - `empty` — **there is nothing, and that is the answer.** The block says so and stays.
+ * - `error` — the fetch failed; offers a retry.
+ * - `unavailable` — the block can't apply here at all (no coverage for this pin, no provider in
+ *   this market). Different from empty: empty means "none yet", unavailable means "not a thing
+ *   here", and a retry would be a lie.
+ */
+export type BlockState = SurfaceState;
+
+export interface BlockProps {
+  /** Uppercase micro-label above the title. */
+  overline?: string;
+  title?: string;
+  /** The object this block reads and the version in force (`M08-16`) — "Quote v4 · 12 Aug 2026". */
+  meta?: React.ReactNode;
+  /** Header-right slot: a link, a small button, a menu. */
+  action?: React.ReactNode;
+  /**
+   * **How many** — the block's summary count, a tabular numeral in a neutral pill in the header. It
+   * renders whether or not there is a `title`: an overline-only block (`overline="AGENT CALLS"`,
+   * `count={6}` — the `SCR-M07-01` / `M13-10` shape) shows the numeral beside the overline.
+   *
+   * A **total**, not an unread badge: grouped by the market pack (`1,240`, not `99+`) and **not**
+   * `CountBadge`, whose accessible name says "unread" and whose tone is danger. Nor is it the same form
+   * as the two nav counters, on purpose — `Tabs` clamps at 99 because a destination count is
+   * navigational, and `SegmentedControl` renders a bare numeral with no pill because a pill inside a
+   * 32px pill is mush. Nothing is drawn at zero — a block with none of something uses `state="empty"`,
+   * which is a sentence rather than a 0.
+   */
+  count?: number;
+  /** Clamp the numeral: `countMax={99}` renders "99+". Unset by default, because clamping a total lies. */
+  countMax?: number;
+  /** Words for the count in the accessible name — "documents", "open blockers". */
+  countLabel?: string;
+  /** In the header row beside the count — a `StatusChip` or a provider badge, with or without a
+      `title`. **A count goes in `count`, not here.** */
+  badge?: React.ReactNode;
+  /** Footer-right content: an honest caveat, a source note, a timestamp. */
+  footer?: React.ReactNode;
+  /** Provenance for the block's figures, rendered in the footer. */
+  provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
+  state?: BlockState;
+  /** The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". */
+  emptyMessage?: string;
+  emptyTitle?: string;
+  emptyAction?: React.ReactNode;
+  errorTitle?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
+  unavailableTitle?: string;
+  unavailableMessage?: string;
+  density?: "expressive" | "functional";
+  /** Drops the surface and shadow — for a block already sitting inside a card or a sheet. */
+  flat?: boolean;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+}
+
+/**
+ * The section frame the composed screens are assembled from — header, body, footer, and a `state`.
+ *
+ * **What an empty block does that `EmptyState` would not:** it says so and **stays**, inside its
+ * own frame, at its own size, with its header still in place. `EmptyState` is a full-region
+ * treatment — 48px of padding, a 72px icon, a 180px bloom — sized for a *screen* with nothing on
+ * it. A block with nothing in it is a different fact: the screen around it is full and the block
+ * still belongs there, so it gets one quiet sentence, not a hero.
+ *
+ * @startingPoint section="Data display" subtitle="Section block with header, states and footer" viewport="900x320"
+ */
+export function Block(props: BlockProps): JSX.Element;
+
+export interface BlockGridProps {
+  children?: React.ReactNode;
+  /** Minimum column width before wrapping. Default 320. */
+  min?: number;
+  gap?: number;
+  /** Fixed column count instead of auto-fit. */
+  columns?: number;
+  style?: React.CSSProperties;
+}
+/**
+ * The seam (`M13-10`). Blocks composed into one screen sit on this grid, so a screen can host
+ * foreign today-blocks without the layout breaking. Also `Block.Grid`.
+ */
+export function BlockGrid(props: BlockGridProps): JSX.Element;

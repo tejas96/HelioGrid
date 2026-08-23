@@ -1,0 +1,121 @@
+/* JobTray — WORK YOU WALKED AWAY FROM, AND THE ONE PLACE IT LIVES (M02-21 P0 / SCR-M02-05).
+
+   IT BELONGS TO THE SHELL, WHICH IS WHY IT SITS BESIDE THE BELL. The bell is the shell's answer to
+   "something happened while you were elsewhere"; this is "something is STILL HAPPENING while you
+   are elsewhere". AppHeader and MobileTopBar take it in a `jobs` slot, before the bell.
+
+   The trigger is 44px of top bar, so it says the aggregate in one line and the panel says the rest.
+   Each row is an OperationProgress at size="inline", so stage narration and the honest-cancel rule
+   are inherited rather than restated.
+
+   The 8/12/16/18px values and the 340/420px panel are the DS source's own. */
+
+.hg-job-tray {
+  position: relative;
+  display: inline-flex;
+  font-family: var(--font-sans);
+}
+
+/* The 44px floor, restated here because aria-haspopup / aria-expanded keep this a plain button. */
+.hg-job-tray-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: 0 var(--sp-3);
+  margin: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-job-tray-trigger[data-open="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-job-tray-trigger[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-job-tray-trigger[data-tone="success"] {
+  color: var(--success-text);
+}
+
+.hg-job-tray-trigger:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-job-tray-trigger:active {
+  transform: scale(0.97);
+}
+
+.hg-job-tray-words {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-job-tray-panel {
+  position: absolute;
+  top: calc(100% + var(--sp-2));
+  z-index: 40;
+  width: 340px;
+  max-width: min(340px, calc(100vw - var(--sp-6)));
+  max-height: 420px;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  box-sizing: border-box;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--e4);
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+}
+
+.hg-job-tray-panel[data-align="right"] {
+  right: 0;
+}
+
+.hg-job-tray-panel[data-align="left"] {
+  left: 0;
+}
+
+.hg-job-tray-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.hg-job-tray-panel-label {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-job-tray-clear {
+  margin-right: calc(var(--sp-2) * -1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-job-tray-jobs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}

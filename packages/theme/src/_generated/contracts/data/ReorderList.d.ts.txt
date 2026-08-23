@@ -1,0 +1,78 @@
+import React from "react";
+import { ComplianceFloorSpec } from "../feedback/ComplianceFloor";
+
+export interface ReorderListProps<T = any> {
+  items: T[];
+  /** Stable identity. The move affordance is keyed by it — that is what lets focus travel with a row. */
+  keyOf?: (item: T, index: number) => string | number;
+  /** The row's name. Said in every announcement and every button label. */
+  labelOf?: (item: T, index: number) => string;
+  /** The row body — the caller's fields. Anything focusable inside stays reachable. */
+  renderItem?: (item: T, index: number) => React.ReactNode;
+  /** `(key, fromIndex, toIndex)` — **an index**, unlike `Kanban.onMove`, because the index is the value. */
+  onMove?: (key: string | number, fromIndex: number, toIndex: number) => void;
+  onDelete?: (key: string | number, index: number) => void;
+  /** Per-row veto. A row that can't be deleted has **no** delete button, not a dead one. */
+  canDelete?: (item: T, index: number) => boolean;
+  /**
+   * **A row protected by law** (`M07-11` P0 / `SCR-M07-05`: *"none forced — except 'asks to stop',
+   * which is the statutory opt-out and cannot be removed"*). Returns a `ComplianceFloor` spec or node
+   * — the row renders it as a permanent line and loses its delete button. `canDelete` vetoes silently;
+   * this row's whole point is that the reason is sayable, and that it is a **floor**, not a preference
+   * an admin set and not a permission the reader lacks.
+   */
+  lockOf?: (item: T, index: number) => ComplianceFloorSpec | React.ReactNode | null;
+  /** Below this many rows every delete button disappears — "at least one phase" is a real rule. */
+  minItems?: number;
+  /** The list's accessible name. */
+  label?: string;
+  /** Plural noun for announcements — "phases", "tranches", "brands". */
+  itemNoun?: string;
+  emptyMessage?: string;
+  /** Where the ⌃ ⌄ 🗑 targets sit. Defaults: `stack` (expressive/phone), `row` (functional). */
+  controls?: "stack" | "row";
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * **An authored order** — `M06-12` (P0)'s reorderable phase rows, and the only component in the system
+ * that changes one. `M01-52` authors the same list in settings while the builder consumes it, so both
+ * get this rather than one improvisation each.
+ *
+ * `Timeline` is display-only. `Kanban.onMove` carries no index and is documented for moves **between
+ * columns** — a different axis, deliberately left alone. `DataTable`'s `sortable` is a *view* order:
+ * sorting answers "how do I want to look at these", reordering answers "what **is** the order", and
+ * only the second is saved.
+ *
+ * **Arrows, not drag** — the reasoning that gave `Kanban` always-visible move buttons: HTML5 drag fires
+ * on neither a keyboard nor a touch screen, and this list's stated home is 375px. Every target is
+ * 44×44; nothing is hover-only.
+ *
+ * **What is announced** (one polite live region, the row's name in every sentence):
+ * - move — "Structure mounting moved to position 2 of 5."
+ * - at an end — "Structure mounting is already first." The arrow is **`aria-disabled`, not `disabled`**
+ *   — a natively disabled button fires no click, so this sentence would be unreachable and the live
+ *   region would never speak. Round 14C's `ActionReason` ruling, for the same reason: the control that
+ *   cannot act is the one with something to say. It stays focusable, moves nothing, and says why.
+ * - delete — "Structure mounting deleted. 4 phases remain."
+ *
+ * **Where focus goes:** on the button that was pressed, **which travels with the row** — so pressing ⌄
+ * three times moves one row three places under one finger. If that button is now `aria-disabled` (the row hit
+ * an end) focus moves to the opposite arrow of the same row. After a delete it lands on the delete
+ * button of the row that took its place — or, **when that row is locked and therefore has no delete
+ * button**, on that same row's own move arrow, then on the nearest delete either side, then the new
+ * last row's — or, when the list is empty, on the list itself, which is focusable for exactly that
+ * case. Never the container mid-list, never the document.
+ *
+ * **A locked row refuses at the delete, not at the save — and `floor-blocked-save` still has a
+ * renderer.** A 44px control whose only outcome is a refusal is a control that lies, and on a 375px
+ * screen a save-time refusal lands far from the row that caused it, against law 5 (*a problem is stated
+ * where it is fixed*). So `lockOf` drops the delete and the row states the floor permanently, before
+ * anyone reaches for it. The save-time refusal exists because the delete is **not the only route to
+ * removal** — a rule set can be replaced wholesale, imported, or copied from another agent language —
+ * and it is `ComplianceFloor variant="refusal"`, carrying the sentence the row already had.
+ *
+ * @startingPoint section="Data display" subtitle="Reorderable authored rows, touch and keyboard" viewport="760x420"
+ */
+export function ReorderList<T = any>(props: ReorderListProps<T>): JSX.Element;

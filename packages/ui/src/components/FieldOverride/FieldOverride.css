@@ -1,0 +1,101 @@
+/* FieldOverride — the one treatment for "a person replaced a derived default".
+
+   Three things in one line, in this order: the MARKER (a word, never a colour or a dot alone),
+   the SUPERSEDED VALUE (both values under `stale`), and the RESET, which names what it restores.
+
+   Values off the 4px spacing scale (6, 10) are the design system's own measurements; no token
+   carries them, so they are named here rather than left loose in the markup. */
+
+.hg-field-override {
+  --hg-field-override-gap: 10px;
+  --hg-field-override-dot: 6px;
+  --hg-field-override-inset: 10px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hg-field-override-gap);
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+}
+
+.hg-field-override[data-size="xs"] {
+  font-size: var(--fs-caption);
+}
+
+.hg-field-override[data-size="sm"] {
+  font-size: var(--fs-body-sm);
+}
+
+/* ── 1 · the marker ───────────────────────────────────────────────────────── */
+
+.hg-field-override-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  height: var(--sp-5);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: inherit;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.hg-field-override-mark[data-state="overridden"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+
+/* `stale` tints warning — "the design has moved on since you edited this". */
+.hg-field-override-mark[data-state="stale"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-field-override-dot {
+  width: var(--hg-field-override-dot);
+  height: var(--hg-field-override-dot);
+  border-radius: var(--r-pill);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── 2 · the superseded value ─────────────────────────────────────────────── */
+
+.hg-field-override-values {
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-field-override-figure {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-field-override-source {
+  color: var(--text-tertiary);
+}
+
+/* ── 3 · the reset (and, under `stale`, the take beside it) ───────────────── */
+
+.hg-field-override-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.hg-field-override-button {
+  padding: 0 var(--hg-field-override-inset);
+  margin: 0 calc(var(--hg-field-override-inset) * -1);
+  border-radius: var(--rf-md);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.hg-field-override-button--strong {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}

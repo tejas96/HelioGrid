@@ -1,0 +1,261 @@
+/* RichText — M06-15 step 9. An editor and its renderer, shipped as a pair: the closed mark set is
+   bold · italic · heading · bulleted list · numbered list · link · inline logo, and every one of
+   them has a defined read-only rendering in RichTextView. No colours, no fonts, no sizes, no
+   alignment, no tables — a tenant editing their terms may not break the document's type system. */
+
+.hg-rich-text-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.hg-rich-text-frame {
+  border-radius: var(--r-input-expressive);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+  overflow: hidden;
+}
+
+.hg-rich-text-frame[data-focus="true"] {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    var(--e2);
+}
+
+/* ── toolbar ──────────────────────────────────────────────────────────────── */
+
+.hg-rich-text-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px var(--sp-2);
+}
+
+/* 44px, like every other target in this product — the floor Pressable owns, held here because a
+   toolbar button acts on mousedown and cannot BE a Pressable (see RichTextToolbar.tsx). */
+.hg-rich-text-tool {
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.hg-rich-text-tool[data-wide="true"] {
+  padding: 0 var(--sp-3);
+}
+
+.hg-rich-text-tool[data-active="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.hg-rich-text-tool:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-rich-text-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--canvas-sunken);
+  margin: 0 6px;
+}
+
+.hg-rich-text-spacer {
+  flex: 1;
+}
+
+.hg-rich-text-templates {
+  height: 44px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+/* ── the link row ─────────────────────────────────────────────────────────── */
+
+.hg-rich-text-link-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 10px var(--sp-2);
+}
+
+.hg-rich-text-href {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 var(--sp-3);
+  border: none;
+  outline: none;
+  border-radius: var(--r-input-functional);
+  background: var(--surface-alt);
+  box-shadow: var(--e1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  color: var(--text-primary);
+}
+
+.hg-rich-text-apply {
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+/* ── the editable body ────────────────────────────────────────────────────── */
+
+.hg-rich-text-body {
+  position: relative;
+}
+
+.hg-rich-text-placeholder {
+  position: absolute;
+  top: var(--sp-1);
+  left: 18px;
+  right: 18px;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.hg-rich-text-editable {
+  max-height: 520px;
+  overflow-y: auto;
+  padding: var(--sp-1) 18px 18px;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* The logo is PLACED, never typed — contenteditable="false" inside the editable body. */
+.hg-rich-text-logo {
+  margin: 0 0 var(--sp-3);
+  padding: 10px 14px;
+  border-radius: var(--rf-lg);
+  background: var(--neutral-bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-rich-text-logo-chip {
+  width: 34px;
+  height: 24px;
+  border-radius: var(--rf-xs);
+  background: var(--canvas-sunken);
+  display: inline-block;
+}
+
+/* ── footer ───────────────────────────────────────────────────────────────── */
+
+.hg-rich-text-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-2) 2px 0;
+}
+
+.hg-rich-text-helper {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-rich-text-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+.hg-rich-text-count[data-over="true"] {
+  color: var(--danger-text);
+}
+
+/* ── the read-only rendering ──────────────────────────────────────────────── */
+
+.hg-rich-text-view {
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-rich-text-view p,
+.hg-rich-text-view li {
+  color: var(--text-secondary);
+}
+
+.hg-rich-text-h {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hg-rich-text-li {
+  margin-bottom: var(--sp-1);
+}
+
+.hg-rich-text-link {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.hg-rich-text-logo-row {
+  margin: 0 0 var(--sp-3);
+}
+
+.hg-rich-text-logo-slot {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--rf-sm);
+  background: var(--canvas-sunken);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.hg-rich-text-logo-row img {
+  width: auto;
+  max-width: 100%;
+}
+
+.hg-rich-text-empty {
+  margin: 0;
+  color: var(--text-tertiary);
+}

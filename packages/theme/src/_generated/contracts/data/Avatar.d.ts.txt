@@ -1,0 +1,19 @@
+import React from "react";
+
+export interface AvatarProps {
+  src?: string;
+  /** used for initials fallback + alt text */
+  name?: string;
+  size?: 24 | 32 | 40 | 56 | 80 | number;
+  style?: React.CSSProperties;
+}
+export interface AvatarGroupProps {
+  people?: AvatarProps[];
+  size?: number;
+  max?: number;
+}
+
+/** Perfect-circle avatar; falls back to initials on a soft brand tint. */
+export function Avatar(props: AvatarProps): JSX.Element;
+/** Overlapping avatar stack with white rings. */
+export function AvatarGroup(props: AvatarGroupProps): JSX.Element;

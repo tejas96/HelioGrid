@@ -1,0 +1,267 @@
+@import "./CompareGridStates.css";
+
+/* CompareGrid — compare 2–4 options attribute by attribute, at every width.
+
+   THIS IS ONE TABLE, NOT N CARDS, and that is the design. Alignment is structural: a row IS a row,
+   so payback cannot drift by a pixel between variants however long a name is, and the row's label
+   is STICKY at the left edge — the fixed thing the eye holds while the variants slide past.
+
+   It is the one component in the system with a horizontal scroller. It scrolls the OPTION axis
+   only; the attribute axis is complete at every width; it is never used for records. It never
+   stacks, because one variant at a time is not a comparison.
+
+   Column widths arrive as --hg-compare-col / --hg-compare-label from the props. Values off the 4px
+   scale (10, 14, 18, 48) are the design system's own; no token carries them. */
+
+.hg-compare {
+  --hg-compare-touch: 44px;
+  --hg-compare-pill-h: 20px;
+  --hg-compare-selected: var(--accent-subtle);
+
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e2);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.hg-compare[data-density="functional"] {
+  border-radius: var(--r-card-functional);
+}
+
+.hg-compare-caption {
+  padding: var(--sp-4) var(--sp-4) 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-compare[data-density="functional"] .hg-compare-caption {
+  padding: 14px 14px 0;
+}
+
+/* <fieldset> is the native role="group"; these four lines undo its default box so it behaves
+   exactly like the div it replaced. */
+.hg-compare-scroller {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--hg-compare-label);
+  -webkit-overflow-scrolling: touch;
+}
+
+.hg-compare-scroller:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-compare-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  font-family: var(--font-sans);
+}
+
+.hg-compare-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── the pinned attribute column ──────────────────────────────────────────── */
+
+.hg-compare-pin {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: var(--hg-compare-label);
+  min-width: var(--hg-compare-label);
+  max-width: var(--hg-compare-label);
+  padding: 14px var(--sp-4);
+  text-align: left;
+  vertical-align: top;
+  box-sizing: border-box;
+  background: var(--surface);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+tr[data-zebra="true"] > .hg-compare-pin {
+  background: var(--surface-alt);
+}
+
+.hg-compare-pin--head,
+.hg-compare-pin--foot {
+  padding-top: var(--sp-4);
+  background: var(--surface);
+}
+
+.hg-compare-label {
+  display: block;
+  text-wrap: pretty;
+}
+
+.hg-compare-unit {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-compare-provenance {
+  display: block;
+  margin-top: var(--sp-1);
+}
+
+/* ── option headers — one snap target per column ──────────────────────────── */
+
+.hg-compare-option-head {
+  width: var(--hg-compare-col);
+  min-width: var(--hg-compare-col);
+  padding: 14px var(--sp-4);
+  padding-top: var(--sp-4);
+  text-align: left;
+  vertical-align: top;
+  scroll-snap-align: start;
+  background: var(--surface);
+  box-sizing: border-box;
+}
+
+.hg-compare-option-head[data-selected="true"],
+.hg-compare-cell[data-selected="true"] {
+  background: var(--hg-compare-selected);
+}
+
+.hg-compare-option-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hg-compare-option-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-compare-option-subtitle {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-compare-option-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hg-compare-pill {
+  display: inline-flex;
+  align-items: center;
+  height: var(--hg-compare-pill-h);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+
+.hg-compare-pill[data-kind="current"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+
+.hg-compare-pill[data-kind="selected"] {
+  background: var(--surface);
+  color: var(--accent);
+}
+
+/* ── value cells ──────────────────────────────────────────────────────────── */
+
+.hg-compare-cell {
+  width: var(--hg-compare-col);
+  min-width: var(--hg-compare-col);
+  padding: 14px var(--sp-4);
+  vertical-align: top;
+  box-sizing: border-box;
+  background: var(--surface);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-compare[data-density="functional"] .hg-compare-cell {
+  font-size: var(--fs-body-sm);
+}
+
+tr[data-zebra="true"] > .hg-compare-cell:not([data-selected="true"]) {
+  background: var(--surface-alt);
+}
+
+.hg-compare-cell[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-compare-cell[data-strong="true"] {
+  font-weight: var(--fw-bold);
+}
+
+/* An absent cell is a NamedGap at `cell` scale — it brings its own ring, words and colour, so
+   there is no gap rule here to disagree with it. */
+
+/* The overline role — a mark that carries meaning never relies on colour alone. */
+.hg-compare-best {
+  margin-left: 6px;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--success-text);
+  white-space: nowrap;
+}
+
+.hg-compare-choose {
+  width: 100%;
+  min-height: var(--hg-compare-touch);
+  padding: 0 var(--sp-4);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+
+.hg-compare-choose[data-selected="true"] {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-compare-cell--choose {
+  background: var(--surface);
+}
+
+/* Functional density last: the compact padding must win over the three base rules above,
+   and a lower-specificity selector placed after a higher one never applies. */
+.hg-compare[data-density="functional"] .hg-compare-pin,
+.hg-compare[data-density="functional"] .hg-compare-option-head,
+.hg-compare[data-density="functional"] .hg-compare-cell {
+  padding: 10px 14px;
+}

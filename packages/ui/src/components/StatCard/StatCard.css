@@ -1,0 +1,180 @@
+/* StatCard — overline label, big tabular value, the provenance line, then the semantic delta pill.
+   The tier's adjacency is fixed here and nowhere else: directly under the value, above the delta
+   and above `children`.
+
+   Direction is the arrow; sentiment is the tint AND the word after it (F7-12). `neutral` is the
+   default tint and makes no claim at all. */
+
+.hg-stat-card {
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  padding: var(--sp-6);
+  box-shadow: var(--e2);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+/* The tappable card. It is a Pressable, so the 44px floor and the focus ring are the primitive's;
+   only the block layout and the hover lift are here — a :hover rule rather than two JS handlers. */
+.hg-pressable.hg-stat-card-button {
+  display: block;
+  width: 100%;
+  text-align: start;
+  border-radius: var(--r-card-expressive);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-standard) var(--ease-standard);
+}
+
+.hg-pressable.hg-stat-card-button:hover:not(:disabled) {
+  box-shadow: var(--e3);
+  transform: translateY(-1px);
+}
+
+.hg-stat-card-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-stat-card-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  margin-top: 10px;
+}
+
+.hg-stat-card-gap {
+  margin-top: 10px;
+}
+
+.hg-stat-card-value {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h1);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-stat-card-unit {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+}
+
+.hg-stat-card-band {
+  align-self: center;
+  margin-left: var(--sp-1);
+}
+
+.hg-stat-card-provenance {
+  margin-top: 6px;
+}
+
+/* ── the delta ─────────────────────────────────────────────────────────────── */
+
+.hg-stat-card-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+
+.hg-stat-card-delta[data-sentiment="good"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-stat-card-delta[data-sentiment="bad"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-stat-card-delta-sep {
+  opacity: 0.5;
+}
+
+.hg-stat-card-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── the four unresolved states ────────────────────────────────────────────── */
+
+.hg-stat-card-loading {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-stat-card-shimmer {
+  display: block;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+/* The value's own footprint, so nothing reflows when the figure lands. */
+.hg-stat-card-shimmer[data-bar="value"] {
+  width: 132px;
+  height: 34px;
+}
+.hg-stat-card-shimmer[data-bar="meta"] {
+  width: 84px;
+  height: 12px;
+}
+
+.hg-stat-card-error {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hg-stat-card-error-body {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--warning-text);
+}
+
+.hg-pressable.hg-stat-card-retry {
+  padding-inline: 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-stat-card-unavailable {
+  margin-top: 10px;
+}
+
+.hg-stat-card-empty {
+  margin: 10px 0 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}

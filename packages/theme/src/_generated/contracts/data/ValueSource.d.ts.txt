@@ -1,0 +1,64 @@
+import React from "react";
+
+/**
+ * `own` — the tenant's own item supplied it: one value, and it is **theirs**. `inherited` — the
+ * override is sparse and this field fell through to the platform item (`M01-37`): one value, and it
+ * is **not theirs**. `unmarked` renders nothing **and records that the absence is deliberate**, the
+ * same distinction `Provenance` draws.
+ *
+ * There is no `overridden` level: an overridden value is `FieldOverride`'s, and the two slots are
+ * mutually exclusive by host.
+ */
+export type ValueSourceLevel = "own" | "inherited" | "unmarked";
+
+export interface ValueSourceSpec {
+  level?: ValueSourceLevel;
+  /** Replaces the default word — "Your SKU", "Platform catalogue", "Group price list". */
+  layerName?: string;
+  /** What it came from, after the word — "Platform catalogue · SKU MP-545". */
+  source?: string;
+  /** Named in the action's accessible label. */
+  fieldName?: string;
+  /** `inherited` only — the owner's next move. Attribution carries no other action. */
+  onOverride?: () => void;
+  overrideLabel?: string;
+  /** 12 (default) or 13. Never below 12 — the type floor. */
+  size?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Which layer supplied this value** — `SCR-M01-15`'s `rates-panel-tier-attribution`, so an owner
+ * can always answer *"why is this price showing"*. `M01-32` fixes the resolution order (tenant
+ * override → tenant own item → platform item) and `M01-37` makes the override sparse, so three fields
+ * side by side can be overridden, own-SKU, or fallen through to the platform.
+ *
+ * **A separate slot, not a third `FieldOverride` state.** `FieldOverride`'s grammar is a marker, a
+ * superseded value and a reset; for `own` and `inherited` nothing was superseded and there is nothing
+ * to reset, so two of its three parts have no referent. The slots are **mutually exclusive**: a host
+ * renders `FieldOverride` for an overridden value and `ValueSource` for an un-overridden one, never
+ * both — two markers under one number make the reader work out which is speaking.
+ *
+ * **The one deliberate overlap** is `FieldOverride.autoSource`, which names the layer of the value
+ * that *was* superseded ("was ₹16,350 · platform") — one extra word in an existing line, because with
+ * a sparse override the superseded value is the platform's.
+ *
+ * **The treatments don't look alike.** `FieldOverride` is a tinted pill with a dot: something happened
+ * to this value. `ValueSource` is a plain word with a layers glyph, no pill and no tint: nothing
+ * happened, this is just where the number lives. `inherited` carries "Override for this tenant" — the
+ * only action attribution ever has.
+ *
+ * Hosts: `NumberField`, `Input`, `Textarea`, `DataTable` via `column.attribution`, `ListRow`, and
+ * `DateSet` — where the layers are a market pack and the tenant, and the value is a date rather than a
+ * price (`SCR-M07-06`, `F1-48`).
+ *
+ * @startingPoint section="Data display" subtitle="Which layer supplied a value — own, or fallen through" viewport="720x300"
+ */
+export function ValueSource(props: ValueSourceSpec): JSX.Element | null;
+
+/** What every `attribution` host prop runs through: a spec, a bare level string, or a ready node. */
+export function renderAttribution(spec?: ValueSourceSpec | ValueSourceLevel | React.ReactNode, extra?: Partial<ValueSourceSpec>): React.ReactNode;
+
+export namespace ValueSource {
+  const render: typeof renderAttribution;
+}

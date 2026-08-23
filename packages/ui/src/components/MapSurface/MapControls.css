@@ -1,0 +1,49 @@
+/* The 44px map controls, and the zoom level made legible on the surface — "Zoom 20" is a fact
+   a surveyor checks, not chrome. Imported by MapSurface.css. */
+
+.hg-map-surface-controls {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+}
+
+.hg-map-surface-ctrl-group {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--e3);
+}
+
+.hg-map-surface-ctrl {
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.hg-map-surface-ctrl:hover:not(:disabled) {
+  background: var(--neutral-bg);
+}
+
+.hg-map-surface-ctrl:disabled {
+  color: var(--text-disabled);
+}
+
+.hg-map-surface-zoom-level {
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}

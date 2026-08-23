@@ -1,0 +1,38 @@
+/* Field — the shared label/hint/error wrapper (docs/17 §4). The error is a SENTENCE in
+   --danger-text under the control (the DS Input idiom) — words carry the state, colour is
+   the second channel. Label weight is --fw-medium, the DS form-label weight (Input.jsx). */
+
+.hg-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-field-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-field-required {
+  color: var(--danger-text);
+  margin-inline-start: var(--sp-0-5);
+}
+
+.hg-field-hint,
+.hg-field-error {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-field-hint {
+  color: var(--text-tertiary);
+}
+
+.hg-field-error {
+  color: var(--danger-text);
+}

@@ -1,0 +1,300 @@
+/* Stepper — four states per step, five arrangements. State is never carried by colour alone
+   (F7-12): each has its own GLYPH and WORD. Reachability is the flow's decision; the default is
+   free — a component that gates by inheritance makes a policy call no row asked for. */
+.hg-stepper-marker {
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface);
+}
+.hg-stepper-marker[data-state="done"] {
+  background: var(--success);
+  color: var(--text-inverse);
+}
+.hg-stepper-marker[data-state="errors"] {
+  background: var(--danger);
+  color: var(--text-inverse);
+}
+.hg-stepper-marker[data-state="in-progress"] {
+  color: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-subtle);
+}
+.hg-stepper-marker[data-state="not-started"] {
+  color: var(--text-tertiary);
+  box-shadow: inset 0 0 0 2px var(--canvas-sunken);
+}
+.hg-stepper-list,
+.hg-stepper-numbered {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.hg-stepper-list {
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+.hg-stepper-item {
+  position: relative;
+}
+.hg-stepper-connector {
+  position: absolute;
+  left: 21px;
+  top: 42px;
+  bottom: -6px;
+  width: 2px;
+}
+.hg-stepper-connector,
+.hg-stepper-line {
+  border-radius: 2px;
+  background: var(--canvas-sunken);
+}
+.hg-stepper-connector[data-done="true"],
+.hg-stepper-line[data-done="true"] {
+  background: var(--success);
+  opacity: 0.35;
+}
+.hg-stepper-row {
+  position: relative;
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 6px 10px;
+  border: none;
+  border-radius: var(--r-md);
+  text-align: left;
+  background: transparent;
+  cursor: default;
+  font-family: var(--font-sans);
+}
+.hg-stepper-row[data-clickable="true"],
+.hg-stepper-node[data-clickable="true"] {
+  cursor: pointer;
+}
+.hg-stepper-row[aria-current="step"] {
+  background: var(--accent-subtle);
+}
+.hg-stepper-row:focus-visible,
+.hg-stepper-nav:focus-visible,
+.hg-stepper-open:focus-visible,
+.hg-stepper-node:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.hg-stepper-body {
+  flex: 1;
+  min-width: 0;
+}
+/* Tertiary type says NOT STARTED, not "unreachable": untouched is quiet and still clickable. */
+.hg-stepper-name,
+.hg-stepper-current {
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hg-stepper-name {
+  display: block;
+}
+.hg-stepper-name[data-state="not-started"] {
+  color: var(--text-tertiary);
+}
+.hg-stepper-name[data-active="true"] {
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-button);
+}
+.hg-stepper-word {
+  display: block;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+.hg-stepper-word[data-state="errors"] {
+  color: var(--danger-text);
+}
+.hg-stepper-word[data-state="done"] {
+  color: var(--success-text);
+}
+.hg-stepper-chevron {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+.hg-stepper-rail-heading,
+.hg-stepper-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.hg-stepper-rail-heading {
+  margin: 0 0 10px 10px;
+}
+.hg-stepper-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: var(--surface);
+  border-radius: var(--r-pill);
+  box-shadow: var(--e1);
+  padding: var(--sp-1);
+}
+.hg-stepper-nav {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.hg-stepper-nav:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+.hg-stepper-open {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-2);
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.hg-stepper-open:disabled {
+  cursor: default;
+}
+.hg-stepper-count {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+.hg-stepper-dot-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--r-pill);
+  background: var(--mark-subtle);
+  flex-shrink: 0;
+}
+.hg-stepper-current {
+  min-width: 0;
+}
+.hg-stepper-errors {
+  flex-shrink: 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--danger-text);
+}
+.hg-stepper-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.hg-stepper-step-name,
+.hg-stepper-dots-name {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+.hg-stepper-track {
+  margin-top: 10px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  overflow: hidden;
+}
+.hg-stepper-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+.hg-stepper-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hg-stepper-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  transition:
+    width var(--dur-standard) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
+}
+.hg-stepper-dot[data-filled="true"] {
+  background: var(--accent);
+}
+.hg-stepper-dot[data-current="true"] {
+  width: 22px;
+}
+.hg-stepper-dots-name {
+  margin-left: var(--sp-2);
+}
+.hg-stepper-numbered {
+  align-items: flex-start;
+}
+.hg-stepper-numbered-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.hg-stepper-numbered-item[data-last="true"] {
+  flex: 0 0 auto;
+}
+/* 44px target around the 28px marker; the extra is taken back as negative margin. Measured 28x28. */
+.hg-stepper-node {
+  border: none;
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: default;
+  width: 44px;
+  height: 44px;
+  margin: -8px;
+  display: grid;
+  place-items: center;
+}
+.hg-stepper-numbered-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: var(--sp-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.hg-stepper-numbered-body[data-density="functional"] {
+  padding-top: var(--sp-0-5);
+}
+/* Shrink-to-fit, unlike the rail row's body: the connector line beside it takes the free space. */
+.hg-stepper-numbered-name {
+  min-width: 0;
+}
+.hg-stepper-line {
+  flex: 1;
+  min-width: 16px;
+  height: 2px;
+  margin-right: var(--sp-2);
+}

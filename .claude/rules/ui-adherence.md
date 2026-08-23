@@ -63,6 +63,16 @@ law, not style, and a component that re-implements either is a defect:
 - **`StatusMark` owns "status is never carried by colour alone"** — always a label plus a
   mark. A tint with no second channel is the defect this primitive exists to prevent.
 
+**Semantics go THROUGH `Pressable`, never around it.** A control that is a checkbox, radio, tab
+or menu row passes `accessibilityRole` and `accessibilityState` to the primitive; reaching past it
+for the platform pressable to obtain them gives up the 44px floor and the focus ring, which is the
+only thing the primitive exists to guarantee. Six audit rounds re-found that trade.
+
+**Never put `accessible` on a wrapper that contains focusable controls.** It folds the subtree into
+one element: the children's labels are concatenated and any 44px control inside goes out of the
+screen reader's reach. State belongs on the node that already IS the accessibility element — the
+Pressable or Text the user lands on.
+
 A surface the design system doesn't cover is COMPOSED from the existing vocabulary — never
 new visuals. Log the composition decision as a module ruling.
 

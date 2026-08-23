@@ -1,0 +1,27 @@
+/* ProgressBar — the 6px pill rail, and nothing else. A DRAWING, not an operation: no label, no
+   indeterminate form, no "n of m", no stage, no cancel, no destination. Anything with those takes
+   OperationProgress, which draws with this rail.
+
+   6px is the rail's own dimension, not a spacing step — the scale has no 6px token (--sp-1 is 4,
+   --sp-2 is 8), so the DS value stands as written. Everything else is a token. */
+
+.hg-progress-bar {
+  height: 6px;
+  width: 100%;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+  overflow: hidden;
+}
+
+.hg-progress-bar-fill {
+  height: 100%;
+  width: var(--hg-progress-bar-value, 0%);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-progress-bar-fill[data-gradient="true"] {
+  background: var(--gradient-brand);
+}

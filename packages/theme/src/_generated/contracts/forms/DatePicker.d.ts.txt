@@ -1,0 +1,89 @@
+import React from "react";
+
+export type ISODate = string;
+export interface DateRange { from: ISODate | null; to: ISODate | null }
+
+export interface DayMarker {
+  /** Muted semantic dot under the date. */
+  tone?: "present" | "absent" | "leave" | "holiday" | "scheduled" | "neutral";
+  /** Read out by screen readers and used as the tooltip. */
+  label?: string;
+}
+
+export interface CalendarProps {
+  /** `single` — one ISO date. `range` — a span. `set` — **an array of unrelated dates**. */
+  value?: ISODate | DateRange | ISODate[];
+  onChange?: (value: ISODate | DateRange | ISODate[]) => void;
+  /**
+   * `set` is `SCR-M07-06`'s holiday calendar: a bag of dates with nothing between them, which
+   * `single` and `range` cannot hold and `markers` could only *display*. Clicking a date toggles it;
+   * `onChange` receives the whole sorted array.
+   */
+  mode?: "single" | "range" | "set";
+  /**
+   * Controlled visible month (any date inside it). **Pass `onMonthChange` with it.** A `month` with no
+   * handler is a *pinned* view: the arrows would write to state the view ignores, so they are not drawn
+   * at all (and a console warning says so) — two 44px controls whose only outcome is nothing are the
+   * same defect as a delete button that can only refuse. Pass both, or neither.
+   */
+  month?: ISODate;
+  onMonthChange?: (month: ISODate) => void;
+  min?: ISODate;
+  max?: ISODate;
+  /** Keyed by ISO date: attendance, leave, holidays, scheduled surveys. **Display only** — a marker
+      cannot be added to or removed from, and its `label` is a tooltip, which `F8-07` rules out for
+      provenance. A set the tenant edits is `mode="set"`. */
+  markers?: Record<string, DayMarker>;
+  disabledDates?: ISODate[];
+  /**
+   * `mode="set"` only — members of the set the tenant may **not** remove (`M07-12`: *"narrower windows
+   * and extra holidays only, never wider"*). The cell is `aria-disabled` and **stays focusable** with
+   * activation suppressed (law 9's mechanical ruling), so a keyboard user reaches it and hears why.
+   * Its second channel in the grid is a bar under the numeral; the **origin itself is persistent
+   * content in `DateSet`'s list**, never a tone and never a tooltip.
+   */
+  lockedDates?: ISODate[];
+  /** `mode="set"` only — a locked date was activated. The caller renders the floor in words. */
+  onBlocked?: (date: ISODate) => void;
+  density?: "expressive" | "functional";
+  /**
+   * A calendar's own three, **not `SurfaceState`** and not a narrowing of it: this is a control, not
+   * a surface — the region that renders content is the field or the sheet around it, and that one
+   * takes the five (law 1). A month grid cannot be `unavailable` while a date is still typeable, and
+   * a failed fetch belongs to the surface that fetched, which offers the retry.
+   */
+  state?: "ready" | "loading" | "empty";
+  emptyMessage?: string;
+  footer?: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+/** Month grid. The market pack supplies the month and day names, the field order and the first
+    column (India starts Sunday). 44px cells (36px functional), dates in tabular-nums. */
+export function Calendar(props: CalendarProps): JSX.Element;
+
+export interface DatePickerProps extends Omit<CalendarProps, "state" | "emptyMessage" | "footer" | "month" | "onMonthChange"> {
+  label?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  helper?: string;
+  error?: string;
+}
+
+/**
+ * Borderless field that opens the calendar in an `e4` popover. The displayed date is the active
+ * market's (`useFormat().date`) — "12 Mar 2026" under the shipped India pack, the pack's own order
+ * and language elsewhere. There is no `firstDayOfWeek` prop: the week start is a market fact, so it
+ * comes from the pack and a screen cannot disagree with it.
+ */
+export function DatePicker(props: DatePickerProps): JSX.Element;
+
+/**
+ * Formats a date or ISO string with the **default (India) pack** — "12 Mar 2026". For anything
+ * inside the app, read `useFormat().date` instead so the active market's pack wins; pass a
+ * `MarketFormat` as the second argument to format with a specific one.
+ */
+export function formatDate(value: ISODate | Date, format?: import("../data/MarketProvider").MarketFormat): string;
+
+/** Date helper reachable from the window namespace: `Dates.format("2026-03-12")` — default pack. */
+export const Dates: { format: typeof formatDate };

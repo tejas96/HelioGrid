@@ -1,0 +1,117 @@
+/* DataTable — the cell's own stack (value, standing, validation message, override marker), the
+   in-place editor, and the row note. Split out of DataTable.css, which @imports it. */
+
+/* ── the cell's own stack: value, standing, message, marker ───────────────── */
+
+.hg-dt-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.hg-dt-cell[data-align="right"] {
+  align-items: flex-end;
+}
+
+/* A named absence is `NamedGap`'s own treatment — the ring, the sentence and the act that fills it
+   — rendered by `renderGap` at the `cell` scale. It was a tertiary-grey span here: the colour of a
+   gap and none of its behaviour. */
+
+.hg-dt-cell-issue {
+  font-size: var(--fs-caption);
+  color: var(--danger-text);
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.hg-dt-cell-issue[data-align="right"] {
+  text-align: right;
+}
+
+.hg-dt-editor {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--hg-dt-touch);
+  padding: 0 var(--sp-3);
+  border: none;
+  outline: none;
+  border-radius: var(--r-input-functional);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-dt-editor[data-mono="true"] {
+  font-family: var(--font-mono);
+}
+
+.hg-dt-editor:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-dt-editor[data-issue="true"] {
+  box-shadow: 0 0 0 2px var(--danger);
+}
+
+.hg-dt-cell-shell[data-numeric="true"] .hg-dt-editor {
+  text-align: right;
+}
+
+/* ── the row's own line ───────────────────────────────────────────────────── */
+
+.hg-dt-row-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-body-sm);
+}
+
+.hg-dt-row-note[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-dt-row-note[data-tone="success"] {
+  color: var(--success-text);
+}
+
+.hg-dt-row-note-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--sp-4);
+  height: var(--sp-4);
+}
+
+.hg-dt-row-note-text {
+  text-wrap: pretty;
+}
+
+.hg-dt-row-note-action {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-dt-row-actions {
+  display: inline-flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.hg-dt-row-standing {
+  display: block;
+  margin-top: var(--sp-1);
+}
+
+.hg-dt-row-pending[data-spaced="true"] {
+  margin-bottom: 10px;
+}

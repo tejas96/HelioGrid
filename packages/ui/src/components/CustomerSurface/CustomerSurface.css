@@ -1,0 +1,16 @@
+/* CustomerSurface — the scope a tenant's brand colour reaches (F7-07's second half).
+
+   The class carries only the page ground: the tenant tokens themselves are written as INLINE
+   custom properties on the element, because that is the whole mechanism. A custom property set
+   on an element cannot escape it, so everything in the subtree re-tints with no prop and nothing
+   outside changes. The operator app is never wrapped, and is therefore never branded. */
+
+.hg-customer-surface {
+  background: var(--canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.hg-customer-surface[data-full-height="true"] {
+  min-height: 100%;
+}

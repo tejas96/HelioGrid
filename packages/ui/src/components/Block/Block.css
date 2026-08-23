@@ -1,0 +1,214 @@
+/* Block — the section frame the composed screens are assembled from: header, body, footer, state.
+   An empty block SAYS SO AND STAYS: one quiet sentence inside its own frame, never EmptyState's
+   full-region treatment, because the screen around it is full and the block still belongs there. */
+
+.hg-block {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: var(--surface);
+  box-shadow: var(--e2);
+  font-family: var(--font-sans);
+  min-width: 0;
+}
+
+.hg-block[data-density="expressive"] {
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-block[data-density="functional"] {
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-card-functional);
+}
+
+.hg-block[data-flat="true"] {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* ── header ──────────────────────────────────────────────────────────────────── */
+
+.hg-block-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-block-head-main {
+  min-width: 0;
+}
+
+.hg-block-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-block-overline[data-spaced="true"] {
+  margin-bottom: 6px;
+}
+
+.hg-block-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.hg-block-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.hg-block[data-density="functional"] .hg-block-title {
+  font-size: var(--fs-body);
+}
+
+/* A TOTAL beside a heading, not an unread badge: neutral pill, tabular numerals, no clamp. */
+.hg-block-count {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-block-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hg-block-meta {
+  margin-top: 3px;
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
+.hg-block-action {
+  flex-shrink: 0;
+}
+
+/* ── body states ─────────────────────────────────────────────────────────────── */
+
+.hg-block-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-block-shimmer {
+  display: block;
+  height: 12px;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-block-shimmer[data-w="72"] {
+  width: 72%;
+}
+.hg-block-shimmer[data-w="94"] {
+  width: 94%;
+}
+.hg-block-shimmer[data-w="58"] {
+  width: 58%;
+}
+
+.hg-block-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: 4px 0 2px;
+}
+
+.hg-block-message-text {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-block-message-text[data-tone="warning"] {
+  color: var(--warning-text);
+}
+
+.hg-block-message-title {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-block-message-text[data-tone="warning"] .hg-block-message-title {
+  color: var(--warning-text);
+}
+
+.hg-block-retry {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* ── footer ──────────────────────────────────────────────────────────────────── */
+
+.hg-block-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-block-foot-end {
+  min-width: 0;
+}
+
+/* ── the seam ────────────────────────────────────────────────────────────────── */
+
+.hg-block-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--hg-block-grid-min), 100%), 1fr));
+  gap: var(--hg-block-grid-gap);
+  align-items: start;
+  min-width: 0;
+}
+
+.hg-block-grid[data-columns="true"] {
+  grid-template-columns: repeat(var(--hg-block-grid-columns), minmax(0, 1fr));
+}

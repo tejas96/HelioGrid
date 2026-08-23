@@ -1,0 +1,48 @@
+import React from "react";
+import { FieldOverrideSpec } from "../data/FieldOverride";
+import { ValueSourceSpec, ValueSourceLevel } from "../data/ValueSource";
+
+export interface InputProps {
+  label?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  type?: string;
+  /** expressive = 52px white; functional = 40px surface-alt */
+  density?: "expressive" | "functional";
+  /** error message — inset 1.5px danger ring + text below */
+  error?: string;
+  /** success = inset 1.5px success ring, no message */
+  success?: boolean;
+  helper?: string;
+  disabled?: boolean;
+  /** monospace value (IDs, kWh, coordinates, invoice numbers) */
+  mono?: boolean;
+  leading?: React.ReactNode;
+  trailing?: React.ReactNode;
+  /** Commit-once mode (MS12-26 / MS3-26), opt-in: the field keeps a local draft and stops
+   *  calling `onChange` per keystroke. */
+  commitOnBlur?: boolean;
+  /** Fires ONCE on blur or Enter, and only when the text actually changed. Always a string —
+   *  numeric entry with clamping, refusal and correction belongs to `NumberField`. */
+  onCommit?: (value: string) => void;
+  /**
+   * A person replaced a derived default (`M05-72`). One treatment, rendered by `FieldOverride`:
+   * marker → superseded value → reset, directly under the field and above helper/error text.
+   */
+  override?: FieldOverrideSpec | React.ReactNode;
+  /**
+   * Which layer supplied this value (`SCR-M01-15`), rendered by `ValueSource`. **Mutually exclusive with
+   * `override`** — the field renders one or the other, never both.
+   */
+  attribution?: ValueSourceSpec | ValueSourceLevel | React.ReactNode;
+  id?: string;
+  style?: React.CSSProperties;
+}
+
+/** Borderless text field. e1 at rest; 2px accent focus ring, never a border. */
+export function Input(props: InputProps): JSX.Element;
+
+/* Commit-once mode: empty never commits, an unchanged string never commits (no undo entry for
+ * a no-op), and Escape cancels the edit and restores the last committed value. */
+

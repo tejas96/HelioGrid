@@ -1,0 +1,44 @@
+/* Wordmark — the identity. HelioGrid has no logo mark, so the wordmark IS the mark: Geist
+   Bold, tightly tracked (--tr-display is the system's own −0.03em), with the iridescence
+   carried by "Grid" only. The gradient fills type here and nowhere else; everywhere else it
+   is atmosphere (bloom, glow, icon wash) and never a button, row, chip or field.
+   `--hg-wordmark-size` / `--hg-logo-tile-*` are per-instance numbers set by the component. */
+
+.hg-wordmark {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--hg-wordmark-size);
+  letter-spacing: var(--tr-display);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-wordmark[data-tone="onDark"] {
+  color: var(--text-inverse);
+}
+
+/* The one gradient in the system — never re-mixed, always the token. */
+.hg-wordmark-grid {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hg-logo-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--hg-logo-tile-size);
+  height: var(--hg-logo-tile-size);
+  border-radius: var(--hg-logo-tile-radius);
+  background: var(--gradient-brand);
+  box-shadow: var(--e2);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--hg-logo-tile-type);
+  letter-spacing: var(--tr-display);
+  color: var(--text-inverse);
+}

@@ -1,0 +1,172 @@
+/* Menu — MS12-12's "actions menu (open · duplicate · delete) with correct menu semantics".
+   Real roles, arrow-key navigation with wrap, Home/End, Escape, type-ahead, and focus returned to
+   the trigger on close. A destructive item carries its own glyph, so the meaning survives
+   greyscale and a colourblind reader. */
+
+.hg-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-menu-trigger {
+  display: inline-flex;
+}
+
+/* The default trigger is already 44×44, so a caller inside a table row needs nothing extra. */
+.hg-menu-overflow {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hg-menu-overflow[data-open="true"] {
+  background: var(--neutral-bg);
+}
+
+.hg-menu-overflow:disabled {
+  cursor: not-allowed;
+}
+
+.hg-menu-overflow:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── the list ──────────────────────────────────────────────────────────────── */
+
+.hg-menu-list {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 6px);
+  width: var(--hg-menu-w, 220px);
+  padding: 6px;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--e4);
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+}
+
+.hg-menu-list[data-align="end"] {
+  right: 0;
+}
+
+.hg-menu-list[data-align="start"] {
+  left: 0;
+}
+
+/* A gap, never a rule: this system separates by luminance and space, not by lines. */
+.hg-menu-separator {
+  height: 6px;
+  margin: var(--sp-1) 6px;
+}
+
+/* ── the rows ──────────────────────────────────────────────────────────────── */
+
+.hg-menu-item {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* With a stated reason the row becomes two lines, so it tops-aligns and takes its own padding. */
+.hg-menu-item[data-reason="true"] {
+  align-items: flex-start;
+  padding: 9px var(--sp-3);
+}
+
+.hg-menu-item[data-active="true"] {
+  background: var(--neutral-bg);
+}
+
+.hg-menu-item[data-destructive="true"] {
+  color: var(--danger-text);
+}
+
+.hg-menu-item[data-destructive="true"][data-active="true"] {
+  background: var(--danger-bg);
+}
+
+/* The control may be grey; the sentence explaining it is not — ActionReason owns that colour. */
+.hg-menu-item[data-disabled="true"] {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.hg-menu-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-menu-item-glyph {
+  flex-shrink: 0;
+}
+
+/* The tick column is reserved on EVERY row, current or not, so the labels do not shift by 22px
+   when the current option moves. */
+.hg-menu-item-tick {
+  width: 16px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.hg-menu-item[data-reason="true"] .hg-menu-item-tick {
+  margin-top: 3px;
+}
+
+.hg-menu-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.hg-menu-item-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 100%;
+}
+
+.hg-menu-item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hg-menu-item-label[data-current="true"] {
+  font-weight: var(--fw-medium);
+}
+
+.hg-menu-item-meta {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.hg-menu-item[data-reason="true"] .hg-menu-item-meta {
+  margin-top: var(--sp-0-5);
+}

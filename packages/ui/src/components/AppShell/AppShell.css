@@ -1,0 +1,288 @@
+/* AppShell — the header half of F7-22's sidebar-and-header shell, plus the phone top bar.
+   Heights come from the tokens that already existed: --header-h (64) and --topbar-h-mobile (56). */
+
+.hg-app-shell {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  background: var(--canvas);
+}
+
+.hg-app-shell-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-app-shell-main {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* ── the desktop header ────────────────────────────────────────────────────────────────── */
+
+.hg-app-shell-header {
+  position: static;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  box-sizing: border-box;
+  min-height: var(--header-h, 64px);
+  padding: 0 var(--sp-6);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+}
+
+.hg-app-shell-header[data-sticky="true"] {
+  position: sticky;
+}
+
+.hg-app-shell-header-slot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.hg-app-shell-header-tenant {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+/* A meta separator, not a structural border. */
+.hg-app-shell-header-rule {
+  width: 1px;
+  height: var(--sp-6);
+  background: var(--hairline);
+}
+
+.hg-app-shell-header-titles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.hg-app-shell-header-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-app-shell-header-subtitle {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The global search box (F6-20) — one box, in the shell, never in the page. */
+.hg-app-shell-header-search {
+  flex: 1 1 320px;
+  min-width: 0;
+  max-width: 420px;
+  margin-left: var(--sp-2);
+}
+
+.hg-app-shell-header-spacer {
+  flex: 1;
+}
+
+.hg-app-shell-header-spacer[data-tight="true"] {
+  flex: 0 0 auto;
+}
+
+.hg-app-shell-header-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── the phone top bar ─────────────────────────────────────────────────────────────────── */
+
+.hg-app-shell-topbar {
+  position: static;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  box-sizing: border-box;
+  min-height: var(--topbar-h-mobile, 56px);
+  padding: 0 var(--sp-3) 0 var(--sp-4);
+  background: var(--surface);
+  font-family: var(--font-sans);
+}
+
+.hg-app-shell-topbar[data-sticky="true"] {
+  position: sticky;
+}
+
+.hg-app-shell-topbar-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h1);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-app-shell-topbar-spacer {
+  flex: 1;
+}
+
+.hg-app-shell-topbar-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+}
+
+/* ── the 44px shell button ─────────────────────────────────────────────────────────────── */
+
+.hg-app-shell-action {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-app-shell-action:hover:not([data-active="true"]) {
+  background: var(--neutral-bg);
+}
+
+.hg-app-shell-action[data-active="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.hg-app-shell-action:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-app-shell-action-badge {
+  position: absolute;
+  top: 6px;
+  right: var(--sp-1);
+}
+
+.hg-app-shell-glyph {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── the count badge ───────────────────────────────────────────────────────────────────────
+   The numeral is WORDS, so the fill is the -bg tint and the digits the -text partner; the DOT
+   is a mark and takes the plain token — except warning, which measures 2.17 and is never a mark
+   anywhere in this system, so the warning dot takes --warning-text. */
+
+.hg-app-shell-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--sp-5);
+  height: var(--sp-5);
+  border-radius: var(--r-pill);
+  padding: 0 6px;
+  box-shadow: 0 0 0 2px var(--surface);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-app-shell-badge[data-dot="true"] {
+  min-width: var(--sp-2);
+  height: var(--sp-2);
+  padding: 0;
+}
+
+.hg-app-shell-badge[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-app-shell-badge[data-tone="danger"][data-dot="true"] {
+  background: var(--danger);
+}
+
+.hg-app-shell-badge[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.hg-app-shell-badge[data-tone="warning"][data-dot="true"] {
+  background: var(--warning-text);
+}
+
+.hg-app-shell-badge[data-tone="success"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-app-shell-badge[data-tone="success"][data-dot="true"] {
+  background: var(--success);
+}
+
+.hg-app-shell-badge[data-tone="info"] {
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+.hg-app-shell-badge[data-tone="info"][data-dot="true"] {
+  background: var(--info);
+}
+
+.hg-app-shell-badge[data-tone="neutral"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+.hg-app-shell-badge[data-tone="neutral"][data-dot="true"] {
+  background: var(--neutral);
+}
+
+.hg-app-shell-badge[data-tone="accent"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.hg-app-shell-badge[data-tone="accent"][data-dot="true"] {
+  background: var(--accent);
+}
+
+/* The badge's own sentence, for a CountBadge mounted outside a labelled host. On the rail, the
+   nav item and the shell button the host's aria-label wins and this is never announced. */
+.hg-app-shell-badge-words {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

@@ -1,0 +1,237 @@
+/* RangeField — two overlaid <input type="range">, one drawn bar.
+   The two inputs' own tracks are transparent and pass pointer events through, so only the two
+   thumbs are grabbable and the visible bar underneath is drawn once. Range thumbs are reachable
+   only through vendor pseudo-elements — the same exemption Slider takes. */
+
+.hg-range-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.hg-range-label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-range-readout {
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.hg-range-readout[data-any="true"] {
+  color: var(--text-tertiary);
+}
+
+.hg-range-track {
+  position: relative;
+  height: 24px;
+}
+
+/* The unfilled rail is a presentational span, so field mode's control selector cannot reach it —
+   and --control-edge is the wrong SHAPE here anyway: a 1.5px INSET ring on a 6px rail leaves a
+   3px core and an EMPTY range would read as a FULL one. It takes --track-edge, the OUTSET
+   hairline, the same answer Slider's track takes. `none` in the base scope. */
+.hg-range-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 9px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge, none);
+}
+
+.hg-range-fill {
+  position: absolute;
+  top: 9px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+.hg-range-fill[data-disabled="true"] {
+  background: var(--text-disabled);
+}
+
+.hg-range-input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 24px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  margin: 0;
+  pointer-events: none;
+}
+
+.hg-range-input:focus {
+  outline: none;
+}
+
+.hg-range-input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: transparent;
+}
+
+.hg-range-input::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: transparent;
+}
+
+.hg-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  /* 44px TARGET, 22px DISC — the drag target must meet the 44px floor (docs/17 §4), but the
+     design system draws a 22px thumb. The box is 44px and the paint is a gradient disc, so
+     the target grows without the thumb looking bigger. */
+  width: 44px;
+  height: 44px;
+  margin-top: -19px;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    var(--surface) 0 9.5px,
+    var(--accent) 9.5px 11px,
+    transparent 11px
+  );
+  filter: drop-shadow(var(--e3));
+  cursor: grab;
+}
+
+.hg-range-input::-moz-range-thumb {
+  pointer-events: auto;
+  /* Firefox half of the 44px-target / 22px-disc pair above. */
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    var(--surface) 0 9.5px,
+    var(--accent) 9.5px 11px,
+    transparent 11px
+  );
+  filter: drop-shadow(var(--e3));
+  cursor: grab;
+}
+
+.hg-range-input:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    var(--e3),
+    0 0 0 2px var(--accent);
+}
+
+.hg-range-input:focus-visible::-moz-range-thumb {
+  box-shadow:
+    var(--e3),
+    0 0 0 2px var(--accent);
+}
+
+.hg-range-input:disabled::-webkit-slider-thumb {
+  box-shadow:
+    var(--e1),
+    0 0 0 1.5px var(--text-disabled) inset;
+  cursor: not-allowed;
+}
+
+.hg-range-input:disabled::-moz-range-thumb {
+  box-shadow:
+    var(--e1),
+    0 0 0 1.5px var(--text-disabled) inset;
+  cursor: not-allowed;
+}
+
+/* ── the two typed boxes ──────────────────────────────────────────────────── */
+
+.hg-range-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.hg-range-dash {
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--text-tertiary);
+  font-size: var(--fs-body-sm);
+}
+
+.hg-range-end {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 96px;
+  flex: 1 1 96px;
+}
+
+.hg-range-end-label {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-range-end-box {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  height: 44px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-input-functional);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+.hg-range-end-box[data-disabled="true"] {
+  background: var(--canvas-sunken);
+}
+
+.hg-range-end-box[data-focus="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Stretched, so the tap lands anywhere in the 44px box — it measured 145x18 before. */
+.hg-range-end-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  align-self: stretch;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  padding: 0;
+}
+
+.hg-range-end-unit {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.hg-range-hint {
+  margin: var(--sp-2) 2px 0;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}

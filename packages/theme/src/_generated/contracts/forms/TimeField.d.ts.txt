@@ -1,0 +1,114 @@
+import React from "react";
+
+/**
+ * "HH:MM" on a 24-hour clock — "09:00", "17:00", "19:30". **The value is always 24-hour**, in every
+ * market: one canonical spelling means no AM/PM ambiguity in the data. What the user reads and
+ * types follows the active market pack's clock, and both spellings parse on entry.
+ */
+export type TimeString = string;
+
+export interface TimeFieldProps {
+  value?: TimeString;
+  /** Fires once, on blur or Enter, with a normalised "HH:MM". Never per keystroke. */
+  onCommit?: (value: TimeString) => void;
+  label?: string;
+  /** Thumb path: quick picks, each ≥44×44. Strings or `{value,label}`; a bare string is labelled in the market's clock. */
+  presets?: (TimeString | { value: TimeString; label: string })[];
+  helper?: string;
+  disabled?: boolean;
+  /** Earliest permitted time. A time before it is **refused**, not clamped. */
+  min?: TimeString;
+  /** Latest permitted time. A time after it is **refused**, not clamped. */
+  max?: TimeString;
+  /** Named in the refusal — "Maharashtra", "DND hours". Makes the message specific. */
+  windowName?: string;
+  /** Override the generated refusal. The default already names the window. */
+  refusalMessage?: string;
+  /**
+   * **The caller's validation failure — not a refusal.** A refusal is the component's own act (you
+   * typed 21:00, nothing was written, and it says so now, out loud). An `error` is the gate saying this
+   * field is why a send refused: the time may be perfectly legal and still be the reason. Same danger
+   * ring, `aria-invalid`, and **described rather than announced**, because it was already true when
+   * `M06-22`'s jump landed here. Precedence in the message slot: refusal → error → helper. The focus
+   * ring rides **on top of** the danger ring rather than behind it — an error only the caller clears
+   * must not hide the caret.
+   */
+  error?: React.ReactNode;
+  /**
+   * The ring with **no sentence**. `TimeRangeField` uses it so a window's one failure is stated once
+   * under the pair rather than twice under two boxes. Prefer `error` anywhere else. Pair it with
+   * `describedBy`: `aria-invalid` with nothing described announces "invalid" and no reason.
+   */
+  invalid?: boolean;
+  /**
+   * Id of a sentence somebody else drew — the one line under a `TimeRangeField` pair. Used as
+   * `aria-describedby` when this box is ringed by `invalid` rather than by its own `error`.
+   */
+  describedBy?: string;
+  density?: "expressive" | "functional";
+  /** Defaults to the market's shape — "HH:MM" or "h:mm AM". */
+  placeholder?: string;
+  style?: React.CSSProperties;
+  id?: string;
+}
+
+/**
+ * Time of day, 24-hour. Commit-once, like `NumberField` — blur or Enter, never per keystroke.
+ *
+ * **A time outside `min`/`max` is refused and the refusal names the window.** It is never clamped.
+ * `NumberField` clamps a **dimension** and says so, because the nearest legal value is obviously what
+ * the user meant; a calling window is a compliance boundary (`F1-15` / `F1-36`), so silently
+ * turning 21:00 into 19:00 would hand an EPC a window they never chose and believe they did. The
+ * field restores the last good value and states the permitted hours in words.
+ *
+ * **This is now a pattern rather than an exception:** `NumberField outOfRange="refuse"` applies the
+ * same ruling to money (`SCR-M11-03`), where a clamp would write a figure the person did not type
+ * into a ledger. Clamping stays `NumberField`'s default because a measurement is not a record of
+ * something that happened.
+ *
+ * Two entry paths on purpose: presets for a thumb on a roof, typing for precision at a desk.
+ *
+ * Display follows the market pack's clock (`F1` / `F3-20`), so a 12-hour market can render
+ * M06-16's "Time generated"; the prop, the commit and `min`/`max` stay 24-hour throughout.
+ */
+export function TimeField(props: TimeFieldProps): JSX.Element;
+
+export interface TimeRangeFieldProps {
+  from?: TimeString;
+  to?: TimeString;
+  /** Fires with both ends once either commits and the pair is valid. */
+  onCommit?: (value: { from: TimeString; to: TimeString }) => void;
+  label?: string;
+  /** Statutory bounds applied to both ends (F1-15 / F1-36). */
+  min?: TimeString;
+  max?: TimeString;
+  windowName?: string;
+  helper?: string;
+  /** The window's own validation failure. Rings **both** fields, states the sentence once under them,
+      and points both boxes' `aria-describedby` at that one sentence. */
+  error?: React.ReactNode;
+  disabled?: boolean;
+  density?: "expressive" | "functional";
+  style?: React.CSSProperties;
+}
+
+/**
+ * A start–end window — the calling window an EPC's voice agent may dial inside
+ * (`SCR-M07-05` / `SCR-M07-06`).
+ *
+ * Both ends refuse anything outside the market pack's statutory hours, and the pair itself refuses
+ * an end at or before its start rather than reordering silently.
+ */
+export function TimeRangeField(props: TimeRangeFieldProps): JSX.Element;
+
+/** "17:00" → 1020 minutes. Null if unparseable. */
+export function parseTime(input: string): number | null;
+/** 1020 → "17:00". */
+export function formatTime(minutes: number): TimeString;
+/** Normalises "9:00" / "0900" / "9.00" to "09:00". Null if unparseable. */
+export function normaliseTime(input: string): TimeString | null;
+
+/** Time helpers reachable from the window namespace: `Times.format(1020)`. */
+export const Times: {
+  parse: typeof parseTime; format: typeof formatTime; normalise: typeof normaliseTime;
+};

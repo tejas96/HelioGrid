@@ -1,0 +1,85 @@
+/* FieldModeToggle — the switch behind F7-16's high-contrast field mode.
+
+   THE TRACK DECLARES --control-edge, and it has to be here rather than in tokens/field-mode.css.
+   In field mode an OFF track is #E9ECF0 on a #FFFFFF surface — about 1.15:1, invisible in direct
+   sun — and the blanket rule in that file keys on CONTROL semantics (button, [role="button"],
+   [role="tab"]) which a presentational <span> cannot match, because the real control is the
+   visually hidden <input role="switch"> beside it. Widening that selector to reach spans would ring
+   every unrelated span in the product, so the component reads the token instead. --control-edge is
+   `none` in the base scope, so this line costs nothing until the mode is on. This row's own switch
+   is the one it mattered most for. */
+
+.hg-field-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* The track is 52×32 and the target is 44 tall — the <label> is the hit box. */
+.hg-field-mode-row {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: var(--sp-3);
+  cursor: pointer;
+}
+
+.hg-field-mode-track {
+  width: 52px;
+  height: var(--sp-8);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  position: relative;
+  background: var(--canvas-sunken);
+  box-shadow: var(--control-edge);
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-field-mode-row[data-checked="true"] .hg-field-mode-track {
+  background: var(--accent);
+}
+
+.hg-field-mode-thumb {
+  position: absolute;
+  top: var(--sp-1);
+  left: var(--sp-1);
+  width: var(--sp-6);
+  height: var(--sp-6);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--e2);
+  transition: left var(--dur-standard) var(--ease-spring);
+}
+
+.hg-field-mode-row[data-checked="true"] .hg-field-mode-thumb {
+  left: var(--sp-6);
+}
+
+.hg-field-mode-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.hg-field-mode-row:has(.hg-field-mode-input:focus-visible) .hg-field-mode-track {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-field-mode-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+}
+
+/* The copy is exact, because a claim in a settings row is a promise. */
+.hg-field-mode-hint {
+  margin: 0;
+  padding-left: var(--sp-0-5);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}

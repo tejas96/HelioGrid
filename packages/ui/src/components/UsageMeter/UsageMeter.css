@@ -1,0 +1,184 @@
+/* UsageMeter — the billing meter for SCR-M12-04 (BM-27 / BM-34 / M12-30 / M12-35 / M12-36).
+
+   NOT A RICHER ProgressBar: this one has a denominator, a period, a provenance tier, a threshold
+   tick, a scale that continues past 100% and the billing states. Folding those into ProgressBar
+   would put billing semantics into every upload bar in the product.
+
+   M12-36 "NO SCARY METERS" — the meter reports, it never alarms. The 80% mark is --warning-text
+   (plain --warning measures 2.17:1 as a mark, under the 3:1 non-text floor), overage is INFO-blue
+   because it is expected billable behaviour rather than a fault, and a paused meter greys the bar
+   and puts the severity in the words. At 100% a Banner appears — the banner is the alarm.
+
+   14px label, the 8/10px track heights, the 92px shimmer and the 2px marks are the meter's own
+   dimensions and have no scale step; every colour, radius and duration is a token. */
+
+.hg-usage-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+}
+
+.hg-usage-meter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-usage-meter-label {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-usage-meter-period {
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
+}
+
+.hg-usage-meter-figure {
+  font-size: var(--fs-body-sm);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.hg-usage-meter-figure > strong {
+  font-weight: var(--fw-bold);
+}
+
+.hg-usage-meter-unit {
+  color: var(--text-tertiary);
+}
+
+/* ── the track ─────────────────────────────────────────────────────────────── */
+
+.hg-usage-meter-track {
+  position: relative;
+  height: var(--hg-usage-meter-track-h, 10px);
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+  display: flex;
+  overflow: hidden;
+}
+
+.hg-usage-meter-used {
+  width: var(--hg-usage-meter-used, 0%);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-usage-meter-used[data-fill="accent"] {
+  background: var(--accent);
+}
+.hg-usage-meter-used[data-fill="info"] {
+  background: var(--info);
+}
+.hg-usage-meter-used[data-fill="warning"] {
+  background: var(--warning-text);
+}
+.hg-usage-meter-used[data-fill="neutral"] {
+  background: var(--neutral);
+}
+
+/* The overage segment is a separate, lighter-weight fill: visible, not shouted. */
+.hg-usage-meter-over {
+  width: var(--hg-usage-meter-over, 0%);
+  background: var(--info);
+  opacity: 0.55;
+  border-left: 2px solid var(--surface);
+  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-usage-meter-tick {
+  position: absolute;
+  left: var(--hg-usage-meter-threshold, 80%);
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--surface);
+  opacity: 0.9;
+}
+
+.hg-usage-meter-bundle-mark {
+  position: absolute;
+  left: var(--hg-usage-meter-limit-mark, 100%);
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: var(--text-primary);
+  opacity: 0.35;
+}
+
+/* ── the lines ─────────────────────────────────────────────────────────────── */
+
+.hg-usage-meter-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-table);
+  color: var(--text-tertiary);
+  text-wrap: pretty;
+}
+
+.hg-usage-meter-status {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-table);
+  font-weight: var(--fw-medium);
+  text-wrap: pretty;
+}
+
+.hg-usage-meter-status[data-tone="danger"] {
+  color: var(--danger-text);
+}
+.hg-usage-meter-status[data-tone="warning"] {
+  color: var(--warning-text);
+}
+.hg-usage-meter-status[data-tone="info"] {
+  color: var(--info-text);
+}
+
+.hg-usage-meter-error {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-table);
+  font-weight: var(--fw-medium);
+  color: var(--warning-text);
+  text-wrap: pretty;
+}
+
+.hg-usage-meter-retry {
+  display: flex;
+}
+
+/* The 44px floor comes from Pressable; this is the pill profile on top of it. */
+.hg-usage-meter-pill.hg-pressable {
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* ── the unresolved shimmer, in the figure's OWN footprint ─────────────────── */
+
+.hg-usage-meter-shimmer {
+  display: block;
+  width: var(--hg-usage-meter-shimmer-w, 100%);
+  height: var(--hg-usage-meter-shimmer-h, 10px);
+  border-radius: var(--hg-usage-meter-shimmer-r, var(--r-pill));
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}

@@ -1,0 +1,91 @@
+import React from "react";
+
+/**
+ * The four ruled kinds. Each owns its wording; `custom` is the only one whose `text` is read.
+ *
+ * - `indicative-basis` — `M06-04` (P0) / `SCR-M06-17`, the Path B line on every document.
+ * - `remote-survey` — the basis line when nobody stood on the roof.
+ * - `structure` — `MS9-17`, wherever structure or mounting is quoted.
+ * - `staleness` — `MS9-16`, and the one that prints even inside a print-suppressed region.
+ */
+export type DisclosureKind = "indicative-basis" | "remote-survey" | "structure" | "staleness" | "custom";
+
+export interface DisclosureSpec {
+  kind: DisclosureKind;
+  /** Read **only** for `kind="custom"` — a market pack's own required line. */
+  text?: string;
+  /** The particulars: which figures, whose survey, as of when. Never a replacement for the line. */
+  detail?: string;
+  /**
+   * `screen` (default) — `--fs-body-lg` (17px) with a 700 lead clause, at or above every run of
+   * prose around it, so the default surface is already in the reading flow (`F5-37`).
+   * `document` — the lead clause at `--doc-fs-figure` (22px = 16.5pt, **the money figure's own
+   * size**) and the sentence at `--doc-fs` (12pt reading copy).
+   */
+  surface?: "screen" | "document";
+  as?: keyof JSX.IntrinsicElements;
+  style?: React.CSSProperties;
+}
+
+export interface DisclosureProps extends DisclosureSpec {}
+
+/**
+ * **The mandatory honesty line, in the reading flow, at the weight of the figures it qualifies.**
+ *
+ * `M06-04` (P0) / `SCR-M06-17`: *"'A proposal built without a design must say so. **Not in fine
+ * print — visibly, on the document**': every Path B document renders the fixed line, **verbatim**"*
+ * — `indicative-disclaimer-path-b`, *"in the reading flow at the same visual weight as the figures
+ * it qualifies"*. The row calls it *a genuine competitive advantage, not a disclaimer*.
+ *
+ * **It has no dismiss, no `open`, no `onDismiss` and no `dismissible`.** There is nothing to close,
+ * so no caller has to remember not to close it — which is the difference between this and
+ * `Banner`, where `dismissible` is opt-in and `NEVER_DISMISSIBLE` is a guard that `disclaimer` was
+ * never on. `BannerStack mode="single"` and `max` could also hide it; `DisclosureSet` cannot.
+ * `MS9-11` rules a banner out a third time — the customer's surface carries *"no operator-only
+ * alerts"* — and a tinted, glyphed strip is the wrong weight a fourth time.
+ *
+ * **The weight is measured against the figure, not against body copy.** On a sheet the lead clause
+ * takes `--doc-fs-figure` at 700 — the same size as the money figure it qualifies — and the sentence
+ * takes `--doc-fs`. On screen the default is `--fs-body-lg` (17px), the top of the prose scale, so
+ * the line is never smaller than the copy around it. The prose weight is **400**, not 500: readme
+ * law reserves 500 for buttons, tabs and table headers, and the emphasis here is the 700 lead.
+ *
+ * **The words are the component's.** "Verbatim" is only true if one place owns the line, so `text`
+ * is ignored (with a console warning) for the four ruled kinds and particulars go in `detail`.
+ * `Disclosure.TEXT` exposes the frozen lines for review.
+ *
+ * **It prints, and it is not print-suppressible.** `data-print="always"` is the declaration; the
+ * guard is the `PrintScope` registry — a disclosure inside a screen-only region hoists into a
+ * print-only copy beside it, because `display:block !important` cannot beat an ancestor's
+ * `display:none`.
+ */
+export function Disclosure(props: DisclosureProps): JSX.Element | null;
+
+export interface DisclosureSetProps {
+  /** Kinds or specs. Order and duplicates don't matter — the set fixes both. */
+  items?: (DisclosureKind | DisclosureSpec)[];
+  surface?: "screen" | "document";
+  gap?: number;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **Every true line, always, in document order** — basis · remote survey · structure · staleness.
+ *
+ * The deliberate opposite of `BannerStack`: **no `mode`, no `max`**, no precedence rule that lets
+ * one statement speak for the others. It orders and de-duplicates, and that is the whole API. There
+ * is no arrangement of props that hides a member.
+ */
+export function DisclosureSet(props: DisclosureSetProps): JSX.Element | null;
+
+/** What every `disclosure` / `disclaimer` host prop runs through: a kind, a spec, or a ready node. */
+export function renderDisclosure(spec: DisclosureKind | DisclosureSpec | React.ReactNode, extra?: Partial<DisclosureProps>): React.ReactNode;
+
+/** The verbatim lines, frozen and readable — so a review can compare them without running the app. */
+export const DISCLOSURE_TEXT: Readonly<Record<DisclosureKind, string>>;
+
+export namespace Disclosure {
+  const Set: typeof DisclosureSet;
+  const render: typeof renderDisclosure;
+  const TEXT: typeof DISCLOSURE_TEXT;
+}

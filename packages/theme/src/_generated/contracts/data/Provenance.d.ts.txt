@@ -1,0 +1,79 @@
+import React from "react";
+
+/**
+ * The four canonical tiers. **Not a closed set** — any string is a valid tier, because three
+ * surfaces need vocabularies these names don't contain and one screen forbids "measured" outright.
+ */
+export type ProvenanceTierName = "measured" | "derived" | "estimated" | "assumed";
+
+/**
+ * A tier. Either a canonical name, any free word (`"Verified datasheet"`), an object that borrows a
+ * canonical mark colour, or the reserved `"unmarked"` — which renders nothing and *records that the
+ * absence is deliberate* (`M05-52`), as distinct from having forgotten.
+ */
+export type ProvenanceTierSpec =
+  | ProvenanceTierName
+  | "unmarked"
+  | string
+  | { label: string; tone?: ProvenanceTierName; color?: string };
+
+/**
+ * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier — a
+ * derived figure from a stale version is still derived, and still must not read as final.
+ *
+ * - `confirmed` — the account confirmed it (`M11-42`).
+ * - `provisional` — a value is shown and is being superseded (`M06-41`, `F5-59`, `M05-06`).
+ * - `reported` — a person says it happened; the system has not confirmed it (`M11-42`).
+ * - `pending` — no value exists yet (`MS12-06`).
+ *
+ * Omit it and nothing renders. Set it — including `"confirmed"` — and the word renders, which is
+ * how a ledger shows confirmed and reported money as visibly different things on one screen.
+ */
+export type ProvenanceStanding = "confirmed" | "provisional" | "reported" | "pending";
+
+export interface ProvenanceProps {
+  tier?: ProvenanceTierSpec;
+  standing?: ProvenanceStanding;
+  /** What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`). */
+  source?: string;
+  /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
+  projection?: string;
+  note?: string;
+  /** 12 (default) or 13. Never below 12 — the type floor. */
+  size?: number;
+  align?: "left" | "right" | "center";
+  inline?: boolean;
+  style?: React.CSSProperties;
+}
+
+/**
+ * The persistent, legible line that sits beside a number and says how much to trust it
+ * (`F8-01` / `F8-07`).
+ *
+ * **The word is the carrier; the dot is a second channel.** Never a tooltip, never a hover, never
+ * colour alone, never a footnote. Renders `standing · tier · source · projection` in that order —
+ * standing leads, because "this is not final" outranks "this is how it was worked out".
+ *
+ * **This is the label; the argument is `Derivation`** (law 24). One of these four facts, fitting on the
+ * line beside the number without being opened, belongs here — *"PVGIS, 2020–2023 average"* is a
+ * `source`. A sentence, or more than one part (a formula in words, an assumption, a model boundary, an
+ * exclusion) is a `Derivation`, which sits **under** this line and never replaces it.
+ */
+export function Provenance(props: ProvenanceProps): JSX.Element | null;
+
+export namespace Provenance {
+  /** True when a spec would render nothing — lets a host reserve space without guessing. */
+  function isEmpty(spec?: ProvenanceProps): boolean;
+}
+
+/** The tier alone. `withLabel` now defaults to **true**: the visible word is the default. */
+export function ProvenanceTier(props: {
+  tier?: ProvenanceTierSpec; withLabel?: boolean; size?: number; style?: React.CSSProperties;
+}): JSX.Element | null;
+
+/** Canonical tier labels and mark colours. Extend by passing your own strings, not by editing this. */
+export const PROVENANCE_TIERS: Record<ProvenanceTierName, { label: string; color: string }>;
+export const PROVENANCE_STANDINGS: Record<ProvenanceStanding, { label: string; color: string; mark: string }>;
+
+/** Resolves any accepted tier spelling to `{label,color}`, or null for a deliberate absence. */
+export function resolveTier(tier?: ProvenanceTierSpec): { label: string; color: string } | null;
