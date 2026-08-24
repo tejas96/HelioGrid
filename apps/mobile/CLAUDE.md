@@ -15,13 +15,13 @@ pnpm --filter @heliogrid/mobile typecheck
 cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 
 ## Dependency policy
-docs/architecture.md §2 apps/mobile; platform rules §3 (React Native). `@heliogrid/data` is
+docs/engineering/architecture.md §2 apps/mobile; platform rules §3 (React Native). `@heliogrid/data` is
 THE data path — transport, repositories, session; this app authors none. Shared login
 types, policy constants and formatters are imported from `@heliogrid/domain`, never
 re-authored (Law 11).
 nav: @react-navigation/native + native-stack + bottom-tabs + elements + react-native-screens
 RN UI components: `@heliogrid/ui` — ONE package holds both platforms, RN via the
-`.native.tsx` half (docs/17-ui-architecture-v2.md §2). Parity is a TYPE, not a script: both
+`.native.tsx` half (docs/engineering/17-ui-architecture-v2.md §2). Parity is a TYPE, not a script: both
 platform files import the same `<Name>.types.ts`, so divergence cannot compile. The v1
 `src/ui` mirror and its `api-parity.ts` were deleted 2026-08-19.
 
@@ -101,9 +101,8 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   copy into our header and the server 401s. Enforced in `@heliogrid/data`'s transport;
   recorded here because this is the platform it bites.
 - metro.config.js holds monorepo resolution only (`watchFolders` + `nodeModulesPaths` for
-  pnpm workspace packages) plus a note that PowerSync (Track E) WILL add an inline-requires
-  blockList — do not remove either. There is no Lingui transformer: the runtime
-  `<Trans id>` convention needs none.
+  pnpm workspace packages). There is no Lingui transformer: the runtime `<Trans id>`
+  convention needs none.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
 - Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).
   Devanagari via `<AppText>` run-splitting — verify on BOTH simulators.
@@ -113,4 +112,4 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
 - babel: `@babel/plugin-transform-class-static-block` for formatjs polyfills.
 
 ## Definition of done here
-Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + docs/10 §10 (per-screen DoD).
+Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + `docs/prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD).

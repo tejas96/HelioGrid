@@ -1,5 +1,5 @@
 /**
- * packages/theme generator — docs/17 §2/§6, the canonical mechanism.
+ * packages/theme generator — docs/engineering/17 §2/§6, the canonical mechanism.
  *
  * Parses src/_generated/tokens/*.css (written by ds:pull from the live design system,
  * project c8aa4326-21bf-453a-8d11-749cc81dee12) and emits:

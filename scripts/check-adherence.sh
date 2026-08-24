@@ -29,11 +29,11 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-# packages/ui/src landed 2026-08-19 (V2 primitives, docs/17 §4) and is scanned from day one,
+# packages/ui/src landed 2026-08-19 (V2 primitives, docs/engineering/17 §4) and is scanned from day one,
 # per the rule that used to sit here. The 95-component layer landed into the same tree the same
 # day and is covered by that entry — a component folder is not a separate opt-in.
 # packages/theme/src is scanned, EXCEPT src/_generated — that is the pulled design-system
-# source itself (ds:pull, docs/17 §6), raw colour by definition; the --exclude-dir below
+# source itself (ds:pull, docs/engineering/17 §6), raw colour by definition; the --exclude-dir below
 # keeps the gate on the HAND-WRITTEN theme source without firing on the DS it enforces.
 # Being the token package is NOT itself an exemption, and the whole tree is not dropped to buy
 # one: _generated is the exempt part, and it is excluded by path so the hand-written source
@@ -148,7 +148,7 @@ hex=$(for f in $(grep -rlE "$COLOUR" $UI_DIRS --include='*.ts' --include='*.tsx'
 if [ -n "$hex" ]; then
   printf 'RAW COLOUR in a UI path — use a token from @heliogrid/theme:\n%s\n' "$hex"
   echo '  Tokens come from @heliogrid/theme, which is GENERATED from the live design'
-  echo '  system (docs/17 §6). Only packages/theme/src/_generated — the pulled DS source'
+  echo '  system (docs/engineering/17 §6). Only packages/theme/src/_generated — the pulled DS source'
   echo '  itself — is exempt. See .claude/rules/ui-adherence.md.'
   echo '  color-mix() OVER TOKENS is fine — a literal colour in any notation is not.'
   fail=1
@@ -223,7 +223,7 @@ copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
        | grep -vE "^($COPY_DEBT):")
 if [ -n "$copy" ]; then
-  printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — prd/foundations/F3-localization.md):\n%s\n' "$copy"
+  printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — docs/prd/foundations/F3-localization.md):\n%s\n' "$copy"
   echo '  Wrap it: <Trans id="…"> in a component, i18n._() where a string is needed. The i18n'
   echo '  CI guard only proves catalogs are FRESH — a literal that was never extracted has no'
   echo '  catalog entry to go stale, so nothing else sees it.'
@@ -247,7 +247,7 @@ for po in packages/i18n/src/locales/*/messages.po; do
   [ "$n" -gt 0 ] && untranslated="${untranslated}  ${po}: ${n} untranslated\n"
 done
 if [ -n "$untranslated" ]; then
-  printf 'UNTRANSLATED MESSAGES (prd/foundations/F3-localization.md — EN/HI/MR):\n'
+  printf 'UNTRANSLATED MESSAGES (docs/prd/foundations/F3-localization.md — EN/HI/MR):\n'
   printf "$untranslated"
   echo '  `lingui extract` only proves catalogs are FRESH. An empty msgstr survives it, and'
   echo '  compiles, and renders English to a Hindi or Marathi user.'
@@ -258,7 +258,7 @@ fi
 # Checked that no feature screen used the pre-component `.hg-*` scaffold instead of the
 # design system. Both sides of that comparison are gone: the v1 packages/ui was deleted and
 # globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
-# called, if there is one — in the change that creates packages/ui (docs/17 §5 step 2).
+# called, if there is one — in the change that creates packages/ui (docs/engineering/17 §5 step 2).
 
 [ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated'
 exit $fail

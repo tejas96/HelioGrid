@@ -54,7 +54,7 @@ function ariaState(
 
 /**
  * The one pressable. Owns the 44px minimum target, the focus ring, the pressed state and
- * the disabled treatment — a component never re-implements any of these (docs/17 §4).
+ * the disabled treatment — a component never re-implements any of these (docs/engineering/17 §4).
  *
  * SEMANTICS COME THROUGH IT, NOT AROUND IT. `accessibilityRole` and `accessibilityState` are here
  * so that a checkbox, a radio, a tab or a menu row can say what it is and which one is on WITHOUT

@@ -24,8 +24,8 @@ pnpm --filter @heliogrid/env build | typecheck
   `.env.example` documents them; neither ever holds a real secret.
 
 ## Dependency policy
-docs/architecture.md §2 env. Two deliberate non-consumers: packages/db (its migrator takes
-the URL as a parameter) and packages/domain (may never read the environment — ADR-0021).
+docs/engineering/architecture.md §2 env. Two deliberate non-consumers: packages/db (its migrator takes
+the URL as a parameter) and packages/domain (may never read the environment — it is pure TS and takes injected context instead).
 
 ## Local conventions
 - Adding a variable means editing a schema HERE and `.env.example`, and nothing else.

@@ -14,7 +14,7 @@ Every file in this folder is a byte-verbatim copy of the live design system:
   which is what makes the `ds:contract` gate possible: `adherence.oxlintrc.json` carries names
   only, so it can say a prop is missing but never that a prop was ported with a weaker type. If a
   typing here looks wrong, the fix is a re-pull, not an edit — an edited contract is a hand-copied
-  mirror, which is the exact failure docs/17 §6 exists to abolish.
+  mirror, which is the exact failure docs/engineering/17 §6 exists to abolish.
 
   **Why `.d.ts.txt` and not `.d.ts`.** These files are DATA, not code: nothing compiles them,
   nothing imports them, nothing type-checks them — `scripts/ds-contract/` opens them as TEXT.
@@ -36,6 +36,6 @@ Every file in this folder is a byte-verbatim copy of the live design system:
   folder from boundaries both leans on ignore support turbo does not really have and installs a
   blind spot over a directory inside a shipping package.
 
-Hand-editing anything here is a bug (docs/17 §6): this folder exists so the repo carries no
+Hand-editing anything here is a bug (docs/engineering/17 §6): this folder exists so the repo carries no
 hand-copied mirror that can drift. The re-pull happens in a Claude session — see
 `packages/theme/README.md` for the contract.

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 /**
- * The DS type scale (docs/17 §4). `overline` is the 11px/700/uppercase/0.12em signature —
+ * The DS type scale (docs/engineering/17 §4). `overline` is the 11px/700/uppercase/0.12em signature —
  * the one sanctioned appearance below the 12px floor. `mono` is body-sm in Geist Mono,
  * for figures and identifiers.
  */

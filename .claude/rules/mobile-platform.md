@@ -5,7 +5,7 @@ paths:
 
 # apps/mobile — React Native
 
-Architecture: `docs/architecture.md` §2 apps/mobile · §3 platform rules.
+Architecture: `docs/engineering/architecture.md` §2 apps/mobile · §3 platform rules.
 
 ## Where files go
 
@@ -27,7 +27,7 @@ src/lib/                    app-level helpers that are NOT design-system primiti
 ## Rules
 
 - **Interactive primitives come from `@heliogrid/ui`, never `react-native`** — its RN half
-  is the `.native.tsx` file in the same component folder (docs/17 §2). `View`, `ScrollView`,
+  is the `.native.tsx` file in the same component folder (docs/engineering/17 §2). `View`, `ScrollView`,
   `StyleSheet` and `Platform` are layout and stay allowed. Biome enforces this under
   `src/screens/**`; the rule binds everywhere in `src/`, including `src/lib` and
   `src/navigation`, which lint does not reach. **INERT until packages/ui lands** —

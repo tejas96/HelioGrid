@@ -21,7 +21,7 @@
     // folder sits outside the `src/**/*.ts` project glob and needs no exclusion here.
     "packages/theme": { "entry": ["build.ts", "src/index.ts"], "project": "src/**/*.ts" },
 
-    // ONE package, both platforms (docs/17 §2). src/index.ts is inferred from the manifest;
+    // ONE package, both platforms (docs/engineering/17 §2). src/index.ts is inferred from the manifest;
     // the .native.tsx halves are extra ENTRIES because Metro substitutes them for the .tsx
     // halves at bundle time, so from the web entry alone knip would call them dead files.
     // react-dom is an optional peer the WEB half references (Portal.tsx createPortal);

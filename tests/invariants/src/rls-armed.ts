@@ -40,7 +40,7 @@ const CANONICAL_POLICY_EXPRESSIONS: Record<string, string> = {
  * SECURITY DEFINER functions in `public`, each with a written reason. Empty today.
  *
  * Every table is owned by a SUPERUSER, and 0005 records that FORCE cannot restrain one. A
- * SECURITY DEFINER function therefore reads through RLS entirely. docs/04 §7 plans exactly
+ * SECURITY DEFINER function therefore reads through RLS entirely. plans exactly
  * such a path for public customer-link reads, so this list exists before that module does.
  */
 const SECURITY_DEFINER_ALLOWED: Record<string, string> = {};
@@ -224,7 +224,7 @@ export async function assertPartitionChildrenUngranted(sql: postgres.Sql) {
  */
 export async function assertNoRlsBypassingRoutes(sql: postgres.Sql) {
   // Extension-owned relations are excluded: pg_stat_statements ships views this repo does not
-  // own and cannot ALTER (docs/09 enables it), and a gate that is permanently red for something
+  // own and cannot ALTER (docs/engineering/09 enables it), and a gate that is permanently red for something
   // nobody can fix is the pressure that gets gates weakened — the failure mode this whole audit
   // keeps finding. `pg_depend`/`pg_extension` is the honest test of "not ours".
   const views = await sql<ViewRow[]>`

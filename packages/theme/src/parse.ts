@@ -1,6 +1,6 @@
 /**
  * Mechanical parser for src/_generated/tokens/*.css — the files `ds:pull` writes from the
- * live design system (docs/17 §6). The CSS is the source of truth; manifest.json is NEVER
+ * live design system (docs/engineering/17 §6). The CSS is the source of truth; manifest.json is NEVER
  * read for values (the v1 manifest snapshotted 1ms reduced-motion overrides as canonical —
  * exactly the drift this parser prevents). Media-query and attribute-scoped overrides are
  * captured separately and never replace the base :root declarations.

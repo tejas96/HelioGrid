@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 /**
- * The one label + hint + error + required wrapper every form control shares (docs/17 §4).
+ * The one label + hint + error + required wrapper every form control shares (docs/engineering/17 §4).
  * A control never draws its own label row; it is composed inside a Field.
  */
 export interface FieldProps {

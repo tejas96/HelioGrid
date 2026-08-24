@@ -47,8 +47,6 @@ apps/mobile/android
 coverage
 *.log
 
-# Docs and design assets. The server images render none of it; docs/ alone is a large tree of
-# markdown, and design/ carries the mockups and font binaries.
+# Docs. The server images render none of it, and docs/ alone is a large tree of markdown.
 docs
-design
 README.md

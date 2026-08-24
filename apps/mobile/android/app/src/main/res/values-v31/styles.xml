@@ -11,7 +11,7 @@
       No androidx.core:core-splashscreen dependency: setting the platform attribute directly
       does the same job for a static colour and adds nothing to the build.
 
-      ACCEPTED DIVERGENCE (owner ruling 2026-08-02, docs/13 UXG-26): the system also centres
+      ACCEPTED DIVERGENCE (owner ruling 2026-08-02): the system also centres
       the launcher icon here, while iOS shows plain canvas. Forcing parity needs a transparent
       windowSplashScreenAnimatedIcon, which fights the platform and breaks on OS updates.
 

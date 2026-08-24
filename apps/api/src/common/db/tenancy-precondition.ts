@@ -3,7 +3,7 @@ import type { INestApplication } from '@nestjs/common';
 import { RUNTIME_DB } from './runtime.token';
 
 /**
- * Boot-time tenancy precondition (docs/08 §4, BYPASSRLS warning).
+ * Boot-time tenancy precondition (docs/engineering/08 §4, BYPASSRLS warning).
  *
  * Lives in `common/db/` rather than `main.ts` because that is the only place outside a
  * repository permitted to touch `@heliogrid/db` — dependency-cruiser

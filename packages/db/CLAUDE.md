@@ -1,11 +1,11 @@
 # @heliogrid/db — Drizzle schema + append-only migrations + RLS plumbing
 
 > **GREENFIELD since 2026-08-01.** Migrations `0001`–`0006` and all of `src/schema/` were
-> deleted on an explicit owner ruling that overrode the append-only law (ADR-0024, docs/15
+> deleted on an explicit owner ruling that overrode the append-only law (owner ruling
 > R20) — the identity spine could not be removed surgically because every platform table
 > foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
 > migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
-> `docs/forward-compat.md` before writing it. Everything below describes how this package
+> `docs/engineering/forward-compat.md` before writing it. Everything below describes how this package
 > works and is what the rebuild must satisfy — it is not a description of today's contents.
 
 ## What lives here / what must never live here
@@ -14,7 +14,7 @@
 - The `./uuid` subpath export exists for app-side id generation and is the ONE thing
   frontends may import from here.
 - NEVER: business logic, contract imports, app imports. Never a table/column that is not
-  in docs/04 or a migration. web and mobile may import nothing here but `./uuid`
+  in a migration. web and mobile may import nothing here but `./uuid`
   (`web-no-db` / `mobile-no-db` exempt exactly that subpath).
 
 ## Commands
@@ -26,7 +26,7 @@ pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
 pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
 ## Dependency policy
-docs/architecture.md §2 db.
+docs/engineering/architecture.md §2 db.
 
 ## Local conventions
 - Migrations are append-only, filename-ordered, sha256-locked by the runner — editing an
@@ -57,9 +57,8 @@ docs/architecture.md §2 db.
   overflow meanwhile.
 - usage_events dedupe is `(idempotency_key, period_key)` — producers MUST derive
   period_key from occurred_at ('YYYY-MM') or retries stop being no-ops.
-- Better Auth's tables were owned by ITS migrator, never authored here — and were dropped
-  with the 2026-08-01 teardown. Whatever identity provider the rebuild picks, the same rule
-  holds: a provider's own tables are not this package's business.
+- An identity provider's own tables are owned by ITS migrator, never authored here.
+  Whatever provider the auth module picks, that rule holds.
 - `tenants` INSERT is deliberately NOT granted to app_user — signup crosses tenancy and
   runs on the explicit admin path (Track A wires it).
 

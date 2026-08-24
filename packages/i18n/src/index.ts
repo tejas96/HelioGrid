@@ -5,7 +5,7 @@ import { messages as hi } from './locales/hi/messages';
 import { messages as mr } from './locales/mr/messages';
 
 /**
- * One catalog, two consumers (docs/10 §7). Catalogs are COMPILED at build time (no
+ * One catalog, two consumers. Catalogs are COMPILED at build time (no
  * runtime parser); missing translations fall back to English — never a bare key.
  * Per-USER language (D25): switching re-renders the whole app, no reload.
  * The locale set derives from the contracts enum — one source, never restated.

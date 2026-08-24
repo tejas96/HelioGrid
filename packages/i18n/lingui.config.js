@@ -1,5 +1,5 @@
 /**
- * THE shared catalog config (docs/10 §7.1) — one catalog, two consumers. Extraction
+ * THE shared catalog config — one catalog, two consumers. Extraction
  * sweeps web, mobile and the ui package; catalogs live under src/ so tsc ships the
  * compiled messages in dist/.
  */

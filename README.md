@@ -15,6 +15,19 @@ For the rules AI agents (and humans) follow when changing this codebase, see
 [`CLAUDE.md`](CLAUDE.md) — read
 those before your first non-trivial change, not after.
 
+## Which folder answers which question
+
+| Question | Folder |
+|---|---|
+| What does the product do? | [`docs/prd/`](docs/prd/) — **the source of truth**, with owner rulings in `docs/prd/registers/` |
+| What does this screen do? | [`docs/ux/briefs/`](docs/ux/briefs/) |
+| What am I building next? | [`docs/tasks/`](docs/tasks/) and [`docs/build-order.md`](docs/build-order.md) |
+| How is the repo built? | [`docs/engineering/`](docs/engineering/) — start at [`docs/README.md`](docs/README.md) |
+| Where does this new file go? | [`docs/engineering/architecture.md`](docs/engineering/architecture.md) §4 |
+| What are the rules? | [`CLAUDE.md`](CLAUDE.md) |
+
+`docs/engineering/` never holds product truth. Where it and `docs/prd/` disagree, `docs/prd/` wins.
+
 ## Contents
 
 - [Repo map](#repo-map)
@@ -53,10 +66,9 @@ authoritative doc for that layer; this table is only the index.
 | `packages/ui` | The design system, BOTH platforms: 95 components as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity) — the only "tests" in this repo | — |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
-| `prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the registers | — |
-| `tasks/` | Per-module build tasks, written to as work completes | — |
-| `ux/` | The 150 screen briefs plus the context file every design session is given | — |
-| `design/` | Design-system gap register and the round prompts that closed it | — |
+| `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the registers | — |
+| `docs/tasks/` | Per-module build tasks, written to as work completes | — |
+| `docs/ux/` | The 150 screen briefs plus the context file every design session is given | — |
 | `.claude/` | Rules, skills and agent configuration that govern AI-assisted changes here | — |
 
 ## Prerequisites
@@ -90,7 +102,7 @@ cp .env.example .env.local                # then fill in:
 #                         on a SUPERUSER/BYPASSRLS role because RLS would silently no-op.
 
 pnpm --filter @heliogrid/db migrate       # roles + schema. NOTE: greenfield since
-                                          # 2026-08-01 (ADR-0024) — there are no migrations
+                                          # 2026-08-01 — there are no migrations
                                           # to apply until the auth+tenancy rebuild lands.
 pnpm verify                               # lint · boundaries · typecheck · test · build
 ```
@@ -253,11 +265,11 @@ to run from the repo root.** Turbo hashes file contents (including transitive wo
 via each task's `^build` dependency) and only rebuilds what actually changed — you never need
 to manually clear a cache. The one gotcha: this only works if every file a package's build
 actually reads is declared as a turbo `input` or a workspace dependency. If a package reads
-files **outside** the workspace graph (e.g. `packages/tokens/build.ts` reads
-`design/ds-source/**`, which isn't a workspace dependency), its `turbo.json` must manually
+files **outside** the workspace graph (e.g. `packages/theme/build.ts` reads generated token
+sources that aren't a workspace dependency), its `turbo.json` must manually
 restate `inputs` to cover them — otherwise `pnpm turbo build` can silently serve a stale cache
 after you edit one of those untracked files. If you add a package that reads non-workspace
-files, give it the same explicit `inputs` treatment (see `packages/tokens/turbo.json` as the
+files, give it the same explicit `inputs` treatment (see `packages/theme/turbo.json` as the
 reference example).
 
 **Workspace-internal packages consuming another workspace package's changes:** since
@@ -327,23 +339,22 @@ yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
-| [`START-HERE.md`](START-HERE.md) | **Designing a screen** — the one file a design session starts from |
-| [`prd/01-product-overview.md`](prd/01-product-overview.md) | Product vision, V1 scope, non-goals |
-| [`prd/registers/screens.md`](prd/registers/screens.md) | **The screen register** — 150 screens, 99 locked to V1, and which are designed |
-| [`BUILD-ORDER.md`](BUILD-ORDER.md) | Build order across modules |
-| [`docs/architecture.md`](docs/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
-| `docs/02-system-architecture.md` | System design record — intent and target state, not current contents (see the spine) |
-| `docs/03-tech-stack.md` | Every technology choice, pinned and justified |
-| `docs/04-data-model.md` | Full multi-tenant Postgres schema |
-| `docs/08-security-and-tenancy.md` | Security & tenancy model |
-| [`docs/17-ui-architecture-v2.md`](docs/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 95 components, and the gates that hold them |
-| [`prd/foundations/F3-localization.md`](prd/foundations/F3-localization.md) | i18n law (EN/HI/MR) |
-| [`prd/foundations/F7-design-language.md`](prd/foundations/F7-design-language.md) | Design language |
-| [`prd/registers/open-questions.md`](prd/registers/open-questions.md) | Owner rulings — check before re-deciding something already decided |
-| [`prd/registers/conflicts.md`](prd/registers/conflicts.md) | Contradictions found in the spec and how each was resolved |
-| `docs/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
-| `docs/adr/` | Why each architecture choice was made — reference only |
-| `docs/research/` | Market + technology research backing the decisions above |
+| [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the one file a design session starts from |
+| [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals |
+| [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens, 99 locked to V1, and which are designed |
+| [`docs/build-order.md`](docs/build-order.md) | Build order across modules |
+| [`docs/engineering/architecture.md`](docs/engineering/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
+| `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage, studio data flow |
+| `docs/engineering/03-tech-stack.md` | Every technology choice, pinned and justified |
+| `docs/engineering/08-security-and-tenancy.md` | Security & tenancy model |
+| [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 95 components, and the gates that hold them |
+| [`docs/prd/foundations/F3-localization.md`](docs/prd/foundations/F3-localization.md) | i18n law (EN/HI/MR) |
+| [`docs/prd/foundations/F7-design-language.md`](docs/prd/foundations/F7-design-language.md) | Design language |
+| [`docs/prd/registers/open-questions.md`](docs/prd/registers/open-questions.md) | Owner rulings — check before re-deciding something already decided |
+| [`docs/prd/registers/conflicts.md`](docs/prd/registers/conflicts.md) | Contradictions found in the spec and how each was resolved |
+| `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
+| `docs/engineering/adr/` | Why each architecture choice was made — reference only |
+| [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
 | `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
 | `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
 
@@ -361,9 +372,8 @@ newcomer immediately.
 | `apps/worker` | `bullmq`/`@nestjs/bullmq` are only importable from processors, schedulers, `common/queue/`, and `worker.module.ts` — no module may build a `Queue` itself |
 | `packages/contracts` | Zod is pinned to 3.25.x — `zod/v4` exists in the ecosystem but is banned here (ts-rest's Zod-4 support isn't stable yet) |
 | `packages/db` | pgEnum values must hand-mirror `packages/contracts`' `z.enum`s — enforced only at runtime by `tests/invariants`, not by any import-time check |
-| `packages/domain` | Zero workspace imports, by design (ADR-0021) — importing `packages/contracts` from here would create a cycle |
+| `packages/domain` | Zero workspace imports, by design — importing `packages/contracts` from here would create a cycle |
 | `packages/env` | `process.env` may **only** be read inside this package — see [Environment variables](#environment-variables) |
 | `packages/i18n` | Never mix macro `<Trans>` with explicit-`id` `<Trans>` for the same string — forks into duplicate catalog entries |
-| `packages/tokens` | Never hand-transcribe a value; never read `_ds_manifest.json` — `design/ds-source/*.css` is the only source of truth |
-| `packages/ui` | `src/api-parity.ts` typechecks this package against `packages/ui-api` in both directions — a prop change here without the RN mirror fails typecheck |
-| `packages/ui-api` | When web and RN disagree on a prop shape, RN has been the one that's right, historically — the contract generally follows RN's stricter shape |
+| `packages/theme` | Never hand-transcribe a token value; the theme is generated by its own `build.ts` |
+| `packages/ui` | both platform files import one `<Name>.types.ts`, so a prop on one platform only is a type error|

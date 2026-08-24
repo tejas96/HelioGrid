@@ -2,7 +2,7 @@
   "name": "@heliogrid/i18n",
   "version": "0.0.1",
   "private": true,
-  "description": "ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN — message source of truth is runtime <Trans id=\"<English text>\"/>, extracted to .po (docs/10 §7)",
+  "description": "ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN — message source of truth is runtime <Trans id=\"<English text>\"/>, extracted to .po",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

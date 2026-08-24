@@ -5,7 +5,7 @@ import postgres from 'postgres';
 export type Db = ReturnType<typeof createDb>['db'];
 
 /**
- * No `schema` argument: the greenfield reset of 2026-08-01 (ADR-0024) deleted the Drizzle
+ * No `schema` argument: the greenfield reset of 2026-08-01 deleted the Drizzle
  * models, so there is nothing to describe and the relational query API (`db.query.*`) has
  * no tables to build. The auth + tenancy module re-adds `src/schema/` with its first
  * migration and passes it back in here.
@@ -17,7 +17,7 @@ export function createDb(databaseUrl: string, options: { max?: number } = {}) {
 }
 
 /**
- * RLS backstop plumbing (packages/db/CLAUDE.md §Local conventions · docs/08 §4 Layer 3): every tenant-scoped request runs in a
+ * RLS backstop plumbing (packages/db/CLAUDE.md §Local conventions · docs/engineering/08 §4 Layer 3): every tenant-scoped request runs in a
  * transaction that pins `app.tenant_id` via SET LOCAL. The repository layer is the
  * primary scoping; this setting is what the row-level policies check. Fail-closed: with
  * no setting, policies see NULL and match zero rows.
@@ -28,7 +28,7 @@ export async function ping(db: Db): Promise<void> {
 }
 
 /**
- * Refuses to let an app start on a connection that can bypass tenancy (docs/08 §4, BYPASSRLS warning).
+ * Refuses to let an app start on a connection that can bypass tenancy (docs/engineering/08 §4, BYPASSRLS warning).
  *
  * RLS silently no-ops for superusers and for any role holding BYPASSRLS — no error, no log,
  * just every tenant's rows. That failure is invisible in testing precisely because

@@ -14,12 +14,12 @@ pnpm --filter @heliogrid/worker dev | build | typecheck
 REDIS_URL unset ⇒ boots in idle scaffold mode (no queue connection).
 
 ## Dependency policy
-docs/architecture.md §2 apps/worker.
+docs/engineering/architecture.md §2 apps/worker.
 
 ## Local conventions
 - **This app is still a scaffold.** `src/` holds only `main.ts`, `worker.module.ts` and
   `config/` — there are no modules, processors or schedulers yet. The TARGET layout, adopted
-  when the first one lands, mirrors apps/api (docs/02 §2): `src/{config,common,modules,scripts}`,
+  when the first one lands, mirrors apps/api (docs/engineering/02 §2): `src/{config,common,modules,scripts}`,
   one `src/modules/<m>/` per context, plus `<m>.processor.ts` (one per queue) and
   `<m>.scheduler.ts`. Copy the shape from an existing `apps/api/src/modules/<m>/`.
 - **A processor holds no logic** — parse the payload schema, take the idempotency key,
@@ -30,7 +30,7 @@ docs/architecture.md §2 apps/worker.
   idempotent — a retried job must not double-apply (money jobs especially).
 - Queue prefix `heliogrid`; queue names namespaced by area.
 - BullMQ connection: `maxRetriesPerRequest: null`, TCP endpoint, eviction OFF (Upstash
-  fixed plan) — these are binding (docs/03 §7).
+  fixed plan) — these are binding (docs/engineering/03 §7).
 
 ## Landmines
 - Provider webhook processing (payment/telephony adapters — Razorpay/Exotel today) happens

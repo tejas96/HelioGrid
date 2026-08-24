@@ -21,11 +21,11 @@ const GLOBAL_TABLES: Record<string, string> = {
   tenants: 'the tenant registry itself — RLS restricts it to the caller’s own row',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 
-  // Better Auth owns and migrates these (docs/04 §1). They are keyed by its own identity
-  // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/08 §2).
+  // An auth provider owns and migrates these. They are keyed by its own identity
+  // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/engineering/08 §2).
   // They are absent until `pnpm --filter @heliogrid/api exec tsx src/scripts/auth-migrate.ts`
   // has run, which is why the stale-entry check below only warns.
-  user: 'Better Auth internal (docs/04 §1)',
+  user: 'auth-provider internal',
   session: 'Better Auth internal',
   account: 'Better Auth internal',
   verification: 'Better Auth internal',
@@ -41,7 +41,7 @@ const GLOBAL_TABLES: Record<string, string> = {
  */
 const GLOBAL_UNIQUES: Record<string, string> = {
   users_phone_e164_key:
-    'docs/04 §2 users: "login identity; unique global (auth owns verification)". One phone is ' +
+    'users: "login identity; unique global (auth owns verification)". One phone is ' +
     'one platform identity — Better Auth verifies the number, so the same person cannot hold ' +
     'two accounts. Contrast customers.phone_e164, which is correctly (tenant_id, phone_e164) ' +
     'because two EPCs may legitimately serve the same homeowner.',

@@ -42,8 +42,8 @@ Author these assuming the implementation is wrong until proven otherwise.
 
 - **Double-submit.** Rapid double tap. Submit while a request is in flight. Back, then
   resubmit. Is the in-flight guard per-action or global — and is that the right one?
-- **Offline.** Airplane mode mid-flow. Connection dropped between send and verify. A
-  request that succeeded on the server whose response never arrived.
+- **Connection loss.** Connection dropped between send and verify. A request that succeeded
+  on the server whose response never arrived.
 - **Stale data.** Two tabs, two devices. Data changed underneath. A cached response after a
   mutation. Design changed but quote not recomputed — does money read provisional, or
   silently final?

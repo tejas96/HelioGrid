@@ -13,9 +13,9 @@ paths:
 
 ## Current state, read this first
 
-**The v1 design system was deleted on 2026-08-19.** `packages/ui`, `packages/ui-api`,
-`packages/tokens`, `apps/mobile/src/ui` and every screen built on them are gone. The V2
-replacement is specified in `docs/17-ui-architecture-v2.md` and **is not built yet**.
+**The v1 design system was deleted on 2026-08-19** — the old UI and token packages,
+`apps/mobile/src/ui` and every screen built on them are gone. The V2 replacement is specified
+in `docs/engineering/17-ui-architecture-v2.md`.
 
 Until it is: `apps/mobile/src/screens/placeholder/` and `apps/web/app/home/` are raw
 primitives on purpose, excluded by path from the rules below. Do not copy their shape into

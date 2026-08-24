@@ -47,7 +47,7 @@ export async function runTenancyInvariants(adminUrl: string) {
 
     /*
      * A database that was NEVER migrated has neither tables nor roles — `app_user` was
-     * created by 0004, which the auth teardown deleted (ADR-0024). That is CI on every run
+     * created by 0004, which the auth teardown deleted. That is CI on every run
      * since 2026-08-01: the service container is fresh, `migrate` applies an empty
      * directory, and asserting the role fails on an artifact of a migration that no longer
      * exists. A long-lived local database still carries the role from before the teardown,
@@ -60,7 +60,7 @@ export async function runTenancyInvariants(adminUrl: string) {
       assert(tables === 0, 'app_user role exists (schema is present, so the role must be too)');
       console.warn(
         'tenancy invariants VACUOUS — the database was never migrated: 0 application tables ' +
-          'and no app_user role (greenfield since 2026-08-01, ADR-0024). NOTHING about ' +
+          'and no app_user role (greenfield since 2026-08-01). NOTHING about ' +
           'tenancy is proven. Real coverage returns with the auth + tenancy module’s first ' +
           'migration, which re-creates the roles it asserts.',
       );
@@ -93,7 +93,7 @@ export async function runTenancyInvariants(adminUrl: string) {
       });
 
     /*
-     * GREENFIELD GUARD (2026-08-01, ADR-0024). The auth teardown deleted every migration,
+     * GREENFIELD GUARD (2026-08-01). The auth teardown deleted every migration,
      * so `tenants` and `users` do not exist and nothing below can seed or exercise them.
      * The catalog half would still "pass" over zero tables, which is worse than useless —
      * it would report tenancy as proven when nothing was proven at all.

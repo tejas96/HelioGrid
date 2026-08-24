@@ -16,7 +16,7 @@ export const databaseUrlSchema = z.string().url().startsWith('postgres');
 /** DDL/owner role. Optional at runtime — falls back to DATABASE_URL where an app allows it. */
 export const adminDatabaseUrlSchema = databaseUrlSchema.optional();
 
-/** BullMQ needs the TCP/RESP endpoint, never the Upstash REST URL (docs/03 §7). */
+/** BullMQ needs the TCP/RESP endpoint, never the Upstash REST URL (docs/engineering/03 §7). */
 export const redisUrlSchema = z.string().url().startsWith('redis');
 
 /**

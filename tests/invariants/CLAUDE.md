@@ -15,7 +15,7 @@ pnpm --filter @heliogrid/invariants test    # needs DATABASE_URL
 pnpm turbo test                             # the same, through the gate
 
 ## Dependency policy
-docs/architecture.md §2 tests/invariants. Importing both the wire and the schema is the
+docs/engineering/architecture.md §2 tests/invariants. Importing both the wire and the schema is the
 POINT — an invariant proves the seam between them.
 
 ## Landmines

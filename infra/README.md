@@ -9,8 +9,12 @@ later.
 | Resource | State |
 |---|---|
 | Fly org `heliogrid` (dedicated) | ✅ created — **needs a credit card** at https://fly.io/dashboard/heliogrid/billing before ANY machine/volume/add-on can be created |
-| Fly apps api/web/worker/voice/powersync | ✅ created, moved into `heliogrid` org, machineless (free) |
-| fly.toml per app | ✅ in each app dir (bom primary, min=1; deploy = `flyctl deploy` from repo root per ADR-0018) |
+| Fly apps api/web/worker | ✅ created, moved into `heliogrid` org, machineless (free) |
+
+> Two further Fly apps, `heliogrid-voice` and `heliogrid-powersync`, were created before those
+> capabilities were dropped. Both are machineless and cost nothing. **Deleting them is an owner
+> action** (`CLAUDE.md` §4) — no agent touches Fly.
+| fly.toml per app | ✅ in each app dir (bom primary, min=1; deploy = `flyctl deploy` from repo root; one Fly app per service) |
 | Dev Postgres (Fly) | ⏳ blocked on card — use local Docker meanwhile (below) |
 | Upstash Redis | ⏳ blocked on card (plan selection requires billing; no free path pre-card) |
 | Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |
@@ -73,16 +77,16 @@ flyctl proxy 15432:5432 -a heliogrid-db &   # then:
 DATABASE_ADMIN_URL=postgres://postgres:<pw>@localhost:15432/heliogrid pnpm --filter @heliogrid/db migrate
 DATABASE_ADMIN_URL=... pnpm --filter @heliogrid/invariants test
 
-# 3. Upstash Redis — FIXED plan, eviction OFF (BullMQ requirement, docs/03 §7):
+# 3. Upstash Redis — FIXED plan, eviction OFF (BullMQ requirement, docs/engineering/03 §7):
 flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
   --no-replicas --disable-eviction        # pick the fixed 250MB plan at the prompt
 
-# 4. Tigris bucket (then verify the `sin` pin per docs/spikes/S4 and RECORD the
+# 4. Tigris bucket (then verify the `sin` pin and RECORD the
 #    working command sequence in that note):
 flyctl storage create --name heliogrid-objects --org heliogrid
 
-# 5. Production upgrade path (later, unchanged from docs/03 §6): grow to 3-node
-#    repmgr HA + pgBackRest→Tigris + restore drill (docs/spikes/S2 sequence).
+# 5. Production upgrade path (later, unchanged from docs/engineering/03 §6): grow to 3-node
+#    repmgr HA + pgBackRest→Tigris + restore drill sequence.
 ```
 
 ## Secrets wiring (when deploys start)

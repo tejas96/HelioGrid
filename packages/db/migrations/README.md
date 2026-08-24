@@ -1,7 +1,7 @@
 # migrations — empty by design (2026-08-01)
 
 Migrations `0001`–`0006` were deleted in the auth teardown, on an explicit owner ruling that
-overrode the append-only law in CLAUDE.md §6. See ADR-0024 and docs/15.
+overrode the append-only law in CLAUDE.md §6.
 
 They held the identity/tenancy spine (`tenants`, `users`, `user_roles`) plus the platform
 tables that referenced it (`files`, `audit_log`, `usage_events`, `tenant_phone_numbers`,
@@ -9,7 +9,7 @@ tables that referenced it (`files`, `audit_log`, `usage_events`, `tenant_phone_n
 surgically — the spine had to go whole or not at all.
 
 The next migration is `0001`, authored by the auth + tenancy module when its slice begins
-(Law 9). Read `docs/forward-compat.md` before writing it: the `auth/tenancy` row states what
+(Law 9). Read `docs/engineering/forward-compat.md` before writing it: the `auth/tenancy` row states what
 that first migration must already satisfy so later modules are not forced into a refactor.
 
 **This directory is not optional.** The runner does `readdirSync` on it, so it must exist

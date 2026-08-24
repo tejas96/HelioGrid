@@ -11,10 +11,8 @@
       "!**/dist",
       "!**/.next",
       "!**/node_modules",
-      "!design/mockups",
       "!packages/contracts/openapi",
       "!packages/theme/src/_generated",
-      "!design/_audit",
       "!packages/i18n/src/locales/**/messages.ts",
       "!apps/mobile/ios",
       "!apps/mobile/android",
@@ -52,8 +50,8 @@
           "level": "error",
           "options": {
             "paths": {
-              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
-              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+              "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+              "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
               "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
               "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26)."
             }
@@ -202,10 +200,10 @@
                       "TouchableHighlight",
                       "Switch"
                     ],
-                    "message": "Import the equivalent from '@heliogrid/ui' instead — one package holds both platforms, RN via the .native.tsx half (docs/17-ui-architecture-v2.md §2). View, ScrollView, StyleSheet and Platform are layout and stay allowed. INERT until packages/ui lands; screens/placeholder is excluded because it predates it."
+                    "message": "Import the equivalent from '@heliogrid/ui' instead — one package holds both platforms, RN via the .native.tsx half (docs/engineering/17-ui-architecture-v2.md §2). View, ScrollView, StyleSheet and Platform are layout and stay allowed. INERT until packages/ui lands; screens/placeholder is excluded because it predates it."
                   },
-                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
-                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
@@ -227,7 +225,7 @@
               "level": "error",
               "options": {
                 "elements": {
-                  "button": "Use Button or IconButton from @heliogrid/ui. A hand-rolled button loses the design system's focus ring, loading state and 44px target (Law 5). The Pressable primitive owns the 44px floor (docs/17 §4).",
+                  "button": "Use Button or IconButton from @heliogrid/ui. A hand-rolled button loses the design system's focus ring, loading state and 44px target (Law 5). The Pressable primitive owns the 44px floor (docs/engineering/17 §4).",
                   "input": "Use Input, Checkbox, Radio, Switch or OtpInput from @heliogrid/ui (Law 5).",
                   "a": "Use TextAction from @heliogrid/ui for text links, or next/link for navigation (Law 5).",
                   "select": "Use Select from @heliogrid/ui; if it is not built yet, BUILD it there rather than inlining one here (Law 5).",
@@ -264,8 +262,8 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
-                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",

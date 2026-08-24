@@ -4,7 +4,7 @@ import { toApiError } from '../errors/errors';
 
 /**
  * ALL data access goes through a repository interface (forward-compat register, `mobile`
- * row). Track E swaps a PowerSync-backed implementation in behind this same interface — a
+ * row). A different data source can be swapped in behind this same interface — a
  * data-layer change only. No React, no React Query, no ts-rest type escapes here.
  */
 export interface HealthRepository {

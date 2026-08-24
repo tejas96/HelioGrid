@@ -12,7 +12,7 @@ import { HomeScreen } from '../../screens/home/HomeScreen';
  *
  * The tab navigator lived here until 2026-08-19; it was built on the v1 design system and
  * was removed with it. The new shell is `AppShell` + `BottomNav` from the V2 design system
- * (docs/17-ui-architecture-v2.md) and re-enters here when it is built.
+ * (docs/engineering/17-ui-architecture-v2.md) and re-enters here when it is built.
  */
 export const appScreens = {
   Home: { screen: HomeScreen },

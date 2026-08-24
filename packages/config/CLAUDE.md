@@ -8,7 +8,7 @@
 None — JSON only. Consumers typecheck against these.
 
 ## Dependency policy
-docs/architecture.md §2 config. Two things the presets do NOT cover: a package with no
+docs/engineering/architecture.md §2 config. Two things the presets do NOT cover: a package with no
 matching preset extends `tsconfig.base.json` directly (there is no browser/react preset), and
 apps/mobile deliberately skips this package for
 `@react-native/typescript-config`, which is why its strict flags are set locally — a new

@@ -3,7 +3,7 @@
 ## What lives here / what must never live here
 - ts-rest routers + Zod schemas + shared conventions (error envelope, pagination,
   provenance/role/language enums) + typed job payloads (`jobs.ts`). The tenancy claim
-  schemas were deleted with auth (ADR-0024) and return with its rebuild — `common.ts`
+  schemas do not exist yet; they are authored by the auth module — `common.ts`
   records where they lived.
 - NEVER: implementations, db imports, NestJS imports, fetch clients, `zod/v4` imports
   (Biome bans them until ts-rest Zod-4 support is stable — spike S3).
@@ -13,7 +13,7 @@ pnpm --filter @heliogrid/contracts build       # tsc -b (composite)
 pnpm --filter @heliogrid/contracts openapi     # emit openapi/openapi.json (after build)
 
 ## Dependency policy
-docs/architecture.md §2 contracts. The domain edge (`z.enum(TENANT_SEGMENTS)` built from
+docs/engineering/architecture.md §2 contracts. The domain edge (`z.enum(TENANT_SEGMENTS)` built from
 domain's tuple) returns with the auth rebuild — `packages/domain/src/tenancy/segment.ts`
 documents it as future. The direction is contracts → domain, never back.
 
@@ -33,7 +33,7 @@ documents it as future. The direction is contracts → domain, never back.
 - One feature = one `src/<area>.ts` router, mounted in `src/index.ts`. Cross-cutting files:
   `common.ts` (shared sets) · `error.ts` (envelope) · `jobs.ts` (job payloads) ·
   `ports/<capability>.ts` (provider port interface + its DI token — re-authored by the
-  rebuild that needs it; implementations will live in `packages/adapters`, NOT created yet).
+  rebuild that needs it; implementations live in the adapters package, NOT created yet).
 - **No `env.ts` here.** It existed until 2026-07-30 and moved to
   `packages/env/src/schema/fragments.ts`: contracts is the WIRE format, and deployment
   configuration is not part of the API surface. Environment shapes live in `@heliogrid/env`

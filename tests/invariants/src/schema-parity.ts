@@ -1,7 +1,7 @@
 import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
 
 /**
- * GREENFIELD (2026-08-01, ADR-0024): `@heliogrid/db` exports no `schema` right now, so there
+ * GREENFIELD (2026-08-01): `@heliogrid/db` exports no `schema` right now, so there
  * is no Drizzle model to compare and `dbSchema` below is empty. The comparison code is kept
  * INTACT — the auth + tenancy module re-adds `packages/db/src/schema/` with its first
  * migration, and this import comes back as `import { schema as dbSchema } from '@heliogrid/db'`

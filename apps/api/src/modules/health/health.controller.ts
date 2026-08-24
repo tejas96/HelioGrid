@@ -10,7 +10,7 @@ const VERSION = ENV.FLY_MACHINE_VERSION;
 /**
  * Carried `@Public()` until 2026-08-01, where it was LOAD-BEARING against the global
  * deny-by-default SessionGuard — without it Fly's probes 401'd and the machine failed its
- * health checks. The guard and the decorator went with the auth teardown (ADR-0024). When
+ * health checks. The guard and the decorator went with the auth teardown. When
  * the guard returns, THIS controller needs the opt-out back or deployment breaks.
  */
 @Controller()
