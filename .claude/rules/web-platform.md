@@ -5,7 +5,7 @@ paths:
 
 # apps/web — Next.js
 
-Architecture: `docs/architecture.md` §2 apps/web · §3 platform rules.
+Architecture: `docs/engineering/architecture.md` §2 apps/web · §3 platform rules.
 
 ## Where files go
 
@@ -24,11 +24,11 @@ lib/                        app infrastructure (ApiErrorText, env.ts)
 ```
 
 Two features sharing something means it is not feature-local — it belongs in a package
-(`docs/architecture.md` §4).
+(`docs/engineering/architecture.md` §4).
 
 ## Rules
 
-- **Server/Client boundary: `docs/architecture.md` §3** — that section states where the
+- **Server/Client boundary: `docs/engineering/architecture.md` §3** — that section states where the
   directive belongs; this file does not restate it. What it means at edit time: a
   `'use client'` at the route level opts every child in, so know which level you are on.
 - **`page.tsx` routes and nothing else** — it renders the Screen; container logic lives in

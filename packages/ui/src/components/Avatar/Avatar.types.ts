@@ -1,6 +1,6 @@
 /**
  * Perfect-circle avatar with an initials fallback, and the overlapping group built from it.
- * The shared contract both platform halves import (docs/17 §2).
+ * The shared contract both platform halves import (docs/engineering/17 §2).
  */
 
 export interface AvatarProps {

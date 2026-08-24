@@ -5,7 +5,7 @@
 > R20) — the identity spine could not be removed surgically because every platform table
 > foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
 > migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
-> `docs/forward-compat.md` before writing it. Everything below describes how this package
+> `docs/engineering/forward-compat.md` before writing it. Everything below describes how this package
 > works and is what the rebuild must satisfy — it is not a description of today's contents.
 
 ## What lives here / what must never live here
@@ -26,7 +26,7 @@ pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
 pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
 ## Dependency policy
-docs/architecture.md §2 db.
+docs/engineering/architecture.md §2 db.
 
 ## Local conventions
 - Migrations are append-only, filename-ordered, sha256-locked by the runner — editing an

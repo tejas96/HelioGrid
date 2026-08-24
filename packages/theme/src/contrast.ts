@@ -8,7 +8,7 @@
  *
  * The v1 coverage scan (findUndeclaredPairs over packages/ui CSS) is deliberately not here:
  * packages/ui does not exist yet. Restore it in the change that creates packages/ui
- * (docs/17 §5 step 2), or a pairing a component uses but nobody declared is unchecked.
+ * (docs/engineering/17 §5 step 2), or a pairing a component uses but nobody declared is unchecked.
  */
 
 function relativeLuminance(hex: string): number {

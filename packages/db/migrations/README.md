@@ -9,7 +9,7 @@ tables that referenced it (`files`, `audit_log`, `usage_events`, `tenant_phone_n
 surgically — the spine had to go whole or not at all.
 
 The next migration is `0001`, authored by the auth + tenancy module when its slice begins
-(Law 9). Read `docs/forward-compat.md` before writing it: the `auth/tenancy` row states what
+(Law 9). Read `docs/engineering/forward-compat.md` before writing it: the `auth/tenancy` row states what
 that first migration must already satisfy so later modules are not forced into a refactor.
 
 **This directory is not optional.** The runner does `readdirSync` on it, so it must exist

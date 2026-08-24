@@ -11,7 +11,7 @@ pnpm --filter @heliogrid/web dev      # localhost:3002 (tokens must be built fir
 pnpm --filter @heliogrid/web build | typecheck
 
 ## Dependency policy
-docs/architecture.md §2 apps/web; platform rules §3 (Next.js). `@heliogrid/data` is THE
+docs/engineering/architecture.md §2 apps/web; platform rules §3 (Next.js). `@heliogrid/data` is THE
 data path — transport, repositories, session; this app authors none. Shared login types,
 policy constants and formatters are imported from `@heliogrid/domain`, never re-authored
 (Law 11).
@@ -81,5 +81,5 @@ policy constants and formatters are imported from `@heliogrid/domain`, never re-
 - Geist woff2 urls resolve relative to tokens.css — Next bundles automatically.
 
 ## Definition of done here
-`prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD) + CLAUDE.md §Commands (a task is DONE only when verified running).
+`docs/prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD) + CLAUDE.md §Commands (a task is DONE only when verified running).
 Verified in the running browser.

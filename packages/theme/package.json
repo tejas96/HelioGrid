@@ -2,7 +2,7 @@
   "name": "@heliogrid/theme",
   "version": "0.0.1",
   "private": true,
-  "description": "GENERATED design tokens + RN theme — parsed from src/_generated (ds:pull, docs/17 §6). Never hand-edited, never hand-transcribed.",
+  "description": "GENERATED design tokens + RN theme — parsed from src/_generated (ds:pull, docs/engineering/17 §6). Never hand-edited, never hand-transcribed.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

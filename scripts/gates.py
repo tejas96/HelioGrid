@@ -24,6 +24,15 @@ from collections import defaultdict
 # Two dirnames, not one: this script lives in scripts/, so the repo is its parent.
 REPO_DEFAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# The spec tree (prd · ux · tasks · start-here) moved under docs/ on 2026-08-25. Every path
+# below goes through this one helper, so a future move is one edit rather than twenty-two.
+SPEC_DIR = "docs"
+
+
+def spec(repo, *parts):
+    return os.path.join(repo, SPEC_DIR, *parts)
+
+
 # A requirement row id: F4-04, M09-52, MS12-19, BM-21, OV-39, PS-24 — and MS7-24b, the one
 # letter-suffixed row in the suite. It is a distinct P0 row sitting beside MS7-24, and a
 # pattern that stops at the digits silently drops it and undercounts the whole register by one.
@@ -44,8 +53,8 @@ def gate(num, name, ok, detail=""):
 
 def prd_files(repo):
     out = []
-    for f in glob.glob(os.path.join(repo, "prd/**/*.md"), recursive=True):
-        rel = os.path.relpath(f, repo)
+    for f in glob.glob(spec(repo, "prd/**/*.md"), recursive=True):
+        rel = os.path.relpath(f, spec(repo))
         if rel.startswith("prd/_process") or rel.startswith("prd/registers"):
             continue
         out.append(f)
@@ -56,7 +65,7 @@ def live_rows(repo):
     """id -> (file, cell text). The live PRD is the only source of truth."""
     rows = {}
     for f in prd_files(repo):
-        rel = os.path.relpath(f, repo)
+        rel = os.path.relpath(f, spec(repo))
         for line in open(f, encoding="utf-8"):
             m = re.match(r"\|\s*`?(" + ROW_ID + r")`?\s*\|(.*)", line)
             if m:
@@ -67,8 +76,8 @@ def live_rows(repo):
 def task_blocks(repo):
     """list of dicts: file, id, title, body."""
     blocks = []
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        rel = os.path.relpath(f, spec(repo))
         if rel.endswith("README.md"):
             continue
         txt = open(f, encoding="utf-8").read()
@@ -134,7 +143,7 @@ HOLE_MARKER = re.compile(
 
 def open_questions(repo):
     """Q ids in the register that are NOT marked as decided."""
-    f = os.path.join(repo, "prd/registers/open-questions.md")
+    f = spec(repo, "prd/registers/open-questions.md")
     if not os.path.exists(f):
         return set(), set()
     allq, openq = set(), set()
@@ -186,15 +195,15 @@ def run(repo, verbose):
     rows = live_rows(repo)
     prefixes = {r.split("-")[0] for r in rows}
     blocks = task_blocks(repo)
-    briefs = sorted(glob.glob(os.path.join(repo, "ux/briefs/SCR-*.md")))
+    briefs = sorted(glob.glob(spec(repo, "ux/briefs/SCR-*.md")))
 
     # --- Gate 1 · ground truth is non-empty and plausible
     gate(1, "live PRD rows extracted", len(rows) > 1000, f"{len(rows)} rows across {len(prd_files(repo))} documents")
 
-    # --- Gate 2 · no dangling row citation in tasks/
+    # --- Gate 2 · no dangling row citation in docs/tasks/
     dangling_t = defaultdict(list)
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
         for lines_, _q in hole_blocks(body):
@@ -206,13 +215,13 @@ def run(repo, verbose):
                 if rid not in rows:
                     dangling_t[rid].append(f"{rel}:{i}")
     n = sum(len(v) for v in dangling_t.values())
-    gate(2, "tasks/ cite no deleted row", not dangling_t,
+    gate(2, "docs/tasks/ cite no deleted row", not dangling_t,
          "clean" if not dangling_t else f"{len(dangling_t)} ids, {n} refs: " + ", ".join(sorted(dangling_t)[:12]))
 
     # --- Gate 3 · no dangling row citation in briefs' LIVE content
     dangling_b = defaultdict(list)
     for f in briefs:
-        rel = os.path.relpath(f, repo)
+        rel = os.path.relpath(f, spec(repo))
         live, _foot = strip_amendment(open(f, encoding="utf-8").read())
         skip = set()
         for lines_, _q in hole_blocks(live):
@@ -227,11 +236,11 @@ def run(repo, verbose):
     gate(3, "briefs' live content cites no deleted row", not dangling_b,
          "clean (amendment footnotes exempt)" if not dangling_b else f"{len(dangling_b)} ids, {n} refs: " + ", ".join(sorted(dangling_b)[:12]))
 
-    # --- Gate 4 · verbatim quote fidelity in tasks/
+    # --- Gate 4 · verbatim quote fidelity in docs/tasks/
     desync = []
     checked = 0
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        rel = os.path.relpath(f, spec(repo))
         for i, line in enumerate(open(f, encoding="utf-8"), 1):
             m = re.match(r"\s*-\s*\*\*`?(" + ROW_ID + r")`?\*\*\s*\([^)]*\)\s*—\s*(.+)", line)
             if not m:
@@ -251,8 +260,8 @@ def run(repo, verbose):
     # --- Gate 5 · every task id referenced is defined
     defined = {b["id"] for b in blocks}
     refs = defaultdict(list)
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
+        rel = os.path.relpath(f, spec(repo))
         for i, line in enumerate(open(f, encoding="utf-8"), 1):
             for m in TASK_ID_RE.finditer(line):
                 tid = m.group(0)
@@ -262,7 +271,7 @@ def run(repo, verbose):
          f"{len(defined)} tasks defined" if not refs else f"{len(refs)} dangling: " + ", ".join(sorted(refs)[:10]))
 
     # --- Gate 6 · register screens vs brief files vs DESIGN tasks
-    reg = os.path.join(repo, "prd/registers/screens.md")
+    reg = spec(repo, "prd/registers/screens.md")
     reg_screens = []
     if os.path.exists(reg):
         for line in open(reg, encoding="utf-8"):
@@ -293,8 +302,8 @@ def run(repo, verbose):
     # --- Gate 8 · deleted screens are not referenced anywhere
     dead_screens = ["SCR-SHELL-04", "SCR-SHELL-05"]
     hits = []
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
+        rel = os.path.relpath(f, spec(repo))
         live, _ = strip_amendment(open(f, encoding="utf-8").read())
         recs = record_lines(live)
         for i, line in enumerate(live.split("\n"), 1):
@@ -308,7 +317,7 @@ def run(repo, verbose):
 
     # --- Gate 9 · no half-cleaned task block
     # Every row a block declares on its PRD line must actually be quoted in that block.
-    # A block that defers its quoting to the brief is exempt by design (tasks/README.md rule 6).
+    # A block that defers its quoting to the brief is exempt by design (docs/tasks/README.md rule 6).
     incoherent = []
     for b in blocks:
         if "Verbatim rows live in" in b["body"] or "they are the specification" in b["body"]:
@@ -332,7 +341,7 @@ def run(repo, verbose):
     gate(9, "no half-cleaned task block", not incoherent,
          f"{len(blocks)} blocks coherent" if not incoherent else "; ".join(incoherent[:6]))
 
-    # --- Gate 10 · offline machinery is gone from tasks/
+    # --- Gate 10 · offline machinery is gone from docs/tasks/
     # Deliberately narrow: only phrases that can ONLY mean the deleted sync layer. The studio's
     # own "stale capture" and F1's "pack staleness" are real, live concepts and must not fire.
     banned = re.compile(
@@ -349,8 +358,8 @@ def run(repo, verbose):
     # gate reads only task-authored prose.
     is_quote = re.compile(r"^\s*-\s*\*\*`?" + ROW_ID + r"`?\*\*\s*\(")
     voc = []
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
         for lines_, _q in hole_blocks(body):
@@ -361,7 +370,7 @@ def run(repo, verbose):
             m = banned.search(line)
             if m:
                 voc.append(f"{rel}:{i} [{m.group(0)}]")
-    gate(10, "no offline machinery in tasks/", not voc,
+    gate(10, "no offline machinery in docs/tasks/", not voc,
          "clean" if not voc else f"{len(voc)} lines: " + " · ".join(voc[:6]))
 
     # --- Gate 11 · the completion contract says THREE base states, not four
@@ -372,12 +381,12 @@ def run(repo, verbose):
     # base-state contract: a studio step (M05-03) and the Site Intelligence card (M05-18).
     domain_four = re.compile(r"M05-03|M05-18|Site Intelligence|not started\s*/\s*in progress\s*/\s*done", re.I)
     stale = []
-    scope = (sorted(glob.glob(os.path.join(repo, "tasks/*.md"))) + briefs +
-             [os.path.join(repo, "ux/briefs/README.md"), os.path.join(repo, "START-HERE.md")])
+    scope = (sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs +
+             [spec(repo, "ux/briefs/README.md"), spec(repo, "start-here.md")])
     for f in scope:
         if not os.path.exists(f):
             continue
-        rel = os.path.relpath(f, repo)
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
         for i, line in enumerate(body.split("\n"), 1):
@@ -389,11 +398,11 @@ def run(repo, verbose):
          "clean" if not stale else f"{len(stale)} lines still say four: " + ", ".join(stale[:8]))
 
     # --- Gate 13 · the PRD does not cite its own deleted rows
-    # Gates 2 and 3 police what tasks/ and briefs/ point at. Nothing was policing the PRD's
+    # Gates 2 and 3 police what docs/tasks/ and briefs/ point at. Nothing was policing the PRD's
     # internal cross-references, which is how nine citations survived the offline sweep.
     dangling_p = defaultdict(list)
     for f in prd_files(repo):
-        rel = os.path.relpath(f, repo)
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
         for i, line in enumerate(body.split("\n"), 1):
@@ -413,8 +422,8 @@ def run(repo, verbose):
     allq, openq = open_questions(repo)
     bad_holes = []
     n_holes = 0
-    for f in sorted(glob.glob(os.path.join(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, repo)
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         for lines_, qs in hole_blocks(body):
             n_holes += 1
@@ -433,10 +442,10 @@ def run(repo, verbose):
     # --- Gate 14 · the registers cite no deleted row
     # screens.md and traceability.md legitimately keep rows for deleted requirements — that is
     # their audit trail — but a *marked* row says so. A bare citation is a dangling pointer.
-    reg_files = sorted(glob.glob(os.path.join(repo, "prd/registers/*.md")))
+    reg_files = sorted(glob.glob(spec(repo, "prd/registers/*.md")))
     dangling_r = defaultdict(list)
     for f in reg_files:
-        rel = os.path.relpath(f, repo)
+        rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
         for lines_, _q in hole_blocks(body):
@@ -457,7 +466,7 @@ def run(repo, verbose):
     #   PRD carries the row (live)      -> register carries a plain disposition
     #   PRD struck it, or deleted it    -> register carries a STRUCK disposition (the audit trail)
     #   register disposition, no PRD row-> dangling, unless the disposition is struck
-    reg = os.path.join(repo, "prd/registers/screens.md")
+    reg = spec(repo, "prd/registers/screens.md")
     prd_struck = {rid for rid, (_f, cell) in rows.items() if cell.lstrip("*").upper().startswith("STRUCK")}
     prd_live = set(rows) - prd_struck
     d_live, d_struck = defaultdict(int), defaultdict(int)
@@ -491,7 +500,7 @@ def run(repo, verbose):
          f"struck-in-PRD-not-in-register {len(unmarked)} {unmarked[:4]}")
 
     # --- Gate 16 · every traceability source key appears exactly once
-    trc = os.path.join(repo, "prd/registers/traceability.md")
+    trc = spec(repo, "prd/registers/traceability.md")
     keys = defaultdict(int)
     if os.path.exists(trc):
         for line in open(trc, encoding="utf-8"):
@@ -511,7 +520,7 @@ def run(repo, verbose):
     # V1/V2 is a release axis, orthogonal to P0/P1/P2. Every screen carries exactly one, the two
     # sides sum to the register's screen count, and the locked V1 total does not drift silently.
     V1_EXPECTED = 99
-    reg = os.path.join(repo, "prd/registers/screens.md")
+    reg = spec(repo, "prd/registers/screens.md")
     v1, v2, novee = [], [], []
     if os.path.exists(reg):
         in2 = False
@@ -585,12 +594,12 @@ def run(repo, verbose):
             gate(18, "helper script agrees with the register", False, f"next-screen.py raised: {e}")
 
     # --- Gate 19 · the pasted design context is current
-    # ux/claude-design-context.md is pasted at the top of every design session, so a stale line
+    # docs/ux/claude-design-context.md is pasted at the top of every design session, so a stale line
     # there is inherited by every screen. It sat unread from 2026-08-07 to 2026-08-16, through
     # four rulings and two scope changes, because nothing was watching it.
-    ctx = os.path.join(repo, "ux/claude-design-context.md")
+    ctx = spec(repo, "ux/claude-design-context.md")
     if not os.path.exists(ctx):
-        gate(19, "design context file is current", False, "ux/claude-design-context.md is missing")
+        gate(19, "design context file is current", False, "docs/ux/claude-design-context.md is missing")
     else:
         body = open(ctx, encoding="utf-8").read()
         must = {

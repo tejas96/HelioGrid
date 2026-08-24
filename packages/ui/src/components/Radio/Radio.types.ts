@@ -2,7 +2,7 @@
  * 20px radio. Checked = 2px accent ring + accent dot.
  *
  * The visible box is 20px and the TARGET is 44 — the hit box is the whole row, the same
- * two-rectangles treatment Checkbox and FilterBar use (Pressable's law, docs/17 §4).
+ * two-rectangles treatment Checkbox and FilterBar use (Pressable's law, docs/engineering/17 §4).
  */
 export interface RadioProps {
   checked?: boolean;

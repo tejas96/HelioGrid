@@ -62,7 +62,7 @@ export interface AudioPlayerProps {
  * gesture back through the three callbacks. Whatever a caller does not wire is rendered DISABLED,
  * because a play button with nothing behind it is a control that lies about what it does.
  *
- * These are native-local props (docs/17 §2's platform split, the same rule that keeps `style` off
+ * These are native-local props (docs/engineering/17 §2's platform split, the same rule that keeps `style` off
  * the web half), so they widen the DS contract rather than replacing any part of it.
  */
 export interface AudioTransportControl {

@@ -14,7 +14,7 @@ Delete rows that genuinely don't apply. Law numbers are `CLAUDE.md` §2.
 - [ ] **Contract first** (Law 3): the `packages/contracts` diff is in this PR and the
       committed OpenAPI was re-emitted — or: no contract change
 - [ ] **Schema**: migration is a NEW append-only file; forward-compat register
-      (`docs/forward-compat.md`) re-read and satisfied — or: no schema change
+      (`docs/engineering/forward-compat.md`) re-read and satisfied — or: no schema change
 - [ ] **Parity** (Law 7): `check:ui-parity` green. Screen shipping on one platform only —
       say which and why
 - [ ] **Flows authored once** (Law 11): what the gates do NOT cover — hook/state naming,

@@ -20,9 +20,9 @@ import re, sys, os, glob, collections
 
 # Two dirnames: this script lives in scripts/, so the repo is its parent.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REG = os.path.join(ROOT, 'prd/registers/screens.md')
+REG = os.path.join(ROOT, 'docs/prd/registers/screens.md')
 
-# Build order, not register order. START-HERE.md and BUILD-ORDER.md carry the reasoning;
+# Build order, not register order. docs/start-here.md and docs/build-order.md carry the reasoning;
 # the short version is that the studio is ported late, once the earlier blocks have settled
 # the API and schema conventions it has to conform to.
 BLOCKS = [
@@ -90,12 +90,12 @@ for line in open(REG, encoding='utf-8'):
 if not cols:
     sys.exit("could not find the screen-index header row in " + REG)
 if 'V' not in cols:
-    sys.exit("the register has no `V` column — the V1 scope lock is missing; see BUILD-ORDER.md")
+    sys.exit("the register has no `V` column — the V1 scope lock is missing; see docs/build-order.md")
 
 # --- where each screen's DESIGN line lives --------------------------------------------
 design = {}
-for fp in sorted(glob.glob(os.path.join(ROOT, 'tasks', '*.md'))):
-    # tasks/README.md documents the task anatomy with a worked DESIGN line. Reading it would
+for fp in sorted(glob.glob(os.path.join(ROOT, 'docs', 'tasks', '*.md'))):
+    # docs/tasks/README.md documents the task anatomy with a worked DESIGN line. Reading it would
     # point a real screen at the documentation instead of at its real task file.
     if os.path.basename(fp).lower() == 'readme.md':
         continue
@@ -161,9 +161,9 @@ print(f"""
   ────────────────────────────────────────────────────────────────────────
   NEXT: {nxt['sid']} · {nxt['name']}
 
-  1. paste  ux/claude-design-context.md
+  1. paste  docs/ux/claude-design-context.md
   2. paste  {nxt['brief']}
-  3. run the four messages (see START-HERE.md)
+  3. run the four messages (see docs/start-here.md)
 
   when approved, edit these two lines:
      {os.path.relpath(REG, ROOT)}:{reg_line.get(nxt['sid'], '?')}   pending → designed, — → <link>

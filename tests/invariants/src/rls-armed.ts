@@ -224,7 +224,7 @@ export async function assertPartitionChildrenUngranted(sql: postgres.Sql) {
  */
 export async function assertNoRlsBypassingRoutes(sql: postgres.Sql) {
   // Extension-owned relations are excluded: pg_stat_statements ships views this repo does not
-  // own and cannot ALTER (docs/09 enables it), and a gate that is permanently red for something
+  // own and cannot ALTER (docs/engineering/09 enables it), and a gate that is permanently red for something
   // nobody can fix is the pressure that gets gates weakened — the failure mode this whole audit
   // keeps finding. `pg_depend`/`pg_extension` is the honest test of "not ours".
   const views = await sql<ViewRow[]>`

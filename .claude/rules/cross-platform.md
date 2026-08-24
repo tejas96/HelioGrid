@@ -7,7 +7,7 @@ paths:
 # Both platforms — author the fact once (Law 11)
 
 Before writing a constant, type, hook or copy string in a screen, ask which package owns it
-(`docs/architecture.md` §4). Screens are the unguarded surface: almost nothing here is gated.
+(`docs/engineering/architecture.md` §4). Screens are the unguarded surface: almost nothing here is gated.
 
 - **Shared state vocabulary and view-model types live in `@heliogrid/domain`** and are
   imported by both controllers; the store that fills them lives in `@heliogrid/data`. The
@@ -30,5 +30,5 @@ Before writing a constant, type, hook or copy string in a screen, ask which pack
 - **Hindi and Marathi need 20–30% more width than English.** A layout that only fits English
   is not done.
 - A behaviour that is deliberately different per platform is recorded in
-  `prd/registers/conflicts.md` as a
+  `docs/prd/registers/conflicts.md` as a
   UXG-PAR row. Undocumented divergence is drift.

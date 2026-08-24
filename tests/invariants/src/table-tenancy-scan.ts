@@ -22,7 +22,7 @@ const GLOBAL_TABLES: Record<string, string> = {
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 
   // An auth provider owns and migrates these. They are keyed by its own identity
-  // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/08 §2).
+  // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/engineering/08 §2).
   // They are absent until `pnpm --filter @heliogrid/api exec tsx src/scripts/auth-migrate.ts`
   // has run, which is why the stale-entry check below only warns.
   user: 'auth-provider internal',

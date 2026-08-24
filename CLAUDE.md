@@ -4,19 +4,19 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
-This file and `docs/architecture.md` are the two you must know. Everything else loads when
+This file and `docs/engineering/architecture.md` are the two you must know. Everything else loads when
 it applies.
 
 ## 1. Core principles
 
-**Architecture decides ownership.** Run `docs/architecture.md` §4 before creating any file,
+**Architecture decides ownership.** Run `docs/engineering/architecture.md` §4 before creating any file,
 constant, type or helper — it names the owning package. §2 says what each package may hold
 and import; §3 what is web-only, RN-only or shared.
 
 **Never duplicate a definition.** A fact both platforms need lives in a package before
 either screen uses it. Enums → contracts. Logic, policy numbers, formatters → domain. Visual
-values → theme. Schema → migrations. Copy → i18n. **Product behaviour → `prd/`, never a doc
-under `docs/`** — `docs/` describes how this repo is built, `prd/` describes what it does. Compose from `packages/`; if a primitive
+values → theme. Schema → migrations. Copy → i18n. **Product behaviour → `docs/prd/`, never a doc
+under `docs/`** — `docs/` describes how this repo is built, `docs/prd/` describes what it does. Compose from `packages/`; if a primitive
 is missing, add it there rather than inlining a copy.
 
 **Screens are the unguarded surface.** Gates check packages; almost nothing checks what a
@@ -51,7 +51,7 @@ architecture is wrong. Say so before writing the workaround.
 **Cross-cutting concerns are built in from day one, never retrofitted.** Anything that will
 reach every module later — permissions/RBAC, tenancy, money, audit, i18n, offline — is
 provisioned by the first slice that could carry it, even while nothing consumes it yet, and
-behind ONE enforcement seam rather than per-handler checks. `docs/forward-compat.md` is the
+behind ONE enforcement seam rather than per-handler checks. `docs/engineering/forward-compat.md` is the
 register: read your module's row before its first migration or contract, and add a row when
 you find a new such concern. Retrofitting one of these is a repo-wide sweep — exactly the
 blast radius the rule above tells you to refuse.
@@ -67,7 +67,7 @@ mechanism — some by lint or types, some only by review (§7).
 5. **Reuse before creation.** Search first; creating what exists is a defect.
 7. **Shared component APIs stay in parity.** A prop on one platform only is a defect.
    Held by a TYPE, not a script: both platform files import the one `<Name>.types.ts`
-   (docs/17 §2). The v1 three-list arrangement and `check-ui-parity.mjs` are gone.
+   (docs/engineering/17 §2). The v1 three-list arrangement and `check-ui-parity.mjs` are gone.
 8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES
    files greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored
@@ -82,7 +82,7 @@ mechanism — some by lint or types, some only by review (§7).
 **Understand → build → `/verify` → `/finish`.**
 
 Before writing code, know two things and say them: **which package owns each new file**
-(`docs/architecture.md` §4) and **what will prove it works**. Anything whose shape is still in
+(`docs/engineering/architecture.md` §4) and **what will prove it works**. Anything whose shape is still in
 question gets settled with the owner first — never invent a requirement.
 
 Turn the task into something checkable — "fix the bug" means reproduce it on the real surface,
@@ -94,7 +94,7 @@ then show those steps passing.
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
 - A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
-  `prd/registers/open-questions.md` or `prd/registers/conflicts.md` first, then continue.
+  `docs/prd/registers/open-questions.md` or `docs/prd/registers/conflicts.md` first, then continue.
 - **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An
   instruction to do work is never approval to commit it, and one approval never carries to
   the next. `main` is PR-only; never `--no-verify`.
@@ -123,10 +123,11 @@ decision, not something to create mid-task. Put the file where the pattern alrea
 | `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
 | `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
 | `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |
-| `prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `registers/` (screens, traceability, conflicts, open-questions) · `_process/` |
-| `tasks/` | one file per module, written to as tasks complete |
-| `ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
-| `docs/` | how the repo is built — `docs/README.md` is the map, and every entry there carries a status |
+| `docs/prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `registers/` (screens, traceability, conflicts, open-questions) · `_process/` |
+| `docs/tasks/` | one file per module, written to as tasks complete |
+| `docs/ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
+| `docs/` | the ONE home for everything written: `prd/` · `ux/` · `tasks/` · `engineering/`, plus `start-here.md` and `build-order.md`. Root holds only README, CLAUDE.md and code |
+| `docs/engineering/` | how the repo is built — architecture, stack, integrations, ADRs. `docs/README.md` is the map, and every entry there carries a status |
 
 **Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one
 file each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the
@@ -137,14 +138,14 @@ its layer — a `components.tsx` or `hooks.ts` grab-bag is the same defect as `*
 split needs a number, it is the wrong split.
 
 The full per-package registry — what each package owns, may import, and may never hold —
-is `docs/architecture.md` §2. Read §4 before creating any file.
+is `docs/engineering/architecture.md` §2. Read §4 before creating any file.
 
 ## 7. When rules conflict
 
 Higher wins, and don't re-declare at a lower level what a higher one already fixed:
 
-**owner rulings (`prd/registers/open-questions.md`, `conflicts.md`) → the product spec (`prd/`)
-→ architecture (`docs/architecture.md`) → contracts →
+**owner rulings (`docs/prd/registers/open-questions.md`, `conflicts.md`) → the product spec (`docs/prd/`)
+→ architecture (`docs/engineering/architecture.md`) → contracts →
 design system → this file → package `CLAUDE.md` → implementation detail.**
 
 Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the
@@ -179,7 +180,7 @@ and a few are narrower than they read.
 
 ## 9. Product law
 
-Digest of `prd/registers/open-questions.md` and the foundations `F1`–`F8`, which are canonical.
+Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`, which are canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale — design changed and quote not recomputed reads provisional.
@@ -198,20 +199,20 @@ Digest of `prd/registers/open-questions.md` and the foundations `F1`–`F8`, whi
 
 | | |
 |---|---|
-| `docs/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
+| `docs/engineering/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
 | `docs/README.md` | **The docs map** — what every file under `docs/` is, and whether it is pinned or live |
-| `START-HERE.md` | **Designing a screen** — the one file a design session starts from |
-| `prd/registers/screens.md` | The screen register — 150 screens, 99 locked to V1 |
-| `prd/registers/open-questions.md` · `conflicts.md` | Owner rulings · contradictions and their resolutions |
-| `docs/17` | **UI architecture V2** — the design system, theme and component layer |
-| `BUILD-ORDER.md` · `tasks/` | Build order · per-module tasks |
-| `docs/forward-compat.md` | What each module's first migration must satisfy |
+| `docs/start-here.md` | **Designing a screen** — the one file a design session starts from |
+| `docs/prd/registers/screens.md` | The screen register — 150 screens, 99 locked to V1 |
+| `docs/prd/registers/open-questions.md` · `conflicts.md` | Owner rulings · contradictions and their resolutions |
+| `docs/engineering/17` | **UI architecture V2** — the design system, theme and component layer |
+| `docs/build-order.md` · `docs/tasks/` | Build order · per-module tasks |
+| `docs/engineering/forward-compat.md` | What each module's first migration must satisfy |
 | `.claude/rules/` | Path-scoped deltas — load automatically for the paths they name |
 | package `CLAUDE.md` | Local conventions and landmines |
-| `docs/adr/` | Reference only — never a gate |
+| `docs/engineering/adr/` | Reference only — never a gate |
 
 The verification record lives in the PR body — `/verify` writes nothing to the tree.
 
 **Skills:** `/contract-change` · `/migration` · `/verify` · `/finish`.
 
-What is built and what is not: `docs/architecture.md`.
+What is built and what is not: `docs/engineering/architecture.md`.

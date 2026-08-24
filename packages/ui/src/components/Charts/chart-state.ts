@@ -19,7 +19,7 @@ export const CHART_LOADING_LABEL = 'Loading chart';
 /* ChartFrame's unavailable copy, handed to `<UnavailableNote variant="region">`. The design
    system's `charts/Charts.d.ts.txt` contract declares NO prop for it — its JSX takes an
    `unavailableTitle`, but the published typings do not, and the typings are what this repo ports
-   against (docs/17 §6) — so it is not overridable here. Adding the prop would be widening past
+   against (docs/engineering/17 §6) — so it is not overridable here. Adding the prop would be widening past
    the contract, not restoring it; see the port notes. */
 export const CHART_UNAVAILABLE_TITLE = 'Not available for this scope';
 

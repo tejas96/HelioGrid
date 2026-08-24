@@ -17,7 +17,7 @@
 pnpm --filter @heliogrid/domain typecheck | build
 
 ## Dependency policy
-docs/architecture.md §2 domain. This is the BOTTOM layer — it imports nothing in the
+docs/engineering/architecture.md §2 domain. This is the BOTTOM layer — it imports nothing in the
 workspace (owner ruling 2026-07-30). The contracts and apps/api edges were
 removed by the same-dayteardown and return with the auth rebuild.
 A business enum both layers need is defined HERE as a pure union; contracts then builds its

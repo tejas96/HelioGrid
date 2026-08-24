@@ -15,11 +15,11 @@ pnpm --filter @heliogrid/api build | typecheck
 curl localhost:8084/health               # liveness · /health/ready = readiness
 
 ## Dependency policy
-docs/architecture.md §2 apps/api. Web and mobile reach it over HTTP through
+docs/engineering/architecture.md §2 apps/api. Web and mobile reach it over HTTP through
 `@heliogrid/data` — never a client they author.
 
 ## Local conventions
-- Layout is the closed set in docs/02 §2: `src/{config,common,modules,scripts}`;
+- Layout is the closed set in docs/engineering/02 §2: `src/{config,common,modules,scripts}`;
   every bounded context is `src/modules/<m>/` with the fixed file roles
   (`<m>.module|public|controller|service|repository.ts`, `tokens.ts`, `internal/`).
   Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).

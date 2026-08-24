@@ -12,7 +12,7 @@
 pnpm --filter @heliogrid/forms build | typecheck     # tsc -b
 
 ## Dependency policy
-docs/architecture.md §2 forms. Apps importing react-hook-form, `@hookform/resolvers/zod` or
+docs/engineering/architecture.md §2 forms. Apps importing react-hook-form, `@hookform/resolvers/zod` or
 bare `zod` directly is a lint failure (Biome `noRestrictedImports` + the cruiser rule
 `forms-through-heliogrid-forms`).
 

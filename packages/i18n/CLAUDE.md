@@ -10,7 +10,7 @@
   canonical explanation). Where a closed set exists, the module is a `Record` over the
   contracts enum. Screen-specific copy stays in its screen.
 - NEVER: app copy hard-coded elsewhere, per-app catalogs, agent/WhatsApp templates
-  (tenant DATA — `prd/foundations/F3-localization.md` · .claude/rules/i18n.md), raw Intl currency (formatMoney when
+  (tenant DATA — `docs/prd/foundations/F3-localization.md` · .claude/rules/i18n.md), raw Intl currency (formatMoney when
   domain's money slice lands).
 
 ## Commands
@@ -19,7 +19,7 @@ pnpm --filter @heliogrid/i18n build       # compile catalogs + tsc (compile alon
 pnpm --filter @heliogrid/i18n typecheck
 
 ## Dependency policy
-docs/architecture.md §2 i18n. `packages/ui` stays string-free — copy arrives as props.
+docs/engineering/architecture.md §2 i18n. `packages/ui` stays string-free — copy arrives as props.
 
 ## THE CONVENTION (until the swc-plugin note below is resolved)
 Both platforms use runtime `<Trans id="<English source text>" />` from '@lingui/react' —

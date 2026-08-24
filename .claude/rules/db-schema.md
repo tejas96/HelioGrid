@@ -43,7 +43,7 @@ A migration is named for what it does (`0002_lead_capture.sql`), never `0002_upd
   the schema is empty** and says so when it runs — re-add the dropped auth enum mappings
   with the migration that re-creates them (`packages/db/CLAUDE.md`).
 - Schema grows module-wise only (Law 9): a module authors its own tables when its slice
-  begins, and satisfies its `docs/forward-compat.md` row while doing so. A table belonging to
+  begins, and satisfies its `docs/engineering/forward-compat.md` row while doing so. A table belonging to
   a module that has not started is a violation, so stop and ask.
 
 Authoring a migration has a sequence — new file, DDL, Drizzle mirror, three verification

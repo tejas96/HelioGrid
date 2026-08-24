@@ -1,7 +1,7 @@
 /**
  * @heliogrid/ui — the V2 design system. ONE package, both platforms: Metro resolves the
- * .native.tsx halves ahead of .tsx, web bundlers only ever see .tsx (docs/17 §2).
- * Every export below is a primitive (docs/17 §4); components compose them and land in
+ * .native.tsx halves ahead of .tsx, web bundlers only ever see .tsx (docs/engineering/17 §2).
+ * Every export below is a primitive (docs/engineering/17 §4); components compose them and land in
  * src/components/<Name>/ via the assemble step, which owns the marked block at the bottom.
  */
 

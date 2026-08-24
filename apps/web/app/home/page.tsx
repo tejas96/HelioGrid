@@ -1,6 +1,6 @@
 /**
  * Placeholder route. The v1 UI was removed on 2026-08-19
- * (docs/17-ui-architecture-v2.md) and the real screen is not built yet.
+ * (docs/engineering/17-ui-architecture-v2.md) and the real screen is not built yet.
  *
  * Plain elements ONLY — no design system, no tokens, no component library.
  * Replaced when the screen is designed; do not build on it.

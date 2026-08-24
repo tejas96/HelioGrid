@@ -4,7 +4,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { ENV } from './config/env';
 
 /**
- * BullMQ wiring (docs/03 §7, binding): Upstash fixed plan over TCP/RESP,
+ * BullMQ wiring (docs/engineering/03 §7, binding): Upstash fixed plan over TCP/RESP,
  * `maxRetriesPerRequest: null`, eviction OFF on the server side — never enable it.
  * Queues register per module; repeatable jobs own the time-based product rules.
  */

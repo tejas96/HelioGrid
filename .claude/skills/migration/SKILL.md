@@ -45,7 +45,7 @@ under CI. A skipped invariant that reports success is worse than no invariant at
 
 ## 5. Document
 
-Check `docs/forward-compat.md` for your module's row and satisfy it in this migration — that
+Check `docs/engineering/forward-compat.md` for your module's row and satisfy it in this migration — that
 register is what stops a later module forcing a refactor. There is no repo-wide frozen schema
 document; a module authors its own tables (Law 9). Note the migration in the docs it affects.
 Same commit (Law 8).

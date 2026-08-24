@@ -1,5 +1,5 @@
 /**
- * Layer rules from CLAUDE.md, enforced as config-as-code (docs/03 §3).
+ * Layer rules from CLAUDE.md, enforced as config-as-code (docs/engineering/03 §3).
  * Dependency direction: apps/{web,mobile} → packages/data → packages/contracts →
  * packages/domain. apps/{api,worker} skip data and reach contracts directly — data is the
  * FRONTEND SDK, and the server implements the contract rather than consuming it.
@@ -129,7 +129,7 @@ module.exports = {
       name: 'theme-standalone',
       severity: 'error',
       comment:
-        'theme is GENERATED from the live design system (docs/17 §6) and depends on nothing in the workspace. Renamed from tokens-standalone 2026-08-19; the v1 packages/tokens was deleted with the v1 design system.',
+        'theme is GENERATED from the live design system (docs/engineering/17 §6) and depends on nothing in the workspace. Renamed from tokens-standalone 2026-08-19; the v1 packages/tokens was deleted with the v1 design system.',
       from: { path: '^packages/theme/' },
       // `[^/]+` after the lookahead is load-bearing. The obvious `^(packages/(?!tokens)|apps)/`
       // is DEAD: its first branch already ends in `/`, so the trailing `/` demanded
@@ -276,7 +276,7 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export.',
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export.',
       from: { path: '^apps/' },
       to: {
         path: [
@@ -287,7 +287,7 @@ module.exports = {
       },
     },
 
-    /* ---- Structure standard (docs/02 §2) --------------------------------------------
+    /* ---- Structure standard (docs/engineering/02 §2) --------------------------------------------
      * Every rule in this file is `error`. The former `warn` tier — "a rule today's code
      * still violates, flipping to error in the slice that fixes it" — is gone: the
      * restructure landed, and a permanently-warning rule is one nobody acts on. */

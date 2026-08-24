@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ds:contract — the MEANING gate (docs/17-ui-architecture-v2.md §6). Lint gate 6 of 6.
+ * ds:contract — the MEANING gate (docs/engineering/17-ui-architecture-v2.md §6). Lint gate 6 of 6.
  *
  * Every other gate in `scripts/lint-all.sh` measures SHAPE: the file exists, it parses, it imports
  * in the allowed direction, the census matches. Seven audit rounds have found behaviour defects in

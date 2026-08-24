@@ -16,7 +16,7 @@ async function bootstrap() {
   // bootstrap only, so they can inject like any other provider.
   app.enableShutdownHooks();
 
-  // Tenancy precondition (docs/08 §4, BYPASSRLS warning): a SUPERUSER or BYPASSRLS runtime
+  // Tenancy precondition (docs/engineering/08 §4, BYPASSRLS warning): a SUPERUSER or BYPASSRLS runtime
   // role makes RLS a silent no-op. Fail at boot rather than serve cross-tenant data that
   // looks correct. This survives the auth teardown deliberately — it inspects role
   // privileges, not tables, so it is valid against an empty database and must be armed

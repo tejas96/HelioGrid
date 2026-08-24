@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ds:check — the drift gate (docs/17-ui-architecture-v2.md §6).
+ * ds:check — the drift gate (docs/engineering/17-ui-architecture-v2.md §6).
  *
  * Compares the design system's component census against what packages/ui actually ships, and
  * fails CI on the two lists that mean something is WRONG rather than merely unfinished.

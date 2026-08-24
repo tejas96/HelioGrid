@@ -41,7 +41,7 @@ const NATIVE_ROLE: Record<PressableRole, AccessibilityRole> = {
 
 /**
  * The one pressable. Owns the 44px minimum target (MIN_TOUCH_TARGET), the pressed state
- * and the disabled semantics — a component never re-implements any of these (docs/17 §4).
+ * and the disabled semantics — a component never re-implements any of these (docs/engineering/17 §4).
  *
  * SEMANTICS COME THROUGH IT, NOT AROUND IT. `accessibilityRole` and `accessibilityState` are here
  * so that a checkbox, a radio, a tab or a menu row can say what it is and which one is on WITHOUT

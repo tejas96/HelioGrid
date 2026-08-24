@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 /**
  * Product law, one declaration: no interactive target in this product measures under
- * 44×44 (docs/17 §4, ui-adherence). Both platform halves enforce it — the native half
+ * 44×44 (docs/engineering/17 §4, ui-adherence). Both platform halves enforce it — the native half
  * reads this constant, Pressable.css carries the same two values for the web — so a
  * component composing Pressable cannot ship a small target.
  */

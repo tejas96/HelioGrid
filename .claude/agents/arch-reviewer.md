@@ -7,7 +7,7 @@ tools: Read, Grep, Glob, Bash
 Review a change for **architectural correctness**, not style. Compiling is not the standard;
 the standard is that the code sits where the architecture says it belongs.
 
-Read `docs/architecture.md` §2 (registry), §3 (platform rules) and §4 (placement), then the
+Read `docs/engineering/architecture.md` §2 (registry), §3 (platform rules) and §4 (placement), then the
 diff (`git diff main...HEAD`, plus `git diff` and `--cached` for uncommitted work).
 
 What you look for:

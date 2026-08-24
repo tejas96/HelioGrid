@@ -77,7 +77,7 @@ flyctl proxy 15432:5432 -a heliogrid-db &   # then:
 DATABASE_ADMIN_URL=postgres://postgres:<pw>@localhost:15432/heliogrid pnpm --filter @heliogrid/db migrate
 DATABASE_ADMIN_URL=... pnpm --filter @heliogrid/invariants test
 
-# 3. Upstash Redis — FIXED plan, eviction OFF (BullMQ requirement, docs/03 §7):
+# 3. Upstash Redis — FIXED plan, eviction OFF (BullMQ requirement, docs/engineering/03 §7):
 flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
   --no-replicas --disable-eviction        # pick the fixed 250MB plan at the prompt
 
@@ -85,7 +85,7 @@ flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
 #    working command sequence in that note):
 flyctl storage create --name heliogrid-objects --org heliogrid
 
-# 5. Production upgrade path (later, unchanged from docs/03 §6): grow to 3-node
+# 5. Production upgrade path (later, unchanged from docs/engineering/03 §6): grow to 3-node
 #    repmgr HA + pgBackRest→Tigris + restore drill sequence.
 ```
 

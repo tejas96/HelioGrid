@@ -1,6 +1,6 @@
 # @heliogrid/theme
 
-The V2 design-token and theme package (docs/17-ui-architecture-v2.md §2, §6). One package:
+The V2 design-token and theme package (docs/engineering/17-ui-architecture-v2.md §2, §6). One package:
 raw tokens, the RN theme object, the web stylesheets and the fonts all come from here.
 
 ## Source of truth: `src/_generated/` (never hand-edit)
@@ -9,7 +9,7 @@ raw tokens, the RN theme object, the web stylesheets and the fonts all come from
 DesignSync MCP to fetch the live design system (Claude Design project
 `c8aa4326-21bf-453a-8d11-749cc81dee12`) byte-verbatim into the repo. The output is
 committed; hand-editing anything under `_generated/` is a bug. `ds:check` re-pulls and
-diffs the manifest to catch stale or drifted components (docs/17 §6).
+diffs the manifest to catch stale or drifted components (docs/engineering/17 §6).
 
 ## What `build.ts` emits (`pnpm --filter @heliogrid/theme build`)
 

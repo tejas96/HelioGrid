@@ -13,7 +13,7 @@ pnpm --filter @heliogrid/contracts build       # tsc -b (composite)
 pnpm --filter @heliogrid/contracts openapi     # emit openapi/openapi.json (after build)
 
 ## Dependency policy
-docs/architecture.md §2 contracts. The domain edge (`z.enum(TENANT_SEGMENTS)` built from
+docs/engineering/architecture.md §2 contracts. The domain edge (`z.enum(TENANT_SEGMENTS)` built from
 domain's tuple) returns with the auth rebuild — `packages/domain/src/tenancy/segment.ts`
 documents it as future. The direction is contracts → domain, never back.
 
