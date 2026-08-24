@@ -16,7 +16,7 @@
 >
 > **56 screens are drawable today** — blocks 1 through 6, which are the shippable product:
 > lead → won → project → payment. Full record:
-> [`design/DESIGN-SYSTEM-GAPS.md`](design/DESIGN-SYSTEM-GAPS.md).
+> [`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md).
 >
 > When a screen finds a gap — and one will — record it in that register and keep drawing. It should
 > be a trickle now, not 57.
@@ -137,7 +137,7 @@ Search the repo for the screen's `SCR-` id. It appears in exactly two places tha
 Both get the same link. Ignore any hit inside `tasks/README.md` — that file only *documents* what
 a `DESIGN:` line looks like.
 
-*(There is also a `next-screen.py` in the repo root that does this lookup for you and prints the
+*(There is also a `scripts/next-screen.py` that does this lookup for you and prints the
 two file:line locations. It's optional — everything above works without it, and the register is
 the source of truth either way.)*
 
@@ -152,7 +152,7 @@ Make sure the right design system is selected — and read this twice, because t
 > **There are TWO Claude Design projects called exactly "HelioGrid Design System".**
 > The live one is **`c8aa4326-21bf-453a-8d11-749cc81dee12`**, last written 2026-08-18 — rounds
 > 13 through 17 all landed on it, closing 51 of the 57 gaps in
-> [`design/DESIGN-SYSTEM-GAPS.md`](design/DESIGN-SYSTEM-GAPS.md).
+> [`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md).
 > The other, `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, has not been touched since 2026-07-20 and
 > received none of the seventeen rounds of design prompts — no contrast fix, no `--text-inverse`,
 > no `NoConnection` screen, and it still has `OfflineBanner`.
@@ -268,7 +268,7 @@ AFTER   | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `ux/briefs/…` |
 ```
 
 *Don't trust the line number above once you are past the first screen — rows move. `python3
-next-screen.py` prints the exact `file:line` for both edits, and it reads the header row rather
+scripts/next-screen.py` prints the exact `file:line` for both edits, and it reads the header row rather
 than counting columns, so a new column cannot make it lie.*
 
 ### Edit 2 — the module's task file (screen one is `tasks/SHELL.md` line 16)

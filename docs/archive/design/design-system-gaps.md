@@ -1,5 +1,10 @@
 # Design system gaps — the register
 
+> **Archived 2026-08-24.** Moved here from `design/DESIGN-SYSTEM-GAPS.md`. The round prompts
+> (`CLAUDE-DESIGN-PROMPT-*.md`) and `_audit/*.json` files it links to were deleted in the same
+> pass, so those links no longer resolve — they are in git history. Kept for the record of what
+> the 57 gaps were and how they closed.
+
 **57 gaps. 5 verified closed · 46 partly closed · 0 sent and not yet checked · 6 not started.**
 
 **Of the 46 partial, 0 stop a screen being drawn**, and the 2026-08-17

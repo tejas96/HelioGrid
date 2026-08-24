@@ -5,7 +5,7 @@
 > survive the port, refactored to the design system and touch-first. It is a merge gate for
 > port PRs, on par with typecheck and lint.
 >
-> Promoted verbatim from `docs/research/phases710.md` §2, which is now historical. The POC
+> Promoted verbatim from `docs/archive/research/phases710.md` §2, which is now historical. The POC
 > repository's `phase-10-prompts.md` is NOT canonical and must not be cited.
 
 ## 2. TOOL / FEATURE CENSUS (Phase 10, screens 10.1–10.11)

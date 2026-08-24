@@ -12,7 +12,7 @@ Since 2026-08-15 the two orders are **the same order** — the design run follow
 V1 rows only. That is the whole point of the scope lock.
 
 **A third thing gates the design order and neither file above holds it:**
-[`design/DESIGN-SYSTEM-GAPS.md`](design/DESIGN-SYSTEM-GAPS.md) — 57 component gaps found on
+[`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md) — 57 component gaps found on
 2026-08-16; 3 closed, 9 partly closed, 45 open. A block cannot be *designed* while it still owns
 an open blocker there, and **block 1 owns ten today**. It does not gate *build*: the 222
 non-screen tasks below are unaffected.
@@ -25,7 +25,7 @@ requirement register; this file only says what order to take them in and why.
 ## The V1 scope lock
 
 **99 of the 150 screens are V1.** *(84 on 2026-08-15; 95 on 2026-08-16; 98 the same day, after the V1 readiness audit found three scope holes the gates could not see; 99 when `SCR-M01-11` followed — V1 had no user-owned preferences screen at all, so the language picker, the per-user units, the notification mute and the high-contrast field mode had nowhere to live.)* The `V` column in `prd/registers/screens.md` §2 is the lock;
-`gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
+`scripts/gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
 **222 of the 372 tasks have no design dependency at all.**
@@ -159,7 +159,7 @@ queue is waiting on a ruling.**
 ## Verifying
 
 ```bash
-python3 gates.py
+python3 scripts/gates.py
 ```
 
 Eighteen mechanical gates over the whole suite — no dangling row or task ids anywhere in `prd/`,

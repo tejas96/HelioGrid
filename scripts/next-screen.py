@@ -4,11 +4,11 @@
 Reads the screen register and prints the pending V1 screens in build order, with the
 exact brief file to paste and the exact two lines to edit when you're done.
 
-    python3 next-screen.py            # next 10 pending V1 screens
-    python3 next-screen.py SHELL      # only the SHELL module
-    python3 next-screen.py M06 40     # M06, up to 40 rows
-    python3 next-screen.py all        # every pending V1 screen
-    python3 next-screen.py v2         # the deferred V2 screens, for reference only
+    python3 scripts/next-screen.py            # next 10 pending V1 screens
+    python3 scripts/next-screen.py SHELL      # only the SHELL module
+    python3 scripts/next-screen.py M06 40     # M06, up to 40 rows
+    python3 scripts/next-screen.py all        # every pending V1 screen
+    python3 scripts/next-screen.py v2         # the deferred V2 screens, for reference only
 
 Columns are located by NAME from the register's own header row, never by position. The
 register gained a `V` column on 2026-08-16; this script had hard-coded indices and silently
@@ -18,7 +18,8 @@ non-event.
 """
 import re, sys, os, glob, collections
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+# Two dirnames: this script lives in scripts/, so the repo is its parent.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REG = os.path.join(ROOT, 'prd/registers/screens.md')
 
 # Build order, not register order. START-HERE.md and BUILD-ORDER.md carry the reasoning;

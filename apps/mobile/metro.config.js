@@ -5,7 +5,7 @@ const workspaceRoot = path.resolve(__dirname, '../..');
 const defaultConfig = getDefaultConfig(__dirname);
 
 /**
- * Monorepo + Lingui wiring (docs/research/verify-bareRn.md — verified bare-RN requirements):
+ * Monorepo + Lingui wiring (docs/archive/research/verify-bareRn.md — verified bare-RN requirements):
  * 1. watchFolders/nodeModulesPaths make pnpm workspace packages resolvable.
  * 3. PowerSync (Track E) will ADD: inline-requires blockList for
  *    require.resolve('@powersync/react-native') + the WebSocket transport — skipping

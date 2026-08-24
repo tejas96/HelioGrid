@@ -287,7 +287,7 @@ Sources: [./research/tooling.md](./research/tooling.md) · [./research/verify-ba
 4. **Tigris single-region pin via `fly storage create`** — confirm the CLI/console path to a
    `sin`-pinned bucket (flag naming under-documented).
 5. ~~**Exotel BYO-number porting mechanics + AgentStream DTMF**~~ — **RESOLVED by spike S5**
-   (`docs/spikes/S5-exotel-byo-dtmf.md`); binding form is ADR-0019. Findings: BYO is inbound
+   (`docs/archive/spikes/S5-exotel-byo-dtmf.md`); binding form is ADR-0019. Findings: BYO is inbound
    forwarding to the platform ExoPhone only (outbound CLI is not portable), AgentStream does
    not provide DTMF-send, and the 1600-series is closed to non-BFSI. Nothing left to verify.
 6. **PowerSync self-host deploy smoke** — deploy the prebuilt `journeyapps/powersync-service`

@@ -400,7 +400,7 @@ module.exports = {
      */
     doNotFollow: { path: '(^|/)(node_modules|dist)/' },
     exclude: {
-      path: '(^|/)(\\.next|\\.turbo)/|^design/|^apps/mobile/(ios|android|vendor)/',
+      path: '(^|/)(\\.next|\\.turbo)/|^apps/mobile/(ios|android|vendor)/',
     },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.base.json' },

@@ -5,7 +5,7 @@ Zero-trust verification of the PRD / briefs / tasks suite. Ground truth is deriv
 from the live PRD every run, never from a cached snapshot, so a gate cannot pass by
 agreeing with a stale baseline.
 
-Run:  python3 gates.py [--repo <path>] [-v]   # defaults to this script's own repo
+Run:  python3 scripts/gates.py [--repo <path>] [-v]   # defaults to this script's own repo
 Exit: 0 all gates pass, 1 otherwise.
 """
 
@@ -21,7 +21,8 @@ from collections import defaultdict
 # name /Volumes/works-space/heliogrid_v2_prd, so after the spec moved into this repo it kept
 # reading — and passing against — the OLD folder. It only surfaced when that folder was deleted
 # and every count dropped to zero. next-screen.py had it right; this matches it.
-REPO_DEFAULT = os.path.dirname(os.path.abspath(__file__))
+# Two dirnames, not one: this script lives in scripts/, so the repo is its parent.
+REPO_DEFAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # A requirement row id: F4-04, M09-52, MS12-19, BM-21, OV-39, PS-24 — and MS7-24b, the one
 # letter-suffixed row in the suite. It is a distinct P0 row sitting beside MS7-24, and a
@@ -548,9 +549,10 @@ def run(repo, verbose):
     # next-screen.py told an operator "150 of 150 designed · nothing left to do" for a day,
     # because the V column shifted the cell it read as status. A helper that lies confidently
     # is worse than no helper, and no other gate could see it — so this one runs it.
-    helper = os.path.join(repo, "next-screen.py")
+    helper = os.path.join(repo, "scripts", "next-screen.py")
     if not os.path.exists(helper):
-        gate(18, "helper script agrees with the register", True, "next-screen.py not present — skipped")
+        gate(18, "helper script agrees with the register", False,
+             f"{os.path.relpath(helper, repo)} not found — the gate cannot run, so it does not pass")
     else:
         import subprocess
         try:

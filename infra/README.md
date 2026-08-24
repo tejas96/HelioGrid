@@ -77,12 +77,12 @@ DATABASE_ADMIN_URL=... pnpm --filter @heliogrid/invariants test
 flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
   --no-replicas --disable-eviction        # pick the fixed 250MB plan at the prompt
 
-# 4. Tigris bucket (then verify the `sin` pin per docs/spikes/S4 and RECORD the
+# 4. Tigris bucket (then verify the `sin` pin per docs/archive/spikes/S4 and RECORD the
 #    working command sequence in that note):
 flyctl storage create --name heliogrid-objects --org heliogrid
 
 # 5. Production upgrade path (later, unchanged from docs/03 §6): grow to 3-node
-#    repmgr HA + pgBackRest→Tigris + restore drill (docs/spikes/S2 sequence).
+#    repmgr HA + pgBackRest→Tigris + restore drill (docs/archive/spikes/S2 sequence).
 ```
 
 ## Secrets wiring (when deploys start)

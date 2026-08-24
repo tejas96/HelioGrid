@@ -343,7 +343,8 @@ yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | [`prd/registers/conflicts.md`](prd/registers/conflicts.md) | Contradictions found in the spec and how each was resolved |
 | `docs/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/adr/` | Why each architecture choice was made — reference only |
-| `docs/research/` | Market + technology research backing the decisions above |
+| [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is law, live, superseded or archive |
+| `docs/archive/` | Frozen history — research, spikes, the offline removal, the closed design-gap register |
 | `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
 | `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
 
