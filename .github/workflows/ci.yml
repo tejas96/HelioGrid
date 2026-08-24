@@ -47,11 +47,16 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           git fetch --no-tags origin ${{ github.base_ref }}
-          if ! git diff --diff-filter=MDR --no-renames --quiet origin/${{ github.base_ref }}...HEAD -- packages/db/migrations; then
+          # Scoped to *.sql to match what the runner actually locks: migrate.ts reads
+          # `readdirSync(...).filter(f => f.endsWith('.sql'))` and hashes only those, and
+          # .claude/hooks/block-applied-migration-edit.sh matches only */migrations/*.sql.
+          # Unscoped, this fired on migrations/README.md — documentation the runner never
+          # reads. Every .sql file is still covered; nothing is exempted.
+          if ! git diff --diff-filter=MDR --no-renames --quiet origin/${{ github.base_ref }}...HEAD -- 'packages/db/migrations/*.sql'; then
             echo "::error::An APPLIED migration was modified, deleted or RENAMED. Migrations are"
             echo "::error::append-only and sha256-locked by the runner — editing one makes"
             echo "::error::the db migrate step refuse to run. Add a new file instead."
-            git diff --diff-filter=MDR --no-renames --name-only origin/${{ github.base_ref }}...HEAD -- packages/db/migrations
+            git diff --diff-filter=MDR --no-renames --name-only origin/${{ github.base_ref }}...HEAD -- 'packages/db/migrations/*.sql'
             exit 1
           fi
           echo "migrations append-only: OK"
