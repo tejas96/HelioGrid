@@ -8,7 +8,7 @@ import { ENV } from './config/env';
 async function bootstrap() {
   // Nest's default body parser is back: `bodyParser: false` plus a manual express.json
   // branch existed ONLY so Better Auth's handler could read the raw stream on /api/auth/*.
-  // Auth was removed to greenfield (ADR-0024); the rebuild re-adds whatever it needs.
+  // Auth was removed to greenfield; the rebuild re-adds whatever it needs.
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.enableCors({ origin: ENV.WEB_ORIGIN, credentials: true });
   app.useLogger(app.get(Logger));

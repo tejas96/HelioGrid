@@ -25,6 +25,5 @@ Hard requirements: one message catalog (EN/HI/MR) shared by Next.js App Router (
 
 ## Sources
 
-- `../research/tooling.md` · `../research/verify-bareRn.md` (§3, bare-RN metro transformer verification)
 - https://lingui.dev/ref/metro-transformer · https://lingui.dev/tutorials/react-native · https://lingui.dev/tutorials/react-rsc
 - https://lingui.dev/blog/2024/11/28/announcing-lingui-5.0

@@ -36,8 +36,7 @@ docs/architecture.md §2 apps/api. Web and mobile reach it over HTTP through
 - pino structured logs with requestId; phone numbers redacted (privacy hygiene — DPDP for
   IN; each market's regime as markets are added).
 - Tenancy is three layers: guard → repository filter → RLS `withTenantTransaction`. **Only
-  RLS exists today** (ADR-0024); a module landing before the rebuild must assume no
-  protection. `@Public()` / `@CurrentClaims()` are deleted — do not reach for them.
+  RLS exists today**; a module landing before the auth module must assume no protection. `@Public()` / `@CurrentClaims()` are deleted — do not reach for them.
 - List endpoints: `orderBy(<sort key> DESC, id DESC)` (stable order, id tiebreaker),
   limit/offset from `paginationQuerySchema`, `totalCount` counted with the SAME `where` —
   never a divergent count query. Recipe: foundation-dx spec §4.2.
@@ -56,8 +55,9 @@ docs/architecture.md §2 apps/api. Web and mobile reach it over HTTP through
   `errorHttpStatusByCode[code]`, but that map holds only BASE codes — `ALREADY_ONBOARDED`
   missed it and silently returned **500 with the right code in the body**. Typecheck was
   green; only an end-to-end curl caught it (2026-07-27). Always pass `HttpStatus.*`.
-- **NO GUARD EXISTS — every route is unauthenticated** (ADR-0024). A new controller ships
-  public and nothing warns you; restoring it is the rebuild's job, not a local fix. The
+- **NO GUARD EXISTS — every route is unauthenticated.** The auth module has not been built. A
+  new controller ships public and nothing warns you; restoring it is that module's job, not a
+  local fix. The
   rebuild must restore: `SessionGuard` as `APP_GUARD` in `app.module.ts` (never
   `CommonModule` — Nest resolves deps in the declaring module, so it fails at boot), the
   `SessionResolver` port, and `@Public()` on health (without it Fly's probes 401).

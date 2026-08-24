@@ -18,7 +18,7 @@ docs/architecture.md §2 data. react + @tanstack/react-query are PEER deps, conf
 
 ## Local conventions
 - **Repositories are interfaces with factories**, and their types are INFERRED from the
-  contract, never hand-written. This is what makes the Track E PowerSync swap a data-layer
+  contract, never hand-written. This is what makes a data-source swap a data-layer
   change for both platforms at once (`docs/forward-compat.md`, `mobile` row).
 - **Every hook lives in `src/react/`**, including feature hooks — `use-health.ts`, not
   `health/hooks.ts`. Colocation reads better, but the lint boundary would then need a

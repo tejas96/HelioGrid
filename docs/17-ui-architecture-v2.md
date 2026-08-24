@@ -10,24 +10,19 @@ backend/shared code and no part of this document changes them.
 
 ## 1 · Why we are replacing, not refactoring
 
-`packages/ui`, `packages/ui-api` and `apps/mobile/src/ui` implement the **v1** design
-system — the 21 components snapshotted in `design/ds-source/`. That snapshot is marked
-`STALE-DO-NOT-TRUST.md` in its own folder. The live design system (Claude Design project
-**HelioGrid Design System**, `c8aa4326-21bf-453a-8d11-749cc81dee12`) carried roughly 65
-exports when that warning was written and has grown since through design rounds 13–17.
+The v1 UI layer implemented a 21-component snapshot of the design system. The live design
+system (Claude Design project **HelioGrid Design System**,
+`c8aa4326-21bf-453a-8d11-749cc81dee12`) had already grown well past it through design rounds
+13–17, and the v1 layer still carried components for capabilities the product no longer has —
+an `OfflineBanner` under parity contract on both platforms, after owner ruling **Q61**
+(2026-08-07) removed the offline capability entirely.
 
-Two concrete proofs that the built UI is the wrong spec:
-
-- **`OfflineBanner` is built, exported and under parity contract on both platforms.**
-  Owner ruling **Q61** (2026-08-07) removed the offline/sync capability from the product
-  entirely. `docs/13-ux-gap-register.md:113` already records it as dead code.
-- **`docs/06-offline-and-sync.md` still exists** and describes that removed capability.
-
-Refactoring preserves both. So we replace.
+Refactoring would have preserved that drift. So the layer was replaced rather than refactored:
+`packages/theme` and `packages/ui` are the result.
 
 ### The failure to design out
 
-`design/ds-source/` was a hand-copy of the design system. It went stale within days and
+The v1 snapshot was a hand-copy of the design system. It went stale within days and
 produced at least one false audit finding. **Any hand-copied mirror of the design system
 will drift.** §6 is the mechanical answer to this, and it is the most important section
 in this document.
@@ -89,10 +84,9 @@ rather than at build time. Use `.tsx` + `.native.tsx`. No web config needed.
 
 ### Why the three-copy problem disappears
 
-Today the same prop list is written three times — `packages/ui`, `apps/mobile/src/ui`,
-and `packages/ui-api` — and `scripts/check-ui-parity.mjs` (200 lines) exists only to keep
-them equal. With `Button.types.ts` co-located, both platform files import the one
-declaration. Divergence becomes a type error, not a script's job.
+The v1 layer wrote the same prop list three times and needed a 200-line script to keep the
+copies equal. With `Button.types.ts` co-located, both platform files import the one
+declaration. Divergence is a type error, not a script's job.
 
 `scripts/check-ui-parity.mjs` is deleted. Its replacement checks something else — see §6.
 
@@ -166,12 +160,12 @@ Build the primitives before any component. They are ~8 files × 2 platforms.
 1. **`packages/theme`** — pull tokens, emit `tokens.css` + `print.css` + the typed theme,
    add the contrast gate. Depends on nothing.
 2. **`packages/ui/primitives`** — the 8 atoms, both platforms.
-3. **Delete the old layer** — `packages/ui`, `packages/ui-api`, `packages/tokens`,
-   `apps/mobile/src/ui`, `scripts/check-ui-parity.mjs`, and the two gallery screens
+3. **Delete the old layer** — the v1 UI and token packages, `apps/mobile/src/ui`,
+   `scripts/check-ui-parity.mjs`, and the two gallery screens
    (`apps/web/features/design-reference/`, `apps/mobile/src/screens/gallery/`). The
    galleries exist only to display the v1 components; they are not migrated.
 4. **Components, in the order the screens need them.** Not alphabetically, not all at
-   once. The V1 screen list is `prd/registers/screens.md` in the `heliogrid_v2_prd` repo,
+   once. The V1 screen list is `prd/registers/screens.md`,
    99 screens, block 1 first.
 5. **Rebuild the four existing flows** — login, signup, onboarding, home — on the new
    system. Roughly 7,600 lines of app code exists today; about 40% of it is gallery and
@@ -474,11 +468,7 @@ Each needs updating when phase 3 lands. Listed so none is missed:
 - `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui']` becomes
   `['@heliogrid/ui', '@heliogrid/theme']`
 - `apps/mobile/babel.config.js` — add the Unistyles plugin if §3 is taken
-- `docs/03-tech-stack.md` — the "21-component `_ds` API" row is stale
-- `docs/10-i18n-and-design-system.md` — the component census is stale
-- `docs/06-offline-and-sync.md` — describes a capability removed by ruling Q61
-- `docs/13-ux-gap-register.md` — predates the V2 PRD; reconcile or retire
-- `design/ds-source/` — delete; it is a v1 snapshot already marked do-not-trust
+- `docs/03-tech-stack.md` — the design-tokens row must name `packages/theme`
 
 ---
 

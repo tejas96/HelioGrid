@@ -100,6 +100,6 @@ export type Paginated<T> = { items: T[]; totalCount: number };
  * routes. The rule outlives the auth teardown; it constrains every module still to come.
  *
  * `tenantClaimSchema` and `sessionClaimsSchema` lived here until 2026-08-01 and existed
- * solely for the session guard, which was deleted with auth (ADR-0024). The rebuild
+ * solely for the session guard, which was deleted with auth. The rebuild
  * re-authors them alongside the guard that consumes them.
  */

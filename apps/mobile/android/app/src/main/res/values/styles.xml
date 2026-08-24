@@ -3,7 +3,7 @@
     <!--
       Base application theme.
 
-      NOT DayNight. This product is light-only v1 (docs/10), there are no values-night
+      NOT DayNight. This product is light-only v1, there are no values-night
       resources, and a DayNight parent was wrong by declaration even though it was inert.
 
       `windowBackground` IS the splash on API 24–30. From API 31 the system owns the splash
@@ -11,7 +11,7 @@
       targetSdk 36, so both ranges ship and both get tested.
 
       @color/splash_canvas is GENERATED from design/ds-source by packages/tokens/build.ts.
-      Never hardcode a hex here (docs/13 UXG-26).
+      Never hardcode a hex here.
     -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->

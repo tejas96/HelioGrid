@@ -16,7 +16,7 @@ agent configures in the visible browser, secrets land in `.env.local`/Fly secret
 
 **Owner decision 2026-07-26:** personal Play/Apple accounts were considered and declined —
 wait for the org accounts (no double fees, no app transfer). Consequence, recorded
-honestly against docs/14 Track M: the "TestFlight + Play internal from Day 5" milestone
+honestly against the mobile distribution milestone: TestFlight and Play internal testing
 becomes "internal distribution via sideload/simulator from Day 5; STORE-internal
 distribution starts when the org accounts exist." The store-review risk row's mitigation
 (code ships in-window, activation follows approval clocks) already covers this pattern.

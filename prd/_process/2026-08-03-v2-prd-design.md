@@ -40,9 +40,9 @@ global from day one, with the 3D Design Studio as the flagship.
 
 ## 3. Source corpus and reading rules
 
-**Corpus (all of it is read):** `docs/00`–`16` (19 documents), `docs/product/product-journey.md`
+**Corpus (all of it is read):** `docs/00`–`16` (19 documents), `prd/_process/product-journey.md`
 (master spec: D1–D39 census, 9-stage journey, customer journey C1–C13, roles matrix),
-`docs/product/studio-census.md` (binding studio acceptance gate), `docs/architecture.md`,
+`prd/modules/M05-studio/studio-census.md` (binding studio acceptance gate), `docs/architecture.md`,
 `docs/forward-compat.md`, `design/ds-source/` (design system). ~85,000 words.
 
 **Reading rules:**

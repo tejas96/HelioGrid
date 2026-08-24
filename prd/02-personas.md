@@ -60,7 +60,7 @@ persona independently."*).
 | 12 | **Marketing** | none — V2 marketing scope | Employees | Web-first | Campaigns and what they captured | `BRIEF` |
 
 **How the v1 six became the V2 twelve.** The source ships **six fixed preset roles** — Owner,
-Manager, Sales rep, Surveyor, Designer, Engineer (`docs/product/product-journey.md` §ROLES &
+Manager, Sales rep, Surveyor, Designer, Engineer (`prd/_process/product-journey.md` §ROLES &
 PERMISSIONS, L1429–1436). The V2 persona set is wider than that, and the mapping is not
 one-to-one in either direction. Three movements are worth stating plainly, because F2 has to rule
 on all three:
@@ -95,11 +95,11 @@ These five rows bind every persona section below and every module that names a p
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-01 | **Role decides the home screen, not a setting.** Every persona lands on the work in front of them, not on a generic dashboard they must navigate away from; the front door is derived from what the person is, never chosen in preferences. The source calls this "the single highest-leverage UX decision in the product". | `SRC` — `S1.rec.1` (`docs/product/product-journey.md` §Stage 1 Recommendation, L183–186) | P0 |
+| PS-01 | **Role decides the home screen, not a setting.** Every persona lands on the work in front of them, not on a generic dashboard they must navigate away from; the front door is derived from what the person is, never chosen in preferences. The source calls this "the single highest-leverage UX decision in the product". | `SRC` — `S1.rec.1` (`prd/_process/product-journey.md` §Stage 1 Recommendation, L183–186) | P0 |
 | PS-02 | The twelve personas named in §2 are the **fixed persona vocabulary of the suite**. Every module and foundation PRD names its audience from this list, using these exact names; a document that needs a thirteenth persona records the need in `registers/open-questions.md` rather than coining one. | `BRIEF` — `_process/owner-brief-2026-08-03.md` §Users | P0 |
-| PS-03 | **A persona is a job; a role is the grant of access.** The two sets are deliberately different sizes, one person may hold several roles at once, and access is resolved by F2's rules — permission granted if **any** held role grants it, lead visibility taking the **widest** scope among them. No persona section in this document grants, implies or restricts a permission. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1417–1422, L1479–1481; `DOC08.six-roles`, `DOC08.roles-or` | P0 |
+| PS-03 | **A persona is a job; a role is the grant of access.** The two sets are deliberately different sizes, one person may hold several roles at once, and access is resolved by F2's rules — permission granted if **any** held role grants it, lead visibility taking the **widest** scope among them. No persona section in this document grants, implies or restricts a permission. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1417–1422, L1479–1481; `DOC08.six-roles`, `DOC08.roles-or` | P0 |
 | PS-04 | **Every persona sits inside one of the three audiences** of `01` §2 — Owner or Employees. No persona in this suite is the EPC's customer, and no persona-level requirement may imply a customer login: the customer reaches the product through one tokenised link and never acquires an account. | `SRC` — `D7` (three audiences), `D5` (customer never logs in) | P0 |
-| PS-05 | **One person, one home.** Someone holding several roles gets a **single** home screen — the one for their widest role, with the other roles' work composed inside it — and can switch, "not two competing home screens". A person who both sells and surveys lands on My Day with today's visits shown inside it. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS Recommendation 2 (L1515–1517) | P1 |
+| PS-05 | **One person, one home.** Someone holding several roles gets a **single** home screen — the one for their widest role, with the other roles' work composed inside it — and can switch, "not two competing home screens". A person who both sells and surveys lands on My Day with today's visits shown inside it. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS Recommendation 2 (L1515–1517) | P1 |
 
 **Surfaces, stated once.** Every persona below names a surface emphasis, never a surface
 restriction. The product is mobile-first without compromising web (`OV-08`): the mobile
@@ -115,8 +115,8 @@ split.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-06 | The **EPC Owner** persona is the person who buys and administers the tenant — the proprietor or director of the solar EPC. Their scope is the whole business: every lead, every design, every project, every unit of money in the tenant's currency, every setting. The source states it flatly: "The business owner. Everything, always. Cannot be deleted or restricted." | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1431; `_process/owner-brief-2026-08-03.md` §Users | P0 |
-| PS-07 | The EPC Owner's **home screen is the pipeline dashboard**, led by the honest attention list — deals stuck or aging, proposals sent and not opened, projects blocked, payments overdue — each item deep-linking to the thing itself, followed by cash collected versus due, pipeline by stage, this period against last, forecast marked a projection, and win/loss. | `SRC` — `S1.rec.1`; `docs/product/product-journey.md` §DASHBOARDS & REPORTS, Owner dashboard row (L1544) and Recommendation (L1569–1572) | P0 |
+| PS-06 | The **EPC Owner** persona is the person who buys and administers the tenant — the proprietor or director of the solar EPC. Their scope is the whole business: every lead, every design, every project, every unit of money in the tenant's currency, every setting. The source states it flatly: "The business owner. Everything, always. Cannot be deleted or restricted." | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1431; `_process/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-07 | The EPC Owner's **home screen is the pipeline dashboard**, led by the honest attention list — deals stuck or aging, proposals sent and not opened, projects blocked, payments overdue — each item deep-linking to the thing itself, followed by cash collected versus due, pipeline by stage, this period against last, forecast marked a projection, and win/loss. | `SRC` — `S1.rec.1`; `prd/_process/product-journey.md` §DASHBOARDS & REPORTS, Owner dashboard row (L1544) and Recommendation (L1569–1572) | P0 |
 
 ### Who they are
 
@@ -198,8 +198,8 @@ away and a tenant always retains at least one of them. Full matrix: **see F2 §E
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-08 | The **Sales Manager** persona runs a selling team. Their scope is the team's leads — seeing them, reassigning them, building and sending proposals against them — and explicitly **not** the company's settings, catalog or billing. Lead visibility is team-wide, one step narrower than the owner and one wider than the executive. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1432; `D20`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
-| PS-09 | The Sales Manager's **home screen is the same dashboard the owner lands on, scoped to their team** — the attention list, cash and pipeline restricted to the team's deals — with the team's per-rep view reachable from it. The source assigns the owner dashboard to "Owner (+ manager, team-scoped)" and makes the same screen serve both, scoped, rather than building a second one. | `SRC` — `docs/product/product-journey.md` §DASHBOARDS & REPORTS L1538–1539, L1544, L1546; `AP.screen.4` (per-rep view, manager-only) | P0 |
+| PS-08 | The **Sales Manager** persona runs a selling team. Their scope is the team's leads — seeing them, reassigning them, building and sending proposals against them — and explicitly **not** the company's settings, catalog or billing. Lead visibility is team-wide, one step narrower than the owner and one wider than the executive. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1432; `D20`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-09 | The Sales Manager's **home screen is the same dashboard the owner lands on, scoped to their team** — the attention list, cash and pipeline restricted to the team's deals — with the team's per-rep view reachable from it. The source assigns the owner dashboard to "Owner (+ manager, team-scoped)" and makes the same screen serve both, scoped, rather than building a second one. | `SRC` — `prd/_process/product-journey.md` §DASHBOARDS & REPORTS L1538–1539, L1544, L1546; `AP.screen.4` (per-rep view, manager-only) | P0 |
 
 ### Who they are
 
@@ -270,7 +270,7 @@ Manager**.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-10 | The **Sales Executive** persona sells. Their scope is their **own** leads, their own proposals and their own follow-ups — capture, qualify, book the survey, build and send the proposal, chase it, and mark it won or lost with a reason. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1433; `D20`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-10 | The **Sales Executive** persona sells. Their scope is their **own** leads, their own proposals and their own follow-ups — capture, qualify, book the survey, build and send the proposal, chase it, and mark it won or lost with a reason. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1433; `D20`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
 | PS-11 | The Sales Executive's **home screen is My Day** — "not a dashboard of numbers, a list of what to do today", in a fixed order: **overdue** first and always visually first, **today's** timed items, a separate **agent activity** block for what the automation did on their behalf, then **upcoming**. Snoozed and dormant leads are excluded until they wake. | `SRC` — `S1.rec.1`; `S7.rule.my-day` (journey L768); `S7.rec.1`; `R9` (snoozed/dormant excluded) | P0 |
 
 ### Who they are
@@ -348,7 +348,7 @@ matrix: **see F2 §Sales Executive**.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-12 | The **Survey Engineer** persona visits sites and captures what a design cannot be built without: roof, electrical, shading, access and structural observations — the last "observations only, never a verdict". Their visibility is limited to what they are assigned. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1434; `S4.rule.capture`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-12 | The **Survey Engineer** persona visits sites and captures what a design cannot be built without: roof, electrical, shading, access and structural observations — the last "observations only, never a verdict". Their visibility is limited to what they are assigned. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1434; `S4.rule.capture`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
 | PS-13 | The Survey Engineer's **home screen is today's site visits** — each with address, customer, time, distance, one-tap navigation and one-tap call. | `SRC` — `S1.rec.1`; `S4.screen.6` (journey L379) | P0 |
 | PS-14 | Surveying is a **capability, not a gatekeeper**: the survey is a task assignable to anyone who holds the capability — a dedicated Survey Engineer or a Sales Executive standing on the roof — and both use one capture flow. The persona describes whose job it usually is, never who is permitted to do it. | `SRC` — `D15`; `DOC08.matrix.capture-surveys` | P0 |
 
@@ -416,9 +416,9 @@ project stages, or anything financial. Full matrix: **see F2 §Survey Engineer**
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| PS-15 | The **Design Engineer** persona builds the system: roof geometry, obstructions, components, panel layout, shading analysis, the single-line diagram and the priced bill of materials, plus the variants a customer needs to choose between. In v1 vocabulary this is the `Designer` preset — source wording "builds designs and quotes", read as **proposals** per R1's naming law — with assigned-only visibility. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1435; `S5.rule.existing-steps`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-15 | The **Design Engineer** persona builds the system: roof geometry, obstructions, components, panel layout, shading analysis, the single-line diagram and the priced bill of materials, plus the variants a customer needs to choose between. In v1 vocabulary this is the `Designer` preset — source wording "builds designs and quotes", read as **proposals** per R1's naming law — with assigned-only visibility. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1435; `S5.rule.existing-steps`; `_process/owner-brief-2026-08-03.md` §Users | P0 |
 | PS-16 | The Design Engineer's **home screen is designs awaiting work** — the queue of surveys handed over and designs in progress, with the blocking gaps named per item. | `SRC` — `S1.rec.1` (journey L184) | P0 |
-| PS-17 | This persona also holds **sign-off authority**: reviewing a design and approving it, or returning it with comments pinned to what is wrong. In v1 this is a separate preset (`Engineer` — "reviews and signs off designs"); in V2 it is documented as a distinct **capability of the Design Engineer persona**, and the customer never sees an unapproved design. | `SRC` — `docs/product/product-journey.md` §ROLES & PERMISSIONS L1436; `DOC08.matrix.approve-designs`; `S5.screen.3`; `S5.wrong.6` | P0 |
+| PS-17 | This persona also holds **sign-off authority**: reviewing a design and approving it, or returning it with comments pinned to what is wrong. In v1 this is a separate preset (`Engineer` — "reviews and signs off designs"); in V2 it is documented as a distinct **capability of the Design Engineer persona**, and the customer never sees an unapproved design. | `SRC` — `prd/_process/product-journey.md` §ROLES & PERMISSIONS L1436; `DOC08.matrix.approve-designs`; `S5.screen.3`; `S5.wrong.6` | P0 |
 | PS-18 | Where a person holds sign-off, their **home screen carries the sign-off queue — designs awaiting review, oldest first** — composed into the one home rather than presented as a second front door (`PS-05`). | `SRC` — `S1.rec.1`; `S5.screen.2`; journey L1515–1517 | P0 |
 | PS-19 | **Sign-off is a capability, and whoever performs it is not the person who drew it.** The reviewer's approval is the structural-safety record for the design, and returning a design sends it back to its author with comments attached to the specific problem. Whether the capability is granted by its own preset role or rides the Design Engineer preset is F2's decision. | `SRC` — `DOC08.matrix.approve-designs`; `DOC08.audit-coverage` (sign-off approve/return with who and when, "the engineer-led structural safety record"); `S5.wrong.6` | P0 |
 

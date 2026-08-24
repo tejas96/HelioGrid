@@ -127,7 +127,6 @@ decision, not something to create mid-task. Put the file where the pattern alrea
 | `tasks/` | one file per module, written to as tasks complete |
 | `ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
 | `docs/` | how the repo is built — `docs/README.md` is the map, and every entry there carries a status |
-| `docs/archive/` | frozen history: research, spikes, the offline removal, the closed design-gap register. Never cited by new work |
 
 **Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one
 file each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the
@@ -200,7 +199,7 @@ Digest of `prd/registers/open-questions.md` and the foundations `F1`–`F8`, whi
 | | |
 |---|---|
 | `docs/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
-| `docs/README.md` | **The docs map** — what every file under `docs/` is, and whether it is law, live, superseded or archive |
+| `docs/README.md` | **The docs map** — what every file under `docs/` is, and whether it is pinned or live |
 | `START-HERE.md` | **Designing a screen** — the one file a design session starts from |
 | `prd/registers/screens.md` | The screen register — 150 screens, 99 locked to V1 |
 | `prd/registers/open-questions.md` · `conflicts.md` | Owner rulings · contradictions and their resolutions |

@@ -81,5 +81,5 @@ policy constants and formatters are imported from `@heliogrid/domain`, never re-
 - Geist woff2 urls resolve relative to tokens.css — Next bundles automatically.
 
 ## Definition of done here
-docs/10 §10 + CLAUDE.md §Commands (a task is DONE only when verified running).
+`prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD) + CLAUDE.md §Commands (a task is DONE only when verified running).
 Verified in the running browser.

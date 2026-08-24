@@ -18,8 +18,8 @@ pnpm --filter @heliogrid/domain typecheck | build
 
 ## Dependency policy
 docs/architecture.md §2 domain. This is the BOTTOM layer — it imports nothing in the
-workspace (owner ruling 2026-07-30, ADR-0021). The contracts and apps/api edges were
-removed by the same-day ADR-0024 teardown and return with the auth rebuild.
+workspace (owner ruling 2026-07-30). The contracts and apps/api edges were
+removed by the same-dayteardown and return with the auth rebuild.
 A business enum both layers need is defined HERE as a pure union; contracts then builds its
 `z.enum` from it. Importing contracts from here is a package cycle, and both gates say so.
 
@@ -33,13 +33,13 @@ A business enum both layers need is defined HERE as a pure union; contracts then
   `package-index-only`).
 
 ## Landmines
-- The package held no behaviour until 2026-07-31, and that was deliberate (ADR-0021). It
+- The package held no behaviour until 2026-07-31, and that was deliberate. It
   existed so `domain-purity-no-layers` and `domain-purity-no-frameworks` were live before the
   code they police — until this package existed, both rules targeted a path matching nothing
   and a green cruise proved less than it looked like it did.
 - **A shared type does not prove shared behaviour — read both call sites, not both
   declarations.** The login types landed here after the two platforms drifted. Reading only the
-  declarations produced a WRONG finding (docs/13 UXG-PAR-01): one platform reached the same
+  declarations produced a WRONG finding: one platform reached the same
   outcome through a differently-named variable, so it looked absent and was not. Unifying a type
   narrows where drift can hide; it does not tell you what each side actually does.
 - Landed so far: login flow types + behavioural constants (`auth/login-state.ts`,

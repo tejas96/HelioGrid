@@ -26,8 +26,8 @@ human engineer sign-off — from a 1 kW rooftop to a 100 MW park (§M05.15).
 
 Two structural facts govern everything below:
 
-1. **The census is the acceptance baseline.** `docs/product/studio-census.md` (canonical per
-   owner ruling 2026-07-30, ADR-0017) is adopted **verbatim** as this module's acceptance
+1. **The census is the acceptance baseline.** `prd/modules/M05-studio/studio-census.md` (canonical per
+   owner ruling 2026-07-30) is adopted **verbatim** as this module's acceptance
    baseline, read through the `_process/extraction/studio-census-checklist.md` post-overlay
    ledger. Every tool and every computed output listed there must survive, refactored to the
    design system and touch-first. **The census never shrinks** (design spec §3.2;
@@ -105,7 +105,7 @@ Census sections: Preamble/`SC.gate.01`–`SC.gate.04` · 10.1 `SC.10-1.01`–`SC
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M05-01 | **The census is this module's acceptance baseline, incorporated by reference as Appendix A, and it never shrinks.** Every census entry is a binding acceptance item for the studio; the appendix maps every entry to the feature area that carries it. A change that would drop, downgrade or quietly reword a census behaviour is out of order at any time, in this pass or pass two. | `SRC` — `SC.gate.01`–`SC.gate.04` (canonical, ADR-0017; merge-gate framing carried as an acceptance-gate statement per §14/DD4); `DOC14.census-quality-gate` ("the census never shrinks"); `D39`; design spec §3.2 | P0 |
+| M05-01 | **The census is this module's acceptance baseline, incorporated by reference as Appendix A, and it never shrinks.** Every census entry is a binding acceptance item for the studio; the appendix maps every entry to the feature area that carries it. A change that would drop, downgrade or quietly reword a census behaviour is out of order at any time, in this pass or pass two. | `SRC` — `SC.gate.01`–`SC.gate.04` (canonical, merge-gate framing carried as an acceptance-gate statement per §14/DD4); `DOC14.census-quality-gate` ("the census never shrinks"); `D39`; design spec §3.2 | P0 |
 | M05-02 | **The wizard presents nine visible steps; no user-visible "step 5" ever exists.** Steps: Project setup · Roof · Obstructions · Components · Panel layout (auto-placement folded in) · Proposal captures · SLD & drawings · BOM & pricing · Done. The step indicator reads "n / 9"; internal step identifiers stay stable across the fold so nothing renumbers underneath. | `SRC` — `R7` (verbatim: 9 visible steps, "no user-visible 'step 5' ever exists"); `DOC05.wizard-9-steps`; `SC.10-1.04`/`SC.10-1.06` (post-overlay); `S5.rule.existing-steps`; `S5.rule.uxprob.3` (resolved by R7) | P0 |
 | M05-03 | **Every step carries one of four states — not started / in progress / done / has errors — and navigation is always visible.** Mobile: compact indicator ("n / 9 · <step> ‹ ›") opening a step-list sheet; desktop: a step rail. Back navigation and re-entry into completed steps are always available. | `SRC` — `SC.10-1.05`, `SC.10-1.06` (post-R7), `SC.10-1.07` | P0 |
 | M05-04 | **One header system, everywhere in the studio:** back · step title · Design Health chip · units toggle (m/ft, global across the studio) · Save · Save & exit to lead · Help (per-step, plain language) · Next/Done. The three unrelated v1 header systems are retired. | `SRC` — `SC.10-1.07`–`SC.10-1.14`; `UXG-21` (single header, consolidated shell); `S5.rule.uxprob.4` | P0 |
@@ -1019,10 +1019,10 @@ Mirrored into `registers/open-questions.md`.
 
 ## Appendix A — Census acceptance baseline (normative)
 
-**Conformance rule.** `docs/product/studio-census.md` — read post-overlay through
+**Conformance rule.** `prd/modules/M05-studio/studio-census.md` — read post-overlay through
 `_process/extraction/studio-census-checklist.md` — is **incorporated by reference, verbatim,
 as this module's normative acceptance baseline** (design spec §3.2; owner ruling 2026-07-30,
-ADR-0017; `SC.gate.01`–`SC.gate.04`). Every entry below is a binding acceptance item of the
+`SC.gate.01`–`SC.gate.04`). Every entry below is a binding acceptance item of the
 feature area it maps to, at the census's own depth — the entry text, its option lists and its
 post-overlay notes govern; this table maps and never abridges. **The census never shrinks:**
 no entry may be dropped, downgraded or reworded away in this pass or pass two (DD13); a

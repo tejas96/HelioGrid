@@ -15,8 +15,7 @@
 > someone asks. The next real test is a screen.
 >
 > **56 screens are drawable today** — blocks 1 through 6, which are the shippable product:
-> lead → won → project → payment. Full record:
-> [`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md).
+> lead → won → project → payment.
 >
 > When a screen finds a gap — and one will — record it in that register and keep drawing. It should
 > be a trickle now, not 57.
@@ -151,8 +150,7 @@ Make sure the right design system is selected — and read this twice, because t
 
 > **There are TWO Claude Design projects called exactly "HelioGrid Design System".**
 > The live one is **`c8aa4326-21bf-453a-8d11-749cc81dee12`**, last written 2026-08-18 — rounds
-> 13 through 17 all landed on it, closing 51 of the 57 gaps in
-> [`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md).
+> 13 through 17 all landed on it, closing the design-system gap register out.
 > The other, `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, has not been touched since 2026-07-20 and
 > received none of the seventeen rounds of design prompts — no contrast fix, no `--text-inverse`,
 > no `NoConnection` screen, and it still has `OfflineBanner`.

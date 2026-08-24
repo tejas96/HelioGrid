@@ -11,7 +11,7 @@ Before writing a constant, type, hook or copy string in a screen, ask which pack
 
 - **Shared state vocabulary and view-model types live in `@heliogrid/domain`** and are
   imported by both controllers; the store that fills them lives in `@heliogrid/data`. The
-  login flow drifted into five renamed fields and an inverted `online`/`offline` polarity
+  login flow drifted into five renamed fields and an inverted boolean polarity
   because each platform named its own.
 - **Data reaches a screen through `@heliogrid/data`.** No `@ts-rest/*`, no auth client, no
   raw HTTP client, no `fetch` wrapper of your own (`apps-never-touch-the-wire`, lint).

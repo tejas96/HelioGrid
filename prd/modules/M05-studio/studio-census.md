@@ -1,11 +1,12 @@
 # Studio tool census — the binding port acceptance gate
 
-> **CANONICAL (owner ruling 2026-07-30).** This census is THE acceptance checklist for the
-> 3D Design Studio port (ADR-0017): every tool and every computed output listed here must
-> survive the port, refactored to the design system and touch-first. It is a merge gate for
-> port PRs, on par with typecheck and lint.
+> **CANONICAL — the binding port-acceptance gate (owner ruling 2026-07-30).** This census is
+> THE acceptance checklist for the 3D Design Studio port: every tool and every computed output
+> listed here must survive the port, refactored to the design system and touch-first. It is a
+> merge gate for port PRs, on par with typecheck and lint. Studio capability is never cut to
+> fit a schedule; the scale program is investment into this moat, never a reason to reduce it.
 >
-> Promoted verbatim from `docs/archive/research/phases710.md` §2, which is now historical. The POC
+> Promoted verbatim from the phase 7–10 research, now superseded by this document. The POC
 > repository's `phase-10-prompts.md` is NOT canonical and must not be cited.
 
 ## 2. TOOL / FEATURE CENSUS (Phase 10, screens 10.1–10.11)

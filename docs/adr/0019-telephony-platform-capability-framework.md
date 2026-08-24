@@ -25,7 +25,7 @@ single "escalate-to-human" action inside CallSession. Two forces broke that fram
 
 ### 1. A port FAMILY with capability negotiation — never one grand interface
 
-`packages/adapters/telephony` exposes a small REQUIRED core plus OPTIONAL capability
+The telephony adapters package exposes a small REQUIRED core plus OPTIONAL capability
 interfaces. Every adapter declares what it truly supports; business logic branches on the
 declaration, never on the vendor name.
 
@@ -62,7 +62,7 @@ interface VoicemailCapable { deposit(leg, box): Promise<void>; }
 IVR traversal requires `dtmfSend`; on an adapter without it, the campaign step is skipped
 and the call is flagged `ivr_blocked` for human follow-up.
 
-### 2. Two planes inside apps/voice
+### 2. Two planes inside the voice service
 
 - **Media/AI plane** (`CallSession`) — unchanged: STT→LLM→TTS turn-taking, barge-in,
   AI-disclosure ≤30 s, outcome classification. Talks only to `SpeechProvider`,
@@ -110,7 +110,7 @@ decision time and pinned — the human sees what the AI knew.
 | Additional providers (Bolna Plan-B, LiveKit/Twilio later) | Bolna adapter if S5 triggers fallback | registry keyed by `phone_provider` enum |
 
 *Call recording as a FEATURE surface is later; the 90-day recording-retention compliance
-machinery (docs/04 `calls.recording_file_id`) is unchanged v1.
+machinery (the calls table's recording reference) is unchanged v1.
 
 ### 6. Compliance stays ours and fail-closed
 
@@ -127,7 +127,7 @@ BYO = inbound-forwarding + ExoPhone outbound identity — product copy must say 
   honestly, map `phone_provider` enum value.
 - Schema additions (`ring_groups`, `routing_policies`, `call_handoffs`, `user_presence`,
   `call_queue` callback fields, `calls.outcome += transferred`) land in **Track C's first
-  migration**; they are specified now in docs/04 §8 so earlier tracks leave room
+  migration**; they are specified by the voice slice's first migration so earlier tracks leave room
   (forward-compat register updated).
 - The Exotel adapter declares `{dtmfSend: false, transferWarm: unverified→sandbox}` —
   the platform is honest about vendor gaps instead of hiding them in code paths.

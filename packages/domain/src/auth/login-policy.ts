@@ -21,6 +21,6 @@ export const CALL_OFFER_AFTER_RESENDS = 2;
  *
  * Spec Q9 leaves this open. Web chose 1400ms and RN chose 900ms; unified here on the longer
  * value because the step exists to be READ and 900ms is short for that. Owner ruling pending
- * (docs/13 UXG-PAR-02) — if 900ms is preferred, this is the one line that changes.
+ * — if 900ms is preferred, this is the one line that changes.
  */
 export const DONE_DWELL_MS = 1400;

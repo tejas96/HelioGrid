@@ -4,14 +4,12 @@ Date: 2026-07-24
 
 ## Context
 
-The product owner issued a binding directive: **pure/bare React Native, no Expo, both platforms from day one.** The research corpus was originally written Expo-first (PowerSync, Better Auth and Lingui guidance all referenced Expo); a dedicated verification pass confirmed the full stack works on bare RN.
+The product owner issued a binding directive: **pure/bare React Native, no Expo, both platforms from day one.** The research corpus was originally written Expo-first; a dedicated verification pass confirmed the full stack works on bare RN.
 
 ## Decision
 
-**Bare React Native for `apps/mobile`** — field-first app (My Day, leads, quick-add, offline surveys, visits, notifications); the studio opens as an authenticated WebView (ADR-0017). Verified stack on bare RN:
+**Bare React Native for `apps/mobile`** — field-first app (My Day, leads, quick-add, surveys, visits, notifications); the studio opens as an authenticated WebView . Verified stack on bare RN:
 
-- **PowerSync**: supported via `@op-engineering/op-sqlite` (New Architecture OK); requires the metro inline-requires blockList and WebSocket transport (ADR-0009).
-- **Better Auth**: framework-agnostic client + custom `react-native-keychain` storage adapter.
 - **Lingui v5**: `@lingui/metro-transformer` works without Expo on RN ≥0.73 (ADR-0015).
 - **Push**: Notifee + react-native-firebase, FCM/APNs direct (no Expo Push).
 
@@ -34,7 +32,5 @@ Honest costs, all accepted with the directive:
 
 ## Sources
 
-- `../research/verify-bareRn.md` (the enabling verification) · `../research/sync.md` · `../research/auth.md` (Expo-assumption superseded)
-- https://docs.powersync.com/client-sdk-references/react-native-and-expo/react-native-web-support · https://www.npmjs.com/package/@op-engineering/op-sqlite
 - https://lingui.dev/ref/metro-transformer
 - BLUEPRINT.md — Final-review directive 3 (user-confirmed, binding)

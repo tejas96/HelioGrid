@@ -4,7 +4,7 @@ Date: 2026-07-24
 
 ## Context
 
-HelioGrid is ~5 apps (web, api, worker, voice, mobile) + ~7 packages (domain, contracts, db, ui, tokens, i18n, config) built primarily by AI agents. The repo tooling must be legible and deterministic for agents: every layer readable as plain config, no generated project graph to reverse-engineer. Layer boundaries (domain never imports db/api; no cycles) are load-bearing for the pure-TS domain port.
+HelioGrid is ~4 apps (web, api, worker, mobile) + packages (domain, contracts, db, ui, theme, i18n, env, data) built primarily by AI agents. The repo tooling must be legible and deterministic for agents: every layer readable as plain config, no generated project graph to reverse-engineer. Layer boundaries (domain never imports db/api; no cycles) are load-bearing for the pure-TS domain port.
 
 ## Decision
 
@@ -27,7 +27,6 @@ HelioGrid is ~5 apps (web, api, worker, voice, mobile) + ~7 packages (domain, co
 
 ## Sources
 
-- `../research/tooling.md`
 - https://turborepo.com/docs/reference/boundaries · https://turborepo.dev/blog/turbo-2-4
 - https://biomejs.dev/blog/biome-v2-5/ · https://github.com/biomejs/biome/discussions/6245
 - https://github.com/QuiiBz/sherif/blob/main/README.md

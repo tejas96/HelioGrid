@@ -1,6 +1,6 @@
 # Extraction ledger — The customer's journey (C1–C13, framing, link lifecycle)
 
-**Source:** `docs/product/product-journey.md` § "THE CUSTOMER'S JOURNEY — the other side of the glass" (lines 950–1163: framing 956–968, C1–C13 971–1140, "The customer's actual surface area" 1144–1156, "The three moments that decide everything" 1158–1161). Line pointers are given per row for `SRC` citation.
+**Source:** `prd/_process/product-journey.md` § "THE CUSTOMER'S JOURNEY — the other side of the glass" (lines 950–1163: framing 956–968, C1–C13 971–1140, "The customer's actual surface area" 1144–1156, "The three moments that decide everything" 1158–1161). Line pointers are given per row for `SRC` citation.
 **Overlay applied:** `docs/15-spec-resolutions.md` read in full first — §1 rulings R1, R2, R4, R5, R6, R9, R10, R12, R15, R16, R17, R18; §2 D-conformance rows D5, D9, D10, D13, D24, D25, D30, D32, D33, D34, D35, D36, D38; §4 owner directives 4 and 7.
 **Reading rule:** every row records the POST-overlay state. Superseded source wording is named and marked `SUPERSEDED`; where the source and the overlay pull against each other the tension is **recorded, not resolved** (marked `CONTRADICTION`).
 **Columns:** `key` · `content` (what the customer sees/does, what the EPC side does, post-overlay state, notes) · `target_doc`. Default mapping for this file is **F5** (customer link / customer-facing surface); cross-referenced modules are given in parentheses and the reason is stated in the content cell.

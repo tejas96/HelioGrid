@@ -1,10 +1,9 @@
 # 08 — Security & Tenancy
 
-Binding companion to `./15-spec-resolutions.md` §4 (owner directives, absorbed from the
+The security and tenancy model: the threat table, the three-layer tenant-isolation defence,
 archived BLUEPRINT — originally its §Auth / §Data layer / §Security & honesty). Sources:
-[`./research/auth.md`](./research/auth.md), [`./research/journey.md`](./research/journey.md),
-[`./research/integrations.md`](./research/integrations.md). Schemas referenced here are defined in
-[`./04-data-model.md`](./04-data-model.md); billing states in [`./16-billing-and-entitlements.md`](./16-billing-and-entitlements.md).
+. Schemas referenced here are defined in
+the owning module's migration.
 
 ---
 
@@ -14,9 +13,9 @@ Ranked by (impact × likelihood) for a multi-tenant Indian EPC SaaS holding phon
 
 | # | Threat | Vector | Impact | Mitigation (all mandatory) |
 |---|---|---|---|---|
-| T1 | **Cross-tenant data leakage** | Missing `tenant_id` predicate in one query; IDOR on a numeric/uuid id; PowerSync bucket misparameterisation | Another EPC's leads, prices, margins exposed — company-ending trust failure | Three-layer defence (§4): guard → tenant-scoped repo → RLS backstop. Locked invariant test: cross-tenant read AND write must fail (`tests/invariants/`). PowerSync sync streams parameterised by verified JWT `tenant_id`, never by client input |
-| T2 | **Customer-link abuse** | D5/D33: customer never logs in; one tokenised link per deal. Any link-holder can view — and **Accept** — a proposal, incl. a ₹92L C&I order (D33 accepted risk). Forwarded links, leaked WhatsApp chats, guessing | Fraudulent acceptance, competitor price scraping, PII exposure | HMAC tokens (§6): unguessable (256-bit MAC), scoped, expiring, revocable via DB row. Accept re-validates server state. Rate-limited public routes. **Ships in the 20-day build (Track B, R6-amended): named per-contact links + OTP challenge above tenant-set threshold (default ₹10L), live at launch** — `customer_links` carries `label` + `contact_id` (nullable) columns and the token payload reserves `otp_required`, matching [`./04-data-model.md`](./04-data-model.md); per-contact rows arrive with the named-links feature |
-| T3 | **Webhook forgery / replay** | Attacker posts fake `subscription.charged` to grant themselves entitlements, or fake Exotel call events | Free service, poisoned ledgers | Razorpay: HMAC-SHA256 signature verify → dedupe on `x-razorpay-event-id` → reconcile-by-poll backstop (see [`./16`](./16-billing-and-entitlements.md) §5). Exotel/MSG91 callbacks: per-tenant/per-integration shared-secret verification + source allowlist + timestamp freshness ≤5 min + event-id dedupe. All webhook endpoints excluded from session auth, included in rate limits |
+| T1 | **Cross-tenant data leakage** | Missing `tenant_id` predicate in one query; IDOR on a numeric/uuid id | Another EPC's leads, prices, margins exposed — company-ending trust failure | Three-layer defence (§4): guard → tenant-scoped repo → RLS backstop. Locked invariant test: cross-tenant read AND write must fail (`tests/invariants/`).|
+| T2 | **Customer-link abuse** | D5/D33: customer never logs in; one tokenised link per deal. Any link-holder can view — and **Accept** — a proposal, incl. a ₹92L C&I order (D33 accepted risk). Forwarded links, leaked WhatsApp chats, guessing | Fraudulent acceptance, competitor price scraping, PII exposure | HMAC tokens (§6): unguessable (256-bit MAC), scoped, expiring, revocable via DB row. Accept re-validates server state. Rate-limited public routes. **Ships in the 20-day build (Track B, R6-amended): named per-contact links + OTP challenge above tenant-set threshold (default ₹10L), live at launch** — `customer_links` carries `label` + `contact_id` (nullable) columns and the token payload reserves `otp_required`; per-contact rows arrive with the named-links feature |
+| T3 | **Webhook forgery / replay** | Attacker posts fake `subscription.charged` to grant themselves entitlements, or fake Exotel call events | Free service, poisoned ledgers | Razorpay: HMAC-SHA256 signature verify → dedupe on `x-razorpay-event-id` → reconcile-by-poll backstop. Exotel/MSG91 callbacks: per-tenant/per-integration shared-secret verification + source allowlist + timestamp freshness ≤5 min + event-id dedupe. All webhook endpoints excluded from session auth, included in rate limits |
 | T4 | **OTP abuse** | SMS pumping (premium-rate number farms burn our MSG91 balance), OTP brute force, invite spam | Direct money loss, account takeover | §7: per-phone/per-IP/per-tenant rate limits, 5-attempt verify lockout, +91 default allowlist, spend-velocity alarms, DLT-registered templates only |
 | T5 | **Voice-agent social misuse** | Caller impersonates a customer to extract another customer's deal data; prompt injection via utterances or tenant knowledge base; agent used to harass (DND/hours violations); vishing our tenants ("HelioGrid support, read me your OTP") | PII leakage, TRAI penalties, brand damage | Agent context is scoped to the **single lead matched by verified caller number** — no cross-customer retrieval tool exists in the agent's toolset. Knowledge base is per-tenant, injected read-only; agent has no DB write tools beyond the call-outcome record. `ComplianceGate` (non-swappable, BLUEPRINT §Voice): DND scrub, 9am–9pm + holiday calendar, AI disclosure ≤30s, keypress opt-out. Recording retention 90 days. Support never asks for OTP — stated in every OTP SMS template |
 | T6 | **Stolen device / session theft** | Field phones lost with 30–90 day mobile sessions | Tenant data exposure from one rep's scope | Sessions server-side in Postgres → revocable instantly from Team screen ("sign out everywhere" on deactivate). RN tokens in hardware keystore via react-native-keychain, never AsyncStorage. Short-lived JWTs (10 min) limit replay of intercepted API tokens |
@@ -30,29 +29,42 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 ## 2. Authentication
 
 > **STATUS 2026-08-01: none of this section is built.** Auth was removed to greenfield on an
-> owner ruling (ADR-0024, docs/15 R20) — the api module, the session guard, the auth contract
+> owner ruling — the api module, the session guard, the auth contract
 > and the identity tables are all gone, every API route is currently unauthenticated, and
 > both login screens run on a walkthrough stub. What follows is the DESIGN the rebuild
-> implements, not a description of the running system. Read it as the target; read ADR-0024
-> for what must be restored and in what order.
+> implements, not a description of the running system. Read it as the target; read> for what must be restored and in what order.
 
-**Better Auth self-hosted** (v1.6.x) on our `bom` Postgres — phone PII stays in India ([`./research/auth.md`](./research/auth.md); [Better Auth 1.6](https://better-auth.com/blog/1-6)). Plugins: `organization` (tenants, members, phone invites), `phoneNumber` (OTP), `jwt` (JWKS).
+**No authentication is installed.** `apps/api` ships no guard and every route is
+unauthenticated today. The auth module authors the session model, the token format and the OTP
+verification path. This document states only the constraints that bind whatever it picks.
+
+### Constraints on the auth rebuild
+
+- **Phone PII stays on the primary Indian database.** A provider that stores phone numbers
+  outside India is disqualified (DPDP).
+- **Sessions are server-side rows**, so deactivating a user — or "sign out everywhere" — kills
+  every device within one token TTL rather than waiting out a stateless expiry.
+- **API calls carry a short-lived token** (target ≤10 min) whose claims are the entire authz
+  payload and nothing more:
+
+```json
+{ "sub": "<user_id>", "tenant_id": "<uuid>", "roles": ["sales_rep","surveyor"], "exp": ... }
+```
+
+- **Customer links never touch it.** They are separate stateless HMAC-signed grants; the
+  customer never logs in (product law).
 
 ### Phone-OTP flow (web and RN — one server flow)
 
-1. User enters phone → server checks rate limits (§7) → MSG91 sends 6-digit OTP (SMS primary, ~₹0.15; WhatsApp-OTP retry channel for opt-in/failed delivery — [MSG91](https://productgrowth.in/tools/engagement/msg91/), [WhatsApp vs SMS](https://quickauth.in/blog/whatsapp-otp-vs-sms-otp-india)).
-2. Verify (single-use, 5-min TTL, constant-time compare) → Better Auth session created → active organisation resolved → `tenant_id`.
-3. Invited employee: invite row keyed by phone (Stage 1 journey) — OTP verify attaches membership + roles atomically.
+1. User enters phone → server checks rate limits (§7) → MSG91 sends 6-digit OTP (SMS primary,
+   ~₹0.15; WhatsApp-OTP retry channel).
+2. Verify (single-use, 5-min TTL, constant-time compare) → session created → active
+   organisation resolved → `tenant_id` established.
+3. Invited employee: invite row keyed by phone — OTP verify attaches membership + roles
+   atomically.
 
-DLT registration (principal entity + headers + templates) is a Day-1 critical-path item of the 20-day build: 1–2 weeks lead time, tracked in [`./14-build-roadmap.md`](./14-build-roadmap.md).
-
-### Session models
-
-| Surface | Mechanism | Lifetime | Storage |
-|---|---|---|---|
-| Web (Next.js) | Better Auth cookie session (`HttpOnly`, `Secure`, `SameSite=Lax`) | 30 days rolling | Server-side session row in Postgres |
-| Mobile (bare RN) | Framework-agnostic Better Auth client + **custom storage adapter over react-native-keychain** (BLUEPRINT ruling; the `expo` plugin from the research is superseded by the no-Expo directive). Bearer session token | 90 days (field crews go offline for long windows) | iOS Keychain / Android Keystore |
-| API calls (both) | Short-lived JWT minted by the `jwt` plugin, **10-min TTL, EdDSA, verified via JWKS** by NestJS guards and PowerSync | 10 min, silent re-mint from live session | Memory only |
+DLT registration (principal entity + headers + templates) is a critical-path item: 1–2 weeks
+lead time gates OTP SMS at launch.
 
 JWT claims — the entire authz payload, nothing more:
 
@@ -60,15 +72,14 @@ JWT claims — the entire authz payload, nothing more:
 { "sub": "<user_id>", "tenant_id": "<uuid>", "roles": ["sales_rep","surveyor"], "exp": ... }
 ```
 
-Sessions are server-side rows → deactivating a user (or "sign out everywhere") kills every device inside one JWT TTL (≤10 min). PowerSync sync-stream parameters (`tenant_id`, assignee scope) come from this JWT only.
+Sessions are server-side rows → deactivating a user (or "sign out everywhere") kills every device inside one JWT TTL (≤10 min).
 
-Week-1 spike (BLUEPRINT): phone-OTP on bare RN with the keychain adapter — the `phoneNumber` plugin has known RN rough edges ([#4679](https://github.com/better-auth/better-auth/issues/4679)); fallback is calling our OTP endpoints directly from RN.
 
 ---
 
 ## 3. Authorisation
 
-Six fixed stackable preset roles, 16 capabilities (source: POC `product-journey.md` D27–D29 via [`./research/journey.md`](./research/journey.md)). **Manage billing returns as a live capability** — D38 is superseded; billing is v1 (see [`./15-spec-resolutions.md`](./15-spec-resolutions.md)).
+Six fixed stackable preset roles, 16 capabilities (source: `prd/foundations/F2-roles-and-permissions.md`). **Manage billing returns as a live capability** — D38 is superseded; billing is v1.
 
 | Capability | Owner | Manager | Sales rep | Surveyor | Designer | Engineer |
 |---|:--:|:--:|:--:|:--:|:--:|:--:|
@@ -108,7 +119,7 @@ Single DB, shared schema, `tenant_id` on every tenant-owned row (BLUEPRINT §Dat
 
 **Layer 1 — request guard.** `TenantContextGuard` extracts `tenant_id` from the verified JWT and binds it to request-scoped context (AsyncLocalStorage). No handler ever reads tenant from params/body.
 
-**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select()` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
+**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
 
 **Layer 3 — Postgres RLS (backstop).** Every tenant-owned table:
 
@@ -131,7 +142,7 @@ SET LOCAL app.tenant_id = '<uuid from verified JWT claim>';
 
 **BYPASSRLS warning (verified the hard way in research — [RLS multi-tenant](https://dev.to/josh_blair/multi-tenant-auth-with-cognito-and-postgresql-row-level-security-part-2-5d30)):** RLS silently no-ops for superusers and roles with `BYPASSRLS`. Therefore: the app connects as `heliogrid_app` (`NOSUPERUSER NOBYPASSRLS`, no DDL); migrations run under a separate `heliogrid_migrator` role in CI/deploy only; the postgres-flex default `postgres` superuser is never a connection string in any app. `FORCE ROW LEVEL SECURITY` is mandatory because the table owner otherwise bypasses its own policies. A startup assertion queries `pg_roles` and refuses to boot if the runtime role has `rolsuper` or `rolbypassrls`.
 
-Exceptions: `platform_catalog_*` tables (shared, read-only to tenants) and Better Auth core tables carry no tenant RLS; admin/back-office paths use a separate service with its own role and explicit audit.
+Exception: `platform_catalog_*` tables (shared, read-only to tenants) carry no tenant RLS; admin/back-office paths use a separate service with its own role and explicit audit.
 
 Locked invariant tests (thin-net exception, always green): cross-tenant SELECT returns zero rows even with a deliberately unscoped repo call; cross-tenant INSERT/UPDATE fails on `WITH CHECK`.
 
@@ -139,7 +150,7 @@ Locked invariant tests (thin-net exception, always green): cross-tenant SELECT r
 
 ## 5. Customer links (no-login access, D5)
 
-Entirely separate from auth — public routes never touch sessions or the RLS user context ([`./research/auth.md`](./research/auth.md) §Customer links).
+Entirely separate from auth — public routes never touch sessions or the RLS user context (§Customer links).
 
 **Token format — stateless HMAC:**
 
@@ -158,7 +169,7 @@ payload = { lid: link_id, tid: tenant_id, sc: ["proposal.view"], cid: contact_id
 
 **Rate limits** (Upstash, per link_id and per IP): 60 views/hr per link; 5 respond-actions/hr; global public-route ceiling with 429 + backoff.
 
-**Never block the customer link over the tenant's unpaid platform bill** — links stay live in every billing state ([`./16`](./16-billing-and-entitlements.md) §3, journey rule "chase the person, don't punish the view").
+**Never block the customer link over the tenant's unpaid platform bill** — links stay live in every billing state (journey rule "chase the person, don't punish the view").
 
 ---
 
@@ -183,7 +194,7 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 
 ## 7. Secrets management
 
-- **Platform secrets**: Fly secrets per app (`api`, `worker`, `voice`, `powersync`) — DB URLs, Better Auth secret, JWT signing key, link-token keyring, MSG91/Exotel/Sarvam/Razorpay platform keys, Tigris credentials. Never in the repo; `.env.example` documents every var name (CLAUDE.md rule). Rotation: staged dual-read (new+old) → flip → retire, per keyring pattern above.
+- **Platform secrets**: Fly secrets per app (`api`, `worker`) — DB URLs, JWT signing key, link-token keyring, MSG91/Exotel/Sarvam/Razorpay platform keys, Tigris credentials. Never in the repo; `.env.example` documents every var name (CLAUDE.md rule). Rotation: staged dual-read (new+old) → flip → retire, per keyring pattern above.
 - **Per-tenant credentials** (BYO Razorpay key/secret + webhook secret now; WABA tokens in v2): **AES-256-GCM app-layer encryption with a per-tenant DEK envelope**. Ciphertext in Postgres (`tenant_integration_credentials` table: tenant_id, kind, ciphertext, key_fingerprint, created_by, rotated_at); each tenant's DEK is wrapped by a **master key that exists only as a Fly secret on the app that must decrypt** (api for payment-link minting; never web, never mobile). Decrypt in memory at the call site, zero after use, never logged, never returned by any API (write-only from the tenant's side — UI shows last-4 only). Every decrypt emits an audit event. Key rotation: re-wrap the per-tenant DEKs under the new master key in one migration job, then retire the old master key.
 - Log hygiene: structured logger redacts `phone`, `otp`, `token`, `authorization`, `x-razorpay-signature`, credential ciphertext keys at the serialiser level.
 
@@ -210,7 +221,7 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 
 DPDP Act 2023 + DPDP Rules 2025 — **the IN market's determination**; onboarding any new market requires that jurisdiction's own privacy/residency determination BEFORE tenants exist there (forward-compat "Market & money"). Position: **we are Data Fiduciary for tenant users' PII** (phones, names) and **Data Processor for the EPC's customer data** (the tenant is the fiduciary for their customers) — the DPA terms ride in our subscription agreement.
 
-- **Residency**: primary DB (all PII, phone numbers via self-hosted Better Auth) on Fly `bom` — in India. Payment instruments never touch us (Razorpay, an Indian PA, holds them → RBI localisation satisfied).
+- **Residency**: primary DB (all PII, phone numbers) on Fly `bom` — in India. Payment instruments never touch us (Razorpay, an Indian PA, holds them → RBI localisation satisfied).
 - **Cross-border (Tigris `sin`)**: object storage (photos, PDFs, DEM tiles, backups) pinned single-region Singapore. DPDP Rules 2025 use a **negative-list model — transfer permitted by default unless the destination is blocklisted**; Singapore is not. Compliant today; the S3-compatible API gives a documented migration path to India-region storage if the list changes (BLUEPRINT §Database & infra). Decision recorded in `adr/` with review trigger "negative-list amendment".
 - **Consent records**: per-customer voice-call consent, recording consent, DND/do-not-call flags with timestamps and source (D36 companion rules) — stored, surfaced pre-dial, exported on request. OTP SMS is transactional authentication traffic under DLT.
 - **Data-principal rights**:

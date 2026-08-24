@@ -32,9 +32,9 @@ jobs:
     env:
       DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
       DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
-      # BETTER_AUTH_SECRET was required here until 2026-08-01 (ADR-0024) — apps/api's env
-      # schema no longer declares it, and Turborepo strict env mode would flag an undeclared
-      # variable. The rebuild re-adds both the variable and the CI value together.
+      # An auth secret was required here until the 2026-08-01 greenfield reset. apps/api's env
+      # schema no longer declares one, and Turborepo strict env mode would flag an undeclared
+      # variable. The auth module re-adds both the variable and the CI value together.
     steps:
       - uses: actions/checkout@v4
         with:
@@ -73,8 +73,8 @@ jobs:
       - run: pnpm turbo typecheck
       - name: Apply migrations (CI database)
         run: pnpm --filter @heliogrid/db migrate
-      # The Better Auth migration step was removed on 2026-08-01 with the auth teardown
-      # (ADR-0024) — the script it ran no longer exists. It created the tables the tenancy
+      # The auth-provider migration step was removed on 2026-08-01 with the greenfield reset
+      # — the script it ran no longer exists. It created the tables the tenancy
       # scan vets, so when auth is rebuilt this step comes BACK: without it the scan only
       # warns that they are absent and never inspects them in CI at all.
       - run: pnpm turbo test
@@ -85,11 +85,11 @@ jobs:
         # "fresh" means. oasdiff is absent here, so the breaking-change half skips cleanly
         # and only the freshness half gates the merge.
         run: pnpm check:openapi
-      - name: i18n extract guard (unextracted messages never merge — docs/10 §7.2)
+      - name: i18n extract guard (unextracted messages never merge)
         run: |
           pnpm --filter @heliogrid/i18n extract
           git diff --exit-code packages/i18n/src/locales
-      - name: Native splash colour freshness (docs/13 UXG-26)
+      - name: Native splash colour freshness
         # The package script, NOT `turbo build`: turbo only tracks outputs inside a package,
         # so these two files are not in its `outputs` and a cache hit would skip rewriting
         # them — replaying a green gate over a stale value, the landmine this package

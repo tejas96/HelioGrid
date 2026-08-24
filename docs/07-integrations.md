@@ -2,18 +2,17 @@
 
 Every external system sits behind a **port** — a plain TS interface owned by us — with one
 production **adapter** bound per environment. Domain code (`packages/domain`) never sees a
-port; orchestration code in `apps/api`, `apps/worker` and `apps/voice` calls the port and
-feeds results into pure domain functions. Sources: [./research/integrations.md](./research/integrations.md),
-[./research/voice.md](./research/voice.md), [./research/calc.md](./research/calc.md) §2,
-[./research/verify-flyNative.md](./research/verify-flyNative.md).
+port; orchestration code in `apps/api` and `apps/worker` calls the port and feeds results
+into pure domain functions.
 
 ## Package layout (ruling)
 
 - **Port interfaces + envelope types**: `packages/contracts/src/ports/` — pure types, zero
   runtime deps, importable everywhere.
-- **Adapter implementations**: `packages/adapters/` (server-only package; may import
-  `contracts`, `domain`, `db`; never `apps/*`). One implementation shared by api, worker and
-  voice — no copy-paste adapters per app. dependency-cruiser gets a rule for this layer.
+- **Adapter implementations**: a server-only adapters package, created with the first module
+  that needs one; it may import `contracts`, `domain`, `db` and never `apps/*`. One
+  implementation shared by every service — no copy-paste adapters per app. dependency-cruiser
+  gets a rule for this layer when it lands.
 - **Binding**: NestJS custom providers per app module, e.g.
   `{ provide: SOLAR_DATA_PORT, useClass: PvgisAdapter }`. Swapping an adapter is a one-line
   provider change plus config.
@@ -24,9 +23,9 @@ feeds results into pure domain functions. Sources: [./research/integrations.md](
    exception: the Google Maps JS key (intentionally public, HTTP-referrer-locked). All keys
    live in Fly secrets; per-tenant BYO credentials (Razorpay, WABA) are AES-256-GCM
    app-layer encrypted at rest with a per-tenant DEK envelope (master key in Fly secrets)
-   in `tenant_integration_credentials` (see `04-data-model.md`).
+   in `tenant_integration_credentials`, authored by the module that first needs it.
 2. **Status envelope, never throw across the port.** Ported from the POC proxy pattern
-   ([./research/calc.md](./research/calc.md) §2):
+   :
 
    ```ts
    type PortResult<T> =
@@ -42,7 +41,7 @@ feeds results into pure domain functions. Sources: [./research/integrations.md](
    transient retry; nothing else retries inside the adapter — retry policy belongs to the
    caller (BullMQ backoff for jobs, user-visible retry for interactive calls).
 4. **Circuit breaker**: after 5 consecutive adapter failures, open for 60 s (return
-   `unavailable` immediately), then half-open. Implemented once in `packages/adapters/lib/breaker.ts`.
+   `unavailable` immediately), then half-open. Implemented once in the adapters package.
 5. **Per-tenant metering hook**: every adapter is wrapped at binding time:
 
    ```ts
@@ -58,7 +57,7 @@ feeds results into pure domain functions. Sources: [./research/integrations.md](
    cost_estimate_minor, occurred_at`) via a fire-and-forget BullMQ enqueue — metering never
    blocks or fails the request. Billable metrics (`voice_minutes`, `ai_detections`, `otp_sms`
    (fair-use, NOT billed v1), `storage_gb`) run the entitlement soft-block check first
-   (`16-billing-and-entitlements.md`). Non-billable observability metrics (`solar_data_fetch`,
+   before the call. Non-billable observability metrics (`solar_data_fetch`,
    `map_tile_fetch`, `dem_tile_fetch`, `push_sent`, `document_rendered`) are metered anyway
    for quotas, fairness and COGS dashboards.
 
@@ -175,13 +174,13 @@ Gemini key → `unconfigured` (graceful, feature hidden). Never a hard error in 
 
 **Metering:** `ai_detections`, **billable**, 1 unit per successful detect (either path —
 the tenant buys the outcome, not the vendor). Entitlement check before dispatch; bundled
-detections per plan, metered beyond (`16-billing-and-entitlements.md`).
+detections per plan, metered beyond.
 
 ## 4. Telephony — a capability-negotiated port FAMILY (ADR-0019)
 
 Telephony is a PLATFORM capability, never one vendor-shaped interface. A small REQUIRED
 core plus OPTIONAL capability interfaces; every adapter declares what it truly supports
-via `getCapabilities()`, and business logic branches on the declaration — never on the
+via `getCapabilities`, and business logic branches on the declaration — never on the
 vendor name. Full rationale + interfaces: [ADR-0019](./adr/0019-telephony-platform-capability-framework.md).
 
 ```ts
@@ -190,14 +189,14 @@ interface TelephonyCorePort {                       // REQUIRED of every adapter
   onInbound(handler: (call: InboundLeg) => void): void;
   mediaStream(leg: CallLeg): DuplexAudio;
   hangup(leg: CallLeg): Promise<void>;
-  getCapabilities(): TelephonyCapabilities;   // dtmfSend/Receive, transferWarm/Cold,
+  getCapabilities: TelephonyCapabilities;   // dtmfSend/Receive, transferWarm/Cold,
 }                                             // conference, recording, monitoring,
                                               // voicemail, queueing, provisioning, ivr
 // Optional: DtmfCapable · TransferCapable (consult/bridge/redirect) · ConferenceCapable ·
 // RecordingCapable · MonitoringCapable (listen/whisper/barge) · VoicemailCapable
 ```
 
-**Two planes in `apps/voice`:** the media/AI plane (`CallSession` — STT→LLM→TTS,
+**Two planes in the voice service:** the media/AI plane (`CallSession` — STT→LLM→TTS,
 barge-in, disclosure) and the provider-agnostic **call-control plane**
 (`CallOrchestrator` — call-leg FSM, routing-plan execution, ComplianceGate before every
 leg incl. consult legs, ledger writes). Transfers, escalation chains, callbacks and
@@ -218,8 +217,8 @@ degrades on a defined path — never throws, never silently no-ops. Warm transfe
 call flagged `ivr_blocked` for human follow-up. No agent available → callback queue →
 voicemail. Conference/monitoring/voicemail/provider-queues are declared, not built, v1.
 
-**v1: `ExotelAdapter`** ([./research/voice.md](./research/voice.md), spike S5).
-AgentStream gives <20 ms media over WS so `apps/voice` owns STT→LLM→TTS itself.
+**v1: `ExotelAdapter`** (spike S5).
+AgentStream gives <20 ms media over WS so the voice service owns STT→LLM→TTS itself.
 Honest capability declaration per S5: `dtmfReceive: true` (verified event shape);
 **`dtmfSend: false`** (undocumented on AgentStream — in-band synthesis is a sandbox
 experiment, not a plan); `transferCold: true` (leg redirect via applet/API);
@@ -248,7 +247,7 @@ error rate (`09-observability-and-ops.md`).
 
 **Metering:** every leg natively metered — telephony seconds, STT seconds, TTS chars, LLM
 tokens — ledgered per call in `calls.cost_breakdown` and rolled into billable
-`voice_minutes`. ≈₹2.5–4/min outbound all-in ([./research/voice.md](./research/voice.md)).
+`voice_minutes`. ≈₹2.5–4/min outbound all-in .
 
 ## 5. SpeechProvider + LanguageModel — Sarvam
 
@@ -264,8 +263,7 @@ interface LanguageModel {
 
 **v1: `SarvamAdapter`** — lowest Indic WER (13/15 languages), Bulbul beats ElevenLabs on
 Hindi prosody, sovereign India compute (DPDP-clean); covers Hindi/Marathi/Gujarati/Tamil/
-Telugu/English ([./research/voice.md](./research/voice.md),
-[Sarvam pricing](https://www.sarvam.ai/api-pricing)). Agent config is versioned; queued
+Telugu/English ([Sarvam pricing](https://www.sarvam.ai/api-pricing)). Agent config is versioned; queued
 calls use the queue-time version (D36).
 
 **Later adapters:** AI4Bharat self-host (cost floor / SLA fallback), Google Chirp or
@@ -273,7 +271,7 @@ equivalent for non-Indic markets when global expansion needs it.
 
 **Failure/degradation:** STT stall >3 s mid-call → play filler, retry once, then
 escalate-to-human or voicemail per tenant IVR config; LLM timeout → same ladder. The
-orchestrator (`CallSession` in `apps/voice`) owns turn-taking, barge-in, AI-disclosure ≤30 s,
+orchestrator (`CallSession` in the voice service) owns turn-taking, barge-in, AI-disclosure ≤30 s,
 escalation and outcome classification — never vendor code.
 
 **Metering:** STT seconds, TTS characters, LLM tokens per call → `cost_breakdown`; surfaced
@@ -286,20 +284,19 @@ interface ComplianceGate {
   canDial(tenantId: string, number: E164, callType: 'transactional' | 'promotional')
     : Promise<{ ok: true } | { ok: false; reason: 'dnd' | 'opt_out' | 'window' | 'series' | 'scrub_stale' }>;
   recordOptOut(tenantId: string, number: E164, source: 'keypress' | 'agent' | 'manual'): Promise<void>;
-  retentionSweep(): Promise<void>;   // nightly BullMQ repeatable job
+  retentionSweep: Promise<void>;   // nightly BullMQ repeatable job
 }
 ```
 
 **One concrete implementation, no alternate adapter, ever.** TRAI penalties (₹25,000 per
 upheld complaint) land on the tenant as Principal Entity, so the gate lives in OUR code, not
-the vendor's ([./research/voice.md](./research/voice.md),
-[TRAI/DLT compliance](https://www.caller.digital/blog/trai-dnd-compliance-ai-outbound-calling-india)).
+the vendor's ([TRAI/DLT compliance](https://www.caller.digital/blog/trai-dnd-compliance-ai-outbound-calling-india)).
 Enforces, before **every** dial: daily-refreshed DND scrub (category-level) + tenant opt-out
 list; 9 am–9 pm promotional window + holiday calendar; 1600 (transactional) vs 140x
 (promotional) series routing; keypress opt-out honoured ≤24 h; 90-day recording retention
 via `retentionSweep` (delete from Tigris + tombstone the ledger row).
 
-**AMENDED 2026-08-02 (global-backend ruling; docs/15 D36):** the MECHANISM above is what is
+**AMENDED 2026-08-02 (global-backend ruling):** the MECHANISM above is what is
 non-swappable — every outbound dial passes this gate, no override flag, no alternate adapter.
 The statutory RULESET the gate enforces is per-market data from the market pack; everything
 in this section (DND scrub, 9am–9pm window, 1600/140x series, ≤24 h opt-out, 90-day
@@ -327,8 +324,7 @@ deep link. Zero regulatory surface, zero cost, ships day one.
 onboarding since April 2026; we register as Tech Provider). Tenant owns the WABA, number and
 Business Portfolio — assets survive a provider switch; deliverability reputation is isolated
 per tenant. BSP shortlist behind the port: AiSensy / Interakt (India SMB) or 360dialog
-(flat pass-through) ([./research/integrations.md](./research/integrations.md),
-[Meta Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/overview),
+(flat pass-through) ([Meta Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/overview),
 [Meta pricing](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing)).
 India per-message: marketing ≈₹0.88, utility/auth ≈₹0.13; utility inside the 24 h service
 window is free — design follow-ups to ride that window.
@@ -352,8 +348,7 @@ interface PaymentLinkPort {
 
 **v1: `RazorpayLinkAdapter`, tenant-scoped credentials.** Each EPC connects its own Razorpay
 account; funds settle customer → EPC's merchant account directly. **The platform never
-touches funds → no RBI Payment Aggregator licence** ([./research/integrations.md](./research/integrations.md),
-[Razorpay Route](https://razorpay.com/route/) documented as the alternate adapter only, if
+touches funds → no RBI Payment Aggregator licence** ([Razorpay Route](https://razorpay.com/route/) documented as the alternate adapter only, if
 aggregation is ever demanded). Webhook verification uses the per-tenant secret; events are
 idempotent on provider event id; tranche state machine lives in `projects` module.
 
@@ -383,11 +378,11 @@ interface SubscriptionBillingPort {
 the trial-only/no-free-tier model; pre-debit notifications are Razorpay's job. Webhooks:
 HMAC verify → dedupe on `x-razorpay-event-id` → fast-2xx → BullMQ queue;
 `subscription.charged` grants the entitlement period; API-polling reconciliation backstop.
-Full state machine, GST/e-invoicing and entitlement tables are specified in
-`16-billing-and-entitlements.md` — this port is deliberately thin.
+The full state machine, GST/e-invoicing and entitlement tables are authored by the billing
+module — this port is deliberately thin.
 
 **Later adapters:** Stripe for overseas tenants in USD (Stripe still isn't a general
-domestic India acquirer — [./research/integrations.md](./research/integrations.md)).
+domestic India acquirer).
 
 **Failure/degradation:** webhook pipeline down → entitlements keep their last granted
 period; reconciliation catches up. Enforcement is soft-block UX and **read + export always
@@ -404,8 +399,7 @@ interface DocumentRenderPort {
 
 **v1: `PlaywrightPdfAdapter`** in `apps/worker` — headless Chromium is the only renderer
 that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
-conjuncts/matras ([./research/integrations.md](./research/integrations.md),
-[react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans Devanagari
+conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans Devanagari
 bundled in the worker image; pooled browser, page-per-render; concurrency 2 per machine;
 budget 300–500 MB RAM per render (worker sizing in `09-observability-and-ops.md`). Output
 goes straight to Tigris; the API hands out presigned GETs.
@@ -448,9 +442,9 @@ interface OtpPort {
 }
 ```
 
-**v1: `Msg91Adapter`.** Better Auth's phoneNumber plugin generates and verifies the code;
-this port only delivers it. SMS via DLT-registered template (~₹0.15/SMS; **DLT registration
-lead time 1–2 weeks is on the Day-1 critical path of the 20-day build** — `14-build-roadmap.md`); WhatsApp-OTP
+**v1: `Msg91Adapter`.** This port only DELIVERS the code; generating and verifying it is the
+auth module's job. SMS via DLT-registered template (~₹0.15/SMS; **DLT registration
+lead time 1–2 weeks is on the critical path**); WhatsApp-OTP
 (same MSG91 account) as automatic fallback on SMS delivery failure or 30 s timeout.
 
 **Rate limits (ours, in front of the port):** 3 sends/number/15 min, 8/number/day, per-IP
@@ -467,7 +461,7 @@ No silent degradation on the front door.
 ```ts
 interface MapsPort {
   staticTile(pin: LatLng, zoom: number, sizePx: Size): Promise<PortResult<StoredTileRef>>;
-  jsApiKey(): string;   // the one intentionally-public key (referrer-locked)
+  jsApiKey: string;   // the one intentionally-public key (referrer-locked)
 }
 ```
 
@@ -494,7 +488,7 @@ interface DemPort {
 
 **v1: `CopernicusGlo30Adapter`.** Reads GLO-30 COG tiles from the public AWS Open Data
 bucket (`copernicus-dem-30m`, no credentials), caches fetched tiles in Tigris so each tile
-is fetched from origin once ever. Serves the scale program (`11-scale-program.md`): terrain
+is fetched from origin once ever. Serves the scale program: terrain
 awareness for ground-mount siting and the tracker/terrain phases; per-site UTM/ENU origin
 conversion happens in domain code, not here.
 
@@ -510,10 +504,7 @@ and a visible warning on ground-mount outputs. Rooftop work never touches this p
 
 ## Cross-references
 
-- Entities (`tenant_phone_numbers`, `usage_events`, `tenant_integration_credentials`,
-  `calls`, `solar_data_cache`): `04-data-model.md`.
-- Entitlement enforcement + billable metrics: `16-billing-and-entitlements.md`.
 - SSRF guard, credential encryption, webhook verification: `08-security-and-tenancy.md`.
 - Alerting on port failure rates, breaker states and quota burn: `09-observability-and-ops.md`.
-- Adapter build order and week-1 spikes (Exotel BYO porting, AgentStream DTMF):
-  `14-build-roadmap.md`.
+- Entities and entitlement enforcement: authored with each module's first migration; the
+  forward-compat register states what that migration must already satisfy.

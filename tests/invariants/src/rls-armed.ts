@@ -40,7 +40,7 @@ const CANONICAL_POLICY_EXPRESSIONS: Record<string, string> = {
  * SECURITY DEFINER functions in `public`, each with a written reason. Empty today.
  *
  * Every table is owned by a SUPERUSER, and 0005 records that FORCE cannot restrain one. A
- * SECURITY DEFINER function therefore reads through RLS entirely. docs/04 §7 plans exactly
+ * SECURITY DEFINER function therefore reads through RLS entirely. plans exactly
  * such a path for public customer-link reads, so this list exists before that module does.
  */
 const SECURITY_DEFINER_ALLOWED: Record<string, string> = {};

@@ -10,7 +10,7 @@
   canonical explanation). Where a closed set exists, the module is a `Record` over the
   contracts enum. Screen-specific copy stays in its screen.
 - NEVER: app copy hard-coded elsewhere, per-app catalogs, agent/WhatsApp templates
-  (tenant DATA — docs/10 §7 · .claude/rules/i18n.md), raw Intl currency (formatMoney when
+  (tenant DATA — `prd/foundations/F3-localization.md` · .claude/rules/i18n.md), raw Intl currency (formatMoney when
   domain's money slice lands).
 
 ## Commands

@@ -18,10 +18,10 @@ divergence in these classes:
 1. **Shared fact authored twice** — a constant, type, policy number or hook defined in both
    trees instead of imported from `@heliogrid/domain` or `@heliogrid/data`.
 2. **State vocabulary drift** — the same fact under different names, especially inverted
-   polarity (`online` vs `offline`). Name both spellings.
+   polarity (for example `enabled` vs `disabled`). Name both spellings.
 3. **Behavioural guard drift** — in-flight/double-submit protection, connectivity gating,
    race handling on one platform and not the other.
-4. **Affordance drift** — a loading, error, empty or offline state one platform renders and
+4. **Affordance drift** — a loading, error or empty state one platform renders and
    the other does not.
 5. **Copy divergence** — the same user-facing string authored inline in both trees instead of
    imported from `packages/i18n/src/copy`; msgids differing by any character.

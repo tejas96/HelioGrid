@@ -9,7 +9,7 @@ import { HealthModule } from './modules/health/health.public';
  * land with their tracks: auth, tenancy, crm, survey, design, proposal, customer-link,
  * projects, billing, catalog, agent, notifications, admin.
  *
- * Auth was removed to greenfield on 2026-08-01 (owner ruling, ADR-0024) and returns with
+ * Auth was removed to greenfield on 2026-08-01 (owner ruling) and returns with
  * its rebuild. The deny-by-default APP_GUARD went with it: there is no session to check, so
  * every route here is currently unauthenticated. Restoring the guard is part of that
  * rebuild, NOT something a later module should improvise.

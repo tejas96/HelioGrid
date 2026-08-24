@@ -27,7 +27,5 @@ Zod stays on 3.x until ts-rest's Zod-4/Standard-Schema support (3.53.0, currentl
 
 ## Sources
 
-- `../research/verify-nestContracts.md`
-- `../research/backend.md` (contract-first rationale)
 - https://ts-rest.com/server/nest · https://ts-rest.com/changelog · https://www.npmjs.com/package/@ts-rest/nest
 - https://orpc.dev/docs/openapi/integrations/implement-contract-in-nest · https://www.npmjs.com/package/@orpc/nest

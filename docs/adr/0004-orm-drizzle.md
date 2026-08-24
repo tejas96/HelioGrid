@@ -4,7 +4,17 @@ Date: 2026-07-24
 
 ## Context
 
-The data layer is Postgres with single-DB multi-tenancy enforced by app-layer scoping plus an RLS backstop (ADR-0005). Multi-tenant RLS requires setting a per-transaction session variable (`SET LOCAL app.tenant_id`) — the ORM must make raw, explicit SQL natural rather than fight it. Agents edit this layer constantly; readable SQL beats a query DSL black box.
+The data layer is Postgres with **single-DB multi-tenancy**: every tenant shares one database,
+application-layer scoping puts `tenant_id` in every query, and **row-level security is the
+backstop** — a second, independent layer that denies cross-tenant rows even when application
+scoping is wrong. Both layers are required; neither is trusted alone. `tests/invariants`
+enforces this today: `app_user` must exist without `BYPASSRLS` or superuser, the connecting
+role must be able to `SET ROLE app_user`, and every unique key on a tenant table must lead with
+`tenant_id`.
+
+RLS needs a per-transaction session variable (`SET LOCAL app.tenant_id`), so the ORM must make
+raw, explicit SQL natural rather than fight it. Agents edit this layer constantly; readable SQL
+beats a query DSL black box.
 
 ## Decision
 
@@ -24,6 +34,5 @@ The data layer is Postgres with single-DB multi-tenancy enforced by app-layer sc
 
 ## Sources
 
-- `../research/backend.md`
 - https://ecosire.com/blog/drizzle-orm-postgres-rls-multitenancy · https://orm.drizzle.team/docs/zod
 - https://www.prisma.io/blog/announcing-prisma-orm-7-0-0

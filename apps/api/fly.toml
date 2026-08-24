@@ -1,4 +1,4 @@
-# heliogrid-api — bom primary, sin overflow (docs/14 Day 1–2; ADR-0018 one app per service)
+# heliogrid-api — bom primary, sin overflow. One Fly app per service.
 app = "heliogrid-api"
 primary_region = "bom"
 

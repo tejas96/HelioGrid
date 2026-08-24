@@ -71,7 +71,7 @@ constant two screens read; a flow state machine. Never: fetch, storage, renderin
 Extension point: one folder per module slice (auth/, tenancy/, format/ today).
 
 ### db — schema mirror, migrations, backend client
-**STATUS: greenfield since 2026-08-01 (ADR-0024).** `src/schema/` and migrations 0001–0006
+**STATUS: greenfield.** `src/schema/` and migrations 0001–0006
 were deleted; the auth + tenancy slice re-authors them and the next migration is a fresh
 0001. Today the package is client.ts + migrate.ts + uuid.ts.
 Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
@@ -133,7 +133,7 @@ folder, three files, one change (Law 7). Never: screens/routes; data access; nav
 raw colour (adherence gate). Extension point: a folder under `src/components/`.
 
 Replaces the v1 split of `packages/ui` (web) + `apps/mobile/src/ui` (RN) +
-`packages/ui-api` (types), all deleted 2026-08-19. That arrangement stated one prop list
+a separate types package. That arrangement stated one prop list
 three times and needed `check-ui-parity.mjs` to compare them; the shared `.types.ts` makes
 divergence a type error instead.
 

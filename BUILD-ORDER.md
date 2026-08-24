@@ -11,11 +11,10 @@ different orders and mixing them up is the main way this goes wrong:
 Since 2026-08-15 the two orders are **the same order** — the design run follows the build blocks,
 V1 rows only. That is the whole point of the scope lock.
 
-**A third thing gates the design order and neither file above holds it:**
-[`docs/archive/design/design-system-gaps.md`](docs/archive/design/design-system-gaps.md) — 57 component gaps found on
-2026-08-16; 3 closed, 9 partly closed, 45 open. A block cannot be *designed* while it still owns
-an open blocker there, and **block 1 owns ten today**. It does not gate *build*: the 222
-non-screen tasks below are unaffected.
+**The design-system gap register is closed.** The 2026-08-17 pass returned zero open
+blockers — every component sent in rounds 13–17 exists and does substantially what was
+asked. No block is gated on it. If a screen finds a new gap, it is designed at
+implementation time inside the owning module's slice (`prd/foundations/F7` `F7-45`).
 
 Nothing here invents scope. Every task already exists in `tasks/`, generated from the
 requirement register; this file only says what order to take them in and why.

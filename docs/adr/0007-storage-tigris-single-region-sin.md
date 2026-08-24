@@ -8,7 +8,7 @@ Object storage holds survey photos, proposal PDFs, DEM tiles and database backup
 
 ## Decision
 
-**Tigris (Fly-native, S3-compatible) with a single-region bucket pinned to `sin`.** Presigned URLs and multipart uploads are verified and carry the PowerSync Attachments flow (offline photo capture → resumable presigned PUT) and the pgBackRest/`pg_dump` backup targets. Placement is controlled via bucket location config / `X-Tigris-Regions`; confirming the exact single-region pin flags through `fly storage create` is a listed week-1 spike.
+**Tigris (Fly-native, S3-compatible) with a single-region bucket pinned to `sin`.** Presigned URLs and multipart uploads are verified and carry field photo upload (resumable presigned PUT) and the pgBackRest/`pg_dump` backup targets. Placement is controlled via bucket location config / `X-Tigris-Regions`; confirming the exact single-region pin flags through `fly storage create` is a listed week-1 spike.
 
 **Compliance position, recorded**: DB (and therefore all phone PII and relational personal data) stays in India; object storage in `sin` is lawful under the DPDP negative-list default; RBI payment-data localisation is satisfied because Razorpay (an Indian licensed PA) holds payment instruments, not us (ADR-0013).
 
@@ -23,12 +23,10 @@ Object storage holds survey photos, proposal PDFs, DEM tiles and database backup
 
 - **AWS S3 `ap-south-1`** — the research's residency-clean pick; rejected by the no-AWS/Fly-native directive. Remains the documented migration target if the negative list or an enterprise contract forces it.
 - **Cloudflare R2** — no India region either, coarse APAC placement hint, and not Fly-native; strictly worse than Tigris here.
-- **Storing blobs in Postgres** — bloats the deprecated-flex DB we must back up ourselves; photos belong in object storage with references synced (PowerSync Attachments pattern).
+- **Storing blobs in Postgres** — bloats the deprecated-flex DB we must back up ourselves; photos belong in object storage with a row referencing the key.
 
 ## Sources
 
-- `../research/fly.md` (incl. DPDP negative-list analysis) · `../research/verify-flyNative.md`
 - https://www.tigrisdata.com/docs/buckets/locations/ · https://www.tigrisdata.com/docs/objects/object_regions/ · https://fly.io/docs/tigris/
-- https://docs.powersync.com/client-sdks/advanced/attachments
 - https://www.dpdpa.com/dpdprules/rule15.html · https://ksandk.com/data-protection-and-data-privacy/indias-new-cross-border-data-transfer-framework/
 - BLUEPRINT.md — Final-review directive 2 (Fly-native only)

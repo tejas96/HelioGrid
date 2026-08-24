@@ -22,7 +22,7 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   unit_pref: { options: unitsPrefSchema.options, contract: 'unitsPrefSchema' },
   role_preset: { options: rolePresetSchema.options, contract: 'rolePresetSchema' },
   // tenant_status, user_status and invite_status were mapped to contract enums that the
-  // 2026-08-01 auth teardown deleted (ADR-0024). The pg enums go with the greenfield reset,
+  // 2026-08-01 auth teardown deleted. The pg enums go with the greenfield reset,
   // so there is nothing on EITHER side to compare; the rebuild re-authors both halves and
   // re-adds the rows here. Leaving stale entries would fail on a database that is correct.
 };
@@ -108,7 +108,7 @@ export async function runEnumParity(adminUrl: string) {
       /*
        * This guard exists to catch "you pointed the invariants at an unmigrated database",
        * which used to be indistinguishable from a passing run. After the 2026-08-01
-       * greenfield reset (ADR-0024) zero enums is the CORRECT state — but only if there are
+       * greenfield reset zero enums is the CORRECT state — but only if there are
        * also zero tables. Enums missing while tables exist is still the original defect.
        */
       const [tables] = await sql<{ n: number }[]>`

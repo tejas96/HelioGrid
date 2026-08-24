@@ -13,7 +13,7 @@ machinery is in-house (docs/16, ADR-0013).
    Software). **Test Mode is available immediately** — full KYC only gates LIVE keys.
 3. Start KYC early (it's the long pole, days–2 weeks): GSTIN, PAN, bank account proof,
    business registration docs. The 20-day plan's fallback stands: launch trial-only and
-   charge on live-key arrival if KYC overruns (docs/14 risk register).
+   charge on live-key arrival if KYC overruns.
 
 ## 2. Then I configure (test mode, via the visible browser)
 
@@ -23,8 +23,8 @@ machinery is in-house (docs/16, ADR-0013).
   `subscription.halted`, `subscription.cancelled`, `subscription.paused`,
   `subscription.resumed`, `payment.failed`, `invoice.paid`, `refund.processed`.
   (Transport dedupe on `x-razorpay-event-id` is already in the schema —
-  `webhook_events`, docs/04 §10.)
-- **Plan objects** (Subscriptions → Plans), monthly + yearly per docs/01 anchors:
+  `webhook_events`, authored by the billing module's migration.)
+- **Plan objects** (Subscriptions → Plans), monthly + yearly per the price anchors in `prd/04-business-model.md`:
   Starter ₹1,999/mo · ₹19,990/yr — Growth ₹3,999/mo · ₹39,990/yr — Pro ₹9,999/mo ·
   ₹99,999/yr (Enterprise = custom, no plan object). Plan ids → `plans.razorpay_plan_id`.
 - **Subscriptions settings**: UPI AutoPay primary + card e-mandate fallback; trial
@@ -42,5 +42,5 @@ deployed api) · GST invoice fields (GSTIN from KYC). None of these block Track 
 
 Platform billing (above) is OUR Razorpay account. Tenant customer-collections are
 **BYO-Razorpay per tenant** (`PaymentLinkPort`, `tenant_integration_credentials` —
-encrypted per docs/04 §9); tenants connect their own keys in Settings. Nothing to
+encrypted at rest with a per-tenant DEK envelope, see `docs/08-security-and-tenancy.md`); tenants connect their own keys in Settings. Nothing to
 prepare on our account for that.

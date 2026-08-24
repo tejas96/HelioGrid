@@ -1,5 +1,5 @@
 /**
- * @heliogrid/domain — pure isomorphic domain logic (ADR-0021).
+ * @heliogrid/domain — pure isomorphic domain logic. Zero workspace imports; never reads the environment.
  *
  * Imports allowed: the TypeScript stdlib. Nothing else in the workspace — this is the BOTTOM
  * layer, so packages/contracts imports IT, never the reverse (owner ruling 2026-07-30).

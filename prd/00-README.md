@@ -184,19 +184,19 @@ Every document in this suite is written under the same three reading rules the d
 establishes for the source corpus (spec §3). A reader relying on any requirement in this suite
 can assume these were followed:
 
-1. **The overlay rule.** `docs/product/product-journey.md` (the D1–D39 census) is read **only
+1. **The overlay rule.** `prd/_process/product-journey.md` (the D1–D39 census) is read **only
    through the `docs/15-spec-resolutions.md` overlay** — roughly 40% of the census's D-text is
    superseded by that overlay. Superseded D-text never enters a PRD in this suite as a live
    requirement; where it is relevant at all, it appears in `registers/traceability.md` as
    `superseded`, pointing at the ruling that superseded it.
-2. **The census rule.** `docs/product/studio-census.md` is adopted **verbatim** as M05's
+2. **The census rule.** `prd/modules/M05-studio/studio-census.md` is adopted **verbatim** as M05's
    acceptance baseline. The census never shrinks: nothing in it is dropped, downgraded, or
    quietly reworded away between this pass and the dedicated studio deep-dive pass (DD13).
 3. **The conflict rule.** Contradictions between source documents — and gaps where cited source
    material is missing or was deleted — are **recorded in `registers/conflicts.md`, never
    silently resolved**. Two such gaps are already known and seeded there: the missing
-   `docs/research/*` files cited across docs 00/01/03/04/05/12/13/16, and the deleted
-   per-module extractions under `modules/` cited by `docs/product/README.md`. Neither gap is
+   research files cited across the retired numbered docs, and the deleted per-module
+   extractions under `modules/` recorded by the vendored product index. Neither gap is
    filled by invention; facts that survive only as citations are used as-is with the citation
    noted.
 

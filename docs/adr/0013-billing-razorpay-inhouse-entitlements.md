@@ -31,12 +31,11 @@ Billing is IN v1 by product-owner override of D38 (recorded 2026-07-24). Two mon
 - **Chargebee** — powerful entitlements but ≈$7,188/yr (Performance), sits on top of Razorpay anyway, and adds a second source of truth for a single-currency launch.
 - **Zoho Billing** — cheap and GST-native but weak on usage-based pricing; declining mindshare.
 - **Stripe** — still not a general domestic India acquirer in 2026 (invite/limited); only wins for USD billing abroad.
-- **Free tier instead of trial** — rejected by standing user decision; a perpetual free tier also breaks the capacity-tiered unit economics in 01-business-model.
+- **Free tier instead of trial** — rejected by standing user decision; a perpetual free tier also breaks the capacity-tiered unit economics.
 - **Platform-aggregated collections (Route/Easy Split as default)** — makes us master merchant with KYC burden and drags us toward PA territory; kept strictly as an alternate adapter.
 
 ## Sources
 
-- `../research/verify-billing.md` · `../research/integrations.md` · `../research/market.md` (competitor price anchors)
 - https://razorpay.com/blog/master-recurring-payments-upi-autopay-guide/ · https://razorpay.com/docs/webhooks/subscriptions/ · https://razorpay.com/docs/webhooks/best-practices/
 - https://razorpay.com/blog/cheapest-payment-gateway-for-recurring-billing-e-nach-upi-autopay-and-subscription/ · https://razorpay.com/invoices/ · https://razorpay.com/route/
 - https://www.chargebee.com/pricing/

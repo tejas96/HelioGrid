@@ -5,8 +5,7 @@
 ## Context
 
 The frontend data layer was authored twice. `apps/web/lib/api-client.ts` and
-`apps/mobile/src/data/api-client.ts` each called `initClient`. `apps/web/lib/auth-client.ts`
-and `apps/mobile/src/auth/client.ts` each built a Better Auth client, the RN one wrapping a
+`apps/mobile/src/data/api-client.ts` each called `initClient`. Each app also built its own session client, the RN one wrapping a
 hand-rolled keychain cookie jar. Only mobile had repository interfaces; web had none. Error
 handling existed on web (`envelopeMessage`) and nowhere on RN. React Query defaults were
 declared per app and had already diverged.
@@ -33,8 +32,8 @@ Create `packages/data` as the ONLY data path for `apps/web` and `apps/mobile`.
 **It may import:** `@heliogrid/contracts`, `@heliogrid/domain`, `@ts-rest/core`, `zod`.
 React and `@tanstack/react-query` are peer dependencies, used only under `src/react/`.
 
-**It may never import:** `packages/db`, `packages/ui`, `packages/ui-api`, `packages/tokens`,
-`packages/i18n`, `packages/adapters`, or any app.
+**It may never import:** `packages/db`, `packages/ui`, `packages/theme`, `packages/i18n`, or
+any app.
 
 **Layering:**
 
@@ -55,8 +54,8 @@ Screen → useSession() / use<Thing>()   ← @heliogrid/data/react
 - `initClient` is called exactly once, in `src/client/client.ts`. `@ts-rest/react-query` is
   dropped from the repo entirely — the core client plus a hand-written adapter is what makes
   the adapter replaceable.
-- Repositories are interfaces with factories, so Track E swaps a PowerSync-backed
-  implementation behind the same interface for BOTH platforms at once.
+- Repositories are interfaces with factories, so a different data source swaps in behind the
+  same interface for BOTH platforms at once.
 - `TokenStorage` is a port, and it is **optional and RN-only**. Web's session is an HttpOnly
   first-party cookie that JavaScript cannot read by design; implementing the port there
   would mean either a no-op or moving to a JS-readable token, which is strictly worse

@@ -1,6 +1,6 @@
 # Extraction ledger — Studio acceptance census checklist
 
-**Source:** `docs/product/studio-census.md` (canonical, owner ruling 2026-07-30 · ADR-0017)
+**Source:** `prd/modules/M05-studio/studio-census.md` (canonical, owner ruling 2026-07-30)
 **Overlay applied:** `docs/15-spec-resolutions.md` (R7, R12, R13, R14, R16, R18, R5, R2, D3/R19-A…E, D38 supersession, §4 directives 5/8/9/10). Every line below records the **post-overlay** state; where the census text is amended or its rationale is dead, the line carries a `[note: …]` saying so.
 **Reading rule:** the census never shrinks (design-spec §3.2). Nothing here is dropped, merged, or summarised away; option lists stay visible inside their control's entry.
 
@@ -42,7 +42,7 @@
 
 ## Preamble — census status & port gate law
 
-- [ ] SC.gate.01 — CANONICAL (owner ruling 2026-07-30): this census is THE acceptance checklist for the 3D Design Studio port (ADR-0017). [target_doc: M05]
+- [ ] SC.gate.01 — CANONICAL (owner ruling 2026-07-30): this census is THE acceptance checklist for the 3D Design Studio port . [target_doc: M05]
 - [ ] SC.gate.02 — Every tool and every computed output listed here must survive the port, refactored to the design system and touch-first. [target_doc: M05] [note: "refactored to the design system" now means `design/ds-source` (D3 superseded, R19-E); directive 9 adds full-parity touch studio on mobile via authenticated WebView (D2)]
 - [ ] SC.gate.03 — It is a merge gate for port PRs, on par with typecheck and lint. [target_doc: M05] [note: engineering-process framing; carries into the PRD as an acceptance-gate statement, not as build/CI content (no-implementation-content constraint §14/DD4)]
 - [ ] SC.gate.04 — Promoted verbatim from `docs/research/phases710.md` §2, which is now historical; the POC repository's `phase-10-prompts.md` is NOT canonical and must not be cited. [target_doc: M05] [note: `docs/research/*` is a recorded source gap — the promoted census is the surviving copy]

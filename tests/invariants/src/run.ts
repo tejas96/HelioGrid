@@ -37,7 +37,7 @@ async function main() {
    * that role by name (`pg_has_role(…, 'app_user', …)` in three files), and postgres raises
    * 42704 when it does not exist, so they cannot run at all rather than running vacuously.
    *
-   * This is CI on a fresh service container: the teardown (ADR-0024) deleted migration 0004,
+   * This is CI on a fresh service container: the teardown deleted migration 0004,
    * which created the role. Roles are CLUSTER-wide, so a long-lived dev database still has it
    * and this whole condition is invisible locally — which is why main went red on 2026-08-01
    * and stayed red while local runs looked green.
@@ -48,7 +48,7 @@ async function main() {
   if (empty && !hasRlsSubjectRole) {
     console.warn(
       '\n  INVARIANTS NOT RUN: the database was never migrated — 0 application tables and no\n' +
-        '  app_user role (greenfield since 2026-08-01, ADR-0024). NOTHING is proven here:\n' +
+        '  app_user role (greenfield since 2026-08-01). NOTHING is proven here:\n' +
         '  not tenancy, not table scoping, not enum or schema parity. Real coverage returns\n' +
         "  with the auth + tenancy module's first migration, which re-creates the role.\n",
     );
@@ -57,7 +57,7 @@ async function main() {
 
   if (empty) {
     // Not a gate — the database is LEGITIMATELY empty after the 2026-08-01 teardown
-    // (ADR-0024). But a green run below must never read as "tenancy is proven", which is
+    // But a green run below must never read as "tenancy is proven", which is
     // exactly how the tenancy gate went unexecuted for the whole foundation phase.
     console.warn(
       '\n  INVARIANTS VACUOUS: 0 application tables. Tenancy, table scoping, enum parity and\n' +

@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 
 /**
- * UUIDv7 — time-ordered, generated APP-SIDE (docs/04 conventions): no Postgres extension
+ * UUIDv7 — time-ordered, generated APP-SIDE: no Postgres extension
  * dependency on postgres-flex. Layout per RFC 9562: 48-bit unix-ms timestamp, ver 7,
  * variant 10, 74 bits randomness.
  */

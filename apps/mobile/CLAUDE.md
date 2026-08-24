@@ -101,9 +101,8 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   copy into our header and the server 401s. Enforced in `@heliogrid/data`'s transport;
   recorded here because this is the platform it bites.
 - metro.config.js holds monorepo resolution only (`watchFolders` + `nodeModulesPaths` for
-  pnpm workspace packages) plus a note that PowerSync (Track E) WILL add an inline-requires
-  blockList — do not remove either. There is no Lingui transformer: the runtime
-  `<Trans id>` convention needs none.
+  pnpm workspace packages). There is no Lingui transformer: the runtime `<Trans id>`
+  convention needs none.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
 - Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).
   Devanagari via `<AppText>` run-splitting — verify on BOTH simulators.
@@ -113,4 +112,4 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
 - babel: `@babel/plugin-transform-class-static-block` for formatjs polyfills.
 
 ## Definition of done here
-Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + docs/10 §10 (per-screen DoD).
+Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + `prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD).

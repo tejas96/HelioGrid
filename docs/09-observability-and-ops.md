@@ -4,12 +4,11 @@ Small team, AI-assisted development, one region. The observability stack is deli
 boring: **pino → Loki, OpenTelemetry → Tempo, Prometheus metrics → Grafana Cloud (free
 tier) with Fly's managed Prometheus as a datasource**. One pane of glass, no self-hosted
 observability infrastructure to babysit. Sources:
-[./research/verify-flyNative.md](./research/verify-flyNative.md),
-[./research/fly.md](./research/fly.md), [./research/sync.md](./research/sync.md).
+.
 
 ## 1. Structured logging — pino
 
-- **`nestjs-pino`** in api, worker and voice; `pino` directly in the PowerSync connector
+- **`nestjs-pino`** in api and worker
   and ops scripts. JSON to stdout only — Fly captures it.
 - **Context injection via AsyncLocalStorage**: every line carries `requestId`, `tenantId`,
   `userId` where a session exists, plus `jobId`/`queue` in worker and `callId` in voice.
@@ -58,7 +57,6 @@ Postgres nodes run `postgres_exporter` as a sidecar process in the postgres-flex
 | **Backup missing** | last successful pgBackRest backup >25 h, or nightly pg_dump absent | second layer must exist |
 | **Restore-drill staleness** | `heliogrid_ops_restore_drill_age_days` >35 | an untested backup is a rumour |
 | Queue depth | `waiting` >500 for 10 min on any queue; `failed` >25/h; pdf queue >50 | jobs are user-visible (PDFs, shading, agent calls) |
-| Sync lag | PowerSync replication-slot lag >200 MB or slot inactive >10 min | field app staleness + unbounded WAL retention |
 | Webhook failures | Razorpay/Exotel webhook processing failures >5/15 min | money + calls |
 | **Call error rate** | voice call setup+media errors >5 % over 15 min | tenant-facing, compliance-adjacent |
 | OTP delivery | failure rate >10 % over 30 min | the front door for every login |
@@ -86,7 +84,7 @@ Postgres nodes run `postgres_exporter` as a sidecar process in the postgres-flex
 4. **Voice** — calls, error rate, concurrency, per-leg cost, ComplianceGate blocks by reason.
 5. **Billing & webhooks** — webhook outcomes, subscription events, reconciliation drift.
 6. **Cost & usage** — port quota burn per tenant, Upstash memory/commands, Tigris GB,
-   machine count; COGS per tenant from `usage_events` rollups (`16-billing-and-entitlements.md`).
+   machine count; COGS per tenant from `usage_events` rollups.
 
 External uptime: Grafana Cloud synthetic checks on `web /healthz`, `api /healthz` and one
 public customer-link URL. `/healthz` is shallow (process up); `/readyz` is deep (DB
@@ -98,8 +96,7 @@ public customer-link URL. `/healthz` is shallow (process up); `/readyz` is deep 
 
 **Context (flagged risk, user-accepted):** Fly has DEPRECATED unmanaged Postgres
 (postgres-flex) — self-support only, wal-g not bundled, Fly MPG has no `bom` region
-([./research/verify-flyNative.md](./research/verify-flyNative.md),
-[postgres-flex](https://github.com/fly-apps/postgres-flex),
+([postgres-flex](https://github.com/fly-apps/postgres-flex),
 [what you should know](https://fly.io/docs/postgres/getting-started/what-you-should-know/)).
 The user chose Fly-native anyway; therefore the mitigations below are **mandatory in-scope
 work for the 20-day build, not optional hardening**. This section is the operative document — print-it-out
@@ -111,9 +108,9 @@ grade.
   its own Machine with a dedicated volume (start: `performance-2x`, 4 GB RAM, 40 GB volume;
   disk autoscale alert at 70 %). Automatic failover via `repmgrd`; clients connect through
   the app's internal address, haproxy routes to the current primary.
-- Config baseline: `wal_level=logical` (PowerSync needs it), `archive_timeout=60s` (bounds
+- Config baseline: `wal_level=logical` (kept for logical replication and future CDC), `archive_timeout=60s` (bounds
   RPO), `shared_buffers=25 %` RAM, `work_mem=16MB`, `max_connections=120` with per-app
-  Drizzle pool caps (api 20, worker 10, voice 5, powersync 10, better-auth shares api).
+  Drizzle pool caps (api 20, worker 10).
   `pg_stat_statements` on.
 - One custom image layer on postgres-flex: adds **pgBackRest** + `postgres_exporter`.
   This image is ours to rebuild when Fly stops maintaining flex — that is the deal we
@@ -125,8 +122,7 @@ Backup bucket: `heliogrid-backups` (Postgres artifacts under the `pg/` prefix), 
 different region from the database, so a `bom` regional loss cannot take the data and the
 backups together. Tigris S3 compatibility (SigV4, multipart) is sufficient for pgBackRest;
 certified-by-us in the week-1 spike, not assumed
-([./research/verify-flyNative.md](./research/verify-flyNative.md),
-[Tigris locations](https://www.tigrisdata.com/docs/buckets/locations/)).
+([Tigris locations](https://www.tigrisdata.com/docs/buckets/locations/)).
 
 **Layer 1 — pgBackRest WAL archiving + physical backups (the RPO layer):**
 - `archive_command = 'pgbackrest --stanza=heliogrid archive-push %p'`, `archive-async=y`,
@@ -162,7 +158,7 @@ pass twice before production traffic.** Monthly thereafter, alert at 35 days.
 3. Start Postgres, wait for recovery, promote.
 4. Verification queries: row counts on 5 sentinel tables vs source-of-truth counts recorded
    at backup time; latest Drizzle migration id matches; the **canary row** — a worker job
-   writes a timestamped row every minute, and `now() - max(canary.at)` measured on the
+   writes a timestamped row every minute, and `now - max(canary.at)` measured on the
    restored DB **is the empirically proven RPO** — recorded per drill.
 5. Record wall-clock time (proven RTO component), destroy scratch app.
 6. Quarterly variant: restore the *logical dump* instead, into a scratch DB, run the same
@@ -188,12 +184,12 @@ replace the failed node the same day (2 nodes is a degraded state, not a stable 
 ### 4.5 Disk-full playbook
 
 Cause #1 is always the same: **WAL retention because archiving or a replication slot
-stalled** (PowerSync holds a logical slot — an inactive slot pins WAL forever).
+stalled** (an inactive logical replication slot pins WAL forever).
 
 1. Check `pg_wal` size vs base data size; check `pgbackrest check`; check
    `select * from pg_replication_slots` for inactive slots / huge `restart_lsn` lag.
-2. Fix the cause: restart archiving (usually Tigris creds or network), or if PowerSync's
-   slot is stale, restart the PowerSync service; **drop its slot only as last resort**
+2. Fix the cause: restart archiving (usually Tigris creds or network). If an orphaned
+   logical slot is holding WAL and nothing consumes it, **drop the slot**
    (forces full resync of every field device).
 3. Buy space: `fly volumes extend` (online, no restart). Never manually delete files in
    `pg_wal` — that is how a cluster dies.
@@ -220,7 +216,7 @@ Signature: machine restart, exit code 137, gap in metrics.
 explain · sustained `bom` capacity failures affecting DB machines · ops load on the DB
 exceeding ~2 person-days/month. Targets, in order: managed Mumbai Postgres (Crunchy Bridge
 or Supabase `ap-south-1` — in-country, low ms from `bom`;
-[./research/fly.md](./research/fly.md)) · Fly MPG in `sin` (accepts ~60 ms/query +
+) · Fly MPG in `sin` (accepts ~60 ms/query +
 cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
 
 1. Provision target; apply schema via Drizzle migrations (never dump-schema drift).
@@ -231,7 +227,6 @@ cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
    **sync sequences** (logical replication does not carry them — script `setval` from
    source), flip `DATABASE_URL` via `fly secrets set` (rolling restart), writes on.
 5. Keep the old cluster as a frozen fallback for 7 days, then destroy.
-6. PowerSync: re-point to the target (it needs `wal_level=logical` there too — verify the
    managed provider allows logical replication slots BEFORE choosing it; Supabase and
    Crunchy both do).
 
@@ -248,12 +243,11 @@ cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
 
 ## 5. Deploys
 
-- **One Fly app per service** (ADR-0018): `heliogrid-web`, `heliogrid-api`,
-  `heliogrid-worker`, `heliogrid-voice`, `heliogrid-powersync` (prebuilt
-  `journeyapps/powersync-service` image) — plus the 3-node postgres-flex cluster app and
+- **One Fly app per service:** `heliogrid-web`, `heliogrid-api`,
+  `heliogrid-worker` — plus the 3-node postgres-flex cluster app and
   `log-shipper`. web/api/worker/voice build per-app Dockerfiles; apps talk over
   6PN/flycast private networking. `primary_region = "bom"` on every app.
-- **Capacity posture** ([./research/fly.md](./research/fly.md) — `bom` is chronically
+- **Capacity posture** ( `bom` is chronically
   capacity-tight): `min_machines_running = 1` for web and api (never scale-to-zero in bom);
   worker and voice `autostop = "off"`. **`sin` overflow is a documented manual play**, not
   automation: on repeated `bom` placement failures, `fly scale count api=2 --region sin`
@@ -276,12 +270,10 @@ Inventory (all via `fly secrets set`, staged per app; setting triggers a rolling
 | Secret | Cadence | Notes |
 |---|---|---|
 | `DATABASE_URL`, `REDIS_URL` | on incident / topology change | flip during escape hatch too |
-| `BETTER_AUTH_SECRET` | on suspicion only | rotation invalidates sessions — deliberate |
 | Razorpay key/secret + webhook secret | quarterly | **dual-accept**: verify webhooks against old+new for 48 h |
 | Exotel, Sarvam, MSG91 keys | quarterly | breaker + `unconfigured` envelope make a bad rotation loud, not silent |
 | Google Maps/Solar, Gemini keys | quarterly | Maps JS key is referrer-locked, not secret-rotated |
 | Tigris access keys | quarterly | rotate backup-bucket creds FIRST and run `pgbackrest check` before rotating the rest |
-| PowerSync JWT/HMAC material | quarterly | coordinate with mobile token TTLs |
 | Customer-link HMAC key | yearly, dual-accept | old links must survive the window |
 
 Rotate immediately on personnel change or suspected leak. Per-tenant credentials
@@ -293,8 +285,7 @@ probe alert (§3) and a settings nag, never silent failure.
 - **Fixed line items**: Upstash **fixed plan** (start $10/mo · 250 MB — Fly explicitly
   recommends fixed for BullMQ; PAYG polling costs are a trap; eviction stays OFF,
   `maxRetriesPerRequest: null`) — alert at 80 % memory and upgrade a tier BEFORE throttling
-  ([./research/verify-flyNative.md](./research/verify-flyNative.md),
-  [Upstash on Fly](https://fly.io/docs/upstash/redis/)).
+  ([Upstash on Fly](https://fly.io/docs/upstash/redis/)).
 - **Machine sizing baseline** (review monthly against the Cost dashboard; figures are
   sizing intent, verify against current Fly pricing):
 
@@ -303,15 +294,13 @@ probe alert (§3) and a settings nag, never silent failure.
   | web | shared-cpu-2x / 1 GB | 2 | SSR is light; min 1 always on |
   | api | performance-1x / 2 GB | 2 | latency-sensitive, always on |
   | worker | performance-2x / 4 GB | 1 | Playwright 300–500 MB/render + shading sims |
-  | voice | performance-1x / 2 GB | 1 | scale with concurrent calls |
-  | powersync | shared-cpu-2x / 2 GB | 1 | replication + bucket storage on pg |
   | pg | performance-2x / 4 GB + 40 GB vol | 3 | the runbook's floor, non-negotiable |
 
 - **Tigris**: no egress fees; track GB/month growth (survey photos dominate) and the
   backup bucket separately.
 - **Per-tenant COGS**: the `usage_events` ledger (voice legs, AI detections, OTP, storage)
   rolls up into the Cost & usage dashboard next to plan revenue — the margin check that
-  keeps pricing honest (`01-business-model.md`, `16-billing-and-entitlements.md`).
+  keeps pricing honest .
 - Monthly ops review (30 min, calendared): Fly invoice vs sizing table, Upstash headroom,
   Tigris growth, restore-drill timings trend, alert noise triage.
 
@@ -319,6 +308,5 @@ probe alert (§3) and a settings nag, never silent failure.
 
 - Port failure semantics and breaker behaviour: `07-integrations.md`.
 - RLS, webhook verification, SSRF guard: `08-security-and-tenancy.md`.
-- PowerSync slot management and sync semantics: `06-offline-and-sync.md`.
 - Week-1 spikes (pgBackRest→Tigris archive+restore, Tigris `sin` pin via `fly storage
-  create`): `14-build-roadmap.md`.
+  create`):the infra runbook.
