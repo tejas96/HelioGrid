@@ -45,10 +45,11 @@ apps/mobile/.bundle/config
 playwright-report/
 test-results/
 
-# Planning-plugin working files (its own briefs, specs and plans). Plugin-internal process
-# state, not repo documentation — the code and the PR carry what the repo needs to know.
+# Planning-plugin working files — its briefs, specs, plans and subagent scratch, all under
+# ONE root. Plugin-internal process state, not repo documentation: the code and the PR carry
+# what the repo needs to know. The plugin's skills default to docs/superpowers/; CLAUDE.md §8
+# overrides that to here, so this stays out of the documentation tree.
 .superpowers/
-docs/superpowers/
 
 # QA writes nothing to the tree (owner ruling 2026-08-03): /verify keeps its artifacts in the
 # session scratchpad and deletes them when the run ends. The verification record lives in the

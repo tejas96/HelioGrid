@@ -22,13 +22,15 @@ apps/mobile/ios/
 apps/mobile/android/
 apps/mobile/vendor/
 
-# Process/historical docs — investigation and planning artifacts, not product
-# truth (product truth is docs/15 rulings + docs/13 UX-gap register per CLAUDE.md).
-# Superseded once the work they describe lands; noise for an agent reasoning about
-# the current system.
-docs/archive/
-docs/ops/
-docs/superpowers/
+# Operational state — external-account setup, what is blocked on company registration.
+# Real and current, but it is account bookkeeping rather than product or code knowledge,
+# and it churns independently of both. Product truth is docs/prd/; the graph should reach
+# for that instead.
+docs/engineering/ops/
+
+# Planning-plugin working state — specs, plans and subagent scratch. Not repo knowledge;
+# CLAUDE.md §8 puts it here rather than in the documentation tree.
+.superpowers/
 
 # Binary assets — no text to graph. Explicit rather than relying on graphify's own
 # detection, per this file's defence-in-depth convention. 4.2 MB of fonts alone.
@@ -54,7 +56,7 @@ packages/i18n/src/locales/**/messages.ts
 # island. The nodes are JSON keys, not entities — "$schema", "bracketSpacing",
 # "dom.iterable", "noEmit", "!**/dist". apps/mobile/package.json alone was the
 # single largest file in the graph (96 nodes); biome.json (88) outweighed
-# docs/04-data-model.md (42). They also created ~12 of the top-30 "communities"
+# a large PRD module (42). They also created ~12 of the top-30 "communities"
 # (Worker Package Manifest, Knip Dead-Code Config, ...), displacing real subsystems.
 # Note the workspace dep graph is NOT lost by this: it was never captured — the
 # @heliogrid/* deps became isolated nodes inside each manifest's own community,
@@ -65,7 +67,7 @@ tsconfig*.json
 packages/config/tsconfig/
 turbo.json
 biome.json
-knip.json
+knip.jsonc
 .jscpd.json
 #apps/mobile/app.json
 .claude/settings.json
@@ -77,9 +79,8 @@ packages/contracts/openapi/
 
 # DELIBERATELY NOT IGNORED, so a future sweep does not "tidy" them away:
 #   .github/workflows/ci.yml   — 11 nodes, and they are real: the xcodebuild
-#     pipefail lane, build-before-boundaries, the RN bundle step and the
-#     better-auth migrate step all feed the "gates that reported green while
-#     proving nothing" hyperedge. Config by extension, product knowledge in fact.
+#     pipefail lane, build-before-boundaries and the RN bundle step all feed the
+#     "gates that reported green while proving nothing" hyperedge. Config by extension, product knowledge in fact.
 #   pnpm-workspace.yaml        — 1 node, defines the workspace itself.
 
 # graphify's own output

@@ -173,7 +173,8 @@ and a few are narrower than they read.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial
   review only when asked for by name.
 - **Repo law beats a plugin skill.** Named: the test-driven-development skill never applies
-  here.
+  here; and planning skills write their specs, plans and scratch to `.superpowers/`, never
+  `docs/superpowers/` — `docs/` is the documentation tree, not plugin working state.
 - **Write to the gates.** 2-space · LF · width 100 · semicolons · single quotes (JSX double) ·
   trailing commas · organised imports · `import type` · no `any`/`!`/`==`/`console.log`/unused
   symbols · `noUncheckedIndexedAccess`. Then `pnpm exec biome check --write <files>`.
