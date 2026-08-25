@@ -20,7 +20,6 @@ pnpm-lock.yaml
 # MainActivity.kt/MainApplication.kt stubs, font/icon binaries) — no business logic.
 apps/mobile/ios/
 apps/mobile/android/
-apps/mobile/vendor/
 
 # Working documents, not knowledge. Briefs and task files are read ONE AT A TIME while
 # designing a screen or building a slice, so they deliberately inline the requirement rows
@@ -108,14 +107,14 @@ packages/i18n/src/locales/**/messages.ts
 # @heliogrid/* deps became isolated nodes inside each manifest's own community,
 # which is what the 2-edge connectivity number proves.
 # ---------------------------------------------------------------------------
-#package.json
+package.json
 tsconfig*.json
 packages/config/tsconfig/
 turbo.json
 biome.json
 knip.jsonc
 .jscpd.json
-#apps/mobile/app.json
+apps/mobile/app.json
 .claude/settings.json
 .claude/launch.json
 
