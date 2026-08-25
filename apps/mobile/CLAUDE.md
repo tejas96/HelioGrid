@@ -47,9 +47,11 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   `types.ts` when two files share a type. A screen component body is capped at
   80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
   layer instead of its job is the same defect as `*-part2`.
-- `src/` is the closed set `{auth,lib,navigation,push,screens,ui}` + root `i18n.ts` and
-  `env.ts`. `lib/` is app-level components and helpers that are NOT design-system
-  primitives, and holds NO copy. A new category is a plan-time call.
+- `src/` is the closed set `{auth,navigation,screens}` + root `i18n.ts` and `env.ts`.
+  It listed `lib/` and `ui/` until 2026-08-25; neither has ever existed on disk, and `push/`
+  went the same day — one file, no callers. It returns with the notifications slice. A new
+  category is a plan-time call, and adding one means editing this line, root `CLAUDE.md` §6
+  and `.claude/rules/mobile-platform.md` together — three places said different things.
   `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
   `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
   and the validation. There is deliberately no `src/config/` — a new folder category is a

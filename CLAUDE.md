@@ -119,7 +119,7 @@ decision, not something to create mid-task. Put the file where the pattern alrea
 | Where | Shape |
 |---|---|
 | `apps/web` | `app/<route>/page.tsx` routes only · `features/<capability>/` owns the work: `<Name>Screen.tsx` composes · `components/` one file per component · `hooks/use-<thing>.ts` · `constants.ts` · `types.ts` · `shared/` when two screens in the feature share · `lib/` for app infrastructure |
-| `apps/mobile` | `src/{auth,lib,navigation,push,screens}` + root `env.ts`, `i18n.ts` · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
+| `apps/mobile` | `src/{auth,navigation,screens}` + root `env.ts`, `i18n.ts` · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
 | `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
 | `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
 | `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |

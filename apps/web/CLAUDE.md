@@ -1,7 +1,10 @@
 # @heliogrid/web — Next.js App Router, pure frontend/BFF (NO domain logic)
 
 ## What lives here / what must never live here
-- Screens, the /design token reference, route handlers ONLY for cookie/session BFF glue.
+- Screens and route handlers ONLY for cookie/session BFF glue. **Nothing is built yet:**
+  `app/` holds a redirect stub, a placeholder home page, the layout and the data/i18n
+  providers. The `/design` token reference and the whole `features/` tree were deleted
+  2026-08-19 with the v1 design system.
 - NEVER: authored business logic (import it — Law 11), direct packages/db imports, raw
   hex/px values.
 

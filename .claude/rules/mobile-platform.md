@@ -9,8 +9,9 @@ Architecture: `docs/engineering/architecture.md` §2 apps/mobile · §3 platform
 
 ## Where files go
 
-`src/` is a CLOSED set — `{auth, lib, navigation, push, screens, ui}` plus root `env.ts` and
-`i18n.ts`.
+`src/` is a CLOSED set — `{auth, navigation, screens}` plus root `env.ts` and `i18n.ts`.
+It listed `lib/` and `ui/` until 2026-08-25; neither has ever existed on disk. `push/` held one
+file with no callers and went the same day — it returns with the notifications slice.
 
 ```
 src/screens/<name>/         same shape as web's feature, in RN's location
@@ -20,8 +21,7 @@ src/screens/<name>/         same shape as web's feature, in RN's location
   styles.ts                 screen-level layout; component geometry stays with its component
   types.ts                  when two files here share a type
 src/navigation/             React Navigation static config
-src/auth/ · src/push/       native adapters — one folder per capability
-src/lib/                    app-level helpers that are NOT design-system primitives; no copy
+src/auth/                   native adapters — one folder per capability
 ```
 
 ## Rules
@@ -29,8 +29,7 @@ src/lib/                    app-level helpers that are NOT design-system primiti
 - **Interactive primitives come from `@heliogrid/ui`, never `react-native`** — its RN half
   is the `.native.tsx` file in the same component folder (docs/engineering/17 §2). `View`, `ScrollView`,
   `StyleSheet` and `Platform` are layout and stay allowed. Biome enforces this under
-  `src/screens/**`; the rule binds everywhere in `src/`, including `src/lib` and
-  `src/navigation`, which lint does not reach. **INERT until packages/ui lands** —
+  `src/screens/**`; the rule binds everywhere in `src/`, including `src/navigation`, which lint does not reach. **INERT until packages/ui lands** —
   `src/screens/placeholder/` is excluded by path and is not a pattern to copy.
 - **No web-only dependency.** Anything reaching for `document`, `window` or a DOM library
   fails at runtime on device, not at build (Law 10).

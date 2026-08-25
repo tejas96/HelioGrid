@@ -2,6 +2,10 @@
 app = "heliogrid-web"
 primary_region = "bom"
 
+# NOT DEPLOYABLE AS WRITTEN. apps/api and apps/worker each have a Dockerfile; apps/web has
+# never had one, so `flyctl deploy` from this directory fails at build. The rest of this file
+# (region, port, autostop, machine size) is the intended shape and is kept so the decision
+# survives — writing the image is owed by the first slice that ships a web screen.
 [build]
   dockerfile = "Dockerfile"
 
