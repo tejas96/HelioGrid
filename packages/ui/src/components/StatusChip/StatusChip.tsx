@@ -6,6 +6,7 @@
    it is the defect the primitive exists to prevent. Density is the only thing added on top, and it
    rides a class into StatusChip.css so no inline style is needed. */
 
+import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { StatusMark } from '../../primitives/StatusMark';
 import { resolveStatusChip, STATUS_CHIP_STATUSES } from './StatusChip.registry';
@@ -13,6 +14,8 @@ import type { StatusChipProps } from './StatusChip.types';
 
 interface WebStatusChipProps extends StatusChipProps {
   className?: string;
+  /** Declared by the design system's own StatusChip contract, and by the native half. */
+  style?: CSSProperties;
 }
 
 export function StatusChip({
@@ -22,6 +25,7 @@ export function StatusChip({
   density = 'expressive',
   dot = true,
   className,
+  style,
 }: WebStatusChipProps) {
   const resolved = resolveStatusChip(status, tone, label);
   return (
@@ -30,6 +34,7 @@ export function StatusChip({
       label={resolved.words}
       mark={dot}
       className={classNames('hg-status-chip', `hg-status-chip-${density}`, className)}
+      style={style}
     />
   );
 }

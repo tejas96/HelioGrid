@@ -24,7 +24,7 @@ contracts. **Nothing in `engineering/` is product truth.** Where the two disagre
 | Path | Status | What it is |
 |---|---|---|
 | [`engineering/architecture.md`](engineering/architecture.md) | **PINNED** | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
-| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-check.mjs`, `scripts/ds-contract.mjs` and `knip.jsonc` name this path. |
+| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-contract.mjs` and `knip.jsonc` name this path. |
 | [`engineering/forward-compat.md`](engineering/forward-compat.md) | **PINNED** | What each module's first migration must satisfy. The PR template requires it. |
 | [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) | LIVE | How the system runs — request path, tenancy, background work, storage, studio data flow, market packs. |
 | [`engineering/03-tech-stack.md`](engineering/03-tech-stack.md) | LIVE | Every technology choice, its pin, and what lost. |

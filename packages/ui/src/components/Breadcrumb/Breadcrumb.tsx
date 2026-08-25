@@ -16,7 +16,7 @@ interface Crumb extends BreadcrumbItem {
  * the root and the current page always stay readable.
  *
  * There is no native half. The reason is the POINTER SURFACE waiver in `Breadcrumb.types.ts`,
- * which is where `ds:check` reads it and therefore the only place it counts; do not restate it
+ * which is where the gate reads it and therefore the only place it counts; do not restate it
  * here as an independent claim.
  *
  * THE TARGET AND THE VISIBLE LINE ARE TWO DIFFERENT RECTANGLES. Each crumb is a 44px-tall

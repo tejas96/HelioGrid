@@ -7,7 +7,7 @@ Every file in this folder is a byte-verbatim copy of the live design system:
 
 - `tokens/*.css` — the 11 token/stylesheet source files
 - `styles.css` — the DS global stylesheet (an `@import` manifest over `tokens/`)
-- `manifest.json` — the component + prop census, consumed by the `ds:check` drift gate
+- `manifest.json` — the component + prop census, consumed by the `ds:contract` gate
 - `adherence.oxlintrc.json` — per-component prop contracts
 - `contracts/<family>/<Name>.d.ts.txt` — the 95 component typings, pulled verbatim and **never
   hand-edited**. These are the design system's own declarations, prop names *and prop types*,
