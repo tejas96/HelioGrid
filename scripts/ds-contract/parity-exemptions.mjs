@@ -16,7 +16,7 @@ export const EXEMPTIONS = {
   WAIVED_SURFACE: {
     reason:
       'the component has no native half at all, waived by the `PRINT SURFACE` / `POINTER SURFACE` ' +
-      'marker in its own types-file header — the same closed vocabulary ds-check.mjs reads. There ' +
+      'marker in its own types-file header — the same closed vocabulary this gate reads. There ' +
       'is no native half to disagree with.',
   },
   NO_RN_ROLE: {

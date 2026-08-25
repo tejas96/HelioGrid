@@ -8,10 +8,16 @@
  *
  *   scripts/ds-contract/contracts.mjs         (a) WEAKENED / (b) DROPPED / (c) RAW EMIT
  *       Does each ported prop still MEAN what the design system's typings say it means?
- *   scripts/ds-contract/excuses.mjs           (d) FALSE EXCUSE  [+ (d·i) REAL GAP, informational]
- *   scripts/ds-contract/capability-claims.mjs (d) FALSE EXCUSE, capability-shaped
- *       Does a comment talk its way out of a port, about a thing — or a CAPABILITY — that is
- *       already sitting in the tree?
+ *   (d) FALSE EXCUSE was REMOVED 2026-08-25. It matched comment prose against a 24-phrase
+ *       vocabulary, and was wrong in both directions: deleting only the excuse comment while
+ *       keeping the dropped prop passed green — it fired on the sentence, never the code — and
+ *       a correct attribution ("a dismiss affordance belongs to the IconButton a caller places
+ *       beside it") failed the gate because IconButton exists. The only escape was rewording
+ *       prose until a regex passed, which is the behaviour it existed to punish.
+ *   scripts/ds-contract/platform-props.mjs    (i) PLATFORM-LOCAL PROP
+ *       Do the two platform interfaces above the shared base declare the same props? Law 7
+ *       says a prop on one platform only is a defect and calls it "held by a TYPE" — but the
+ *       type holds only the shared base, and 89 of 95 components extend it per-platform.
  *   scripts/ds-contract/native-a11y.mjs       (e) INERT A11Y
  *   scripts/ds-contract/native-fold.mjs       (f) FOLDED CONTROL
  *   scripts/ds-contract/native-role.mjs       (g) DISHONEST ROLE
@@ -47,7 +53,6 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { auditContracts } from './ds-contract/contracts.mjs';
-import { auditExcuses } from './ds-contract/excuses.mjs';
 import { maskComments } from './ds-contract/jsx.mjs';
 import {
   ADHERENCE,
@@ -61,6 +66,7 @@ import {
 import { A11Y_EXPLAINER, auditInertA11y } from './ds-contract/native-a11y.mjs';
 import { auditFolds, FOLD_EXPLAINER } from './ds-contract/native-fold.mjs';
 import { auditRoleHonesty, ROLE_EXPLAINER } from './ds-contract/native-role.mjs';
+import { auditPlatformProps } from './ds-contract/platform-props.mjs';
 import {
   auditSemanticParity,
   exemptionReport,
@@ -92,7 +98,7 @@ function runChecks(contractsDir) {
     files,
     folders,
     contract: auditContracts(contractsDir),
-    excuse: auditExcuses(files, folders),
+    platform: auditPlatformProps(),
     inert: auditInertA11y(scanned),
     folded: auditFolds(scanned),
     dishonest: auditRoleHonesty(scanned),
@@ -102,9 +108,7 @@ function runChecks(contractsDir) {
 
 function printHeader(run, contractsDir) {
   const { contract, files, folders, parity } = run;
-  console.log(
-    'ds:contract — prop contracts, false excuses, native accessibility-element hygiene and',
-  );
+  console.log('ds:contract — prop contracts, native accessibility-element hygiene and');
   console.log('              web/native semantic parity');
   console.log(`  contracts:  ${rel(contractsDir)} (${contract.contracts} files)`);
   console.log(`  adherence:  ${rel(ADHERENCE)} (${contract.allowlists} allowlists)`);
@@ -139,7 +143,7 @@ function main() {
   const run = runChecks(contractsDir);
   const findings = [
     ...run.contract.findings,
-    ...run.excuse.findings,
+    ...run.platform,
     ...run.inert,
     ...run.folded,
     ...run.dishonest,
@@ -147,12 +151,6 @@ function main() {
   ].sort(byName);
 
   printHeader(run, contractsDir);
-  report(
-    'comment(s) naming a real gap',
-    run.excuse.informational,
-    '  These do NOT fail the gate. Each names something genuinely absent — kept\n' +
-      '  visible so the gap does not vanish into a passing run.',
-  );
   report(
     'live-region / unpairable difference(s)',
     run.parity.informational,
@@ -163,9 +161,10 @@ function main() {
   if (run.contract.contracts === 0) {
     console.log(`FAIL — no contracts under ${rel(contractsDir)}. Pass --contracts <dir>.\n`);
   } else if (findings.length === 0) {
-    console.log('OK — no weakened, dropped or unrendered spec props, no false excuses, no inert');
-    console.log('     native accessibility state, no folded controls, no position-less');
-    console.log('     progressbars, and no web/native semantic drift. Eight checks (a)–(h);');
+    console.log('OK — no weakened, dropped or unrendered spec props, no inert native');
+    console.log('     accessibility state, no folded controls, no position-less progressbars,');
+    console.log('     no web/native semantic drift, and no platform-local prop on one');
+    console.log('     half only. Eight checks;');
     console.log('     see §6 for what they still cannot see.\n');
     return;
   } else {

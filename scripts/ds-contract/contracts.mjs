@@ -46,7 +46,7 @@
  * Accordion's would mask real findings. It says nothing about behaviour, defaults, focus order,
  * a11y, tokens, copy or state, roughly two thirds of what the audits found: this closes ONE class,
  * it does not replace reading the file. And it does not check the contracts are CURRENT — ds:pull
- * refreshes them and ds:check diffs the census, so a component with no contract file is skipped.
+ * refreshes them, so a component with no contract file is skipped.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
