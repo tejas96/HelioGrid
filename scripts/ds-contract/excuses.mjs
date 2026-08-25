@@ -36,7 +36,7 @@
  *
  * WHAT IT CANNOT SEE. It reads COMMENTS, not code, so an excuse expressed as a shrug in a variable
  * name is invisible, and so is a false excuse written in words outside the vocabulary — which is
- * closed on purpose (ds:check's native-waiver note argues the same point: free-text matching turns
+ * closed on purpose (the native-waiver vocabulary argues the same point: free-text matching turns
  * a gate into a grep). It cannot tell you an excuse is TRUE — resolving a name proves the thing
  * exists, not that this component should use it; a finding is a claim to CHECK, not a defect proved.
  * A phrase inside "double quotes" is treated as a citation, not an assertion, so a comment that

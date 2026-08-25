@@ -64,4 +64,4 @@ export function compareRoles({ from, to, fromSide, at, partnerLabel, exemptions 
   );
 }
 
-/** A folder with no `*.native.tsx` at all. Waived by marker, or handed to `ds:check` list 3. */
+/** A folder with no `*.native.tsx` at all. Waived by marker, or UNOWNED since ds:check went. */

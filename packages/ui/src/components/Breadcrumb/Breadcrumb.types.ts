@@ -13,7 +13,7 @@
  *     such prop; its leading position is a back/menu affordance and `BottomNav` is destinations,
  *     not location. A native half would have nowhere to mount and no DS drawing to port from.
  *
- * This is NOT "not ported yet" — that case is list 1 of `ds:check`, not a waiver. This file still
+ * This is NOT "not ported yet" — that case is a component absent from the repo, not a waiver. This file still
  * has to stay platform-neutral because both tsconfig projects compile it.
  */
 export interface BreadcrumbItem {

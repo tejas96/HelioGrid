@@ -99,7 +99,7 @@ function componentFolders() {
 const WAIVERS = ['PRINT SURFACE', 'POINTER SURFACE'];
 const HEADER_CHARS = 1500;
 
-/** The same closed waiver vocabulary ds-check.mjs reads, from the same place — the component's own
+/** The closed waiver vocabulary, read from the component's own types-file header — the component's own
  *  types-file header. Read rather than copied, so a third list cannot go stale. */
 function waiverOf(dir, name) {
   const types = join(dir, `${name}.types.ts`);
@@ -170,7 +170,7 @@ function noNativeHalf({ name, dir }, webCount, exemptions, out) {
   out.informational.push(
     `(h·i) NO NATIVE HALF  ${rel(dir)}/: ${webCount} web file(s) and no ` +
       '`*.native.tsx`, and the types-file header carries neither `PRINT SURFACE` nor ' +
-      '`POINTER SURFACE`. There is nothing to compare. `ds:check` list 3 owns this one.',
+      '`POINTER SURFACE`. There is nothing to compare, and since ds:check was removed 2026-08-25 no gate owns the missing native half.',
   );
 }
 

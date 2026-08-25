@@ -7,7 +7,7 @@
  * that grows every audit round is its own responsibility, and keeping it here means widening it
  * never touches the code that decides what a hit MEANS.
  *
- * WHY CLOSED. Free-text matching turns a gate into a grep — ds-check.mjs's native-waiver header
+ * WHY CLOSED. Free-text matching turns a gate into a grep — the native-waiver header
  * makes the same argument about `POINTER SURFACE`. A closed list is a record of shapes that were
  * actually written; it is also, honestly, a record of the wordings the audits happened to use, and
  * a false excuse worded outside it is invisible.

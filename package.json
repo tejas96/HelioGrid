@@ -20,7 +20,6 @@
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:unused": "knip",
     "check:env": "node scripts/check-env-access.mjs",
-    "ds:check": "node scripts/ds-check.mjs",
     "ds:contract": "node scripts/ds-contract.mjs"
   },
   "simple-git-hooks": {

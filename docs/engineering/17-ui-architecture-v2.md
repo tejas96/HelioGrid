@@ -185,8 +185,12 @@ Three scripts, all mechanical.
 per-component typings (as `.d.ts.txt`) into `packages/theme/src/_generated/`. Output is committed.
 Hand-editing anything in `_generated/` is a bug.
 
-**`pnpm ds:check`** — re-pulls and diffs the live manifest against the repo, reporting
-three lists:
+**`pnpm ds:check` was removed 2026-08-25.** It compared the census — names and file presence —
+and reported everything not yet built as informational, so with the components absent entirely it
+printed `OK — no drift` and exited 0. It was never a lint gate and never ran in CI, so it blocked
+nothing; what it did do was report success over an empty repo. **Nothing now checks that a
+component has its four files.** `ds:contract` (gate 6) still checks what the files MEAN. It
+formerly reported three lists:
 
 - in the design system, not in the repo (not yet built — expected during phase 4)
 - in the repo, not in the design system (**stale — a component that was removed, like
@@ -197,8 +201,8 @@ CI fails on the second and third lists. The first is informational while the com
 build is in progress.
 
 **`pnpm ds:contract`** — the same comparison one level down, and **lint gate 6 of 6** in
-`scripts/lint-all.sh`. `ds:check` asks whether the component *exists* and has its four files;
-`ds:contract` asks whether its **props mean what the design system says they mean**, whether
+`scripts/lint-all.sh`. Where `ds:check` used to ask whether the component *exists* and has its
+four files, `ds:contract` asks whether its **props mean what the design system says they mean**, whether
 the comments explaining a shortfall are **true**, whether its native accessibility markup
 **does what it claims**, and whether its **two platform halves say the same thing**. It reads
 `packages/theme/src/_generated/contracts/<family>/<Name>.d.ts.txt` (typings, so prop *types*;
@@ -251,7 +255,8 @@ capability — that **exists** can fail the gate.
 **Android-only**: iOS has no equivalent prop, VoiceOver announces through
 `AccessibilityInfo.announceForAccessibility`, and that is an imperative call, not a declaration, so
 no lexical check can see it. Absence on either side therefore proves nothing. A folder with web
-files, no `*.native.tsx` and no waiver marker is also informational — `ds:check` list 3 owns it.
+files, no `*.native.tsx` and no waiver marker is also informational — and since `ds:check` was
+removed, nothing owns it.
 
 **Why the round-seven excuse family needed a SECOND resolver, not more phrases.** The primitive
 change that landed `accessibilityRole` and `accessibilityState` on `Pressable` falsified a whole
@@ -271,7 +276,7 @@ check does not read).
 **(h)'s exemptions are enumerated, counted and PRINTED on every run** — green or red — in
 `parity-exemptions.mjs`. A gate this broad is mostly exemptions, and an exemption written as an
 unlabelled `continue` is one nobody can audit. Twelve are sanctioned: `WAIVED_SURFACE` (no native
-half, waived by the same `PRINT SURFACE` / `POINTER SURFACE` markers `ds:check` reads, from the same
+half, waived by the `PRINT SURFACE` / `POINTER SURFACE` markers in the component's own
 types-file header), `NO_RN_ROLE` (`status`, the landmark roles, `group`, `presentation` — no React
 Native partner exists; the honest native form for `status` is a labelled live region, which is
 (g)'s point), `NO_WEB_ROLE` (`text`, `keyboardkey`, `none` — not ARIA words), `ROLE_IN_ELEMENT`
@@ -356,10 +361,10 @@ Each script's header carries the long version; this is the short one.
 a component you already ported, only that the committed snapshot is what the DS served at pull
 time. Nothing verifies the snapshot is current except running it again.
 
-**`ds:check`** compares the *census*: names and file presence. Four files with the right names
-is a complete port to it, however wrong their contents. It cannot see prop types, behaviour, or
-whether the native half is a real port or a stub. Its two waivers (`PRINT SURFACE`,
-`POINTER SURFACE`) are a closed vocabulary precisely so it does not become a grep for excuses.
+**Census checking is unowned since `ds:check` was removed 2026-08-25.** Nothing verifies that a
+component has its four files with the right names. The two waivers (`PRINT SURFACE`,
+`POINTER SURFACE`) survive as a closed vocabulary read by `ds:contract`, precisely so the gate
+does not become a grep for excuses.
 
 **`ds:contract`** reads TEXT — no TypeScript program, no JSX parser. Specifically:
 
@@ -448,7 +453,7 @@ trail" and `AppShell`'s `AppHeader` has a `breadcrumb` slot while `MobileTopBar`
 
 The vocabulary is closed on purpose. Matching free text — "desktop only", "N/A on mobile" —
 would turn the gate into a grep for excuses and let every unported component talk its way out.
-The markers are enumerated in `NATIVE_WAIVERS` in `scripts/ds-check.mjs`, so
+The markers are enumerated in `WAIVERS` in `scripts/ds-contract/semantic-parity.mjs`, so
 `git grep 'POINTER SURFACE'` lists every component claiming one. Adding a third kind means
 editing that array and justifying it in review.
 
