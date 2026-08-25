@@ -45,6 +45,10 @@ apps/mobile/.bundle/config
 playwright-report/
 test-results/
 
+# Python bytecode. scripts/ gained it when gates.py and next-screen.py moved there.
+__pycache__/
+*.pyc
+
 # Planning-plugin working files — its briefs, specs, plans and subagent scratch, all under
 # ONE root. Plugin-internal process state, not repo documentation: the code and the PR carry
 # what the repo needs to know. The plugin's skills default to docs/superpowers/; CLAUDE.md §8

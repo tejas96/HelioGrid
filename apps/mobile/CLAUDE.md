@@ -63,6 +63,12 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   `mobile-app-entry-thin`, severity `error`).
 
 ## Landmines
+- **The native splash colour has no generator.** `res/values/colors.xml` and
+  `Images.xcassets/SplashCanvas.colorset` were emitted by `packages/tokens/build.ts`, deleted
+  2026-08-19. `packages/theme` does not re-emit them yet, so both files are FROZEN — do not
+  hand-edit, and do not assume a build refreshes them. The CI freshness gate was removed
+  2026-08-25 because it filtered the deleted package, exited 0 and passed green proving
+  nothing. Re-emitting them is owed by the mobile slice.
 - **Navigation groups are keyed by CAPABILITY, never by role.** Roles are stackable
   (`role_preset[]`, OR-across, widest visibility), so a role-keyed group declares a shared
   screen twice — and a duplicate route name is a hard THROW, not a warning. The OR-across

@@ -23,8 +23,8 @@ const GLOBAL_TABLES: Record<string, string> = {
 
   // An auth provider owns and migrates these. They are keyed by its own identity
   // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/engineering/08 §2).
-  // They are absent until `pnpm --filter @heliogrid/api exec tsx src/scripts/auth-migrate.ts`
-  // has run, which is why the stale-entry check below only warns.
+  // They are absent until the auth module lands its first migration, which is why the
+  // stale-entry check below only warns.
   user: 'auth-provider internal',
   session: 'Better Auth internal',
   account: 'Better Auth internal',
