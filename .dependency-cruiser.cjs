@@ -376,7 +376,7 @@ module.exports = {
       name: 'adapters-no-domain-internals',
       severity: 'error',
       comment:
-        'adapters implement ports (contracts/src/ports) and may use domain only through its index — never reach into an engine.',
+        'adapters implement ports (contracts/src/ports) and may use domain only through its index — never reach into an engine. INERT until the adapters package exists: it is created by the first module that needs a provider adapter (docs/engineering/07). Kept so the rule lands with the package rather than after it.',
       from: { path: '^packages/adapters/' },
       to: { path: '^packages/domain/src/(?!index)' },
     },

@@ -49,6 +49,3 @@ there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/regist
 scripts and `knip.jsonc`. `engineering/forward-compat.md` is named by the PR template.
 `.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites
 `engineering/03 §7`; `apps/api/CLAUDE.md` and `apps/worker/CLAUDE.md` cite `engineering/02 §2`.
-
-`superpowers/` holds the design specs and implementation plans for this repo's own
-process work. It is graphify-ignored and cited by nothing.

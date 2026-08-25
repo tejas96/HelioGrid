@@ -94,25 +94,13 @@ jobs:
         run: |
           pnpm --filter @heliogrid/i18n extract
           git diff --exit-code packages/i18n/src/locales
-      - name: Native splash colour freshness
-        # The package script, NOT `turbo build`: turbo only tracks outputs inside a package,
-        # so these two files are not in its `outputs` and a cache hit would skip rewriting
-        # them — replaying a green gate over a stale value, the landmine this package
-        # already carries once.
-        #
-        # `git status --porcelain`, NOT `git diff --exit-code`: diff is blind to untracked
-        # files, so deleting a generated file and committing that would regenerate it as
-        # untracked and PASS. status catches modified and untracked alike.
-        run: |
-          pnpm --filter @heliogrid/tokens build
-          CHANGED=$(git status --porcelain -- \
-            apps/mobile/android/app/src/main/res/values/colors.xml \
-            apps/mobile/ios/HelioGridMobile/Images.xcassets/SplashCanvas.colorset)
-          if [ -n "$CHANGED" ]; then
-            echo "Native splash colour is stale or missing — run: pnpm --filter @heliogrid/tokens build"
-            echo "$CHANGED"
-            exit 1
-          fi
+      # REMOVED 2026-08-25: the native splash-colour freshness gate. It ran
+      # `pnpm --filter @heliogrid/tokens build`, but that package was deleted 2026-08-19 when
+      # packages/theme replaced it. pnpm exits 0 on an unmatched filter, so the step
+      # regenerated nothing, `git status` was clean, and the gate passed green while proving
+      # nothing — for six days. The splash artifacts are FROZEN (see the $comment in
+      # SplashCanvas.colorset/Contents.json); the gate returns when packages/theme re-emits
+      # them. A gate that cannot run is worse than no gate: it reports success forever.
       - uses: actions/upload-artifact@v4
         with:
           name: openapi
