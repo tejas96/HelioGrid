@@ -124,7 +124,7 @@ decision, not something to create mid-task. Put the file where the pattern alrea
 | `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
 | `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
 | `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |
-| `docs/prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `registers/` (screens, traceability, conflicts, open-questions) · `_process/` |
+| `docs/prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `owner-brief-2026-08-03.md` · `registers/` (screens, conflicts, open-questions, enhancements) |
 | `docs/tasks/` | one file per module, written to as tasks complete |
 | `docs/ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
 | `docs/` | the ONE home for everything written: `prd/` · `ux/` · `tasks/` · `engineering/`, plus `start-here.md` and `build-order.md` |

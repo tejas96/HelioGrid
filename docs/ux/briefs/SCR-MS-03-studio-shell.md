@@ -22,7 +22,7 @@ Reached from: opening a design from the Design List (SCR-MS-01) or Design Queue 
 
 ### From `docs/prd/modules/M05-studio/11-shell-and-platform.md`
 
-- **MS12-01** (P0) — NINE visible steps with no phantom step and no reachable dead step URL; internal step ids stay stable so existing designs open unchanged (S11-1 fixes `.1/.2`, census R7). _(non-UI half, build-side: internal step ids stay stable; no reachable dead step URL — for awareness, not for drawing)_
+- **MS12-01** (P0) — NINE visible steps with no phantom step and no reachable dead step URL; the progress bar reads "Step n of 9"; internal step ids stay stable so existing designs open unchanged (S11-1 fixes `.1/.2`, census R7).
 - **MS12-03** (P0) — Per-step Next gates state their reason in plain language, in a defined order: setup completeness · at least one roof · panel/inverter/capacity · at least one enabled panel · the electrical hard gate (error-level electrical issues block and clamp the reachable steps, MS8-33); steps without gates say so by simply proceeding (`.5–.9`). _(non-UI half, build-side: gate evaluation in defined order, ending with electrical hard gate — for awareness, not for drawing)_
 - **MS12-04** (P0) — A blocked Next explains itself in an accessible, non-blocking toast (`.10`).
 - **MS12-05** (P0) — Header: back, step title, health chip, units toggle, save, save-and-exit, help, and the primary action (Next / Done) (`.11/.12/.18–.21/.24`); "save and exit" returns to the LEAD the design belongs to (S11-3d fixes `.20`).

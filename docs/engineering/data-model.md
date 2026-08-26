@@ -8,7 +8,7 @@ document and `docs/prd/` disagree, the PRD wins (`CLAUDE.md` §7).
 [`forward-compat.md`](forward-compat.md), which states what each module's FIRST MIGRATION must
 satisfy; this document states what the entities and relationships ARE. Neither restates the other.
 
-Source of truth: `docs/prd/` (suite of 2026-08; owner rulings Q1–Q67 applied; Q53/Q65/Q66/Q68/Q69/Q70 open).
+Source of truth: `docs/prd/` (suite of 2026-08; owner rulings Q1–Q72 applied; **`Q53` is the only open question** — the IN pack's statutory messaging window and send hour, which await TRAI research and constrain no entity here).
 Requirement IDs (`M02-31`, `F5-07`, `BM-22`, `MS10-39`, `OV-xx`, `PS-xx`) cite the PRD rows that
 justify each element.
 

@@ -8,7 +8,7 @@ source-derived, and the V2 brief shapes only §2's surface emphasis) · Depends 
 `foundations/F3-localization.md`, `foundations/F4-data-integrity.md`,
 `foundations/F7-design-language.md`, `foundations/F8-data-honesty.md`,
 `modules/M01-onboarding-and-tenant-config.md`, `modules/M02-crm-and-leads.md`,
-`modules/M05-design-studio.md`, `_process/2026-08-03-v2-prd-design.md` §2 (DD2, DD4, DD9, DD10,
+`modules/M05-design-studio.md`, *retired: PRD design note* §2 (DD2, DD4, DD9, DD10,
 DD12) and §10
 
 ## 1. Purpose & scope

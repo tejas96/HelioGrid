@@ -28,7 +28,7 @@ Two structural facts govern everything below:
 
 1. **The census is the acceptance baseline.** `docs/prd/modules/M05-studio/studio-census.md` (canonical per
    owner ruling 2026-07-30) is adopted **verbatim** as this module's acceptance
-   baseline, read through the `_process/extraction/studio-census-checklist.md` post-overlay
+   baseline, read through the *retired: studio-census checklist* post-overlay
    ledger. Every tool and every computed output listed there must survive, refactored to the
    design system and touch-first. **The census never shrinks** (design spec §3.2;
    `DOC14.census-quality-gate`: the census gate is a quality gate — if work runs long, scope is
@@ -989,7 +989,7 @@ rulings covering 115 individual fixes *(Final review 2026-08-05: count normalise
 ruling with numbered sub-parts counts once)*, 56 defects each carrying its ruling. This document remains the baseline and its
 Appendix A census remains the binding acceptance gate (it never shrinks); the sub-suite deepens
 it. Read `M05-studio/00-overview.md` first — it carries the document map and the studio-wide
-laws established in pass two. **Build strategy (owner ruling S12-1, 2026-08-05): the POC codebase is the starting point, not a reference.** V2's studio is built by PORTING and RESHAPING `3d_design_studio/` — the engineering core and its ~1,000 tests port as-is, the UI/UX of every screen is rebuilt to the new design, the code is restructured to V2 conventions, and the 56 defects + 115 owner-ruled fixes are applied on top. Never a green-field re-implementation. See `M05-studio/00-overview.md` §5b. Verification: `docs/prd/_process/studio/verification-report.md`
+laws established in pass two. **Build strategy (owner ruling S12-1, 2026-08-05): the POC codebase is the starting point, not a reference.** V2's studio is built by PORTING and RESHAPING `3d_design_studio/` — the engineering core and its ~1,000 tests port as-is, the UI/UX of every screen is rebuilt to the new design, the code is restructured to V2 conventions, and the 56 defects + 115 owner-ruled fixes are applied on top. Never a green-field re-implementation. See `M05-studio/00-overview.md` §5b. Verification: *retired: studio verification report*
 (1,551/1,551 keys dispositioned, zero unresolved references, every P0 with acceptance criteria).
 
 ## 6. Open questions
@@ -1020,7 +1020,7 @@ Mirrored into `registers/open-questions.md`.
 ## Appendix A — Census acceptance baseline (normative)
 
 **Conformance rule.** `docs/prd/modules/M05-studio/studio-census.md` — read post-overlay through
-`_process/extraction/studio-census-checklist.md` — is **incorporated by reference, verbatim,
+*retired: studio-census checklist* — is **incorporated by reference, verbatim,
 as this module's normative acceptance baseline** (design spec §3.2; owner ruling 2026-07-30,
 `SC.gate.01`–`SC.gate.04`). Every entry below is a binding acceptance item of the
 feature area it maps to, at the census's own depth — the entry text, its option lists and its

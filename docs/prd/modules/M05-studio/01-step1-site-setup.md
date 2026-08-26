@@ -1,7 +1,7 @@
 # MS1 · Studio Step 1 — Site Setup
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 1 rulings, 2026-08-05) · Depends on: M05 (baseline §M05.2–.3), F1, F2, F7, F8, M01, M02, M04
-Sources: inventory ledger `docs/prd/_process/studio/inventory/step1-setup.md` (115 CODE keys, 33/33 area tests passing) · sitting rulings `docs/prd/_process/studio/sittings/step1-setup-rulings.md` (S1-1…S1-6) · census A.10-1/A.10-2 cross-refs.
+Sources: POC code inventory — site-setup (115 CODE keys, 33/33 area tests passing) · sitting rulings (S1-1…S1-6) · census A.10-1/A.10-2 cross-refs. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS2 (roof drawing consumes the confirmed location, calibration, canvas contract) · MS4 (bill-based size suggestion) · studio docs 02–13.
 
 ## 1. Purpose & scope

@@ -12,6 +12,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - Given the owner dashboard, when it renders, then the seven sections appear in the stated order with "what needs you" and cash leading (M13-14, M13-20).
 - Given an unassigned lead past 24 h, when the dashboard renders, then it appears in "what needs you" deep-linking to the lead (M13-15).
 - Given each of the twelve presets held singly, when the person signs in, then their home matches their row above, with content identical to the owning module's contract (M13-29 through M13-40, M13-11).
+- Given a Sales Manager, when their home renders, then it is the owner dashboard **scoped to their team**, with the team's per-rep view reachable from it and that per-rep view still gated by `F2.M07.agent-performance` (`M13-30`).
 - (M13-16 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cash is collected vs due this month from the project tranches plus the overdue total, read from `modules/M11`'s figures with their freshness and confirmation qualifiers intact, and collections ageing renders the ageing M11 publishes, never a recomputation.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
@@ -35,6 +36,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **DONE WHEN:**
 - Given each of the twelve presets held singly, when the person signs in, then their home matches their row above, with content identical to the owning module's contract (M13-29 through M13-40, M13-11).
 - Given a field-day or attendance rollup, when audited, then gaps are stated, unmarked is unmarked, and no score of any kind appears (M13-47, M13-48).
+- Given an Operations user, when their home renders, then blockers are grouped by party with **everything waiting on us before everything waiting on someone else**, oldest first, aged projects by days-in-stage beneath, and the field team's current day alongside (`M13-39`).
 - (M13-25 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — project ageing renders days-in-stage per the canonical machine, aged projects surface to the Owner and Operations, and stage labels render per market pack through F1.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 

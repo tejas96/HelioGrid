@@ -1,7 +1,7 @@
 # MS9 · Studio customer surfaces — the proposal document & the share link
 
 Status: draft · Origin mix: SRC-CODE + BRIEF (Sitting 8 rulings, 2026-08-05) · Depends on: F5 (customer-link laws), Q27 (3D inside the proposal link), Q42 (OTP default off), Q34 (permanent link), F8 (provenance/staleness), M01 (branding), M06 (proposal document + pinning), MS6/MS7/MS8 (the numbers, imagery and drawings)
-Sources: ledger `share.md` (**109 keys**, 35 POC-DEFECTs — the pass's largest crop; zero automated coverage found on these files) · rulings `share-rulings.md` (S8-1…S8-4) · census A.10-8 share rows + A.10-11 link rows.
+Sources: POC code inventory — share (**109 keys**, 35 POC-DEFECTs — the pass's largest crop; zero automated coverage found on these files) · sitting rulings (S8-1…S8-4) · census A.10-8 share rows + A.10-11 link rows. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: F5 (the main-suite customer-link framework this must satisfy) · M06 (the builder that issues the document) · MS11 (installation sheet).
 
 ## 1. Purpose & scope

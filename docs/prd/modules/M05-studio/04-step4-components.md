@@ -1,7 +1,7 @@
 # MS4 · Studio Step 4 — Components (panel · capacity · inverter · battery)
 
 Status: draft · Origin mix: SRC-CODE + BRIEF (Sitting 4 rulings, 2026-08-05) · Depends on: M01 (catalog laws M01-32..46), M05 §M05.6 + DD12 (the shared picker pattern), F1 (pack money/certification), F8 (provenance), MS2 (roofs), MS6 (layout/fill)
-Sources: ledger `step4-components.md` (92 keys; 92/92 tests pass; formulas re-derived live) · rulings `step4-components-rulings.md` (S4-1…S4-5) · census A.10-5 (41/41 matched, 9 with recorded divergences now ruled).
+Sources: POC code inventory — components (92 keys; 92/92 tests pass; formulas re-derived live) · sitting rulings (S4-1…S4-5) · census A.10-5 (41/41 matched, 9 with recorded divergences now ruled). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS6 (fill consumes the chosen module/target) · MS8 (SLD/stringing consumes inverter/topology/MLPE) · MS10 (BOM consumes catalog + pricebook) · MS3 (capability presets recorded here at `.81–.86`) · MS6 (steel profile catalog recorded here at `.87–.92`).
 
 ## 1. Purpose & scope

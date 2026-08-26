@@ -1,7 +1,7 @@
 # MS3 · Studio Step 3 — Obstructions
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 3 rulings, 2026-08-05) · Depends on: MS1 (canvas contract), MS2 (obstruction factory/platform conversion recorded at `drawing.93/.94`), M05 baseline, F7, F8
-Sources: ledger `step3-obstructions.md` (54 keys, 60/60 tests + live repro) · rulings `step3-obstructions-rulings.md` (5 rulings covering 10 fixes, S3-1…S3-5.6) · census A.10-4 (42/42 matched).
+Sources: POC code inventory — obstructions (54 keys, 60/60 tests + live repro) · sitting rulings (5 rulings covering 10 fixes, S3-1…S3-5.6) · census A.10-4 (42/42 matched). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS6 (layout keep-out truth; ObstructionLayer reuse) · MS8 (bridging flags on drawings) · 3D behaviors consumed by the Scene doc (MS6-scene sections).
 
 ## 1. Purpose & scope

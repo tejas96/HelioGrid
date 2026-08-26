@@ -2,7 +2,7 @@
 
 This file carries the engineering tasks for the second half of the Design Studio: Step 4 (components and the compare/decision engine), Step 6 (layout editor, 3D scene and the parametric structure model), Step 7 (captures, the energy and money models, insights, report, narrative and comparison) and Step 8 (SLD sheets and the electrical engine). Task-id prefix: **T-MS-** (this file runs T-MS-201 upward). Source PRD docs: `docs/prd/modules/M05-studio/04-step4-components.md`, `docs/prd/modules/M05-studio/05-step6-editor.md`, `docs/prd/modules/M05-studio/06-step7-proposal.md`, `docs/prd/modules/M05-studio/07-step8-sld.md`.
 
-Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild. Where the POC already implements the behaviour the task is a **port** — the engineering core moves as-is with its tests as the regression net. Where the surface is redesigned the task is a **screen** and its title says "port + UI rebuild". POC file claims per area come from `docs/prd/_process/studio/inventory/file-claims.md`; defects come from `docs/prd/_process/studio/defect-register.md`.
+Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild. Where the POC already implements the behaviour the task is a **port** — the engineering core moves as-is with its tests as the regression net. Where the surface is redesigned the task is a **screen** and its title says "port + UI rebuild". POC file claims per area come from `docs/prd/modules/M05-studio/poc-file-claims.md`; defects come from `docs/prd/modules/M05-studio/defect-register.md`.
 
 ---
 
@@ -78,7 +78,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 **Type:** engine · **Tier:** P0
 **PRD rows:** MS4-34
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/lib/comparison.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts`
-**DEFECTS:** none recorded against MS4-34 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS4-34 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS4-34** (P0) — Everything derived recomputes from the store (efficiency, energy, cost, subsidy, payback, savings, ROI, ratio, weight) — no cached figures (`.70`); capacity edits re-key the comparison memo, so the compare sheet always reflects the current target (`.71`).
@@ -92,7 +92,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 ### T-MS-204 · Battery flow-through to BOM, SLD and the proposal components block
 **Type:** integration · **Tier:** P0
 **PRD rows:** MS4-25
-**PORT:** no POC counterpart — `docs/prd/_process/studio/inventory/file-claims.md` claims no battery file (`BATTERY (absent entirely)`, grep: 0 hits); this extends the ported design payload and its downstream consumers rather than porting an existing path.
+**PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no battery file (`BATTERY (absent entirely)`, grep: 0 hits); this extends the ported design payload and its downstream consumers rather than porting an existing path.
 **DEFECTS:**
 - `BATTERY (absent entirely)` — no battery section/type/catalog in POC (S4-1: first-class section → MS4-24/25).
 
@@ -187,7 +187,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS6-03, MS6-04, MS6-53
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/auto-design.ts` · `3d_design_studio/src/features/solar-studio/lib/layout.ts` · `3d_design_studio/src/features/solar-studio/lib/spacing.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-pose.ts` · `3d_design_studio/src/features/solar-studio/lib/shading.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/auto-design.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/layout.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/spacing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/row-shading.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/shading.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/shading-beam-availability.test.ts`
-**DEFECTS:** none recorded against MS6-03, MS6-04 or MS6-53 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS6-03, MS6-04 or MS6-53 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS6-03** (P0) — Roof ranking is MEASURED, not assumed: sampled probe panels through the real raycast shading engine × orientation factor — the ranking, per-roof access %, row spacing and every choice are recorded in the decision log (`layout.5/.6`).
@@ -223,7 +223,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 ### T-MS-209 · Racking resolution chain, foundation validity & topology/member emission
 **Type:** port · **Tier:** P0
 **PRD rows:** MS6-39, MS6-40
-**PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/ground.ts` · `3d_design_studio/src/features/solar-studio/lib/foundation.ts` · `3d_design_studio/src/features/solar-studio/data/profiles.ts` (sitting 4 — the steel section catalog whose kg/m the structural BOM multiplies; `docs/prd/_process/studio/inventory/step6-structures.md` records structure as its only consumer, and `docs/prd/_process/studio/inventory/step4-components.md` §I states it from the owner's side) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/structure.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-golden.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/ground-mount.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundations.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/profiles.test.ts` (sitting 4 — the catalog's guard; it is also the only net over `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts`, which T-MS-206 ports)
+**PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/ground.ts` · `3d_design_studio/src/features/solar-studio/lib/foundation.ts` · `3d_design_studio/src/features/solar-studio/data/profiles.ts` (sitting 4 — the steel section catalog whose kg/m the structural BOM multiplies; *retired: studio inventory* records structure as its only consumer, and *retired: studio inventory* §I states it from the owner's side) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/structure.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-golden.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/ground-mount.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundations.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/profiles.test.ts` (sitting 4 — the catalog's guard; it is also the only net over `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts`, which T-MS-206 ports)
 **DEFECTS:**
 - `CODE.step6-structures.52/.68` — foundation buttons bypass allowed-options; silent clamp (S5-1b: offered ⊆ allowed → MS6-39/47/51; the MS6-39 half — the resolution chain and the read-time correction — is this task's).
 
@@ -243,7 +243,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS6-41, MS6-42, MS6-43
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/foundation.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/drc-structure.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundations.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundation-grounding.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/live-structure-geometry.test.ts`
-**DEFECTS:** none recorded against MS6-41, MS6-42 or MS6-43 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS6-41, MS6-42 or MS6-43 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS6-41** (P0) — Height chain law: the foundation CONSUMES clearance — steel spans from the foundation top, so quoted clearance is what a person actually gets (`structures.9`).
@@ -262,7 +262,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** engine · **Tier:** P1
 **PRD rows:** MS6-38
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/scene-frame.ts` · `3d_design_studio/src/features/solar-studio/three/PanelsInstanced.tsx` (the instanced-draw path, shared with T-MS-206's scene shell) · `3d_design_studio/src/features/solar-studio/three/textures.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/one-frame.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/frame-parity.test.ts`
-**DEFECTS:** none recorded against MS6-38 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS6-38 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS6-38** (P1) — Rendering contracts that keep truth and speed together: instanced draws for the whole site, ONE panel frame shared by mesh/engine/2D, shared materials, exact extruded steel sections, structure re-derivation keyed to geometry, position-resolved obstruction grounding, and GPU cleanup on unmount (`scene3d.43–.50`).
@@ -277,7 +277,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** integration · **Tier:** P0
 **PRD rows:** MS6-50
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/dxf-structure.test.ts` (sitting 5 — the structural-layer regression net over sitting 8's `3d_design_studio/src/features/solar-studio/lib/dxf.ts` and `lib/export-dxf.ts`) · `3d_design_studio/src/features/solar-studio/components/drawing/StructureSheet.tsx` (sitting 2 — the structural drawing sheet this row feeds)
-**DEFECTS:** none recorded against MS6-50 in `docs/prd/_process/studio/defect-register.md`. (The paired surface defect `CODE.step6-layout.65` is attached to T-MS-205 at MS6-22; this task owns the outputs the disclaimer travels to.)
+**DEFECTS:** none recorded against MS6-50 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step6-layout.65` is attached to T-MS-205 at MS6-22; this task owns the outputs the disclaimer travels to.)
 
 **Requirements (verbatim):**
 - **MS6-50** (P0) — Structure reaches the outputs: DXF structural layers, structural drawing sheet, BOM lines and the wind-zone display table — all carrying the preliminary/assumed language (`structures.20/.21/.24/.71/.72`).
@@ -377,7 +377,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** integration · **Tier:** P0
 **PRD rows:** MS7-25, MS7-26, MS7-27
 **PORT:** `3d_design_studio/src/app/api/pvgis/route.ts` · `3d_design_studio/src/features/solar-studio/lib/pvgis.ts` · `3d_design_studio/src/features/solar-studio/lib/weatherApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/pvgis.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/weatherApi.test.ts`
-**DEFECTS:** none recorded against MS7-25, MS7-26 or MS7-27 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS7-25, MS7-26 or MS7-27 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS7-25** (P0) — Measured-weather ingestion is server-proxied with an explicit source ladder, per-rung timeouts, and a client timeout deliberately longer than the server's so the honest server message wins (`.76–.79`).
@@ -519,7 +519,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** engine · **Tier:** P0
 **PRD rows:** MS8-20, MS8-22
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/sld.ts` · `3d_design_studio/src/features/solar-studio/screens/Step8Sld.tsx` (the parameter/override plumbing behind T-MS-268's surface) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sld.test.ts`
-**DEFECTS:** none recorded against MS8-20 or MS8-22 in `docs/prd/_process/studio/defect-register.md`. (The paired dialog defect `CODE.step8-sld.52` is attached to T-MS-268 at MS8-21; this task owns the effective-value merge the dialog seeds from.)
+**DEFECTS:** none recorded against MS8-20 or MS8-22 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired dialog defect `CODE.step8-sld.52` is attached to T-MS-268 at MS8-21; this task owns the effective-value merge the dialog seeds from.)
 
 **Requirements (verbatim):**
 - **MS8-20** (P0) — Parameters are derived (pure, from the design) and merged with explicit overrides; the merge is the single effective value every surface reads (`.48/.49`).
@@ -536,7 +536,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS8-24, MS8-25
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/temps.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/window.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-temps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/stringing.test.ts`
-**DEFECTS:** none recorded against MS8-24 or MS8-25 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS8-24 or MS8-25 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS8-24** (P0) — Module voltage at temperature uses the datasheet coefficient; the string window derives min/max panels from the inverter's DC ceiling and MPPT window at those temperatures; an impossible pair is STATED as empty, never as nonsense bounds (`.57–.59`).
@@ -553,7 +553,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS8-26, MS8-27
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/grouping.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/autostring.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/combiner.ts` · `3d_design_studio/src/features/solar-studio/lib/stringing.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/grouping-plane.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/autostring.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/combiner.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/stringing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/mlpe.test.ts`
-**DEFECTS:** none recorded against MS8-26 or MS8-27 in `docs/prd/_process/studio/defect-register.md`. (The paired surface defect `CODE.step8-sld.16/.84` — Step 8's auto-string using a degraded legacy shim and swallowing refusals — is attached to T-MS-268 at MS8-07; this task owns the REAL planner that entry point must call.)
+**DEFECTS:** none recorded against MS8-26 or MS8-27 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step8-sld.16/.84` — Step 8's auto-string using a degraded legacy shim and swallowing refusals — is attached to T-MS-268 at MS8-07; this task owns the REAL planner that entry point must call.)
 
 **Requirements (verbatim):**
 - **MS8-26** (P0) — Grouping engine: panels group by plane identity, azimuth/tilt buckets and shade tier (thresholds shared with the 3D access tints); co-planarity is geometric, not by-name; disabled panels never occupy a string; MLPE changes the grouping rules; serpentine ordering follows the roof grid (`.62–.67`).
@@ -570,7 +570,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS8-28, MS8-29, MS8-30, MS8-31, MS8-32, MS8-33
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/gate.ts` · `3d_design_studio/src/features/solar-studio/lib/drc.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-gate.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/drc.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/drc-structure.test.ts` (sitting 5 — the structure-DRC regression net, shared with T-MS-210)
-**DEFECTS:** none recorded against MS8-28…MS8-33 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS8-28…MS8-33 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS8-28** (P0) — System validation runs live on every edit and feeds the editor banner, health score and the gate (`.77`).
@@ -595,7 +595,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS8-34, MS8-35
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical-sizing.ts` · `3d_design_studio/src/features/solar-studio/lib/bom/emitters/electrical.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-sizing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/ac-cable-sizing.test.ts`
-**DEFECTS:** none recorded against MS8-34 or MS8-35 in `docs/prd/_process/studio/defect-register.md`. (The paired drawing defect `CODE.step8-sld.35` — the SLD printing legacy 10/6 mm2 AC cable while the BOM sizes properly — is attached to T-MS-268 at MS8-12; this task owns the one engine both must read, per the S7-1 one-source-of-truth law.)
+**DEFECTS:** none recorded against MS8-34 or MS8-35 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired drawing defect `CODE.step8-sld.35` — the SLD printing legacy 10/6 mm2 AC cable while the BOM sizes properly — is attached to T-MS-268 at MS8-12; this task owns the one engine both must read, per the S7-1 one-source-of-truth law.)
 
 **Requirements (verbatim):**
 - **MS8-34** (P0) — DC protection sizing: fuse from the continuous-current rule, isolator and cable from the pack ladders (`.90/.91`).
@@ -612,7 +612,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P0
 **PRD rows:** MS8-36, MS8-37, MS8-38, MS8-39
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/routing.ts` · `3d_design_studio/src/features/solar-studio/lib/cascade.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/routing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/cascade.test.ts`
-**DEFECTS:** none recorded against MS8-36…MS8-39 in `docs/prd/_process/studio/defect-register.md`. (MS8-39 pairs with MS6-25, whose defect `CODE.step6-layout.32` is attached to T-MS-208.)
+**DEFECTS:** none recorded against MS8-36…MS8-39 in `docs/prd/modules/M05-studio/defect-register.md`. (MS8-39 pairs with MS6-25, whose defect `CODE.step6-layout.32` is attached to T-MS-208.)
 
 **Requirements (verbatim):**
 - **MS8-36** (P0) — Cable routing: vertical drops from the model (never a constant), inverter position resolved from its wall placement, length = path + drop + stated slack, blockers limited to what a cable truly may not cross, straight line when clear and a shortest-path route otherwise, corridor-cost preference over free-field crossing, array footprint and intra-string extras counted (`.102–.111`).
@@ -633,7 +633,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** port · **Tier:** P1
 **PRD rows:** MS8-40
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/hardware.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/hardware.test.ts`
-**DEFECTS:** none recorded against MS8-40 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none recorded against MS8-40 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS8-40** (P1) — Node hardware provides nominal visual parts per structure node, with foundation assemblies owned by the structure model (no double-counting) (`.132/.133`).

@@ -1,7 +1,7 @@
 # MS8 · Studio Step 8 — SLD & the electrical engine
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 7 rulings, 2026-08-05) · Depends on: MS4 (panel/inverter specs, topology, MLPE), MS6 (panels, segments, strings, structures), MS10 (BOM money path), F1 (pack: standards, ladders, design temperatures), F8 (assumed-vs-derived language), Q28
-Sources: ledger `step8-sld.md` (**133 keys**, 12 test files / 171 tests all passing, every ladder cross-checked against the rules pack) · rulings `step8-sld-rulings.md` (S7-1, S7-2) · census A.10-9 (37/37 matched, 9 with divergences now ruled).
+Sources: POC code inventory — sld (**133 keys**, 12 test files / 171 tests all passing, every ladder cross-checked against the rules pack) · sitting rulings (S7-1, S7-2) · census A.10-9 (37/37 matched, 9 with divergences now ruled). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS10 (BOM consumes sized ratings, cable metres, combiner plan) · MS6 (validation banner + the hard gate) · MS11 (installation sheet) · customer surfaces (drawings in the proposal pack).
 
 ## 1. Purpose & scope

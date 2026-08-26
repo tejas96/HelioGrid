@@ -15,11 +15,11 @@ Type: screen            (screen | engine | policy | integration | port)
 Tier: P0
 PRD:    M02-01 (P0), M02-03 (P0), M02-<nn> (P0), M02-05 (P0), M02-06 (P0)
 DESIGN: SCR-<module>-<nn> → PENDING               — filled when the screen is approved
-PORT:   (studio tasks only) POC files from docs/prd/_process/studio/inventory/file-claims.md
+PORT:   (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
         POC `*.test.ts`; port the LOGIC it proves into tests/invariants. CLAUDE.md §8 bans
         a `.test.*` file in this repo and check-adherence.sh fails the build on one.
-DEFECTS:(studio tasks only) rows from docs/prd/_process/studio/defect-register.md
+DEFECTS:(studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
 DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased
 ```
 
@@ -28,7 +28,7 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`,
-   `docs/ux/briefs/**`, `docs/prd/_process/studio/inventory/**` and `docs/prd/_process/studio/defect-register.md`
+   `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task.
 3. **`DESIGN: PENDING` blocks build, not start.** Engine/policy/integration/port tasks have no

@@ -7,7 +7,7 @@ emphasis but adds no requirement here) · Depends on:
 `foundations/F1-global-market-framework.md`, `foundations/F2-roles-and-permissions.md`,
 `foundations/F3-localization.md`, `foundations/F4-data-integrity.md`,
 `foundations/F7-design-language.md`, `foundations/F8-data-honesty.md`,
-`modules/M02-crm-and-leads.md`, `_process/2026-08-03-v2-prd-design.md` §2 (DD2, DD3, DD4)
+`modules/M02-crm-and-leads.md`, *retired: PRD design note* §2 (DD2, DD3, DD4)
 
 ## 1. Purpose & scope
 

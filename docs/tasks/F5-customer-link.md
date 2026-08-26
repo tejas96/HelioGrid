@@ -19,7 +19,7 @@ bucket exactly once.
 **Type:** screen (port + UI rebuild — the POC share page implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
 **PRD rows:** F5-07 (P0), F5-32 (P0), F5-33 (P0), F5-35 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0), MS9-10 (P0), MS9-11 (P0), MS9-14 (P0), MS9-15 (P0), MS9-17 (P0), MS9-23 (P0), MS9-24 (P0), MS9-25 (P1), MS9-29 (P0)
 **DESIGN:** SCR-F5-01 → PENDING
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` · `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` (share-sitting claims, `docs/prd/_process/studio/inventory/file-claims.md`)
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` · `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
 **DEFECTS:**
 - `CODE.share.98/.99/.100/.11` — one permanent unnamed link; no revoke/attribution/acceptance (S8-2c → MS9-09/10; the `.100` acceptance-path half lands on this screen).
 - `CODE.share.80/.24` — structure disclaimer conditional/absent on customer surfaces (S8-3b → MS9-17).
@@ -117,8 +117,8 @@ bucket exactly once.
 **Type:** screen (port + UI rebuild — the POC read-only share rendering implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
 **PRD rows:** none from this bucket — this line claims no row. The screen is realized by `M05-55` (cross-ref, P0, dispositioned in `docs/tasks/MS-studio-a.md`) and `MS6-37` (cross-ref, P0, claimed by T-MS-206 in `docs/tasks/MS-studio-b.md`); `F5-33` (cross-ref, P0, claimed by T-F5-001) is the "View in 3D" entry on the carrying proposal page.
 **DESIGN:** SCR-F5-05 → PENDING
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (the POC read-only share rendering host — share-sitting claim) · `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` (read-only 3D presentation consumed here; the scene-engine port itself is claimed by the step-6 sitting and owned by the studio editor task file, per `docs/prd/_process/studio/inventory/file-claims.md`)
-**DEFECTS:** none in `docs/prd/_process/studio/defect-register.md` target this screen's realizing rows; the S8 share-surface defects attach to T-F5-001, T-F5-011, T-F5-012 and T-F5-013.
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (the POC read-only share rendering host — share-sitting claim) · `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` (read-only 3D presentation consumed here; the scene-engine port itself is claimed by the step-6 sitting and owned by the studio editor task file, per `docs/prd/modules/M05-studio/poc-file-claims.md`)
+**DEFECTS:** none in `docs/prd/modules/M05-studio/defect-register.md` target this screen's realizing rows; the S8 share-surface defects attach to T-F5-001, T-F5-011, T-F5-012 and T-F5-013.
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-F5-05-customer-3d-view.md`; they are the specification (`M05-55`, `MS6-37` — quoted in full there; their behavioural acceptance rides their owning studio task files).
 
@@ -240,7 +240,7 @@ bucket exactly once.
 
 **Type:** port · **Tier:** P0
 **PRD rows:** MS9-09, MS9-12, MS9-13, MS9-26, MS9-27
-**PORT:** `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/_process/studio/inventory/file-claims.md`)
+**PORT:** `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
 **DEFECTS:**
 - `CODE.share.98/.99/.100/.11` — one permanent unnamed link; no revoke/attribution/acceptance (S8-2c → MS9-09/10).
 - `CODE.share.106` — anonymous share hydrates operator's entire project store (S8-4.1 → MS9-12).
@@ -268,7 +268,7 @@ bucket exactly once.
 
 **Type:** port · **Tier:** P0
 **PRD rows:** MS9-01, MS9-02, MS9-03, MS9-04, MS9-05, MS9-16, MS9-18, MS9-19, MS9-20, MS9-21, MS9-22, MS9-28
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` (share-sitting claim, `docs/prd/_process/studio/inventory/file-claims.md`; the narrative library `3d_design_studio/src/features/solar-studio/lib/proposal-narrative.ts` and its tests are the step-7 sitting's claim and port with that bucket)
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` (share-sitting claim, `docs/prd/modules/M05-studio/poc-file-claims.md`; the narrative library `3d_design_studio/src/features/solar-studio/lib/proposal-narrative.ts` and its tests are the step-7 sitting's claim and port with that bucket)
 **DEFECTS:**
 - `CODE.share.109/.92/.94/.44` — proposal has no number/date/version/validity; internal name printed; bad pagination (S8-1 → MS9-01/02).
 - `CODE.share.35/.62/.63` — staleness stripped from print; no per-capture badge; wrong caption (S8-3a → MS9-16).
@@ -306,7 +306,7 @@ defect set against it.
 
 **Type:** port · **Tier:** P0
 **PRD rows:** MS9-06, MS9-07, MS9-08
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/_process/studio/inventory/file-claims.md`; the defect register locates S8-2a in "ProposalView + routes" and S8-2b in ShareViewer)
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`; the defect register locates S8-2a in "ProposalView + routes" and S8-2b in ShareViewer)
 **DEFECTS:**
 - `CODE.share.107/.108/.14` — no readiness gate; inconsistent status marking; any design served (S8-2a → MS9-06/07).
 - `CODE.share.101` — issued proposal mutates with later edits (no pinning) (S8-2b → MS9-08).

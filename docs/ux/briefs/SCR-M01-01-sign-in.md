@@ -19,6 +19,7 @@ Reached from: any signed-out launch of the app or web product (signed-out routin
 ### From `docs/prd/modules/M05-studio/11-shell-and-platform.md`
 
 - **MS12-17** (P0) — Sign-in is the PLATFORM's: mobile OTP and Google (Q18), establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`). _(non-UI half, build-side: establishes tenant, user and role context; replaces mock login — for awareness, not for drawing)_
+- **F4-37** (P0) — **On a shared device, tenant isolation beats convenience: a user switch discards work held for the previous user, and tells them before it happens.** Shared field phones are normal in this market. When a different user signs in on a device still holding photographs or submissions captured by another user and not yet uploaded, that held work is **discarded before any new data loads**, and the person whose work is being discarded is told what will be lost **before** the switch completes, with the chance to connect and upload first. This is the one **carve-out from `F4-21`**: everywhere else nothing a field user captured is ever unrecoverable, and here it is, deliberately — a rep must never reach another rep's customer photographs, and no device-held data survives the identity that captured it.
 
 ## States
 
@@ -39,6 +40,7 @@ Screen-specific:
 - **number-locked-15min** — 3 consecutive OTP invalidations lock the number for 15 min with an honest message (M01-04).
 - **auth-error** — generic authentication failure, honestly stated.
 - **google-link-first-sign-in** — the first Google sign-in runs the linking flow onto the same phone-identity account (M01-02).
+- **switch-discards-held-work** — a different user is signing in on a device still holding un-uploaded photographs or submissions: what will be lost is named BEFORE the switch completes, with the chance to connect and upload first; on confirm the held work is discarded before any new data loads (F4-37, the one carve-out from F4-21).
 
 *State removed by owner ruling 2026-08-06 (Q47), recorded not deleted:* **channel-fallback-fired** — which read "automatic fallback channel fired on delivery failure or the 30 s timeout (M01-03)". The system uses no fallback mechanism, so this state cannot occur and must not be drawn. The **resend-cooldown** state above was left untouched by Q47 and is the whole of the recovery path the system offers, alongside the user-initiated **call-me-instead**. *(That sentence previously read "The **resend-cooldown** state above is unchanged and is now the whole of the recovery path the system offers, alongside the user-initiated **call-me-instead**." — true of Q47, but no longer sayable as written: owner ruling 2026-08-06 (Q51) has since amended that state, releasing the cooldown immediately when a hard delivery failure is confirmed. Q47's own scope, the removed fallback, is untouched by Q51.)*
 

@@ -501,7 +501,7 @@ question that records it and does **not** invent a replacement.
 | BM-02 | P0 | policy | policy | LAW |
 | BM-03 | P0 | policy | policy | LAW |
 | BM-04 | P0 | policy | policy | LAW |
-| BM-05 | P0 | mixed | SCR-M12-01 · +non-UI: tiers gate capacity/counts/bundles, never features — every module ever | LAW |
+| BM-05 | P0 | mixed | SCR-M12-01 · +non-UI: tiers gate capacity/counts/bundles, never features — every module… | LAW |
 | BM-06 | P0 | policy | policy | LAW |
 | BM-07 | P0 | mixed | SCR-M12-01, SCR-M12-04 · +non-UI: caps are upgrade signals and abuse bounds; soft-block enforcement | LAW |
 | BM-08 | P0 | policy | policy | LAW |
@@ -523,14 +523,14 @@ question that records it and does **not** invent a replacement.
 | BM-24 | P0 | policy | policy | T-FCORE-011 |
 | BM-25 | P0 | policy | policy | T-FCORE-011 |
 | BM-26 | P1 | policy | policy | T-FCORE-010 |
-| BM-27 | P0 | mixed | SCR-M12-04 · +non-UI: screen shows exactly the enforced/billed rollups, no smoothing (F8-33) | T-FCORE-014 |
+| BM-27 | P0 | mixed | SCR-M12-04 · +non-UI: screen shows exactly the enforced/billed rollups, no smoothing… | T-FCORE-014 |
 | BM-28 | P0 | policy | policy | T-FCORE-013 |
 | BM-29 | P0 | policy | policy | T-FCORE-013 |
 | BM-30 | P0 | policy | policy | T-FCORE-013 |
 | BM-31 | P1 | context | context → ['BM-28', 'BM-41'] | T-FCORE-013 |
-| BM-32 | P0 | mixed | SCR-M12-02 · +non-UI: read/export/customer-links/billing always work in every state; nothing | T-FCORE-014 |
+| BM-32 | P0 | mixed | SCR-M12-02 · +non-UI: read/export/customer-links/billing always work in every state… | T-FCORE-014 |
 | BM-33 | P0 | policy | policy | T-FCORE-012 |
-| BM-34 | P0 | mixed | SCR-M12-04 · +non-UI: 7-day grace after 100%; then new creations pause; resets on billing an | T-FCORE-014 |
+| BM-34 | P0 | mixed | SCR-M12-04 · +non-UI: 7-day grace after 100%; then new creations pause; resets on billing… | T-FCORE-014 |
 | BM-35 | P0 | policy | policy | T-FCORE-014 |
 | BM-36 | P0 | policy | policy | T-FCORE-014 |
 | BM-37 | P0 | policy | policy | T-FCORE-010 |
@@ -607,7 +607,7 @@ question that records it and does **not** invent a replacement.
 | F1-56 | P0 | policy | policy | T-FCORE-009 |
 | F1-57 | P0 | policy | policy | T-FCORE-009 |
 | F1-58 | P0 | policy | policy | T-FCORE-009 |
-| F1-59 | P0 | mixed | SCR-SHELL-01 · +non-UI: breach-notification duty to Data Protection Board and affected princip | T-FCORE-009, T-SHELL-001 |
+| F1-59 | P0 | mixed | SCR-SHELL-01 · +non-UI: breach-notification duty to Data Protection Board and affected… | T-FCORE-009, T-SHELL-001 |
 | F1-60 | P0 | policy | policy | T-FCORE-010 |
 | F1-61 | P0 | policy | policy | T-FCORE-010 |
 
@@ -668,7 +668,7 @@ question that records it and does **not** invent a replacement.
 | F3-20 | P0 | engine | engine | T-FPLAT-008 |
 | F3-21 | P0 | policy | policy | T-FPLAT-008 |
 | F3-22 | P0 | engine | engine | T-FPLAT-008 |
-| F3-23 | P1 | mixed | SCR-M01-11 · +non-UI: procurement, BOM and supplier quantities stay metric regardless of pre | T-FPLAT-008 |
+| F3-23 | P1 | mixed | SCR-M01-11 · +non-UI: procurement, BOM and supplier quantities stay metric regardless of… | T-FPLAT-008 |
 | F3-24 | P0 | policy | policy | T-FPLAT-008 |
 | F3-25 | P0 | policy | policy | LAW |
 | F3-26 | P0 | policy | policy | T-FPLAT-009 |
@@ -688,7 +688,7 @@ under this heading, so that all 35 ids of the deleted document are accounted for
 and forever. **Restoring them changes no count in §1 or §4** — a struck row is not a live
 requirement and claims no build obligation — but it did raise §3's own total from 1,674 rows to
 1,699 and this register's struck total from 18 to **43**. *(§3's total moved once more the same day, to **1,702**, when the three rows ruled at `Q62`–`Q64` were added as live dispositions; the struck total is unchanged at 43. §4 carries the current figures.)* Where each row's law went is recorded
-key-by-key in `registers/traceability.md`'s Task 10 block and is summarised in its note below; two
+key-by-key in the retired traceability register's Task 10 block and is summarised in its note below; two
 of them left holes that are open owner questions rather than losses to absorb — `F4-35` is `Q65` (a
 client too old to talk to the server) and `F4-32` is `Q66` (a shared field phone holding another
 user's unuploaded photographs) — and those two cite the question rather than naming a carrier.
@@ -696,11 +696,11 @@ Nothing below is renumbered.*
 
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
-| ~~F4-01~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the three-term vocabulary — offline-full, online-only, degraded reads — that named the sets `R14`'s offline-scope boundary was drawn between. `Q61` overrode `R14` wholesale, so there is no boundary left to have a vocabulary for: the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble) and losing it is an ordinary network error. `DOC06.online-only-set` is SUPERSEDED in `registers/traceability.md`'s Task 10 block, not excluded, because the ruling absorbed the set rather than declaring it a non-goal. `docs/ux/briefs/SCR-M01-01-sign-in.md` dropped the OTP connectivity contract stated in this row's vocabulary in the same sweep.* | — |
+| ~~F4-01~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the three-term vocabulary — offline-full, online-only, degraded reads — that named the sets `R14`'s offline-scope boundary was drawn between. `Q61` overrode `R14` wholesale, so there is no boundary left to have a vocabulary for: the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble) and losing it is an ordinary network error. `DOC06.online-only-set` is SUPERSEDED in the retired traceability register's Task 10 block, not excluded, because the ruling absorbed the set rather than declaring it a non-goal. `docs/ux/briefs/SCR-M01-01-sign-in.md` dropped the OTP connectivity contract stated in this row's vocabulary in the same sweep.* | — |
 | ~~F4-02~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It quoted `DOC06.reads-local` verbatim — "Reads are local, always", every synced entity served from an on-device store — which is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "The product does not read from a cache"). **Nothing live carries a local read**, and none is needed: every read is a server read. The one clause of its neighbourhood with independent life, no spinner wall and no pre-emptively disabled primary action, is live at `F4-27` under `DOC06.sync-status-ux`, and is not claimed here. `docs/tasks/F-platform.md` `T-FPLAT-011` lost "the local-first core" from its title for the same reason.* | — |
 | ~~F4-03~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the durable device write queue for offline mutations — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "does not queue mutations"), and `M04-55` now rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else". The half of `DOC06.writes-queued` that survives — the server is the only writer of record — is stated at live `F4-04`, and the never-silently-drop guarantee it neighboured is live at `F4-21`; neither is claimed as this row's carrier. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped the `Offline` base state this row supported.* | — |
 | F4-04 | P0 | policy | policy | T-FPLAT-011 |
-| ~~F4-05~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It is the one id of these 25 whose content this register cannot state: no source key in `registers/traceability.md`'s Task 10 block names it, no live row cites it, no brief or task note mentions it, and the deleted document was its only record — a grep of the suite for `F4-05` returns nothing outside this register. It is struck here so the id is accounted for rather than silently absent. Nothing is re-instated, no carrier is claimed, and this is **not** one of `Q62`–`Q66`: an unrecoverable row text is a records gap, not an open product question.* | — |
+| ~~F4-05~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It is the one id of these 25 whose content this register cannot state: no source key in the retired traceability register's Task 10 block names it, no live row cites it, no brief or task note mentions it, and the deleted document was its only record — a grep of the suite for `F4-05` returns nothing outside this register. It is struck here so the id is accounted for rather than silently absent. Nothing is re-instated, no carrier is claimed, and this is **not** one of `Q62`–`Q66`: an unrecoverable row text is a records gap, not an open product question.* | — |
 | ~~F4-06~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It carried the online-first-is-a-move-in-TIME-only half of `DOC06.online-first-until-offline` and of `OD-10 · studio-and-offline-last` — deferring offline was "never a reduction in scope or quality", with online-first an interim state qualifying `R14`'s boundary. `Q61` falsified both clauses at once: the move was in scope, permanently, and there is no target-state boundary left to be interim to, so `OD-10 · studio-and-offline-last` takes the SUPERSEDED mark in the Task 10 block. *(Corrected 2026-08-15: this read "both keys take the SUPERSEDED mark". `DOC06.online-first-until-offline` is dispositioned **live** at `F4-07` — which is what the next clause says — because the write-model guarantees it carried never depended on the offline layer arriving.)* The two guarantees the source tied to the **write model** rather than to connectivity — versioned-append surveys, idempotent submission — are live and unchanged at `F4-07`.* | — |
 | F4-07 | P0 | policy | policy | T-FPLAT-011 |
 | ~~F4-08~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the eight-capability **offline-full set** and its table — survey capture, survey photos, quick-add lead, activity/visit logging, task ticks, My Day and the read cache — which is exactly the capability the ruling removed; the cache and the mutation queue are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). **Exactly one of the eight survives, and only as the carve-out:** field photographs held on the device until they upload (`F4-21` / `M04-55`), status on `SCR-M04-07` only. Rows that consumed this table by row number — `M09-20`, `M02-22` — are struck in their own sections, and the briefs that cited it (`SCR-M02-01`, `SCR-M02-04`) dropped the state.* | — |
@@ -716,7 +716,7 @@ Nothing below is renumbered.*
 | ~~F4-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It carried the conflict matrix's two device-store entries — the catalog read-only on the device, notification read-state up-only on the device — and with no on-device store neither has a subject. Its up-only read-state contract is live at `F6-07` on its own merits (reading on one device reads everywhere and nothing un-reads); the catalog laws `M01-46` and `M01-48` are untouched, while the device-copy row `M01-47` is struck in its own section, as is the notification-side `F6-18`. `DOC06.conflict-matrix` stays **live** on `F4-14`–`F4-19` with this row dropped from its ref. The loss is a direct consequence of the removal and is **not** one of `Q62`–`Q66`.* | — |
 | F4-19 | P0 | policy | policy | T-FPLAT-012 |
 | ~~F4-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the queue's acknowledgement lifecycle — every mutation applied-or-rejected, the item leaving the queue, server truth replacing local state on next sync, rejections surfacing in the attention tray. With no queue and no local state there is nothing to acknowledge and nothing to replace (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1), and the attention tray is a sync surface (bullet 2), so `DOC06.rejects-ack` is excluded. The law inside it does not die and is already cited elsewhere: a rejected submission is never a silent disappearance (`F4-21`, preserve-and-badge) and never a raw error (`F8-36`, honest refusal).* | — |
-| F4-21 | P0 | mixed | SCR-M04-07 · +non-UI: validation-failure preservation; photo hold-and-upload | T-FPLAT-013 *(`T-SHELL-004` removed 2026-08-07: it was the Sync Center task, and its screen `SCR-SHELL-04` was deleted with the offline/sync capability by owner ruling `Q61`. `F4-21`'s surviving surface is `SCR-M04-07` alone. Cited as `D3` until 2026-08-15: `D3` was a local row label in the offline-removal plan, but in this suite's source vocabulary `D3` is the superseded brand-identity decision of `docs/prd/_process/extraction/d-census.md`, so the ruling id is the only unambiguous authority.)* |
+| F4-21 | P0 | mixed | SCR-M04-07 · +non-UI: validation-failure preservation; photo hold-and-upload | T-FPLAT-013 *(`T-SHELL-004` removed 2026-08-07: it was the Sync Center task, and its screen `SCR-SHELL-04` was deleted with the offline/sync capability by owner ruling `Q61`. `F4-21`'s surviving surface is `SCR-M04-07` alone. Cited as `D3` until 2026-08-15: `D3` was a local row label in the offline-removal plan, but in this suite's source vocabulary `D3` is the superseded brand-identity decision of *retired: D-census ledger*, so the ruling id is the only unambiguous authority.)* |
 | ~~F4-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the persistent **global sync indicator** in the app shell, with its counts sentence ("3 surveys waiting · 47 photos · will upload on Wi-Fi") and its last-sync time. Killed by name: `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2 forbids a global connection indicator, and the shell shows no connectivity state at all. `docs/ux/briefs/SCR-SHELL-01-app-shell.md` is amended and `docs/tasks/SHELL.md` `T-SHELL-001` loses the element; §2 keeps the withdrawn `shell-sync-indicator` merge proposal struck at `SCR-SHELL-01` for the same audit reason this row is struck here.* | — |
 | ~~F4-23~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the **sync centre** — the one surface that listed everything waiting, per item, with a retry. A sync surface is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2) and its screen `SCR-SHELL-04` was deleted by the same ruling, taking `T-SHELL-004` with it. The per-item retry it hosted survives **only for photographs and only on the capture screen** — `SCR-M04-07` and nowhere else (`F4-21`, `M04-55`). No live row and no screen replaces it.* | — |
 | ~~F4-24~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the per-record sync chip — queued → syncing → synced, with a fourth attention state — and the chip is excised by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2: "no queued or unsynced marker on any record"). Its fourth state survives verbatim at live `F4-21`: a record that fails validation is preserved and **badged for attention**, with a reason and a retry, on the capture screen itself; `docs/tasks/F-platform.md` repoints that acceptance line to `T-FPLAT-013` rather than deleting it. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped its `offline-queued` state with this row.* | — |
@@ -731,6 +731,8 @@ Nothing below is renumbered.*
 | ~~F4-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It said a billing block never stops the queue draining. Its law survives precisely and by name in M12 — `M12-26`: a photograph already captured in the field always uploads, in every billing state, and no gate may inspect, delay or refuse it; `M12-24` puts that upload in the never-gated list. Only its words "offline-captured survey data still syncs" needed cutting: there is no survey queue to drain, the one piece of work the product holds on the device being the photograph. `DOC16.offline-drain-never-blocked` stays **live** in the Task 10 block, routed to M12.* | — |
 | ~~F4-34~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its **mechanism** — entitlement cached on the device with a 72-hour grace, so a dead zone is not read as an absent payment — dies with the cache (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The two rulings it carried are live and their citations land in M12 rather than vanishing: field capture is never cut off by elapsed time, running through the full dunning grace and pausing only at `halted`, with a mid-visit halt letting the visit complete (`M12-27`), and read and export always work (`M12-22`, `M12-24`). `Q16` is **PARTLY SUPERSEDED** 2026-08-07 — closed, not open.* | — |
 | ~~F4-35~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`), and it left a hole: **OPEN owner question `Q65`** in `registers/open-questions.md`. "An application too old to sync still reads" was built entirely on the sync contract — its trigger was a sync-contract change and its mitigation was that local reads keep working — so with no local store the soft lockout it required is impossible rather than merely unnecessary, and its only screen, `SCR-SHELL-05`, was deleted with it. But the product still ships client versions, and no live row anywhere covers version skew. `Q65` records that; it blocks no screen and blocks the first breaking API change. Not re-instated, and no carrier is named here.* | — |
+| F4-36 | P0 | mixed | SCR-SHELL-01 · +non-UI: server-declared minimum client version… | T-FPLAT-033 |
+| F4-37 | P0 | mixed | SCR-M01-01 · +non-UI: held work discarded on user switch, after warning… | T-FPLAT-034 |
 
 ### docs/prd/foundations/F5-customer-link.md
 
@@ -765,7 +767,7 @@ Nothing below is renumbered.*
 | F5-27 | P0 | engine | engine | T-F5-007 |
 | F5-28 | P0 | policy | policy | T-F5-007 |
 | F5-29 | P0 | policy | policy | T-F5-007 |
-| F5-30 | P0 | mixed | SCR-M06-20 · +non-UI: customer page never shows other contacts' links, labels or open histor | T-F5-007 |
+| F5-30 | P0 | mixed | SCR-M06-20 · +non-UI: customer page never shows other contacts' links, labels or open… | T-F5-007 |
 | F5-31 | P0 | policy | policy | T-F5-007 |
 | F5-32 | P0 | screen | SCR-F5-01 | T-F5-001 |
 | F5-33 | P0 | screen | SCR-F5-01 | T-F5-001 |
@@ -774,22 +776,22 @@ Nothing below is renumbered.*
 | F5-36 | P0 | screen | SCR-F5-01 | T-F5-001 |
 | F5-37 | P0 | screen | SCR-F5-01 | T-F5-001 |
 | F5-38 | P0 | policy | policy | T-F5-009 |
-| F5-39 | P0 | mixed | SCR-F5-01 · +non-UI: document render retries once then notifies operator; web page, not PDF | T-F5-001 |
+| F5-39 | P0 | mixed | SCR-F5-01 · +non-UI: document render retries once then notifies operator; web page, not… | T-F5-001 |
 | F5-40 | P0 | policy | policy | T-F5-009 |
 | F5-41 | P0 | policy | policy | LAW |
 | F5-42 | P1 | screen | SCR-F5-01 | T-F5-001 |
 | F5-43 | P0 | mixed | SCR-F5-01 · +non-UI: no verbal agreement, rep note or operator act ever records acceptance | T-F5-001 |
-| F5-44 | P0 | mixed | SCR-F5-01 · +non-UI: OTP-at-accept ships default OFF; per-tenant enable; any threshold is t | T-F5-001 |
+| F5-44 | P0 | mixed | SCR-F5-01 · +non-UI: OTP-at-accept ships default OFF; per-tenant enable; any threshold is… | T-F5-001 |
 | F5-45 | P0 | policy | policy | T-F5-008 |
 | F5-46 | P0 | policy | policy | T-F5-008 |
-| F5-47 | P0 | mixed | SCR-F5-01 · +non-UI: server revalidates version currency, staleness, deal state and challen | T-F5-001 |
-| F5-48 | P0 | mixed | SCR-F5-01 · +non-UI: instant confirmation message auto-sends from connected transactional c | T-F5-001 |
+| F5-47 | P0 | mixed | SCR-F5-01 · +non-UI: server revalidates version currency, staleness, deal state and… | T-F5-001 |
+| F5-48 | P0 | mixed | SCR-F5-01 · +non-UI: instant confirmation message auto-sends from connected transactional… | T-F5-001 |
 | F5-49 | P0 | policy | policy | T-F5-008 |
 | F5-50 | P0 | policy | policy | LAW |
 | F5-51 | P0 | policy | policy | LAW |
 | F5-52 | P0 | screen | SCR-F5-01, SCR-F5-02, SCR-F5-03 | T-F5-001 |
-| F5-53 | P0 | mixed | SCR-F5-01, SCR-F5-02, SCR-F5-03 · +non-UI: question raises tenant-side notification and timeline entry; product n | T-F5-001 |
-| F5-54 | P0 | mixed | SCR-F5-01, SCR-F5-02, SCR-F5-03 · +non-UI: request queues as customer-requested callback with recorded, timestamp | T-F5-001 |
+| F5-53 | P0 | mixed | SCR-F5-01, SCR-F5-02, SCR-F5-03 · +non-UI: question raises tenant-side notification and timeline entry; product… | T-F5-001 |
+| F5-54 | P0 | mixed | SCR-F5-01, SCR-F5-02, SCR-F5-03 · +non-UI: request queues as customer-requested callback with recorded… | T-F5-001 |
 | F5-55 | P0 | screen | SCR-F5-01, SCR-F5-02, SCR-F5-03 | T-F5-001 |
 | F5-56 | P1 | policy | policy | LAW |
 | F5-57 | P0 | screen | SCR-F5-02 | T-F5-002 |
@@ -803,9 +805,9 @@ Nothing below is renumbered.*
 | F5-65 | P0 | policy | policy | LAW |
 | F5-66 | P0 | policy | policy | LAW |
 | F5-67 | P0 | policy | policy | LAW |
-| F5-68 | P0 | mixed | SCR-F5-02 · +non-UI: evening-before message with crew lead's name and number is composed an | T-F5-002 |
+| F5-68 | P0 | mixed | SCR-F5-02 · +non-UI: evening-before message with crew lead's name and number is composed… | T-F5-002 |
 | F5-69 | P0 | policy | policy | LAW |
-| F5-70 | P0 | mixed | SCR-F5-03 · +non-UI: permanent read-only solar file for life; respond scopes dead with phas | T-F5-003 |
+| F5-70 | P0 | mixed | SCR-F5-03 · +non-UI: permanent read-only solar file for life; respond scopes dead with… | T-F5-003 |
 | F5-71 | P0 | screen | SCR-F5-03 | T-F5-003 |
 | F5-72 | P0 | screen | SCR-F5-03 | T-F5-003 |
 | F5-73 | P0 | screen | SCR-F5-03 | T-F5-003 |
@@ -813,7 +815,7 @@ Nothing below is renumbered.*
 | F5-75 | P0 | policy | policy | T-F5-006 |
 | F5-76 | P0 | policy | policy | T-F5-006 |
 | F5-77 | P0 | policy | policy | T-F5-007 |
-| F5-78 | P0 | mixed | SCR-F5-04 · +non-UI: per-link view and respond ceilings, global public-route ceiling with b | T-F5-004 |
+| F5-78 | P0 | mixed | SCR-F5-04 · +non-UI: per-link view and respond ceilings, global public-route ceiling with… | T-F5-004 |
 | F5-79 | P0 | policy | policy | T-F5-007 |
 | F5-80 | P0 | policy | policy | T-F5-006 |
 | F5-81 | P0 | policy | policy | LAW |
@@ -838,11 +840,11 @@ Nothing below is renumbered.*
 | F6-12 | P1 | screen | SCR-SHELL-03 | T-SHELL-003 |
 | F6-13 | P0 | policy | policy | T-FPLAT-018 |
 | F6-14 | P1 | policy | policy | T-FPLAT-018 |
-| F6-15 | P2 | mixed | SCR-M01-11 · +non-UI: in-app record always lands; owner billing/compliance push never mutabl | T-FPLAT-018 |
+| F6-15 | P2 | mixed | SCR-M01-11 · +non-UI: in-app record always lands; owner billing/compliance push never… | T-FPLAT-018 |
 | F6-16 | P0 | policy | policy | T-FPLAT-018 |
 | F6-17 | P0 | screen | SCR-SHELL-03 | T-SHELL-003 |
 | ~~F6-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its two surviving halves were rehomed, not lost: the up-only read-state contract to `F6-07`, the never-blocking clause to `F4-27`. Kept as a struck row because this register never deletes rows. It carried `T-FPLAT-019`; the Task cell is normalised to `—` 2026-08-15 so that no struck row claims a build obligation or counts toward §4's tasked total — `T-FPLAT-019` itself is alive (it is the notification centre's data contract, and `F6-19` still carries it).* | — |
-| F6-19 | P2 | mixed | SCR-SHELL-03 · +non-UI: bounded retention horizon; underlying facts persist on record timeline | T-FPLAT-019, T-SHELL-003 |
+| F6-19 | P2 | mixed | SCR-SHELL-03 · +non-UI: bounded retention horizon; underlying facts persist on record… | T-FPLAT-019, T-SHELL-003 |
 | F6-20 | P0 | screen | SCR-SHELL-02 | T-SHELL-002 |
 | F6-21 | P0 | policy | policy | T-FPLAT-020 |
 | F6-22 | P0 | engine | engine | T-FPLAT-020 |
@@ -862,7 +864,7 @@ Nothing below is renumbered.*
 | F7-04 | P0 | policy | policy | LAW |
 | F7-05 | P0 | policy | policy | LAW |
 | F7-06 | P0 | policy | policy | LAW |
-| F7-07 | P0 | mixed | SCR-M01-18 · +non-UI: contrast re-verification engine derives compliant shades; operator app | T-FPLAT-022 |
+| F7-07 | P0 | mixed | SCR-M01-18 · +non-UI: contrast re-verification engine derives compliant shades; operator… | T-FPLAT-022 |
 | F7-08 | P0 | policy | policy | LAW |
 | F7-09 | P0 | policy | policy | LAW |
 | F7-10 | P0 | policy | policy | LAW |
@@ -871,13 +873,13 @@ Nothing below is renumbered.*
 | F7-13 | P0 | policy | policy | LAW |
 | F7-14 | P0 | policy | policy | LAW |
 | F7-15 | P0 | policy | policy | LAW |
-| F7-16 | P1 | mixed | SCR-M01-11 · +non-UI: sanctioned exception to no-borders law; per-user preference, never a t | T-FPLAT-024 |
+| F7-16 | P1 | mixed | SCR-M01-11 · +non-UI: sanctioned exception to no-borders law; per-user preference, never a… | T-FPLAT-024 |
 | F7-17 | P0 | policy | policy | LAW |
 | F7-18 | P0 | policy | policy | LAW |
 | F7-19 | P0 | policy | policy | LAW |
 | F7-20 | P1 | policy | policy | LAW |
 | F7-21 | P0 | policy | policy | LAW |
-| F7-22 | P0 | mixed | SCR-SHELL-01 · +non-UI: centre-verb resolution reads role presets (F2-01); composition rule fo | T-FPLAT-025, T-SHELL-001 |
+| F7-22 | P0 | mixed | SCR-SHELL-01 · +non-UI: centre-verb resolution reads role presets (F2-01); composition rule… | T-FPLAT-025, T-SHELL-001 |
 | F7-23 | P0 | policy | policy | LAW |
 | F7-24 | P0 | policy | policy | LAW |
 | F7-25 | P0 | policy | policy | LAW |
@@ -948,9 +950,9 @@ Nothing below is renumbered.*
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M01-01 | P0 | screen | SCR-M01-02 | T-M01-002 |
-| M01-02 | P0 | mixed | SCR-M01-01 · +non-UI: Google identity links onto same phone-identity account at first Google | T-M01-001 |
-| M01-03 | P0 | mixed | SCR-M01-01 · +non-UI: layered OTP delivery rail: SMS primary, auto fallback channel on failu | T-M01-001 |
-| M01-04 | P0 | mixed | SCR-M01-01 · +non-UI: rate limits: 3/15min and 8/day per phone, resend cooldown, 5-fail inva | T-M01-001 |
+| M01-02 | P0 | mixed | SCR-M01-01 · +non-UI: Google identity links onto same phone-identity account at first… | T-M01-001 |
+| M01-03 | P0 | mixed | SCR-M01-01 · +non-UI: layered OTP delivery rail: SMS primary, auto fallback channel on… | T-M01-001 |
+| M01-04 | P0 | mixed | SCR-M01-01 · +non-UI: rate limits: 3/15min and 8/day per phone, resend cooldown, 5-fail… | T-M01-001 |
 | M01-05 | P0 | policy | policy | T-M01-025 |
 | M01-06 | P1 | policy | policy | T-M01-025 |
 | M01-07 | P0 | policy | policy | T-M01-025 |
@@ -959,11 +961,11 @@ Nothing below is renumbered.*
 | M01-10 | P0 | policy | policy | T-M01-025 |
 | M01-11 | P0 | policy | policy | LAW |
 | M01-12 | P0 | screen | SCR-M01-07 | T-M01-007 |
-| M01-13 | P0 | mixed | SCR-M01-08 · +non-UI: OTP verification atomically creates user plus tenant membership plus r | T-M01-008 |
+| M01-13 | P0 | mixed | SCR-M01-08 · +non-UI: OTP verification atomically creates user plus tenant membership plus… | T-M01-008 |
 | M01-14 | P0 | screen | SCR-M01-09 | T-M01-009 |
 | M01-15 | P1 | screen | SCR-M01-10 | T-M01-010 |
 | M01-16 | P1 | screen | SCR-SHELL-01 | T-SHELL-001 |
-| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real assign | T-M01-025, T-SHELL-001 |
+| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-025, T-SHELL-001 |
 | M01-18 | P0 | policy | policy | T-M01-025 |
 | M01-19 | P0 | screen | SCR-M01-12 | T-M01-012 |
 | M01-20 | P0 | screen | SCR-M01-13 | T-M01-013 |
@@ -980,33 +982,33 @@ Nothing below is renumbered.*
 | M01-31 | P0 | mixed | SCR-M01-05 · +non-UI: single write-point for identity facts; proposal, agent, link, invoice  | T-M01-005 |
 | M01-32 | P0 | mixed | SCR-M01-15 · +non-UI: resolution order: tenant override, then own item, then platform item | T-M01-015 |
 | M01-33 | P0 | policy | policy | T-M01-027 |
-| M01-34 | P0 | mixed | SCR-M01-15 · +non-UI: typed per-kind specs; certifications scheme-keyed from pack declaratio | T-M01-015 |
-| M01-35 | P0 | mixed | SCR-M01-15 · +non-UI: three-value provenance enum: verified-datasheet, tenant-provided, repr | T-M01-015 |
+| M01-34 | P0 | mixed | SCR-M01-15 · +non-UI: typed per-kind specs; certifications scheme-keyed from pack… | T-M01-015 |
+| M01-35 | P0 | mixed | SCR-M01-15 · +non-UI: three-value provenance enum: verified-datasheet, tenant-provided… | T-M01-015 |
 | M01-36 | P0 | mixed | SCR-M01-16 · +non-UI: tenant SKU is full item, private to tenant, no platform approval | T-M01-016 |
 | M01-37 | P0 | mixed | SCR-M01-15 · +non-UI: sparse override: unset fields fall through; one override per platform  | T-M01-015 |
-| M01-38 | P0 | mixed | SCR-M01-15 · +non-UI: one search over both tiers, preferred-first ranking, shared with the D | T-M01-015 |
+| M01-38 | P0 | mixed | SCR-M01-15 · +non-UI: one search over both tiers, preferred-first ranking, shared with the… | T-M01-015 |
 | M01-39 | P0 | screen | SCR-M01-16 | T-M01-016 |
-| M01-40 | P0 | mixed | SCR-M01-16 · +non-UI: PDF spec-extraction engine; output never committed without review; fai | T-M01-016 |
-| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides, unknow | T-M01-017 |
+| M01-40 | P0 | mixed | SCR-M01-16 · +non-UI: PDF spec-extraction engine; output never committed without review… | T-M01-016 |
+| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017 |
 | M01-42 | P0 | policy | policy | T-M01-027 |
-| M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release; publ | T-M01-015 |
+| M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release… | T-M01-015 |
 | M01-44 | P0 | policy | policy | T-M01-027 |
 | M01-45 | P1 | policy | policy | T-M01-027 |
 | M01-46 | P0 | policy | policy | LAW |
 | ~~M01-47~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It held the catalog and price book read-only on the device; with no on-device store the rule has no subject, and a read cache is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 — "The product does not read from a cache"). No live row replaces it and none is needed: the catalog is read from the server like every other read, and its own laws (`M01-46`, `M01-48`) are untouched. `docs/tasks/M01-onboarding.md` records the same removal under `T-M01-027`, which is alive.* | — |
-| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin ride | T-M01-015 |
+| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015 |
 | M01-49 | P0 | policy | policy | LAW |
-| M01-50 | P0 | mixed | SCR-M01-18 · +non-UI: computational contrast re-verify on palette save; compliant shades der | T-M01-018 |
+| M01-50 | P0 | mixed | SCR-M01-18 · +non-UI: computational contrast re-verify on palette save; compliant shades… | T-M01-018 |
 | M01-51 | P0 | screen | SCR-M01-19 | T-M01-019 |
 | M01-52 | P1 | screen | SCR-M01-19 | T-M01-019 |
 | M01-53 | P0 | policy | policy | T-M01-026 |
-| M01-54 | P0 | mixed | SCR-M01-20 · +non-UI: percentages must sum exactly 100.00; two seeded standard templates; ed | T-M01-020 |
-| M01-55 | P0 | mixed | SCR-M01-21 · +non-UI: per-language tenant content class; sends via connected transactional c | T-M01-021 |
+| M01-54 | P0 | mixed | SCR-M01-20 · +non-UI: percentages must sum exactly 100.00; two seeded standard templates… | T-M01-020 |
+| M01-55 | P0 | mixed | SCR-M01-21 · +non-UI: per-language tenant content class; sends via connected transactional… | T-M01-021 |
 | M01-56 | P0 | policy | policy | LAW |
 | M01-57 | P0 | screen | SCR-M07-05 | T-M07-005 |
 | M01-58 | P0 | screen | SCR-M01-22 | T-M01-022 |
-| M01-59 | P1 | mixed | SCR-M01-23 · +non-UI: holiday additions only narrow calling availability; per-user UI langua | T-M01-023 |
-| M01-60 | P0 | mixed | SCR-M01-24 · +non-UI: write-only credential storage, scheduled probes, every decrypt audit-l | T-M01-024 |
+| M01-59 | P1 | mixed | SCR-M01-23 · +non-UI: holiday additions only narrow calling availability; per-user UI… | T-M01-023 |
+| M01-60 | P0 | mixed | SCR-M01-24 · +non-UI: write-only credential storage, scheduled probes, every decrypt… | T-M01-024 |
 
 ### docs/prd/modules/M02-crm-and-leads.md
 
@@ -1023,7 +1025,7 @@ Nothing below is renumbered.*
 | M02-09 | P0 | mixed | SCR-M02-01, SCR-M02-05, SCR-M02-04 · +non-UI: exactly three choices, no silent default; dismissing creates nothing | T-M02-008 |
 | M02-10 | P0 | policy | policy | T-M02-008 |
 | M02-11 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: appends enquiry activity, notifies owner, changes no stage or owner | T-M02-008 |
-| M02-12 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: mandatory reason audited on both timelines; records cross-linked for m | T-M02-008 |
+| M02-12 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: mandatory reason audited on both timelines; records cross-linked for… | T-M02-008 |
 | M02-13 | P0 | mixed | SCR-M02-02, SCR-M02-03 · +non-UI: closed v1 source enum; source set by path, immutable | T-M02-009 |
 | M02-14 | P0 | policy | policy | T-M02-009 |
 | M02-15 | P0 | policy | policy | T-M02-010 |
@@ -1032,7 +1034,7 @@ Nothing below is renumbered.*
 | M02-18 | P0 | screen | SCR-M02-05 | T-M02-005 |
 | M02-19 | P0 | screen | SCR-M02-05 | T-M02-005 |
 | M02-20 | P0 | mixed | SCR-M02-05 · +non-UI: skip is default; create-anyway needs audited reason per row | T-M02-005 |
-| M02-21 | P0 | mixed | SCR-M02-05 · +non-UI: async background job; landed rows never rolled back on partial failure | T-M02-005 |
+| M02-21 | P0 | mixed | SCR-M02-05 · +non-UI: async background job; landed rows never rolled back on partial… | T-M02-005 |
 | ~~M02-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). "Import is online-only" existed only to place lead import on the offline boundary, and there is no boundary left to place it on — the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble), so the statement is true of everything and worth stating of nothing. Its citation of `F4-09` (the online-only capability table) points at a deleted row. The import behaviour itself is untouched: `M02-18`–`M02-21` still own mapping, preview, duplicate handling and the background job, and `SCR-M02-05`'s `importing-progress` keeps the server-side continuation of a connection drop mid-import.* | — |
 | M02-23 | P0 | screen | SCR-M02-02 | T-M02-002 |
 | M02-24 | P0 | screen | SCR-M02-02 | T-M02-002 |
@@ -1044,11 +1046,11 @@ Nothing below is renumbered.*
 | M02-30 | P0 | policy | policy | T-M02-011 |
 | M02-31 | P0 | policy | policy | T-M02-011 |
 | M02-32 | P0 | screen | SCR-M02-04 | T-M02-004 |
-| M02-33 | P0 | mixed | SCR-M02-04 · +non-UI: connected WhatsApp/SMS transactional send with honest delivery states; | T-M02-013 |
-| M02-34 | P0 | mixed | SCR-M02-04 · +non-UI: contact numbers participate in dedupe; exactly one primary; tenant-ext | T-M02-004 |
+| M02-33 | P0 | mixed | SCR-M02-04 · +non-UI: connected WhatsApp/SMS transactional send with honest delivery… | T-M02-013 |
+| M02-34 | P0 | mixed | SCR-M02-04 · +non-UI: contact numbers participate in dedupe; exactly one primary… | T-M02-004 |
 | M02-35 | P0 | mixed | SCR-M02-04 · +non-UI: append-only law; every module writes; nothing edits or deletes | T-M02-012 |
 | M02-36 | P0 | policy | policy | T-M02-012 |
-| M02-37 | P0 | mixed | SCR-M02-04 · +non-UI: M07 gate reads one row per dial; stop-calling irreversible; M03 consen | T-M02-007 |
+| M02-37 | P0 | mixed | SCR-M02-04 · +non-UI: M07 gate reads one row per dial; stop-calling irreversible; M03… | T-M02-007 |
 | M02-38 | P1 | policy | policy | LAW |
 | M02-39 | P0 | screen | SCR-M02-04 | T-M02-004 |
 | M02-40 | P0 | screen | SCR-M02-03 | T-M02-003 |
@@ -1058,12 +1060,12 @@ Nothing below is renumbered.*
 | M02-44 | P0 | policy | policy | T-M02-010 |
 | M02-45 | P1 | context | context → ['M02-42', 'M02-34'] | realized-by: M02-42, M02-34 |
 | M02-46 | P0 | mixed | SCR-M02-04 · +non-UI: creates the visit object M04 owns from that moment | T-M02-014 |
-| M02-47 | P0 | mixed | SCR-M02-04 · +non-UI: transactional-channel auto-send with honest delivery; copy-paste fallb | T-M02-013 |
+| M02-47 | P0 | mixed | SCR-M02-04 · +non-UI: transactional-channel auto-send with honest delivery; copy-paste… | T-M02-013 |
 | M02-48 | P1 | mixed | SCR-M02-04 · +non-UI: exactly one reminder per visit; no surface may generate a second | T-M02-013 |
 | M02-49 | P0 | policy | policy | T-M02-015 |
-| M02-50 | P0 | mixed | SCR-M02-02 · +non-UI: 24h-unassigned timer escalates to owner via notification; state unchan | T-M02-015 |
+| M02-50 | P0 | mixed | SCR-M02-02 · +non-UI: 24h-unassigned timer escalates to owner via notification; state… | T-M02-015 |
 | M02-51 | P0 | mixed | SCR-M02-04 · +non-UI: hidden from My Day; 09:00 wake creates follow-up task | T-M02-015 |
-| M02-52 | P0 | mixed | SCR-M02-03 · +non-UI: nightly sweep flags after thirty inactive days; any activity reactivat | T-M02-015 |
+| M02-52 | P0 | mixed | SCR-M02-03 · +non-UI: nightly sweep flags after thirty inactive days; any activity… | T-M02-015 |
 | M02-53 | P0 | policy | policy | T-M02-015 |
 | M02-54 | P0 | policy | policy | T-M02-015 |
 | M02-55 | P0 | policy | policy | T-M02-015 |
@@ -1075,7 +1077,7 @@ Nothing below is renumbered.*
 | M02-61 | P0 | policy | policy | T-M02-016 |
 | M02-62 | P0 | policy | policy | T-M02-016 |
 | M02-63 | P0 | mixed | SCR-M02-06 · +non-UI: both records must be in actor's visibility scope; the merge completes on the server; no undo *(2026-08-07: "online-first" replaced — the three-term connectivity vocabulary was `F4-01`'s and was deleted with the offline/sync capability, `Q61`; the behaviour is unchanged)* | T-M02-006 |
-| M02-64 | P0 | mixed | SCR-M01-22 · +non-UI: toggle governs new capture only; existing leads untouched; manual alwa | T-M02-017 |
+| M02-64 | P0 | mixed | SCR-M01-22 · +non-UI: toggle governs new capture only; existing leads untouched; manual… | T-M02-017 |
 | M02-65 | P0 | screen | SCR-M01-22 | T-M02-017 |
 | M02-66 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: apply-time collision flags both records and cross-links them (`M02-12`); nothing ever merged automatically | T-M02-008 |
 | M02-67 | P0 | mixed | SCR-M02-02 · +non-UI: assign and mark-junk are server-completed; failure returns the lead to the queue naming the reason | T-M02-002 |
@@ -1091,7 +1093,7 @@ Nothing below is renumbered.*
 | M03-05 | P0 | policy | policy | LAW |
 | M03-06 | P0 | policy | policy | LAW |
 | M03-07 | P0 | policy | policy | LAW |
-| M03-08 | P0 | mixed | SCR-M03-01, SCR-M03-05 · +non-UI: a campaign that sent anything is archived, never deleted (compliance r | T-M03-001 |
+| M03-08 | P0 | mixed | SCR-M03-01, SCR-M03-05 · +non-UI: a campaign that sent anything is archived, never deleted (compliance… | T-M03-001 |
 | M03-09 | P0 | policy | policy | T-M03-011 |
 | M03-10 | P0 | mixed | SCR-M03-02 · +non-UI: aggregate-only whole-base scope; no individual lead-file read through  | T-M03-002 |
 | M03-11 | P0 | screen | SCR-M03-02, SCR-M03-04 | T-M03-002 |
@@ -1102,40 +1104,40 @@ Nothing below is renumbered.*
 | M03-16 | P2 | context | context → registers/enhancements.md (REC, not v1 scope) | realized-by: docs/prd/registers/enhancements.md (REC, not v1 scope) |
 | M03-17 | P2 | context | context → registers/enhancements.md (REC, not v1 scope) | realized-by: docs/prd/registers/enhancements.md (REC, not v1 scope) |
 | M03-18 | P0 | policy | policy | LAW |
-| M03-19 | P0 | mixed | SCR-M03-07 · +non-UI: connection state machine; forms without required phone field refused c | T-M03-007 |
+| M03-19 | P0 | mixed | SCR-M03-07 · +non-UI: connection state machine; forms without required phone field refused… | T-M03-007 |
 | M03-20 | P0 | integration | integration | T-M03-014 |
 | M03-21 | P0 | integration | integration | T-M03-015 |
 | M03-22 | P0 | integration | integration | T-M03-016 |
 | M03-23 | P0 | integration | integration | T-M03-017 |
 | M03-24 | P0 | screen | SCR-M03-10 | T-M03-010 |
 | M03-25 | P0 | context | context → modules/M07 (M07-47, M07-48, M07-27) and M02-14; appears on Channel Health | realized-by: docs/prd/modules/M07-sales-execution.md (M07-47, M07-48, M07-27) and M02-14; appears on Channel Health (SCR-M03-08) |
-| M03-26 | P0 | mixed | SCR-M03-06 · +non-UI: per-channel reporting-capability declaration drives which columns exis | T-M03-006 |
+| M03-26 | P0 | mixed | SCR-M03-06 · +non-UI: per-channel reporting-capability declaration drives which columns… | T-M03-006 |
 | M03-27 | P0 | mixed | SCR-M03-07 · +non-UI: disconnect never deletes captures, badges or completed reports | T-M03-007 |
-| M03-28 | P0 | mixed | SCR-M03-05, SCR-M03-07 · +non-UI: break detection pauses sending campaigns, notifies owner; unsent messa | T-M03-007 |
+| M03-28 | P0 | mixed | SCR-M03-05, SCR-M03-07 · +non-UI: break detection pauses sending campaigns, notifies owner; unsent… | T-M03-007 |
 | M03-29 | P1 | screen | SCR-M03-08 | T-M03-008 |
 | M03-30 | P0 | policy | policy | T-M03-012 |
 | M03-31 | P0 | policy | policy | T-M03-012 |
 | M03-32 | P0 | policy | policy | T-M03-012 |
 | M03-33 | P0 | policy | policy | LAW |
-| M03-34 | P0 | mixed | SCR-M02-04 · +non-UI: consent ledger auto-recorded per contact per channel class; import dec | T-M03-013 |
+| M03-34 | P0 | mixed | SCR-M02-04 · +non-UI: consent ledger auto-recorded per contact per channel class; import… | T-M03-013 |
 | M03-35 | P1 | engine | engine | T-M03-018 |
 | M03-36 | P0 | mixed | SCR-M03-08 · +non-UI: capture-failure log records what arrived and why unusable | T-M03-008 |
 | M03-37 | P2 | context | context → registers/enhancements.md (REC); modules/M07 would own implementation | realized-by: docs/prd/registers/enhancements.md (REC); modules/M07 would own implementation |
-| M03-38 | P0 | mixed | SCR-M03-03 · +non-UI: never machine-translated or auto-substituted; missing-language gap sur | T-M03-003 |
-| M03-39 | P0 | mixed | SCR-M03-09 · +non-UI: only approved template schedulable; third-party approval clock gates a | T-M03-009 |
+| M03-38 | P0 | mixed | SCR-M03-03 · +non-UI: never machine-translated or auto-substituted; missing-language gap… | T-M03-003 |
+| M03-39 | P0 | mixed | SCR-M03-09 · +non-UI: only approved template schedulable; third-party approval clock gates… | T-M03-009 |
 | M03-40 | P0 | policy | policy | T-M03-009 |
-| M03-41 | P0 | mixed | SCR-M03-03 · +non-UI: send-time token resolution: fallback or exclude recipient, never broke | T-M03-003 |
+| M03-41 | P0 | mixed | SCR-M03-03 · +non-UI: send-time token resolution: fallback or exclude recipient, never… | T-M03-003 |
 | M03-42 | P1 | policy | policy | LAW |
 | M03-43 | P2 | context | context → registers/enhancements.md (REC; Q6 disclosure floor an input) | realized-by: docs/prd/registers/enhancements.md (REC; Q6 disclosure floor an input) |
 | M03-44 | P0 | screen | SCR-M03-04 | T-M03-004 |
-| M03-45 | P0 | mixed | SCR-M03-04, SCR-M03-05 · +non-UI: 80% pre-warn; overage needs approve-campaign-spend grant; mid-send exh | T-M03-004 |
+| M03-45 | P0 | mixed | SCR-M03-04, SCR-M03-05 · +non-UI: 80% pre-warn; overage needs approve-campaign-spend grant; mid-send… | T-M03-004 |
 | M03-46 | P0 | policy | policy | T-M03-013 |
 | M03-47 | P0 | policy | policy | T-M03-013 |
 | M03-48 | P0 | policy | policy | T-M03-013 |
 | M03-49 | P0 | mixed | SCR-M03-06 · +non-UI: report counts identical to counts the usage ledger bills from | T-M03-006 |
-| M03-50 | P1 | mixed | SCR-M03-05 · +non-UI: channel throughput/daily ceilings respected; limits attributed to thei | T-M03-005 |
+| M03-50 | P1 | mixed | SCR-M03-05 · +non-UI: channel throughput/daily ceilings respected; limits attributed to… | T-M03-005 |
 | M03-51 | P0 | policy | policy | LAW |
-| M03-52 | P1 | mixed | SCR-M03-08 · +non-UI: draft rate-card values never treated launch-final; metered selling wai | T-M03-008 |
+| M03-52 | P1 | mixed | SCR-M03-08 · +non-UI: draft rate-card values never treated launch-final; metered selling… | T-M03-008 |
 | M03-53 | P0 | mixed | SCR-M03-06 · +non-UI: no revenue, generated-deal or causation claim anywhere | T-M03-006 |
 | M03-54 | P0 | policy | policy | LAW |
 | M03-55 | P0 | screen | SCR-M03-06 | T-M03-006 |
@@ -1203,7 +1205,7 @@ Nothing below is renumbered.*
 | M04-54 | P0 | mixed | SCR-M04-07 · +non-UI: closed tag and source vocabularies; pin to obstruction | T-M04-007 |
 | M04-55 | P0 | policy | policy | T-M04-017 |
 | M04-56 | P0 | policy | policy | T-M04-017 |
-| M04-57 | P0 | mixed | SCR-M04-10 · +non-UI: versioned-append immutability; states draft, in-progress, submitted, s | T-M04-015 |
+| M04-57 | P0 | mixed | SCR-M04-10 · +non-UI: versioned-append immutability; states draft, in-progress, submitted… | T-M04-015 |
 | M04-58 | P0 | mixed | SCR-M04-06 · +non-UI: exactly one message: auto via connected channel, else composed | T-M04-006 |
 | M04-59 | P0 | mixed | SCR-M04-06 · +non-UI: correction propagates to the site record | T-M04-006 |
 | M04-60 | P0 | policy | policy | T-M04-015 |
@@ -1219,7 +1221,7 @@ Nothing below is renumbered.*
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M05-01 | P0 | policy | policy | LAW |
-| M05-02 | P0 | mixed | SCR-MS-03 · +non-UI: internal step identifiers stay stable across the fold; no step-5 anywh | T-MS-360 |
+| M05-02 | P0 | mixed | SCR-MS-03 · +non-UI: internal step identifiers stay stable across the fold; no step-5… | T-MS-360 |
 | M05-03 | P0 | screen | SCR-MS-03 | T-MS-360 |
 | M05-04 | P0 | screen | SCR-MS-03 | T-MS-360 |
 | M05-05 | P0 | mixed | SCR-MS-03 · +non-UI: electrical hard gate law; never normalised with M06 free navigation | T-MS-360 |
@@ -1230,17 +1232,17 @@ Nothing below is renumbered.*
 | M05-10 | P0 | policy | policy | LAW |
 | M05-11 | P0 | policy | policy | LAW |
 | M05-12 | P0 | policy | policy | LAW |
-| M05-13 | P0 | mixed | SCR-MS-03 · +non-UI: draft proposals blocked from sending until review; nothing auto-applie | T-MS-117 |
+| M05-13 | P0 | mixed | SCR-MS-03 · +non-UI: draft proposals blocked from sending until review; nothing… | T-MS-117 |
 | M05-14 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | M05-15 | P0 | screen | SCR-MS-04 | T-MS-101 |
-| M05-16 | P0 | mixed | SCR-MS-04 · +non-UI: imagery tile pinned at capture, never changes underneath; failure neve | T-MS-101 |
-| M05-17 | P0 | mixed | SCR-MS-04 · +non-UI: energy source-of-record ladder (PVGIS SARAH3→ERA5); ±10% fallback, nev | T-MS-101 |
-| M05-18 | P0 | mixed | SCR-MS-04 · +non-UI: async building-insights-class provider; enhancement, never a dependenc | T-MS-101 |
+| M05-16 | P0 | mixed | SCR-MS-04 · +non-UI: imagery tile pinned at capture, never changes underneath; failure… | T-MS-101 |
+| M05-17 | P0 | mixed | SCR-MS-04 · +non-UI: energy source-of-record ladder (PVGIS SARAH3→ERA5); ±10% fallback… | T-MS-101 |
+| M05-18 | P0 | mixed | SCR-MS-04 · +non-UI: async building-insights-class provider; enhancement, never a… | T-MS-101 |
 | M05-19 | P0 | mixed | SCR-MS-04 · +non-UI: relocation >25m wipes all traced geometry; undoable | T-MS-101 |
-| M05-20 | P0 | mixed | SCR-MS-04 · +non-UI: soft cap never blocks; warning travels to readiness and compliance che | T-MS-101 |
+| M05-20 | P0 | mixed | SCR-MS-04 · +non-UI: soft cap never blocks; warning travels to readiness and compliance… | T-MS-101 |
 | M05-21 | P0 | screen | SCR-MS-01 | T-MS-363 |
 | M05-22 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| M05-23 | P0 | mixed | SCR-MS-05 · +non-UI: consumes validated M04 artifact only, never raw detector; provenance s | T-MS-102 |
+| M05-23 | P0 | mixed | SCR-MS-05 · +non-UI: consumes validated M04 artifact only, never raw detector; provenance… | T-MS-102 |
 | M05-24 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-25 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-26 | P0 | mixed | SCR-MS-05 · +non-UI: scale correction plus expert north offset rescales all geometry | T-MS-102 |
@@ -1252,27 +1254,27 @@ Nothing below is renumbered.*
 | M05-32 | P0 | screen | SCR-MS-06 | T-MS-103 |
 | M05-33 | P0 | screen | SCR-MS-06 | T-MS-103 |
 | M05-34 | P0 | screen | SCR-MS-06 | T-MS-103 |
-| M05-35 | P0 | mixed | SCR-MS-06 · +non-UI: height drives shadow/bridging maths; bridging flagged for engineer con | T-MS-103 |
+| M05-35 | P0 | mixed | SCR-MS-06 · +non-UI: height drives shadow/bridging maths; bridging flagged for engineer… | T-MS-103 |
 | M05-36 | P0 | engine | engine | T-MS-114 |
 | M05-37 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | M05-38 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | M05-39 | P0 | mixed | SCR-MS-07 · +non-UI: auto computes maximum fit after setbacks and obstructions | T-MS-201 |
-| M05-40 | P0 | mixed | SCR-MS-07 · +non-UI: recommendation and live DC/AC ratio computation with census thresholds | T-MS-201 |
-| M05-41 | P0 | mixed | SCR-MS-07 · +non-UI: apply is one atomic undoable action; basis honesty stated before colum | T-MS-201 |
+| M05-40 | P0 | mixed | SCR-MS-07 · +non-UI: recommendation and live DC/AC ratio computation with census… | T-MS-201 |
+| M05-41 | P0 | mixed | SCR-MS-07 · +non-UI: apply is one atomic undoable action; basis honesty stated before… | T-MS-201 |
 | M05-42 | P0 | engine | engine | T-MS-203 |
-| M05-43 | P0 | mixed | SCR-MS-07 · +non-UI: sent proposals keep rate version; archived items never break reference | T-MS-201 |
+| M05-43 | P0 | mixed | SCR-MS-07 · +non-UI: sent proposals keep rate version; archived items never break… | T-MS-201 |
 | M05-44 | P0 | screen | SCR-MS-08 | T-MS-205 |
 | M05-45 | P0 | screen | SCR-MS-08 | T-MS-205 |
 | M05-46 | P0 | screen | SCR-MS-08 | T-MS-205 |
-| M05-47 | P0 | mixed | SCR-MS-08 · +non-UI: parametric member/steel model computation; disclaimer law, never a saf | T-MS-205 |
-| M05-48 | P0 | mixed | SCR-MS-08 · +non-UI: auto-string algorithm; unstrung-over-illegal rule; empty voltage windo | T-MS-205 |
+| M05-47 | P0 | mixed | SCR-MS-08 · +non-UI: parametric member/steel model computation; disclaimer law, never a… | T-MS-205 |
+| M05-48 | P0 | mixed | SCR-MS-08 · +non-UI: auto-string algorithm; unstrung-over-illegal rule; empty voltage… | T-MS-205 |
 | M05-49 | P0 | mixed | SCR-MS-08 · +non-UI: invalid electrical blocks next step; hard gate expressly preserved | T-MS-205 |
-| M05-50 | P0 | mixed | SCR-MS-08 · +non-UI: no subscription/plan-capacity limit in layout; kW ceiling only at M05- | T-MS-205 |
+| M05-50 | P0 | mixed | SCR-MS-08 · +non-UI: no subscription/plan-capacity limit in layout; kW ceiling only at… | T-MS-205 |
 | M05-51 | P0 | screen | SCR-MS-09 | T-MS-206 |
-| M05-52 | P0 | mixed | SCR-MS-09 · +non-UI: kWh/m² carries source marker; access numbers deliberately unmarked; ne | T-MS-206 |
+| M05-52 | P0 | mixed | SCR-MS-09 · +non-UI: kWh/m² carries source marker; access numbers deliberately unmarked… | T-MS-206 |
 | M05-53 | P0 | screen | SCR-MS-09 | T-MS-206 |
 | M05-54 | P0 | mixed | SCR-MS-09 · +non-UI: provenance-line labeling law; engineer-validation caveat travels with  | T-MS-206 |
-| M05-55 | P0 | mixed | SCR-F5-05 · +non-UI: no separate customer 3D URL, ships inside proposal link; data-ramp cha | T-F5-005 |
+| M05-55 | P0 | mixed | SCR-F5-05 · +non-UI: no separate customer 3D URL, ships inside proposal link; data-ramp… | T-F5-005 |
 | M05-56 | P2 | engine | engine | LAW |
 | M05-57 | P0 | screen | SCR-MS-10 | T-MS-260 |
 | M05-58 | P0 | screen | SCR-MS-10 | T-MS-260 |
@@ -1286,12 +1288,12 @@ Nothing below is renumbered.*
 | M05-66 | P0 | mixed | SCR-MS-11 · +non-UI: human two-state record only; app never computes structural adequacy | T-MS-268 |
 | M05-67 | P0 | mixed | SCR-MS-11 · +non-UI: exports online-only, fail fast, never queued | T-MS-268 |
 | M05-68 | P0 | screen | SCR-MS-12 | T-MS-301 |
-| M05-69 | P0 | mixed | SCR-MS-12 · +non-UI: no discount-approval flow; below-cost warns; payable≤0 blocks at M06 G | T-MS-301 |
+| M05-69 | P0 | mixed | SCR-MS-12 · +non-UI: no discount-approval flow; below-cost warns; payable≤0 blocks at M06… | T-MS-301 |
 | M05-70 | P0 | engine | engine | T-MS-304 |
 | M05-71 | P0 | screen | SCR-MS-12 | T-MS-301 |
-| M05-72 | P0 | mixed | SCR-MS-12 · +non-UI: override takes measured provenance; stale-field tracking; versioned ra | T-MS-301 |
+| M05-72 | P0 | mixed | SCR-MS-12 · +non-UI: override takes measured provenance; stale-field tracking; versioned… | T-MS-301 |
 | M05-73 | P0 | screen | SCR-MS-12 | T-MS-301 |
-| M05-74 | P0 | mixed | SCR-MS-12 · +non-UI: read+export always work regardless of billing state; checklist content | T-MS-301 |
+| M05-74 | P0 | mixed | SCR-MS-12 · +non-UI: read+export always work regardless of billing state; checklist… | T-MS-301 |
 | M05-75 | P0 | screen | SCR-MS-13 | T-MS-310 |
 | M05-76 | P0 | screen | SCR-MS-17 | T-MS-318 |
 | M05-77 | P0 | policy | policy | LAW |
@@ -1302,15 +1304,15 @@ Nothing below is renumbered.*
 | M05-82 | P0 | policy | policy | LAW |
 | M05-83 | P0 | screen | SCR-MS-15 | T-MS-312 |
 | M05-84 | P0 | screen | SCR-MS-16 | T-MS-313 |
-| M05-85 | P0 | mixed | SCR-MS-16 · +non-UI: append-only sign-off pinned to version+fingerprint; edit drops approva | T-MS-313 |
+| M05-85 | P0 | mixed | SCR-MS-16 · +non-UI: append-only sign-off pinned to version+fingerprint; edit drops… | T-MS-313 |
 | M05-86 | P0 | mixed | SCR-MS-16 · +non-UI: ≥1 pinned comment required; customer never sees returned design | T-MS-313 |
 | M05-87 | P0 | policy | policy | LAW |
 | M05-88 | P0 | policy | policy | LAW |
-| M05-89 | P0 | mixed | SCR-MS-08 · +non-UI: no census tool lost; per-panel remove-map inside tables, scoped not de | T-MS-116 |
+| M05-89 | P0 | mixed | SCR-MS-08 · +non-UI: no census tool lost; per-panel remove-map inside tables, scoped not… | T-MS-116 |
 | M05-90 | P0 | engine | engine | T-MS-116 |
-| M05-91 | P1 | mixed | SCR-MS-08 · +non-UI: GPU/CPU shading equivalence ±2% pin; server-side simulation with stamp | T-MS-118 |
-| M05-92 | P2 | mixed | SCR-MS-08, SCR-MS-09 · +non-UI: tracker backtracking solver; GLO-30/SRTM DEM import; flat default with | T-MS-119 |
-| M05-93 | P1 | mixed | SCR-MS-11 · +non-UI: inverter-block tier extends combiners; MV a labelled assumption; recon | T-MS-120 |
+| M05-91 | P1 | mixed | SCR-MS-08 · +non-UI: GPU/CPU shading equivalence ±2% pin; server-side simulation with… | T-MS-118 |
+| M05-92 | P2 | mixed | SCR-MS-08, SCR-MS-09 · +non-UI: tracker backtracking solver; GLO-30/SRTM DEM import; flat default… | T-MS-119 |
+| M05-93 | P1 | mixed | SCR-MS-11 · +non-UI: inverter-block tier extends combiners; MV a labelled assumption… | T-MS-120 |
 | M05-94 | P0 | policy | policy | LAW |
 | M05-95 | P1 | policy | policy | LAW |
 
@@ -1320,13 +1322,13 @@ Nothing below is renumbered.*
 |---|---|---|---|---|
 | MS1-01 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-02 | P0 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-03 | P0 | mixed | SCR-MS-04 · +non-UI: region/utility/tariff content is F1 pack data; tariff precedence per-u | T-MS-101 |
+| MS1-03 | P0 | mixed | SCR-MS-04 · +non-UI: region/utility/tariff content is F1 pack data; tariff precedence… | T-MS-101 |
 | MS1-04 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-05 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-06 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-07 | P1 | policy | policy | LAW |
 | MS1-08 | P1 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-09 | P0 | mixed | SCR-MS-04 · +non-UI: Q28 law: only capacity limit is plan design-kW ceiling at Save/Generat | T-MS-101 |
+| MS1-09 | P0 | mixed | SCR-MS-04 · +non-UI: Q28 law: only capacity limit is plan design-kW ceiling at… | T-MS-101 |
 | MS1-10 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-11 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-12 | P0 | screen | SCR-MS-04 | T-MS-101 |
@@ -1335,18 +1337,18 @@ Nothing below is renumbered.*
 | MS1-15 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-16 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-17 | P0 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-18 | P0 | mixed | SCR-MS-04 · +non-UI: stores address/latLng/confirmed plus built-in irradiance with ±10% pro | T-MS-101 |
+| MS1-18 | P0 | mixed | SCR-MS-04 · +non-UI: stores address/latLng/confirmed plus built-in irradiance with ±10%… | T-MS-101 |
 | MS1-19 | P0 | policy | policy | LAW |
 | MS1-20 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-21 | P0 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-22 | P0 | mixed | SCR-MS-04 · +non-UI: decoupled post-confirm fetches; pin-move discard guard; writes never c | T-MS-101 |
+| MS1-22 | P0 | mixed | SCR-MS-04 · +non-UI: decoupled post-confirm fetches; pin-move discard guard; writes never… | T-MS-101 |
 | MS1-23 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-24 | P0 | integration | integration | T-MS-106 |
 | MS1-25 | P0 | engine | engine | T-MS-105 |
 | MS1-26 | P0 | engine | engine | T-MS-105 |
 | MS1-27 | P0 | engine | engine | T-MS-105 |
 | MS1-28 | P0 | engine | engine | T-MS-104 |
-| MS1-29 | P0 | mixed | SCR-MS-05 · +non-UI: gesture contract: cursor-anchored wheel, clamps, ≥3 px drag threshold, | T-MS-102 |
+| MS1-29 | P0 | mixed | SCR-MS-05 · +non-UI: gesture contract: cursor-anchored wheel, clamps, ≥3 px drag… | T-MS-102 |
 | MS1-30 | P0 | mixed | SCR-MS-05 · +non-UI: scale bar computed from same px/m as hit-testing — can never disagree  | T-MS-102 |
 | MS1-31 | P0 | engine | engine | T-MS-104 |
 
@@ -1359,10 +1361,10 @@ Nothing below is renumbered.*
 | MS2-03 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-04 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-05 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| MS2-06 | P0 | mixed | SCR-MS-05 · +non-UI: snap resolution engine: angle capture ±7.5°, object snap priority (ver | T-MS-102 |
+| MS2-06 | P0 | mixed | SCR-MS-05 · +non-UI: snap resolution engine: angle capture ±7.5°, object snap priority… | T-MS-102 |
 | MS2-07 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| MS2-08 | P0 | mixed | SCR-MS-05 · +non-UI: one canonical polygon validator shared verbatim with AI importer: CCW, | T-MS-102 |
-| MS2-09 | P0 | mixed | SCR-MS-05 · +non-UI: single roof factory shared by hand-drawn/duplicated/AI paths; defaults | T-MS-102 |
+| MS2-08 | P0 | mixed | SCR-MS-05 · +non-UI: one canonical polygon validator shared verbatim with AI importer… | T-MS-102 |
+| MS2-09 | P0 | mixed | SCR-MS-05 · +non-UI: single roof factory shared by hand-drawn/duplicated/AI paths… | T-MS-102 |
 | MS2-10 | P1 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-11 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-12 | P0 | mixed | SCR-MS-05 · +non-UI: locks persist with the project; all edit paths refuse on locked roofs | T-MS-102 |
@@ -1376,11 +1378,11 @@ Nothing below is renumbered.*
 | MS2-20 | P0 | engine | engine | T-MS-107 |
 | MS2-21 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-22 | P0 | engine | engine | T-MS-108 |
-| MS2-23 | P0 | mixed | SCR-MS-05 · +non-UI: centroid-line split perpendicular to ridge, pitch clamp 1–60°, area co | T-MS-102 |
+| MS2-23 | P0 | mixed | SCR-MS-05 · +non-UI: centroid-line split perpendicular to ridge, pitch clamp 1–60°, area… | T-MS-102 |
 | MS2-24 | P0 | engine | engine | T-MS-108 |
 | MS2-25 | P0 | engine | engine | T-MS-108 |
 | MS2-26 | P0 | engine | engine | T-MS-108 |
-| MS2-27 | P0 | mixed | SCR-MS-05 · +non-UI: face-group propagation keeps ridge level: pitch/eave shared, azimuth p | T-MS-102 |
+| MS2-27 | P0 | mixed | SCR-MS-05 · +non-UI: face-group propagation keeps ridge level: pitch/eave shared, azimuth… | T-MS-102 |
 | MS2-28 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-29 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-30 | P0 | engine | engine | T-MS-109 |
@@ -1389,8 +1391,8 @@ Nothing below is renumbered.*
 | MS2-33 | P0 | engine | engine | T-MS-109 |
 | MS2-34 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-35 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| MS2-36 | P0 | mixed | SCR-MS-05 · +non-UI: dependent detection on every geometry change; typed changes blocked pr | T-MS-102 |
-| MS2-37 | P0 | mixed | SCR-MS-05 · +non-UI: strictly sequential detection ladder; cross-check floors disagreeing s | T-MS-102 |
+| MS2-36 | P0 | mixed | SCR-MS-05 · +non-UI: dependent detection on every geometry change; typed changes blocked… | T-MS-102 |
+| MS2-37 | P0 | mixed | SCR-MS-05 · +non-UI: strictly sequential detection ladder; cross-check floors disagreeing… | T-MS-102 |
 | MS2-38 | P0 | mixed | SCR-MS-05 · +non-UI: photo entry gated on live platform capability; per-detection metering  | T-MS-102 |
 | MS2-39 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-40 | P0 | engine | engine | T-MS-110 |
@@ -1465,7 +1467,7 @@ Nothing below is renumbered.*
 | MS4-15 | P0 | mixed | SCR-MS-07 · +non-UI: max-capacity estimation from drawn roofs | T-MS-201 |
 | MS4-16 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-17 | P1 | screen | SCR-MS-07 | T-MS-201 |
-| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price tieb | T-MS-201 |
+| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price… | T-MS-201 |
 | MS4-19 | P0 | mixed | SCR-MS-07 · +non-UI: reuses compare sheet's nearest-fit computation | T-MS-201 |
 | MS4-20 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-21 | P0 | screen | SCR-MS-07 | T-MS-201 |
@@ -1503,7 +1505,7 @@ Nothing below is renumbered.*
 | MS6-14 | P0 | screen | SCR-MS-08 | T-MS-205 |
 | MS6-15 | P0 | policy | policy | T-MS-208 |
 | MS6-16 | P0 | mixed | SCR-MS-08 · +non-UI: tilt partitions selection so each table tilts as unit | T-MS-205 |
-| MS6-17 | P0 | mixed | SCR-MS-08 · +non-UI: delete cascades segments/strings/routes with reindexing; lock persiste | T-MS-205 |
+| MS6-17 | P0 | mixed | SCR-MS-08 · +non-UI: delete cascades segments/strings/routes with reindexing; lock… | T-MS-205 |
 | MS6-18 | P0 | mixed | SCR-MS-08 · +non-UI: one gesture = exactly one undo entry | T-MS-205 |
 | MS6-19 | P0 | screen | SCR-MS-08 | T-MS-205 |
 | MS6-20 | P0 | screen | SCR-MS-08 | T-MS-205 |
@@ -1518,10 +1520,10 @@ Nothing below is renumbered.*
 | MS6-29 | P0 | mixed | SCR-MS-08 · +non-UI: no studio-side capacity cap; entitlements checked at Save/Generate | T-MS-205 |
 | MS6-30 | P0 | screen | SCR-MS-09 | T-MS-206 |
 | MS6-31 | P0 | mixed | SCR-MS-09 · +non-UI: one simulation-time basis (site mean-solar), NOAA-style sun position | T-MS-206 |
-| MS6-32 | P0 | mixed | SCR-MS-09 · +non-UI: shadow-caster set law: real elements cast, decor deterministic cast-fr | T-MS-206 |
+| MS6-32 | P0 | mixed | SCR-MS-09 · +non-UI: shadow-caster set law: real elements cast, decor deterministic… | T-MS-206 |
 | MS6-33 | P0 | mixed | SCR-MS-09 · +non-UI: access values only from headless engine over one geometry source | T-MS-206 |
 | MS6-34 | P0 | screen | SCR-MS-09 | T-MS-206 |
-| MS6-35 | P0 | mixed | SCR-MS-09 · +non-UI: inspection view state never persists or fingerprints; strict dismissal | T-MS-206 |
+| MS6-35 | P0 | mixed | SCR-MS-09 · +non-UI: inspection view state never persists or fingerprints; strict… | T-MS-206 |
 | MS6-36 | P0 | mixed | SCR-MS-09 · +non-UI: adaptive grid resolution, geometric-access metric, 2D-canvas parity | T-MS-206 |
 | MS6-37 | P0 | screen | SCR-MS-09, SCR-F5-05 | T-MS-206 |
 | MS6-38 | P1 | engine | engine | T-MS-211 |
@@ -1566,7 +1568,7 @@ Nothing below is renumbered.*
 | MS7-19 | P0 | policy | policy | T-MS-262 |
 | MS7-20 | P0 | mixed | SCR-MS-10 · +non-UI: clipping modelled from inverter AC limit times count | T-MS-260 |
 | MS7-21 | P0 | policy | policy | LAW |
-| MS7-22 | P0 | mixed | SCR-MS-10 · +non-UI: beam-only transposition by numeric integration, cached by site/orienta | T-MS-260 |
+| MS7-22 | P0 | mixed | SCR-MS-10 · +non-UI: beam-only transposition by numeric integration, cached by… | T-MS-260 |
 | MS7-23 | P1 | engine | engine | T-MS-262 |
 | MS7-24 | P1 | policy | policy | LAW |
 | MS7-24b | P0 | engine | engine | T-MS-262 |
@@ -1652,7 +1654,7 @@ Nothing below is renumbered.*
 | MS9-03 | P0 | screen | SCR-M06-17 | T-F5-012 |
 | MS9-04 | P0 | mixed | SCR-M06-17 · +non-UI: internal view is never the default for a customer artefact | T-F5-012 |
 | MS9-05 | P0 | screen | SCR-M06-17 | T-F5-012 |
-| MS9-06 | P0 | mixed | SCR-M06-17 · +non-UI: issuance blocked unless readiness review passes (electrical gate, verd | T-F5-013 |
+| MS9-06 | P0 | mixed | SCR-M06-17 · +non-UI: issuance blocked unless readiness review passes (electrical gate… | T-F5-013 |
 | MS9-07 | P0 | policy | policy | T-F5-013 |
 | MS9-08 | P0 | policy | policy | T-F5-013 |
 | MS9-09 | P0 | policy | policy | T-F5-011 |
@@ -1675,7 +1677,7 @@ Nothing below is renumbered.*
 | MS9-26 | P0 | policy | policy | T-F5-011 |
 | MS9-27 | P0 | policy | policy | T-F5-011 |
 | MS9-28 | P0 | policy | policy | T-F5-012 |
-| MS9-29 | P0 | mixed | SCR-F5-01, SCR-M06-17 · +non-UI: stage/progress, document pack and permanence surfaces are consumed fro | T-F5-001 |
+| MS9-29 | P0 | mixed | SCR-F5-01, SCR-M06-17 · +non-UI: stage/progress, document pack and permanence surfaces are consumed… | T-F5-001 |
 | ~~MS9-30~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`) — swept for its wording, not its content. "Link issuance is an ONLINE operation, never a silent local-only mint" is a security and attribution law, not a connectivity one, and it is live at `F5-80`, with mint attribution at `F5-31`/`F5-79`. The source it closed, `CODE.share.104`, is still closed — now under `F5-80`. `docs/tasks/F5-customer-link.md` records the same removal; `T-F5-011` is alive.* | — |
 
 ### docs/prd/modules/M05-studio/09-step9-bom.md
@@ -1684,7 +1686,7 @@ Nothing below is renumbered.*
 |---|---|---|---|---|
 | MS10-01 | P0 | screen | SCR-MS-12 | T-MS-301 |
 | MS10-02 | P0 | screen | SCR-MS-12 | T-MS-301 |
-| MS10-03 | P0 | mixed | SCR-MS-12 · +non-UI: zero stores nothing; kind kept; re-commit on kind switch; re-sync on u | T-MS-301 |
+| MS10-03 | P0 | mixed | SCR-MS-12 · +non-UI: zero stores nothing; kind kept; re-commit on kind switch; re-sync on… | T-MS-301 |
 | MS10-04 | P0 | policy | policy | T-MS-309 |
 | MS10-05 | P0 | policy | policy | T-MS-305 |
 | MS10-06 | P0 | screen | SCR-MS-12 | T-MS-301 |
@@ -1692,7 +1694,7 @@ Nothing below is renumbered.*
 | MS10-08 | P0 | screen | SCR-MS-12 | T-MS-301 |
 | MS10-09 | P0 | screen | SCR-MS-12 | T-MS-301 |
 | MS10-10 | P0 | mixed | SCR-MS-12 · +non-UI: checklist content is market-pack data, not code | T-MS-301 |
-| MS10-11 | P0 | mixed | SCR-MS-12 · +non-UI: flat discount applied once, allocated proportionally, never re-clamped | T-MS-301 |
+| MS10-11 | P0 | mixed | SCR-MS-12 · +non-UI: flat discount applied once, allocated proportionally, never… | T-MS-301 |
 | MS10-12 | P0 | screen | SCR-MS-12 | T-MS-301 |
 | MS10-13 | P0 | screen | SCR-MS-12 | T-MS-301 |
 | MS10-14 | P0 | screen | SCR-MS-12 | T-MS-301 |
@@ -1733,14 +1735,14 @@ Nothing below is renumbered.*
 | MS11-04 | P0 | screen | SCR-MS-13 | T-MS-310 |
 | MS11-05 | P0 | screen | SCR-MS-13 | T-MS-310 |
 | MS11-06 | P1 | screen | SCR-MS-13 | T-MS-310 |
-| MS11-07 | P0 | mixed | SCR-MS-13 · +non-UI: derives from real gates, never re-implements them; worst-of verdict co | T-MS-310 |
-| MS11-08 | P0 | mixed | SCR-MS-13 · +non-UI: electrical is the sole blocking item; vacuous-ready (no components) ed | T-MS-310 |
-| MS11-09 | P0 | mixed | SCR-MS-13 · +non-UI: counts only insights neither accepted nor dismissed; severity-driven s | T-MS-310 |
+| MS11-07 | P0 | mixed | SCR-MS-13 · +non-UI: derives from real gates, never re-implements them; worst-of verdict… | T-MS-310 |
+| MS11-08 | P0 | mixed | SCR-MS-13 · +non-UI: electrical is the sole blocking item; vacuous-ready (no components)… | T-MS-310 |
+| MS11-09 | P0 | mixed | SCR-MS-13 · +non-UI: counts only insights neither accepted nor dismissed; severity-driven… | T-MS-310 |
 | MS11-10 | P0 | engine | engine | T-MS-311 |
-| MS11-11 | P0 | mixed | SCR-MS-13 · +non-UI: never blocks; shortfall ordered before staleness; includes cover stale | T-MS-310 |
+| MS11-11 | P0 | mixed | SCR-MS-13 · +non-UI: never blocks; shortfall ordered before staleness; includes cover… | T-MS-310 |
 | MS11-12 | P0 | policy | policy | LAW |
 | MS11-13 | P0 | screen | SCR-MS-15 | T-MS-312 |
-| MS11-14 | P0 | mixed | SCR-MS-16 · +non-UI: records who/when/design-version on approve; notifies designer on retur | T-MS-313 |
+| MS11-14 | P0 | mixed | SCR-MS-16 · +non-UI: records who/when/design-version on approve; notifies designer on… | T-MS-313 |
 | MS11-15 | P0 | policy | policy | T-MS-314 |
 | MS11-16 | P0 | policy | policy | T-MS-314 |
 | MS11-17 | P0 | mixed | SCR-MS-17 · +non-UI: unapproved designs never reach customer surfaces | T-MS-314 |
@@ -1757,7 +1759,7 @@ Nothing below is renumbered.*
 | MS11-28 | P0 | mixed | SCR-MS-17 · +non-UI: derived never authored; deterministic step ids; walked per roof/table | T-MS-318 |
 | MS11-29 | P0 | mixed | SCR-MS-17 · +non-UI: counts from structural model; disabled panels excluded from wiring | T-MS-318 |
 | MS11-30 | P0 | screen | SCR-MS-17 | T-MS-318 |
-| MS11-31 | P0 | mixed | SCR-MS-17 · +non-UI: BOM resolution: no-source-id lines included, not-supplied excluded, co | T-MS-318 |
+| MS11-31 | P0 | mixed | SCR-MS-17 · +non-UI: BOM resolution: no-source-id lines included, not-supplied excluded… | T-MS-318 |
 | MS11-32 | P0 | policy | policy | T-MS-318 |
 | MS11-33 | P0 | screen | SCR-MS-17 | T-MS-318 |
 | MS11-34 | P0 | screen | SCR-MS-17 | T-MS-318 |
@@ -1808,33 +1810,33 @@ Nothing below is renumbered.*
 | M06-01 | P0 | policy | policy | LAW |
 | M06-02 | P0 | policy | policy | LAW |
 | M06-03 | P0 | policy | policy | T-M06-021 |
-| M06-04 | P0 | mixed | SCR-M06-17 · +non-UI: F8 honesty law: every figure labelled; verbatim indicative line mandat | T-M06-017 |
+| M06-04 | P0 | mixed | SCR-M06-17 · +non-UI: F8 honesty law: every figure labelled; verbatim indicative line… | T-M06-017 |
 | M06-05 | P0 | screen | SCR-M06-01 | T-M06-001 |
-| M06-06 | P0 | mixed | SCR-M06-03 · +non-UI: R17: type branches nothing downstream except document and projection l | T-M06-003 |
+| M06-06 | P0 | mixed | SCR-M06-03 · +non-UI: R17: type branches nothing downstream except document and projection… | T-M06-003 |
 | M06-07 | P0 | screen | SCR-M06-03 | T-M06-003 |
 | M06-08 | P0 | screen | SCR-M06-04 | T-M06-004 |
 | M06-09 | P0 | screen | SCR-M06-05 | T-M06-005 |
 | M06-10 | P0 | screen | SCR-M06-06 | T-M06-006 |
 | M06-11 | P0 | screen | SCR-M06-07 | T-M06-007 |
 | M06-12 | P0 | screen | SCR-M06-08 | T-M06-008 |
-| M06-13 | P0 | mixed | SCR-M06-09 · +non-UI: tranche total must equal 100% — live feedback only, hard enforcement s | T-M06-009 |
+| M06-13 | P0 | mixed | SCR-M06-09 · +non-UI: tranche total must equal 100% — live feedback only, hard enforcement… | T-M06-009 |
 | M06-14 | P0 | screen | SCR-M06-10 | T-M06-010 |
 | M06-15 | P0 | screen | SCR-M06-11 | T-M06-011 |
 | M06-16 | P0 | screen | SCR-M06-12 | T-M06-012 |
 | M06-17 | P0 | screen | SCR-M06-13 | T-M06-013 |
-| M06-18 | P0 | mixed | SCR-M06-01, SCR-M06-02 · +non-UI: hidden steps 6/7/9/11 filled from tenant defaults, 4/5 AI-filled — the | T-M06-002 |
-| M06-19 | P0 | mixed | SCR-M06-01 · +non-UI: loss-free expansion invariant: nothing re-entered or discarded, before | T-M06-001 |
+| M06-18 | P0 | mixed | SCR-M06-01, SCR-M06-02 · +non-UI: hidden steps 6/7/9/11 filled from tenant defaults, 4/5 AI-filled… | T-M06-002 |
+| M06-19 | P0 | mixed | SCR-M06-01 · +non-UI: loss-free expansion invariant: nothing re-entered or discarded… | T-M06-001 |
 | M06-20 | P0 | policy | policy | T-M06-022 |
 | M06-21 | P0 | screen | SCR-M06-02 | T-M06-002 |
-| M06-22 | P0 | mixed | SCR-M06-02 · +non-UI: R12 law: free navigation everywhere, validation only at Generate, Next | T-M06-002 |
+| M06-22 | P0 | mixed | SCR-M06-02 · +non-UI: R12 law: free navigation everywhere, validation only at Generate… | T-M06-002 |
 | M06-23 | P0 | mixed | SCR-M06-02 · +non-UI: one-pass gate: components, battery validity, payable floor, tranches,  | T-M06-002 |
 | M06-24 | P0 | screen | SCR-M06-02 | T-M06-002 |
 | M06-25 | P0 | mixed | SCR-M02-04 · +non-UI: every field commits on blur; a draft exists from the first commit and is resumable from the lead *(2026-08-07: the "editing online-first, generate/share/render online-only" connectivity clause is deleted — the vocabulary was `F4-01`'s and the boundary `F4-09`'s, both removed with the offline/sync capability, `Q61`; the live row now speaks only of losing a network mid-build)* | T-M06-023 |
 | M06-26 | P0 | policy | policy | T-M06-028 |
-| M06-27 | P0 | mixed | SCR-M06-10 · +non-UI: D22: all categories mandatory before Generate — the counter is the gat | T-M06-010 |
-| M06-28 | P0 | mixed | SCR-M06-10 · +non-UI: DD12 one-picker law: M05 §M05.6 pattern cited, never restated; no seco | T-M06-010 |
+| M06-27 | P0 | mixed | SCR-M06-10 · +non-UI: D22: all categories mandatory before Generate — the counter is the… | T-M06-010 |
+| M06-28 | P0 | mixed | SCR-M06-10 · +non-UI: DD12 one-picker law: M05 §M05.6 pattern cited, never restated; no… | T-M06-010 |
 | M06-29 | P0 | screen | SCR-M06-10 | T-M06-010 |
-| M06-30 | P0 | mixed | SCR-M06-05, SCR-M06-10 · +non-UI: OFFGRID/HYBRID without battery: notice at step 3, hard block only at G | T-M06-005 |
+| M06-30 | P0 | mixed | SCR-M06-05, SCR-M06-10 · +non-UI: OFFGRID/HYBRID without battery: notice at step 3, hard block only at… | T-M06-005 |
 | M06-31 | P0 | policy | policy | T-M06-026 |
 | M06-32 | P0 | policy | policy | LAW |
 | M06-33 | P2 | context | context → registers/enhancements.md (future battery-economics layer riding F8-23 honesty laws) | realized-by: docs/prd/registers/enhancements.md |
@@ -1843,25 +1845,25 @@ Nothing below is renumbered.*
 | M06-36 | P0 | policy | policy | T-M06-022 |
 | M06-37 | P0 | policy | policy | T-M06-022 |
 | M06-38 | P0 | engine | engine | T-M06-024 |
-| M06-39 | P0 | mixed | SCR-M06-14 · +non-UI: BOM money invariants: margin below tax, discounts pro-rated pre-tax, B | T-M06-014 |
+| M06-39 | P0 | mixed | SCR-M06-14 · +non-UI: BOM money invariants: margin below tax, discounts pro-rated pre-tax… | T-M06-014 |
 | M06-40 | P0 | mixed | SCR-M06-05 · +non-UI: EMI arithmetic rendered as labelled projection; financing marketplace  | T-M06-005 |
 | M06-41 | P0 | policy | policy | T-M06-024 |
-| M06-42 | P0 | mixed | SCR-M06-16 · +non-UI: versions immutable, append-only, server-numbered; snapshot pins catalo | T-M06-016 |
+| M06-42 | P0 | mixed | SCR-M06-16 · +non-UI: versions immutable, append-only, server-numbered; snapshot pins… | T-M06-016 |
 | M06-43 | P0 | policy | policy | T-M06-025 |
 | M06-44 | P0 | policy | policy | T-M06-025 |
 | M06-45 | P0 | policy | policy | T-M06-025 |
-| M06-46 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: staleness derived by comparing pinned fingerprint/input versions again | T-M06-018 |
-| M06-47 | P0 | mixed | SCR-M06-18 · +non-UI: tier change shown before commit (F8-05); accept creates Path A version | T-M06-018 |
-| M06-48 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: duplicate copies all steps and components; never copies number, versio | T-M06-018 |
+| M06-46 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: staleness derived by comparing pinned fingerprint/input versions… | T-M06-018 |
+| M06-47 | P0 | mixed | SCR-M06-18 · +non-UI: tier change shown before commit (F8-05); accept creates Path A… | T-M06-018 |
+| M06-48 | P0 | mixed | SCR-M06-19, SCR-M06-18 · +non-UI: duplicate copies all steps and components; never copies number… | T-M06-018 |
 | M06-49 | P0 | policy | policy | T-M06-027 |
 | M06-50 | P0 | screen | SCR-M06-15 | T-M06-015 |
-| M06-51 | P0 | mixed | SCR-M06-17 · +non-UI: one computed value set feeds document, link, exports; render online-on | T-M06-017 |
+| M06-51 | P0 | mixed | SCR-M06-17 · +non-UI: one computed value set feeds document, link, exports; render… | T-M06-017 |
 | M06-52 | P0 | policy | policy | T-M06-029 |
-| M06-53 | P0 | mixed | SCR-M06-18 · +non-UI: auto-send via connected transactional channel (Q33 integration); copy- | T-M06-018 |
-| M06-54 | P0 | mixed | SCR-M06-18 · +non-UI: delivery states only as connected channel reports; fallback never show | T-M06-018 |
+| M06-53 | P0 | mixed | SCR-M06-18 · +non-UI: auto-send via connected transactional channel (Q33 integration)… | T-M06-018 |
+| M06-54 | P0 | mixed | SCR-M06-18 · +non-UI: delivery states only as connected channel reports; fallback never… | T-M06-018 |
 | M06-55 | P0 | policy | policy | T-M06-030 |
-| M06-56 | P0 | mixed | SCR-M06-17 · +non-UI: exactly one recommended variant by default; variants only when designe | T-M06-017 |
-| M06-57 | P0 | mixed | SCR-M06-18 · +non-UI: connected channel's failure report is the visible failure (integration | T-M06-018 |
+| M06-56 | P0 | mixed | SCR-M06-17 · +non-UI: exactly one recommended variant by default; variants only when… | T-M06-017 |
+| M06-57 | P0 | mixed | SCR-M06-18 · +non-UI: connected channel's failure report is the visible failure… | T-M06-018 |
 | M06-58 | P0 | mixed | SCR-M02-04 · +non-UI: nothing auto-withdraws; a person marks superseded/declined-by-tenant;  | T-M06-031 |
 
 ### docs/prd/modules/M07-sales-execution.md
@@ -1877,15 +1879,15 @@ Nothing below is renumbered.*
 | M07-07 | P0 | engine | engine | T-M07-021 |
 | M07-08 | P0 | screen | SCR-M07-05 | T-M07-005 |
 | M07-09 | P0 | mixed | SCR-M07-05 · +non-UI: floor items can only narrow; above-floor items are the owner's | T-M07-005 |
-| M07-10 | P0 | mixed | SCR-M07-05 · +non-UI: four hard floors no edit removes; proactive disclosure is pack flag wi | T-M07-005 |
+| M07-10 | P0 | mixed | SCR-M07-05 · +non-UI: four hard floors no edit removes; proactive disclosure is pack flag… | T-M07-005 |
 | M07-11 | P0 | mixed | SCR-M07-05 · +non-UI: asks-to-stop rule is statutory opt-out, cannot be removed | T-M07-005 |
-| M07-12 | P0 | mixed | SCR-M07-06 · +non-UI: saves only equal-or-narrower schedules and extra holidays vs statutory | T-M07-006 |
+| M07-12 | P0 | mixed | SCR-M07-06 · +non-UI: saves only equal-or-narrower schedules and extra holidays vs… | T-M07-006 |
 | M07-13 | P0 | screen | SCR-M07-07 | T-M07-007 |
-| M07-14 | P0 | mixed | SCR-M07-08 · +non-UI: versioned-append publishing; queued calls keep their queued version; p | T-M07-008 |
+| M07-14 | P0 | mixed | SCR-M07-08 · +non-UI: versioned-append publishing; queued calls keep their queued version… | T-M07-008 |
 | M07-15 | P0 | mixed | SCR-M07-05 · +non-UI: six agent languages stay independent of three interface languages | T-M07-005 |
 | M07-16 | P0 | screen | SCR-M07-09 | T-M07-009 |
 | M07-17 | P0 | policy | policy | T-M07-023 |
-| M07-18 | P0 | mixed | SCR-M07-10 · +non-UI: captures unanswerable questions with asked-count; answer live from nex | T-M07-010 |
+| M07-18 | P0 | mixed | SCR-M07-10 · +non-UI: captures unanswerable questions with asked-count; answer live from… | T-M07-010 |
 | M07-19 | P0 | mixed | SCR-M07-09 · +non-UI: contradiction detection runs at save, before agent can speak either | T-M07-009 |
 | M07-20 | P0 | policy | policy | T-M07-022 |
 | M07-21 | P1 | screen | SCR-M07-09 | T-M07-009 |
@@ -1897,24 +1899,24 @@ Nothing below is renumbered.*
 | M07-27 | P0 | engine | engine | T-M07-024 |
 | M07-28 | P0 | mixed | SCR-M07-12 · +non-UI: gate reads one row of customer compliance fields per dial | T-M07-012 |
 | M07-29 | P0 | policy | policy | T-M07-024 |
-| M07-30 | P0 | mixed | SCR-M07-12 · +non-UI: gate enforcement binds automated dials; manual dials get warning-then- | T-M07-012 |
+| M07-30 | P0 | mixed | SCR-M07-12 · +non-UI: gate enforcement binds automated dials; manual dials get… | T-M07-012 |
 | M07-31 | P0 | policy | policy | T-M07-024 |
 | M07-32 | P0 | policy | policy | T-M07-024 |
 | M07-33 | P0 | engine | engine | T-M07-025 |
 | M07-34 | P0 | mixed | SCR-M07-05 · +non-UI: off means nothing queues or dials; inbound falls to non-AI routing | T-M07-005 |
-| M07-35 | P0 | mixed | SCR-M07-12 · +non-UI: window-shifted scheduling; attempts counted against configured maximum | T-M07-012 |
+| M07-35 | P0 | mixed | SCR-M07-12 · +non-UI: window-shifted scheduling; attempts counted against configured… | T-M07-012 |
 | M07-36 | P0 | mixed | SCR-M07-12 · +non-UI: queued call dials with exactly its queued config version | T-M07-012 |
 | M07-37 | P0 | mixed | SCR-M07-12 · +non-UI: allowance checked at insert and dial; minutes metered to usage ledger | T-M07-012 |
-| M07-38 | P0 | mixed | SCR-M07-13 · +non-UI: every call ledgered; recording purged at retention bound, transcript r | T-M07-013 |
+| M07-38 | P0 | mixed | SCR-M07-13 · +non-UI: every call ledgered; recording purged at retention bound, transcript… | T-M07-013 |
 | M07-39 | P0 | engine | engine | T-M07-026 |
 | M07-40 | P0 | policy | policy | T-M07-026 |
 | M07-41 | P0 | policy | policy | T-M07-022 |
 | M07-42 | P0 | screen | SCR-M07-14 | T-M07-014 |
 | M07-43 | P0 | policy | policy | T-M07-027 |
-| M07-44 | P0 | mixed | SCR-M07-15 · +non-UI: chains ring level-by-level with timeouts, mandatory terminal fallback; | T-M07-015 |
+| M07-44 | P0 | mixed | SCR-M07-15 · +non-UI: chains ring level-by-level with timeouts, mandatory terminal… | T-M07-015 |
 | M07-45 | P0 | engine | engine | T-M07-027 |
 | M07-46 | P0 | screen | SCR-SHELL-01 | T-M07-027, T-SHELL-001 |
-| M07-47 | P0 | mixed | SCR-M07-16 · +non-UI: flows versioned and published whole; in-flight calls keep their versio | T-M07-016 |
+| M07-47 | P0 | mixed | SCR-M07-16 · +non-UI: flows versioned and published whole; in-flight calls keep their… | T-M07-016 |
 | M07-48 | P0 | engine | engine | T-M07-028 |
 | M07-49 | P0 | integration | integration | T-M07-029 |
 | M07-50 | P0 | policy | policy | T-M07-028 |
@@ -1923,15 +1925,15 @@ Nothing below is renumbered.*
 | M07-53 | P0 | screen | SCR-M07-17 | T-M07-017 |
 | M07-54 | P0 | integration | integration | T-M07-029 |
 | M07-55 | P0 | screen | SCR-M07-18 | T-M07-018 |
-| M07-56 | P0 | mixed | SCR-M07-18 · +non-UI: correlation-only claim law (F8-30/31); product never claims agent reve | T-M07-018 |
+| M07-56 | P0 | mixed | SCR-M07-18 · +non-UI: correlation-only claim law (F8-30/31); product never claims agent… | T-M07-018 |
 | M07-57 | P0 | screen | SCR-M07-19 | T-M07-019 |
 | M07-58 | P0 | screen | SCR-M07-10 | T-M07-010 |
 | M07-59 | P0 | screen | SCR-M07-20 | T-M07-020 |
-| M07-60 | P1 | mixed | SCR-M07-18 · +non-UI: visible to EPC Owner and Sales Manager only (F2.M07.agent-performance) | T-M07-018 |
-| M07-61 | P0 | mixed | SCR-M07-18 · +non-UI: detects collapsing connect rate with likely cause; monthly in-app summ | T-M07-018 |
+| M07-60 | P1 | mixed | SCR-M07-18 · +non-UI: visible to EPC Owner and Sales Manager only… | T-M07-018 |
+| M07-61 | P0 | mixed | SCR-M07-18 · +non-UI: detects collapsing connect rate with likely cause; monthly in-app… | T-M07-018 |
 | M07-62 | P0 | mixed | SCR-M07-02 · +non-UI: atomically creates the project in the same act; no customer re-entry | T-M07-002 |
-| M07-63 | P0 | mixed | SCR-M07-03 · +non-UI: reason drives R9: postponed auto-resurfaces, not-interested suppresses | T-M07-003 |
-| M07-64 | P0 | mixed | SCR-M07-04 · +non-UI: postponed losses auto-resurface on their date without anyone rememberi | T-M07-004 |
+| M07-63 | P0 | mixed | SCR-M07-03 · +non-UI: reason drives R9: postponed auto-resurfaces, not-interested… | T-M07-003 |
+| M07-64 | P0 | mixed | SCR-M07-04 · +non-UI: postponed losses auto-resurface on their date without anyone… | T-M07-004 |
 | M07-65 | P0 | policy | policy | LAW |
 
 ### docs/prd/modules/M08-projects.md
@@ -1954,11 +1956,11 @@ Nothing below is renumbered.*
 | M08-14 | P1 | mixed | SCR-M08-01 · +non-UI: append-only actor-stamped timeline event; a backward stage move is allowed and recorded with the same weight as a forward one *(2026-08-07: "online-first write" replaced — the vocabulary was `F4-01`'s, deleted with the offline/sync capability, `Q61`; a stage move is an ordinary server write)* | T-M08-001 |
 | M08-15 | P0 | engine | engine | T-M08-009 |
 | M08-16 | P0 | screen | SCR-M08-02 | T-M08-002 |
-| M08-17 | P0 | mixed | SCR-M08-02 · +non-UI: single polymorphic append-only stream owned by M02; project and custom | T-M08-002 |
+| M08-17 | P0 | mixed | SCR-M08-02 · +non-UI: single polymorphic append-only stream owned by M02; project and… | T-M08-002 |
 | M08-18 | P0 | policy | policy | LAW |
 | M08-19 | P1 | policy | policy | LAW |
 | M08-20 | P0 | policy | policy | T-M08-010 |
-| M08-21 | P0 | mixed | SCR-M08-02, SCR-M08-01 · +non-UI: start date never silently back-edited; clearing records who and when s | T-M08-002 |
+| M08-21 | P0 | mixed | SCR-M08-02, SCR-M08-01 · +non-UI: start date never silently back-edited; clearing records who and when… | T-M08-002 |
 | M08-22 | P0 | policy | policy | T-M08-008 |
 | M08-23 | P0 | policy | policy | T-M08-010 |
 | M08-24 | P0 | policy | policy | T-M08-010 |
@@ -1967,7 +1969,7 @@ Nothing below is renumbered.*
 | M08-27 | P0 | screen | SCR-M08-02 | T-M08-002 |
 | M08-28 | P0 | policy | policy | T-M08-010 |
 | M08-29 | P0 | policy | policy | T-M08-010 |
-| M08-30 | P0 | mixed | SCR-M08-03 · +non-UI: row set seeded once from market pack per segment at creation; module d | T-M08-003 |
+| M08-30 | P0 | mixed | SCR-M08-03 · +non-UI: row set seeded once from market pack per segment at creation; module… | T-M08-003 |
 | M08-31 | P0 | mixed | SCR-M08-03 · +non-UI: verification is a separate audited act recording who and when; upload  | T-M08-003 |
 | M08-32 | P0 | policy | policy | T-M08-012 |
 | ~~M08-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It kept the local original of a captured project document until the server confirmed it held the file. `M04-55` rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else", so no retained local original exists for project documents; a device write queue is a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The guarantee on a failed upload is now the general one: the act fails fast and honestly rather than appearing to succeed (`F8-36`). `M08-32`, the neighbouring capture law, is untouched, as is `T-M08-012`.* | — |
@@ -1975,20 +1977,20 @@ Nothing below is renumbered.*
 | M08-35 | P0 | policy | policy | T-M08-009 |
 | M08-36 | P0 | engine | engine | T-M08-009 |
 | M08-37 | P0 | policy | policy | T-M08-011 |
-| M08-38 | P0 | mixed | SCR-M08-02 · +non-UI: sends via tenant's connected transactional channel with honest deliver | T-M08-002 |
+| M08-38 | P0 | mixed | SCR-M08-02 · +non-UI: sends via tenant's connected transactional channel with honest… | T-M08-002 |
 | M08-39 | P0 | policy | policy | T-M08-011 |
 | ~~M08-40~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It forbade a money-bearing offline write on a project surface; with no queue there is no such write left to forbid. The surviving money rule is `M11-06` — every money mutation is online-only and is refused, never queued — which `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3 cites by name ("No offline money, on any surface, at any tier"). `M08-39` and `T-M08-011` are untouched.* | — |
-| M08-41 | P0 | mixed | SCR-M08-04 · +non-UI: steps are the design's derived work order (M05-76); this module genera | T-M08-004 |
+| M08-41 | P0 | mixed | SCR-M08-04 · +non-UI: steps are the design's derived work order (M05-76); this module… | T-M08-004 |
 | M08-42 | P0 | mixed | SCR-M08-04 · +non-UI: attribution law per R16: tick attributed to coordinator/ticker; never  | T-M08-004 |
 | M08-43 | P0 | policy | policy | T-M08-014 |
 | ~~M08-44~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It made installation-checklist ticks offline-capable and queued them; both halves are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The checklist itself is untouched at `M08-43` and `M08-45` — a tick is now an ordinary server write that fails fast and honestly when it cannot reach the server (`F8-36`). `T-M08-014` is alive.* | — |
 | M08-45 | P1 | screen | SCR-M08-05 | T-M08-005 |
-| M08-46 | P0 | mixed | SCR-M08-06 · +non-UI: link becomes the pack (F5's transition); share rides transactional lan | T-M08-006 |
+| M08-46 | P0 | mixed | SCR-M08-06 · +non-UI: link becomes the pack (F5's transition); share rides transactional… | T-M08-006 |
 | M08-47 | P0 | mixed | SCR-M08-06 · +non-UI: produces M02-16's referral row on both records; no credit, redemption  | T-M08-006 |
 | M08-48 | P0 | policy | policy | T-M08-015 |
 | M08-49 | P1 | policy | policy | T-M08-015 |
 | M08-50 | P0 | policy | policy | T-M08-015 |
-| M08-51 | P0 | mixed | SCR-M08-01, SCR-M08-02 · +non-UI: terminal state; revenue stops counting immediately across all reportin | T-M08-001 |
+| M08-51 | P0 | mixed | SCR-M08-01, SCR-M08-02 · +non-UI: terminal state; revenue stops counting immediately across all… | T-M08-001 |
 | M08-52 | P0 | policy | policy | T-M08-015 |
 | M08-53 | P1 | policy | policy | T-M08-015 |
 
@@ -1999,7 +2001,7 @@ Nothing below is renumbered.*
 | M09-01 | P0 | context | context → M09.2-M09.10 feature-area rows; registers/enhancements.md | realized-by: docs/prd/modules/M09-field-workforce.md §M09.2–§M09.10 rows (this file); docs/prd/registers/enhancements.md |
 | M09-02 | P0 | policy | policy | T-M09-009 |
 | M09-03 | P0 | policy | policy | T-M09-009 |
-| M09-04 | P0 | mixed | SCR-M09-01 · +non-UI: billing unit is tracked-seat-months; ledger, proration and invoicing o | T-M09-001 |
+| M09-04 | P0 | mixed | SCR-M09-01 · +non-UI: billing unit is tracked-seat-months; ledger, proration and invoicing… | T-M09-001 |
 | M09-05 | P0 | policy | policy | T-M09-009 |
 | M09-06 | P0 | context | context → M09 §5 non-goals; M09-09 | realized-by: docs/prd/modules/M09-field-workforce.md §5 non-goals; M09-09 (LAW) |
 | M09-07 | P0 | context | context → M09-25, M09-33, M09-34, M09-63; registers/enhancements.md | T-M09-014 |
@@ -2009,17 +2011,17 @@ Nothing below is renumbered.*
 | M09-11 | P0 | policy | policy | T-M09-008 |
 | M09-12 | P0 | screen | SCR-M09-01 | T-M09-001 |
 | M09-13 | P0 | mixed | SCR-M09-02 · +non-UI: on/off notifications delivered to the employee (placement is F6's) | T-M09-002 |
-| M09-14 | P0 | mixed | SCR-M09-01 · +non-UI: collection ceases immediately on toggle-off; collected data kept under | T-M09-001 |
+| M09-14 | P0 | mixed | SCR-M09-01 · +non-UI: collection ceases immediately on toggle-off; collected data kept… | T-M09-001 |
 | M09-15 | P0 | policy | policy | T-M09-008 |
-| M09-16 | P0 | mixed | SCR-M09-01 · +non-UI: price is market-book data; empty slot means not sellable; no FX conver | T-M09-001 |
+| M09-16 | P0 | mixed | SCR-M09-01 · +non-UI: price is market-book data; empty slot means not sellable; no FX… | T-M09-001 |
 | M09-17 | P0 | policy | policy | T-M09-009 |
 | M09-18 | P0 | policy | policy | T-M09-009 |
 | M09-19 | P0 | mixed | SCR-M09-02 · +non-UI: record schema: who, site/visit, capture time, position with accuracy,  | T-M09-002 |
 | ~~M09-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its durable offline queue for site check-in and check-out died with the capability — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1) — and its acceptance line, which tested the no-connection half, went with it. Its two surviving halves are live in the concurrency law and were never about connectivity: a visit's status only moves forward (`F4-17`), and last-writer-wins is resolved by server apply order and never by a device clock (`F4-19`), both built in `docs/tasks/F-platform.md`. The check-in/check-out capability itself is unchanged at `M09-18`, `M09-19` and `M09-21`–`M09-24`.* | — |
-| M09-21 | P0 | mixed | SCR-M09-02 · +non-UI: never backfill position from site coords, last-known, or network guess | T-M09-002 |
+| M09-21 | P0 | mixed | SCR-M09-02 · +non-UI: never backfill position from site coords, last-known, or network… | T-M09-002 |
 | M09-22 | P0 | policy | policy | T-M09-010 |
 | M09-23 | P1 | screen | SCR-M09-02 | T-M09-002 |
-| M09-24 | P0 | mixed | SCR-M09-02, SCR-M09-04 · +non-UI: no invented close-out time; human closes, correction appended and audi | T-M09-002 |
+| M09-24 | P0 | mixed | SCR-M09-02, SCR-M09-04 · +non-UI: no invented close-out time; human closes, correction appended and… | T-M09-002 |
 | M09-25 | P2 | engine | engine | T-M09-014 |
 | M09-26 | P0 | policy | policy | T-M09-015 |
 | M09-27 | P0 | screen | SCR-M09-03 | T-M09-003 |
@@ -2039,14 +2041,14 @@ Nothing below is renumbered.*
 | M09-41 | P0 | policy | policy | LAW |
 | M09-42 | P0 | policy | policy | T-M09-009 |
 | M09-43 | P0 | screen | SCR-M09-04 | T-M09-004 |
-| M09-44 | P0 | mixed | SCR-M09-01 · +non-UI: window = day-start tap to day-end tap plus owner force-stop backstop ( | T-M09-001 |
+| M09-44 | P0 | mixed | SCR-M09-01 · +non-UI: window = day-start tap to day-end tap plus owner force-stop backstop… | T-M09-001 |
 | M09-45 | P0 | mixed | SCR-M09-05, SCR-M09-06 · +non-UI: no line, curve or estimate fitted across unobserved intervals | T-M09-005 |
 | M09-46 | P0 | policy | policy | T-M09-010 |
 | M09-47 | P0 | policy | policy | LAW |
 | M09-48 | P0 | mixed | SCR-M09-04 · +non-UI: a live position needs the server; the last known position is rendered with the time it was taken, plainly labelled, never as current *(2026-08-07: the `F4-09` citation is dropped — the online-only capability table was deleted with the offline/sync capability, `Q61`; the live sources are `F8-18` and `F8-34`)* | T-M09-004 |
-| M09-49 | P0 | mixed | SCR-M09-07 · +non-UI: no place creation; anchors are M08/M04/M02 sites; wrong fence = fix ad | T-M09-007 |
+| M09-49 | P0 | mixed | SCR-M09-07 · +non-UI: no place creation; anchors are M08/M04/M02 sites; wrong fence = fix… | T-M09-007 |
 | M09-50 | P0 | mixed | SCR-M09-07, SCR-M09-01 · +non-UI: radius below typical fix accuracy refused with reason named | T-M09-007 |
-| M09-51 | P0 | mixed | SCR-M09-02 · +non-UI: ignored prompt writes nothing; fence crossing recorded as fence's even | T-M09-002 |
+| M09-51 | P0 | mixed | SCR-M09-02 · +non-UI: ignored prompt writes nothing; fence crossing recorded as fence's… | T-M09-002 |
 | M09-52 | P0 | engine | engine | T-M09-011 |
 | M09-53 | P0 | policy | policy | T-M09-009 |
 | M09-54 | P0 | screen | SCR-M09-05 | T-M09-005 |
@@ -2090,7 +2092,7 @@ Nothing below is renumbered.*
 | M10-16 | P2 | screen | SCR-M10-01 | T-M10-001 |
 | M10-17 | P1 | policy | policy | LAW |
 | M10-18 | P0 | mixed | SCR-M10-04 · +non-UI: offboard defined as revocation plus reassignment, done together | T-M10-004 |
-| M10-19 | P0 | mixed | SCR-M10-04 · +non-UI: composes open work cross-module; owns no assignment act; nothing silen | T-M10-004 |
+| M10-19 | P0 | mixed | SCR-M10-04 · +non-UI: composes open work cross-module; owns no assignment act; nothing… | T-M10-004 |
 | M10-20 | P0 | policy | policy | T-M10-004 |
 | M10-21 | P0 | mixed | SCR-M10-04 · +non-UI: F2 guard-rail transitions enforced and audited | T-M10-004 |
 | M10-22 | P0 | mixed | SCR-M10-04 · +non-UI: deactivation act is Owner-only, never delegated | T-M10-004 |
@@ -2129,16 +2131,16 @@ Nothing below is renumbered.*
 | M11-11 | P0 | engine | engine | T-M11-006 |
 | M11-12 | P0 | engine | engine | T-M11-006 |
 | M11-13 | P0 | engine | engine | T-M11-005 |
-| M11-14 | P0 | mixed | SCR-M11-02 · +non-UI: schedule follows version in force; receipts never rewritten or deleted | T-M11-002 |
+| M11-14 | P0 | mixed | SCR-M11-02 · +non-UI: schedule follows version in force; receipts never rewritten or… | T-M11-002 |
 | M11-15 | P0 | mixed | SCR-M11-02 · +non-UI: never fabricate rows, distribute evenly, or back-fill templates | T-M11-002 |
 | M11-16 | P0 | mixed | SCR-M11-02 · +non-UI: no recurring billing, no periodic charge, no added rows | T-M11-002 |
 | M11-17 | P0 | policy | policy | T-M11-010 |
 | M11-18 | P0 | policy | policy | T-M11-010 |
-| M11-19 | P0 | mixed | SCR-M11-02, SCR-M11-04 · +non-UI: scheduled credential probe raises alert and settings nag (probe is M01 | T-M11-002 |
+| M11-19 | P0 | mixed | SCR-M11-02, SCR-M11-04 · +non-UI: scheduled credential probe raises alert and settings nag (probe is… | T-M11-002 |
 | M11-20 | P0 | policy | policy | T-M11-010 |
 | M11-21 | P0 | policy | policy | LAW |
 | M11-22 | P0 | policy | policy | T-M11-010 |
-| M11-23 | P1 | mixed | SCR-M11-04 · +non-UI: disconnect recorded and audited; no revocation ability claimed over mi | T-M11-004 |
+| M11-23 | P1 | mixed | SCR-M11-04 · +non-UI: disconnect recorded and audited; no revocation ability claimed over… | T-M11-004 |
 | M11-24 | P0 | screen | SCR-M11-02 | T-M11-002 |
 | M11-25 | P0 | integration | integration | T-M11-011 |
 | M11-26 | P0 | policy | policy | LAW |
@@ -2151,24 +2153,24 @@ Nothing below is renumbered.*
 | M11-33 | P0 | screen | SCR-M11-03 | T-M11-003 |
 | M11-34 | P0 | screen | SCR-M11-03 | T-M11-003 |
 | M11-35 | P0 | mixed | SCR-M11-03 · +non-UI: mode validated against pack's open-set vocabulary | T-M11-003 |
-| M11-36 | P0 | mixed | SCR-M11-03, SCR-M11-02 · +non-UI: many entries per tranche; state follows entries; surplus never absorbe | T-M11-002 |
-| M11-37 | P0 | mixed | SCR-M11-03 · +non-UI: receipt file rides capture-and-upload pipeline; entry is server-only w | T-M11-003 |
-| M11-38 | P1 | mixed | SCR-M11-03 · +non-UI: the ledger write path refuses a non-positive amount from any non-rever | T-M11-003 |
+| M11-36 | P0 | mixed | SCR-M11-03, SCR-M11-02 · +non-UI: many entries per tranche; state follows entries; surplus never… | T-M11-002 |
+| M11-37 | P0 | mixed | SCR-M11-03 · +non-UI: receipt file rides capture-and-upload pipeline; entry is server-only… | T-M11-003 |
+| M11-38 | P1 | mixed | SCR-M11-03 · +non-UI: the ledger write path refuses a non-positive amount from any… | T-M11-003 |
 | M11-39 | P0 | mixed | SCR-M11-03 · +non-UI: recording requires the server, is refused with an honest reason, and nothing is held (`M11-06`) *(2026-08-07: the `F4-09` row-2 citation is dropped — the online-only capability table was deleted with the offline/sync capability, `Q61`; the money rule it pointed at is live and unchanged at `M11-06`, cited by `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3)* | T-M11-003 |
 | M11-40 | P0 | policy | policy | T-M11-007 |
-| M11-41 | P0 | mixed | SCR-M11-02, SCR-F5-02 · +non-UI: receipt record contents: amount, tranche, date, mode, reference, file, | T-M11-002 |
-| M11-42 | P0 | mixed | SCR-M11-02 · +non-UI: claim never upgraded to confirmation; qualifier never dropped in expor | T-M11-002 |
+| M11-41 | P0 | mixed | SCR-M11-02, SCR-F5-02 · +non-UI: receipt record contents: amount, tranche, date, mode, reference… | T-M11-002 |
+| M11-42 | P0 | mixed | SCR-M11-02 · +non-UI: claim never upgraded to confirmation; qualifier never dropped in… | T-M11-002 |
 | M11-43 | P0 | engine | engine | T-M11-014 |
 | M11-44 | P0 | policy | policy | T-M11-014 |
 | M11-45 | P1 | mixed | SCR-F5-02 · +non-UI: receipt produced and published the instant money confirms | T-M11-015 |
-| M11-46 | P0 | mixed | SCR-M11-02 · +non-UI: reversing entry with opposing amount, pointer, reason, actor; original | T-M11-002 |
+| M11-46 | P0 | mixed | SCR-M11-02 · +non-UI: reversing entry with opposing amount, pointer, reason, actor… | T-M11-002 |
 | M11-47 | P0 | screen | SCR-M11-02 | T-M11-002 |
 | M11-48 | P0 | engine | engine | T-M11-013 |
 | M11-49 | P0 | mixed | SCR-M11-02 · +non-UI: terminal state, mandatory reason, audited, never counts as collected | T-M11-002 |
 | M11-50 | P0 | policy | policy | T-M11-013 |
 | M11-51 | P0 | policy | policy | T-M11-009 |
 | M11-52 | P0 | mixed | SCR-M11-02 · +non-UI: only place money is written; copy-message carve-out for project block | T-M11-002 |
-| M11-53 | P0 | mixed | SCR-M08-02 · +non-UI: supplies overdue facts to M08 board/project and M13 dashboard; never s | T-M11-016 |
+| M11-53 | P0 | mixed | SCR-M08-02 · +non-UI: supplies overdue facts to M08 board/project and M13 dashboard; never… | T-M11-016 |
 | M11-54 | P1 | mixed | SCR-M11-01 · +non-UI: supplies due/overdue/receipts/period figures; composition is M13's | T-M11-001 |
 | M11-55 | P0 | mixed | SCR-F5-02 · +non-UI: publishes facts only, never copy; F5 renders; never gates page | T-M11-015 |
 | M11-56 | P0 | policy | policy | LAW |
@@ -2184,7 +2186,7 @@ Nothing below is renumbered.*
 | M12-05 | P0 | engine | engine | T-M12-005 |
 | M12-06 | P0 | mixed | SCR-SHELL-06 · +non-UI: two-phase 7-day grace timer; only metered features pause day 4 | T-SHELL-006, T-M12-005 |
 | M12-07 | P0 | policy | policy | T-M12-005 |
-| M12-08 | P0 | mixed | SCR-M12-02 · +non-UI: new gateway subscription created, never resumed; entitlements immediat | T-M12-002 |
+| M12-08 | P0 | mixed | SCR-M12-02 · +non-UI: new gateway subscription created, never resumed; entitlements… | T-M12-002 |
 | M12-09 | P0 | engine | engine | T-M12-006 |
 | M12-10 | P0 | integration | integration | T-M12-007 |
 | M12-11 | P0 | integration | integration | T-M12-007 |
@@ -2206,7 +2208,7 @@ Nothing below is renumbered.*
 | M12-27 | P0 | policy | policy | T-M12-008 |
 | M12-28 | P0 | policy | policy | LAW |
 | M12-29 | P0 | policy | policy | LAW |
-| M12-30 | P0 | mixed | SCR-M12-04, SCR-SHELL-06 · +non-UI: 80%/100%/7-day-grace cap ladder; counts reset on billing anchor, no pr | T-SHELL-006, T-M12-009 |
+| M12-30 | P0 | mixed | SCR-M12-04, SCR-SHELL-06 · +non-UI: 80%/100%/7-day-grace cap ladder; counts reset on billing anchor, no… | T-SHELL-006, T-M12-009 |
 | M12-31 | P0 | screen | SCR-SHELL-06 | T-SHELL-006, T-M12-009 |
 | M12-32 | P0 | engine | engine | T-M12-010 |
 | M12-33 | P0 | engine | engine | T-M12-010 |
@@ -2215,7 +2217,7 @@ Nothing below is renumbered.*
 | M12-36 | P1 | screen | SCR-M12-04 | T-M12-004 |
 | M12-37 | P1 | engine | engine | T-M12-010 |
 | M12-38 | P0 | policy | policy | LAW |
-| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly; forfeiture d | T-SHELL-006, T-M12-011 |
+| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly; forfeiture… | T-SHELL-006, T-M12-011 |
 | M12-40 | P0 | integration | integration | T-M12-011 |
 | M12-41 | P0 | policy | policy | T-M12-011 |
 | M12-42 | P1 | engine | engine | T-M12-011 |
@@ -2224,13 +2226,13 @@ Nothing below is renumbered.*
 | M12-45 | P0 | policy | policy | T-M12-012 |
 | M12-46 | P0 | mixed | SCR-M12-02 · +non-UI: export ungated in every billing state including halted | T-M12-002 |
 | M12-47 | P0 | mixed | SCR-M12-02 · +non-UI: refund-to-source; credit note auto-issues; renewals carry no refunds | T-M12-002 |
-| M12-48 | P0 | mixed | SCR-M12-03 · +non-UI: immediate entitlements; prorated delta one-time invoice; swap at bound | T-M12-003 |
+| M12-48 | P0 | mixed | SCR-M12-03 · +non-UI: immediate entitlements; prorated delta one-time invoice; swap at… | T-M12-003 |
 | M12-49 | P0 | mixed | SCR-M12-03 · +non-UI: preview computed from real usage; recomputes at confirm and boundary | T-M12-003 |
 | M12-50 | P0 | mixed | SCR-M12-02 · +non-UI: reason is signal never gate; runs to period end; data retained | T-M12-002 |
 | M12-51 | P1 | policy | policy | LAW |
 | M12-52 | P0 | policy | policy | T-M12-005 |
 | M12-53 | P0 | mixed | SCR-M12-03, SCR-SHELL-06 · +non-UI: soft expiry law: convert never destroy; read+export always work | T-SHELL-006, T-M12-003 |
-| M12-54 | P0 | mixed | SCR-M12-03 · +non-UI: hosted checkout handoff; payment at conversion; paid cycle starts then | T-M12-003 |
+| M12-54 | P0 | mixed | SCR-M12-03 · +non-UI: hosted checkout handoff; payment at conversion; paid cycle starts… | T-M12-003 |
 | M12-55 | P0 | screen | SCR-M12-02, SCR-M12-03 | T-M12-002 |
 | M12-56 | P0 | policy | policy | LAW |
 | M12-57 | P1 | engine | engine | T-M12-013 |
@@ -2249,18 +2251,18 @@ Nothing below is renumbered.*
 | M13-07 | P0 | policy | policy | LAW |
 | M13-08 | P0 | policy | policy | LAW |
 | M13-09 | P0 | policy | policy | LAW |
-| M13-10 | P0 | mixed | SCR-SHELL-01 · +non-UI: fixed preset-precedence ladder derives one home; other presets compose | T-M13-006, T-SHELL-001 |
+| M13-10 | P0 | mixed | SCR-SHELL-01 · +non-UI: fixed preset-precedence ladder derives one home; other presets… | T-M13-006, T-SHELL-001 |
 | M13-11 | P0 | policy | policy | LAW |
 | M13-12 | P0 | policy | policy | LAW |
 | M13-13 | P0 | policy | policy | LAW |
 | M13-14 | P0 | screen | SCR-M13-01 | T-M13-001 |
 | M13-15 | P0 | screen | SCR-M13-01 | T-M13-001 |
 | M13-16 | P0 | screen | SCR-M13-01 | T-M13-001 |
-| M13-17 | P1 | mixed | SCR-M13-01 · +non-UI: target stored as goal only, one per scope+month; actuals derived at re | T-M13-008 |
+| M13-17 | P1 | mixed | SCR-M13-01 · +non-UI: target stored as goal only, one per scope+month; actuals derived at… | T-M13-008 |
 | M13-18 | P1 | mixed | SCR-M13-01, SCR-M13-04 · +non-UI: median selection / outlier detection computation | T-M13-009 |
 | M13-19 | P0 | policy | policy | LAW |
 | M13-20 | P1 | screen | SCR-M13-01 | T-M13-001 |
-| M13-21 | P1 | mixed | SCR-SHELL-03 · +non-UI: monthly summary generation and push scheduling; notification type regi | T-M13-010, T-SHELL-003 |
+| M13-21 | P1 | mixed | SCR-SHELL-03 · +non-UI: monthly summary generation and push scheduling; notification type… | T-M13-010, T-SHELL-003 |
 | M13-22 | P0 | screen | SCR-M13-04 | T-M13-004 |
 | M13-23 | P0 | screen | SCR-M13-05 | T-M13-005 |
 | M13-24 | P0 | mixed | SCR-M13-04 · +non-UI: cycle duration computation, per-stage durations, per-segment medians;  | T-M13-009 |
@@ -2275,7 +2277,7 @@ Nothing below is renumbered.*
 | M13-33 | P0 | screen | SCR-MS-02 | T-MS-375 |
 | M13-34 | P0 | screen | SCR-M08-01 | T-M08-001 |
 | M13-35 | P0 | screen | SCR-M09-02 | T-M09-002 |
-| M13-36 | P0 | mixed | SCR-M08-05 · +non-UI: F2-06 surface law: no commercial figure on this home or composed block | T-M08-005 |
+| M13-36 | P0 | mixed | SCR-M08-05 · +non-UI: F2-06 surface law: no commercial figure on this home or composed… | T-M08-005 |
 | M13-37 | P0 | screen | SCR-M10-01 | T-M10-001 |
 | M13-38 | P0 | screen | SCR-M11-01 | T-M11-001 |
 | M13-39 | P0 | screen | SCR-M13-03 | T-M13-003 |

@@ -269,6 +269,36 @@ This file dispositions every requirement row of the suite's six platform foundat
 *(Swept 2026-08-07 for the removal of the offline/sync capability. This task was the five-surface sync-state model; four of the five surfaces and the principle that required them are gone, so it is reduced to the one row that was never about connectivity and retitled accordingly. **`F4-10`** — a read served from cache says so, with a staleness banner — is a non-goal by name (`docs/prd/foundations/F4-data-integrity.md` §5: "no staleness or freshness banner"; "The product does not read from a cache"), and the money half it pointed at `F8-16` is carried by live `F8-12`, built at `T-FPLAT-028`. **`F4-24`** — the queued → syncing → synced per-record chip — is excised by name ("no queued or unsynced marker on any record"); its fourth state survives verbatim in `F4-21` and its acceptance line now sits in `T-FPLAT-013`. **`F4-26`** — the stale-read banner — is excised by name. **`F4-28`** — "all five surfaces are translated, honest and complete" — has no subject once the five are gone, and every obligation it imposed is already binding generally: `F3-01`/`F3-06`, `F3-19`/`F3-22`, `F7-42` and `F7-43`'s Definition of Done, now three base states not four per owner ruling 2026-08-07 `Q61`. **`F7-36`** — Principle 7, "offline is a visible state on every surface" — was **struck in place** in `docs/prd/foundations/F7-design-language.md` by the same ruling and is deliberately not resurrected here; Principles 8–12 keep their numbers. **`F4-27`** is live and unchanged as law, but it is a property of every screen rather than a component this bucket builds, so it moves to **## Laws** below with its text re-pulled verbatim — the live row now reads "A warning never disables a primary action" and no longer speaks of connectivity. `F4-25`'s text above was re-pulled verbatim: it lost its "Surface 4 — " prefix.)*
 
 ---
+### T-FPLAT-033 · The too-old client — server-declared minimum version and the forced-upgrade screen
+**Type:** engine · **Tier:** P0
+**PRD rows:** F4-36
+**Requirements (verbatim):**
+
+- **F4-36** (P0) — **A client too old to talk to the server is told so plainly, and told which version to get.** The product ships client versions and will break API compatibility; when a client is below the minimum supported version the server declares, the app shows a plain forced-upgrade screen that **names the required version and routes to the store**, in place of the surface the person asked for. It is never a bare error, never a silent failure, and never a screen that pretends to work. There is nothing to fall back to: v1 keeps no local store (§5), so an out-of-date client has no cached data being withheld from anyone — which is why the rule is a screen and not a degraded read mode. The minimum supported version is server-declared, so raising it never requires a client release.
+
+**DONE WHEN:**
+
+- Given a client below the server-declared minimum version, when it calls the API, then the server refuses with a distinguishable version-skew response rather than a generic error (`F4-36`).
+- Given that refusal, when the app receives it, then the forced-upgrade screen replaces the requested surface, names the required version and routes to the store (`F4-36`).
+- Given the minimum supported version is raised, when it is raised, then it takes effect with no client release (`F4-36`).
+- Given a supported client, when it calls the API, then no upgrade screen ever appears (`F4-36`).
+
+---
+### T-FPLAT-034 · Shared-device user switch — tenant isolation over held work
+**Type:** engine · **Tier:** P0
+**PRD rows:** F4-37
+**Requirements (verbatim):**
+
+- **F4-37** (P0) — **On a shared device, tenant isolation beats convenience: a user switch discards work held for the previous user, and tells them before it happens.** Shared field phones are normal in this market. When a different user signs in on a device still holding photographs or submissions captured by another user and not yet uploaded, that held work is **discarded before any new data loads**, and the person whose work is being discarded is told what will be lost **before** the switch completes, with the chance to connect and upload first. This is the one **carve-out from `F4-21`**: everywhere else nothing a field user captured is ever unrecoverable, and here it is, deliberately — a rep must never reach another rep's customer photographs, and no device-held data survives the identity that captured it.
+
+**DONE WHEN:**
+
+- Given a device holding one user's un-uploaded photographs, when a different user signs in, then that held work is discarded before any new data loads (`F4-37`).
+- Given that switch, when it is initiated, then the person whose work will be lost is told what is lost before it completes, and is offered the chance to connect and upload first (`F4-37`).
+- Given the same user signing in again, when they sign in, then nothing is discarded (`F4-37`).
+- Given any completed switch, when the new user browses, then no photograph or submission captured by the previous user is reachable (`F4-37`, carve-out from `F4-21`).
+
+---
 ### T-FPLAT-015 · The device-held photograph queue — unconditional capture, deliberate resumable upload, bounded device storage
 **Type:** engine · **Tier:** P0
 **PRD rows:** F4-21 (the carve-out half; the preserved-submission half is `T-FPLAT-013`'s) · `M04-55` (`docs/prd/modules/M04-survey.md`, which owns the queue and is dispositioned in `docs/tasks/M04-survey.md`)
@@ -305,11 +335,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 - Given a tenant inside the `past_due` dunning grace, when a field user captures new work, then capture is not cut off; capture pauses only at `halted`, and a halt landing mid-visit lets the current visit complete (`M12-27`).
 - Given any billing state at all, when a user reads, searches or exports, then all three work and no enforcement design touches them (`M12-22`, `M12-24`).
 
-**⚠ Obligation with no live carrier — recorded 2026-08-07 as register question `Q66`, awaiting an owner ruling. Nothing is built for it here, and no dead row is cited for it.**
-
-> When a different user signs in on a device that is holding another user's unuploaded field photographs, tenant isolation wins: the held photographs are discarded before any new data loads, and the person whose work is being discarded is told before it happens.
-
-*Why this is recorded rather than built (register `Q66`, raised 2026-08-07):* the obligation above was the second half of `F4-32`, deleted that day with the offline/sync capability. Its first half — local reads and writes continuing indefinitely while a session token is expired — died with the local-first store and is correctly gone. The second half did not become moot, because the photograph carve-out survived the sweep: a shared field phone still holds one user's unuploaded photographs when a different user signs in, and the answer is a tenant-isolation question rather than a convenience one ("tenant isolation beats convenience" was the source's own rule). The live PRD was read for a carrier and has none: `M04-55` governs the queue but says nothing about who is signed in; `F4-21` promises nothing captured is unrecoverable, which pulls the other way; `M01-07` covers session lifetimes and revocation but not device-held data; `F2-20` covers deactivation, not user switching. This is a hole the carve-out created, and it is a build blocker for any multi-user field device.
+**Obligation now carried — `Q66` was ruled 2026-08-26.** The shared-device rule this task once recorded with no carrier is now `F4-37` (`foundations/F4` §F4.3), built by **`T-FPLAT-034`**, with `F4-21` explicitly carved out for it. Nothing about it is built here; this note exists so the trail stays readable: `F4-32`, deleted 2026-08-07 with the offline/sync capability, was recorded as `Q66`, and is now carried by `F4-37`.
 
 *(Swept 2026-08-07 for the removal of the offline/sync capability, and retitled. `F4-33`'s law survives precisely and by name at `M12-26` and `M12-24`; only its words "offline-captured survey data still syncs" needed cutting, because there is no survey queue to drain — the one piece of work the product holds on the device is the photograph. `F4-34`'s mechanism — entitlement cached on the device with a 72-hour grace so a dead zone is not read as an absent payment — dies with the cache and is cut, but the two rulings it carried are live and their citations land here rather than vanishing: the `Q16` capture edge is verbatim at `M12-27`, and "read and export always work regardless" is `M12-22`'s unconditional always-on set and `M12-24`'s never-gated list. `F4-32` is recorded above as an obligation with no live carrier.)*
 

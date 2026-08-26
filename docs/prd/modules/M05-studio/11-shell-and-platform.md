@@ -1,7 +1,7 @@
 # MS12 · Studio shell — wizard, dashboard, persistence, UI kit
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 11 rulings, 2026-08-05) · Depends on: F2 (roles), F3 (languages), F4 (data integrity), F7 (design system, a11y), M01 (auth per Q18), M02 (leads), MS6/MS10 (health, BOM), MS11 (fingerprints, duplicate)
-Sources: ledger `shell.md` (**131 keys**, 11 test files / 120 tests passing) · rulings `shell-rulings.md` (S11-1…S11-3) · census A.10-1.
+Sources: POC code inventory — shell (**131 keys**, 11 test files / 120 tests passing) · sitting rulings (S11-1…S11-3) · census A.10-1. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: every studio document consumes this shell's navigation, gates, persistence and UI kit.
 
 ## 1. Purpose & scope
@@ -18,7 +18,7 @@ All studio personas (F2). Web primary, mobile parity (F7-30). Accessibility is a
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS12-01 | NINE visible steps with no phantom step and no reachable dead step URL; internal step ids stay stable so existing designs open unchanged (S11-1 fixes `.1/.2`, census R7). | `BRIEF` S11-1 | P0 |
+| MS12-01 | NINE visible steps with no phantom step and no reachable dead step URL; the progress bar reads "Step n of 9"; internal step ids stay stable so existing designs open unchanged (S11-1 fixes `.1/.2`, census R7). | `BRIEF` S11-1 | P0 |
 | MS12-02 | Navigation clamps to valid steps and remembers where a design was left (`.3`); deep links are gated by prerequisites — you cannot jump past an unmet gate (`.4`). | `SRC-CODE` | P0 |
 | MS12-03 | Per-step Next gates state their reason in plain language, in a defined order: setup completeness · at least one roof · panel/inverter/capacity · at least one enabled panel · the electrical hard gate (error-level electrical issues block and clamp the reachable steps, MS8-33); steps without gates say so by simply proceeding (`.5–.9`). | `SRC-CODE` | P0 |
 | MS12-04 | A blocked Next explains itself in an accessible, non-blocking toast (`.10`). | `SRC-CODE` | P0 |

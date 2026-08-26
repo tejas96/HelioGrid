@@ -11,9 +11,9 @@ from-scratch rebuild. Where the POC already implements the behavior the task is 
 engineering core moves as-is *with its tests as the regression net*. Where the surface is
 redesigned the task is a **screen** whose title says "port + UI rebuild": the engineering ports,
 the UI is rebuilt to the V2 design system. POC file ownership per area is
-`docs/prd/_process/studio/inventory/file-claims.md` (sitting 1 = Step 1, sitting 2 = Step 2,
+`docs/prd/modules/M05-studio/poc-file-claims.md` (sitting 1 = Step 1, sitting 2 = Step 2,
 sitting 3 = Step 3); every defect whose target requirement is one of this file's rows is attached
-to the task that owns that row, from `docs/prd/_process/studio/defect-register.md`.
+to the task that owns that row, from `docs/prd/modules/M05-studio/defect-register.md`.
 
 Rows that this file's documents state but that another surface realizes are listed under
 **Realized elsewhere** with their pointer; rows that engineering enforces rather than builds are
@@ -137,7 +137,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS1-28, MS1-31
 **PORT:** `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` · `3d_design_studio/src/features/solar-studio/workers/analysis.worker.ts` · `3d_design_studio/src/features/solar-studio/lib/analysis-client.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/analysis-client.test.ts`
-**DEFECTS:** none registered against MS1-28 or MS1-31 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS1-28 or MS1-31 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS1-28** (P0) — Canvas frame: fixed logical viewport over the calibrated static tile; centre-origin metre coordinates; single shared zoom constant across 2D canvas, 3D ground and AI-detect tile math so every surface agrees on m/px (`CODE.step1-setup.98–.100`).
@@ -155,7 +155,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS1-25, MS1-26, MS1-27
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/calibration.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/calibration.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`
-**DEFECTS:** none registered against MS1-25, MS1-26 or MS1-27 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS1-25, MS1-26 or MS1-27 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS1-25** (P0) — Known-distance calibration: rejects degenerate inputs (≤0.05 m); factors COMPOSE on repeat calibration; the reference measurement stores rescaled (round-trips exactly); scaleFactor drives every imagery projector so corrected geometry sits exactly on the imagery (`CODE.step1-setup.61/64/65`).
@@ -173,7 +173,7 @@ file's slice exactly once.
 **Type:** integration · **Tier:** P0
 **PRD rows:** MS1-24
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
-**DEFECTS:** none registered against MS1-24 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS1-24 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS1-24** (P0) — Solar-data client behaviors as shipped: proxy-only access (key server-side), 10 s client timeout over the proxy's 8 s, typed never-throw results so the UI always explains the situation, non-2xx surfaced, coordinate-keyed memo (ok/unavailable cached as location facts; errors NOT cached — retryable), usable-segment filtering with no zero-filling and rounding rules per the mapping contract (`CODE.step1-setup.49–.55`). Detection metering rides BM-16/BM-19 (cited, not restated).
@@ -189,7 +189,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS2-13, MS2-20
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-topology.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/lib/segment-ops.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-topology.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/segment-ops.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/segment-grid-pitched.test.ts` (sitting 2 — the deliberately pitched fixture over `reindexSegment`; it straddles this task and T-MS-207's `layout.ts`, and every other fixture in this area is flat, where the two derivations coincide, so it ports here)
-**DEFECTS:** none registered against MS2-13 or MS2-20 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS2-13 or MS2-20 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS2-13** (P0) — Delete cascades in ONE undo step: panels, segments, on-roof obstructions, walkways, rails, arresters, inverter placements, strings pruned — no orphans (`.28`).
@@ -207,7 +207,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS2-22, MS2-24, MS2-25, MS2-26
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-gable.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-hip.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-skeleton.ts` · `3d_design_studio/src/features/solar-studio/lib/skeleton-events.ts` · `3d_design_studio/src/features/solar-studio/lib/skeleton-wavefront.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-gable.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-hip.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-skeleton.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/skeleton-events.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/skeleton-wavefront.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-pipeline.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-covering.test.ts`
-**DEFECTS:** none registered against MS2-22, MS2-24, MS2-25 or MS2-26 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS2-22, MS2-24, MS2-25 or MS2-26 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS2-22** (P0) — Ground Array conversion: height 0, pitch 0, 1.5 m boundary setback, parapet off, "Array Area A/B/…" naming, poses remapped — one undo step; flat-terrain-only stated, never approximated (`.49/.95`).
@@ -229,7 +229,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS2-30, MS2-33
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-plane.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-topology.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/eave-ref-plane.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/inset-fuzz.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/flat-azimuth-lattice.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/azimuth-lattice-attacks.test.ts`
-**DEFECTS:** none registered against MS2-30 or MS2-33 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS2-30 or MS2-33 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS2-30** (P0) — Roof-plane math single source: eave-height datum, upslope rise, flush panels inherit pitch+azimuth; adjacent same-slope roofs share one eave datum (wraparound-safe tolerances), different heights never fuse (`.76/.77`).
@@ -247,7 +247,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS2-40, MS2-41, MS2-43
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/artifact.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/pipeline.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/vectorize.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/plane-fit.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/geotiff-decode.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect.worker.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-artifact.test.ts`
-**DEFECTS:** none registered against MS2-40, MS2-41 or MS2-43 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS2-40, MS2-41 or MS2-43 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS2-40** (P0) — The artifact doorway is the ONLY path in: versioned, pin-guarded (~110 m), 150 m site extent, value gates (heights (0,60), pitch [0,60], azimuth [0,360), confidence clamped), per-entity drops with reasons (one bad shape never kills the batch), same sanitizer as manual drawing, whole-artifact rejections for wrong version/source/pin (`ai.9/.43–.51`).
@@ -266,7 +266,7 @@ file's slice exactly once.
 
 **Type:** port · **Tier:** P0
 **PRD rows:** MS2-42
-**PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/gemini-client.ts` · `3d_design_studio/src/app/api/gemini/route.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/gemini-client.test.ts` (sitting 6 in `docs/prd/_process/studio/inventory/file-claims.md`, corrected to sitting 2 in `docs/prd/registers/traceability.md` — the file's only regression net; it also holds the `crossCheckWithGeometry` assertions that T-MS-102's `CODE.step2-roof-ai.72` ruling un-gates, so it ports here and is read from there)
+**PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/gemini-client.ts` · `3d_design_studio/src/app/api/gemini/route.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/gemini-client.test.ts` (sitting 6 in `docs/prd/modules/M05-studio/poc-file-claims.md`, corrected to sitting 2 in the retired traceability register — the file's only regression net; it also holds the `crossCheckWithGeometry` assertions that T-MS-102's `CODE.step2-roof-ai.72` ruling un-gates, so it ports here and is read from there)
 **DEFECTS:**
 - `CODE.step2-roof-ai.62` — photo-mode endpoint has no in-app caller (ruling S2-2: wired at P1, survey/drone photos → MS2-42).
 
@@ -284,7 +284,7 @@ file's slice exactly once.
 **Type:** integration · **Tier:** P0
 **PRD rows:** MS2-44
 **PORT:** `3d_design_studio/src/app/api/solar/building-insights/route.ts` · `3d_design_studio/src/app/api/solar/data-layers/route.ts` · `3d_design_studio/src/app/api/solar/geotiff/route.ts` · `3d_design_studio/src/app/api/solar/key.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/utm.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts`
-**DEFECTS:** none registered against MS2-44 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against MS2-44 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **MS2-44** (P0) — Server-side product guarantees: keys never reach the browser (relay + SSRF guard), expired-raster retry semantics, day-cached rasters/insights (same pin never re-bills), envelope always explains (no naked failures), UTM-only rasters with mm-accurate inverse and a ≤0.5 m/50 m alignment gate against the app's own projector (`ai.6–.23/.73–.76`).
@@ -318,7 +318,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** M05-36, MS3-31, MS3-34
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/capabilities.ts` (sitting 4 — capability resolver + reconcile) · `3d_design_studio/src/features/solar-studio/screens/Step3Obstructions.tsx` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/capabilities.test.ts`
-**DEFECTS:** none registered against M05-36, MS3-31 or MS3-34 in `docs/prd/_process/studio/defect-register.md`.
+**DEFECTS:** none registered against M05-36, MS3-31 or MS3-34 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-36** (P0) — **Everything derived updates live:** owning roof (re-checked on move), base/top heights, required bridging clearance, setback ring size, total count.
@@ -338,7 +338,7 @@ file's slice exactly once.
 **Type:** port · **Tier:** P0
 **PRD rows:** MS3-36, MS3-37, MS3-38, MS3-39
 **PORT:** `3d_design_studio/src/features/solar-studio/three/ObstructionMesh.tsx` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/obstruction-grounding.test.ts`, `3d_design_studio/src/features/solar-studio/three/__tests__/obstruction-assets.test.ts`
-**DEFECTS:** none registered against MS3-36, MS3-37 or MS3-39 in `docs/prd/_process/studio/defect-register.md`. (The paired surface defect `CODE.step3-obstructions.32` is attached to T-MS-103 at MS3-28; this task owns the predicate both sides read.)
+**DEFECTS:** none registered against MS3-36, MS3-37 or MS3-39 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step3-obstructions.32` is attached to T-MS-103 at MS3-28; this task owns the predicate both sides read.)
 
 **Requirements (verbatim):**
 - **MS3-36** (P0) — Grounding: every object sits on the surface resolved from its POSITION (stale anchors healed, deleted roofs fall back, higher roof wins, explicit ground kept) — and the SHADING caster grounds identically to the visual mesh (`.43`).
@@ -348,7 +348,7 @@ file's slice exactly once.
 
 **DONE WHEN:**
 - Given a stale roof anchor, Then 3D grounds by position and the shading caster matches the mesh (MS3-36); the shadow predicate is shared engine-wide (MS3-37). Given a missing 3D asset, Then the fallback renders and nothing crashes (MS3-38).
-- Given a project containing only some of the six modelled types, When the 3D scene mounts, Then only those types' assets are fetched; and given a corrupt asset or a 404 for a type the project does contain, Then the procedural fallback renders in its place and the scene survives. (Beyond the missing-asset line above, the lazy per-type streaming half and the corrupt/404 half of MS3-38 carry no dedicated Given/When/Then line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`'s P0 acceptance block; the requirement text above is the binding criterion.) The fetch policy is this task's; the mount that triggers it is `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx`, ported by T-MS-206 (`docs/tasks/MS-studio-b.md`), and the fallback's appearance renders on the shared 3D scene (`docs/ux/briefs/SCR-MS-09-3d-scene.md`, same task). Note for the porting engineer: `docs/prd/_process/studio/inventory/step3-obstructions.md` records no test against `.45`/`.46`, so the ported `obstruction-assets.test.ts` pins `.47`/`.48` (MS3-39) only — this pair needs new coverage rather than an inherited net.
+- Given a project containing only some of the six modelled types, When the 3D scene mounts, Then only those types' assets are fetched; and given a corrupt asset or a 404 for a type the project does contain, Then the procedural fallback renders in its place and the scene survives. (Beyond the missing-asset line above, the lazy per-type streaming half and the corrupt/404 half of MS3-38 carry no dedicated Given/When/Then line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`'s P0 acceptance block; the requirement text above is the binding criterion.) The fetch policy is this task's; the mount that triggers it is `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx`, ported by T-MS-206 (`docs/tasks/MS-studio-b.md`), and the fallback's appearance renders on the shared 3D scene (`docs/ux/briefs/SCR-MS-09-3d-scene.md`, same task). Note for the porting engineer: *retired: studio inventory* records no test against `.45`/`.46`, so the ported `obstruction-assets.test.ts` pins `.47`/`.48` (MS3-39) only — this pair needs new coverage rather than an inherited net.
 - MS3-39 is P1 and carries no separate acceptance line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`; its test-pinned reference dims are the acceptance and travel with the ported suite.
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -358,8 +358,8 @@ file's slice exactly once.
 
 **Type:** engine · **Tier:** P0
 **PRD rows:** M05-89, M05-90
-**PORT:** no POC counterpart — `docs/prd/_process/studio/inventory/file-claims.md` claims no scale-regime files; this extends the ported design payload rather than porting an existing one.
-**DEFECTS:** none registered against M05-89 or M05-90 in `docs/prd/_process/studio/defect-register.md`.
+**PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends the ported design payload rather than porting an existing one.
+**DEFECTS:** none registered against M05-89 or M05-90 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-89** (P0) — **The paradigm switch never loses a census tool:** a design with blocks presents block/table tools; pure-rooftop designs keep the **full per-panel tool census**; and per-panel editing remains available **inside** a table (remove-map pattern) — scoped, not deleted.
@@ -377,8 +377,8 @@ file's slice exactly once.
 
 **Type:** engine · **Tier:** P0
 **PRD rows:** M05-13
-**PORT:** no POC counterpart — `docs/prd/_process/studio/inventory/file-claims.md` claims no survey-hand-off files; the POC has no survey module and no supersession path at all.
-**DEFECTS:** none registered against M05-13 in `docs/prd/_process/studio/defect-register.md`.
+**PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no survey-hand-off files; the POC has no survey module and no supersession path at all.
+**DEFECTS:** none registered against M05-13 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-13** (P0) — **When a newer survey version supersedes the one a design was built from, the studio marks the design "survey updated — review needed" and notifies the designer — and applies nothing automatically (owner ruling 2026-08-04, Q24).** The design shows the review-needed banner naming the superseding version and the fields that differ in provenance or value; the designer reviews and chooses what to apply. **Draft proposals built on the design are blocked from SENDING until the review clears; sent proposals stay pinned and never mutate** (`F8-15`). The same self-stale pattern as catalog releases.
@@ -401,8 +401,8 @@ file's slice exactly once.
 
 **Type:** engine · **Tier:** P1
 **PRD rows:** M05-91
-**PORT:** no POC counterpart — `docs/prd/_process/studio/inventory/file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and the ported shading engine rather than porting an existing one. That shading engine is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/shading.ts` (MS6-03's measured raycast engine, `docs/tasks/MS-studio-b.md`), given a GPU executor and a permanently retained CPU path, never replaced.
-**DEFECTS:** none registered against M05-91 in `docs/prd/_process/studio/defect-register.md`.
+**PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and the ported shading engine rather than porting an existing one. That shading engine is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/shading.ts` (MS6-03's measured raycast engine, `docs/tasks/MS-studio-b.md`), given a GPU executor and a permanently retained CPU path, never replaced.
+**DEFECTS:** none registered against M05-91 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-91** (P1) — **Tier B capabilities (P1): large-C&I editing and simulation** — draw a zone polygon → auto-fill with tables; drag/rotate/split blocks; per-block GCR and tilt; per-table delete/nudge; keep-out subtraction — on-object direct manipulation, touch-first, working at 375 px (the DoD unchanged); GPU-accelerated shading **with a CPU fallback path retained permanently**, both pinned within ±2% on a golden scene (one engine version, two executors — an honesty-relevant equivalence); server-side full simulation for batch/over-budget designs, results stamped and staleness cleared on completion.
@@ -422,8 +422,8 @@ file's slice exactly once.
 
 **Type:** engine · **Tier:** P2
 **PRD rows:** M05-92
-**PORT:** no POC counterpart for the terrain tier — `docs/prd/_process/studio/inventory/file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and T-MS-118's Tier B block model. The winter-solstice shadow-free pitch model this row generalises is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/spacing.ts` (MS6-04/MS6-53, `docs/tasks/MS-studio-b.md`), extended to sloped ground at block granularity, never replaced.
-**DEFECTS:** none registered against M05-92 in `docs/prd/_process/studio/defect-register.md`.
+**PORT:** no POC counterpart for the terrain tier — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and T-MS-118's Tier B block model. The winter-solstice shadow-free pitch model this row generalises is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/spacing.ts` (MS6-04/MS6-53, `docs/tasks/MS-studio-b.md`), extended to sloped ground at block granularity, never replaced.
+**DEFECTS:** none registered against M05-92 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-92** (P2) — **Tier C capabilities (P2): utility scale** — single-axis trackers with closed-form GCR backtracking (rows never self-shade at low sun), validated against the community reference model; terrain import from a **free global 30 m DEM** (v1 reference implementations: GLO-30 baseline, SRTM fallback) with draped-mesh ground and tables sitting on the terrain surface, **flat ground remaining the default when no DEM is loaded**; terrain-aware row spacing (the winter-solstice shadow-free solver generalised to sloped ground at block granularity). **Terrain data unavailable → flat-terrain assumption with provenance `assumed` and a visible warning on ground-mount outputs; rooftop work never touches this path.**
@@ -443,8 +443,8 @@ file's slice exactly once.
 
 **Type:** engine · **Tier:** P1
 **PRD rows:** M05-93
-**PORT:** no POC counterpart for the block tier — `docs/prd/_process/studio/inventory/file-claims.md` claims no scale-regime files; this layers above the combiner architecture T-MS-271 (`docs/tasks/MS-studio-b.md`) ports, and does not modify it.
-**DEFECTS:** none registered against M05-93 in `docs/prd/_process/studio/defect-register.md`.
+**PORT:** no POC counterpart for the block tier — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this layers above the combiner architecture T-MS-271 (`docs/tasks/MS-studio-b.md`) ports, and does not modify it.
+**DEFECTS:** none registered against M05-93 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
 - **M05-93** (P1) — **Block-level electrical extends — never replaces — the combiner architecture:** an inverter-block tier for central-inverter blocks; string inverters remain for ≤10 MW distributed designs; MV collection is stubbed as a **LABELLED ASSUMPTION** — no MV engineering claim; reconciliation gates hold (Σ combiner inputs = total strings; Σ blocks = project total). Permit/DXF outputs at scale: zone plan, table rows with pitch dimensions, per-block electrical single-line, DEM contour underlay — **provenance tiers print on every sheet, unchanged**.
