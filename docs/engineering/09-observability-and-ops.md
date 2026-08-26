@@ -12,11 +12,30 @@ observability infrastructure to babysit. Sources:
   and ops scripts. JSON to stdout only — Fly captures it.
 - **Context injection via AsyncLocalStorage**: every line carries `requestId`, `tenantId`,
   `userId` where a session exists, plus `jobId`/`queue` in worker and `callId` in voice.
-  Request ID: honour incoming `Fly-Request-Id`, else generate a ULID; echo as
-  `x-request-id` on every response (support greps on it).
+  *AsyncLocalStorage is NOT built yet* — it lands with the M01 request-context seam. Today
+  `requestId` reaches every line through pino-http's `genReqId`, and there is no tenant or
+  actor to carry.
+- **Request ID — as built (2026-08-25)**: `apps/api/src/common/request-id.ts` assigns one
+  per request BEFORE CORS and body parsing, so even a body-parser 413 carries it. A
+  caller-supplied `x-request-id` is honoured only if it matches
+  `[A-Za-z0-9._:-]{1,128}` — otherwise it is replaced, never echoed, because an unbounded
+  or control-character id lands in a log line and a response header. It is echoed on every
+  response and listed in CORS `exposedHeaders` so the browser can read it. A generated id is
+  a **UUID v4** (`node:crypto`), not a ULID, and `Fly-Request-Id` is not read yet — both are
+  open items for the observability slice, not claims about today.
 - **Redaction is mandatory**: `req.headers.authorization`, `*.otp`, `*.password`,
   Razorpay payloads' instrument fields, and phone numbers logged masked (`+91••••••1234`).
-  Redaction paths live in one shared `packages/config/logging.ts` — not per-app copies.
+  The masking format is not built yet — today a matched path is replaced whole with
+  `[redacted]`. **There is no shared `packages/config/logging.ts`** (there never was; a
+  package holding it would have to depend on pino, which no shared package may). The one
+  authoring is `apps/api/src/common/logging.ts`; `apps/worker` gets its own when it grows a
+  log surface worth redacting.
+- **Two limits of `redact`, both found by probe and both handled there**: it reaches
+  STRUCTURED fields only, so a value in the raw `req.url` query string escapes it — the
+  request serialiser strips the query string and leaves the parameters in `req.query`, where
+  paths apply. And an error's own payload cannot be redacted path-by-path — a ts-rest
+  `RequestValidationError` carries the submitted data's Zod issues — so errors serialise
+  through an ALLOWLIST (`type`, `message`, `stack`, `code`, `status`, `statusCode`).
 - Levels: `info` in prod; `debug` togglable per-machine via env without redeploy
   (`LOG_LEVEL`). Drizzle slow-query logging at >200 ms as `warn` with the query fingerprint
   (never bound parameter values).
@@ -33,7 +52,8 @@ observability infrastructure to babysit. Sources:
 - `@opentelemetry/sdk-node` with auto-instrumentations (http/undici, pg, ioredis) in api,
   worker and voice; `service.name` = `heliogrid-api` / `-worker` / `-voice`.
 - **W3C traceparent propagation end-to-end**: web → api (ts-rest client injects headers),
-  api → worker (traceparent stored in BullMQ job data, worker resumes the trace),
+  api → worker (traceparent carried in the orchestration payload — a Temporal workflow
+  argument since ADR-0025 — worker resumes the trace),
   api → voice. One trace covers "user clicked Generate PDF → job → Playwright → Tigris".
 - Export OTLP to Grafana Cloud Tempo. Sampling: `ParentBased(TraceIdRatio 0.2)` for api;
   **100 % for voice call sessions** (low volume, high value per trace) and for any request
@@ -62,7 +82,7 @@ Postgres nodes run `postgres_exporter` as a sidecar process in the postgres-flex
 | OTP delivery | failure rate >10 % over 30 min | the front door for every login |
 | ComplianceGate fail-closed | promotional dialing paused on stale DND scrub | revenue-affecting, must be seen |
 | Machine restarts | any app >3 restarts/h (OOM signature exit 137) | catches Playwright/shading memory creep |
-| Upstash limits | memory >80 % of fixed plan, or command rate near plan cap | BullMQ dies badly on eviction/throttle |
+| Upstash limits | memory >80 % of fixed plan, or command rate near plan cap | rate limiting fails OPEN or CLOSED on eviction/throttle — neither is silent-safe |
 | Cert/secret expiry | tenant WABA/Razorpay creds invalid on scheduled probe | tenant-facing integrations rot silently |
 
 ### Custom metrics (prom-client, names are the contract)
@@ -253,7 +273,7 @@ cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
   automation: on repeated `bom` placement failures, `fly scale count api=2 --region sin`
   (DB stays in bom; ~60 ms/query is acceptable during an overflow window).
 - **Rolling deploys**: `fly deploy --strategy rolling`, health-check gated (`/readyz`).
-  `kill_timeout`: api/web 30 s; worker 120 s (BullMQ graceful close — stop taking jobs,
+  `kill_timeout`: api/web 30 s; worker 120 s (graceful close — stop taking jobs,
   finish in-flight); **voice 300 s** (drain live calls; new calls route to new machines).
 - **Migrations** run as `release_command` (`pnpm --filter @heliogrid/db migrate`) before
   machines roll. Discipline: every migration must be compatible with the previous release's
@@ -282,9 +302,12 @@ probe alert (§3) and a settings nag, never silent failure.
 
 ## 7. Cost monitoring
 
-- **Fixed line items**: Upstash **fixed plan** (start $10/mo · 250 MB — Fly explicitly
-  recommends fixed for BullMQ; PAYG polling costs are a trap; eviction stays OFF,
-  `maxRetriesPerRequest: null`) — alert at 80 % memory and upgrade a tier BEFORE throttling
+- **Fixed line items**: Upstash **fixed plan** (start $10/mo · 250 MB — PAYG polling costs
+  are a trap; eviction stays OFF) — alert at 80 % memory and upgrade a tier BEFORE throttling.
+  **This sizing was chosen for BullMQ, which is gone (ADR-0025).** Redis now carries only rate
+  limiting and SSE fan-out, whose working set is smaller and whose eviction tolerance is a
+  different question. Re-derive the plan and the eviction setting before provisioning — do not
+  inherit this number
   ([Upstash on Fly](https://fly.io/docs/upstash/redis/)).
 - **Machine sizing baseline** (review monthly against the Cost dashboard; figures are
   sizing intent, verify against current Fly pricing):

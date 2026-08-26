@@ -1,4 +1,4 @@
-import { LoginScreen } from '../../screens/login/LoginScreen';
+import { LoginScreen } from '../../screens/login';
 
 /**
  * Screens visible only while signed out. The gate is stated ONCE, by the Auth group in

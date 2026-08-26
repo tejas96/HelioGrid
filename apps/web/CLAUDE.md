@@ -1,10 +1,10 @@
 # @heliogrid/web — Next.js App Router, pure frontend/BFF (NO domain logic)
 
 ## What lives here / what must never live here
-- Screens and route handlers ONLY for cookie/session BFF glue. **Nothing is built yet:**
-  `app/` holds a redirect stub, a placeholder home page, the layout and the data/i18n
-  providers. The `/design` token reference and the whole `features/` tree were deleted
-  2026-08-19 with the v1 design system.
+- Route handlers ONLY for cookie/session BFF glue. `app/` holds a redirect stub, a home
+  screen route, the layout and the data/i18n providers. `features/app/home/` holds the first
+  screen composition — `HomeScreen.tsx` composes `@heliogrid/ui` `EmptyState`; more features
+  land per module slice.
 - NEVER: authored business logic (import it — Law 11), direct packages/db imports, raw
   hex/px values.
 
@@ -18,6 +18,20 @@ docs/engineering/architecture.md §2 apps/web; platform rules §3 (Next.js). `@h
 data path — transport, repositories, session; this app authors none. Shared login types,
 policy constants and formatters are imported from `@heliogrid/domain`, never re-authored
 (Law 11).
+
+**Language.** `<Trans>`, `useI18n()` and `useTranslate()` come from `@heliogrid/i18n/react` —
+never `@lingui/react`, which this app no longer declares. `app/providers.tsx` builds ONE
+runtime per mount (a `useState` initialiser, never module scope: Next shares module scope
+across every server request) and syncs `<html lang>`/`dir` on each switch. Inactive catalogs
+are separate chunks fetched on switch — keep the loader specifiers literal or that stops.
+
+**Client vs server render.** A client component reaches data through `@heliogrid/data/react`
+hooks under `<DataProvider>`. A server component or server action uses
+`createServerDataContext({ baseUrl, headers })` from `@heliogrid/data/server` — call it
+INSIDE the render and let it fall out of scope. Never hoist it to a module constant: its
+repositories close over that one caller's forwarded cookie and its QueryClient holds that
+one caller's data, so a process-global serves the next visitor the previous visitor's
+session. No route uses it yet; it lands with the first server-rendered product screen.
 
 ## Local conventions
 - **`app/` ROUTES, `features/` OWNS.** `page.tsx` reads route params and renders one screen

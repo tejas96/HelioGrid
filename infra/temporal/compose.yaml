@@ -1,0 +1,120 @@
+# The production-like local Temporal stack.
+#
+# Every image is pinned BY DIGEST, not by tag. A tag is a moving pointer: `1.30.6` was
+# rebuilt once already in the window this stack was authored, and a spike that proves a
+# behaviour against an image nobody can fetch again has proven nothing durable.
+#
+# Its Postgres is DEDICATED and on its own port. It is not `heliogrid-pg-local` and must
+# never become it: Temporal's schema is owned by `temporal-sql-tool` at the server's exact
+# version, product schema is owned by Drizzle migrations, and putting them in one database
+# means one of the two tools eventually migrates the other's tables.
+#
+#   docker compose -f infra/temporal/compose.yaml up -d
+#   bash infra/temporal/scripts/bootstrap.sh          # schema + namespace, idempotent
+#   docker compose -f infra/temporal/compose.yaml down -v   # -v for a genuinely clean boot
+
+name: heliogrid-temporal
+
+services:
+  postgres:
+    image: postgres:16@sha256:33f923b05f64ca54ac4401c01126a6b92afe839a0aa0a52bc5aeb5cc958e5f20
+    container_name: heliogrid-temporal-pg
+    environment:
+      POSTGRES_USER: temporal
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_DB: postgres
+    # 5545, one past the product database's 5544, and exposed only so the backup/restore
+    # rehearsal can reach it from the host. Track 8's Fly template exposes nothing.
+    ports: ['5545:5432']
+    volumes: ['temporal-pgdata:/var/lib/postgresql/data']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U temporal -d postgres']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  # Serves the JWKS the server fetches to verify identity tokens. In production this is the
+  # identity provider; here it is a static file, which is the ONLY part of the authorization
+  # path that is simplified — the claim mapper, the authorizer and the claims are real.
+  jwks:
+    image: nginx:1.27-alpine
+    container_name: heliogrid-temporal-jwks
+    volumes: ['./pki/jwt/jwks.json:/usr/share/nginx/html/jwks.json:ro']
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O /dev/null http://127.0.0.1/jwks.json || exit 1']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  temporal:
+    # Overridable ONLY so scripts/probe-upgrade.sh can rehearse a one-minor move without
+    # editing this file. The default is the pinned digest; nothing else sets it.
+    image: ${TEMPORAL_SERVER_IMAGE:-temporalio/server:1.30.6@sha256:c8ade0075f9d9da43c206de2b255c80be49db384045bd1ff76bd58d0f408a314}
+    container_name: heliogrid-temporal
+    depends_on:
+      postgres: { condition: service_healthy }
+      jwks: { condition: service_healthy }
+    environment:
+      # The ONLY way to make the server read a mounted config: a file at the conventional
+      # ./config/<env>.yaml is ignored in favour of an embedded env-driven template. See the
+      # note at the top of config/temporal.yaml — this cost an hour to find and is why the
+      # values in that file are literal rather than ${...}.
+      TEMPORAL_SERVER_CONFIG_FILE_PATH: /etc/temporal/config/temporal.yaml
+      # internal-frontend must be STARTED, not merely configured — the entrypoint defaults to
+      # frontend,history,matching,worker and the system worker then has nothing to call.
+      TEMPORAL_SERVICES: frontend,internal-frontend,history,matching,worker
+      # NOT set: TEMPORAL_ALLOW_NO_AUTH. The server refuses to start without an authorizer
+      # unless that flag is given, and never giving it is what stops an unauthenticated
+      # cluster from appearing by accident during a debugging session.
+    volumes:
+      - './config/temporal.yaml:/etc/temporal/config/temporal.yaml:ro'
+      - './config/dynamicconfig:/etc/temporal/dynamicconfig:ro'
+      - './pki:/etc/temporal/pki:ro'
+    ports: ['7233:7233']
+    networks:
+      default:
+        ipv4_address: 172.29.0.10
+    healthcheck:
+      # gRPC health over mTLS. `temporal` CLI is not in the server image, so this checks the
+      # port is accepting TLS at all; the real readiness proof is bootstrap.sh's namespace
+      # describe, which exercises authentication AND authorization.
+      test: ['CMD-SHELL', 'nc -z 127.0.0.1 7233 || exit 1']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # Not a service — an operator shell holding temporal-sql-tool and the CLI at the versions
+  # that match the server. `sleep infinity` so scripts can `docker compose exec` into it
+  # rather than starting a new container per command and re-mounting the PKI each time.
+  admin:
+    image: temporalio/admin-tools:1.30.6@sha256:d6218349ac4468ea97877dedaa5351b16364983946dbde49811d93011da649c6
+    container_name: heliogrid-temporal-admin
+    depends_on:
+      postgres: { condition: service_healthy }
+    environment:
+      SQL_PLUGIN: postgres12
+      SQL_HOST: postgres
+      SQL_PORT: '5432'
+      SQL_USER: temporal
+      SQL_PASSWORD: temporal
+      TEMPORAL_ADDRESS: temporal:7233
+      TEMPORAL_TLS_CA: /etc/temporal/pki/ca-bundle.pem
+      TEMPORAL_TLS_CERT: /etc/temporal/pki/client-operator/tls.pem
+      TEMPORAL_TLS_KEY: /etc/temporal/pki/client-operator/tls.key
+      TEMPORAL_TLS_SERVER_NAME: temporal
+    volumes: ['./pki:/etc/temporal/pki:ro']
+    entrypoint: ['sleep', 'infinity']
+
+volumes:
+  temporal-pgdata:
+
+# A fixed subnet so the frontend has a STABLE broadcast address. Ringpop's `broadcastAddress`
+# must be an IP — a hostname is rejected outright ("ringpop config malformed `broadcastAddress`
+# param: temporal") — and because the explicit-config path does no ${VAR} expansion, the
+# server image's own TEMPORAL_BROADCAST_ADDRESS computation cannot reach the file. On Fly the
+# equivalent is the machine's stable private 6PN address, which the release step renders in.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.29.0.0/24

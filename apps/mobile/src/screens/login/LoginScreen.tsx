@@ -1,6 +1,6 @@
-import { PlaceholderScreen } from '../placeholder/PlaceholderScreen';
+import { PlaceholderScaffold } from '../shared/PlaceholderScaffold';
 
-/** Placeholder — see PlaceholderScreen. Replaced when the real Login screen is designed. */
+/** Placeholder — replaced when the real Login screen is designed. */
 export function LoginScreen() {
-  return <PlaceholderScreen name="Login" />;
+  return <PlaceholderScaffold name="Login" />;
 }

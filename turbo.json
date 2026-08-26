@@ -70,22 +70,51 @@
           "allow": ["forms", "config"]
         }
       },
-      "app": {
+      "app-web": {
         "dependencies": {
           "allow": [
-            "app",
+            "app-web",
             "contracts",
             "data",
             "domain",
-            "db",
+            "env",
+            "forms",
+            "i18n",
             "theme",
             "ui",
-            "i18n",
-            "forms",
-            "adapters",
-            "config",
-            "env"
+            "config"
           ]
+        }
+      },
+      "app-mobile": {
+        "dependencies": {
+          "allow": [
+            "app-mobile",
+            "contracts",
+            "data",
+            "domain",
+            "env",
+            "forms",
+            "i18n",
+            "theme",
+            "ui",
+            "config"
+          ]
+        }
+      },
+      "app-api": {
+        "dependencies": {
+          "allow": ["app-api", "contracts", "domain", "db", "env", "config"]
+        }
+      },
+      "app-worker": {
+        "dependencies": {
+          "allow": ["app-worker", "contracts", "domain", "db", "env", "config", "adapters"]
+        }
+      },
+      "app-invariants": {
+        "dependencies": {
+          "allow": ["app-invariants", "contracts", "domain", "db", "env", "config"]
         }
       },
       "env": {

@@ -13,7 +13,7 @@ migrations/NNNN_<what>.sql  four-digit, zero-padded, one above the highest; NEVE
 src/schema/<area>.ts        the Drizzle mirror of what the migrations built
 src/client.ts               connection factory + withTenantTransaction
 src/migrate.ts              the sha256-locked runner
-src/uuid.ts                 the ./uuid subpath — the one thing frontends may import
+src/uuid.ts                 the ./uuid subpath — backend use only (repositories, common/db)
 ```
 
 A migration is named for what it does (`0002_lead_capture.sql`), never `0002_update.sql`.

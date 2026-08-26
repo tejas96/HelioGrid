@@ -1,6 +1,6 @@
-import { PlaceholderScreen } from '../placeholder/PlaceholderScreen';
+import { PlaceholderScaffold } from '../shared/PlaceholderScaffold';
 
-/** Placeholder — see PlaceholderScreen. Replaced when the real Boot screen is designed. */
+/** Placeholder — replaced when the real Boot screen is designed. */
 export function BootScreen() {
-  return <PlaceholderScreen name="Boot" />;
+  return <PlaceholderScaffold name="Boot" />;
 }

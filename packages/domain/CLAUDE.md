@@ -2,7 +2,13 @@
 
 ## What lives here / what must never live here
 - Decision logic both platforms need: state machines as pure reducers, formatters,
-  business invariants, calculations.
+  business invariants, calculations, and the AUTHORIZATION POLICY (`src/authz/`).
+- **`src/authz/` is the whole permission model** — the twelve fixed presets, the capability
+  matrix, OR-across-held-roles, and widest-wins visibility resolved PER DOMAIN
+  (`docs/prd/foundations/F2-roles-and-permissions.md`). It is pure by design: no session, no
+  tenant, no request. The API resolves the current membership and passes the ROLES in; this
+  decides. That is what lets the model be exercised without a server, and what stops a
+  permission check quietly becoming a query.
 - NEVER: NestJS, React, React Native, storage, fetch, env reads, packages/db, packages/ui,
   or any app import. No side effects, no I/O, no clock reads at module scope.
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global
@@ -18,8 +24,8 @@ pnpm --filter @heliogrid/domain typecheck | build
 
 ## Dependency policy
 docs/engineering/architecture.md §2 domain. This is the BOTTOM layer — it imports nothing in the
-workspace (owner ruling 2026-07-30). The contracts and apps/api edges were
-removed by the same-dayteardown and return with the auth rebuild.
+workspace (owner ruling 2026-07-30). The contracts edge is LIVE again since 2026-08-25:
+`rolePresetSchema` is `z.enum(ROLE_PRESETS)` built from this package's tuple.
 A business enum both layers need is defined HERE as a pure union; contracts then builds its
 `z.enum` from it. Importing contracts from here is a package cycle, and both gates say so.
 
@@ -42,7 +48,16 @@ A business enum both layers need is defined HERE as a pure union; contracts then
   declarations produced a WRONG finding: one platform reached the same
   outcome through a differently-named variable, so it looked absent and was not. Unifying a type
   narrows where drift can hide; it does not tell you what each side actually does.
-- Landed so far: login flow types + behavioural constants (`auth/login-state.ts`,
+- **A capability matrix with a default is a matrix with a hole.** `CAPABILITY_MATRIX` is
+  `Record<Capability, Record<RolePreset, CapabilityGrant>>` with every cell written out —
+  60 of them for M01 alone. That is deliberate and must stay: an unstated cell is exactly how
+  a permission silently appears, and `Record` is what makes a thirteenth preset a compile
+  error in every row rather than a quiet `undefined`.
+- **A module appends its OWN capability rows when its slice begins** (Law 9), in its own file
+  beside `capabilities.ts`. The visibility matrix is empty on purpose: M01's rows are all
+  acts, and an unlanded domain resolves to `none`, which is fail-closed and correct.
+- Landed so far: the authorization policy (`authz/`), login flow types + behavioural constants
+  (`auth/login-state.ts`,
   `auth/login-policy.ts`), the OTP protocol constants (`auth/otp.ts`), `TENANT_SEGMENTS`
   (`tenancy/segment.ts`) and phone NSN display (`format/phone.ts`). Still to come, in order:
   the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6),

@@ -1,0 +1,26 @@
+# Dynamic config — the knobs that can change without a restart.
+#
+# Deliberately small. Every entry here is a decision someone must be able to find, and a
+# dynamic-config file that mirrors defaults is a file nobody reads.
+
+# Retention is set per namespace at creation (30 days — README §4), not here. This raises the
+# per-namespace RPS ceiling above the conservative default for a single-machine deployment
+# that has no other tenant to protect.
+frontend.namespaceRPS:
+  - value: 2400
+
+# Payload size. Temporal's own hard limit is 4 MB per gRPC message; the WARN threshold is
+# where a growing payload becomes visible before it becomes a failure. Our rule (README §4)
+# is that a workflow argument carries IDs and never a document, so anything approaching this
+# is a design error, not a tuning opportunity.
+limit.blobSize.warn:
+  - value: 262144      # 256 KB
+limit.blobSize.error:
+  - value: 2097152     # 2 MB
+
+# History size guards. Continue-As-New is the answer to a long-running workflow, and these
+# thresholds are what make "it grew unbounded" visible while it is still recoverable.
+limit.historySize.warn:
+  - value: 10485760    # 10 MB
+limit.historyCount.warn:
+  - value: 10240

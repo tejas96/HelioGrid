@@ -1,5 +1,10 @@
+import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
+import { LANGUAGE_META } from '@heliogrid/i18n';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import '@heliogrid/theme/tokens.css';
+import '@heliogrid/theme/base.css';
+import '@heliogrid/ui/styles.css';
 import './globals.css';
 import { Providers } from './providers';
 
@@ -15,7 +20,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // The SOURCE locale, because the server has no per-user language until M01 lands a
+    // session. Providers moves both attributes on a client switch.
+    <html lang={LANGUAGE_META[UI_SOURCE_LOCALE].tag} dir={LANGUAGE_META[UI_SOURCE_LOCALE].dir}>
       <body>
         <Providers>{children}</Providers>
       </body>

@@ -38,7 +38,7 @@ done
 # Being the token package is NOT itself an exemption, and the whole tree is not dropped to buy
 # one: _generated is the exempt part, and it is excluded by path so the hand-written source
 # beside it stays covered. That distinction is the reason --exclude-dir exists here.
-UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/lib packages/theme/src packages/ui/src"
+UI_DIRS="apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/features apps/web/lib packages/theme/src packages/ui/src"
 for d in $UI_DIRS; do
   [ -e "$d" ] || { printf 'CONFIG ROT: UI_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
 done
@@ -260,5 +260,38 @@ fi
 # globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
 # called, if there is one — in the change that creates packages/ui (docs/engineering/17 §5 step 2).
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated'
+# ── 9. Every contract UI language is fully REGISTERED in packages/i18n ──────
+# `UI_LANGUAGES` in packages/contracts/src/locale.ts is the one place the set is written.
+# Two of the three registrations it implies are held by TYPES — LANGUAGE_META and
+# CATALOG_LOADERS are `satisfies Record<UiLanguage, …>`, so a new language fails typecheck
+# until both exist. The THIRD cannot be: the Hermes plural-rule data is a bare side-effect
+# import, referenced by nothing, so no type and no lint rule can see that it is missing.
+# It would fail on a device, mid-sentence, as English plural rules applied to Hindi.
+#
+# So this reads the tuple and greps for the import line. It is a grep in an existing gate,
+# not a new script (CLAUDE.md §8 mechanism order) — and it derives its expectation from the
+# source of truth rather than restating the list, so it cannot rot into a fourth locale list.
+LOCALE_FILE='packages/contracts/src/locale.ts'
+RN_ENTRY='packages/i18n/src/rn/index.ts'
+if [ -e "$LOCALE_FILE" ] && [ -e "$RN_ENTRY" ]; then
+  langs=$(sed -n "/UI_LANGUAGES = \[/,/\] as const/p" "$LOCALE_FILE" | grep -oE "'[a-z-]+'" | tr -d "'")
+  [ -n "$langs" ] || { printf 'CONFIG ROT: could not read UI_LANGUAGES from %s.\n' "$LOCALE_FILE"; fail=1; }
+  unregistered=''
+  for lang in $langs; do
+    grep -q "intl-pluralrules/locale-data/$lang'" "$RN_ENTRY" \
+      || unregistered="${unregistered}  ${lang}: no plural-rule data import in ${RN_ENTRY}\n"
+  done
+  if [ -n "$unregistered" ]; then
+    printf 'UI LANGUAGE NOT FULLY REGISTERED (packages/contracts/src/locale.ts is the source):\n'
+    printf "$unregistered"
+    echo '  Add the @formatjs/intl-pluralrules/locale-data import. Without it Hermes falls'
+    echo '  back to English plural rules and the UI is silently wrong, not broken.'
+    fail=1
+  fi
+else
+  printf 'CONFIG ROT: check 9 names a file that does not exist (%s or %s).\n' "$LOCALE_FILE" "$RN_ENTRY"
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered'
 exit $fail

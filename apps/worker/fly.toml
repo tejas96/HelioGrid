@@ -1,9 +1,15 @@
-# heliogrid-worker — autostop OFF (repeatable jobs + queue consumers must keep running).
+# heliogrid-worker — autostop OFF (a Temporal worker must keep polling its task queue).
 app = "heliogrid-worker"
 primary_region = "bom"
 
 [build]
   dockerfile = "Dockerfile"
+
+# Graceful drain (ADR-0025). SIGTERM makes the worker stop taking NEW tasks and finish the
+# in-flight ones; this is how long the platform waits before killing it. It must EXCEED the
+# longest activity, because an activity is exactly where a side effect is half-applied — the
+# workflows themselves are durable and lose nothing either way.
+kill_timeout = "120s"
 
 [[vm]]
   size = "shared-cpu-2x"

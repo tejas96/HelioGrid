@@ -11,11 +11,12 @@
 ## What lives here / what must never live here
 - Drizzle schema (`src/schema/*`), the connection factory + `withTenantTransaction`
   (SET LOCAL app.tenant_id), the migration runner, and `migrations/*.sql`.
-- The `./uuid` subpath export exists for app-side id generation and is the ONE thing
-  frontends may import from here.
+- The `./uuid` subpath export is for backend use (repositories, common/db). The former
+  frontend exemption is retired — no app ever imported it and `node:crypto` cannot resolve
+  in a browser or Metro bundle.
 - NEVER: business logic, contract imports, app imports. Never a table/column that is not
-  in a migration. web and mobile may import nothing here but `./uuid`
-  (`web-no-db` / `mobile-no-db` exempt exactly that subpath).
+  in a migration. web and mobile may import NOTHING from this package (`web-no-db` /
+  `mobile-no-db` cover the full package including the uuid subpath).
 
 ## Commands
 pnpm --filter @heliogrid/db build        # tsc -b
