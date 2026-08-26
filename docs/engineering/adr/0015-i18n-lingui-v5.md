@@ -1,6 +1,6 @@
 # ADR-0015: i18n — Lingui v5, one catalog for Next.js and bare React Native
 
-Date: 2026-07-24
+Date: 2026-07-24 · Updated: 2026-08-25 (entry-point split, per-mount instances, forked catalog loader)
 
 ## Context
 
@@ -9,6 +9,21 @@ Hard requirements: one message catalog (EN/HI/MR) shared by Next.js App Router (
 ## Decision
 
 **Lingui v5, single catalog in `packages/i18n`.** Compile-based (small bundles, ICU MessageFormat native) with a lightweight runtime for per-user locale switching. Next.js App Router + RSC officially supported. On bare RN: `@lingui/metro-transformer` (verified without Expo, RN ≥0.73) — set `transformer.babelTransformerPath`, add `po`/`pot` to `resolver.sourceExts`, install `@formatjs/intl-locale` + `@formatjs/intl-pluralrules` polyfills. Devanagari via the Noto Sans Devanagari chain with explicit RN fallback handling.
+
+**Shape, as built 2026-08-25.** Three entry points of ONE package: `.` is React-free and
+exposes `createTranslator(locale)` for a server render or a job; `./react` owns the provider,
+the hooks and the re-exported `<Trans>`; `./rn` isolates the Hermes Intl polyfills, whose
+global side effects must never enter a web bundle. The package owns the `@lingui` and
+`@formatjs` dependencies outright — neither app declares them.
+
+**Catalog loading is platform-forked, and that is not a workaround.** `catalog-loader.ts`
+uses `import()`, so webpack emits one chunk per language and an inactive catalog never
+reaches the initial page. `catalog-loader.native.ts` imports all three statically, because
+React Native ships ONE bundle: a release build inlines the `import()`, but against the dev
+server the same call goes through `__loadBundleAsync` and throws
+`LoadBundleFromServerError` — proven on the iOS simulator. A loader that works only in
+release builds is worse than no lazy loading. The two hosts have genuinely different loading
+models; one signature hides that from everything above.
 
 ## Consequences
 

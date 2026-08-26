@@ -1,28 +1,21 @@
-import { type UiLanguage, uiLanguageSchema } from '@heliogrid/contracts';
-import { i18n } from '@lingui/core';
-import { messages as en } from './locales/en/messages';
-import { messages as hi } from './locales/hi/messages';
-import { messages as mr } from './locales/mr/messages';
-
 /**
- * One catalog, two consumers. Catalogs are COMPILED at build time (no
- * runtime parser); missing translations fall back to English — never a bare key.
- * Per-USER language (D25): switching re-renders the whole app, no reload.
- * The locale set derives from the contracts enum — one source, never restated.
+ * @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare React Native.
+ *
+ * This entry is REACT-FREE. Four entries, and the split is the point:
+ *   `.`      identity-adjacent metadata, catalog loading, and `createTranslator` for
+ *            isolated server/background/export work.
+ *   `./react` the provider, the hooks, and the Lingui component API.
+ *   `./rn`    Hermes Intl polyfills — global side effects that must never enter a web bundle.
+ *
+ * The language SET is not re-exported: it lives in `@heliogrid/contracts`
+ * (`UI_LANGUAGES` / `UiLanguage`), and restating it here would be the second list this
+ * package exists to prevent.
  */
-export const LOCALES = uiLanguageSchema.options;
-export type Locale = UiLanguage;
-
-export const catalogs = { en, hi, mr } as const;
-
-export function setupI18n(locale: Locale = 'en') {
-  i18n.load(catalogs);
-  i18n.activate(locale);
-  return i18n;
-}
-
 export type { ApiErrorLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
 export type { ValidationIssueLike } from './copy/validation';
-export { formsValidationMessage } from './copy/validation';
-export { i18n };
+export { createFormsValidationMessage } from './copy/validation';
+export type { LanguageMeta } from './languages';
+export { LANGUAGE_META, loadCatalog } from './languages';
+export type { I18nRuntime, Translator } from './runtime';
+export { createI18nRuntime, createTranslator } from './runtime';

@@ -2,8 +2,10 @@ import { z } from 'zod';
 import {
   adminDatabaseUrlSchema,
   databaseUrlSchema,
+  filePathSchema,
   nodeEnvSchema,
-  redisUrlSchema,
+  temporalAddressSchema,
+  temporalNamespaceSchema,
 } from './fragments';
 
 /**
@@ -17,11 +19,27 @@ export const workerEnvSchema = z.object({
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,
 
   /*
-   * Optional ON PURPOSE — absent REDIS_URL is the documented scaffold-idle mode, and
-   * modelling it here keeps that a visible part of the contract rather than an inline
-   * ternary in worker.module.ts.
+   * REDIS_URL is GONE from the worker (ADR-0025, Track 7). It existed for BullMQ; orchestration
+   * is Temporal now, which has its own PostgreSQL. `redisUrlSchema` stays in fragments.ts and
+   * Redis stays in the product — docs/engineering/08 §7 needs it for rate limiting and SSE
+   * fan-out — but those are API concerns, and a variable this process never reads is a
+   * required setting nobody can explain.
    */
-  REDIS_URL: redisUrlSchema.optional(),
+
+  /*
+   * Temporal (ADR-0025). REQUIRED, unlike REDIS_URL: a worker with no orchestrator is not
+   * "idle", it is a machine that will never do the work it was started for — and it would say
+   * nothing about it. Failing at boot with the key named is the whole point of this file.
+   */
+  TEMPORAL_ADDRESS: temporalAddressSchema,
+  TEMPORAL_NAMESPACE: temporalNamespaceSchema,
+  TEMPORAL_TLS_CA_FILE: filePathSchema,
+  TEMPORAL_TLS_CERT_FILE: filePathSchema,
+  TEMPORAL_TLS_KEY_FILE: filePathSchema,
+  /** The identity token, read from a FILE for the reason fragments.ts states. */
+  TEMPORAL_AUTH_TOKEN_FILE: filePathSchema,
+  /** Verified against the server certificate's SANs. A mismatch must fail, not warn. */
+  TEMPORAL_TLS_SERVER_NAME: z.string().min(1).default('temporal'),
 });
 
 export type WorkerEnv = z.infer<typeof workerEnvSchema>;

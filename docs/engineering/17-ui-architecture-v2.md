@@ -470,9 +470,16 @@ Each needs updating when phase 3 lands. Listed so none is missed:
 - `package.json` — remove the `check:ui-parity` script, add `ds:pull` and `ds:check`
 - `.dependency-cruiser.cjs` — package boundary rules naming `ui` / `ui-api` / `tokens`
 - `knip.jsonc` — entry points for the deleted packages
-- `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui']` becomes
-  `['@heliogrid/ui', '@heliogrid/theme']`
+- `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui', '@heliogrid/theme']`
+  **done 2026-08-25 (task 2)**
 - `apps/mobile/babel.config.js` — add the Unistyles plugin if §3 is taken
+- **hardcoded English in `packages/ui` — 78 occurrences / 46 unique strings across 64 files
+  (measured 2026-08-25).** Mostly `aria-label` / `accessibilityLabel` pairs, which a screen
+  reader speaks and which are therefore copy. Each becomes a REQUIRED prop on the
+  component's one `<Name>.types.ts`, so by Law 7 it changes both platform halves and every
+  call site together — a design-system change, sequenced here rather than with the i18n
+  track that established the rule. The rule and the regenerating command are in
+  `.claude/rules/ui-adherence.md`; `packages/ui` gains no dependency on `@heliogrid/i18n`.
 - `docs/engineering/03-tech-stack.md` — the design-tokens row must name `packages/theme`
 
 ---

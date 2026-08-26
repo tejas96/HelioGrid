@@ -12,7 +12,7 @@ placement are `architecture.md`, not this document; where the two disagree, the 
 HelioGrid is a **modular monolith on Fly.io Mumbai (`bom`)** with two already-separate
 compute processes (worker, voice), object storage
 pinned to Tigris Singapore (`sin`), and a thin set of external providers. One Postgres is
-the system of record; Redis exists only for BullMQ, rate limiting and SSE fan-out.
+the system of record. Orchestration is Temporal on its OWN PostgreSQL (ADR-0025); Redis exists for rate limiting and SSE fan-out, and is read by `apps/api` alone.
 
 ```mermaid
 graph TB
@@ -25,7 +25,7 @@ graph TB
   subgraph flybom [Fly.io bom — Mumbai]
     WEB[apps/web — Next.js BFF, no domain logic]
     API[apps/api — NestJS modular monolith]
-    WORKER[apps/worker — NestJS standalone, BullMQ processors]
+    WORKER[apps/worker — NestJS standalone, Temporal worker ADR-0025]
     VOICE[voice service — NOT YET BUILT: CallSession media/AI plane + CallOrchestrator control plane, ADR-0019]
     PG[(Fly postgres-flex — 3-node repmgr HA)]
     RD[(Upstash Redis — fixed plan, eviction off)]
@@ -83,16 +83,16 @@ proxy for webhooks and mobile.
 
 ## 2. Monorepo layout and boundaries
 
-pnpm workspaces + Turborepo + TS project references (ship source; references order
-typecheck). Lint/format: **Biome v2.5**. Boundary enforcement: **dependency-cruiser**
-(layer rules, no cycles) + **Turborepo Boundaries** (package encapsulation) + **sherif**
-(version drift).
+pnpm workspaces + Turborepo (Turbo drives the build graph via `^build`; cross-package TS
+project references removed — Turbo owns ordering). Lint/format: **Biome v2.5**. Boundary
+enforcement: **dependency-cruiser** (layer rules, no cycles) + **Turborepo Boundaries**
+(exact role tags per app) + **sherif** (version drift).
 
 ```
 apps/
   web/        Next.js — frontend + BFF only; zero domain logic
   api/        NestJS modular monolith (Node 22)
-  worker/     NestJS standalone — BullMQ processors, worker_threads for CPU
+  worker/     NestJS standalone — Temporal workflows + activities (ADR-0025), worker_threads for CPU
   voice/      NestJS standalone — CallSession orchestrator (Exotel ↔ Sarvam)
   mobile/     bare React Native (iOS + Android, no Expo)
 packages/
@@ -126,9 +126,11 @@ packages/
   `packages/data` → `packages/contracts` → `packages/domain`. Neither app may import
   `@ts-rest/*` or an auth client directly (`apps-never-touch-the-wire`), and `initClient` is
   called exactly once in the whole repository. The package itself may not import
-  db/ui/ui-api/tokens/i18n/adapters or any app (`data-lean`), and React plus React Query are
-  confined to `packages/data/src/react/` (`data-core-is-framework-free`) so the query library
-  stays replaceable without touching a repository or a screen.
+  db/ui/theme/i18n/adapters or any app (`data-lean`), and React plus React Query are
+  confined to `packages/data/src/react/` and `src/server/` (`data-core-is-framework-free`) so
+  the query library stays replaceable without touching a repository or a screen. The package
+  declares three entry points — `.`, `./react`, `./server` — and `package-index-only` names
+  exactly those.
 
 **NestJS modules in `apps/api`** (one per bounded context): `auth`, `tenancy`, `crm`,
 `survey`, `design`, `proposal`, `customer-link`, `projects`, `billing` (payments,
@@ -142,8 +144,10 @@ apps/{api,worker,voice}/src/
   main.ts            bootstrap only
   app.module.ts
   config/            env.schema.ts · env.ts (the ONLY process.env read) · config.module.ts
-  common/            common.module.ts · tokens.ts · guards/ decorators/ filters/
-                     interceptors/ errors/ db/ queue/   — framework plumbing, never behaviour
+  common/            common.module.ts · tokens.ts · request-id.ts · logging.ts ·
+                     guards/ decorators/ filters/ interceptors/ errors/ db/ queue/
+                     — framework plumbing, never behaviour. A concern with exactly one file
+                     stays a flat file here; it earns a folder when it has a second.
   modules/<m>/       <m>.module.ts · <m>.public.ts · tokens.ts   (required)
                      <m>.controller.ts · <m>.service.ts · <m>.repository.ts
                      <m>.processor.ts · <m>.scheduler.ts   (worker)
@@ -177,8 +181,9 @@ extract anything before a scaling or isolation reason exists.
 
 **Web** — browser → `apps/web` (Next.js). The session layer terminates at the BFF and is
 authored by the auth module, which is not yet built;
-route handlers/server components call `apps/api` with the ts-rest fetch client over
-`.internal`, forwarding identity. Next.js composes pages and holds sessions; it computes
+route handlers/server components call `apps/api` through
+`createServerDataContext` (`@heliogrid/data/server`), which is request-scoped and forwards
+only `cookie`, `authorization` and `x-request-id`. Next.js composes pages and holds sessions; it computes
 nothing. The 3D studio runs in the browser against `packages/domain` (client bundle) for
 interactive geometry, and persists via the design endpoints (§9).
 
@@ -227,13 +232,23 @@ tenant-owned row.
 
 ## 6. Background processing
 
-**BullMQ + `@nestjs/bullmq`** on Upstash Redis (Fly extension, `bom`, **fixed plan** —
-Fly's explicit recommendation for BullMQ — eviction OFF, `maxRetriesPerRequest: null`).
-All processors live in `apps/worker` (`autostop="off"`, dedicated larger machines). CPU
-holds (shading at scale, Playwright PDF) run in `worker_threads` so the event loop keeps
-draining queues.
+**Orchestration is Temporal (ADR-0025).** BullMQ is GONE — packages uninstalled, exports
+deleted, and `no-bullmq` fails the build on a re-import (Tracks 7 and 9, 2026-08-26). Redis
+remains, for rate limiting and SSE fan-out only, and is read by `apps/api` alone.
 
-| Queue | Work | Notes |
+Workers live in `apps/worker` (`autostop="off"`, dedicated larger machines). CPU holds
+(shading at scale, Playwright PDF) run in `worker_threads` so the event loop keeps polling.
+
+**Task queues are a scaling and isolation boundary, not a label** — a slow PDF render sharing
+a queue with lead assignment starves it. `TASK_QUEUES` in
+`packages/contracts/src/workflows/registry.ts` is the authoritative list, and today it holds
+exactly one entry (`heliogrid-platform`). The table below is the PLANNED split: each row
+becomes a task queue when its module lands, not before (Law 9).
+
+> Every name — workflow type, task queue, workflow id — is **permanent once a durable history
+> exists**. Renaming one later is a migration, not a rename.
+
+| Planned task queue | Work | Notes |
 |---|---|---|
 | `shading` | Server-side solar-access sims via the same pure kernels as the browser (§9) | worker_threads; big-array jobs chunked |
 | `pdf` | Proposal/document render — Playwright/Chromium (only correct Devanagari shaping) | output → Tigris `pdfs` bucket |
@@ -242,11 +257,12 @@ draining queues.
 | `webhooks` | Razorpay/Exotel/MSG91 event processing + reconciliation | idempotent by provider event id |
 | `notifications` | Push (Notifee → FCM/APNs), in-app fan-out, OTP-adjacent messaging | per-tenant metered |
 
-**Repeatable jobs** (BullMQ repeatables, registered on their owning queue). User-facing
+**Recurring work is a Temporal Schedule**, not a queue feature — one schedule per row below,
+owned by the module that lands it. None exist yet. User-facing
 schedules are tenant-timezone-aware by law (forward-compat "Market & money"); v1 tenants are
 all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clock:
 
-| Job | Queue | Schedule | Purpose |
+| Schedule | Planned task queue | When | Purpose |
 |---|---|---|---|
 | `proposal-unopened-3d` | agent-triggers | daily 09:15 | queue follow-up calls for proposals unopened 3 days |
 | `task-overdue-2d` | agent-triggers | daily 09:05 | overdue-task nudges to assignees |
@@ -259,7 +275,9 @@ all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clo
 | `usage-rollup` | webhooks | hourly | roll `usage_events` into period aggregates for metering |
 
 Infra-level cron (pgBackRest WAL archiving, nightly `pg_dump` to the `heliogrid-backups` bucket, `pg/` prefix) is NOT
-BullMQ — it runs beside Postgres and is specified in `09-observability-and-ops.md`.
+orchestrated — it runs beside Postgres and is specified in `09-observability-and-ops.md`.
+Temporal's own persistence is backed up separately (`infra/temporal/deploy/scripts/backup.sh`),
+and BOTH its stores must be restored together.
 
 ---
 

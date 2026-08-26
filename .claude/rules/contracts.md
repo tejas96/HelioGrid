@@ -11,9 +11,11 @@ paths:
 src/<area>.ts               one router per feature area, mounted in src/index.ts
 src/common.ts               shared sets and schemas
 src/error.ts                the canonical error envelope
-src/jobs.ts                 typed BullMQ payloads — the ./jobs subpath export
+src/workflows/              Temporal workflow message schemas — the ./workflows subpath
+                            export. Names, payloads and the id rule for the API→worker
+                            contract (ADR-0025)
 src/ports/<capability>.ts   provider port interface + its DI token
-src/index.ts                the only entry consumers import (jobs is the one exception)
+src/index.ts                the only entry consumers import, plus the ./workflows subpath
 openapi/openapi.json        emitted, committed, gate-checked — never hand-edited
 ```
 
@@ -22,7 +24,7 @@ openapi/openapi.json        emitted, committed, gate-checked — never hand-edit
 - **The contract diff comes FIRST.** Change `packages/contracts` before implementing an
   endpoint or a client. The diff IS the API review (Law 3).
 - **Tenant identity never travels on the wire** — `packages/contracts/CLAUDE.md` carries the
-  rule, the invariant that proves it, and the jobs carve-out.
+  rule and the invariant that proves it.
 - **One `z.enum` per business set** — one definition per fact — exported with its inferred type. Consumers
   import the type; they never re-declare the values. UI status/variant maps are
   `Record<TheEnum, …>` so a new value fails to compile rather than rendering blank.

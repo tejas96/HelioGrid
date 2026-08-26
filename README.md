@@ -55,7 +55,7 @@ authoritative doc for that layer; this table is only the index.
 | `apps/api` | NestJS modular monolith — the only tenant-facing HTTP surface | [apps/api/CLAUDE.md](apps/api/CLAUDE.md) |
 | `apps/web` | Next.js App Router — pure frontend/BFF, no domain logic | [apps/web/CLAUDE.md](apps/web/CLAUDE.md) |
 | `apps/mobile` | Bare React Native (iOS + Android), no Expo — field-first app | [apps/mobile/CLAUDE.md](apps/mobile/CLAUDE.md) |
-| `apps/worker` | NestJS standalone worker — BullMQ processors, heavy compute (scaffold stage) | [apps/worker/CLAUDE.md](apps/worker/CLAUDE.md) |
+| `apps/worker` | NestJS standalone worker — durable orchestration (Temporal, ADR-0025) + heavy compute | [apps/worker/CLAUDE.md](apps/worker/CLAUDE.md) |
 | `packages/contracts` | ts-rest + Zod API contracts — the single source of truth for the API surface | [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) |
 | `packages/data` | Frontend SDK — the **only** data path for web + mobile: transport, ts-rest client, repositories, session, React Query adapter | [packages/data/CLAUDE.md](packages/data/CLAUDE.md) |
 | `packages/db` | Drizzle schema + append-only SQL migrations + RLS/tenancy — **greenfield since 2026-08-01**, awaiting the auth+tenancy rebuild's `0001` | [packages/db/CLAUDE.md](packages/db/CLAUDE.md) |
@@ -120,7 +120,9 @@ pnpm --filter @heliogrid/api dev        # NestJS, tsx watch, http://localhost:80
 pnpm --filter @heliogrid/web dev        # Next.js, http://localhost:3002
 pnpm --filter @heliogrid/mobile start   # Metro bundler (default port 8081)
 pnpm --filter @heliogrid/mobile ios     # or: android — builds + launches on a simulator
-pnpm --filter @heliogrid/worker dev     # NestJS worker, no HTTP surface (BullMQ processors)
+pnpm --filter @heliogrid/worker dev     # NestJS worker, no HTTP surface
+# Local Temporal stack (ADR-0025) — decisions, runbooks and proofs: infra/temporal/README.md
+docker compose -f infra/temporal/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh
 ```
 
 Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the same way.
@@ -198,12 +200,12 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, web↔RN prop parity. Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
-| `pnpm verify` | The full local gate: `build && lint && boundaries && typecheck && test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
+| `pnpm verify` | The full local gate: `build && lint && boundaries && typecheck && test && check:openapi && check:catalogs`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
 | `pnpm precommit` | The subset of `verify` the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck |
-| `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) |
+| `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) — test files, source size, raw hex, domain purity, unwrapped copy, untranslated messages, and that every contract UI language is registered in `packages/i18n` |
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
 | `pnpm check:env` | The env-centralisation gate standalone (also part of `pnpm lint`) |
-| `pnpm check:ui-parity` | The web↔RN component-prop parity gate standalone (also part of `pnpm lint`) |
+| `pnpm ds:contract` | The design-system contract gate standalone (also part of `pnpm lint`) — prop contracts vs the design system, and web↔RN semantic drift. It REPLACED `check:ui-parity`, which was deleted with the v1 design system (docs/engineering/17 §6); the script no longer exists |
 | `pnpm check:unused` | `knip` — finds unused exports/files (not part of `pnpm verify`, run manually) |
 | `pnpm check:dupes` | `jscpd` — duplicate-code scan (not part of `pnpm verify`, run manually) |
 
@@ -369,7 +371,7 @@ newcomer immediately.
 | `apps/api` | `pnpm dev` runs via `tsx` (esbuild) — **no decorator metadata**, so every constructor param needs an explicit `@Inject(Token)`, including framework types like `Reflector` |
 | `apps/web` | Never author business logic here — shared decisions/formatters/policy import from `@heliogrid/domain`; writing one inline is the defect |
 | `apps/mobile` | Repository types are **inferred from contracts**, never hand-declared — a hand-written interface silently drifts when the contract changes |
-| `apps/worker` | `bullmq`/`@nestjs/bullmq` are only importable from processors, schedulers, `common/queue/`, and `worker.module.ts` — no module may build a `Queue` itself |
+| `apps/worker` | Orchestration is Temporal (ADR-0025). `bullmq`/`@nestjs/bullmq` are **banned outright** (`no-bullmq`); a module never builds its own Temporal connection (`temporal-client-fenced`), and a workflow file must stay deterministic — no `node:*`, no db |
 | `packages/contracts` | Zod is pinned to 3.25.x — `zod/v4` exists in the ecosystem but is banned here (ts-rest's Zod-4 support isn't stable yet) |
 | `packages/db` | pgEnum values must hand-mirror `packages/contracts`' `z.enum`s — enforced only at runtime by `tests/invariants`, not by any import-time check |
 | `packages/domain` | Zero workspace imports, by design — importing `packages/contracts` from here would create a cycle |

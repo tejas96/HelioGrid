@@ -11,7 +11,13 @@ import { type ApiFetcher, initClient } from '@ts-rest/core';
  * the transport is the layer that knows which one it is. See createTransport.
  */
 export function createApiClient(baseUrl: string, api: ApiFetcher) {
-  return initClient(apiContract, { baseUrl, baseHeaders: {}, api });
+  return initClient(apiContract, {
+    baseUrl,
+    baseHeaders: {},
+    api,
+    throwOnUnknownStatus: true,
+    validateResponse: true,
+  });
 }
 
 export type ApiClient = ReturnType<typeof createApiClient>;

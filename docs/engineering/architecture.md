@@ -4,8 +4,9 @@ The single canonical home for inter-package facts: what each package owns, what 
 depend on, its platform scope, and where new code goes. Other documents POINT here; none
 restates it.
 This file states POLICY. The current dependency graph lives in package.json files;
-enforcement lives in .dependency-cruiser.cjs (authoritative) and turbo boundaries tags
-(coarse cover). Anything describing unbuilt design carries a STATUS banner.
+enforcement lives in .dependency-cruiser.cjs (import rules and cycles) and Turbo
+Boundaries (package declarations and role tags) — each authoritative within its own
+concern. Anything describing unbuilt design carries a STATUS banner.
 
 ## §1 Module map & dependency direction
 
@@ -23,11 +24,12 @@ Layers, top to bottom — imports point strictly downward:
   declares the edge (contracts → domain is legal and intra-layer).
 - The only wire path for frontend apps is @heliogrid/data (ADR-0023) — the sole
   initClient call in the repo lives there.
-- db is backend-only, except the @heliogrid/db/uuid subpath (app-side id generation — see
-  its caveat in §2 db).
-- **A §2 block is the policy; it is not a claim that something enforces it.** What each
-  mechanism can actually hold — and where turbo tags are broader or narrower than policy —
-  is the enforcing config itself. A tag is never evidence that a rule is held.
+- db is backend-only. The uuid subpath is consumed by the backend (repositories, common/db);
+  the Node-only frontend exemption is retired — no app ever imported it.
+- **A §2 block is the policy; it is not a claim that something enforces it.** dep-cruiser
+  holds import rules and cycles; Turbo Boundaries holds package declarations and role tags.
+  Each gate is authoritative within its own scope, not across both. A passing gate proves
+  nothing outside its concern.
 
 ## §2 Package registry
 
@@ -35,6 +37,23 @@ Every block carries seven fields: **purpose** (the heading) · **owns** · **all
 (policy — the workspace packages it MAY import) · **never** · **platform scope** ·
 **belongs/never here** · **extension point**. A block missing one is incomplete. Anything
 not built yet carries a STATUS line, per this file's header.
+
+**When a NEW package is justified — the four triggers.** Splitting is not free: every package
+is a build edge, a `dist/` to rebuild, an `exports` map to keep honest, and one more hop
+between a reader and the code. Split ONLY for:
+
+1. **Incompatible runtime dependencies** — the halves cannot share one dependency set (a
+   Node-only server entry beside a bundle that must never see `node:*`).
+2. **Independent bundling or deployment** — one half must be reachable without pulling the
+   other in (why `@heliogrid/i18n` publishes `./rn` separately: importing it installs global
+   Intl polyfills that must never enter a web bundle).
+3. **Measured build cost** — a rebuild time you have actually recorded, not one you expect.
+4. **Stable independent ownership** — a different team or release cadence, sustained, not
+   anticipated.
+
+**Folder size is NOT a trigger.** A large package with a coherent purpose is healthier than
+two packages joined by a cycle. If a split would need both halves to import each other, the
+boundary is in the wrong place — move the shared fact down a layer instead (§1).
 
 ### config — shared tsconfig presets
 Owns: tsconfig presets (node-package, nest-app) and nothing else. Allowed deps: none.
@@ -52,23 +71,38 @@ carries each exception's reason (do not "fix" an entry you find there). Extensio
 new loader per new runtime.
 
 ### contracts — the wire truth
-Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, and
-typed BullMQ job payloads (jobs.ts, published as the `./jobs` subpath — dep-cruiser's
-package-index-only permits exactly index and jobs as entry points). Emits the committed
-openapi/openapi.json, gated by scripts/check-openapi-breaking.mjs. Allowed deps: domain
-(for z.enum over domain constants — returns with the auth rebuild), config. Platform
+Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, the
+UI language identity (locale.ts — UI_LANGUAGES/UI_SOURCE_LOCALE/uiLanguageSchema, its own
+file because packages/i18n and the Lingui CLI config read it, and a locale list reached for
+through a grab-bag of pagination schemas is how a second list gets written), and
+Temporal workflow messages (`workflows/`, published as the `./workflows` subpath — a
+process-to-process contract that must never reach the OpenAPI artifact or a frontend
+bundle). Emits the committed
+openapi/openapi.json, gated by scripts/check-openapi-breaking.mjs. Also owns the HelioGrid
+SESSION PROJECTION (session.ts — actor, membership with its held roles and authorization
+version, expiry) so replacing the identity provider changes no guard, repository, screen or
+contract. Allowed deps: domain (LIVE since 2026-08-25 — rolePresetSchema is
+z.enum(ROLE_PRESETS) built from domain's tuple), config. Platform
 scope: shared. Belongs: anything crossing HTTP. Never: tenant identity on the wire
-(`packages/contracts/CLAUDE.md` carries the rule, its invariant and the jobs carve-out);
+(`packages/contracts/CLAUDE.md` carries the rule and its invariant);
 implementation; storage shapes. Extension points: a feature module mounts its router into
-apiContract (Law 3: contract before implementation); ports/<capability>.ts re-lands with
-its consumer.
+apiContract (Law 3: contract before implementation); ports/<capability>.ts lands with its
+consumer, EXCEPT where the port is the thing its consumer must be BUILT AGAINST —
+ports/session.ts was authored ahead of its guard (Track 5a, 2026-08-25) because a session
+projection invented alongside its first handler is a projection shaped by that handler, and
+because a guard depending on an interface rather than a service class is what stops it
+failing at boot in the declaring module's injector.
 
 ### domain — pure business truth
 Owns: business logic, policy numbers, protocol constants, formatters, flow view-model
-types shared by platforms (Law 11). Allowed deps: config. Platform scope: shared, pure TS
+types shared by platforms (Law 11), and the AUTHORIZATION POLICY — the twelve preset roles,
+the capability matrix, and the OR-across-roles / widest-wins-per-domain resolution
+(`src/authz/`, F2). Allowed deps: config. Platform scope: shared, pure TS
 — no react, no node builtins, no clock/randomness/I-O (domain-purity gates). Belongs: a
-constant two screens read; a flow state machine. Never: fetch, storage, rendering.
-Extension point: one folder per module slice (auth/, tenancy/, format/ today).
+constant two screens read; a flow state machine; a permission rule. Never: fetch, storage,
+rendering; a session, a tenant or a request (the API resolves those and passes roles IN).
+Extension point: one folder per module slice (authz/, auth/, tenancy/, format/ today); each
+module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client
 **STATUS: greenfield.** `src/schema/` and migrations 0001–0006
@@ -78,23 +112,27 @@ Owns: append-only migrations and the Drizzle schema mirror (both re-authored per
 the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
 plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
 The admin/runtime pool PAIR is not here — apps/api constructs it (admin-pool-fenced).
-Allowed deps: config. Platform scope: backend only — EXCEPT @heliogrid/db/uuid, which
-web-no-db/mobile-no-db exempt for app-side id generation. **Caveat: uuid.ts currently
-imports node:crypto, which neither Metro nor a browser bundle resolves, so the first
-frontend consumer needs a crypto shim or a platform-safe RNG — no app imports it yet.**
+Allowed deps: config. Platform scope: backend only. The ./uuid subpath is for backend use
+(repositories, common/db); the Node-only frontend exemption is retired — no app ever
+imported it and node:crypto cannot resolve in a browser or Metro bundle.
 Belongs: DDL for the current module's slice (Law 9).
 Never: contracts imports (db-no-upward — the enum-parity invariant is the seam that keeps
 pgEnum ↔ z.enum honest); business logic. Extension point: /migration authors the next
 numbered file.
 
 ### data — the ONLY frontend wire path (ADR-0023)
-Owns: the typed client (sole initClient), repositories, session store, react-query
-adapters under src/react/ only. Allowed deps: contracts, domain, config. Platform scope:
-shared frontend (core framework-free; react confined to src/react/). Belongs: every new
-endpoint's repository + hook. Never (all held by data-lean): db — INCLUDING the uuid
-subpath, which is exempted only for the two apps, not for data — ui, theme, i18n,
-adapters, and any app; a second client; platform APIs. Extension point: one repository per
-contract router.
+Owns: the typed client (sole initClient, response-validating and unknown-status-rejecting),
+the one cross-platform transport and its three modes (browser · mobile · request-scoped
+server), the stable DataError taxonomy, the internal repository registry (src/composition.ts),
+repositories, session store, and the react-query adapters under src/react/. Allowed deps:
+contracts, domain, config. Platform scope: shared frontend (core framework-free; react
+confined to src/react/ and src/server/). THREE entry points, all declared in package.json
+exports and all named in package-index-only: `.` framework-free · `./react` the React Query
+adapter · `./server` one request-scoped context for a Next server render. Belongs: every new
+endpoint's repository + hook. Never (all held by data-lean): db (the uuid subpath included), ui, theme, i18n,
+adapters, and any app; a second client; platform APIs; a process-global holding credentials
+or a QueryClient. Extension point: one repository per contract router, registered in
+src/composition.ts.
 
 ### forms — the fenced form layer
 Owns: useZodForm, applyServerErrors (server VALIDATION_FAILED → field errors), the
@@ -105,15 +143,23 @@ Platform scope: shared frontend. Belongs: form-state wiring. Never: schemas them
 (contracts) or copy (i18n). Extension point: new form primitives, exported through the
 index only.
 
-### i18n — catalogs and shared copy
-Owns: Lingui catalogs (compiled messages committed), LOCALES derived from contracts'
-uiLanguageSchema (never restated), src/copy/ shared-copy modules (React-free /*i18n*/
-descriptors — JSX is banned there for the dual-instance ESM/CJS hazard). Allowed deps:
+### i18n — catalogs, language metadata and the provider
+Owns: Lingui catalogs (compiled messages committed), the LANGUAGE_META table and the
+catalog loaders (both `satisfies Record<UiLanguage, …>` over the contract's UI_LANGUAGES —
+never a second list), the per-mount/per-request runtime and translator factories, the ONE
+React provider both platforms use, the Hermes Intl polyfills, and src/copy/ shared-copy
+modules (React-free /*i18n*/ descriptors — JSX is banned there for the dual-instance
+ESM/CJS hazard). It also owns the @lingui and @formatjs DEPENDENCIES: neither app declares
+them. THREE entry points: `.` React-free (createTranslator for a server render or a job) ·
+`./react` the provider and hooks · `./rn` the Hermes polyfills, separate because importing
+them has global side effects a web bundle must never take. Allowed deps:
 contracts, domain (the money/format helpers when domain's money slice lands — the turbo
-i18n tag already permits this edge), config. Platform scope: shared frontend. Belongs:
-copy both platforms render (Law 11). Never: macro imports (lint-banned); locale-default
-number formats for money
-(CLAUDE.md §7: tenant-currency grouping). Extension point: new copy modules keyed by
+i18n tag already permits this edge), config; react is a PEER. Platform scope: shared
+frontend. Belongs: copy both platforms render (Law 11). Never: macro imports (lint-banned);
+a module-scope i18n instance (one shared mutable locale across concurrent server renders);
+locale-default number formats for money
+(CLAUDE.md §7: tenant-currency grouping — UI LANGUAGE never selects a money format; the
+tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
 ### theme — tokens, the semantic layer and the provider  (NOT BUILT YET — docs/engineering/17)
@@ -141,9 +187,8 @@ divergence a type error instead.
 Owns: routes (app/ — routing only), features/ (capability owners), web screens, and lib/
 (app infrastructure: ApiErrorText + its css, and env.ts — the allowlisted literal
 NEXT_PUBLIC_* read; see §2 env). Allowed deps: contracts, data, domain, env, forms, i18n,
-tokens, ui, config. Platform scope: web (browser + Next server runtime). Belongs: screen
-composition, web-only hooks (DOM APIs) under features/*/shared/. Never: db (web-no-db;
-uuid subpath exempt), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
+theme, ui, config. Platform scope: web (browser + Next server runtime). Belongs: screen
+composition, web-only hooks (DOM APIs) under features/*/shared/. Never: db (web-no-db — uuid subpath included), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
 no-raw-http-clients), react-hook-form/zod directly (forms is the fence), RN imports.
 Extension point: a new capability is a new features/<capability>/ folder with an index
 barrel — app/ may import it only through that barrel
@@ -155,35 +200,65 @@ adapters, and app-level helpers. `src/` is a CLOSED set of folder categories, en
 `apps/mobile/CLAUDE.md`; a new one is a plan-time call. Allowed
 deps: contracts, data, domain, env, forms, i18n, theme, ui. Deliberately NOT config
 (extends @react-native/typescript-config; hand-mirrors base strictness flags — a new base
-flag must be copied here). Platform scope: native only (iOS + Android, bare React Native —
+flag must be copied here). Note: `config` appears in the Turbo `app-mobile` boundary
+allowlist because Turbo traverses transitive workspace devDependencies — env (a direct dep)
+declares config as a devDep. No mobile source file may import from config; dep-cruiser
+enforces this and config has no runtime exports to import. Platform scope: native only (iOS + Android, bare React Native —
 no Expo, no DOM). Belongs: screen composition and the native adapters the screens consume;
 anything both platforms need belongs in a package instead (Law 11). Never: a local
-component mirror (the RN half lives in @heliogrid/ui as `.native.tsx`), db (uuid exempt),
+component mirror (the RN half lives in @heliogrid/ui as `.native.tsx`), db (mobile-no-db — uuid subpath included),
 wire/form internals (same fences as web), expo/EAS/
 AsyncStorage (owner rulings). Extension point: a new screen is a new src/screens/<screen>/
 folder. Platform rules: §3.
 
 ### apps/api — NestJS BFF
-Owns: API modules (health today; feature modules land per slice), the ContractException
-error envelope, the tenancy runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
+Owns: API modules (health today; feature modules land per slice), the Temporal gateway
+(common/temporal — the ONE place workflows are started, signalled and queried, every payload
+validated against its contract), the ContractException
+error envelope, global ts-rest response validation, the request-id seam (common/request-id.ts
+— assign before CORS and body parsing, echo on every response, expose through CORS), the
+log shape and its redaction (common/logging.ts — the ONE authoring; there is no shared
+packages/config/logging.ts), the explicit body limit and its canonical 413, the tenancy
+runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
 common/db (fenced by admin-pool-fenced — db provides the factory, this app builds the
-pair). Allowed deps: contracts, db, env, config (+ domain when the rebuild re-adds its
-consumer). Platform scope: backend only (Node). Belongs: the HTTP edge and its
-repositories. Never: ui/tokens/i18n/data (frontend layers) — **POLICY ONLY, unenforced
-today: the shared `app` turbo tag permits them and no dep-cruiser rule fences it**; raw
-process.env (env owns it). Extension point: one Nest module per contract router,
+pair). Allowed deps: contracts, domain, db, env, config (domain consumer is re-added with
+the auth rebuild). Platform scope: backend only (Node). Belongs: the HTTP edge and its
+repositories. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
+boundary tag); raw process.env (env owns it). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
-### apps/worker — queue processors
-**STATUS: scaffold.** No processor or scheduler exists yet — src/ holds main.ts,
-worker.module.ts and config/ only.
-Owns: BullMQ binding config (today just the root connection in worker.module.ts).
-Processors and their queues land with their owning modules. Allowed deps: contracts, db,
-env, config. Platform scope: backend only (Node, no HTTP surface). Belongs: work that must
-outlive a request. Never: HTTP handlers (api owns the edge); frontend layers — **POLICY
-ONLY, unenforced today, same shared `app` tag as apps/api**. Extension point: one
-`<m>.processor.ts` per queue inside its owning `src/modules/<m>/` (the apps/api module
-shape); worker.module.ts registers ONLY the root connection (bullmq-fenced).
+### apps/worker — Temporal workflows and activities
+**STATUS: Temporal worker (ADR-0025).** BullMQ was removed in the Track 7 cutover and its
+contract export deleted in Track 9; `no-bullmq` makes re-adding it a build failure. One
+business area exists (`modules/platform/`) and it is deliberately not a product module — the
+cutover proves the path without a product module depending on an unproven mechanism.
+Owns: the single Temporal connection and worker lifecycle (common/temporal — graceful drain on
+SIGTERM), and one folder per business area under src/modules/<area>/ holding
+`<area>.workflows.ts` (DETERMINISTIC — imports nothing from Node, Nest, db, HTTP or env),
+`<area>.activities.types.ts` (the seam the workflow types against), `<area>.activities.ts`
+(idempotent side effects) and `<area>.public.ts`. The workflow BUNDLE is a build artifact; the
+worker refuses to boot without it. Held by: workflows-are-deterministic ·
+workflows-take-no-core-modules · temporal-client-fenced · no-bullmq. Allowed deps: contracts, domain,
+db, env, config, adapters. Platform scope: backend only (Node, no HTTP surface). Belongs: work that must
+outlive a request. Never: HTTP handlers (api owns the edge); frontend layers (held by
+the `app-worker` Turbo boundary tag — allows contracts/domain/db/env/config/adapters).
+Extension point: one folder per business area under `src/modules/<area>/`, exporting a
+`TemporalWorkerRegistration` that `worker.module.ts` composes — a second area is one line at
+the root plus its own folder, with no framework edit. A module NEVER constructs its own
+connection to the orchestrator (`temporal-client-fenced`); `common/` owns the single one and
+must not import a module (`common-imports-no-modules`), which is why the host depends on the
+registration INTERFACE and the root does the composing.
+
+### infra — deployment and local-stack material (not a package)
+Owns: `infra/temporal/` — the production-like local Temporal stack (compose, pinned digests,
+development PKI, bootstrap and the probe scripts that prove identity, durability, rotation and
+upgrades) — and `infra/temporal/deploy/` — the reviewed, UNDEPLOYED production candidate
+(image, Fly template, rendered config, runbooks, alerts). Allowed deps: none — it is NOT a
+workspace package (`pnpm-workspace.yaml` covers apps/packages/tests only), so it is outside the
+build graph, the lockfile, dep-cruiser and knip. Platform scope: operator tooling. Belongs:
+anything needed to RUN or DEPLOY a dependency that is not application code. Never: product
+code, a workspace dependency, or a real credential — `pki/` is gitignored development material.
+Extension point: one folder per deployed dependency.
 
 ### tests/invariants — the proof layer
 Owns: executable invariants (tenancy/RLS, table scoping, enum parity, schema parity,
@@ -204,8 +279,12 @@ call.
 - No web-only dependencies, no DOM APIs. No expo, no EAS, no AsyncStorage (owner rulings;
   see apps/mobile/CLAUDE.md landmines for the dated reasons).
 - Platform APIs (camera, storage, notifications, keychain) stay isolated in dedicated
-  modules under apps/mobile/src/ (today: push/ and auth/; adapter packages land with their
-  modules).
+  modules under apps/mobile/src/ (today: auth/ — push/ was deleted 2026-08-25 and returns
+  with the notifications slice; adapter packages land with their modules).
+- Host lifecycle belongs to ONE root adapter, not to screens: src/react-query-host.tsx
+  bridges AppState → React Query focus and NetInfo → its online state, refcounted so a
+  Strict-Mode double mount installs one listener set and a remount leaks none. It is NOT
+  offline support — there is no persistence and no queue.
 - Navigation is React Navigation static config; navigation state derives from shared
   session/domain state, never duplicated into screens.
 - Metro is the bundler: RN debug builds serve JS lazily — a screen "running" on a
@@ -224,9 +303,9 @@ call.
 
 ### Shared (packages/*)
 - Platform-agnostic by law (Law 10): no DOM, no react-native, no Node-only APIs outside
-  declared server entries (env/server, db, data's client is isomorphic-fetch). The one
-  known breach is @heliogrid/db/uuid, which §2 db exempts for frontends but which imports
-  node:crypto — the caveat is recorded there and no app imports it yet.
+  declared server entries (env/server, db, data's client is isomorphic-fetch). The
+  @heliogrid/db/uuid subpath imports node:crypto and is backend-only; the former frontend
+  exemption is retired (web-no-db/mobile-no-db now cover the full db package).
 - Business logic, policy numbers, protocol constants → domain. Flow view-model TYPES and
   policy shared by both platforms → domain, authored once BEFORE either screen consumes
   them (Law 11); the store or repository that fills them → data. Copy both platforms need
@@ -244,12 +323,17 @@ section records the answer per new file.
 1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts
    (+ /contract-change).
 2. Is it stored schema? → packages/db via /migration, in the owning module's slice (Law 9).
-3. Is it business logic, a policy number, a protocol constant, or a flow view-model both
-   platforms read? → packages/domain (pure TS only).
+3. Is it business logic, a policy number, a protocol constant, a permission rule, or a flow
+   view-model both platforms read? → packages/domain (pure TS only). A capability or a
+   visibility scope is ALWAYS domain — never an `if role === …` in a handler, which is the
+   repo-wide sweep `docs/engineering/forward-compat.md`'s auth/tenancy row exists to prevent.
 4. Is it data access (fetch, cache, session store)? → packages/data (react only under
-   src/react/).
+   src/react/ and src/server/; a new repository is registered in src/composition.ts, and
+   nothing else may build a client or a transport).
 5. Is it form state/validation wiring? → packages/forms.
-6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy.
+6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy. Is it the
+   SET of languages? → packages/contracts/src/locale.ts, and nowhere else — i18n and the
+   Lingui CLI both read it from there.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
    packages/theme (`pnpm ds:pull`) — never a literal in a screen, never hand-transcribed.
 8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared

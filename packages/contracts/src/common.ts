@@ -1,3 +1,4 @@
+import { ROLE_PRESETS } from '@heliogrid/domain';
 import { z } from 'zod';
 
 /** Shared conventions every feature contract builds on. */
@@ -30,23 +31,22 @@ export const percentSchema = z
 export const provenanceTierSchema = z.enum(['measured', 'derived', 'estimated', 'assumed']);
 export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
 
-/** Per-USER UI language (D25). The agent language set is broader and lives with the agent contract. */
-export const uiLanguageSchema = z.enum(['en', 'hi', 'mr']);
-export type UiLanguage = z.infer<typeof uiLanguageSchema>;
-
 /** Per-USER measurement units preference. */
 export const unitsPrefSchema = z.enum(['m', 'ft']);
 export type UnitsPref = z.infer<typeof unitsPrefSchema>;
 
-/** The six preset roles (D27/D28) — OR across held roles, widest visibility wins. */
-export const rolePresetSchema = z.enum([
-  'owner',
-  'manager',
-  'sales_rep',
-  'surveyor',
-  'designer',
-  'engineer',
-]);
+/**
+ * The TWELVE preset roles — F2-01, owner ruling `Q69` (2026-08-25), which supersedes the
+ * retired six-value set and says it "must not be restored".
+ *
+ * Built from `ROLE_PRESETS` in `@heliogrid/domain`, never restated: domain is the bottom
+ * layer, so the list is written once and this enum is derived. `z.enum` needs a non-empty
+ * literal tuple, which the `as const` tuple already is.
+ *
+ * OR across held roles (F2-11); widest visibility wins, per domain (F2-13/F2-14). Both live
+ * in `@heliogrid/domain/authz` — they are policy, not wire shape.
+ */
+export const rolePresetSchema = z.enum(ROLE_PRESETS);
 export type RolePreset = z.infer<typeof rolePresetSchema>;
 
 /**

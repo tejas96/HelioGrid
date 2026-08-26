@@ -4,6 +4,13 @@
 blocks implementation: the api/worker run against local Docker Postgres; deploys come
 later.
 
+## Temporal (ADR-0025)
+
+The local orchestration stack, its decisions and its runbooks: `infra/temporal/README.md`.
+The reviewed — and **undeployed** — production candidate: `infra/temporal/deploy/README.md`.
+No Fly app, database, certificate authority or machine exists for it; creating one is an
+owner-approved operation.
+
 ## Current state (2026-07-26)
 
 | Resource | State |
@@ -28,7 +35,7 @@ docker start heliogrid-pg-local 2>/dev/null || docker run -d --name heliogrid-pg
   -p 5544:5432 postgres:16
 DATABASE_ADMIN_URL=postgres://heliogrid:heliogrid@localhost:5544/heliogrid_dev \
   pnpm --filter @heliogrid/db migrate
-# Redis for BullMQ (when Track A/C needs it):
+# Redis for rate limiting and SSE fan-out (apps/api only — orchestration is Temporal):
 docker run -d --name heliogrid-redis-local -p 6379:6379 redis:7 --maxmemory-policy noeviction
 ```
 
@@ -77,7 +84,8 @@ flyctl proxy 15432:5432 -a heliogrid-db &   # then:
 DATABASE_ADMIN_URL=postgres://postgres:<pw>@localhost:15432/heliogrid pnpm --filter @heliogrid/db migrate
 DATABASE_ADMIN_URL=... pnpm --filter @heliogrid/invariants test
 
-# 3. Upstash Redis — FIXED plan, eviction OFF (BullMQ requirement, docs/engineering/03 §7):
+# 3. Upstash Redis — rate limiting + SSE only. Plan/eviction were sized for BullMQ and need
+#    re-deriving before provisioning (docs/engineering/09 §costs):
 flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
   --no-replicas --disable-eviction        # pick the fixed 250MB plan at the prompt
 

@@ -5,6 +5,15 @@ production **adapter** bound per environment. Domain code (`packages/domain`) ne
 port; orchestration code in `apps/api` and `apps/worker` calls the port and feeds results
 into pure domain functions.
 
+> **Orchestration is Temporal (ADR-0025).** The five BullMQ references below describe
+> per-integration job usage — a retry backoff, a metering enqueue, a nightly sweep, a
+> webhook handoff. Each is superseded in shape, not in intent: the same work becomes a
+> Temporal activity or a scheduled workflow **when its owning module lands** — Track 7 cut
+> over the mechanism, not these five, because no product module exists to convert yet.
+> They are left as written rather than half-translated, because a converted description
+> with no converted code is the worse of the two lies. Read "BullMQ job" below as "durable
+> work"; the library named is gone.
+
 ## Package layout (ruling)
 
 - **Port interfaces + envelope types**: `packages/contracts/src/ports/` — pure types, zero

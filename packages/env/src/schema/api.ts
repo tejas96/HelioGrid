@@ -2,9 +2,12 @@ import { z } from 'zod';
 import {
   adminDatabaseUrlSchema,
   databaseUrlSchema,
+  filePathSchema,
   nodeEnvSchema,
   originSchema,
   portSchema,
+  temporalAddressSchema,
+  temporalNamespaceSchema,
 } from './fragments';
 
 /**
@@ -29,6 +32,21 @@ export const apiEnvSchema = z.object({
    * teardown. The rebuild declares whatever it needs HERE and in .env.example —
    * Law 9: a variable is authored when its owning module's slice begins.
    */
+
+  /*
+   * Temporal (ADR-0025) — the API STARTS and SIGNALS workflows; the worker executes them.
+   * Same variables, a DIFFERENT certificate and a different token: two identities, so a
+   * compromise of one is not a compromise of both. (They currently hold the same Temporal
+   * ROLE — the built-in authorizer cannot separate start-workflow from poll-task-queue;
+   * `infra/temporal/README.md` §3 records why and what closing it would take.)
+   */
+  TEMPORAL_ADDRESS: temporalAddressSchema,
+  TEMPORAL_NAMESPACE: temporalNamespaceSchema,
+  TEMPORAL_TLS_CA_FILE: filePathSchema,
+  TEMPORAL_TLS_CERT_FILE: filePathSchema,
+  TEMPORAL_TLS_KEY_FILE: filePathSchema,
+  TEMPORAL_AUTH_TOKEN_FILE: filePathSchema,
+  TEMPORAL_TLS_SERVER_NAME: z.string().min(1).default('temporal'),
 
   /* Injected by the platform, not by us. */
   FLY_MACHINE_VERSION: z.string().default('0.0.1'),

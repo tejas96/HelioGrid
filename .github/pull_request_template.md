@@ -8,15 +8,16 @@ Traces to: D<n> · Mockup: `<Name>.dc.html`
 
 Delete rows that genuinely don't apply. Law numbers are `CLAUDE.md` §2.
 
-- [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test)
+- [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test · openapi freshness · i18n catalog freshness)
 - [ ] **Run-and-look** (`/verify`): behaviour proven on every surface the change reaches.
       Green gates never prove behaviour.
 - [ ] **Contract first** (Law 3): the `packages/contracts` diff is in this PR and the
       committed OpenAPI was re-emitted — or: no contract change
 - [ ] **Schema**: migration is a NEW append-only file; forward-compat register
       (`docs/engineering/forward-compat.md`) re-read and satisfied — or: no schema change
-- [ ] **Parity** (Law 7): `check:ui-parity` green. Screen shipping on one platform only —
-      say which and why
+- [ ] **Parity** (Law 7): both platform halves import the ONE `<Name>.types.ts`, so a
+      one-sided prop is a type error (docs/engineering/17 §2); `ds:contract` green for the
+      rest. Screen shipping on one platform only — say which and why
 - [ ] **Flows authored once** (Law 11): what the gates do NOT cover — hook/state naming,
       behavioural guards, loading affordances, msgid identity across platforms
 - [ ] **Docs in the same commit** (Law 8): per-package `CLAUDE.md` landmines and `docs/*`

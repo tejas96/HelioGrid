@@ -11,13 +11,22 @@ import type { BaseErrorCode } from '@heliogrid/contracts';
  * message descriptors.
  */
 const COPY: Record<BaseErrorCode, { id: string }> = {
-  VALIDATION_FAILED: /*i18n*/ { id: 'Some fields need attention. Check the form and retry.' },
+  VALIDATION_FAILED: /*i18n*/ {
+    id: 'Some fields need attention. Check the form and retry.',
+  },
   UNAUTHENTICATED: /*i18n*/ { id: "You're signed out. Sign in to continue." },
   FORBIDDEN: /*i18n*/ { id: "You don't have access to do that." },
-  ENTITLEMENT_BLOCKED: /*i18n*/ { id: "Your current plan doesn't include this." },
+  ENTITLEMENT_BLOCKED: /*i18n*/ {
+    id: "Your current plan doesn't include this.",
+  },
   NOT_FOUND: /*i18n*/ { id: "That record isn't available." },
-  CONFLICT: /*i18n*/ { id: 'Someone changed this while you were editing. Refresh and retry.' },
+  CONFLICT: /*i18n*/ {
+    id: 'Someone changed this while you were editing. Refresh and retry.',
+  },
   DOMAIN_RULE_VIOLATION: /*i18n*/ { id: "That change isn't allowed here." },
+  PAYLOAD_TOO_LARGE: /*i18n*/ {
+    id: 'That request is too large. Reduce it and retry.',
+  },
   RATE_LIMITED: /*i18n*/ { id: 'Too many attempts. Wait a moment and retry.' },
   INTERNAL: /*i18n*/ { id: 'Something went wrong on our side. Try again.' },
 };

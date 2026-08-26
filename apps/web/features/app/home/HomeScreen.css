@@ -1,0 +1,10 @@
+/* HomeScreen — screen-level layout only. Component pixels belong to @heliogrid/ui.
+   All values via theme var(). */
+
+.hg-home-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  background-color: var(--canvas);
+}

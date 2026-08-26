@@ -1,6 +1,7 @@
 import { healthContract } from '@heliogrid/contracts';
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, HttpStatus, Inject } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import { ContractException } from '../../common/errors/contract-exception';
 import { ENV } from '../../config/env';
 import { HealthRepository } from './health.repository';
 
@@ -32,16 +33,11 @@ export class HealthController {
           database: await this.repo.check(),
         };
         if (checks.database === 'failed') {
-          return {
-            status: 503,
-            body: {
-              error: {
-                code: 'INTERNAL' as const,
-                message: 'A dependency is unreachable.',
-                requestId: 'health',
-              },
-            },
-          };
+          throw new ContractException(
+            'INTERNAL',
+            'A dependency is unreachable.',
+            HttpStatus.SERVICE_UNAVAILABLE,
+          );
         }
         return { status: 200, body: { status: 'ok', checks } };
       },

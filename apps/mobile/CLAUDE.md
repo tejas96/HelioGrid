@@ -31,7 +31,12 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
 - Where UI, data, forms, shared copy and shared types come from:
   `.claude/rules/cross-platform.md` (both apps) — not restated here. RN specifics: theme
   ONLY from `@heliogrid/theme`, UI ONLY from `@heliogrid/ui`, Intl polyfills in
-  `src/i18n.ts` FIRST.
+  `src/i18n.ts` FIRST (it imports `@heliogrid/i18n/rn`, whose side effects install them and
+  assert their locale data).
+- **Language**: `<Trans>`, `useI18n()` and `useTranslate()` come from
+  `@heliogrid/i18n/react` — never `@lingui/react`, which this app no longer declares.
+  `App.tsx` builds ONE runtime per mount and hands it to `HelioI18nProvider`; a screen never
+  calls `i18n.activate` itself, because it cannot know whether that catalog is loaded.
 - **Styling layers:** components own pixels (`@heliogrid/ui` only); screens own layout in
   the screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.
 - API failures render a shared error component, never a hand-written string.
@@ -47,7 +52,8 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   `types.ts` when two files share a type. A screen component body is capped at
   80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
   layer instead of its job is the same defect as `*-part2`.
-- `src/` is the closed set `{auth,navigation,screens}` + root `i18n.ts` and `env.ts`.
+- `src/` is the closed set `{auth,navigation,screens}` + root `i18n.ts`, `env.ts` and
+  `react-query-host.tsx`.
   It listed `lib/` and `ui/` until 2026-08-25; neither has ever existed on disk, and `push/`
   went the same day — one file, no callers. It returns with the notifications slice. A new
   category is a plan-time call, and adding one means editing this line, root `CLAUDE.md` §6
@@ -111,6 +117,11 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
 - metro.config.js holds monorepo resolution only (`watchFolders` + `nodeModulesPaths` for
   pnpm workspace packages). There is no Lingui transformer: the runtime `<Trans id>`
   convention needs none.
+- **`import()` is NOT usable for lazy loading here.** RN ships one bundle: a release build
+  inlines it, but against the dev server it goes through `__loadBundleAsync` and throws
+  `LoadBundleFromServerError: Could not load bundle` — hit 2026-08-25 switching language on
+  the iOS simulator. Anything that wants per-platform loading uses a `.native.ts` half, as
+  `packages/i18n/src/catalog-loader.native.ts` does.
 - Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
 - Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).
   Devanagari via `<AppText>` run-splitting — verify on BOTH simulators.

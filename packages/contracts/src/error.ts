@@ -16,6 +16,7 @@ export const baseErrorCodes = [
   'NOT_FOUND',
   'CONFLICT',
   'DOMAIN_RULE_VIOLATION',
+  'PAYLOAD_TOO_LARGE',
   'RATE_LIMITED',
   'INTERNAL',
 ] as const;
@@ -27,6 +28,7 @@ export const errorDetailSchema = z.object({
   path: z.string(),
   issue: z.string(),
 });
+export type ErrorDetail = z.infer<typeof errorDetailSchema>;
 
 /**
  * Build the envelope for a route's declared code union.
@@ -60,7 +62,7 @@ export const openErrorEnvelopeSchema = errorEnvelope(z.string());
  * 400 VALIDATION_FAILED · 401 UNAUTHENTICATED · 403 FORBIDDEN / ENTITLEMENT_BLOCKED ·
  * 404 NOT_FOUND (not-found-or-not-yours — never reveal existence across tenants) ·
  * 409 CONFLICT (version/optimistic-concurrency) · 422 DOMAIN_RULE_VIOLATION ·
- * 429 RATE_LIMITED · 5xx INTERNAL (opaque).
+ * 413 PAYLOAD_TOO_LARGE · 429 RATE_LIMITED · 5xx INTERNAL (opaque).
  */
 export const errorHttpStatusByCode: Record<BaseErrorCode, number> = {
   VALIDATION_FAILED: 400,
@@ -70,6 +72,7 @@ export const errorHttpStatusByCode: Record<BaseErrorCode, number> = {
   NOT_FOUND: 404,
   CONFLICT: 409,
   DOMAIN_RULE_VIOLATION: 422,
+  PAYLOAD_TOO_LARGE: 413,
   RATE_LIMITED: 429,
   INTERNAL: 500,
 };

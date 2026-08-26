@@ -90,7 +90,10 @@ module.exports = {
       severity: 'error',
       comment:
         'React Query is an ADAPTER over the repositories, confined to packages/data/src/react. Repositories that know no framework are what let the query library be replaced without touching a repository or a screen. The boundary is a DIRECTORY prefix on purpose — a filename pattern would rot.',
-      from: { path: '^packages/data/src/', pathNot: '^packages/data/src/react/' },
+      from: {
+        path: '^packages/data/src/',
+        pathNot: '^packages/data/src/(react|server)/',
+      },
       /*
        * Matches the RESOLVED node_modules path, like `no-raw-http-clients` above — not the
        * bare specifier. Two ways this rule was silently inert before it was probed:
@@ -98,7 +101,9 @@ module.exports = {
        * `'^@tanstack/react-query$'` never matches an INSTALLED package, whose graph path is
        * the file it resolved to. A rule that matches nothing is worse than no rule.
        */
-      to: { path: '(^|/)node_modules/(react|react-dom|@tanstack/react-query)/' },
+      to: {
+        path: '(^|/)node_modules/(react|react-dom|@tanstack/react-query)/',
+      },
     },
     {
       name: 'apps-never-touch-the-wire',
@@ -113,7 +118,9 @@ module.exports = {
        * resolve to a real file instead, which only the node_modules half catches. Matching
        * one form alone leaves the rule inert in exactly the case that matters.
        */
-      to: { path: '(^|/)node_modules/(@ts-rest|better-auth)/|^(@ts-rest/|better-auth)' },
+      to: {
+        path: '(^|/)node_modules/(@ts-rest|better-auth)/|^(@ts-rest/|better-auth)',
+      },
     },
     {
       name: 'forms-through-heliogrid-forms',
@@ -164,13 +171,11 @@ module.exports = {
        * @heliogrid/db, so an import of it CANNOT resolve and sits in the graph as the
        * literal string `@heliogrid/db` — a `^packages/db/` pattern never sees it. Verified
        * by probe on 2026-08-02: this rule had been inert since it was written.
-       * `@heliogrid/db/uuid` stays exempt in both forms: uuidv7 is a pure randomBytes
-       * helper with no connection, so importing it is not database access.
+       * The uuid subpath exemption is retired (no app ever imported it; node:crypto is
+       * Node-only and cannot resolve in a browser/Metro bundle). UUID generation from the
+       * frontend is not a use-case; IDs are generated server-side or in repositories.
        */
-      to: {
-        path: '^@heliogrid/db|^packages/db/',
-        pathNot: '(^|/)uuid\\.|^@heliogrid/db/uuid$',
-      },
+      to: { path: '^@heliogrid/db|^packages/db/' },
     },
     {
       name: 'web-app-imports-feature-barrel-only',
@@ -235,12 +240,9 @@ module.exports = {
       severity: 'error',
       comment: 'apps/mobile data access goes through repository interfaces, never packages/db',
       from: { path: '^apps/mobile/' },
-      // Same two-form match and the same uuid exemption as `web-no-db` above — and this
-      // rule was inert for the same reason until 2026-08-02.
-      to: {
-        path: '^@heliogrid/db|^packages/db/',
-        pathNot: '(^|/)uuid\\.|^@heliogrid/db/uuid$',
-      },
+      // Same two-form match as `web-no-db` above — and this rule was inert for the same
+      // reason until 2026-08-02. The uuid subpath exemption is retired alongside web-no-db.
+      to: { path: '^@heliogrid/db|^packages/db/' },
     },
     {
       name: 'no-raw-http-clients',
@@ -276,13 +278,15 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export.',
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export. @heliogrid/ui declares a `./styles.css` subpath export (resolved to `src/styles.css`), so it is permitted alongside index. @heliogrid/i18n declares `.`, `./react` and `./rn` — `./rn` is separate because importing it installs global Intl polyfills that must never enter a web bundle. `packages/contracts/src/locale.ts` needs no subpath: it is re-exported from index, which is how `lingui.config.js` reads the language set. The `@heliogrid/*/src/` arm is LOAD-BEARING, not belt-and-braces: every package restricts its `exports`, so a deep source import does NOT resolve to a file — `resolved` stays the BARE SPECIFIER and a `^packages/` regex can never match it. With only the path arms this rule was INERT in exactly the case it exists to catch (found by injection, Track 9) — the same failure mode as the old `bullmq-fenced`.',
       from: { path: '^apps/' },
       to: {
         path: [
-          '^packages/(ui|theme|db|i18n|domain|adapters)/src/(?!index)',
-          '^packages/contracts/src/(?!index|jobs)',
-          '^packages/data/src/(?!index|react/index)',
+          '^packages/(ui|theme|db|domain|adapters)/src/(?!index|styles\\.css$)',
+          '^packages/contracts/src/(?!index|workflows/index)',
+          '^packages/data/src/(?!index|react/index|server/index)',
+          '^packages/i18n/src/(?!index|react/index|rn/index)',
+          '^@heliogrid/[^/]+/src/',
         ].join('|'),
       },
     },
@@ -345,16 +349,68 @@ module.exports = {
       to: { path: '^apps/[^/]+/src/modules/' },
     },
     {
-      name: 'bullmq-fenced',
+      name: 'workflows-are-deterministic',
       severity: 'error',
       comment:
-        'queue machinery lives in processors/schedulers and common/queue only — a module never constructs a Queue itself (worker.module.ts registers the root connection).',
-      from: {
-        path: '^apps/',
-        pathNot:
-          '(\\.processor\\.ts$|\\.scheduler\\.ts$|^apps/[^/]+/src/common/queue/|^apps/worker/src/worker\\.module\\.ts$)',
+        'A workflow file is REPLAYED from history every time a worker picks it up, so anything ' +
+        'that could answer differently on a second run corrupts it. `*.workflows.ts` may ' +
+        'therefore import only @temporalio/workflow and pure types — no Node builtin, no Nest, ' +
+        'no database, no HTTP client, no env. This is the IMPORT half; the replay gate ' +
+        '(infra/temporal/spike/probe-replay.mjs) catches logic the import graph cannot see. ' +
+        'The activity TYPES are imported type-only from a types-file that has no runtime graph, ' +
+        'which is why *.activities.types.ts is the seam and *.activities.ts is not.',
+      from: { path: '\\.workflows\\.ts$' },
+      to: {
+        path: [
+          '(^|/)node_modules/(@nestjs|drizzle-orm|axios|node-fetch|undici|got|ky|pino)/',
+          '^(packages/(db|env|data|ui|theme)|apps/[^/]+/src/(config|common))/',
+          '^@heliogrid/(db|env|data|ui|theme)',
+          '\\.activities\\.ts$',
+        ].join('|'),
       },
-      to: { dependencyTypes: ['npm'], path: '(^|/)node_modules/(bullmq|@nestjs/bullmq)/' },
+    },
+    {
+      name: 'workflows-take-no-core-modules',
+      severity: 'error',
+      comment:
+        'The same rule as workflows-are-deterministic, for Node BUILTINS specifically. ' +
+        '`dependencyTypes: core` is the one matcher that fires on `node:fs`/`node:crypto` ' +
+        'whether or not @types/node is installed — the exact class of inertness that made four ' +
+        'rules in this file silently match nothing (see domain-purity-no-core-modules).',
+      from: { path: '\\.workflows\\.ts$' },
+      to: { dependencyTypes: ['core'] },
+    },
+    {
+      name: 'temporal-client-fenced',
+      severity: 'error',
+      comment:
+        'The Temporal SDK is constructed in ONE place per app — apps/api/src/common/temporal ' +
+        'and apps/worker/src/common/temporal. A feature module injects the gateway or the ' +
+        'worker host; it never opens its own connection. Same shape as bullmq-fenced, and the ' +
+        'same reason: a second connection is a second identity, a second reconnection policy ' +
+        'and a second thing to shut down. Workflow and activity files are exempt for @temporalio ' +
+        'PACKAGES they legitimately use (workflow/activity), which this pattern does not match.',
+      from: {
+        path: '^apps/(api|worker)/src/',
+        pathNot: '^apps/[^/]+/src/common/temporal/',
+      },
+      to: { path: '(^|/)node_modules/@temporalio/(client|worker)/' },
+    },
+    {
+      name: 'no-bullmq',
+      severity: 'error',
+      comment:
+        'BullMQ is REMOVED (ADR-0025, Track 7) — orchestration is Temporal. This replaced ' +
+        '`bullmq-fenced`, which confined queue construction to processors and common/queue. ' +
+        'That rule went inert the moment the packages were uninstalled: it filtered on ' +
+        "dependencyTypes 'npm', and an uninstalled import resolves to nothing, so the one case " +
+        'that matters — someone re-adding it — would have cruised clean. This matches BOTH the ' +
+        'resolved path and the bare specifier, with no dependencyTypes filter, for exactly ' +
+        'that reason. The compatibility `@heliogrid/contracts/jobs` export is GONE (Track 9).',
+      from: { path: '^apps/' },
+      to: {
+        path: '(^|/)node_modules/(bullmq|@nestjs/bullmq)/|^(bullmq|@nestjs/bullmq)($|/)',
+      },
     },
     {
       name: 'mobile-app-entry-thin',
