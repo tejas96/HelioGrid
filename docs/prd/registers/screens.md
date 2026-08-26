@@ -587,6 +587,7 @@ question that records it and does **not** invent a replacement.
 | F1-36 | P0 | policy | policy | T-FCORE-004 |
 | F1-37 | P0 | integration | integration | T-FCORE-005 |
 | F1-38 | P0 | integration | integration | T-FCORE-005 |
+| F1-62 | P0 | policy | policy | T-FCORE-004 |
 | F1-39 | P0 | policy | policy | T-FCORE-004 |
 | F1-40 | P0 | integration | integration | T-FCORE-006 |
 | F1-41 | P0 | policy | policy | T-FCORE-006 |

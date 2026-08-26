@@ -8,7 +8,7 @@ document and `docs/prd/` disagree, the PRD wins (`CLAUDE.md` §7).
 [`forward-compat.md`](forward-compat.md), which states what each module's FIRST MIGRATION must
 satisfy; this document states what the entities and relationships ARE. Neither restates the other.
 
-Source of truth: `docs/prd/` (suite of 2026-08; owner rulings Q1–Q72 applied; **`Q53` is the only open question** — the IN pack's statutory messaging window and send hour, which await TRAI research and constrain no entity here).
+Source of truth: `docs/prd/` (suite of 2026-08; owner rulings Q1–Q72 applied; **zero open questions** — `Q53`, the last one, closed 2026-08-26 by `F1-62`).
 Requirement IDs (`M02-31`, `F5-07`, `BM-22`, `MS10-39`, `OV-xx`, `PS-xx`) cite the PRD rows that
 justify each element.
 
@@ -3288,7 +3288,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | F5 §F5.9 | Payment surface: due tranche, instrument, receipts as published (F5-57–F5-59) | tranche, payment_entry, payment_link (payments) — read-only | yes |
 | F5 §F5.10 | Handover pack, permanence, respond-scope death (F5-70, F5-71, F5-74) | project_document_file, document_checklist_item (projects); link_token per-scope lifetime | yes |
 | F5 §F5.10 | Referral ask at handover, attribution only (F5-72) | referral (crm) with customer/lead attribution | yes |
-| F5 §F5.10 | Evening-before crew message: template row, pack send hour, statutory window (F5-68) | message_template crew_arrival (config); market_pack send-hour default (market) | partial (Q53 open — IN values unauthored) |
+| F5 §F5.10 | Evening-before crew message: template row, pack send hour, statutory window (F5-68) | message_template crew_arrival (config); market_pack send-hour default (market) | yes (IN values authored 2026-08-26 at F1-62: empty window, 19:00 tenant-local send hour) |
 | F5 §F5.11 | Rate ceilings and honest failure page (F5-25, F5-78) | link_event as counting basis; counter persistence explicitly engineering | partial |
 | F5 §F5.11 | Audit: every act append-only, tenant-scoped, exportable (F5-31, F5-79) | audit_log_entry (platform-services); link_event | yes |
 | F5 §2 | No-account law; challenge is not a credential (F5-01, F5-45) | n/a (negative constraint — no stored data may exist) | n/a (no stored data) |
