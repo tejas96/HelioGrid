@@ -293,5 +293,34 @@ else
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered'
+# ── 10. Apps must not declare shared vocabulary ──────────────────────────────
+# A string-literal union or a SCREAMING_CASE lookup object IS a shared vocabulary: it belongs
+# to packages/contracts (enums, wire shapes) or packages/domain (policy). An app that declares
+# its own creates a second source of truth that drifts silently — the exact defect the package
+# split exists to prevent. Biome's noEnum bans the `enum` form on apps/**; these two shapes
+# have no Biome rule (noRestrictedTypes restricts type NAMES, not declaration SHAPES), so they
+# are matched here.
+#
+# EXPORTED only, deliberately: a type nothing can import cannot become a second source of
+# truth. `NavigationPhase` in the mobile shell and `ValidationSource` in the API's exception
+# filter are both file-local state machines, and both are correct as written (checked
+# 2026-08-27). The defect this check exists for is a vocabulary that LEAKS.
+app_vocab=$(
+  find apps -type f \( -name '*.ts' -o -name '*.tsx' \) "${PRUNE[@]}" \
+    -not -name '*.d.ts' 2>/dev/null \
+  | while IFS= read -r f; do
+      grep -nE "^[[:space:]]*export[[:space:]]+type[[:space:]]+[A-Za-z0-9_]+[[:space:]]*=[[:space:]]*'[^']+'[[:space:]]*\|" "$f" \
+        | sed "s|^|  UNION    ${f}:|"
+      grep -nE "^[[:space:]]*export[[:space:]]+const[[:space:]]+[A-Z][A-Z0-9_]+[[:space:]]*=[[:space:]]*\{" "$f" \
+        | sed "s|^|  AS-CONST ${f}:|"
+    done)
+if [ -n "$app_vocab" ]; then
+  printf 'APP DECLARES SHARED VOCABULARY — it belongs in a package, not an app:\n%s\n' "$app_vocab"
+  echo '  Union of string literals  -> packages/contracts (it is an enum by another name)'
+  echo '  SCREAMING_CASE lookup     -> packages/domain (policy) or packages/contracts (wire)'
+  echo '  Import it back into the app; never re-declare it (Law 5, and .claude/rules/architecture-ownership.md).'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary'
 exit $fail
