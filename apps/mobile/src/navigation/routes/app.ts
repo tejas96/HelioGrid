@@ -1,4 +1,4 @@
-import { HomeScreen } from '../../screens/home/HomeScreen';
+import { HomeScreen } from '../../screens/home';
 
 /**
  * Authenticated routes.

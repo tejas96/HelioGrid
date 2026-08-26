@@ -12,14 +12,23 @@
     // These two are RUN by package.json scripts, and knip cannot infer either: the openapi
     // script invokes the BUILT `dist/scripts/emit-openapi.js`, and migrate is a tsx entry.
     // Dropping them made both files report as dead code.
-    "packages/contracts": { "entry": ["src/scripts/*.ts"], "project": "src/**/*.ts" },
+    "packages/contracts": {
+      "entry": ["src/scripts/*.ts"],
+      "project": "src/**/*.ts"
+    },
     "packages/db": { "entry": ["src/migrate.ts"], "project": "src/**/*.ts" },
 
-    // build.ts is RUN by the package build script (tsx), never imported; src/index.ts is the
-    // package entry. src/_generated is data (css/json, plus the DS typings as .d.ts.txt —
+    // build.ts is RUN by the package build script (tsx), never imported. It is NOT listed as
+    // an entry: knip already infers it and said so ("Remove redundant entry pattern"), and a
+    // redundant pattern reads as protection while holding nothing — removed 2026-08-26 after
+    // confirming knip's output was otherwise byte-identical. src/index.ts is the package
+    // entry. src/_generated is data (css/json, plus the DS typings as .d.ts.txt —
     // see that folder's README for why the contracts carry a .txt suffix), so the whole
     // folder sits outside the `src/**/*.ts` project glob and needs no exclusion here.
-    "packages/theme": { "entry": ["build.ts", "src/index.ts"], "project": "src/**/*.ts" },
+    "packages/theme": {
+      "entry": ["src/index.ts"],
+      "project": "src/**/*.ts"
+    },
 
     // ONE package, both platforms (docs/engineering/17 §2). src/index.ts is inferred from the manifest;
     // the .native.tsx halves are extra ENTRIES because Metro substitutes them for the .tsx
@@ -56,7 +65,29 @@
       "ignoreDependencies": ["zod"]
     },
 
-    "tests/invariants": { "entry": ["src/run.ts"], "project": "src/**/*.ts" },
+    // The three declared entry points are INFERRED from package.json exports; only the
+    // .native half needs listing, for the same reason packages/ui's .native.tsx halves do —
+    // Metro substitutes it for catalog-loader.ts at bundle time, so from the web graph alone
+    // knip calls it dead.
+    "packages/i18n": {
+      "entry": ["src/catalog-loader.native.ts"],
+      "project": "src/**/*.{ts,tsx}"
+    },
+
+    // build-workflow-bundle.mjs is RUN by the build script (it produces the artifact the
+    // worker loads by path), never imported — an entry, not an orphan. `*.workflows.ts` is an
+    // entry for the same class of reason packages/ui's .native.tsx halves are: Temporal
+    // resolves a workflow by EXPORTED NAME out of the bundle at runtime, so from the import
+    // graph alone every workflow and its signals look dead.
+    // `zod` stays in the manifest WITHOUT being imported — the explicit pin is what stops pnpm
+    // resolving a transitive zod 4, the same reason apps/web and apps/mobile carry it.
+    "apps/worker": {
+      "entry": ["src/main.ts", "scripts/*.mjs", "src/modules/*/*.workflows.ts"],
+      "project": "src/**/*.ts",
+      "ignoreDependencies": ["zod"]
+    },
+
+    "tests/invariants": { "project": "src/**/*.ts" },
 
     // The gate scripts are RUN by package.json and lint-all.sh, never imported — entries,
     // not orphans. Listing them is what stopped knip calling three live gates dead code.
@@ -66,9 +97,7 @@
   "ignore": [
     // Asserts root.tsx's module augmentation landed, so `useNavigation()`
     // stays typed. Checked by tsc (which reads every file under src/), imported by nothing.
-    "apps/mobile/src/navigation/route-typing.ts",
-    // Read by the lingui CLI (`extract`/`compile`), never imported by TypeScript.
-    "packages/i18n/lingui.config.js"
+    "apps/mobile/src/navigation/route-typing.ts"
   ],
 
   "ignoreDependencies": [

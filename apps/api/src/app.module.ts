@@ -1,7 +1,9 @@
-import { randomUUID } from 'node:crypto';
 import { Module } from '@nestjs/common';
+import { TsRestModule } from '@ts-rest/nest';
 import { LoggerModule } from 'nestjs-pino';
 import { CommonModule } from './common/common.module';
+import { pinoHttpOptions } from './common/logging';
+import { TemporalModule } from './common/temporal/temporal.module';
 import { HealthModule } from './modules/health/health.public';
 
 /**
@@ -16,18 +18,10 @@ import { HealthModule } from './modules/health/health.public';
  */
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        genReqId: (req) => (req.headers['x-request-id'] as string) ?? randomUUID(),
-        redact: {
-          // DPDP hygiene: no phone numbers or tokens in logs (apps/api/CLAUDE.md §Local conventions)
-          paths: ['req.headers.authorization', 'req.headers.cookie', '*.phone_e164', '*.phoneE164'],
-          censor: '[redacted]',
-        },
-        autoLogging: true,
-      },
-    }),
+    LoggerModule.forRoot({ pinoHttp: pinoHttpOptions }),
+    TsRestModule.register({ isGlobal: true, validateResponses: true }),
     CommonModule,
+    TemporalModule,
     HealthModule,
   ],
 })

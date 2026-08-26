@@ -1,0 +1,12 @@
+{
+  "name": "heliogrid-temporal-spike",
+  "private": true,
+  "type": "module",
+  "description": "Track 6 spike harness. NOT a workspace package — pnpm-workspace.yaml covers apps/packages/tests only, so this stays out of the build graph, the lockfile and every repository gate. Track 7 lands the real integration in apps/worker and apps/api.",
+  "dependencies": {
+    "@temporalio/activity": "1.22.0",
+    "@temporalio/client": "1.22.0",
+    "@temporalio/worker": "1.22.0",
+    "@temporalio/workflow": "1.22.0"
+  }
+}

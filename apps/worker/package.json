@@ -3,19 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/build-workflow-bundle.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "dev": "tsx watch --env-file-if-exists=../../.env.local src/main.ts",
-    "start": "node --env-file-if-exists=../../.env.local dist/main.js"
+    "start": "node --env-file-if-exists=../../.env.local dist/main.js",
+    "build:workflows": "node scripts/build-workflow-bundle.mjs"
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/db": "workspace:*",
     "@heliogrid/env": "workspace:*",
-    "@nestjs/bullmq": "11.0.4",
     "@nestjs/common": "11.1.28",
     "@nestjs/core": "11.1.28",
-    "bullmq": "5.81.2",
+    "@temporalio/worker": "1.22.0",
+    "@temporalio/workflow": "1.22.0",
     "nestjs-pino": "4.6.1",
     "pino": "9.14.0",
     "pino-http": "11.0.0",

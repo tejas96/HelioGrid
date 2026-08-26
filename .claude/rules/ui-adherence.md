@@ -17,10 +17,10 @@ paths:
 `apps/mobile/src/ui` and every screen built on them are gone. The V2 replacement is specified
 in `docs/engineering/17-ui-architecture-v2.md`.
 
-Until it is: `apps/mobile/src/screens/placeholder/` and `apps/web/app/home/` are raw
-primitives on purpose, excluded by path from the rules below. Do not copy their shape into
-a real screen, and do not build a component outside `packages/ui` to unblock yourself —
-say the package is missing and stop.
+The first screens to use it are the placeholder screens under `apps/web/features/app/home/`
+(web) and `apps/mobile/src/screens/shared/PlaceholderScaffold` (mobile). Both use
+`@heliogrid/ui` `EmptyState` and are governed by all rules below. Their copy is temporary —
+the i18n track wraps it when the real screens are designed.
 
 ## Where a component goes
 
@@ -76,8 +76,33 @@ Pressable or Text the user lands on.
 A surface the design system doesn't cover is COMPOSED from the existing vocabulary — never
 new visuals. Log the composition decision as a module ruling.
 
-- Copy props are required, never optional-with-an-English-fallback.
+- **`packages/ui` holds NO user-visible English — including accessibility labels.** Copy
+  props are required, never optional-with-an-English-fallback, and an `aria-label` /
+  `accessibilityLabel` is copy: a screen reader speaks it, so a hard-coded one is a Hindi
+  user hearing English. The package does NOT depend on `@heliogrid/i18n` and never will —
+  the caller passes an already-translated string, or the string lives in
+  `packages/i18n/src/copy/` and the caller renders it. A default that "only shows if you
+  forget" is how untranslated copy ships.
 - Status/variant → visual maps are `Record<TheEnum, …>` (`.claude/rules/contracts.md`).
+
+### Known debt: hardcoded English in `packages/ui`
+
+**78 occurrences / 46 unique strings across 64 files, measured 2026-08-25** — 54 of them
+accessibility labels (each appearing in both platform halves of one component), 20 JSX text
+nodes, 4 attributes. They predate the rule above; the V2 component layer landed with them.
+
+**A NEW component gets no grace** — write the prop. Clearing the existing set is a design-
+system change, not an i18n one: every string becomes a required prop on the component's ONE
+`<Name>.types.ts`, which by Law 7 changes both platform halves and every call site at once.
+It is sequenced with the design-system work in `docs/engineering/17`, not with the language
+plumbing that landed 2026-08-25.
+
+List the current set — regenerate it rather than trusting a copied list:
+
+```bash
+git ls-files 'packages/ui/src' | grep -E '\.tsx?$' | grep -v '\.types\.ts$' \
+  | xargs grep -nE '(aria-label|accessibilityLabel|accessibilityHint|placeholder|title|alt)="[^"]{2,}"|>[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<'
+```
 
 ### Presentation and logic live in different files
 A component renders. It does not also fetch, orchestrate, or hold flow logic.

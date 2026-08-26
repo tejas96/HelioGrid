@@ -44,7 +44,7 @@ export function useDetunedSubject(ref: RefObject<HTMLElement | null>): void {
       return;
     }
     const detune = () => {
-      for (const node of element.querySelectorAll(FOCUSABLE)) {
+      for (const node of Array.from(element.querySelectorAll(FOCUSABLE))) {
         if (node.getAttribute('tabindex') !== '-1') {
           node.setAttribute('tabindex', '-1');
         }

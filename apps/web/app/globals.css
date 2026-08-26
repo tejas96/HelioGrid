@@ -1,13 +1,10 @@
 @import "tailwindcss";
 
 /*
- * EMPTIED 2026-08-19 (docs/engineering/17-ui-architecture-v2.md).
+ * Token custom properties (--sp-*, --fs-*, --color-*, etc.) are NOT defined here.
+ * They are imported in layout.tsx in load-bearing order:
+ *   @heliogrid/theme/tokens.css → @heliogrid/theme/base.css → @heliogrid/ui/styles.css → globals.css
  *
- * This file used to map @heliogrid/tokens custom properties into Tailwind v4 theme keys and
- * carry the pre-component `.hg-*` scaffold. Both were built on the v1 design system, which
- * has been removed. Every mapping here resolved to a token that no longer exists.
- *
- * The V2 replacement is `@heliogrid/theme`, which emits `tokens.css`. When it lands, its
- * stylesheet is imported in layout.tsx and the `@theme inline` mapping is regenerated from
- * it — never hand-transcribed. Do not re-add raw values here in the meantime.
+ * Do not add raw values here — every visual value comes from @heliogrid/theme.
+ * A future @theme inline mapping is regenerated from tokens.css via ds:pull, never hand-transcribed.
  */

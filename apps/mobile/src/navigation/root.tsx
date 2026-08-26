@@ -1,6 +1,6 @@
 import { createStaticNavigation, type StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { BootScreen } from '../screens/boot/BootScreen';
+import { BootScreen } from '../screens/boot';
 import { useIsBooting, useIsSignedIn, useIsSignedOut } from './guards';
 import { appScreens } from './routes/app';
 import { authScreens } from './routes/auth';

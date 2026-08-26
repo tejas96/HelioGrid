@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:12
+#: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "योग्य मूल्य प्रविष्ट करा."
 
@@ -23,56 +23,61 @@ msgid "Some fields need attention. Check the form and retry."
 msgstr "काही फील्डकडे लक्ष देणे आवश्यक आहे. फॉर्म तपासून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:19
+#: src/copy/api-error.ts:23
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "तुम्ही संपादित करत असताना कोणीतरी हे बदलले. रिफ्रेश करून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:22
+#: src/copy/api-error.ts:31
 msgid "Something went wrong on our side. Try again."
 msgstr "आमच्याकडून काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:20
+#: src/copy/api-error.ts:26
 msgid "That change isn't allowed here."
 msgstr "हा बदल येथे अनुमत नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:18
+#: src/copy/api-error.ts:22
 msgid "That record isn't available."
 msgstr "ते रेकॉर्ड उपलब्ध नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:11
+#: src/copy/api-error.ts:27
+msgid "That request is too large. Reduce it and retry."
+msgstr "ही विनंती खूप मोठी आहे. ती लहान करून पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "हे फील्ड आवश्यक आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:14
+#: src/copy/validation.ts:12
 msgid "This value is too large."
 msgstr "हे मूल्य खूप मोठे आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:13
+#: src/copy/validation.ts:11
 msgid "This value is too small."
 msgstr "हे मूल्य खूप लहान आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:21
+#: src/copy/api-error.ts:30
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "खूप प्रयत्न झाले. थोडा वेळ थांबून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:16
+#: src/copy/api-error.ts:18
 msgid "You don't have access to do that."
 msgstr "तुम्हाला हे करण्याची परवानगी नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:15
+#: src/copy/api-error.ts:17
 msgid "You're signed out. Sign in to continue."
 msgstr "तुम्ही साइन आउट आहात. सुरू ठेवण्यासाठी साइन इन करा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:17
+#: src/copy/api-error.ts:19
 msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."

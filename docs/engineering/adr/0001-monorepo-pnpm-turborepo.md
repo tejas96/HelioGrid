@@ -1,6 +1,6 @@
-# ADR-0001: Monorepo on pnpm workspaces + Turborepo + TypeScript project references
+# ADR-0001: Monorepo on pnpm workspaces + Turborepo
 
-Date: 2026-07-24
+Date: 2026-07-24 · Updated: 2026-08-25 (removed cross-package TS project references)
 
 ## Context
 
@@ -8,15 +8,23 @@ HelioGrid is ~4 apps (web, api, worker, mobile) + packages (domain, contracts, d
 
 ## Decision
 
-**pnpm workspaces + Turborepo + TypeScript project references.** Ship source (not pre-built dist) — Next.js and Metro bundle downstream; references exist purely for incremental `tsc -b` ordering and hard type boundaries. Lint/format is **Biome v2.5** (single binary, one `biome.json`), backed by **dependency-cruiser** (semantic layer rules: `domain` may not import `db`/`api`; no cycles; no orphans), **sherif** (dependency-version drift across packages) and **Turborepo Boundaries** (package encapsulation, undeclared-dependency imports). Remote cache: Turborepo's free/self-hostable protocol.
+**pnpm workspaces + Turborepo.** Dist-emitting library packages (composite, `tsc -b`) build independently; apps and the invariant runner typecheck with `--noEmit`. **Turbo drives the inter-package build graph** (`^build` dependencies in `turbo.json`) — cross-package `references` arrays in root and app tsconfigs are removed; each package's tsconfig is self-contained. Lint/format is **Biome v2.5** (single binary, one `biome.json`), backed by **dependency-cruiser** (semantic layer rules: `domain` may not import `db`/`api`; no cycles; no orphans), **sherif** (dependency-version drift across packages) and **Turborepo Boundaries** (package encapsulation via exact role tags — `app-web`, `app-mobile`, `app-api`, `app-worker`, `app-invariants` — not a coarse shared `app` tag). Remote cache: Turborepo's free/self-hostable protocol.
+
+**Enforcement ownership (one tool per concern — do not merge concerns):**
+- Biome: format, local AST, a11y
+- dependency-cruiser: import rules and cycles (authoritative within its scope)
+- Turbo Boundaries: undeclared workspace-package imports and role-tag violations (authoritative within its scope)
+- Sherif: version drift
+- CI yml: generated/runtime/platform proofs (gitleaks, migration append-only, native builds, artifact upload)
 
 ## Consequences
 
-- Truth lives in native files (`package.json` scripts + `turbo.json` + `biome.json` + `.dependency-cruiser.js`) — agents read exactly what runs.
+- Truth lives in native files (`package.json` scripts + `turbo.json` + `biome.json` + `.dependency-cruiser.cjs`) — agents read exactly what runs.
 - Four small tools instead of one integrated graph: boundary enforcement is split across dependency-cruiser (semantic), Turborepo Boundaries (physical) and sherif (versions). Each must stay in CI or its slice of enforcement silently disappears.
 - Biome lacks an Nx-style tag-based module-boundary rule — dependency-cruiser is not optional.
 - We forgo Nx's generators and its ~7x speed edge on 50+ package repos; at ~12 packages this is immaterial.
 - Naming trap recorded: **sherif** (QuiiBz, version linter) is what we use — not **Sheriff** (@softarc, ESLint boundary tool).
+- TS project references (cross-package `references` arrays) were removed 2026-08-25: they added no value over Turbo's `^build` ordering, and maintaining them in every tsconfig that added a workspace dependency created constant drift. Composite packages keep their own `tsc -b` setup; apps typecheck in isolation.
 
 ## Alternatives rejected
 

@@ -1,0 +1,7 @@
+# Development PKI and JWT signing material. Regenerate with scripts/make-dev-pki.sh.
+#
+# Never committed, and never reused as production material: these are 2048-bit keys minted by
+# a shell script with no HSM, no passphrase and no revocation path. Track 8's deployment
+# candidate carries the PROCEDURE for production certificates, never the certificates.
+pki/
+backup/

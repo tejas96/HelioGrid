@@ -1,0 +1,84 @@
+# Alert definitions for heliogrid-temporal.
+#
+# Each one names the FAILURE a human would otherwise find out about from a customer. An alert
+# that fires on a metric nobody would act on is noise that teaches people to ignore the page.
+groups:
+  - name: temporal-availability
+    rules:
+      - alert: TemporalDown
+        expr: up{job="heliogrid-temporal"} == 0
+        for: 2m
+        labels: { severity: page }
+        annotations:
+          summary: Temporal is not being scraped
+          description: >-
+            One machine, no HA (see README §"What this is not"). While it is down, every
+            durable timer, waiting workflow and task-queue poll is stopped. Persisted
+            workflows recover when it returns; nothing is lost, but nothing progresses.
+            Runbook: check the machine, then the database, then the certificates.
+
+      - alert: TemporalPersistenceErrors
+        expr: sum(rate(persistence_error_with_type{job="heliogrid-temporal"}[5m])) > 0
+        for: 5m
+        labels: { severity: page }
+        annotations:
+          summary: Temporal cannot reach or write its database
+          description: >-
+            The cluster serves the port while its persistence is failing, so a TCP check would
+            still be green. Check the Postgres machine, the connection budget (maxConns in the
+            server config plus visibility's must fit under max_connections) and TLS validity.
+
+  - name: temporal-workload
+    rules:
+      - alert: TemporalTaskQueueBacklog
+        expr: >-
+          max by (task_queue) (
+            temporal_task_schedule_to_start_latency_seconds{job="heliogrid-temporal", quantile="0.99"}
+          ) > 60
+        for: 10m
+        labels: { severity: warn }
+        annotations:
+          summary: Tasks are waiting more than a minute to be picked up
+          description: >-
+            Schedule-to-start latency measures WORKER shortage, not workflow slowness — the
+            task is ready and nothing is polling. Check that apps/worker machines are running
+            and holding the queue named in the label; a deploy that failed halfway looks
+            exactly like this.
+
+      - alert: TemporalWorkflowTaskFailures
+        expr: sum(rate(workflow_task_execution_failed{job="heliogrid-temporal"}[5m])) > 0
+        for: 5m
+        labels: { severity: page }
+        annotations:
+          summary: Workflow tasks are failing
+          description: >-
+            The most likely cause is a NON-DETERMINISM error from a workflow code change that
+            was not replay-tested — the workflow cannot progress on new code and the old code
+            is gone. Roll the worker back to the previous build first, then replay the captured
+            history against the new code before shipping it again.
+
+      - alert: TemporalHistorySizeGrowing
+        expr: >-
+          max(temporal_history_size_bytes{job="heliogrid-temporal", quantile="0.99"}) > 10485760
+        for: 30m
+        labels: { severity: warn }
+        annotations:
+          summary: A workflow history is past the 10 MB warning threshold
+          description: >-
+            A history that grows without bound eventually cannot be loaded. The fix is
+            Continue-As-New in the owning workflow, not a higher limit.
+
+  - name: temporal-certificates
+    rules:
+      # There is no metric for "the CA I trust expires next month". This is the alert that
+      # would have to exist for rotation to be planned rather than reactive, and it is written
+      # here so its absence is visible rather than assumed.
+      - alert: TemporalCertificateExpiryUnmonitored
+        expr: vector(0)
+        labels: { severity: info }
+        annotations:
+          summary: PLACEHOLDER — certificate expiry is not monitored
+          description: >-
+            mTLS material has no expiry metric here. Until an exporter publishes one, expiry is
+            tracked by the rotation runbook (README §"Rotating certificates") and a calendar
+            reminder. Recorded as a known gap rather than left silent.

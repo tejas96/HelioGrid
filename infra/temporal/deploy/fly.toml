@@ -1,0 +1,59 @@
+# heliogrid-temporal — the deployment CANDIDATE. NOT deployed; no Fly app exists.
+#
+# Creating the app, its database, its certificates or any machine is a separate owner-approved
+# operation (CLAUDE.md §4). This file is reviewed, validated against the local stack, and
+# waiting.
+app = "heliogrid-temporal"
+primary_region = "bom"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# The drain window. On SIGTERM Temporal stops accepting work and finishes what it holds; this
+# is how long the platform waits before killing it. Shorter than the longest in-flight
+# operation means the kill lands mid-write.
+kill_timeout = "120s"
+
+[env]
+  PG_PORT = "5432"
+  # Everything else is a Fly SECRET, and the credentials are files rather than values:
+  #   fly secrets set --stage PG_HOST=... PG_USER=...
+  #   PG_PASSWORD_FILE / the TLS material are mounted from a secrets volume.
+  # A private key in an environment variable is readable by every child process and appears in
+  # `fly ssh console` output and in any crash dump that snapshots the environment.
+
+# PRIVATE ONLY. There is deliberately no [http_service] and no public [[services]] block:
+# port 7233 is reachable over Fly's 6PN private network as `heliogrid-temporal.internal`, and
+# nothing about Temporal's API should ever face the internet. Publishing it is not a
+# configuration choice, it is an incident.
+#
+# The api and worker apps reach it at heliogrid-temporal.internal:7233, which is also the name
+# the server certificate must carry as a SAN.
+
+[[vm]]
+  # Always-running single machine. Sizing assumption: 512 history shards on one machine with
+  # its own PostgreSQL, at launch volumes. Revisit when shard-level lag appears in the metrics
+  # below, NOT on a hunch — the shard count itself is immutable.
+  size = "shared-cpu-2x"
+  memory = "2gb"
+
+[machine]
+  # OFF, and this is load-bearing: a stopped Temporal is a stopped orchestrator. Every durable
+  # timer, every waiting workflow and every task queue poll stops with it.
+  auto_stop_machines = "off"
+  auto_start_machines = false
+  min_machines_running = 1
+
+# gRPC health over mTLS. `temporal operator cluster health` exercises the whole path —
+# transport identity, authorization and persistence — which a TCP check does not: a server
+# that has lost its database still accepts a connection on 7233.
+[checks.cluster]
+  type = "command"
+  command = "temporal operator cluster health --address heliogrid-temporal.internal:7233 --tls --tls-ca-path /secrets/tls/ca-bundle.pem --tls-cert-path /secrets/tls/operator.pem --tls-key-path /secrets/tls/operator.key --tls-server-name heliogrid-temporal.internal --grpc-meta authorization=$(cat /secrets/operator-token)"
+  interval = "30s"
+  timeout = "10s"
+  grace_period = "60s"
+
+[metrics]
+  port = 9090
+  path = "/metrics"

@@ -1,18 +1,28 @@
-import { openErrorEnvelopeSchema } from '@heliogrid/contracts';
+import { type ErrorDetail, openErrorEnvelopeSchema } from '@heliogrid/contracts';
+import { ResponseValidationError, UnknownStatusError } from '@ts-rest/core';
+import { ZodError } from 'zod';
 
-export interface ApiErrorDetail {
-  path: string;
-  issue: string;
-}
+export type ApiErrorDetail = ErrorDetail;
 
 interface EnvelopeFields {
   code?: string;
-  details?: readonly ApiErrorDetail[];
+  details?: readonly ErrorDetail[];
   requestId?: string;
 }
 
+/** Stable base for failures crossing the data-layer boundary. */
+export class DataError extends Error {
+  constructor(
+    message: string,
+    readonly retryable: boolean,
+  ) {
+    super(message);
+    this.name = 'DataError';
+  }
+}
+
 /** A non-2xx the server described with the canonical error envelope. */
-export class ApiError extends Error {
+export class ApiError extends DataError {
   readonly status: number;
   /**
    * UPPER_SNAKE envelope code ('VALIDATION_FAILED', route-specific literals…).
@@ -24,12 +34,40 @@ export class ApiError extends Error {
   readonly requestId?: string;
 
   constructor(status: number, message: string, envelope?: EnvelopeFields) {
-    super(message);
+    super(message, status >= 500 && status <= 599);
     this.name = 'ApiError';
     this.status = status;
     this.code = envelope?.code ?? 'UNKNOWN';
     this.details = envelope?.details;
     this.requestId = envelope?.requestId;
+  }
+}
+
+export class NetworkError extends DataError {
+  constructor() {
+    super('The network request failed.', true);
+    this.name = 'NetworkError';
+  }
+}
+
+export class RequestTimeoutError extends DataError {
+  constructor() {
+    super('The network request timed out.', true);
+    this.name = 'RequestTimeoutError';
+  }
+}
+
+export class RequestCancelledError extends DataError {
+  constructor() {
+    super('The request was cancelled.', false);
+    this.name = 'RequestCancelledError';
+  }
+}
+
+export class InvalidResponseError extends DataError {
+  constructor() {
+    super('The server returned an invalid response.', false);
+    this.name = 'InvalidResponseError';
   }
 }
 
@@ -59,4 +97,14 @@ export function toApiError(res: { status: number; body: unknown }): ApiError {
   return res.status === 401
     ? new UnauthorizedError(message, envelope)
     : new ApiError(res.status, message, envelope);
+}
+
+/** Collapse ts-rest/Zod/provider internals into the stable errors exposed by this package. */
+export function normalizeClientError(error: unknown): DataError {
+  if (error instanceof DataError) return error;
+  if (error instanceof UnknownStatusError) return toApiError(error.response);
+  if (error instanceof ResponseValidationError || error instanceof ZodError) {
+    return new InvalidResponseError();
+  }
+  return new InvalidResponseError();
 }

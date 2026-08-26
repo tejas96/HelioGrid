@@ -1,13 +1,9 @@
-import { createApiClient } from './client/client';
-import { createHealthRepository, type HealthRepository } from './health/repository';
+import { createRepositoryRegistry, type Repositories } from './composition';
 import type { SessionStore } from './session/types';
 import { createWalkthroughSession } from './session/walkthrough';
 import type { TokenStorage } from './transport/storage';
-import { createTransport } from './transport/transport';
 
-export interface Repositories {
-  health: HealthRepository;
-}
+export type { Repositories } from './composition';
 
 export interface DataLayerConfig {
   baseUrl: string;
@@ -25,9 +21,10 @@ export interface DataLayer {
  * transport themselves — they supply only what is genuinely platform-specific.
  */
 export function createDataLayer({ baseUrl, storage }: DataLayerConfig): DataLayer {
-  const api = createApiClient(baseUrl, createTransport(storage));
   return {
-    repositories: { health: createHealthRepository(api) },
+    repositories: storage
+      ? createRepositoryRegistry({ baseUrl, mode: 'mobile', storage })
+      : createRepositoryRegistry({ baseUrl, mode: 'browser' }),
     session: createWalkthroughSession(),
   };
 }

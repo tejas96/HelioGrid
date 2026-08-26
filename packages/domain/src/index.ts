@@ -19,6 +19,7 @@
  * invite and role invariants land with the first slice that needs them (Law 9). The package
  * existed before any of it so the purity rules were live BEFORE the code they must police.
  */
+
 export {
   AUTO_VERIFY_DELAY_MS,
   CALL_OFFER_AFTER_RESENDS,
@@ -32,6 +33,29 @@ export {
   OTP_LENGTH,
   PHONE_NSN_LENGTH,
 } from './auth/otp';
+export type {
+  Capability,
+  CapabilityGrant,
+  CapabilityRow,
+  CapabilityRowKey,
+  LadderScope,
+  ResolvedVisibility,
+  RolePreset,
+  VisibilityDomain,
+  VisibilityScope,
+} from './authz';
+export {
+  CAPABILITY_MATRIX,
+  can,
+  capabilityLimit,
+  grantedCapabilities,
+  M01_CAPABILITIES,
+  ROLE_PRESETS,
+  resolveVisibility,
+  VISIBILITY_DOMAINS,
+  VISIBILITY_LADDER,
+  visibilityIn,
+} from './authz';
 export { formatPhoneNsn } from './format/phone';
 export type { TenantSegment } from './tenancy/segment';
 export { TENANT_SEGMENTS } from './tenancy/segment';

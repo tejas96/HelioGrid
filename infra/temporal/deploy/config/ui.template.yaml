@@ -1,0 +1,45 @@
+# Temporal UI — OPERATOR-PRIVATE, and DISABLED BY DEFAULT.
+#
+# It is not part of `fly.toml`. Running it means running a second process that can read every
+# workflow's history — which is customer data: lead names, phone numbers, money. The local
+# stack does not run it either.
+#
+# When an operator does need it, it is a TEMPORARY, PRIVATE session, never a deployed service:
+#
+#   fly proxy 8080:8233 -a heliogrid-temporal      # 6PN only; nothing is published
+#
+# ...against a UI container started by hand on the machine with this config. Two properties
+# must hold every time, and neither is default:
+#   - it binds to the private address only;
+#   - it authenticates as an OPERATOR identity — its own certificate and its own token, so the
+#     audit trail says which human looked, not "the UI".
+#
+# There is no read-only mode: the UI can terminate workflows and send signals. Whoever holds
+# this holds production.
+
+temporalGrpcAddress: heliogrid-temporal.internal:7233
+enableUi: true
+
+# Bind to loopback INSIDE the machine. The only way in is `fly proxy`, which is authenticated
+# by the Fly org. Binding 0.0.0.0 would expose it to every machine on the private network.
+host: 127.0.0.1
+port: 8233
+
+# Mutual TLS, exactly as any other client (ADR-0025). The UI is not special.
+tls:
+  caFile: /secrets/tls/ca-bundle.pem
+  certFile: /secrets/tls/operator.pem
+  keyFile: /secrets/tls/operator.key
+  serverName: heliogrid-temporal.internal
+
+# The operator's own token. `default` here is a placeholder for the identity provider's
+# issuance — never a long-lived token baked into an image.
+auth:
+  enabled: false   # the UI's own login. Access control is `fly proxy` + the mTLS identity above.
+
+# Codec server: OFF. If payloads are ever encrypted, this is where the decoder lives — and it
+# would then be another process able to read customer data, needing its own decision.
+codec: {}
+
+# Hide nothing by default. An operator looking at a workflow needs to see what it actually did;
+# the control is WHO can reach this page, not what the page redacts.

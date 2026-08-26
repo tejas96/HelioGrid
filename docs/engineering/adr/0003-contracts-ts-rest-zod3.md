@@ -4,7 +4,11 @@ Date: 2026-07-24
 
 ## Context
 
-One contract source of truth must yield (a) end-to-end typed clients for Next.js and bare React Native, and (b) an emitted OpenAPI 3.1 document for public customer-link endpoints, webhooks and a future public API — with no codegen drift. The host framework is NestJS, which is CommonJS-shaped in practice.
+One contract source of truth must yield (a) end-to-end typed clients for Next.js and bare React Native, and (b) an emitted OpenAPI document for public customer-link endpoints, webhooks and a future public API — with no codegen drift.
+
+**Correction, 2026-08-25:** this ADR and `docs/engineering/03` both said "OpenAPI 3.1". The committed artifact declares `"openapi": "3.0.2"`, which is what `@ts-rest/open-api` 3.52.1 emits. The requirement is "an emitted, gate-checked OpenAPI document"; the version was an unverified detail. Nothing depends on 3.1 today. Recorded rather than fixed by upgrading, because changing the generator is a decision with its own consequences and no consumer is asking for it.
+
+The host framework is NestJS, which is CommonJS-shaped in practice.
 
 ## Decision
 

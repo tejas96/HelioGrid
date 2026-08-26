@@ -1,5 +1,5 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "extends": ["//"],
-  "tags": ["app"]
+  "tags": ["app-invariants"]
 }

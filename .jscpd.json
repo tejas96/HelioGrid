@@ -10,8 +10,7 @@
     "**/dist/**",
     "**/.next/**",
     "**/*.d.ts",
-    "packages/i18n/src/locales/**",
-    "apps/mobile/src/screens/placeholder/**"
+    "packages/i18n/src/locales/**"
   ],
   "format": ["typescript", "tsx"]
 }

@@ -18,7 +18,7 @@ Ranked by (impact × likelihood) for a multi-tenant Indian EPC SaaS holding phon
 | T3 | **Webhook forgery / replay** | Attacker posts fake `subscription.charged` to grant themselves entitlements, or fake Exotel call events | Free service, poisoned ledgers | Razorpay: HMAC-SHA256 signature verify → dedupe on `x-razorpay-event-id` → reconcile-by-poll backstop. Exotel/MSG91 callbacks: per-tenant/per-integration shared-secret verification + source allowlist + timestamp freshness ≤5 min + event-id dedupe. All webhook endpoints excluded from session auth, included in rate limits |
 | T4 | **OTP abuse** | SMS pumping (premium-rate number farms burn our MSG91 balance), OTP brute force, invite spam | Direct money loss, account takeover | §7: per-phone/per-IP/per-tenant rate limits, 5-attempt verify lockout, +91 default allowlist, spend-velocity alarms, DLT-registered templates only |
 | T5 | **Voice-agent social misuse** | Caller impersonates a customer to extract another customer's deal data; prompt injection via utterances or tenant knowledge base; agent used to harass (DND/hours violations); vishing our tenants ("HelioGrid support, read me your OTP") | PII leakage, TRAI penalties, brand damage | Agent context is scoped to the **single lead matched by verified caller number** — no cross-customer retrieval tool exists in the agent's toolset. Knowledge base is per-tenant, injected read-only; agent has no DB write tools beyond the call-outcome record. `ComplianceGate` (non-swappable, BLUEPRINT §Voice): DND scrub, 9am–9pm + holiday calendar, AI disclosure ≤30s, keypress opt-out. Recording retention 90 days. Support never asks for OTP — stated in every OTP SMS template |
-| T6 | **Stolen device / session theft** | Field phones lost with 30–90 day mobile sessions | Tenant data exposure from one rep's scope | Sessions server-side in Postgres → revocable instantly from Team screen ("sign out everywhere" on deactivate). RN tokens in hardware keystore via react-native-keychain, never AsyncStorage. Short-lived JWTs (10 min) limit replay of intercepted API tokens |
+| T6 | **Stolen device / session theft** | A field phone is lost while its activity-rolling mobile session remains valid | Tenant data exposure from one rep's scope | Sessions are server-side and revocable from the Team screen; seven full days without foreground authenticated use expires mobile access, while background work cannot extend it (owner ruling `Q71`). Session material stays device-bound in the hardware keystore, never AsyncStorage. Product API tokens live ≤10 minutes, limiting replay of intercepted traffic; deactivation and “sign out everywhere” end access within that same bound. |
 | T7 | **Per-tenant credential theft** | BYO Razorpay keys / WABA tokens (v2) exfiltrated from DB backup or logs | Attacker drains tenant's payment flows | AES-256-GCM app-layer encryption with per-tenant DEK envelope (§8): ciphertext-only at rest, master key exists solely as a Fly secret on `api`, decrypt-in-memory at call site, never logged, access audit-logged |
 | T8 | **SSRF via imagery proxies** | PVGIS/Gemini/Google Solar/geotiff relays coerced to fetch internal URLs | Internal network probe, metadata theft | Keep the POC's geotiff-relay guard: hostname allowlist per provider, no redirects across hosts, deny private IP ranges, response-type validation. All third-party calls are server-proxied — API keys never reach clients |
 
@@ -79,27 +79,18 @@ Sessions are server-side rows → deactivating a user (or "sign out everywhere")
 
 ## 3. Authorisation
 
-Six fixed stackable preset roles, 16 capabilities (source: `docs/prd/foundations/F2-roles-and-permissions.md`). **Manage billing returns as a live capability** — D38 is superseded; billing is v1.
+**TWELVE** fixed stackable preset roles, 16 capabilities. **Manage billing is a live
+capability** — D38 is superseded; billing is v1.
 
-| Capability | Owner | Manager | Sales rep | Surveyor | Designer | Engineer |
-|---|:--:|:--:|:--:|:--:|:--:|:--:|
-| Lead visibility (scope) | All | Team | Own | Assigned | Assigned | Assigned |
-| Add and edit leads | ✓ | ✓ | ✓ | — | — | — |
-| Assign leads to others | ✓ | ✓ | — | — | — | — |
-| Delete leads | ✓ | — | — | — | — | — |
-| Capture site surveys | ✓ | ✓ | ✓ | ✓ | — | — |
-| Create and edit designs | ✓ | — | — | — | ✓ | — |
-| Approve designs (sign-off) | ✓ | — | — | — | — | ✓ |
-| Create and edit proposals (incl. discounts, D34) | ✓ | ✓ | ✓ | — | ✓ | — |
-| Send proposals to customers | ✓ | ✓ | ✓ | — | — | — |
-| Update project stages | ✓ | ✓ | — | — | — | — |
-| Record payments, upload documents | ✓ | ✓ | — | — | — | — |
-| Configure the agent and its knowledge | ✓ | — | — | — | — | — |
-| See agent performance | ✓ | ✓ | — | — | — | — |
-| Manage team and roles | ✓ | — | — | — | — | — |
-| Manage catalog and price book | ✓ | — | — | — | — | — |
-| **Manage billing** (restored, D38 superseded) | ✓ | — | — | — | — | — |
-| See company reports | ✓ | ✓ | — | — | — | — |
+> The matrix is NOT reproduced here. It is authored ONCE, in code, as
+> `CAPABILITY_MATRIX` in [`packages/domain/src/authz/`](../../packages/domain/src/authz)
+> (re-exported from the package index), with every cell stated rather than defaulted.
+> Product law is [`docs/prd/foundations/F2-roles-and-permissions.md`](../prd/foundations/F2-roles-and-permissions.md).
+>
+> The six-role table that stood here until 2026-08-26 was a hand-copy that had already gone
+> stale — it still showed the v1 preset count after F2 widened it to twelve (§F2.5 records
+> the carry: superseded in count, carried in content). A second copy of a permission matrix
+> is the Law 5 defect that produces exactly this drift, so it is a pointer now, permanently.
 
 Rules (all product law, enforced in code):
 

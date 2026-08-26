@@ -1,0 +1,179 @@
+# heliogrid-temporal — PRODUCTION server configuration TEMPLATE.
+#
+# It is a TEMPLATE because Temporal does not expand `${VAR}` in a config file: on the
+# explicit-path branch the placeholder reaches the connection string verbatim and Postgres
+# rejects `invalid port ":${...}"` (measured 2026-08-25, `infra/temporal/README.md` §8).
+# `scripts/render-config.sh` substitutes at CONTAINER START and the server reads the result.
+#
+# Start-time, not build-time: `broadcastAddress` must be the machine's own 6PN address, and a
+# machine does not have one until it boots.
+#
+# Derived from the production-like local stack (`infra/temporal/config/temporal.yaml`) so the
+# two stay one artifact with two substitutions rather than two files that drift.
+
+log:
+  stdout: true
+  level: info
+
+persistence:
+  # IMMUTABLE after the cluster is initialised. Changing it means a NEW cluster and a
+  # migration of every workflow — see README §"The shard decision" before touching it.
+  numHistoryShards: 512
+  defaultStore: default
+  visibilityStore: visibility
+  datastores:
+    default:
+      sql:
+        pluginName: "postgres12"
+        databaseName: "temporal"
+        connectAddr: "__PG_HOST__:__PG_PORT__"
+        connectProtocol: "tcp"
+        user: "__PG_USER__"
+        password: "__PG_PASSWORD__"
+        # Connection BUDGET, not a default. maxConns here plus visibility's must stay under
+        # the database's own max_connections with headroom for the schema tool and one
+        # operator psql session — a cluster that cannot open a connection to upgrade itself is
+        # a cluster you cannot upgrade.
+        maxConns: 20
+        maxIdleConns: 20
+        maxConnLifetime: "1h"
+        tls:
+          # A DECISION, not a default. Production must state `true`: the connection carries
+          # every workflow argument and every activity result, and Fly Postgres is reachable
+          # from any machine in the org's private network. Rendered so the same template can be
+          # validated against a local database that has no TLS — with `false` written down
+          # rather than silently assumed.
+          enabled: __PG_TLS__
+          enableHostVerification: __PG_TLS__
+    visibility:
+      sql:
+        pluginName: "postgres12"
+        databaseName: "temporal_visibility"
+        connectAddr: "__PG_HOST__:__PG_PORT__"
+        connectProtocol: "tcp"
+        user: "__PG_USER__"
+        password: "__PG_PASSWORD__"
+        maxConns: 10
+        maxIdleConns: 10
+        maxConnLifetime: "1h"
+        tls:
+          enabled: __PG_TLS__
+          enableHostVerification: __PG_TLS__
+
+global:
+  membership:
+    maxJoinDuration: 30s
+    # The machine's own 6PN address. An IP, never a hostname — ringpop rejects a name outright
+    # ("ringpop config malformed `broadcastAddress` param"). Rendered from $FLY_PRIVATE_IP.
+    broadcastAddress: "__BROADCAST_IP__"
+
+  # ── Transport identity ────────────────────────────────────────────────────────────
+  # `requireClientAuth: true` is the half that matters: without it the server presents a
+  # certificate and accepts anyone, which looks identical in a connection log.
+  #
+  # `serverName` is `heliogrid-temporal.internal` — the Fly private DNS name clients dial, and
+  # therefore the name that must appear in the server certificate's SANs. A mismatch must fail;
+  # dropping the check makes the client accept a certificate for a different host, which is the
+  # attack mTLS exists to stop.
+  tls:
+    frontend:
+      server:
+        certFile: /secrets/tls/server.pem
+        keyFile: /secrets/tls/server.key
+        requireClientAuth: true
+        # A BUNDLE. Rotation is trust-both → rotate the server cert → move clients → drop the
+        # old, and the overlap window is this line. README §"Rotating certificates".
+        clientCaFiles:
+          - /secrets/tls/ca-bundle.pem
+      client:
+        serverName: heliogrid-temporal.internal
+        rootCaFiles:
+          - /secrets/tls/ca-bundle.pem
+    internode:
+      server:
+        certFile: /secrets/tls/server.pem
+        keyFile: /secrets/tls/server.key
+        requireClientAuth: true
+        clientCaFiles:
+          - /secrets/tls/ca-bundle.pem
+      client:
+        serverName: heliogrid-temporal.internal
+        rootCaFiles:
+          - /secrets/tls/ca-bundle.pem
+
+  # ── Authorization ─────────────────────────────────────────────────────────────────
+  # A certificate proves WHO. It says nothing about what they may do, and treating it as
+  # permission would give every service that can connect every right there is.
+  #
+  # KNOWN LIMIT, measured: the default authorizer cannot separate "may start a workflow" from
+  # "may poll a task queue" — both are `namespace:write`. api and worker therefore differ by
+  # certificate and token subject, not by privilege. Closing that needs a custom Authorizer
+  # plugin or a private enforcing proxy; neither is built. `infra/temporal/README.md` §3.
+  authorization:
+    jwtKeyProvider:
+      keySourceURIs:
+        - __JWKS_URI__
+      refreshInterval: 1m
+    permissionsClaimName: permissions
+    authorizer: default
+    claimMapper: default
+
+  # ── Metrics ───────────────────────────────────────────────────────────────────────
+  # Prometheus on a PRIVATE port. Fly's managed Prometheus scrapes over 6PN; nothing here is
+  # published, and `docs/engineering/09` §3 owns the dashboards these feed.
+  metrics:
+    prometheus:
+      framework: tally
+      listenAddress: "0.0.0.0:9090"
+
+services:
+  frontend:
+    rpc:
+      grpcPort: 7233
+      membershipPort: 6933
+      # `::` — Fly machines are IPv6-only on the private network.
+      bindOnIP: "::"
+  # Temporal's OWN system worker (scanner, history scavenger) calls the frontend as an ordinary
+  # client and carries no JWT. With the authorizer on, it is refused and the server DIES at boot
+  # with `error starting scanner: Request unauthorized.` (measured 2026-08-25).
+  # `internal-frontend` is Temporal's mechanism for it: never published, not subject to the
+  # authorizer, and the reason the PUBLIC frontend can stay strictly authorized.
+  internal-frontend:
+    rpc:
+      grpcPort: 7236
+      membershipPort: 6936
+      bindOnIP: "::"
+  history:
+    rpc:
+      grpcPort: 7234
+      membershipPort: 6934
+      bindOnIP: "::"
+  matching:
+    rpc:
+      grpcPort: 7235
+      membershipPort: 6935
+      bindOnIP: "::"
+  worker:
+    rpc:
+      grpcPort: 7239
+      membershipPort: 6939
+      bindOnIP: "::"
+
+clusterMetadata:
+  enableGlobalNamespace: false
+  failoverVersionIncrement: 10
+  masterClusterName: "active"
+  currentClusterName: "active"
+  clusterInformation:
+    active:
+      enabled: true
+      initialFailoverVersion: 1
+      rpcName: "frontend"
+      rpcAddress: "heliogrid-temporal.internal:7233"
+
+dcRedirectionPolicy:
+  policy: "noop"
+
+dynamicConfigClient:
+  filepath: "/etc/temporal/dynamicconfig/production.yaml"
+  pollInterval: "60s"

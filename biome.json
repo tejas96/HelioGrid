@@ -128,7 +128,8 @@
         "packages/db/src/migrate.ts",
         "tests/invariants/**",
         "**/*.config.{js,ts,mjs,cjs}",
-        "**/scripts/**"
+        "**/scripts/**",
+        "infra/temporal/spike/**"
       ],
       "linter": {
         "rules": {
@@ -152,7 +153,8 @@
       "includes": [
         "packages/env/src/**",
         "apps/web/lib/env.ts",
-        "scripts/check-openapi-breaking.mjs"
+        "scripts/check-openapi-breaking.mjs",
+        "infra/temporal/spike/**"
       ],
       "linter": {
         "rules": {
@@ -182,7 +184,7 @@
       }
     },
     {
-      "includes": ["apps/mobile/src/screens/**", "!apps/mobile/src/screens/placeholder/**"],
+      "includes": ["apps/mobile/src/screens/**"],
       "linter": {
         "rules": {
           "style": {
@@ -200,7 +202,7 @@
                       "TouchableHighlight",
                       "Switch"
                     ],
-                    "message": "Import the equivalent from '@heliogrid/ui' instead — one package holds both platforms, RN via the .native.tsx half (docs/engineering/17-ui-architecture-v2.md §2). View, ScrollView, StyleSheet and Platform are layout and stay allowed. INERT until packages/ui lands; screens/placeholder is excluded because it predates it."
+                    "message": "Import the equivalent from '@heliogrid/ui' instead — one package holds both platforms, RN via the .native.tsx half (docs/engineering/17-ui-architecture-v2.md §2). View, ScrollView, StyleSheet and Platform are layout and stay allowed."
                   },
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",

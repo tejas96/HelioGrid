@@ -25,14 +25,26 @@ const GLOBAL_TABLES: Record<string, string> = {
   // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/engineering/08 §2).
   // They are absent until the auth module lands its first migration, which is why the
   // stale-entry check below only warns.
+  //
+  // ⚠ THE LAST THREE ARE PROVISIONAL — do NOT inherit them into the first auth migration
+  // without the owner ruling. `packages/contracts/CLAUDE.md` (Track 5a, later record) says
+  // HelioGrid owns tenants, MEMBERSHIPS and roles; these entries say the provider does. If
+  // HelioGrid owns memberships, `member` is a tenant-owned table that must carry tenant_id
+  // and sit under RLS — and exempting it here would be a silent tenancy bypass on the one
+  // table that maps a person to a tenant. Whether Better Auth is adopted at all, and whether
+  // its organization plugin is used, is the deferred Track 5b decision.
+  // Recorded as conflicts.md row 13. Nothing is mis-enforced today: 0 application tables.
   user: 'auth-provider internal',
   session: 'Better Auth internal',
   account: 'Better Auth internal',
   verification: 'Better Auth internal',
-  organization: 'Better Auth internal — tenants.id IS organization.id',
-  member: 'Better Auth internal',
-  invitation: 'Better Auth internal (unused; phone invites are ours, in `invites`)',
   jwks: 'Better Auth internal (jwt plugin)',
+  organization:
+    'PROVISIONAL (conflicts.md #13) — provider-internal ONLY if the organization plugin is adopted; ownership of tenants is contested',
+  member:
+    'PROVISIONAL (conflicts.md #13) — contested: if HelioGrid owns memberships this is tenant-owned and must NOT be exempt',
+  invitation:
+    'PROVISIONAL (conflicts.md #13) — unused either way; phone invites are ours, in `invites`',
 };
 
 /**

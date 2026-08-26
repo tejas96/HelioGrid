@@ -9,6 +9,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.js"
+    },
+    "./rn": {
+      "types": "./dist/rn/index.d.ts",
+      "default": "./dist/rn/index.js"
     }
   },
   "scripts": {
@@ -18,13 +26,21 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
+    "@formatjs/intl-locale": "5.3.10",
+    "@formatjs/intl-pluralrules": "6.3.13",
     "@heliogrid/contracts": "workspace:*",
-    "@lingui/core": "5.9.5"
+    "@lingui/core": "5.9.5",
+    "@lingui/react": "5.9.5"
   },
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
     "@lingui/cli": "5.9.5",
     "@types/node": "22.20.1",
+    "@types/react": "19.2.17",
+    "react": "19.2.3",
     "typescript": "5.8.3"
+  },
+  "peerDependencies": {
+    "react": "19.2.3"
   }
 }

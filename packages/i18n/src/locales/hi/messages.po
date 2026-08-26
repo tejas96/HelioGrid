@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:12
+#: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "मान्य मान दर्ज करें।"
 
@@ -23,56 +23,61 @@ msgid "Some fields need attention. Check the form and retry."
 msgstr "कुछ फ़ील्ड्स पर ध्यान देना ज़रूरी है। फ़ॉर्म जाँचकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:19
+#: src/copy/api-error.ts:23
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "आपके संपादन के दौरान किसी और ने इसे बदल दिया। रीफ़्रेश करके फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:22
+#: src/copy/api-error.ts:31
 msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:20
+#: src/copy/api-error.ts:26
 msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:18
+#: src/copy/api-error.ts:22
 msgid "That record isn't available."
 msgstr "वह रिकॉर्ड उपलब्ध नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:11
+#: src/copy/api-error.ts:27
+msgid "That request is too large. Reduce it and retry."
+msgstr "यह अनुरोध बहुत बड़ा है। इसे छोटा करके फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:14
+#: src/copy/validation.ts:12
 msgid "This value is too large."
 msgstr "यह मान बहुत बड़ा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/validation.ts:13
+#: src/copy/validation.ts:11
 msgid "This value is too small."
 msgstr "यह मान बहुत छोटा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:21
+#: src/copy/api-error.ts:30
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:16
+#: src/copy/api-error.ts:18
 msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:15
+#: src/copy/api-error.ts:17
 msgid "You're signed out. Sign in to continue."
 msgstr "आप साइन आउट हैं। जारी रखने के लिए साइन इन करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:17
+#: src/copy/api-error.ts:19
 msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"

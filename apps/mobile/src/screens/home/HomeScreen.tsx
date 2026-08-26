@@ -1,6 +1,6 @@
-import { PlaceholderScreen } from '../placeholder/PlaceholderScreen';
+import { PlaceholderScaffold } from '../shared/PlaceholderScaffold';
 
-/** Placeholder — see PlaceholderScreen. Replaced when the real Home screen is designed. */
+/** Placeholder — replaced when the real Home screen is designed. */
 export function HomeScreen() {
-  return <PlaceholderScreen name="Home" />;
+  return <PlaceholderScaffold name="Home" />;
 }

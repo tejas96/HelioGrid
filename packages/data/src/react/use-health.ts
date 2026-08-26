@@ -9,5 +9,8 @@ import { useRepositories } from './context';
  */
 export function useLiveness() {
   const { health } = useRepositories();
-  return useQuery({ queryKey: queryKeys.health.liveness, queryFn: () => health.liveness() });
+  return useQuery({
+    queryKey: queryKeys.health.liveness,
+    queryFn: ({ signal }) => health.liveness(signal),
+  });
 }

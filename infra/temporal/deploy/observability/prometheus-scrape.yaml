@@ -1,0 +1,16 @@
+# Scrape configuration for heliogrid-temporal.
+#
+# Fly's managed Prometheus reaches the machine over 6PN; port 9090 is PRIVATE and never
+# published. `docs/engineering/09` §3 owns where these land (Grafana Cloud) — this file owns
+# only what is scraped and how often.
+scrape_configs:
+  - job_name: heliogrid-temporal
+    metrics_path: /metrics
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['heliogrid-temporal.internal:9090']
+        labels:
+          service: temporal
+          # One machine, one region. When that stops being true these labels are how a
+          # per-machine problem is told apart from a cluster-wide one.
+          region: bom

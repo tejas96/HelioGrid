@@ -1,0 +1,177 @@
+# Temporal server configuration — the PRODUCTION-LIKE local stack.
+#
+# This is not the `temporal server start-dev` inner loop. The dev server has no TLS, no
+# authorization and an in-memory store; a proof that runs against it proves nothing about the
+# thing we would deploy. This file is what Track 8's Fly template is derived from, so the two
+# stay one artifact with two substitutions rather than two files that drift.
+#
+# VALUES ARE LITERAL, and that is a finding, not laziness. Server 1.30.6 reads this file only
+# when TEMPORAL_SERVER_CONFIG_FILE_PATH names it — a file mounted at the conventional
+# ./config/<env>.yaml is IGNORED in favour of an embedded template driven purely by
+# environment variables ("Loading configuration from environment variables only"). And on the
+# explicit-path branch, `${VAR}` is NOT expanded: it reaches the connection string verbatim
+# and Postgres rejects `invalid port ":${TEMPORAL_POSTGRES_PORT}"`. Both observed 2026-08-25.
+# Consequence for Track 8: the Fly deployment RENDERS this file with real values at build or
+# release time. It must never ship `${}` placeholders and hope the server expands them.
+#
+# The credentials below are local-stack constants on a dedicated container that binds to a
+# development port. They are not a secret and must not become the shape production uses —
+# Track 8's template reads them from files supplied as Fly secrets.
+#
+# Pinned set (2026-08-25) — see infra/temporal/README.md for why these move together:
+#   server            temporalio/server:1.30.6
+#   admin-tools       temporalio/admin-tools:1.30.6   (temporal-sql-tool 1.30.6, CLI 1.6.1)
+#   TypeScript SDK    @temporalio/* 1.22.0
+#   persistence       postgres:16
+
+log:
+  stdout: true
+  level: info
+
+persistence:
+  # numHistoryShards is IMMUTABLE once the cluster is initialised — changing it later means a
+  # new cluster and a migration of every workflow. 512 is the smallest value that does not cap
+  # a single-machine deployment's throughput before the machine itself does; going lower is a
+  # decision that cannot be revisited, and going higher costs shard-management overhead on one
+  # machine for parallelism it cannot use. Decision procedure: infra/temporal/README.md §4.
+  numHistoryShards: 512
+  defaultStore: default
+  visibilityStore: visibility
+  datastores:
+    default:
+      sql:
+        pluginName: "postgres12"
+        databaseName: "temporal"
+        connectAddr: "postgres:5432"
+        connectProtocol: "tcp"
+        user: "temporal"
+        password: "temporal"
+        # Connection budget, not a default: one machine, two stores. maxConns here plus
+        # visibility's must stay under the database's own max_connections with headroom for
+        # the schema tool and an operator psql session.
+        maxConns: 20
+        maxIdleConns: 20
+        maxConnLifetime: "1h"
+    visibility:
+      sql:
+        pluginName: "postgres12"
+        databaseName: "temporal_visibility"
+        connectAddr: "postgres:5432"
+        connectProtocol: "tcp"
+        user: "temporal"
+        password: "temporal"
+        maxConns: 10
+        maxIdleConns: 10
+        maxConnLifetime: "1h"
+
+global:
+  membership:
+    maxJoinDuration: 30s
+    # An IP, not a hostname: ringpop rejects a name outright. Pinned by compose.yaml's subnet.
+    broadcastAddress: "172.29.0.10"
+
+  # ── Transport identity ────────────────────────────────────────────────────────────
+  # mTLS on the frontend: the client proves it holds a certificate this CA signed, and the
+  # client verifies the server name against the certificate's SANs. `requireClientAuth: true`
+  # is the half that matters — without it the server presents a certificate and accepts
+  # anyone, which looks identical in a connection log.
+  tls:
+    frontend:
+      server:
+        certFile: /etc/temporal/pki/server/tls.pem
+        keyFile: /etc/temporal/pki/server/tls.key
+        requireClientAuth: true
+        clientCaFiles:
+          # A BUNDLE, not a single CA: rotation is "trust both, move clients, drop the old",
+          # and the overlap window is this line. Rehearsed by probe-rotation.sh.
+          - /etc/temporal/pki/ca-bundle.pem
+      client:
+        serverName: temporal
+        rootCaFiles:
+          - /etc/temporal/pki/ca-bundle.pem
+    # The internal frontend is reached over the same mutual TLS as everything else — it is
+    # unauthenticated to the AUTHORIZER, not to the network.
+    internode:
+      server:
+        certFile: /etc/temporal/pki/server/tls.pem
+        keyFile: /etc/temporal/pki/server/tls.key
+        requireClientAuth: true
+        clientCaFiles:
+          - /etc/temporal/pki/ca-bundle.pem
+      client:
+        serverName: temporal
+        rootCaFiles:
+          - /etc/temporal/pki/ca-bundle.pem
+
+  # ── Authorization ─────────────────────────────────────────────────────────────────
+  # A certificate proves WHO is calling. It says nothing about what they may do, and treating
+  # it as permission is the mistake this block exists to prevent: every service would hold
+  # every right the moment it could connect at all.
+  #
+  # The default claim mapper reads a signed JWT from the `authorization` header and the
+  # default authorizer enforces its `permissions` claim against the namespace being touched.
+  # Identities and their least-privilege claims are minted by scripts/mint-token.mjs:
+  #   api      heliogrid:write        start/signal — may NOT poll a task queue
+  #   worker   heliogrid:worker       poll/complete — may NOT administer the namespace
+  #   operator temporal-system:admin  cluster administration, a human, never a service
+  authorization:
+    jwtKeyProvider:
+      keySourceURIs:
+        - http://jwks:80/jwks.json
+      refreshInterval: 1m
+    permissionsClaimName: permissions
+    authorizer: default
+    claimMapper: default
+
+services:
+  frontend:
+    rpc:
+      grpcPort: 7233
+      membershipPort: 6933
+      bindOnIP: 0.0.0.0
+  # Temporal's OWN system worker (scanner, history scavenger, task-queue scanner) calls the
+  # frontend as an ordinary client and carries no JWT. With the default authorizer on, it is
+  # refused and the server dies at boot: `error starting scanner: Request unauthorized.`
+  # (observed 2026-08-25). `internal-frontend` is the mechanism Temporal provides for exactly
+  # this — an additional frontend, never published, that internal components use and that does
+  # not run the authorizer. It is NOT a hole in the security model: it is bound inside the
+  # deployment and is the reason the PUBLIC frontend can stay strictly authorized.
+  internal-frontend:
+    rpc:
+      grpcPort: 7236
+      membershipPort: 6936
+      bindOnIP: 0.0.0.0
+  history:
+    rpc:
+      grpcPort: 7234
+      membershipPort: 6934
+      bindOnIP: 0.0.0.0
+  matching:
+    rpc:
+      grpcPort: 7235
+      membershipPort: 6935
+      bindOnIP: 0.0.0.0
+  worker:
+    rpc:
+      grpcPort: 7239
+      membershipPort: 6939
+      bindOnIP: 0.0.0.0
+
+clusterMetadata:
+  enableGlobalNamespace: false
+  failoverVersionIncrement: 10
+  masterClusterName: "active"
+  currentClusterName: "active"
+  clusterInformation:
+    active:
+      enabled: true
+      initialFailoverVersion: 1
+      rpcName: "frontend"
+      rpcAddress: "temporal:7233"
+
+dcRedirectionPolicy:
+  policy: "noop"
+
+dynamicConfigClient:
+  filepath: "/etc/temporal/dynamicconfig/production-like.yaml"
+  pollInterval: "60s"
