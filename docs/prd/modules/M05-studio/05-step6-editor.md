@@ -1,7 +1,7 @@
 # MS6 · Studio Step 6 — Editor (panel layout · 3D scene · structures)
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 5 rulings, 2026-08-05) · Depends on: MS1 (canvas/worker contract), MS2 (roofs, segment-engine laws, face groups), MS3 (obstructions/bridging), MS4 (module, target, inverter, profiles catalog), F1/F4/F7/F8, Q28
-Sources: three ledgers — `step6-layout.md` (93), `step6-scene3d.md` (50), `step6-structures.md` (72) = **215 keys**; all area tests pass · rulings `step6-editor-rulings.md` (S5-1…S5-5.8) · census A.10-6 (66) + A.10-7 (43).
+Sources: POC code inventory — layout (93), scene3d (50), structures (72) = **215 keys**; all area tests pass · sitting rulings (S5-1…S5-5.8) · census A.10-6 (66) + A.10-7 (43). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS8 (electrical/SLD consumes strings, routes, inverter placements) · MS10 (BOM consumes structure/fasteners/foundations + panel counts) · MS7 (captures, review) · customer share surface (F5/Q27).
 
 ## 1. Purpose & scope

@@ -71,22 +71,20 @@ The suite tree, matching the approved design spec §4 exactly (paths relative to
 | `modules/M11-payments-and-collections.md` | Tenant-side money (tranches, BYO gateway, receipts) | reviewed-pending-owner |
 | `modules/M12-platform-billing.md` | SaaS subscription lifecycle, entitlements, dunning, invoicing | reviewed-pending-owner |
 | `modules/M13-dashboards-and-reporting.md` | Dashboards and reporting | reviewed-pending-owner |
-| `registers/traceability.md` | Requirement ↔ source pointer index (completeness check) | reviewed-pending-owner |
 | `registers/conflicts.md` | Contradictions + source gaps, recorded not resolved | reviewed-pending-owner |
 | `registers/enhancements.md` | Every `REC` in one place with rationale | reviewed-pending-owner |
 | `registers/open-questions.md` | Decisions V2 still owes an owner ruling | reviewed-pending-owner |
-| `_process/` | This spec, the authoring plan, task briefs, extraction ledger. Process artifacts — not product content | — (process) |
+| *retired: PRD authoring process* | This spec, the authoring plan, task briefs, extraction ledger. Process artifacts — not product content | — (process) |
 
 **Status vocabulary (set by Task 26, the suite-wide consistency pass):** `reviewed-pending-owner`
-means the document has passed its authoring task's review cycle, the Task 25 completeness gate
-(traceability 100% dispositioned) and the Task 26 consistency pass, and now awaits the owner's
+means the document has passed its authoring task's review cycle, the Task 26 consistency pass, and now awaits the owner's
 sign-off. The per-document `Status:` header lines keep the template's `draft` value until the
 owner signs off, at which point they flip to `reviewed` — this doc-map column is the suite-level
-status of record in the meantime. The four registers are living documents; their status marks the
+status of record in the meantime. The three registers are living documents; their status marks the
 state of their contents as of the Task 26 pass.
 
-**Register-naming note:** the four files under `registers/` use descriptive filenames
-(`traceability.md`, `conflicts.md`, `enhancements.md`, `open-questions.md`) and are **deliberately
+**Register-naming note:** the three files under `registers/` use descriptive filenames
+(`conflicts.md`, `enhancements.md`, `open-questions.md`) and are **deliberately
 not R-numbered** — the source corpus already has its own rulings numbered R1–R20, and giving the
 registers numbers of their own would collide with that scheme in conversation and in cross-references.
 
@@ -163,20 +161,6 @@ Requirement IDs are stable and are what registers and cross-references point to:
 - IDs are stable across drafts: once a document assigns `M02-31`, that identifier means the same
   requirement (or its documented supersession trail) for the life of the suite.
 
-## Traceability row format
-
-Every task appends rows to `docs/prd/registers/traceability.md` in this format:
-
-`| <source key> | <disposition: live/superseded/excluded/conflict> | <PRD ID(s) or register> |`
-
-- `<source key>` is a ledger key from the Task 2 extraction ledger — e.g. `D22`, `R9`,
-  `S5.wrong.3`, `C8`, `UXG-11`, `CG-14`, `DOC16.softblock`.
-- `<disposition>` is one of `live` (present as a requirement in a module/foundation PRD),
-  `superseded` (v1 text overridden by a later ruling), `excluded` (explicit non-goal, v1
-  rationale recorded), or `conflict` (unresolved contradiction, also recorded in
-  `registers/conflicts.md`).
-- `<PRD ID(s) or register>` is the requirement ID(s) the source key landed as, or the register
-  file it lives in instead.
 
 ## Provenance discipline: the reading rules
 
@@ -184,23 +168,15 @@ Every document in this suite is written under the same three reading rules the d
 establishes for the source corpus (spec §3). A reader relying on any requirement in this suite
 can assume these were followed:
 
-1. **The overlay rule.** `docs/prd/_process/product-journey.md` (the D1–D39 census) is read **only
-   through the `docs/15-spec-resolutions.md` overlay** — roughly 40% of the census's D-text is
-   superseded by that overlay. Superseded D-text never enters a PRD in this suite as a live
-   requirement; where it is relevant at all, it appears in `registers/traceability.md` as
-   `superseded`, pointing at the ruling that superseded it.
-2. **The census rule.** `docs/prd/modules/M05-studio/studio-census.md` is adopted **verbatim** as M05's
+1. **The census rule.** `docs/prd/modules/M05-studio/studio-census.md` is adopted **verbatim** as M05's
    acceptance baseline. The census never shrinks: nothing in it is dropped, downgraded, or
    quietly reworded away between this pass and the dedicated studio deep-dive pass (DD13).
-3. **The conflict rule.** Contradictions between source documents — and gaps where cited source
+2. **The conflict rule.** Contradictions between source documents — and gaps where cited source
    material is missing or was deleted — are **recorded in `registers/conflicts.md`, never
-   silently resolved**. Two such gaps are already known and seeded there: the missing
-   research files cited across the retired numbered docs, and the deleted per-module
-   extractions under `modules/` recorded by the vendored product index. Neither gap is
-   filled by invention; facts that survive only as citations are used as-is with the citation
-   noted.
+   silently resolved**. Neither gap is filled by invention; facts that survive only as
+   citations are used as-is with the citation noted.
 
-These three rules are what keep this suite honest about where a requirement's authority comes
+These rules are what keep this suite honest about where a requirement's authority comes
 from — a reader who finds a requirement suspicious can always trace it back to a `SRC` pointer,
 a `BRIEF` mandate, or a `REC` rationale, and can always check the registers for whether it has
-already been flagged as superseded, conflicted, or open.
+already been flagged as conflicted or open.

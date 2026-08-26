@@ -100,6 +100,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **DONE WHEN:**
 - Given a new tenant, when the agent takes its first call, then every KB section already holds seeded content and no answer is a blank (M07-16, M07-17).
 - Given a KB edit that gives a second, different warranty answer, when the owner saves, then the contradiction is flagged at save time (M07-19).
+- Given the knowledge-base configuration screen, when knowledge is edited, then the preview shows the agent **using** that knowledge, so a tone or knowledge mismatch is caught before it goes live (`M07-21`, the `M01-30` live-preview law).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M07-010 · Unanswered questions
@@ -200,6 +201,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given a month of agent activity, when the performance screen renders, then attempted, connected, callbacks, site visits, hand-offs and unanswered counts show this month vs last (M07-55).
 - Given the "deals it touched" block renders, then the `F8-30` caption is visible beside the figure without any interaction, in the viewer's language (M07-56).
 - Given a sharp connect-rate drop, when the screen renders, then the warning with likely cause is present; given a month of no visits to the screen, then the owner received the in-app summary (M07-61).
+- Given the per-rep view — which reps lean on the agent, whose leads it rescued — when it is requested, then it renders for **EPC Owner and Sales Manager only** and is refused for every other preset (`M07-60`, gated by `F2.M07.agent-performance`).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M07-019 · Call log

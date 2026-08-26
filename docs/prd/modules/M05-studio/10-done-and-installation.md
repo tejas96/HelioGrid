@@ -1,7 +1,7 @@
 # MS11 · Studio Step 10 (Done) · sign-off · variants · the installation work order
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 10 rulings, 2026-08-05) · Depends on: MS6 (design), MS7 (review), MS8 (electrical gate), MS10 (BOM), MS9 (customer surfaces), F8-25 (sign-off law), F2 (Design Engineer approval capability), M08 (R16 installation attribution), Q28
-Sources: ledgers `step10-done.md` (**132 keys**) + `installation.md` (**64 keys**) = 196 · rulings `done-installation-rulings.md` (S10-1…S10-3) · census A.10-11.
+Sources: POC code inventory — done (**132 keys**) + installation (**64 keys**) = 196 · sitting rulings (S10-1…S10-3) · census A.10-11. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS9 (issuance gating), F5 (customer link), M08 (project-side installation checklist).
 
 ## 1. Purpose & scope

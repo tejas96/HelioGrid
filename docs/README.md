@@ -11,7 +11,7 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 
 | Tree | What it is | Authority |
 |---|---|---|
-| [`prd/`](prd/) | The product spec — foundations, modules, and the registers carrying owner rulings | **Source of truth** |
+| [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the registers carrying owner rulings | **Source of truth** |
 | [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built — architecture, stack, integrations, ADRs | Support, ranked below `prd/` |
@@ -45,7 +45,7 @@ Moving one of these breaks a gate silently.
 
 `scripts/gates.py` routes every spec path through one `spec()` helper — change `SPEC_DIR`
 there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/registers/screens.md`,
-`traceability.md`, `open-questions.md`, `ux/briefs/`, `ux/claude-design-context.md`,
+`open-questions.md`, `ux/briefs/`, `ux/claude-design-context.md`,
 `tasks/*.md` and `start-here.md`. `engineering/17-ui-architecture-v2.md` is named by two
 scripts and `knip.jsonc`. `engineering/forward-compat.md` is named by the PR template.
 `.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites

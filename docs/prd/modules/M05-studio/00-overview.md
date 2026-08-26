@@ -2,7 +2,7 @@
 
 Status: draft (pass two delivered) · Origin mix: index + suite-wide studio laws · Owner rulings: 54 across 11 sittings, covering 115 individual fixes, 2026-08-05
 Parent: `docs/prd/modules/M05-design-studio.md` (the pass-one baseline; census appendix remains binding there)
-Process record: `docs/prd/_process/studio/` — design spec (decisions SD1–SD5), 15 inventory ledgers, 12 sitting-ruling files, defect register, verification report. (The execution plan and SDD ledger were removed 2026-08-05 once the sittings closed; their outcomes are recorded in the ruling files and the verification report.)
+Process record: *retired: studio process notes* — design spec (decisions SD1–SD5), 15 inventory ledgers, 12 sitting-ruling files, defect register, verification report. (The execution plan and SDD ledger were removed 2026-08-05 once the sittings closed; their outcomes are recorded in the ruling files and the verification report.)
 
 ## 1. What this sub-suite is
 
@@ -70,7 +70,7 @@ These bind every studio document; they are stated here once so no screen re-liti
 
 ## 5. What pass two changed about the studio
 
-56 defects were found and ruled (full list: `docs/prd/_process/studio/defect-register.md` — it is
+56 defects were found and ruled (full list: `docs/prd/modules/M05-studio/defect-register.md` — it is
 the V2 test checklist). The structural ones worth naming:
 
 - **The engineer sign-off flow did not exist** — no queue, no review, no return-with-comments,
@@ -97,15 +97,15 @@ from scratch.** This is binding on planning and estimation.
 | **Reshape** | The UI/UX of every screen per the new design (F7 laws + the 54 sitting rulings), the shell (platform-native auth, tenancy and server-side designs per S11-3), and the extraction of market data into packs (S1-6, S6-4, S9-1). Rendering, interaction and layout are redesigned; the maths beneath them is not re-derived. |
 | **Restructure** | The code is placed according to the V2 project's architecture, module boundaries and design system. File layout and naming change; algorithm behavior does not. |
 | **Fix + add** | The 56 defect-register entries are the correction list; the 115 owner-ruled fixes and additions are the change list. Each names its target requirement id. |
-| **Port map** | `docs/prd/_process/studio/inventory/file-claims.md` maps all 287 POC source files to their owning area, and every requirement's `CODE.*` pointer resolves to a ledger row naming the file and line the behavior lives at today. **The ledgers are the port's working map**, not only PRD evidence. |
+| **Port map** | `docs/prd/modules/M05-studio/poc-file-claims.md` maps all 287 POC source files to their owning area, and every requirement's `CODE.*` pointer resolves to a ledger row naming the file and line the behavior lives at today. **The ledgers are the port's working map**, not only PRD evidence. |
 
 Consequence for planning: studio effort is **port + UI rebuild + defect/feature application** —
-not a green-field build of the engineering core. Ruling record:
-`docs/prd/_process/studio/sittings/build-strategy-ruling.md`.
+not a green-field build of the engineering core. The sitting rulings themselves are carried by
+the requirement rows of this sub-suite; the sitting transcripts are retired.
 
 ## 6. Non-goals of the sub-suite
 
-Implementation detail (it stays in the inventory ledgers) · re-litigating pass-one laws
+Implementation detail (it stays in the POC source) · re-litigating pass-one laws
 (census, honesty tiers, DD12 picker) · the main suite's own modules (M06 owns the proposal
 document lifecycle, M08 the project-side checklist, F5 the customer-link framework — the studio
 consumes them) · certified structural or electrical engineering (the studio sizes and checks;
@@ -113,5 +113,5 @@ a licensed engineer signs).
 
 ## 7. Open items
 
-None. All 11 sittings closed with zero open items; all 54 rulings (115 individual fixes) are recorded in
-`docs/prd/_process/studio/sittings/` and applied in the documents above.
+None. All 11 sittings closed with zero open items; all 54 rulings (115 individual fixes) are
+applied in the documents above, which are now their record.

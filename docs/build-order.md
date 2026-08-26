@@ -79,7 +79,7 @@ there are two.
   (`apps/api`, 342 lines, one module) with no schema in `packages/db`;
 - it does not meet this repo's standards, and `boundaries`, `check:adherence`, `check:dupes` and
   `check:unused` run on every commit;
-- it carries its own defect register at `docs/prd/_process/studio/defect-register.md`.
+- it carries its own defect register at `docs/prd/modules/M05-studio/defect-register.md`.
 
 Porting it first would mean inventing the API, schema and data-layer conventions *while* fighting
 a port. Blocks 1–6 settle those conventions; then the port has something to conform to.

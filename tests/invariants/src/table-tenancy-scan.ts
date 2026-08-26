@@ -104,6 +104,27 @@ export async function runTableTenancyScan(adminUrl: string) {
       ).map((r) => r.table_name),
     );
 
+    // A PROVISIONAL exemption is a comment until something enforces it. conflicts.md row 13
+    // contests who owns `organization`/`member`/`invitation`, and T-M01-025 says settle it
+    // BEFORE the first auth migration — but nothing stopped that migration inheriting the
+    // exemption unread, which is the exact failure the row warns about. So: the moment one of
+    // these tables actually exists while still marked provisional, this fails. Resolving the
+    // row means editing the reason here (or adding tenant_id and deleting the entry), which is
+    // precisely the deliberate act the deferral asks for.
+    const provisional = tables.filter(
+      (t) => GLOBAL_TABLES[t]?.startsWith('PROVISIONAL') && !withTenant.has(t),
+    );
+    if (provisional.length) {
+      throw new Error(
+        `${provisional.length} table(s) exist under a PROVISIONAL tenancy exemption:\n` +
+          `  - ${provisional.map((t) => `${t}: ${GLOBAL_TABLES[t]}`).join('\n  - ')}\n\n` +
+          '  These were exempted pending an owner ruling that has not landed. Settle\n' +
+          '  registers/conflicts.md row 13 (see docs/tasks/M01-onboarding.md T-M01-025),\n' +
+          '  then either give the table tenant_id and delete its entry here, or rewrite the\n' +
+          '  reason to the settled one. Do not simply drop the PROVISIONAL prefix.',
+      );
+    }
+
     const offenders = tables.filter((t) => !withTenant.has(t) && !(t in GLOBAL_TABLES));
 
     if (offenders.length) {

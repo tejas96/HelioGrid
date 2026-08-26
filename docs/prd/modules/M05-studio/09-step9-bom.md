@@ -1,7 +1,7 @@
 # MS10 · Studio Step 9 — Bill of Materials (the money document)
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 9 rulings, 2026-08-05) · Depends on: MS2/MS6 (geometry, structures), MS4 (catalog + pricebook), MS8 (sized ratings, routed metres, combiner plan), F1 (pack: prices, tax, subsidy, rules), F8 (confidence/provenance), MS7 (system cost consumer), MS9 (customer document)
-Sources: ledger `step9-bom.md` (**167 keys** — the largest area of the pass; 12 test files all passing) · rulings `step9-bom-rulings.md` (S9-1…S9-3) · census A.10-10.
+Sources: POC code inventory — bom (**167 keys** — the largest area of the pass; 12 test files all passing) · sitting rulings (S9-1…S9-3) · census A.10-10. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS7 (system cost = BOM total), MS9 (BOM section + confidence on the customer document), MS8 (DXF trigger lives on the SLD step).
 
 ## 1. Purpose & scope

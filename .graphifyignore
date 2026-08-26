@@ -35,21 +35,10 @@ docs/ux/briefs/SCR-*.md
 docs/tasks/*.md
 !docs/tasks/README.md
 
-# PRD process corpus — the extraction ledgers, POC inventories and the raw ruling session.
-# Kept in the repo (registers/traceability.md keys against the extraction ids, and tasks cite
-# the studio inventory as the binding PORT source), but they restate product law in the
-# SOURCE's wording, inventory a POC codebase that is not in this tree, and — in the ruling
-# session — state Q43 three times with contradictory content. sittings/, defect-register.md,
-# owner-brief and the verification reports stay graphed: real, dated, non-duplicated signal.
-docs/prd/_process/extraction/
-docs/prd/_process/studio/inventory/
-docs/prd/_process/rulings/
-docs/prd/_process/product-journey.md
-
-# Source-key index. 3,346 lines mapping keys (D22, R9, UXG-11, DOC16.softblock) to where they
-# landed — and most sources it indexes were deleted with the pre-V2 documents. Disconnected
-# island: ~1,700 key nodes with no resolvable target, each restating its requirement.
-docs/prd/registers/traceability.md
+# POC port map. Indexes 287 source files of a codebase that is not in this tree, so every
+# node it would add points outside the graph. The owner brief and the defect register stay
+# graphed: real, dated, non-duplicated signal.
+docs/prd/modules/M05-studio/poc-file-claims.md
 
 # Render harness. Its fixtures carry fabricated product data — invented tariffs, vendors and
 # rupee amounts — which a graph would learn as real market facts, and it describes an

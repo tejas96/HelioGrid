@@ -7,7 +7,7 @@ the ultimate record.
 Process artifact, not product content. Nothing here is edited, paraphrased or extended: where a
 PRD requirement widens or interprets an excerpt below, that interpretation lives in the PRD
 requirement and is visible as such, never folded back into this file. Citations elsewhere in the
-suite take the form `_process/owner-brief-2026-08-03.md §<heading>`.
+suite take the form `docs/prd/owner-brief-2026-08-03.md §<heading>`.
 
 ## Primary-goals
 

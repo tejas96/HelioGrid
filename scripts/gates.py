@@ -55,7 +55,7 @@ def prd_files(repo):
     out = []
     for f in glob.glob(spec(repo, "prd/**/*.md"), recursive=True):
         rel = os.path.relpath(f, spec(repo))
-        if rel.startswith("prd/_process") or rel.startswith("prd/registers"):
+        if rel.startswith("prd/registers"):
             continue
         out.append(f)
     return sorted(out)
@@ -236,10 +236,14 @@ def run(repo, verbose):
     gate(3, "briefs' live content cites no deleted row", not dangling_b,
          "clean (amendment footnotes exempt)" if not dangling_b else f"{len(dangling_b)} ids, {n} refs: " + ", ".join(sorted(dangling_b)[:12]))
 
-    # --- Gate 4 · verbatim quote fidelity in docs/tasks/
+    # --- Gate 4 · verbatim quote fidelity in docs/tasks/ AND docs/ux/briefs/
+    # Briefs quote PRD cells in exactly the same form tasks do, and are what the design run
+    # builds from — so an unchecked brief is a screen designed from a stale requirement. Briefs
+    # were outside this gate until 2026-08-26, and a PRD edit that day desynced two of them
+    # with nothing to catch it.
     desync = []
     checked = 0
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
         rel = os.path.relpath(f, spec(repo))
         for i, line in enumerate(open(f, encoding="utf-8"), 1):
             m = re.match(r"\s*-\s*\*\*`?(" + ROW_ID + r")`?\*\*\s*\([^)]*\)\s*—\s*(.+)", line)
@@ -254,7 +258,7 @@ def run(repo, verbose):
                 continue
             if difflib.SequenceMatcher(None, a, b).ratio() < 0.93:
                 desync.append(f"{rel}:{i} {rid}")
-    gate(4, "task quotes match live PRD cells", not desync,
+    gate(4, "task + brief quotes match live PRD cells", not desync,
          f"{checked} quotes checked, all match" if not desync else f"{len(desync)} desynced: " + "; ".join(desync[:8]))
 
     # --- Gate 5 · every task id referenced is defined
@@ -440,8 +444,8 @@ def run(repo, verbose):
          if not bad_holes else f"{len(bad_holes)}: " + " · ".join(bad_holes[:6]))
 
     # --- Gate 14 · the registers cite no deleted row
-    # screens.md and traceability.md legitimately keep rows for deleted requirements — that is
-    # their audit trail — but a *marked* row says so. A bare citation is a dangling pointer.
+    # screens.md legitimately keeps rows for deleted requirements — that is its audit
+    # trail — but a *marked* row says so. A bare citation is a dangling pointer.
     reg_files = sorted(glob.glob(spec(repo, "prd/registers/*.md")))
     dangling_r = defaultdict(list)
     for f in reg_files:
@@ -499,22 +503,32 @@ def run(repo, verbose):
          f"dangling {len(dangling)} {dangling[:5]} · struck-but-live {len(wrongly_struck)} {wrongly_struck[:4]} · "
          f"struck-in-PRD-not-in-register {len(unmarked)} {unmarked[:4]}")
 
-    # --- Gate 16 · every traceability source key appears exactly once
-    trc = spec(repo, "prd/registers/traceability.md")
-    keys = defaultdict(int)
-    if os.path.exists(trc):
-        for line in open(trc, encoding="utf-8"):
-            m = re.match(r"\s*\|\s*`([^`]+)`\s*\|\s*([a-z]+)(.*)", line)
-            if m:
-                # The register splits a key across two task blocks when each owns half of it,
-                # and says so in the annotation — "shared", or "the M12 half". Either wording
-                # is a declared split; an unannotated repeat is the real defect.
-                declared = re.search(r"\bshared\b|\bhalf\b", m.group(3), re.I)
-                keys[m.group(1)] += 0 if declared else 1
-    dupes = sorted(k for k, v in keys.items() if v > 1)
-    gate(16, "traceability keys dispositioned once (bar declared shares)", not dupes,
-         f"{len(keys)} source keys, no undeclared duplicate" if not dupes
-         else f"{len(dupes)} duplicated without a 'shared' annotation: {dupes[:8]}")
+    # --- Gate 21 · every claimed PRD row has an acceptance criterion proving it
+    # A task's DONE WHEN list is the completion bar the implementer works to. A row claimed in
+    # **PRD rows:** with no criterion citing it can be called done without ever being built —
+    # exactly the drift the register cannot see. Blocks whose row line is prose ("none from this
+    # bucket", "cross-ref") claim nothing and are not checked; their rows belong to another task.
+    uncovered = []
+    n_claims = 0
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        rel = os.path.relpath(f, spec(repo))
+        body = open(f, encoding="utf-8").read()
+        for m in re.finditer(r"^### (T-[A-Z0-9-]+) \u00b7.*?(?=^### |\Z)", body, re.M | re.S):
+            blk = m.group(0)
+            rowline = re.search(r"\*\*PRD rows:\*\*(.*)", blk)
+            if not rowline:
+                continue
+            txt = rowline.group(1)
+            if "none" in txt.lower() or "cross-ref" in txt.lower():
+                continue
+            claimed = {r for r in re.findall(ROW_ID, txt) if r in rows}
+            n_claims += len(claimed)
+            dw = re.search(r"\*\*DONE WHEN:\*\*(.*?)(?=\n\*\(|\Z)", blk, re.S)
+            cited = set(re.findall(ROW_ID, dw.group(1))) if dw else set()
+            uncovered += [f"{rel} {m.group(1)} {r}" for r in sorted(claimed - cited)]
+    gate(21, "every claimed PRD row has an acceptance criterion", not uncovered,
+         f"{n_claims} row-claims, all covered by a DONE WHEN line" if not uncovered
+         else f"{len(uncovered)} uncovered: {uncovered[:6]}")
 
     # --- Gate 17 · the V1 scope lock is intact
     # V1/V2 is a release axis, orthogonal to P0/P1/P2. Every screen carries exactly one, the two

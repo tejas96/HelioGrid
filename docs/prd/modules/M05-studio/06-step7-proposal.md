@@ -1,7 +1,7 @@
 # MS7 · Studio Step 7 — Proposal (captures · energy · finance · review)
 
 Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 6 rulings, 2026-08-05) · Depends on: MS1 (location/weather provenance), MS4 (module/inverter/catalog), MS6 (layout, shading, captures), F1 (pack: money, climate, escalation), F8 (provenance & staleness law), M06 (the 11-step builder — a DIFFERENT surface), BM/Q28
-Sources: ledger `step7-proposal.md` (**156 keys**, 13 files/132 tests all passing, every numeric claim re-derived live) · rulings `step7-proposal-rulings.md` (S6-1…S6-7) · census A.10-8 (20/20 matched; 99 rows beyond census — the whole energy/finance model had no census home).
+Sources: POC code inventory — proposal (**156 keys**, 13 files/132 tests all passing, every numeric claim re-derived live) · sitting rulings (S6-1…S6-7) · census A.10-8 (20/20 matched; 99 rows beyond census — the whole energy/finance model had no census home). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS10 (BOM money path), MS11 (done/review), F5 (customer surface), M06 (proposal builder consumes these numbers).
 
 ## 1. Purpose & scope
@@ -34,7 +34,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 |---|---|---|---|
 | MS7-08 | A capture is STALE when the layout it was taken against no longer matches the current layout; stale tiles carry a badge (`.30/.31`). | `SRC-CODE` | P0 |
 | MS7-09 | "Set as cover" preserves the IMAGE's own freshness stamp — promoting a stale capture can never mark it fresh (S6-2 fixes `.33`). | `BRIEF` S6-2 | P0 |
-| MS7-10 | The cover preview itself carries the staleness badge (S6-2 fixes `.34`), and the readiness card checks cover freshness, not just capture count (S6-2 fixes `.27`). | `BRIEF` S6-2 | P0 |
+| MS7-10 | The cover preview itself carries the staleness badge (S6-2 fixes `.34`), and the readiness card checks cover freshness, not just capture count, and "ready to send" stays false while any customer-facing image is stale (S6-2 fixes `.27`). | `BRIEF` S6-2 | P0 |
 
 ### MS7.3 — Pre-proposal readiness review
 
@@ -54,7 +54,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 | MS7-17 | Equipment losses compose multiplicatively (industry convention), with shading applied to the BEAM component only — never double-counted in the stack (`.47–.49`). | `SRC-CODE` | P0 |
 | MS7-18 | Two computation paths with honest provenance: measured-weather path (monthly irradiance with diffuse fraction) and built-in-estimate path; the provenance flag follows the ACTUAL path taken, never a persisted string (`.50/.51/.63`), with a stale-pin guard on stored weather (`.64`). | `SRC-CODE` | P0 |
 | MS7-19 | Climate/commercial constants become MARKET-PACK DATA: degradation default (with the panel's datasheet value used when present), soiling/temperature bands, monsoon months, the analysis horizon and the geographic fallback (S6-4 fixes `.60/.66/.52/.53`). | `BRIEF` S6-4 | P0 |
-| MS7-20 | Inverter clipping is modelled from the inverter AC limit × count; where clipping is material the surfaces say so (S6-6 fixes `.65`). | `BRIEF` S6-6 | P0 |
+| MS7-20 | Inverter clipping is modelled from the inverter AC limit × count; where clipping is material the surfaces say so, in the binding copy "~x% clipped at this DC/AC ratio" (S6-6 fixes `.65`). | `BRIEF` S6-6 | P0 |
 | MS7-21 | Derived figures state exactly what they are: displayed performance ratio includes shading (`.55`); the comparability access score is labelled as a score, never as "% of sunlight" (S6-1c, `.56/.57`); the orientation factor readout is orientation-only or renamed (S6-7.4 fixes `.58/.59`). | `SRC-CODE` + `BRIEF` S6-1c/S6-7.4 | P0 |
 | MS7-22 | Transposition model: beam-only ratio by numeric integration with a stated diffuse share, project-wide azimuth convention, and cached results keyed on site/orientation — model boundaries stated in the surfaces that use it, not only in code (`.71–.75`, S6-1b provenance law). | `SRC-CODE` | P0 |
 | MS7-23 | Dead/misleading helpers removed: the always-1 access stub (S6-7.8 fixes `.68`) and the unused per-panel POA loop (`.59`) never ship as live surface behavior. | `BRIEF` S6-7.8 | P1 |
@@ -77,7 +77,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 | MS7-29 | Subsidy is computed from pack rules by capacity/segment/certification eligibility (`.86`, F1). | `SRC-CODE` | P0 |
 | MS7-30 | Financials read EXACT annual energy, not the rounded display figure (S6-3a fixes `.88`) (`.87`). | `BRIEF` S6-3a | P0 |
 | MS7-31 | Self-consumption/export is an EXPLICIT, editable, stated assumption — not an implicit 100% retail offset (S6-3d fixes `.87`). | `BRIEF` S6-3d | P0 |
-| MS7-32 | Payback iterates with pack-driven escalation and degradation (S6-4 fixes hardcoded `.91`), and a system that never pays back reports exactly that — never a sentinel year (S6-1a fixes `.90/.140`) (`.89/.94`). | `SRC-CODE` + `BRIEF` S6-1a/S6-4 | P0 |
+| MS7-32 | Payback iterates with pack-driven escalation and degradation (S6-4 fixes hardcoded `.91`), and a system that never pays back reports exactly that — the binding copy is "Does not pay back within 25 years", never a sentinel year (S6-1a fixes `.90/.140`) (`.89/.94`). | `SRC-CODE` + `BRIEF` S6-1a/S6-4 | P0 |
 | MS7-33 | Lifetime savings are shown net of lifecycle cost (inverter replacement) or explicitly labelled gross with the assumption list attached (S6-3b fixes `.92`). | `BRIEF` S6-3b | P0 |
 | MS7-34 | Financing: four options from one cost basis with pack-driven terms — and the lease amortises the SAME net basis as the others (S6-3c fixes `.98`); the PPA reconciliation contract holds; first-year negatives are shown honestly; no eligibility/credit claims are made (`.93/.95–.97/.99–.102`). | `SRC-CODE` + `BRIEF` S6-3c | P0 |
 

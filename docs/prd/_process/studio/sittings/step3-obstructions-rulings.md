@@ -1,7 +1,0 @@
-# Sitting 3 rulings — Step 3 Obstructions (2026-08-05)
-S3-1 (CODE.step3-obstructions.32, POC-DEFECT): Casts-shadow switch made REAL — writes the effective capability field, engine+3D respond, switch displays true state. Owner ruled 2026-08-05.
-S3-2 (CODE.step3-obstructions.8, POC-DEFECT): Undo/redo buttons + shortcuts ON the step (history already recorded; one gesture = one step law holds). Owner ruled 2026-08-05.
-S3-3 (CODE.step3-obstructions.29/.30, POC-DEFECTs): Typed dims commit-on-blur/Enter with drag-path floors (0.3 m size / 0.1 m height; empty/invalid never commits); slider drag = ONE undo entry. Owner ruled 2026-08-05.
-S3-4 (CODE.step3-obstructions.23/.25 touch gaps): Visible 15°-steps toggle at the rotate handle + nudge arrows on the action bar (tap 0.1 m, long-press 1 m); keyboard set retained. Matches S2-1 law. Owner ruled 2026-08-05.
-S3-5 (hygiene batch, all 6): (1) labels next-free-number (fixes .17); (2) show-all-measurements includes rect obstruction edges (fixes .12); (3) locks persist with project (fixes .24 session-only); (4) hit-test true shape bounds — corner-tap race fixed (fixes .19); (5) height card grounds on the SAME surface number as 3D (fixes .38 note); (6) empty-state hint added (fixes .41). Owner ruled 2026-08-05.
-SITTING 3 CLOSED 2026-08-05 — 5 rulings (S3-1..S3-5; S3-5 is a 6-part hygiene batch, 10 individual fixes in all), zero open items. (Count corrected at final review 2026-08-05.)

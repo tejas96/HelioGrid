@@ -2,7 +2,7 @@
 
 This file covers the last three studio documents: `docs/prd/modules/M05-studio/09-step9-bom.md` (rows MS10-01…MS10-40, the priced bill and the money engine), `docs/prd/modules/M05-studio/10-done-and-installation.md` (rows MS11-01…MS11-38, the Done step, the readiness contract, engineer sign-off, the fingerprint system, duplicate, and the installation work order) and `docs/prd/modules/M05-studio/11-shell-and-platform.md` (rows MS12-01…MS12-30, the wizard shell, design list, sign-in and tenancy, persistence, the shared UI kit and the accessibility gate). Task-id prefix: `T-MS-`, numbered from `T-MS-301`.
 
-Every task here is a studio task, so each carries a **PORT** line naming the POC files claimed for its area in `docs/prd/_process/studio/inventory/file-claims.md`, and a **DEFECTS** line listing the rows of `docs/prd/_process/studio/defect-register.md` whose target requirement ids fall inside the task. Owner ruling S12-1 binds: the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild — where it already implements the behaviour the task is a **port** and the engineering core moves as-is with its tests as the regression net; where the surface is redesigned the task is a **screen** task titled "port + UI rebuild". Screen tasks point at their UX briefs under `docs/ux/briefs/`, where the verbatim requirement rows live; engine, policy, integration and port tasks quote their rows in full. Policy rows that engineering does not build directly are listed under "Laws". The Disposition index at the end of the file accounts for all 108 rows of this bucket exactly once.
+Every task here is a studio task, so each carries a **PORT** line naming the POC files claimed for its area in `docs/prd/modules/M05-studio/poc-file-claims.md`, and a **DEFECTS** line listing the rows of `docs/prd/modules/M05-studio/defect-register.md` whose target requirement ids fall inside the task. Owner ruling S12-1 binds: the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild — where it already implements the behaviour the task is a **port** and the engineering core moves as-is with its tests as the regression net; where the surface is redesigned the task is a **screen** task titled "port + UI rebuild". Screen tasks point at their UX briefs under `docs/ux/briefs/`, where the verbatim requirement rows live; engine, policy, integration and port tasks quote their rows in full. Policy rows that engineering does not build directly are listed under "Laws". The Disposition index at the end of the file accounts for all 108 rows of this bucket exactly once.
 
 ---
 
@@ -194,7 +194,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **Type:** screen · **Tier:** P0
 **PRD rows:** MS11-13 (P0)
 **DESIGN:** SCR-MS-15 → PENDING
-**PORT:** none — the POC has no engineer sign-off flow at all, so no file in `docs/prd/_process/studio/inventory/file-claims.md` claims this area; ruling S10-1 builds it. Owner ruling S12-1's port-first default cannot apply to a surface that does not exist in `3d_design_studio/`.
+**PORT:** none — the POC has no engineer sign-off flow at all, so no file in `docs/prd/modules/M05-studio/poc-file-claims.md` claims this area; ruling S10-1 builds it. Owner ruling S12-1's port-first default cannot apply to a surface that does not exist in `3d_design_studio/`.
 **DEFECTS:**
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; this task owns MS11-13).
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-15-signoff-queue.md`; they are the specification.
@@ -207,7 +207,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **Type:** screen · **Tier:** P0
 **PRD rows:** MS11-14 (P0)
 **DESIGN:** SCR-MS-16 → PENDING
-**PORT:** none — the POC has no engineer sign-off flow at all (no claimed file in `docs/prd/_process/studio/inventory/file-claims.md`); ruling S10-1 builds it. The read-only studio and drawings it composes are the surfaces ported by the earlier studio tasks.
+**PORT:** none — the POC has no engineer sign-off flow at all (no claimed file in `docs/prd/modules/M05-studio/poc-file-claims.md`); ruling S10-1 builds it. The read-only studio and drawings it composes are the surfaces ported by the earlier studio tasks.
 **DEFECTS:**
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; this task owns MS11-14).
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-16-signoff-review.md`; they are the specification.
@@ -516,7 +516,7 @@ Cross-bucket note: these three rows are dispositioned in `docs/tasks/M13-dashboa
 **PRD rows:** M05-79 (P0)
 **DESIGN:** SCR-MS-14 → PENDING
 **PORT:** none as a surface — the POC has no compare screen; it composes over ported outputs: the fingerprint/variant lineage of T-MS-315/T-MS-316, the money engine of the BOM tasks, and Design Health from T-MS-205 (the health engine ported with the layout editor).
-**DEFECTS:** none targeting M05-79 — `docs/prd/_process/studio/inventory/file-claims.md` claims no compare-variants surface. One adjacent entry binds this screen indirectly:
+**DEFECTS:** none targeting M05-79 — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no compare-variants surface. One adjacent entry binds this screen indirectly:
 - `CODE.step7-proposal.90/.152` — never-paying system reports "25 years"; ranking sorts the sentinel (S6-1a: no-payback state → MS7-32/50). This screen ranks and marks `is_recommended`, so it consumes the corrected payback of T-MS-264 (MS7-32) and the corrected ranking of T-MS-267 (MS7-50); it owns neither half.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-14-variant-compare.md`; they are the specification.
 

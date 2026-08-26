@@ -36,6 +36,18 @@ states it needs; entry and exit points; realistic data volume; which numbers car
 tiers. Never contains: colours, spacing, typography, component styling — the design system in
 Claude Design owns all of that.
 
+## The one thing no gate checks: the States list
+
+Gate 4 holds every verbatim requirement quote in this folder against its PRD cell, and gate 21
+holds every task's acceptance criteria — but **nothing checks that a brief's States list is
+complete**. It cannot be checked: states are a design decomposition, not a projection of the
+requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
+2026-08-26 and all three fired on 17–43% of correct briefs).
+
+**So read the States list against the requirement rows by hand, once, before the design session.**
+A requirement whose failure, empty, refused or in-progress frame has no state is a screen that
+gets built without it, and the first thing that catches it is `/verify` on the real surface.
+
 ## If a design decision splits or merges a screen
 
 That is allowed — the register is updated, never bypassed: the SCR row is split/merged there
