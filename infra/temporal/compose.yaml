@@ -13,7 +13,9 @@
 #   pnpm infra:up      mints dev PKI if missing, starts everything, bootstraps Temporal
 #   pnpm infra:reset   destroys the volume — a genuinely clean boot
 
-name: heliogrid-temporal
+# No `name:` here. ../compose.yaml's `include:` merges these services into the `heliogrid`
+# project and ignores any name this file declares — one that said otherwise would be a
+# lie, and the project name is exactly what the probe scripts resolve against.
 
 services:
   # Serves the JWKS the server fetches to verify identity tokens. In production this is the
