@@ -143,9 +143,8 @@ lint rule or an invariant actually holds it — several here are held only by re
 Every line, every app, every package. No exceptions for "just this once".
 
 - **The gates hold the mechanics.** Formatting · `any`/`!`/`==`/`console.log` · env access ·
-  **files ≲300 lines, split by responsibility** · no test files · style out of the component
-  file · no app-declared enum, union or lookup. All enforced — run `pnpm check:all` and fix
-  what it says.
+  **files ≲300 lines, split by responsibility** · no test files · style out of the component file ·
+  no app-declared enum, union or lookup. All enforced — run `pnpm check:all` and fix what it says.
 - **Zero duplication.** Before writing anything, search for it. A second copy of a definition,
   a formula or a shape is a defect even when both copies are correct — they will diverge.
   `check:dupes` catches clones of 12+ lines; a duplicated constant or a re-derived formula it
@@ -192,8 +191,8 @@ Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`
 - Sent proposals keep their prices; a price-book update creates a new version.
 - Structural adequacy is NEVER computed — an engineer signs off, and the disclaimer travels with
   every structure-bearing output.
-- Money renders in the tenant currency's grouping in every locale (INR: lakh/crore);
-  kW/kWh/kWp are never translated.
+- Money renders in the tenant currency's grouping in every locale (INR: lakh/crore); kW/kWh/kWp
+  are never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 
