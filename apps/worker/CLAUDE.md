@@ -32,6 +32,16 @@ src/modules/<area>/<area>.public.ts           what the root composes; asserts th
   defect the whole retry model rests on not having. Key the effect and use
   `INSERT … ON CONFLICT DO NOTHING`.
 
+## Folder shape
+
+```
+src/{config,common,modules}
+src/modules/<m>/            one folder per module, four files:
+  <m>.module.ts  <m>.controller.ts  <m>.service.ts  <m>.repository.ts
+```
+
+Never invent a folder: this tree is a closed set. Same shape as `apps/api`.
+
 ## Commands
 `dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load
 automatically and a REAL env var still wins (Fly secrets and CI are never overridden).

@@ -44,3 +44,11 @@ openapi/openapi.json        emitted, committed, gate-checked — never hand-edit
 
 Changing a contract has a sequence — re-emit, keep db enums in step, sweep the clients,
 judge breaking changes. Run `/contract-change`.
+
+## Cross-cutting concerns are built in, never retrofitted
+
+Anything that will reach every module later — permissions/RBAC, tenancy, money, audit, i18n — is
+provisioned by the **first** contract that could carry it, even while nothing consumes it yet, and
+behind ONE seam rather than per-endpoint checks. Read your module's row in
+`docs/engineering/forward-compat.md` before authoring its first contract. Retrofitting one of these
+is a repo-wide sweep.

@@ -5,7 +5,6 @@
 #
 #   1. no test files            — owner directive: no .test.*/.spec.* until a testing
 #                                 program is commissioned
-#   2. source files ≲300 lines  — split by RESPONSIBILITY, never `*-part2`
 #   3. no raw hex in UI paths   — every visual value comes from @heliogrid/theme
 #
 # Each check prints its violations and the script exits 1 if any fired.
@@ -65,19 +64,15 @@ if [ -n "$tests_found" ]; then
   fail=1
 fi
 
-# ── 2. Source files over ~300 lines ──────────────────────────────────────────
-oversize=$(find $SRC_DIRS -type f \
-  \( -name '*.ts' -o -name '*.tsx' -o -name '*.mts' -o -name '*.cts' \
-     -o -name '*.js' -o -name '*.jsx' -o -name '*.mjs' -o -name '*.cjs' -o -name '*.css' \) \
-  "${PRUNE[@]}" -not -name '*.d.ts' 2>/dev/null \
-  | while IFS= read -r f; do
-      n=$(wc -l < "$f" | tr -d ' ')
-      if [ "$n" -gt 300 ]; then printf '  %5s  %s\n' "$n" "$f"; fi
-    done)
-if [ -n "$oversize" ]; then
-  printf 'OVER 300 LINES — split by RESPONSIBILITY (never *-part2 / *2 / *-extra):\n%s\n' "$oversize"
-  fail=1
-fi
+# ── 2. (retired 2026-08-27) Source files over ~300 lines ────────────────────
+# Replaced by Biome `style/noExcessiveLinesPerFile` at maxLines 300, which does the same job
+# as a LINT RULE — CLAUDE.md §8 mechanism order puts a lint rule above a script. It is faster,
+# reports in the editor as you type, and is not blind the way this grep was: SRC_DIRS listed
+# only "apps packages tests scripts", so the 3,400-line render harness under docs/ passed
+# green for months. Biome sees the whole tree; configs and that harness are excluded in
+# biome.json deliberately, by name. One behaviour change, accepted: Biome counts CODE lines,
+# so comments no longer push a file over. Measured 2026-08-27 — zero files in the tree differ
+# between the two.
 
 # ── 3. Raw hex in UI paths ───────────────────────────────────────────────────
 # Matches hex ANYWHERE on the line. The old pattern required the hex to be the first token
@@ -293,5 +288,34 @@ else
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered'
+# ── 10. Apps must not declare shared vocabulary ──────────────────────────────
+# A string-literal union or a SCREAMING_CASE lookup object IS a shared vocabulary: it belongs
+# to packages/contracts (enums, wire shapes) or packages/domain (policy). An app that declares
+# its own creates a second source of truth that drifts silently — the exact defect the package
+# split exists to prevent. Biome's noEnum bans the `enum` form on apps/**; these two shapes
+# have no Biome rule (noRestrictedTypes restricts type NAMES, not declaration SHAPES), so they
+# are matched here.
+#
+# EXPORTED only, deliberately: a type nothing can import cannot become a second source of
+# truth. `NavigationPhase` in the mobile shell and `ValidationSource` in the API's exception
+# filter are both file-local state machines, and both are correct as written (checked
+# 2026-08-27). The defect this check exists for is a vocabulary that LEAKS.
+app_vocab=$(
+  find apps -type f \( -name '*.ts' -o -name '*.tsx' \) "${PRUNE[@]}" \
+    -not -name '*.d.ts' 2>/dev/null \
+  | while IFS= read -r f; do
+      grep -nE "^[[:space:]]*export[[:space:]]+type[[:space:]]+[A-Za-z0-9_]+[[:space:]]*=[[:space:]]*'[^']+'[[:space:]]*\|" "$f" \
+        | sed "s|^|  UNION    ${f}:|"
+      grep -nE "^[[:space:]]*export[[:space:]]+const[[:space:]]+[A-Z][A-Z0-9_]+[[:space:]]*=[[:space:]]*\{" "$f" \
+        | sed "s|^|  AS-CONST ${f}:|"
+    done)
+if [ -n "$app_vocab" ]; then
+  printf 'APP DECLARES SHARED VOCABULARY — it belongs in a package, not an app:\n%s\n' "$app_vocab"
+  echo '  Union of string literals  -> packages/contracts (it is an enum by another name)'
+  echo '  SCREAMING_CASE lookup     -> packages/domain (policy) or packages/contracts (wire)'
+  echo '  Import it back into the app; never re-declare it (Law 5, and .claude/rules/architecture-ownership.md).'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary'
 exit $fail

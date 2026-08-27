@@ -63,7 +63,11 @@
         "useTemplate": "error",
         "noParameterAssign": "error",
         "useImportType": "error",
-        "useExportType": "error"
+        "useExportType": "error",
+        "noExcessiveLinesPerFile": {
+          "level": "error",
+          "options": { "maxLines": 300 }
+        }
       },
       "suspicious": {
         "noConsole": {
@@ -79,7 +83,7 @@
       "complexity": {
         "noUselessFragments": "error",
         "noExcessiveCognitiveComplexity": {
-          "level": "warn",
+          "level": "error",
           "options": {
             "maxAllowedComplexity": 15
           }
@@ -112,6 +116,30 @@
     }
   },
   "overrides": [
+    {
+      "includes": [
+        "**/*.config.{js,ts,mjs,cjs}",
+        ".dependency-cruiser.cjs",
+        "docs/engineering/harness/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noExcessiveLinesPerFile": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/**/*.ts", "apps/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noEnum": "error"
+          }
+        }
+      }
+    },
     {
       "includes": ["apps/api/**", "apps/worker/**"],
       "linter": {

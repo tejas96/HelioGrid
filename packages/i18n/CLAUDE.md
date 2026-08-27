@@ -91,3 +91,8 @@ extract leaves the tree clean (CI guard) · all locales 0 missing or the gap is
 deliberate (English fallback) · every language RENDERED on web and both simulators —
 switching, not just loading · the web build shows inactive catalogs outside the initial
 chunk, and the RN bundle shows one copy of each runtime.
+
+## Folder shape
+
+`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
+never a deep path. Never invent a folder: this tree is a closed set.

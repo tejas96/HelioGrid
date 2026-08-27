@@ -63,3 +63,8 @@ the URL as a parameter) and packages/domain (may never read the environment — 
 ## Definition of done here
 Every variable declared in a schema and documented in `.env.example` · no `process.env` read
 outside this package · a missing required value fails at STARTUP naming the key.
+
+## Folder shape
+
+`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
+never a deep path. Never invent a folder: this tree is a closed set.

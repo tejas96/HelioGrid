@@ -13,7 +13,7 @@
     "lint": "bash scripts/lint-all.sh",
     "lint:fix": "biome check --write .",
     "boundaries": "turbo boundaries",
-    "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm turbo test && pnpm check:openapi && pnpm check:catalogs",
+    "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:docs && pnpm turbo test",
     "verify:ci": "pnpm verify && pnpm check:env",
     "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck",
     "check:adherence": "bash scripts/check-adherence.sh",
@@ -22,7 +22,11 @@
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:unused": "knip",
     "check:env": "node scripts/check-env-access.mjs",
-    "ds:contract": "node scripts/ds-contract.mjs"
+    "ds:contract": "node scripts/ds-contract.mjs",
+    "check:docs": "python3 scripts/gates.py",
+    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs",
+    "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
+    "db:migrate": "pnpm --filter @heliogrid/db migrate"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit"

@@ -8,6 +8,23 @@
 - NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
   authored domain logic (import it — Law 11).
 
+## Folder shape
+
+```
+src/{auth,navigation,screens}
+src/screens/<name>/         mirrors web's feature shape:
+  <Name>Screen.tsx            composes
+  components/                 one file per component
+  hooks/                      the logic
+  styles.ts                   style NEVER in the component file
+  types.ts
+env.ts · i18n.ts · react-query-host.tsx    root; the ONE host-lifecycle adapter
+```
+
+**Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one file
+each, `hooks/` holds the logic, style sits in its own file. Only the location and a few filenames
+differ. Never invent a folder: this tree is a closed set.
+
 ## Commands
 pnpm --filter @heliogrid/mobile start                 # metro
 pnpm --filter @heliogrid/mobile ios | android         # run on simulator/emulator

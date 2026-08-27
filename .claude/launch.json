@@ -3,15 +3,35 @@
   "configurations": [
     {
       "name": "web",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@heliogrid/web", "dev"],
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti:3002 | xargs -r kill -9; exec pnpm --filter @heliogrid/web dev"
+      ],
       "port": 3002
     },
     {
       "name": "api",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@heliogrid/api", "dev"],
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti:8084 | xargs -r kill -9; exec pnpm --filter @heliogrid/api dev"
+      ],
       "port": 8084
+    },
+    {
+      "name": "mobile-metro",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti:8081 | xargs -r kill -9; exec pnpm --filter @heliogrid/mobile start"
+      ],
+      "port": 8081
+    },
+    {
+      "name": "worker",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@heliogrid/worker", "dev"]
     }
   ]
 }
