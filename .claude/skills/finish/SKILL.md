@@ -15,8 +15,11 @@ instruction to do the work is never approval to commit it.
 pnpm verify
 ```
 
-All five stages must pass. **Never weaken a gate to make a change pass.** If the invariants
-skipped (no `DATABASE_URL`) or ran vacuously, say so — a green run has NOT proven tenancy.
+All eleven stages must pass — build · lint · boundaries · typecheck · adherence · dupes ·
+ds:contract · openapi · catalogs · docs · invariants. **Never weaken a gate to make a change
+pass.** If the invariants skipped (no `DATABASE_URL`) or ran vacuously, say so — a green run has
+NOT proven tenancy. `pnpm check:all` is the fast subset for use DURING the work; `/finish` runs
+the full chain.
 
 Deleted a source file? `pnpm turbo build --force` first, and run Law 8's deletion sweep.
 

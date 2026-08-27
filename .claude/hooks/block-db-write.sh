@@ -11,11 +11,12 @@ case "$cmd" in
   *"db:migrate"*|*"db:migration:new"*|*"drizzle-kit generate"*) exit 0 ;;
 esac
 
-# Only inspect commands that actually reach a database.
-case "$cmd" in
-  *psql*|*drizzle*|*postgres://*|*postgresql://*) ;;
-  *) exit 0 ;;
-esac
+# Only inspect a command that actually INVOKES a database client. Matching a bare mention
+# blocked `grep -n 'drizzle|create' file` on 2026-08-27 — a read, not a write. The binary must
+# sit at a command position: start of line, or after | ; & or a subshell.
+if ! printf '%s' "$cmd" | grep -qE '(^|[|;&(]|&&|\bsudo )[[:space:]]*(psql|pg_dump|pg_restore|drizzle-kit)\b'; then
+  exit 0
+fi
 
 if printf '%s' "$cmd" | grep -qiE '\b(insert|update|delete|drop|truncate|alter|create|grant|revoke)\b'; then
   echo "Blocked: agents do not write to the database. Schema -> 'pnpm db:migration:new', review the draft, then 'pnpm db:migrate'. Data -> go through the application." >&2
