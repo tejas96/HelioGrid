@@ -21,9 +21,7 @@ mention unrelated dead code, don't delete it.
 **Verify reality.** A task is done when you have looked at it — "fix the bug" means reproducing it
 on the real surface, then showing those steps pass. Read failures, not exit codes: a red probe
 proves nothing until you know why, and **a green gate proves nothing until you have seen it go red
-on an injected violation.** Read call sites, not declarations.
-
-**Don't move to the next task until 99% confident the current one is complete and correct.**
+on an injected violation.** Read call sites, not declarations. Don't move on until 99% confident.
 
 ## 2. The Laws
 
@@ -72,12 +70,18 @@ still in question gets settled with the owner first.
 | `pnpm db:migration:new` | The only way a migration is created. Never hand-author one. |
 
 - `verify` needs a live postgres (`DATABASE_URL`) or the invariants fail — a run without one has
-  NOT proven tenancy. **Read gate output, not exit codes**; an invariant over an empty schema says
-  VACUOUS, which is not a pass.
+  NOT proven tenancy. **Read gate output, not exit codes**: an invariant over an empty schema
+  reports VACUOUS, which is not a pass.
 - Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
-- Enumerate files with `git ls-files`, never a bare glob: in zsh one unmatched pattern aborts the
+- Enumerate with `git ls-files`, never a bare glob — in zsh one unmatched pattern aborts the
   command and prints nothing, which reads as "clean".
 - **Never weaken a gate to make a change pass.**
+
+**Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` ·
+postgres `5544` · temporal UI `8233` · worker has no listener. A busy port is a stale service:
+kill it, never fall back to another. Start web/api/metro through the browser preview tool, which
+reads `.claude/launch.json` and kills stale listeners first; iOS/Android are not servers —
+`pnpm --filter @heliogrid/mobile ios|android` drives metro.
 
 ## 6. Where everything lives
 
@@ -103,11 +107,8 @@ still in question gets settled with the owner first.
 | `.claude/rules/` | path-scoped deltas — load automatically for the paths they name. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
-Each app and package has its own `CLAUDE.md` with its folder shape and landmines. It loads when
-you read that folder — read it before writing there.
-
-**Start from the right file** — each is the entry point for one kind of work, and reading it first
-is cheaper than searching:
+Each app and package has its own `CLAUDE.md` — folder shape and landmines — loaded when you read
+that folder. **Start from the right file; searching costs more than opening it:**
 
 | doing | open |
 |---|---|
@@ -119,9 +120,8 @@ is cheaper than searching:
 | the screen register | `docs/prd/registers/screens.md` — 150 screens, 99 locked to V1 |
 | the UI layer | `docs/engineering/17-ui-architecture-v2.md` |
 
-**Naming.** A file is named for what it does. Never `*-part2`, `*2`, `*-extra`, and never for its
-layer — a `components.tsx` grab-bag is the same defect. If a split needs a number, it is the
-wrong split.
+**Naming.** A file is named for what it does — never `*-part2`/`*2`/`*-extra`, never for its
+layer (a `components.tsx` grab-bag is the same defect). A split that needs a number is wrong.
 
 ## 7. When rules conflict
 
