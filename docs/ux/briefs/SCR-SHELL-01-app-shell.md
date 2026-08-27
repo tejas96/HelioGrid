@@ -8,6 +8,21 @@ The permanent frame of the product: mobile arc bar with a raised centre action i
 
 Reached from: first-run onboarding ends **on** the role-decided home inside this shell, never on a generic dashboard (M01-17); thereafter the shell is the permanent chrome around every screen. Leads to: the role home chosen by the preset-precedence ladder, with a switcher listing the home of every held preset (M13-10); one-tap quick add from the elevated centre action (M02-06 → SCR-M02-01); the shell also hosts the global search box (SCR-SHELL-02) and the notification bell (SCR-SHELL-03). Placement of the availability toggle (M07-46), the grievance contact (F1-59) and the sign-out control (MS12-19) within the shell: not pinned by PRD — designer decides, note the decision.
 
+**Decisions made in design (2026-08-19) — the brief left these open; the next screen inherits them.**
+
+1. **Availability (M07-46)** — a `StatusChip` pill in the home header stating the until-time inline ("Busy until 17:00") with the recording line beside it ("You set this at 12:40 — ring groups see it"). It opens the Routing availability editor: `OptionCardGroup` (available · busy · off) plus `TimeField` "Until (optional)", `min 09:00` / `max 21:00`, `windowName` "team calling" — a time outside the window is refused with the window named, never clamped.
+2. **Grievance contact (F1-59) and sign-out (MS12-19)** — behind the top-bar avatar, in a two-item `Menu`. Sign-out is not styled destructive: MS12-19 preserves work, so N8's confirm-and-undo has no subject.
+3. **Tenant identity** — the tenant's name as words beside the product `LogoTile`. No monogram, no tenant logo, no tenant colour anywhere in the shell (F7-07).
+4. **Home switcher (M13-10)** — the home title *is* the switcher: `Menu selection="single"`, `menuitemradio` + tick, listing the home of every held preset. Switching swaps which body of work is the home's own and which is composed in.
+5. **Fourth standing destination = Quotes** (Home · Leads · Quotes · More). Visits are composed inline in My Day and need no second route.
+6. **The centre action's verb follows the home in force** ("Add lead" on My Day, "Start survey" on Today's surveys); the four standing destinations belong to the person and do not change with the home. The plus glyph never changes (F7-22).
+7. **Section frames go flat only where the child renders as cards** — the phone's `RecordCard` work lists and the `StatCard` figures block at both widths. A desktop work block holds `ListRow` glance rows, so it keeps its frame. The working `DataTable` and its F7-27 caption belong to the full list behind "See all", not to this screen.
+8. **The shell bar carries shell things; the home header is the first band of the content region**, at both widths. `AppHeader` holds tenant, search, bell and avatar — no page title. Title-switcher, preset line, availability pill, its recording line and the primary action sit together in the content.
+9. **The home stays a dashboard at 1536**, two columns instead of one — never a data table. Density is chosen by surface (F7-17).
+
+**Clock:** times render in the market pack's clock — the India pack is 24-hour, so the pill reads `17:00`, not "5:00 PM" (`F1` / `F3-20`). Storage stays 24-hour.
+
+
 ## Requirements (verbatim)
 
 ### docs/prd/foundations/F1-global-market-framework.md

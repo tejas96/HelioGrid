@@ -9,7 +9,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-001 · Sign In
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-02 (P0), M01-03 (P0), M01-04 (P0), MS12-17 (P0)
-**DESIGN:** SCR-M01-01 → PENDING
+**DESIGN:** SCR-M01-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-01-sign-in.md`; they are the specification.
 **DONE WHEN:**
 - Given an OTP that fails to deliver by SMS, when the failure occurs, then no automatic fallback to any other channel fires, login fails loudly with a plain retry-later message, and the resend control and the user-initiated "call me instead" voice option are the visible ways forward (M01-03, owner ruling 2026-08-06 Q47). *(This criterion previously read "when 30 s elapse or delivery fails, then the fallback channel fires automatically and resend + voice options are visible" — the ruling removes the automatic fallback it tested; copied verbatim from the amended §M01.1 acceptance block.)*
@@ -23,7 +23,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-002 · Company Signup
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-01 (P0), M01-08 (P0), M01-09 (P1)
-**DESIGN:** SCR-M01-02 → PENDING
+**DESIGN:** SCR-M01-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-02-company-signup.md`; they are the specification.
 **DONE WHEN:**
 - Given a new phone number, when signup completes, then exactly phone, OTP, company name, owner name and city were required, a tenant exists with the signer as EPC Owner, and no billing or payment step occurred (M01-01, M01-11).
