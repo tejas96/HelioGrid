@@ -16,7 +16,7 @@ FROM_SERVER='temporalio/server:1.30.6@sha256:c8ade0075f9d9da43c206de2b255c80be49
 TO_SERVER='temporalio/server:1.31.2@sha256:b5ecdb8282bededae2a10c36e8d862e27d0bc2d247fc73c5416025997ab4a1da'
 TO_ADMIN='temporalio/admin-tools:1.31.2@sha256:dbc5fcd6ee8f0f4d808bf765af9a87dea9d8a283abfdcfbd2fc148496ba66107'
 SCHEMA_ROOT=/etc/temporal/schema/postgresql/v12
-COMPOSE="docker compose -f compose.yaml"
+COMPOSE="docker compose -f ../compose.yaml"
 fails=0
 wf () { (cd spike && node wf.mjs "$@" 2>/dev/null); }
 check () { if [ "$2" = 0 ]; then printf 'PASS  %-52s %s\n' "$1" "$3"
@@ -42,7 +42,7 @@ echo
 echo "════ step 1 · schema, with the NEW tool, OLD server still running ════"
 for pair in "temporal:temporal" "temporal_visibility:visibility"; do
   db="${pair%%:*}"; dir="${pair##*:}"
-  docker run --rm --network heliogrid-temporal_default "$TO_ADMIN" \
+  docker run --rm --network heliogrid_default "$TO_ADMIN" \
     temporal-sql-tool --plugin postgres12 --ep postgres -p 5432 -u temporal --pw temporal \
     --db "$db" update-schema -d "$SCHEMA_ROOT/$dir/versioned" >/dev/null 2>&1
   check "schema updated: $db" $? ""

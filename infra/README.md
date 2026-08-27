@@ -27,38 +27,59 @@ owner-approved operation.
 | Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |
 | GitHub CI | ✅ green (quality + android + iOS lanes); branch protection requires all three |
 
-## Local dev (running today)
+## Local dev
 
 ```bash
-docker start heliogrid-pg-local 2>/dev/null || docker run -d --name heliogrid-pg-local \
-  -e POSTGRES_USER=heliogrid -e POSTGRES_PASSWORD=heliogrid -e POSTGRES_DB=heliogrid_dev \
-  -p 5544:5432 postgres:16
-DATABASE_ADMIN_URL=postgres://heliogrid:heliogrid@localhost:5544/heliogrid_dev \
-  pnpm --filter @heliogrid/db migrate
-# Redis for rate limiting and SSE fan-out (apps/api only — orchestration is Temporal):
-docker run -d --name heliogrid-redis-local -p 6379:6379 redis:7 --maxmemory-policy noeviction
+pnpm infra:up      # from a clean clone: mints dev PKI, starts everything, bootstraps Temporal
+pnpm infra:token   # re-mint the Temporal token (1 hour TTL)
+pnpm infra:down    # stop, keep the data
+pnpm infra:reset   # down -v — destroys the volume
+```
+
+**One Postgres container, three databases** (owner ruling 2026-08-27). `heliogrid-pg-local` on
+port `5544` holds `heliogrid_dev` (Drizzle migrations), plus `temporal` and `temporal_visibility`
+(owned by `temporal-sql-tool`). Two migration tools, separate databases, so neither can reach the
+other's tables — and the tenancy invariant still scans `heliogrid_dev` alone, because `pg_class`
+is per-database.
+
+Roles and databases are provisioned by `infra/postgres/init/*.sql`, which Postgres runs once on
+an empty volume. Nothing is created by hand any more. Put these in `.env.local`:
+
+```
+DATABASE_URL=postgres://app_runtime:app_runtime@localhost:5544/heliogrid_dev
+DATABASE_ADMIN_URL=postgres://app_admin:app_admin@localhost:5544/heliogrid_dev
+```
+
+The four `TEMPORAL_TLS_*`/`TEMPORAL_AUTH_TOKEN_FILE` values ship as `/ABSOLUTE/PATH/TO/…`
+placeholders. They must be ABSOLUTE: `apps/api`, `apps/worker` and `tests/invariants` each run
+from their own directory, so no one relative value is right for all three. Run this from the repo
+root and it fills them for you:
+
+```bash
+sed -i '' "s|/ABSOLUTE/PATH/TO|$PWD|g" .env.local   # GNU sed: drop the ''
+```
+
+Redis is not started. `REDIS_URL` is declared in `.env.example` but no service reads it
+(`packages/env/src/schema/api.ts` does not list it) — Law 9, it returns with its module.
+
+**Migrating from the old `heliogrid-temporal` compose project?** Its leftover Docker network
+still holds subnet `172.29.0.0/24`, and `pnpm infra:up` fails with a pool-overlap error until
+it's removed — a one-time step, not an ongoing one:
+
+```bash
+docker network rm heliogrid-temporal_default
 ```
 
 ### QA read-only role
 
-`/verify`'s `qa-api` agent reads database state through a role that cannot write, against
-the ALREADY RUNNING container above — never a new container, never a clone (owner ruling
-2026-08-03). Create it once:
+`qa_readonly` is created by `infra/postgres/init/01-roles.sql` — no longer by hand. It can
+connect and holds no write grants. Its `SELECT` grants arrive with migration `0001`.
 
-```bash
-docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -c \
-  "CREATE ROLE qa_readonly LOGIN PASSWORD 'qa_readonly';
-   GRANT CONNECT ON DATABASE heliogrid_dev TO qa_readonly;
-   GRANT USAGE ON SCHEMA public TO qa_readonly;
-   GRANT SELECT ON ALL TABLES IN SCHEMA public TO qa_readonly;
-   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO qa_readonly;
-   GRANT app_user TO qa_readonly;"
-```
-
-**The `GRANT app_user` line is load-bearing, and the reason is a trap worth understanding.**
-Every tenant table is RLS ENABLED and FORCEd (`tests/invariants/src/tenancy-rls.ts` asserts
-it), and the policies are written for `app_user`. A read-only role with no applicable policy
-therefore reads **zero rows from every tenant table** — and an agent would report those empty
+**`qa_readonly`'s membership in `app_user` is load-bearing, and the reason is a trap worth
+understanding.** Every tenant table is RLS ENABLED and FORCEd
+(`tests/invariants/src/tenancy-rls.ts` asserts it), and the policies are written for
+`app_user`. A read-only role with no applicable policy therefore reads **zero rows from
+every tenant table** — and an agent would report those empty
 results as observed values, producing a confident green that proves nothing. That is exactly
 the vacuous-pass failure this repo's invariants exist to prevent.
 

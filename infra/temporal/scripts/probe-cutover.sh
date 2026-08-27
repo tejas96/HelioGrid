@@ -61,7 +61,11 @@ check "no Redis/BullMQ in the worker's startup log" $? ""
 grep -qE 'require\("(bullmq|@nestjs/bullmq)"\)|from ?"(bullmq|@nestjs/bullmq)"' \
   apps/worker/dist/worker.module.js 2>/dev/null; [ $? -ne 0 ]
 check "no BullMQ import in the built worker module" $? ""
-node -e "require('/Volumes/works-space/heliogrid/apps/worker/package.json').dependencies['bullmq'] && process.exit(1)" 2>/dev/null
+# Repo-relative, like every other path here — this script already cd'd to the repo root. A
+# hardcoded checkout path made this probe fail for everyone but its author; the spike modules
+# carry the same warning. `?.` so a package with no `dependencies` is a PASS, not a throw, and
+# stderr stays visible so a broken path reads as a broken path rather than a mystery FAIL.
+node -e "process.exit(require('./apps/worker/package.json').dependencies?.bullmq ? 1 : 0)"
 check "bullmq is not a worker dependency at all" $? ""
 
 echo

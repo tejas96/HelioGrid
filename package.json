@@ -26,7 +26,11 @@
     "check:docs": "python3 scripts/gates.py",
     "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs",
     "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
-    "db:migrate": "pnpm --filter @heliogrid/db migrate"
+    "db:migrate": "pnpm --filter @heliogrid/db migrate",
+    "infra:up": "bash -c '[ -f infra/temporal/pki/jwt/jwks.json ] || bash infra/temporal/scripts/make-dev-pki.sh' && docker compose -f infra/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh && pnpm infra:token",
+    "infra:token": "node infra/temporal/scripts/mint-token.mjs api > .temporal-token.tmp && mv .temporal-token.tmp .temporal-token",
+    "infra:down": "docker compose -f infra/compose.yaml down",
+    "infra:reset": "docker compose -f infra/compose.yaml down -v"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit"

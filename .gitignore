@@ -67,3 +67,8 @@ __pycache__/
 # graphify — generated knowledge-graph cache, never committed
 graphify-out/
 drizzle-draft/
+
+# Signed dev JWT for Temporal, written by `pnpm infra:token`. One hour TTL, minted from the
+# gitignored infra/temporal/pki/jwt key. Never committed — a token in a diff is a credential
+# in the history. The glob also covers the .tmp the mint writes before moving it into place.
+.temporal-token*

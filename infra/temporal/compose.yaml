@@ -1,38 +1,23 @@
 # The production-like local Temporal stack.
 #
-# Every image is pinned BY DIGEST, not by tag. A tag is a moving pointer: `1.30.6` was
-# rebuilt once already in the window this stack was authored, and a spike that proves a
-# behaviour against an image nobody can fetch again has proven nothing durable.
+# Every image is pinned BY DIGEST, not by tag. A tag is a moving pointer — `1.30.6` was rebuilt
+# once already — and a spike proven against an image nobody can re-fetch has proven nothing.
 #
-# Its Postgres is DEDICATED and on its own port. It is not `heliogrid-pg-local` and must
-# never become it: Temporal's schema is owned by `temporal-sql-tool` at the server's exact
-# version, product schema is owned by Drizzle migrations, and putting them in one database
-# means one of the two tools eventually migrates the other's tables.
+# Its Postgres is the shared `heliogrid-pg-local` container from ../compose.yaml, merged into
+# this project by that file's `include:`.
 #
-#   docker compose -f infra/temporal/compose.yaml up -d
-#   bash infra/temporal/scripts/bootstrap.sh          # schema + namespace, idempotent
-#   docker compose -f infra/temporal/compose.yaml down -v   # -v for a genuinely clean boot
+# Temporal's schema is owned by `temporal-sql-tool` at the server's exact version, product
+# schema by Drizzle. Two migration tools must never share a DATABASE — so they share the
+# CONTAINER and hold separate databases, and neither can reach the other's tables.
+#
+#   pnpm infra:up      mints dev PKI if missing, starts everything, bootstraps Temporal
+#   pnpm infra:reset   destroys the volume — a genuinely clean boot
 
-name: heliogrid-temporal
+# No `name:` here. ../compose.yaml's `include:` merges these services into the `heliogrid`
+# project and ignores any name this file declares — one that said otherwise would be a
+# lie, and the project name is exactly what the probe scripts resolve against.
 
 services:
-  postgres:
-    image: postgres:16@sha256:33f923b05f64ca54ac4401c01126a6b92afe839a0aa0a52bc5aeb5cc958e5f20
-    container_name: heliogrid-temporal-pg
-    environment:
-      POSTGRES_USER: temporal
-      POSTGRES_PASSWORD: temporal
-      POSTGRES_DB: postgres
-    # 5545, one past the product database's 5544, and exposed only so the backup/restore
-    # rehearsal can reach it from the host. Track 8's Fly template exposes nothing.
-    ports: ['5545:5432']
-    volumes: ['temporal-pgdata:/var/lib/postgresql/data']
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U temporal -d postgres']
-      interval: 3s
-      timeout: 3s
-      retries: 30
-
   # Serves the JWKS the server fetches to verify identity tokens. In production this is the
   # identity provider; here it is a static file, which is the ONLY part of the authorization
   # path that is simplified — the claim mapper, the authorizer and the claims are real.
@@ -104,9 +89,6 @@ services:
       TEMPORAL_TLS_SERVER_NAME: temporal
     volumes: ['./pki:/etc/temporal/pki:ro']
     entrypoint: ['sleep', 'infinity']
-
-volumes:
-  temporal-pgdata:
 
 # A fixed subnet so the frontend has a STABLE broadcast address. Ringpop's `broadcastAddress`
 # must be an IP — a hostname is rejected outright ("ringpop config malformed `broadcastAddress`

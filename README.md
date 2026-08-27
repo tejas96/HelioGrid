@@ -92,16 +92,14 @@ nvm use
 pnpm install --frozen-lockfile
 pnpm turbo build                          # REQUIRED before anything below
 
-docker run --rm -d --name heliogrid-db \
-  -e POSTGRES_USER=heliogrid -e POSTGRES_PASSWORD=heliogrid \
-  -e POSTGRES_DB=heliogrid -p 5432:5432 postgres:16
+pnpm infra:up                             # container + all three databases + roles —
+                                          # see infra/README.md §"Local dev"
 
-cp .env.example .env.local                # then fill in:
-#   DATABASE_ADMIN_URL -> the container above (owner/superuser: runs migrations)
-#   DATABASE_URL       -> the app_runtime role, NOT a superuser. The api refuses to boot
-#                         on a SUPERUSER/BYPASSRLS role because RLS would silently no-op.
+cp .env.example .env.local                # then fill in DATABASE_URL (app_runtime) and
+                                          # DATABASE_ADMIN_URL (app_admin) — values in
+                                          # infra/README.md §"Local dev"
 
-pnpm --filter @heliogrid/db migrate       # roles + schema. NOTE: greenfield since
+pnpm --filter @heliogrid/db migrate       # schema. NOTE: greenfield since
                                           # 2026-08-01 — there are no migrations
                                           # to apply until the auth+tenancy rebuild lands.
 pnpm verify                               # lint · boundaries · typecheck · test · build
@@ -122,7 +120,7 @@ pnpm --filter @heliogrid/mobile start   # Metro bundler (default port 8081)
 pnpm --filter @heliogrid/mobile ios     # or: android — builds + launches on a simulator
 pnpm --filter @heliogrid/worker dev     # NestJS worker, no HTTP surface
 # Local Temporal stack (ADR-0025) — decisions, runbooks and proofs: infra/temporal/README.md
-docker compose -f infra/temporal/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh
+pnpm infra:up
 ```
 
 Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the same way.
@@ -146,7 +144,7 @@ own port, only a `--port` flag, so this is the standard convention almost every 
 | `apps/api` | `8084` | `packages/env/src/schema/api.ts` (`API_PORT`, default `8084`) | Yes — set `API_PORT` in `.env.local` |
 | `apps/web` | `3002` | Literal in `apps/web/package.json` (`next dev/start --port 3002`) | No — edit the script (Next has no port env var) |
 | `apps/mobile` | `8081` (Metro default) | React Native CLI default | Yes — `--port` flag to `react-native start` |
-| Postgres (local dev) | `5432` | Whatever you pass to `docker run` | N/A |
+| Postgres (local dev) | `5544` | `infra/compose.yaml` (`heliogrid-pg-local`) | No — dedicated port, see `infra/README.md` |
 
 `.claude/launch.json` mirrors the api/web ports for this repo's browser-preview tooling — if
 you ever change either port, update that file too.

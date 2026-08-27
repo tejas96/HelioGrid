@@ -5,16 +5,14 @@ program. The code cutover is Track 7; the deployment candidate is Track 8. BullM
 what `apps/worker` runs — it is superseded, not yet removed.
 
 ```bash
-bash infra/temporal/scripts/make-dev-pki.sh          # dev CA, certs, JWT keypair + JWKS
-docker compose -f infra/temporal/compose.yaml up -d
-bash infra/temporal/scripts/bootstrap.sh             # schema + namespace, idempotent
+pnpm infra:up                                        # mints dev PKI, starts everything, bootstraps Temporal
 (cd infra/temporal/spike && node worker.mjs &)       # the spike worker
 bash infra/temporal/scripts/probe-identity.sh        # mTLS + authorization
 bash infra/temporal/scripts/probe-durability.sh      # restart · DB outage · backup/restore
 bash infra/temporal/scripts/probe-rotation.sh        # certificate rotation, all four steps
 bash infra/temporal/scripts/probe-upgrade.sh         # one-minor upgrade and rollback
 (cd infra/temporal/spike && node probe-durable-handoff.mjs && node probe-replay.mjs)
-docker compose -f infra/temporal/compose.yaml down -v
+pnpm infra:reset
 ```
 
 ---
@@ -47,17 +45,18 @@ move to, instead of a hypothetical.
 
 ## 2. What the local stack is, and is not
 
-It is the pinned server image, a **dedicated** PostgreSQL, mutual TLS, a real authorizer, a
+It is the pinned server image, a **production-like** PostgreSQL, mutual TLS, a real authorizer, a
 JWKS endpoint and namespace bootstrap. It is what Track 8's Fly template is derived from.
 
 It is **not** `temporal server start-dev`. The dev server has no TLS, no authorization and an
 in-memory store; every proof below would pass there and mean nothing. Use the dev server for
 the inner loop only.
 
-**The database is deliberately separate from the product's.** Temporal's schema is owned by
-`temporal-sql-tool` at the server's exact version; product schema is owned by Drizzle
-migrations, append-only and hash-locked. In one database, one tool eventually migrates the
-other's tables. Different container, different port (5545, one past the product's 5544).
+**Temporal's databases are separate from the product's; the container is shared.** Temporal's
+schema is owned by `temporal-sql-tool` at the server's exact version; product schema is owned by
+Drizzle migrations, append-only and hash-locked — two migration tools that must never share one
+DATABASE, or one starts reading the other's `schema_version` and applying its upgrades.
+Container, port, volume and the three-database topology: `infra/README.md` §"Local dev".
 
 ---
 
