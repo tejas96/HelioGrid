@@ -8,7 +8,7 @@ raw tokens, the RN theme object, the web stylesheets and the fonts all come from
 `src/_generated/` is written by **ds:pull** — a Claude session action that uses the
 DesignSync MCP to fetch the live design system (Claude Design project
 `c8aa4326-21bf-453a-8d11-749cc81dee12`) byte-verbatim into the repo. The output is
-committed; hand-editing anything under `_generated/` is a bug. `pnpm ds:pull` re-pulls and
+committed; hand-editing anything under `_generated/` is a bug. `ds:pull` re-pulls and
 diffs the manifest to catch stale or drifted components (docs/engineering/17 §6).
 
 ## What `build.ts` emits (`pnpm --filter @heliogrid/theme build`)

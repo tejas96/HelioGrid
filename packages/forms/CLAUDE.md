@@ -27,3 +27,8 @@ bare `zod` directly is a lint failure (Biome `noRestrictedImports` + the cruiser
 ## Definition of done here
 build/typecheck/lint green · consumed by BOTH platforms' gallery form demo (Law 7) ·
 the demo walked in a browser and on both simulators.
+
+## Folder shape
+
+`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
+never a deep path. Never invent a folder: this tree is a closed set.

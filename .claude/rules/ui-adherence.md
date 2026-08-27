@@ -44,8 +44,10 @@ replaced the three hand-maintained prop lists and the script that compared them.
 
 ### Visual values
 - **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
-  `@heliogrid/theme`, which is GENERATED from the live design system (`pnpm ds:pull`) —
-  never hand-transcribed. Anything under `_generated/` is written by script only.
+  `@heliogrid/theme`, which is GENERATED from the live design system and never hand-transcribed.
+  Anything under `packages/theme/src/_generated/` is written by **`ds:pull`** — a Claude session
+  action driving the DesignSync MCP, **not a pnpm script**; do not go looking for one. Its output
+  is committed, and hand-editing it is a bug.
   (Hex: `pnpm lint` fails. Arbitrary px and inline style are review-only — no honest gate
   exists, so the rule holds by your care, not by a red build.)
 - **Primary actions are near-black.** Accent is focus, links, selection, active tab and
@@ -104,7 +106,20 @@ git ls-files 'packages/ui/src' | grep -E '\.tsx?$' | grep -v '\.types\.ts$' \
   | xargs grep -nE '(aria-label|accessibilityLabel|accessibilityHint|placeholder|title|alt)="[^"]{2,}"|>[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<'
 ```
 
+### Screens are the unguarded surface
+
+Gates check packages; almost nothing checks what a screen writes inline, and that is where every
+recent defect landed. Inside a screen, assume nothing is watching:
+
+- No inline policy, no inline money maths, no inline enum, no inline copy, no inline colour.
+- A screen **renders**. It does not hold policy (Law 11).
+- Anything you are tempted to define here belongs in a package — see
+  `.claude/rules/architecture-ownership.md` for which one.
+
 ### Presentation and logic live in different files
+
+**Style never lives in the component file** — `<Name>.css` on web, `styles.ts` on RN. A component
+file holds markup and the hook calls it needs; nothing else.
 A component renders. It does not also fetch, orchestrate, or hold flow logic.
 - **Container** — `<Name>Screen.tsx`: data via the typed client, state, handlers, navigation.
   Returns presentational components; holds little markup. Web's `page.tsx` is routing only.

@@ -163,7 +163,7 @@ tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
 ### theme — tokens, the semantic layer and the provider  (NOT BUILT YET — docs/engineering/17)
-Owns: `src/_generated/` pulled from the LIVE design system (`pnpm ds:pull`), the semantic
+Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull`), the semantic
 role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
 the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
 scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (the v1
@@ -335,7 +335,7 @@ section records the answer per new file.
    SET of languages? → packages/contracts/src/locale.ts, and nowhere else — i18n and the
    Lingui CLI both read it from there.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
-   packages/theme (`pnpm ds:pull`) — never a literal in a screen, never hand-transcribed.
+   packages/theme (`ds:pull`) — never a literal in a screen, never hand-transcribed.
 8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared
    `<Name>.types.ts` plus `<Name>.tsx` (web) and `<Name>.native.tsx` (RN), one change
    (Law 7).

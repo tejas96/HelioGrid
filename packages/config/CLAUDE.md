@@ -26,3 +26,8 @@ base strictness flag must be copied there by hand.
 
 ## Definition of done here
 A preset change is done when `pnpm turbo typecheck` stays green across the workspace.
+
+## Folder shape
+
+`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
+never a deep path. Never invent a folder: this tree is a closed set.

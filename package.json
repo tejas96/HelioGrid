@@ -24,7 +24,9 @@
     "check:env": "node scripts/check-env-access.mjs",
     "ds:contract": "node scripts/ds-contract.mjs",
     "check:docs": "python3 scripts/gates.py",
-    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs"
+    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs",
+    "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
+    "db:migrate": "pnpm --filter @heliogrid/db migrate"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit"

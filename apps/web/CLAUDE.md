@@ -8,6 +8,23 @@
 - NEVER: authored business logic (import it — Law 11), direct packages/db imports, raw
   hex/px values.
 
+## Folder shape
+
+```
+app/<route>/page.tsx        routes ONLY — a page composes, it never holds work
+features/<capability>/      owns the work:
+  <Name>Screen.tsx            composes
+  components/                 one file per component
+  hooks/use-<thing>.ts        the logic
+  constants.ts · types.ts
+  shared/                     when two screens in this feature share
+lib/                        app infrastructure
+```
+
+**Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one file
+each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the location and a
+few filenames differ. Never invent a folder: this tree is a closed set.
+
 ## Commands
 pnpm --filter @heliogrid/web dev      # localhost:3002 (tokens must be built first: turbo
                                        # handles it; kills a stale listener on that port first)

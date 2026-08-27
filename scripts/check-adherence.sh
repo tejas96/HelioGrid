@@ -5,7 +5,6 @@
 #
 #   1. no test files            — owner directive: no .test.*/.spec.* until a testing
 #                                 program is commissioned
-#   2. source files ≲300 lines  — split by RESPONSIBILITY, never `*-part2`
 #   3. no raw hex in UI paths   — every visual value comes from @heliogrid/theme
 #
 # Each check prints its violations and the script exits 1 if any fired.
@@ -65,19 +64,15 @@ if [ -n "$tests_found" ]; then
   fail=1
 fi
 
-# ── 2. Source files over ~300 lines ──────────────────────────────────────────
-oversize=$(find $SRC_DIRS -type f \
-  \( -name '*.ts' -o -name '*.tsx' -o -name '*.mts' -o -name '*.cts' \
-     -o -name '*.js' -o -name '*.jsx' -o -name '*.mjs' -o -name '*.cjs' -o -name '*.css' \) \
-  "${PRUNE[@]}" -not -name '*.d.ts' 2>/dev/null \
-  | while IFS= read -r f; do
-      n=$(wc -l < "$f" | tr -d ' ')
-      if [ "$n" -gt 300 ]; then printf '  %5s  %s\n' "$n" "$f"; fi
-    done)
-if [ -n "$oversize" ]; then
-  printf 'OVER 300 LINES — split by RESPONSIBILITY (never *-part2 / *2 / *-extra):\n%s\n' "$oversize"
-  fail=1
-fi
+# ── 2. (retired 2026-08-27) Source files over ~300 lines ────────────────────
+# Replaced by Biome `style/noExcessiveLinesPerFile` at maxLines 300, which does the same job
+# as a LINT RULE — CLAUDE.md §8 mechanism order puts a lint rule above a script. It is faster,
+# reports in the editor as you type, and is not blind the way this grep was: SRC_DIRS listed
+# only "apps packages tests scripts", so the 3,400-line render harness under docs/ passed
+# green for months. Biome sees the whole tree; configs and that harness are excluded in
+# biome.json deliberately, by name. One behaviour change, accepted: Biome counts CODE lines,
+# so comments no longer push a file over. Measured 2026-08-27 — zero files in the tree differ
+# between the two.
 
 # ── 3. Raw hex in UI paths ───────────────────────────────────────────────────
 # Matches hex ANYWHERE on the line. The old pattern required the hex to be the first token
@@ -322,5 +317,5 @@ if [ -n "$app_vocab" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no oversize source, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary'
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary'
 exit $fail

@@ -66,3 +66,8 @@ docs/engineering/architecture.md §2 db.
 ## Definition of done here
 Migration applies fresh AND on an already-migrated DB (idempotent skip) · RLS
 cross-tenant invariant green · `pnpm turbo typecheck lint` green.
+
+## Folder shape
+
+`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
+never a deep path. Never invent a folder: this tree is a closed set.

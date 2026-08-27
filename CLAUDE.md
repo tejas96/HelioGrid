@@ -4,89 +4,53 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
-This file and `docs/engineering/architecture.md` are the two you must know. Everything else loads when
-it applies.
+This file and `docs/engineering/architecture.md` are the two you must know; everything else loads when it applies.
 
 ## 1. Core principles
 
-**Architecture decides ownership.** Run `docs/engineering/architecture.md` §4 before creating any file,
-constant, type or helper — it names the owning package. §2 says what each package may hold
-and import; §3 what is web-only, RN-only or shared.
+**Think before coding.** State assumptions. Two readings of a request → present both. Unclear →
+stop and ask; never invent a requirement.
 
-**Never duplicate a definition.** A fact both platforms need lives in a package before
-either screen uses it. Enums → contracts. Logic, policy numbers, formatters → domain. Visual
-values → theme. Schema → migrations. Copy → i18n. **Product behaviour → `docs/prd/`, never a doc
-under `docs/`** — `docs/` describes how this repo is built, `docs/prd/` describes what it does. Compose from `packages/`; if a primitive
-is missing, add it there rather than inlining a copy.
+**Found a better approach? Propose it, with an example** in *this* codebase, and what it costs to
+switch. A recommendation you withheld is a decision made on the owner's behalf. Never switch
+silently — propose, then follow the answer.
 
-**Screens are the unguarded surface.** Gates check packages; almost nothing checks what a
-screen writes inline, and that is where every recent defect landed.
+**Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned;
+mention unrelated dead code, don't delete it.
 
-**Think before coding.** State assumptions. Two readings of a request → present both.
-Unclear → stop and ask; never invent a requirement.
+**Verify reality.** A task is done when you have looked at it — "fix the bug" means reproducing it
+on the real surface, then showing those steps pass. Read failures, not exit codes: a red probe
+proves nothing until you know why, and **a green gate proves nothing until you have seen it go red
+on an injected violation.** Read call sites, not declarations.
 
-**Found a better approach? Propose it, with an example.** Show what it would look like in
-*this* codebase — the shape of the code or the file it would live in — and what it costs to
-switch. A recommendation you withheld is a decision you made on the owner's behalf without
-telling them. Two limits: only when you have actually found one (a manufactured alternative
-wastes their attention), and never switch to it silently — propose, then follow the answer.
-
-**Keep changes minimal.** Solve the requested problem only. No speculative abstraction, no
-error handling for impossible states, no refactoring what isn't broken. Match surrounding
-style. Remove what your change orphaned; mention unrelated dead code, don't delete it. Every
-changed line traces to the request.
-
-**Verify reality.** `/verify` on the real surface — a task is done when you have looked at
-it. Read failures, not exit codes: a red probe proves nothing until you know why it went
-red, and a green gate proves nothing until you have seen it go red on an injected violation.
-Read call sites, not declarations — two platforms reach the same behaviour through
-differently-named state.
-
-**Don't move to the next task or to-do until you are 99% confident the current one is
-complete and correct.**
-
-**Minimise blast radius.** If something small needs edits across many unrelated files, the
-architecture is wrong. Say so before writing the workaround.
-
-**Cross-cutting concerns are built in from day one, never retrofitted.** Anything that will
-reach every module later — permissions/RBAC, tenancy, money, audit, i18n, offline — is
-provisioned by the first slice that could carry it, even while nothing consumes it yet, and
-behind ONE enforcement seam rather than per-handler checks. `docs/engineering/forward-compat.md` is the
-register: read your module's row before its first migration or contract, and add a row when
-you find a new such concern. Retrofitting one of these is a repo-wide sweep — exactly the
-blast radius the rule above tells you to refuse.
+**Don't move to the next task until 99% confident the current one is complete and correct.**
 
 ## 2. The Laws
 
-Stable ids — never reused or renumbered; a gap is a law that was removed. Each is held by a different
-mechanism — some by lint or types, some only by review (§7).
+Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 1. **Foundation before features.** Feature modules build only on landed foundation.
 3. **Contracts before code.** requirements → domain model → contract → shared types →
    migration → implementation → verification → docs. Never in reverse.
 5. **Reuse before creation.** Search first; creating what exists is a defect.
-7. **Shared component APIs stay in parity.** A prop on one platform only is a defect.
-   Held by a TYPE, not a script: both platform files import the one `<Name>.types.ts`
-   (docs/engineering/17 §2). The v1 three-list arrangement and `check-ui-parity.mjs` are gone.
-8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES
-   files greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
-9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored
-   only when their owning module's slice begins.
-10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API
-    outside a declared server entry.
-11. **Flows are authored once.** Shared state vocabulary and view-model types live in a
-    shared package before either screen consumes them. Screens render; they don't hold policy.
+7. **Shared component APIs stay in parity.** Held by a TYPE: both platform files import the one
+   `<Name>.types.ts`. A prop on one platform only is a compile error.
+8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES files
+   greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
+9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored only
+   when their owning module's slice begins.
+10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API outside a
+    declared server entry. Held by dependency-cruiser.
+11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
+    package before either screen consumes them. Screens render; they don't hold policy.
 
 ## 3. Workflow
 
 **Understand → build → `/verify` → `/finish`.**
 
-Before writing code, know two things and say them: **which package owns each new file**
-(`docs/engineering/architecture.md` §4) and **what will prove it works**. Anything whose shape is still in
-question gets settled with the owner first — never invent a requirement.
-
-Turn the task into something checkable — "fix the bug" means reproduce it on the real surface,
-then show those steps passing.
+Before writing code, say two things: **which package owns each new file**
+(`docs/engineering/architecture.md` §4) and **what will prove it works**. Anything whose shape is
+still in question gets settled with the owner first.
 
 ## 4. Stop and ask the owner before
 
@@ -95,91 +59,126 @@ then show those steps passing.
 - A layer conflict §7 does not resolve.
 - A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
   `docs/prd/registers/open-questions.md` or `docs/prd/registers/conflicts.md` first, then continue.
-- **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An
-  instruction to do work is never approval to commit it, and one approval never carries to
-  the next. `main` is PR-only; never `--no-verify`.
+- **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An instruction to
+  do work is never approval to commit it, and one approval never carries to the next. `main` is
+  PR-only; never `--no-verify`.
 
 ## 5. Commands
 
-`pnpm verify` — build · lint · boundaries · typecheck · test · openapi freshness · i18n
-catalog freshness. Build runs FIRST: dep-cruiser resolves workspace edges through `dist/`,
-so linting an unbuilt checkout is partially blind.
-
-- Needs a live postgres (`DATABASE_URL`) or the invariants skip — a green run has NOT proven
-  tenancy. **Read gate output, not exit codes**; an invariant over an empty schema says VACUOUS.
-- Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
-- Enumerate files with `git ls-files`, never a bare glob: in zsh one unmatched pattern aborts
-  the command and prints nothing, which reads as "clean".
-- **Never weaken a gate to make a change pass.** Not every rule is mechanically held — see §7.
-
-## 6. File and folder structure
-
-**Never invent a folder.** Every tree below is a closed set — a new category is a plan-time
-decision, not something to create mid-task. Put the file where the pattern already puts it.
-
-| Where | Shape |
+| | |
 |---|---|
-| `apps/web` | `app/<route>/page.tsx` routes only · `features/<capability>/` owns the work: `<Name>Screen.tsx` composes · `components/` one file per component · `hooks/use-<thing>.ts` · `constants.ts` · `types.ts` · `shared/` when two screens in the feature share · `lib/` for app infrastructure |
-| `apps/mobile` | `src/{auth,navigation,screens}` + root `env.ts`, `i18n.ts`, `react-query-host.tsx` (the ONE host-lifecycle adapter) · `screens/<name>/` mirrors web's feature shape: `<Name>Screen.tsx` · `components/` · `hooks/` · `styles.ts` · `types.ts` |
-| `apps/api`, `apps/worker` | `src/{config,common,modules}` · one folder per module, `<m>.module.ts` + `<m>.controller.ts` + `<m>.service.ts` + `<m>.repository.ts` |
-| `packages/*` | `src/` with everything public re-exported from `src/index.ts`; consumers import the index, never a deep path |
-| `tests/invariants` | one file per invariant in `src/`, called from `run.ts` |
-| `docs/prd/` | the product spec — `0N-*.md` overview · `foundations/F1–F8` · `modules/M01–M13` · `owner-brief-2026-08-03.md` · `registers/` (screens, conflicts, open-questions, enhancements) |
-| `docs/tasks/` | one file per module, written to as tasks complete |
-| `docs/ux/` | `briefs/` one per screen, plus `claude-design-context.md` |
-| `docs/` | the ONE home for everything written: `prd/` · `ux/` · `tasks/` · `engineering/`, plus `start-here.md` and `build-order.md` |
-| `infra/` | deployment and local-stack material that is NOT application code: `infra/temporal/` (the local stack, its PKI and its proofs) and `infra/temporal/deploy/` (the reviewed, undeployed candidate). Never product code, never a workspace package. Root otherwise holds only README, CLAUDE.md and code |
-| `docs/engineering/` | how the repo is built — architecture, stack, integrations, ADRs. `docs/README.md` is the map, and every entry there carries a status |
+| `pnpm check:all` | **Before you push.** Fixes formatting, then every gate. Fast, no build, no DB. |
+| `pnpm verify` | **The full proof.** Build · lint · boundaries · typecheck · all gates · invariants. |
+| `pnpm db:migration:new` | The only way a migration is created. Never hand-author one. |
 
-**Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one
-file each, `hooks/use-<thing>.ts` holds the logic, style sits in its own file. Only the
-location and a few filenames differ.
+- `verify` needs a live postgres (`DATABASE_URL`) or the invariants fail — a run without one has
+  NOT proven tenancy. **Read gate output, not exit codes**; an invariant over an empty schema says
+  VACUOUS, which is not a pass.
+- Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
+- Enumerate files with `git ls-files`, never a bare glob: in zsh one unmatched pattern aborts the
+  command and prints nothing, which reads as "clean".
+- **Never weaken a gate to make a change pass.**
 
-**Naming.** A file is named for what it does. Never `*-part2`, `*2`, `*-extra`, and never for
-its layer — a `components.tsx` or `hooks.ts` grab-bag is the same defect as `*-part2`. If a
-split needs a number, it is the wrong split.
+## 6. Where everything lives
 
-The full per-package registry — what each package owns, may import, and may never hold —
-is `docs/engineering/architecture.md` §2. Read §4 before creating any file.
+**Never invent a folder.** Every tree is a closed set — a new category is a plan-time decision.
+
+| package | owns |
+|---|---|
+| `contracts` | enums, wire shapes, string-literal unions, ports. The API review surface. |
+| `domain` | logic, policy numbers, formatters, money maths. Pure — no clock, no I/O. |
+| `theme` | every visual value. Generated; never hand-edited. |
+| `ui` | one component package, both platforms (`.tsx` + `.native.tsx`). |
+| `db` | schema and append-only migrations. |
+| `i18n` | every user-visible string. |
+| `env` | the only reader of `process.env`. |
+| `forms`, `data`, `config` | the form layer · the typed client · shared build config. |
+
+| tree | what it is |
+|---|---|
+| `docs/prd/` | **the product spec** — what the product does. Source of truth. |
+| `docs/ux/briefs/` | one design brief per screen. Source of truth. |
+| `docs/tasks/` | engineering work, one file per module. Source of truth. |
+| `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
+| `.claude/rules/` | path-scoped deltas — load automatically for the paths they name. |
+| `infra/` | deployment and local-stack material that is NOT application code. |
+
+Each app and package has its own `CLAUDE.md` with its folder shape and landmines. It loads when
+you read that folder — read it before writing there.
+
+**Start from the right file** — each is the entry point for one kind of work, and reading it first
+is cheaper than searching:
+
+| doing | open |
+|---|---|
+| designing a screen | `docs/start-here.md` |
+| building | `docs/build-order.md`, then `docs/tasks/<module>.md` |
+| finding any doc | `docs/README.md` — the map, with a status per file |
+| placing a new file | `docs/engineering/architecture.md` §4 |
+| a first migration | `docs/engineering/forward-compat.md` |
+| the screen register | `docs/prd/registers/screens.md` — 150 screens, 99 locked to V1 |
+| the UI layer | `docs/engineering/17-ui-architecture-v2.md` |
+
+**Naming.** A file is named for what it does. Never `*-part2`, `*2`, `*-extra`, and never for its
+layer — a `components.tsx` grab-bag is the same defect. If a split needs a number, it is the
+wrong split.
 
 ## 7. When rules conflict
 
 Higher wins, and don't re-declare at a lower level what a higher one already fixed:
 
-**owner rulings (`docs/prd/registers/open-questions.md`, `conflicts.md`) → the product spec (`docs/prd/`)
-→ architecture (`docs/engineering/architecture.md`) → contracts →
-design system → this file → package `CLAUDE.md` → implementation detail.**
+**owner rulings (`docs/prd/registers/open-questions.md`, `conflicts.md`) → the product spec
+(`docs/prd/`) → architecture (`docs/engineering/architecture.md`) → contracts → design system →
+this file → package `CLAUDE.md` → implementation detail.**
 
-Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the
-code and has historically been the accurate one; and between two records, the **later-dated**
-one wins. If a doc and the code disagree, fix the doc or ask.
+Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the code
+and has historically been the accurate one; and between two records, the **later-dated** one wins.
+If a doc and the code disagree, fix the doc or ask.
 
-**A rule is not enforced just because it is written.** Before trusting one, check whether a
-type, a lint rule or an invariant actually holds it — several here are held only by review,
-and a few are narrower than they read.
+**A rule is not enforced just because it is written.** Before trusting one, check whether a type, a
+lint rule or an invariant actually holds it — several here are held only by review.
 
-## 8. Repository rules
+## 8. Coding standards
 
+Every line, every app, every package. No exceptions for "just this once".
+
+- **The gates hold the mechanics.** Formatting · `any`/`!`/`==`/`console.log` · env access ·
+  **files ≲300 lines, split by responsibility** · no test files · style out of the component
+  file · no app-declared enum, union or lookup. All enforced — run `pnpm check:all` and fix
+  what it says.
+- **Zero duplication.** Before writing anything, search for it. A second copy of a definition,
+  a formula or a shape is a defect even when both copies are correct — they will diverge.
+  `check:dupes` catches clones of 12+ lines; a duplicated constant or a re-derived formula it
+  cannot see, and that one is yours to refuse.
+- **Code reads like English or it is rewritten.** Names say WHAT, never how. A reader who does
+  not know this codebase follows a function top to bottom without scrolling back. If
+  explaining it needs a comment, the code is wrong — fix the code, not the comment.
+- **Solve today's problem.** No speculative abstraction, no config for one caller, no
+  indirection for a future that has not been specified. The simplest thing that is correct.
+- **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded
+  scan, and every tenant-scoped read carries its tenant predicate. A query written to be fixed
+  later never is.
+- **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred
+  or `any` shape. If two sides need to agree, the agreement is a type in `packages/contracts`.
+- **A bug you find is reported immediately and fixed next.** Never silently, never inside the
+  current change — that hides it in an unrelated diff. Say it, finish the scope you are on,
+  then fix it before starting anything new.
+- **Dependencies change only through `pnpm add`/`pnpm remove`.** Never hand-edit a dependency
+  block, never touch a lockfile. **The database is read-only to you** — schema through
+  `pnpm db:migration:new`, data through the application. Both are hook-enforced.
 - **No unit tests** — never a `.test.*`/`.spec.*` file. `tests/invariants/` is the only
   executable check layer; behaviour is proven by running it.
-- **Files ≲300 lines**, split by responsibility. Never `*-part2`, `*2`, `*-extra`.
-- **Style never lives in the component file** — `<Name>.css` on web, `styles.ts` on RN.
+
+Writing rules, not code:
+
 - **An instruction earns its length.** State the rule, its cost, the fix — 1–3 lines. The war
-  story belongs in the commit. Before adding a rule, check whether it REPLACES an existing
-  one rather than stacking beside it.
-- **Presentation and logic in different files** (`.claude/rules/ui-adherence.md`).
-- **Config comes from `@heliogrid/env`** — a variable is a schema edit plus `.env.example`.
-  Who else may read a raw source: `scripts/check-env-access.mjs`'s allowlist.
+  story belongs in the commit. Before adding a rule, check whether it REPLACES an existing one.
 - **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial
   review only when asked for by name.
 - **Repo law beats a plugin skill.** Named: the test-driven-development skill never applies
-  here; and planning skills write their specs, plans and scratch to `.superpowers/`, never
-  `docs/superpowers/` — `docs/` is the documentation tree, not plugin working state.
-- **Write to the gates.** 2-space · LF · width 100 · semicolons · single quotes (JSX double) ·
-  trailing commas · organised imports · `import type` · no `any`/`!`/`==`/`console.log`/unused
-  symbols · `noUncheckedIndexedAccess`. Then `pnpm exec biome check --write <files>`.
+  here; planning skills write to `.superpowers/`, never `docs/superpowers/`.
 
 ## 9. Product law
 
@@ -191,31 +190,11 @@ Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone
   spec) resolve from versioned market packs, never hard-coded.
 - Sent proposals keep their prices; a price-book update creates a new version.
-- Structural adequacy is NEVER computed — an engineer signs off, and the disclaimer travels
-  with every structure-bearing output.
+- Structural adequacy is NEVER computed — an engineer signs off, and the disclaimer travels with
+  every structure-bearing output.
 - Money renders in the tenant currency's grouping in every locale (INR: lakh/crore);
   kW/kWh/kWp are never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 
-## 10. Where things are
-
-| | |
-|---|---|
-| `docs/engineering/architecture.md` | **The spine** — §1 map · §2 package registry · §3 platform rules · §4 placement |
-| `docs/README.md` | **The docs map** — what every file under `docs/` is, and whether it is pinned or live |
-| `docs/start-here.md` | **Designing a screen** — the one file a design session starts from |
-| `docs/prd/registers/screens.md` | The screen register — 150 screens, 99 locked to V1 |
-| `docs/prd/registers/open-questions.md` · `conflicts.md` | Owner rulings · contradictions and their resolutions |
-| `docs/engineering/17` | **UI architecture V2** — the design system, theme and component layer |
-| `docs/build-order.md` · `docs/tasks/` | Build order · per-module tasks |
-| `docs/engineering/forward-compat.md` | What each module's first migration must satisfy |
-| `.claude/rules/` | Path-scoped deltas — load automatically for the paths they name |
-| package `CLAUDE.md` | Local conventions and landmines |
-| `docs/engineering/adr/` | Reference only — never a gate |
-
-The verification record lives in the PR body — `/verify` writes nothing to the tree.
-
 **Skills:** `/contract-change` · `/migration` · `/verify` · `/finish`.
-
-What is built and what is not: `docs/engineering/architecture.md`.

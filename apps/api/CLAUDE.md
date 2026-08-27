@@ -6,6 +6,16 @@
 - NEVER: hand-rolled @Get/@Post outside a contract (webhook receivers excepted),
   domain math (that's packages/domain), raw SQL outside repositories, console.log.
 
+## Folder shape
+
+```
+src/{config,common,modules}
+src/modules/<m>/            one folder per module, four files:
+  <m>.module.ts  <m>.controller.ts  <m>.service.ts  <m>.repository.ts
+```
+
+Never invent a folder: this tree is a closed set. `apps/worker` uses the same shape.
+
 ## Commands
 `dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load
 automatically and a REAL env var still wins (Fly secrets and CI are never overridden).

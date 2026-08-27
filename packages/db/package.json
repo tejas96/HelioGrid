@@ -18,7 +18,8 @@
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b",
-    "migrate": "tsx src/migrate.ts \"${DATABASE_ADMIN_URL:-$DATABASE_URL}\""
+    "migrate": "tsx src/migrate.ts \"${DATABASE_ADMIN_URL:-$DATABASE_URL}\"",
+    "migration:new": "drizzle-kit generate"
   },
   "dependencies": {
     "drizzle-orm": "0.44.7",
