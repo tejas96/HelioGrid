@@ -34,7 +34,13 @@ say () { printf '\n── %s ──\n' "$1"; }
 for pair in "temporal:temporal" "temporal_visibility:visibility"; do
   db="${pair%%:*}"; dir="${pair##*:}"
   say "schema: $db"
-  sql "$db" create-database >/dev/null 2>&1 || true   # already exists on a re-run
+  # infra/postgres/init/02-databases.sql owns these databases; `temporal` holds no
+  # CREATEDB, so asking the tool to create one can only ever fail. Assert instead —
+  # swallowing that failure hid a missing database behind a confusing schema error.
+  $COMPOSE exec -T postgres psql -U heliogrid -d postgres -tAc \
+    "select 1 from pg_database where datname = '$db'" | grep -q 1 || {
+    echo "FATAL: database $db is missing. The init SQL runs only on an EMPTY volume."
+    echo "       Reprovision with: pnpm infra:reset && pnpm infra:up"; exit 1; }
   sql "$db" setup-schema -v 0.0 >/dev/null 2>&1 || true
   sql "$db" update-schema -d "$SCHEMA_ROOT/$dir/versioned" 2>&1 | grep -E "UpdateSchemaTask|updating schema|Schema updated|error" | tail -3
 done

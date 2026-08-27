@@ -28,7 +28,7 @@
     "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
     "db:migrate": "pnpm --filter @heliogrid/db migrate",
     "infra:up": "bash -c '[ -f infra/temporal/pki/jwt/jwks.json ] || bash infra/temporal/scripts/make-dev-pki.sh' && docker compose -f infra/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh && pnpm infra:token",
-    "infra:token": "node infra/temporal/scripts/mint-token.mjs api > .temporal-token",
+    "infra:token": "node infra/temporal/scripts/mint-token.mjs api > .temporal-token.tmp && mv .temporal-token.tmp .temporal-token",
     "infra:down": "docker compose -f infra/compose.yaml down",
     "infra:reset": "docker compose -f infra/compose.yaml down -v"
   },
