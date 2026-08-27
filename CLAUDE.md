@@ -152,7 +152,9 @@ Every line, every app, every package. No exceptions for "just this once".
   cannot see, and that one is yours to refuse.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how. A reader who does
   not know this codebase follows a function top to bottom without scrolling back. If
-  explaining it needs a comment, the code is wrong — fix the code, not the comment.
+  explaining it needs a comment, the code is wrong — fix the code, not the comment. A comment
+  that earns its place states the CONSTRAINT — what breaks if you change this. When and why we
+  changed it goes in the commit; git stores that already, undated and un-rotting.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no
   indirection for a future that has not been specified. The simplest thing that is correct.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded

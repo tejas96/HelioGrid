@@ -46,16 +46,12 @@ export async function runTenancyInvariants(adminUrl: string) {
       await sql`select rolbypassrls, rolsuper from pg_roles where rolname = 'app_user'`;
 
     /*
-     * This branch fires when NO `app_user` role exists. `app_user` was originally created
-     * by migration 0004, which the 2026-08-01 auth teardown deleted; it is provisioned by
-     * `infra/postgres/init/01-roles.sql` now. In CI (a bare `postgres:16` service with no
-     * init SQL) that is still every run: the container is fresh, `migrate` applies an empty
-     * directory, and neither the role nor any table exists there. Locally it no longer
-     * does — `pnpm infra:up` runs `01-roles.sql` on volume init, so a freshly-reset local
-     * database has the role (and its grants) with zero tables, and lands in the
-     * `tables === 0` branch below instead of this one. A long-lived local database from
-     * before the teardown still carried the role too, which is why this passed locally and
-     * went red only in CI (main red 2026-08-01→08-03).
+     * Fires when NO `app_user` role exists. Every db-backed check below names that role, so
+     * postgres raises 42704 and they cannot run at all rather than running vacuously.
+     *
+     * Still every CI run — a bare `postgres:16` service with no init SQL. Never locally:
+     * `pnpm infra:up` provisions the role from `infra/postgres/init/01-roles.sql`, so a reset
+     * database has roles and zero tables and takes the `tables === 0` branch below.
      *
      * Fail CLOSED where it still means something: tables without roles is a broken database,
      * not a greenfield one.
@@ -80,8 +76,7 @@ export async function runTenancyInvariants(adminUrl: string) {
     // This whole suite proves RLS by BECOMING app_user, so the connecting role must be able to
     // `set local role app_user`. app_admin — which .env.example mandates for
     // DATABASE_ADMIN_URL, and which infra/README tells operators to run this command with —
-    // originally could NOT until 0006_admin_role_privileges.sql granted it membership;
-    // that grant is provisioned by infra/postgres/init/01-roles.sql now. Any other role
+    // gets that membership from infra/postgres/init/01-roles.sql. Any other role
     // still cannot, and without this preflight the failure surfaces as a raw 42501 from deep
     // inside the run with nothing pointing at the cause.
     await sql

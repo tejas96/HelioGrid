@@ -54,9 +54,7 @@ echo
 echo "════ 2. database outage ════"
 ID="outage-$$"
 wf start "$ID" >/dev/null
-# This is the ONE shared container (owner ruling 2026-08-27): stopping it also takes
-# heliogrid_dev down, not just Temporal's databases — a wider blast radius than the
-# dedicated container this replaced.
+# Shared container: this stops heliogrid_dev too, not just Temporal's databases.
 $COMPOSE stop postgres >/dev/null 2>&1
 sleep 6
 # The server must NOT claim health while its persistence is gone. A cluster that reports
@@ -94,11 +92,10 @@ check "dumped both stores while a workflow was live" $? "$sizes"
 # it holding shard leases for data that no longer exists.
 $COMPOSE stop temporal >/dev/null 2>&1
 for db in temporal temporal_visibility; do
-  # `temporal` was the cluster SUPERUSER in the dedicated container this replaced; in the
-  # shared container it is a plain role that only OWNS these databases, so DROP/CREATE need
-  # the cluster superuser `heliogrid`, and `OWNER temporal` keeps them owned correctly after.
-  # stderr is left unswallowed here on purpose: `>/dev/null 2>&1` on these two statements is
-  # what hid CREATE DATABASE failing with permission denied after DROP had already succeeded.
+  # `temporal` only OWNS these databases, so it can DROP but not CREATE — cluster-level DDL
+  # needs the superuser, and `OWNER temporal` restores ownership after. stderr stays unswallowed
+  # on purpose: hiding it let CREATE fail with permission denied after DROP had succeeded,
+  # destroying both databases with no recreate path.
   $PG psql -U heliogrid -d postgres -c "DROP DATABASE $db WITH (FORCE);"
   $PG psql -U heliogrid -d postgres -c "CREATE DATABASE $db OWNER temporal;"
   $PGI pg_restore -U temporal -d "$db" --no-owner < "backup/$db.dump" >/dev/null 2>&1
