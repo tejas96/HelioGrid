@@ -18,7 +18,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
-COMPOSE="docker compose -f compose.yaml"
+COMPOSE="docker compose -f ../compose.yaml"
 fails=0
 check () { if [ "$2" = 0 ]; then printf 'PASS  %-52s %s\n' "$1" "$3"
            else printf 'FAIL  %-52s %s\n' "$1" "$3"; fails=$((fails + 1)); fi }

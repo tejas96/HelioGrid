@@ -1,0 +1,50 @@
+# The local stack. ONE Postgres container serves the app AND Temporal (owner ruling
+# 2026-08-27): one container, one named volume, one port — and one managed Postgres bill in
+# production, with Temporal's two databases movable to their own instance later by changing a
+# connection string in temporal/config/temporal.yaml. No code change, no architectural change.
+#
+#   pnpm infra:up      from a clean clone, brings up everything
+#   pnpm infra:down    stop, keep the data
+#   pnpm infra:reset   down -v — destroys the volume
+#
+# The image is pinned BY DIGEST, not by tag. A tag is a moving pointer, and a stack that cannot
+# be re-fetched byte-for-byte is not reproducible.
+
+name: heliogrid
+
+# Compose's own include — NOT a script (CLAUDE.md §8 mechanism order). It merges the Temporal
+# stack into THIS project, so one `up` / `down` / `down -v` covers everything. Temporal's
+# recorded findings stay beside the config and PKI they describe, and both files stay short.
+#
+# Relative paths inside the included file resolve against ITS directory, so `./config` and
+# `./pki` there still mean infra/temporal/config and infra/temporal/pki. Step 5 proves it.
+include:
+  - path: temporal/compose.yaml
+
+services:
+  postgres:
+    image: postgres:16@sha256:33f923b05f64ca54ac4401c01126a6b92afe839a0aa0a52bc5aeb5cc958e5f20
+    # The name is UNCHANGED from the hand-made container it replaces. .claude/agents/qa-api.md,
+    # .claude/skills/verify/references/test-matrix.md and tests/invariants/CLAUDE.md all name it
+    # as the QA read path; renaming would churn three files for nothing.
+    container_name: heliogrid-pg-local
+    environment:
+      POSTGRES_USER: heliogrid
+      POSTGRES_PASSWORD: heliogrid
+      POSTGRES_DB: heliogrid_dev
+    ports: ['5544:5432']
+    volumes:
+      # NAMED, never anonymous. The container this replaces used an anonymous volume, so
+      # `docker rm` lost the database with no way to rebuild it. That is the bug being fixed.
+      - 'heliogrid-pgdata:/var/lib/postgresql/data'
+      # Runs ONCE, when the data directory is empty. This is what makes the database
+      # reproducible: roles and databases are provisioned from the repo, not by hand.
+      - './postgres/init:/docker-entrypoint-initdb.d:ro'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U heliogrid -d heliogrid_dev']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  heliogrid-pgdata:

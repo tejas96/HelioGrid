@@ -48,8 +48,7 @@ automatically and a REAL env var still wins (Fly secrets and CI are never overri
 pnpm --filter @heliogrid/worker dev | build | typecheck
 `build` runs tsc AND `build:workflows` — the workflow bundle is a BUILD artifact and the
 worker refuses to start without it.
-The local Temporal stack: `docker compose -f infra/temporal/compose.yaml up -d` then
-`bash infra/temporal/scripts/bootstrap.sh`.
+The local Temporal stack: `pnpm infra:up`.
 
 ## Dependency policy
 docs/engineering/architecture.md §2 apps/worker.

@@ -65,13 +65,14 @@ still in question gets settled with the owner first.
 
 | | |
 |---|---|
+| `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
 | `pnpm check:all` | **Before you push.** Fixes formatting, then every gate. Fast, no build, no DB. |
 | `pnpm verify` | **The full proof.** Build · lint · boundaries · typecheck · all gates · invariants. |
 | `pnpm db:migration:new` | The only way a migration is created. Never hand-author one. |
 
-- `verify` needs a live postgres (`DATABASE_URL`) or the invariants fail — a run without one has
-  NOT proven tenancy. **Read gate output, not exit codes**: an invariant over an empty schema
-  reports VACUOUS, which is not a pass.
+- `verify` needs a live postgres (`pnpm infra:up`, then `DATABASE_URL`) or the invariants fail —
+  a run without one has NOT proven tenancy. **Read gate output, not exit codes**: an invariant
+  over an empty schema reports VACUOUS, which is not a pass.
 - Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
 - Enumerate with `git ls-files`, never a bare glob — in zsh one unmatched pattern aborts the
   command and prints nothing, which reads as "clean".

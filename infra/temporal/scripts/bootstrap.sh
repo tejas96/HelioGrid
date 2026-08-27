@@ -12,7 +12,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
-COMPOSE="docker compose -f compose.yaml"
+COMPOSE="docker compose -f ../compose.yaml"
 NAMESPACE="${TEMPORAL_NAMESPACE:-heliogrid}"
 RETENTION="${TEMPORAL_RETENTION:-30d}"
 

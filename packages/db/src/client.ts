@@ -52,7 +52,7 @@ export async function assertRuntimeRoleIsNotPrivileged(db: Db): Promise<void> {
     throw new Error(
       `Refusing to start: the runtime database role "${row.role}" has ${why}, so row-level ` +
         'security is silently inactive and every query can read across tenants. Point ' +
-        'DATABASE_URL at the app_runtime role (packages/db/migrations/0004_login_roles.sql).',
+        'DATABASE_URL at the app_runtime role (infra/postgres/init/01-roles.sql).',
     );
   }
 }

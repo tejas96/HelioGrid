@@ -9,7 +9,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
-COMPOSE="docker compose -f compose.yaml"
+COMPOSE="docker compose -f ../compose.yaml"
 NS=heliogrid
 PKI=/etc/temporal/pki
 fails=0

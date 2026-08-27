@@ -8,13 +8,13 @@
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
-COMPOSE="docker compose -f compose.yaml"
-PG="docker exec heliogrid-temporal-pg"
+COMPOSE="docker compose -f ../compose.yaml"
+PG="docker exec heliogrid-pg-local"
 # `-i` is NOT optional for the restore: without it `docker exec` attaches no stdin, pg_restore
 # reads an empty archive, exits 0, and you get an empty database that looks restored. The
 # server then starts, finds no tables and dies — which reads as a Temporal problem rather than
 # a shell one. Found 2026-08-25 by checking `\dt` instead of the exit code.
-PGI="docker exec -i heliogrid-temporal-pg"
+PGI="docker exec -i heliogrid-pg-local"
 fails=0
 wf () { (cd spike && node wf.mjs "$@" 2>/dev/null); }
 
@@ -54,6 +54,9 @@ echo
 echo "════ 2. database outage ════"
 ID="outage-$$"
 wf start "$ID" >/dev/null
+# This is the ONE shared container (owner ruling 2026-08-27): stopping it also takes
+# heliogrid_dev down, not just Temporal's databases — a wider blast radius than the
+# dedicated container this replaced.
 $COMPOSE stop postgres >/dev/null 2>&1
 sleep 6
 # The server must NOT claim health while its persistence is gone. A cluster that reports
@@ -91,8 +94,13 @@ check "dumped both stores while a workflow was live" $? "$sizes"
 # it holding shard leases for data that no longer exists.
 $COMPOSE stop temporal >/dev/null 2>&1
 for db in temporal temporal_visibility; do
-  $PG psql -U temporal -d postgres -c "DROP DATABASE $db WITH (FORCE);" >/dev/null 2>&1
-  $PG psql -U temporal -d postgres -c "CREATE DATABASE $db;" >/dev/null 2>&1
+  # `temporal` was the cluster SUPERUSER in the dedicated container this replaced; in the
+  # shared container it is a plain role that only OWNS these databases, so DROP/CREATE need
+  # the cluster superuser `heliogrid`, and `OWNER temporal` keeps them owned correctly after.
+  # stderr is left unswallowed here on purpose: `>/dev/null 2>&1` on these two statements is
+  # what hid CREATE DATABASE failing with permission denied after DROP had already succeeded.
+  $PG psql -U heliogrid -d postgres -c "DROP DATABASE $db WITH (FORCE);"
+  $PG psql -U heliogrid -d postgres -c "CREATE DATABASE $db OWNER temporal;"
   $PGI pg_restore -U temporal -d "$db" --no-owner < "backup/$db.dump" >/dev/null 2>&1
   # Count the tables, because pg_restore exits 0 on an empty archive. This is the check that
   # would have caught the missing `-i` immediately instead of three failures later.

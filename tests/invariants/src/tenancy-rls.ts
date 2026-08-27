@@ -46,12 +46,16 @@ export async function runTenancyInvariants(adminUrl: string) {
       await sql`select rolbypassrls, rolsuper from pg_roles where rolname = 'app_user'`;
 
     /*
-     * A database that was NEVER migrated has neither tables nor roles — `app_user` was
-     * created by 0004, which the auth teardown deleted. That is CI on every run
-     * since 2026-08-01: the service container is fresh, `migrate` applies an empty
-     * directory, and asserting the role fails on an artifact of a migration that no longer
-     * exists. A long-lived local database still carries the role from before the teardown,
-     * which is why this passed locally and went red only in CI (main red 2026-08-01→08-03).
+     * This branch fires when NO `app_user` role exists. `app_user` was originally created
+     * by migration 0004, which the 2026-08-01 auth teardown deleted; it is provisioned by
+     * `infra/postgres/init/01-roles.sql` now. In CI (a bare `postgres:16` service with no
+     * init SQL) that is still every run: the container is fresh, `migrate` applies an empty
+     * directory, and neither the role nor any table exists there. Locally it no longer
+     * does — `pnpm infra:up` runs `01-roles.sql` on volume init, so a freshly-reset local
+     * database has the role (and its grants) with zero tables, and lands in the
+     * `tables === 0` branch below instead of this one. A long-lived local database from
+     * before the teardown still carried the role too, which is why this passed locally and
+     * went red only in CI (main red 2026-08-01→08-03).
      *
      * Fail CLOSED where it still means something: tables without roles is a broken database,
      * not a greenfield one.
@@ -76,7 +80,8 @@ export async function runTenancyInvariants(adminUrl: string) {
     // This whole suite proves RLS by BECOMING app_user, so the connecting role must be able to
     // `set local role app_user`. app_admin — which .env.example mandates for
     // DATABASE_ADMIN_URL, and which infra/README tells operators to run this command with —
-    // could NOT until 0006_admin_role_privileges.sql granted it membership. Any other role
+    // originally could NOT until 0006_admin_role_privileges.sql granted it membership;
+    // that grant is provisioned by infra/postgres/init/01-roles.sql now. Any other role
     // still cannot, and without this preflight the failure surfaces as a raw 42501 from deep
     // inside the run with nothing pointing at the cause.
     await sql
@@ -87,8 +92,8 @@ export async function runTenancyInvariants(adminUrl: string) {
         throw new Error(
           'tenancy: the connecting role cannot SET ROLE app_user, so RLS cannot be proven. ' +
             'Use a member of app_user, or the owner/superuser. app_admin and app_runtime both ' +
-            'qualify (0004_login_roles.sql + 0006_admin_role_privileges.sql); a role created ' +
-            'outside those migrations will not.',
+            'qualify (infra/postgres/init/01-roles.sql); a role created outside that file ' +
+            'will not.',
         );
       });
 
