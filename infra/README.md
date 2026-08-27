@@ -50,16 +50,13 @@ DATABASE_URL=postgres://app_runtime:app_runtime@localhost:5544/heliogrid_dev
 DATABASE_ADMIN_URL=postgres://app_admin:app_admin@localhost:5544/heliogrid_dev
 ```
 
-The four `TEMPORAL_TLS_*`/`TEMPORAL_AUTH_TOKEN_FILE` paths in `.env.example` are repo-root-relative,
-but `apps/api` and `apps/worker` run from their own directories, so those relative paths `ENOENT`
-on a fresh clone. In `.env.local`, give them as ABSOLUTE paths instead — replace
-`/Volumes/works-space/heliogrid` below with your own repo root:
+The four `TEMPORAL_TLS_*`/`TEMPORAL_AUTH_TOKEN_FILE` values ship as `/ABSOLUTE/PATH/TO/…`
+placeholders. They must be ABSOLUTE: `apps/api`, `apps/worker` and `tests/invariants` each run
+from their own directory, so no one relative value is right for all three. Run this from the repo
+root and it fills them for you:
 
-```
-TEMPORAL_TLS_CA_FILE=/Volumes/works-space/heliogrid/infra/temporal/pki/ca-bundle.pem
-TEMPORAL_TLS_CERT_FILE=/Volumes/works-space/heliogrid/infra/temporal/pki/client-api/tls.pem
-TEMPORAL_TLS_KEY_FILE=/Volumes/works-space/heliogrid/infra/temporal/pki/client-api/tls.key
-TEMPORAL_AUTH_TOKEN_FILE=/Volumes/works-space/heliogrid/.temporal-token
+```bash
+sed -i '' "s|/ABSOLUTE/PATH/TO|$PWD|g" .env.local   # GNU sed: drop the ''
 ```
 
 Redis is not started. `REDIS_URL` is declared in `.env.example` but no service reads it
