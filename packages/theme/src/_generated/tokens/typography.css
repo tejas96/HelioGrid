@@ -1,7 +1,8 @@
-/* HelioGrid — typography. Geist. Two weights in normal use: 400 / 700.
-   500 permitted for buttons, tabs, table headers only. Tightly tracked headings. */
+/* HelioGrid — typography. Geist, with Noto Sans Devanagari behind it for हिन्दी and मराठी —
+   the browser picks per character, so Geist keeps the Latin and Noto takes what Geist lacks.
+   Two weights in normal use: 400 / 700. 500 permitted for buttons, tabs, table headers only. */
 :root{
-  --font-sans:"Geist","Inter",-apple-system,system-ui,sans-serif;
+  --font-sans:"Geist","Noto Sans Devanagari","Inter",-apple-system,system-ui,sans-serif;
   --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 
   --fw-regular:400; /* @kind font */
