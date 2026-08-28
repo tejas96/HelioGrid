@@ -21,7 +21,7 @@ Reached from: the product's signed-out front door as the self-serve signup path.
 9. **Desktop rule for states, stated once:** a finding *about you* moves into the identity half; a message *about a field* stays on the field. Two states earn a 1536 frame because that move changes the act.
 10. **No shell at either width, and that is an answer, not a dropped capability.** Signup runs before roles exist, so `F7-22`'s two shell forms have no subject. They first diverge on the two-door landing this flow hands off to (`SCR-M01-06`).
 
-**Build note — a design-system gap this screen worked around.** `Banner` has no kind for a **signed-out steer**. Its kind table pins a glyph per kind, and the nearest (`suggestion`) carries a spark glyph that reads as AI — wrong for a workspace-detection finding, which is a fact about the tenant estate, not something the system generated. `Banner` also offers one `BannerAction` pill where both steers here own two full-size routes. Both statements are composed from tokens instead. A `kind="finding"` (info tone, info glyph, no spark) plus an `actions` slot accepting real buttons would close this when `packages/ui` builds the component.
+**Build note — design-system gaps this screen found** are recorded once, in `packages/ui/CLAUDE.md` §"Known component gaps", which loads when anyone opens that folder. A screen brief is the wrong home for them: nobody building a component reads one.
 
 
 ## Requirements (verbatim)

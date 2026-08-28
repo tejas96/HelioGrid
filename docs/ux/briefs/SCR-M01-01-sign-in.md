@@ -18,7 +18,7 @@ Reached from: any signed-out launch of the app or web product (signed-out routin
 6. **Base `empty` is the normal frame** — on a single-record front door, empty *is* normal, and base `error` and `auth-error` are one surface drawn once. Both are resolutions, not omissions.
 7. **`switch-discards-held-work` is the product's one deliberately unrecoverable act** (`F4-37`, the carve-out from `F4-21`). The count, who captured the work and when are named *before* the switch, upload is offered first and above the destructive control, the surface cannot be dismissed into silence, and the frame says in words that it cannot be undone.
 
-**Build note — a design-system gap this screen worked around.** `Modal` exposes no `labelId`, the way `Sheet` does. Its header is a fixed leading-icon row, so the desktop discard decision is composed through `children`; dropping `title` also drops the `aria-labelledby` it wires up. The heading carries `id="discard-confirm-title"` for the build to point at. A `labelId` prop on `Modal` closes this properly when `packages/ui` builds the component.
+**Build note — design-system gaps this screen found** are recorded once, in `packages/ui/CLAUDE.md` §"Known component gaps", which loads when anyone opens that folder. A screen brief is the wrong home for them: nobody building a component reads one.
 
 
 ## Requirements (verbatim)
