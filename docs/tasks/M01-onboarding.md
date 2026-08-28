@@ -35,7 +35,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
 **PRD rows:** F3-03 (P0)
-**DESIGN:** SCR-M01-03 → PENDING
+**DESIGN:** SCR-M01-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-03-onboarding-language.md`; they are the specification.
 **DONE WHEN:**
 - Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).
