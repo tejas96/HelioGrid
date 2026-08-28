@@ -58,6 +58,29 @@ incomplete, not "web-only".
 - **`packages/ui` still carries hardcoded English** — real debt, tracked in
   `.claude/rules/ui-adherence.md`. Do not add more.
 
+## Known component gaps, found by designing screens
+
+Every one was found by drawing a real screen against the component and hitting the wall; each names
+the screen so you can see the case. Same rule as the touch targets above — **fix them when you touch
+those components**, and delete the row when you do. `NumberField`'s unit colour was one of these and
+is fixed (`--text-secondary`; a unit is part of the number, so it is load-bearing and tertiary is
+never load-bearing, `F7-11`).
+
+| Component | Gap | Found by |
+|---|---|---|
+| `NumberField` | No unset value. `value` defaults to `0` and the draft is `String(value)`, so an unanswered field can only render a figure nobody declared — with no tier that could qualify it (`N7`). An explicit unset state is needed, and a stated answer for what a commit does from one. | `SCR-M01-04` |
+| `Provenance` | Its line is fixed `--text-tertiary`. That is right where a tier sits among other facts beside a figure, and wrong where the tier IS the screen's honesty contract — the caller currently steps it up through the component's own `style` prop. An `emphasis` prop makes it the component's decision instead of every caller's. | `SCR-M01-04` |
+| `NumberField`, `OptionCardGroup` | A field-level `error` is **described, not announced**. Correct for a gate that jumps you to an already-failing field (`M06-22`); wrong for a refusal that happens under the user's finger, where the press must be heard. An `announce`/`live` option on the error prop stops every screen hand-rolling its own live line. | `SCR-M01-04` |
+| `OptionCardGroup` | No per-option `lang`. A screen reader running in English announces मराठी under English pronunciation rules — the accessible name failing at the one point `F3-03` cares about, on the picker whose whole job is naming languages in their own words. | `SCR-M01-03` |
+| `Modal` | No `labelId`, the way `Sheet` has one. Its header is a fixed leading-icon row, so a composed decision must drop `title` — which also drops the `aria-labelledby` it wires up. | `SCR-M01-01` |
+| `Banner` | No kind for a **signed-out steer**. The nearest kind (`suggestion`) carries a spark glyph that reads as AI, wrong for a workspace-detection finding, which is a fact about the tenant estate rather than something the system generated. `Banner` also offers one `BannerAction` pill where such a steer owns two full-size routes. A `kind="finding"` plus an `actions` slot taking real buttons would close it. | `SCR-M01-02` |
+| — | **No `Skeleton` component**, and no duration token for the system's stated 1.4 s shimmer (nearest is `--dur-ambient` at 500 ms). Loading placeholders are currently built from `--canvas-sunken`, `--surface` and the `hg-sheet-shimmer` keyframe. | `SCR-M01-03` |
+
+**Not in this table, because it has an owner:** the React Native half of `F3-13` — components read
+`theme.type.families.sans`, the single primary family, and RN has no per-codepoint fallback, so
+Devanagari falls to the OS face. `T-FPLAT-007` owns it with `F3-17`'s per-script line height. The web
+half is fixed.
+
 ## Done means
 
 Both halves exist and import the one `<Name>.types.ts`; style is in its own file; every visual

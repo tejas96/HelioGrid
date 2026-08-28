@@ -87,10 +87,11 @@
   color: var(--text-secondary);
 }
 
+/* A unit is part of the number, so it is load-bearing and never tertiary (F7-11). */
 .hg-number-field-unit {
   padding-right: var(--sp-1);
   font-size: var(--fs-body-sm);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 

@@ -105,7 +105,7 @@ export function NumberFieldBox({
           onSubmitEditing={draft.commit}
         />
         {unit !== undefined && !currency ? (
-          <Text variant="body-sm" color="tertiary" style={styles.unit}>
+          <Text variant="body-sm" color="secondary" style={styles.unit}>
             {unit}
           </Text>
         ) : null}
