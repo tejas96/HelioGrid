@@ -172,7 +172,7 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-02 | **Company Signup** | P0 | 3 | `docs/ux/briefs/SCR-M01-02-company-signup.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html | — |
 | SCR-M01-03 | **Onboarding — Language** | P0 | 1 | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html | — |
 | SCR-M01-04 | **Setup — What You Sell** | P0 | 1 | `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-04+What+You+Sell+-+Mobile.dc.html | — |
-| SCR-M01-05 | **Business Profile** | P0 | 3 | `docs/ux/briefs/SCR-M01-05-business-profile.md` | V1 | pending | — | — |
+| SCR-M01-05 | **Business Profile** | P0 | 3 | `docs/ux/briefs/SCR-M01-05-business-profile.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-05+Business+Profile+-+Mobile.dc.html | — |
 | SCR-M01-06 | **Setup — You're Ready** | P0 | 1 | `docs/ux/briefs/SCR-M01-06-setup-ready.md` | V1 | pending | — | — |
 | SCR-M01-07 | **Invite Teammate** | P0 | 2 | `docs/ux/briefs/SCR-M01-07-invite-teammate.md` | V1 | pending | — | `F2-roles-and-permissions:invite-person` |
 | SCR-M01-08 | **Invite Landing** | P0 | 1 | `docs/ux/briefs/SCR-M01-08-invite-landing.md` | V1 | pending | — | — |
