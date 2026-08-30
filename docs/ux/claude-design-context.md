@@ -118,6 +118,23 @@ Only spacing and radius differ, and the design system owns both values. Pick the
 the screen *is*, not from the viewport it is being drawn at: a data table is functional at 375px
 too, and a dashboard stays expressive at 1536px.
 
+**The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (F7-22, P0; Law 5 —
+reuse before creation).** Where a screen renders inside the app shell, draw that shell exactly as
+`SCR-SHELL-01` fixed it and never re-derive it: at 375 an arc bar with a **raised centre action**
+and **exactly four** standing destinations — **Home · Leads · Quotes · More**; at 1536 the icon rail
+carrying **the same four**, plus `AppHeader`. **Never add a fifth slot.** Settings, account,
+grievance contact and sign-out are reached from **More** and from the avatar menu — a screen that
+gives itself a rail entry has invented a navigation the product does not have, and ninety screens
+each inventing one is ninety different products. The centre action's *verb* follows the home in
+force; the four destinations belong to the person and never change with the screen.
+
+**Most screens carry no shell at all, and that is an answer rather than an omission.** Anything
+running before roles exist — sign-in, signup, the whole onboarding corridor — has no shell at
+either width, because the shell is built around the role-decided home. Say so on the board rather
+than leaving a reader to wonder. Where one screen has more than one life (an onboarding step now, a
+settings destination later), the shell appears only on the life that is inside the app, and the
+board labels which life each frame is.
+
 ## The completion contract (from F7-43)
 
 *`F7-43` states the per-screen Definition of Done as **twelve** items and is categorical about
