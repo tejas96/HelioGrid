@@ -119,7 +119,7 @@ const input: TextStyle = {
   fontSize: R.body.fontSize,
   lineHeight: R.body.lineHeight,
   color: theme.colors['text-primary'],
-  ...theme.elevation.e1,
+  ...theme.elevation.e2,
 };
 
 const foot: ViewStyle = {

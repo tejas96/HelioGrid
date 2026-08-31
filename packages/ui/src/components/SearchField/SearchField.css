@@ -11,7 +11,12 @@
   padding: 0 14px;
   background: var(--surface);
   border-radius: var(--r-input-expressive);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 

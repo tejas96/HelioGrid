@@ -165,7 +165,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    // A control is raised, not outlined — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
   fix: {
     paddingHorizontal: theme.spacing['sp-4'],

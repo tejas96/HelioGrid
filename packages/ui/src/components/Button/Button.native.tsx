@@ -23,7 +23,7 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
   secondary: {
     background: theme.colors.surface,
     color: theme.colors['text-primary'],
-    elevation: theme.elevation.e1,
+    elevation: theme.elevation.e2,
   },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },

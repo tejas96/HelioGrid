@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: theme.radius['r-input-expressive'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   boxFunctional: { height: 40, borderRadius: theme.radius['r-input-functional'] },
   boxSteppers: { paddingHorizontal: 0 },

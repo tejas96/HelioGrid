@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-input-expressive'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   triggerFunctional: {
     paddingHorizontal: theme.spacing['sp-3'],

@@ -3,26 +3,45 @@
    Primary action is near-black, never coloured.
 
    THE CONTRAST FLOOR (P0 — measured, not eyeballed).
-   Every token that sets WORDS clears 4.5:1 on BOTH #FFFFFF and #F6F7F9.
-   The canvas is the harder background; a text colour has to pass on both.
-   AND A THIRD BACKGROUND IS A THIRD MEASUREMENT: --canvas-sunken (#EEF0F3) and the state tints are
-   neither of the two above. --text-tertiary measures 4.48 on both of them — UNDER the floor — so on
-   sunken and on any state tint, quiet text steps up to --text-secondary. Measured in
+   Every token that sets WORDS clears 4.5:1 on BOTH #FFFFFF and #F6F7F9 — the control and the
+   container that holds it. A text colour has to pass on both.
+   AND THE DARKER BACKGROUNDS ARE THEIR OWN MEASUREMENT: --canvas (#EEF0F3, the page), --canvas-sunken
+   (#EEF0F3, a well) and the state tints are none of the two above. --text-tertiary measures 4.48 on
+   the page and on sunken at its previous value — so it was darkened one notch to #6A6D73 (Q77), which
+   clears 4.54 on the page and 5.19 on white. On a state TINT it still steps up to --text-secondary. Measured in
    guidelines/color-contrast.card.html, on all four backgrounds.
-   Ratios below are white / canvas. Do not lighten these — the users are on
-   mid-range Android phones on a roof in direct sunlight.
+   RATIOS BELOW ARE white / --surface-form (#F6F7F9) — the control and the container that holds it,
+   which is the pair every word in this product actually lands on. The second figure was labelled
+   "canvas" until the ladder shifted (Q77): #F6F7F9 stopped being the page and became the form
+   container, and the page moved down to #EEF0F3. The numbers did not change; the name did.
+   Do not lighten these — the users are on mid-range Android phones on a roof in direct sunlight.
    Semantic colours are MARKS (dots, bars, fills, tints). Their -text
    partners are the only ones allowed to set words, and each also clears
    4.5:1 on its own tinted background. */
 :root{
   /* Neutrals — three text steps, all legible. text-tertiary is a TEXT colour, not decoration. */
-  --canvas:#F6F7F9;
+  /* THE LADDER, LIGHTEST LAST (owner ruling 2026-08-28, Q77). page -> form container -> control,
+     each one BRIGHTER than the thing behind it, so a control is the brightest object on screen and
+     reads as raised with no line anywhere. The first cut of this darkened the CARD instead of the
+     page, which put the card BELOW its own page and read as a hole; the ladder is the fix.
+       --canvas        the page                       #EEF0F3
+       --surface-form  a container holding controls   #F6F7F9   (1.07 above the page)
+       --surface       the control, and content cards #FFFFFF   (1.07 above the container)
+     --canvas-sunken means BELOW ITS CONTAINER, not below the page — a well, a disabled control and a
+     skeleton read as recessed inside whatever holds them, which is a form container or a control.
+     It carries the SAME value as --canvas and that is deliberate: #EEF0F3 is the darkest background
+     this palette's MARKS survive (a --success dot measures 3.13 there and 2.88 one step lower, under
+     the 3:1 non-text floor), so the ladder bottoms out here and the page and the well coincide. Two
+     names, two roles, one value; field mode already gives them different ones. */
+  --canvas:#EEF0F3;
   --canvas-sunken:#EEF0F3;
   --surface:#FFFFFF;
+  --surface-form:#F6F7F9;
   --surface-alt:#FAFBFC;
   --text-primary:#0A0A0B;   /* 19.79 / 18.46 */
   --text-secondary:#54565B; /*  7.34 /  6.85 — AAA */
-  --text-tertiary:#6B6E74;  /*  5.11 /  4.77 — AA  */
+  --text-tertiary:#6A6D73;  /*  5.19 /  4.54 on the page — AA. One notch darker than #6B6E74 so it
+                               clears 4.5 on the ladder's new bottom step (Q77). */
   --text-disabled:#C7CAD0;  /*  1.64 /  1.53 — WCAG-exempt (inactive controls). Never words a user must read. */
   --text-inverse:#FFFFFF;   /* words on a dark or accent fill: 19.79 on --action-primary, 5.41 on --accent.
                                Always fully opaque — an alpha white composites down and drops under the floor. */
@@ -55,10 +74,12 @@
      -text ratios are white / canvas / own tint.
 
      A MARK HAS ITS OWN MEASURED FLOOR — 3:1, WCAG's non-text minimum — and it is measured on every
-     background a mark of that tone actually lands on: white, canvas, canvas-sunken, and its own tint
+     background a mark of that tone actually lands on: white, the form container, the page (which
+     --canvas-sunken shares), and its own tint
      (a chip's dot sits on the tint, not on the page). Measured, not eyeballed:
 
-       mark          white  canvas  sunken  own tint
+       mark          white  form    page    own tint
+                                     /sunken
        --success      3.62   3.37    3.17    3.28   PASSES
        --danger       3.91   3.65    3.43    3.43   PASSES
        --info         3.68   3.43    3.22    3.26   PASSES
@@ -90,6 +111,7 @@
   --bg-page:var(--canvas);
   --bg-well:var(--canvas-sunken);
   --surface-card:var(--surface);
+  --bg-form:var(--surface-form);
   --surface-row-alt:var(--surface-alt);
   --text-body:var(--text-secondary);
   --text-heading:var(--text-primary);

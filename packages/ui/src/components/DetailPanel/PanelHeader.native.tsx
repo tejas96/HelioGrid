@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-4'],
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
     zIndex: 1,
   },
   /* The web half draws a downward-only scroll shadow; RN shadows have no spread or inset, so e2 —

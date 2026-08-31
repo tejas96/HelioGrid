@@ -26,7 +26,12 @@
   border: none;
   border-radius: var(--r-input-expressive);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   text-align: left;
@@ -59,7 +64,7 @@
 .hg-select-trigger[data-error="true"] {
   box-shadow:
     inset 0 0 0 1.5px var(--danger),
-    var(--e1);
+    var(--e2);
 }
 
 .hg-select-trigger[data-error="true"][data-open="true"] {

@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   panel: {
     width: '100%',
     maxHeight: '88%',
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
     ...theme.elevation.e5,
   },
   panelExpressive: { borderRadius: theme.radius['r-xl'] },

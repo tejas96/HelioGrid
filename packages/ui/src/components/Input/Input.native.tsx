@@ -35,12 +35,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-input-expressive'],
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
-  shellFunctional: {
-    backgroundColor: theme.colors['surface-alt'],
-    borderRadius: theme.radius['r-input-functional'],
-  },
+  // Density changes the size, never the ground — a control is `surface` at e2 in both (Q77).
+  shellFunctional: { borderRadius: theme.radius['r-input-functional'] },
   /* RN cannot draw an inset ring, so the semantic ring is a 1.5px border of the same colour and
      the same 1.5px width — the one place this half spells a border, and only where web insets one. */
   ringError: { borderWidth: 1.5, borderColor: theme.colors.danger },

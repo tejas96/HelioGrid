@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     borderWidth: DANGER_RING,
     borderColor: 'transparent',
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   boxFunctional: {
     height: 40,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: PAD_X,
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   /* The active pill drops its elevation, the way the web half drops to box-shadow: none. */
   presetActive: {

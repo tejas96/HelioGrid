@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'transparent',
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   triggerFunctional: {
     height: 40,

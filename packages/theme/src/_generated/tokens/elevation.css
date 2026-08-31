@@ -8,8 +8,9 @@
   --e4:0 16px 48px rgba(16,24,40,0.08);
   --e5:0 24px 72px rgba(16,24,40,0.10);
 
-  /* The three edges FIELD MODE needs and nothing else uses. They are `none` here, which is the
-     no-borders law of F7-15, and tokens/field-mode.css is the only file that sets them.
+  /* The three edges the elevation override cannot reach. --control-edge now carries a value in this
+     scope too (see the ruling below); --surface-edge and --track-edge are still `none` here, which is
+     the no-borders law of F7-15, and tokens/field-mode.css is where all three go louder.
      They exist because overriding --e1…--e5 cannot reach three cases:
        --control-edge  a control the stylesheet rule cannot win against or cannot match at all.
                        Two shapes of that: a control that sets box-shadow:none INLINE
@@ -21,12 +22,27 @@
        --surface-edge  a resting surface that floats on nothing (ListRow at rest). Its only edge
                        used to be its hover shadow, and nothing in this system is hover-only.
        --track-edge    A TRACK IS THINNER THAN AN INSET EDGE CAN AFFORD. Slider's unfilled track and
-                       RangeField's rail are 6px tall, and --control-edge's 1.5px INSET ring would
+                       RangeField's rail are 6px tall, and --control-edge's INSET ring would
                        leave a 3px core inside a dark outline — an EMPTY slider would read as a
                        FULL one, which is worse than the missing edge. So a track takes an OUTSET
                        hairline instead: it rings the rail from outside, the interior keeps saying
                        --canvas-sunken, and empty still reads empty. Same reason, opposite geometry. */
   --control-edge:none; /* @kind shadow */
+
+  /* A CONTROL IS RAISED, NOT OUTLINED — and whatever holds it steps DOWN so it can be
+     (owner ruling 2026-08-28, Q77). A control takes --surface at --e2; its container takes
+     --canvas-sunken. The control is then BRIGHTER than the thing it sits on, which is the
+     luminance half of F7-15 doing the work it was written for, with no line anywhere.
+     A white control on a WHITE card has no luminance left to spend — that is the case this
+     ruling exists to prevent, and the answer is to darken the container, never to draw an edge.
+     Measured: --surface on --canvas-sunken is 1.14:1. That is BELOW WCAG's 3:1 floor for
+     information identifying a control, and the owner chose it with the number in hand: the
+     product reads as elevation rather than outline, and F7-16's field mode is the sanctioned
+     answer for sunlight — it rings every elevation, so a control at --e2 is ringed there
+     automatically with no per-control token. An earlier cut of this ruling added a
+     --control-rest-edge token; it is gone, because an edge is not the answer here.
+     --control-edge below keeps its own separate job: the field-mode-only reach for a control
+     whose inline  a stylesheet rule cannot beat. */
   --surface-edge:none; /* @kind shadow */
   --track-edge:none; /* @kind shadow */
 }

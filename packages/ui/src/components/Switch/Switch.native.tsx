@@ -62,7 +62,13 @@ export function Switch({
           hasError ? styles.trackError : undefined,
         ]}
       >
-        <Animated.View style={[styles.thumb, { transform: [{ translateX: offset }] }]} />
+        <Animated.View
+          style={[
+            styles.thumb,
+            disabled ? styles.thumbDisabled : undefined,
+            { transform: [{ translateX: offset }] },
+          ]}
+        />
       </View>
       {label !== undefined ? (
         <Text variant="body" color={disabled ? 'disabled' : 'primary'}>
@@ -118,7 +124,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
-  },
+  } /* The track flattens when disabled and the knob must too, or a dead switch keeps a raised
+     white knob floating in a sunken groove (Q77). */,
+  thumbDisabled: { shadowOpacity: 0, elevation: 0 },
+
   wrap: {
     flexDirection: 'column',
     alignItems: 'flex-start',

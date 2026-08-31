@@ -26,7 +26,7 @@ const SWATCH = 44;
 const styles = StyleSheet.create({
   column: { gap: 14, minWidth: 0 },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
-  swatch: { width: SWATCH, height: SWATCH, borderRadius: SWATCH / 2, ...theme.elevation.e1 },
+  swatch: { width: SWATCH, height: SWATCH, borderRadius: SWATCH / 2, ...theme.elevation.e2 },
   swatchSelected: {
     borderWidth: 2,
     borderColor: theme.colors.accent,

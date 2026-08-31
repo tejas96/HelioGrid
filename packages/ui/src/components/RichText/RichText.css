@@ -108,8 +108,10 @@
   border: none;
   outline: none;
   border-radius: var(--r-input-functional);
-  background: var(--surface-alt);
-  box-shadow: var(--e1);
+  /* A control is --surface at --e2 (Q77) — this is a text field, and it was the one left on the
+     dim ground the ruling was raised to end. */
+  background: var(--surface);
+  box-shadow: var(--e2);
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
   color: var(--text-primary);

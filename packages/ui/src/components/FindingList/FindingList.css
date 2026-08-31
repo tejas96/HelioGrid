@@ -183,7 +183,8 @@
 
 .hg-finding-jump {
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   color: var(--text-primary);
 }
 

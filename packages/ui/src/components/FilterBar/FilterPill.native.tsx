@@ -52,9 +52,9 @@ const ACTIVE_FILL: Record<PillKind, string> = {
 /** Chips and the Filters pill are white pills separated by shadow; scope and sort are bare. */
 const RESTING: Record<PillKind, ViewStyle> = {
   scope: { backgroundColor: 'transparent' },
-  chip: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
+  chip: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
   sort: { backgroundColor: 'transparent' },
-  filters: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
+  filters: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
 };
 
 const PADDING: Record<PillKind, number> = {

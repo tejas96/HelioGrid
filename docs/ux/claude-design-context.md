@@ -118,6 +118,55 @@ Only spacing and radius differ, and the design system owns both values. Pick the
 the screen *is*, not from the viewport it is being drawn at: a data table is functional at 375px
 too, and a dashboard stays expressive at 1536px.
 
+**The ladder, lightest last (`F7-15`, owner ruling `Q77`).** This is the one composition rule that
+decides how a form looks. Three steps, each brighter than the one behind it:
+
+- **the page** — `--canvas` (#EEF0F3)
+- **a container that holds controls** — `--surface-form` (#F6F7F9)
+- **a control** — `--surface` (#FFFFFF) at `--e2`
+
+A control is therefore the brightest object on screen and reads as **raised**, with no line anywhere.
+**Never draw a border on a control**, and never leave a white control on a white card — that has no
+luminance left to spend and the field disappears, which is the defect this rule exists to prevent. A
+**primary** button needs no step (a near-black fill is its own separation) and a **ghost/text** button
+gets none — no box, no edge, no fill: its label *is* the control, and outlining it collapses the
+fill / outline / text hierarchy into two tiers.
+
+**"A control" means anything you press or type into, not just a form field.** Fields, buttons, icon
+buttons, filter and facet chips, language pills, slider steppers, colour swatches, the stepper
+indicator, a range's end boxes, inline cell editors and **every `Try again` button** are all
+`--surface` at `--e2` — 45 components. Searching by component NAME missed the whole retry class;
+search by SHAPE instead — a white ground, control-sized, still on `--e1`. Three things are NOT, and each has a
+reason: a **disabled** control comes OFF the ladder (one that cannot be pressed is not one to find —
+`--e1` where it keeps its ground, `--canvas-sunken` and no shadow at all where it sinks; **whatever
+the container beside it does, the part inside it must do too**), a **decorative label** keeps `--e1`
+(`Chip` without `onClick` — raising it would say it could be pressed), and a **specimen or listed
+row** keeps `--e1` because it is a surface, not a control.
+
+**A 44px white pill is not proof of a control.** `SourceDocument`'s glyph badge is a `<span>` and
+`MapSurface`'s zoom readout is a label; both pass every shape test and neither is pressed. The only
+test that holds is whether a `<button>` or `Pressable` renders it.
+
+**A hover must clear the resting step.** Rest is `--e2`, so a hover lift is `--e3` — a lift to the
+same step is no lift. **Focus ADDS a ring; it never replaces the elevation**, or a focused control
+sits lower than an unfocused one.
+
+**The ladder measures itself — do not eyeball it.** `guidelines/ladder-in-a-sheet.card.html` renders a
+form inside a `Sheet` and reads its own computed values live, settling until two frames agree. It
+caught the whole ladder sitting one rung low on 2026-08-31 and went green on the rebuild, so it is a
+probe that has been seen red. Re-run it after any elevation or ground change, and read its FIELD MODE
+column for the ghost button: `none` and `--control-edge` are indistinguishable in the base scope, and
+only field mode tells a token apart from a hardcoded `none`.
+
+**An overlay is a container too, so it sits on the same rung as a form card.** A sheet, a side panel and a modal are `--surface-form`, including their sticky headers and footers, so a control or a card inside them is `--surface` and reads brighter. A white field on a white sheet is the same white-on-white defect as a white field on a white card.
+
+**A card that holds CONTENT rather than controls stays `--surface` on the page** — it is the top of
+the ladder like any control, which is why a content card and a field look alike: both are the bright
+thing on a darker ground. Only a container that *wraps* controls takes `--surface-form`, so its
+controls have somewhere brighter to go. **`--canvas-sunken` means below its CONTAINER**, not below the
+page — a well, a disabled control, a skeleton base — and it carries the same value as the page,
+because #EEF0F3 is the darkest ground this palette's marks survive.
+
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (F7-22, P0; Law 5 —
 reuse before creation).** Where a screen renders inside the app shell, draw that shell exactly as
 `SCR-SHELL-01` fixed it and never re-derive it: at 375 an arc bar with a **raised centre action**

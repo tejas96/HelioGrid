@@ -32,7 +32,12 @@
   padding: 0 14px;
   border-radius: var(--r-input-expressive);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
@@ -55,7 +60,7 @@
 .hg-time-field-box[data-danger="true"] {
   box-shadow:
     inset 0 0 0 1.5px var(--danger),
-    var(--e1);
+    var(--e2);
 }
 
 .hg-time-field-box[data-danger="true"][data-focus="true"] {
@@ -102,7 +107,8 @@
   border-radius: var(--r-pill);
   background: var(--surface);
   color: var(--text-secondary);
-  box-shadow: var(--e1);
+  /* A preset is a control too — raised at --e2, same ruling as the field above it (Q77). */
+  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);

@@ -195,7 +195,8 @@
   padding: 0 var(--sp-3);
   border-radius: var(--r-input-functional);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
@@ -204,7 +205,11 @@
 }
 
 .hg-range-end-box[data-focus="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
+  /* Focus ADDS a ring, it does not un-raise the control: rest is --e2 (Q77), so dropping the lift
+     here made a focused box sink below an unfocused one. */
+  box-shadow:
+    var(--e2),
+    0 0 0 2px var(--accent);
 }
 
 /* Stretched, so the tap lands anywhere in the 44px box — it measured 145x18 before. */

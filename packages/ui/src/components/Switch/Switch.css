@@ -68,6 +68,12 @@
   left: var(--sp-6);
 }
 
+/* THE THUMB LIVES INSIDE THAT TRACK. The track flattened when disabled and the knob did not, so a
+   dead switch still had a raised white knob floating in a sunken groove (Q77). */
+.hg-switch[data-disabled="true"] .hg-switch-thumb {
+  box-shadow: none;
+}
+
 .hg-switch-input {
   position: absolute;
   opacity: 0;

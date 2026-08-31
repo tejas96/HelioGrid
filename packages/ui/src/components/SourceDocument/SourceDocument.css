@@ -176,7 +176,8 @@
   place-items: center;
   background: var(--surface);
   color: var(--text-tertiary);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
 }
 
 .hg-source-doc-message[data-tone="warning"] .hg-source-doc-message-mark {
@@ -216,7 +217,8 @@
   border: none;
   border-radius: var(--r-pill);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);

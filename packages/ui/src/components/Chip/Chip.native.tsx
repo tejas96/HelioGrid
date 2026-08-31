@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   chipRest: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
+  /* One pill, two jobs — a control is raised, a label is not (Q77). The lift follows `onClick`. */
+  chipPressable: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
   chipActive: { backgroundColor: theme.colors['action-primary'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
   target: { flexShrink: 0 },
@@ -81,8 +83,17 @@ export function Chip({
   density = 'expressive',
   style,
 }: NativeChipProps) {
+  const raised = onClick !== undefined;
   const pill = (
-    <View style={[pillStyle(density, active ? styles.chipActive : styles.chipRest), style]}>
+    <View
+      style={[
+        pillStyle(
+          density,
+          active ? styles.chipActive : raised ? styles.chipPressable : styles.chipRest,
+        ),
+        style,
+      ]}
+    >
       {dot ? (
         <View
           style={[

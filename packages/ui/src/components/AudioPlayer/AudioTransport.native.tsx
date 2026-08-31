@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    // A control is raised, not outlined — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
   speedChanged: { backgroundColor: theme.colors['accent-subtle'], shadowOpacity: 0, elevation: 0 },
   speedText: {
@@ -92,7 +93,8 @@ const styles = StyleSheet.create({
     paddingRight: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    // A control is raised, not outlined — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
   doorText: {
     fontFamily: theme.type.families.sans,

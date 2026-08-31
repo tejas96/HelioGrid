@@ -55,6 +55,10 @@
   --canvas:#FFFFFF;
   --canvas-sunken:#E9ECF0;
   --surface:#FFFFFF;
+  /* The ladder flattens here ON PURPOSE. Field mode separates by the hairline ring, not by
+     luminance — three near-white steps in sunlight are three invisible steps — so a form container
+     is white like everything else and the ring does the work (Q77 + F7-16). */
+  --surface-form:#FFFFFF;
   --surface-alt:#F4F6F8;
 
   /* Text: secondary and tertiary both clear 9:1. Nothing a user must read stays grey. */
@@ -115,13 +119,14 @@
    it is the only duplication in the token layer: keep it in step with tokens/colors.css and
    tokens/elevation.css. Setting it on <html> is also how FieldModeToggle spells "off". */
 [data-field-mode="off"]{
-  --canvas:#F6F7F9;
+  --canvas:#EEF0F3;
   --canvas-sunken:#EEF0F3;
   --surface:#FFFFFF;
+  --surface-form:#F6F7F9;
   --surface-alt:#FAFBFC;
   --text-primary:#0A0A0B;
   --text-secondary:#54565B;
-  --text-tertiary:#6B6E74;
+  --text-tertiary:#6A6D73;
   --text-disabled:#C7CAD0;
   --hairline:rgba(10,10,11,0.06);
   --mark-subtle:#83888E;

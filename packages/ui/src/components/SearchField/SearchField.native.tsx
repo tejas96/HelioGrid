@@ -103,7 +103,7 @@ const box: ViewStyle = {
   borderRadius: theme.radius['r-input-expressive'],
   borderWidth: RING,
   borderColor: 'transparent',
-  ...theme.elevation.e1,
+  ...theme.elevation.e2,
 };
 
 const input: TextStyle = {

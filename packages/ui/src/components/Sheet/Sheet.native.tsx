@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     maxHeight: '92%',
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
     ...theme.elevation.e5,
   },
   panelExpressive: {
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   footer: {
     flexShrink: 0,
     paddingTop: theme.spacing['sp-3'],
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
   },
   footerExpressive: {
     paddingHorizontal: theme.spacing['sp-5'],
