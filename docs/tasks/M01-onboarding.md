@@ -84,7 +84,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-008 · Invite Landing
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-13 (P0)
-**DESIGN:** SCR-M01-08 → PENDING
+**DESIGN:** SCR-M01-08 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-08+Invite+Landing+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-08-invite-landing.md`; they are the specification.
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17).

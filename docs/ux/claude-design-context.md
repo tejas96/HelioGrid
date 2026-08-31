@@ -81,6 +81,9 @@ order below are exact; each line then states the operative obligation the rule c
   disclosure governs **the rest of the screen**, never the tier. If a layout only works by hiding
   the tier, the layout is what changes.
 - **N8** — destructive actions are confirmed AND undoable; undo is thumb-reachable on mobile.
+  Where an act genuinely CANNOT be undone by the person who did it — it is already someone else's
+  knowledge, or the record is gone — the confirm carries the RECOVERY ROUTE IN WORDS instead, on both
+  the confirm and the after-state (owner ruling 2026-08-31, `Q78`). Never drop half of `N8` silently.
 - **N9** — no layout tuned to a fixed viewport.
 - **N10** — loading, empty and error states are part of "done". *(Amended by owner ruling
   2026-08-07, `Q61`: this rule named four states. The offline capability was removed from the
@@ -159,6 +162,12 @@ column for the ghost button: `none` and `--control-edge` are indistinguishable i
 only field mode tells a token apart from a hardcoded `none`.
 
 **An overlay is a container too, so it sits on the same rung as a form card.** A sheet, a side panel and a modal are `--surface-form`, including their sticky headers and footers, so a control or a card inside them is `--surface` and reads brighter. A white field on a white sheet is the same white-on-white defect as a white field on a white card.
+
+**`--surface-form` is a rung only if the container is wide enough for the control it raises.**
+Measure it: six `OtpInput` boxes plus five gaps need 328px, and a container that leaves less squeezes
+every box to its minimum. A ladder that compresses what it raises is a defect, not a rung — take the
+control out of the container instead. **Two rungs is a legitimate answer** — page to control —
+wherever nothing wraps a control.
 
 **A card that holds CONTENT rather than controls stays `--surface` on the page** — it is the top of
 the ladder like any control, which is why a content card and a field look alike: both are the bright
