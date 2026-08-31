@@ -98,8 +98,8 @@
   background: var(--neutral-bg);
 }
 
-/* --danger is the token one step lighter than --danger-text. The DS carried a raw literal here
-   until 2026-08-31; both halves now read the token. */
+/* --danger is the token one step lighter than --danger-text — this hover is a token, never a
+   literal lighter red. */
 .hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--danger);
   box-shadow: var(--e2);

@@ -205,8 +205,8 @@
 }
 
 .hg-range-end-box[data-focus="true"] {
-  /* Focus ADDS a ring, it does not un-raise the control: rest is --e2 (Q77), so dropping the lift
-     here made a focused box sink below an unfocused one. */
+  /* Focus ADDS a ring, never replaces the elevation: rest is --e2 (Q77), so a ring alone would
+     sink the focused box below every unfocused one. */
   box-shadow:
     var(--e2),
     0 0 0 2px var(--accent);

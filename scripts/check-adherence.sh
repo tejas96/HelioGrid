@@ -317,5 +317,47 @@ if [ -n "$app_vocab" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary'
+# ── 11. A control must not declare a shrink range ────────────────────────────
+# `width: 48px` with `min-width: 44px` tells the browser "48 is what I want, 44 is what I will
+# accept". In a flex row it takes the 44 — silently, and the touch-target check then measures 44
+# and PASSES, so nothing downstream reports it.
+#
+# Either value is a defect on its own terms: in a flex context it is a silent shrink, and
+# outside one the smaller min-* is dead code. Wrap the row, or set `flex-shrink: 0`.
+#
+# This is the one of the four render-harness probes that does NOT need a browser — the CSS
+# declares the shrink range itself, so it is caught here rather than at runtime. The other
+# three (empty containers, Devanagari overflow, the quiet role on load-bearing text) need
+# computed layout or human judgement: docs/engineering/harness/README.md owns those.
+shrink_range=$(
+  find packages/ui/src -type f -name '*.css' 2>/dev/null \
+  | while IFS= read -r f; do
+      awk -v F="$f" '
+        function num(s,   t) {
+          if (match(s, /:[ \t]*[0-9]+px/)) { t = substr(s, RSTART, RLENGTH); gsub(/[^0-9]/, "", t); return t + 0 }
+          return 0
+        }
+        /\{[ \t]*$/ { sel = $0; sub(/[ \t]*\{[ \t]*$/, "", sel); line = NR; w = 0; mw = 0; h = 0; mh = 0; pinned = 0; next }
+        /^[ \t]*width:[ \t]*[0-9]+px/      { w  = num($0) }
+        /^[ \t]*min-width:[ \t]*[0-9]+px/  { mw = num($0) }
+        /^[ \t]*height:[ \t]*[0-9]+px/     { h  = num($0) }
+        /^[ \t]*min-height:[ \t]*[0-9]+px/ { mh = num($0) }
+        /^[ \t]*flex-shrink:[ \t]*0/       { pinned = 1 }
+        /^[ \t]*\}/ {
+          if (pinned) { w = 0; mw = 0; h = 0; mh = 0; pinned = 0; next }
+          if (w > 0 && mw > 0 && mw < w) printf "  %s:%d  %s  declares width:%dpx but accepts min-width:%dpx\n", F, line, sel, w, mw
+          if (h > 0 && mh > 0 && mh < h) printf "  %s:%d  %s  declares height:%dpx but accepts min-height:%dpx\n", F, line, sel, h, mh
+          w = 0; mw = 0; h = 0; mh = 0; pinned = 0
+        }
+      ' "$f"
+    done)
+if [ -n "$shrink_range" ]; then
+  printf 'CONTROL DECLARES A SHRINK RANGE — it will render smaller than designed, silently:\n%s\n' "$shrink_range"
+  echo '  A control never renders below the size it was designed at. Let the row wrap, or set'
+  echo '  flex-shrink: 0 — then a container that is too narrow is VISIBLE instead of silent.'
+  echo '  (.claude/rules/ui-adherence.md — four things a static gate cannot see)'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — no test files, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no control declaring a shrink range'
 exit $fail

@@ -40,10 +40,9 @@
   height: 52px;
 }
 
-/* DENSITY CHANGES THE SIZE, NEVER THE GROUND. This set --surface-alt (#FAFBFC), which on a
-   --surface-form container measures 1.03:1 — dimmer than the 1.07:1 the ladder gives every other
-   control, and the exact "looks like normal text" defect Q77 was raised to end. A control is
-   --surface at --e2 in BOTH densities. */
+/* DENSITY CHANGES THE SIZE, NEVER THE GROUND — a control is --surface at --e2 in both. On a
+   --surface-form container, --surface-alt measures 1.03:1 against --surface's 1.07:1, which is the
+   "looks like normal text" defect Q77 exists to prevent. */
 .hg-input-shell[data-density="functional"] {
   height: var(--sp-10);
   border-radius: var(--r-input-functional);

@@ -59,3 +59,19 @@ a text link, not a touch target.
 | `AppShell` breadcrumb link | **42px** wide | `min-width: auto`; the 44px floor is applied to height only |
 
 None is caught by a static gate — they are computed layout, which only a browser can report.
+
+## Three probes a static gate cannot replace
+
+Each measures computed layout, so only a browser can run them. **Run them with the touch-target
+sweep, on the same settled frames.** A fourth — a control rendering below its declared `width` — is
+static and lives in `scripts/check-adherence.sh` check 11 instead.
+
+| probe | assert | the defect it would have caught |
+|---|---|---|
+| **Empty container** | no element with a background, border-radius and fixed size has zero child nodes and no text | `EmptyState` drew a blank 72px disc whenever the caller had no honest icon (`F7-19` forbids inventing one) |
+| **Devanagari overflow** | re-render every fixture with its strings replaced by Devanagari of 1.6× the length; no element's `scrollWidth` exceeds its `clientWidth` | `Accordion`'s header `meta` and state word were `white-space: nowrap` — fine in English, clipped in Hindi and Marathi, which are P0 markets |
+| **Quiet role** | enumerate every text node's computed colour; flag `--text-tertiary` on any node the fixture marks load-bearing | `Accordion`'s state word — which sections of a form are unfilled — computed to tertiary on every untinted section (`N4`) |
+
+**The pattern behind all four:** a static gate proves a value is a token and a type proves a prop
+exists. Neither can see what the browser actually painted, and every one of these six defects lived
+in exactly that gap.

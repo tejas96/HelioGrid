@@ -116,6 +116,24 @@ recent defect landed. Inside a screen, assume nothing is watching:
 - Anything you are tempted to define here belongs in a package — see
   `.claude/rules/architecture-ownership.md` for which one.
 
+### Four things a static gate cannot see
+
+Each shipped as a real defect in `packages/ui` and each passed every gate. They are held by your
+care and by the render harness's probes (`docs/engineering/harness/README.md`), nothing else.
+
+- **A control never renders smaller than it was designed.** A `width` with a smaller `min-width` in a
+  flex row shrinks silently; the touch check then measures the floor and passes. Wrap, or set
+  `flex-shrink: 0`.
+- **No container is drawn around content that is absent.** An optional icon, badge or slot renders
+  its box only when it has something in it — otherwise the caller gets an empty shape it cannot remove.
+- **`white-space: nowrap` / `numberOfLines` belong on NUMBERS, never on caller text.** A number is one
+  token and wrapping it is worse than any overflow. A translated string clips, and it holds in English
+  and breaks in Hindi and Marathi.
+- **`--text-tertiary` is the quiet role.** If a caller depends on reading it, it is `--text-secondary`
+  — a state word, a count, a limit and a delivery channel are all information, not decoration.
+- **A component never states a value it was not told.** A default that invents a limit, a size or a
+  ceiling promises one thing while the caller refuses another.
+
 ### Presentation and logic live in different files
 
 **Style never lives in the component file** — `<Name>.css` on web, `styles.ts` on RN. A component

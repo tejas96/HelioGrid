@@ -29,6 +29,9 @@
   gap: var(--sp-2);
   height: 48px;
   min-height: 44px;
+  /* Pinned: the declared height is the height. Without this a flex column could shrink the box
+     to its min-height and every field in a tall form would silently be 44 instead of 48. */
+  flex-shrink: 0;
   padding: 0 14px;
   border-radius: var(--r-input-expressive);
   background: var(--surface);

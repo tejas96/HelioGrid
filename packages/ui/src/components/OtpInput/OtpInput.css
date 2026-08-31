@@ -11,11 +11,16 @@
 
 .hg-otp-boxes {
   display: flex;
+  /* WRAP, NEVER SHRINK. Six 48px boxes and five gaps need 328px. Anything narrower takes a second
+     line; a plain flex row would drop every box to its 44px minimum instead, and the touch-target
+     check measures 44 and passes, so nothing would report it. */
+  flex-wrap: wrap;
   gap: var(--sp-2);
 }
 
 .hg-otp-box {
   width: 48px;
+  flex-shrink: 0;
   height: 56px;
   min-width: 44px;
   text-align: center;

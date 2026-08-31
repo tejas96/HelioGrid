@@ -149,7 +149,7 @@ export function OptionCard({
       <View style={styles.body}>
         <View style={styles.head}>
           <View style={styles.titles}>
-            <Text variant="body" color={ink} style={styles.title}>
+            <Text variant="body" color={ink} lang={option.lang} style={styles.title}>
               {option.title}
             </Text>
             {/* A word in its own neutral pill — never the accent, which selection owns. */}
@@ -165,7 +165,7 @@ export function OptionCard({
           ) : null}
         </View>
         {option.description !== undefined ? (
-          <Text variant="body-sm" color="secondary" style={styles.description}>
+          <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
             {option.description}
           </Text>
         ) : null}

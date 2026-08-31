@@ -42,4 +42,12 @@ export interface TextProps {
   variant?: TextVariant;
   color?: TextColor;
   align?: TextAlign;
+  /**
+   * BCP-47 tag, when THIS text is in a different language from the page around it. A screen reader
+   * running in English speaks मराठी under English pronunciation rules, and the product's own
+   * language picker names every language in its own words — so any list whose items are not all in
+   * the page's language needs this. Omit it and the text inherits the document, which is right
+   * everywhere else. Web: `lang`. Native: `accessibilityLanguage`.
+   */
+  lang?: string;
 }

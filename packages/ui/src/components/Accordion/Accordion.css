@@ -98,6 +98,11 @@
 }
 
 /* The word carries the state; the dot is the second, non-colour channel. */
+/* CALLER TEXT WRAPS, AND A STATE WORD IS NOT DECORATION. `state` and `meta` are caller strings the
+   product translates, so `nowrap` here holds in English and clips in Hindi and Marathi. Which
+   sections are unfilled is the caller's PRIMARY information (`N4`), never the quiet tertiary role.
+   `.hg-accordion-total` keeps its nowrap: a number is one token, and wrapping one is worse than any
+   overflow. */
 .hg-accordion-state {
   display: inline-flex;
   align-items: center;
@@ -105,8 +110,7 @@
   flex-shrink: 0;
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
-  white-space: nowrap;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-accordion-item[data-state="errors"] .hg-accordion-state {
@@ -138,7 +142,6 @@
 
 .hg-accordion-meta {
   font-size: var(--fs-caption);
-  white-space: nowrap;
   flex-shrink: 0;
   color: var(--text-tertiary);
 }

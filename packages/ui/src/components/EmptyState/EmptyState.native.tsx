@@ -21,7 +21,8 @@ export function EmptyState({
     <View style={[styles.root, style]}>
       <View style={styles.art}>
         {glow ? <View style={styles.glow} /> : null}
-        <View style={styles.icon}>{icon}</View>
+        {/* No glyph, no circle — see the web half. */}
+        {icon ? <View style={styles.icon}>{icon}</View> : null}
       </View>
       <Text variant="h3" align="center" style={styles.title}>
         {title}

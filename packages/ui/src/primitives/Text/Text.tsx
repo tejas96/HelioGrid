@@ -29,6 +29,7 @@ export function Text({
   variant = 'body',
   color = 'primary',
   align,
+  lang,
   as,
   className,
 }: WebTextProps) {
@@ -39,6 +40,7 @@ export function Text({
       data-variant={variant}
       data-color={color}
       data-align={align}
+      lang={lang}
     >
       {children}
     </Element>

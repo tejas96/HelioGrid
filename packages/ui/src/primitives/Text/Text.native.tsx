@@ -117,6 +117,7 @@ export function Text({
   variant = 'body',
   color = 'primary',
   align,
+  lang,
   style,
 }: NativeTextProps) {
   return (
@@ -127,6 +128,7 @@ export function Text({
         align !== undefined ? { textAlign: ALIGN[align] } : undefined,
         style,
       ]}
+      accessibilityLanguage={lang}
     >
       {children}
     </RNText>

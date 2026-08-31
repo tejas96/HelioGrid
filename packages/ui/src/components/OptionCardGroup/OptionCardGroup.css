@@ -76,8 +76,8 @@
 .hg-option-card[data-off="true"] {
   background: var(--canvas-sunken);
   cursor: not-allowed;
-  /* Sunken AND flat. It went sunken and kept --e2, so an unavailable option still read as the
-     brightest, most pressable thing in the list (Q77). */
+  /* Sunken AND flat: sunken alone still leaves an unavailable option the brightest, most
+     pressable-looking thing in the list (Q77). */
   box-shadow: none;
 }
 

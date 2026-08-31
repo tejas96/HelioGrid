@@ -64,7 +64,9 @@ export function OptionCard({
       <span className="hg-option-card-body">
         <span className="hg-option-card-head">
           <span className="hg-option-card-titles">
-            <span className="hg-option-card-title">{option.title}</span>
+            <span className="hg-option-card-title" lang={option.lang}>
+              {option.title}
+            </span>
             {/* A word, in its own pill — not the accent, which is what selection uses.
                 mark={false}: the words ARE the channel here, and the selection dot next to it
                 is the mark that carries state (StatusMark.mark). */}
@@ -78,7 +80,9 @@ export function OptionCard({
           ) : null}
         </span>
         {option.description !== undefined ? (
-          <span className="hg-option-card-description">{option.description}</span>
+          <span className="hg-option-card-description" lang={option.lang}>
+            {option.description}
+          </span>
         ) : null}
         {reason === null ? null : <span className="hg-option-card-reason">{reason}</span>}
         {option.content !== undefined ? (

@@ -39,10 +39,8 @@
      information identifying a control, and the owner chose it with the number in hand: the
      product reads as elevation rather than outline, and F7-16's field mode is the sanctioned
      answer for sunlight — it rings every elevation, so a control at --e2 is ringed there
-     automatically with no per-control token. An earlier cut of this ruling added a
-     --control-rest-edge token; it is gone, because an edge is not the answer here.
-     --control-edge below keeps its own separate job: the field-mode-only reach for a control
-     whose inline  a stylesheet rule cannot beat. */
+     automatically with no per-control token. --control-edge above keeps its own separate job: the
+     field-mode-only reach for a control whose inline box-shadow a stylesheet rule cannot beat. */
   --surface-edge:none; /* @kind shadow */
   --track-edge:none; /* @kind shadow */
 }

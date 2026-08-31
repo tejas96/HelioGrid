@@ -105,15 +105,11 @@ function HeaderFacts({ item, quiet }: { item: AccordionItem; quiet: string }) {
       {word !== undefined ? (
         <View style={styles.state}>
           {ink !== undefined ? <View style={[styles.dot, { backgroundColor: ink.mark }]} /> : null}
-          <Text numberOfLines={1} style={wordStyle}>
-            {word}
-          </Text>
+          <Text style={wordStyle}>{word}</Text>
         </View>
       ) : null}
       {item.meta !== undefined ? (
-        <Text numberOfLines={1} style={[styles.meta, { color: quiet }]}>
-          {item.meta}
-        </Text>
+        <Text style={[styles.meta, { color: quiet }]}>{item.meta}</Text>
       ) : null}
       {item.total !== undefined && item.total !== null ? (
         <Text numberOfLines={1} style={styles.total}>
@@ -155,7 +151,8 @@ export function Accordion({
       {items.map((item) => {
         const isOpen = openList.includes(item.key);
         const errored = item.state === 'errors';
-        const quiet = errored ? theme.colors['text-secondary'] : theme.colors['text-tertiary'];
+        // A state word is primary information (`N4`), never the quiet role — see the web half.
+        const quiet = theme.colors['text-secondary'];
         return (
           <View
             key={item.key}
