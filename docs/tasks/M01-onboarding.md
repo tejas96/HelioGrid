@@ -102,7 +102,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-010 · Role Explainer
 **Type:** screen · **Tier:** P1
 **PRD rows:** M01-15 (P1)
-**DESIGN:** SCR-M01-10 → PENDING
+**DESIGN:** SCR-M01-10 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-10+Role+Explainer+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-10-role-explainer.md`; they are the specification.
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17).
@@ -112,7 +112,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-011 · Profile & Preferences
 **Type:** screen · **Tier:** P0
 **PRD rows:** F3-03 (P0), F3-23 (P1), F6-15 (P2), F7-16 (P1)
-**DESIGN:** SCR-M01-11 → PENDING
+**DESIGN:** SCR-M01-11 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-11-profile-preferences.md`; they are the specification.
 **DONE WHEN:**
 - Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).

@@ -37,7 +37,7 @@ Screen-specific:
    later*. It renders as a labelled mono value with one sentence saying who entered it and where the
    code went, and the exit named (*if it is wrong, decline*).
 3. **The evidence stops at the role's NAME.** Inviter with role and company, the company in the
-   heading, the number, and the role. What a Sales rep can DO is `SCR-M01-10`'s job; repeating it
+   heading, the number, and the role. What a `Sales Executive` can DO is `SCR-M01-10`'s job; repeating it
    here would be the whole control surface at once (`F7-34`).
 4. **One landing, not two.** Someone who already has a HelioGrid account — a surveyor at a second
    EPC, an owner joining a partner's tenant — lands here and joins with the same one act; membership
