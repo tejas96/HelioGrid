@@ -124,7 +124,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-012 · Team
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-19 (P0), F2-10 (P0), F2-19 (P0)
-**DESIGN:** SCR-M01-12 → PENDING
+**DESIGN:** SCR-M01-12 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-12-team.md`; they are the specification.
 **DONE WHEN:**
 - Given an attempt to deactivate the last EPC Owner, when it is submitted, then it is blocked with an explanation and the blocked attempt is audit-logged (M01-19, M01-18, F2-19/F2-22).

@@ -179,7 +179,7 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-09 | **First-Run Profile** | P0 | 1 | `docs/ux/briefs/SCR-M01-09-first-run-profile.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-09+First-Run+Profile+-+Mobile.dc.html | — |
 | SCR-M01-10 | **Role Explainer** | P1 | 1 | `docs/ux/briefs/SCR-M01-10-role-explainer.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-10+Role+Explainer+-+Mobile.dc.html | — |
 | SCR-M01-11 | **Profile & Preferences** | P0 | 4 | `docs/ux/briefs/SCR-M01-11-profile-preferences.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html | `F7-design-language:shell-app-settings`; `F6-notifications-and-search:notification-preferences` |
-| SCR-M01-12 | **Team** | P0 | 3 | `docs/ux/briefs/SCR-M01-12-team.md` | V1 | pending | — | `F2-roles-and-permissions:team` |
+| SCR-M01-12 | **Team** | P0 | 3 | `docs/ux/briefs/SCR-M01-12-team.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html | `F2-roles-and-permissions:team` |
 | SCR-M01-13 | **Assign Roles** | P0 | 1 | `docs/ux/briefs/SCR-M01-13-assign-roles.md` | V1 | pending | — | — |
 | SCR-M01-14 | **Roles Reference** | P0 | 1 | `docs/ux/briefs/SCR-M01-14-roles-reference.md` | V1 | pending | — | — |
 | SCR-M01-15 | **Catalog Settings** | P0 | 7 | `docs/ux/briefs/SCR-M01-15-catalog-settings.md` | V1 | pending | — | — |
