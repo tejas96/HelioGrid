@@ -1,0 +1,83 @@
+/* PhotoField — one image, in the circle it will live in. The circle is the target's shape, so the
+   affordance and the result are the same object. */
+
+.hg-photo-field {
+  /* A fieldset carries the group's name for a screen reader; its own chrome is not the design. */
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* The group is NAMED, not labelled on screen — the circle and its act already say what this is. */
+.hg-photo-field-legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hg-photo-field-mark {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+}
+
+/* THE REFUSAL RINGS THE CIRCLE, not the page. A page banner would put a name that saved in doubt;
+   the failure belongs to the thing that failed. Outset, because the crop is what it rings. */
+.hg-photo-field-mark[data-error="true"] {
+  box-shadow: 0 0 0 2px var(--danger);
+}
+
+.hg-photo-field-mark[data-loading="true"] {
+  animation: hg-sheet-shimmer 1.4s var(--ease-standard) infinite;
+}
+
+/* A nameless circle is NEUTRAL — an empty tinted disc reads as a rendering fault rather than as
+   "no name yet", and `F7-19` forbids inventing an image to fill it. The fill follows whatever is
+   behind it, which is `--canvas-sunken` on a form card and on the page alike. */
+.hg-photo-field-nameless {
+  display: block;
+  width: var(--hg-photo-size, 72px);
+  height: var(--hg-photo-size, 72px);
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+.hg-photo-field-mark[data-size="72"] {
+  --hg-photo-size: 72px;
+}
+
+.hg-photo-field-mark[data-size="120"] {
+  --hg-photo-size: 120px;
+}
+
+.hg-photo-field-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-photo-field-message {
+  flex-basis: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  /* --text-secondary, not tertiary: a caller passing a sentence beside a control expects it read. */
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-photo-field-message[data-error="true"] {
+  color: var(--danger-text);
+}

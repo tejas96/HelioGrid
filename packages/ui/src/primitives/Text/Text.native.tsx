@@ -118,6 +118,7 @@ export function Text({
   color = 'primary',
   align,
   lang,
+  live,
   style,
 }: NativeTextProps) {
   return (
@@ -129,6 +130,7 @@ export function Text({
         style,
       ]}
       accessibilityLanguage={lang}
+      accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
     >
       {children}
     </RNText>

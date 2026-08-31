@@ -30,6 +30,7 @@ export function Text({
   color = 'primary',
   align,
   lang,
+  live,
   as,
   className,
 }: WebTextProps) {
@@ -41,6 +42,7 @@ export function Text({
       data-color={color}
       data-align={align}
       lang={lang}
+      role={live === true ? 'alert' : undefined}
     >
       {children}
     </Element>

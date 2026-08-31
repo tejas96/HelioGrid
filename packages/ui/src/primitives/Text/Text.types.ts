@@ -50,4 +50,11 @@ export interface TextProps {
    * everywhere else. Web: `lang`. Native: `accessibilityLanguage`.
    */
   lang?: string;
+  /**
+   * ANNOUNCE this text when it appears, rather than only describing it. For a refusal that happens
+   * under the user's finger — a gate that jumps you to an already-failing field leaves it off,
+   * because a screen reader that shouts every field on arrival tells you nothing.
+   * Web: `role="alert"`. Native: `accessibilityLiveRegion="assertive"`.
+   */
+  live?: boolean;
 }

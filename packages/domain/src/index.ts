@@ -56,6 +56,5 @@ export {
   VISIBILITY_LADDER,
   visibilityIn,
 } from './authz';
-export { formatPhoneNsn } from './format/phone';
 export type { TenantSegment } from './tenancy/segment';
 export { TENANT_SEGMENTS } from './tenancy/segment';

@@ -20,6 +20,12 @@ export interface MarketPack {
   clock?: '24h' | '12h';
   /** What a customer document calls the tax number — "GSTIN", "VAT number". */
   taxIdLabel?: string;
+  /**
+   * The phone spec (`F1-49`). `dialCode` is the market's calling code and `nsnGroups` the digit
+   * grouping of its national number — India is `+91` and `[5, 5]`, so `98450 27746`. Storage and
+   * transport are always E.164 (`contracts/common.ts`); this is display only.
+   */
+  phone?: { dialCode: string; nsnGroups: number[] };
   /** Compact notation is pack data, not styling (M06-07 / F1-46): "1.2 lakh" is an IN fact. */
   compact?: (n: number, locale?: string) => string;
   /**
@@ -39,6 +45,7 @@ export interface ResolvedPack extends MarketPack {
   currencyFractionDigits: number;
   clock: '24h' | '12h';
   taxIdLabel: string;
+  phone: { dialCode: string; nsnGroups: number[] };
   compact: (n: number, locale?: string) => string;
 }
 
@@ -58,6 +65,8 @@ export const IN_DEFAULTS: ResolvedPack = {
   clock: '24h',
   /** What the tax number on a customer document is called here. */
   taxIdLabel: 'GSTIN',
+  /** `+91`, and the 5+5 grouping every Indian phone is read in. */
+  phone: { dialCode: '+91', nsnGroups: [5, 5] },
   /**
    * ISO-numbered: 1 = Monday … 7 = Sunday. India's week starts SUNDAY (CLDR territory IN), which
    * is exactly the fact `Calendar` used to get wrong. Declared rather than derived, because the
