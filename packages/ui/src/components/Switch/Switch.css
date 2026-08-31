@@ -86,8 +86,10 @@
   color: var(--text-primary);
 }
 
+/* A SWITCH'S LABEL IS ITS INFORMATION. It names which setting is off-limits, so the reader still
+   has to read it; the track carries "unavailable", which is `N4`'s second channel. */
 .hg-switch[data-disabled="true"] .hg-switch-label {
-  color: var(--text-disabled);
+  color: var(--text-secondary);
 }
 
 /* With an error the whole thing becomes a column: the sentence sits UNDER the label, never inside

@@ -71,7 +71,7 @@ export function Switch({
         />
       </View>
       {label !== undefined ? (
-        <Text variant="body" color={disabled ? 'disabled' : 'primary'}>
+        <Text variant="body" color={disabled ? 'secondary' : 'primary'}>
           {label}
         </Text>
       ) : null}

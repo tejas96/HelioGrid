@@ -48,8 +48,10 @@
   color: var(--text-secondary);
 }
 
+/* THE FLOOR'S NAME IS THE REQUIREMENT. Which floor, whose authority and what it means are what the
+   reader came for — tertiary is the quiet role and this is the sentence, not a caption beside it. */
 .hg-compliance-floor-named {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 /* ── variant="refusal" ──────────────────────────────────────────────────────── */
