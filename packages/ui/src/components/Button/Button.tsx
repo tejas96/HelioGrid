@@ -55,6 +55,7 @@ export function Button({
       data-variant={variant}
       data-size={size}
       data-full-width={fullWidth ? 'true' : undefined}
+      data-stated={stated ? 'true' : undefined}
       style={style}
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}

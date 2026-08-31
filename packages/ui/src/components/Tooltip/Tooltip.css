@@ -15,7 +15,6 @@
   position: absolute;
   z-index: 70;
   pointer-events: none;
-  white-space: nowrap;
   padding: 6px 10px;
   border-radius: var(--r-xs);
   background: var(--text-primary);

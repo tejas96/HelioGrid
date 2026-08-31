@@ -79,5 +79,4 @@
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   color: var(--accent);
-  white-space: nowrap;
 }

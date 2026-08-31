@@ -28,8 +28,13 @@
     background var(--dur-standard) var(--ease-standard);
 }
 
+/* A LABEL OVERFLOWS RATHER THAN WRAPS, so `nowrap` above is only safe while the pill sizes to its
+   own text. `fullWidth` fixes the width, and a translation longer than the pill then spills out of
+   it — the first thing that breaks in Hindi and Marathi. */
 .hg-button[data-full-width="true"] {
   width: 100%;
+  white-space: normal;
+  line-height: var(--lh-body-sm);
 }
 
 .hg-button:focus-visible {
@@ -113,6 +118,14 @@
 .hg-button[aria-disabled="true"] {
   background: var(--canvas-sunken);
   color: var(--text-disabled);
+}
+
+/* A STATED DISABLED LABEL IS INFORMATION, NOT CHROME. `--text-disabled` is exempt from the contrast
+   floor as a control's chrome and measures 1.44:1 on --canvas-sunken. A button carrying a
+   `disabledReason` is meant to be READ (`MS4-15`), so its label takes --text-secondary and only the
+   fill says unavailable; an unstated disabled button is chrome and keeps the grey. */
+.hg-button[data-stated="true"] {
+  color: var(--text-secondary);
   box-shadow: none;
   cursor: not-allowed;
 }

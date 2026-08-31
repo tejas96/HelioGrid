@@ -105,7 +105,9 @@
   display: block;
 }
 .hg-stepper-name[data-state="not-started"] {
-  color: var(--text-tertiary);
+  /* NOT the quiet role — this is what the caller depends on reading (`N4`); tertiary is for the
+     caption or overline beside it. */
+  color: var(--text-secondary);
 }
 .hg-stepper-name[data-active="true"] {
   font-weight: var(--fw-bold);

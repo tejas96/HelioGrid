@@ -89,7 +89,10 @@ export function Button({
      ActionReason, and a spec with no sentence resolves to nothing and states nothing. */
   const reason = renderActionReason(disabledReason);
   const stated = disabled && reason !== null;
-  const labelColor = disabled ? theme.colors['text-disabled'] : visual.color;
+  /* A stated disabled label is information, not chrome — see the web half. */
+  const labelColor = disabled
+    ? theme.colors[stated ? 'text-secondary' : 'text-disabled']
+    : visual.color;
 
   const pill = (
     <Pressable

@@ -184,7 +184,9 @@
 
 .hg-range-end-label {
   font-size: var(--fs-caption);
-  color: var(--text-tertiary);
+  /* NOT the quiet role. A field label, an option's own text, a title and a step's name are what
+     the caller depends on reading (`N4`) — tertiary is for captions and overlines beside them. */
+  color: var(--text-secondary);
 }
 
 .hg-range-end-box {

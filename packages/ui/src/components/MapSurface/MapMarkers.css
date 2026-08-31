@@ -76,7 +76,6 @@
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
-  white-space: nowrap;
   color: var(--text-primary);
 }
 
