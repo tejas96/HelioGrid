@@ -65,7 +65,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-26 (P0)
-**DESIGN:** SCR-M01-06 → PENDING
+**DESIGN:** SCR-M01-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-06+Youre+Ready+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-06-setup-ready.md`; they are the specification.
 **DONE WHEN:**
 - Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26).
@@ -74,7 +74,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-007 · Invite Teammate
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-12 (P0), F2-21 (P1)
-**DESIGN:** SCR-M01-07 → PENDING
+**DESIGN:** SCR-M01-07 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-07+Invite+Teammate+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-07-invite-teammate.md`; they are the specification.
 **DONE WHEN:**
 - Given an invite with zero roles, when it is submitted, then it is blocked before sending (M01-12, F2-21).
