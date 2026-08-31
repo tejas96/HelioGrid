@@ -14,8 +14,12 @@
   pointer-events: none;
 }
 
+/* THE CLEARANCE IS DERIVED, NOT TYPED. This said 96px, which happens to be the nav plus --sp-6 but
+   never looked at the nav — so a screen wanting the toast in the right place had to compute the
+   offset itself, and `SCR-M01-12` computed 88. Two answers to one measurement is exactly what a
+   design system exists to prevent, so the default now tracks `--bottomnav-h`. */
 .hg-toast-host[data-position="bottom-center"] {
-  bottom: var(--hg-toast-host-offset, 96px);
+  bottom: var(--hg-toast-host-offset, calc(var(--bottomnav-h) + var(--sp-6)));
   left: var(--sp-4);
   right: var(--sp-4);
   align-items: center;

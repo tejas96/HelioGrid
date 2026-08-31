@@ -120,6 +120,15 @@
   color: var(--text-disabled);
 }
 
+/* A GHOST HAS NO GROUND, AND BEING UNAVAILABLE DOES NOT GIVE IT ONE. The rule above fills every
+   variant with --canvas-sunken, which turns the one act in a column of ghosts that CANNOT be pressed
+   into the only one wearing a pill — the loudest control on the surface. A ghost keeps its ground;
+   its label and its stated reason carry the state. */
+.hg-button[data-variant="ghost"]:disabled,
+.hg-button[data-variant="ghost"][aria-disabled="true"] {
+  background: transparent;
+}
+
 /* A STATED DISABLED LABEL IS INFORMATION, NOT CHROME. `--text-disabled` is exempt from the contrast
    floor as a control's chrome and measures 1.44:1 on --canvas-sunken. A button carrying a
    `disabledReason` is meant to be READ (`MS4-15`), so its label takes --text-secondary and only the

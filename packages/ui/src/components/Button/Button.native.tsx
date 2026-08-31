@@ -103,7 +103,8 @@ export function Button({
         SIZE[size],
         { backgroundColor: visual.background },
         disabled ? undefined : visual.elevation,
-        disabled ? styles.disabled : undefined,
+        // A ghost has no ground, and being unavailable does not give it one — see the web half.
+        disabled && variant !== 'ghost' ? styles.disabled : undefined,
         fullWidth ? styles.fullWidth : undefined,
         style,
       ]}
