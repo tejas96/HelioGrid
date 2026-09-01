@@ -22,6 +22,18 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 - **normal** — descriptions, matrices and holder counts rendered read-only; no create, edit, duplicate or delete action exists anywhere (M01-21).
 - **zero-holders-shown** — a preset held by nobody still renders, showing zero (M01-21: "including zero").
 
+**Decisions made in design (2026-08-31) — later screens inherit them.**
+
+1. **Read-only means no act anywhere.** No create, edit, duplicate or delete on any frame — `M01-21`
+   makes the v1 config surface for roles **assignment**, never a role editor (`F2-02`, `F2-16`).
+2. **`empty` has no honest subject** — the twelve presets always exist. The nearest real case is a
+   preset with **zero holders**, which renders as zero rather than as an absence (`M01-21`: *"including
+   zero"*).
+3. **The holder count is a live count from membership, so it carries a tier** — `measured`, counted
+   from the tenant's own records, with the count named beside it.
+4. **The twelve presets are `F2-01`'s, verbatim and in `F2`'s order.** This screen's whole job is
+   rendering `F2`'s preset set, so the names are the requirement rather than sample data.
+
 ## Data volume
 
 Design at F2's full preset set: twelve presets, each with a description, its matrix rows, and a holder count (including zero). Team sizes are small-company scale — the counts are small integers.

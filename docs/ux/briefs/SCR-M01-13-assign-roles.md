@@ -31,9 +31,11 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
    list in one case and discard the owner's work in the other. `loading` does use it.
 3. **`grant-line-updating-live` is drawn as a before/after pair.** A static board cannot show a
    sentence changing, so it shows the two ends of the change.
-4. **The twelve presets carry `F2`'s canonical names** — `Sales Executive`, `Survey Engineer`,
-   `Design Engineer`, `Installation Team Member` — never `SCR-M01-07`'s v1 vocabulary
-   (`SCR-M01-10`'s ruling, `F2-02`).
+4. **The twelve presets carry `F2`'s canonical names** — all twelve, from `F2-01`'s table: `EPC
+   Owner` · `Sales Manager` · `Sales Executive` · `Survey Engineer` · `Design Engineer` · `Project
+   Manager` · `Field Technician` · `Installation Team Member` · `HR/Admin` · `Finance` ·
+   `Operations` · `Marketing` — in `F2`'s own order. `F2-01` names the twelve verbatim and `F2-02`
+   forbids renaming them, so a preset list is never transcribed from another frame.
 
 5. **`N8` is closed with both halves** — the undo in a toast, AND the recovery route in words, on the
    confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.

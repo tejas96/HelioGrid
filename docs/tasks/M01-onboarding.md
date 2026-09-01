@@ -146,7 +146,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-014 · Roles Reference
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-21 (P0)
-**DESIGN:** SCR-M01-14 → PENDING
+**DESIGN:** SCR-M01-14 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-14+Roles+Reference+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-14-roles-reference.md`; they are the specification.
 **DONE WHEN:**
 - Given the Roles reference, when it renders, then it is read-only, shows per-preset holder counts, and no role-editing action exists (M01-21).
