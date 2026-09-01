@@ -57,6 +57,10 @@ Screen-specific:
 8. **Relative times are refused.** *"2 hours ago"* turns a recorded fact into a computed one and would
    put a tier on every row for no gain.
 
+**One roster correction owed.** `SCR-M01-13`'s `empty` frame needs a person holding NO presets, and
+nobody in this screen's roster has none — it is drawn on **Nitin Pawar**, who must gain a row here or
+the two boards disagree about who is on this team.
+
 **Two holes this screen reports rather than invents.** There is **no reactivation control** — a list
 that can deactivate and never reactivate is a one-way door, and bringing someone back is not a row of
 this slice. And **seven of the twelve preset names** are not on this board; they must come from `F2`'s
