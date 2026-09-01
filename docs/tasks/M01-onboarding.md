@@ -137,7 +137,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-013 · Assign Roles
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-20 (P0)
-**DESIGN:** SCR-M01-13 → PENDING
+**DESIGN:** SCR-M01-13 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-13+Assign+Roles+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-13-assign-roles.md`; they are the specification.
 **DONE WHEN:**
 - Given the Assign-roles screen, when presets are toggled, then the plain-English grant line updates live to describe exactly the resulting grants (M01-20).

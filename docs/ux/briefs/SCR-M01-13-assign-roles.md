@@ -35,8 +35,9 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
    `Design Engineer`, `Installation Team Member` — never `SCR-M01-07`'s v1 vocabulary
    (`SCR-M01-10`'s ruling, `F2-02`).
 
-**Owed, and NOT drawn: the after-state.** The toast, its undo, and `N8`'s recovery route in words.
-`N8` wants a destructive act confirmed AND undoable, so the screen is not complete without it.
+5. **`N8` is closed with both halves** — the undo in a toast, AND the recovery route in words, on the
+   confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
+   The toast is a `ToastHost`, which owns its own placement and clearance.
 
 **The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31, `Q80`), never
 `name + "can" + phrases`. Each language supplies its own template and its own list joiner, so word
