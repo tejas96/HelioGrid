@@ -41,3 +41,5 @@ Each carries its F8 provenance tier in the design:
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline` state and a matching online-only sentence in Context of use (`F4-09`). Both are deleted. The import's async server-side run is untouched.*
+
+*Returning from this wizard lands on the panel and scroll position the caller was on (`SCR-M01-15` decision 6).*

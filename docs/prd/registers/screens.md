@@ -182,8 +182,8 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-12 | **Team** | P0 | 3 | `docs/ux/briefs/SCR-M01-12-team.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html | `F2-roles-and-permissions:team` |
 | SCR-M01-13 | **Assign Roles** | P0 | 1 | `docs/ux/briefs/SCR-M01-13-assign-roles.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-13+Assign+Roles+-+Mobile.dc.html | — |
 | SCR-M01-14 | **Roles Reference** | P0 | 1 | `docs/ux/briefs/SCR-M01-14-roles-reference.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-14+Roles+Reference+-+Mobile.dc.html | — |
-| SCR-M01-15 | **Catalog Settings** | P0 | 7 | `docs/ux/briefs/SCR-M01-15-catalog-settings.md` | V1 | pending | — | — |
-| SCR-M01-16 | **Add Catalog Item** | P0 | 3 | `docs/ux/briefs/SCR-M01-16-add-catalog-item.md` | V1 | pending | — | — |
+| SCR-M01-15 | **Catalog Settings** | P0 | 7 | `docs/ux/briefs/SCR-M01-15-catalog-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html | — |
+| SCR-M01-16 | **Add Catalog Item** | P0 | 3 | `docs/ux/briefs/SCR-M01-16-add-catalog-item.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html | — |
 | SCR-M01-17 | **Catalog Import Wizard** | P0 | 1 | `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` | V1 | pending | — | — |
 | SCR-M01-18 | **Branding Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-18-branding-settings.md` | V1 | pending | — | `F7-design-language:shell-tenant-branding-settings` |
 | SCR-M01-19 | **Proposal Template Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md` | V1 | pending | — | — |

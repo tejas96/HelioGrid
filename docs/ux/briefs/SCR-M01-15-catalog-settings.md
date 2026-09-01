@@ -34,6 +34,30 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
 - **release-contents-inspect** — what a release contains (which items changed) is inspectable (§M01.4 behavior detail).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
+**Decisions made in design (2026-09-01) — later screens inherit them.**
+
+1. **One destination, two panels.** *Catalog* is the one row in the settings surface map; *Price
+   book* is not its own destination. At 375 the two panels switch with a `SegmentedControl`; at 1536
+   the rates panel sits **beside** the list. `M01-32` forbids two catalogues to administer and
+   §M01.5 calls the price book *the rates panel of the one catalog surface* — the switch exists only
+   because 375 has no *beside*.
+2. **`empty` on the items panel is not an empty list and never will be.** A tenant's first day
+   already has the platform slice (`M01-32`: there is never "no catalogue"), so what is empty is the
+   tenant's own two dimensions — own SKUs and overrides — and the teaching card sits above a full
+   list.
+3. **An archived row claims no price tier.** Its price is not what anyone would be charged, so it
+   renders `unmarked` — the reserved value that records a deliberate absence — rather than a
+   `measured` that is true of a number nobody can use.
+4. **Publishing asks for a name, not a serial** (`M01-43`: a release is a human-readable name plus a
+   date), and states the consequence as a number before the act: *N designs pinned to <label> will
+   show as out of date*. A release's contents are a **before-and-after**, not a list of names — a
+   tier on each side.
+5. **The three row acts are 32px at 1536 and 44px on the phone card.** The design system's one
+   in-row exception, whose three conditions all hold: a `<table>` row, pointer-only, and the same
+   acts at full size elsewhere.
+6. **Returning from `SCR-M01-16` and `SCR-M01-17` lands on the panel and scroll position the caller
+   was on.** Written into both briefs.
+
 ## Data volume
 
 The PRD fixes no item count for the catalog; it does classify catalog administration as dense-list, desktop-first territory (M01 §2, UXG-01 pattern) and makes search-with-filters the primary navigation (M01-38). Design at list scale — a full market slice of platform items across component kinds plus the tenant's own SKUs and overrides — not at a handful of cards. The rates panel additionally carries the price book's non-component rates (service and installation charges, engineering fees, per-kW adders and comparable rates, M01-48).

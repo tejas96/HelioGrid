@@ -71,6 +71,10 @@ order below are exact; each line then states the operative obligation the rule c
   which sent scheduled visit times to the tiered side where none of F8's four values fits them.
   Owner refined it 2026-08-07 after the question surfaced on `SCR-SHELL-01`.)*
 
+  **A date follows the MARKET, not the reader (Q81).** The pack owns the order, the calendar and the
+  month name, so `12 Aug 2026` renders identically in Hindi, Marathi and English — the same class as
+  `BIS`, `ALMM`, `DISCOM` and `kWp`. Two colleagues in one tenant quote a customer the same date.
+
   **Where the tier renders, because N7 and progressive disclosure (F7-34) otherwise collide.**
   A designer told to tier every number *and* to reveal detail progressively will reach for a
   tooltip, an info icon, a colour difference or a footnote. **All four are forbidden**, by two

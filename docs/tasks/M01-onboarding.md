@@ -155,7 +155,9 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-015 · Catalog Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-32 (P0), M01-34 (P0), M01-35 (P0), M01-37 (P0), M01-38 (P0), M01-43 (P0), M01-48 (P0)
-**DESIGN:** SCR-M01-15 → PENDING
+**DESIGN:** SCR-M01-15 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html
+  · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+States.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-15-catalog-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given a tenant with an override on a platform item, when any surface resolves that item, then the override's set fields win, unset fields fall through to the platform value, and own SKUs shadow nothing (M01-32, M01-37).
@@ -170,7 +172,9 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-016 · Add Catalog Item
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-36 (P0), M01-39 (P0), M01-40 (P0)
-**DESIGN:** SCR-M01-16 → PENDING
+**DESIGN:** SCR-M01-16 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html
+  · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+States.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-16-add-catalog-item.md`; they are the specification.
 **DONE WHEN:**
 - Given a missing product mid-proposal, when the person invokes add-in-flow, then single-form, datasheet-PDF and spreadsheet paths are all available, and completing any of them selects the new SKU in place without leaving the builder (M01-36, M01-39).
