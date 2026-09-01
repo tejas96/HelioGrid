@@ -184,7 +184,8 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-017 · Catalog Import Wizard
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-41 (P0)
-**DESIGN:** SCR-M01-17 → PENDING
+**DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
 **DONE WHEN:**
 - Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41).
