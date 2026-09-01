@@ -95,5 +95,11 @@ export interface FilterPanelProps {
   panelAbove?: number;
   width?: number;
   inset?: boolean;
+  /**
+   * **The panel form exists so the results stay visible while you filter**, and a backdrop spends
+   * exactly that. Default true, because the sheet form covers the list anyway; pass false wherever
+   * the side panel sits beside the list it is filtering. Straight through to `EditorSurface`.
+   */
+  modal?: boolean;
   zIndex?: number;
 }

@@ -70,7 +70,10 @@ export function Sheet({
   const bodyRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const autoId = useId();
+  /* A caller's own heading names the dialog when there is no `title` — without this the prop could
+     only rename an id that already existed, and an icon-header dialog had no name at all. */
   const titleId = labelId ?? `${autoId}-title`;
+  const namedBy = labelId ?? (title === undefined ? undefined : titleId);
   const draggable = dragToDismiss && dismissible;
   const { dragY, dragging, onPointerDown } = useSheetDrag(bodyRef, draggable, onClose);
 
@@ -90,7 +93,7 @@ export function Sheet({
       ) : null}
       <div
         {...sheetPanelAttrs({ density, dragY, dragging, inset, size })}
-        aria-labelledby={title === undefined ? undefined : titleId}
+        aria-labelledby={namedBy}
         aria-modal={modal ? 'true' : undefined}
         className={classNames('hg-sheet', className)}
         ref={panelRef}

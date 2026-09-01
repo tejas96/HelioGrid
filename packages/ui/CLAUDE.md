@@ -48,10 +48,9 @@ incomplete, not "web-only".
   deliberate web/native pair Law 7 requires, and knip cannot see that. `check:unused` is therefore
   NOT in `verify` until knip is configured to understand the pair. Do not "fix" it by deleting a
   half. The same applies to `IN_DEFAULTS|IN_PACK` in `src/utils/market-pack.ts`.
-- **Three touch targets are below the 44px floor and are known**, found by the render harness on
-  2026-08-19: `RangeField`/`FilterPanel` thumbs measure 22×22, `ActivityStream`'s summary button
-  43.3, `AppShell`'s breadcrumb link 42 wide. No static gate can see computed layout — only a real
-  browser reports it. Fix them when you touch those components.
+- **No static gate can see computed layout — only a real browser reports it.** The three targets
+  this file used to list are fixed and each carries its measurement in a comment where it was fixed;
+  the lesson is that the floor is two-dimensional and a control can pass on height and fail on width.
 - **Measuring a touch target mid-animation lies.** Overlays animate in over 320ms from
   `scale(0.97)`; a sweep that runs during it reported 12 failures of which 4 were false. Wait for
   `document.getAnimations()` to be quiet, or for `transform` to read `none`.

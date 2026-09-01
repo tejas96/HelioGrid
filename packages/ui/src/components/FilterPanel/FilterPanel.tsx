@@ -91,6 +91,7 @@ export function FilterPanel({
   panelAbove = 720,
   width = 460,
   inset = false,
+  modal = true,
   zIndex = 40,
   style,
 }: WebFilterPanelProps) {
@@ -115,6 +116,7 @@ export function FilterPanel({
       width={width}
       footer={footer}
       inset={inset}
+      modal={modal}
       zIndex={zIndex}
       showClose
       style={style}

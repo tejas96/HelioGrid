@@ -44,10 +44,14 @@
   /* The floor is two-dimensional. A short crumb ("Leads") measured 42px wide with the height
      rule alone, so the target failed on the axis nobody checked. */
   min-width: 44px;
+  /* THE PADDING AND THE MARGIN CANCEL ON BOTH AXES, which is what makes the borrowed height safe at
+     ANY line height. A bare -10px gave back space the box never took: at a 24px line the two happened
+     to agree, and a taller one — Devanagari's, measured — bled 10px into the header title above it,
+     so a tap on the title's top edge navigated. Give back only what you took. */
   margin: -10px -6px;
   border: none;
   border-radius: var(--r-xs);
-  padding: 0 6px;
+  padding: 10px 6px;
   background: none;
   color: var(--text-secondary);
   font-family: var(--font-sans);

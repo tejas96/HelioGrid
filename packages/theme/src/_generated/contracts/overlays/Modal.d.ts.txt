@@ -20,6 +20,12 @@ export interface ModalProps {
   dismissible?: boolean;
   inset?: boolean;
   zIndex?: number;
+  /**
+   * The id of a heading the CALLER rendered. A dialog must have an accessible name, and the
+   * fixed icon header is exactly what makes a caller drop `title` and compose its own — without
+   * this the `aria-labelledby` went undefined and the dialog was announced as nothing.
+   */
+  labelId?: string;
   style?: React.CSSProperties;
 }
 

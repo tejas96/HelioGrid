@@ -115,8 +115,12 @@ export function Sheet({
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
         {modal ? <SheetBackdrop onClick={dismissible ? onClose : undefined} /> : null}
         <Animated.View
+          /* NO `accessibilityRole`. ARIA's `dialog` has no React Native partner — the sanctioned
+             NO_RN_ROLE gap, answered this way by `Modal.native` and `DetailPanel.native`. `alert` is
+             not that partner: it means "urgent text, announce it now", so a sheet with a header, a
+             body and a footer was announced as ONE interruption. `accessibilityViewIsModal` is what
+             actually carries the modality. */
           accessibilityViewIsModal={modal}
-          accessibilityRole={modal ? 'alert' : 'none'}
           onLayout={onLayout}
           style={[
             styles.panel,

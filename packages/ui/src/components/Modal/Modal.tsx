@@ -33,6 +33,7 @@ export function Modal({
   open = true,
   onClose,
   title,
+  labelId,
   description,
   overline,
   children,
@@ -65,7 +66,7 @@ export function Modal({
       <SheetBackdrop inset={inset} onClick={dismissible ? onClose : undefined} zIndex={zIndex} />
       <div className="hg-modal-layer" data-inset={inset ? 'true' : 'false'} style={vars}>
         <div
-          aria-labelledby={title === undefined ? undefined : autoId}
+          aria-labelledby={labelId ?? (title === undefined ? undefined : autoId)}
           aria-modal="true"
           className={classNames('hg-modal', className)}
           data-density={density}

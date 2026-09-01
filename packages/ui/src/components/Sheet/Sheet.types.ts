@@ -56,6 +56,10 @@ export interface SheetProps {
   /** Position absolutely inside the nearest positioned ancestor (device frames, specimen cards). */
   inset?: boolean;
   zIndex?: number;
+  /**
+   * The id of a heading the CALLER rendered. A dialog must have an accessible name, and a caller
+   * whose header is its own — an icon header, a composed title row — has no `title` to be named by.
+   */
   labelId?: string;
 }
 
