@@ -4,11 +4,12 @@ import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-n
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { clampCount } from '../../utils/count';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
-import { hasReason, normalise } from './Tabs.options';
+import { hasReason, normalise, TAB_COUNT_MAX } from './Tabs.options';
 import type { TabsProps } from './Tabs.types';
 
 interface NativeTabsProps extends TabsProps {
@@ -103,7 +104,7 @@ export function Tabs({ tabs, value, onChange, style }: NativeTabsProps) {
                 {tab.count !== undefined ? (
                   <View style={[styles.count, active ? styles.countActive : styles.countRest]}>
                     <Text variant="caption" style={countStyle(active, off)}>
-                      {tab.count > 99 ? '99+' : String(tab.count)}
+                      {clampCount(tab.count, TAB_COUNT_MAX)}
                     </Text>
                   </View>
                 ) : null}

@@ -54,10 +54,14 @@
   text-overflow: ellipsis;
 }
 
+/* THE CONTROLS NEVER SHRINK. The header is a flex row and the root clips, so a chrome that gives
+   way to a long file name is a chrome that gets CUT — and this component's rule is that every
+   control stays reachable. The name ellipsises instead; it has `min-width: 0` for exactly that. */
 .hg-source-doc-chrome {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-0-5);
+  flex-shrink: 0;
 }
 
 .hg-source-doc-count {

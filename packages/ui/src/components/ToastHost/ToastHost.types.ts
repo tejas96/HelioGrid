@@ -22,7 +22,8 @@ export interface ToastHostProps {
   /** Most toasts on screen at once. Older ones drop rather than piling up. */
   max?: number;
   duration?: number;
-  /** Distance from the bottom — clear the bottom nav on a phone. */
+  /** Overrides the derived clearance. The default already clears the bottom nav — pass this only
+   *  where something else sits under the toast. */
   offset?: number;
 }
 

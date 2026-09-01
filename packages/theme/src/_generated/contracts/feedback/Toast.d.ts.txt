@@ -11,5 +11,12 @@ export interface ToastProps {
   style?: React.CSSProperties;
 }
 
-/** White toast card (16px radius, e5) with a leading semantic icon in a circular tint. One at a time. */
+/**
+ * White toast card (16px radius, e5) with a leading semantic icon in a circular tint. One at a time.
+ *
+ * **A Toast is never placed by a caller.** `ToastHost` owns the queue, the stacking, the auto-dismiss
+ * AND the position — including the clearance over the bottom nav, which it derives from the nav's own
+ * height. A hand-positioned Toast is a second answer to that measurement, and three screens have now
+ * each invented a different number for it.
+ */
 export function Toast(props: ToastProps): JSX.Element;

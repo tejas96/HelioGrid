@@ -15,7 +15,13 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 
 const styles = StyleSheet.create({
-  chrome: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-0-5'] },
+  // Pinned, like the web half: a chrome that gives way to a long file name is a chrome that is cut.
+  chrome: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-0-5'],
+    flexShrink: 0,
+  },
   iconBtn: {
     width: MIN_TOUCH_TARGET,
     height: MIN_TOUCH_TARGET,

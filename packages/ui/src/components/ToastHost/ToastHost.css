@@ -1,5 +1,5 @@
 /* ToastHost — the queue container. Stacks at most `max`, auto-dismisses, pauses under the pointer,
-   and clears the bottom nav through `offset`. The stack itself is pointer-transparent; each toast
+   and clears the bottom nav on its own. The stack itself is pointer-transparent; each toast
    takes its own events back, so a toast never blocks the screen under it.
 
    The dismiss is 44×44 (Pressable's floor) and takes the extra 12px back as negative margin, so no
@@ -14,10 +14,8 @@
   pointer-events: none;
 }
 
-/* THE CLEARANCE IS DERIVED, NOT TYPED. This said 96px, which happens to be the nav plus --sp-6 but
-   never looked at the nav — so a screen wanting the toast in the right place had to compute the
-   offset itself, and `SCR-M01-12` computed 88. Two answers to one measurement is exactly what a
-   design system exists to prevent, so the default now tracks `--bottomnav-h`. */
+/* THE CLEARANCE IS DERIVED, NOT TYPED — it tracks --bottomnav-h, so the nav's height and the
+   toast's clearance can never disagree. A literal here freezes one and a screen computes another. */
 .hg-toast-host[data-position="bottom-center"] {
   bottom: var(--hg-toast-host-offset, calc(var(--bottomnav-h) + var(--sp-6)));
   left: var(--sp-4);

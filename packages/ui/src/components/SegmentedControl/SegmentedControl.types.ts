@@ -9,6 +9,9 @@ export interface SegmentedOption {
    * `--text-tertiary` measures 4.48 — and a count is a value the reader must read.
    */
   count?: number;
+  /** Clamp the numeral: `countMax={99}` renders "99+". Unset by default, because a segment
+   *  names a panel of records and clamping its total lies. */
+  countMax?: number;
   /** Nodes, through `MarkRow`, for anything that is not a count. */
   marks?: ReactNode | ReactNode[];
   /**

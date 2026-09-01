@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-5'],
   },
   /* The web half fades the footer in with a luminance gradient. RN has no CSS gradient, and a
-     divider line is the one thing this family may not draw — so the footer sits on --surface and
-     the body's own padding keeps content from touching it. */
+     divider line is the one thing this family may not draw — so the footer takes the same
+     --surface-form as the body and only padding separates them. */
   footer: {
     flexShrink: 0,
     paddingTop: theme.spacing['sp-3'],

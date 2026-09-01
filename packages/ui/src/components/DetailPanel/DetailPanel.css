@@ -11,6 +11,8 @@
 .hg-detail-panel {
   /* Functional is the default here: this panel usually sits on a data screen. */
   --hg-panel-pad: var(--sp-6);
+  /* ONE NUMBER, TWO CONSUMERS — see Sheet.css. */
+  --hg-panel-footer-fade: var(--sp-5);
 
   position: fixed;
   top: 0;
@@ -116,7 +118,7 @@
 }
 
 .hg-detail-panel-body[data-footer="true"] {
-  padding-bottom: var(--sp-2);
+  padding-bottom: var(--hg-panel-footer-fade);
 }
 
 .hg-detail-panel-unavailable {
@@ -130,14 +132,15 @@
   background: var(--surface-form);
 }
 
-/* A luminance fade above the sticky footer, never a divider line. */
+/* A luminance fade above the sticky footer, never a divider line. It fades to the FOOTER'S OWN
+   ground — fading to a colour the footer is not leaves the band a divider line would have drawn. */
 .hg-detail-panel-footer-fade {
   position: absolute;
-  top: calc(-1 * var(--sp-5));
+  top: calc(-1 * var(--hg-panel-footer-fade));
   left: 0;
   right: 0;
-  height: var(--sp-5);
-  background: linear-gradient(to top, var(--surface), transparent);
+  height: var(--hg-panel-footer-fade);
+  background: linear-gradient(to top, var(--surface-form), transparent);
   pointer-events: none;
 }
 

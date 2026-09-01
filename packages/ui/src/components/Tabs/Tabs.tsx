@@ -1,9 +1,10 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
 import { renderMarks } from '../ChipGroup';
-import { hasReason, normalise } from './Tabs.options';
+import { hasReason, normalise, TAB_COUNT_MAX } from './Tabs.options';
 import type { TabsProps } from './Tabs.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -93,7 +94,7 @@ export function Tabs({ tabs, value, onChange, className, style }: WebTabsProps) 
           >
             {tab.label}
             {tab.count !== undefined ? (
-              <span className="hg-tabs-count">{tab.count > 99 ? '99+' : tab.count}</span>
+              <span className="hg-tabs-count">{clampCount(tab.count, TAB_COUNT_MAX)}</span>
             ) : null}
             {renderMarks(tab.marks)}
           </button>

@@ -37,6 +37,9 @@
   --hg-sheet-pad-top: var(--sp-3);
   --hg-sheet-pad-bottom: var(--sp-6);
   --hg-sheet-title: var(--fs-h3);
+  /* ONE NUMBER, TWO CONSUMERS: the fade's height and the clearance the body keeps under it. Split
+     them and the fade draws over the body's last line — which on a form is the provenance tier. */
+  --hg-sheet-footer-fade: var(--sp-5);
 
   position: fixed;
   left: 0;
@@ -184,7 +187,7 @@
 }
 
 .hg-sheet-body[data-footer="true"] {
-  padding-bottom: var(--sp-2);
+  padding-bottom: var(--hg-sheet-footer-fade);
 }
 
 .hg-sheet[data-size="auto"] .hg-sheet-body {
@@ -204,14 +207,15 @@
   background: var(--surface-form);
 }
 
-/* A luminance fade above the sticky footer, never a divider line. */
+/* A luminance fade above the sticky footer, never a divider line. It fades to the FOOTER'S OWN
+   ground — fading to a colour the footer is not leaves the band a divider line would have drawn. */
 .hg-sheet-footer-fade {
   position: absolute;
-  top: calc(-1 * var(--sp-5));
+  top: calc(-1 * var(--hg-sheet-footer-fade));
   left: 0;
   right: 0;
-  height: var(--sp-5);
-  background: linear-gradient(to top, var(--surface), transparent);
+  height: var(--hg-sheet-footer-fade);
+  background: linear-gradient(to top, var(--surface-form), transparent);
   pointer-events: none;
 }
 
