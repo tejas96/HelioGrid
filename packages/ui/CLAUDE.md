@@ -15,7 +15,10 @@ loads with this folder — this file is the package's own shape and its landmine
 ## What must NEVER live here
 
 - **Product logic, policy or money maths.** That is `@heliogrid/domain`. A component takes props
-  and renders; it does not know what a lead or a tranche is.
+  and renders; it does not know what a lead or a tranche is. **Formatting is product logic**:
+  `src/utils/format.ts` BINDS a market pack to `@heliogrid/domain`'s format slice and implements
+  nothing. It held its own implementation and its own India pack until the slice landed; a
+  `new Intl.NumberFormat` anywhere in this package now fails the format invariant.
 - **A raw visual value.** Colour, spacing, radius and type come from `@heliogrid/theme`.
 - **User-visible English.** Copy comes from `@heliogrid/i18n` through the consumer.
 - **Navigation chrome.** That belongs to the app (`apps/mobile/src/navigation/`).
@@ -47,7 +50,7 @@ incomplete, not "web-only".
 - **`knip` reports `Image|ImageFrame` as a duplicate export.** It is not a defect: it is the
   deliberate web/native pair Law 7 requires, and knip cannot see that. `check:unused` is therefore
   NOT in `verify` until knip is configured to understand the pair. Do not "fix" it by deleting a
-  half. The same applies to `IN_DEFAULTS|IN_PACK` in `src/utils/market-pack.ts`.
+  half.
 - **No static gate can see computed layout — only a real browser reports it.** The three targets
   this file used to list are fixed and each carries its measurement in a comment where it was fixed;
   the lesson is that the floor is two-dimensional and a control can pass on height and fail on width.

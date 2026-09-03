@@ -13,6 +13,7 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.native.json"
   },
   "dependencies": {
+    "@heliogrid/domain": "workspace:*",
     "@heliogrid/theme": "workspace:*"
   },
   "peerDependencies": {

@@ -135,7 +135,16 @@
       "linter": {
         "rules": {
           "style": {
-            "noEnum": "error"
+            "noEnum": "error",
+            "noMagicNumbers": "error",
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "fetch": "The wire is packages/data's, and an app that calls fetch has its own transport: no cookie mode, no timeout, no error envelope, no retry policy (ADR-0023). Use the typed client. Zero apps called it when this was added."
+                }
+              }
+            }
           }
         }
       }

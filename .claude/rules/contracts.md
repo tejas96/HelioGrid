@@ -36,9 +36,13 @@ openapi/openapi.json        emitted, committed, gate-checked — never hand-edit
 - Every non-2xx response uses the canonical envelope (`error.ts` + `errorHttpStatusByCode`).
   A route declaring a NON-base error code needs `ContractException` with that literal on
   the server, or the wire silently carries the wrong code with a green typecheck.
-- Protocol constants clients need (`OTP_LENGTH`, `PHONE_NSN_LENGTH`, `COUNTRY_CALLING_CODE`)
-  live in `@heliogrid/domain`, not here — domain is the bottom layer, so a contract that
-  needs one IMPORTS it. Never hard-code one in a client.
+- Protocol constants a SCREEN needs (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) live in
+  `@heliogrid/domain`, not here — domain is the bottom layer, so a contract that needs one
+  IMPORTS it. Never hard-code one in a client. Two things that are NOT that:
+  a MARKET fact — the calling code, national-number grouping and length are `pack.formats`
+  (`IN_FORMATS.phone`); and a WIRE fact no screen ever sees, which belongs HERE — owner ruling
+  2026-09-03 put `REQUEST_ID_HEADER` in `common.ts` because contracts is the wire truth and
+  domain is business truth. It had been written in `apps/api` and `packages/data` at once.
 - Zod is pinned at 3.x and `zod/v4` is Biome-banned (ts-rest Zod-4 support is still RC —
   spike S3). Do not lift the pin.
 

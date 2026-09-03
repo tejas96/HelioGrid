@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
+import { REQUEST_ID_HEADER } from '@heliogrid/contracts';
 import type { NextFunction, Request, Response } from 'express';
 
-export const REQUEST_ID_HEADER = 'x-request-id';
+export { REQUEST_ID_HEADER };
+
 const REQUEST_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 
 export function safeRequestId(value: unknown): string | undefined {

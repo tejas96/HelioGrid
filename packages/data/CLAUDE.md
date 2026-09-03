@@ -58,7 +58,8 @@ filename pattern.
   mismatch therefore surfaces in the transport's own `catch` as a raw `ZodError`, where it
   looks exactly like a failed request — classify it as a network error and a bad response
   becomes retryable. The transport rethrows `ZodError` untouched for that reason.
-- **`server` mode forwards an allowlist** (`cookie`, `authorization`, `x-request-id`) and
+- **`server` mode forwards an allowlist** (`cookie`, `authorization`, `REQUEST_ID_HEADER`
+  from `@heliogrid/contracts` — never the literal; `apps/api` sets the same one) and
   never a spread: the browser's `host`/`content-length` corrupt our request, and everything
   else risks carrying one caller's identity into another's. Never a tenant header.
 - **`createServerDataContext` must not be hoisted to a module constant.** Both fields are

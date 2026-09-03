@@ -56,8 +56,16 @@ two packages joined by a cycle. If a split would need both halves to import each
 boundary is in the wrong place — move the shared fact down a layer instead (§1).
 
 ### config — shared tsconfig presets
-Owns: tsconfig presets (node-package, nest-app) and nothing else. Allowed deps: none.
-Platform scope: all. Belongs: a new compiler preset. Never: runtime code, lint config
+Owns: the shared compiler options (`tsconfig/base.json`) and the presets that extend them
+(node-package, nest-app) — nothing else. The repo-root `tsconfig.base.json` extends this
+package's `base.json`, not the other way round: **every `extends` inside this package must be
+package-relative.** A consumer reads these files through `node_modules/@heliogrid/config/`, a
+pnpm symlink, so a path climbing out of the package resolves to
+`packages/<consumer>/node_modules/` for any tool that does not realpath first. `tsc` does
+realpath, which hid this for months; Vite's transform does not, and no unit test in the repo
+could compile until it was fixed (2026-09-03). Allowed deps: none.
+Platform scope: all. Belongs: a new compiler preset. Never: a comment — Biome parses these as
+strict JSON, so the reason lives here; runtime code, lint config
 (biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
 extends `tsconfig.base.json` directly; apps/mobile extends `@react-native/typescript-config`
 and hand-mirrors the base strictness flags (`packages/config/CLAUDE.md`).
@@ -266,9 +274,21 @@ tenant-id-in-body) run by pnpm turbo test; fail-closed under CI, loud-skip local
 without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven
-mechanically against the live schema or contracts. Never: unit tests (owner directive
-2026-07-29); anything needing a mock. Extension point: one file per invariant + a run.ts
-call.
+mechanically against the live schema or contracts. Never: a UNIT test — one lives at
+`<package>/tests/**/*.test.ts` beside the package it proves (owner ruling 2026-09-03), and
+proves one DECISION at its edges where an invariant proves a property of the SYSTEM against
+real state; anything needing a mock. Extension point: one file per invariant + a run.ts call.
+
+### `<package>/tests/` — unit tests, beside the package they prove
+Owns: `*.test.ts` for the LOGIC layers only — `packages/domain`, `packages/contracts`,
+`packages/forms`, `apps/api`, `apps/worker` — run by `pnpm test:unit` (vitest, config at
+`vitest.config.mts`). Outside `src/`, so the package's own `tsc -b` never compiles a test into
+`dist/`. Allowed deps: the package's own `src/`, by RELATIVE path — `@heliogrid/<pkg>` resolves
+to built `dist/` and would test the last build. Platform scope: shared. Belongs: the boundary
+value, the one either side of it, the empty, the negative. Never: a frontend package (proven by
+running it), `packages/data` (proven by driving the real client), a mock of something this repo
+owns. Extension point: a per-glob coverage threshold in `vitest.config.mts`, landing with the
+slice it covers.
 
 ## §3 Platform rules — React Native · Next.js · shared
 

@@ -40,8 +40,9 @@
  * Omit<OperationProgressProps, …>`) are invisible and method shorthand (`onX(): void`) is not read
  * at all, so (b) under-reports; every ambiguity here resolves toward under-reporting on purpose,
  * because this gate must never invent work. Namespaces are FLATTENED — one per contract file, one
- * per component folder plus the non-component modules it imports (`utils/format` →
- * `utils/market-pack`, where several components legitimately declare their contract) — while
+ * per component folder plus the non-component modules it imports, followed transitively across
+ * workspace packages too (`utils/format` → `@heliogrid/domain`'s format slice, where the market
+ * pack several components declare their contract against now lives) — while
  * sibling COMPONENT folders are deliberately NOT followed, since pulling Provenance's props into
  * Accordion's would mask real findings. It says nothing about behaviour, defaults, focus order,
  * a11y, tokens, copy or state, roughly two thirds of what the audits found: this closes ONE class,
@@ -50,7 +51,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
-import { ADHERENCE, byName, mentions, strip, UI, walkFiles } from './lib.mjs';
+import { ADHERENCE, byName, mentions, ROOT, strip, UI, walkFiles } from './lib.mjs';
 
 /**
  * The contract files are DATA this gate reads as TEXT — never compiled, never imported, never
@@ -76,6 +77,11 @@ const PLATFORM_LOCAL = new Set(['style', 'className']);
 const MEMBER = /^\s*(?:readonly\s+)?['"]?([A-Za-z0-9_$]+)['"]?\s*\??\s*:\s*([\s\S]+)$/;
 const DECL = /\b(?:export\s+)?(?:declare\s+)?(interface|type)\s+([A-Za-z0-9_$]+)/g;
 const RELATIVE = /from\s*['"](\.[^'"]*)['"]/g;
+/* A workspace import is followed exactly like a relative one. The walk used to stop at the
+   package edge, so moving a declaration into `@heliogrid/domain` — where CLAUDE.md §6 says
+   formatters and market config belong — made every prop on it read as DROPPED. Widening the
+   resolution is this gate's own stated remedy for a false positive; silencing it is not. */
+const WORKSPACE = /from\s*['"]@heliogrid\/([a-z-]+)['"]/g;
 const IMPORTED = /import[^;]*?\{([^}]*)\}[^;]*?from\s*['"][^'"]+['"]/g;
 
 const nestDelta = (ch) => ('{(['.includes(ch) ? 1 : 0) - ('})]'.includes(ch) ? 1 : 0);
@@ -169,8 +175,12 @@ function readPort(name) {
   const seen = new Set(queue);
   const shared = [];
   for (let i = 0; i < queue.length; i += 1) {
-    for (const match of readFileSync(queue[i], 'utf8').matchAll(RELATIVE)) {
-      const base = resolve(dirname(queue[i]), match[1]);
+    const source = readFileSync(queue[i], 'utf8');
+    const bases = [
+      ...[...source.matchAll(RELATIVE)].map((m) => resolve(dirname(queue[i]), m[1])),
+      ...[...source.matchAll(WORKSPACE)].map((m) => join(ROOT, 'packages', m[1], 'src')),
+    ];
+    for (const base of bases) {
       const tries = [`${base}.ts`, `${base}.tsx`, join(base, 'index.ts'), join(base, 'index.tsx')];
       const target = tries.find((path) => existsSync(path));
       if (!target || seen.has(target) || target.startsWith(`${UI}/`)) continue;

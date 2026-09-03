@@ -113,12 +113,13 @@ platform files import the same `<Name>.types.ts`, so divergence cannot compile. 
   `@heliogrid/data`). `HealthStatus` was a hand-written interface duplicating the liveness
   200 schema; a contract gaining a field drifted silently. Import the exported schema type
   (`Liveness`) instead.
-- **Protocol constants come from `@heliogrid/domain`** (`OTP_LENGTH`, `PHONE_NSN_LENGTH`,
-  `COUNTRY_CALLING_CODE`) — they lived in contracts until 2026-08-01 and moved down a layer
-  with the auth teardown, because domain outlives a contract being deleted and rebuilt. The
-  phone pair is the IN market's spec and becomes injected market-pack config when packs land
-  (global ruling 2026-08-02). This screen used to define its own `OTP_LEN`/`PHONE_LEN`, so a
-  server-side OTP-length change would leave the boxes rendering the old count.
+- **Protocol constants come from `@heliogrid/domain`** (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) —
+  they lived in contracts until 2026-08-01 and moved down a layer with the auth teardown,
+  because domain outlives a contract being deleted and rebuilt. This screen used to define its
+  own `OTP_LEN`, so a server-side OTP-length change would leave the boxes rendering the old
+  count. **The phone pair is NOT one of them**: the calling code and the national-number length
+  are market facts and live in `pack.formats` (`IN_FORMATS.phone`, `F1-49`) since the format
+  slice landed — the injected-market-pack move the global ruling 2026-08-02 promised.
 - `pod install` fails with `Unicode Normalization not appropriate for ASCII-8BIT` unless the
   shell locale is UTF-8 — prefix `LANG=en_US.UTF-8` (hit 2026-07-27 adding react-native-screens).
 - **apps/mobile pins `zod` explicitly (3.25.76)** like api/worker. Without it pnpm resolved

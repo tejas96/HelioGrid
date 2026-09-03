@@ -46,9 +46,10 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 **Understand → build → `/verify` → `/finish`.**
 
-Before writing code, say two things: **which package owns each new file**
-(`docs/engineering/architecture.md` §4) and **what will prove it works**. Anything whose shape is
-still in question gets settled with the owner first.
+Before writing code, say three things: **which package owns each new file**
+(`docs/engineering/architecture.md` §4), **which facts are new and where their TYPE lives** (§8,
+unspeakable-by-default), and **what will prove it works**. Anything whose shape is still in
+question gets settled with the owner first.
 
 ## 4. Stop and ask the owner before
 
@@ -68,6 +69,8 @@ still in question gets settled with the owner first.
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
 | `pnpm check:all` | **Before you push.** Fixes formatting, then every gate. Fast, no build, no DB. |
 | `pnpm verify` | **The full proof.** Build · lint · boundaries · typecheck · all gates · invariants. |
+| `pnpm test:unit` | Unit tests. In `check:all` and `verify`; `pnpm test:watch` while writing. |
+| `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
 | `pnpm db:migration:new` | The only way a migration is created. Never hand-author one. |
 
 - `verify` needs a live postgres (`pnpm infra:up`, then `DATABASE_URL`) or the invariants fail —
@@ -144,12 +147,21 @@ lint rule or an invariant actually holds it — several here are held only by re
 Every line, every app, every package. No exceptions for "just this once".
 
 - **The gates hold the mechanics.** Formatting · `any`/`!`/`==`/`console.log` · env access ·
-  **files ≲300 lines, split by responsibility** · no test files · style out of the component file ·
+  **files ≲300 lines, split by responsibility** · unit-test name and place · style out of the component file ·
   no app-declared enum, union or lookup. All enforced — run `pnpm check:all` and fix what it says.
 - **Zero duplication.** Before writing anything, search for it. A second copy of a definition,
   a formula or a shape is a defect even when both copies are correct — they will diverge.
   `check:dupes` catches clones of 12+ lines; a duplicated constant or a re-derived formula it
   cannot see, and that one is yours to refuse.
+- **A shared fact is UNSPEAKABLE outside its owner.** Before writing a value a second package
+  could ever need, ask: *could a consumer just type this themselves?* If yes, it will be typed
+  twice. Give it a branded type in its owning package so the only way to obtain one is to
+  import it. Gates catch a bad IMPORT; nothing but a type catches a fact WRITTEN in the wrong
+  place — measured 2026-09-03, nine such injections passed every gate in this repo.
+  Owners: money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies →
+  `contracts` · visual values → `theme` · queries → `db` · wire calls → `data`.
+- **Never `as <Brand>`.** A cast is the one hole in a branded type, so outside the owning
+  package it is a defect and never a shortcut — call the constructor instead.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how. A reader who does
   not know this codebase follows a function top to bottom without scrolling back. If
   explaining it needs a comment, the code is wrong — fix the code, not the comment. A comment
@@ -168,8 +180,26 @@ Every line, every app, every package. No exceptions for "just this once".
 - **Dependencies change only through `pnpm add`/`pnpm remove`.** Never hand-edit a dependency
   block, never touch a lockfile. **The database is read-only to you** — schema through
   `pnpm db:migration:new`, data through the application. Both are hook-enforced.
-- **No unit tests** — never a `.test.*`/`.spec.*` file. `tests/invariants/` is the only
-  executable check layer; behaviour is proven by running it.
+- **Unit tests are required for the LOGIC layers** (owner ruling 2026-09-03, replacing the
+  2026-07-29 ban). `packages/domain` · `packages/contracts` · `packages/forms` · `apps/api` ·
+  `apps/worker`. Not the frontend — `packages/ui`, `apps/web`, `apps/mobile` are proven by
+  running them; `packages/data` by driving the real client; `packages/db` by migrations and
+  `tests/invariants/`.
+- **One name, one place: `<package>/tests/**/*.test.ts`.** Never `*.spec.*`, never `__tests__/`,
+  never beside the source — inside `src/` the package's own `tsc -b` compiles the test into
+  `dist/` and ships it. Held by `.claude/hooks/block-test-files.sh` and `check:adherence`.
+- **Test the DECISION, at its edges.** One `it.each` table per rule, rows for the boundary and
+  one either side of it, the empty, the negative, the zero. A test that restates the
+  implementation proves nothing; a test that pins a value the PRD fixes proves the row. Never
+  test a type, a constant or a re-export, and never mock what this repo owns.
+- **A test imports `../../src/…`, never `@heliogrid/<pkg>`.** The package specifier resolves to
+  BUILT `dist/`, so the test passes against the last build and says nothing about the source you
+  just edited.
+- **Coverage thresholds land WITH the slice** (Law 9), per glob in `vitest.config.mts`, at 100%.
+  A global floor over untested packages is either meaningless or red on day one.
+- **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the
+  SYSTEM against real state — tenancy holds, one format implementation exists. A unit test
+  proves one decision at its edges. Neither substitutes for the other.
 
 Writing rules, not code:
 
@@ -179,8 +209,9 @@ Writing rules, not code:
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial
   review only when asked for by name.
-- **Repo law beats a plugin skill.** Named: the test-driven-development skill never applies
-  here; planning skills write to `.superpowers/`, never `docs/superpowers/`.
+- **Repo law beats a plugin skill.** The test-driven-development skill may now be used for the
+  logic layers above, and never overrides this file's name, place and scope rules; planning
+  skills write to `.superpowers/`, never `docs/superpowers/`.
 
 ## 9. Product law
 

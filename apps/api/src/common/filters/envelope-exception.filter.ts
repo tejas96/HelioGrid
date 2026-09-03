@@ -29,6 +29,12 @@ interface Envelope {
  * its own contract, an undeclared status, a thrown Error — collapses to exactly this, and the
  * truth goes to the log under the same request id.
  */
+/**
+ * The 5xx boundary. Named because `status >= 500` reads as arithmetic and IS a policy: at and
+ * above this the client is told nothing and the log keeps the truth.
+ */
+const SERVER_ERROR_STATUS = 500;
+
 const OPAQUE_INTERNAL: Envelope = {
   status: errorHttpStatusByCode.INTERNAL,
   code: 'INTERNAL',
@@ -98,7 +104,7 @@ function envelopeFor(exception: unknown): Envelope {
   // A status the code→status map does not name is one no contract declares — including the
   // 500 ts-rest raises when a handler answers with an undeclared status. Opaque, not guessed.
   if (code === undefined) return OPAQUE_INTERNAL;
-  return status >= 500
+  return status >= SERVER_ERROR_STATUS
     ? { status, code, message: OPAQUE_INTERNAL.message }
     : { status, code, message: httpExceptionMessage(exception) };
 }
@@ -140,7 +146,7 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
     res.setHeader(REQUEST_ID_HEADER, requestId);
 
     const { status, code, message, details } = envelopeFor(exception);
-    if (status >= 500) {
+    if (status >= SERVER_ERROR_STATUS) {
       // The client sees opaque INTERNAL; the log keeps the truth, under the same request id.
       this.logger.error(safeErrorLog(exception, requestId), 'Request failed internally');
     }

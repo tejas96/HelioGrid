@@ -49,6 +49,8 @@ docs/engineering/architecture.md §2 apps/api. Web and mobile reach it over HTTP
 - **Response validation is ON globally** (`TsRestModule.register({ validateResponses: true })`).
   A handler whose body fails its own contract, or which answers an UNDECLARED status, becomes
   an opaque `INTERNAL` on the wire — the truth goes to the log, under the same request id.
+- **The header NAME is `REQUEST_ID_HEADER` from `@heliogrid/contracts`** — never the literal.
+  It is one wire fact and `packages/data` forwards the same one (owner ruling 2026-09-03).
 - **`x-request-id` is assigned in one place** (`common/request-id.ts`, mounted before CORS
   and body parsing) so even a parser 413 carries one. A caller-supplied id is honoured only
   if it matches `[A-Za-z0-9._:-]{1,128}`; anything else is replaced, never echoed. It is a

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useFormat } from '../MarketProvider';
 import { OperationActions } from './OperationActions';
 import { OperationHead } from './OperationHead';
 import { OperationMessage } from './OperationMessage';
@@ -47,7 +48,8 @@ export function OperationProgress({
   const running = state === 'running';
   const pct = resolvePercent(state, value);
   const cancel = resolveCancel(onCancel, cancelEffect);
-  const counted = countWords(count, unit);
+  const { number } = useFormat();
+  const counted = countWords(count, unit, number);
   const step = stepWords(stageIndex, stageTotal);
   const showActions =
     cancel !== null || destination !== undefined || (state === 'failed' && onRetry !== undefined);

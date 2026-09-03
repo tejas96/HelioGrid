@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { NumberOptions } from '../../utils/format';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
@@ -37,7 +38,7 @@ export interface CompareAttribute<Opt extends CompareOption = CompareOption> {
   format?: (v: number) => string;
   money?: boolean;
   compact?: boolean;
-  numberOptions?: Intl.NumberFormatOptions;
+  numberOptions?: NumberOptions;
   numeric?: boolean;
   mono?: boolean;
   strong?: boolean;

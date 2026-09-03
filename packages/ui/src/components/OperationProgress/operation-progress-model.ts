@@ -61,18 +61,25 @@ export function resolvePercent(
   return Math.max(0, Math.min(100, value));
 }
 
-/** "142 of 400 rows". Nothing without a finite total. */
+/**
+ * "142 of 400 rows". Nothing without a finite total.
+ *
+ * The number renderer is passed IN — `useFormat().number`, the market's. It used to construct
+ * a bare `new Intl.NumberFormat()`, which groups by the DEVICE's locale: an Indian tenant on a
+ * US phone read `452,471` where every other figure on the screen read `4,52,471`. `F3-19` allows
+ * exactly one number implementation and it is `@heliogrid/domain`'s.
+ */
 export function countWords(
   count: OperationCount | null | undefined,
   unit: string | undefined,
+  formatCount: (value: number) => string,
 ): string | null {
   if (count === null || count === undefined || !Number.isFinite(count.total)) {
     return null;
   }
-  const format = new Intl.NumberFormat();
   const suffix = unit === undefined ? '' : ` ${unit}`;
   const done = Number.isFinite(count.done) ? count.done : 0;
-  return `${format.format(done)} of ${format.format(count.total)}${suffix}`;
+  return `${formatCount(done)} of ${formatCount(count.total)}${suffix}`;
 }
 
 /** "Step 2 of 3", when the caller has both halves. */

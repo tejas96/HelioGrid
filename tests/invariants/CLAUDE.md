@@ -2,8 +2,10 @@
 
 ## What lives here / what must never live here
 - The locked invariant set: tenancy RLS, table tenancy scan, enum parity, schema parity,
-  tenant-id-in-body. **Additions require explicit owner approval** — the set is deliberately
-  small so a green run means something.
+  tenant-id-in-body, format rendering. **Additions require explicit owner approval** — the set
+  is deliberately small so a green run means something. `format-rendering` was approved with the
+  format slice: it is STATIC, and it is the only proof that `F1-46`'s exact strings ship, since
+  `₹92 lakh` and `₹92L` both read as reasonable code.
 - NEVER a unit test: no `.test.*`, no `.spec.*` (owner directive 2026-07-29, hook-blocked).
   An invariant proves a property of the SYSTEM against a real database or the real contract;
   it does not exercise a function.
@@ -30,6 +32,10 @@ POINT — an invariant proves the seam between them.
   early return.
 - Db checks target the existing `heliogrid-pg-local` container (postgres:16, port 5544).
   Never create a container or clone a database (owner ruling 2026-08-03).
+- **Injecting a violation into a workspace package proves nothing until you REBUILD it.** This
+  package imports `@heliogrid/domain` as its BUILT `dist/`, so editing `src/` and re-running
+  reports the old result — a false green that looks exactly like a passing check. Rebuild the
+  package between the injection and the run.
 
 ## Definition of done here
 The invariant fails on the violation it names — inject the violation once, watch it go red,

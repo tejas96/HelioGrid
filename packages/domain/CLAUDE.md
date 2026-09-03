@@ -14,10 +14,10 @@
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global
   (the POC's `resolveRules()` pattern) is the specific anti-pattern this package exists
   to prevent.
-- **No test files here either.** An old dependency-cruiser comment claimed colocated tests
-  live in this package; that predates the owner's no-unit-tests directive (2026-07-29) and
-  was corrected when this package landed. The only executable checks are `tests/invariants/`
-  and on-demand `scripts/`.
+- **Unit tests live in `tests/`, never in `src/`** (owner ruling 2026-09-03). `tsc -b` compiles
+  everything under `src/` into `dist/`, so a colocated test ships. `tests/tsconfig.json` is its
+  own project and `pnpm --filter @heliogrid/domain typecheck` runs both. A test imports
+  `../../src/…`; `@heliogrid/domain` would resolve to `dist/` and test the last build.
 
 ## Commands
 pnpm --filter @heliogrid/domain typecheck | build
@@ -57,16 +57,18 @@ A business enum both layers need is defined HERE as a pure union; contracts then
   beside `capabilities.ts`. The visibility matrix is empty on purpose: M01's rows are all
   acts, and an unlanded domain resolves to `none`, which is fail-closed and correct.
 - Landed so far: the authorization policy (`authz/`), login flow types + behavioural constants
-  (`auth/login-state.ts`,
-  `auth/login-policy.ts`), the OTP protocol constants (`auth/otp.ts`), `TENANT_SEGMENTS`
-  (`tenancy/segment.ts`). Phone NSN display moved OUT: grouping is the market pack's, not a fixed
-  5+5, so it sits beside money and date in `packages/ui/src/utils/format.ts` until the money slice
-  below brings all three back here together (`docs/engineering/architecture.md` §2, `packages/ui`).
-  Still to come, in order:
-  the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6),
-  `formatMoney(amount, currency, locale)` (market grouping per currency — lakh/crore for INR;
-  global ruling 2026-08-02 renamed the planned `formatInr` before it was built), then the
-  invite/role invariants currently embedded in `apps/api` services.
+  (`auth/login-state.ts`, `auth/login-policy.ts`), the OTP protocol constants (`auth/otp.ts`),
+  `TENANT_SEGMENTS` (`tenancy/segment.ts`), and the FORMAT slice (`format/`) — `pack.formats`
+  and the four single implementations, money and date and phone display among them. Still to
+  come: the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6), then
+  the invite/role invariants currently embedded in `apps/api` services.
+- **`format/pack.ts` is FLAT, and that is not a style choice.** The design system's pulled
+  `MarketProvider` contract fixes `id`, `locale`, `currency`, `currencyFractionDigits`, `clock`
+  and `taxIdLabel` as names, and `ds:contract` fails on a dropped one. Grouping them into
+  sub-objects would make the DS and this package each declare a pack — the duplicate the slice
+  removed.
+- **`new Date(…)` is banned here, parsing included** (`check:adherence`, ADR-0021). Use
+  `Date.parse` and pass the epoch to Intl; constructing a Date is how a clock read gets in.
 
 ## Definition of done here
 Pure (cruiser purity rules green) · consumed by BOTH platforms where a mobile surface

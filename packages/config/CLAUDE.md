@@ -2,6 +2,8 @@
 
 ## What lives here / what must never live here
 - tsconfig presets only (`tsconfig/*.json`), consumed via `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
+- `tsconfig/base.json` holds the shared compiler options. The repo-root `tsconfig.base.json`
+  extends IT, so there is one copy and the packages that extend the root file keep working.
 - No runtime code, no dependencies, ever. Anything executable belongs in a real package.
 
 ## Commands
@@ -18,11 +20,17 @@ base strictness flag must be copied there by hand.
 - `node-package.json` — composite library package (dist + d.ts emit, project-reference member).
 - `nest-app.json` — NestJS app (decorators + metadata, no composite).
 - Presets use `${configDir}` (TS 5.5+) so outDir/rootDir resolve per consumer.
+- **Never a `//` comment in these files.** Biome parses them as strict JSON and the build goes
+  red. The reasons live here and in `docs/engineering/architecture.md` §2 config.
 
 ## Landmines
-- The relative `"extends": "../../../tsconfig.base.json"` resolves from this package's REAL
-  location on disk — it works because the repo root holds tsconfig.base.json. Do not move
-  this package deeper without fixing those paths.
+- **Every `extends` in this package must be PACKAGE-RELATIVE (`./base.json`).** A consumer reads
+  these files through `node_modules/@heliogrid/config/`, a pnpm symlink, so a path that climbs
+  out of the package (`../../../tsconfig.base.json`) resolves to
+  `packages/<consumer>/node_modules/` for any tool that does not realpath first. `tsc` DOES
+  realpath, which hid this from every gate; Vite's transform does not, and no unit test in the
+  repo could compile until it was fixed (2026-09-03). A green `pnpm turbo typecheck` does not
+  prove these paths resolve — only a non-tsc tool does.
 
 ## Definition of done here
 A preset change is done when `pnpm turbo typecheck` stays green across the workspace.

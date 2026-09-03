@@ -67,6 +67,18 @@ export const workflowStatusSchema = z.enum([
 export type WorkflowStatus = z.infer<typeof workflowStatusSchema>;
 
 /**
+ * Our request-correlation header. The API assigns one per request before CORS and body
+ * parsing (so even a parser 413 carries it) and echoes it on the response; a server render
+ * forwards it so one user action has ONE id end to end.
+ *
+ * Here, not in an app: it was written in `apps/api` AND `packages/data` until 2026-09-03, and
+ * a header the two sides spell differently correlates nothing. Owner ruling 2026-09-03 —
+ * contracts is the wire truth, and this is wire, not business truth. It is not in the OpenAPI
+ * document: the transport sets it, no route declares it.
+ */
+export const REQUEST_ID_HEADER = 'x-request-id';
+
+/**
  * Pagination convention: offset-based, tenant-scoped, STABLE order (indexed sort key +
  * id tiebreaker — repository recipe in apps/api/CLAUDE.md). Offset over cursor is a
  * 2026-08-02 owner decision (specs/2026-08-02-foundation-dx-design.md §4): per-tenant CRM

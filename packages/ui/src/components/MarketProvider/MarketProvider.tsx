@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createFormat, GENERIC_PACK, IN_FORMAT, IN_PACK } from '../../utils/format';
+import { createFormat, IN_FORMAT, IN_FORMATS } from '../../utils/format';
 import type { MarketProviderProps } from './MarketProvider.types';
 import { FormatContext, useFormat } from './market-context';
 
@@ -19,7 +19,6 @@ export function MarketProvider({ pack, format, children }: MarketProviderProps) 
    hook as the named export, so a consumer holding only the component still finds the format. */
 MarketProvider.useFormat = useFormat;
 MarketProvider.createFormat = createFormat;
-MarketProvider.IN_PACK = IN_PACK;
-MarketProvider.GENERIC_PACK = GENERIC_PACK;
+MarketProvider.IN_FORMATS = IN_FORMATS;
 
-export { createFormat, GENERIC_PACK, IN_PACK, useFormat };
+export { createFormat, IN_FORMATS, useFormat };
