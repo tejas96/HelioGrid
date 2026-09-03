@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   /* RN has no inset box-shadow: the checked 2px accent ring is a border of the same weight. */
   boxChecked: {

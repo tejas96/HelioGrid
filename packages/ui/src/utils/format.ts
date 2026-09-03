@@ -38,6 +38,11 @@ export interface MarketFormat {
   compact: (n: number | string) => string;
   compactMoney: (n: number | string) => string;
   /** "17:00" → "17:00" or "5:00 PM" by the pack's clock. Storage stays 24-hour. */
+  /**
+   * A phone number as a reader sees it — E.164 in, the market's dial code and grouping out.
+   * `+919845027746` → `+91 98450 27746`. Pass `nsn` for the national number alone.
+   */
+  phone: (value: string, opts?: { nsn?: boolean }) => string;
   time: (hhmm: string) => string;
   /** A date in the pack's language and field order — "12 Mar 2026" under the India pack. */
   date: (value: string | Date) => string;
@@ -51,6 +56,28 @@ export interface MarketFormat {
   weekdayNames: (style?: 'narrow' | 'short' | 'long') => string[];
   /** Strips grouping and symbols so a typed amount parses back to a number. */
   parseNumber: (input: string | number) => number | null;
+}
+
+/* PHONE — the grouping and the dial code are the PACK's (`F1-49`), never a component's. Storage and
+   transport stay E.164 (`contracts/common.ts`); this is display only and validates nothing, because
+   a refusal is the caller's to word. */
+const NON_DIGIT = /\D/g;
+
+/** Splits a national number into the market's groups. Digits beyond the declared groups stay in the
+    last one, so a number longer than the market expects renders whole and wrong rather than short
+    and plausible. */
+function groupNsn(nsn: string, groups: number[]): string {
+  const digits = nsn.replace(NON_DIGIT, '');
+  if (groups.length === 0) return digits;
+  const parts: string[] = [];
+  let at = 0;
+  for (const size of groups.slice(0, -1)) {
+    if (at >= digits.length) break;
+    parts.push(digits.slice(at, at + size));
+    at += size;
+  }
+  if (at < digits.length) parts.push(digits.slice(at));
+  return parts.join(' ');
 }
 
 /** What every formatter accepts at runtime — a caller outside TypeScript can still pass null. */
@@ -214,8 +241,28 @@ export function createFormat(pack: MarketPack = {}): MarketFormat {
     return Number.isNaN(n) ? null : n;
   };
 
+  /* The grouping and the dial code are the PACK's; the splitting is domain's. Neither belongs to a
+     component, which is how one number ended up formatted two ways on two screens. */
+  /* A NUMBER FROM ANOTHER MARKET IS SHOWN AS IT ARRIVED. This pack knows India's grouping and
+     nothing else, so applying 5+5 to a US number renders `14155 551234` — unreadable, and it looks
+     like an Indian number that lost a digit. Relabelling it `+91` would be worse. E.164 unchanged
+     is the only honest answer, and it stays legible. */
+  const phone = (value: string, opts?: { nsn?: boolean }): string => {
+    const raw = String(value);
+    const digits = raw.replace(NON_DIGIT, '');
+    const code = p.phone.dialCode.replace(NON_DIGIT, '');
+    if (opts?.nsn === true) return groupNsn(digits, p.phone.nsnGroups);
+    if (code.length > 0 && digits.startsWith(code)) {
+      return `${p.phone.dialCode} ${groupNsn(digits.slice(code.length), p.phone.nsnGroups)}`;
+    }
+    /* An explicit country code that is not this market's — leave it exactly as stored. */
+    if (raw.trim().startsWith('+')) return raw.trim();
+    return groupNsn(digits, p.phone.nsnGroups);
+  };
+
   return {
     pack: p,
+    phone,
     number,
     money,
     currencySymbol,

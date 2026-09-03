@@ -21,6 +21,32 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 - **Error** — an assignment save fails; what happened and what to do next, per F7's contract.
 - **grant-line-updating-live** — as presets are toggled on/off, the plain-English grant line updates live to describe exactly the resulting grants (M01-20 acceptance).
 
+**Decisions made in design (2026-08-31) — later screens inherit them.**
+
+1. **Entry is a person's row on `SCR-M01-12`**, not pinned by the PRD. `M01-20` assigns presets *to a
+   person*, so the per-person entry is the natural path.
+2. **Two of the brief's states are not surface states.** `empty` is a COMBINATION — the twelve presets
+   always exist — and `error` is a failed save that must keep the composed ticks. Both are drawn as
+   content inside a live screen rather than through the component's own `state`, which would blank the
+   list in one case and discard the owner's work in the other. `loading` does use it.
+3. **`grant-line-updating-live` is drawn as a before/after pair.** A static board cannot show a
+   sentence changing, so it shows the two ends of the change.
+4. **The twelve presets carry `F2`'s canonical names** — all twelve, from `F2-01`'s table: `EPC
+   Owner` · `Sales Manager` · `Sales Executive` · `Survey Engineer` · `Design Engineer` · `Project
+   Manager` · `Field Technician` · `Installation Team Member` · `HR/Admin` · `Finance` ·
+   `Operations` · `Marketing` — in `F2`'s own order. `F2-01` names the twelve verbatim and `F2-02`
+   forbids renaming them, so a preset list is never transcribed from another frame.
+
+5. **`N8` is closed with both halves** — the undo in a toast, AND the recovery route in words, on the
+   confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
+   The toast is a `ToastHost`, which owns its own placement and clearance.
+
+**The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31, `Q80`), never
+`name + "can" + phrases`. Each language supplies its own template and its own list joiner, so word
+order belongs to the translator rather than to the code — Hindi and Marathi put the verb after the
+list, which is what a concatenation cannot express. **A preset supplies a full CLAUSE, not a
+fragment**: `Viewer` reads *"can look but change nothing"* and joins cleanly.
+
 ## Data volume
 
 Design at F2's full preset set: twelve presets available to stack per person (M01 §M01.2, F2-01), any combination of which may already be held. One person per assignment surface.

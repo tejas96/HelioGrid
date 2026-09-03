@@ -1,3 +1,8 @@
+/* AN OVERLAY THAT HOLDS THINGS IS A CONTAINER, SO IT SITS ONE STEP BELOW THEM (owner ruling
+   2026-08-28, Q77). --surface-form, not --surface: a control or a card inside is --surface and must
+   be BRIGHTER than what holds it, or it disappears — a white field on a white sheet is the same
+   white-on-white defect the ladder exists to prevent. Header and footer match the panel so no seam
+   shows when content scrolls beneath them. */
 /* Modal — the centred member of the Sheet family. Same backdrop law: blur + fade toward white,
    never a dark scrim. Springs in with a 12px rise and a 0.97 scale (hg-modal-in). The close
    button, the footer action row and the backdrop are the family's shared chrome — see
@@ -30,7 +35,7 @@
   display: flex;
   flex-direction: column;
   outline: none;
-  background: var(--surface);
+  background: var(--surface-form);
   border-radius: var(--hg-modal-radius);
   box-shadow: var(--e5);
   animation: hg-modal-in var(--dur-emphasised) var(--ease-spring);

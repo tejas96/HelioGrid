@@ -51,6 +51,13 @@
   transition: background var(--dur-standard) var(--ease-standard);
 }
 
+/* ONE PILL, TWO JOBS. `.hg-chip` is a static label AND the visible body of a pressable chip, so the
+   lift hangs off the pressable wrapper rather than the pill: a control is raised, a label is not
+   (owner ruling 2026-08-28, Q77). Raising both would make every decorative chip read as pressable. */
+.hg-chip-target .hg-chip {
+  box-shadow: var(--e2);
+}
+
 .hg-chip[data-active="true"] {
   background: var(--action-primary);
   color: var(--text-inverse);

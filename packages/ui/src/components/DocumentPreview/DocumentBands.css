@@ -107,7 +107,6 @@
 .hg-doc-section-meta {
   font-size: 9px;
   color: var(--text-tertiary);
-  white-space: nowrap;
 }
 
 .hg-doc-tranche-index {
@@ -141,7 +140,6 @@
   font-size: 10px;
   text-align: right;
   color: var(--text-secondary);
-  white-space: nowrap;
   vertical-align: top;
 }
 

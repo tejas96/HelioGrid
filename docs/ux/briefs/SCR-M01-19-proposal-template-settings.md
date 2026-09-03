@@ -8,6 +8,24 @@ Document defaults: cover, included sections, default T&C, bank details, and the 
 
 Reached from: the tenant-config settings surface map — *Proposal templates* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the proposal builder consumes these document defaults, including everything Quick mode fills for its hidden steps (M01-51, M01-53 context, M01 §4 contracts); T&C templates support the builder's "save as template" round-trip (§M01.6 behavior detail, M06's step).
 
+**Decisions made in design (2026-09-02) — later screens inherit them.**
+
+1. **Bank details are shown as they print and written once elsewhere** (`M01-31`'s single
+   write-point). Two editable copies of one account number is how a proposal and an invoice come to
+   disagree about where a customer sends money.
+2. **`Proposal` is stated as content, not as a greyed field.** The document is named that in every
+   locale (`R1` via `F3-11`) — the one fact here a tenant cannot change — and `F7-11` says disabled
+   is never the only signal.
+3. **A timeline phase's fields live in a sheet, not inline in the row.** A 205px inline field cannot
+   hold a sentence a customer reads, and the row already spends its width on three 44px controls.
+4. **Terms and conditions cannot be switched off** (`Q82`). Every other section is the tenant's
+   choice; this one is a floor, so the row carries **no toggle** and states the floor by name —
+   `ComplianceFloor`'s case, where the control is absent rather than disabled. The wording stays
+   the tenant's, through the same standard-terms editor — *whether it prints is not a setting*.
+5. **The reorder row is floored by its controls, not its text** — three 44px buttons give a 132px
+   floor against a 105–122px Devanagari body, so the text has 10–27px of slack before anything
+   moves. Measured in both languages: nothing moves.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`

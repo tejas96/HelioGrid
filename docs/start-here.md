@@ -113,17 +113,24 @@ UX status    : pending                               ← this is how you know it
 Design link  : —
 ```
 
-### Finding today's screen, by hand
+### Finding today's screen
 
-Open `docs/prd/registers/screens.md`, go to **§2 Screen index**, and scroll down to the **first row
-that says `V1` and whose `UX status` still says `pending`**. That row is today's screen. Its
-`Brief` column is the file you paste.
+```bash
+python3 scripts/next-screen.py
+```
 
-**A `V2` row is not today's screen, ever** — scroll past it. It stays `pending` for the whole of
-V1 and that is correct, not a backlog you are falling behind on.
+It prints the screen, the two files to paste, and the two `file:line` locations to edit
+afterwards. Run it — do not read the register top to bottom instead.
 
-That is the whole method. Every row you finish becomes `designed`, so the first `pending` row
-always moves down by one and you never lose your place — even if you stop for a week.
+**The register is not in build order.** §2 groups screens by module for auditing; the eight
+blocks above are the order you draw them in, and the two disagree from the very first screen.
+The one that trips people is `SCR-SHELL-06` — it sits with the other shell rows in §2, but it
+renders a tenant's M12 billing state, so it belongs to block 2 and cannot be drawn before M12.
+
+**Doing it by hand:** take the blocks above in order; inside a block, take that module's §2 rows
+in order; skip every row whose `V` is `V2`, and every row whose `UX status` is already `designed`.
+A `V2` row is never today's screen — it stays `pending` for the whole of V1, and that is correct,
+not a backlog you are falling behind on.
 
 ### Finding the two lines to edit afterwards
 
@@ -136,9 +143,9 @@ Search the repo for the screen's `SCR-` id. It appears in exactly two places tha
 Both get the same link. Ignore any hit inside `docs/tasks/README.md` — that file only *documents* what
 a `DESIGN:` line looks like.
 
-*(There is also a `scripts/next-screen.py` that does this lookup for you and prints the
-two file:line locations. It's optional — everything above works without it, and the register is
-the source of truth either way.)*
+*(`scripts/next-screen.py` prints both locations too, and it reads the header row rather than
+counting columns, so a new column cannot make it lie. The register stays the source of truth for
+what exists and what is done; the script only puts it in build order.)*
 
 
 ## Step 1 — open a Claude Design session
@@ -198,24 +205,17 @@ this file, unchanged", and pasting guarantees both documents are actually in the
 > genuinely different, because the constraints are. A 1536px desktop that is the 375px phone
 > stretched wide is wrong; so is a desktop that quietly drops something the phone can do.
 >
-> Three things change, and you should let them:
+> Two things are genuinely different at this width, and you should let them be:
 >
-> 1. **The shell itself changes by law.** `F7-22`: an arc bar with an elevated centre action on
->    mobile, a sidebar-and-header shell on desktop. Not a variant of one thing — two forms.
-> 2. **The design system already owns most responsive behaviour.** Its components change form on
->    their own — by their **own width**, not the viewport — so pass the same props at both widths
->    and let each pick its form. Do not hand-roll a second layout for something a component already
->    handles, and do not fight a component that is deliberately changing shape.
-> 3. **Desktop has room the phone does not, and using it is the point.** More rows visible at once,
->    more columns, a persistent panel where the phone needed an overlay, less progressive
->    disclosure because there is less to defer. Density is a real difference, not a nicety.
+> 1. **The shell is a different object** (`F7-22`) — an arc bar with a raised centre action on
+>    mobile, a sidebar-and-header shell on desktop. Two forms, not one form with a variant.
+> 2. **Desktop has room the phone does not, and using it is the point.** More rows on screen at
+>    once, more columns, a persistent side panel where the phone needed an overlay, less deferred
+>    behind a tap. Density is a real difference, not a nicety.
 >
-> What must **not** change: any capability, any state, any fact. A thing available on one width and
-> absent on the other is an `F7-31` violation, not a design decision.
->
-> When you're done, name the places where the desktop arrangement genuinely differs and say in one
-> line why each. Where a section really is the same frame with more whitespace, say that too — I
-> want the judgement visible, not just the frames.
+> When you're done, name each place the desktop arrangement genuinely differs, one line of why.
+> Where a section is honestly the same frame with more whitespace, say that too — I want the
+> judgement visible, not just the frames.
 
 **Message 3:**
 

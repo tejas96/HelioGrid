@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    // A control is raised, not outlined — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
   skeletonStack: { padding: theme.spacing['sp-2'] },
   skeletonHead: { height: MIN_TOUCH_TARGET, backgroundColor: theme.colors.canvas },

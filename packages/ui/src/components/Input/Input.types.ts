@@ -2,7 +2,8 @@ import type { ReactNode } from 'react';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
 
-/** expressive = 52px white; functional = 40px surface-alt. */
+/** Density changes the SIZE only — both grounds are `--surface` at `--e2` (Q77).
+ *  expressive = 52px, functional = 40px. */
 export type InputDensity = 'expressive' | 'functional';
 
 export interface InputProps {
@@ -19,7 +20,7 @@ export interface InputProps {
    * native counterpart on each; anything else falls back to plain text.
    */
   type?: InputType;
-  /** expressive = 52px white; functional = 40px surface-alt */
+  /** expressive = 52px, functional = 40px — size only, never the ground (Q77) */
   density?: InputDensity;
   /** error message — inset 1.5px danger ring + text below */
   error?: string;

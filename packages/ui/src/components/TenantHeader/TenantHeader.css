@@ -68,7 +68,6 @@
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
   color: var(--text-tertiary);
-  white-space: nowrap;
 }
 
 .hg-tenant-header {

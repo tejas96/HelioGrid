@@ -1,7 +1,10 @@
 # GENERATED — never hand-edit
 
 Pulled **2026-08-19** from Claude Design project `c8aa4326-21bf-453a-8d11-749cc81dee12`
-(HelioGrid Design System) via **DesignSync**.
+(HelioGrid Design System) via **DesignSync**. Four contracts re-pulled **2026-09-02** after their
+components were changed on both sides: `feedback/Toast`, `feedback/ToastHost`,
+`navigation/SegmentedControl`, `overlays/Modal`. A partial pull is named so the date above is not
+read as covering them.
 
 Every file in this folder is a byte-verbatim copy of the live design system:
 

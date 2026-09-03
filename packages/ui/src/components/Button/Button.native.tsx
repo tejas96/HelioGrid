@@ -23,7 +23,7 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
   secondary: {
     background: theme.colors.surface,
     color: theme.colors['text-primary'],
-    elevation: theme.elevation.e1,
+    elevation: theme.elevation.e2,
   },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
@@ -89,7 +89,10 @@ export function Button({
      ActionReason, and a spec with no sentence resolves to nothing and states nothing. */
   const reason = renderActionReason(disabledReason);
   const stated = disabled && reason !== null;
-  const labelColor = disabled ? theme.colors['text-disabled'] : visual.color;
+  /* A stated disabled label is information, not chrome — see the web half. */
+  const labelColor = disabled
+    ? theme.colors[stated ? 'text-secondary' : 'text-disabled']
+    : visual.color;
 
   const pill = (
     <Pressable
@@ -100,7 +103,8 @@ export function Button({
         SIZE[size],
         { backgroundColor: visual.background },
         disabled ? undefined : visual.elevation,
-        disabled ? styles.disabled : undefined,
+        // A ghost has no ground, and being unavailable does not give it one — see the web half.
+        disabled && variant !== 'ghost' ? styles.disabled : undefined,
         fullWidth ? styles.fullWidth : undefined,
         style,
       ]}

@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.body.fontSize,
     color: theme.colors['text-primary'],
-    ...theme.elevation.e1,
+    // An inline cell editor is a control — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
   editorMono: { fontFamily: theme.type.families.mono },
   /* RN has no focus/danger box-shadow ring, so the state rides on a real border of the same

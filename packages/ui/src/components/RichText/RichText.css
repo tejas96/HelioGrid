@@ -108,8 +108,10 @@
   border: none;
   outline: none;
   border-radius: var(--r-input-functional);
-  background: var(--surface-alt);
-  box-shadow: var(--e1);
+  /* A control is --surface at --e2 (Q77) — this is a text field, and it was the one left on the
+     dim ground the ruling was raised to end. */
+  background: var(--surface);
+  box-shadow: var(--e2);
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
   color: var(--text-primary);
@@ -195,13 +197,16 @@
   text-wrap: pretty;
 }
 
+/* A COUNT AND ITS LIMIT ARE INFORMATION, NOT DECORATION — the two words the tertiary rule names
+   outright. Drawing them tertiary until they go over says the number only matters once it is too
+   late, when the whole point is to be read on the way there. */
 .hg-rich-text-count {
   display: inline-flex;
   align-items: baseline;
   gap: var(--sp-3);
   font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-rich-text-count[data-over="true"] {

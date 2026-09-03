@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    // A control is raised, not outlined — `surface` at e2 (Q77).
+    ...theme.elevation.e2,
   },
 });
 

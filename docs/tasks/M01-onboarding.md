@@ -9,7 +9,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-001 · Sign In
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-02 (P0), M01-03 (P0), M01-04 (P0), MS12-17 (P0)
-**DESIGN:** SCR-M01-01 → PENDING
+**DESIGN:** SCR-M01-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-01-sign-in.md`; they are the specification.
 **DONE WHEN:**
 - Given an OTP that fails to deliver by SMS, when the failure occurs, then no automatic fallback to any other channel fires, login fails loudly with a plain retry-later message, and the resend control and the user-initiated "call me instead" voice option are the visible ways forward (M01-03, owner ruling 2026-08-06 Q47). *(This criterion previously read "when 30 s elapse or delivery fails, then the fallback channel fires automatically and resend + voice options are visible" — the ruling removes the automatic fallback it tested; copied verbatim from the amended §M01.1 acceptance block.)*
@@ -23,7 +23,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-002 · Company Signup
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-01 (P0), M01-08 (P0), M01-09 (P1)
-**DESIGN:** SCR-M01-02 → PENDING
+**DESIGN:** SCR-M01-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-02-company-signup.md`; they are the specification.
 **DONE WHEN:**
 - Given a new phone number, when signup completes, then exactly phone, OTP, company name, owner name and city were required, a tenant exists with the signer as EPC Owner, and no billing or payment step occurred (M01-01, M01-11).
@@ -35,7 +35,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
 **PRD rows:** F3-03 (P0)
-**DESIGN:** SCR-M01-03 → PENDING
+**DESIGN:** SCR-M01-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-03-onboarding-language.md`; they are the specification.
 **DONE WHEN:**
 - Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).
@@ -45,7 +45,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-23 (P0)
-**DESIGN:** SCR-M01-04 → PENDING
+**DESIGN:** SCR-M01-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-04+What+You+Sell+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md`; they are the specification.
 **DONE WHEN:**
 - Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26).
@@ -54,7 +54,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-005 · Business Profile
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-24 (P0), M01-25 (P0), M01-31 (P0)
-**DESIGN:** SCR-M01-05 → PENDING
+**DESIGN:** SCR-M01-05 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-05+Business+Profile+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-05-business-profile.md`; they are the specification.
 **DONE WHEN:**
 - Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).
@@ -65,7 +65,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-26 (P0)
-**DESIGN:** SCR-M01-06 → PENDING
+**DESIGN:** SCR-M01-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-06+Youre+Ready+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-06-setup-ready.md`; they are the specification.
 **DONE WHEN:**
 - Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26).
@@ -74,7 +74,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-007 · Invite Teammate
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-12 (P0), F2-21 (P1)
-**DESIGN:** SCR-M01-07 → PENDING
+**DESIGN:** SCR-M01-07 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-07+Invite+Teammate+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-07-invite-teammate.md`; they are the specification.
 **DONE WHEN:**
 - Given an invite with zero roles, when it is submitted, then it is blocked before sending (M01-12, F2-21).
@@ -84,7 +84,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-008 · Invite Landing
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-13 (P0)
-**DESIGN:** SCR-M01-08 → PENDING
+**DESIGN:** SCR-M01-08 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-08+Invite+Landing+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-08-invite-landing.md`; they are the specification.
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17).
@@ -93,7 +93,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-009 · First-Run Profile
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-14 (P0)
-**DESIGN:** SCR-M01-09 → PENDING
+**DESIGN:** SCR-M01-09 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-09+First-Run+Profile+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-09-first-run-profile.md`; they are the specification.
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17).
@@ -102,7 +102,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-010 · Role Explainer
 **Type:** screen · **Tier:** P1
 **PRD rows:** M01-15 (P1)
-**DESIGN:** SCR-M01-10 → PENDING
+**DESIGN:** SCR-M01-10 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-10+Role+Explainer+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-10-role-explainer.md`; they are the specification.
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17).
@@ -112,7 +112,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-011 · Profile & Preferences
 **Type:** screen · **Tier:** P0
 **PRD rows:** F3-03 (P0), F3-23 (P1), F6-15 (P2), F7-16 (P1)
-**DESIGN:** SCR-M01-11 → PENDING
+**DESIGN:** SCR-M01-11 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-11-profile-preferences.md`; they are the specification.
 **DONE WHEN:**
 - Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).
@@ -124,7 +124,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-012 · Team
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-19 (P0), F2-10 (P0), F2-19 (P0)
-**DESIGN:** SCR-M01-12 → PENDING
+**DESIGN:** SCR-M01-12 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-12-team.md`; they are the specification.
 **DONE WHEN:**
 - Given an attempt to deactivate the last EPC Owner, when it is submitted, then it is blocked with an explanation and the blocked attempt is audit-logged (M01-19, M01-18, F2-19/F2-22).
@@ -137,7 +137,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-013 · Assign Roles
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-20 (P0)
-**DESIGN:** SCR-M01-13 → PENDING
+**DESIGN:** SCR-M01-13 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-13+Assign+Roles+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-13-assign-roles.md`; they are the specification.
 **DONE WHEN:**
 - Given the Assign-roles screen, when presets are toggled, then the plain-English grant line updates live to describe exactly the resulting grants (M01-20).
@@ -146,7 +146,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-014 · Roles Reference
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-21 (P0)
-**DESIGN:** SCR-M01-14 → PENDING
+**DESIGN:** SCR-M01-14 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-14+Roles+Reference+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-14-roles-reference.md`; they are the specification.
 **DONE WHEN:**
 - Given the Roles reference, when it renders, then it is read-only, shows per-preset holder counts, and no role-editing action exists (M01-21).
@@ -155,7 +155,9 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-015 · Catalog Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-32 (P0), M01-34 (P0), M01-35 (P0), M01-37 (P0), M01-38 (P0), M01-43 (P0), M01-48 (P0)
-**DESIGN:** SCR-M01-15 → PENDING
+**DESIGN:** SCR-M01-15 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html
+  · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+States.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-15-catalog-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given a tenant with an override on a platform item, when any surface resolves that item, then the override's set fields win, unset fields fall through to the platform value, and own SKUs shadow nothing (M01-32, M01-37).
@@ -170,7 +172,9 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-016 · Add Catalog Item
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-36 (P0), M01-39 (P0), M01-40 (P0)
-**DESIGN:** SCR-M01-16 → PENDING
+**DESIGN:** SCR-M01-16 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html
+  · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+States.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-16-add-catalog-item.md`; they are the specification.
 **DONE WHEN:**
 - Given a missing product mid-proposal, when the person invokes add-in-flow, then single-form, datasheet-PDF and spreadsheet paths are all available, and completing any of them selects the new SKU in place without leaving the builder (M01-36, M01-39).
@@ -180,7 +184,8 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-017 · Catalog Import Wizard
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-41 (P0)
-**DESIGN:** SCR-M01-17 → PENDING
+**DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html
+  · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
 **DONE WHEN:**
 - Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41).
@@ -189,7 +194,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-018 · Branding Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-50 (P0), F7-07 (P0)
-**DESIGN:** SCR-M01-18 → PENDING
+**DESIGN:** SCR-M01-18 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-18-branding-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given any branding save, when it completes, then the operator app is visually unchanged and only customer documents carry the branding (M01-50).
@@ -200,7 +205,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-019 · Proposal Template Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-51 (P0), M01-52 (P1)
-**DESIGN:** SCR-M01-19 → PENDING
+**DESIGN:** SCR-M01-19 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-19+Proposal+Template+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51).
@@ -211,7 +216,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-020 · Payment Terms Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-54 (P0)
-**DESIGN:** SCR-M01-20 → PENDING
+**DESIGN:** SCR-M01-20 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-20+Payment+Terms+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default (M01-54).

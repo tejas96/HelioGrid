@@ -59,7 +59,10 @@ A business enum both layers need is defined HERE as a pure union; contracts then
 - Landed so far: the authorization policy (`authz/`), login flow types + behavioural constants
   (`auth/login-state.ts`,
   `auth/login-policy.ts`), the OTP protocol constants (`auth/otp.ts`), `TENANT_SEGMENTS`
-  (`tenancy/segment.ts`) and phone NSN display (`format/phone.ts`). Still to come, in order:
+  (`tenancy/segment.ts`). Phone NSN display moved OUT: grouping is the market pack's, not a fixed
+  5+5, so it sits beside money and date in `packages/ui/src/utils/format.ts` until the money slice
+  below brings all three back here together (`docs/engineering/architecture.md` §2, `packages/ui`).
+  Still to come, in order:
   the login state MACHINE (arrives with the auth rebuild — auth-tenancy ruling 6),
   `formatMoney(amount, currency, locale)` (market grouping per currency — lakh/crore for INR;
   global ruling 2026-08-02 renamed the planned `formatInr` before it was built), then the

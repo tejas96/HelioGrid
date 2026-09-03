@@ -6,6 +6,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { clampCount } from '../../utils/count';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
@@ -136,7 +137,7 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
       </Text>
       {option.count !== undefined ? (
         <Text variant="body-sm" color="secondary" style={styles.count}>
-          {option.count > 99 ? '99+' : String(option.count)}
+          {clampCount(option.count, option.countMax)}
         </Text>
       ) : null}
       {renderMarks(option.marks)}

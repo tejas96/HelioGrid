@@ -66,7 +66,8 @@ export function ToastHost({
   position = 'bottom-center',
   max = 3,
   duration = 4000,
-  offset = 96,
+  // Derived, not typed — see the web half. The nav's height is the thing being cleared.
+  offset = theme.layout['bottomnav-h'] + theme.spacing['sp-6'],
   style,
 }: NativeToastHostProps) {
   const shown = useMemo(() => toasts.slice(-max), [toasts, max]);

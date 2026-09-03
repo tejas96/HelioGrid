@@ -54,10 +54,14 @@
   text-overflow: ellipsis;
 }
 
+/* THE CONTROLS NEVER SHRINK. The header is a flex row and the root clips, so a chrome that gives
+   way to a long file name is a chrome that gets CUT — and this component's rule is that every
+   control stays reachable. The name ellipsises instead; it has `min-width: 0` for exactly that. */
 .hg-source-doc-chrome {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-0-5);
+  flex-shrink: 0;
 }
 
 .hg-source-doc-count {
@@ -106,7 +110,6 @@
   font-weight: var(--fw-medium);
   color: var(--accent);
   text-decoration: none;
-  white-space: nowrap;
 }
 
 /* ── the reading area ──────────────────────────────────────────────────────── */
@@ -176,6 +179,9 @@
   place-items: center;
   background: var(--surface);
   color: var(--text-tertiary);
+  /* NOT a control — a `<span>` glyph badge. Nothing presses it, so it stays a surface (Q77), and
+     the native half says the same at SourceDocumentChrome.native.tsx. A 44px white pill is not
+     proof of a control; the only test that holds is whether a button or Pressable renders it. */
   box-shadow: var(--e1);
 }
 
@@ -216,7 +222,8 @@
   border: none;
   border-radius: var(--r-pill);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);

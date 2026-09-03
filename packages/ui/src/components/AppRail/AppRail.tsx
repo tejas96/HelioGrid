@@ -67,7 +67,6 @@ function RailButton({ item, active, onClick }: RailButtonProps) {
       type="button"
       aria-label={badgeName(item.label, item.badge)}
       aria-current={active ? 'page' : undefined}
-      title={item.label}
       onClick={onClick}
       className="hg-app-rail-button"
       data-active={active ? 'true' : undefined}

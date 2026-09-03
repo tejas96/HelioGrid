@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
 import { renderMarks } from '../ChipGroup';
 import { hasReason, normalise } from './SegmentedControl.options';
@@ -186,7 +187,7 @@ function Segment({
       {off ? <OffGlyph /> : null}
       {option.label}
       {count === undefined ? null : (
-        <span className="hg-segmented-control-count">{count > 99 ? '99+' : count}</span>
+        <span className="hg-segmented-control-count">{clampCount(count, option.countMax)}</span>
       )}
       {renderMarks(option.marks)}
     </button>

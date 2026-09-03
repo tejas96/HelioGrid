@@ -42,4 +42,19 @@ export interface TextProps {
   variant?: TextVariant;
   color?: TextColor;
   align?: TextAlign;
+  /**
+   * BCP-47 tag, when THIS text is in a different language from the page around it. A screen reader
+   * running in English speaks मराठी under English pronunciation rules, and the product's own
+   * language picker names every language in its own words — so any list whose items are not all in
+   * the page's language needs this. Omit it and the text inherits the document, which is right
+   * everywhere else. Web: `lang`. Native: `accessibilityLanguage`.
+   */
+  lang?: string;
+  /**
+   * ANNOUNCE this text when it appears, rather than only describing it. For a refusal that happens
+   * under the user's finger — a gate that jumps you to an already-failing field leaves it off,
+   * because a screen reader that shouts every field on arrival tells you nothing.
+   * Web: `role="alert"`. Native: `accessibilityLiveRegion="assertive"`.
+   */
+  live?: boolean;
 }

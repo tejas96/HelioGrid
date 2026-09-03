@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { clampCount } from '../../utils/count';
 import type { CountBadgeProps, CountBadgeTone } from './AppShell.types';
 
 interface NativeCountBadgeProps extends CountBadgeProps {
@@ -66,7 +67,7 @@ export function CountBadge({
     return null;
   }
   const pair = TONES[tone];
-  const shown = n === null ? null : n > max ? `${max}+` : String(n);
+  const shown = n === null ? null : clampCount(n, max);
   const words = n === null ? `Unread ${label}` : `${n} unread ${label}`;
   if (shown === null) {
     /* The bare dot draws no digits, so there is no text node to hang the sentence on — the view

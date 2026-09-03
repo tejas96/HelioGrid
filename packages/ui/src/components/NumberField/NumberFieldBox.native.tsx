@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: theme.radius['r-input-expressive'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   boxFunctional: { height: 40, borderRadius: theme.radius['r-input-functional'] },
   boxSteppers: { paddingHorizontal: 0 },
@@ -105,7 +105,7 @@ export function NumberFieldBox({
           onSubmitEditing={draft.commit}
         />
         {unit !== undefined && !currency ? (
-          <Text variant="body-sm" color="tertiary" style={styles.unit}>
+          <Text variant="body-sm" color="secondary" style={styles.unit}>
             {unit}
           </Text>
         ) : null}

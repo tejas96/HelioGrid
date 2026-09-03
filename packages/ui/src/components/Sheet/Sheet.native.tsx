@@ -115,8 +115,12 @@ export function Sheet({
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
         {modal ? <SheetBackdrop onClick={dismissible ? onClose : undefined} /> : null}
         <Animated.View
+          /* NO `accessibilityRole`. ARIA's `dialog` has no React Native partner — the sanctioned
+             NO_RN_ROLE gap, answered this way by `Modal.native` and `DetailPanel.native`. `alert` is
+             not that partner: it means "urgent text, announce it now", so a sheet with a header, a
+             body and a footer was announced as ONE interruption. `accessibilityViewIsModal` is what
+             actually carries the modality. */
           accessibilityViewIsModal={modal}
-          accessibilityRole={modal ? 'alert' : 'none'}
           onLayout={onLayout}
           style={[
             styles.panel,
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     maxHeight: '92%',
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
     ...theme.elevation.e5,
   },
   panelExpressive: {
@@ -223,12 +227,12 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-5'],
   },
   /* The web half fades the footer in with a luminance gradient. RN has no CSS gradient, and a
-     divider line is the one thing this family may not draw — so the footer sits on --surface and
-     the body's own padding keeps content from touching it. */
+     divider line is the one thing this family may not draw — so the footer takes the same
+     --surface-form as the body and only padding separates them. */
   footer: {
     flexShrink: 0,
     paddingTop: theme.spacing['sp-3'],
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors['surface-form'],
   },
   footerExpressive: {
     paddingHorizontal: theme.spacing['sp-5'],

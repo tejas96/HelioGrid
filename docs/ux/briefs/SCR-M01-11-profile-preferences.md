@@ -36,6 +36,31 @@ Screen-specific:
 - **type-group-muted** — a push type-group muted by the user; the in-app record still always lands (F6-15).
 - **protected-types-locked** — audit-relevant billing/compliance events for the Owner are never mutable; the control shows they cannot be muted (F6-15).
 
+**Decisions made in design (2026-08-31) — later screens inherit them.**
+
+1. **There is no exit act.** Every change applies in place, so the screen has no forward act at all —
+   no Done, no Save, no confirmation. The routes off it are the shell's. A preferences screen whose
+   changes are already live has nothing for a forward act to do.
+2. **Every preference applies as it is touched.** `SCR-M01-03` recorded this for language; it extends
+   to the unit, the field mode and the push groups. A screen that batched a language change would
+   have to redraw itself in the new language to prove the save took *and* still owe a Save button.
+3. **A switch reads as capability, not as mute** — it is *on* when push is on, so muting turns
+   something off. *"Mute leads"* switched *on* to stop something is a double negative on a control a
+   thumb hits without reading.
+4. **Field mode sits beside language and measurements, not in a section of its own.** All three are
+   per-user facts about how the product renders to this person; a section headed *Appearance* is an
+   invitation to the light/dark switch `F7-04` forbids.
+5. **Field mode is live in `loading` and in `error`** — it is set on the device, not in the
+   preferences record, so it is the one control never waiting and never lost.
+6. **`empty` is a language set holding only the language already in use.** The other three
+   preferences cannot be empty by construction, and *nothing arrived* is `error`, not empty.
+7. **Sign-out and the name field are not here.** The shell fixes sign-out to More; name and photo are
+   edited on `SCR-M01-09` where they were first set. Two homes for one field is how they drift.
+
+**Owed to the register, not to the board.** The **five push type-groups are drawn, not specified** —
+neither this brief nor `F6-15` names them, and a per-group control cannot be specified without the
+groups. Replace them from the notifications register rather than transcribing them from the frame.
+
 ## Data volume
 
 Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). One field-mode toggle.

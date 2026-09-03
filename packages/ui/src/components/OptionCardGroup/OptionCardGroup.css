@@ -51,7 +51,12 @@
   cursor: pointer;
   border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   font-family: var(--font-sans);
   transition:
     box-shadow var(--dur-standard) var(--ease-standard),
@@ -71,6 +76,9 @@
 .hg-option-card[data-off="true"] {
   background: var(--canvas-sunken);
   cursor: not-allowed;
+  /* Sunken AND flat: sunken alone still leaves an unavailable option the brightest, most
+     pressable-looking thing in the list (Q77). */
+  box-shadow: none;
 }
 
 .hg-option-card:focus-visible {
@@ -93,6 +101,14 @@
 .hg-option-card-dot[data-selected="true"] {
   background: var(--accent);
   box-shadow: none;
+}
+
+/* THE DOT IS THE SAME DEFECT ONE LEVEL DOWN. On an off card the white fill measured 1.14:1 —
+   WEAKER than its own --text-disabled ring at 1.44:1, so the fill was never what you read, and
+   all it did was make the dot the brightest thing on a dead card. The ring still carries it.
+   A SELECTED off card keeps its --accent dot (4.73:1) — that one is a fact, not an affordance. */
+.hg-option-card[data-off="true"] .hg-option-card-dot:not([data-selected="true"]) {
+  background: var(--canvas-sunken);
 }
 
 .hg-option-card-dot-fill {

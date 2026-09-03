@@ -8,6 +8,23 @@ Guided spreadsheet import: upload, column mapping with auto-guess, preview with 
 
 Reached from: its three entry points — onboarding, Catalog settings (SCR-M01-15), and the picker's add-flow (M01-41; §M01.4 behavior detail: "Import is one wizard reused at its three entry points"). Leads to: the import runs async with visible progress; the import report is kept and re-openable (M01-41, §M01.4 behavior detail). Return-to-invoking-surface behaviour beyond that is not pinned by PRD — designer decides, note the decision.
 
+**Decisions made in design (2026-09-01) — later screens inherit them.**
+
+1. **`reachability="entered"`, not the system's free default.** `Stepper`'s own docs name an import
+   wizard reading a parsed file as the case for opt-in gating: the preview of a file whose columns
+   are not mapped is a meaningless step. This is **not** the studio's ruled gate (`M05-05`) and does
+   not normalise it.
+2. **The three counts are `derived`.** A matching pass computed them; nothing measured them.
+3. **A row fixed in the preview moves the counts, and the act's number with it** —
+   `318/87/7 → import 405` becomes `319/87/6 → import 406`. Both close on 412.
+4. **The file's own header text is data and never translates.** *Item description*, *Rate*,
+   *Supplier code* stay in mono English inside a Hindi UI; the field list beside them is the
+   product's vocabulary and does translate. A pass that translated the headers would hide what the
+   file actually says.
+5. **The act's sentence is the last thing that shortens.** Six lines of consequence in Marathi
+   against four in English — the body shrinks, the footer never clips. A person who cannot read what
+   the act does must not be able to reach the button.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
@@ -41,3 +58,5 @@ Each carries its F8 provenance tier in the design:
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline` state and a matching online-only sentence in Context of use (`F4-09`). Both are deleted. The import's async server-side run is untouched.*
+
+*Returning from this wizard lands on the panel and scroll position the caller was on (`SCR-M01-15` decision 6).*

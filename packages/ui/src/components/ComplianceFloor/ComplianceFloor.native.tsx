@@ -72,12 +72,12 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
           {head}
         </Text>
         {named === '' ? null : (
-          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="tertiary">
+          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="secondary">
             {` · ${named}`}
           </Text>
         )}
         {message === undefined ? null : (
-          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="tertiary">
+          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="secondary">
             {` ${message}`}
           </Text>
         )}

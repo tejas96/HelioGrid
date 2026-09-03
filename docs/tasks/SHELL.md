@@ -13,7 +13,7 @@ Type: screen
 Tier: P0
 PRD:    F1-59, F7-22, M01-16, M01-17, M02-06, M07-46, M13-10, MS12-19
 BRIEF:  docs/ux/briefs/SCR-SHELL-01-app-shell.md
-DESIGN: SCR-SHELL-01 → PENDING
+DESIGN: SCR-SHELL-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html
 ```
 
 **PRD rows (verbatim):**
@@ -49,7 +49,7 @@ Type: screen
 Tier: P0
 PRD:    F6-20, F6-23
 BRIEF:  docs/ux/briefs/SCR-SHELL-02-global-search.md
-DESIGN: SCR-SHELL-02 → PENDING
+DESIGN: SCR-SHELL-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-02+Global+Search+-+Mobile.dc.html
 ```
 
 **PRD rows (verbatim):**
@@ -72,7 +72,7 @@ Type: screen
 Tier: P0
 PRD:    F4-27, F6-07, F6-12, F6-17, F6-19, M13-21, M13-45
 BRIEF:  docs/ux/briefs/SCR-SHELL-03-notification-center.md
-DESIGN: SCR-SHELL-03 → PENDING
+DESIGN: SCR-SHELL-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-03+Notification+Center+-+Mobile.dc.html
 ```
 
 **PRD rows (verbatim):**

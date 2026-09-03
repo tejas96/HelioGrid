@@ -23,7 +23,6 @@ export function ToolButton({ active = false, label, d, onMouseDown, children }: 
       className="hg-rich-text-tool"
       aria-label={label}
       aria-pressed={active}
-      title={label}
       data-active={active}
       data-wide={children !== undefined}
       onMouseDown={onMouseDown}

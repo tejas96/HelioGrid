@@ -1,3 +1,9 @@
+/**
+ * A tab count is NAVIGATIONAL — the reader needs to know there are more than they will read,
+ * not how many. A total that must be read exactly belongs on a control that does not clamp.
+ */
+export const TAB_COUNT_MAX = 99;
+
 import type { Tab, TabsProps } from './Tabs.types';
 
 /** A bare string is `{value, label}` — the design system's own shorthand, in one declaration. */

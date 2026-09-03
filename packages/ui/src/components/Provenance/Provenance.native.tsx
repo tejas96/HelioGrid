@@ -237,7 +237,11 @@ export function renderProvenance(
     return spec;
   }
   if (typeof spec === 'string') {
-    return <Provenance tier={spec} {...extra} />;
+    /* THE SAME GUARD THE OBJECT PATH ALREADY HAS. Without it `renderProvenance("unmarked")` hands
+       back an element that renders nothing, and every host then draws its slot around the void —
+       which is exactly the value whose documented job is to record a deliberate absence. */
+    const asProps: ProvenanceProps = { tier: spec, ...extra };
+    return isProvenanceEmpty(asProps) ? null : <Provenance {...asProps} />;
   }
   if (typeof spec !== 'object') {
     return null;

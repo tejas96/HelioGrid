@@ -4,6 +4,14 @@ import type { ActionReasonSpec } from '../ActionReason/ActionReason.types';
 export interface OptionCardItem {
   value: string;
   title: string;
+  /**
+   * BCP-47 tag for this option's own text, when it differs from the page's. A screen reader
+   * running in English speaks मराठी under English pronunciation rules, which fails the accessible
+   * name at the one point `F3-03` cares about — on the picker whose whole job is naming languages
+   * in their own words. Omitted, the option inherits the document's language, which is correct
+   * everywhere else.
+   */
+  lang?: string;
   description?: string;
   /** Right-aligned mono figure — a price or a rating. */
   price?: string;

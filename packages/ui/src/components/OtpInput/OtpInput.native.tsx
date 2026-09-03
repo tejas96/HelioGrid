@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: theme.colors['text-primary'],
     padding: 0,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   boxDisabled: { backgroundColor: theme.colors['canvas-sunken'] },
   /* RN has no box-shadow ring: focus and error rings are borders of the same weight. */

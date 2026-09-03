@@ -1,3 +1,8 @@
+/* AN OVERLAY THAT HOLDS THINGS IS A CONTAINER, SO IT SITS ONE STEP BELOW THEM (owner ruling
+   2026-08-28, Q77). --surface-form, not --surface: a control or a card inside is --surface and must
+   be BRIGHTER than what holds it, or it disappears — a white field on a white sheet is the same
+   white-on-white defect the ladder exists to prevent. Header and footer match the panel so no seam
+   shows when content scrolls beneath them. */
 /* DetailPanel — the desktop half of the Sheet family (master-detail, 480px right drawer). Same
    backdrop law as Sheet: blurs the layer behind and fades it toward white, never dark. Slides from
    the edge, e5. The close button and the empty/error bodies are the family's shared chrome — see
@@ -6,6 +11,8 @@
 .hg-detail-panel {
   /* Functional is the default here: this panel usually sits on a data screen. */
   --hg-panel-pad: var(--sp-6);
+  /* ONE NUMBER, TWO CONSUMERS — see Sheet.css. */
+  --hg-panel-footer-fade: var(--sp-5);
 
   position: fixed;
   top: 0;
@@ -15,7 +22,7 @@
   display: flex;
   flex-direction: column;
   outline: none;
-  background: var(--surface);
+  background: var(--surface-form);
   box-shadow: var(--e5);
 }
 
@@ -46,7 +53,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sp-3);
-  background: var(--surface);
+  background: var(--surface-form);
   position: relative;
   z-index: 1;
   transition: box-shadow var(--dur-standard) var(--ease-standard);
@@ -111,7 +118,7 @@
 }
 
 .hg-detail-panel-body[data-footer="true"] {
-  padding-bottom: var(--sp-2);
+  padding-bottom: var(--hg-panel-footer-fade);
 }
 
 .hg-detail-panel-unavailable {
@@ -122,17 +129,18 @@
   flex-shrink: 0;
   position: relative;
   padding: var(--sp-3) var(--hg-panel-pad) var(--hg-panel-pad);
-  background: var(--surface);
+  background: var(--surface-form);
 }
 
-/* A luminance fade above the sticky footer, never a divider line. */
+/* A luminance fade above the sticky footer, never a divider line. It fades to the FOOTER'S OWN
+   ground — fading to a colour the footer is not leaves the band a divider line would have drawn. */
 .hg-detail-panel-footer-fade {
   position: absolute;
-  top: calc(-1 * var(--sp-5));
+  top: calc(-1 * var(--hg-panel-footer-fade));
   left: 0;
   right: 0;
-  height: var(--sp-5);
-  background: linear-gradient(to top, var(--surface), transparent);
+  height: var(--hg-panel-footer-fade);
+  background: linear-gradient(to top, var(--surface-form), transparent);
   pointer-events: none;
 }
 

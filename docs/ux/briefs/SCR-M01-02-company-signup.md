@@ -6,7 +6,23 @@ Self-serve tenant creation: phone, OTP, company name, owner name, city in under 
 
 ## Entry & exit
 
-Reached from: the product's signed-out front door as the self-serve signup path; the precise entry control is not pinned by PRD — designer decides, note the decision. Leads to: the onboarding sequence — after the three fields, the only further onboarding steps are the "What do you sell?" step (M01-23, SCR-M01-04), the skippable business profile (M01-24, SCR-M01-05), the skippable invite step (M01-12, SCR-M01-07) and the two-door landing (M01-26, SCR-M01-06) (M01 §M01.3 behavior detail); the first-run language picker also appears in onboarding (F3-03, SCR-M01-03). A known phone number exits to login (SCR-M01-01) per M01-08.
+Reached from: the product's signed-out front door as the self-serve signup path. The precise entry control was not pinned by PRD; **`SCR-M01-01` decided it (2026-08-27)** — a persistent **"Create a company account"** door at the foot of the sign-in frame, reachable without typing a number. This screen carries the **reciprocal door, "Sign in instead"**, in the same position, so the two signed-out screens are a pair. **A second entry exists:** a person who verified an unrecognised number on `SCR-M01-01` is handed here **with that number already verified**, landing on the company-details step — steps 1 and 2 are done either way, so it is the same frame, not a separate flow. Leads to: the onboarding sequence — after the three fields, the only further onboarding steps are the "What do you sell?" step (M01-23, SCR-M01-04), the skippable business profile (M01-24, SCR-M01-05), the skippable invite step (M01-12, SCR-M01-07) and the two-door landing (M01-26, SCR-M01-06) (M01 §M01.3 behavior detail); the first-run language picker also appears in onboarding (F3-03, SCR-M01-03). A known phone number exits to login (SCR-M01-01) per M01-08.
+
+**Further decisions made in design (2026-08-28) — later screens inherit them.**
+
+1. **After verification the number is a fact, not a field.** The company-details step shows it on a surface with a `StatusChip` *Verified* and **no Change control** — changing the number after verification is a different account, not an edit. *Change number* exists on the code step only, where nothing has been created yet.
+2. **The three steps are gated, not free.** `Stepper reachability="entered"` — the company details read the verified account and cannot be jumped to before it exists. Going back stays open. The flow's length is also spoken in body copy, so it is never carried only by the step counter.
+3. **City is a text field with suggestions, never a `Select`.** There is no closed list of Indian cities. The value resolves to a **market-pack city**, because `M01-09` matches on company name *and* city, and a steer keyed on free text would fire on *pune* and miss *Pune, MH*.
+4. **The code step's limit states belong to `SCR-M01-01`.** Resend is drawn live here; no cooldown, cap or lock number renders. Those eleven states are specified once, on the front door.
+5. **A steer is a steer: both roads are full-size controls.** *Request to join* is primary and *Create a new company anyway* is a full-width secondary directly beneath it — never a link inside a sentence. A steer that shrinks the road it does not recommend is a block wearing a steer's clothes, and `M01-09` says creating remains possible.
+6. **The join steer names a company and a city, and nothing about who works there.** Naming another tenant's owner across a tenant boundary is not this screen's to do; the request is described by where it goes ("its owner").
+7. **The known number is answered on the number step, before any code is sent** (`M01-08`). The field keeps the number — the person just typed it, so no account is disclosed to a stranger.
+8. **Nothing on the resume state carries a clock.** No last-seen time and no "you left off at…" — a returning-user timestamp invites a staleness reading this product does not have.
+9. **Desktop rule for states, stated once:** a finding *about you* moves into the identity half; a message *about a field* stays on the field. Two states earn a 1536 frame because that move changes the act.
+10. **No shell at either width, and that is an answer, not a dropped capability.** Signup runs before roles exist, so `F7-22`'s two shell forms have no subject. They first diverge on the two-door landing this flow hands off to (`SCR-M01-06`).
+
+**Build note — design-system gaps this screen found** are recorded once, in `packages/ui/CLAUDE.md` §"Known component gaps", which loads when anyone opens that folder. A screen brief is the wrong home for them: nobody building a component reads one.
+
 
 ## Requirements (verbatim)
 
@@ -26,6 +42,12 @@ Screen-specific:
 - **duplicate-phone-login-offered** — a known phone offers login instead of creating a duplicate company (M01-08).
 - **request-to-join-offered** — likely-existing workspace detected by company name + city; "request to join" offered and routed to that tenant's EPC Owner as an invite request; creating a new company remains possible (M01-09).
 - **resume-after-abandon** — once the OTP has verified the person is an account; returning resumes exactly where they left off — no restart, no duplicate (context: M01 §M01.1 edge list / M01-10, not a row of this slice).
+
+*Three states added in design (2026-08-28), each separable — remove one and nothing else moves:*
+
+- **request-sent** — where **request-to-join-offered**'s primary control lands. `M01-09` routes the request to the existing tenant's EPC Owner and names no screen for what the asker then sees, which would have left that control leading nowhere. Drawn as the smallest honest answer: what was sent, to whom, how the answer arrives, and the way back to creating their own company. **Checked 2026-08-28: no other V1 screen owns this acknowledgement** — `M01-09` is dispositioned to `SCR-M01-02` alone — so it stays a state of this screen and adds no row to the register.
+- **number-invalid** — the phone number is answered on the field when the control is pressed, counted against the market pack's format ("that is 7 digits — an Indian mobile number has 10"), never by gating the primary at rest.
+- **fields-invalid** — a missing company detail says *why* it is needed (a company name goes on every quote), never a scold.
 
 ## Data volume
 

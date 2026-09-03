@@ -5,7 +5,7 @@ import { Pressable } from '../../primitives/Pressable';
 import { Toast } from '../Toast/Toast';
 import type { ToastHostProps, ToastItem } from './ToastHost.types';
 
-/** The offset rides in as a custom property so the placement rules stay in ToastHost.css. */
+/** A caller's offset rides in as a custom property so the placement rules stay in ToastHost.css. */
 type HostVars = CSSProperties & Record<`--${string}`, string>;
 
 interface WebToastHostProps extends ToastHostProps {
@@ -42,7 +42,7 @@ export function ToastHost({
   position = 'bottom-center',
   max = 3,
   duration = 4000,
-  offset = 96,
+  offset,
   className,
   style,
 }: WebToastHostProps) {
@@ -63,7 +63,10 @@ export function ToastHost({
     return null;
   }
 
-  const vars: HostVars = { '--hg-toast-host-offset': `${offset}px` };
+  /* Unset unless a caller asks: an always-written property beats the stylesheet's own default,
+     which is the nav-derived one. */
+  const vars: HostVars | undefined =
+    offset === undefined ? undefined : { '--hg-toast-host-offset': `${offset}px` };
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: the DS pauses the queue under the pointer; the stack is not a control and every toast keeps its own semantics.
     <div

@@ -154,7 +154,11 @@ div.hg-bottom-nav-plate[data-shape="notch"] {
   line-height: 14px;
   font-weight: var(--fw-medium);
   letter-spacing: var(--tr-button);
+  /* A nav slot has a fixed height, so a longer translation TRUNCATES rather than wrapping —
+     without the ellipsis it silently overflowed into the slot beside it. */
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* The FAB's own label hangs 6px above the others' line because it has no icon box above it. */

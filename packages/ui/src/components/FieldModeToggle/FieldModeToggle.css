@@ -80,6 +80,8 @@
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
-  color: var(--text-tertiary);
+  /* The capability's ONLY explanation — what the mode does to the interface. Quiet is for a caption
+     beside a control, never for the sentence a person needs to decide with. */
+  color: var(--text-secondary);
   text-wrap: pretty;
 }

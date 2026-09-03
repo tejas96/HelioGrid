@@ -50,14 +50,22 @@ Decided 2026-08-15 after inspecting both codebases.
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
 | **0** | **Foundations** | 0 | `F-core` (15) · `F-platform` (32) |
-| **1** | **Shell + entry & tenant** | 23 | `SHELL` (4) · `M01-onboarding` (27) |
-| **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) |
+| **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
+| **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
 | **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
 | **7** | **3D Design Studio** | 18 | `MS-studio-a/-b/-c` (83) |
 | **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) |
+
+**The `SHELL` task file spans two blocks.** `SCR-SHELL-06` — the billing state banner and its
+denial sheets — sits with the other shell rows in the register, because that is where it renders.
+It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
+so designing it in block 1 means inventing the states and the destinations `M12` has not defined
+yet. The block-1 count of 23 already excludes it and the block-2 count of 5 already includes it.
+`python3 scripts/next-screen.py` is the sequence made executable — run it rather than reading this
+table against the register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a

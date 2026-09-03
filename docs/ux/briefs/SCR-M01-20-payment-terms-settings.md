@@ -8,6 +8,28 @@ Named tranche templates (label + percentage per canonical stage) with a tenant d
 
 Reached from: the tenant-config settings surface map — *Payment terms* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the builder's payment-terms step default, Quick mode, and — at Won — the project's collection schedule (§M01.7 behavior detail; M11's one-money-path contract). The template editor is the same control the builder's payment step uses — one pattern (§M01.7 behavior detail).
 
+**Decisions made in design (2026-09-02) — later screens inherit them.**
+
+1. **The stage a tranche falls due on is `M08-08`'s canonical chain, not this screen's.** Nine
+   market-neutral values — `WON → MATERIAL_ORDERED → DISPATCHED → INSTALLATION →
+   ELECTRICAL_METERING → UTILITY_INSPECTION → COMMISSIONED → INCENTIVE_CLAIMED → HANDED_OVER`,
+   plus `CANCELLED`. The five-state shorthand is deprecated and appears nowhere. Display labels are
+   the pack's (`F1-22`); `F1-51` fixes two of them — *DISCOM inspection*, *Subsidy claimed*.
+2. **A split that must total exactly 100% is an `AllocationMeter`.** Never `ProgressBar` or
+   `UsageMeter`, and **never an `=== 100` test**: `met` is a tolerance of 0.05 of a unit, because
+   three tranches of 33.33% sum to 99.99 and are fully allocated. Read the component's verdict; do
+   not compute a second one beside it. **Over-allocation is `warning`, never `danger`** — the
+   tenant is mid-edit and the block belongs to the act, not to the meter.
+3. **The preview's money comes from a stated sample contract value** — basis `assumed`, per-tranche
+   amounts `derived`, both tiers persistent. A customer sees money, so percentages alone fail the
+   requirement; and the tenant's latest quote would make a settings preview move because someone
+   priced a job.
+4. **Seeded means given, not locked.** The platform seeds two templates at tenant creation — a copy
+   taken once, not a live upstream — so they are edited in place, and offering a "restore the
+   platform split" would imply an upstream that does not exist.
+5. **Archived templates are reached by a scope chip**, absent from the list otherwise — the shape
+   `SCR-M01-15` already set for archived catalog items, so the two settings screens agree.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`

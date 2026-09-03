@@ -16,7 +16,7 @@ interface VariantVisual {
 }
 
 const VARIANT: Record<IconButtonVariant, VariantVisual> = {
-  surface: { background: theme.colors.surface, elevation: theme.elevation.e1 },
+  surface: { background: theme.colors.surface, elevation: theme.elevation.e2 },
   dark: { background: theme.colors['action-primary'] },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent' },

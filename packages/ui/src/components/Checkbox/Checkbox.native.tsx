@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   boxChecked: { backgroundColor: theme.colors.accent },
   boxDisabled: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },

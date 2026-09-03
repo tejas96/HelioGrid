@@ -11,11 +11,16 @@
 
 .hg-otp-boxes {
   display: flex;
+  /* WRAP, NEVER SHRINK. Six 48px boxes and five gaps need 328px. Anything narrower takes a second
+     line; a plain flex row would drop every box to its 44px minimum instead, and the touch-target
+     check measures 44 and passes, so nothing would report it. */
+  flex-wrap: wrap;
   gap: var(--sp-2);
 }
 
 .hg-otp-box {
   width: 48px;
+  flex-shrink: 0;
   height: 56px;
   min-width: 44px;
   text-align: center;
@@ -23,7 +28,12 @@
   outline: none;
   border-radius: var(--r-input-expressive);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   font-family: var(--font-mono);
   font-size: 22px;
   font-weight: var(--fw-bold);

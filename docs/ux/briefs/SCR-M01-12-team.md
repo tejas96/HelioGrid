@@ -32,13 +32,55 @@ Screen-specific:
 - **deactivated-member** — a deactivated person's history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01 §M01.2 acceptance).
 - **pending-invite-revoke** — revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail); invite states are pending / accepted / expired / revoked (M01-12 context, carried on SCR-M01-07).
 
+**Decisions made in design (2026-08-31) — later screens inherit them.**
+
+1. **Entry is More → Team**, not pinned by the PRD. The shell fixes settings and administration to
+   *More*; Team is reached the same way. *More* is the destination in force, no fifth slot.
+2. **The invite act is a full-width primary at the top of the scroll, not sticky.** A sticky band
+   costs ~100px permanently on a screen that is a list, a footer act collides with the arc bar's
+   raised centre, and a text act in the top bar is the smallest target furthest from a thumb.
+3. **One tap means ON the row.** *Deactivate* and *Revoke invite* sit in the card's action line, not
+   behind a kebab — a menu is a second tap on an act the module calls first-class. **Ghost is the
+   only legal weight**: `secondary` is white at `--e2` on a card that is already white, `destructive`
+   is a red fill on eight rows, `primary` competes with the invite.
+4. **Status is a chip; a role is not.** invited/active/deactivated is a membership lifecycle, so it is
+   a word plus a dot. Presets held render as `Badge` — a preset drawn as a `StatusChip` would invent
+   a semantic colour for an identity.
+5. **The deactivated row is not dimmed.** Greyness as the signal pulls the name and both dates under
+   the contrast floor; the chip carries the word.
+6. **List order is pending invites, then everyone by name, deactivated last** — stated in the caption.
+   No group headings: a heading that vanishes when its group is empty is a second answer to one
+   question, and the status is already on the record (`N6b`).
+7. **The `F2-19` guard is the RESTING state of the owner's own row**, not a refusal after a tap. In a
+   one-owner tenant the last owner is the reader, so the control stays, is `aria-disabled`, stays
+   focusable, and states the route out beside it.
+8. **Relative times are refused.** *"2 hours ago"* turns a recorded fact into a computed one and would
+   put a tier on every row for no gain.
+
+**One roster correction owed.** `SCR-M01-13`'s `empty` frame needs a person holding NO presets, and
+nobody in this screen's roster has none — it is drawn on **Nitin Pawar**, who must gain a row here or
+the two boards disagree about who is on this team.
+
+**Two holes this screen reports rather than invents.** There is **no reactivation control** — a list
+that can deactivate and never reactivate is a one-way door, and bringing someone back is not a row of
+this slice. And **seven of the twelve preset names** are not on this board; they must come from `F2`'s
+table, never transcribed from the frame.
+
 ## Data volume
 
 The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes).
 
 ## Numbers carrying provenance
 
-Every rendered number carries its F8 provenance tier in the design. User-visible here: each person's **last-active** date/time (M01-19) and the expiry on pending invites (M01-12 context). No money or business quantity renders here.
+Every rendered number carries its F8 provenance tier in the design.
+
+**Corrected 2026-08-31 against `Q59`, which outranks a brief (`CLAUDE.md` §7).** Only ONE value here
+is tiered: **the pending invite's expiry**, computed from sent-on plus a seven-day window, so it
+renders `derived` with the derivation named beside it. **Last-active carries NO tier** — `Q59` rules
+that a *recorded* date is a record fact showing when it was recorded, and `F8-02`'s four values all
+describe how a QUANTITY was arrived at, none of which describes a timestamp the system wrote down.
+This brief previously listed last-active as tiered and was wrong. No money or business quantity
+renders here.
 
 ---
 

@@ -8,6 +8,25 @@ Self-serve SKU add via single form, datasheet PDF extraction, or spreadsheet; op
 
 Reached from: the proposal builder's and studio's component picker, and from Catalog settings (M01-39); it opens as a sheet over the picker (F7's sheets-not-pages contract), pre-scoped to the component kind being picked (§M01.4 behavior detail). Leads to: on save the sheet closes and the new SKU is selected in place — the flow continues; nobody leaves the builder to go to settings (M01-39, §M01.4 behavior detail). The spreadsheet path hands off to the Catalog Import Wizard (SCR-M01-17), one of that wizard's three entry points (M01-41).
 
+**Decisions made in design (2026-09-01) — later screens inherit them.**
+
+1. **One sheet, three ways in.** All three callers — the builder's picker, the studio's picker,
+   Catalog settings — open the same editor, pre-scoped to the kind being picked, and the kind stays
+   changeable.
+2. **The footer verb names what it returns to.** From a picker: **Add and select** — the SKU is
+   selected in place and the flow continues. From Catalog settings: **Add to catalogue** — landing on
+   the Items panel at the caller's row (`SCR-M01-15` decision 6).
+3. **The datasheet path stays inside this sheet** and becomes the review state; only the spreadsheet
+   path leaves, to `SCR-M01-17`. Two accelerators, one form.
+4. **Extracted values are `estimated`, with the page named** — *read off page 2*. An engine read them
+   and `M01-40` forbids committing them silently, so the tier says so until a person confirms. Values
+   the tenant types carry `M01-35`'s **Tenant-provided** label, not an F8 tier: nothing computed them.
+5. **Abandoning a filled sheet is confirmed and un-dismissible**, and the confirm carries the
+   recovery route in words (`Q78`) — nothing was created, so there is nothing to restore, and the
+   sentence says the datasheet can be uploaded again in one tap.
+6. **No progress count.** No *fields filled* figure and no *3 of 12* counter — neither is a fact about
+   the product, and a progress count on a form invites the Next-disabled pattern `M06-22` killed.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
@@ -40,3 +59,5 @@ Each carries its F8 provenance tier in the design:
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline / offline-fail-fast` state and a matching online-only sentence in Context of use (`F4-09`). Both are deleted.*
+
+*Returning from this screen lands on the panel and scroll position the caller was on (`SCR-M01-15` decision 6).*

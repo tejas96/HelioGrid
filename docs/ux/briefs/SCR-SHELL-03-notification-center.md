@@ -8,6 +8,19 @@ Bell + badge + grouped actionable notification list, filterable by type-group an
 
 Reached from: the bell in the app shell on both platforms (F6-17; the shell is SCR-SHELL-01). Leads to: every item deep-links to its subject and offers its one-step act where the recipient holds it (F6-17); a recipient who has lost the subject's visibility gets the honest landing (F6-16's edge, carried in this screen's states). If the PRD does not pin an entry/exit beyond these, it is not pinned by PRD — designer decides, note the decision.
 
+**Decisions made in design (2026-08-19) — the brief left these open; later screens inherit them.**
+
+1. **The centre is the product's overlay grammar, not a screen you travel to** (`F7-21`). Phone: a `Sheet` at 92%, modal, focus trapped and handed back to the bell. Desktop: a 520px `DetailPanel` anchored under the header, **non-modal** — no backdrop, no scroll lock — with the content column inset by the panel's width, because the page beside a 520px panel is still the user's work.
+2. **Exits** — an item card's whole face → its subject; a group member's name → its record; each one-step act → the act; `Show older` → the next page; `Mark all read` → the same list with nothing unread; `Clear filters` → the unfiltered list; the honest landing's `Back to the list`; close / Esc / drag → back to the home.
+3. **A group row is not an exit.** Grouping is presentation only (`F6-12`), so the group has no subject of its own — its members carry the links. A bulk act reaches its members through its subject record, never by opening 400 rows in place.
+4. **A monthly summary is read where it arrived** (`M13-21`'s own reason), with the full dashboard one control away. A summary that only deep-links to the dashboard the owner never opens has not been read either.
+5. **A lifecycle chip sits in `RecordCard.marks`, not `chip`.** `chip` renders on the name's line, and a notification's name is a sentence — at 335px that pushed it to four lines, and Hindi and Marathi push further.
+6. **Row acts are `secondary`, never the near-black primary.** On an inbox nothing is *the* primary action — it belongs to the record the row opens — and a column of near-black pills makes the identity marker meaningless.
+7. **An act on a nested member row is an icon button; an act on a card is a verb.** A card has width for "Send over WhatsApp"; a member row carries a wrapping record name in the same 335px. The icon button keeps the 44px floor and the full accessible name, and the same act returns with its verb on the record the row opens.
+8. **Nesting reads from elevation and position, never an indent.** Group members run the full row width at `e1` under the group's `e2`.
+9. **A control with nothing to do removes itself rather than going grey** (`F4-27`) — `Mark all read` is absent when nothing is unread.
+
+
 ## Requirements (verbatim)
 
 ### docs/prd/foundations/F6-notifications-and-search.md

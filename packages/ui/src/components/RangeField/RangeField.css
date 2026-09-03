@@ -184,7 +184,9 @@
 
 .hg-range-end-label {
   font-size: var(--fs-caption);
-  color: var(--text-tertiary);
+  /* NOT the quiet role. A field label, an option's own text, a title and a step's name are what
+     the caller depends on reading (`N4`) — tertiary is for captions and overlines beside them. */
+  color: var(--text-secondary);
 }
 
 .hg-range-end-box {
@@ -195,7 +197,8 @@
   padding: 0 var(--sp-3);
   border-radius: var(--r-input-functional);
   background: var(--surface);
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
@@ -204,7 +207,11 @@
 }
 
 .hg-range-end-box[data-focus="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
+  /* Focus ADDS a ring, never replaces the elevation: rest is --e2 (Q77), so a ring alone would
+     sink the focused box below every unfocused one. */
+  box-shadow:
+    var(--e2),
+    0 0 0 2px var(--accent);
 }
 
 /* Stretched, so the tap lands anywhere in the 44px box — it measured 145x18 before. */

@@ -4,7 +4,7 @@
 
    Ghost carries no shadow of its own — but it must not hardcode `none`, or an inline none beats
    field mode's rule and the lowest-contrast control in the system is the one control with no edge
-   in sunlight. --control-edge is `none` in the base scope and the field edge in field mode. */
+   in sunlight. --control-edge is `none` in the base scope and the field edge in field mode — a text button has no box to find, so Q77's raised treatment deliberately does NOT reach it — its label IS the component. */
 
 .hg-button {
   display: inline-flex;
@@ -28,8 +28,13 @@
     background var(--dur-standard) var(--ease-standard);
 }
 
+/* A LABEL OVERFLOWS RATHER THAN WRAPS, so `nowrap` above is only safe while the pill sizes to its
+   own text. `fullWidth` fixes the width, and a translation longer than the pill then spills out of
+   it — the first thing that breaks in Hindi and Marathi. */
 .hg-button[data-full-width="true"] {
   width: 100%;
+  white-space: normal;
+  line-height: var(--lh-body-sm);
 }
 
 .hg-button:focus-visible {
@@ -64,7 +69,12 @@
 .hg-button[data-variant="secondary"] {
   background: var(--surface);
   color: var(--text-primary);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
 }
 
 .hg-button[data-variant="ghost"] {
@@ -85,14 +95,16 @@
 }
 
 .hg-button[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  box-shadow: var(--e2);
+  /* Rest is --e2 now (Q77), so hover must clear it — a lift to the SAME step is no lift. */
+  box-shadow: var(--e3);
 }
 
 .hg-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--neutral-bg);
 }
 
-/* The DS spells this hover as a raw lighter red; --danger is the DS token in that direction. */
+/* --danger is the token one step lighter than --danger-text — this hover is a token, never a
+   literal lighter red. */
 .hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--danger);
   box-shadow: var(--e2);
@@ -106,6 +118,23 @@
 .hg-button[aria-disabled="true"] {
   background: var(--canvas-sunken);
   color: var(--text-disabled);
+}
+
+/* A GHOST HAS NO GROUND, AND BEING UNAVAILABLE DOES NOT GIVE IT ONE. The rule above fills every
+   variant with --canvas-sunken, which turns the one act in a column of ghosts that CANNOT be pressed
+   into the only one wearing a pill — the loudest control on the surface. A ghost keeps its ground;
+   its label and its stated reason carry the state. */
+.hg-button[data-variant="ghost"]:disabled,
+.hg-button[data-variant="ghost"][aria-disabled="true"] {
+  background: transparent;
+}
+
+/* A STATED DISABLED LABEL IS INFORMATION, NOT CHROME. `--text-disabled` is exempt from the contrast
+   floor as a control's chrome and measures 1.44:1 on --canvas-sunken. A button carrying a
+   `disabledReason` is meant to be READ (`MS4-15`), so its label takes --text-secondary and only the
+   fill says unavailable; an unstated disabled button is chrome and keeps the grey. */
+.hg-button[data-stated="true"] {
+  color: var(--text-secondary);
   box-shadow: none;
   cursor: not-allowed;
 }

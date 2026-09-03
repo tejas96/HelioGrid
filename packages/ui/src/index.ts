@@ -75,6 +75,8 @@ export * from './components/OtpInput';
 export type { DocumentSection } from './components/PagedDocument';
 export * from './components/PagedDocument';
 export * from './components/PendingAction';
+export * from './components/PhoneField';
+export * from './components/PhotoField';
 export * from './components/PreviewFrame';
 export * from './components/ProgressBar';
 export * from './components/Provenance';

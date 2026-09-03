@@ -28,4 +28,10 @@ export interface ModalProps {
   dismissible?: boolean;
   inset?: boolean;
   zIndex?: number;
+  /**
+   * The id of a heading the CALLER rendered. The fixed icon header makes a caller drop `title`,
+   * and a dialog with no name is a dialog a screen reader announces as nothing. Same slot as
+   * `Sheet.labelId`.
+   */
+  labelId?: string;
 }

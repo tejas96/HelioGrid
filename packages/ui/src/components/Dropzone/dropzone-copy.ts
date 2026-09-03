@@ -1,6 +1,8 @@
+/* THE FILE TYPES ONLY — never a size. The ceiling comes from `maxSizeMB` below, because a component
+   that states a limit nobody told it promises one thing while the caller refuses another. */
 const ACCEPTS_HINT: Record<string, string> = {
-  image: 'JPG or PNG up to 10 MB',
-  pdf: 'PDF up to 10 MB',
+  image: 'JPG or PNG',
+  pdf: 'PDF',
 };
 
 export interface CaptureLineInput {
@@ -38,7 +40,8 @@ export function captureLine({
     return 'Tap to capture or upload';
   }
   const acceptHint = ACCEPTS_HINT[accept.startsWith('image') ? 'image' : 'pdf'];
-  return `${browsePhrase} · ${acceptHint ?? `up to ${maxSizeMB} MB`}`;
+  const limit = `up to ${maxSizeMB} MB`;
+  return `${browsePhrase} · ${acceptHint === undefined ? limit : `${acceptHint} ${limit}`}`;
 }
 
 /** The default when a file was refused: state the problem AND the fix. */

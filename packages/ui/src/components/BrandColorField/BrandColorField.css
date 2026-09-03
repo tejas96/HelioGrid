@@ -37,7 +37,8 @@
   border-radius: 50%;
   padding: 0;
   cursor: pointer;
-  box-shadow: var(--e1);
+  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 

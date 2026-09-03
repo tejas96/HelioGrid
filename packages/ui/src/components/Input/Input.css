@@ -1,5 +1,6 @@
-/* Input — BORDERLESS. No border ever: --e1 at rest, a 2px accent focus ring, and an inset 1.5px
-   semantic ring for error/success. Hierarchy is luminance and elevation, never an outline.
+/* Input — --surface at --e2 at rest (raised, not outlined), a 2px accent focus ring, and an inset
+   1.5px semantic ring for error/success. The semantic ring stays 1.5px: a refusal is a line on
+   purpose, and it should be louder than the lift.
 
    The control stretches to the shell's full height rather than sitting as a centred 21px line:
    the field LOOKS 44–52px tall and the tap has to land anywhere inside it. */
@@ -26,7 +27,12 @@
   padding: 0 var(--sp-4);
   background: var(--surface);
   border-radius: var(--r-input-expressive);
-  box-shadow: var(--e1);
+  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
+   (owner ruling 2026-08-28, Q77). --surface at --e2 on a --canvas-sunken container: the control is
+   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
+   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
+   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
+  box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
@@ -34,22 +40,24 @@
   height: 52px;
 }
 
+/* DENSITY CHANGES THE SIZE, NEVER THE GROUND — a control is --surface at --e2 in both. On a
+   --surface-form container, --surface-alt measures 1.03:1 against --surface's 1.07:1, which is the
+   "looks like normal text" defect Q77 exists to prevent. */
 .hg-input-shell[data-density="functional"] {
   height: var(--sp-10);
-  background: var(--surface-alt);
   border-radius: var(--r-input-functional);
 }
 
 .hg-input-shell[data-ring="error"] {
   box-shadow:
     inset 0 0 0 1.5px var(--danger),
-    var(--e1);
+    var(--e2);
 }
 
 .hg-input-shell[data-ring="success"] {
   box-shadow:
     inset 0 0 0 1.5px var(--success),
-    var(--e1);
+    var(--e2);
 }
 
 /* Focus wins over every ring, and it is a RING — no border ever appears. */

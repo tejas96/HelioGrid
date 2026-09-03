@@ -83,7 +83,7 @@ export function FieldModeToggle({
       </Pressable>
       {hint === undefined ? null : (
         <View style={styles.hint}>
-          <Text variant="caption" color="tertiary">
+          <Text variant="caption" color="secondary">
             {hint}
           </Text>
         </View>

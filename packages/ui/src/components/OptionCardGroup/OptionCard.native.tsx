@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
+    ...theme.elevation.e2,
   },
   cardFunctional: { padding: 14, borderRadius: theme.radius['r-card-functional'] },
   /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight. */
@@ -39,7 +39,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
-  cardOff: { backgroundColor: theme.colors['canvas-sunken'] },
+  /* Sunken AND flat — it went sunken and kept e2, so an unavailable option still read as the
+     brightest, most pressable thing in the list (Q77). */
+  cardOff: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
   dot: {
     width: 20,
     height: 20,
@@ -51,7 +53,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderWidth: 1.5,
     borderColor: theme.colors['text-disabled'],
-  },
+  } /* The white fill measured 1.14:1 on an off card — weaker than its own ring at 1.44:1, so it
+     was never what you read, and it made the dot the brightest thing on a dead card (Q77). */,
+  dotOff: { backgroundColor: theme.colors['canvas-sunken'] },
+
   dotSelected: { backgroundColor: theme.colors.accent, borderWidth: 0 },
   dotFill: { width: 7, height: 7, borderRadius: theme.radius['r-pill'] },
   body: { flex: 1, minWidth: 0 },
@@ -89,6 +94,13 @@ function cardStyle(
     selected ? styles.cardSelected : null,
     off ? styles.cardOff : null,
   ];
+}
+
+/** The dot's fill. A selected dot keeps the accent whether or not the card is off — selection is a
+    fact, not an affordance. An unselected dot on an off card sinks into it. */
+function dotStyle(selected: boolean, off: boolean): StyleProp<ViewStyle> {
+  if (selected) return [styles.dot, styles.dotSelected];
+  return off ? [styles.dot, styles.dotOff] : styles.dot;
 }
 
 /** One card. The card IS the radio, so `content` is static by contract. */
@@ -129,7 +141,7 @@ export function OptionCard({
       accessibilityState={{ checked, disabled: off }}
       style={cardStyle(density, selected, off)}
     >
-      <View style={[styles.dot, selected ? styles.dotSelected : null]}>
+      <View style={dotStyle(selected, off)}>
         {selected ? (
           <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
         ) : null}
@@ -137,7 +149,7 @@ export function OptionCard({
       <View style={styles.body}>
         <View style={styles.head}>
           <View style={styles.titles}>
-            <Text variant="body" color={ink} style={styles.title}>
+            <Text variant="body" color={ink} lang={option.lang} style={styles.title}>
               {option.title}
             </Text>
             {/* A word in its own neutral pill — never the accent, which selection owns. */}
@@ -153,7 +165,7 @@ export function OptionCard({
           ) : null}
         </View>
         {option.description !== undefined ? (
-          <Text variant="body-sm" color="secondary" style={styles.description}>
+          <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
             {option.description}
           </Text>
         ) : null}

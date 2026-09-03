@@ -100,7 +100,8 @@
   width: 100%;
   /* 44px, not 24px: this is the entry's own tap target and owes the same floor every other
      control in the package takes from the Pressable primitive (docs/17 §4). At 24px plus
-     padding it measured 43.3px in the browser — short by design, not by rounding. */
+     padding it measured 43.3px in the browser — short by design, not by rounding, and only a
+     real browser reports it. */
   min-height: 44px;
   padding: 10px 0;
   margin: -10px 0;

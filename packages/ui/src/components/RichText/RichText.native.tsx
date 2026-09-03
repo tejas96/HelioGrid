@@ -48,7 +48,9 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-input-functional'],
-    backgroundColor: theme.colors['surface-alt'],
+    // A control is `surface` at e2 (Q77) — this is a text field.
+    backgroundColor: theme.colors.surface,
+    ...theme.elevation.e2,
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles['body-sm'].fontSize,
     color: theme.colors['text-primary'],
@@ -207,7 +209,8 @@ export function RichText({
         </Text>
         <View style={styles.count}>
           {pageEstimate}
-          <Text variant="caption" color={over ? 'danger' : 'tertiary'}>
+          {/* Secondary, not tertiary: a count and its limit are information (see RichText.css). */}
+          <Text variant="caption" color={over ? 'danger' : 'secondary'}>
             {maxLength !== undefined
               ? `${m.chars}/${maxLength} characters`
               : `${m.chars} characters`}

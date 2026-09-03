@@ -91,6 +91,8 @@
 @import "./components/OperationProgress/OperationProgress.css";
 @import "./components/OptionCardGroup/OptionCardGroup.css";
 @import "./components/OtpInput/OtpInput.css";
+@import "./components/PhoneField/PhoneField.css";
+@import "./components/PhotoField/PhotoField.css";
 @import "./components/PagedDocument/PagedDocument.css";
 @import "./components/PagedDocument/TitleBlock.css";
 @import "./components/PendingAction/IndeterminateRail.css";
