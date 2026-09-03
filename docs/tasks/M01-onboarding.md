@@ -194,7 +194,7 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-018 · Branding Settings
 **Type:** screen · **Tier:** P0
 **PRD rows:** M01-50 (P0), F7-07 (P0)
-**DESIGN:** SCR-M01-18 → PENDING
+**DESIGN:** SCR-M01-18 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-18-branding-settings.md`; they are the specification.
 **DONE WHEN:**
 - Given any branding save, when it completes, then the operator app is visually unchanged and only customer documents carry the branding (M01-50).

@@ -8,6 +8,21 @@ Logo, letterhead, brand colour, company details for customer documents only, wit
 
 Reached from: the tenant-config settings surface map — *Branding* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: branding rides proposal PDFs and customer-link pages (M01-50); M06 consumes branding for rendered documents (M01 §4 contracts).
 
+**Decisions made in design (2026-09-02) — later screens inherit them.**
+
+1. **A brand colour is measured, never refused** (`F7-07`, `M01-50`). The field asks **two**
+   questions and answers both: can text sit ON the colour, and can the colour BE a word on paper.
+   A single "is this accessible?" verdict destroys that distinction.
+2. **A colour that fails the text-on-it question gets a darker shade offered**, same hue, and the
+   offer is drawn. The band is narrow — about 1% of colours — and it is full of saturated blues,
+   teals and greens, so it is exactly where solar brands live.
+3. **A rejected logo is `warning`, not `danger`, and the saved mark stays.** Nothing failed; a file
+   was declined. A rejection that cleared the field would read as deletion.
+4. **The limits are stated before anything is rejected** — format, size and minimum width sit under
+   the control, so `logo-invalid-limits-stated` is met by the resting state, not only by the error.
+5. **The operator app is never restyled** (`F7-07`). The brand colour appears only inside the two
+   framed previews — the proposal cover and the customer-link header.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
