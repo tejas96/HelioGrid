@@ -187,7 +187,7 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-17 | **Catalog Import Wizard** | P0 | 1 | `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html | — |
 | SCR-M01-18 | **Branding Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-18-branding-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html | `F7-design-language:shell-tenant-branding-settings` |
 | SCR-M01-19 | **Proposal Template Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-19+Proposal+Template+-+Mobile.dc.html | — |
-| SCR-M01-20 | **Payment Terms Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md` | V1 | pending | — | — |
+| SCR-M01-20 | **Payment Terms Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-20+Payment+Terms+-+Mobile.dc.html | — |
 | SCR-M01-21 | **Message Template Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-21-message-template-settings.md` | V2 | pending | — | — |
 | SCR-M01-22 | **Capture Settings** | P0 | 4 | `docs/ux/briefs/SCR-M01-22-capture-settings.md` | V2 | pending | — | `M02-crm-and-leads:capture-settings` |
 | SCR-M01-23 | **Locale Defaults** | P1 | 1 | `docs/ux/briefs/SCR-M01-23-locale-defaults.md` | V2 | pending | — | — |
