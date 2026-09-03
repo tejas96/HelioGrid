@@ -79,7 +79,7 @@ row UP this order over widening the script that currently holds it.
 
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
-| M45 | User-visible copy goes through Lingui | `check:adherence` 6 | PARTIAL | Scans three app folders. `packages/ui` is unscanned and holds 19 unwrapped literals plus 178 English default props. |
+| M45 | User-visible copy goes through Lingui | `check:adherence` 6 | HELD · red 2026-09-04 | Now scans `packages/ui/src` too. 18 existing files are listed as debt and each is rot-checked, so a deleted one breaks the gate; a NEW file gets no grace. Two gaps: the exemption is per FILE, so a second literal in a debt file passes, and the heuristic reads JSX text nodes only — the 178 English DEFAULT PROPS are invisible to it. `M50` is the real fix. |
 | M46 | Every extracted message is actually translated | `check:adherence` 7 | HELD | Catches an empty `msgstr`, which `lingui extract` cannot see. |
 | M47 | The catalogs are freshly extracted | `check:catalogs` | HELD | Freshness only. A literal that was never extracted has no entry to go stale (that is M45's job). |
 | M48 | Every contract UI language is fully registered | types (`satisfies Record<UiLanguage, …>`) · `check:adherence` 9 | HELD | Derives its expectation from `locale.ts` instead of restating the list. The model row for how to write a check. |
@@ -96,7 +96,7 @@ row UP this order over widening the script that currently holds it.
 | M58 | An app declares no enum, union, lookup or policy number | biome `noEnum` · `noMagicNumbers` · `check:adherence` 10 | HELD · red 2026-09-03 | Apps only, and EXPORTED declarations only. A package may declare freely. |
 | M59 | A query lives in `packages/db` | `check:adherence` 10c (SQL verbs in an app) | PARTIAL | Catches a literal SQL verb in an app. Index-backed, no N+1 and no `select *` are review-only. |
 | M60 | A shared fact is unspeakable outside its owner; never `as <Brand>` | `check:adherence` 10b | **NONE** | `BRANDS=''` — the registry is empty, so the loop runs zero times and the check cannot fire. Zero branded types exist in the repo. **`.claude/rules/architecture-ownership.md` lists this as "caught" in its 2026-09-03 measurement; that line is wrong today.** Closing it: register each brand on the day it lands. |
-| M61 | No duplicated code | `check:dupes` (jscpd) | **NONE** | **Verified 2026-09-04: 99 clones, exit code 0.** `threshold: 12` in `.jscpd.json` is a PERCENTAGE of duplicated lines, not a line count — up to 12% passes. Closing it: `"threshold": 0`. |
+| M61 | Duplication never increases | `check:dupes` (jscpd) | HELD · red 2026-09-04 | `threshold` is a PERCENTAGE, not a line count; it was 12 and is now 2.38, immediately above today's 2.37%. So it is a RATCHET, not the zero-duplication rule: the 99 existing clones stay, and any addition fails. Driving it to 0 is separate work and an owner call. jscpd also reads several files under two formats at once, so the denominator is inflated and the true figure is higher. |
 | M62 | Dependency versions agree across every manifest | sherif | HELD | — |
 | M63 | A lockfile is generated, never authored | PreToolUse hook | HELD | Agent-only. A hand-edited `package.json` dependency block is not blocked. |
 | M64 | The pre-commit gate is never skipped | PreToolUse hook | HELD | Agent-only. Strips quoted text first, so it matches the flag and not a mention of it. |
@@ -108,7 +108,7 @@ row UP this order over widening the script that currently holds it.
 | M70 | A unit test has one name, one place, and covers the logic layers only | PreToolUse hook · `check:adherence` 1 · dependency-cruiser | PARTIAL | Three implementations with three separately-maintained package lists. All key on `*.test.*`, so `money-tests.ts` evades every one. The hook fires on `Write` only. |
 | M71 | Coverage thresholds land with the slice | vitest `thresholds` | PARTIAL | One glob has a threshold: `packages/domain/src/format/**`. Every other covered path has none. |
 | M72 | A test imports `../../src/…`, never `@heliogrid/<pkg>` | — | **NONE** | Review-only. The reason is in `vitest.config.mts`; all five current tests obey it. |
-| M73 | The invariants run before a change is called done | `pnpm verify` | PARTIAL | `pnpm check:all` — the command `CLAUDE.md` §5 names for use before a push — omits both the build and `turbo test`, so M12–M14, M17, M18 and M49 never run there. |
+| M73 | The invariants run before a change is called done | `pnpm verify` · `pnpm check:all` | HELD | `check:all` now ends with `pnpm turbo test`, so the static invariants (`M14`, `M49`) run during the work and the db-backed ones skip loudly. It costs nothing extra: `turbo typecheck` already builds. |
 
 ## Cross-platform behaviour
 

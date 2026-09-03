@@ -231,16 +231,25 @@ fi
 # reference — English by design, never shipped to a customer, and translating them would make
 # the reference harder to check against the design source. They are excluded by path.
 #
-# COPY_DEBT lists product screens that are NOT yet wrapped, each with a reason and an owner.
-# Both survived the 2026-08-01 auth teardown (ADR-0024) with their designs intact but their
-# data paths stubbed, and both get their real content back with the auth rebuild — wrapping
-# copy that is about to change would be translating twice. The debt is LISTED rather than
-# invisible, and a NEW screen gets no such grace.
-# EMPTY since 2026-08-19: both debt screens were deleted with the v1 UI. A new screen
-# gets no grace — wrap its copy when you write it.
-COPY_DEBT='__none__'
+# packages/ui IS SCANNED. It was not, and it is where the copy actually is: the package holds
+# no i18n dependency by design, so every string it renders must arrive as a prop. Leaving it
+# unscanned meant the one package that must hold no English was the only one nobody checked.
+#
+# COPY_DEBT lists files that are NOT yet wrapped, each of which becomes a required prop on the
+# component's one <Name>.types.ts — a design-system change that alters both platform halves and
+# every call site together (Law 7), sequenced with the design-system work rather than here. The
+# debt is LISTED rather than invisible, and a NEW file gets no grace. The real mechanism is the
+# TranslatedText brand (mechanisms.md M50), which makes a bare string a compile error and retires
+# this list wholesale.
+#
+# Each entry is checked to EXIST: a debt file that was deleted or renamed must break this gate,
+# not silently keep an exemption alive.
+COPY_DEBT='packages/ui/src/components/ActivityStream/ActivityStream.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.tsx|packages/ui/src/components/Checklist/ChecklistRow.tsx|packages/ui/src/components/CompareGrid/CompareGridTable.tsx|packages/ui/src/components/CompareGrid/CompareValueCell.tsx|packages/ui/src/components/DataTable/DataTableHead.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.native.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.native.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.tsx|packages/ui/src/components/DrawingSheet/DrawingSheetParts.tsx|packages/ui/src/components/FilterBar/FacetChips.tsx|packages/ui/src/components/PagedDocument/DocumentSheet.tsx|packages/ui/src/components/RichText/RichTextToolbar.tsx|packages/ui/src/components/Stepper/StepperNumbered.tsx|packages/ui/src/components/Wordmark/Wordmark.native.tsx|packages/ui/src/components/Wordmark/Wordmark.tsx'
+for d in $(printf '%s' "$COPY_DEBT" | tr '|' ' '); do
+  [ -e "$d" ] || { printf 'CONFIG ROT: COPY_DEBT names "%s", which does not exist.\n' "$d"; fail=1; }
+done
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
-         apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
+         apps/web/app apps/web/features apps/mobile/src/screens packages/ui/src --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
        | grep -vE "^($COPY_DEBT):")

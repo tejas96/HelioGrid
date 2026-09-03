@@ -66,15 +66,15 @@ still in question gets settled with the owner first.
 | | |
 |---|---|
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
-| `pnpm check:all` | The fast gates, DURING the work. No build and no invariants — it is not the proof. |
+| `pnpm check:all` | Every gate that runs without a database, DURING the work. It builds, because typecheck does. |
 | `pnpm verify` | **The proof.** Build · lint · boundaries · typecheck · gates · unit tests · invariants. |
 | `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
 | `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
 | `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |
 
-`verify` needs a live postgres or the invariants do not run — and an invariant over an empty schema
-reports VACUOUS, which is not a pass. **Read gate output, not exit codes**, and never weaken a gate
-to make a change pass.
+The db-backed invariants need a live postgres; without one they SKIP loudly, and over an empty
+schema they report VACUOUS. Neither is a pass. **Read gate output, not exit codes**, and never
+weaken a gate to make a change pass.
 
 **Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
 `5544` · temporal UI `8233` · worker has no listener. A busy port is a stale service: kill it,
