@@ -1,73 +1,54 @@
-# @heliogrid/db — Drizzle schema + append-only migrations + RLS plumbing
+# @heliogrid/db — Drizzle schema, append-only migrations, RLS plumbing
 
-> **GREENFIELD since 2026-08-01.** Migrations `0001`–`0006` and all of `src/schema/` were
-> deleted on an explicit owner ruling that overrode the append-only law (owner ruling
-> R20) — the identity spine could not be removed surgically because every platform table
-> foreign-keys to it. What survives: `client.ts`, `migrate.ts`, `uuid.ts`. The next
-> migration is `0001`, authored by the auth + tenancy module; read the `auth/tenancy` row of
-> `docs/engineering/forward-compat.md` before writing it. Everything below describes how this package
-> works and is what the rebuild must satisfy — it is not a description of today's contents.
+> **GREENFIELD.** Migrations `0001`–`0006` and all of `src/schema/` were deleted on an explicit
+> owner ruling that overrode the append-only law: the identity spine could not be removed
+> surgically because every platform table foreign-keys to it. What survives is `client.ts`,
+> `migrate.ts` and `uuid.ts`. The next migration is `0001`, authored by the auth and tenancy
+> module. Read the `auth/tenancy` row of `forward-compat.md` first. Everything below is what the
+> rebuild must satisfy, not a description of today's contents.
+
+Traps: `docs/engineering/landmines.md` · schema law: `.claude/rules/db-schema.md` · authoring a
+migration: `/migration` · deps: `architecture.md` §2 db.
 
 ## What lives here / what must never live here
-- Drizzle schema (`src/schema/*`), the connection factory + `withTenantTransaction`
-  (SET LOCAL app.tenant_id), the migration runner, and `migrations/*.sql`.
-- The `./uuid` subpath export is for backend use (repositories, common/db). The former
-  frontend exemption is retired — no app ever imported it and `node:crypto` cannot resolve
-  in a browser or Metro bundle.
-- NEVER: business logic, contract imports, app imports. Never a table/column that is not
-  in a migration. web and mobile may import NOTHING from this package (`web-no-db` /
-  `mobile-no-db` cover the full package including the uuid subpath).
+
+- The Drizzle schema (`src/schema/*`), the connection factory and `withTenantTransaction`, the
+  migration runner, and `migrations/*.sql`.
+- The `./uuid` subpath is backend-only; `node:crypto` cannot resolve in a browser or Metro bundle.
+- NEVER: business logic, a contract import, an app import, or a table or column that is not in a
+  migration.
 
 ## Commands
-pnpm --filter @heliogrid/db build        # tsc -b
-pnpm --filter @heliogrid/db migrate      # apply migrations; the SCRIPT passes
-                                         # ${DATABASE_ADMIN_URL:-$DATABASE_URL} as argv[1].
-                                         # This package reads no environment: runMigrations(url)
-                                         # takes the URL, so it stays reusable and testable.
-pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT SQL into drizzle-draft/ (review → move to migrations/)
 
-## Dependency policy
-docs/engineering/architecture.md §2 db.
+```
+pnpm --filter @heliogrid/db build | migrate
+pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-draft/ — review, then move
+```
+
+`migrate` takes the URL as `argv[1]`; this package reads no environment, so it stays reusable.
 
 ## Local conventions
-- Migrations are append-only, filename-ordered, sha256-locked by the runner — editing an
-  applied file makes `migrate` refuse to run. Add a new file instead.
-- ids are UUIDv7 generated APP-SIDE (`uuidv7()` via Drizzle `$defaultFn`) — tables have
-  no DB-side id default on purpose; raw SQL inserts must supply ids.
-- Every tenant table: RLS policy for `app_user` checking `app.tenant_id`, fail-closed
-  (`current_setting(..., true)` → NULL → zero rows). app_admin is BYPASSRLS, audited.
-- Append-only tables (audit_log, usage_events, sync_mutations): no UPDATE/DELETE grants.
-- New module tables land in the OWNING module's first migration with explicit grants —
-  there are no default privileges, so a forgotten grant fails closed.
 
-## Landmines
-- **pgEnum values hand-mirror the contracts `z.enum`s — and this is now CHECKED.**
-  `db-no-upward` (dependency-cruiser) forbids importing contracts here, so the sync cannot
-  be a type-level one. `tests/invariants/src/enum-parity.ts` closes it instead: it reads
-  live `pg_enum` values and compares them to the contract schemas (which it MAY import,
-  being tagged `app`). Both drift directions fail the build, and a NEW pg enum that is
-  neither mapped nor listed in `NO_CONTRACT_YET` also fails — so "does this cross the wire?"
-  becomes a conscious decision rather than a silent omission.
-  When you touch `src/schema/enums.ts`, change the contract `z.enum` in the same slice and
-  run `/contract-change`. A value present in one and not the other is a silent production
-  defect (rows the API can never return, or API values the DB rejects at insert) — which is
-  why it was the highest-risk drift in the repo until 2026-07-30.
-- audit_log / usage_events are PARTITIONED — drizzle-kit cannot express this; their DDL
-  is hand-authored in migrations, the Drizzle model is the query surface via the parent.
-  Partition upkeep beyond 2027-06 is a worker job (Track A); default partitions catch
-  overflow meanwhile.
-- usage_events dedupe is `(idempotency_key, period_key)` — producers MUST derive
-  period_key from occurred_at ('YYYY-MM') or retries stop being no-ops.
+- **Migrations are append-only, filename-ordered and sha256-locked by the runner** (`M19`).
+  Editing an applied file makes `migrate` refuse to run. Add a new numbered file instead.
+- ids are UUIDv7 generated APP-SIDE via `$defaultFn`. Tables carry no DB-side id default on
+  purpose, so a raw SQL insert must supply ids.
+- **Every tenant table:** `tenant_id`, a composite index leading with it, a fail-closed RLS policy
+  for `app_user`, and explicit grants. There are no default privileges, so a forgotten grant fails
+  closed. `app_admin` is BYPASSRLS and audited.
+- Append-only ledgers (`audit_log`, `usage_events`, `sync_mutations`) get no UPDATE or DELETE
+  grants.
+- pgEnum values hand-mirror the contract `z.enum`s, because `db-no-upward` forbids the import.
+  `M17` proves both directions once tables exist; change both sides in the same slice.
+- `audit_log` and `usage_events` are PARTITIONED and drizzle-kit cannot express that, so their DDL
+  is hand-authored and the Drizzle model is the query surface via the parent.
+- `usage_events` dedupe is `(idempotency_key, period_key)`; a producer MUST derive `period_key`
+  from `occurred_at` or retries stop being no-ops.
 - An identity provider's own tables are owned by ITS migrator, never authored here.
-  Whatever provider the auth module picks, that rule holds.
-- `tenants` INSERT is deliberately NOT granted to app_user — signup crosses tenancy and
-  runs on the explicit admin path (Track A wires it).
+- `tenants` INSERT is deliberately NOT granted to `app_user` — signup crosses tenancy and runs on
+  the explicit admin path.
 
-## Definition of done here
-Migration applies fresh AND on an already-migrated DB (idempotent skip) · RLS
-cross-tenant invariant green · `pnpm turbo typecheck lint` green.
+## Done means
 
-## Folder shape
-
-`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
-never a deep path. Never invent a folder: this tree is a closed set.
+The migration applies fresh AND on an already-migrated database (idempotent skip) · the RLS
+cross-tenant invariant green against real state · typecheck and lint green.

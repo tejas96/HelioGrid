@@ -1,152 +1,67 @@
 # @heliogrid/mobile — bare React Native (iOS + Android), NO Expo anywhere
 
-## What lives here / what must never live here
-- Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile,
-  signup, invite accept. Screens land per-module from the same contract as web; which
-  platform ships a screen first is a plan decision, but the prop contract stays in parity
-  (Law 7).
-- NEVER: expo packages, EAS, AsyncStorage for tokens, direct packages/db imports, or
-  authored domain logic (import it — Law 11).
+Traps: `docs/engineering/landmines.md` · deps and platform rules: `architecture.md` §2
+apps/mobile, §3 · screen-authoring rules: `.claude/rules/mobile-platform.md`.
 
-## Folder shape
+## What lives here / what must never live here
+
+- Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile, signup,
+  invite accept. Screens land per module from the same contract as web; which platform ships a
+  screen first is a plan decision, but the prop contract stays in parity (Law 7).
+- NEVER: an expo package, EAS, AsyncStorage for tokens, a `packages/db` import, or authored
+  domain logic — import it (Law 11).
+
+## Folder shape — a closed set; never invent a folder
 
 ```
 src/{auth,navigation,screens}
-src/screens/<name>/         mirrors web's feature shape:
-  <Name>Screen.tsx            composes
-  components/                 one file per component
-  hooks/                      the logic
-  styles.ts                   style NEVER in the component file
-  types.ts
+src/screens/<name>/   <Name>Screen.tsx composes · components/ one per component ·
+                      hooks/use-<thing>.ts the logic · styles.ts · types.ts
 env.ts · i18n.ts · react-query-host.tsx    root; the ONE host-lifecycle adapter
 ```
 
-**Web and mobile use the SAME shape** — a screen folder composes, `components/` holds one file
-each, `hooks/` holds the logic, style sits in its own file. Only the location and a few filenames
-differ. Never invent a folder: this tree is a closed set.
+Web and mobile use the SAME shape: `src/screens/<name>/` is web's `features/<capability>/`. Only
+the path and a few filenames differ. A new folder category is a plan-time call, and it changes
+this line and `.claude/rules/mobile-platform.md` together.
 
 ## Commands
-pnpm --filter @heliogrid/mobile start                 # metro
-pnpm --filter @heliogrid/mobile ios | android         # run on simulator/emulator
-pnpm --filter @heliogrid/mobile typecheck
-cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after native dep changes
 
-## Dependency policy
-docs/engineering/architecture.md §2 apps/mobile; platform rules §3 (React Native). `@heliogrid/data` is
-THE data path — transport, repositories, session; this app authors none. Shared login
-types, policy constants and formatters are imported from `@heliogrid/domain`, never
-re-authored (Law 11).
-nav: @react-navigation/native + native-stack + bottom-tabs + elements + react-native-screens
-RN UI components: `@heliogrid/ui` — ONE package holds both platforms, RN via the
-`.native.tsx` half (docs/engineering/17-ui-architecture-v2.md §2). Parity is a TYPE, not a script: both
-platform files import the same `<Name>.types.ts`, so divergence cannot compile. The v1
-`src/ui` mirror and its `api-parity.ts` were deleted 2026-08-19.
+```
+pnpm --filter @heliogrid/mobile start                 # metro
+pnpm --filter @heliogrid/mobile ios | android | typecheck
+cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep change
+```
 
 ## Local conventions
-- **Same structure as web, different location and names.** `src/screens/<name>/` is web's
-  `features/<capability>/`; only the path and a few filenames differ, never the shape.
-- Where UI, data, forms, shared copy and shared types come from:
-  `.claude/rules/cross-platform.md` (both apps) — not restated here. RN specifics: theme
-  ONLY from `@heliogrid/theme`, UI ONLY from `@heliogrid/ui`, Intl polyfills in
-  `src/i18n.ts` FIRST (it imports `@heliogrid/i18n/rn`, whose side effects install them and
-  assert their locale data).
-- **Language**: `<Trans>`, `useI18n()` and `useTranslate()` come from
-  `@heliogrid/i18n/react` — never `@lingui/react`, which this app no longer declares.
-  `App.tsx` builds ONE runtime per mount and hands it to `HelioI18nProvider`; a screen never
-  calls `i18n.activate` itself, because it cannot know whether that catalog is loaded.
-- **Styling layers:** components own pixels (`@heliogrid/ui` only); screens own layout in
-  the screen folder (StyleSheet + `theme.*`); no inline style objects for visual values.
-- API failures render a shared error component, never a hand-written string.
-  **`src/lib/ApiErrorText.tsx` was deleted with the v1 UI (2026-08-19) — rebuild it in
-  `packages/ui` so both platforms share one.**
-  Paginated screens: `FlatList` + `usePaginatedList` (`onEndReached={fetchNextPage}`) —
-  never inside a ScrollView.
-- Auth tokens via `src/auth/keychain-storage.ts` — never anywhere else.
-- **Inside a screen folder, structure follows need** — the same shape as web, in RN's own
-  location: `<Name>Screen.tsx` composes and holds no state · `components/` one file
-  per component or coherent group · `hooks/use-<thing>.ts` for state, network and timers ·
-  `styles.ts` owns screen-level layout, component-local geometry stays with its component ·
-  `types.ts` when two files share a type. A screen component body is capped at
-  80 lines (Biome). **Never a `components.tsx` or `hooks.ts` grab-bag** — a file named for its
-  layer instead of its job is the same defect as `*-part2`.
-- `src/` is the closed set `{auth,navigation,screens}` + root `i18n.ts`, `env.ts` and
-  `react-query-host.tsx`.
-  It listed `lib/` and `ui/` until 2026-08-25; neither has ever existed on disk, and `push/`
-  went the same day — one file, no callers. It returns with the notifications slice. A new
-  category is a plan-time call, and adding one means editing this line, root `CLAUDE.md` §6
-  and `.claude/rules/mobile-platform.md` together — three places said different things.
-  `env.ts` is the app's ONE configuration decision point: bare RN has no runtime
-  `process.env`, so it hands a source to `@heliogrid/env/native`, which owns the schema
-  and the validation. There is deliberately no `src/config/` — a new folder category is a
-  plan-time call, not something to add mid-diff.
-- **Navigation is React Navigation 7's STATIC config.** `src/navigation/root.tsx` holds the
-  one route map and the param list is INFERRED — there is no `RootStackParamList` to write.
-  Adding a screen is ONE entry in `src/navigation/routes/<module>.ts`; its param type, deep
-  link and auth gate all follow. Screens receive `route` ONLY — navigation comes from
-  `useNavigation()`, never a prop; params come from the screen's own `StaticScreenProps<…>`.
-  `App.tsx` renders `AppNavigation` and never imports a screen (dep-cruiser
-  `mobile-app-entry-thin`, severity `error`).
 
-## Landmines
-- **The native splash colour has no generator.** `res/values/colors.xml` and
-  `Images.xcassets/SplashCanvas.colorset` were emitted by `packages/tokens/build.ts`, deleted
-  2026-08-19. `packages/theme` does not re-emit them yet, so both files are FROZEN — do not
-  hand-edit, and do not assume a build refreshes them. The CI freshness gate was removed
-  2026-08-25 because it filtered the deleted package, exited 0 and passed green proving
-  nothing. Re-emitting them is owed by the mobile slice.
-- **Navigation groups are keyed by CAPABILITY, never by role.** Roles are stackable
-  (`role_preset[]`, OR-across, widest visibility), so a role-keyed group declares a shared
-  screen twice — and a duplicate route name is a hard THROW, not a warning. The OR-across
-  resolution belongs in `@heliogrid/domain`, defined once.
-- **Navigation chrome lives in `src/navigation/`, never in `@heliogrid/ui`.** A component
-  that knows route names is not a design-system component. The V2 shell (`AppShell`,
-  `BottomNav`, `AppRail`) takes items as PROPS and stays route-blind.
-- **The root navigator must never be empty.** Every group is `if`-gated, so a `Boot` route
-  sits ungrouped to guarantee one screen always renders — an empty navigator throws.
-  `src/navigation/phase.tsx` computes ONE phase value for this reason: per-guard timers can
-  disagree for a frame and leave zero screens mounted.
-- **A screen that fetches, holds state, renders and styles in one file passes every gate**
-  (2026-07-31: LoginScreen hit 446 lines, GalleryScreen 406 — both since split into
-  `components/`, `hooks/`, `styles.ts`). Only the 80-line cap catches this shape. When a
-  screen grows, extract the hook first — logic is what makes the file unreadable, not markup.
-- **Repository types are INFERRED from contracts, never re-declared** (now enforced in
-  `@heliogrid/data`). `HealthStatus` was a hand-written interface duplicating the liveness
-  200 schema; a contract gaining a field drifted silently. Import the exported schema type
-  (`Liveness`) instead.
-- **Protocol constants come from `@heliogrid/domain`** (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) —
-  they lived in contracts until 2026-08-01 and moved down a layer with the auth teardown,
-  because domain outlives a contract being deleted and rebuilt. This screen used to define its
-  own `OTP_LEN`, so a server-side OTP-length change would leave the boxes rendering the old
-  count. **The phone pair is NOT one of them**: the calling code and the national-number length
-  are market facts and live in `pack.formats` (`IN_FORMATS.phone`, `F1-49`) since the format
-  slice landed — the injected-market-pack move the global ruling 2026-08-02 promised.
-- `pod install` fails with `Unicode Normalization not appropriate for ASCII-8BIT` unless the
-  shell locale is UTF-8 — prefix `LANG=en_US.UTF-8` (hit 2026-07-27 adding react-native-screens).
-- **apps/mobile pins `zod` explicitly (3.25.76)** like api/worker. Without it pnpm resolved
-  `@ts-rest/core`'s zod peer to the transitive **zod 4** in the store and the typed client
-  collapsed to `never` — every `api.*` call became a type error (hit 2026-07-27).
-- Biome `a11y/useValidAriaRole` is OFF for this app (biome.json override): `AppText`'s
-  `role` is a TYPOGRAPHY role (`body`/`h2`/`overline`), not an ARIA role, and RN is not the
-  DOM — real RN a11y goes through `accessibilityRole`, which the components already set.
-  The rule only fired on static literals, so it flagged correct code inconsistently.
-- Cookies: `credentials: 'omit'`, keychain jar only — iOS CFNetwork otherwise merges its
-  copy into our header and the server 401s. Enforced in `@heliogrid/data`'s transport;
-  recorded here because this is the platform it bites.
-- metro.config.js holds monorepo resolution only (`watchFolders` + `nodeModulesPaths` for
-  pnpm workspace packages). There is no Lingui transformer: the runtime `<Trans id>`
-  convention needs none.
-- **`import()` is NOT usable for lazy loading here.** RN ships one bundle: a release build
-  inlines it, but against the dev server it goes through `__loadBundleAsync` and throws
-  `LoadBundleFromServerError: Could not load bundle` — hit 2026-08-25 switching language on
-  the iOS simulator. Anything that wants per-platform loading uses a `.native.ts` half, as
-  `packages/i18n/src/catalog-loader.native.ts` does.
-- Firebase LIVE (google-services.json + GoogleService-Info.plist committed).
-- Geist/Noto TTFs 400/500/600/700 bundled (`assets/fonts/`, react-native.config.js).
-  Devanagari via `<AppText>` run-splitting — verify on BOTH simulators.
-- pnpm symlinked node_modules: do not hoist by hand. Direct devDeps on mobile for
-  `@react-native/gradle-plugin`, `@react-native/codegen`, `@react-native/metro-config`.
-- Podfile `use_modular_headers!` required for react-native-firebase.
-- babel: `@babel/plugin-transform-class-static-block` for formatjs polyfills.
+- Where UI, data, forms, shared copy and shared types come from is
+  `.claude/rules/cross-platform.md`, not restated here. RN specifics: theme ONLY from
+  `@heliogrid/theme`, UI ONLY from `@heliogrid/ui`, and `src/i18n.ts` FIRST — it imports
+  `@heliogrid/i18n/rn`, whose side effects install the Intl polyfills.
+- **Language comes from `@heliogrid/i18n/react`**, never `@lingui/react`, which this app does not
+  declare. `App.tsx` builds ONE runtime per mount; a screen never calls `i18n.activate` itself,
+  because it cannot know whether that catalog is loaded.
+- **Styling layers:** components own pixels (`@heliogrid/ui`); screens own layout in the screen
+  folder (StyleSheet + `theme.*`); no inline style object for a visual value.
+- **Navigation is React Navigation 7 STATIC config.** `src/navigation/root.tsx` holds the one
+  route map and the param list is INFERRED — there is no `RootStackParamList` to write. Adding a
+  screen is ONE entry in `src/navigation/routes/<module>.ts`; its param type, deep link and auth
+  gate follow. Screens receive `route` only; navigation comes from `useNavigation()`.
+- **Navigation chrome lives in `src/navigation/`, never in `@heliogrid/ui`** — a component that
+  knows route names is not a design-system component. The shell takes items as PROPS.
+- Auth tokens go through `src/auth/keychain-storage.ts`, never anywhere else.
+- Repository types are INFERRED from contracts, never re-declared: import the exported schema
+  type. Protocol constants (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) come from `@heliogrid/domain`;
+  the calling code and national-number length do NOT — those are market facts in `pack.formats`.
+- A screen component body is capped at 80 lines. **Never a `components.tsx` or `hooks.ts`
+  grab-bag** — a file named for its layer instead of its job is the same defect as `*-part2`.
+- Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`.
+- API failures render a shared error component, never a hand-written string. `ApiErrorText` is
+  owed to `packages/ui` so both platforms share one.
+- Firebase is LIVE (`google-services.json` + `GoogleService-Info.plist` committed). Geist and
+  Noto TTFs are bundled; verify Devanagari on BOTH simulators.
 
-## Definition of done here
-Runs on BOTH simulators · typecheck green · CLAUDE.md §Commands + `docs/prd/foundations/F7-design-language.md` `F7-43` (per-screen DoD).
+## Done means
+
+Runs on BOTH simulators · typecheck green · the per-screen DoD in
+`docs/prd/foundations/F7-design-language.md` `F7-43`.

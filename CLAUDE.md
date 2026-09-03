@@ -5,9 +5,8 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
 **This file states the invariants.** `docs/engineering/architecture.md` places every file ·
-`docs/engineering/mechanisms.md` is the ONLY place enforcement is described, cited by row
-(`M12`) · `docs/engineering/landmines.md` holds the live traps. Everything else loads when it
-applies.
+`mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
+`landmines.md` holds the live traps. Everything else loads when it applies.
 
 ## 1. Core principles
 
@@ -105,7 +104,8 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `.claude/rules/` | path-scoped deltas — load automatically for the paths they name. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
-Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a folder**:
+Everything public is re-exported from a package's `src/index.ts`; consumers import the
+index, never a deep path. Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a folder**:
 every tree is a closed set, and a new category is a plan-time decision. `docs/README.md` maps every
 document; `start-here.md` opens a design session, `build-order.md` a build one, and
 `docs/tasks/<module>.md` holds the work.
@@ -173,8 +173,11 @@ Every line, every app, every package. No exceptions for "just this once".
 
 Writing rules, not code:
 
-- **A rule states an invariant.** If it starts with a date it is a landmine, and it belongs in
-  `landmines.md`.
+- **A rule states an invariant, and carries NO DATE** — not a leading one, and not one buried
+  mid-sentence in a `hit …`, `measured …` or `since …` clause. A dated sentence is a war story,
+  and war stories are how this corpus doubled before. The trap goes to `landmines.md`; when and
+  why we changed something is the commit's job. `mechanisms.md` is the one exception: a date there
+  is the day a gate was proven red, which is the only date that stays true.
 - **One fact, one file.** Cite a ruling by its id; never restate it. Law 8's sweep covers the
   ledger and the matrix too.
 - **Name no gate outside `mechanisms.md`**, and cite a row there only once it has been seen to go
@@ -183,7 +186,9 @@ Writing rules, not code:
 - **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
   nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
-- **Budgets.** This file ≤ 180 lines · a package `CLAUDE.md` ≤ 45 · a `.claude/rules/` file ≤ 50.
+- **Budgets are ceilings, not targets.** This file ≤ 215 lines · a package or app
+  `CLAUDE.md` ≤ 70 · a `.claude/rules/` file ≤ 85. Hitting one means the file has taken on
+  something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.
 - **Repo law beats a plugin skill.** The test-driven-development skill may be used for the logic
