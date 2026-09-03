@@ -209,7 +209,8 @@ export function RichText({
         </Text>
         <View style={styles.count}>
           {pageEstimate}
-          <Text variant="caption" color={over ? 'danger' : 'tertiary'}>
+          {/* Secondary, not tertiary: a count and its limit are information (see RichText.css). */}
+          <Text variant="caption" color={over ? 'danger' : 'secondary'}>
             {maxLength !== undefined
               ? `${m.chars}/${maxLength} characters`
               : `${m.chars} characters`}

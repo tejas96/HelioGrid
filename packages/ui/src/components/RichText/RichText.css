@@ -197,13 +197,16 @@
   text-wrap: pretty;
 }
 
+/* A COUNT AND ITS LIMIT ARE INFORMATION, NOT DECORATION — the two words the tertiary rule names
+   outright. Drawing them tertiary until they go over says the number only matters once it is too
+   late, when the whole point is to be read on the way there. */
 .hg-rich-text-count {
   display: inline-flex;
   align-items: baseline;
   gap: var(--sp-3);
   font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-rich-text-count[data-over="true"] {
