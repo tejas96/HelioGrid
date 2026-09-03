@@ -116,7 +116,7 @@ recent defect landed. Inside a screen, assume nothing is watching:
 - Anything you are tempted to define here belongs in a package — see
   `.claude/rules/architecture-ownership.md` for which one.
 
-### Four things a static gate cannot see
+### What a static gate cannot see
 
 Each shipped as a real defect in `packages/ui` and each passed every gate. They are held by your
 care and by the render harness's probes (`docs/engineering/harness/README.md`), nothing else.

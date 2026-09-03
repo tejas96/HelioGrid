@@ -355,7 +355,7 @@ if [ -n "$shrink_range" ]; then
   printf 'CONTROL DECLARES A SHRINK RANGE — it will render smaller than designed, silently:\n%s\n' "$shrink_range"
   echo '  A control never renders below the size it was designed at. Let the row wrap, or set'
   echo '  flex-shrink: 0 — then a container that is too narrow is VISIBLE instead of silent.'
-  echo '  (.claude/rules/ui-adherence.md — four things a static gate cannot see)'
+  echo '  (.claude/rules/ui-adherence.md — what a static gate cannot see)'
   fail=1
 fi
 

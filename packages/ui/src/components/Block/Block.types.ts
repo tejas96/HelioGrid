@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { clampCount } from '../../utils/count';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote';
 
@@ -85,6 +86,5 @@ export function blockCount(
   group: (n: number) => string,
 ): string | null {
   if (typeof count !== 'number' || count <= 0) return null;
-  if (countMax !== undefined && count > countMax) return `${countMax}+`;
-  return group(count);
+  return clampCount(count, countMax, group);
 }

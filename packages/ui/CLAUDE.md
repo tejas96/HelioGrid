@@ -1,6 +1,6 @@
 # @heliogrid/ui — ONE component package, both platforms
 
-95 components and 8 primitives, each shipping a web half and a React Native half from the same
+97 components and 8 primitives, each shipping a web half and a React Native half from the same
 folder. `.claude/rules/ui-adherence.md` carries the compose-don't-invent and no-raw-values laws and
 loads with this folder — this file is the package's own shape and its landmines.
 

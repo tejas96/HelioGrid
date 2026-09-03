@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text';
+import { clampCount } from '../../utils/count';
 import type { CountBadgeProps } from './AppShell.types';
 
 interface WebCountBadgeProps extends CountBadgeProps {
@@ -39,7 +40,7 @@ export function CountBadge({
   if (n === null && count !== true) {
     return null;
   }
-  const shown = n === null ? null : n > max ? `${max}+` : String(n);
+  const shown = n === null ? null : clampCount(n, max);
   const words = n === null ? `Unread ${label}` : `${n} unread ${label}`;
   return (
     <span

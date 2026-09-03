@@ -50,15 +50,17 @@ Two other apparent failures are not defects: `Dropzone`'s file input is `opacity
 `pointer-events:none` (the drop zone is the target), and an inline `<a>` inside `RichText` prose is
 a text link, not a touch target.
 
-### Open findings — real, not yet fixed
+### What the harness found, and what each one taught
 
-| where | measured | why it is real |
+All three are FIXED; the measurements are kept because the lesson is in the number.
+
+| where | measured | what it taught |
 |---|---|---|
-| `RangeField`, `FilterPanel` (×4) | thumb **22×22px** | `.hg-range-input::-webkit-slider-thumb` is 22px with `pointer-events:auto`, so the thumb IS the target — half the 44px floor, on a control you drag |
-| `ActivityStream` summary button | **43.3px** tall | declares `min-height: 24px` rather than taking the `Pressable` floor |
-| `AppShell` breadcrumb link | **42px** wide | `min-width: auto`; the 44px floor is applied to height only |
+| `RangeField`, `FilterPanel` (×4) | thumb **22×22px** | the thumb IS the target, so a 44px box now carries a 22px painted disc — the target grows without the thumb looking bigger |
+| `ActivityStream` summary button | **43.3px** tall | a control that declares its own `min-height` instead of taking `Pressable`'s floor lands *just* short — 43.3 is not a rounding error |
+| `AppShell` breadcrumb link | **42px** wide | **the floor is two-dimensional.** The 44px rule had been applied to height only, so the target failed on the axis nobody checked |
 
-None is caught by a static gate — they are computed layout, which only a browser can report.
+None was caught by a static gate — they are computed layout, which only a browser can report.
 
 ## Three probes a static gate cannot replace
 
@@ -72,6 +74,6 @@ static and lives in `scripts/check-adherence.sh` check 11 instead.
 | **Devanagari overflow** | re-render every fixture with its strings replaced by Devanagari of 1.6× the length; no element's `scrollWidth` exceeds its `clientWidth` | `Accordion`'s header `meta` and state word were `white-space: nowrap` — fine in English, clipped in Hindi and Marathi, which are P0 markets |
 | **Quiet role** | enumerate every text node's computed colour; flag `--text-tertiary` on any node the fixture marks load-bearing | `Accordion`'s state word — which sections of a form are unfilled — computed to tertiary on every untinted section (`N4`) |
 
-**The pattern behind all four:** a static gate proves a value is a token and a type proves a prop
-exists. Neither can see what the browser actually painted, and every one of these six defects lived
+**The pattern behind them:** a static gate proves a value is a token and a type proves a prop
+exists. Neither can see what the browser actually painted, and every one of these defects lived
 in exactly that gap.

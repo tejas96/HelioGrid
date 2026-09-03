@@ -6,6 +6,11 @@
  * records that says `99+` has stated a number nobody can act on. So the clamp is per-component and
  * never implicit. `Block.blockCount` holds the same rule for a figure that also groups.
  */
-export function clampCount(count: number, countMax?: number): string {
-  return countMax !== undefined && count > countMax ? `${countMax}+` : String(count);
+export function clampCount(
+  count: number,
+  countMax?: number,
+  /** How the UNCLAMPED number renders — a total that groups passes its grouper here. */
+  format: (n: number) => string = String,
+): string {
+  return countMax !== undefined && count > countMax ? `${countMax}+` : format(count);
 }

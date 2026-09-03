@@ -179,8 +179,10 @@
   place-items: center;
   background: var(--surface);
   color: var(--text-tertiary);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
-  box-shadow: var(--e2);
+  /* NOT a control — a `<span>` glyph badge. Nothing presses it, so it stays a surface (Q77), and
+     the native half says the same at SourceDocumentChrome.native.tsx. A 44px white pill is not
+     proof of a control; the only test that holds is whether a button or Pressable renders it. */
+  box-shadow: var(--e1);
 }
 
 .hg-source-doc-message[data-tone="warning"] .hg-source-doc-message-mark {
