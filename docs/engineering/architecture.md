@@ -166,7 +166,7 @@ i18n tag already permits this edge), config; react is a PEER. Platform scope: sh
 frontend. Belongs: copy both platforms render (Law 11). Never: macro imports (lint-banned);
 a module-scope i18n instance (one shared mutable locale across concurrent server renders);
 locale-default number formats for money
-(CLAUDE.md §7: tenant-currency grouping — UI LANGUAGE never selects a money format; the
+(CLAUDE.md §9: tenant-currency grouping — UI LANGUAGE never selects a money format; the
 tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 

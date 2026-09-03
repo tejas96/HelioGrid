@@ -1,7 +1,7 @@
 # migrations — empty by design (2026-08-01)
 
 Migrations `0001`–`0006` were deleted in the auth teardown, on an explicit owner ruling that
-overrode the append-only law in CLAUDE.md §6.
+overrode the append-only law (`.claude/rules/db-schema.md`, mechanism `M19`).
 
 They held the identity/tenancy spine (`tenants`, `users`, `user_roles`) plus the platform
 tables that referenced it (`files`, `audit_log`, `usage_events`, `tenant_phone_numbers`,

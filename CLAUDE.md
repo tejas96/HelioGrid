@@ -4,24 +4,25 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
-This file and `docs/engineering/architecture.md` are the two you must know; everything else loads when it applies.
+**This file states the invariants.** `docs/engineering/architecture.md` places every file ·
+`docs/engineering/mechanisms.md` is the ONLY place enforcement is described, cited by row
+(`M12`) · `docs/engineering/landmines.md` holds the live traps. Everything else loads when it
+applies.
 
 ## 1. Core principles
 
 **Think before coding.** State assumptions. Two readings of a request → present both. Unclear →
 stop and ask; never invent a requirement.
 
-**Found a better approach? Propose it, with an example** in *this* codebase, and what it costs to
-switch. A recommendation you withheld is a decision made on the owner's behalf. Never switch
-silently — propose, then follow the answer.
+**Propose a better approach when you see one** — with an example in *this* codebase and the cost
+to switch. A recommendation you withheld is a decision made for the owner. Never switch silently.
 
 **Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned;
 mention unrelated dead code, don't delete it.
 
-**Verify reality.** A task is done when you have looked at it — "fix the bug" means reproducing it
-on the real surface, then showing those steps pass. Read failures, not exit codes: a red probe
-proves nothing until you know why, and **a green gate proves nothing until you have seen it go red
-on an injected violation.** Read call sites, not declarations. Don't move on until 99% confident.
+**Verify reality.** "Fix the bug" means reproducing it on the real surface, then showing those
+steps pass. Read failures, not exit codes. **A green gate proves nothing until you have seen it go
+red on an injected violation.** Read call sites, not declarations.
 
 ## 2. The Laws
 
@@ -31,14 +32,14 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 3. **Contracts before code.** requirements → domain model → contract → shared types →
    migration → implementation → verification → docs. Never in reverse.
 5. **Reuse before creation.** Search first; creating what exists is a defect.
-7. **Shared component APIs stay in parity.** Held by a TYPE: both platform files import the one
-   `<Name>.types.ts`. A prop on one platform only is a compile error.
+7. **One prop contract per shared component.** Both platform files implement the one
+   `<Name>.types.ts`; a prop belongs to that contract, never to a single platform.
 8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES files
    greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored only
    when their owning module's slice begins.
 10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API outside a
-    declared server entry. Held by dependency-cruiser.
+    declared server entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
 
@@ -46,10 +47,9 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 **Understand → build → `/verify` → `/finish`.**
 
-Before writing code, say three things: **which package owns each new file**
-(`docs/engineering/architecture.md` §4), **which facts are new and where their TYPE lives** (§8,
-unspeakable-by-default), and **what will prove it works**. Anything whose shape is still in
-question gets settled with the owner first.
+Before writing code, say three things: **which package owns each new file** (§6), **which facts are
+new and where their TYPE lives** (§8), and **what will prove it works**. Anything whose shape is
+still in question gets settled with the owner first.
 
 ## 4. Stop and ask the owner before
 
@@ -57,7 +57,7 @@ question gets settled with the owner first.
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
 - A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
-  `docs/prd/registers/open-questions.md` or `docs/prd/registers/conflicts.md` first, then continue.
+  `docs/prd/registers/open-questions.md` or `conflicts.md` first, then continue.
 - **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An instruction to
   do work is never approval to commit it, and one approval never carries to the next. `main` is
   PR-only; never `--no-verify`.
@@ -67,151 +67,128 @@ question gets settled with the owner first.
 | | |
 |---|---|
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
-| `pnpm check:all` | **Before you push.** Fixes formatting, then every gate. Fast, no build, no DB. |
-| `pnpm verify` | **The full proof.** Build · lint · boundaries · typecheck · all gates · invariants. |
-| `pnpm test:unit` | Unit tests. In `check:all` and `verify`; `pnpm test:watch` while writing. |
+| `pnpm check:all` | The fast gates, DURING the work. No build and no invariants — it is not the proof. |
+| `pnpm verify` | **The proof.** Build · lint · boundaries · typecheck · gates · unit tests · invariants. |
+| `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
 | `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
-| `pnpm db:migration:new` | The only way a migration is created. Never hand-author one. |
+| `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |
 
-- `verify` needs a live postgres (`pnpm infra:up`, then `DATABASE_URL`) or the invariants fail —
-  a run without one has NOT proven tenancy. **Read gate output, not exit codes**: an invariant
-  over an empty schema reports VACUOUS, which is not a pass.
-- Deleted a source file? `pnpm turbo build --force` — stale `dist/` keeps `boundaries` red.
-- Enumerate with `git ls-files`, never a bare glob — in zsh one unmatched pattern aborts the
-  command and prints nothing, which reads as "clean".
-- **Never weaken a gate to make a change pass.**
+`verify` needs a live postgres or the invariants do not run — and an invariant over an empty schema
+reports VACUOUS, which is not a pass. **Read gate output, not exit codes**, and never weaken a gate
+to make a change pass.
 
-**Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` ·
-postgres `5544` · temporal UI `8233` · worker has no listener. A busy port is a stale service:
-kill it, never fall back to another. Start web/api/metro through the browser preview tool, which
-reads `.claude/launch.json` and kills stale listeners first; iOS/Android are not servers —
+**Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
+`5544` · temporal UI `8233` · worker has no listener. A busy port is a stale service: kill it,
+never fall back to another. Start web/api/metro through the browser preview tool;
 `pnpm --filter @heliogrid/mobile ios|android` drives metro.
 
 ## 6. Where everything lives
 
-**Never invent a folder.** Every tree is a closed set — a new category is a plan-time decision.
+**`docs/engineering/architecture.md` is the authority** — §2 what each package owns and may
+import, §4 where a new file goes. Run §4 before creating one. This is the digest.
 
 | package | owns |
 |---|---|
-| `contracts` | enums, wire shapes, string-literal unions, ports. The API review surface. |
+| `contracts` | enums, wire shapes, string-literal unions, ports, workflow messages. The API review surface. |
 | `domain` | logic, policy numbers, formatters, money maths. Pure — no clock, no I/O. |
 | `theme` | every visual value. Generated; never hand-edited. |
 | `ui` | one component package, both platforms (`.tsx` + `.native.tsx`). |
 | `db` | schema and append-only migrations. |
 | `i18n` | every user-visible string. |
 | `env` | the only reader of `process.env`. |
-| `forms`, `data`, `config` | the form layer · the typed client · shared build config. |
+| `forms` · `data` · `config` | the form layer · the typed client · shared build config. |
 
 | tree | what it is |
 |---|---|
-| `docs/prd/` | **the product spec** — what the product does. Source of truth. |
-| `docs/ux/briefs/` | one design brief per screen. Source of truth. |
-| `docs/tasks/` | engineering work, one file per module. Source of truth. |
+| `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
 | `.claude/rules/` | path-scoped deltas — load automatically for the paths they name. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
-Each app and package has its own `CLAUDE.md` — folder shape and landmines — loaded when you read
-that folder. **Start from the right file; searching costs more than opening it:**
+Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a folder**:
+every tree is a closed set, and a new category is a plan-time decision. `docs/README.md` maps every
+document; `start-here.md` opens a design session, `build-order.md` a build one, and
+`docs/tasks/<module>.md` holds the work.
 
-| doing | open |
-|---|---|
-| designing a screen | `docs/start-here.md` |
-| building | `docs/build-order.md`, then `docs/tasks/<module>.md` |
-| finding any doc | `docs/README.md` — the map, with a status per file |
-| placing a new file | `docs/engineering/architecture.md` §4 |
-| a first migration | `docs/engineering/forward-compat.md` |
-| the screen register | `docs/prd/registers/screens.md` — 150 screens, 99 locked to V1 |
-| the UI layer | `docs/engineering/17-ui-architecture-v2.md` |
-
-**Naming.** A file is named for what it does — never `*-part2`/`*2`/`*-extra`, never for its
-layer (a `components.tsx` grab-bag is the same defect). A split that needs a number is wrong.
+**Naming.** A file is named for what it does — never `*-part2`/`*2`/`*-extra`, never for its layer
+(a `components.tsx` grab-bag is the same defect). A split that needs a number is wrong.
 
 ## 7. When rules conflict
 
-Higher wins, and don't re-declare at a lower level what a higher one already fixed:
+Higher wins, and don't re-declare at a lower level what a higher one already fixes:
 
 **owner rulings (`docs/prd/registers/open-questions.md`, `conflicts.md`) → the product spec
-(`docs/prd/`) → architecture (`docs/engineering/architecture.md`) → contracts → design system →
-this file → package `CLAUDE.md` → implementation detail.**
+(`docs/prd/`) → `docs/engineering/architecture.md` → contracts → design system → this file →
+package `CLAUDE.md` → implementation detail.**
 
-Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule** — it is closer to the code
-and has historically been the accurate one; and between two records, the **later-dated** one wins.
-If a doc and the code disagree, fix the doc or ask.
+Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule**, being closer to the code;
+and between two records the **later-dated** one wins. If a doc and the code disagree, fix the doc
+or ask.
 
-**A rule is not enforced just because it is written.** Before trusting one, check whether a type, a
-lint rule or an invariant actually holds it — several here are held only by review.
+**A rule is not enforced because it is written.** `mechanisms.md` says what holds each one, and
+how much of it.
 
 ## 8. Coding standards
 
 Every line, every app, every package. No exceptions for "just this once".
 
-- **The gates hold the mechanics.** Formatting · `any`/`!`/`==`/`console.log` · env access ·
-  **files ≲300 lines, split by responsibility** · unit-test name and place · style out of the component file ·
-  no app-declared enum, union or lookup. All enforced — run `pnpm check:all` and fix what it says.
-- **Zero duplication.** Before writing anything, search for it. A second copy of a definition,
-  a formula or a shape is a defect even when both copies are correct — they will diverge.
-  `check:dupes` catches clones of 12+ lines; a duplicated constant or a re-derived formula it
-  cannot see, and that one is yours to refuse.
-- **A shared fact is UNSPEAKABLE outside its owner.** Before writing a value a second package
-  could ever need, ask: *could a consumer just type this themselves?* If yes, it will be typed
-  twice. Give it a branded type in its owning package so the only way to obtain one is to
-  import it. Gates catch a bad IMPORT; nothing but a type catches a fact WRITTEN in the wrong
-  place — measured 2026-09-03, nine such injections passed every gate in this repo.
-  Owners: money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies →
-  `contracts` · visual values → `theme` · queries → `db` · wire calls → `data`.
-- **Never `as <Brand>`.** A cast is the one hole in a branded type, so outside the owning
-  package it is a defect and never a shortcut — call the constructor instead.
-- **Code reads like English or it is rewritten.** Names say WHAT, never how. A reader who does
-  not know this codebase follows a function top to bottom without scrolling back. If
-  explaining it needs a comment, the code is wrong — fix the code, not the comment. A comment
-  that earns its place states the CONSTRAINT — what breaks if you change this. When and why we
-  changed it goes in the commit; git stores that already, undated and un-rotting.
-- **Solve today's problem.** No speculative abstraction, no config for one caller, no
-  indirection for a future that has not been specified. The simplest thing that is correct.
-- **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded
-  scan, and every tenant-scoped read carries its tenant predicate. A query written to be fixed
-  later never is.
-- **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred
-  or `any` shape. If two sides need to agree, the agreement is a type in `packages/contracts`.
-- **A bug you find is reported immediately and fixed next.** Never silently, never inside the
-  current change — that hides it in an unrelated diff. Say it, finish the scope you are on,
-  then fix it before starting anything new.
-- **Dependencies change only through `pnpm add`/`pnpm remove`.** Never hand-edit a dependency
-  block, never touch a lockfile. **The database is read-only to you** — schema through
-  `pnpm db:migration:new`, data through the application. Both are hook-enforced.
-- **Unit tests are required for the LOGIC layers** (owner ruling 2026-09-03, replacing the
-  2026-07-29 ban). `packages/domain` · `packages/contracts` · `packages/forms` · `apps/api` ·
-  `apps/worker`. Not the frontend — `packages/ui`, `apps/web`, `apps/mobile` are proven by
-  running them; `packages/data` by driving the real client; `packages/db` by migrations and
-  `tests/invariants/`.
-- **One name, one place: `<package>/tests/**/*.test.ts`.** Never `*.spec.*`, never `__tests__/`,
-  never beside the source — inside `src/` the package's own `tsc -b` compiles the test into
-  `dist/` and ships it. Held by `.claude/hooks/block-test-files.sh` and `check:adherence`.
-- **Test the DECISION, at its edges.** One `it.each` table per rule, rows for the boundary and
-  one either side of it, the empty, the negative, the zero. A test that restates the
-  implementation proves nothing; a test that pins a value the PRD fixes proves the row. Never
-  test a type, a constant or a re-export, and never mock what this repo owns.
-- **A test imports `../../src/…`, never `@heliogrid/<pkg>`.** The package specifier resolves to
-  BUILT `dist/`, so the test passes against the last build and says nothing about the source you
-  just edited.
-- **Coverage thresholds land WITH the slice** (Law 9), per glob in `vitest.config.mts`, at 100%.
-  A global floor over untested packages is either meaningless or red on day one.
-- **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the
-  SYSTEM against real state — tenancy holds, one format implementation exists. A unit test
-  proves one decision at its edges. Neither substitutes for the other.
+- **A shared fact is UNSPEAKABLE outside its owner.** If a consumer could simply type the value
+  themselves, it will be typed twice: give it a branded type in its owner, so importing is the only
+  way to obtain one. Never `as <Brand>` outside that package — the one hole a brand has. Owners:
+  money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies → `contracts` ·
+  visual values → `theme` · queries → `db` · wire calls → `data`.
+- **Zero duplication.** Search before you write. A second copy of a definition, a formula or a
+  shape is a defect even when both copies are correct — they will diverge.
+- **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this
+  codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
+  means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this. When
+  and why we changed it goes in the commit, undated and un-rotting.
+- **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
+  for a future that has not been specified.
+- **Shape.** Files ≲300 lines, split by responsibility · no `any`, `!`, `==` or `console.log` ·
+  style outside the component file · no app-declared enum, union, lookup or policy number ·
+  `process.env` read only in `packages/env`.
+- **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
+  every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
+- **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
+  `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
+- **A bug you find is reported immediately and fixed next** — never silently, and never inside the
+  current change, which hides it in an unrelated diff.
+- **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
+  block or lockfile. **The database is read-only to you**: schema through a migration, data through
+  the application.
+- **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker`. Not
+  the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
+  client, `db` by migrations and `tests/invariants/`.
+- **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
+  never inside `src/`, where the package's own `tsc -b` compiles the test into `dist/` and ships
+  it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
+- **Test the DECISION at its edges** — the boundary and one either side, the empty, the negative,
+  the zero, as one `it.each` table per rule. A test that restates the implementation proves
+  nothing. Never test a type, a constant or a re-export; never mock what this repo owns. Coverage
+  thresholds land WITH the slice (Law 9), per glob, at 100%.
+- **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
+  against real state; a unit test proves one decision at its edges. Neither substitutes for the
+  other.
 
 Writing rules, not code:
 
-- **An instruction earns its length.** State the rule, its cost, the fix — 1–3 lines. The war
-  story belongs in the commit. Before adding a rule, check whether it REPLACES an existing one.
-- **Mechanism order: type → lint rule → instruction → script.** A script encodes today's tree
-  and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it.
-- **One review per change.** Findings get fixed and the work ships; multi-round adversarial
-  review only when asked for by name.
-- **Repo law beats a plugin skill.** The test-driven-development skill may now be used for the
-  logic layers above, and never overrides this file's name, place and scope rules; planning
-  skills write to `.superpowers/`, never `docs/superpowers/`.
+- **A rule states an invariant.** If it starts with a date it is a landmine, and it belongs in
+  `landmines.md`.
+- **One fact, one file.** Cite a ruling by its id; never restate it. Law 8's sweep covers the
+  ledger and the matrix too.
+- **Name no gate outside `mechanisms.md`**, and cite a row there only once it has been seen to go
+  RED on an injected violation.
+- **No rule about deleted code.** When a file goes, its stories go with it.
+- **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
+  and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
+  nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
+- **Budgets.** This file ≤ 180 lines · a package `CLAUDE.md` ≤ 45 · a `.claude/rules/` file ≤ 50.
+- **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
+  only when asked for by name.
+- **Repo law beats a plugin skill.** The test-driven-development skill may be used for the logic
+  layers above, and never overrides this file's name, place and scope rules; planning skills write
+  to `.superpowers/`, never `docs/superpowers/`.
 
 ## 9. Product law
 
@@ -220,13 +197,13 @@ Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale — design changed and quote not recomputed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
-- One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone
-  spec) resolve from versioned market packs, never hard-coded.
+- One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)
+  resolve from versioned market packs, never hard-coded.
 - Sent proposals keep their prices; a price-book update creates a new version.
 - Structural adequacy is NEVER computed — an engineer signs off, and the disclaimer travels with
   every structure-bearing output.
-- Money renders in the tenant currency's grouping in every locale (INR: lakh/crore); kW/kWh/kWp
-  are never translated.
+- Money renders in the tenant currency's grouping in every locale (INR: lakh/crore); kW/kWh/kWp are
+  never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 

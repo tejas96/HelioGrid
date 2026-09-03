@@ -72,7 +72,7 @@ never back, because domain is the bottom layer and the reverse is a package cycl
 - Every closed business set is ONE `z.enum` here, defined once (shared sets in
   `common.ts`), with its inferred type exported (`export type UiLanguage = z.infer<…>`)
   from the index. Consumers — api services, web, mobile, i18n — import the type; an
-  inline literal union anywhere downstream is a defect — one definition per fact (CLAUDE.md §1).
+  inline literal union anywhere downstream is a defect — one definition per fact (CLAUDE.md §8).
 - Pagination is offset + totalCount (`paginationQuerySchema` / `paginated()` /
   `Paginated<T>`). A cursor-based route needs an owner ruling (spec 2026-08-02 §4).
 

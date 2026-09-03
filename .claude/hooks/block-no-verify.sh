@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PreToolUse(Bash): the --no-verify flag skips the pre-commit gate (biome --error-on-warnings
-# + typecheck). Fix the diagnostic instead (CLAUDE.md §6).
+# + typecheck). Fix the diagnostic instead (CLAUDE.md §4).
 #
 # Matches the ACTION, not a mention: quoted segments are stripped first, so a commit message
 # that discusses the flag still lands, while the flag as an argument is caught wherever it
@@ -21,7 +21,7 @@ print(s)
 ')"
 
 if printf '%s' "$args" | grep -qE '(^|[[:space:]])--no-verify([[:space:]]|=|$)'; then
-  echo "Blocked: --no-verify skips the pre-commit gate. Fix the lint or typecheck diagnostic instead (CLAUDE.md §6)." >&2
+  echo "Blocked: --no-verify skips the pre-commit gate. Fix the lint or typecheck diagnostic instead (CLAUDE.md §4)." >&2
   exit 2
 fi
 exit 0
