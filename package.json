@@ -10,10 +10,13 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "test:unit": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage --coverage.reporter=text --coverage.reporter=html",
     "lint": "bash scripts/lint-all.sh",
     "lint:fix": "biome check --write .",
     "boundaries": "turbo boundaries",
-    "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:docs && pnpm turbo test",
+    "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "verify:ci": "pnpm verify && pnpm check:env",
     "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck",
     "check:adherence": "bash scripts/check-adherence.sh",
@@ -24,7 +27,7 @@
     "check:env": "node scripts/check-env-access.mjs",
     "ds:contract": "node scripts/ds-contract.mjs",
     "check:docs": "python3 scripts/gates.py",
-    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs",
+    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm boundaries && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
     "db:migrate": "pnpm --filter @heliogrid/db migrate",
     "infra:up": "bash -c '[ -f infra/temporal/pki/jwt/jwks.json ] || bash infra/temporal/scripts/make-dev-pki.sh' && docker compose -f infra/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh && pnpm infra:token",
@@ -37,12 +40,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
+    "@vitest/coverage-v8": "5.0.0",
     "dependency-cruiser": "16.10.4",
     "jscpd": "4.0.5",
     "knip": "5.88.1",
     "sherif": "1.13.0",
     "simple-git-hooks": "2.13.1",
     "turbo": "2.10.7",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "5.0.0"
   }
 }

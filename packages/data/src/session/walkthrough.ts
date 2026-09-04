@@ -1,4 +1,4 @@
-import { COUNTRY_CALLING_CODE, OTP_LENGTH, PHONE_NSN_LENGTH } from '@heliogrid/domain';
+import { IN_FORMATS, OTP_LENGTH } from '@heliogrid/domain';
 import type { OtpResult, SessionSnapshot, SessionStore, SessionUser } from './types';
 
 /**
@@ -11,7 +11,7 @@ import type { OtpResult, SessionSnapshot, SessionStore, SessionUser } from './ty
 const WALKTHROUGH_USER: SessionUser = {
   id: '00000000-0000-0000-0000-000000000000',
   name: 'Walkthrough User',
-  phoneE164: `${COUNTRY_CALLING_CODE}0000000000`,
+  phoneE164: `${IN_FORMATS.phone.dialCode}0000000000`,
   tenant: { id: '00000000-0000-0000-0000-000000000001', name: 'Walkthrough Workspace' },
 };
 
@@ -36,8 +36,8 @@ export function createWalkthroughSession(): SessionStore {
       };
     },
     async requestOtp(phoneE164): Promise<OtpResult> {
-      const nsn = phoneE164.slice(COUNTRY_CALLING_CODE.length);
-      return nsn.length === PHONE_NSN_LENGTH
+      const nsn = phoneE164.slice(IN_FORMATS.phone.dialCode.length);
+      return nsn.length === IN_FORMATS.phone.nsnLength
         ? { ok: true }
         : { ok: false, failure: 'resend-failed' };
     },

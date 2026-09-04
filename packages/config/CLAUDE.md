@@ -1,33 +1,30 @@
 # @heliogrid/config — shared tsconfig presets
 
+Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 config.
+
 ## What lives here / what must never live here
-- tsconfig presets only (`tsconfig/*.json`), consumed via `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
-- No runtime code, no dependencies, ever. Anything executable belongs in a real package.
+
+- tsconfig presets only, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
+  `tsconfig/base.json` holds the shared compiler options, and the repo-root `tsconfig.base.json`
+  extends IT — so there is one copy and the packages that extend the root file keep working.
+- NEVER: runtime code, a dependency, or a `//` comment. Anything executable belongs in a real
+  package; a comment turns the build red, so reasons live in this file.
 
 ## Commands
+
 None — JSON only. Consumers typecheck against these.
 
-## Dependency policy
-docs/engineering/architecture.md §2 config. Two things the presets do NOT cover: a package with no
-matching preset extends `tsconfig.base.json` directly (there is no browser/react preset), and
-apps/mobile deliberately skips this package for
-`@react-native/typescript-config`, which is why its strict flags are set locally — a new
-base strictness flag must be copied there by hand.
-
 ## Local conventions
-- `node-package.json` — composite library package (dist + d.ts emit, project-reference member).
-- `nest-app.json` — NestJS app (decorators + metadata, no composite).
-- Presets use `${configDir}` (TS 5.5+) so outDir/rootDir resolve per consumer.
 
-## Landmines
-- The relative `"extends": "../../../tsconfig.base.json"` resolves from this package's REAL
-  location on disk — it works because the repo root holds tsconfig.base.json. Do not move
-  this package deeper without fixing those paths.
+- `node-package.json` — a composite library package (dist and d.ts emit, project-reference
+  member). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
+- Presets use `${configDir}` so `outDir` and `rootDir` resolve per consumer.
+- Two things the presets do NOT cover: a package with no matching preset extends
+  `tsconfig.base.json` directly (there is no browser or react preset), and `apps/mobile`
+  deliberately skips this package for `@react-native/typescript-config` — so a new base strictness
+  flag must be copied there by hand.
 
-## Definition of done here
-A preset change is done when `pnpm turbo typecheck` stays green across the workspace.
+## Done means
 
-## Folder shape
-
-`src/` with everything public re-exported from `src/index.ts`. Consumers import the index,
-never a deep path. Never invent a folder: this tree is a closed set.
+`pnpm turbo typecheck` stays green across the workspace. Note that a green typecheck does not
+prove the `extends` paths resolve for every tool — see the landmine.

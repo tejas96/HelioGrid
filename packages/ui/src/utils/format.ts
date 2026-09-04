@@ -1,56 +1,67 @@
-import type { MarketPack, ResolvedPack } from './market-pack';
-import { GENERIC_PACK, IN_DEFAULTS, IN_PACK } from './market-pack';
+import {
+  type FormatPack,
+  formatCompact,
+  formatCompactMoney,
+  formatDate,
+  formatMoney,
+  formatMonthYear,
+  formatNumber,
+  formatPhone,
+  formatTime,
+  IN_FORMATS,
+  moneySymbol,
+  monthNames,
+  type Numberish,
+  type NumberOptions,
+  parseNumber,
+  weekdayNames,
+} from '@heliogrid/domain';
 
 /**
- * Market formats — F1 / F3-20 / F3-22.
+ * The design system's view of the format layer.
  *
- * Currency, grouping, clock, compact notation AND DATES are MARKET-PACK DATA, not product facts.
- * Components used to bake `en-IN` and `₹` in six places; they now take a format object and this
- * file is the one place a market's answer is supplied.
+ * **It implements nothing.** Every rule — the market's grouping, the compact ladder, the date
+ * style, the tenant's timezone, Latin digits — lives once in `@heliogrid/domain`'s `format/`
+ * slice (`F3-19`: one rendering implementation per capability, product-wide). This file only
+ * BINDS a pack to those functions so a component can call `format.money(n)` without carrying
+ * the pack through every prop.
  *
- * DATES ARE THE FORMAT WHERE GETTING IT WRONG IS WORST — 03/04 is two different days in two
- * markets and looks correct in both — and three separate things in a date are market data:
- * the month and day NAMES are language, the FIELD ORDER is a market fact, and the FIRST DAY OF
- * THE WEEK is a market fact too (India's week starts SUNDAY).
- *
- * The application owns the real market-pack system. This module is the shape the components
- * agree to consume, plus the India pack as the shipped default — India-first, not India-only.
+ * It used to hold the implementation itself, plus its own India pack. That was written before
+ * the domain slice existed and was the second copy `F3-19` forbids; the pack values moved to
+ * `domain/format/pack.ts` (`F1-21`) and the maths beside them.
  */
 
-/** The pack, the two shipped packs and the resolved shape, re-exported so `utils/format` stays
- *  the one import a consumer needs. */
-export type { MarketPack, ResolvedPack };
-export { GENERIC_PACK, IN_PACK };
+export type { FormatPack, Numberish, NumberOptions };
+export { IN_FORMATS };
 
 export interface MarketFormat {
-  /** The pack with every gap filled, so a consumer can read `pack.taxIdLabel` without a fallback. */
-  pack: ResolvedPack;
-  number: (n: number | string, opts?: Intl.NumberFormatOptions) => string;
-  money: (n: number | string, opts?: { fractionDigits?: number }) => string;
+  /** The bound pack, so a consumer reads `pack.taxIdLabel` or `pack.phone` without a fallback. */
+  pack: FormatPack;
+  number: (value: Numberish, options?: NumberOptions) => string;
+  money: (value: Numberish, options?: { fractionDigits?: number }) => string;
   /**
-   * **The resolved symbol** — the pack's explicit `currencySymbol` if it has one, else Intl's for
-   * the locale, else the ISO code. `NumberField` renders a money field's symbol from this, which is
-   * how no component ends up owning a currency; `useFormat()` is the only way to reach it.
+   * **The resolved symbol** — the pack's if it writes one, else Intl's, else the ISO code.
+   * `NumberField` renders a money field's adornment from this, which is how no component ends
+   * up owning a currency; `useFormat()` is the only way to reach it.
    */
   currencySymbol: string;
-  /** Which side that symbol sits on. `NumberField` places it leading or trailing from here. */
   symbolPosition: 'before' | 'after';
-  compact: (n: number | string) => string;
-  compactMoney: (n: number | string) => string;
-  /** "17:00" → "17:00" or "5:00 PM" by the pack's clock. Storage stays 24-hour. */
+  compact: (value: Numberish) => string;
+  compactMoney: (value: Numberish) => string;
   /**
-   * A phone number as a reader sees it — E.164 in, the market's dial code and grouping out.
+   * A phone as a reader sees it — E.164 in, the market's dial code and grouping out.
    * `+919845027746` → `+91 98450 27746`. Pass `nsn` for the national number alone.
    */
-  phone: (value: string, opts?: { nsn?: boolean }) => string;
+  phone: (value: string, options?: { nsn?: boolean }) => string;
+  /** `17:00` → `17:00` or `5:00 PM` by the pack's clock. Storage stays 24-hour. */
   time: (hhmm: string) => string;
-  /** A date in the pack's language and field order — "12 Mar 2026" under the India pack. */
+  /** A date in the pack's style and zone — `12 Mar 2026` under the India pack. */
   date: (value: string | Date) => string;
-  /** A calendar heading — "March 2026", in the pack's language and order. */
+  /** A calendar heading — `March 2026`. */
   monthYear: (value: string | Date) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
   firstDayOfWeek: number;
-  /** 12 month names in calendar order, in the pack's language. */
+  /** 12 month names in calendar order. */
   monthNames: (style?: 'long' | 'short' | 'narrow') => string[];
   /** 7 weekday names **starting at `firstDayOfWeek`** — a calendar grid's column order. */
   weekdayNames: (style?: 'narrow' | 'short' | 'long') => string[];
@@ -58,226 +69,26 @@ export interface MarketFormat {
   parseNumber: (input: string | number) => number | null;
 }
 
-/* PHONE — the grouping and the dial code are the PACK's (`F1-49`), never a component's. Storage and
-   transport stay E.164 (`contracts/common.ts`); this is display only and validates nothing, because
-   a refusal is the caller's to word. */
-const NON_DIGIT = /\D/g;
-
-/** Splits a national number into the market's groups. Digits beyond the declared groups stay in the
-    last one, so a number longer than the market expects renders whole and wrong rather than short
-    and plausible. */
-function groupNsn(nsn: string, groups: number[]): string {
-  const digits = nsn.replace(NON_DIGIT, '');
-  if (groups.length === 0) return digits;
-  const parts: string[] = [];
-  let at = 0;
-  for (const size of groups.slice(0, -1)) {
-    if (at >= digits.length) break;
-    parts.push(digits.slice(at, at + size));
-    at += size;
-  }
-  if (at < digits.length) parts.push(digits.slice(at));
-  return parts.join(' ');
-}
-
-/** What every formatter accepts at runtime — a caller outside TypeScript can still pass null. */
-type Numberish = number | string | null | undefined;
-
-/* A sign-like symbol (₹, $, €) sits flush against the digits; a word-like one (KSh, kr, R$) needs
-   a space — and that space must be NON-BREAKING, or a narrow card wraps "KSh" onto its own line
-   and the amount reads as two things. A pack may write its symbol with or without the space. */
-const WORD_LIKE = /[a-z]/i;
-/** NON-BREAKING on purpose: a narrow card must never wrap "KSh" off its own amount. */
-const NBSP = '\u00A0';
-function joinSymbol(symbol: string, body: string, position: 'before' | 'after'): string {
-  const sym = String(symbol).trim();
-  const gap = WORD_LIKE.test(sym) ? NBSP : '';
-  return position === 'after' ? body + NBSP + sym : sym + gap + body;
-}
-
-/** `Intl.Locale`'s week info is not in the standard lib — engines expose it two ways or not at all. */
-interface WeekInfo {
-  firstDay?: number;
-}
-interface LocaleWeekInfo {
-  getWeekInfo?: () => WeekInfo;
-  weekInfo?: WeekInfo;
-}
-/** Narrowing assertion, not a widening one: the engine either has these members or it does not. */
-type LocaleWithWeekInfo = Intl.Locale & LocaleWeekInfo;
-
-/* A pack may declare its week start; if it hasn't, the locale knows (CLDR ships a firstDay per
-   territory) and Intl exposes it. Monday is the last resort — the ISO answer, and honest about
-   being a fallback rather than a claim about the market.
-
-   IT READS THE RAW PACK, NOT THE MERGED ONE, and that distinction is the whole point: createFormat
-   fills a pack's gaps from IN, which is right for currency and WRONG here — a GB pack that says
-   nothing about days must not inherit India's Sunday, it must get en-GB's Monday. */
-function resolveFirstDay(rawPack: MarketPack, locale: string | undefined): number {
-  if (rawPack.firstDayOfWeek) return rawPack.firstDayOfWeek;
-  try {
-    const loc = new Intl.Locale(locale || 'en') as LocaleWithWeekInfo;
-    const info = typeof loc.getWeekInfo === 'function' ? loc.getWeekInfo() : loc.weekInfo;
-    if (info?.firstDay) return info.firstDay;
-  } catch {
-    /* no Intl.Locale on this engine */
-  }
-  if (locale === IN_DEFAULTS.locale && IN_DEFAULTS.firstDayOfWeek !== undefined) {
-    return IN_DEFAULTS.firstDayOfWeek;
-  }
-  return 1;
-}
-
-/* Reference dates for NAMES ONLY, read in UTC so a timezone can't shift them by a day.
-   2021-08-01 was a Sunday, which makes the weekday walk arithmetic instead of a lookup table. */
-const NAME_YEAR = 2021;
-const SUNDAY = Date.UTC(2021, 7, 1);
-const DAY_MS = 86400000;
-
-/** Builds the format object every component consumes. Pass a partial pack; IN fills the gaps. */
-export function createFormat(pack: MarketPack = {}): MarketFormat {
-  const p: ResolvedPack = { ...IN_DEFAULTS, ...pack };
-  const nf = (opts?: Intl.NumberFormatOptions) => new Intl.NumberFormat(p.locale, opts);
-
-  const number = (n: Numberish, opts?: Intl.NumberFormatOptions): string =>
-    n === null || n === undefined || n === '' || Number.isNaN(Number(n))
-      ? ''
-      : nf({ maximumFractionDigits: 1, ...opts }).format(Number(n));
-
-  const money = (n: Numberish, opts: { fractionDigits?: number } = {}): string => {
-    if (n === null || n === undefined || n === '' || Number.isNaN(Number(n))) return '';
-    const digits = opts.fractionDigits ?? p.currencyFractionDigits;
-    /* An explicit symbol wins, because a pack may want "₹" where Intl would print "INR". */
-    if (p.currencySymbol) {
-      const body = nf({ minimumFractionDigits: digits, maximumFractionDigits: digits }).format(
-        Number(n),
-      );
-      return joinSymbol(p.currencySymbol, body, p.symbolPosition);
-    }
-    return nf({
-      style: 'currency',
-      currency: p.currency,
-      minimumFractionDigits: digits,
-      maximumFractionDigits: digits,
-    }).format(Number(n));
-  };
-
-  /* THE SYMBOL ON ITS OWN, because a field that is EDITED as a plain number still has to SAY which
-     currency it is in (NumberField's money mode renders it as a leading adornment). A pack that
-     spells its symbol wins; otherwise Intl is asked for the locale's, and the ISO code is the last
-     resort. Derived here rather than in the component, so no component owns a currency again. */
-  const currencySymbol = ((): string => {
-    if (p.currencySymbol) return String(p.currencySymbol).trim();
-    try {
-      const part = nf({ style: 'currency', currency: p.currency })
-        .formatToParts(0)
-        .find((x) => x.type === 'currency');
-      if (part) return part.value;
-    } catch {
-      /* no formatToParts on this engine */
-    }
-    return p.currency;
-  })();
-
-  const compact = (n: Numberish): string =>
-    n === null || n === undefined || Number.isNaN(Number(n)) ? '' : p.compact(Number(n), p.locale);
-
-  const compactMoney = (n: Numberish): string =>
-    p.currencySymbol ? joinSymbol(p.currencySymbol, compact(n), p.symbolPosition) : compact(n);
-
-  /** "17:00" → "17:00" or "5:00 PM", by the pack's clock. Storage stays 24-hour either way. */
-  const time = (hhmm: string): string => {
-    if (typeof hhmm !== 'string') return '';
-    const m = hhmm.trim().match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
-    const hours = m?.[1];
-    const min = m?.[2];
-    if (hours === undefined || min === undefined) return hhmm;
-    const h = Number(hours);
-    if (p.clock === '24h') return `${String(h).padStart(2, '0')}:${min}`;
-    const suffix = h < 12 ? 'AM' : 'PM';
-    return `${h % 12 || 12}:${min} ${suffix}`;
-  };
-
-  /** Accepts an ISO date or a Date. The pack locale decides both the names and the field order. */
-  const date = (value: string | Date): string => {
-    const d = value instanceof Date ? value : new Date(value);
-    if (Number.isNaN(d.getTime())) return typeof value === 'string' ? value : '';
-    return new Intl.DateTimeFormat(p.locale, {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(d);
-  };
-
-  /** The calendar's own heading — "March 2026", "मार्च 2026". Order is the locale's, not ours. */
-  const monthYear = (value: string | Date): string => {
-    const d = value instanceof Date ? value : new Date(value);
-    if (Number.isNaN(d.getTime())) return '';
-    return new Intl.DateTimeFormat(p.locale, { month: 'long', year: 'numeric' }).format(d);
-  };
-
-  const firstDayOfWeek = resolveFirstDay(pack, p.locale);
-
-  /** 12 month names in calendar order. `long` for a heading, `short` for a compact strip. */
-  const monthNames = (style: 'long' | 'short' | 'narrow' = 'long'): string[] => {
-    const f = new Intl.DateTimeFormat(p.locale, { month: style, timeZone: 'UTC' });
-    return Array.from({ length: 12 }, (_, m) => f.format(Date.UTC(NAME_YEAR, m, 15)));
-  };
-
-  /** 7 weekday names STARTING AT THIS MARKET'S FIRST DAY — the grid's column order, not Monday's. */
-  const weekdayNames = (style: 'narrow' | 'short' | 'long' = 'narrow'): string[] => {
-    const f = new Intl.DateTimeFormat(p.locale, { weekday: style, timeZone: 'UTC' });
-    const start = firstDayOfWeek % 7; /* 7 (Sunday) → 0, 1 (Monday) → 1 */
-    return Array.from({ length: 7 }, (_, i) => f.format(SUNDAY + (start + i) * DAY_MS));
-  };
-
-  /** Strips grouping, symbols and spaces so a typed amount can be parsed back to a number. */
-  const parseNumber = (input: string | number): number | null => {
-    if (typeof input === 'number') return input;
-    if (typeof input !== 'string') return null;
-    const cleaned = input.replace(/[^\d.,-]/g, '').replace(/,/g, '');
-    if (cleaned === '' || cleaned === '-') return null;
-    const n = Number(cleaned);
-    return Number.isNaN(n) ? null : n;
-  };
-
-  /* The grouping and the dial code are the PACK's; the splitting is domain's. Neither belongs to a
-     component, which is how one number ended up formatted two ways on two screens. */
-  /* A NUMBER FROM ANOTHER MARKET IS SHOWN AS IT ARRIVED. This pack knows India's grouping and
-     nothing else, so applying 5+5 to a US number renders `14155 551234` — unreadable, and it looks
-     like an Indian number that lost a digit. Relabelling it `+91` would be worse. E.164 unchanged
-     is the only honest answer, and it stays legible. */
-  const phone = (value: string, opts?: { nsn?: boolean }): string => {
-    const raw = String(value);
-    const digits = raw.replace(NON_DIGIT, '');
-    const code = p.phone.dialCode.replace(NON_DIGIT, '');
-    if (opts?.nsn === true) return groupNsn(digits, p.phone.nsnGroups);
-    if (code.length > 0 && digits.startsWith(code)) {
-      return `${p.phone.dialCode} ${groupNsn(digits.slice(code.length), p.phone.nsnGroups)}`;
-    }
-    /* An explicit country code that is not this market's — leave it exactly as stored. */
-    if (raw.trim().startsWith('+')) return raw.trim();
-    return groupNsn(digits, p.phone.nsnGroups);
-  };
-
+/** Binds a market pack to the domain implementations. A market overrides by supplying a pack. */
+export function createFormat(pack: FormatPack = IN_FORMATS): MarketFormat {
   return {
-    pack: p,
-    phone,
-    number,
-    money,
-    currencySymbol,
-    symbolPosition: p.symbolPosition,
-    compact,
-    compactMoney,
-    time,
-    date,
-    monthYear,
-    firstDayOfWeek,
-    monthNames,
-    weekdayNames,
+    pack,
+    number: (value, options) => formatNumber(pack, value, options),
+    money: (value, options) => formatMoney(pack, value, { digits: options?.fractionDigits }),
+    currencySymbol: moneySymbol(pack),
+    symbolPosition: pack.symbolPosition,
+    compact: (value) => formatCompact(pack, value),
+    compactMoney: (value) => formatCompactMoney(pack, value),
+    phone: (value, options) => formatPhone(pack, value, { nationalOnly: options?.nsn }),
+    time: (hhmm) => formatTime(pack, hhmm),
+    date: (value) => formatDate(pack, value),
+    monthYear: (value) => formatMonthYear(pack, value),
+    firstDayOfWeek: pack.firstDayOfWeek,
+    monthNames: (style) => monthNames(pack, style),
+    weekdayNames: (style) => weekdayNames(pack, style),
     parseNumber,
   };
 }
 
-/** The shipped default — India, because the product is India-first. */
-export const IN_FORMAT: MarketFormat = createFormat(IN_PACK);
+/** The shipped default — India, the one authored pack at launch (`F1-06`). */
+export const IN_FORMAT: MarketFormat = createFormat(IN_FORMATS);

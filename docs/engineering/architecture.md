@@ -56,8 +56,16 @@ two packages joined by a cycle. If a split would need both halves to import each
 boundary is in the wrong place — move the shared fact down a layer instead (§1).
 
 ### config — shared tsconfig presets
-Owns: tsconfig presets (node-package, nest-app) and nothing else. Allowed deps: none.
-Platform scope: all. Belongs: a new compiler preset. Never: runtime code, lint config
+Owns: the shared compiler options (`tsconfig/base.json`) and the presets that extend them
+(node-package, nest-app) — nothing else. The repo-root `tsconfig.base.json` extends this
+package's `base.json`, not the other way round: **every `extends` inside this package must be
+package-relative.** A consumer reads these files through `node_modules/@heliogrid/config/`, a
+pnpm symlink, so a path climbing out of the package resolves to
+`packages/<consumer>/node_modules/` for any tool that does not realpath first. `tsc` does
+realpath, which hid this for months; Vite's transform does not, and no unit test in the repo
+could compile until it was fixed (2026-09-03). Allowed deps: none.
+Platform scope: all. Belongs: a new compiler preset. Never: a comment — Biome parses these as
+strict JSON, so the reason lives here; runtime code, lint config
 (biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
 extends `tsconfig.base.json` directly; apps/mobile extends `@react-native/typescript-config`
 and hand-mirrors the base strictness flags (`packages/config/CLAUDE.md`).
@@ -158,11 +166,11 @@ i18n tag already permits this edge), config; react is a PEER. Platform scope: sh
 frontend. Belongs: copy both platforms render (Law 11). Never: macro imports (lint-banned);
 a module-scope i18n instance (one shared mutable locale across concurrent server renders);
 locale-default number formats for money
-(CLAUDE.md §7: tenant-currency grouping — UI LANGUAGE never selects a money format; the
+(CLAUDE.md §9: tenant-currency grouping — UI LANGUAGE never selects a money format; the
 tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
-### theme — tokens, the semantic layer and the provider  (NOT BUILT YET — docs/engineering/17)
+### theme — tokens, the semantic layer and the provider
 Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull`), the semantic
 role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
 the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
@@ -170,7 +178,7 @@ scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (th
 package was hand-copied and drifted in days — docs/engineering/17 §1); workspace imports. Extension
 point: emit targets grow here. Replaces the v1 `tokens` package, deleted 2026-08-19.
 
-### ui — the design system, BOTH platforms  (NOT BUILT YET — docs/engineering/17)
+### ui — the design system, BOTH platforms  (built ahead of its screens — docs/engineering/17)
 Owns: `primitives/` (the ~8 atoms, two of which hold product law — 44px targets and
 status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` is the one
 prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,
@@ -266,9 +274,21 @@ tenant-id-in-body) run by pnpm turbo test; fail-closed under CI, loud-skip local
 without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven
-mechanically against the live schema or contracts. Never: unit tests (owner directive
-2026-07-29); anything needing a mock. Extension point: one file per invariant + a run.ts
-call.
+mechanically against the live schema or contracts. Never: a UNIT test — one lives at
+`<package>/tests/**/*.test.ts` beside the package it proves (owner ruling 2026-09-03), and
+proves one DECISION at its edges where an invariant proves a property of the SYSTEM against
+real state; anything needing a mock. Extension point: one file per invariant + a run.ts call.
+
+### `<package>/tests/` — unit tests, beside the package they prove
+Owns: `*.test.ts` for the LOGIC layers only — `packages/domain`, `packages/contracts`,
+`packages/forms`, `apps/api`, `apps/worker` — run by `pnpm test:unit` (vitest, config at
+`vitest.config.mts`). Outside `src/`, so the package's own `tsc -b` never compiles a test into
+`dist/`. Allowed deps: the package's own `src/`, by RELATIVE path — `@heliogrid/<pkg>` resolves
+to built `dist/` and would test the last build. Platform scope: shared. Belongs: the boundary
+value, the one either side of it, the empty, the negative. Never: a frontend package (proven by
+running it), `packages/data` (proven by driving the real client), a mock of something this repo
+owns. Extension point: a per-glob coverage threshold in `vitest.config.mts`, landing with the
+slice it covers.
 
 ## §3 Platform rules — React Native · Next.js · shared
 

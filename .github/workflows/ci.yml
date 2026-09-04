@@ -14,7 +14,7 @@ env:
 
 jobs:
   quality:
-    name: quality (lint · typecheck · test · build · openapi)
+    name: quality (lint · typecheck · unit tests · invariants · build · openapi)
     runs-on: ubuntu-24.04
     services:
       postgres:
@@ -76,8 +76,13 @@ jobs:
       - name: Quality gate
         # pnpm verify:ci = pnpm verify + pnpm check:env.
         # pnpm verify = build (dist/ present before dep-cruiser runs) → lint (Biome + adherence)
-        # → boundaries (Turbo role tags) → typecheck → test (invariants, vacuous without tables)
-        # → check:openapi → i18n extract freshness.
+        # → boundaries (Turbo role tags) → typecheck → check:dupes → ds:contract → check:openapi
+        # → i18n extract freshness → check:docs → test:unit → test (invariants).
+        # test:unit runs vitest WITH COVERAGE deliberately: the per-slice 100% thresholds in
+        # vitest.config.mts are the only thing stopping an edge case being deleted with its
+        # test, and a bare `vitest run` reports them not at all. Do not drop the flag to save
+        # a second — without it this step passes on a suite that has quietly stopped covering
+        # what it claims to.
         # BUILD FIRST: dependency-cruiser resolves a workspace import through the target's
         # `main`/`types`, which point at dist/ — so before anything is built the edge does not
         # exist and every rule aimed at a dist-shipping package reports clean. Proven

@@ -71,6 +71,19 @@ the side-panel form keeps a backdrop over the list it is filtering.
 | `PhoneField` · `PhotoField` | **No design-system contract mirror**, so both sit outside `ds:contract` — the only gate comparing repo props against the design system. `ds:contract` skips a component with no contract file, silently. | `arch review 2026-09-02` |
 | — | No `Skeleton` component, and no duration token for the stated 1.4 s shimmer (nearest is `--dur-ambient`, 500 ms). | `SCR-M01-03` |
 
+**The English-string debt has a MECHANISM now, and it is one change, not 46.** CLAUDE.md §8
+makes a shared fact unspeakable outside its owner: `TranslatedText` is a branded string, and
+every copy prop on a `<Name>.types.ts` takes that type instead of `string`. **The brand is
+declared in `packages/contracts`, not `packages/i18n`** — `packages/ui` may not import `i18n`
+(the `ui` boundary tag allows contracts, domain, theme and config only), so a brand declared
+there could never be named by a UI prop. `packages/i18n` stays the only CONSTRUCTOR. A hardcoded English literal then
+fails to COMPILE rather than waiting for an audit; verified against the three shapes that leak
+today (a literal, a template literal, an English default). Every row above that names an
+unreachable or defaulted English string closes with that one change plus its own prop, and
+`.claude/rules/ui-adherence.md`'s regenerate-the-list command stops being how this is tracked.
+Sequenced with `docs/engineering/17`, per that rule; register the brand in
+`scripts/check-adherence.sh`'s `BRANDS` on the day it lands, or the cast hole stays open.
+
 **Has an owner, so not listed above:** `F3-13`'s React Native half — components read
 `theme.type.families.sans` and RN has no per-codepoint fallback, so Devanagari falls to the OS face.
 `T-FPLAT-007` owns it with `F3-17`'s per-script line height. The web half is fixed.

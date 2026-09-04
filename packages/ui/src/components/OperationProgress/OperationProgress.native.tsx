@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useFormat } from '../MarketProvider';
 import { OperationActions } from './OperationActions.native';
 import { OperationHead } from './OperationHead.native';
 import { OperationMessage } from './OperationMessage.native';
@@ -59,7 +60,8 @@ export function OperationProgress({
   const running = state === 'running';
   const pct = resolvePercent(state, value);
   const cancel = resolveCancel(onCancel, cancelEffect);
-  const counted = countWords(count, unit);
+  const { number } = useFormat();
+  const counted = countWords(count, unit, number);
   const step = stepWords(stageIndex, stageTotal);
   const showActions =
     cancel !== null || destination !== undefined || (state === 'failed' && onRetry !== undefined);

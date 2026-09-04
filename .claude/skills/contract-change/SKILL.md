@@ -5,7 +5,7 @@ description: Change the API contract safely — edit first, re-emit OpenAPI, kee
 
 # Changing the contract
 
-Contract law — what may and may not go in a contract — is in `.claude/rules/contracts.md`,
+Contract law — what may and may not go in a contract — is in `packages/contracts/CLAUDE.md`,
 which loads when you open a contract file. This is the sequence to run.
 
 ## 1. Edit the contract first

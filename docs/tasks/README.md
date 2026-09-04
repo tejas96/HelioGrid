@@ -19,8 +19,9 @@ PRD:    M02-01 (P0), M02-03 (P0), M02-<nn> (P0), M02-05 (P0), M02-06 (P0)
 DESIGN: SCR-<module>-<nn> → PENDING               — filled when the screen is approved
 PORT:   (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
-        POC `*.test.ts`; port the LOGIC it proves into tests/invariants. CLAUDE.md §8 bans
-        a `.test.*` file in this repo and check-adherence.sh fails the build on one.
+        POC `*.test.ts`; port the LOGIC it proves into the studio package's own
+        `tests/` tree, or into tests/invariants where it is a property of the system.
+        CLAUDE.md §8 fixes the name and the place; check-adherence.sh fails on either.
 DEFECTS:(studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
 DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased
 ```
@@ -30,6 +31,8 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`,
+   `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
+   task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task.

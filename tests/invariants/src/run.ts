@@ -1,18 +1,21 @@
 import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { runEnumParity } from './enum-parity';
+import { runFormatInvariants } from './format-rendering';
 import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdInBody } from './tenant-id-in-body';
 
 /**
- * Locked invariant runner. Sets: tenancy (live), enum parity (live), money (lands with the
- * proposal module), billing (lands with the billing module), migrations (Track A).
+ * Locked invariant runner. Sets: tenancy (live), enum parity (live), format rendering (static,
+ * F3-19…F3-24), money (lands with the proposal module), billing (lands with the billing
+ * module), migrations (Track A).
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
 async function main() {
   runTenantIdInBody(); // static — needs no database, must never be skipped
+  runFormatInvariants(); // static — the format layer needs no database either
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {

@@ -1,3 +1,4 @@
+import { REQUEST_ID_HEADER } from '@heliogrid/contracts';
 import { type ApiFetcher, type ApiFetcherArgs, tsRestFetchApi } from '@ts-rest/core';
 import { ZodError } from 'zod';
 import type { DataError } from '../errors/errors';
@@ -29,7 +30,7 @@ const DEFAULT_TIMEOUT_MS = 10_000;
  * corrupt ours, and anything else is one header away from leaking a caller's identity into a
  * request it never made. No tenant header — tenancy is resolved from the session, never sent.
  */
-const FORWARDED_SERVER_HEADERS = ['authorization', 'cookie', 'x-request-id'] as const;
+const FORWARDED_SERVER_HEADERS = ['authorization', 'cookie', REQUEST_ID_HEADER] as const;
 
 /**
  * Merge Set-Cookie rotations into the stored jar, keyed by cookie name.

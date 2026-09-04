@@ -20,18 +20,37 @@ A fact both platforms need lives in a package **before** either screen uses it.
 | visual values — colour, spacing, radius, type | `packages/theme` |
 | schema | `packages/db/migrations` |
 | user-visible copy | `packages/i18n` |
-| product behaviour | `docs/prd/` — never a doc under `docs/` |
+| product behaviour | `docs/prd/` |
 
 Compose from `packages/`. If a primitive is missing, **add it there** rather than inlining a copy.
 
-## What is mechanically caught, and what is not
+## Make the fact UNSPEAKABLE — before reaching for a gate
 
-Caught: biome `noEnum` bans a TS `enum` in an app · `check:adherence` #10 bans an app **exporting**
-a string-literal union or a SCREAMING_CASE lookup · `boundaries` and dependency-cruiser hold the
-import graph · `check:dupes` finds clones of 12+ lines.
+A gate asks *"did you spell it wrong?"*. A type asks *"can you even say it?"*. A fact leaks
+because the consumer could simply WRITE it — a number, a string, a role name, a query. The fix is
+not a better pattern; it is removing the consumer's ability to write it.
 
-**Not caught, and yours to hold:** a single duplicated scalar (`const GST = 0.18`), a re-derived
-formula, a re-typed shape that differs by one field. These are the ones that drift.
+The brand symbol is declared in the owner and never exported, so the owner's constructor is the
+only way to obtain the type:
+
+```ts
+declare const MONEY: unique symbol;                    // not exported
+export type Money = number & { readonly [MONEY]: 'INR' };
+export function money(minorUnits: number): Money { … } // the only door in
+```
+
+A consumer then cannot write `total * 1.18`, cannot assign a bare number, cannot add two amounts
+by hand. Its one hole is a cast, which is why `as <Brand>` outside the owner is a defect
+(`CLAUDE.md` §8) — one exact string to look for beats infinite ways to write a formula.
+
+**Apply it when the fact is CREATED**, not later: branding a value after five consumers exist is
+five rewrites. Register each brand in `mechanisms.md` `M60` on the day it lands.
+
+## What is watching, and what is not
+
+`docs/engineering/mechanisms.md` is the answer, per rule, with its status. Read it before
+trusting one. The short version: imports and shapes are held; a fact WRITTEN in the wrong place
+mostly is not.
 
 ## Minimise blast radius
 

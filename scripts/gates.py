@@ -191,6 +191,83 @@ def norm(s):
 
 # --------------------------------------------------------------------------- gates
 
+# --------------------------------------------------------- instruction hygiene
+
+# The instruction corpus regrows in three ways, and each is a shape a grep can see.
+# Every one of them was measured in the tree before these gates existed: 55 dated war
+# stories, files at five times their budget, and enforcement claims that named a gate
+# which could not fire.
+#
+# `mechanisms.md` is exempt from the DATE check, and only that check: a date there is the
+# day a gate was proven to go red on an injected violation, which is the one date that
+# stays true. It is not an instruction file and carries no budget.
+INSTRUCTION_BUDGETS = [
+    ("CLAUDE.md", 215),
+    ("apps/*/CLAUDE.md", 85),
+    ("packages/*/CLAUDE.md", 85),
+    ("tests/*/CLAUDE.md", 85),
+    (".claude/rules/*.md", 85),
+]
+DATE_RE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
+# An enforcement phrase is a claim that something is HELD. It is allowed only beside the
+# mechanism row that proves it, because a claim with no row is how a rule outlives its gate.
+CLAIM_RE = re.compile(
+    r"held by|hook-enforced|all enforced|enforced by|is enforced|gate-checked|caught by",
+    re.I,
+)
+MECH_ROW_RE = re.compile(r"\bM\d+\b")
+
+
+def instruction_files(repo):
+    """(path, relative path, budget) for every file that states a rule."""
+    out = []
+    for pattern, budget in INSTRUCTION_BUDGETS:
+        for f in sorted(glob.glob(os.path.join(repo, pattern))):
+            out.append((f, os.path.relpath(f, repo), budget))
+    return out
+
+
+def check_instruction_hygiene(repo):
+    files = instruction_files(repo)
+    if not files:
+        gate(22, "no dated war story in an instruction file", False,
+             "CONFIG ROT: instruction_files() matched nothing")
+        return
+
+    dated, over, claims = [], [], []
+    for path, rel, budget in files:
+        lines = open(path, encoding="utf-8").read().split("\n")
+        for i, line in enumerate(lines, 1):
+            if DATE_RE.search(line):
+                dated.append(f"{rel}:{i}")
+            if CLAIM_RE.search(line) and not MECH_ROW_RE.search(line):
+                claims.append(f"{rel}:{i}")
+        n = len(lines) - (1 if lines and lines[-1] == "" else 0)
+        if n > budget:
+            over.append(f"{rel} {n} > {budget}")
+
+    # The ledger states traps, never when one was found — same rule, different file.
+    ledger = os.path.join(repo, "docs/engineering/landmines.md")
+    if os.path.exists(ledger):
+        for i, line in enumerate(open(ledger, encoding="utf-8"), 1):
+            if DATE_RE.search(line):
+                dated.append(f"docs/engineering/landmines.md:{i}")
+
+    gate(22, "no dated war story in an instruction file", not dated,
+         f"{len(files)} files scanned, none dated" if not dated
+         else "a date is a war story — the trap goes to landmines.md, the story to the commit: "
+              + ", ".join(dated[:8]) + (f" (+{len(dated) - 8} more)" if len(dated) > 8 else ""))
+
+    gate(23, "every instruction file within its budget", not over,
+         f"{len(files)} files, largest is {max(len(open(f, encoding='utf-8').readlines()) for f, _, _ in files)} lines"
+         if not over else "; ".join(over))
+
+    gate(24, "no enforcement claim without its mechanism row", not claims,
+         "no unsourced claim" if not claims
+         else "name the row that proves it (mechanisms.md M<n>), or drop the claim: "
+              + ", ".join(claims[:8]) + (f" (+{len(claims) - 8} more)" if len(claims) > 8 else ""))
+
+
 def run(repo, verbose):
     rows = live_rows(repo)
     prefixes = {r.split("-")[0] for r in rows}
@@ -678,6 +755,8 @@ def run(repo, verbose):
          f"{n_screen} screen tasks, all carry it"
          + (f" · {len(truncated)} omit the colour-literal clause (style drift, not fatal): {sorted(set(x.split()[0] for x in truncated))}" if truncated else "")
          if not bad else " · ".join(bad))
+
+    check_instruction_hygiene(repo)
 
     # --------------------------------------------------------------------- report
     results.sort(key=lambda r: r[0])

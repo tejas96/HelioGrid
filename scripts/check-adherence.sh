@@ -3,9 +3,13 @@
 # linter (owner decision 2026-07-30: oxlint was installed for this and REMOVED — it does
 # not implement `no-restricted-syntax`, which was the whole reason to add it).
 #
-#   1. no test files            — owner directive: no .test.*/.spec.* until a testing
-#                                 program is commissioned
-#   3. no raw hex in UI paths   — every visual value comes from @heliogrid/theme
+#   1.  unit-test shape         — `*.test.ts` under `<package>/tests/`, logic packages only
+#                                 (owner ruling 2026-09-03 commissioned the testing programme)
+#   3.  no raw hex in UI paths  — every visual value comes from @heliogrid/theme
+#   10. app-declared vocabulary — a union, a lookup or a POLICY NUMBER an app writes itself
+#   10b. a brand obtained by a cast — the one hole in an unspeakable fact (CLAUDE.md §8)
+#
+# Numbering is stable; a gap is a check that was retired in place.
 #
 # Each check prints its violations and the script exits 1 if any fired.
 set -uo pipefail
@@ -44,23 +48,46 @@ done
 PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*'
        -not -path '*/ios/*' -not -path '*/android/*')
 
-# ── 1. No test files ─────────────────────────────────────────────────────────
-# `*.test.*` / `*.spec.*`, matching the rule as CLAUDE.md states it. The old eight-clause
-# extension list (ts/tsx/js/jsx only) missed .mts/.cts/.mjs/.cjs — and write-guard.sh
-# enumerated the same four, so the hook and this backstop shared one blind spot.
-# `__tests__/` is the other half of the convention: a directory named that way holds test
-# files whatever the filenames inside it are, and both the hook and this gate matched only on
-# filename, so the whole directory form passed green.
-tests_found=$(
-  find $SRC_DIRS -type f \( -name '*.test.*' -o -name '*.spec.*' \) "${PRUNE[@]}" 2>/dev/null
+# ── 1. Unit tests: one name, one place, one set of packages ──────────────────
+# Unit tests were forbidden until the owner ruling of 2026-09-03 and are now REQUIRED for the
+# logic layers — but the shape is fixed, because a suite that spreads is a suite nobody
+# maintains. This is the backstop for `.claude/hooks/block-test-files.sh`, which stops the same
+# three things at authoring time; change BOTH or the pair disagrees.
+#
+#   * name  — `*.test.ts`. `*.spec.*` and `__tests__/` are the competing conventions; allowing
+#             any of them means every glob in this repo has to match three shapes and one day
+#             misses half the suite.
+#   * place — `<package>/tests/**`, never inside `src/`. Inside src the package's own `tsc -b`
+#             compiles tests into `dist/`, which then ships.
+#   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
+#             driving the real client, `packages/db` by migrations plus tests/invariants/.
+UNIT_TEST_PACKAGES='packages/domain packages/contracts packages/forms apps/api apps/worker'
+
+bad_name=$(
+  find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" 2>/dev/null
   find $SRC_DIRS -type d \( -name '__tests__' -o -name '__mocks__' \) "${PRUNE[@]}" 2>/dev/null
-  find . -maxdepth 1 \( -type f \( -name '*.test.*' -o -name '*.spec.*' \) \
+  find . -maxdepth 1 \( -type f -name '*.spec.*' \
                      -o -type d \( -name '__tests__' -o -name '__mocks__' \) \) 2>/dev/null
 )
-if [ -n "$tests_found" ]; then
-  printf 'TEST FILES (owner directive 2026-07-29 — not authored in this repo):\n%s\n' "$tests_found"
-  echo '  The only sanctioned checks are tests/invariants/ and on-demand scripts/.'
-  echo '  Features are verified by RUNNING them — see the /verify skill.'
+if [ -n "$bad_name" ]; then
+  printf 'WRONG TEST CONVENTION (this repo uses `*.test.ts` in a package tests/ tree):\n%s\n' "$bad_name"
+  echo '  `*.spec.*`, `__tests__/` and `__mocks__/` are not used here — CLAUDE.md §8.'
+  fail=1
+fi
+
+# Every `*.test.*` that is NOT under an allowed `<package>/tests/` tree.
+allowed_re="^\./($(echo "$UNIT_TEST_PACKAGES" | tr ' ' '|'))/tests/"
+misplaced=$(
+  find $SRC_DIRS -type f -name '*.test.*' "${PRUNE[@]}" 2>/dev/null
+  find . -maxdepth 1 -type f -name '*.test.*' 2>/dev/null
+)
+misplaced=$(printf '%s\n' "$misplaced" | sed '/^$/d' | sed 's|^|./|; s|^\./\./|./|' \
+            | grep -Ev "$allowed_re" || true)
+if [ -n "$misplaced" ]; then
+  printf 'MISPLACED UNIT TESTS:\n%s\n' "$misplaced"
+  echo "  A unit test lives at <package>/tests/**/*.test.ts, in one of: $UNIT_TEST_PACKAGES"
+  echo '  Inside src/ the package build compiles it into dist/; outside those packages it is'
+  echo '  testing a layer this repo proves by running (CLAUDE.md §8).'
   fail=1
 fi
 
@@ -204,16 +231,25 @@ fi
 # reference — English by design, never shipped to a customer, and translating them would make
 # the reference harder to check against the design source. They are excluded by path.
 #
-# COPY_DEBT lists product screens that are NOT yet wrapped, each with a reason and an owner.
-# Both survived the 2026-08-01 auth teardown (ADR-0024) with their designs intact but their
-# data paths stubbed, and both get their real content back with the auth rebuild — wrapping
-# copy that is about to change would be translating twice. The debt is LISTED rather than
-# invisible, and a NEW screen gets no such grace.
-# EMPTY since 2026-08-19: both debt screens were deleted with the v1 UI. A new screen
-# gets no grace — wrap its copy when you write it.
-COPY_DEBT='__none__'
+# packages/ui IS SCANNED. It was not, and it is where the copy actually is: the package holds
+# no i18n dependency by design, so every string it renders must arrive as a prop. Leaving it
+# unscanned meant the one package that must hold no English was the only one nobody checked.
+#
+# COPY_DEBT lists files that are NOT yet wrapped, each of which becomes a required prop on the
+# component's one <Name>.types.ts — a design-system change that alters both platform halves and
+# every call site together (Law 7), sequenced with the design-system work rather than here. The
+# debt is LISTED rather than invisible, and a NEW file gets no grace. The real mechanism is the
+# TranslatedText brand (mechanisms.md M50), which makes a bare string a compile error and retires
+# this list wholesale.
+#
+# Each entry is checked to EXIST: a debt file that was deleted or renamed must break this gate,
+# not silently keep an exemption alive.
+COPY_DEBT='packages/ui/src/components/ActivityStream/ActivityStream.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.tsx|packages/ui/src/components/Checklist/ChecklistRow.tsx|packages/ui/src/components/CompareGrid/CompareGridTable.tsx|packages/ui/src/components/CompareGrid/CompareValueCell.tsx|packages/ui/src/components/DataTable/DataTableHead.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.native.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.native.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.tsx|packages/ui/src/components/DrawingSheet/DrawingSheetParts.tsx|packages/ui/src/components/FilterBar/FacetChips.tsx|packages/ui/src/components/PagedDocument/DocumentSheet.tsx|packages/ui/src/components/RichText/RichTextToolbar.tsx|packages/ui/src/components/Stepper/StepperNumbered.tsx|packages/ui/src/components/Wordmark/Wordmark.native.tsx|packages/ui/src/components/Wordmark/Wordmark.tsx'
+for d in $(printf '%s' "$COPY_DEBT" | tr '|' ' '); do
+  [ -e "$d" ] || { printf 'CONFIG ROT: COPY_DEBT names "%s", which does not exist.\n' "$d"; fail=1; }
+done
 copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
-         apps/web/app apps/web/features apps/mobile/src/screens --include='*.tsx' \
+         apps/web/app apps/web/features apps/mobile/src/screens packages/ui/src --include='*.tsx' \
          --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
        | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
        | grep -vE "^($COPY_DEBT):")
@@ -308,12 +344,84 @@ app_vocab=$(
         | sed "s|^|  UNION    ${f}:|"
       grep -nE "^[[:space:]]*export[[:space:]]+const[[:space:]]+[A-Z][A-Z0-9_]+[[:space:]]*=[[:space:]]*\{" "$f" \
         | sed "s|^|  AS-CONST ${f}:|"
+      # A POLICY NUMBER is shared vocabulary too, and it was the hole this check left open:
+      # `export const GST_RATE = 0.18` passed every gate in the repo (measured 2026-09-03).
+      # Biome's noMagicNumbers stops the INLINE form (`n * 1.18`) and by design accepts a named
+      # constant — which is exactly this shape. The two together close the pair.
+      # Numeric only: a string constant in an app is usually a local key, and widening this to
+      # strings fires on legitimate ones while catching nothing the union check misses.
+      grep -nE "^[[:space:]]*export[[:space:]]+const[[:space:]]+[A-Z][A-Z0-9_]+[[:space:]]*(:[^=]+)?=[[:space:]]*-?[0-9]" "$f" \
+        | sed "s|^|  POLICY-N ${f}:|"
     done)
 if [ -n "$app_vocab" ]; then
   printf 'APP DECLARES SHARED VOCABULARY — it belongs in a package, not an app:\n%s\n' "$app_vocab"
   echo '  Union of string literals  -> packages/contracts (it is an enum by another name)'
   echo '  SCREAMING_CASE lookup     -> packages/domain (policy) or packages/contracts (wire)'
+  echo '  SCREAMING_CASE number     -> packages/domain (policy) or the market pack (a market fact)'
   echo '  Import it back into the app; never re-declare it (Law 5, and .claude/rules/architecture-ownership.md).'
+  fail=1
+fi
+
+# ── 10c. A role name and a query belong to their owner ───────────────────────
+# Two facts a consumer can WRITE rather than import, both measured uncaught 2026-09-03.
+#
+#   * A ROLE PRESET literal outside domain/contracts is a permission decision taken where the
+#     permission model cannot see it. `docs/engineering/architecture.md` §4: "A capability or a
+#     visibility scope is ALWAYS domain — never an `if role === …` in a handler." The preset
+#     list is CLOSED and lives in `packages/domain/src/authz/roles.ts`, which is what makes a
+#     grep the right shape here: twelve exact strings, no guessing.
+#   * A SQL verb in an app is a query outside `packages/db`, which owns schema, tenancy
+#     predicates and the index-backed reads CLAUDE.md §8 requires.
+#
+# Both cost ZERO on the day they landed — the apps were empty. That is the only cheap moment
+# a rule like this ever has.
+ROLE_PRESETS_RE="epc_owner|sales_manager|sales_executive|survey_engineer|design_engineer|project_manager|field_technician|installation_team_member|hr_admin|finance|operations|marketing"
+
+role_literals=$(git ls-files apps packages 2>/dev/null | grep -E '\.tsx?$' \
+  | grep -v '^packages/domain/\|^packages/contracts/' \
+  | xargs grep -nE "'(${ROLE_PRESETS_RE})'" 2>/dev/null)
+if [ -n "$role_literals" ]; then
+  printf 'ROLE NAME WRITTEN OUTSIDE THE PERMISSION MODEL:\n%s\n' "$role_literals"
+  echo '  A capability is ALWAYS packages/domain. Call can(roles, capability) — never compare a'
+  echo '  role string, which puts the decision where the matrix cannot see it.'
+  fail=1
+fi
+
+app_sql=$(git ls-files apps 2>/dev/null | grep -E '\.tsx?$' \
+  | xargs grep -niE "'(select |insert into |update .* set |delete from )" 2>/dev/null)
+if [ -n "$app_sql" ]; then
+  printf 'SQL IN AN APP — queries belong to packages/db:\n%s\n' "$app_sql"
+  echo '  packages/db owns schema, the tenant predicate and the index-backed read. A query'
+  echo '  written in an app carries none of them.'
+  fail=1
+fi
+
+# ── 10b. A branded type is never obtained by casting ─────────────────────────
+# A brand makes a shared fact unspeakable outside its owner (CLAUDE.md §8): `Money` has one
+# constructor, so `total * 1.18` in a screen is a compile error. TypeScript's one hole is a
+# cast — `x as Money` compiles — which is why the cast is a DEFECT outside the owning package
+# and not a shortcut. Unlike a formula, it is one exact string, so a grep is the right shape
+# of check here.
+#
+# The registry is declared EMPTY on purpose (2026-09-03): brands land with the slices that
+# create them, and a rule authored after its first violation has already been broken once.
+# This is the same reason the domain-purity rules existed before packages/domain did.
+# Add `<Brand>:<owning path prefix>` as each one lands.
+BRANDS=''   # e.g. 'Money:packages/domain/ TranslatedText:packages/i18n/'
+
+cast_escapes=''
+for entry in $BRANDS; do
+  brand="${entry%%:*}"; owner="${entry#*:}"
+  hits=$(git ls-files apps packages | grep -E '\.tsx?$' \
+         | grep -v "^${owner}" \
+         | xargs grep -nE "\bas[[:space:]]+(unknown[[:space:]]+as[[:space:]]+)?${brand}\b" 2>/dev/null)
+  [ -n "$hits" ] && cast_escapes="${cast_escapes}${hits}
+"
+done
+if [ -n "$(printf '%s' "$cast_escapes")" ]; then
+  printf 'BRAND OBTAINED BY CAST — the one hole in an unspeakable fact:\n%s\n' "$cast_escapes"
+  echo '  Call the owning package'"'"'s constructor instead. A cast re-opens exactly what the'
+  echo '  brand was added to close (CLAUDE.md §8, .claude/rules/architecture-ownership.md).'
   fail=1
 fi
 
@@ -359,5 +467,5 @@ if [ -n "$shrink_range" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — no test files, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no control declaring a shrink range'
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range'
 exit $fail

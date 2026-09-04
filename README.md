@@ -64,7 +64,8 @@ authoritative doc for that layer; this table is only the index.
 | `packages/i18n` | One Lingui catalog (EN/HI/MR) shared by web + mobile | [packages/i18n/CLAUDE.md](packages/i18n/CLAUDE.md) |
 | `packages/theme` | Tokens, semantic layer and the RN theme object — GENERATED from the live design system, never hand-edited | — |
 | `packages/ui` | The design system, BOTH platforms: 95 components as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
-| `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity) — the only "tests" in this repo | — |
+| `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
+| `<package>/tests` | Unit tests for the logic layers only — domain, contracts, forms, api, worker (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the registers | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
@@ -194,7 +195,9 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm install` | Install deps; also installs the git pre-commit hook |
 | `pnpm turbo build` | Build every package (respects the dependency graph — safe to run anytime) |
 | `pnpm typecheck` | `turbo run typecheck` across every package |
-| `pnpm test` | `turbo run test` — runs `tests/invariants/` only; **there are no unit tests anywhere in this repo** (owner directive) |
+| `pnpm test` | `turbo run test` — runs `tests/invariants/` against real state |
+| `pnpm test:unit` | vitest over `<package>/tests/**/*.test.ts` — the LOGIC layers only, never the frontend (owner ruling 2026-09-03) |
+| `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
 | `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, web↔RN prop parity. Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |

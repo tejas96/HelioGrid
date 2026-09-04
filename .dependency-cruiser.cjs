@@ -421,11 +421,14 @@ module.exports = {
       to: { path: '^apps/mobile/src/screens/' },
     },
     {
-      name: 'no-tests-in-apps',
+      name: 'no-tests-outside-the-tests-tree',
       severity: 'error',
       comment:
-        'testing policy is deliberately thin (CLAUDE.md §Testing): the ONLY executable checks are tests/invariants and on-demand scripts/. This comment used to say colocated tests live in packages/domain — that predates the owner no-unit-tests directive (2026-07-29) and was stale by the time packages/domain actually existed.',
-      from: { path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$' },
+        'Unit tests are welcome in the LOGIC layers since the owner ruling 2026-09-03, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
+      from: {
+        path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$',
+        pathNot: '^apps/(api|worker)/tests/',
+      },
       to: { path: '.*' },
     },
     {

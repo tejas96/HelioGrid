@@ -13,10 +13,11 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tests/tsconfig.json"
   },
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "5.0.0"
   }
 }
