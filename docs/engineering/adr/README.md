@@ -18,5 +18,6 @@ enforces it, so no citation is left pointing at nothing.
 | [0019](0019-telephony-platform-capability-framework.md) | Telephony as a provider-agnostic capability framework |
 | [0023](0023-packages-data-frontend-sdk.md) | `packages/data` — the frontend SDK |
 | [0025](0025-orchestration-temporal.md) | Workflow orchestration — Temporal, superseding the BullMQ scaffold |
+| [0026](0026-ui-styling-plain-css-and-stylesheet.md) | UI styling — plain CSS on web, StyleSheet on native, Tailwind for layout only |
 
 Numbers are stable and never reused. A gap is an ADR that was removed.

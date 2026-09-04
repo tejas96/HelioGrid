@@ -84,7 +84,7 @@ row UP this order over widening the script that currently holds it.
 | M47 | The catalogs are freshly extracted | `check:catalogs` | HELD | Freshness only. A literal that was never extracted has no entry to go stale (that is M45's job). |
 | M48 | Every contract UI language is fully registered | types (`satisfies Record<UiLanguage, …>`) · `check:adherence` 9 | HELD | Derives its expectation from `locale.ts` instead of restating the list. The model row for how to write a check. |
 | M49 | One format implementation, and the PRD's exact strings ship | invariant `format-rendering` (static) | HELD | Knows `new Intl.*` only — a hand-rolled grouping loop or `toLocaleString()` is invisible. Enumerates with `git ls-files`, so an untracked file is exempt. |
-| M50 | A UI component holds no user-visible English | — | **NONE** | `packages/ui` cannot import `packages/i18n`, so no prop can be typed as translated copy. Closing it: declare the `TranslatedText` brand in `contracts`, which `ui` may import; `i18n` stays the only constructor. |
+| M50 | A UI component holds no user-visible English | — | **NONE** | `packages/ui` cannot import `packages/i18n` (its boundary tag allows contracts, domain, theme and config only), so no prop can be typed as translated copy. Closing it: declare the `TranslatedText` brand in `contracts`; `i18n` stays the only constructor. `docs/tasks/UI.md` carries the plan and now names the right home. |
 
 ## Code shape
 
@@ -122,5 +122,5 @@ row UP this order over widening the script that currently holds it.
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
 | M90 | Every PRD row is dispositioned once; no dangling row, task or screen id | `scripts/gates.py` (about 21 gates) | HELD | Covers `docs/prd/`, `docs/ux/briefs/`, `docs/tasks/` and the registers. Reads no engineering doc and no instruction file. |
-| M91 | An engineering doc agrees with the tree it describes | — | **NONE** | Today: two folder-shape blocks in the worker file, a `src/` in `packages/config` that does not exist, "NOT BUILT YET" on two built packages. |
+| M91 | An engineering doc agrees with the tree it describes | — | **NONE**, and deliberately so | A path-existence grep over `docs/` was written and rejected: of 217 candidate dead paths, nearly all were legitimate — a relative reference resolving from another tree, or an ADR correctly naming a file it recorded the deletion of. A gate with that false-positive rate gets muted, and a muted gate catches nothing. The instances found by hand are fixed; the class stays under review. |
 | M92 | An instruction file carries no date, stays within its budget, and makes no enforcement claim without citing a row here | `scripts/gates.py` gates 22, 23, 24 | HELD · red 2026-09-04 | Greps three shapes. It cannot see a war story told without a date, a rule that is merely wrong, or a claim phrased outside the seven matched forms. `mechanisms.md` is exempt from the date check — a date here is the day a gate was proven red. |

@@ -170,7 +170,7 @@ locale-default number formats for money
 tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
-### theme — tokens, the semantic layer and the provider  (NOT BUILT YET — docs/engineering/17)
+### theme — tokens, the semantic layer and the provider
 Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull`), the semantic
 role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
 the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
@@ -178,7 +178,7 @@ scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (th
 package was hand-copied and drifted in days — docs/engineering/17 §1); workspace imports. Extension
 point: emit targets grow here. Replaces the v1 `tokens` package, deleted 2026-08-19.
 
-### ui — the design system, BOTH platforms  (NOT BUILT YET — docs/engineering/17)
+### ui — the design system, BOTH platforms  (built ahead of its screens — docs/engineering/17)
 Owns: `primitives/` (the ~8 atoms, two of which hold product law — 44px targets and
 status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` is the one
 prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,

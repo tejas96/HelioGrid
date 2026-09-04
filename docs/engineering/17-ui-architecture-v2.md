@@ -1,6 +1,11 @@
 # 17 — UI architecture V2
 
-**Status:** approved direction, not yet built. Written 2026-08-19.
+**Status:** BUILT. `packages/theme` is generated from the live design system and
+`packages/ui` holds the primitives and components. It is deliberately built AHEAD of the
+screens that consume it: the design system is the source, and screens pull from it per
+block. §5's build order below is therefore a record of how it was built, not a live
+instruction — the sequencing that still binds is that a component gap found by a screen is
+registered in `docs/tasks/UI.md` and fixed on both halves when that component is touched.
 **Scope:** the UI layer only — tokens, theme, components, and the two apps' screens.
 **Out of scope, do not touch:** `packages/domain`, `data`, `contracts`, `db`, `env`, `config`,
 `i18n`, `forms`, and `apps/api` / `apps/worker`. Those are ~1,100 lines of working
@@ -39,7 +44,7 @@ packages/
 │   │   │   ├── tokens.json      #   pulled from the live design system
 │   │   │   └── manifest.json    #   component + prop census, for the drift gate
 │   │   ├── semantic.ts          # raw token -> role mapping (bg-page, text-body, …)
-│   │   ├── theme.native.ts      # Unistyles theme registration
+│   │   ├── theme.native.ts      # the RN theme object (StyleSheet consumers read it)
 │   │   ├── provider.tsx         # web provider (density mode, locale direction)
 │   │   └── index.ts
 │   ├── dist/
@@ -100,29 +105,24 @@ contract and the behaviour. Let each platform render idiomatically.
 ### Web — plain CSS files + CSS custom properties
 
 The design system's own source is CSS custom properties, so the repo mirrors it exactly.
-No runtime cost, no build plugin, no translation layer. Radix stays underneath for focus
-management and roving tabindex.
+No runtime cost, no build plugin, no translation layer.
 
-Do not introduce Tailwind or CSS-in-JS. There is nothing to gain and a token-shaped
-system fights a utility-shaped one.
+**No Radix, and Tailwind for LAYOUT ONLY** (`flex`, `grid`, `min-h-dvh`). `Pressable` owns the
+44px target, the focus ring and the roles, on both platforms — Radix under the web half alone
+would split that ownership and leave native unserved. A Tailwind colour, spacing or type class is
+the same defect as a raw hex: values come from `@heliogrid/theme` through `var()`. See ADR-0026.
 
-### React Native — `react-native-unistyles` v3
+### React Native — `StyleSheet`
 
-Recommended over hand-rolled `StyleSheet` + prop arrays, for three reasons that only
-matter at this scale:
+Plain `StyleSheet.create`, with the variant table written out per component as a
+`Record<Variant, VariantVisual>`.
 
-1. **`variants` / `compoundVariants`** map 1:1 onto the design system's prop enums
-   (`Button` primary/secondary/ghost/destructive × lg/md/sm). Across ~100 components this
-   removes a large amount of `[styles.base, v === 'primary' && styles.primary]` wiring.
-2. **Theme swap without re-render** — density mode (Expressive / Functional) is a
-   product-wide switch, not a per-screen prop.
-3. It consumes a **plain theme object**, which is exactly what `theme/build.ts` emits.
-
-Cost to accept knowingly: a Babel plugin and a real dependency. RN 0.86 is supported.
-
-If the new session judges the dependency not worth it, plain `StyleSheet` plus a small
-`useStyles` helper is a legitimate fallback — but make that call explicitly and write
-down why, do not drift into it.
+`react-native-unistyles` v3 was the original choice, for `variants`/`compoundVariants` mapping
+onto the design system's prop enums and for theme swap without re-render. It was not adopted: the
+dependency and its Babel plugin are not repaid while the density-mode switch has no product
+surface. **ADR-0026 records that reversal**, and its two costs: variant wiring is hand-written and
+compared only by prop NAME across halves (`mechanisms.md` `M35`), and "style out of the component
+file" is true on web and false on native (`M42`).
 
 ---
 
@@ -467,12 +467,12 @@ This one compares the repo to the design system, which is the comparison that ma
 
 Each needs updating when phase 3 lands. Listed so none is missed:
 
-- `package.json` — remove the `check:ui-parity` script, add `ds:pull` and `ds:check`
+- `package.json` — `check:ui-parity` removed; `ds:contract` is the live gate (`ds:check` was removed too — §6)
 - `.dependency-cruiser.cjs` — package boundary rules naming `ui` / `ui-api` / `tokens`
 - `knip.jsonc` — entry points for the deleted packages
 - `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui', '@heliogrid/theme']`
   **done 2026-08-25 (task 2)**
-- `apps/mobile/babel.config.js` — add the Unistyles plugin if §3 is taken
+- `apps/mobile/babel.config.js` — no styling plugin: §3 takes plain `StyleSheet` (ADR-0026)
 - **hardcoded English in `packages/ui` — 78 occurrences / 46 unique strings across 64 files
   (measured 2026-08-25).** Mostly `aria-label` / `accessibilityLabel` pairs, which a screen
   reader speaks and which are therefore copy. Each becomes a REQUIRED prop on the
