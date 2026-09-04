@@ -199,16 +199,23 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-012 · Activity timeline service
 
 **Type:** engine · **Tier:** P0
-**PRD rows:** M02-35, M02-36
+**PRD rows:** M02-35, M02-36, F4-16, F4-19
 **Requirements (verbatim):**
 
 - **M02-35** (P0) — **One append-only timeline per lead and customer, rendered as a single stream.** Its kinds include notes, logged calls, agent calls, stage changes, assignments, proposal events, link opens, survey submissions, design events, sign-off events, payments, documents, task events and system events; its actor may be a person, the agent, the system or the customer. Every module writes into this one stream; nothing edits or deletes an entry.
 - **M02-36** (P0) — **Activity logging preserves capture time, and never loses a concurrent edit silently.** When a call outcome, a note or a visit status is logged, the time it was captured is preserved for display and audit while server apply order decides ordering (`F4-19`); a lead's field edits resolve per-field last-writer-wins **with an activity entry for every applied change**, so a lost concurrent edit is always visible (`F4-16`).
+- **F4-16** (P0) — **Lead field edits — per-field last-writer-wins, with an activity entry for every applied change.** Server apply order wins per field, and each applied change writes an activity entry naming the field, its old and new values, the actor and the capture time — **"so a 'lost' concurrent edit is always visible and recoverable from the log."** Last-writer-wins is acceptable here *only because* the log makes the loser recoverable; a module may not apply last-writer-wins to any field without that record. Stage transitions are validated against the pipeline state machine, and an invalid transition is refused.
+- **F4-19** (P0) — **Last-writer-wins is resolved by server apply order, never by device clocks. Capture time is display and audit only.** A device's clock may be wrong, deliberately or otherwise, and the product never lets it decide which of two edits survives. The time a capture was taken is preserved and shown — it is what the field user means by "when" — but it orders nothing.
 
 **DONE WHEN:**
 
 - Given any lead event from any module, when it occurs, then one append-only entry appears in the single timeline naming its kind and actor, and no surface can edit or delete it (M02-35).
 - Given an activity logged, when it is applied, then its capture time is preserved; and given two concurrent edits to the same field, then one wins by server apply order and both are visible as activity entries (M02-36).
+- Given two edits to different fields of the same lead, when both are applied, then both changes are present and each has an activity entry naming field, old value, new value, actor and capture time (`F4-16`).
+- Given a lead field edited concurrently by two people, when the later write wins, then the earlier value is recoverable from the activity log (`F4-16`).
+- Given two devices whose clocks disagree, when both submit edits to the same field, then the outcome is determined by server apply order and not by either timestamp (`F4-19`).
+
+*(Moved here from `T-FPLAT-012`, deleted by owner decision: the conflict rules land with the module that uses them (Law 9) rather than as a block 0 engine nothing consumes yet.)*
 
 ---
 
@@ -401,3 +408,5 @@ The settings surface itself is M01's (SCR-M01-22, `docs/ux/briefs/SCR-M01-22-cap
 | M02-65 | T-M02-017 |
 | M02-66 | T-M02-008 |
 | M02-67 | T-M02-002 |
+| F4-16 | T-M02-012 (moved from T-FPLAT-012) |
+| F4-19 | T-M02-012 (moved from T-FPLAT-012) |

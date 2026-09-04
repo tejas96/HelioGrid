@@ -269,7 +269,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-025 · Auth, session & account-lifecycle engine
 **Type:** engine · **Tier:** P0
-**PRD rows:** M01-05, M01-06, M01-07, M01-10, M01-17, M01-18
+**PRD rows:** M01-05, M01-06, M01-07, M01-10, M01-17, M01-18, F4-37
 **Requirements (verbatim):**
 - **M01-05** (P0) — **OTP is single-use with a 5-minute TTL, and no passwords exist anywhere in the product.** Sign-in is phone + 6-digit OTP (plus Google Login per M01-02); there is no password to set, store, forget or phish.
 - **M01-06** (P1) — **OTP messages are anti-vishing by copy.** Every OTP message states the product name and "we never call to ask for this code"; support never asks for an OTP.
@@ -277,6 +277,7 @@ This file covers module M01 — company signup and authentication, team invites 
 - **M01-10** (P0) — **Abandoning signup midway loses nothing.** Once the OTP has verified, the person is an account; returning resumes exactly where they left off — no restart, no duplicate.
 - **M01-17** (P0) — **First-run lands on the role-decided home with real work already in it.** An invited person is useful within two minutes without reading anything: tap invite → OTP → name → their role's home screen, showing the work already assigned to them. The role-decides-home mechanics are `02-personas.md` `PS-01` / `modules/M13-dashboards-and-reporting.md`'s; M01 owns the handoff — onboarding ends **on** that home, never on a generic dashboard or an unexplained blank. *(This task carries the non-UI handoff half; the surface half is `docs/tasks/SHELL.md` T-SHELL-001 / SCR-SHELL-01.)*
 - **M01-18** (P0) — **User lifecycle: phone is the login identity (E.164, unique globally); status is invited / active / deactivated — "deactivate, never delete."** Deactivation and the tenant service invariants (always ≥1 EPC Owner; always ≥1 person holding Manage team) are F2's laws (F2-19, F2-20), enforced at the transition and surfaced on this module's screens.
+- **F4-37** (P0) — **On a shared device, tenant isolation beats convenience: a user switch discards work held for the previous user, and tells them before it happens.** Shared field phones are normal in this market. When a different user signs in on a device still holding photographs or submissions captured by another user and not yet uploaded, that held work is **discarded before any new data loads**, and the person whose work is being discarded is told what will be lost **before** the switch completes, with the chance to connect and upload first. This is the one **carve-out from `F4-21`**: everywhere else nothing a field user captured is ever unrecoverable, and here it is, deliberately — a rep must never reach another rep's customer photographs, and no device-held data survives the identity that captured it.
 **DONE WHEN:**
 - Given any sign-in surface, when it renders, then no password field exists anywhere (M01-05) and Google Login is offered alongside Mobile OTP (M01-02).
 - Given a deactivation or "sign out everywhere", when it is issued, then every session of that user ends within 10 minutes (M01-07).
@@ -286,6 +287,9 @@ This file covers module M01 — company signup and authentication, team invites 
 - Given a deactivated person, when the Team screen is read, then their history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01-19, M01-18, F2-20).
 - (M01-06 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted above is the binding criterion.)
 - (**Identity-provider ownership — recorded, not resolved; this task is where it gets decided.** The `user + membership + roles exist atomically` criterion above assumes one owner for that write. Two records disagree about who that is: the tenancy invariant treats `organization` and `member` as identity-provider-internal tables and asserts the tenant id and the organization id are the same key, while the later engineering record says HelioGrid owns tenants, memberships and roles and joins the two sides once, in a session projection. Both cannot hold — if HelioGrid owns memberships then `member` is tenant-owned, must carry `tenant_id` and must sit under row-level security, and treating it as provider-internal would exempt from tenant scoping the one table that maps a person to a tenant. The contradiction, its sources and its consequence are enumerated at `docs/prd/registers/conflicts.md` **row 13**; nothing is mis-enforced today because no schema exists yet. **Settle it before this task's first migration, not during it** — the choice fixes whether `member` carries `tenant_id`, and changing that afterwards rewrites every membership read in the product.)
+- Given work held on a shared device for one user, when a different user signs in, then the held work is discarded and the outgoing user is warned before it happens (`F4-37`).
+
+*(`F4-37` moved here from struck `T-FPLAT-034`: the switch happens at sign-in, and its screen half is already `SCR-M01-01` (Law 9).)*
 
 ### T-M01-026 · Tenant bootstrap engine: platform defaults, demo project seed & Quick-mode defaults
 **Type:** engine · **Tier:** P0
@@ -400,3 +404,4 @@ This file covers module M01 — company signup and authentication, team invites 
 | M01-58 | T-M01-022 |
 | M01-59 | T-M01-023 |
 | M01-60 | T-M01-024 |
+| F4-37 | T-M01-025 |

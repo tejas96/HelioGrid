@@ -399,14 +399,19 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-367 · Concurrent editing surfaced, never silently overwritten (engine)
 
 **Type:** engine · **Tier:** P0
-**PRD rows:** MS12-22
+**PRD rows:** MS12-22, F4-15
 **PORT:** `3d_design_studio/src/features/solar-studio/store/store.tsx`'s external-change reconciliation and `lib/persistence/repository.ts`'s write path (both claimed with T-MS-365), tests `3d_design_studio/src/features/solar-studio/store/store.test.ts`, `lib/__tests__/persistence.test.ts` — the POC's detection ports; its last-writer-wins resolution does not, ruling S11-3b replacing it with the platform's conflict handling.
 **DEFECTS:** none targeting this row.
 **Requirements (verbatim):**
 - **MS12-22** (P0) — Concurrent editing is handled honestly: an external change to the same design is detected and surfaced rather than silently overwriting (`.63/.64/.82/.109`); the POC's last-writer-wins local rule is superseded by the platform's conflict handling (S11-3b).
+- **F4-15** (P0) — **Design — single editor plus a server version check. No merge, ever.** Every design save carries the version it was based on; a mismatch is **refused**, the client reloads server state, and the user re-applies their change. A design is one document and is never algorithmically merged; the version check is what makes a stale second editor impossible to lose silently rather than a mechanism for combining two edits.
 **DONE WHEN:**
 - Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-22 half; the conflict-detected state it raises is drawn in `docs/ux/briefs/SCR-MS-03-studio-shell.md` and built with T-MS-360.)*
 - The ported POC tests for this area pass unchanged in the new project — the last-writer-wins expectations excepted, since S11-3b supersedes them; every other persistence expectation stands.
+- Given a design save based on a superseded version, when it reaches the server, then it is refused, no merge occurs, and the editor is prompted to reload (`F4-15`).
+- Given a studio save that fails the server's version check, when the failure returns, then the optimistically applied state is rolled back and a reload is prompted, and the save is never merged and never silently kept (`F4-15`, `M05-09`).
+
+*(`F4-15` moved here from struck `T-FPLAT-012`: the conflict rules land with the module that uses them (Law 9) rather than as a block 0 engine nothing consumes yet.)*
 
 ### T-MS-368 · Normalise and repair every persisted design on load (port)
 
@@ -655,3 +660,4 @@ Cross-bucket note: M05-79 is dispositioned in `docs/tasks/MS-studio-a.md` (the b
 | MS12-28 | T-MS-371 |
 | MS12-29 | T-MS-374 |
 | MS12-30 | T-MS-373 |
+| F4-15 | T-MS-367 |
