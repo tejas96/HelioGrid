@@ -214,61 +214,53 @@ This file dispositions every requirement row of the suite's six platform foundat
 *(Swept 2026-08-07 for the removal of the offline/sync capability. `F4-02` — "reads are local, always" — and `F4-03` — the durable device write queue — were deleted with `docs/prd/foundations/F4-offline-and-sync.md`; the local-first read engine is a non-goal by name (`docs/prd/foundations/F4-data-integrity.md` §5: "The product does not read from a cache"), and `M04-55` now rules that the photograph queue is the product's one and only device-held queue and "holds photographs and nothing else". The two clauses inside them that had independent life are already live elsewhere and already cited: no spinner walls at `F4-27`, and "nothing a field user captured is ever unrecoverable" at `F4-21`. The task title lost "the local-first core — local reads, the durable write queue" for the same reason. `F4-04`'s and `F4-07`'s texts above were re-pulled verbatim from the live document: `F4-04` lost its trailing "Offline output is always labelled provisional" clause and the `F8-16` citation with it — the general money law is `F8-12`'s, built by `T-FPLAT-028` — and `F4-07` lost "independent of when the offline layer lands". The second acceptance line above is deleted `F4-12`'s surviving headline, repointed to `F4-04` and `M06-41` per the 2026-08-07 audit; `F4-12`'s queued proposal-draft request and its "every figure shown from local data renders provisional" clause died with the queue and the cache.)*
 
 ---
-### T-FPLAT-012 · The conflict-policy engine — versioned-append survey, design version check, per-field last-writer-wins, forward-only visit status
-**Type:** engine · **Tier:** P0
-**PRD rows:** F4-14, F4-15, F4-16, F4-17, F4-19
-**Requirements (verbatim):**
+### T-FPLAT-012 · STRUCK 2026-09-04 — the conflict-policy engine
+**Type:** — · **Tier:** —
+**PRD rows:** none — all five moved to the modules that consume them.
 
-- **F4-14** (P0) — **Survey — versioned-append. A revisit NEVER overwrites the first version.** A return visit to a site creates a **new survey version**; prior versions are immutable and remain readable forever. Within one in-progress version, edits by its own author resolve last-writer-wins by server apply order. The rule is stated as a product law, not a storage strategy: the first survey is evidence of what the site looked like on that day, and no later visit is permitted to erase it.
-- **F4-15** (P0) — **Design — single editor plus a server version check. No merge, ever.** Every design save carries the version it was based on; a mismatch is **refused**, the client reloads server state, and the user re-applies their change. A design is one document and is never algorithmically merged; the version check is what makes a stale second editor impossible to lose silently rather than a mechanism for combining two edits.
-- **F4-16** (P0) — **Lead field edits — per-field last-writer-wins, with an activity entry for every applied change.** Server apply order wins per field, and each applied change writes an activity entry naming the field, its old and new values, the actor and the capture time — **"so a 'lost' concurrent edit is always visible and recoverable from the log."** Last-writer-wins is acceptable here *only because* the log makes the loser recoverable; a module may not apply last-writer-wins to any field without that record. Stage transitions are validated against the pipeline state machine, and an invalid transition is refused.
-- **F4-17** (P0) — **Visit — status only moves forward.** A visit's status advances through its states and never regresses; a write that would move it backwards is refused.
-- **F4-19** (P0) — **Last-writer-wins is resolved by server apply order, never by device clocks. Capture time is display and audit only.** A device's clock may be wrong, deliberately or otherwise, and the product never lets it decide which of two edits survives. The time a capture was taken is preserved and shown — it is what the field user means by "when" — but it orders nothing.
+**Struck in place by owner decision 2026-09-04.** The concurrency law is real and unchanged; what
+was wrong was building it as a block 0 engine before any module existed to use it. Law 9 puts a
+rule with the slice that consumes it, so each row moved to its owner and this task carries none.
 
-**DONE WHEN:**
+**Where every row went — no citation was dropped:**
 
-- Given an existing survey for a site, when a revisit is captured, then a new version is created and the earlier version is unchanged and still readable (`F4-14`).
-- Given a design save based on a superseded version, when it reaches the server, then it is refused, no merge occurs, and the editor is prompted to reload (`F4-15`).
-- Given a studio save that fails the server's version check, when the failure returns, then the optimistically applied state is rolled back and a reload is prompted, and the save is never merged and never silently kept (`F4-15`, `M05-09`).
-- Given two edits to different fields of the same lead, when both are applied, then both changes are present and each has an activity entry naming field, old value, new value, actor and capture time (`F4-16`).
-- Given a lead field edited concurrently by two people, when the later write wins, then the earlier value is recoverable from the activity log (`F4-16`).
-- Given a visit at a later status, when a write attempts an earlier status, then the write is refused (`F4-17`).
-- Given a notification read on one device, when the read reaches the server, then the read state travels up only, is set once, and nothing un-reads (`F6-07` — the row is quoted and built at `T-FPLAT-017`).
-- Given two devices whose clocks disagree, when both submit edits to the same field, then the outcome is determined by server apply order and not by either timestamp (`F4-19`).
+| row | rule | now carried by |
+|---|---|---|
+| `F4-14` | survey is versioned-append; a revisit never overwrites | `T-M04-015` (`docs/tasks/M04-survey.md`) |
+| `F4-15` | design save carries its base version; a mismatch is refused, never merged | `T-MS-367` (`docs/tasks/MS-studio-c.md`) |
+| `F4-16` | lead fields are per-field last-writer-wins, with an activity entry per change | `T-M02-012` (`docs/tasks/M02-crm-leads.md`) |
+| `F4-17` | a visit's status only moves forward | `T-M04-015` (`docs/tasks/M04-survey.md`) |
+| `F4-19` | server apply order decides, never a device clock | `T-M02-012` (`docs/tasks/M02-crm-leads.md`) |
 
-*(Swept 2026-08-07 for the removal of the offline/sync capability. This task survives whole — the concurrency law was never about connectivity — but four things changed. `F4-18` was deleted: its catalog half ("catalog is read-only on the device") dies with the device copy of the catalog, and the read-state half survives verbatim as live `F6-07`, "Read state travels up only and is set once — reading on one device reads everywhere; nothing un-reads", which is exactly what the sweep left standing when it cut `F6-07`'s offline clause; the read-state acceptance line above is repointed there and the catalog acceptance line is deleted. `F4-16` and `F4-17` were re-pulled verbatim: both lost their "corrected on the next sync" tails, and `F4-17` lost the word "offline" before "write". The stale-save acceptance line above arrives from struck `T-FPLAT-010`, where it co-cited deleted `F4-11`; `F4-11`'s connectivity half — "mobile carries no offline design surface", the studio surviving a blip — died with the boundary, and the acceptance survives intact under `F4-15` and `M05-09` ("a stale save is refused, never merged … never a silent no-op, never an optimistic result").)*
+Each receiving task quotes its row verbatim and closes it with its own acceptance line. The
+read-state line this task used to carry belongs to `T-FPLAT-017` (`F6-07`) and was already there.
 
 ---
-### T-FPLAT-013 · Nothing captured is unrecoverable — preserved submissions and attention items
-**Type:** engine · **Tier:** P0
-**PRD rows:** F4-21
-**Requirements (verbatim):**
+### T-FPLAT-013 · STRUCK 2026-09-04 — nothing captured is unrecoverable
+**Type:** — · **Tier:** —
+**PRD rows:** none — `F4-21` moved to its module.
 
-- **F4-21** (P0) — **Nothing a field user captured is ever unrecoverable.** A photograph taken in the field is held on the device until it has uploaded, and its waiting count and a retry are shown **on the capture screen itself** — there is no separate sync surface. A record that fails validation is preserved and badged for attention rather than crashing the screen or vanishing, and a submission the server cannot accept is preserved for recovery rather than discarded. The law the source states, and this document adopts whole: **"nothing a field user captured is ever unrecoverable."**
+**Struck in place by owner decision 2026-09-04.** The guarantee is unchanged; it lands with the
+module that captures photographs rather than as a block 0 engine (Law 9).
 
-**DONE WHEN:**
-
-- Given a record that fails validation, when it is loaded, then it is preserved and badged for attention and the screen renders without crashing (`F4-21`).
-- Given a submission the server cannot accept, when the refusal returns, then the submission is preserved for recovery rather than discarded — never a silent disappearance and never a raw error — and the refusal itself is stated in plain language at the moment of the attempt (`F4-21`, `F8-36`).
-- Given an attention item, when the user opens it, then a reason and a retry are shown, on the capture screen itself and on no separate sync surface (`F4-21`).
-
-*(Swept 2026-08-07 for the removal of the offline/sync capability. `F4-20` was deleted: its acknowledgement lifecycle — applied-or-rejected, the item leaving the queue, server truth replacing local state — dies with the queue, and its "Given any queued submission" acceptance line goes with it. The law inside it does not die: a rejected submission is never a silent disappearance and never a raw error, which is live at `F4-21` ("a submission the server cannot accept is preserved for recovery rather than discarded") and at `F8-36` for the honest-refusal wording, so the second acceptance line above is repointed rather than deleted. The attention-item acceptance line, which cited deleted `F4-24`'s per-record chip, is likewise repointed to `F4-21`: the queued → syncing → synced chip is excised by name (`docs/prd/foundations/F4-data-integrity.md` §5: "no queued or unsynced marker on any record") but the attention state — badged, with a reason and a retry, on the capture screen — survives verbatim there. `F4-21`'s text above was re-pulled verbatim from the live document; the task title lost "submission acknowledgement" for the same reason `F4-20` went.)*
+| row | now carried by |
+|---|---|
+| `F4-21` — nothing a field user captured is ever unrecoverable | `T-M04-017` (`docs/tasks/M04-survey.md`) |
 
 ---
-### T-FPLAT-014 · The version-kept notice
-**Type:** engine · **Tier:** P0
-**PRD rows:** F4-25
-**Requirements (verbatim):**
 
-- **F4-25** (P0) — **The version-kept notice.** When a revisit creates a new survey version, the product tells the user what just happened in one line — the source's wording is **"v2 — v1 kept"** — shown at the moment of the revisit and carried on the record afterwards, with the earlier version reachable from it. The notice exists because `F4-14`'s guarantee is worthless if the person on the roof does not know it held: the fear it removes is *"have I just overwritten what I did last month?"*
+### T-FPLAT-014 · STRUCK 2026-09-04 — the version-kept notice
+**Type:** — · **Tier:** —
+**PRD rows:** none — `F4-25` moved to its module.
 
-**DONE WHEN:**
+**Struck in place by owner decision 2026-09-04.** The notice belongs where the version is created.
 
-- Given a revisit to a previously surveyed site, when the new version is created, then the user is told in one line that the earlier version is kept, the line is carried on the record afterwards, and the earlier version is reachable from it (`F4-25`).
-
-*(Swept 2026-08-07 for the removal of the offline/sync capability. This task was the five-surface sync-state model; four of the five surfaces and the principle that required them are gone, so it is reduced to the one row that was never about connectivity and retitled accordingly. **`F4-10`** — a read served from cache says so, with a staleness banner — is a non-goal by name (`docs/prd/foundations/F4-data-integrity.md` §5: "no staleness or freshness banner"; "The product does not read from a cache"), and the money half it pointed at `F8-16` is carried by live `F8-12`, built at `T-FPLAT-028`. **`F4-24`** — the queued → syncing → synced per-record chip — is excised by name ("no queued or unsynced marker on any record"); its fourth state survives verbatim in `F4-21` and its acceptance line now sits in `T-FPLAT-013`. **`F4-26`** — the stale-read banner — is excised by name. **`F4-28`** — "all five surfaces are translated, honest and complete" — has no subject once the five are gone, and every obligation it imposed is already binding generally: `F3-01`/`F3-06`, `F3-19`/`F3-22`, `F7-42` and `F7-43`'s Definition of Done, now three base states not four per owner ruling 2026-08-07 `Q61`. **`F7-36`** — Principle 7, "offline is a visible state on every surface" — was **struck in place** in `docs/prd/foundations/F7-design-language.md` by the same ruling and is deliberately not resurrected here; Principles 8–12 keep their numbers. **`F4-27`** is live and unchanged as law, but it is a property of every screen rather than a component this bucket builds, so it moves to **## Laws** below with its text re-pulled verbatim — the live row now reads "A warning never disables a primary action" and no longer speaks of connectivity. `F4-25`'s text above was re-pulled verbatim: it lost its "Surface 4 — " prefix.)*
+| row | now carried by |
+|---|---|
+| `F4-25` — the version-kept notice | `T-M04-015` (`docs/tasks/M04-survey.md`) |
 
 ---
+
 ### T-FPLAT-033 · The too-old client — server-declared minimum version and the forced-upgrade screen
 **Type:** engine · **Tier:** P0
 **PRD rows:** F4-36
@@ -284,62 +276,51 @@ This file dispositions every requirement row of the suite's six platform foundat
 - Given a supported client, when it calls the API, then no upgrade screen ever appears (`F4-36`).
 
 ---
-### T-FPLAT-034 · Shared-device user switch — tenant isolation over held work
-**Type:** engine · **Tier:** P0
-**PRD rows:** F4-37
-**Requirements (verbatim):**
+### T-FPLAT-034 · STRUCK 2026-09-04 — shared-device user switch
+**Type:** — · **Tier:** —
+**PRD rows:** none — `F4-37` moved to its module.
 
-- **F4-37** (P0) — **On a shared device, tenant isolation beats convenience: a user switch discards work held for the previous user, and tells them before it happens.** Shared field phones are normal in this market. When a different user signs in on a device still holding photographs or submissions captured by another user and not yet uploaded, that held work is **discarded before any new data loads**, and the person whose work is being discarded is told what will be lost **before** the switch completes, with the chance to connect and upload first. This is the one **carve-out from `F4-21`**: everywhere else nothing a field user captured is ever unrecoverable, and here it is, deliberately — a rep must never reach another rep's customer photographs, and no device-held data survives the identity that captured it.
+**Struck in place by owner decision 2026-09-04.** The switch happens at sign-in and its screen half
+was already `SCR-M01-01`, so the rule sits with the session engine rather than in block 0.
 
-**DONE WHEN:**
-
-- Given a device holding one user's un-uploaded photographs, when a different user signs in, then that held work is discarded before any new data loads (`F4-37`).
-- Given that switch, when it is initiated, then the person whose work will be lost is told what is lost before it completes, and is offered the chance to connect and upload first (`F4-37`).
-- Given the same user signing in again, when they sign in, then nothing is discarded (`F4-37`).
-- Given any completed switch, when the new user browses, then no photograph or submission captured by the previous user is reachable (`F4-37`, carve-out from `F4-21`).
+| row | now carried by |
+|---|---|
+| `F4-37` — a user switch discards held work, after warning | `T-M01-025` (`docs/tasks/M01-onboarding.md`) |
 
 ---
-### T-FPLAT-015 · The device-held photograph queue — unconditional capture, deliberate resumable upload, bounded device storage
-**Type:** engine · **Tier:** P0
-**PRD rows:** F4-21 (the carve-out half; the preserved-submission half is `T-FPLAT-013`'s) · `M04-55` (`docs/prd/modules/M04-survey.md`, which owns the queue and is dispositioned in `docs/tasks/M04-survey.md`)
-**Requirements (verbatim):**
 
-- **F4-21** (P0) — **Nothing a field user captured is ever unrecoverable.** A photograph taken in the field is held on the device until it has uploaded, and its waiting count and a retry are shown **on the capture screen itself** — there is no separate sync surface. A record that fails validation is preserved and badged for attention rather than crashing the screen or vanishing, and a submission the server cannot accept is preserved for recovery rather than discarded. The law the source states, and this document adopts whole: **"nothing a field user captured is ever unrecoverable."**
-- **M04-55** (P0, `docs/prd/modules/M04-survey.md`) — **Capture is unconditional; upload is deliberate — and this is the product's one and only device-held queue.** A photograph is written to the device the moment it is taken, with no delay, and uploads when the connection returns — resumably, defaulting to Wi-Fi-or-charging, with a per-batch "upload now" available. A photograph is never blocked, never degraded to fit a network, and never lost because an upload failed. The queue is **one queue, one direction, no conflicts and no merge**, it holds photographs and nothing else, and its status is shown **on the capture screen (`SCR-M04-07`) and nowhere else** — no global indicator, no separate centre, no per-record marker anywhere else in the product. The device storage cap and its eviction order are this row's: acknowledged originals are evicted first and an unacknowledged original is never evicted.
+### T-FPLAT-015 · STRUCK 2026-09-04 — the device-held photograph queue
+**Type:** — · **Tier:** —
+**PRD rows:** none — both were already carried elsewhere.
 
-**DONE WHEN:**
+**Struck in place by owner decision 2026-09-04.** This task duplicated work its module already
+owns: `M04-55` was dispositioned to `T-M04-017` and `F4-21` moved there with it. Nothing was lost
+by removing it, and the product keeps one device-held queue, specified once, in survey.
 
-- Given no connection, when a user takes a photograph, then it is written to the device the moment it is taken, with no delay, and the capture is neither blocked nor degraded to fit a network (`M04-55`).
-- Given photographs held on the device, when the connection returns, then they upload resumably, defaulting to Wi-Fi-or-charging, with a per-batch "upload now" available (`M04-55`, `F4-21`).
-- Given an upload interrupted by signal loss, an application kill or a restart, when the connection returns, then it resumes rather than restarting (`M04-55`).
-- Given storage pressure at the device cap, when eviction runs, then acknowledged originals are evicted first and an unacknowledged original is never evicted (`M04-55`).
-- Given photographs waiting to upload, when their status is read, then the waiting count and a retry are shown on the capture screen (`SCR-M04-07`) and nowhere else — no global indicator, no separate centre, and no per-record marker anywhere else in the product (`F4-21`, `M04-55`).
-- Given any device-held holding path proposed anywhere in the product, when it is reviewed, then it is refused: this queue is the product's one and only device-held queue and it holds photographs and nothing else (`M04-55`).
-
-*(Rewritten 2026-08-07. This is the one surviving carve-out of the removed offline/sync capability, not a casualty, so the task is repointed rather than struck. `F4-29`, `F4-30` and `F4-31` were deleted with `docs/prd/foundations/F4-offline-and-sync.md`, and live `M04-55` claims their content by name — unconditional capture with no delay, Wi-Fi-or-charging default, the per-batch "upload now", resumability, and the storage cap with acknowledged-originals-evicted-first. The clauses that did not survive: `F4-29`'s "small mutations always upload immediately", which presupposed a mutation queue that no longer exists; and the sync centre the per-batch override used to be reached from, which is replaced by `SCR-M04-07` alone. **Three details did not travel into `M04-55` and are flagged to the owner as detail lost in the move, not law lost:** `F4-31`'s **2 GB** cap figure; `F4-31`'s rule that when the cap is reached with nothing acknowledged to evict the product tells the user rather than choosing for them; and `F4-30`'s thumbnail-retention detail — the device keeping the thumbnail so the record still looks complete after the full-resolution original is pruned. The retention guarantee itself is not lost: `M04-55`'s eviction order plus `F4-21`'s "held on the device until it has uploaded" carry it.)*
+| row | already carried by |
+|---|---|
+| `M04-55` — capture unconditional, upload deliberate, storage bounded | `T-M04-017` (`docs/tasks/M04-survey.md`) |
+| `F4-21` — the carve-out half | `T-M04-017`, with the rest of the row |
 
 ---
-### T-FPLAT-016 · Continuity under a billing block — the field photograph always uploads, capture runs to `halted`, reads and exports are never gated
-**Type:** engine · **Tier:** P0
-**PRD rows:** `M12-26`, `M12-24`, `M12-22`, `M12-27` (`docs/prd/modules/M12-platform-billing.md`, dispositioned in `docs/tasks/M12-platform-billing.md`) — none of this bucket's own rows survive here; every F4 row this task once carried was deleted 2026-08-07, and one obligation has no live carrier at all and is recorded below rather than dropped. See the dated sweep note at the end of the block.
-**Requirements (verbatim, carried from their live carriers):**
 
-- **M12-26** (P0, `docs/prd/modules/M12-platform-billing.md`) — **A photograph already captured in the field always uploads, in every billing state.** The block is on new mutations from the interface, never on the upload of a photograph the field user has already taken — the one piece of work the product holds on the device (`F4-21`). No gate may inspect, delay or refuse that upload, and reads work while blocked.
-- **M12-24** (P0, `docs/prd/modules/M12-platform-billing.md`) — **The never-gated list is law:** reads · search · exports · customer links · billing screens · **engineer sign-off on already-submitted designs** (a safety workflow) · the upload of photographs already captured in the field. No enforcement design may touch any of them, in any state, for any cap.
-- **M12-22** (P0, `docs/prd/modules/M12-platform-billing.md`) — **The always-on set is enforced as unconditional:** in every state including `halted`, `expired` and post-period `cancelled` — read everything, search, dashboards; export (CSV, data export, existing proposal PDFs, invoices); customer links (view **and** respond) and progress pages; billing screens with pay/upgrade/reactivate. The gated set pauses only at `halted`/`expired`/`cancelled`(post-period): create/edit of leads, tasks, activities, surveys; studio create/edit (read-only open always works); generate/send proposals, mark won/lost, project updates; file/photo uploads. Metered features pause from `past_due` day 4; team invites (OTP spend) block from day 4.
-- **M12-27** (P0, `docs/prd/modules/M12-platform-billing.md`) — **New field capture is never cut off before `halted` (owner ruling 2026-08-04, Q16).** No enforcement mechanic cuts off new field capture during dunning — capture works through the **full dunning grace** (the `past_due` window, M12-39) and **pauses only at `halted`**; a **halt that lands mid-visit lets the current visit complete** ("never strand a surveyor on a roof"); reads, exports and the upload of already-captured photographs are unchanged, always-on (M12-24, M12-26).
+### T-FPLAT-016 · STRUCK 2026-09-04 — continuity under a billing block
+**Type:** — · **Tier:** —
+**PRD rows:** none — all four were already carried elsewhere.
 
-**DONE WHEN:**
+**Struck in place by owner decision 2026-09-04.** This task restated billing rules its own module
+already owns. The never-gated guarantee survives as product law (`CLAUDE.md` §9, "read and export
+work regardless of billing state"), which is what `M12-24` and `M12-26` are already marked as.
 
-- Given a tenant in a blocked billing state — `halted`, `expired` or post-period `cancelled` — when the device holds a photograph already captured in the field, then that photograph still uploads and no gate inspects, delays or refuses it (`M12-26`, `M12-24`).
-- Given a tenant inside the `past_due` dunning grace, when a field user captures new work, then capture is not cut off; capture pauses only at `halted`, and a halt landing mid-visit lets the current visit complete (`M12-27`).
-- Given any billing state at all, when a user reads, searches or exports, then all three work and no enforcement design touches them (`M12-22`, `M12-24`).
-
-**Obligation now carried — `Q66` was ruled 2026-08-26.** The shared-device rule this task once recorded with no carrier is now `F4-37` (`foundations/F4` §F4.3), built by **`T-FPLAT-034`**, with `F4-21` explicitly carved out for it. Nothing about it is built here; this note exists so the trail stays readable: `F4-32`, deleted 2026-08-07 with the offline/sync capability, was recorded as `Q66`, and is now carried by `F4-37`.
-
-*(Swept 2026-08-07 for the removal of the offline/sync capability, and retitled. `F4-33`'s law survives precisely and by name at `M12-26` and `M12-24`; only its words "offline-captured survey data still syncs" needed cutting, because there is no survey queue to drain — the one piece of work the product holds on the device is the photograph. `F4-34`'s mechanism — entitlement cached on the device with a 72-hour grace so a dead zone is not read as an absent payment — dies with the cache and is cut, but the two rulings it carried are live and their citations land here rather than vanishing: the `Q16` capture edge is verbatim at `M12-27`, and "read and export always work regardless" is `M12-22`'s unconditional always-on set and `M12-24`'s never-gated list. `F4-32` is recorded above as an obligation with no live carrier.)*
+| row | already carried by |
+|---|---|
+| `M12-22` — the always-on set is unconditional | `T-M12-009` (`docs/tasks/M12-platform-billing.md`) |
+| `M12-24` — the never-gated list is law | LAW |
+| `M12-26` — a captured photograph always uploads | LAW |
+| `M12-27` — new field capture is never cut off before `halted` | `T-M12-008` (`docs/tasks/M12-platform-billing.md`) |
 
 ---
+
 ### T-FPLAT-017 · The notification type registry and the record-of-truth model
 **Type:** engine · **Tier:** P0
 **PRD rows:** F6-01, F6-02, F6-05, F6-06, F6-07, F6-08, F6-09
@@ -863,11 +844,11 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F3-29 | LAW |
 | F4-04 | T-FPLAT-011 |
 | F4-07 | T-FPLAT-011 |
-| F4-14 | T-FPLAT-012 |
-| F4-15 | T-FPLAT-012 |
-| F4-16 | T-FPLAT-012 |
-| F4-17 | T-FPLAT-012 |
-| F4-19 | T-FPLAT-012 |
+| F4-14 | moved to T-M04-015 (`docs/tasks/M04-survey.md`) |
+| F4-15 | moved to T-MS-367 (`docs/tasks/MS-studio-c.md`) |
+| F4-16 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
+| F4-17 | moved to T-M04-015 (`docs/tasks/M04-survey.md`) |
+| F4-19 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
 | F4-21 | T-FPLAT-013 (preserved submissions and attention items) · T-FPLAT-015 (the device-held photograph queue) |
 | F4-25 | T-FPLAT-014 |
 | F4-27 | LAW |
@@ -877,7 +858,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F6-04 | LAW |
 | F6-05 | T-FPLAT-017 |
 | F6-06 | T-FPLAT-017 |
-| F6-07 | T-FPLAT-017 (also read by T-FPLAT-012 and T-FPLAT-019) |
+| F6-07 | T-FPLAT-017 (also read by T-FPLAT-019) |
 | F6-08 | T-FPLAT-017 |
 | F6-09 | T-FPLAT-017 |
 | F6-10 | T-FPLAT-018 |

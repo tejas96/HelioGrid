@@ -236,7 +236,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-015 · Survey object, versions and states; the visit object; visibility and attribution
 
 **Type:** engine · **Tier:** P0
-**PRD rows:** M04-01, M04-57, M04-60, M04-61, M04-62
+**PRD rows:** M04-01, M04-57, M04-60, M04-61, M04-62, F4-14, F4-17, F4-25
 **Requirements (verbatim):**
 
 - **M04-01** (P0) — **The survey has exactly two modes — remote and physical — and both produce the same kind of record.** A survey is one object with one identity per site whichever mode produced it: same groups, same photograph attachments, same hand-off to the designer, same versioning. The modes differ in **how the facts were obtained**, and that difference is carried as provenance (M04-34), never as two incompatible records or two parallel screens.
@@ -244,7 +244,10 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - **M04-60** (P0) — **A visit is a scheduled assignment with its own states — scheduled · in progress · done · cancelled — linked to the survey version it produces.** Booking a visit for open capture-on-site gaps schedules one (M04-32); booking one from a lead is `modules/M02`'s act (`M02-46`) and produces this object. A visit's status only moves forward (`F4-17`).
 - **M04-61** (P0) — **The survey and its visits are readable by everyone whose scope contains the lead or site, and by nobody else.** Survey visibility follows the lead or site the survey belongs to (`F2.M02.lead-visibility`, `F2-12`–`F2-14`); this module creates no separate visibility domain and no per-person exception (`F2-15`).
 - **M04-62** (P0) — **Every consequential act on a survey is attributable: who captured it, who submitted it, who waived a gap, who cancelled or rescheduled a visit, and when.** Capture time is preserved and shown because it is what a field user means by "when" — and it orders nothing: conflicts resolve by server apply order, never by device clocks (`F4-19`).
+- **F4-14** (P0) — **Survey — versioned-append. A revisit NEVER overwrites the first version.** A return visit to a site creates a **new survey version**; prior versions are immutable and remain readable forever. Within one in-progress version, edits by its own author resolve last-writer-wins by server apply order. The rule is stated as a product law, not a storage strategy: the first survey is evidence of what the site looked like on that day, and no later visit is permitted to erase it.
+- **F4-17** (P0) — **Visit — status only moves forward.** A visit's status advances through its states and never regresses; a write that would move it backwards is refused.
 
+- **F4-25** (P0) — **The version-kept notice.** When a revisit creates a new survey version, the product tells the user what just happened in one line — the source's wording is **"v2 — v1 kept"** — shown at the moment of the revisit and carried on the record afterwards, with the earlier version reachable from it. The notice exists because `F4-14`'s guarantee is worthless if the person on the roof does not know it held: the fear it removes is *"have I just overwritten what I did last month?"*
 **DONE WHEN:**
 
 - Given a lead with a confirmed address, when a survey is started, then both modes are offered and the mode applicable to that lead's segment is stated with its rule (M04-01, M04-05).
@@ -252,6 +255,11 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given a visit, when its status changes, then it moves only forward through scheduled → in progress → done, or to cancelled, and it names the survey version it produced (M04-60).
 - Given a user whose scope does not contain the lead, when they search for its survey, then it is not returned (M04-61).
 - Given any waiver, submission, cancellation or reschedule, when the record is read, then the actor and the time are attributable (M04-62).
+- Given an existing survey for a site, when a revisit is captured, then a new version is created and the earlier version is unchanged and still readable (`F4-14`).
+- Given a visit at a later status, when a write attempts an earlier status, then the write is refused (`F4-17`).
+- Given a revisit that creates a new survey version, when it is created, then the user is told in one line what happened, naming the source version and the new one (`F4-25`).
+
+*(`F4-14`, `F4-17` and `F4-25` moved here from struck `T-FPLAT-012` and `T-FPLAT-014`: the survey and visit rules land with the module that owns those objects (Law 9), rather than as a block 0 engine nothing consumes yet.)*
 
 ---
 
@@ -273,12 +281,13 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-017 · Photograph capture, resumable upload and version binding
 
 **Type:** engine · **Tier:** P0
-**PRD rows:** M04-55, M04-56
+**PRD rows:** M04-55, M04-56, F4-21
 **Requirements (verbatim):**
 
 - **M04-55** (P0) — **Capture is unconditional; upload is deliberate — and this is the product's one and only device-held queue.** A photograph is written to the device the moment it is taken, with no delay, and uploads when the connection returns — resumably, defaulting to Wi-Fi-or-charging, with a per-batch "upload now" available. A photograph is never blocked, never degraded to fit a network, and never lost because an upload failed. The queue is **one queue, one direction, no conflicts and no merge**, it holds photographs and nothing else, and its status is shown **on the capture screen (`SCR-M04-07`) and nowhere else** — no global indicator, no separate centre, no per-record marker anywhere else in the product. The device storage cap and its eviction order are this row's: acknowledged originals are evicted first and an unacknowledged original is never evicted.
 - **M04-56** (P0) — **Photographs travel with the survey version they were captured in.** A revisit's photographs belong to the new version; the earlier version keeps its own (M04-57). A photograph is never moved between versions to make a later survey look complete.
 
+- **F4-21** (P0) — **Nothing a field user captured is ever unrecoverable.** A photograph taken in the field is held on the device until it has uploaded, and its waiting count and a retry are shown **on the capture screen itself** — there is no separate sync surface. A record that fails validation is preserved and badged for attention rather than crashing the screen or vanishing, and a submission the server cannot accept is preserved for recovery rather than discarded. The law the source states, and this document adopts whole: **"nothing a field user captured is ever unrecoverable."**
 **DONE WHEN:**
 
 - Given photographs taken while the connection is down, then each is stored on the device immediately and uploads resumably when the connection returns, without user action, with the queue's status shown on the capture screen and on no other surface (M04-55).
@@ -378,3 +387,10 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 | M04-64 | T-M04-010 |
 | M04-65 | T-M04-013 |
 | M04-66 | LAW |
+| F4-14 | T-M04-015 (moved from T-FPLAT-012) |
+| F4-17 | T-M04-015 (moved from T-FPLAT-012) |
+- Given a photograph captured in the field, when it has not yet uploaded, then it is held on the device until it has, and a submission that fails validation is preserved rather than discarded (`F4-21`).
+
+*(`F4-21` moved here from struck `T-FPLAT-013`: the rule lands with the module that captures photographs (Law 9).)*
+| F4-21 | T-M04-017 |
+| F4-25 | T-M04-015 |
