@@ -203,9 +203,9 @@ def norm(s):
 # stays true. It is not an instruction file and carries no budget.
 INSTRUCTION_BUDGETS = [
     ("CLAUDE.md", 215),
-    ("apps/*/CLAUDE.md", 70),
-    ("packages/*/CLAUDE.md", 70),
-    ("tests/*/CLAUDE.md", 70),
+    ("apps/*/CLAUDE.md", 85),
+    ("packages/*/CLAUDE.md", 85),
+    ("tests/*/CLAUDE.md", 85),
     (".claude/rules/*.md", 85),
 ]
 DATE_RE = re.compile(r"\b20\d\d-\d\d-\d\d\b")

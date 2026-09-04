@@ -12,7 +12,7 @@ esac
 
 rel="${path#"${CLAUDE_PROJECT_DIR:-$PWD}/"}"
 if git -C "${CLAUDE_PROJECT_DIR:-$PWD}" cat-file -e "HEAD:$rel" 2>/dev/null; then
-  echo "Blocked: $rel is already committed, so it is an applied migration. Migrations are append-only (.claude/rules/db-schema.md) — add a new numbered file." >&2
+  echo "Blocked: $rel is already committed, so it is an applied migration. Migrations are append-only (packages/db/CLAUDE.md, mechanism M19) — add a new numbered file." >&2
   exit 2
 fi
 exit 0

@@ -2,7 +2,7 @@ import { apiContract } from '@heliogrid/contracts';
 
 /**
  * tenant_id never travels in a request body or query — it derives from the session
- * context server-side (.claude/rules/contracts.md; docs/engineering/08). A contract schema carrying
+ * context server-side (packages/contracts/CLAUDE.md; docs/engineering/08). A contract schema carrying
  * it invites the client to assert its own tenant, the exact spoof RLS exists to stop.
  *
  * Static: walks the ts-rest router tree, unwraps common Zod wrappers, and asserts no

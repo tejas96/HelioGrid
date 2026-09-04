@@ -101,7 +101,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
-| `.claude/rules/` | path-scoped deltas — load automatically for the paths they name. |
+| `.claude/rules/` | law that spans MORE than one package — a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the
@@ -187,7 +187,7 @@ Writing rules, not code:
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
   nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
 - **Budgets are ceilings, not targets.** This file ≤ 215 lines · a package or app
-  `CLAUDE.md` ≤ 70 · a `.claude/rules/` file ≤ 85. Hitting one means the file has taken on
+  `CLAUDE.md` ≤ 85 · a `.claude/rules/` file ≤ 85. Hitting one means the file has taken on
   something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.

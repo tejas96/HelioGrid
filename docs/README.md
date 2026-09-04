@@ -28,7 +28,7 @@ contracts. **Nothing in `engineering/` is product truth.** Where the two disagre
 | [`engineering/landmines.md`](engineering/landmines.md) | **PINNED** | **Live traps** — one line each: the trap, the fix, and when it retires. Only what is real today and what no mechanism can hold. The story of how it was found stays in the commit. |
 | [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-contract.mjs` and `knip.jsonc` name this path. |
 | [`engineering/forward-compat.md`](engineering/forward-compat.md) | **PINNED** | What each module's first migration must satisfy. The PR template requires it. |
-| [`engineering/data-model.md`](engineering/data-model.md) | LIVE | **The logical data model and ERD** — 171 entities, 248 relationships, 13 ERDs, derived from `prd/` (answers `Q68`). Carries the V1/V2 and build-block scope per entity, the ⚠ cross-scope hazards, and the studio persistence decision (§5.7a). Logical only — no SQL. Read beside `forward-compat.md`. |
+| [`engineering/data-model.md`](engineering/data-model.md) | LIVE | **The logical data model and ERD** — 171 entities, 248 relationships, 13 ERDs, derived from `prd/` (answers `Q68`). Carries the V1/V2 and build-block scope per entity, the ⚠ cross-scope hazards, and the studio persistence decision (§5.7a). Logical only — no SQL, and NOT product truth: where it and `prd/` disagree, `prd/` wins. `/migration` step 1 reads it beside `forward-compat.md` before any schema change, and step 5 corrects it where the built tables differ. |
 | [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) | LIVE | How the system runs — request path, tenancy, background work, storage, studio data flow, market packs. |
 | [`engineering/03-tech-stack.md`](engineering/03-tech-stack.md) | LIVE | Every technology choice, its pin, and what lost. |
 | [`engineering/07-integrations.md`](engineering/07-integrations.md) | LIVE | Ports and adapters — 14 external systems behind interfaces we own. |
@@ -49,6 +49,7 @@ Moving one of these breaks a gate silently.
 there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/registers/screens.md`,
 `open-questions.md`, `ux/briefs/`, `ux/claude-design-context.md`,
 `tasks/*.md` and `start-here.md`. `engineering/17-ui-architecture-v2.md` is named by two
-scripts and `knip.jsonc`. `engineering/forward-compat.md` is named by the PR template.
+scripts and `knip.jsonc`. `engineering/forward-compat.md` is named by the PR template, and it and
+`engineering/data-model.md` are both named by the `/migration` skill's first step.
 `.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites
 `engineering/03 §7`; `apps/api/CLAUDE.md` and `apps/worker/CLAUDE.md` cite `engineering/02 §2`.

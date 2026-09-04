@@ -31,6 +31,8 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`,
+   `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
+   task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task.
