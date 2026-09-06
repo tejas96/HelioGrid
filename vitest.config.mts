@@ -61,6 +61,7 @@ export default defineConfig({
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,
+        'packages/domain/src/rails/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
       },

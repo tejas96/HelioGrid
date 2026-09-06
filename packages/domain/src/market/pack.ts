@@ -1,5 +1,6 @@
 import { type CallingRulesPack, IN_CALLING_RULES } from '../calling/pack';
 import { type FormatPack, IN_FORMATS } from '../format/pack';
+import { IN_PAYMENT_RAILS, type PaymentRailsPack } from '../rails/pack';
 import { IN_SUBSIDY, type SubsidyPack } from '../subsidy/pack';
 import { IN_TAX, type TaxPack } from '../tax/pack';
 import { IN_MARKET, type MarketCode } from './code';
@@ -10,8 +11,8 @@ import { type PackVersion, packVersion } from './version';
  * the product renders, computes with or enforces is a value on one of its eight keys
  * (`F1-02`); nothing else is a market fact, and no module keeps one of its own.
  *
- * **The keys land one task at a time (Law 9).** `formats`, `tax`, `subsidy` and `callingRules`
- * are here because their tasks built them.
+ * **The keys land one task at a time (Law 9).** `formats`, `tax`, `subsidy`, `callingRules` and
+ * `paymentRails` are here because their tasks built them.
  * Each remaining key arrives with its own T-FCORE task (`docs/tasks/F-core.md`) as a property
  * here, a folder beside `format/`, and its India values on `IN_PACK`; `unauthoredKeys(IN_PACK)`
  * names what is still owed. Until all eight are present the pack is not launchable, and
@@ -39,6 +40,8 @@ export interface MarketPack {
   readonly subsidy: SubsidyPack;
   /** `pack.calling-rules`: the communications ruleset, voice AND messaging, every item classified (`F1-15`–`F1-17`). */
   readonly callingRules: CallingRulesPack;
+  /** `pack.payment-rails`: the mandate ladder, the collection vocabularies, the reference adapters (`F1-18`). */
+  readonly paymentRails: PaymentRailsPack;
 }
 
 /**
@@ -54,4 +57,5 @@ export const IN_PACK: MarketPack = {
   tax: IN_TAX,
   subsidy: IN_SUBSIDY,
   callingRules: IN_CALLING_RULES,
+  paymentRails: IN_PAYMENT_RAILS,
 };

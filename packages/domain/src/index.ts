@@ -116,6 +116,30 @@ export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './m
 export type { BasisPoints, MinorUnits, Share } from './money';
 export { amountForQuantity, applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
 export type {
+  BillingCycle,
+  CollectionRoute,
+  InvoiceRoute,
+  LocalisationConstraint,
+  MandateRoute,
+  MandateType,
+  NoLocalisationConstraint,
+  PaymentMode,
+  PaymentRailsPack,
+  RailCapability,
+  TierBand,
+} from './rails';
+export {
+  availablePaymentModes,
+  BILLING_CYCLES,
+  collectionRoute,
+  fitsPerDebitCap,
+  IN_PAYMENT_RAILS,
+  mandateType,
+  paymentMode,
+  RAIL_CAPABILITIES,
+  TIER_BANDS,
+} from './rails';
+export type {
   CapacitySlab,
   IncentiveProject,
   IncentiveStage,
