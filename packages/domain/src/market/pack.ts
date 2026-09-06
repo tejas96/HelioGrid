@@ -1,4 +1,5 @@
 import { type FormatPack, IN_FORMATS } from '../format/pack';
+import { IN_TAX, type TaxPack } from '../tax/pack';
 import { IN_MARKET, type MarketCode } from './code';
 import { type PackVersion, packVersion } from './version';
 
@@ -7,7 +8,8 @@ import { type PackVersion, packVersion } from './version';
  * the product renders, computes with or enforces is a value on one of its eight keys
  * (`F1-02`); nothing else is a market fact, and no module keeps one of its own.
  *
- * **The keys land one task at a time (Law 9).** `formats` is here because its task built it.
+ * **The keys land one task at a time (Law 9).** `formats` and `tax` are here because their tasks
+ * built them.
  * Each remaining key arrives with its own T-FCORE task (`docs/tasks/F-core.md`) as a property
  * here, a folder beside `format/`, and its India values on `IN_PACK`; `unauthoredKeys(IN_PACK)`
  * names what is still owed. Until all eight are present the pack is not launchable, and
@@ -29,6 +31,8 @@ export interface MarketPack {
   readonly version: PackVersion;
   /** `pack.formats`: locale, format and display data (`F1-21`, `F1-22`). */
   readonly formats: FormatPack;
+  /** `pack.tax`: the scheme, its strategy, registrations, place rule and statutory extras (`F1-08`, `F1-13`). */
+  readonly tax: TaxPack;
 }
 
 /**
@@ -41,4 +45,5 @@ export const IN_PACK: MarketPack = {
   market: IN_MARKET,
   version: packVersion(IN_MARKET, 1),
   formats: IN_FORMATS,
+  tax: IN_TAX,
 };

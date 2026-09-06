@@ -82,5 +82,23 @@ export {
 } from './format';
 export type { MarketCode, MarketPack, PackKey, PackVersion } from './market';
 export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './market';
+export type { BasisPoints, MinorUnits, Share } from './money';
+export { applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
+export type {
+  MoneyScheme,
+  PlaceOfSupply,
+  PlaceOfSupplyRule,
+  PlatformSaleTax,
+  StatutoryExtra,
+  TaxableLine,
+  TaxBreakdown,
+  TaxComponentAmount,
+  TaxComponentShare,
+  TaxedLine,
+  TaxPack,
+  TaxRegistrationType,
+  TaxStrategy,
+} from './tax';
+export { activeStatutoryExtras, IN_TAX, TAX_STRATEGIES, taxBreakdown } from './tax';
 export type { TenantSegment } from './tenancy/segment';
 export { TENANT_SEGMENTS } from './tenancy/segment';

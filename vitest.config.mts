@@ -61,6 +61,8 @@ export default defineConfig({
       thresholds: {
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
+        'packages/domain/src/money/**': COMPLETE,
+        'packages/domain/src/tax/**': COMPLETE,
       },
     },
   },
