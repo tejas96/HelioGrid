@@ -19,5 +19,6 @@ enforces it, so no citation is left pointing at nothing.
 | [0023](0023-packages-data-frontend-sdk.md) | `packages/data` — the frontend SDK |
 | [0025](0025-orchestration-temporal.md) | Workflow orchestration — Temporal, superseding the BullMQ scaffold |
 | [0026](0026-ui-styling-plain-css-and-stylesheet.md) | UI styling — plain CSS on web, StyleSheet on native, Tailwind for layout only |
+| [0027](0027-ai-driven-sdlc.md) | An AI-driven SDLC — one human gate, skills sized to the change |
 
 Numbers are stable and never reused. A gap is an ADR that was removed.

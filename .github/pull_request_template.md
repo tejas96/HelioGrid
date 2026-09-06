@@ -1,40 +1,25 @@
-## What changed
+## What and why
 
-Traces to: D<n> · Mockup: `<Name>.dc.html`
+<!-- One paragraph. The task id is in the title. Explicit non-goals here — not a file list. -->
 
-<!-- One paragraph of scope and explicit NON-goals. Not a file list — the diff shows that. -->
+## Design
 
-## Checklist
+<!-- The three things as decided (CLAUDE.md §3): the package per new file · the new facts and where
+     each TYPE lives · what proves it. Any owner ruling applied, by Q id. -->
 
-Delete rows that genuinely don't apply. Law numbers are `CLAUDE.md` §2.
+## Done-when
 
-- [ ] `pnpm verify` green (build · lint · boundaries · typecheck · test · openapi freshness · i18n catalog freshness)
-- [ ] **Run-and-look** (`/verify`): behaviour proven on every surface the change reaches.
-      Green gates never prove behaviour.
-- [ ] **Contract first** (Law 3): the `packages/contracts` diff is in this PR and the
-      committed OpenAPI was re-emitted — or: no contract change
-- [ ] **Schema**: migration is a NEW append-only file; forward-compat register
-      (`docs/engineering/forward-compat.md`) re-read and satisfied — or: no schema change
-- [ ] **Parity** (Law 7): both platform halves import the ONE `<Name>.types.ts`, so a
-      one-sided prop is a type error (docs/engineering/17 §2); `ds:contract` green for the
-      rest. Screen shipping on one platform only — say which and why
-- [ ] **Flows authored once** (Law 11): what the gates do NOT cover — hook/state naming,
-      behavioural guards, loading affordances, msgid identity across platforms
-- [ ] **Docs in the same commit** (Law 8): per-package `CLAUDE.md` landmines and `docs/*`
-- [ ] Loading / empty / error states · 375 and 1440 · light theme · Hindi render
-- [ ] Provenance tier on every user-visible number; money never renders stale; ₹ in Indian
-      grouping
-- [ ] No orphan screens — every exit wired into a flow that reaches it
-- [ ] Business math is shared, not duplicated across web/api/mobile (`packages/domain`)
+| task line | proof | where |
+|---|---|---|
 
-## Evidence
+<!-- Every done-when line of the task. A line with no proof is not done, and this PR is not open. -->
 
-<!-- Specifics, not adjectives: "browser 375+1440 happy/wrong-code/send-error; iPhone
-     relaunch restores session; curl 409 ALREADY_ONBOARDED" — never just "tested".
-     Paste the `## Verification` section `/verify` produced — this is the ONLY record that
-     the work was run. Say plainly what could NOT be run. -->
+## Verification
 
-## Review findings & known limitations
+<!-- The `## Verification` section /verify produced, verbatim: the depth, per-surface verdicts with
+     observed values, parity comparisons, and what was NOT run. Specifics, not adjectives. -->
 
-<!-- What review surfaced that a reviewer should look at, and what is deliberately
-     NOT handled yet. Omitting the latter is how reviewers get surprised. -->
+## Review and risks
+
+<!-- The review tier (inline or arch-reviewer), its findings and their fate. What is deliberately not
+     handled yet — omitting it is how reviewers get surprised. -->

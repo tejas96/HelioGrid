@@ -358,7 +358,7 @@ if [ -n "$app_vocab" ]; then
   echo '  Union of string literals  -> packages/contracts (it is an enum by another name)'
   echo '  SCREAMING_CASE lookup     -> packages/domain (policy) or packages/contracts (wire)'
   echo '  SCREAMING_CASE number     -> packages/domain (policy) or the market pack (a market fact)'
-  echo '  Import it back into the app; never re-declare it (Law 5, and .claude/rules/architecture-ownership.md).'
+  echo '  Import it back into the app; never re-declare it (Law 5, CLAUDE.md §6).'
   fail=1
 fi
 
@@ -421,7 +421,7 @@ done
 if [ -n "$(printf '%s' "$cast_escapes")" ]; then
   printf 'BRAND OBTAINED BY CAST — the one hole in an unspeakable fact:\n%s\n' "$cast_escapes"
   echo '  Call the owning package'"'"'s constructor instead. A cast re-opens exactly what the'
-  echo '  brand was added to close (CLAUDE.md §8, .claude/rules/architecture-ownership.md).'
+  echo '  brand was added to close (CLAUDE.md §8, architecture.md §4).'
   fail=1
 fi
 

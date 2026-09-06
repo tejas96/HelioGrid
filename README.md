@@ -332,13 +332,14 @@ it is how drift enters the repo silently:
 | `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
 | A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
 | Any feature/bugfix slice, before calling it done | `/verify` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/verify` drives the real app — browser for web, simulator for iOS, adb for Android, curl for the API — across only the surfaces the change reaches, and loops until clean |
-| A completed task, before review | `/finish` | Gates, an architecture review of the diff, then a proposed branch/commits/PR carrying the verification record. Nothing is committed or pushed without an explicit yes |
+| Any task or bug, before a line is written | `/start` | Reads only the task's own section, states the three things (CLAUDE.md §3), names the files it will reach and splits a task that is really two, creates the branch, and stops for the go |
+| A completed task, before review | `/ship` | Gates once, a review sized to the diff, the size and done-when checks, then a commit on a yes and the push and PR without one. Merge is the owner's |
 
 ## Git workflow
 
-Work happens on a branch and ends PR-ready via `/finish`, which proposes the branch, the
-commits and the PR body. **Committing, pushing and opening the PR each need an explicit
-yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
+Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes
+and then pushes and opens the PR itself. Merge is the owner's; `main` is PR-only. A PR is one
+complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8.
 
 ## Where to find things
 
@@ -362,8 +363,8 @@ yes.** `main` is PR-only. Full detail: [`CLAUDE.md`](CLAUDE.md) §8.
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
-| `.claude/skills/` | `/contract-change`, `/migration`, `/verify`, `/finish` — see [above](#schema-contract--cross-cutting-changes) |
-| `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer |
+| `.claude/skills/` | `/start`, `/verify`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer — Sonnet 5, medium effort, a turn cap each |
 
 ## Per-package gotchas index
 

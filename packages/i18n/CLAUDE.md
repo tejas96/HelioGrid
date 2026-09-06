@@ -1,6 +1,6 @@
 # @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN
 
-Traps: `docs/engineering/landmines.md` · catalog rules: `.claude/rules/i18n.md` · deps:
+Traps: `docs/engineering/landmines.md` · deps:
 `architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
 
 ## What lives here / what must never live here
@@ -17,6 +17,19 @@ Traps: `docs/engineering/landmines.md` · catalog rules: `.claude/rules/i18n.md`
 - NEVER: app copy hard-coded elsewhere, a per-app catalog, the language LIST (that is
   `packages/contracts/src/locale.ts`), agent or WhatsApp templates (those are tenant DATA), or a
   raw Intl currency format.
+
+## Where files go
+
+```
+src/copy/<area>.ts            copy BOTH platforms need — pure data, no React, no JSX
+src/locales/<lang>/           messages.po (source of truth) + messages.ts (compiled, committed)
+src/index.ts                  REACT-FREE root — createI18nRuntime, createTranslator, metadata
+src/languages.ts              LANGUAGE_META + the statically-imported source catalog
+src/catalog-loader.ts         web: one import() chunk per language
+src/catalog-loader.native.ts  RN: static imports (Metro substitutes it — see the landmine)
+src/react/                    the ONE provider and hooks both platforms use
+src/rn/                       Hermes Intl polyfills — global side effects, own entry
+```
 
 ## Three entry points
 
