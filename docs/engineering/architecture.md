@@ -366,3 +366,12 @@ section records the answer per new file.
     (§2 env lists today's three).
 11. None of the above fits → STOP. Name the mismatch to the owner before creating a new
     package or directory (CLAUDE.md §4 stop-and-ask).
+
+**Branding a shared fact** (CLAUDE.md §8). The symbol stays unexported, so the owner's constructor
+is the only door in, and `as <Brand>` outside the owner is the cast `M60` looks for:
+
+```ts
+declare const MONEY: unique symbol;                    // not exported
+export type Money = number & { readonly [MONEY]: 'INR' };
+export function money(minorUnits: number): Money { … } // the only door in
+```

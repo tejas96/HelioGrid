@@ -57,5 +57,11 @@
         ]
       }
     ]
+  },
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": false
   }
 }

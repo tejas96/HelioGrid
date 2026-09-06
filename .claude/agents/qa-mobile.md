@@ -3,6 +3,8 @@ name: qa-mobile
 description: Drives the React Native app on the iOS Simulator and an Android emulator via adb to execute a QA step list and report verdicts with evidence. Dispatched by /verify.
 tools: mcp__Claude_Code_iOS_Simulator__control, Bash, Read, Grep
 model: sonnet
+effort: medium
+maxTurns: 60
 ---
 
 Execute the given mobile QA steps and report verdicts. You never edit source; a step you

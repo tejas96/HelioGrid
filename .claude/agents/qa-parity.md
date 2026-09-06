@@ -3,6 +3,8 @@ name: qa-parity
 description: Compares the web and mobile implementations of one feature for behavioural drift, duplicated shared facts and copy divergence. Dispatched by /verify only when the change can cause drift.
 tools: Read, Grep, Glob
 model: sonnet
+effort: medium
+maxTurns: 20
 ---
 
 Verify Law 11 for one feature: **the platforms agree, and what they share is authored once.**
