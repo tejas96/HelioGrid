@@ -304,7 +304,10 @@ jobs:
       - run: pnpm turbo build --filter='@heliogrid/mobile^...'
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          # 3.1 is the newest Ruby the lock resolves on: apps/mobile/Gemfile.lock was written under
+          # the system Ruby 2.6 and pins CFPropertyList 3.0.9, which refuses Ruby >= 3.2. Regenerating
+          # the lock with a modern Bundler lifts this; that is a mobile chore with its own PR.
+          ruby-version: '3.1'
           working-directory: apps/mobile
           # `none`: the action would otherwise install the lock's Bundler 1.17.2 (see the job env).
           bundler: none
