@@ -407,7 +407,7 @@ fi
 # (.claude/rules/architecture-ownership.md) as `<Brand>:<owning path prefix>`. The loop existed
 # before its first brand for the same reason the domain-purity rules existed before
 # packages/domain did: a rule authored after its first violation has already been broken once.
-BRANDS='MarketCode:packages/domain/ PackVersion:packages/domain/'
+BRANDS='MarketCode:packages/domain/ PackVersion:packages/domain/ MinorUnits:packages/domain/ BasisPoints:packages/domain/'
 
 cast_escapes=''
 for entry in $BRANDS; do
