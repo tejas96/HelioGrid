@@ -109,7 +109,7 @@ the capability matrix, and the OR-across-roles / widest-wins-per-domain resoluti
 — no react, no node builtins, no clock/randomness/I-O (domain-purity gates). Belongs: a
 constant two screens read; a flow state machine; a permission rule. Never: fetch, storage,
 rendering; a session, a tenant or a request (the API resolves those and passes roles IN).
-Extension point: one folder per module slice (authz/, auth/, tenancy/, format/, market/, money/, tax/ today); each
+Extension point: one folder per module slice (authz/, auth/, tenancy/, format/, market/, money/, subsidy/, tax/ today); each
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client

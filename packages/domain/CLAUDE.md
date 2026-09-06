@@ -47,9 +47,10 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
   `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
-  each, and `applyRate` is the ONE place money rounds (`Q83`) — so BOM, proposal and invoice can only
-  agree. `tax/breakdown.ts` is the one tax computation: a module that needs tax calls it and never
-  multiplies a rate itself.
+  each, and `money/` is the ONLY slice that rounds (`Q83`) — `applyRate` for a fraction of an
+  amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
+  only agree. `tax/breakdown.ts` is the one tax computation and `subsidy/amount.ts` the one incentive
+  computation: a module that needs either calls it and never multiplies a rate itself.
 
 ## Done means
 
