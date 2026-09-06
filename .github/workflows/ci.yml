@@ -34,7 +34,7 @@ jobs:
       android: ${{ steps.lanes.outputs.android }}
       ios: ${{ steps.lanes.outputs.ios }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: lanes
@@ -103,13 +103,13 @@ jobs:
       # schema no longer declares one, and Turborepo strict env mode would flag an undeclared
       # variable. The auth module re-adds both the variable and the CI value together.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Full history: gitleaks scans every commit, and the openapi breaking-change compare
           # and the migration guard both read origin/<base>.
           fetch-depth: 0
       - name: Secret scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Migrations are append-only (packages/db/CLAUDE.md)
@@ -129,12 +129,12 @@ jobs:
             exit 1
           fi
           echo "migrations append-only: OK"
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.sha }}
@@ -183,7 +183,7 @@ jobs:
       # exits 0 on an unmatched filter, so the step regenerates nothing, `git status` is clean,
       # and the gate passes green while proving nothing. A gate that cannot run is worse than no
       # gate: it reports success forever.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: openapi
           path: packages/contracts/openapi/openapi.json
@@ -195,13 +195,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.sha }}
@@ -225,18 +225,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/cache@v4
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.sha }}
@@ -263,13 +263,13 @@ jobs:
       # Bundler in charge; the lock's resolution is unchanged and still honoured.
       BUNDLE_VERSION: system
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.sha }}
@@ -288,7 +288,7 @@ jobs:
           # Installs the Gemfile.lock's CocoaPods into vendor/bundle and caches it by lockfile
           # hash — the pinned version React Native's template expects, not whatever `gem` finds.
           bundler-cache: true
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: apps/mobile/ios/Pods
           key: pods-${{ runner.os }}-${{ hashFiles('apps/mobile/ios/Podfile.lock') }}
