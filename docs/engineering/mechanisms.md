@@ -58,7 +58,7 @@ row UP this order over widening the script that currently holds it.
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
 | M25 | The committed OpenAPI matches the contract | `check:openapi` (rebuild, re-emit, byte compare) | PARTIAL | `.refine()` and `.transform()` are dropped by the generator, so a real narrowing emits an identical spec. |
-| M26 | A breaking API change is judged before it merges | `check:openapi` + `oasdiff` | PARTIAL | Advisory. A missing or unparseable `oasdiff` is a SILENT SKIP, not a failure. Closing it: fail when it is absent under CI. |
+| M26 | A breaking API change is judged before it merges | `check:openapi` + `oasdiff` | HELD · red 2026-09-06 | Under `CI` an absent `oasdiff`, a compare that cannot run, or an unfetched base fails closed; locally each is a labelled skip. The workflow pins the binary by version and checksum. Judges only what the emitted spec carries, so the M25 gap (a dropped `.refine()`) is invisible here too. |
 | M27 | Every non-2xx response is the canonical envelope | global exception filter · global response validation | HELD | A route declaring a NON-base error code still needs `ContractException` with that literal, which nothing checks. Closing it: make the status a required constructor argument. |
 | M28 | The contract diff comes before the implementation (Law 3) | — | **NONE** | Review-only. `/contract-change` is the procedure, not a gate. |
 
