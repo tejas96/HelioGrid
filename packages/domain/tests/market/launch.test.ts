@@ -6,12 +6,7 @@ import { IN_PACK, type MarketPack } from '../../src/market/pack';
 /** The keys the pack type has not landed. Each key task removes its own name from this set. */
 type PendingKey = Exclude<PackKey, keyof MarketPack>;
 
-const PENDING: readonly PendingKey[] = [
-  'paymentRails',
-  'certificationSchemes',
-  'dataRights',
-  'priceBook',
-];
+const PENDING: readonly PendingKey[] = ['certificationSchemes', 'dataRights', 'priceBook'];
 
 /** The India pack with the given keys present. The gate reads presence, so content is moot. */
 function packWith(pending: readonly PendingKey[]): MarketPack {
@@ -26,16 +21,19 @@ describe('unauthoredKeys — which of the eight keys a pack has not authored (F1
   });
 
   it('names the one key that is missing', () => {
-    expect(unauthoredKeys(packWith(PENDING.filter((key) => key !== 'paymentRails')))).toEqual([
-      'paymentRails',
-    ]);
+    expect(
+      unauthoredKeys(packWith(PENDING.filter((key) => key !== 'certificationSchemes'))),
+    ).toEqual(['certificationSchemes']);
   });
 
   it('lists the missing keys in PRD order, whatever order they were authored in', () => {
-    const missingRailsAndBook = PENDING.filter(
-      (key) => key !== 'priceBook' && key !== 'paymentRails',
+    const missingSchemesAndBook = PENDING.filter(
+      (key) => key !== 'priceBook' && key !== 'certificationSchemes',
     );
-    expect(unauthoredKeys(packWith(missingRailsAndBook))).toEqual(['paymentRails', 'priceBook']);
+    expect(unauthoredKeys(packWith(missingSchemesAndBook))).toEqual([
+      'certificationSchemes',
+      'priceBook',
+    ]);
   });
 });
 

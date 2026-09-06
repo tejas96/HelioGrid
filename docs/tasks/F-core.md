@@ -288,6 +288,7 @@ This file dispositions every requirement row of the suite's four core documents 
 - Given M12's usage ledger and M13's usage reporting, when billable usage lines are enumerated, then they are exactly the five meters of BM-16 — voice minutes, AI roof detections, storage, marketing sends, tracked field seats — and no other billable line exists (BM-16).
 - Given a tenant in `halted`, `expired` or post-period `cancelled` — three of the six fixed billing-state names (BM-33) — when any user reads, searches, exports, opens dashboards or opens the billing screen — or the tenant's customer opens any link — then it works (BM-32, BM-35); and when M12's lifecycle machine or M13's reporting names a state, then it is one of BM-33's six names and no other (BM-33).
 - Given any tier, when its limits are read, then they are expressed only on the four capacity kinds — single-design kW ceiling, per-cycle creation counts, metered bundles and storage — and the kW ceiling is enforced at save/generate boundaries, never as a clamp inside the design engine and never as a mid-edit interruption (`BM-12`).
+- Given a tier name, when a subscription is collected, then it maps to one of `TIER_BANDS` — `self_serve` or `enterprise` — and the mandate ladder is read for that band (`F1-18`). **The map lands here**, because it needs the four `BM-11` names: `T-FCORE-006` authored the band axis and the ladder it keys, and deliberately left the map out, having no tier vocabulary to write it against.
 
 ---
 
