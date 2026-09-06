@@ -44,7 +44,9 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 ## 3. Workflow
 
-**Understand → build → `/verify` → `/finish`.**
+**`/start` → build, tests first → `/verify` → `/ship`.** `/start` reads the task's own section and the
+PRD only for what it does not quote; `/ship` sizes the review to the diff, then commits on a yes and
+opens the PR. Each skill states its own depth, and a plugin skill fires only when this file asks.
 
 Before writing code, say three things: **which package owns each new file** (§6), **which facts are
 new and where their TYPE lives** (§8), and **what will prove it works**. Anything whose shape is
@@ -57,9 +59,9 @@ still in question gets settled with the owner first.
 - A layer conflict §7 does not resolve.
 - A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
   `docs/prd/registers/open-questions.md` or `conflicts.md` first, then continue.
-- **Committing, pushing, or opening a PR.** Each needs its own yes, every time. An instruction to
-  do work is never approval to commit it, and one approval never carries to the next. `main` is
-  PR-only; never `--no-verify`.
+- **Committing.** Every commit waits for a yes; an instruction to do work is never approval to
+  commit it. After that yes the push and the PR follow without asking, and the merge is the
+  owner's. `main` is PR-only; never `--no-verify`, never a force-push.
 
 ## 5. Commands
 
@@ -191,9 +193,9 @@ Writing rules, not code:
   something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.
-- **Repo law beats a plugin skill.** The test-driven-development skill may be used for the logic
-  layers above, and never overrides this file's name, place and scope rules; planning skills write
-  to `.superpowers/`, never `docs/superpowers/`.
+- **A PR is one complete task.** Every done-when line is met and proven before the PR opens; a
+  task that is really two is split at `/start`, never shipped half. The PR is the one human gate,
+  so its body carries the design, the done-when proof and the verification record.
 
 ## 9. Product law
 
@@ -211,5 +213,3 @@ Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`
   never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
-
-**Skills:** `/contract-change` · `/migration` · `/verify` · `/finish`.

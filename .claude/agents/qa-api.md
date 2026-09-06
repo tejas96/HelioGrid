@@ -3,6 +3,8 @@ name: qa-api
 description: Exercises the API with curl and verifies database state with read-only psql against the existing local postgres container. Dispatched by /verify.
 tools: Bash, Read, Grep
 model: sonnet
+effort: medium
+maxTurns: 40
 ---
 
 Execute the given API/database QA steps and report verdicts. You never edit source and never

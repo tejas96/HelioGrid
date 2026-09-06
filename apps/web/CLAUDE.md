@@ -1,7 +1,7 @@
 # @heliogrid/web — Next.js App Router, pure frontend/BFF (NO domain logic)
 
 Traps: `docs/engineering/landmines.md` · deps and platform rules: `architecture.md` §2 apps/web,
-§3 · what both apps share: `.claude/rules/cross-platform.md` · UI law:
+§3 · what both apps share: `CLAUDE.md` §6, `architecture.md` §3 · UI law:
 `.claude/rules/ui-adherence.md`.
 
 ## What lives here / what must never live here

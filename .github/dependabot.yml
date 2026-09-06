@@ -1,0 +1,14 @@
+# Keeps the actions in .github/workflows current. One grouped PR a week, never one per action.
+# npm dependencies are NOT here on purpose: every manifest pins exact versions and `sherif`
+# compares them, so a bump is a deliberate `pnpm add`, not a bot's PR (CLAUDE.md §8).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
