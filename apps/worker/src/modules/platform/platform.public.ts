@@ -13,8 +13,7 @@ import * as platformWorkflows from './platform.workflows';
  * **The name check.** Temporal resolves a workflow by EXPORTED FUNCTION NAME, so the contract's
  * `name` and this module's export are one fact written in two places — the Law 5 defect this
  * repository exists to prevent. Nothing catches it at runtime except the workflow itself
- * failing every task with "no such function is exported by the workflow bundle", which is what
- * happened on 2026-08-26.
+ * failing every task with "no such function is exported by the workflow bundle".
  *
  * `satisfies` makes it a COMPILE error instead: rename either side and this line stops
  * building. It costs one line and no runtime.

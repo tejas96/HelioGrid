@@ -20,8 +20,8 @@ run () {
   # `${auth[@]+...}` and not `"${auth[@]}"`: under `set -u`, bash 3.2 (what macOS ships)
   # treats an EMPTY array expansion as an unbound variable and aborts the function. The
   # no-token probe is exactly the case that hits it, so the bug silently turned the most
-  # important assertion in this file into a pass. Found 2026-08-25 by reading the output
-  # rather than the exit code.
+  # important assertion in this file into a pass. Read the output,
+  # not the exit code.
   local auth=()
   if [ "$ident" != "none" ]; then
     auth=(--grpc-meta "authorization=$(node scripts/mint-token.mjs "$ident")")
@@ -41,7 +41,7 @@ expect () { # expect <allow|deny> <label> <output>
   # so a rejected client sees a finished handshake and then a dropped connection — `openssl
   # s_client` even reports "Verify return code: 0 (ok)" for a certificate the server will
   # refuse. "The handshake succeeded" is therefore not evidence of trust; the connection dying
-  # before any RPC completes is. Checked 2026-08-25 against both a trusted and a rogue cert.
+  # before any RPC completes is, for a trusted and a rogue cert alike.
   elif echo "$out" | grep -qiE "tls|certificate|handshake|transport: authentication|broken pipe|connection reset|EOF|failed reaching server"; then got=tls-refused
   elif [ -z "$out" ] || ! echo "$out" | grep -qiE "^error|level=ERROR"; then got=allow
   else got=error; fi

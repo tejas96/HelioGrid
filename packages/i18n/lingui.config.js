@@ -30,9 +30,8 @@ module.exports = {
   // Array#sort stability falls back to extraction-worker collection order, which is
   // non-deterministic once messages span multiple files (@lingui/cli catalog.js
   // orderByMessage). 'messageId' sorts on the id itself, which is always populated —
-  // deterministic regardless of worker scheduling. Discovered when the auth/login move
-  // (Task 3) split one file's strings across four component files (fix-round-1,
-  // 2026-07-31): 5 consecutive `extract` runs produced 5 byte-identical catalogs.
+  // deterministic regardless of worker scheduling: with one file's strings split across four
+  // component files, 5 consecutive `extract` runs produce 5 byte-identical catalogs.
   orderBy: 'messageId',
   catalogs: [
     {

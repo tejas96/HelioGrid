@@ -5,8 +5,8 @@
  * TYPE, not a script: both platform files import the one <Name>.types.ts". That is true of the
  * SHARED base and false of everything above it: 89 of the 95 components declare their own
  * `Web<N>Props` / `Native<N>Props` extending that base, and nothing holds the extensions to
- * each other. Probed 2026-08-25 — adding `align?: 'start' | 'center'` to `WebButtonProps`,
- * rendering it, and giving the native half nothing passed typecheck, biome AND this gate. The
+ * each other: adding `align?: 'start' | 'center'` to `WebButtonProps`,
+ * rendering it, and giving the native half nothing passes typecheck, biome AND this gate. The
  * law's headline defect was unenforced by anything, including the type it was retired onto
  * when `check-ui-parity.mjs` was deleted.
  *

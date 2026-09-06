@@ -15,7 +15,7 @@ check () { if [ "$2" = 0 ]; then printf 'PASS  %-52s %s\n' "$1" "$3"
            else printf 'FAIL  %-52s %s\n' "$1" "$3"; fails=$((fails+1)); fi }
 # Every call is BOUNDED. `wf finish` awaits a workflow result, so if a worker failed to come
 # back the unbounded form hangs forever and the rehearsal reports nothing at all rather than a
-# failure — which is how a 10-minute timeout replaced a one-line FAIL on 2026-08-26.
+# failure — a 10-minute hang where a one-line FAIL belongs.
 wf () {
   local out
   out=$(node --env-file="$API_ENV" "$SPIKE/cutover-wf.mjs" "$@" 2>/dev/null & pid=$!
@@ -57,7 +57,7 @@ echo "════ 3. the worker holds NO BullMQ connection ════"
 grep -qi "bullmq\|ioredis\|redis" "$LOG"; [ $? -ne 0 ]
 check "no Redis/BullMQ in the worker's startup log" $? ""
 # An IMPORT, not the word: the module's comment explains what BullMQ was replaced with, and
-# tsc keeps comments in the output. Matching the word made this FAIL on prose (2026-08-26).
+# tsc keeps comments in the output. Matching the word makes this FAIL on prose.
 grep -qE 'require\("(bullmq|@nestjs/bullmq)"\)|from ?"(bullmq|@nestjs/bullmq)"' \
   apps/worker/dist/worker.module.js 2>/dev/null; [ $? -ne 0 ]
 check "no BullMQ import in the built worker module" $? ""

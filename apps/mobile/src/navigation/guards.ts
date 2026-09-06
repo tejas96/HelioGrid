@@ -12,7 +12,7 @@ export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
 
 /*
- * `useIsDevBuild` lived here and gated the Dev group. Removed 2026-08-19 with the v1
+ * `useIsDevBuild` lived here and gated the Dev group. Removed with the v1
  * component gallery, which was the group's only member. It comes back
  * with the group and its `routes/dev.ts` map, not before — an exported hook nothing calls
  * is what knip exists to catch.

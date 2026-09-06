@@ -36,7 +36,7 @@ export const unitsPrefSchema = z.enum(['m', 'ft']);
 export type UnitsPref = z.infer<typeof unitsPrefSchema>;
 
 /**
- * The TWELVE preset roles — F2-01, owner ruling `Q69` (2026-08-25), which supersedes the
+ * The TWELVE preset roles — F2-01, owner ruling `Q69`, which supersedes the
  * retired six-value set and says it "must not be restored".
  *
  * Built from `ROLE_PRESETS` in `@heliogrid/domain`, never restated: domain is the bottom
@@ -71,8 +71,8 @@ export type WorkflowStatus = z.infer<typeof workflowStatusSchema>;
  * parsing (so even a parser 413 carries it) and echoes it on the response; a server render
  * forwards it so one user action has ONE id end to end.
  *
- * Here, not in an app: it was written in `apps/api` AND `packages/data` until 2026-09-03, and
- * a header the two sides spell differently correlates nothing. Owner ruling 2026-09-03 —
+ * Here, not in an app: written in `apps/api` AND `packages/data` separately, a header the two
+ * sides spell differently correlates nothing. Owner ruling —
  * contracts is the wire truth, and this is wire, not business truth. It is not in the OpenAPI
  * document: the transport sets it, no route declares it.
  */
@@ -81,7 +81,7 @@ export const REQUEST_ID_HEADER = 'x-request-id';
 /**
  * Pagination convention: offset-based, tenant-scoped, STABLE order (indexed sort key +
  * id tiebreaker — repository recipe in apps/api/CLAUDE.md). Offset over cursor is a
- * 2026-08-02 owner decision (specs/2026-08-02-foundation-dx-design.md §4): per-tenant CRM
+ * owner decision: per-tenant CRM
  * volumes never hit offset's deep-page cost, and counts / jump-to-page / column sorting
  * are product needs. A hot endpoint may go cursor-based per-route ONLY with an owner ruling.
  */
@@ -111,7 +111,7 @@ export type Paginated<T> = { items: T[]; totalCount: number };
  * backstop). Contracts therefore never declare a tenantId input field on tenant-scoped
  * routes. The rule outlives the auth teardown; it constrains every module still to come.
  *
- * `tenantClaimSchema` and `sessionClaimsSchema` lived here until 2026-08-01 and existed
+ * `tenantClaimSchema` and `sessionClaimsSchema` lived here and existed
  * solely for the session guard, which was deleted with auth. The rebuild
  * re-authors them alongside the guard that consumes them.
  */

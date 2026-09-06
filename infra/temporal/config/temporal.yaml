@@ -10,7 +10,7 @@
 # ./config/<env>.yaml is IGNORED in favour of an embedded template driven purely by
 # environment variables ("Loading configuration from environment variables only"). And on the
 # explicit-path branch, `${VAR}` is NOT expanded: it reaches the connection string verbatim
-# and Postgres rejects `invalid port ":${TEMPORAL_POSTGRES_PORT}"`. Both observed 2026-08-25.
+# and Postgres rejects `invalid port ":${TEMPORAL_POSTGRES_PORT}"`.
 # Consequence for Track 8: the Fly deployment RENDERS this file with real values at build or
 # release time. It must never ship `${}` placeholders and hope the server expands them.
 #
@@ -18,7 +18,7 @@
 # development port. They are not a secret and must not become the shape production uses —
 # Track 8's template reads them from files supplied as Fly secrets.
 #
-# Pinned set (2026-08-25) — see infra/temporal/README.md for why these move together:
+# Pinned set — see infra/temporal/README.md for why these move together:
 #   server            temporalio/server:1.30.6
 #   admin-tools       temporalio/admin-tools:1.30.6   (temporal-sql-tool 1.30.6, CLI 1.6.1)
 #   TypeScript SDK    @temporalio/* 1.22.0
@@ -132,7 +132,7 @@ services:
   # Temporal's OWN system worker (scanner, history scavenger, task-queue scanner) calls the
   # frontend as an ordinary client and carries no JWT. With the default authorizer on, it is
   # refused and the server dies at boot: `error starting scanner: Request unauthorized.`
-  # (observed 2026-08-25). `internal-frontend` is the mechanism Temporal provides for exactly
+  # `internal-frontend` is the mechanism Temporal provides for exactly
   # this — an additional frontend, never published, that internal components use and that does
   # not run the authorizer. It is NOT a hole in the security model: it is bound inside the
   # deployment and is the reason the PUBLIC frontend can stay strictly authorized.

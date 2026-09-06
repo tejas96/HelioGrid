@@ -13,7 +13,7 @@ PG="docker exec heliogrid-pg-local"
 # `-i` is NOT optional for the restore: without it `docker exec` attaches no stdin, pg_restore
 # reads an empty archive, exits 0, and you get an empty database that looks restored. The
 # server then starts, finds no tables and dies — which reads as a Temporal problem rather than
-# a shell one. Found 2026-08-25 by checking `\dt` instead of the exit code.
+# a shell one. Check `\dt`, not the exit code.
 PGI="docker exec -i heliogrid-pg-local"
 fails=0
 wf () { (cd spike && node wf.mjs "$@" 2>/dev/null); }

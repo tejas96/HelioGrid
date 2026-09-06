@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PreToolUse(Write): unit tests are WELCOME here since the owner ruling of 2026-09-03 — but only
+# PreToolUse(Write): unit tests are WELCOME here — but only
 # in one shape and one place, because a test tree that grows wherever it likes is how a suite
 # becomes unmaintainable.
 #

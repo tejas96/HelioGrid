@@ -170,7 +170,7 @@ function noNativeHalf({ name, dir }, webCount, exemptions, out) {
   out.informational.push(
     `(h·i) NO NATIVE HALF  ${rel(dir)}/: ${webCount} web file(s) and no ` +
       '`*.native.tsx`, and the types-file header carries neither `PRINT SURFACE` nor ' +
-      '`POINTER SURFACE`. There is nothing to compare, and since ds:check was removed 2026-08-25 no gate owns the missing native half.',
+      '`POINTER SURFACE`. There is nothing to compare, and no gate owns the missing native half.',
   );
 }
 

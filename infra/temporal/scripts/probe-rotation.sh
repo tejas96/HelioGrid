@@ -10,8 +10,8 @@
 # Step 2 is the one that gets forgotten, and forgetting it does not fail quietly: the server
 # verifies its OWN certificate on the internode path, so dropping the old CA while the server
 # still presents an old-CA certificate takes the CLUSTER down — every client is refused,
-# including ones already holding new-CA certificates. Measured 2026-08-25 by running this
-# drill without step 2 and watching a new-CA client be refused alongside the old one.
+# including ones already holding new-CA certificates: run this drill without step 2 and a
+# new-CA client is refused alongside the old one.
 #
 # Skipping step 1 is an outage. Never doing step 4 means the CA you rotated away from is still
 # trusted, which is the failure rotation existed to fix. Every half is checked here.

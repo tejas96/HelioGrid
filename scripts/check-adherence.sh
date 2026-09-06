@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # Three repo-hygiene gates that Biome cannot express, done with grep rather than a new
-# linter (owner decision 2026-07-30: oxlint was installed for this and REMOVED — it does
+# linter (owner decision: oxlint was installed for this and REMOVED — it does
 # not implement `no-restricted-syntax`, which was the whole reason to add it).
 #
 #   1.  unit-test shape         — `*.test.ts` under `<package>/tests/`, logic packages only
-#                                 (owner ruling 2026-09-03 commissioned the testing programme)
 #   3.  no raw hex in UI paths  — every visual value comes from @heliogrid/theme
 #   10. app-declared vocabulary — a union, a lookup or a POLICY NUMBER an app writes itself
 #   10b. a brand obtained by a cast — the one hole in an unspeakable fact (CLAUDE.md §8)
@@ -32,9 +31,8 @@ done
 # apps/mobile/src/screens, so apps/mobile/src/navigation, apps/mobile/src/push, App.tsx and
 # apps/web/lib were never scanned — real UI files where a hard-coded colour passed green.
 # A new UI folder must be covered on the day it is created, not three files later.
-# packages/ui/src landed 2026-08-19 (V2 primitives, docs/engineering/17 §4) and is scanned from day one,
-# per the rule that used to sit here. The 95-component layer landed into the same tree the same
-# day and is covered by that entry — a component folder is not a separate opt-in.
+# packages/ui/src (V2 primitives, docs/engineering/17 §4) is scanned in full, component folders
+# included — a component folder is not a separate opt-in.
 # packages/theme/src is scanned, EXCEPT src/_generated — that is the pulled design-system
 # source itself (ds:pull, docs/engineering/17 §6), raw colour by definition; the --exclude-dir below
 # keeps the gate on the HAND-WRITTEN theme source without firing on the DS it enforces.
@@ -49,7 +47,7 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
        -not -path '*/ios/*' -not -path '*/android/*')
 
 # ── 1. Unit tests: one name, one place, one set of packages ──────────────────
-# Unit tests were forbidden until the owner ruling of 2026-09-03 and are now REQUIRED for the
+# Unit tests are REQUIRED for the
 # logic layers — but the shape is fixed, because a suite that spreads is a suite nobody
 # maintains. This is the backstop for `.claude/hooks/block-test-files.sh`, which stops the same
 # three things at authoring time; change BOTH or the pair disagrees.
@@ -91,15 +89,14 @@ if [ -n "$misplaced" ]; then
   fail=1
 fi
 
-# ── 2. (retired 2026-08-27) Source files over ~300 lines ────────────────────
+# ── 2. (retired) Source files over ~300 lines ────────────────────
 # Replaced by Biome `style/noExcessiveLinesPerFile` at maxLines 300, which does the same job
 # as a LINT RULE — CLAUDE.md §8 mechanism order puts a lint rule above a script. It is faster,
 # reports in the editor as you type, and is not blind the way this grep was: SRC_DIRS listed
 # only "apps packages tests scripts", so the 3,400-line render harness under docs/ passed
 # green for months. Biome sees the whole tree; configs and that harness are excluded in
 # biome.json deliberately, by name. One behaviour change, accepted: Biome counts CODE lines,
-# so comments no longer push a file over. Measured 2026-08-27 — zero files in the tree differ
-# between the two.
+# so comments no longer push a file over.
 
 # ── 3. Raw hex in UI paths ───────────────────────────────────────────────────
 # Matches hex ANYWHERE on the line. The old pattern required the hex to be the first token
@@ -285,7 +282,7 @@ if [ -n "$untranslated" ]; then
   fail=1
 fi
 
-# ── 8. (retired 2026-08-19) Screens compose from @heliogrid/ui ──────────────
+# ── 8. (retired) Screens compose from @heliogrid/ui ──────────────
 # Checked that no feature screen used the pre-component `.hg-*` scaffold instead of the
 # design system. Both sides of that comparison are gone: the v1 packages/ui was deleted and
 # globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
@@ -334,8 +331,8 @@ fi
 #
 # EXPORTED only, deliberately: a type nothing can import cannot become a second source of
 # truth. `NavigationPhase` in the mobile shell and `ValidationSource` in the API's exception
-# filter are both file-local state machines, and both are correct as written (checked
-# 2026-08-27). The defect this check exists for is a vocabulary that LEAKS.
+# filter are both file-local state machines, and both are correct as written. The defect this
+# check exists for is a vocabulary that LEAKS.
 app_vocab=$(
   find apps -type f \( -name '*.ts' -o -name '*.tsx' \) "${PRUNE[@]}" \
     -not -name '*.d.ts' 2>/dev/null \
@@ -345,7 +342,7 @@ app_vocab=$(
       grep -nE "^[[:space:]]*export[[:space:]]+const[[:space:]]+[A-Z][A-Z0-9_]+[[:space:]]*=[[:space:]]*\{" "$f" \
         | sed "s|^|  AS-CONST ${f}:|"
       # A POLICY NUMBER is shared vocabulary too, and it was the hole this check left open:
-      # `export const GST_RATE = 0.18` passed every gate in the repo (measured 2026-09-03).
+      # `export const GST_RATE = 0.18` passes every other gate in the repo.
       # Biome's noMagicNumbers stops the INLINE form (`n * 1.18`) and by design accepts a named
       # constant — which is exactly this shape. The two together close the pair.
       # Numeric only: a string constant in an app is usually a local key, and widening this to
@@ -363,7 +360,7 @@ if [ -n "$app_vocab" ]; then
 fi
 
 # ── 10c. A role name and a query belong to their owner ───────────────────────
-# Two facts a consumer can WRITE rather than import, both measured uncaught 2026-09-03.
+# Two facts a consumer can WRITE rather than import, both uncaught by every other gate.
 #
 #   * A ROLE PRESET literal outside domain/contracts is a permission decision taken where the
 #     permission model cannot see it. `docs/engineering/architecture.md` §4: "A capability or a
@@ -467,5 +464,23 @@ if [ -n "$shrink_range" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range'
+# ── 12. A comment states the constraint, never the date it was learned ─────────
+# CLAUDE.md §8: a comment says what breaks if you change this; when and why it changed is the
+# commit's. A date in a comment is a war story, and a story rots the moment the tree moves on.
+# Scanned: every tracked source, script, config and workflow file outside docs/ and generated
+# trees. A quoted date is an example VALUE and passes — `2026-03-12` → `12 Mar 2026` is the
+# format rule's own sample, not a story. Not seen: a docstring, a string that reads as a
+# comment, a date written without hyphens.
+dated_comments=$(git ls-files -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' \
+  | grep -zvE '^docs/|/_generated/|/openapi/|/dist/' \
+  | xargs -0 grep -HnE '(^[[:space:]]*(//|/?\*|#)|(^|[^:])//|[[:space:]]#).*\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b' 2>/dev/null \
+  | grep -vE "[\`\"']20[0-9]{2}-[0-9]{2}-[0-9]{2}[\`\"']" || true)
+if [ -n "$dated_comments" ]; then
+  printf 'DATED COMMENT — a comment states the constraint, the commit carries the story (CLAUDE.md §8):\n%s\n' "$dated_comments"
+  echo '  Drop the date and the verb around it (hit, measured, since, until, removed on); keep what'
+  echo '  breaks if the line changes. A quoted date (`2026-03-12`) is an example value and passes.'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment'
 exit $fail

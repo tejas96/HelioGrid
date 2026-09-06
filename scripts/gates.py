@@ -24,7 +24,7 @@ from collections import defaultdict
 # Two dirnames, not one: this script lives in scripts/, so the repo is its parent.
 REPO_DEFAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# The spec tree (prd · ux · tasks · start-here) moved under docs/ on 2026-08-25. Every path
+# The spec tree (prd · ux · tasks · start-here) lives under docs/. Every path
 # below goes through this one helper, so a future move is one edit rather than twenty-two.
 SPEC_DIR = "docs"
 
@@ -316,7 +316,7 @@ def run(repo, verbose):
     # --- Gate 4 · verbatim quote fidelity in docs/tasks/ AND docs/ux/briefs/
     # Briefs quote PRD cells in exactly the same form tasks do, and are what the design run
     # builds from — so an unchecked brief is a screen designed from a stale requirement. Briefs
-    # were outside this gate until 2026-08-26, and a PRD edit that day desynced two of them
+    # outside this gate would desync on the next PRD edit
     # with nothing to catch it.
     desync = []
     checked = 0
@@ -686,8 +686,7 @@ def run(repo, verbose):
 
     # --- Gate 19 · the pasted design context is current
     # docs/ux/claude-design-context.md is pasted at the top of every design session, so a stale line
-    # there is inherited by every screen. It sat unread from 2026-08-07 to 2026-08-16, through
-    # four rulings and two scope changes, because nothing was watching it.
+    # there is inherited by every screen, and nothing else watches it.
     ctx = spec(repo, "ux/claude-design-context.md")
     if not os.path.exists(ctx):
         gate(19, "design context file is current", False, "docs/ux/claude-design-context.md is missing")

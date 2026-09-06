@@ -20,7 +20,7 @@ function readToken(): string {
  * How often the token file is re-read. The worker runs for weeks; its token does not last
  * that long, and reading it once at boot means every poll fails the moment it expires — with
  * "Request unauthorized.", which reads as a permissions problem rather than a stale
- * credential. Measured on the local stack, 2026-08-26.
+ * credential.
  *
  * The client's `Connection` takes a FUNCTION and calls it per request; `NativeConnection` does
  * not, so the refresh is explicit here.

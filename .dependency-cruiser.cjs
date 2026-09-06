@@ -43,8 +43,8 @@ module.exports = {
       from: { path: '^packages/domain/' },
       to: {
         // 'npm-dev' is included on purpose: this package ships SOURCE (main → src/index.ts),
-        // so a devDependency import reaches consumers exactly like a production one. Proven
-        // 2026-07-30 — with 'npm' alone a react devDependency import passed the cruise clean.
+        // so a devDependency import reaches consumers exactly like a production one. With 'npm'
+        // alone a react devDependency import passes the cruise clean.
         dependencyTypes: ['npm', 'npm-dev'],
         // pnpm resolves to node_modules/.pnpm/<pkg>@<ver>_<hash>/node_modules/<pkg>/… —
         // a bare '^react' anchor never matches. Always anchor on the node_modules segment.
@@ -136,7 +136,7 @@ module.exports = {
       name: 'theme-standalone',
       severity: 'error',
       comment:
-        'theme is GENERATED from the live design system (docs/engineering/17 §6) and depends on nothing in the workspace. Renamed from tokens-standalone 2026-08-19; the v1 packages/tokens was deleted with the v1 design system.',
+        'theme is GENERATED from the live design system (docs/engineering/17 §6) and depends on nothing in the workspace. Renamed from tokens-standalone; the v1 packages/tokens was deleted with the v1 design system.',
       from: { path: '^packages/theme/' },
       // `[^/]+` after the lookahead is load-bearing. The obvious `^(packages/(?!tokens)|apps)/`
       // is DEAD: its first branch already ends in `/`, so the trailing `/` demanded
@@ -144,7 +144,7 @@ module.exports = {
       // this one lists no package names — "depends on nothing in the workspace" must keep
       // holding for packages that do not exist yet.
       //
-      // Probed 2026-08-19, the day the package landed — and the single-form pattern WAS
+      // The single-form pattern WAS
       // inert for the likely violation: an import of a workspace package theme does not
       // declare cannot resolve, so it sits in the graph as the bare `@heliogrid/…` specifier
       // the packages/ pattern never sees (the same class data-lean documents). Both forms,
@@ -169,8 +169,8 @@ module.exports = {
       /*
        * BOTH the bare workspace specifier and the on-disk path. apps/web does not declare
        * @heliogrid/db, so an import of it CANNOT resolve and sits in the graph as the
-       * literal string `@heliogrid/db` — a `^packages/db/` pattern never sees it. Verified
-       * by probe on 2026-08-02: this rule had been inert since it was written.
+       * literal string `@heliogrid/db` — a `^packages/db/` pattern never sees it, and a rule
+       * written with only that pattern is inert.
        * The uuid subpath exemption is retired (no app ever imported it; node:crypto is
        * Node-only and cannot resolve in a browser/Metro bundle). UUID generation from the
        * frontend is not a use-case; IDs are generated server-side or in repositories.
@@ -226,8 +226,8 @@ module.exports = {
         'packages/domain (logic) or apps/web/lib (app infrastructure).',
       // `pathNot` carries the $1 backreference, NOT a lookahead inside `path`. This mirrors the
       // proven `no-app-to-app` rule twenty lines up. A backreference inside a negative lookahead
-      // is the shape that silently matches nothing — `tokens-standalone` was dead for exactly
-      // that class of reason until 2026-07-30, so verify this one fires (Step 3a) rather than
+      // is the shape that silently matches nothing — a rule on a renamed package dies of exactly
+      // that class of reason, so verify this one fires (Step 3a) rather than
       // assuming it does.
       from: { path: '^apps/web/features/([^/]+)/' },
       to: {
@@ -240,8 +240,8 @@ module.exports = {
       severity: 'error',
       comment: 'apps/mobile data access goes through repository interfaces, never packages/db',
       from: { path: '^apps/mobile/' },
-      // Same two-form match as `web-no-db` above — and this rule was inert for the same
-      // reason until 2026-08-02. The uuid subpath exemption is retired alongside web-no-db.
+      // Same two-form match as `web-no-db` above — a single-form rule is inert for the same
+      // reason. The uuid subpath exemption is retired alongside web-no-db.
       to: { path: '^@heliogrid/db|^packages/db/' },
     },
     {
@@ -263,8 +263,8 @@ module.exports = {
         // NO dependencyTypes filter, exactly like apps-never-touch-the-wire. None of these
         // clients is installed, so the import cannot resolve and dependency-cruiser types it
         // `unknown` — a ['npm','npm-dev'] filter drops precisely the case this rule exists to
-        // catch. Probed 2026-08-03: with the filter, an injected `import axios from 'axios'`
-        // in apps/web cruised clean.
+        // catch: with the filter, an injected `import axios from 'axios'`
+        // in apps/web cruises clean.
         //
         // BOTH path forms for the same reason: an unresolvable import stays a bare specifier
         // the node_modules half never sees, while an installed one resolves to
@@ -424,7 +424,7 @@ module.exports = {
       name: 'no-tests-outside-the-tests-tree',
       severity: 'error',
       comment:
-        'Unit tests are welcome in the LOGIC layers since the owner ruling 2026-09-03, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
+        'Unit tests are welcome in the LOGIC layers, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
       from: {
         path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$',
         pathNot: '^apps/(api|worker)/tests/',

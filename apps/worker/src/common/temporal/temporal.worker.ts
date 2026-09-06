@@ -62,7 +62,7 @@ export class TemporalWorkerHost implements OnModuleInit, OnApplicationShutdown {
    *
    * `Worker.shutdown()` raises `IllegalStateError: Not running. Current state: DRAINING` if it
    * is called when a drain is already under way, which happens on a second SIGTERM or when a
-   * supervisor signals the group. Observed 2026-08-26. Only RUNNING workers are asked to stop,
+   * supervisor signals the group. Only RUNNING workers are asked to stop,
    * and the call is guarded anyway — a state machine read and then acted on is a race.
    */
   async onApplicationShutdown(): Promise<void> {

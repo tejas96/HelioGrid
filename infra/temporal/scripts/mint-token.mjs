@@ -28,7 +28,7 @@ const NAMESPACE = 'heliogrid';
 
 const PERMISSIONS = {
   api: [`${NAMESPACE}:write`],
-  // MEASURED, not assumed (2026-08-25, SDK 1.22.0 / server 1.30.6). A worker needs
+  // MEASURED, not assumed (SDK 1.22.0 / server 1.30.6). A worker needs
   // `namespace:write`, and the results were:
   //     worker              → never starts: DescribeNamespace is refused and the SDK reports
   //                           "Namespace heliogrid was not found or otherwise could not be

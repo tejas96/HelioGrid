@@ -20,7 +20,7 @@ PORT="${PG_PORT:-5432}"
 # `--tls` is a BOOLEAN flag and there is no `--tls-enable-host-verification` — host
 # verification is ON by default and only `--tls-disable-host-verification` turns it off. The
 # invented flag made the tool print its help and exit 0, so the schema step silently did
-# nothing (2026-08-26). Checked against `temporal-sql-tool --help` in the pinned image.
+# nothing. Checked against `temporal-sql-tool --help` in the pinned image.
 #
 # TLS follows the SAME decision the server config renders (PG_TLS), so the schema tool and the
 # server cannot disagree about whether the database connection is encrypted.
@@ -41,7 +41,7 @@ for pair in "temporal:temporal" "temporal_visibility:visibility"; do
   sql "$db" setup-schema -v 0.0 >/dev/null 2>&1 || true
   # `versioned/`, NOT its parent. Pointed at the parent, update-schema logs "invalid directory
   # name: versioned", finds zero updates and EXITS 0 — a silent no-op that leaves the server
-  # unable to boot. Measured 2026-08-25.
+  # unable to boot.
   sql "$db" update-schema -d "$SCHEMA_ROOT/$dir/versioned"
 done
 

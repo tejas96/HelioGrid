@@ -2,7 +2,7 @@
  * @heliogrid/domain — pure isomorphic domain logic. Zero workspace imports; never reads the environment.
  *
  * Imports allowed: the TypeScript stdlib. Nothing else in the workspace — this is the BOTTOM
- * layer, so packages/contracts imports IT, never the reverse (owner ruling 2026-07-30).
+ * layer, so packages/contracts imports IT, never the reverse (owner ruling).
  * A business enum both layers need is defined here as a pure union and contracts builds its
  * `z.enum` from it; importing contracts from here would be a package cycle.
  * Never: NestJS · React · React Native · storage · fetch · env reads · packages/db ·
@@ -13,7 +13,7 @@
  * rules that were inert until this package existed, because they targeted a path that
  * matched nothing.
  *
- * Seeded 2026-07-31 with the login flow's shared TYPES only — the two platforms had each
+ * Seeded with the login flow's shared TYPES only — the two platforms had each
  * authored their own copy and had already drifted. The login state MACHINE (reducer,
  * transitions) still arrives with the auth rebuild (auth-tenancy ruling 6); formatters and the
  * invite and role invariants land with the first slice that needs them (Law 9). The package

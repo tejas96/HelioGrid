@@ -2,7 +2,7 @@
 #
 # It is a TEMPLATE because Temporal does not expand `${VAR}` in a config file: on the
 # explicit-path branch the placeholder reaches the connection string verbatim and Postgres
-# rejects `invalid port ":${...}"` (measured 2026-08-25, `infra/temporal/README.md` §8).
+# rejects `invalid port ":${...}"` (`infra/temporal/README.md` §8).
 # `scripts/render-config.sh` substitutes at CONTAINER START and the server reads the result.
 #
 # Start-time, not build-time: `broadcastAddress` must be the machine's own 6PN address, and a
@@ -135,7 +135,7 @@ services:
       bindOnIP: "::"
   # Temporal's OWN system worker (scanner, history scavenger) calls the frontend as an ordinary
   # client and carries no JWT. With the authorizer on, it is refused and the server DIES at boot
-  # with `error starting scanner: Request unauthorized.` (measured 2026-08-25).
+  # with `error starting scanner: Request unauthorized.`
   # `internal-frontend` is Temporal's mechanism for it: never published, not subject to the
   # authorizer, and the reason the PUBLIC frontend can stay strictly authorized.
   internal-frontend:

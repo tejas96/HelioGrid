@@ -40,7 +40,7 @@ const REDACTED_PATHS = [
 
 /**
  * `redact` reaches STRUCTURED fields only, so `req.query.phone` is censored while the same
- * value sitting inside the raw `req.url` string is not — proven by probe on 2026-08-25, where
+ * value sitting inside the raw `req.url` string is not:
  * `?phone=%2B91…` reached the log in full with `req.query.phone` already `[redacted]`.
  * The path alone is what a log reader needs; the parameters survive, redactable, in
  * `req.query`.

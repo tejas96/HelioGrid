@@ -27,7 +27,7 @@ DAYS=825            # under the 825-day browser/most-toolchain ceiling; dev mate
 # Clear the CONTENTS, never the directory itself. `rm -rf pki` replaces the directory inode,
 # and a running container's bind mount still points at the OLD one — every certificate then
 # reads as "no such file or directory" INSIDE the container while `ls` on the host shows them
-# all present. Cost an entire rotation drill to diagnose on 2026-08-25.
+# all present.
 mkdir -p "$PKI"
 find "$PKI" -mindepth 1 -delete
 mkdir -p "$PKI"/{ca,ca-next,ca-rogue,server,server-next,client-api,client-worker,client-operator,client-rogue,client-next,jwt}
@@ -72,7 +72,6 @@ make_cert "$PKI/server" "temporal" "$PKI/ca" "DNS:temporal,DNS:localhost,IP:127.
 # to miss: the server verifies its OWN certificate on the internode path, so dropping the old
 # CA from the trust bundle while the server still presents an old-CA certificate breaks the
 # cluster internally — every client is refused, including ones holding new-CA certificates.
-# Observed 2026-08-25 by running the drill without this step.
 make_cert "$PKI/server-next" "temporal" "$PKI/ca-next" "DNS:temporal,DNS:localhost,IP:127.0.0.1"
 
 make_cert "$PKI/client-api"      "api"      "$PKI/ca"

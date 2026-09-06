@@ -19,7 +19,7 @@ const c = initContract();
  * The root API contract. Feature modules mount their routers here — contract FIRST,
  * then implementation; the contract diff is the API review surface (CLAUDE.md §2 Law 3).
  *
- * Auth and tenancy were removed to greenfield on 2026-08-01 (owner ruling) and
+ * Auth and tenancy were removed to greenfield (owner ruling) and
  * return with their rebuild, which also re-authors `ports/session.ts` for the guard.
  */
 export const apiContract = c.router(
