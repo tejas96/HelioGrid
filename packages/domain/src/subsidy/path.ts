@@ -1,3 +1,5 @@
+import type { Certification } from '../certification/pack';
+import { holdsScheme } from '../certification/schemes';
 import type { MinorUnits } from '../money/minor-units';
 import type { DealSegment } from '../tenancy/segment';
 import type { SubsidyPack } from './pack';
@@ -31,6 +33,21 @@ export function isSubsidyAvailable(subsidy: SubsidyPack, segment: DealSegment): 
  */
 export function requiredSubsidySchemes(subsidy: SubsidyPack): readonly string[] {
   return subsidy.offered ? subsidy.eligibility.requiredSchemes : [];
+}
+
+/**
+ * The schemes a component on a subsidy-path output does not hold (`F1-19`, `F1-34`). Empty
+ * means it passes. `M06`'s Generate gate fails the output naming the component and these
+ * schemes (`M06-23`); the DECISION is here, so no module carries the rule.
+ *
+ * A market declaring no subsidy demands nothing, so every component passes there by
+ * construction rather than by a caller remembering to skip the check.
+ */
+export function unmetSubsidySchemes(
+  subsidy: SubsidyPack,
+  held: readonly Certification[],
+): readonly string[] {
+  return requiredSubsidySchemes(subsidy).filter((scheme) => !holdsScheme(held, scheme));
 }
 
 /**

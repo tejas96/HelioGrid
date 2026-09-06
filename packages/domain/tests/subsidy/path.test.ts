@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { Certification } from '../../src/certification/pack';
 import { IN_PACK } from '../../src/market/pack';
 import { minorUnits } from '../../src/money/minor-units';
 import type { SubsidyPack } from '../../src/subsidy/pack';
@@ -6,6 +7,7 @@ import {
   isIncentiveStageSkippable,
   isSubsidyAvailable,
   requiredSubsidySchemes,
+  unmetSubsidySchemes,
 } from '../../src/subsidy/path';
 
 const NO_SUBSIDY: SubsidyPack = { offered: false };
@@ -33,6 +35,27 @@ describe('requiredSubsidySchemes — the rule M06’s gate enforces (F1-19, F1-3
 
   it('a market declaring no subsidy requires nothing', () => {
     expect(requiredSubsidySchemes(NO_SUBSIDY)).toEqual([]);
+  });
+});
+
+const DCR_COMPLIANT: Certification = { scheme: 'DCR', reference: null };
+const ALMM_ONLY: Certification = { scheme: 'ALMM', reference: 'MNRE/ALMM/I/2026/0412' };
+
+describe('unmetSubsidySchemes — what M06’s gate fails an output for (F1-19, F1-34)', () => {
+  it('passes an IN component certified under DCR', () => {
+    expect(unmetSubsidySchemes(IN_PACK.subsidy, [ALMM_ONLY, DCR_COMPLIANT])).toEqual([]);
+  });
+
+  it('names DCR on an IN component that is listed but not DCR', () => {
+    expect(unmetSubsidySchemes(IN_PACK.subsidy, [ALMM_ONLY])).toEqual(['DCR']);
+  });
+
+  it('names DCR on a component carrying no certification at all — it fails closed', () => {
+    expect(unmetSubsidySchemes(IN_PACK.subsidy, [])).toEqual(['DCR']);
+  });
+
+  it('passes every component where the pack declares no subsidy', () => {
+    expect(unmetSubsidySchemes(NO_SUBSIDY, [])).toEqual([]);
   });
 });
 

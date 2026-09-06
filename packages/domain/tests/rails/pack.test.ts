@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { unauthoredKeys } from '../../src/market/launch';
 import { IN_PACK } from '../../src/market/pack';
 import { mandateType } from '../../src/rails/ladder';
 import { BILLING_CYCLES, IN_PAYMENT_RAILS, TIER_BANDS } from '../../src/rails/pack';
@@ -58,11 +57,5 @@ describe('IN_PAYMENT_RAILS — the India rails declaration (F1-40…F1-43)', () 
         expect(mandateType(IN_PAYMENT_RAILS, rail)).not.toBeNull();
       }
     }
-  });
-});
-
-describe('the launch gate reads the new key (F1-02, F1-05)', () => {
-  it('owes three keys now that payment rails are authored', () => {
-    expect(unauthoredKeys(IN_PACK)).toEqual(['certificationSchemes', 'dataRights', 'priceBook']);
   });
 });

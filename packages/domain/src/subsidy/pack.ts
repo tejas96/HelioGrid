@@ -44,6 +44,10 @@ export interface SubsidyEligibility {
    * Scheme keys from `pack.certification-schemes` (`F1-19`) that every component on a
    * subsidy-path output must carry. The gate that fails a non-conforming one is `M06`'s
    * (`F1-34`); this pack supplies the rule, and an empty list means the path gates on nothing.
+   *
+   * A key here that the market never declared would gate on nothing and pass every
+   * non-conforming component silently. Open sets cannot be tied by a type (`F1-09`), so
+   * `undeclaredSchemes` is the read that ties them.
    */
   readonly requiredSchemes: readonly string[];
 }
