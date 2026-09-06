@@ -44,7 +44,7 @@ by hand. Its one hole is a cast, which is why `as <Brand>` outside the owner is 
 (`CLAUDE.md` §8) — one exact string to look for beats infinite ways to write a formula.
 
 **Apply it when the fact is CREATED**, not later: branding a value after five consumers exist is
-five rewrites. Register each brand in `mechanisms.md` `M60` on the day it lands.
+five rewrites. Register each brand the day it lands; `M60` says where.
 
 ## What is watching, and what is not
 

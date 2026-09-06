@@ -403,11 +403,11 @@ fi
 # and not a shortcut. Unlike a formula, it is one exact string, so a grep is the right shape
 # of check here.
 #
-# The registry is declared EMPTY on purpose (2026-09-03): brands land with the slices that
-# create them, and a rule authored after its first violation has already been broken once.
-# This is the same reason the domain-purity rules existed before packages/domain did.
-# Add `<Brand>:<owning path prefix>` as each one lands.
-BRANDS=''   # e.g. 'Money:packages/domain/ TranslatedText:packages/i18n/'
+# Brands land with the slices that create them, and each is registered here the day it lands
+# (.claude/rules/architecture-ownership.md) as `<Brand>:<owning path prefix>`. The loop existed
+# before its first brand for the same reason the domain-purity rules existed before
+# packages/domain did: a rule authored after its first violation has already been broken once.
+BRANDS='MarketCode:packages/domain/ PackVersion:packages/domain/'
 
 cast_escapes=''
 for entry in $BRANDS; do

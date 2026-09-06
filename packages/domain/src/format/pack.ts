@@ -1,3 +1,5 @@
+import { IN_MARKET, type MarketCode } from '../market/code';
+
 /**
  * `pack.formats` — the market's format values (`F1-21`). F1 owns these VALUES; F3 owns the
  * single rendering implementation that consumes them (`F3-19`), and it sits beside this file.
@@ -40,8 +42,8 @@ export interface PhoneFormats {
 export type MeasurementSystem = 'metric' | 'imperial';
 
 export interface FormatPack {
-  /** Market identifier. Market-neutral, never a label (`F1-09`). */
-  readonly id: string;
+  /** The market's code (`market/code.ts`), never a label (`F1-09`). */
+  readonly id: MarketCode;
   /**
    * The market's GROUPING and date locale — never the reader's (`F3-20`). `-u-nu-latn` is not
    * decoration: it pins Latin digits at the Intl call itself (`F3-21`, `F1-47`), so a pack
@@ -88,7 +90,7 @@ export interface FormatPack {
  * it; a reader checks this table against the PRD rather than trusting the code.
  */
 export const IN_FORMATS: FormatPack = {
-  id: 'IN',
+  id: IN_MARKET,
   /** `en-IN` groups `4,52,471`; the `latn` pin holds `F3-21` whatever tag a pack is authored with. */
   locale: 'en-IN-u-nu-latn',
   currency: 'INR',
