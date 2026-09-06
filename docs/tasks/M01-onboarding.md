@@ -296,6 +296,10 @@ This file covers module M01 — company signup and authentication, team invites 
 **PRD rows:** M01-27, M01-28, M01-53
 **Requirements (verbatim):**
 - **M01-27** (P0) — **A demo project ships per market pack, ready on day one.** Every new tenant starts with a finished, realistic demo project supplied as market-pack demo content — a real rooftop of that market's kind, pre-loaded through survey, design and proposal — so new users learn by opening something finished, not an empty state, and the demo is the safe place to learn the design studio "without fear of breaking a real quote". The IN pack's demo content is the source's Pune-class residential rooftop; every other market authors its own. **Placement ruled (owner ruling 2026-08-04, Q19):** the demo project ships as **pack content** — versioned with the pack per `F1-11`, beside the eight rules keys, not a ninth key (`F1-02` carries the note).
+  *Also owned here:* the `DocumentPreview` sample defaults — a fake tenant, tax registration, customer,
+  document number and date, line items, subsidy and their English labels — are demo content of this
+  kind and move to the pack with this task; the labels are copy and move to i18n; the settings screens
+  that preview a real tenant pass every prop, so no sample value can print on a real document.
 - **M01-28** (P0) — **Nothing is required on day one; a tenant with no config at all breaks nothing.** Every setting has a working platform default; a tenant can sign up and send a real proposal without opening settings once. Zero-config fallback is total: "everything falls back to platform defaults and nothing breaks."
 - **M01-53** (P0) — **Tenant defaults feed the proposal builder's Quick mode.** The defaults this area and §M01.7 define — timeline template, default tranche template, default T&C, bank details — are exactly what Quick mode fills for its hidden steps; a tenant who never opens settings still has working platform defaults there (M01-28). Quick mode itself, and its loss-free expansion, are `modules/M06-proposals.md`'s (R11).
 **DONE WHEN:**
