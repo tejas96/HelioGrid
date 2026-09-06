@@ -57,6 +57,7 @@ export default defineConfig({
        * nothing — or red on day one and switched off by the second person who hit it.
        */
       thresholds: {
+        'packages/domain/src/calling/**': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,

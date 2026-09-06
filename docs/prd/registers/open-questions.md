@@ -1,9 +1,11 @@
 # Open questions register
 
-> **State as of 2026-09-06 — 84 questions, ZERO open.**
+> **State as of 2026-09-06 — 86 questions, TWO open — `Q85`, `Q86`.**
 >
 > | | |
 > |---|---|
+> | **`Q85`** | **OPEN — owner ruling needed.** **A pack is authored in CODE, so launching a market is a release.** `F1-04` calls launching a market *"configuration, not a product change"* and `F1-11` calls a pack revision *"a versioned, dated data update — never a product release"*. Both hold STRUCTURALLY: the pack is injected, so no module branches on a market name and no computation moves. Neither holds OPERATIONALLY: `IN_PACK` is a TypeScript constant, so a second market — or a GST rate revision — is a pull request and a deploy. The code already carries the other half's seams: `market/launch.ts` reads key presence off the object so a stored pack that lost a key reports identically, and `market/pack.ts` leaves `F1-11`'s published date to a publication record that does not exist. **No task owns pack storage** — `F1-04` and `F1-11` are both dispositioned to `T-FCORE-001`, which shipped as code. The ruling needed: schedule a storage slice, or rule code authorship correct for as long as `F1-06`'s one-market launch holds and say so in `F1-04`. Raised by `T-FCORE-004`'s `/start`. |
+> | **`Q86`** | **OPEN — owner ruling needed.** **Where a scheduled send slot falls BEFORE the messaging window opens.** `F1-15` resolves a slot outside the window to *"the last lawful moment before it, never after"*. Past the window's close that is the close. Before its open, read literally, it is the PREVIOUS day's close — which sends `F5-68`'s evening-before crew message two evenings early. IN never reaches the case: `F1-62` authors an EMPTY messaging window, so no IN slot is outside one. `T-FCORE-004`'s `lawfulSendTime` therefore REFUSES a before-open slot rather than guess one, the posture `tax/breakdown.ts` already takes to `document_level`. The ruling needed is one of: clamp forward to the open (contradicting *"never after"*), the previous close as written, or a pack with a window may not author a slot outside it. |
 > | **`Q53`** | **Resolved 2026-08-26.** The research was done: TCCCPR states no hour, and its time band is a per-recipient preference binding promotional traffic only. The IN pack declares an empty messaging window and a 19:00 tenant-local send hour → `F1-62`. |
 > | `Q1`–`Q52`, `Q54`–`Q64`, `Q67`–`Q71` | Resolved by owner ruling. |
 > | `Q65`, `Q66` | Resolved by owner ruling 2026-08-26 → `F4-36` / `T-FPLAT-033` and `F4-37` / `T-FPLAT-034`. |
@@ -22,7 +24,7 @@
 > | **`Q76`** | **Resolved 2026-08-28.** `F8-01`'s "number" means a **quantity**; an identifier — a tax registration, a bank account, an invoice number, a phone number, a one-time code — carries no tier, and what was checked about it is stated as prose beside it per `F8-03`. Writes down what four screens had already practised. |
 > | **`Q74`**, **`Q75`** | **Resolved 2026-08-28.** The typical system size is declared in **`kWp`** — market-neutral, and the 10–30% DC/AC gap that residential hides and C&I does not. Both declarations are edited afterwards in the **company profile, `SCR-M01-05`** → `M01-23`. |
 >
-> A row is open **only** if its contradiction cell begins with `**OPEN`. No row does. The rows
+> A row is open **only** if its contradiction cell begins with `**OPEN`. `Q85` and `Q86` do. The rows
 > stay for their trail, never deleted.
 
 Purpose: decisions V2 still owes an owner ruling. Every "Open questions" section in every

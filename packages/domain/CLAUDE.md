@@ -46,6 +46,11 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   `IN_PACK`, and reaches `MarketCode` through `market/code` by path, never the market index;
   `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
   `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
+- **A ruleset item declares `floor()` or `tenantDefault()`** (`calling/`), so an unclassified one
+  is a compile error rather than a silent default-to-editable (`F1-17`). A time of day is
+  `ClockTime`, minutes past midnight, carrying no zone — `F1-10` puts every comparison on the
+  TENANT's clock and the caller holding the tenant applies it. `packages/ui`'s `TimeField` keeps
+  its own parser: that one reads what a person types, not what the platform authors.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
   each, and `money/` is the ONLY slice that rounds (`Q83`) — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
