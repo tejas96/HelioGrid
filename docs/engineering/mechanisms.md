@@ -106,7 +106,7 @@ row UP this order over widening the script that currently holds it.
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
 | M70 | A unit test has one name, one place, and covers the logic layers only | PreToolUse hook · `check:adherence` 1 · dependency-cruiser | PARTIAL | Three implementations with three separately-maintained package lists. All key on `*.test.*`, so `money-tests.ts` evades every one. The hook fires on `Write` only. |
-| M71 | Coverage thresholds land with the slice | vitest `thresholds` | PARTIAL · red 2026-09-06 | Four globs have a threshold, all at 100%: `format/**`, `market/**`, `money/**` and `tax/**` under `packages/domain/src/`. Every other covered path has none. |
+| M71 | Coverage thresholds land with the slice | vitest `thresholds` | PARTIAL · red 2026-09-06 | Five globs have a threshold, all at 100%: `format/**`, `market/**`, `money/**`, `subsidy/**` and `tax/**` under `packages/domain/src/`. Every other covered path has none. |
 | M72 | A test imports `../../src/…`, never `@heliogrid/<pkg>` | — | **NONE** | Review-only. The reason is in `vitest.config.mts`; all five current tests obey it. |
 | M73 | The invariants run before a change is called done | `pnpm verify` · `pnpm check:all` | HELD | `check:all` now ends with `pnpm turbo test`, so the static invariants (`M14`, `M49`) run during the work and the db-backed ones skip loudly. It costs nothing extra: `turbo typecheck` already builds. |
 

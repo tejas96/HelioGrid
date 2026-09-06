@@ -83,7 +83,25 @@ export {
 export type { MarketCode, MarketPack, PackKey, PackVersion } from './market';
 export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './market';
 export type { BasisPoints, MinorUnits, Share } from './money';
-export { applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
+export { amountForQuantity, applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
+export type {
+  CapacitySlab,
+  IncentiveProject,
+  IncentiveStage,
+  NoSubsidy,
+  RegionalTopUp,
+  SubsidyDeal,
+  SubsidyEligibility,
+  SubsidyModel,
+  SubsidyPack,
+} from './subsidy';
+export {
+  IN_SUBSIDY,
+  isIncentiveStageSkippable,
+  isSubsidyAvailable,
+  requiredSubsidySchemes,
+  subsidyAmount,
+} from './subsidy';
 export type {
   MoneyScheme,
   PlaceOfSupply,
@@ -100,5 +118,5 @@ export type {
   TaxStrategy,
 } from './tax';
 export { activeStatutoryExtras, IN_TAX, TAX_STRATEGIES, taxBreakdown } from './tax';
-export type { TenantSegment } from './tenancy/segment';
-export { TENANT_SEGMENTS } from './tenancy/segment';
+export type { DealSegment, TenantSegment } from './tenancy/segment';
+export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './tenancy/segment';

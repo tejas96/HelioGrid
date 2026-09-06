@@ -25,3 +25,20 @@ export function sumMinorUnits(amounts: readonly MinorUnits[]): MinorUnits {
   for (const amount of amounts) total += amount;
   return minorUnits(total);
 }
+
+/**
+ * What a quantity costs at a per-unit amount, rounded ONCE to the minor unit, half away from
+ * zero — `applyRate`'s law (`Q83`) for the case a rate cannot express, because a quantity is not
+ * a fraction of anything and runs past 100%. A subsidy ladder's `₹30,000 per kW × 2.5 kWp` is
+ * this and not a rate.
+ *
+ * The multiplication is float because the quantity is: a system is 2.5 kWp, never a whole
+ * number of anything. Rounding it here is what keeps the float out of every sum above it.
+ */
+export function amountForQuantity(perUnit: MinorUnits, quantity: number): MinorUnits {
+  if (!Number.isFinite(quantity) || quantity < 0) {
+    throw new RangeError(`a quantity is a finite non-negative number, not ${String(quantity)}`);
+  }
+  const exact = perUnit * quantity;
+  return minorUnits(Math.sign(exact) * Math.round(Math.abs(exact)));
+}
