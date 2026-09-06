@@ -117,7 +117,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 - Given IN promotional outbound, when a CLI is selected, then it is a 140-series identity, never a 1600-series one; and given any platform SMS, when it is sent, then it uses a DLT-registered entity/header/template (F1-37, F1-38).
 
-*Note:* `F1-15` lists caller-line/series routing and messaging sender/template registration among `pack.calling-rules`' items, and their India values are this task's `F1-37` and `F1-38`. Both FIELDS therefore land here, on `CallingRulesPack` (`packages/domain/src/calling/pack.ts`), together with their `IN_CALLING_RULES` values — `T-FCORE-004` authored the key without them rather than leave placeholders a launch gate would read as authored (Law 9).
+*Note:* these are the last two `pack.calling-rules` items of `F1-15`, so the fields sit on `CallingRulesPack` beside the rest of the ruleset rather than in a key of their own. The done-when line divides where `F1-15` divides it: the market RULE and the registration DUTY are pack data and are proven here, while selecting a line and carrying a send are the consuming modules' — `M07`'s telephony framework and number provisioning (`T-M07-029`, `T-M07-017`), `M12`'s dunning and `M03`'s marketing sends. `F1-38`'s registration clock gates activation, not scope: no account is opened by this task, and a tenant's own registered entity and headers are tenant data, never pack data.
 
 ---
 

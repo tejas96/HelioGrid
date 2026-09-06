@@ -8,6 +8,7 @@
 export type { ClockTime } from './clock-time';
 export { clockTime, clockTimeHhmm } from './clock-time';
 export type {
+  CallerLineSeries,
   CallingRulesPack,
   CallingWindow,
   Floor,
@@ -15,9 +16,19 @@ export type {
   MessagingWindow,
   NoVoiceRuleset,
   RulesetItem,
+  SenderRegistration,
   TenantDefault,
+  TrafficClass,
   VoiceRuleset,
 } from './pack';
-export { callingWindow, floor, IN_CALLING_RULES, NO_WINDOW, tenantDefault } from './pack';
+export {
+  callingWindow,
+  floor,
+  IN_CALLING_RULES,
+  NO_WINDOW,
+  TRAFFIC_CLASSES,
+  tenantDefault,
+} from './pack';
+export { isCallerLineAllowed } from './routing';
 export { isOutboundVoiceAvailable } from './voice';
 export { isWithinFloor, lawfulSendTime, windowInForce } from './window';
