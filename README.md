@@ -328,14 +328,14 @@ it is how drift enters the repo silently:
 | `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
 | A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
 | Any feature/bugfix slice, before calling it done | `/verify` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/verify` drives the real app — browser for web, simulator for iOS, adb for Android, curl for the API — across only the surfaces the change reaches, and loops until clean |
-| Any task or bug, before a line is written | `/start` | Reads only the task's own section, states the three things (CLAUDE.md §3), sizes the PR against the 1,000-line ceiling and splits it if needed, creates the branch, and stops for the go |
+| Any task or bug, before a line is written | `/start` | Reads only the task's own section, states the three things (CLAUDE.md §3), names the files it will reach and splits a task that is really two, creates the branch, and stops for the go |
 | A completed task, before review | `/ship` | Gates once, a review sized to the diff, the size and done-when checks, then a commit on a yes and the push and PR without one. Merge is the owner's |
 
 ## Git workflow
 
 Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes
 and then pushes and opens the PR itself. Merge is the owner's; `main` is PR-only. A PR is one
-complete task and at most 1,000 non-generated lines. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8.
+complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8.
 
 ## Where to find things
 

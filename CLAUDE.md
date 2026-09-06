@@ -193,8 +193,8 @@ Writing rules, not code:
   something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.
-- **A PR is one complete task and at most 1,000 non-generated lines (`M93`).** A task that cannot
-  fit is split into complete slices at `/start`, never shipped half. The PR is the one human gate,
+- **A PR is one complete task.** Every done-when line is met and proven before the PR opens; a
+  task that is really two is split at `/start`, never shipped half. The PR is the one human gate,
   so its body carries the design, the done-when proof and the verification record.
 
 ## 9. Product law

@@ -36,12 +36,11 @@ Fix every blocker and major at the root cause and re-run only the gates the fix 
 per change; do not re-review the review. A review that costs more than the change is the defect
 this tiering prevents.
 
-## 3. Size and completeness
+## 3. Completeness
 
-- Non-generated lines changed ≤ 1,000 (`M93`). Over it: stop and split (`/start` §2). The
-  `size-exception` label is the owner's to add in the PR, never this skill's.
-- Every done-when line of the task has its proof — a test, a `/verify` verdict or a gate. A line
-  without one is not done, and the PR is not opened.
+Every done-when line of the task has its proof — a test, a `/verify` verdict or a gate. A line
+without one is not done, and the PR is not opened. A task that turned out to be two is split
+(`/start` §2), never shipped half.
 
 ## 4. Commit on a yes
 

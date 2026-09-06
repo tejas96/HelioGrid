@@ -19,8 +19,8 @@ gate on every task. Three rule files restated law that lived elsewhere.
    procedures.
 2. **One human gate: the PR.** A commit waits for a yes every time. After it, the push and the PR
    are the skill's. Merge is the owner's; `main` stays PR-only.
-3. **A PR is one complete task and at most 1,000 non-generated lines** (`M93`). A task that cannot
-   fit is split into complete slices before it is built.
+3. **A PR is one complete task.** Every done-when line is met and proven before the PR opens; a
+   task that is really two is split into complete slices before it is built.
 4. **Agents run on Sonnet 5 at medium effort with a turn cap, never below Sonnet 5.**
    `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` is the default for any agent without its own model. The
    architecture reviewer reads; it never runs a gate, and it is dispatched only for a structural
@@ -37,7 +37,7 @@ gate on every task. Three rule files restated law that lived elsewhere.
 
 - A small change costs no agent tokens; a structural one costs a capped Sonnet review.
 - The PR body is the design record, the done-when proof and the verification record in one place.
-- What is review-held is stated as such: a PR's completeness (`M93`'s second half) and the
-  reviewer's judgement. What is mechanical is a row in `mechanisms.md`.
+- What is review-held is stated as such: a PR's completeness and the reviewer's judgement. What
+  is mechanical is a row in `mechanisms.md`.
 - Superseded: `/finish` (rewritten as `/ship`), `.claude/rules/architecture-ownership.md`,
   `.claude/rules/cross-platform.md`, `.claude/rules/i18n.md`.

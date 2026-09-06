@@ -20,15 +20,15 @@ The cheapest token is the one never read. This skill reads the task, not the cor
 A bug is a task whose rows are the report. Its first proof is the reproduction on the real
 surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
-## 2. Say the three things, then the size
+## 2. Say the three things, then the reach
 
 `CLAUDE.md` §3: which package owns each new file (`architecture.md` §4), which facts are new and
-where each TYPE lives, and what will prove it works. Then the size: the files that will change and
-the lines, counted the way `M93` counts them — everything but generated files.
+where each TYPE lives, and what will prove it works. Then the reach: the files that will change,
+so the owner sees the shape before a line is written.
 
-**Over 1,000 lines is not a bigger PR; it is two tasks.** Split at a seam that leaves each slice
-complete on its own — a done-when list that passes, docs that agree, gates green — and propose the
-slices in order. A slice that cannot pass its done-when alone is not a slice.
+**A task that is really two tasks is split now, not shipped half.** Split at a seam that leaves
+each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
+propose the slices in order. A slice that cannot pass its done-when alone is not a slice.
 
 ## 3. Branch, and stop
 
