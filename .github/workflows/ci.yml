@@ -283,6 +283,11 @@ jobs:
       # The Gemfile.lock resolves the `ruby` platform only (apps/mobile/.bundle/config sets the
       # same flag locally); without it bundler refuses the darwin platform of the runner.
       BUNDLE_FORCE_RUBY_PLATFORM: '1'
+      # The lock says `BUNDLED WITH 1.17.2`, written by the system Ruby 2.6 the template ran on.
+      # Bundler 1.17 cannot run on Ruby 3.2+ (`String#untaint` is gone), and Bundler's default
+      # is to install and switch to the locked version anyway. `system` keeps the Ruby's own
+      # Bundler in charge; the lock's resolution is unchanged and still honoured.
+      BUNDLE_VERSION: system
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -301,6 +306,8 @@ jobs:
         with:
           ruby-version: '3.3'
           working-directory: apps/mobile
+          # `none`: the action would otherwise install the lock's Bundler 1.17.2 (see the job env).
+          bundler: none
           # Installs the Gemfile.lock's CocoaPods into vendor/bundle and caches it by lockfile
           # hash — the pinned version React Native's template expects, not whatever `gem` finds.
           bundler-cache: true
