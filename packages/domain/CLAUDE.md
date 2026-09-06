@@ -41,6 +41,11 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   `MarketProvider` contract fixes `id`, `locale`, `currency`, `currencyFractionDigits`, `clock`
   and `taxIdLabel` as names, and `ds:contract` fails on a dropped one. Grouping them into
   sub-objects would make the design system and this package each declare a pack.
+- **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A key task
+  adds its folder beside `format/`, its property on `MarketPack` and its India values on
+  `IN_PACK`, and reaches `MarketCode` through `market/code` by path, never the market index;
+  `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
+  `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
 
 ## Done means
 

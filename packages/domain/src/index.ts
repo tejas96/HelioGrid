@@ -80,5 +80,7 @@ export {
   resolveMeasurementSystem,
   weekdayNames,
 } from './format';
+export type { MarketCode, MarketPack, PackKey, PackVersion } from './market';
+export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './market';
 export type { TenantSegment } from './tenancy/segment';
 export { TENANT_SEGMENTS } from './tenancy/segment';

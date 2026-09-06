@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitest/config';
 
+/** Every line, branch and function of a slice: the bar each glob below lands at (CLAUDE.md §8). */
+const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
+
 /**
  * Unit tests — owner ruling 2026-09-03, which commissioned the testing programme the
  * 2026-07-29 directive deferred. `tests/invariants/` did not go away: the two prove different
@@ -56,12 +59,8 @@ export default defineConfig({
        * nothing — or red on day one and switched off by the second person who hit it.
        */
       thresholds: {
-        'packages/domain/src/format/**': {
-          statements: 100,
-          branches: 100,
-          functions: 100,
-          lines: 100,
-        },
+        'packages/domain/src/format/**': COMPLETE,
+        'packages/domain/src/market/**': COMPLETE,
       },
     },
   },
