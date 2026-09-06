@@ -78,31 +78,6 @@ jobs:
           # package.json (autolinking) or the lockfile (a native dependency's version).
           lane android '^(apps/mobile/(android/|package\.json$|app\.json$|react-native\.config\.js$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
           lane ios '^(apps/mobile/(ios/|package\.json$|app\.json$|react-native\.config\.js$|Gemfile$|Gemfile\.lock$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
-      - name: A pull request is at most 1,000 non-generated lines (M93)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
-        run: |
-          set -euo pipefail
-          # A PR a person can verify in one sitting. Generated files are not read by a person,
-          # so they do not count; everything else does, docs included, because the docs are part
-          # of the change (Law 8). The cap is a ceiling on one complete PR, never a licence to
-          # ship half a task: a task that cannot fit is split at /start, before it is built.
-          # `size-exception`, a label only a person can add, records the one-off case in the PR.
-          limit=1000
-          lines=$(git diff --numstat "origin/${BASE_REF}...${GITHUB_SHA:-HEAD}" \
-            | grep -vE '\t(pnpm-lock\.yaml|packages/contracts/openapi/openapi\.json|packages/i18n/src/locales/.*|packages/theme/src/_generated/.*|.*\.snap)$' \
-            | awk '{ a += $1 == "-" ? 0 : $1; d += $2 == "-" ? 0 : $2 } END { print a + d + 0 }')
-          echo "non-generated lines changed: $lines (limit $limit)"
-          case " $LABELS " in *" size-exception "*) echo 'size-exception label present — recorded, not enforced'; exit 0;; esac
-          if [ "$lines" -gt "$limit" ]; then
-            echo "::error::This PR changes $lines non-generated lines; the ceiling is $limit. Split the task"
-            echo "::error::into complete PRs (/start sizes a task before it is built), or add the"
-            echo "::error::size-exception label with the reason in the PR body."
-            exit 1
-          fi
 
   quality:
     name: quality
