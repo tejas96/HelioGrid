@@ -10,11 +10,10 @@ exact brief file to paste and the exact two lines to edit when you're done.
     python3 scripts/next-screen.py all        # every pending V1 screen
     python3 scripts/next-screen.py v2         # the deferred V2 screens, for reference only
 
-Columns are located by NAME from the register's own header row, never by position. The
-register gained a `V` column on 2026-08-16; this script had hard-coded indices and silently
-read that column as the status, so every screen looked designed and it reported
-"150 of 150 · nothing left to do". Reading the header makes the next column addition a
-non-event.
+Columns are located by NAME from the register's own header row, never by position. When the
+register gains a column, hard-coded indices silently read the wrong column as the status, so
+every screen looks designed and the script reports "150 of 150 · nothing left to do". Reading
+the header makes the next column addition a non-event.
 """
 import re, sys, os, glob, collections
 

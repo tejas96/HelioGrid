@@ -60,7 +60,7 @@ export async function runTenancyInvariants(adminUrl: string) {
       assert(tables === 0, 'app_user role exists (schema is present, so the role must be too)');
       console.warn(
         'tenancy invariants VACUOUS — the database was never migrated: 0 application tables ' +
-          'and no app_user role (greenfield since 2026-08-01). NOTHING about ' +
+          'and no app_user role (greenfield). NOTHING about ' +
           'tenancy is proven. Real coverage returns with the auth + tenancy module’s first ' +
           'migration, which re-creates the roles it asserts.',
       );
@@ -93,7 +93,7 @@ export async function runTenancyInvariants(adminUrl: string) {
       });
 
     /*
-     * GREENFIELD GUARD (2026-08-01). The auth teardown deleted every migration,
+     * GREENFIELD GUARD. The auth teardown deleted every migration,
      * so `tenants` and `users` do not exist and nothing below can seed or exercise them.
      * The catalog half would still "pass" over zero tables, which is worse than useless —
      * it would report tenancy as proven when nothing was proven at all.
@@ -104,7 +104,7 @@ export async function runTenancyInvariants(adminUrl: string) {
      */
     if (tables === 0) {
       console.warn(
-        'tenancy invariants VACUOUS — 0 application tables (greenfield since 2026-08-01). ' +
+        'tenancy invariants VACUOUS — 0 application tables (greenfield). ' +
           'Verified only that app_user exists without BYPASSRLS/superuser and that the ' +
           'connecting role can SET ROLE app_user. CROSS-TENANT ISOLATION IS UNPROVEN until ' +
           'the auth + tenancy module lands its first migration.',

@@ -1,6 +1,6 @@
 /**
  * Phone-OTP protocol constants. They described the WIRE while auth existed and shape the
- * UI now that it does not (owner ruling 2026-08-01, auth removed to greenfield). They live
+ * UI now that it does not (owner ruling: auth removed to greenfield). They live
  * HERE because domain is the bottom layer: when the contract is rebuilt it imports these,
  * which keeps one definition instead of a contract copy and a screen copy that drift.
  *

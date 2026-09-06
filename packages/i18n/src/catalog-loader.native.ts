@@ -11,8 +11,8 @@ import { messages as mr } from './locales/mr/messages';
  * The fork is REQUIRED, not a preference. React Native ships ONE bundle: in a release build
  * Metro inlines an `import()` and resolves it from that bundle, but against the DEV SERVER
  * the same call goes through `__loadBundleAsync` and fails with
- * `LoadBundleFromServerError: Could not load bundle` — proven on the iOS simulator
- * 2026-08-25, where switching to Hindi threw and the UI stayed English. A loader that works
+ * `LoadBundleFromServerError: Could not load bundle` — on the iOS simulator,
+ * switching to Hindi throws and the UI stays English. A loader that works
  * only in release builds is worse than no lazy loading at all.
  *
  * It costs nothing to load them all here: the catalogs are in the bundle either way, and a

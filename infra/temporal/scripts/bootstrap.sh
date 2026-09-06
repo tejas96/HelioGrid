@@ -58,7 +58,7 @@ say "namespace: $NAMESPACE (retention $RETENTION)"
 #
 # The token goes in `--grpc-meta authorization=…`. TEMPORAL_AUTH_TOKEN is NOT read by CLI
 # 1.6.1: with it set and nothing else, every call fails "Request unauthorized." and looks
-# exactly like a permissions problem rather than a token that was never sent (2026-08-25).
+# exactly like a permissions problem rather than a token that was never sent.
 TOKEN="$(node scripts/mint-token.mjs operator)"
 AUTH=(--grpc-meta "authorization=$TOKEN")
 

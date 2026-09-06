@@ -32,7 +32,7 @@ export interface WorkflowDefinition<
    * It must be a valid JS identifier and must equal the name the worker EXPORTS: Temporal
    * resolves a workflow by exported function name, and a mismatch is not a type error, it is
    * a workflow that starts, sits in the queue and fails every task with "no such function is
-   * exported by the workflow bundle". Hit on 2026-08-26 with a dotted name. The literal type
+   * exported by the workflow bundle" — a dotted name does exactly that. The literal type
    * is preserved so each module can assert the two agree at compile time — see
    * `apps/worker/src/modules/platform/platform.public.ts`.
    */

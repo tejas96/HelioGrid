@@ -99,7 +99,7 @@ jobs:
     env:
       DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
       DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
-      # An auth secret was required here until the 2026-08-01 greenfield reset. apps/api's env
+      # No auth secret is set here: apps/api's env
       # schema no longer declares one, and Turborepo strict env mode would flag an undeclared
       # variable. The auth module re-adds both the variable and the CI value together.
     steps:
@@ -156,7 +156,7 @@ jobs:
           "$bin" --version
       - name: Apply migrations (CI database)
         # Must run before pnpm verify:ci so the invariants have tables to inspect.
-        # The auth-provider migration step was removed on 2026-08-01 with the greenfield reset
+        # The auth-provider migration step is gone with the greenfield reset
         # — the script it ran no longer exists. It created the tables the tenancy
         # scan vets, so when auth is rebuilt this step comes BACK: without it the scan only
         # warns that they are absent and never inspects them in CI at all.
@@ -173,17 +173,16 @@ jobs:
         # what it claims to.
         # BUILD FIRST: dependency-cruiser resolves a workspace import through the target's
         # `main`/`types`, which point at dist/ — so before anything is built the edge does not
-        # exist and every rule aimed at a dist-shipping package reports clean. Proven
-        # 2026-07-31: `db-access-in-repositories-only` fires with dist present and reports
+        # exist and every rule aimed at a dist-shipping package reports clean:
+        # `db-access-in-repositories-only` fires with dist present and reports
         # "no dependency violations found" without it, on the identical offending file.
         run: pnpm verify:ci
-      # REMOVED 2026-08-25: the native splash-colour freshness gate. It ran
-      # `pnpm --filter @heliogrid/tokens build`, but that package was deleted 2026-08-19 when
-      # packages/theme replaced it. pnpm exits 0 on an unmatched filter, so the step
-      # regenerated nothing, `git status` was clean, and the gate passed green while proving
-      # nothing — for six days. The splash artifacts are FROZEN (see the $comment in
-      # SplashCanvas.colorset/Contents.json); the gate returns when packages/theme re-emits
-      # them. A gate that cannot run is worse than no gate: it reports success forever.
+      # No native splash-colour freshness gate: the splash artifacts are FROZEN (see the $comment
+      # in SplashCanvas.colorset/Contents.json) and the gate returns when packages/theme re-emits
+      # them. Never gate on `pnpm --filter <pkg> build` for a package that can be deleted: pnpm
+      # exits 0 on an unmatched filter, so the step regenerates nothing, `git status` is clean,
+      # and the gate passes green while proving nothing. A gate that cannot run is worse than no
+      # gate: it reports success forever.
       - uses: actions/upload-artifact@v4
         with:
           name: openapi

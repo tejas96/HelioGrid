@@ -21,7 +21,7 @@ async function main() {
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no
     // invariant at all — that is exactly how the tenancy gate went unexecuted for the
-    // whole of the foundation phase, and again until 2026-07-31 because nothing loaded .env.local.
+    // whole of the foundation phase, and again because nothing loaded .env.local.
     if (env.CI) {
       throw new Error(
         'INVARIANTS NOT RUN: DATABASE_URL/DATABASE_ADMIN_URL missing under CI. ' +
@@ -42,8 +42,8 @@ async function main() {
    *
    * This is CI on a fresh service container: the teardown deleted migration 0004,
    * which created the role. Roles are CLUSTER-wide, so a long-lived dev database still has it
-   * and this whole condition is invisible locally — which is why main went red on 2026-08-01
-   * and stayed red while local runs looked green.
+   * and this whole condition is invisible locally — main goes red
+   * while local runs look green.
    *
    * Tables WITHOUT the role is a different thing entirely — a broken database, not a
    * greenfield one — and `runTenancyInvariants` still fails closed on it.
@@ -51,7 +51,7 @@ async function main() {
   if (empty && !hasRlsSubjectRole) {
     console.warn(
       '\n  INVARIANTS NOT RUN: the database was never migrated — 0 application tables and no\n' +
-        '  app_user role (greenfield since 2026-08-01). NOTHING is proven here:\n' +
+        '  app_user role (greenfield). NOTHING is proven here:\n' +
         '  not tenancy, not table scoping, not enum or schema parity. Real coverage returns\n' +
         "  with the auth + tenancy module's first migration, which re-creates the role.\n",
     );
@@ -59,7 +59,7 @@ async function main() {
   }
 
   if (empty) {
-    // Not a gate — the database is LEGITIMATELY empty after the 2026-08-01 teardown
+    // Not a gate — the database is LEGITIMATELY empty after the teardown
     // But a green run below must never read as "tenancy is proven", which is
     // exactly how the tenancy gate went unexecuted for the whole foundation phase.
     console.warn(

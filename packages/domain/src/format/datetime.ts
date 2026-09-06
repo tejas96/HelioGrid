@@ -19,7 +19,7 @@ import type { FormatPack } from './pack';
 
 /** Reference dates for NAMES ONLY, read in UTC so no zone can shift them by a day. */
 const NAME_YEAR = 2021;
-/** 2021-08-01 was a Sunday, which makes the weekday walk arithmetic instead of a lookup table. */
+/** `2021-08-01` is a Sunday, which makes the weekday walk arithmetic instead of a lookup table. */
 const SUNDAY = Date.UTC(2021, 7, 1);
 const DAY_MS = 86_400_000;
 const HHMM = /^([01]?\d|2[0-3]):([0-5]\d)$/;

@@ -4,8 +4,8 @@
 #
 # Matches the ACTION, not a mention: quoted segments are stripped first, so a commit message
 # that discusses the flag still lands, while the flag as an argument is caught wherever it
-# sits in the command. An earlier version truncated at the first `-m` instead and missed
-# `git commit -m x --no-verify` entirely (found by arch-reviewer 2026-08-03).
+# sits in the command. Truncating at the first `-m` instead misses
+# `git commit -m x --no-verify` entirely.
 set -euo pipefail
 
 cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')"

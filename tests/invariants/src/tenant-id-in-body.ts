@@ -40,7 +40,6 @@ function isRoute(node: Record<string, unknown>): boolean {
 /**
  * Banned keys anywhere in a schema, including nested objects and array members — a
  * `tenant_id` two levels down travels on the wire exactly as freely as one at the top.
- * (The first version checked only the top level; arch-reviewer caught it 2026-08-03.)
  */
 function schemaProblems(schema: ZodLike | undefined, path: string, depth = 0): string[] {
   if (depth > 8) return [];

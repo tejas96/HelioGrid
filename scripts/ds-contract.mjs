@@ -8,7 +8,7 @@
  *
  *   scripts/ds-contract/contracts.mjs         (a) WEAKENED / (b) DROPPED / (c) RAW EMIT
  *       Does each ported prop still MEAN what the design system's typings say it means?
- *   (d) FALSE EXCUSE was REMOVED 2026-08-25. It matched comment prose against a 24-phrase
+ *   (d) FALSE EXCUSE was REMOVED. It matched comment prose against a 24-phrase
  *       vocabulary, and was wrong in both directions: deleting only the excuse comment while
  *       keeping the dropped prop passed green — it fired on the sentence, never the code — and
  *       a correct attribution ("a dismiss affordance belongs to the IconButton a caller places

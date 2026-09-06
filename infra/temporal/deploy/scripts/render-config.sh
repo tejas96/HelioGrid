@@ -4,7 +4,7 @@
 # Two reasons this is not a build step:
 #  - Temporal does NOT expand `${VAR}` in a config file. The placeholder reaches the connection
 #    string verbatim and Postgres rejects `invalid port ":${TEMPORAL_POSTGRES_PORT}"`
-#    (measured 2026-08-25, infra/temporal/README.md §8). Substitution has to happen before the
+#    (infra/temporal/README.md §8). Substitution has to happen before the
 #    server reads the file.
 #  - `broadcastAddress` must be this machine's own 6PN address, and a machine has no address
 #    until it boots.

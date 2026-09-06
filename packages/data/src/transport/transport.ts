@@ -35,7 +35,7 @@ const FORWARDED_SERVER_HEADERS = ['authorization', 'cookie', REQUEST_ID_HEADER] 
 /**
  * Merge Set-Cookie rotations into the stored jar, keyed by cookie name.
  * Read with getSetCookie(), NEVER headers.get('set-cookie'): .get() joins multiple
- * Set-Cookie headers lossily and the server then rejects the session (hit 2026-07-26).
+ * Set-Cookie headers lossily and the server then rejects the session.
  */
 async function absorbRotation(headers: Headers, storage: TokenStorage): Promise<void> {
   const getSetCookie = (headers as HeadersWithSetCookie).getSetCookie;
@@ -154,7 +154,7 @@ async function sendRequest(
  *  - web has no storage; the browser owns the HttpOnly cookie and must send it cross-origin.
  *  - RN has storage, and the jar is then the ONLY cookie path. With native handling on, iOS
  *    CFNetwork merges its own copy into our manual header ("token,token") and the server
- *    rejects the session — a 401 with everything looking correct (hit 2026-07-26).
+ *    rejects the session — a 401 with everything looking correct.
  *  - a Next server render has no cookie jar at all: it forwards the allowlist above and
  *    otherwise sends nothing, so one render can never inherit another request's identity.
  */

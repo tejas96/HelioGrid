@@ -9,7 +9,7 @@ import type { PlatformActivities } from './platform.activities.types';
  * first product activity will implement.
  *
  * **The store is in memory, and that is a stated limit, not an oversight.** Product database
- * work is out of scope by owner ruling (2026-08-26), so this proves the retry/idempotency
+ * work is out of scope by owner ruling, so this proves the retry/idempotency
  * SHAPE and not durable idempotency across a process restart. The first product activity
  * replaces the map with its table.
  */

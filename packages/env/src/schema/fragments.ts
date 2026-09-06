@@ -6,7 +6,7 @@ import { z } from 'zod';
  *
  * This file never reads an environment source; it only describes shapes. Composition lives
  * in the sibling per-target schemas, validation in ../parse.ts, and the single actual read
- * in ../server.ts. Moved here from packages/contracts on 2026-07-30: contracts is the WIRE
+ * in ../server.ts. Here and not in packages/contracts: contracts is the WIRE
  * format, and deployment configuration is not part of the API surface.
  */
 

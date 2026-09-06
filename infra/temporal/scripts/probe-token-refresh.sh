@@ -3,7 +3,7 @@
 #
 # The failure this guards: a token read once at boot expires, and every call then fails with
 # "Request unauthorized." — which reads as a permissions problem rather than a stale
-# credential, so the first instinct is to widen permissions. Hit on the local stack 2026-08-26.
+# credential, so the first instinct is to widen permissions.
 set -uo pipefail
 cd "$(dirname "$0")/../../.." || exit 1
 
@@ -35,7 +35,7 @@ check "the workflow completed on the ROTATED tokens" $? "$out"
 # The check above proves the WORKER's refresh — it is one long-lived process across the
 # rotation. It says NOTHING about the API's: `cutover-wf.mjs` is a fresh process per call, so
 # it re-reads the file whether or not the client refreshes. That gap hid an unwired API reader
-# through a green run (2026-08-26). This probe holds ONE client across the rotation.
+# through a green run. This probe holds ONE client across the rotation.
 node --env-file="$API_ENV" "$SPIKE/probe-api-token-refresh.mjs" >/dev/null 2>&1
 check "the API client refreshes on a LONG-LIVED connection" $? "4 checks"
 

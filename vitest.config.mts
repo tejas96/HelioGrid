@@ -4,8 +4,7 @@ import { defineConfig } from 'vitest/config';
 const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
 
 /**
- * Unit tests — owner ruling 2026-09-03, which commissioned the testing programme the
- * 2026-07-29 directive deferred. `tests/invariants/` did not go away: the two prove different
+ * Unit tests sit beside `tests/invariants/`: the two prove different
  * things and neither replaces the other.
  *
  *   * an INVARIANT proves a property of the SYSTEM — tenancy holds, the contract and the
@@ -34,7 +33,6 @@ export default defineConfig({
      * A test imports `../../src/…`, never `@heliogrid/<pkg>`. The package entry resolves to
      * BUILT `dist/`, so a test written that way passes against the last build and says nothing
      * about the source you just edited — a false green that reads exactly like a real one.
-     * This bit the format slice on 2026-09-03 while proving an invariant went red.
      */
     coverage: {
       provider: 'v8',

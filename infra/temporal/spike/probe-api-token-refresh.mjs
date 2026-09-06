@@ -3,7 +3,7 @@
  *
  * This needs a LONG-LIVED client: a fresh process reads the file at startup and would pass
  * whether or not the refresh works, which is exactly how the API half of this went unproven
- * on the first attempt (2026-08-26). One client, one connection, a rotation in between.
+ * at first. One client, one connection, a rotation in between.
  */
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -59,7 +59,7 @@ check('3 the SAME client starts a workflow on the ROTATED token', ok, after);
  *
  * Assert down the CAUSE CHAIN, not on `error.message`: the SDK's own message is the generic
  * "Failed to start Workflow" and the server's reason sits underneath. Matching the top-level
- * message reported a false FAIL on a working implementation (2026-08-26).
+ * message reports a false FAIL on a working implementation.
  */
 execFileSync('sh', ['-c', `printf 'Bearer not-a-jwt' > ${tokenFile}`]);
 const reason = (error) => {

@@ -8,7 +8,7 @@ import { HttpException, type HttpStatus } from '@nestjs/common';
  * `status` is REQUIRED, and that is deliberate. It used to default via
  * `errorHttpStatusByCode[code]`, but that map only holds BASE codes — a route-specific
  * literal missed it and silently fell back to 500, so the wire carried the right code with
- * the wrong status (caught by an end-to-end curl on 2026-07-27, not by typecheck). The
+ * the wrong status — caught by an end-to-end curl, not by typecheck. The
  * throw site always knows the status its contract declares; making it required means the
  * mistake cannot recur.
  *

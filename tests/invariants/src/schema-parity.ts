@@ -1,7 +1,7 @@
 import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
 
 /**
- * GREENFIELD (2026-08-01): `@heliogrid/db` exports no `schema` right now, so there
+ * GREENFIELD: `@heliogrid/db` exports no `schema` right now, so there
  * is no Drizzle model to compare and `dbSchema` below is empty. The comparison code is kept
  * INTACT — the auth + tenancy module re-adds `packages/db/src/schema/` with its first
  * migration, and this import comes back as `import { schema as dbSchema } from '@heliogrid/db'`
@@ -122,8 +122,8 @@ export async function runSchemaParity(adminUrl: string) {
           'migration ran that nothing models. Both are the drift this invariant exists for.',
       );
       console.log(
-        'schema parity VACUOUS — no Drizzle model and no tables (greenfield since ' +
-          '2026-08-01). Proves nothing about column parity; only that the two are ' +
+        'schema parity VACUOUS — no Drizzle model and no tables (greenfield). ' +
+          'Proves nothing about column parity; only that the two are ' +
           'consistently empty.',
       );
       return;
