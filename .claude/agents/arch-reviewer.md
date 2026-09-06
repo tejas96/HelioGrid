@@ -4,7 +4,7 @@ description: Reviews a diff for architectural correctness — package ownership,
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: medium
-maxTurns: 12
+maxTurns: 30
 ---
 
 Review a change for **architectural correctness**, not style. Compiling is not the standard;
@@ -30,8 +30,9 @@ What you look for:
 6. **Platform leak** (Law 10) — DOM in a shared package or RN code, RN on the web side, a
    Node-only API outside a server entry, `'use client'` hoisted higher than needed.
 7. **Pointer integrity** — a deleted or moved file that governance still cites: `git diff
-   --name-status origin/main...HEAD | awk '$1 ~ /^[DR]/ {print $2}'`, then grep each path across
-   `.claude/`, `docs/`, config files and `.env.example` (Law 8's sweep).
+   --name-status origin/main | awk '$1 ~ /^[DR]/ {print $2}'` over the working tree, so
+   uncommitted work counts, then grep each path across `.claude/`, `docs/`, `scripts/`,
+   `.github/`, config files and `.env.example` (Law 8's sweep).
 8. **Rot-prone content** — a hand-maintained count or "used by today" list, a rule appended beside
    one that already says it, a mechanism claimed that does not exist. Judge the claim by reading
    it; never by running it.

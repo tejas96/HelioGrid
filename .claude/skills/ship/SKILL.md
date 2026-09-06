@@ -18,10 +18,11 @@ file? `pnpm turbo build --force` first, then Law 8's sweep.
 
 ## 2. Review sized to the diff
 
-**Tier 0, every change, inline, two commands.** `git diff --name-status origin/main...HEAD`: for
+**Tier 0, every change, inline, two commands.** `git diff --name-status origin/main` plus
+`git ls-files --others --exclude-standard` — the working tree, so uncommitted work counts: for
 each added or renamed file, name its `architecture.md` §4 step in one line; for each deleted or
-moved path, grep `.claude/`, `docs/`, configs and `.env.example` for the dead pointer. Fix what
-that finds.
+moved path, grep `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the
+dead pointer. Fix what that finds.
 
 **Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
 excluded) creates a folder, spans two or more packages or apps, touches `packages/contracts` or

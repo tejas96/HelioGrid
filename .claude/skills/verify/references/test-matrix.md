@@ -58,9 +58,9 @@ Author these assuming the implementation is wrong until proven otherwise.
 ## Assert on text, not on pixels — on EVERY surface
 
 Never ask the model whether a gap is 12px, or whether a screenshot "shows the login
-screen". It will confidently guess, and it guesses in the direction of a pass. On
-2026-08-02 a blank `Loading from …:8081` frame was reported as "wordmark, Welcome back,
-+91 prefix, disabled Continue" — because the step's criterion was a picture.
+screen". It will confidently guess, and it guesses in the direction of a pass: a blank
+loading frame has been reported as a fully rendered screen because the step's criterion was a
+picture.
 
 **Every surface has a machine-readable view tree. Use it as the criterion:**
 
