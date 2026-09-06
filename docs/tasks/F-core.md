@@ -101,6 +101,8 @@ This file dispositions every requirement row of the suite's four core documents 
 - Given a promotional send in IN, when it is dispatched, then the product enforces no window of its own and a carrier or DLT refusal is reported honestly rather than pre-empted by a guessed one (`F1-62`, `F1-38`).
 - Given the IN pack's send-hour default, when it is read, then it is 19:00 on the tenant's timezone, and a tenant may narrow within it but never widen (`F1-62`, `F1-10`).
 
+*Note:* `F1-15` makes the ruleset DATA and the compliance gate that enforces it `M07`'s non-swappable mechanism, so the lines above divide the same way. This task proves the ones a pack and its pure rules can prove: the one key with every item classified, the hard disable of outbound voice, narrowing without a path across a floor, the authored EMPTY messaging window, the unheld transactional send and the 19:00 default. The lines that describe an agent's own conduct — the dialled promotional call, the requested-callback lane, the AI-honesty floors, the disclosure auto-flip and its owner notification, serving a customer who declines recording — are proven when `M07`'s gate lands and read this pack; the consent RECORD they land in is `pack.data-rights` (`F1-58`, `T-FCORE-009`), and honest reporting of a carrier refusal is `F1-38` (`T-FCORE-005`).
+
 ---
 
 ### T-FCORE-005 · IN telephony and messaging compliance routes — 140-series CLI + DLT-registered SMS
@@ -114,6 +116,8 @@ This file dispositions every requirement row of the suite's four core documents 
 **DONE WHEN:**
 
 - Given IN promotional outbound, when a CLI is selected, then it is a 140-series identity, never a 1600-series one; and given any platform SMS, when it is sent, then it uses a DLT-registered entity/header/template (F1-37, F1-38).
+
+*Note:* `F1-15` lists caller-line/series routing and messaging sender/template registration among `pack.calling-rules`' items, and their India values are this task's `F1-37` and `F1-38`. Both FIELDS therefore land here, on `CallingRulesPack` (`packages/domain/src/calling/pack.ts`), together with their `IN_CALLING_RULES` values — `T-FCORE-004` authored the key without them rather than leave placeholders a launch gate would read as authored (Law 9).
 
 ---
 

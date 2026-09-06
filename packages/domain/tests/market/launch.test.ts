@@ -7,7 +7,6 @@ import { IN_PACK, type MarketPack } from '../../src/market/pack';
 type PendingKey = Exclude<PackKey, keyof MarketPack>;
 
 const PENDING: readonly PendingKey[] = [
-  'callingRules',
   'paymentRails',
   'certificationSchemes',
   'dataRights',
@@ -27,16 +26,16 @@ describe('unauthoredKeys — which of the eight keys a pack has not authored (F1
   });
 
   it('names the one key that is missing', () => {
-    expect(unauthoredKeys(packWith(PENDING.filter((key) => key !== 'callingRules')))).toEqual([
-      'callingRules',
+    expect(unauthoredKeys(packWith(PENDING.filter((key) => key !== 'paymentRails')))).toEqual([
+      'paymentRails',
     ]);
   });
 
   it('lists the missing keys in PRD order, whatever order they were authored in', () => {
-    const missingRulesAndBook = PENDING.filter(
-      (key) => key !== 'priceBook' && key !== 'callingRules',
+    const missingRailsAndBook = PENDING.filter(
+      (key) => key !== 'priceBook' && key !== 'paymentRails',
     );
-    expect(unauthoredKeys(packWith(missingRulesAndBook))).toEqual(['callingRules', 'priceBook']);
+    expect(unauthoredKeys(packWith(missingRailsAndBook))).toEqual(['paymentRails', 'priceBook']);
   });
 });
 
