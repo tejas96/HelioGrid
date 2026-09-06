@@ -210,12 +210,16 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm check:unused` | `knip` — finds unused exports/files (not part of `pnpm verify`, run manually) |
 | `pnpm check:dupes` | `jscpd` — duplicate-code scan (not part of `pnpm verify`, run manually) |
 
-CI (`.github/workflows/ci.yml`) runs a superset of `pnpm verify` in one job — build first (so
-dependency-cruiser can resolve workspace `dist/` output), then lint, boundaries, typecheck,
-apply migrations against a real CI Postgres, run the invariants, build again, check OpenAPI
-freshness, and guard that i18n messages are extracted — plus separate Android/iOS build jobs
-and a Gitleaks secret scan. If it's not green in CI, `pnpm verify` locally should already have
-told you (except the DB-dependent and i18n-extraction steps, which need real Postgres to run).
+CI (`.github/workflows/ci.yml`) has one job that always runs, `quality`: a Gitleaks secret
+scan, the append-only migration guard, migrations applied to a real CI Postgres, then
+`pnpm verify:ci` (build first, so dependency-cruiser can resolve workspace `dist/`) with
+`oasdiff` installed so the OpenAPI breaking-change check fails closed instead of skipping.
+Three mobile lanes are switched on by path by a `changes` job: `mobile-js` (the Metro bundle,
+whenever `apps/mobile` or a package mobile bundles changes) and `android` / `ios` (native
+builds, only when native files, the mobile `package.json` or the lockfile change). Markdown
+never counts. A skipped lane reports success, so all four are safe to require on `main`. If
+`quality` is not green, `pnpm verify` locally should already have told you (except the
+DB-dependent and i18n-extraction steps, which need real Postgres to run).
 
 ## Working with packages (add / update / remove)
 

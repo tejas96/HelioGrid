@@ -5,17 +5,109 @@ on:
     branches: [main]
   pull_request:
 
+# The token reads the repository and nothing else. A step that needs more declares it itself.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 env:
   TURBO_TELEMETRY_DISABLED: '1'
+  # The breaking-change half of check:openapi (M26). Version and checksum are bumped TOGETHER;
+  # the checksum is the linux_amd64 tar.gz line of that release's checksums.txt.
+  OASDIFF_VERSION: 1.31.0
+  OASDIFF_SHA256: 0177d4bc0bf04f4061e9277795b77335ee100a43b508e94fce5c46de083bbede
 
 jobs:
-  quality:
-    name: quality (lint · typecheck · unit tests · invariants · build · openapi)
+  # Which lanes this change can reach. `quality` never asks; it always runs. The three mobile
+  # lanes ask, because a native build costs 11–15 minutes and proves nothing about a change
+  # that no mobile bundle contains. Markdown never counts: a CLAUDE.md inside apps/mobile is
+  # not a mobile change (the same rule /verify applies to its blast radius).
+  changes:
+    name: changes
     runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      mobile_js: ${{ steps.lanes.outputs.mobile_js }}
+      android: ${{ steps.lanes.outputs.android }}
+      ios: ${{ steps.lanes.outputs.ios }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: lanes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          sha="${GITHUB_SHA:-HEAD}"
+          # A pull request diffs against the merge base with its target; a push diffs against the
+          # tip it replaced. No usable base (a first push, a force-push, a rewritten tip) means
+          # every lane runs — unknown is never treated as "nothing changed".
+          range=''
+          if [ "$EVENT" = pull_request ]; then
+            git fetch --no-tags --quiet origin "$BASE_REF"
+            range="origin/${BASE_REF}...${sha}"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ] \
+               && git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            range="${BEFORE}..${sha}"
+          fi
+          if [ -z "$range" ]; then
+            echo 'no base to diff against — every lane runs'
+            files=''; all=true
+          else
+            files=$(git diff --name-only "$range" | grep -vE '\.md$' || true)
+            all=false
+            printf 'changed (markdown dropped):\n%s\n' "${files:-<none>}"
+          fi
+          lane() { # lane <output> <path regex>
+            local on=false
+            if [ "$all" = true ] || printf '%s\n' "$files" | grep -qE "$2"; then on=true; fi
+            echo "$1=$on" >> "$GITHUB_OUTPUT"
+            echo "$1: $on"
+          }
+          # Everything Metro bundles: the app and every package apps/mobile may import
+          # (turbo.json boundaries, app-mobile), plus the files that shape the module graph.
+          lane mobile_js '^(apps/mobile/|packages/(config|contracts|data|domain|env|forms|i18n|theme|ui)/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
+          # A native build changes only through native sources, the app manifest, the mobile
+          # package.json (autolinking) or the lockfile (a native dependency's version).
+          lane android '^(apps/mobile/(android/|package\.json$|app\.json$|react-native\.config\.js$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
+          lane ios '^(apps/mobile/(ios/|package\.json$|app\.json$|react-native\.config\.js$|Gemfile$|Gemfile\.lock$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
+      - name: A pull request is at most 1,000 non-generated lines (M93)
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
+        run: |
+          set -euo pipefail
+          # A PR a person can verify in one sitting. Generated files are not read by a person,
+          # so they do not count; everything else does, docs included, because the docs are part
+          # of the change (Law 8). The cap is a ceiling on one complete PR, never a licence to
+          # ship half a task: a task that cannot fit is split at /start, before it is built.
+          # `size-exception`, a label only a person can add, records the one-off case in the PR.
+          limit=1000
+          lines=$(git diff --numstat "origin/${BASE_REF}...${GITHUB_SHA:-HEAD}" \
+            | grep -vE '\t(pnpm-lock\.yaml|packages/contracts/openapi/openapi\.json|packages/i18n/src/locales/.*|packages/theme/src/_generated/.*|.*\.snap)$' \
+            | awk '{ a += $1 == "-" ? 0 : $1; d += $2 == "-" ? 0 : $2 } END { print a + d + 0 }')
+          echo "non-generated lines changed: $lines (limit $limit)"
+          case " $LABELS " in *" size-exception "*) echo 'size-exception label present — recorded, not enforced'; exit 0;; esac
+          if [ "$lines" -gt "$limit" ]; then
+            echo "::error::This PR changes $lines non-generated lines; the ceiling is $limit. Split the task"
+            echo "::error::into complete PRs (/start sizes a task before it is built), or add the"
+            echo "::error::size-exception label with the reason in the PR body."
+            exit 1
+          fi
+
+  quality:
+    name: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16
@@ -38,6 +130,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Full history: gitleaks scans every commit, and the openapi breaking-change compare
+          # and the migration guard both read origin/<base>.
           fetch-depth: 0
       - name: Secret scan
         uses: gitleaks/gitleaks-action@v2
@@ -65,7 +159,26 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
+      - name: Install oasdiff (the breaking-change half of check:openapi — M26)
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/oasdiff"
+          mkdir -p "$dir"
+          curl -fsSL -o "$dir/oasdiff.tar.gz" \
+            "https://github.com/oasdiff/oasdiff/releases/download/v${OASDIFF_VERSION}/oasdiff_${OASDIFF_VERSION}_linux_amd64.tar.gz"
+          echo "${OASDIFF_SHA256}  $dir/oasdiff.tar.gz" | sha256sum -c -
+          tar -xzf "$dir/oasdiff.tar.gz" -C "$dir"
+          bin=$(find "$dir" -type f -name oasdiff | head -1)
+          [ -n "$bin" ] || { echo '::error::no oasdiff binary in the release archive'; exit 1; }
+          chmod +x "$bin"
+          dirname "$bin" >> "$GITHUB_PATH"
+          "$bin" --version
       - name: Apply migrations (CI database)
         # Must run before pnpm verify:ci so the invariants have tables to inspect.
         # The auth-provider migration step was removed on 2026-08-01 with the greenfield reset
@@ -101,9 +214,42 @@ jobs:
           name: openapi
           path: packages/contracts/openapi/openapi.json
 
-  android:
-    name: android (assembleDebug)
+  mobile-js:
+    name: mobile-js
+    needs: changes
+    if: needs.changes.outputs.mobile_js == 'true'
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      - name: Bundle the RN JavaScript (Law 7's only proof that the JS resolves)
+        working-directory: apps/mobile
+        # Neither native lane bundles JS — a debug build loads it from Metro at runtime — so
+        # this is the one mechanical proof the React Native JavaScript even resolves: a broken
+        # import path, a renamed asset, a Metro resolution failure of a workspace package, or a
+        # package-exports change in a dependency all pass typecheck. Only the bundler walks the
+        # real module graph the app runs on. No `.ios.*`/`.android.*` file exists, so the
+        # android bundle covers the whole graph.
+        run: pnpm bundle
+
+  android:
+    name: android
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -116,25 +262,27 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo build --filter='@heliogrid/mobile^...'
       - name: Assemble debug APK
         working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --no-daemon
-      - name: Bundle the RN JavaScript (Law 7's only proof that the JS resolves)
-        working-directory: apps/mobile
-        # `assembleDebug` does NOT bundle JS — a debug build loads it from Metro at runtime —
-        # and the iOS job builds Debug too. So until this step nothing mechanical proved the
-        # React Native JavaScript even resolves: a broken import path, a renamed asset, a Metro
-        # resolution failure of a workspace package, or a package-exports change in a dependency
-        # all passed CI green. typecheck does not catch these — the bundler is the only thing
-        # that walks the real module graph the app runs on.
-        shell: bash
-        run: pnpm bundle
 
   ios:
-    name: ios (simulator build, macOS lane)
+    name: ios
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
     runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      # The Gemfile.lock resolves the `ruby` platform only (apps/mobile/.bundle/config sets the
+      # same flag locally); without it bundler refuses the darwin platform of the runner.
+      BUNDLE_FORCE_RUBY_PLATFORM: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -142,13 +290,29 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          working-directory: apps/mobile
+          # Installs the Gemfile.lock's CocoaPods into vendor/bundle and caches it by lockfile
+          # hash — the pinned version React Native's template expects, not whatever `gem` finds.
+          bundler-cache: true
+      - uses: actions/cache@v4
+        with:
+          path: apps/mobile/ios/Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('apps/mobile/ios/Podfile.lock') }}
       - name: Pod install
         working-directory: apps/mobile/ios
-        run: |
-          bundle install || sudo gem install cocoapods
-          pod install
+        env:
+          BUNDLE_GEMFILE: ${{ github.workspace }}/apps/mobile/Gemfile
+        run: bundle exec pod install
       - name: Build for simulator (no signing)
         working-directory: apps/mobile/ios
         # `shell: bash` turns on `-o pipefail`. Without it the step's exit status is

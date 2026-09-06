@@ -5,8 +5,9 @@
  *   1. FRESHNESS: the openapi.json on disk already matches what the contract emits.
  *      A stale committed surface is a lie told to every reader. This is the CI gate.
  *   2. BREAKING CHANGES: the emitted surface introduces no breaking change against the
- *      base branch, via oasdiff. On-demand and local: it skips cleanly when oasdiff is
- *      absent, so `pnpm check:openapi` degrades to the freshness half on any machine.
+ *      base branch, via oasdiff. Under CI this is a GATE (`M26`): an absent tool, a tool
+ *      that cannot compare, or an unfetched base fails closed. Locally the same cases skip
+ *      and say so, so `pnpm check:openapi` degrades to the freshness half on any machine.
  *
  * Freshness is decided by hashing the file BEFORE and AFTER a fresh emit — not by asking
  * git. Two reasons: (a) the emit reads packages/contracts/dist, so we build first, and a
@@ -26,6 +27,7 @@ import { join, resolve } from 'node:path';
 const ROOT = resolve(import.meta.dirname, '..');
 const SPEC = join(ROOT, 'packages/contracts/openapi/openapi.json');
 const BASE = process.env.OPENAPI_BASE_REF ?? 'origin/main';
+const UNDER_CI = Boolean(process.env.CI) && process.env.CI !== 'false';
 
 const run = (cmd, args, opts = {}) =>
   execFileSync(cmd, args, { cwd: ROOT, encoding: 'utf8', ...opts });
@@ -50,13 +52,40 @@ if (before === null || !before.equals(after)) {
 console.log('openapi freshness OK — committed spec matches the contract');
 
 // ── 2. Breaking changes vs the base branch ────────────────────────────────────
+/**
+ * A compare that cannot run is not a pass. Under CI it is a failure (`M26` fails closed);
+ * locally it is a labelled skip, because a developer without oasdiff is not a broken build.
+ * Returns the exit code the caller should use.
+ */
+function inconclusive(reason) {
+  if (UNDER_CI) {
+    console.error(
+      `\nOPENAPI BREAKING-CHANGE CHECK CANNOT RUN under CI: ${reason}.\n` +
+        'A compare that cannot run is not a pass (M26). The workflow installs oasdiff and\n' +
+        'fetches the base with full history; one of the two is missing here.\n',
+    );
+    return 1;
+  }
+  console.log(`openapi breaking-change check skipped — ${reason} (local, on-demand check)`);
+  return 0;
+}
+
+function refExists(ref) {
+  try {
+    run('git', ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 let baseSpec;
 try {
   baseSpec = run('git', ['show', `${BASE}:packages/contracts/openapi/openapi.json`]);
 } catch {
-  console.log(
-    `openapi breaking-change check skipped — no spec at ${BASE} (new file or unfetched base)`,
-  );
+  if (!refExists(BASE)) process.exit(inconclusive(`${BASE} is not fetched`));
+  // The base exists and carries no spec: a genuinely new file has nothing to break.
+  console.log(`openapi breaking-change check skipped — no spec at ${BASE} (new file)`);
   process.exit(0);
 }
 
@@ -82,11 +111,7 @@ try {
   // status of 1 is a real break — every other failure is the tool unable to compare, which
   // is a SKIP, not a verdict. Misreporting tool drift as a breaking change is a false alarm
   // that trains people to ignore the gate.
-  if (err.code === 'ENOENT') {
-    console.log(
-      'openapi breaking-change check skipped — oasdiff not installed (local, on-demand check)',
-    );
-  } else if (err.status === 1) {
+  if (err.status === 1) {
     console.error(`\nOPENAPI BREAKING CHANGE vs ${BASE}:\n`);
     console.error((err.stdout || err.message).trim());
     console.error(
@@ -95,9 +120,10 @@ try {
     );
     code = 1;
   } else {
-    console.log(
-      `openapi breaking-change check skipped — oasdiff could not compare (exit ${err.status}); ` +
-        'result inconclusive, not treated as a break',
+    code = inconclusive(
+      err.code === 'ENOENT'
+        ? 'oasdiff is not installed'
+        : `oasdiff could not compare (exit ${err.status})`,
     );
   }
 } finally {
