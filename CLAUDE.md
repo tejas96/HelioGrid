@@ -34,7 +34,7 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 7. **One prop contract per shared component.** Both platform files implement the one
    `<Name>.types.ts`; a prop belongs to that contract, never to a single platform.
 8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES files
-   greps `.claude/`, `docs/`, configs and `.env.example` for the dead paths.
+   greps `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored only
    when their owning module's slice begins.
 10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API outside a
@@ -103,7 +103,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
-| `.claude/rules/` | law that spans MORE than one package — a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the
@@ -159,19 +159,8 @@ Every line, every app, every package. No exceptions for "just this once".
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
   the application.
-- **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker`. Not
-  the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
-  client, `db` by migrations and `tests/invariants/`.
-- **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
-  never inside `src/`, where the package's own `tsc -b` compiles the test into `dist/` and ships
-  it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
-- **Test the DECISION at its edges** — the boundary and one either side, the empty, the negative,
-  the zero, as one `it.each` table per rule. A test that restates the implementation proves
-  nothing. Never test a type, a constant or a re-export; never mock what this repo owns. Coverage
-  thresholds land WITH the slice (Law 9), per glob, at 100%.
-- **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
-  against real state; a unit test proves one decision at its edges. Neither substitutes for the
-  other.
+- **Testing law is `.claude/rules/testing.md`** — which layers get unit tests, the one name and
+  place a test has, what a test proves, and why it never replaces `tests/invariants/`.
 
 Writing rules, not code:
 

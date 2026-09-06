@@ -404,9 +404,9 @@ fi
 # of check here.
 #
 # Brands land with the slices that create them, and each is registered here the day it lands
-# (.claude/rules/architecture-ownership.md) as `<Brand>:<owning path prefix>`. The loop existed
-# before its first brand for the same reason the domain-purity rules existed before
-# packages/domain did: a rule authored after its first violation has already been broken once.
+# (mechanisms.md M60) as `<Brand>:<owning path prefix>`. The loop existed before its first brand
+# for the same reason the domain-purity rules existed before packages/domain did: a rule
+# authored after its first violation has already been broken once.
 BRANDS='MarketCode:packages/domain/ PackVersion:packages/domain/'
 
 cast_escapes=''

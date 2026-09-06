@@ -32,7 +32,7 @@ propose the slices in order. A slice that cannot pass its done-when alone is not
 
 ## 3. Branch, and stop
 
-`git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix` for a bug, `ci`,
+`git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix` for a bug, `ci`,
 `chore` or `docs` for work with no task rows. Then stop and wait for the go. The go covers this
 branch and, later, the push and the PR (`CLAUDE.md` §4); every commit still waits for its own yes.
 

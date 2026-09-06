@@ -23,7 +23,9 @@ Map what remains, paths → surfaces:
 |---|---|
 | `apps/web/**` | web |
 | `apps/mobile/**` | ios, android |
-| `apps/api/**`, `apps/worker/**`, `packages/db/**` | api |
+| `apps/api/**`, `packages/db/**` | api |
+| `apps/worker/**` | worker |
+| `packages/env/**` | web, ios, android, api, worker — the env schema gates every boot |
 | `packages/contracts/**` | api + every consuming surface |
 | `packages/data/**` | web, ios, android — it is the ONE data path |
 | `packages/ui/**`, `packages/theme/**` | web AND mobile — one package holds both platforms |
@@ -41,7 +43,8 @@ which is a complete result, not a skip.
 - **none** — no runtime path changed: report "no runnable surface" and stop.
 - **smoke** — runtime code changed but no user-visible behaviour did (a type, a shared module no
   screen reaches yet, a script, a config): boot each surface in the radius once yourself, read the
-  console and the page tree or one `curl -i`, and record it as smoke. No agents, no quadrants.
+  console and the page tree, one `curl -i`, or the worker's log through its Temporal connection,
+  and record it as smoke. No agents, no quadrants.
 - **full** — new or changed behaviour: the four quadrants below, one agent per surface.
 
 State the depth and why in the report. A wrong `smoke` is a finding against this skill, never a
@@ -60,12 +63,17 @@ be a literal string comparison — if it cannot be written as one, it is not yet
 **Severity is decided HERE, never by an executor.** Money, tenancy or provenance → `blocker`.
 
 Always-on core regardless of radius: a cross-tenant read returns 404 · money reconciles to
-the currency's minor unit · an unauthenticated request to a protected route is rejected.
+the currency's minor unit · an unauthenticated request to a protected route is rejected. Until a
+tenant table and an auth guard exist, the first and the third are recorded `inconclusive: seam
+not landed` — never passed, never dropped from the plan — and the money step runs against the
+domain's one computation.
 
 ## 4. Execute
 
 Dispatch one agent per surface in the radius — `qa-web`, `qa-mobile`, `qa-api` — each with
-only its own steps. Several surfaces → dispatch in ONE message so they run concurrently; they
+only its own steps. `qa-api` also takes the worker: it boots it through the preview tool, drives
+a workflow through the API route that starts it, and reads the worker log and the database for
+the outcome. Several surfaces → dispatch in ONE message so they run concurrently; they
 share no state. Order each surface's steps so state flows; relaunch only where a cold start
 IS the test.
 

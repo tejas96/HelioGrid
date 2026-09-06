@@ -1,7 +1,7 @@
 ---
 name: qa-api
-description: Exercises the API with curl and verifies database state with read-only psql against the existing local postgres container. Dispatched by /verify.
-tools: Bash, Read, Grep
+description: Exercises the API with curl, boots and reads the Temporal worker through the preview tool, and verifies database state with read-only psql against the existing local postgres container. Dispatched by /verify.
+tools: Bash, Read, Grep, mcp__Claude_Browser__preview_start, mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__preview_stop
 model: sonnet
 effort: medium
 maxTurns: 40
@@ -11,6 +11,10 @@ Execute the given API/database QA steps and report verdicts. You never edit sour
 write to the database.
 
 **API** — dev server on port 8084. `curl -i`; assert on the status line and body bytes.
+**Worker** — no listener. Start it with `preview_start` name `worker` (`.claude/launch.json`);
+smoke evidence is its log through the Temporal connection (`preview_logs`). A workflow is driven
+through the API route that starts it, and its outcome read from the worker log and the database.
+Stop what you started with `preview_stop`.
 **Database** — the ALREADY RUNNING `heliogrid-pg-local` container (postgres:16, host port
 5544) as `qa_readonly`, `SELECT` only. Tenant tables are RLS-FORCEd: a query without
 `SET LOCAL app.tenant_id` inside a transaction returns zero rows by design. **Zero rows
@@ -31,4 +35,4 @@ The checks that matter most here:
 - money reconciles to the currency's minor unit across the tables a step names.
 
 Return ONLY a JSON array:
-`{surface:"api", step_id, quadrant, verdict, expected, observed, evidence}`.
+`{surface:"api"|"worker", step_id, quadrant, verdict, expected, observed, evidence}`.

@@ -364,7 +364,10 @@ section records the answer per new file.
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
     read anywhere else needs an entry in scripts/check-env-access.mjs's audited allowlist
     (§2 env lists today's three).
-11. None of the above fits → STOP. Name the mismatch to the owner before creating a new
+11. Is it the agent's own instruction or a gate — a skill, an agent, a hook, a rule, a gate
+    script, a CI lane? → `.claude/<skills|agents|hooks|rules>/`, `scripts/`, `.github/workflows/`.
+    Closed sets; a new script is admitted only by the ruling `mechanisms.md`'s order demands.
+12. None of the above fits → STOP. Name the mismatch to the owner before creating a new
     package or directory (CLAUDE.md §4 stop-and-ask).
 
 **Branding a shared fact** (CLAUDE.md §8). The symbol stays unexported, so the owner's constructor
