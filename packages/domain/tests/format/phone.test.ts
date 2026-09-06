@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { type FormatPack, IN_FORMATS } from '../../src/format/pack';
-import { formatPhone } from '../../src/format/phone';
+import { formatPhone, nationalNumber } from '../../src/format/phone';
 
 /** A market that declares no grouping — the digits stay one run. */
 const UNGROUPED: FormatPack = {
@@ -53,5 +53,20 @@ describe('formatPhone — display only; storage stays E.164 (F1-49)', () => {
 
   it.each([[''], ['   ']])('renders %o as nothing to group', (value) => {
     expect(formatPhone(IN_FORMATS, value)).toBe('');
+  });
+});
+
+describe('nationalNumber — the one derivation a display and a compliance check share (F1-37)', () => {
+  it.each([
+    ['+91 98450 27746', '9845027746', 'a formatted number carrying this market’s code'],
+    ['+919845027746', '9845027746', 'the stored E.164 spelling'],
+    ['9845027746', '9845027746', 'a value that is already national'],
+    ['+911600123456', '1600123456', 'a series number, where the leading digits are the answer'],
+  ])('reads %s as %s — %s', (value, expected) => {
+    expect(nationalNumber(IN_FORMATS, value)).toBe(expected);
+  });
+
+  it('strips nothing where the market declares no calling code', () => {
+    expect(nationalNumber(NO_DIAL_CODE, '919845027746')).toBe('919845027746');
   });
 });

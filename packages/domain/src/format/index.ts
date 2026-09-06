@@ -30,4 +30,4 @@ export type {
   PhoneFormats,
 } from './pack';
 export { IN_FORMATS } from './pack';
-export { formatPhone, type PhoneOptions } from './phone';
+export { formatPhone, nationalNumber, type PhoneOptions } from './phone';

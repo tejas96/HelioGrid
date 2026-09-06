@@ -33,6 +33,7 @@ describe('the IN ruleset carries voice AND messaging in the one key (F1-15, F1-1
     ['recordingRetentionDays', 'floor'],
     ['proactiveAiDisclosure', 'floor'],
     ['recordingConsentCaptured', 'default'],
+    ['callerLineSeries', 'floor'],
   ])('classifies the voice item %s as %s', (item, enforcement) => {
     expect(IN_VOICE.declared && IN_VOICE[item as 'dndScrubMaxAgeHours'].enforcement).toBe(
       enforcement,
@@ -42,6 +43,7 @@ describe('the IN ruleset carries voice AND messaging in the one key (F1-15, F1-1
   it.each([
     ['statutoryWindow', 'floor'],
     ['scheduledSendHour', 'default'],
+    ['senderRegistration', 'floor'],
   ])('classifies the messaging item %s as %s', (item, enforcement) => {
     expect(IN_CALLING_RULES.messaging[item as 'scheduledSendHour'].enforcement).toBe(enforcement);
   });
@@ -68,6 +70,27 @@ describe('the IN voice floor — TRAI/DND (F1-36, F1-39)', () => {
 
   it('captures recording consent by default', () => {
     expect(IN_VOICE.declared && IN_VOICE.recordingConsentCaptured.value).toBe(true);
+  });
+});
+
+describe('the IN compliance routes — 140-series CLI and DLT (F1-37, F1-38)', () => {
+  it('requires the 140-series for promotional outbound and nothing for the other classes', () => {
+    expect(IN_VOICE.declared && IN_VOICE.callerLineSeries.value.requiredByClass).toEqual({
+      transactional: null,
+      promotional: '140',
+      inbound: null,
+    });
+  });
+
+  it('closes the 1600-series, which is not open to non-BFSI entities', () => {
+    expect(IN_VOICE.declared && IN_VOICE.callerLineSeries.value.forbidden).toEqual(['1600']);
+  });
+
+  it('demands DLT registration of the entity, the header and the template', () => {
+    expect(IN_CALLING_RULES.messaging.senderRegistration.value).toEqual({
+      platform: 'DLT',
+      levels: ['entity', 'header', 'template'],
+    });
   });
 });
 

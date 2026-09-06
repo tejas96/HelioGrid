@@ -52,6 +52,7 @@ export {
   visibilityIn,
 } from './authz';
 export type {
+  CallerLineSeries,
   CallingRulesPack,
   CallingWindow,
   ClockTime,
@@ -60,7 +61,9 @@ export type {
   MessagingWindow,
   NoVoiceRuleset,
   RulesetItem,
+  SenderRegistration,
   TenantDefault,
+  TrafficClass,
   VoiceRuleset,
 } from './calling';
 export {
@@ -69,10 +72,12 @@ export {
   clockTimeHhmm,
   floor,
   IN_CALLING_RULES,
+  isCallerLineAllowed,
   isOutboundVoiceAvailable,
   isWithinFloor,
   lawfulSendTime,
   NO_WINDOW,
+  TRAFFIC_CLASSES,
   tenantDefault,
   windowInForce,
 } from './calling';
@@ -100,6 +105,7 @@ export {
   isRenderableNumber,
   moneySymbol,
   monthNames,
+  nationalNumber,
   PROCUREMENT_SYSTEM,
   parseNumber,
   resolveMeasurementSystem,

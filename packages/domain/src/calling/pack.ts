@@ -15,9 +15,6 @@ import { type ClockTime, clockTime } from './clock-time';
  * could author it away. `F1-39`'s "a customer who declines recording is still served" is the same
  * class. Lane 2 honours the market's holiday calendar (`F1-36`b), which is `pack.formats` data
  * (`F1-48`) and lands with `T-FCORE-008`; it is not restated here (`F1-01` — one fact, one key).
- * Caller-line series routing and messaging sender/template registration are `F1-15` items whose
- * India values are `F1-37` and `F1-38` — `T-FCORE-005`'s rows, and they arrive with that slice
- * (Law 9) rather than as placeholders a launch gate would read as authored.
  */
 
 /**
@@ -75,6 +72,44 @@ export const NO_WINDOW = null;
 
 export type MessagingWindow = CallingWindow | typeof NO_WINDOW;
 
+/**
+ * What a caller line carries (`F1-37`). The market's series rule turns on this, and so does the
+ * lawful-window question: lane 1, inbound, is never window-bound and lane 2, promotional, is
+ * (`F1-36`b). A market-neutral vocabulary — no market's own series names appear on it.
+ */
+export const TRAFFIC_CLASSES = ['transactional', 'promotional', 'inbound'] as const;
+
+export type TrafficClass = (typeof TRAFFIC_CLASSES)[number];
+
+/**
+ * Which caller-line series a market allows each class of traffic (`F1-37`). Series are the
+ * market's own numbering, so they are VALUES here and are never spelled anywhere else.
+ *
+ * `requiredByClass` writes out every class — a class carrying `null` has no required series, and
+ * a fourth class added to `TRAFFIC_CLASSES` is then a compile error rather than a quiet
+ * `undefined` that reads as "no requirement".
+ */
+export interface CallerLineSeries {
+  readonly requiredByClass: Record<TrafficClass, string | null>;
+  /** Series this product's tenants may never dial from, whatever the class. */
+  readonly forbidden: readonly string[];
+}
+
+/**
+ * What a market demands be registered before messaging traffic flows (`F1-38`). Registration is a
+ * third-party approval clock: it gates ACTIVATION, not scope — the code ships and the tenant's own
+ * registered identifiers are tenant data, never pack data.
+ *
+ * A market that demands no registration declares none, so absence is the answer rather than an
+ * empty list a caller must interpret.
+ */
+export interface SenderRegistration {
+  /** The registration platform — `DLT` in India. A value, never a field name. */
+  readonly platform: string;
+  /** What must be registered, coarsest first. Unregistered traffic is carrier-blocked. */
+  readonly levels: readonly string[];
+}
+
 /** A market that declares no voice ruleset. `F1-16` reads this as a HARD DISABLE of outbound. */
 export interface NoVoiceRuleset {
   readonly declared: false;
@@ -97,6 +132,8 @@ export interface VoiceRuleset {
   readonly proactiveAiDisclosure: Floor<boolean>;
   /** `F1-39` — a default above the floor: consent is captured, and a customer who declines is served regardless. */
   readonly recordingConsentCaptured: TenantDefault<boolean>;
+  /** `F1-37` — which series each class of outbound may dial from. A FLOOR: the carrier enforces it, not a preference. */
+  readonly callerLineSeries: Floor<CallerLineSeries>;
 }
 
 export interface MessagingRuleset {
@@ -104,6 +141,8 @@ export interface MessagingRuleset {
   readonly statutoryWindow: Floor<MessagingWindow>;
   /** `F1-15` — the hour an automatic transactional message goes, on the tenant's clock. A tenant may narrow it. */
   readonly scheduledSendHour: TenantDefault<ClockTime>;
+  /** `F1-38` — what must be registered before a send is carried. A FLOOR; `null` where the market demands none. */
+  readonly senderRegistration: Floor<SenderRegistration | null>;
 }
 
 export interface CallingRulesPack {
@@ -129,6 +168,17 @@ export const IN_CALLING_RULES: CallingRulesPack = {
      */
     proactiveAiDisclosure: floor(false),
     recordingConsentCaptured: tenantDefault(true),
+    /**
+     * `F1-37` — promotional outbound rides the **140-series RTM route**, and the **1600-series is
+     * closed to non-BFSI entities**, which every tenant of this product is. The row names a
+     * required series for the promotional class only, so the other two carry `null`: no
+     * requirement is a complete answer here, not a gap — nothing downstream is left undefined by
+     * it, unlike a rule the code would have to act on.
+     */
+    callerLineSeries: floor({
+      requiredByClass: { transactional: null, promotional: '140', inbound: null },
+      forbidden: ['1600'],
+    }),
   },
   messaging: {
     /**
@@ -141,5 +191,12 @@ export const IN_CALLING_RULES: CallingRulesPack = {
     statutoryWindow: floor(NO_WINDOW),
     /** `F1-62` — 19:00 on the tenant's clock: Indian households are home, so a problem can be raised before the crew leaves. */
     scheduledSendHour: tenantDefault(clockTime('19:00')),
+    /**
+     * `F1-38` — SMS rides only a DLT-registered entity, header and template; unregistered traffic
+     * is carrier-blocked, and platform→tenant messaging rides the same rule. The tenant's OWN
+     * registered entity and headers are tenant data, never authored here: this declares the DUTY,
+     * which is the market fact. Registration is a third-party clock gating activation, not scope.
+     */
+    senderRegistration: floor({ platform: 'DLT', levels: ['entity', 'header', 'template'] }),
   },
 };

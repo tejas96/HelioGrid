@@ -29,6 +29,20 @@ function groupNationalNumber(digits: string, groups: readonly number[]): string 
   return parts.join(' ');
 }
 
+/**
+ * The national number, digits only — `+91 98450 27746` → `9845027746`. THIS MARKET's calling code
+ * is stripped where the value carries it, and a value without one is already national.
+ *
+ * Exported because the series a caller line belongs to is a property of the national number
+ * (`F1-37`), and `calling/routing.ts` reads it. One derivation, so a display and a compliance
+ * check can never disagree about where the code ends.
+ */
+export function nationalNumber(pack: FormatPack, value: string): string {
+  const digits = value.trim().replace(NON_DIGIT, '');
+  const code = pack.phone.dialCode.replace(NON_DIGIT, '');
+  return code.length > 0 && digits.startsWith(code) ? digits.slice(code.length) : digits;
+}
+
 export interface PhoneOptions {
   /**
    * Render the national number alone — `98450 27746` — for a field that shows its dial code as
@@ -49,9 +63,8 @@ export interface PhoneOptions {
 export function formatPhone(pack: FormatPack, value: string, options?: PhoneOptions): string {
   const raw = value.trim();
   const digits = raw.replace(NON_DIGIT, '');
-  const code = pack.phone.dialCode.replace(NON_DIGIT, '');
-  const carriesCode = code.length > 0 && digits.startsWith(code);
-  const national = carriesCode ? digits.slice(code.length) : digits;
+  const national = nationalNumber(pack, raw);
+  const carriesCode = national.length !== digits.length;
   if (options?.nationalOnly === true) return groupNationalNumber(national, pack.phone.nsnGroups);
   if (carriesCode) {
     return `${pack.phone.dialCode} ${groupNationalNumber(national, pack.phone.nsnGroups)}`;
