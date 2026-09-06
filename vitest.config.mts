@@ -58,6 +58,7 @@ export default defineConfig({
        */
       thresholds: {
         'packages/domain/src/calling/**': COMPLETE,
+        'packages/domain/src/certification/**': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,

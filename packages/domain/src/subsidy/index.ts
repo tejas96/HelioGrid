@@ -16,4 +16,9 @@ export type {
 } from './pack';
 export { IN_SUBSIDY } from './pack';
 export type { IncentiveProject } from './path';
-export { isIncentiveStageSkippable, isSubsidyAvailable, requiredSubsidySchemes } from './path';
+export {
+  isIncentiveStageSkippable,
+  isSubsidyAvailable,
+  requiredSubsidySchemes,
+  unmetSubsidySchemes,
+} from './path';

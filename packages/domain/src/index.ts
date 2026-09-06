@@ -82,6 +82,21 @@ export {
   windowInForce,
 } from './calling';
 export type {
+  Certification,
+  CertificationEvidence,
+  CertificationScheme,
+  CertificationSchemesPack,
+  StandardsLabels,
+} from './certification';
+export {
+  badgedSchemes,
+  CERTIFICATION_EVIDENCE,
+  certificationScheme,
+  holdsScheme,
+  IN_CERTIFICATION_SCHEMES,
+  undeclaredSchemes,
+} from './certification';
+export type {
   CompactStep,
   FormatPack,
   MeasurementSystem,
@@ -156,6 +171,7 @@ export {
   isSubsidyAvailable,
   requiredSubsidySchemes,
   subsidyAmount,
+  unmetSubsidySchemes,
 } from './subsidy';
 export type {
   MoneyScheme,
