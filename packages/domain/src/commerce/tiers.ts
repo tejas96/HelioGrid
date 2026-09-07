@@ -1,5 +1,5 @@
 import type { TierBand } from '../rails/pack';
-import type { Meter } from './meters';
+import type { Meter, STANDING_METER } from './meters';
 
 /**
  * The four tiers, fixed names and suite-wide vocabulary (`BM-11`). Every market's book prices
@@ -79,8 +79,12 @@ export interface TierCapacity {
   readonly designCeilingKw: TierLimit;
   /** (b) What may be created per billing cycle, counted over the tenant's own anchor window. */
   readonly creationsPerCycle: Record<CountedCreation, TierLimit>;
-  /** (c) The allowance per meter, before the book's published overage rate applies (`BM-17`). */
-  readonly meterBundles: Record<Meter, TierLimit>;
+  /**
+   * (c) The allowance per PER-CYCLE meter, before the book's published overage rate applies
+   * (`BM-17`). Storage is absent by construction: it is `(d)`'s standing ceiling, and holding it
+   * in both places would let one tier carry two different storage numbers.
+   */
+  readonly meterBundles: Record<Exclude<Meter, typeof STANDING_METER>, TierLimit>;
   /** (d) The storage ceiling, in GB. Reads and exports are never storage-gated (`BM-20`). */
   readonly storageGb: TierLimit;
 }
