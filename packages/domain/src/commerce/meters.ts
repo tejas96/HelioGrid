@@ -29,3 +29,14 @@ export const METERS = [
 ] as const;
 
 export type Meter = (typeof METERS)[number];
+
+/**
+ * The one meter that is a standing GAUGE rather than a per-cycle allowance (`BM-20`): storage is
+ * measured, not counted, and it is a ceiling a tenant stops at rather than a bundle that runs out
+ * into overage. So it carries no per-unit rate, and it never sits in the record of per-cycle
+ * bundles — `BM-12` names it as its own capacity kind for exactly this reason.
+ *
+ * `satisfies Meter` makes renaming the meter a compile error here. Spelling the name in an
+ * `Exclude<…>` directly would silently widen back to the full set instead.
+ */
+export const STANDING_METER = 'storage' satisfies Meter;
