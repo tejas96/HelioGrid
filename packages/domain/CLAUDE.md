@@ -46,11 +46,8 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   `IN_PACK`, and reaches `MarketCode` through `market/code` by path, never the market index;
   `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
   `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
-- **`commerce/` is packaging, not a pack key.** The four tiers, the five meters, the six billing
-  states and the four capacity kinds are the market-NEUTRAL structure every market prices against
-  (`BM-11`, `BM-12`, `BM-16`, `BM-33`), which is why they sit outside `MarketPack` and carry no
-  currency and no number. `TierCapacity` is the shape; the values are the market's price book.
-  `tierBand()` is the one decision here, and it fills the map `rails/` left open.
+- **`commerce/` is packaging, not a pack key** — the one folder beside the keys that is NOT one, so
+  it sits outside `MarketPack`. It holds structure every market prices against, never a market fact.
 - **A ruleset item declares `floor()` or `tenantDefault()`** (`calling/`), so an unclassified one
   is a compile error rather than a silent default-to-editable (`F1-17`). A time of day is
   `ClockTime`, minutes past midnight, carrying no zone — `F1-10` puts every comparison on the

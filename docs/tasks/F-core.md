@@ -221,6 +221,8 @@ This file dispositions every requirement row of the suite's four core documents 
 *Builds after `T-FCORE-012`:* the book prices the four `BM-11` tiers and bundles the five `BM-16`
 meters, and both vocabularies are `T-FCORE-012`'s — a book authored first would have to spell them
 a second time. Owner ruling at `T-FCORE-010`'s `/start`.
+*Service terms are NOT authored here:* `BM-41` lists them and `F1-25` does not carry them as book
+contents. Recorded as `docs/prd/registers/open-questions.md` `Q90`, open.
 **PRD rows:** F1-25, F1-26, F1-27, F1-60, F1-61, BM-13, BM-26, BM-37, BM-38, BM-39, BM-40, BM-41
 **Requirements (verbatim):**
 
@@ -380,7 +382,9 @@ a second time. Owner ruling at `T-FCORE-010`'s `/start`.
 **PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
 **Requirements:** `F1-04` calls launching a market "configuration, not a product change" and `F1-11` calls a pack revision "a versioned, dated data update — never a product release". Both hold structurally: the pack is injected, so no module branches on a market name. Neither holds operationally while `IN_PACK` is a TypeScript constant, which makes a GST-rate revision a pull request and a deploy. The owner ruled the slice rather than narrowing the promises (`docs/prd/registers/open-questions.md` `Q85`).
 
-**It builds after `T-FCORE-010`, and the reason is mechanical:** migrations are append-only. `dataRights` and `priceBook` are authored by `T-FCORE-009` and `T-FCORE-010`, so storing the pack before them costs a migration per key that lands after. Once `T-FCORE-010` is in, the eight keys are complete, `isLaunchable(IN_PACK)` is true, and one migration stores a finished shape.
+**It builds after `T-FCORE-010`, and the reason is mechanical:** migrations are append-only, so storing the pack before a key lands costs a migration per key that arrives after. `priceBook` is now authored and seven of the eight keys are stored-shaped.
+
+**The eighth is not, and this task decides what to do about it.** `Q89` parked `T-FCORE-009`, so `dataRights` is unauthored and `isLaunchable(IN_PACK)` stays `false` — the accepted consequence `Q89` records. This task therefore chooses between storing seven keys now and paying one later migration when `dataRights` lands, or waiting for `Q89` to unpark. The choice is this task's; it is not a blocker on anything upstream.
 
 **It owns migration `0001`.** `market_pack` and `market_pack_version` carry no foreign key out and `tenant` carries the market one (`docs/engineering/data-model.md` §2.2, both Block 0), so the pack precedes the identity spine rather than following it.
 
