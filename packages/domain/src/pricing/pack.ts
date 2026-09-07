@@ -17,6 +17,12 @@ import type { BillingCycle } from '../rails/pack';
  * instance lives in `india.ts`. Launching a market is adding a sibling instance — new rows
  * against these same four tiers, with no product change (`BM-38`, `F1-27`).
  *
+ * **Service terms are not book fields.** Support in-app, WhatsApp, an onboarding call, a named
+ * contact — the per-tier service terms are pricing-page copy (`BM-14`, `BM-41`), Tier-keyed
+ * under `packages/i18n`'s convention, and nothing computes on them: no entitlement, invoice or
+ * gate reads one. A field here would be a second home for copy. A market whose terms differ
+ * carries them as pack labels (`F1-22`), never here.
+ *
  * Amounts are `MinorUnits` and the currency is NOT restated here: one currency per tenant,
  * resolved from the same pack's `formats.currency` (`F1-07`). Two homes for it would let a book
  * and its own market disagree. Prices are ex-tax in every market; the scheme and the

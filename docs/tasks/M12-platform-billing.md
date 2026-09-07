@@ -11,6 +11,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **DONE WHEN:**
 - Given any tier and any module, when a tenant on that tier opens that module, then no capability is absent that a higher tier has (BM-05) — only ceilings, counts and bundle sizes differ.
 - Given any cap in any tier, when the pricing page and the usage screen render, then the cap is published and visible on both, and reaching it produces §04.5's soft-block with an upgrade path — never a feature withdrawal and never a surprise (BM-07).
+- Given the per-tier service terms (support in-app / in-app + WhatsApp / priority + onboarding call / named contact), when the pricing page renders them, then they are Tier-keyed screen copy from this screen under the i18n convention, read from no book field, and no entitlement, invoice or gate reads them (BM-14, BM-41; owner ruling 2026-09-07).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M12-002 · Billing Home

@@ -27,7 +27,7 @@ Reached from: the public web — the PRD names the pricing page as an M12-owned 
 
 ## Data volume
 
-Design at the full IN book grid (`docs/prd/04-business-model.md` BM-41): 4 tiers × 2 cycles, each tier carrying on the order of a dozen published values — monthly and yearly price, single-design kW ceiling, proposals/month, active projects, users (unlimited), AI-detection bundle + overage rate, voice minutes (PAYG rate or bundle), storage, included tracked seats + per-seat rate, marketing-send bundles + per-channel overage rates, trial caps, service terms — plus competitor benchmark rows per tier. The comparison must stay legible at that density on a phone.
+Design at the full IN book grid (`docs/prd/04-business-model.md` BM-41): 4 tiers × 2 cycles, each tier carrying on the order of a dozen published values — monthly and yearly price, single-design kW ceiling, proposals/month, active projects, users (unlimited), AI-detection bundle + overage rate, voice minutes (PAYG rate or bundle), storage, included tracked seats + per-seat rate, marketing-send bundles + per-channel overage rates, trial caps, service terms (Tier-keyed screen copy, never a book value — BM-14, BM-41) — plus competitor benchmark rows per tier. The comparison must stay legible at that density on a phone.
 
 ## Numbers carrying provenance
 
