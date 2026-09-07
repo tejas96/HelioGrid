@@ -7,8 +7,8 @@ export type Db = ReturnType<typeof createDb>['db'];
 /**
  * No `schema` argument: the greenfield reset deleted the Drizzle
  * models, so there is nothing to describe and the relational query API (`db.query.*`) has
- * no tables to build. The auth + tenancy module re-adds `src/schema/` with its first
- * migration and passes it back in here.
+ * no tables to build. The market-pack storage slice re-adds `src/schema/` with
+ * migration 0001 and passes it back in here; auth + tenancy follow it (`Q85`).
  */
 export function createDb(databaseUrl: string, options: { max?: number } = {}) {
   const client = postgres(databaseUrl, { max: options.max ?? 10, prepare: false });

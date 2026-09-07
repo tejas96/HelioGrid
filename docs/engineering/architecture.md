@@ -114,8 +114,8 @@ module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client
 **STATUS: greenfield.** `src/schema/` and migrations 0001–0006
-were deleted; the auth + tenancy slice re-authors them and the next migration is a fresh
-0001. Today the package is client.ts + migrate.ts + uuid.ts.
+were deleted; the market-pack storage slice (`T-FCORE-016`) authors the fresh 0001 and the auth +
+tenancy slice follows it (`Q85`). Today the package is client.ts + migrate.ts + uuid.ts.
 Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
 the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
 plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
