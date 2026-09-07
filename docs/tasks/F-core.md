@@ -203,6 +203,8 @@ This file dispositions every requirement row of the suite's four core documents 
 
 *Note:* the in-app grievance-contact surface of F1-59 rides the app shell (SCR-SHELL-01, `docs/ux/briefs/SCR-SHELL-01-app-shell.md`); this task owns the breach-notification duty and the determination/consent/erasure data and workflow.
 
+*Deferred:* parked by owner ruling until the tenant base reaches real-customer scale (`docs/prd/registers/open-questions.md` `Q89`); `T-FCORE-010` proceeds next.
+
 **DONE WHEN:**
 
 - Given a market pack presented for launch, when it is validated, then its `pack.data-rights` key carries the jurisdiction's determination — roles, residency, rights map, breach duties and required consent records (F1-23, with F1-05).
