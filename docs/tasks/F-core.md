@@ -257,6 +257,18 @@ contents. Recorded as `docs/prd/registers/open-questions.md` `Q90`, open.
 
 ### T-FCORE-011 · Meter definitions and platform cost policy — five meters, COGS floors, absorbed costs, quota containment
 **Type:** engine · **Tier:** P0
+*Builds after `T-FCORE-010` and `T-FCORE-012`:* the meter list and the tier capacity axis are
+`T-FCORE-012`'s and the rates are `T-FCORE-010`'s; this adds the cost each rate must clear and the
+lists of what is never charged for at all.
+*The worst-case COGS figures did not exist and are now ruled:* owner ruling 2026-09-07, recorded
+as a status note on `docs/prd/registers/open-questions.md` `Q1`.
+*This task owns the COST half of its rows; the RUNTIME half is already owned elsewhere and is not
+a gap.* Every row here cites `M12` for its mechanics, and those citations land on named tasks:
+`T-M12-010` (`M12-33`) authors the per-meter rules — one ledger event per completed call, a
+detection billing only when a result was returned, storage as a nightly gauge, tracked-seat-months
+from the owner's toggles, per-channel send events — and (`M12-37`) the per-tenant quotas behind
+`BM-25`; `T-M12-009` authors storage enforcement on new uploads. So this task authors what a unit
+COSTS and what is never charged for at all, and never what counts one.
 **PRD rows:** BM-17, BM-18, BM-19, BM-20, BM-21, BM-22, BM-23, BM-24, BM-25
 **Requirements (verbatim):**
 
@@ -382,7 +394,7 @@ contents. Recorded as `docs/prd/registers/open-questions.md` `Q90`, open.
 **PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
 **Requirements:** `F1-04` calls launching a market "configuration, not a product change" and `F1-11` calls a pack revision "a versioned, dated data update — never a product release". Both hold structurally: the pack is injected, so no module branches on a market name. Neither holds operationally while `IN_PACK` is a TypeScript constant, which makes a GST-rate revision a pull request and a deploy. The owner ruled the slice rather than narrowing the promises (`docs/prd/registers/open-questions.md` `Q85`).
 
-**It builds after `T-FCORE-010`, and the reason is mechanical:** migrations are append-only, so storing the pack before a key lands costs a migration per key that arrives after. `priceBook` is now authored and seven of the eight keys are stored-shaped.
+**It builds after `T-FCORE-010` and `T-FCORE-011`, and the reason is mechanical:** migrations are append-only, so storing the pack before a key lands — or before a key's shape is finished — costs a migration per change that arrives after. `T-FCORE-011` added the worst-case unit COGS every overage rate must clear (`BM-17`), so a book stored between the two tasks would have paid one. `priceBook` is now authored and seven of the eight keys are stored-shaped.
 
 **The eighth is not, and this task decides what to do about it.** `Q89` parked `T-FCORE-009`, so `dataRights` is unauthored and `isLaunchable(IN_PACK)` stays `false` — the accepted consequence `Q89` records. This task therefore chooses between storing seven keys now and paying one later migration when `dataRights` lands, or waiting for `Q89` to unpark. The choice is this task's; it is not a blocker on anything upstream.
 

@@ -97,14 +97,28 @@ export {
   undeclaredSchemes,
 } from './certification';
 export type {
+  AbsorbedCost,
   BillingState,
   CountedCreation,
+  FreeUpstream,
   Meter,
+  NeverMeteredCapability,
+  ProxiedUpstream,
   Tier,
   TierCapacity,
   TierLimit,
 } from './commerce';
-export { BILLING_STATES, COUNTED_CREATIONS, METERS, TIERS, tierBand } from './commerce';
+export {
+  ABSORBED_COSTS,
+  BILLING_STATES,
+  COUNTED_CREATIONS,
+  FREE_UPSTREAMS,
+  METERS,
+  NEVER_METERED,
+  PROXIED_UPSTREAMS,
+  TIERS,
+  tierBand,
+} from './commerce';
 export type {
   BlockerPartyLabel,
   CalendarDate,
@@ -179,8 +193,18 @@ export type {
   TierPrice,
   TrialCaps,
   UnitRate,
+  WorstCaseCogs,
 } from './pricing';
-export { IN_PRICE_BOOK, isSellable, listedPrice, tenMonthYearly, tierRow } from './pricing';
+export {
+  COGS_MARKUP_FLOOR,
+  clearsCogsFloor,
+  IN_PRICE_BOOK,
+  isSellable,
+  listedPrice,
+  metersBelowCogsFloor,
+  tenMonthYearly,
+  tierRow,
+} from './pricing';
 export type {
   BillingCycle,
   CollectionRoute,

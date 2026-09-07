@@ -53,7 +53,27 @@ export interface TierBookRow {
 }
 
 /**
- * The published rate one unit overruns into (`BM-17`), and whether that rate may be sold yet.
+ * The worst-case cost of serving ONE unit of a meter in this market — the figure `BM-17`'s ≥40%
+ * overage floor is measured against, and the reason a rate can be judged rather than trusted.
+ *
+ * There is deliberately no `verified` field. `BM-26` carries the caution verbatim: no COGS figure
+ * in this suite is verified, and the floor is computed against the WORST case precisely because
+ * the estimates are not. A flag that cannot be written cannot be rendered as a claim.
+ *
+ * `source` says where the figure came from, so a book whose costs have moved goes stale honestly
+ * — the same reason a `Benchmark` records the page it was read from (`BM-39`).
+ */
+export interface WorstCaseCogs {
+  readonly amount: MinorUnits;
+  readonly source: string;
+}
+
+/**
+ * The published rate one unit overruns into (`BM-17`), the worst-case cost that rate must clear,
+ * and whether the rate may be sold yet.
+ *
+ * The cost sits ON the rate rather than in a table beside it, so a rate cannot be authored
+ * without the figure that makes it judgeable. `metersBelowCogsFloor` is what judges it.
  *
  * `draft` is behaviour, not a note. A rate the owner has set but not verified against worst-case
  * unit COGS is carried in the book and is NOT sellable until the rate card verifies
@@ -62,6 +82,7 @@ export interface TierBookRow {
 export interface UnitRate {
   readonly kind: 'per_unit';
   readonly rate: MinorUnits;
+  readonly worstCaseCogs: WorstCaseCogs;
   readonly draft: boolean;
 }
 
@@ -76,6 +97,8 @@ export interface ChannelRate {
   readonly channel: string;
   readonly billableUnit: string;
   readonly rate: MinorUnits;
+  /** Per channel, never per meter: a WhatsApp conversation and an SMS do not cost the same. */
+  readonly worstCaseCogs: WorstCaseCogs;
 }
 
 /** A meter billed per channel rather than at one rate (`BM-21`). */
@@ -89,6 +112,9 @@ export interface ChannelRates {
  * A meter with no overage at all (`BM-20`). Storage is a ceiling a tenant stops at, not a bundle
  * that runs out into a bill — declared rather than left absent, so "this meter never overruns"
  * and "nobody authored a rate" can never be read as the same thing.
+ *
+ * It carries no worst-case cost either, and that is not an omission: `BM-17`'s floor is a
+ * property of a RATE, and a meter with nothing to overrun into has no rate to hold above a floor.
  */
 export interface NoOverage {
   readonly kind: 'ceiling';

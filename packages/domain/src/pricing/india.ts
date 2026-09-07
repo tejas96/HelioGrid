@@ -1,5 +1,5 @@
-import { minorUnits } from '../money/minor-units';
-import type { Benchmark, PriceBookPack, TierBookRow } from './pack';
+import { type MinorUnits, minorUnits } from '../money/minor-units';
+import type { Benchmark, PriceBookPack, TierBookRow, WorstCaseCogs } from './pack';
 
 /**
  * The India book — the source-derived first instance (`F1-60`, `F1-61`, `BM-41`). Every number
@@ -32,6 +32,27 @@ const PRO_YEARLY = minorUnits(9_999_900);
 
 /** `BM-41` — Enterprise is custom; this is the anchor the conversation opens at, per month. */
 const ENTERPRISE_ANCHOR = minorUnits(2_499_900);
+
+/**
+ * `BM-17`, `BM-26`, `Q1` — where every worst-case unit cost in this book came from, and why not
+ * one of them is verified.
+ *
+ * The owner ruled `BM-17`'s floor read BACKWARDS: a published rate already implies the highest
+ * cost its unit may carry — the rate divided by 1.4 — and that ceiling IS the worst case until
+ * the vendor rate cards land. So each figure below is the largest cost its own rate can survive,
+ * taken to the whole paise below the ceiling.
+ *
+ * The consequence is stated rather than hidden: four of the six rows clear the floor by nothing
+ * at all, so a real cost even a paisa above its ceiling makes that row invalid. That is the
+ * ruling's own shape, not a defect — `metersBelowCogsFloor` is what will say so, and the rate
+ * cards are `Q1`'s revisit trigger.
+ */
+function rateImpliedCeiling(amount: MinorUnits): WorstCaseCogs {
+  return { amount, source: RATE_IMPLIED_CEILING };
+}
+
+const RATE_IMPLIED_CEILING =
+  'owner ruling — the highest cost this rate can carry under BM-17, pending rate-card verification';
 
 const STARTER: TierBookRow = {
   price: { kind: 'listed', perCycle: { monthly: STARTER_MONTHLY, yearly: STARTER_YEARLY } },
@@ -150,9 +171,19 @@ export const IN_PRICE_BOOK: PriceBookPack = {
   tiers: { starter: STARTER, growth: GROWTH, pro: PRO, enterprise: ENTERPRISE },
   overage: {
     /* `BM-41` — ₹6 a minute on every tier, bundled or pay-as-you-go. */
-    voice_minutes: { kind: 'per_unit', rate: minorUnits(600), draft: false },
+    voice_minutes: {
+      kind: 'per_unit',
+      rate: minorUnits(600),
+      worstCaseCogs: rateImpliedCeiling(minorUnits(428)),
+      draft: false,
+    },
     /* `BM-41` — ₹10 a detection past the bundle. A detection that returned nothing bills nothing (`BM-19`). */
-    ai_roof_detections: { kind: 'per_unit', rate: minorUnits(1_000), draft: false },
+    ai_roof_detections: {
+      kind: 'per_unit',
+      rate: minorUnits(1_000),
+      worstCaseCogs: rateImpliedCeiling(minorUnits(714)),
+      draft: false,
+    },
     storage: { kind: 'ceiling' },
     /*
      * `BM-41`, `Q1` — the owner's DRAFT per-channel rates. They stay draft, and the meter stays
@@ -163,13 +194,33 @@ export const IN_PRICE_BOOK: PriceBookPack = {
       kind: 'per_channel',
       draft: true,
       channels: [
-        { channel: 'whatsapp', billableUnit: 'conversation', rate: minorUnits(150) },
-        { channel: 'sms', billableUnit: 'message', rate: minorUnits(35) },
-        { channel: 'email', billableUnit: 'message', rate: minorUnits(10) },
+        {
+          channel: 'whatsapp',
+          billableUnit: 'conversation',
+          rate: minorUnits(150),
+          worstCaseCogs: rateImpliedCeiling(minorUnits(107)),
+        },
+        {
+          channel: 'sms',
+          billableUnit: 'message',
+          rate: minorUnits(35),
+          worstCaseCogs: rateImpliedCeiling(minorUnits(25)),
+        },
+        {
+          channel: 'email',
+          billableUnit: 'message',
+          rate: minorUnits(10),
+          worstCaseCogs: rateImpliedCeiling(minorUnits(7)),
+        },
       ],
     },
     /* `BM-41`, `Q17` — DRAFT ≈₹99 per tracked seat per month beyond the tier's allowance. */
-    tracked_field_seats: { kind: 'per_unit', rate: minorUnits(9_900), draft: true },
+    tracked_field_seats: {
+      kind: 'per_unit',
+      rate: minorUnits(9_900),
+      worstCaseCogs: rateImpliedCeiling(minorUnits(7_071)),
+      draft: true,
+    },
   },
   /*
    * `BM-28`, `BM-41` — the trial bounds only what costs real money. The two V2 meters carry 0
