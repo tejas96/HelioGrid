@@ -31,6 +31,7 @@ export {
   NEVER_METERED,
   PROXIED_UPSTREAMS,
 } from './costs';
+export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
 export type { Meter } from './meters';
 export { METERS } from './meters';
 export type { BillingCapability, BillingPhase, CapabilityStanding } from './soft-block';

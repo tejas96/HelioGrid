@@ -64,6 +64,7 @@ export default defineConfig({
            them buys an import-only test. Every other file here has a runtime reader and so has a
            bar; `states.ts` and `costs.ts` widen this to `commerce/**` when theirs land. */
         'packages/domain/src/commerce/caps.ts': COMPLETE,
+        'packages/domain/src/commerce/grandfathering.ts': COMPLETE,
         'packages/domain/src/commerce/meters.ts': COMPLETE,
         'packages/domain/src/commerce/soft-block.ts': COMPLETE,
         'packages/domain/src/commerce/tiers.ts': COMPLETE,

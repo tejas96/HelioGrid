@@ -50,7 +50,8 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   it sits outside `MarketPack`. It holds structure every market prices against, never a market fact.
   `costs.ts` is its other half: what the platform pays for instead of selling (`M97`), and
   `trial.ts` the one non-paying motion there will ever be (`M98`), and `soft-block.ts` what a
-  tenant may still do when they have not (`M100`).
+  tenant may still do when they have not (`M100`), and `grandfathering.ts` what a repricing may
+  do to them (`M102`, `M103`). A change that cannot be PROVEN generous waits for the horizon.
 - **This package holds no clock, so a billing fact is authored in its own unit, never as an
   instant.** The trial is DAYS; the soft-block matrix is keyed by PHASE, because `past_due` behaves
   as two. Turning either into a moment needs the TENANT's clock (`F1-10`), which `M12` holds.

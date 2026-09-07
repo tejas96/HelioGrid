@@ -113,6 +113,7 @@ export type {
 } from './commerce';
 export {
   ABSORBED_COSTS,
+  appliesImmediately,
   BILLING_CAPABILITIES,
   BILLING_PHASES,
   BILLING_STATES,
@@ -122,6 +123,7 @@ export {
   capabilityStanding,
   capWarningReached,
   FREE_UPSTREAMS,
+  forfeitsPriceProtection,
   isAlwaysOn,
   isNonPaying,
   METERS,

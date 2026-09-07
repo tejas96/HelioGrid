@@ -237,4 +237,7 @@ export const IN_PRICE_BOOK: PriceBookPack = {
     storageGb: 5,
   },
   benchmarks: [RESLINK, ARKA],
+  /* `BM-42` — early tenants keep launch pricing for 24 months MINIMUM. The floor is the promise;
+     a longer protection is generous and allowed, a shorter one would break the guarantee. */
+  priceProtectionMonths: 24,
 };
