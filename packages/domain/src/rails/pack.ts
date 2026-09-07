@@ -22,8 +22,8 @@ import { minorUnits } from '../money/minor-units';
  * the rail — so this is market-neutral, and no market's own tier name appears on it.
  *
  * Two bands, not the four tier names of `BM-11`: a tier is a capacity rung and a band is a
- * purchase route, and the map between them needs the tier names, so it lands with them
- * (`T-FCORE-012`).
+ * purchase route. The map between them needed the tier names, so it lands with them —
+ * `tierBand` in `commerce/tiers.ts`.
  */
 export const TIER_BANDS = ['self_serve', 'enterprise'] as const;
 

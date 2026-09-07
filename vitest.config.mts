@@ -59,6 +59,10 @@ export default defineConfig({
       thresholds: {
         'packages/domain/src/calling/**': COMPLETE,
         'packages/domain/src/certification/**': COMPLETE,
+        /* A FILE, not a folder: `commerce/`'s other two files are closed vocabularies whose
+           consumers have not landed (Law 9), and a test may not restate a constant, so a bar
+           over them buys an import-only test. It widens to `commerce/**` with the first reader. */
+        'packages/domain/src/commerce/tiers.ts': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,

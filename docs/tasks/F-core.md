@@ -218,6 +218,9 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-010 · Market price-book law (pack.price-book) + the India book
 **Type:** engine · **Tier:** P0
+*Builds after `T-FCORE-012`:* the book prices the four `BM-11` tiers and bundles the five `BM-16`
+meters, and both vocabularies are `T-FCORE-012`'s — a book authored first would have to spell them
+a second time. Owner ruling at `T-FCORE-010`'s `/start`.
 **PRD rows:** F1-25, F1-26, F1-27, F1-60, F1-61, BM-13, BM-26, BM-37, BM-38, BM-39, BM-40, BM-41
 **Requirements (verbatim):**
 

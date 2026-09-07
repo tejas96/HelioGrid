@@ -97,6 +97,15 @@ export {
   undeclaredSchemes,
 } from './certification';
 export type {
+  BillingState,
+  CountedCreation,
+  Meter,
+  Tier,
+  TierCapacity,
+  TierLimit,
+} from './commerce';
+export { BILLING_STATES, COUNTED_CREATIONS, METERS, TIERS, tierBand } from './commerce';
+export type {
   BlockerPartyLabel,
   CalendarDate,
   ChecklistRow,
