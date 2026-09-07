@@ -370,6 +370,25 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ---
 
+### T-FCORE-016 · Market pack storage — a pack revision is a row change, not a deploy
+**Type:** engine · **Tier:** P0
+**PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
+**Requirements:** `F1-04` calls launching a market "configuration, not a product change" and `F1-11` calls a pack revision "a versioned, dated data update — never a product release". Both hold structurally: the pack is injected, so no module branches on a market name. Neither holds operationally while `IN_PACK` is a TypeScript constant, which makes a GST-rate revision a pull request and a deploy. The owner ruled the slice rather than narrowing the promises (`docs/prd/registers/open-questions.md` `Q85`).
+
+**It builds after `T-FCORE-010`, and the reason is mechanical:** migrations are append-only. `dataRights` and `priceBook` are authored by `T-FCORE-009` and `T-FCORE-010`, so storing the pack before them costs a migration per key that lands after. Once `T-FCORE-010` is in, the eight keys are complete, `isLaunchable(IN_PACK)` is true, and one migration stores a finished shape.
+
+**It owns migration `0001`.** `market_pack` and `market_pack_version` carry no foreign key out and `tenant` carries the market one (`docs/engineering/data-model.md` §2.2, both Block 0), so the pack precedes the identity spine rather than following it.
+
+**DONE WHEN:**
+
+- Given a pack revision — a tax rate, a subsidy slab, a label — when it is published, then it lands as rows and a new `market_pack_version`, and no deploy occurs (`F1-04`, `F1-11`).
+- Given a money- or engineering-bearing output, when it is computed, then it pins the `market_pack_version` it read, and a later revision leaves that output's figures untouched (`F1-11`).
+- Given `IN_PACK`, when the pack is seeded, then the seed runs through the application and the migration carries schema only (`CLAUDE.md` §8).
+- Given a stored pack missing a key, when the launch gate reads it, then `unauthoredKeys` names that key exactly as it does for an in-memory pack — the seam `market/launch.ts` already holds, and this task is where it stops being hypothetical (`F1-05`).
+- Given the eight keys, when they are stored, then they are ONE versioned payload and never a table per key: `F1-01` versions them as one unit, so a ninth key would be a data change and not a migration.
+
+---
+
 ## Laws (enforced through screens and review, no standalone build)
 
 Each row below is carried verbatim and is followed by what enforces it. Nothing here is a separate build: every law is either a property another bucket's screens and engines must exhibit, or a discipline the PRD review applies to the suite.
@@ -733,14 +752,14 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | F1-01 | T-FCORE-001 |
 | F1-02 | T-FCORE-001 |
 | F1-03 | T-FCORE-001 |
-| F1-04 | T-FCORE-001 |
+| F1-04 | T-FCORE-001 (structure) + T-FCORE-016 (storage) |
 | F1-05 | T-FCORE-001 |
 | F1-06 | T-FCORE-001 |
 | F1-07 | T-FCORE-002 |
 | F1-08 | T-FCORE-002 |
 | F1-09 | T-FCORE-001 |
 | F1-10 | T-FCORE-001 |
-| F1-11 | T-FCORE-001 |
+| F1-11 | T-FCORE-001 (structure) + T-FCORE-016 (storage) |
 | F1-12 | T-FCORE-001 |
 | F1-13 | T-FCORE-002 |
 | F1-14 | T-FCORE-003 |

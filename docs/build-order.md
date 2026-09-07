@@ -49,7 +49,7 @@ Decided 2026-08-15 after inspecting both codebases.
 
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (15) · `F-platform` (27) |
+| **0** | **Foundations** | 0 | `F-core` (16) · `F-platform` (27) |
 | **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
 | **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) |
@@ -74,7 +74,7 @@ purpose (`M12` §2: Finance's money scope is the tenant's customers' money, neve
 bill). Owner decision 2026-08-16: self-serve billing ships in V1, so `M12` sits early — a
 prospect meets the pricing page before they have an account.
 
-**Phase 0 starts today.** 42 foundation tasks, zero screens: roles and the twelve presets,
+**Phase 0 starts today.** 43 foundation tasks, zero screens: roles and the twelve presets,
 permission resolution, the audit log, the message catalog, the four format implementations,
 script rendering, notification delivery, the data-honesty engine. Everything else consumes them.
 **Six F-platform tasks were struck 2026-09-04 and their rows moved to the modules that consume
