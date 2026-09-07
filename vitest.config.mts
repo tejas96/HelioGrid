@@ -67,6 +67,7 @@ export default defineConfig({
         'packages/domain/src/commerce/meters.ts': COMPLETE,
         'packages/domain/src/commerce/soft-block.ts': COMPLETE,
         'packages/domain/src/commerce/tiers.ts': COMPLETE,
+        'packages/domain/src/commerce/trial.ts': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,

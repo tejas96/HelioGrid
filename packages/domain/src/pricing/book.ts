@@ -1,5 +1,5 @@
 import type { Meter } from '../commerce/meters';
-import type { Tier } from '../commerce/tiers';
+import type { Tier, TierCapacity } from '../commerce/tiers';
 import { amountForQuantity, type MinorUnits } from '../money/minor-units';
 import type { BillingCycle } from '../rails/pack';
 import type { PriceBookPack, TierBookRow } from './pack';
@@ -42,6 +42,29 @@ export function listedPrice(
 export function isSellable(book: PriceBookPack, meter: Meter): boolean {
   const overage = book.overage[meter];
   return overage.kind === 'ceiling' || !overage.draft;
+}
+
+/**
+ * `BM-28` — what a TRIAL may do. Every tier capability, bounded by the book's caps and by nothing
+ * else: the thing being evaluated is the thing being bought, so a trial is never a smaller
+ * product. `BM-31` settles the tension out loud — the caps bound the platform's spend, and
+ * capability is never withdrawn to bound it.
+ *
+ * `unlimited` on the ceiling and on both counts is that law written down. It is not the top tier's
+ * number copied: a trial is not a rung, and pinning it to Enterprise would silently re-cap the
+ * trial the day Enterprise's own ceiling moved.
+ *
+ * Returns a `TierCapacity` so an entitlement check reads ONE shape whether the tenant is trialing
+ * or paying (`M12`), and so a third counted creation must be given a trial answer here before
+ * this compiles.
+ */
+export function trialCapacity(book: PriceBookPack): TierCapacity {
+  return {
+    designCeilingKw: 'unlimited',
+    creationsPerCycle: { proposals: 'unlimited', active_projects: 'unlimited' },
+    meterBundles: book.trialCaps.meterBundles,
+    storageGb: book.trialCaps.storageGb,
+  };
 }
 
 /**

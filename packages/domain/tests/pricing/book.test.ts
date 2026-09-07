@@ -3,7 +3,13 @@ import { METERS } from '../../src/commerce/meters';
 import { TIERS, type Tier } from '../../src/commerce/tiers';
 import { IN_PACK } from '../../src/market/pack';
 import type { MinorUnits } from '../../src/money/minor-units';
-import { isSellable, listedPrice, tenMonthYearly, tierRow } from '../../src/pricing/book';
+import {
+  isSellable,
+  listedPrice,
+  tenMonthYearly,
+  tierRow,
+  trialCapacity,
+} from '../../src/pricing/book';
 import { IN_PRICE_BOOK } from '../../src/pricing/india';
 import type { BillingCycle } from '../../src/rails/pack';
 
@@ -126,5 +132,41 @@ describe('the book is the pack’s price-book key (F1-02, F1-25)', () => {
     expect(IN_PRICE_BOOK.trialCaps.meterBundles.ai_roof_detections).toBe(25);
     expect(IN_PRICE_BOOK.trialCaps.meterBundles.voice_minutes).toBe(15);
     expect(IN_PRICE_BOOK.trialCaps.storageGb).toBe(5);
+  });
+});
+
+describe('trialCapacity — the whole product, bounded only by the book (BM-28, BM-31)', () => {
+  it('withholds no capability: no design ceiling and no creation count', () => {
+    const trial = trialCapacity(IN_PRICE_BOOK);
+    expect(trial.designCeilingKw).toBe('unlimited');
+    expect(trial.creationsPerCycle).toEqual({
+      proposals: 'unlimited',
+      active_projects: 'unlimited',
+    });
+  });
+
+  it('is bounded by the book’s caps and by nothing else (BM-41)', () => {
+    const trial = trialCapacity(IN_PRICE_BOOK);
+    expect(trial.meterBundles).toEqual({
+      voice_minutes: 15,
+      ai_roof_detections: 25,
+      marketing_sends: 0,
+      tracked_field_seats: 0,
+    });
+    expect(trial.storageGb).toBe(5);
+  });
+
+  it('outreaches every tier it is meant to let a buyer evaluate (BM-28)', () => {
+    expect(trialCapacity(IN_PRICE_BOOK).designCeilingKw).not.toBe(
+      tierRow(IN_PRICE_BOOK, 'enterprise')?.capacity.designCeilingKw,
+    );
+  });
+
+  it('re-reads the book rather than carrying a cap of its own', () => {
+    const generousBook = {
+      ...IN_PRICE_BOOK,
+      trialCaps: { ...IN_PRICE_BOOK.trialCaps, storageGb: 500 },
+    };
+    expect(trialCapacity(generousBook).storageGb).toBe(500);
   });
 });

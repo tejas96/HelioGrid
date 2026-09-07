@@ -123,11 +123,13 @@ export {
   capWarningReached,
   FREE_UPSTREAMS,
   isAlwaysOn,
+  isNonPaying,
   METERS,
   NEVER_METERED,
   PROXIED_UPSTREAMS,
   STATE_CAPABILITY_MATRIX,
   TIERS,
+  TRIAL_DAYS,
   tierBand,
 } from './commerce';
 export type {
@@ -215,6 +217,7 @@ export {
   metersBelowCogsFloor,
   tenMonthYearly,
   tierRow,
+  trialCapacity,
 } from './pricing';
 export type {
   BillingCycle,

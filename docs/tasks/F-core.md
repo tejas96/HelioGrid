@@ -322,6 +322,8 @@ COSTS and what is never charged for at all, and never what counts one.
 
 *Note:* the trial's cap values are IN-book data owned by T-FCORE-010 (BM-41); this task owns the trial's length, its full-feature guarantee, the no-instrument-at-signup rule and the expiry posture. Lifecycle transitions, nudges and the support-grantable extension are `docs/prd/modules/M12-platform-billing.md`'s mechanics.
 
+*The length is authored in DAYS and never as an instant.* This package holds no clock, and `F1-10` puts every time comparison on the TENANT's clock, which a caller holds and it does not. `T-M12-005` owns the `trialing` → `expired` transition and `M12-43` the expiry sweep; both read `TRIAL_DAYS` and do their own arithmetic. `BM-30`'s capability column — read, export and customer links still working in `expired` — is `T-FCORE-014`'s matrix, not a second answer here.
+
 **DONE WHEN:**
 
 - Given a new signup, when the trial starts, then no payment instrument exists on file and every tier capability is available within the book's trial caps (BM-28, BM-29).
