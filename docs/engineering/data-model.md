@@ -24,8 +24,8 @@ Fifteen domains, four ownership boundaries. The entity list groups them into twe
 | # | Domain | §2 | What it holds | Boundary |
 |---|---|---|---|---|
 | 1 | Identity & tenancy | §2.1 | Global phone-keyed accounts, tenants, memberships, preset roles, invites, sessions, OTP | platform + tenant |
-| 2 | Market framework | §2.2 | Versioned market packs (tax, compliance, calling rules, vocabularies), utilities, certification schemes, DND scrub, demo content | market-pack |
-| 3 | Platform billing & entitlements | §2.3 | Plans, market price books, subscription lifecycle, usage meters, entitlements, invoices, dunning, grandfathering | platform + tenant |
+| 2 | Market framework | §2.2 | Versioned market packs — one payload of the eight keys (tax, subsidy, calling rules, payment rails, certification schemes, formats with the display labels and the utility directory, data rights, price book), DND scrub, demo content | market-pack |
+| 3 | Platform billing & entitlements | §2.3 | Plans, plan prices mirrored from the pack's price book, subscription lifecycle, usage meters, entitlements, invoices, dunning, grandfathering | platform + tenant |
 | 4 | Tenant configuration | §2.4 | Business profile, tax registrations, branding, templates, integrations, onboarding resume state | tenant |
 | 5 | Catalog & rates | §2.4 | Platform catalog + releases, tenant SKUs and overrides, append-only rate history, tenant price book, pack BOM rates | platform + tenant + market-pack |
 | 6 | CRM & marketing | §2.5 | Customers, contacts, leads, timeline, consent ledger, campaigns, capture, referrals | tenant |
@@ -50,9 +50,9 @@ the customer is never a user (OV-32).
 
 Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant) · market-pack (versioned market data) · customer (created/read through the no-login link). Every tenant-owned entity is additionally scoped by its tenant; that scoping is implicit and not repeated per row.
 
-**V and Block columns.** `V` is the V1/V2 scope lock carried from `docs/prd/registers/screens.md` — 99 of 150 screens are V1. `Block` is the build block from `docs/build-order.md`: 0 Foundations · 1 Shell + entry & tenant · 2 Billing & plans · 3 CRM & leads · 4 Projects · 5 Payments & collections · 6 Sales exec + calling core + owner home · 7 3D Design Studio · 8 Proposals + customer link. **138 entities are V1; 33 are V2** (M03 marketing, M04 survey, M09 field workforce, M10 HR-lite and the four M01 V2 settings screens — the M07 voice-admin console leaves no V2 entity behind it: its tables are V1 block 6 carrying platform-seeded defaults, and only their editors wait, per the seeded-default law in §5.0). Per **Law 9** a table is authored only when its owning module's slice begins — the Block cell is what says when that is. A V2 entity's shape is owed to its own module's `docs/tasks/` file, and is never a blocker on V1 work.
+**V and Block columns.** `V` is the V1/V2 scope lock carried from `docs/prd/registers/screens.md` — 99 of 150 screens are V1. `Block` is the build block from `docs/build-order.md`: 0 Foundations · 1 Shell + entry & tenant · 2 Billing & plans · 3 CRM & leads · 4 Projects · 5 Payments & collections · 6 Sales exec + calling core + owner home · 7 3D Design Studio · 8 Proposals + customer link. **134 entities are V1; 33 are V2** (M03 marketing, M04 survey, M09 field workforce, M10 HR-lite and the four M01 V2 settings screens — the M07 voice-admin console leaves no V2 entity behind it: its tables are V1 block 6 carrying platform-seeded defaults, and only their editors wait, per the seeded-default law in §5.0). Per **Law 9** a table is authored only when its owning module's slice begins — the Block cell is what says when that is. A V2 entity's shape is owed to its own module's `docs/tasks/` file, and is never a blocker on V1 work.
 
-**Markers.** An italic parenthetical in the Purpose cell means the entity's existence, shape, grain, placement or ownership is still open — 147 markers across 108 entities, folded in from §8 so a migration author meets them here rather than 3,000 lines away. A marker is a decision to take before that table is authored, not a defect.
+**Markers.** An italic parenthetical in the Purpose cell means the entity's existence, shape, grain, placement or ownership is still open — 144 markers across 105 entities, folded in from §8 so a migration author meets them here rather than 3,000 lines away. A marker is a decision to take before that table is authored, not a defect.
 
 **⚠ Cross-scope hazards.** A ⚠ on the Block cell means a V1 consumer depends on this entity across the V1/V2 line, or a V1 entity has a mandatory parent on the V2 side. These are sequencing traps: the table cannot simply wait for its own module. Each needs a decision before the consuming block starts.
 
@@ -76,7 +76,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
 | tenant | V1 | 1 | One EPC company's isolated workspace — root scope for data, market, currency, subscription and team *(white-label custom-domain field provisioned at launch or deferred? — F5-82)*  | platform | company_name; city; market_key (exactly one); tenant_currency (exactly one); default_language; timezone; segment; typical_system_kw; quiet_hours_window; tracking_force_stop_hour (default 20:00, owner-set — M09-44); geofence_default_radius (M09-50) | — | M01-01, M01-23, F1-07, F1-10, OV-06, BM-01, F6-14 |
-| user_account | V1 | 1 | Global platform account keyed by verified phone; one account whatever door it enters; Google identity links to it *(user status placement open — user_account vs tenant_membership; multi-tenant person unstated)*  | platform | phone_e164 (natural key, unique globally); name; photo; linked_google_identity; status; interface_language (F3); unit_preference (F3) | invited → active → deactivated (never deleted) | M01-18, M01-02, M01-08, M01-14, F2-20, OV-31 |
+| user_account | V1 | 1 | Global platform account keyed by verified phone; one account whatever door it enters; Google identity links to it *(user status placement open — user_account vs tenant_membership; multi-tenant person unstated)*  | platform | phone_e164 (natural key, unique globally); name; photo; linked_google_identity; status; interface_language (F3; a value validated against the contract's `UiLanguage` — there is no language table); unit_preference (F3) | invited → active → deactivated (never deleted) | M01-18, M01-02, M01-08, M01-14, F2-20, OV-31 |
 | tenant_membership | V1 | 1 | Attaches a user_account to a tenant with stacked preset roles; created atomically at invite-OTP verification *(may carry user status instead of user_account; multi-tenant membership unstated)*  | tenant | tenant ref; user_account ref; last_active; first-run/coach-mark dismissal state (≤3) | — (status home ambiguous, see open questions) | M01-13, M01-19, M01-20, M01-16, F2-10 |
 | membership_role | V1 | 1 | Junction stacking one F2 preset onto one membership; OR-composition of grants across a person's rows | tenant | tenant_membership ref; role_preset ref | assigned → removed (guarded; audited old → new) | M01-12, M01-20, F2-10, F2-11, F2-19 |
 | role_preset | V1 | 0 | One of exactly twelve fixed platform presets named 1:1 for the personas; read-only, no role editor *(stored table or shipped product configuration? — F2 §1, F2-25) · (twelve presets per F2 vs retired six; launch set unconfirmed — Q69)*  | platform | canonical_english_name (natural key); per-language display names (open language set — F3-25); plain-language description phrases; default per-domain visibility scopes | — (fixed product data) | F2-01, F2-02, F2-16, M01-20, M01-21, PS-02 |
@@ -91,21 +91,17 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| market_pack | V1 | 0 | The one versioned unit of a market's configuration; source of tenant market and server-assigned currency; carries launch-gate facts. | market-pack | market_code (natural key); market_currency; privacy_residency_determination_present; supplier_of_record_decision_present | authored → launch-gated → live (gate: F1-05) | F1-01, F1-02, F1-05, F1-06, F1-07, F1-12 |
-| market_pack_version | V1 | 0 | One published, dated revision of the pack's eight-key data, versioned as one unit; pinned by every money/engineering-bearing computed output. One version per pack, never per key: F1-01 versions the eight keys as one unit, so an output pins one identifier, the market code plus the revision (F1-11; a slab or ruleset change under F1-14/F1-33 is a revision of the whole pack). | market-pack | version_identifier (natural key with market_code); published_date; tax_config; subsidy_config; calling_rules (incl. ai_disclosure_flag, statutory windows); payment_rails; formats (currency/date/phone/holiday/OTP-allowlist/units); display_labels; data_rights; engineering_rules_data; certification_scheme_set | published → superseded (never deleted; pinned versions live forever) | F1-01, F1-11, F1-13, F1-14, F1-15, F1-18, F1-21, F1-22, F1-23, F1 §F1.3 |
-| certification_scheme | V1 | 0 | A scheme the market's pack declares as required (IN: ALMM, DCR); keys catalog certifications, picker badges and subsidy-path money gates. *(version affinity unfixed — pack-versioned rows or standalone cross-version keys? — F1-11/19/53)*  | market-pack | scheme_key (e.g. ALMM, DCR; untranslated proper noun); market_code | — | F1-19, F1-44, F1-34, F1-14 |
-| utility | V1 | 0 | One entry of the pack-supplied utility directory (IN: state → DISCOM) that site records select from; drives blocker labels and honest wait attribution. *(version affinity unfixed — pack-versioned rows or standalone cross-version keys? — F1-11/19/53)*  | market-pack | state; utility_name; display_label (never translated) | — | F1-53, F1-51, F3-08 |
+| market_pack | V1 | 0 | The one versioned unit of a market's configuration and the source of a tenant's market; readable global reference data — every tenant reads its market's pack and none writes it (owner ruling 2026-09-07). The server-assigned currency and the two launch-gate facts (residency determination, supplier-of-record decision) DERIVE from the current version's payload and are never columns — one fact, one home. | market-pack | market_code (natural key) | authored → launch-gated → live (gate: F1-05, computed from the payload) | F1-01, F1-02, F1-05, F1-06, F1-07, F1-12 |
+| market_pack_version | V1 | 0 | One published, dated revision of the pack, versioned as one unit; pinned by every money/engineering-bearing computed output together with the keys it read. One version per pack, never per key: F1-01 versions the eight keys as one unit, so an output pins one identifier, the market code plus the revision, re-minted through `packVersion` (F1-11; a slab or ruleset change under F1-14/F1-33 is a revision of the whole pack). The payload is ONE `jsonb` column whose every top-level property is a `PACK_KEYS` name — `priceBook` among them, so there is no price-book table; an unauthored key is omitted and reported, never rejected; a ninth key is a data change, not a migration; the column is typed as its envelope, never as the domain aggregate (owner ruling 2026-09-07). Readable global reference data, as market_pack. | market-pack | market_code; revision (unique with market_code); published_at; pack (tax; subsidy; callingRules incl. ai_disclosure_flag and statutory windows; paymentRails; certificationSchemes incl. the standards labels; formats incl. currency/date/phone/holiday/OTP-allowlist/units, the display labels and the utility directory; dataRights; priceBook — owner-only interior, never served by the tenant-facing read) | published → superseded (never deleted; pinned versions live forever) | F1-01, F1-11, F1-13, F1-14, F1-15, F1-18, F1-19, F1-21, F1-22, F1-23, F1-25, F1-53, F1 §F1.3 |
 | dnd_scrub_entry | V1 | 6 | Cached DND-registry scrub verdict per phone number, refreshed daily before the calling window; consumed by the pre-dial compliance gate. *(platform-wide or per-tenant; per-number cache or batch verdicts — F1-36/15)*  | platform | phone_e164; dnd_registered_status; scrubbed_at (24 h freshness threshold) | fresh (<24 h) → stale (promotional dialing pauses fail-closed) | F1-36, F1-15, F1-17 |
 | demo_project_content | V1 | 1 ⚠ | One finished, realistic demo project per market pack (V1: lead → design → proposal; the survey chapter joins the pack content when M04 lands — Q67), shipped as pack content versioned with the pack; instantiated per new tenant. *(content shape and seeding format deferred to M01-27 — F1-02)*  | market-pack | market_code; pack_version_pin; localized design/proposal content (survey content added with M04) | — | F1-02, M01-27, Q19, Q67 |
-| language | V1 | 0 | Product-level language list (EN/HI/MR at launch): per-language readiness state; an open list nothing may hard-code; the value set for interface_language. *(readiness state stored, or only the offered set? proposed addition — F3-26/27)*  | platform | locale_code (natural key); script; own-script display name; readiness_state; offered_in_picker | — | F3-01, F3-25, F3-26, F3-27 |
 
 ### 2.3 Platform billing & entitlements
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
 | plan | V1 | 2 | Tier definition as stored entitlement source; entitlement truth lives in platform tables, money truth at the gateway | platform | tier_name (Starter/Growth/Pro/Enterprise); trial_days; included_bundles per meter (voice, detections, OTP fair-use, storage, V2 slots); capacity_ceilings (design-kW, proposals/month, Starter active projects); gateway_plan_refs (exactly two: monthly + yearly) | — | M12-02, M12-12, M12-17, BM-11 |
-| market_price_book | V1 | 2 | Per-market, owner-authored, versioned commercial book; a market without one has no prices and cannot sell; never FX-derived | market-pack | market_key; currency; version/revision; per-tier per-cycle prices (ex-tax); bundle_sizes per meter; overage_rates per meter; addon_rows with draft/sellable status; trial_caps; benchmarks (page, date, currency — provenance recorded); grandfather_protection_horizon; service_terms per tier | authored → owner-approved/published → superseded (revisions retained) | BM-37..BM-42, F1-25, F1-26, M12-57 |
-| plan_price | V1 | 2 | Per-currency tier × cycle price row mirrored 1:1 to a gateway plan object; the row a subscription bills against *(Enterprise custom pricing unmodeled — per-tenant row or per-contract book row? — BM-15/BM-41)*  | market-pack | tier; cycle (monthly/yearly); currency; amount_ex_tax; market_key; book_version pin; gateway_plan_object_ref | — (immutable book rows; retained indefinitely for grandfathering) | M12-03, M12-12, M12-57, BM-38, F1-27 |
+| plan_price | V1 | 2 | Per-currency tier × cycle price row mirrored 1:1 to a gateway plan object; the row a subscription bills against *(Enterprise custom pricing unmodeled — per-tenant row or per-contract book row? — BM-15/BM-41)*  | market-pack | tier; cycle (monthly/yearly); currency; amount_ex_tax; market_key; pack_version pin (the market_pack_version whose priceBook it mirrors); gateway_plan_object_ref | — (immutable book rows; retained indefinitely for grandfathering) | M12-03, M12-12, M12-57, BM-38, F1-27 |
 | subscription | V1 | 2 | The tenant's single billing-lifecycle machine: tier, cycle, six-state relationship with the platform; runtime gating source with entitlements *(trialing: row with null gateway refs, or no row until conversion? — M12-04/52/54)*  | tenant | state (six BM-33 names); tier; cycle; billed plan_price ref; gateway_subscription_ref (conversion onward); paid_period_start/end; entitled_until (period end + 3-day buffer); billing_anchor; trial_start/expiry; cancellation_reason; pending_plan_change (target tier/cycle, applied at the next cycle boundary — M12-48/49/54) | trialing → active → past_due (grace d0–3/d4–7) → halted; active → cancelled (runs to period end); trialing → expired; reactivation = new row | M12-04..08, M12-14, M12-50, M12-52, M12-54, BM-33 |
 | subscription_state_history | V1 | 2 | Append-only record of every subscription state entered — when, why, tenant- or time-caused; readable on billing screen | tenant | state_entered; entered_at; cause (pay/cancel/reactivate/charge failure/timer/trial expiry); actor_class (tenant-caused vs time-caused) | append-only | M12-04, M12 §M12.2 |
 | payment_mandate | V1 | 2 | The tenant's live gateway payment authorization — reference only; instrument data exists solely at the gateway | tenant | gateway_mandate_ref (no instrument data); rail (pack F1-40/41 ladder); live_status (one live at a time); established_at (conversion, never signup) | established → live → superseded/ended | M12-08, M12-10, M12-11, M12-55, M12-58 |
@@ -118,7 +114,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | subscription_payment | V1 | 2 | The recorded platform charge — a successful charge is entitlement truth: extends window, triggers invoice, clears dunning, atomically *(does a failed charge write a row, and a failed invoice? — M12-09/44/39)*  | tenant | amount; currency; gateway_charge_ref; idempotency_key (duplicate/out-of-order events are no-ops); occurred_at | — (append) | M12-09, M12-32, M12-48 |
 | credit_note | V1 | 2 | Market scheme's credit-note artefact auto-issued against the first-cycle invoice on 7-day money-back refund; refund-to-source | tenant | scheme_artefact_type (pack.tax; IN: GST credit note); amount; currency; invoice ref; refund_to_source_ref; issued_at | — (issued, immutable) | M12-47 |
 | dunning_event | V1 | 2 | A fired rung of the dunning ladder (or trial nudge reusing the pipeline); history renders on the billing screen *(distinct rows or derived from F6's notification log? — M12-39/55, F6-11) · (trial nudges parent on subscription or tenant — depends on trialing storage; M12-42/54)*  | tenant | rung (day 0/2/4/6/7; post-halt weekly ×4 then monthly; trial nudge day 7/12/14); channels_used (pack stack); fired_at; cleared_at / cleared_by_payment; forfeiture_disclosure_included (protected tenants, from day 0) | fired → cleared-by-payment | M12-39, M12-40, M12-42, M12-55 |
-| price_protection | V1 | 2 | The tenant's grandfathering fact: signed-up book/rows billed against, protection horizon, and permanent forfeiture on lapse *(grandfathering stored on tenant or subscription — register M12-Q4; M12-57)*  | tenant | signed_up_book / plan_price rows pinned; protection_horizon (from market book); status (protected / forfeited-on-lapse / horizon-lapsed); forfeited_at; lapse_cause (cancelled / halted) | protected → forfeited-on-lapse \| horizon-lapsed (recorded, never deleted) | M12-57, M12-39 (Q43), BM-42, M12-Q4 |
+| price_protection | V1 | 2 | The tenant's grandfathering fact: signed-up book/rows billed against, protection horizon, and permanent forfeiture on lapse *(grandfathering stored on tenant or subscription — register M12-Q4; M12-57)*  | tenant | signed-up pack version (its priceBook) / plan_price rows pinned; protection_horizon (from pack.priceBook); status (protected / forfeited-on-lapse / horizon-lapsed); forfeited_at; lapse_cause (cancelled / halted) | protected → forfeited-on-lapse \| horizon-lapsed (recorded, never deleted) | M12-57, M12-39 (Q43), BM-42, M12-Q4 |
 | price_protection_pin | V1 | 2 | Junction: one plan_price row a price_protection pins as its signed-up (or protected-upgrade) billing row *(which plan_price rows a protected upgrade pins is undecided — M12-Q4, M12-57)*  | tenant | price_protection ref; plan_price ref; pin_kind (signed_up \| protected_upgrade) | — | M12-57, BM-42 |
 
 ### 2.4 Tenant configuration, catalog & rates
@@ -137,7 +133,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | tenant_holiday | V1 | 1 | A tenant-added holiday narrowing the pack calling calendar; never widens past the statutory floor; read by scheduling consumers | tenant | date; label | — | M01-59 |
 | tranche_template | V1 | 1 | Named payment-term template; two standards seeded at tenant creation, exactly one default; archives never deletes; feeds builder, Quick mode and M11 | tenant | name (tenant data per language); is_default (exactly one per tenant); archived | active → archived | M01-53, M01-54 |
 | catalog_item_market_availability | V1 | 1 | Junction: one platform catalog item's availability in one market; a tenant sees exactly their market's slice | platform | catalog_item ref; market_pack ref | — | M01-33 |
-| catalog_item_certification | V1 | 1 | Junction: one scheme-keyed certification held by one platform catalog item; drives picker badges and subsidy-path gates | platform | catalog_item ref; certification_scheme ref | — | M01-34, F1-44 |
+| catalog_item_certification | V1 | 1 | Junction: one scheme-keyed certification held by one platform catalog item; drives picker badges and subsidy-path gates | platform | catalog_item ref; scheme_key (a value validated against the tenant market's pack.certificationSchemes, not a foreign key) | — | M01-34, F1-44 |
 | catalog_release_line | V1 | 1 | One changed-item line of a catalog release — what a release contains is inspectable | platform | catalog_release ref; catalog_item ref; change_kind | — (immutable with the release) | M01-43 |
 | tranche_template_line | V1 | 1 | One row of a payment-term template: label + percentage + canonical stage + order; rows sum to exactly 100.00 | tenant | tranche_template ref; label (per language); percentage; due_on_stage (canonical); order | — | M01-54 |
 | catalog_item | V1 | 1 | Platform-curated master-catalog component with typed per-kind specs and market-scoped availability; read-only to tenants — overrides are the only tenant write | platform | component_kind (incl. MLPE); brand (never translated); model (never translated); typed per-kind spec fields; market_availability; certifications (scheme-keyed); provenance_label (verified-datasheet/representative); no price — a component's rate is tenant_catalog_override's or catalog_rate_entry's, never the platform's; archived; out_of_stock/discontinued | active → archived | M01-33, M01-34, M01-35, M01-42, M01-45, MS10-26 |
@@ -180,7 +176,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| site | V1 | 4 ⚠ | The roof/premises anchor: survey identity is per-site; projects and geofences reference it; address corrections propagate here. *(site-level sanctioned-load source of record when versions disagree — M04-45/57)*  | tenant | address; dropped-pin coordinates; utility ref (pack directory); lead ref | — | M04-57, M04-59, M04-12, F1-53, M08-04, M09-49, 03 §2 |
+| site | V1 | 4 ⚠ | The roof/premises anchor: survey identity is per-site; projects and geofences reference it; address corrections propagate here. *(site-level sanctioned-load source of record when versions disagree — M04-45/57)*  | tenant | address; dropped-pin coordinates; utility_key (a value validated against pack.formats.utilities, not a foreign key); lead ref | — | M04-57, M04-59, M04-12, F1-53, M08-04, M09-49, 03 §2 |
 | survey | V2 | V2 — M04 | Per-site survey identity header under which immutable versions accumulate; carries the version-kept notice and latest-version pointer. *(lead anchor: survey header or survey_version? — M04-01/57/61)*  | tenant | site ref (unique — one per site); latest version number; version-kept notice ("v2 — v1 kept") | — | M04-01, M04-57, F4-14, F4-25 |
 | survey_version | V2 | V2 — M04 | One immutable capture of the site (remote or physical) — the designer's brief and evidence of the site that day. *(draft storage locus device, server, or both? — M04-48/55) · (immutability trigger: explicit close action or next version appended? — F4-14)*  | tenant | mode (remote\|physical); status; version number + supersedes ref; roof geometry/type/pitch/azimuth/area with per-field provenance tiers; roof origin path; confirmed building pick; remote-unreliable mark + imagery-age ack; known-distance calibration; meter reading + sanctioned load (person-entered); access constraints + structural observations; skipped-but-flagged markers + open-gap count; captured-by/submitted-by/-at; optional pinned_tile / detection references (§3.7, never required) | draft → in progress → submitted → superseded | M04-01..03, M04-28, M04-34/35, M04-42..45, M04-51/52, M04-57, M04-62/63 |
 | survey_visit | V2 | V2 — M04 | Scheduled on-site assignment (Mode B) with forward-only states, reschedule chain and could-not-complete handling. *(one-customer-message fact may move to a unified transactional_send — 8.1, M02-48)*  | tenant | site/lead ref; assigned surveyor; scheduled time (tenant tz); status; could-not-complete reason; reschedule successor ref; produced survey version ref; cancelled/rescheduled-by; one customer message record | scheduled → in progress → done \| cancelled (forward-only) | M04-32, M04-38, M04-58, M04-60, F4-17 |
@@ -262,7 +258,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
 | project | V1 | 4 | Post-Won status/documents/money tracker, created atomically by the won transition; supplies facts to customer link, M11, M12, M13. *(per-phase 'named person with a phone number' has no source field — F5-55/73) · (demo-instance marker unmodeled on instantiated rows — 8.1, M01-27)*  | tenant | project_number (server-assigned, natural key); stage; stage_entered_at; segment; cancellation_reason; market_pack_version_pin; proposal_version_in_force_ref; system_size_kw; system_value (tenant currency — the M07-62 typed final value captured at Won); expected_install_date (required at Won — M07-62); commissioning_artifact_refs | WON → MATERIAL_ORDERED → DISPATCHED → INSTALLATION → ELECTRICAL_METERING → UTILITY_INSPECTION → COMMISSIONED → INCENTIVE_CLAIMED → HANDED_OVER; CANCELLED terminal from any stage | M08-02..05, M08-07, M08-08, M08-48, M08-51, M08-52 |
-| project_blocker | V1 | 4 | Wait-attribution sub-state riding any stage: who is waited on, why, since when; feeds F5 and M13. *(reason_class vocabulary: closed or free, module- or pack-owned? — M08-29)*  | tenant | party (closed set utility\|customer\|material\|company); reason (internal); reason_class (published); wait_start_date; expected_until; cleared_by; cleared_at; attributed_utility_ref | active → cleared (explicit act only) | M08-20..25, M08-28, M08-29 |
+| project_blocker | V1 | 4 | Wait-attribution sub-state riding any stage: who is waited on, why, since when; feeds F5 and M13. *(reason_class vocabulary: closed or free, module- or pack-owned? — M08-29)*  | tenant | party (closed set utility\|customer\|material\|company); reason (internal); reason_class (published); wait_start_date; expected_until; cleared_by; cleared_at; attributed_utility_key (a value from pack.formats.utilities) | active → cleared (explicit act only) | M08-20..25, M08-28, M08-29 |
 | document_checklist_item | V1 | 4 | One document-checklist row seeded at creation from the pack per segment; the rows collectively define handover. | tenant | pack_row_key (pack label ref); status; verified_by; verified_at | pending → uploaded → verified | M08-05, M08-30..32, M08-34 |
 | project_document_file | V1 | 4 | A file attached to a checklist row; replace retains history; verified files form the handover pack. *(handover pack: stored snapshot at handover or live view? — M08-46/49)*  | tenant | checklist_item_ref; uploaded_by; uploaded_at; replaced_retained_flag | current → replaced (retained, never deleted) | M08-31, M08-46, M08 §M08.5 |
 | installation_checklist_step | V1 | 4 | Execution state of the design's derived work order plus marked manual additions: tick, evidence, attribution; no commercial figure. *(may duplicate installation_plan_tick — which module owns stored tick state? M05-76, MS11-35)*  | tenant | derived_step_ref (design phase/step/build order); manual_flag; title (manual only); ticked_by; ticked_at; done_by_text (free text); evidence_photo_refs | unticked → ticked (ticks survive design changes) | M08-41..43, M08-45 |
@@ -329,11 +325,8 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 
 | From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
 |---|---|---|---|---|---|---|
-| market_pack | is published as | market_pack_version | 1:N | yes | Versions effectively permanent: computed outputs pin them, sent proposals keep them forever; a revision supersedes, never rewrites (F1-11) | F1-01, F1-11, F1-33 |
-| market_pack | declares required schemes | certification_scheme | 1:N | yes | Removal is a pack revision; outputs computed on prior versions self-stale rather than change (F1-11); otherwise PRD silent | F1-19, F1-44, F1-11 |
-| market_pack | supplies utility directory of | utility | 1:N | yes | PRD silent (pack data is versioned; never-delete posture implied by F1-11) | F1-53 |
+| market_pack | is published as | market_pack_version | 1:N | yes | Versions effectively permanent: computed outputs pin them, sent proposals keep them forever; a revision supersedes, never rewrites (F1-11); the price book is the payload's priceBook key, and a version without one is the defined cannot-sell state, not a deletion path | F1-01, F1-11, F1-33, F1-25, F1-26, BM-37 |
 | market_pack | ships one demo project as pack content | demo_project_content | 1:1 | yes | Versioned with the pack (Q19); tenant demo instances are resettable; PRD silent on removal | F1-02, M01-27, M01 §6 M01-Q2 |
-| language | is the interface-language value set for | user_account | 1:N | no (may be unset before first run — device language, then English backstop) | Fixed product-level open list with readiness states; never hard-coded | F3-01, F3-25, F3-26, F3-27 |
 
 (dnd_scrub_entry has no PRD-grounded business parent: it is a per-phone-number platform cache; its platform-wide vs per-tenant/market boundary is an open question below.)
 
@@ -344,8 +337,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | tenant | holds | subscription | 1:N | yes | Never deleted — every state retains all data indefinitely; reactivation creates a NEW row, so history accumulates | M12-04, M12-07, M12-08, BM-32 |
 | subscription | logs transitions as | subscription_state_history | 1:N | yes | Append-only; never deleted | M12-04, M12 §M12.2 |
 | plan | is priced per currency and cycle by | plan_price | 1:N | yes | PRD silent; grandfathering requires signed-up rows to stay resolvable indefinitely | M12-03, M12-12, M12-57 |
-| market_price_book | publishes book rows as | plan_price | 1:N | yes | Book revisions are versioned; repricing never retroactive; old rows persist for protected tenants | BM-38, BM-41, BM-42, F1-27 |
-| market_pack | authors | market_price_book | 1:N | yes | Revisions retained; absence of a book is the defined cannot-sell state, not a deletion path | F1-25, F1-26, BM-37, BM-42 |
+| market_pack_version | publishes its priceBook rows as (pack.priceBook) | plan_price | 1:N | yes | The book rides the pack version; repricing never retroactive; old rows persist for protected tenants | BM-38, BM-41, BM-42, F1-27 |
 | plan_price | bills | subscription | 1:N | no (trialing has no billed row until conversion) | PRD silent | M12-12, M12-52, M12-57 |
 | tenant | carries current effective limits as | entitlement | 1:N | yes | Recomputed in place; PRD silent on deletion | M12-16 |
 | tenant | receives audited grants as | entitlement_override | 1:N | yes | PRD silent; audit coverage implies retention | M12-19, M12-52, M12-58 |
@@ -376,7 +368,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | market_pack | declares type and format of (pack.tax) | tax_registration | 1:N | yes | Packs versioned (F1-11), never deleted from under a tenant | M01-24, M01-25 |
 | business_profile | supplies bank details to (one write-point reference) | proposal_template_settings | 1:1 | no (profile skippable; platform defaults stand in) | PRD silent | M01-51, M01-31, M01-28 |
 | market_pack | catalog_item_market_availability (market-scoped availability) | catalog_item | N:M | yes (every item carries market availability) | PRD silent | M01-33 |
-| catalog_item | catalog_item_certification (scheme-keyed certifications) | certification_scheme | N:M | no (empty scheme set = no badges, never an error) | PRD silent | M01-34, F1-44 |
+| catalog_item | catalog_item_certification (certifications keyed by a scheme value validated against pack.certificationSchemes) | market_pack_version | N:M | no (empty scheme set = no badges, never an error) | A value, not a foreign key: a scheme a revision drops leaves the certification row in place and its badge un-rendered; PRD silent otherwise | M01-34, F1-44, F1-19 |
 | catalog_release | lists changed items as | catalog_release_line | 1:N | yes | Immutable with the release (append-only) | M01-43 |
 | catalog_item | is named changed in | catalog_release_line | 1:N | yes | Archived items keep serving old references | M01-43, M01-42 |
 | tranche_template | is composed of | tranche_template_line | 1:N | yes (rows sum to exactly 100.00) | Template archives never delete | M01-53, M01-54 |
@@ -429,7 +421,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
 |---|---|---|---|---|---|---|
 | lead | acquires | site | 1:N | yes | No lead state ever deletes; PRD silent on site deletion — survey history hangs off it forever | 03 §2, M04-61, M09-49 |
-| utility | is selected by | site | 1:N | no | PRD silent; packs are versioned, directory entries never hard-coded | F1-53 |
+| market_pack_version | supplies the utility a site selects (a value validated against pack.formats.utilities) | site | 1:N | no | A value, not a foreign key; packs are versioned, directory entries never hard-coded; PRD silent otherwise | F1-53 |
 | site | has survey identity | survey | 1:1 | yes | Never deleted — versions under it are immutable and readable forever | M04-01, M04-57, F4-14 |
 | lead | originates and scopes | survey | 1:N | no | PRD silent; visibility follows the lead/site scope, no separate visibility domain | M04-61, F2-12–F2-14, §M04.1 |
 | survey | has versions | survey_version | 1:N | yes | Versioned-append: never overwritten, never deleted; prior versions readable forever | F4-14, F4-25, M04-57 |
@@ -565,7 +557,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | project | logs stage moves as | project_stage_transition | 1:N | yes | Append-only; backward moves first-class, never rewritten | M08-11, M08-14 |
 | project | is staffed by | project_assignment | 1:N | yes | Append-only; a person leaving the job is a new row, never a deletion; projects are never deleted so the staffing history stays readable | M08-18, F2 §F2.5-M08 |
 | project | retains at handover | commissioning_artifact | 1:N | yes | Retained as data for future O&M attach; never deleted | M08-48 |
-| utility | attributed for utility waits (via site's pack selection) | project_blocker | 1:N | no | PRD silent; pack directory data (F1-53) | M08-28, F1-53 |
+| market_pack_version | supplies the utility a blocker attributes (a value from pack.formats.utilities, via the site's selection) | project_blocker | 1:N | no | A value, not a foreign key; PRD silent; pack directory data (F1-53) | M08-28, F1-53 |
 | project | seeds checklist rows at creation | document_checklist_item | 1:N | yes | Rows never disappear when complete; seeded once, pack-version pinned | M08-05, M08-30 |
 | document_checklist_item | holds | project_document_file | 1:N | yes | Replace keeps both acts; nothing deleted; verified files form handover pack | M08-31, M08-46 |
 | file | holds the bytes of | project_document_file | 1:1 | yes | Replace retains both rows on both sides; nothing deleted. The document row keeps checklist linkage, uploader and verification; the file row keeps bytes, size, checksum and store reference | M08-31, M08-46 |
@@ -753,29 +745,12 @@ erDiagram
 erDiagram
   MARKET_PACK {
     string market_code PK
-    string market_currency
-    boolean privacy_residency_determination_present
-    boolean supplier_of_record_decision_present
   }
   MARKET_PACK_VERSION {
-    string version_identifier PK
     string market_code FK
-    date published_date
-    json tax_config
-    json subsidy_config
-    json calling_rules
-    json formats
-    json data_rights
-  }
-  CERTIFICATION_SCHEME {
-    string scheme_key PK
-    string market_code FK
-  }
-  UTILITY {
-    string market_code FK
-    string state
-    string utility_name
-    string display_label
+    int revision
+    datetime published_at
+    json pack
   }
   DEMO_PROJECT_CONTENT {
     string market_code FK
@@ -787,15 +762,7 @@ erDiagram
     string dnd_registered_status
     datetime scrubbed_at
   }
-  LANGUAGE {
-    string locale_code PK
-    string readiness_state
-    boolean offered_in_picker
-  }
   MARKET_PACK ||--|{ MARKET_PACK_VERSION : "is published as"
-  LANGUAGE |o--o{ USER_ACCOUNT : "is interface language of"
-  MARKET_PACK ||--o{ CERTIFICATION_SCHEME : "declares required schemes"
-  MARKET_PACK ||--o{ UTILITY : "supplies utility directory of"
   MARKET_PACK ||--|| DEMO_PROJECT_CONTENT : "ships one demo project"
 ```
 
@@ -810,19 +777,10 @@ erDiagram
     string capacity_ceilings
     string gateway_plan_refs
   }
-  MARKET_PRICE_BOOK {
-    string market_key
-    string currency
-    string version
-    string tier_prices_ex_tax
-    string overage_rates
-    string addon_draft_status
-    string protection_horizon
-  }
   PLAN_PRICE {
     string id PK
     string plan_tier FK
-    string book_version FK
+    string pack_version_pin FK
     string cycle
     string currency
     decimal amount_ex_tax
@@ -941,8 +899,7 @@ erDiagram
   TENANT ||--o{ SUBSCRIPTION : "holds"
   SUBSCRIPTION ||--o{ SUBSCRIPTION_STATE_HISTORY : "logs transitions as"
   PLAN ||--o{ PLAN_PRICE : "is priced per currency-cycle by"
-  MARKET_PRICE_BOOK ||--o{ PLAN_PRICE : "publishes book rows as"
-  MARKET_PACK ||--o{ MARKET_PRICE_BOOK : "authors"
+  MARKET_PACK_VERSION ||--o{ PLAN_PRICE : "publishes priceBook rows as"
   PLAN_PRICE |o--o{ SUBSCRIPTION : "bills"
   TENANT ||--o{ ENTITLEMENT : "carries current limits as"
   TENANT ||--o{ ENTITLEMENT_OVERRIDE : "receives audited grants as"
@@ -982,7 +939,6 @@ erDiagram
   MARKET_PACK ||--o{ CATALOG_ITEM_MARKET_AVAILABILITY : "scopes availability via"
   CATALOG_ITEM ||--|{ CATALOG_ITEM_MARKET_AVAILABILITY : "is available via"
   CATALOG_ITEM ||--o{ CATALOG_ITEM_CERTIFICATION : "holds certifications via"
-  CERTIFICATION_SCHEME ||--o{ CATALOG_ITEM_CERTIFICATION : "keys"
   CATALOG_RELEASE ||--|{ CATALOG_RELEASE_LINE : "lists changed items as"
   CATALOG_ITEM ||--o{ CATALOG_RELEASE_LINE : "is named changed in"
   TRANCHE_TEMPLATE ||--|{ TRANCHE_TEMPLATE_LINE : "is composed of"
@@ -1121,7 +1077,7 @@ erDiagram
   }
   CATALOG_ITEM_CERTIFICATION {
     string catalog_item_ref FK
-    string scheme_key FK
+    string scheme_key
   }
   CATALOG_RELEASE_LINE {
     string catalog_release_ref FK
@@ -1318,7 +1274,6 @@ erDiagram
 ```mermaid
 erDiagram
     LEAD ||--o{ SITE : "acquires"
-    UTILITY |o--o{ SITE : "is selected by"
     SITE ||--|| SURVEY : "has survey identity"
     LEAD |o--o{ SURVEY : "originates and scopes"
     SURVEY ||--|{ SURVEY_VERSION : "has versions"
@@ -1344,7 +1299,7 @@ erDiagram
         string address
         string location_pin
         string lead_ref FK
-        string utility_ref FK
+        string utility_key
     }
     SURVEY {
         string site_ref FK
@@ -1909,7 +1864,7 @@ erDiagram
     date wait_start_date
     date expected_until
     datetime cleared_at
-    string attributed_utility_ref FK
+    string attributed_utility_key
   }
   DOCUMENT_CHECKLIST_ITEM {
     string project_ref FK
@@ -2004,7 +1959,6 @@ erDiagram
   PROPOSAL_VERSION ||--o| PROJECT : "accepted version in force"
   MARKET_PACK_VERSION ||--o{ PROJECT : "pinned at seeding"
   PROJECT ||--o{ PROJECT_BLOCKER : "carries wait sub-states"
-  UTILITY |o--o{ PROJECT_BLOCKER : "attributed for utility waits"
   PROJECT ||--o{ DOCUMENT_CHECKLIST_ITEM : "seeds checklist rows"
   DOCUMENT_CHECKLIST_ITEM ||--o{ PROJECT_DOCUMENT_FILE : "holds"
   PROJECT ||--o{ INSTALLATION_CHECKLIST_STEP : "executes work order via"
@@ -2307,8 +2261,9 @@ erDiagram
 ### 5.2 Market framework & localization
 
 - Packs are platform-authored, never tenant-editable; statutory-floor items can only be narrowed by tenant config (shorter window, extra holidays), never widened — no override flag, no support-side bypass. (F1-12, F1-17, F1-36)
-- Pack data versions as one unit; a revision is a dated data update; computed outputs pin the pack/rules version and self-stale on revision, never recompute; running work keeps its version, new work takes the new one; sent proposals keep their versions forever. (F1-01, F1-11)
-- Launch gate: pack.tax, pack.formats, pack.data-rights and the market price book can never be empty; a privacy/residency determination must exist before any tenant, a supplier-of-record decision before any sale — both stored with the pack. (F1-05)
+- Pack data versions as one unit; a revision is a dated data update; computed outputs pin the pack/rules version and the keys they read, and self-stale on revision only where a key they read changed — a price-book revision never stales a customer design (owner ruling 2026-09-07) — never recompute; running work keeps its version, new work takes the new one; sent proposals keep their versions forever. (F1-01, F1-11, F8-13, F8-14)
+- The stored pack is ONE payload keyed by the eight PACK_KEYS names; an unauthored key is omitted and reported, never rejected; a ninth key is a data change, not a migration; the column is typed as its envelope — key names, market, revision, brands re-minted — and the whole is parsed in domain before any writer that is not typed code exists. (F1-01, F1-02; owner ruling 2026-09-07)
+- Launch gate: pack.tax, pack.formats, pack.data-rights and the market price book can never be empty; a privacy/residency determination must exist before any tenant, a supplier-of-record decision before any sale — both derived by the launch gate from the current version's payload, never stored as columns. (F1-05)
 - An absent voice ruleset hard-disables outbound voice — never a permissive default. pack.subsidy may be `none`; an empty certification-scheme set means no badges and no gates — never an error. (F1-16, F1-14, F1-19)
 - Pack internal consistency is validated at authoring (a subsidy requiring a scheme the scheme set lacks makes the pack invalid); pack validation is a platform-ops duty, never resolved locally by a module. (F1 §F1.2)
 - No market fact is ever a module-level constant; every market fact resolves from the versioned pack through the eight keys. (F1-01, F1-04, OV-23)
@@ -2322,10 +2277,10 @@ erDiagram
 - Format values (currency symbol/grouping/minor unit, digit rules, date style, default timezone, holiday calendar, phone spec, OTP allowlist, unit defaults) live only in pack.formats — stated once, never duplicated, never role/plan/tenant-configurable. (F1-21, F3 §5, F1-12)
 - The OTP-destination allowlist is pack data (+91 default); enabling another country code is a data switch, not a code change. (F1-49, F1-21)
 - One demo project per pack, versioned with the pack — pack content, not a ninth rules key; tenant instances are labelled demo, resettable, excluded from reports. (F1-02, M01-27, Q19)
-- market_code is unique (one pack per market); market_code + version_identifier is unique; exactly one authored pack exists at launch (IN) on global-safe schemas. (F1-01, F1-06)
+- market_code is unique (one pack per market); market_code + revision is unique, and the pair is the pack version outputs pin; exactly one authored pack exists at launch (IN) on global-safe schemas. (F1-01, F1-06)
 - Pack authoring and change control are platform operations outside the tenant role system: every change versioned, dated and audited; no tenant-facing surface edits pack data. (F1 §4, F1-11, F1-12)
 - The pack supplies only the market default timezone; the tenant's actual timezone is tenant data. (F1-10, F1-21)
-- No FX-converted pricing ever rides pack data; the market's commercial book is a separate authored artifact (billing domain) whose absence is the defined cannot-sell state. (F1-25, F1-26, F1-27)
+- No FX-converted pricing ever rides the pack; the market's commercial book is the pack's own priceBook key, authored in the pack and versioned with it, whose absence is the defined cannot-sell state; its interior (worst-case COGS, benchmark provenance) is owner-only and never served by the tenant-facing pack read — the billing path alone reads it. (F1-25, F1-26, F1-27, BM-17; owner ruling 2026-09-07)
 
 ### 5.3 Platform billing & entitlements
 
@@ -2663,7 +2618,7 @@ erDiagram
 | Entity.field(s) | Class (PII / credential-secret / financial / location / biometric-none / imagery) | Handling noted in PRD |
 |---|---|---|
 | dnd_scrub_entry.phone_e164, dnd_registered_status | PII | Regulated third-party compliance data with a 24 h freshness duty; staleness fail-closes promotional dialing; read pre-dial | 
-| market_pack, market_pack_version, certification_scheme, utility, demo_project_content (all fields) | — (none) | Platform-authored market configuration and fictional demo content; no personal data |
+| market_pack, market_pack_version (the pack payload, priceBook excepted below), demo_project_content (all fields) | — (none) | Platform-authored market configuration and fictional demo content; no personal data |
 
 #### Platform billing & entitlements
 
@@ -2671,7 +2626,7 @@ erDiagram
 |---|---|---|
 | payment_mandate.gateway_mandate_ref; subscription.gateway_subscription_ref; subscription_payment.gateway_charge_ref | financial | References only — instruments exist exclusively at the gateway (hosted checkout); RBI payment-data localisation satisfied by construction (M12-10, F1-43) |
 | subscription_invoice.supplier_registration_ids, tenant tax registration rendered, place_of_supply | PII / financial | Statutory identity on invoices; supplier of record; statutory retention (IN GST 6+ years) outlives erasure (M12-44, M12-45, F1-32) |
-| plan_price.amount; market_price_book prices/benchmarks; subscription_invoice, invoice_line, credit_note, subscription_payment amounts | financial | Owner-only (F2.M12.manage-billing); no employee surface shows amounts; never mixed with M11 collections figures (M12-56, M12-01) |
+| plan_price.amount; market_pack_version.pack.priceBook prices/benchmarks (owner-only interior, never served by the tenant-facing pack read); subscription_invoice, invoice_line, credit_note, subscription_payment amounts | financial | Owner-only (F2.M12.manage-billing); no employee surface shows amounts; never mixed with M11 collections figures (M12-56, M12-01) |
 | subscription.state; dunning_event history | financial | Confidential toward EPC customers — never reaches a customer link; employees see state, never amounts; inbound callers never told of billing (M12-29, M12-25, M12-56) |
 | dunning_event delivery contacts (owner/manager phones via pack channel stack) | PII | Platform→tenant messaging over registered SMS templates and opted-in business messaging (M12-40, F1-38) |
 | usage_event.provenance_ref (links to calls, detections, sends, documents, seat toggles) | financial | Behavioral trace of tenant activity; internal per-tenant cost estimates never customer-facing (M12-32, M12-37) |
@@ -2820,10 +2775,8 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | Entity | Suggested index / access path | Justifying access pattern (from the PRD) | PRD refs |
 |---|---|---|---|
 | market_pack | market_code (unique) | Tenant creation fixes market and server-assigns currency from the pack; every market-fact resolution starts at the tenant's pack | F1-07, F1-01 |
-| market_pack_version | (market_code, published_date desc) | Fetch the current version for new work; staleness evaluation compares an output's pinned version to the current one | F1-11, F1-33 |
-| market_pack_version | version_identifier (unique per market) | Pinned reads: sent proposals, designs and subsidy computations resolve the exact version they pinned | F1-11, F1-33 |
-| utility | (market_code, state) | Utility selection lists the pack directory filtered by state (state → DISCOMs) for site records; blocker rendering reads the label | F1-53 |
-| certification_scheme | (market_code) | Component picker badges catalog items by the tenant market's declared scheme set; Generate-time subsidy gate reads required schemes | F1-19, F1-44, F1-34 |
+| market_pack_version | (market_code, published_at desc) | Fetch the current version for new work; staleness evaluation compares an output's pinned version, per key read, to the current one | F1-11, F1-33 |
+| market_pack_version | (market_code, revision) unique — the pair packVersion re-mints | Pinned reads: sent proposals, designs and subsidy computations resolve the exact version they pinned | F1-11, F1-33 |
 | dnd_scrub_entry | phone_e164 (unique) | Pre-dial gate reads the scrub verdict for the number about to be dialed, before every dial | F1-36, F1-39 |
 | dnd_scrub_entry | (scrubbed_at) | Daily refresh sweep before the calling window opens; freshness check (age < 24 h) pauses promotional dialing fail-closed | F1-36, F1-15 |
 | demo_project_content | (market_code) | Instantiated for every new tenant at creation; reset re-reads the pack content | M01-27, F1-02 |
@@ -2844,7 +2797,7 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | subscription_state_history | subscription + entered_at | Subscription history readable on the billing screen | M12-04, M12-55 |
 | subscription_invoice | subscription/tenant + cycle_covered | Invoice list with PDFs on the billing screen; export in every billing state | M12-55, M12-46 |
 | storage_gauge_snapshot | tenant + snapshot_date (latest) | Storage gate at upload issuance reads gauge vs ceiling × 1.1; usage screen | M12-23, M12-33 |
-| plan_price | market + tier + cycle + currency; book_version | Price resolution only from the tenant market's book; grandfather row selection (signed-up rows vs current list book) at billing time | F1-27, M12-12, M12-57 |
+| plan_price | market + tier + cycle + currency; pack_version_pin | Price resolution only from the tenant market's book; grandfather row selection (signed-up rows vs current list book) at billing time | F1-27, M12-12, M12-57 |
 
 ### 6.4 Tenant configuration, catalog & rates
 
@@ -3047,20 +3000,20 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
 | F1 §F1.1 | Pack as versioned unit, eight keys, no market constants, platform-authored (F1-01..04, F1-06, F1-11, F1-12) | market_pack, market_pack_version; market_pack→market_pack_version | yes |
-| F1 §F1.1 | New-market launch gate: residency determination, supplier-of-record decision (F1-05) | market_pack (gate-fact fields) | yes |
+| F1 §F1.1 | New-market launch gate: residency determination, supplier-of-record decision (F1-05) | market_pack — the two gate facts derive from market_pack_version.pack, never stored | yes |
 | F1 | Tenant market/currency/timezone assignment (F1-07, F1-10) | tenant [identity] child of market_pack (identity domain writes the row) | yes |
-| F1 pack.tax | Scheme-neutral tax + IN GST/IRN/retention (F1-08, F1-13, F1-28..32) | market_pack_version.tax_config; tax_registration [config]; subscription_invoice [billing] | yes |
-| F1 pack.subsidy | Versioned subsidy model, DCR gate, incentive stage (F1-14, F1-33..35) | market_pack_version.subsidy_config; certification_scheme | yes |
-| F1 pack.calling-rules | Voice/messaging floors, DND scrub, consent, AI disclosure (F1-15..17, F1-36..39) | market_pack_version.calling_rules; dnd_scrub_entry; consent_record [crm] | yes |
-| F1 pack.payment-rails | Mandate ladder/caps, payment-mode open sets, localisation (F1-18, F1-40..43) | market_pack_version.payment_rails; payment_mandate [billing] | yes |
-| F1 pack.certification-schemes + standards | Scheme set, catalog badging, engineering-standards labels (F1-19, F1-20, F1-44, F1-45) | certification_scheme; catalog_item [catalog] scheme-keyed certifications | yes |
-| F1 pack.formats | Currency/digits/date/timezone/holidays/phone/OTP/units (F1-21, F1-46..50) | market_pack_version.formats | yes |
-| F1 pack.display-labels | Stage/blocker labels, skippable set, document checklist (F1-22, F1-51, F1-52) | market_pack_version.display_labels | yes |
-| F1 | Utility directory and wait attribution (F1-53) | utility; site [survey] selects utility | yes |
-| F1 pack.data-rights | DPDP roles, residency, rights map, erasure/retention (F1-23, F1-24, F1-54..59) | market_pack_version.data_rights; consent_record [crm]; erasure = anonymisation on owning entities | partial — whether rights requests (export/erasure/correction) are tracked as stored records is open |
-| F1 price book | Per-market book, per-currency plan rows, draft add-on rates (F1-25..27, F1-60, F1-61) | market_price_book, plan_price [billing] | yes |
+| F1 pack.tax | Scheme-neutral tax + IN GST/IRN/retention (F1-08, F1-13, F1-28..32) | market_pack_version.pack.tax; tax_registration [config]; subscription_invoice [billing] | yes |
+| F1 pack.subsidy | Versioned subsidy model, DCR gate, incentive stage (F1-14, F1-33..35) | market_pack_version.pack.subsidy; pack.certificationSchemes | yes |
+| F1 pack.calling-rules | Voice/messaging floors, DND scrub, consent, AI disclosure (F1-15..17, F1-36..39) | market_pack_version.pack.callingRules; dnd_scrub_entry; consent_record [crm] | yes |
+| F1 pack.payment-rails | Mandate ladder/caps, payment-mode open sets, localisation (F1-18, F1-40..43) | market_pack_version.pack.paymentRails; payment_mandate [billing] | yes |
+| F1 pack.certification-schemes + standards | Scheme set, catalog badging, engineering-standards labels (F1-19, F1-20, F1-44, F1-45) | market_pack_version.pack.certificationSchemes; catalog_item [catalog] scheme-keyed certifications (values) | yes |
+| F1 pack.formats | Currency/digits/date/timezone/holidays/phone/OTP/units (F1-21, F1-46..50) | market_pack_version.pack.formats | yes |
+| F1 pack.display-labels | Stage/blocker labels, skippable set, document checklist (F1-22, F1-51, F1-52) | market_pack_version.pack.formats (display labels) | yes |
+| F1 | Utility directory and wait attribution (F1-53) | market_pack_version.pack.formats (utility directory); site [survey] holds the selected utility as a value | yes |
+| F1 pack.data-rights | DPDP roles, residency, rights map, erasure/retention (F1-23, F1-24, F1-54..59) | market_pack_version.pack.dataRights; consent_record [crm]; erasure = anonymisation on owning entities | partial — whether rights requests (export/erasure/correction) are tracked as stored records is open |
+| F1 price book | Per-market book, per-currency plan rows, draft add-on rates (F1-25..27, F1-60, F1-61) | market_pack_version.pack.priceBook, plan_price [billing] | yes |
 | F1-02 | One demo project as versioned pack content | demo_project_content; market_pack→demo_project_content | yes |
-| F3 | Product-level language set + readiness gate (F3-01, F3-25..27) | language | yes |
+| F3 | Product-level language set + readiness gate (F3-01, F3-25..27) | no entity: the set is `UI_LANGUAGES` in domain, consumed by contracts; readiness is a build fact — fonts, plurals, catalogs — that no stored flag can make true (owner ruling 2026-09-07) | n/a (no stored data) |
 | F3 | Per-user interface language and unit preference (F3-02, F3-23) | user_account [identity] fields | yes |
 | F3 | Runtime English fallback, reader-language render, translated catalog content (F3-05..07) | product translation catalog is shipped content, not tenant-stored data | n/a (no stored data) |
 | F3 | Never-translated set, naming law, closed vocabularies (F3-08, F3-11, F3-12) | storage constraints across all entities (byte-identical values, neutral machine values) | n/a (no stored data) |
@@ -3072,7 +3025,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
-| M12 §M12.1 | Money-system separation, vocabulary resolution, per-currency neutrality (M12-01..03) | plan, plan_price, market_price_book; disjoint from payments-domain entities | yes |
+| M12 §M12.1 | Money-system separation, vocabulary resolution, per-currency neutrality (M12-01..03) | plan, plan_price, market_pack_version.pack.priceBook; disjoint from payments-domain entities | yes |
 | M12 §M12.2 | Six-state subscription machine, history, reactivation, no-pause (M12-04..08, M12-13, M12-14) | subscription, subscription_state_history, payment_mandate | yes |
 | M12 §M12.2 | Charge = entitlement truth; gateway mirror; reconcile (M12-09, M12-12, M12-43) | subscription_payment, subscription_invoice, subscription.entitled_until, entitlement | yes |
 | M12 | Mandate & hosted checkout; pack rails (M12-10, M12-11) | payment_mandate; market_pack → payment_mandate | yes |
@@ -3092,11 +3045,11 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | M12 | Billing audit coverage (M12-58) | audit_log_entry [platform-services] | yes |
 | 04-business-model | Subscription structure, unlimited seats, org-level billing (BM-01..06, OV-29, OV-42) | subscription, plan; no seat entity by design | yes |
 | 04-business-model | Two money systems never mix (BM-02) | disjoint billing vs payments domains; no shared entity | yes |
-| 04-business-model | Tier framework & market book (BM-11..15, BM-37..41) | plan, plan_price, market_price_book (draft/sellable status, benchmarks) — BM-15 public-API classification open upstream | yes |
-| 04-business-model | Meter set, per-meter rules, COGS/absorbed-cost law, transparency (BM-16..27) | usage_event, storage_gauge_snapshot, market_price_book bundles/overages; absorbed non-tracked location ingestion & internal cost lines have no entity | partial |
+| 04-business-model | Tier framework & market book (BM-11..15, BM-37..41) | plan, plan_price, market_pack_version.pack.priceBook (draft/sellable status, benchmarks) — BM-15 public-API classification open upstream | yes |
+| 04-business-model | Meter set, per-meter rules, COGS/absorbed-cost law, transparency (BM-16..27) | usage_event, storage_gauge_snapshot, market_pack_version.pack.priceBook bundles/overages; absorbed non-tracked location ingestion & internal cost lines have no entity | partial |
 | 04-business-model | Trial (BM-28..30) | subscription trial fields, entitlement (source=trial) | yes |
 | 04-business-model | Soft-block & cap law (BM-07, BM-32..36) | subscription.state, entitlement, usage_event rollups; matrix is engine behaviour | yes |
-| 04-business-model | Grandfathering & protection horizon (BM-42) | price_protection + price_protection_pin; market_price_book.protection_horizon | yes |
+| 04-business-model | Grandfathering & protection horizon (BM-42) | price_protection + price_protection_pin; market_pack_version.pack.priceBook.priceProtectionMonths | yes |
 | 04-business-model | Trial-to-paid launch metric (BM-47) | derivable from subscription_state_history (trialing→active); event taxonomy lands in M13 | yes |
 
 ### 7.4 Tenant configuration, catalog & rates
@@ -3113,7 +3066,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | M01 §M01.3 | Company profile & tax registrations (M01-24, -25, -31) | business_profile, tax_registration; business_profile → tax_registration; market_pack → tax_registration | yes |
 | M01 §M01.3 | Demo project (M01-27) | demo_project_content (market domain), versioned with the pack per Q19 | yes |
 | M01 §M01.3 | Zero-config platform defaults (M01-28) | — (platform defaults are product behaviour, not tenant rows) | n/a (no stored data) |
-| M01 §M01.4 | Catalog structure, scoping, specs, provenance, archive, MLPE, no queue (M01-32..38, -42, -45, -46) | catalog_item, tenant_catalog_item, tenant_catalog_override, certification_scheme; catalog_item → tenant_catalog_override | partial (junctions present — catalog_item_market_availability, catalog_item_certification; residue: tenant-SKU certification/preferred handling open, §8) |
+| M01 §M01.4 | Catalog structure, scoping, specs, provenance, archive, MLPE, no queue (M01-32..38, -42, -45, -46) | catalog_item, tenant_catalog_item, tenant_catalog_override, scheme values from market_pack_version.pack.certificationSchemes; catalog_item → tenant_catalog_override | partial (junctions present — catalog_item_market_availability, catalog_item_certification; residue: tenant-SKU certification/preferred handling open, §8) |
 | M01 §M01.4 | Add paths & spreadsheet import (M01-39, -40, -41) | catalog_import_job, tenant_catalog_item, tenant_catalog_override, catalog_rate_entry; import → SKU/override relationships | yes |
 | M01 §M01.4 | Catalog releases & pinning (M01-43, -49) | catalog_release; pins held by design, proposal_version (studio/proposals domains) | partial (release publisher/scope unresolved — see open questions) |
 | M01 §M01.4 | Rate history (M01-44) | catalog_rate_entry; SKU/override → catalog_rate_entry append-only | yes |
@@ -3333,7 +3286,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 |---|---|---|---|
 | M09 | Included-tier field basics — check-in/out and visit logging free for all (M09-02/05/17/18) | check_in_record, field_visit, attendance_record | yes |
 | M09 | Tracked bundle & per-employee toggle (M09-03/04/10..15/65/66) | employee_tracking_state (+ toggle events metered to usage_event, billing domain) | yes |
-| M09 | Tracked-seat pricing display (M09-16) | market_price_book / plan_price (billing domain) | yes |
+| M09 | Tracked-seat pricing display (M09-16) | market_pack_version.pack.priceBook / plan_price (billing domain) | yes |
 | M09 | Field-record write boundary and no-scoring laws (M09-08/09) | — (behavioural constraints only) | n/a (no stored data) |
 | M09 | Check-in/out capture semantics (M09-19/21/22/23/24) | check_in_record; employee_record→check_in_record; field_visit/site anchors | yes |
 | M09 | Visit model, outcomes, reschedule, unplanned stops (M09-26..32) | field_visit; lead/survey_visit/project→field_visit; self-reschedule relation | yes |
@@ -3488,13 +3441,10 @@ Every question below that bears on a specific entity is **also inlined as an ita
 
 #### Market framework & localization
 
-- Pack-version identity granularity: pack data versions "as one unit" (F1-01, F1-11), yet the subsidy computation model is separately "versioned injected configuration" (F1-14, F1-33) and outputs pin "the pack/rules version" — one version identity or per-key versions, and which exact identity do outputs pin? No register Q-number cited in the digests.
 - dnd_scrub_entry data boundary and shape: platform-wide per market, or per-tenant; per-number cache vs batch verdicts — F1 fixes only the freshness duty and the cache's existence; mechanism is M07's. (F1-36, F1-15)
-- Do certification_scheme and utility rows version with the pack (pack versions as one unit) or stand as stable cross-version keys the version content references? The registry models them standalone; the PRD does not fix their version affinity. (F1-11, F1-19, F1-53)
 - Where do per-language translations of pack display labels live — versioned with the pack, or in the product message catalog? F1-22 and F3-07 each half-claim it. (F1-22, F3-07)
 - The IN pack declares neither a statutory messaging window nor a scheduled-send hour — no market value exists yet for pack.calling_rules to carry. Register Q53 (OPEN) tracks this. (F1-Q3(a), F1-15)
 - Demo content shape and seeding format are deferred to M01-27; whether reset restores the creation-time pack version or the current pack version is unstated. (F1-02, M01-27)
-- Is a language's readiness-gate state (script/weight coverage, plural rules, expansion check) stored data driving picker availability, or a release-process gate with only the offered set as data? Ties to the proposed `language` addition below. (F3-27, F3-26)
 
 #### Platform billing & entitlements
 
