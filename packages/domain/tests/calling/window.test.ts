@@ -37,25 +37,27 @@ describe('windowInForce — the floor stands where a tenant would cross it (F1-1
   });
 });
 
-describe('lawfulSendTime — the hour yields to the window it sits inside (F1-15, F1-62)', () => {
+describe('lawfulSendTime — the hour yields to the window on both sides (F1-15, F1-62)', () => {
   it.each([
-    ['12:00', '12:00', 'inside the window'],
-    ['09:00', '09:00', 'exactly as it opens'],
-    ['21:00', '21:00', 'exactly as it closes'],
-    ['21:01', '21:00', 'one minute past the close — the last lawful moment before it'],
-    ['23:00', '21:00', 'well past the close'],
-  ])('a %s slot sends at %s: %s', (slot, expected) => {
-    expect(lawfulSendTime(STATUTORY, clockTime(slot))).toBe(clockTime(expected));
+    ['12:00', '12:00', 'same', 'inside the window'],
+    ['09:00', '09:00', 'same', 'exactly as it opens'],
+    ['21:00', '21:00', 'same', 'exactly as it closes'],
+    ['21:01', '21:00', 'same', 'one minute past the close — that day’s close'],
+    ['23:59', '21:00', 'same', 'the last minute of the day — still that day’s close'],
+    ['08:59', '21:00', 'previous', 'one minute before the open — the previous day’s close'],
+    ['07:00', '21:00', 'previous', 'well before the open'],
+    ['00:00', '21:00', 'previous', 'midnight — the first minute of the day'],
+  ])('a %s slot sends at %s on the %s day: %s', (slot, at, day) => {
+    expect(lawfulSendTime(STATUTORY, clockTime(slot))).toEqual({ at: clockTime(at), day });
   });
 
   it.each(['00:00', '19:00', '23:59'])(
-    'lets a %s slot stand where the market authors no window — IN’s transactional lane',
+    'lets a %s slot stand on its own day where the market authors no window — IN’s transactional lane',
     (slot) => {
-      expect(lawfulSendTime(NO_WINDOW, clockTime(slot))).toBe(clockTime(slot));
+      expect(lawfulSendTime(NO_WINDOW, clockTime(slot))).toEqual({
+        at: clockTime(slot),
+        day: 'same',
+      });
     },
   );
-
-  it('refuses a slot before the window opens — unruled, open question Q86', () => {
-    expect(() => lawfulSendTime(STATUTORY, clockTime('07:00'))).toThrow(/Q86/);
-  });
 });
