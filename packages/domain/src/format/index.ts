@@ -8,7 +8,16 @@
  * them (`docs/engineering/architecture.md` §2 — `ui` may import `domain`).
  */
 
+export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './checklist';
 export { formatDate, formatMonthYear, formatTime, monthNames, weekdayNames } from './datetime';
+export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
+export {
+  type PackLabel,
+  packLabel,
+  UI_LANGUAGES,
+  UI_SOURCE_LOCALE,
+  type UiLanguage,
+} from './languages';
 export {
   formatLength,
   PROCUREMENT_SYSTEM,
@@ -31,3 +40,22 @@ export type {
 } from './pack';
 export { IN_FORMATS } from './pack';
 export { formatPhone, nationalNumber, type PhoneOptions } from './phone';
+export {
+  IN_UTILITIES,
+  operatorsForRegion,
+  typicalWait,
+  type UtilityDirectory,
+  type UtilityRegion,
+  type UtilityWait,
+} from './utility';
+export {
+  type BlockerPartyLabel,
+  blockerPartyLabel,
+  type DisplayVocabulary,
+  IN_VOCABULARY,
+  isSkippableStage,
+  type PaymentModeLabel,
+  paymentModeLabel,
+  type StageLabel,
+  stageLabel,
+} from './vocabulary';

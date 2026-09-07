@@ -15,7 +15,7 @@ Traps: `docs/engineering/landmines.md` · deps:
   `/*i18n*/` descriptors. Where a closed set exists the module is a `Record` over the contract
   enum. Screen-specific copy stays in its screen.
 - NEVER: app copy hard-coded elsewhere, a per-app catalog, the language LIST (that is
-  `packages/contracts/src/locale.ts`), agent or WhatsApp templates (those are tenant DATA), or a
+  the re-export in `packages/contracts/src/locale.ts`), agent or WhatsApp templates (those are tenant DATA), or a
   raw Intl currency format.
 
 ## Where files go
@@ -53,8 +53,9 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
   keeps ONE entry per message. Never mix macro `<Trans>` and explicit-id usage for the same
   string — the extractor forks them into duplicate entries and translations are lost. It is also
   why the first paint is correct with no catalog fetched: a missing message renders its id.
-- **The language SET is not written here.** `UI_LANGUAGES` in `packages/contracts/src/locale.ts`
-  is the one authoring, and `lingui.config.js` reads it too. `LANGUAGE_META` and both catalog
+- **The language SET is not written here.** `UI_LANGUAGES` is authored in
+  `packages/domain/src/format/languages.ts` (`Q87`) and re-exported by contracts, which is
+  where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
   loaders are `satisfies Record<UiLanguage, …>` (`M48`).
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module
   once per server process and shares it across every request, so a module-level `setupI18n()` is

@@ -1,13 +1,19 @@
+import { UI_LANGUAGES, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import { z } from 'zod';
 
 /**
- * UI language identity — the ONE place the supported language set is written.
+ * UI language identity — the wire and validation half of the set.
  *
- * It sits in its own file, not in common.ts, because it has consumers that are not
- * contracts: `packages/i18n` derives its metadata table, its catalog loaders and its
- * Lingui CLI configuration from these exports, and a `lingui.config.js` reaching into a
- * grab-bag of pagination and money schemas to find a locale list is how a second list gets
- * written instead. One fact, one file, one import.
+ * **The set itself is authored in `packages/domain`** (`format/languages.ts`, `Q87`): a pack
+ * declares its display labels per language (`F1-22`), domain owns the pack, and domain imports
+ * nothing in the workspace — so the tuple has to sit below this package and this one derives from
+ * it, exactly as it does for `ROLE_PRESETS`. Re-exported here so `packages/i18n`, the apps and the
+ * enum-parity invariant keep one import site; moving the authorship moved no consumer.
+ *
+ * This file still exists rather than folding into `common.ts` because its consumers are not all
+ * contracts: `packages/i18n` derives its metadata table, its catalog loaders and its Lingui CLI
+ * configuration from these exports, and a `lingui.config.js` reaching into a grab-bag of
+ * pagination and money schemas to find a locale list is how a second list gets written instead.
  *
  * Per-USER, not per-tenant (D25). Distinct from the tenant's MARKET, which decides currency
  * grouping, tax scheme and paperwork — a Marathi-reading user in an Indian tenant still
@@ -16,13 +22,7 @@ import { z } from 'zod';
  * The agent/voice language set is broader (it includes languages we have no UI catalog
  * for) and lives with the agent contract.
  */
-export const UI_LANGUAGES = ['en', 'hi', 'mr'] as const;
-
-/**
- * The language message IDs are authored in. Lingui's `sourceLocale`: its catalog needs no
- * translation because the id IS the English text (packages/i18n/CLAUDE.md, THE CONVENTION).
- */
-export const UI_SOURCE_LOCALE = 'en' satisfies (typeof UI_LANGUAGES)[number];
+export { UI_LANGUAGES, UI_SOURCE_LOCALE };
 
 export const uiLanguageSchema = z.enum(UI_LANGUAGES);
 export type UiLanguage = z.infer<typeof uiLanguageSchema>;
