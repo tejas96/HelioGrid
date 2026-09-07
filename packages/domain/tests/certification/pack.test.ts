@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IN_CERTIFICATION_SCHEMES } from '../../src/certification/pack';
 import { badgedSchemes, undeclaredSchemes } from '../../src/certification/schemes';
-import { unauthoredKeys } from '../../src/market/launch';
 import { IN_PACK } from '../../src/market/pack';
 import { requiredSubsidySchemes } from '../../src/subsidy/path';
 
@@ -41,11 +40,5 @@ describe('every scheme the IN subsidy path requires is a scheme IN declares (F1-
     expect(
       undeclaredSchemes(IN_PACK.certificationSchemes, requiredSubsidySchemes(IN_PACK.subsidy)),
     ).toEqual([]);
-  });
-});
-
-describe('the launch gate reads the new key (F1-02, F1-05)', () => {
-  it('owes two keys now that certification schemes are authored', () => {
-    expect(unauthoredKeys(IN_PACK)).toEqual(['dataRights', 'priceBook']);
   });
 });

@@ -1,6 +1,8 @@
 import { type CallingRulesPack, IN_CALLING_RULES } from '../calling/pack';
 import { type CertificationSchemesPack, IN_CERTIFICATION_SCHEMES } from '../certification/pack';
 import { type FormatPack, IN_FORMATS } from '../format/pack';
+import { IN_PRICE_BOOK } from '../pricing/india';
+import type { PriceBookPack } from '../pricing/pack';
 import { IN_PAYMENT_RAILS, type PaymentRailsPack } from '../rails/pack';
 import { IN_SUBSIDY, type SubsidyPack } from '../subsidy/pack';
 import { IN_TAX, type TaxPack } from '../tax/pack';
@@ -12,12 +14,12 @@ import { type PackVersion, packVersion } from './version';
  * the product renders, computes with or enforces is a value on one of its eight keys
  * (`F1-02`); nothing else is a market fact, and no module keeps one of its own.
  *
- * **The keys land one task at a time (Law 9).** `formats`, `tax`, `subsidy`, `callingRules`,
- * `paymentRails` and `certificationSchemes` are here because their tasks built them.
- * Each remaining key arrives with its own T-FCORE task (`docs/tasks/F-core.md`) as a property
- * here, a folder beside `format/`, and its India values on `IN_PACK`; `unauthoredKeys(IN_PACK)`
- * names what is still owed. Until all eight are present the pack is not launchable, and
- * `launch.ts` says so rather than pretending (`F1-05`).
+ * **The keys land one task at a time (Law 9).** Seven are here because their tasks built them;
+ * `dataRights` is the one still owed, parked by owner ruling `Q89` until the tenant base reaches
+ * real-customer scale. It arrives as a property here, a folder beside `format/`, and its India
+ * values on `IN_PACK`; `unauthoredKeys(IN_PACK)` names it until then. Until all eight are present
+ * the pack is not launchable, and `launch.ts` says so rather than pretending (`F1-05`) — which is
+ * the accepted consequence `Q89` records, not a defect to work around.
  *
  * A pack is DATA, and it is INJECTED: a caller resolves the tenant's pack and passes it in.
  * There is no registry and no default here, because a module-level lookup is the
@@ -45,6 +47,8 @@ export interface MarketPack {
   readonly paymentRails: PaymentRailsPack;
   /** `pack.certification-schemes`: the schemes a market requires and its standards labels — possibly no schemes (`F1-19`, `F1-20`). */
   readonly certificationSchemes: CertificationSchemesPack;
+  /** `pack.price-book`: what this market charges — authored, never converted (`F1-25`–`F1-27`). */
+  readonly priceBook: PriceBookPack;
 }
 
 /**
@@ -62,4 +66,5 @@ export const IN_PACK: MarketPack = {
   callingRules: IN_CALLING_RULES,
   paymentRails: IN_PAYMENT_RAILS,
   certificationSchemes: IN_CERTIFICATION_SCHEMES,
+  priceBook: IN_PRICE_BOOK,
 };

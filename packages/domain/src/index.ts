@@ -166,6 +166,22 @@ export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './m
 export type { BasisPoints, MinorUnits, Share } from './money';
 export { amountForQuantity, applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
 export type {
+  AnchoredPrice,
+  Benchmark,
+  BenchmarkRung,
+  ChannelRate,
+  ChannelRates,
+  ListedPrice,
+  MeterOverage,
+  NoOverage,
+  PriceBookPack,
+  TierBookRow,
+  TierPrice,
+  TrialCaps,
+  UnitRate,
+} from './pricing';
+export { IN_PRICE_BOOK, isSellable, listedPrice, tenMonthYearly, tierRow } from './pricing';
+export type {
   BillingCycle,
   CollectionRoute,
   InvoiceRoute,
