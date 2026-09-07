@@ -16,35 +16,17 @@ import postgres from 'postgres';
 /**
  * Tables that are genuinely global. Each needs a WRITTEN reason — a silent entry here is
  * indistinguishable from a table that slipped through.
+ *
+ * HelioGrid owns the account, tenant, membership, role, invitation and session tables, so
+ * none of them belongs here except the tenant registry itself. A wrapped identity library
+ * owns ONLY its own tables under its own migrator; those enter this list by their real names,
+ * with a reason, in the change that lands them — never before, because an exemption written
+ * for a library that has not landed would let a HelioGrid table of the same name land under
+ * it unread.
  */
 const GLOBAL_TABLES: Record<string, string> = {
   tenants: 'the tenant registry itself — RLS restricts it to the caller’s own row',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
-
-  // An auth provider owns and migrates these. They are keyed by its own identity
-  // model, accessed by its own DB role, and deliberately exempt from app RLS (docs/engineering/08 §2).
-  // They are absent until the auth module lands its first migration, which is why the
-  // stale-entry check below only warns.
-  //
-  // ⚠ THE LAST THREE ARE PROVISIONAL — do NOT inherit them into the first auth migration
-  // without the owner ruling. `packages/contracts/CLAUDE.md` (Track 5a, later record) says
-  // HelioGrid owns tenants, MEMBERSHIPS and roles; these entries say the provider does. If
-  // HelioGrid owns memberships, `member` is a tenant-owned table that must carry tenant_id
-  // and sit under RLS — and exempting it here would be a silent tenancy bypass on the one
-  // table that maps a person to a tenant. Whether Better Auth is adopted at all, and whether
-  // its organization plugin is used, is the deferred Track 5b decision.
-  // Recorded as conflicts.md row 13. Nothing is mis-enforced today: 0 application tables.
-  user: 'auth-provider internal',
-  session: 'Better Auth internal',
-  account: 'Better Auth internal',
-  verification: 'Better Auth internal',
-  jwks: 'Better Auth internal (jwt plugin)',
-  organization:
-    'PROVISIONAL (conflicts.md #13) — provider-internal ONLY if the organization plugin is adopted; ownership of tenants is contested',
-  member:
-    'PROVISIONAL (conflicts.md #13) — contested: if HelioGrid owns memberships this is tenant-owned and must NOT be exempt',
-  invitation:
-    'PROVISIONAL (conflicts.md #13) — unused either way; phone invites are ours, in `invites`',
 };
 
 /**
@@ -54,7 +36,7 @@ const GLOBAL_TABLES: Record<string, string> = {
 const GLOBAL_UNIQUES: Record<string, string> = {
   users_phone_e164_key:
     'users: "login identity; unique global (auth owns verification)". One phone is ' +
-    'one platform identity — Better Auth verifies the number, so the same person cannot hold ' +
+    'one platform identity — the OTP verifies the number, so the same person cannot hold ' +
     'two accounts. Contrast customers.phone_e164, which is correctly (tenant_id, phone_e164) ' +
     'because two EPCs may legitimately serve the same homeowner.',
   invites_token_hash_key:
@@ -104,27 +86,6 @@ export async function runTableTenancyScan(adminUrl: string) {
       ).map((r) => r.table_name),
     );
 
-    // A PROVISIONAL exemption is a comment until something enforces it. conflicts.md row 13
-    // contests who owns `organization`/`member`/`invitation`, and T-M01-025 says settle it
-    // BEFORE the first auth migration — but nothing stopped that migration inheriting the
-    // exemption unread, which is the exact failure the row warns about. So: the moment one of
-    // these tables actually exists while still marked provisional, this fails. Resolving the
-    // row means editing the reason here (or adding tenant_id and deleting the entry), which is
-    // precisely the deliberate act the deferral asks for.
-    const provisional = tables.filter(
-      (t) => GLOBAL_TABLES[t]?.startsWith('PROVISIONAL') && !withTenant.has(t),
-    );
-    if (provisional.length) {
-      throw new Error(
-        `${provisional.length} table(s) exist under a PROVISIONAL tenancy exemption:\n` +
-          `  - ${provisional.map((t) => `${t}: ${GLOBAL_TABLES[t]}`).join('\n  - ')}\n\n` +
-          '  These were exempted pending an owner ruling that has not landed. Settle\n' +
-          '  registers/conflicts.md row 13 (see docs/tasks/M01-onboarding.md T-M01-025),\n' +
-          '  then either give the table tenant_id and delete its entry here, or rewrite the\n' +
-          '  reason to the settled one. Do not simply drop the PROVISIONAL prefix.',
-      );
-    }
-
     const offenders = tables.filter((t) => !withTenant.has(t) && !(t in GLOBAL_TABLES));
 
     if (offenders.length) {
@@ -139,21 +100,21 @@ export async function runTableTenancyScan(adminUrl: string) {
     }
 
     // Guard the allowlist against rot: an entry for a table that does not exist hides the
-    // fact that nobody has revisited these exemptions. A warning, not a failure — Better
-    // Auth's tables are legitimately absent until its own migrator has run.
+    // fact that nobody has revisited these exemptions. A warning, not a failure — an entry
+    // is legitimately absent until the migration that owns its table has run.
     const stale = Object.keys(GLOBAL_TABLES).filter((t) => !tables.includes(t));
     if (stale.length) {
       console.warn(
         `table-tenancy: GLOBAL_TABLES lists ${stale.length} table(s) not present in this ` +
-          `database — expected if the owning migrator has not run: ${stale.join(', ')}`,
+          `database — expected until the migration that owns it has run: ${stale.join(', ')}`,
       );
     }
 
     // A GLOBAL_TABLES entry exempts a table from tenancy; it must therefore be UNREACHABLE by
-    // the RLS-subject roles, or the exemption is just a hole with a comment on it. The eight
-    // Better Auth tables have RLS off and zero policies by design (they are keyed by its own
-    // identity model) — what makes that safe is that app_user cannot touch them, and nothing
-    // asserted it. Armed tables are exempt from this rule: `tenants` protects itself.
+    // the RLS-subject roles, or the exemption is just a hole with a comment on it. A wrapped
+    // identity library's tables have RLS off and zero policies by design (they are keyed by
+    // its own identity model) — what makes that safe is that app_user cannot touch them, and
+    // this asserts it. Armed tables are exempt from this rule: `tenants` protects itself.
     const reachableGlobals = await sql<{ table_name: string; grantee: string }[]>`
       select c.relname as table_name, sub.rolname as grantee
       from pg_class c

@@ -28,9 +28,8 @@ export const apiEnvSchema = z.object({
   WEB_ORIGIN: originSchema.default('http://localhost:3002'),
 
   /*
-   * BETTER_AUTH_SECRET / BETTER_AUTH_URL / MSG91_* were removed with the auth
-   * teardown. The rebuild declares whatever it needs HERE and in .env.example —
-   * Law 9: a variable is authored when its owning module's slice begins.
+   * No auth or SMS variable exists yet. The slice that needs one declares it HERE and in
+   * .env.example — Law 9: a variable is authored when its owning module's slice begins.
    */
 
   /*

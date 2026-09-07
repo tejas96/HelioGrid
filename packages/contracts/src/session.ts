@@ -5,10 +5,10 @@ import { rolePresetSchema, uuidSchema } from './common';
  * The HelioGrid session PROJECTION — the shape every guard, repository, screen and contract
  * sees, and the reason replacing or upgrading the identity provider changes none of them.
  *
- * It is deliberately NOT the provider's session. Better Auth (or whatever succeeds it) owns
- * user/session/account rows; HelioGrid owns tenants, memberships and roles. This type is
- * where the two are joined, once, at the boundary — so a provider upgrade is a mapping
- * change in one adapter rather than a sweep through every handler.
+ * It is deliberately NOT the provider's session. HelioGrid owns user_account, sessions,
+ * tenants, memberships and roles; a wrapped identity library owns only its own tables. This
+ * type is where the two are joined, once, at the boundary — so a provider upgrade is a
+ * mapping change in one adapter rather than a sweep through every handler.
  *
  * STATUS: contract-only. No handler, guard or table exists yet — the M01 slice lands those.
  * It is authored first on purpose: the roadmap sequences requirements → contract → schema →

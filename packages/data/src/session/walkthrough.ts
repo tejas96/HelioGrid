@@ -3,7 +3,7 @@ import type { OtpResult, SessionSnapshot, SessionStore, SessionUser } from './ty
 
 /**
  * DELIBERATE STUB (owner ruling). Auth was removed to greenfield and the login
- * designs on both platforms must stay walkable until the Better Auth rebuild lands. This
+ * designs on both platforms must stay walkable until the auth rebuild lands. This
  * reaches NO server: it accepts any correctly shaped phone number and any OTP_LENGTH-digit
  * code. It is authored ONCE so neither app invents its own, and it is DELETED — not
  * adapted — when the real SessionStore implementation arrives.

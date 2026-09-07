@@ -25,7 +25,7 @@ export type OtpResult = { ok: true } | { ok: false; failure: OtpFailure };
 /**
  * Framework-free session state. It is a STORE, not a plain object: a bare `status` field
  * could never re-render a screen. The React layer reads it through useSyncExternalStore.
- * The Better Auth rebuild implements this interface and nothing in a screen changes.
+ * The auth rebuild implements this interface and nothing in a screen changes.
  */
 export interface SessionStore {
   getSnapshot(): SessionSnapshot;

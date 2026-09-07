@@ -36,7 +36,7 @@ export const redisUrlSchema = z.string().url().startsWith('redis');
  */
 export const secretSchema = z.string().min(32);
 
-/** Browser origin allowed by CORS + Better Auth trustedOrigins. */
+/** Browser origin allowed by CORS and by the auth layer's trusted-origin list. */
 export const originSchema = z.string().url();
 
 /** Non-secret convenience values may default IN THE SCHEMA — never via `??` at a call site. */
