@@ -7,6 +7,7 @@
  * copy is `i18n`'s. This supplies the numbers all of them run on, and nothing else defines one.
  */
 export { isSellable, listedPrice, tenMonthYearly, tierRow } from './book';
+export { COGS_MARKUP_FLOOR, clearsCogsFloor, metersBelowCogsFloor } from './cogs';
 export { IN_PRICE_BOOK } from './india';
 export type {
   AnchoredPrice,
@@ -22,4 +23,5 @@ export type {
   TierPrice,
   TrialCaps,
   UnitRate,
+  WorstCaseCogs,
 } from './pack';
