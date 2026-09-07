@@ -86,7 +86,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
 | MS7-35 | Analyzer substrate: stable dedupe keys, per-analyzer isolation (a failing analyzer never blanks the review), duplicate-id protection, and memoization keyed to the design (`.103–.107`) — the memo key must include shading when any analyzer reads it (`.108`). | `SRC-CODE` | P0 |
-| MS7-36 | Commercial and data-quality analyzers are IMPLEMENTED (margin sanity, no-payback, missing tariff/price; estimated-vs-measured irradiance, stale captures, assumed heights, missing provenance) — closing the two declared-but-empty categories (S6-5 fixes `.109`). | `BRIEF` S6-5 | P0 |
+| MS7-36 | Commercial and data-quality analyzers are IMPLEMENTED (margin sanity, no-payback, missing tariff/price — the missing-price analyzer is the consumer of every BOM line whose rate is absent (MS10-18; owner ruling 2026-09-07); estimated-vs-measured irradiance, stale captures, assumed heights, missing provenance) — closing the two declared-but-empty categories (S6-5 fixes `.109`). | `BRIEF` S6-5 | P0 |
 | MS7-37 | Design analyzers as shipped: roof utilisation, DC/AC ratio, orientation (hemisphere-aware per S2-5.5), row spacing (`.111–.114`). | `SRC-CODE` | P0 |
 | MS7-38 | O&M/constructability analyzers with their thresholds stated as ASSUMED pack conventions, never code minimums: cleaning access, module replacement, ladder access, inverter access — none of which block (`.115–.120`). | `SRC-CODE` | P0 |
 | MS7-39 | Insight actions are descriptors the surfaces wire to Accept/Dismiss (MS6-05) (`.110`). | `SRC-CODE` | P1 |
@@ -113,7 +113,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
 | MS7-47 | No scoring black box: every candidate runs through the SAME pure pipelines the design itself uses, with the unshaded-basis honesty contract stated verbatim in the UI (`.143/.144`). | `SRC-CODE` | P0 |
-| MS7-48 | Candidate construction: budgeted fill, inverter recommendation with the nearest-fit fallback, certification-first shortlist by cost-per-watt (`.145–.148`). | `SRC-CODE` | P0 |
+| MS7-48 | Candidate construction: budgeted fill, inverter recommendation with the nearest-fit fallback, certification-first shortlist by cost-per-watt under MS4-29's rule — ₹/Wp on module nameplate DC among candidates with a tenant rate, unpriced after priced (`.145–.148`). | `SRC-CODE` | P0 |
 | MS7-49 | A warning never hides; feasibility notes distinguish causes; the recommendation rule is stated on screen (`.149–.151`). | `SRC-CODE` | P0 |
 | MS7-50 | Ranking is computed from corrected figures: no sentinel payback (S6-1a), exact energy (S6-3a) and a correctly named return metric (S6-1b) (fixes `.152`). | `BRIEF` S6-1a/S6-3a/S6-1b | P0 |
 | MS7-51 | Basis and decision cards state objective, target, catalog version and assumptions (`.153`); memoization keys on the design fingerprint (`.154`); complexity and efficiency derivations are stated where shown (`.155/.156`). | `SRC-CODE` | P0 |

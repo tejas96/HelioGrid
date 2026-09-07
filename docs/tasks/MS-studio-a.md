@@ -39,7 +39,7 @@ file's slice exactly once.
 - Given a tenant of any market, when the form renders, then utility/tariff/currency labels and data come from the market pack and no other market's terms appear (M05-15).
 - Given a confirmed location with the source of record reachable, when the Solar Data card renders, then figures carry the `F8-08` source label naming the database; given it unreachable, then figures carry "±10%" and never switch silently (M05-17).
 - Given a pin move >25 m, when confirmed, then the design resets with an undo available; when cancelled, nothing changes (M05-19).
-- Given a design exceeding sanctioned load, when the overrun occurs, then the warning names the captured limit and the design remains editable (M05-20).
+- Given the sanctioned-load input, when it is lowered below what the design's inverters already deliver (AC kW × count), then the warning names the captured limit in kW and the design remains editable; the design-time warning is T-MS-201's (M05-20).
 - Given a tile fetch failure, when the studio opens, then the canvas opens blank with manual calibration offered, and nothing blocks (M05-16).
 - Given Site Intelligence in any of its four states, when the card renders, then the state is named honestly and no design step depends on the result (M05-18).
 - Given a lead with a completed survey, When the designer opens a new design, Then Step 1 shows customer info + CONFIRMED surveyed location with provenance hints and every field editable (MS1-01); Given an IN tenant, When Step 1 renders, Then region/utility/tariff content equals the IN pack's shipped lists (MS1-03/04); Given a typed tariff edit, When auto-fill would re-derive, Then the manual value wins (MS1-05); Given first use, When Step 1 opens, Then the walkthrough offers and never returns after dismissal (MS1-08).
@@ -609,7 +609,7 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | M05-17 | T-MS-101 |
 | M05-18 | T-MS-101 |
 | M05-19 | T-MS-101 |
-| M05-20 | T-MS-101 |
+| M05-20 | T-MS-101 (the input and the re-edit case); T-MS-201 (the design-time warning on capacity and inverter) |
 | M05-21 | realized-by: T-MS-363 — `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-22 | T-MS-102 |
 | M05-23 | T-MS-102 |

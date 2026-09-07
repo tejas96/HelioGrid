@@ -30,7 +30,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - Given a section, Then add-custom-line and refresh-from-design are available and the table renders its full column set with an accessible caption (MS10-12).
 - Given a drifted edited field, Then the banner names item, field and both values with a take-new action (MS10-13).
 - Given routed geometry exists, Then survey-input fields disable with the reason (MS10-14).
-- Given an excluded line, Then it stays visible at zero (MS10-16).
+- Given an excluded line, Then it stays visible at zero (MS10-16); given a line whose rate is absent, Then the rate reads as missing, never zero (MS10-18).
 - Given any row, Then its confidence tier and per-field reset are available (MS10-17), its editable fields behave as specified (MS10-18), its derivation is readable on touch and by screen reader (MS10-19), and only custom lines offer removal (MS10-20).
 - Given an edited field, Then the override records the engine's value for exact staleness, legacy overrides still apply and migrate lazily (MS10-33), retyping the same value creates no override (MS10-34), and the edit re-keys the fingerprint without reordering fields (MS10-35). *(This task owns the MS10-35 half — the section-state counts and the fingerprint re-key on edit; MS10-33/34 are built in T-MS-305.)*
 - The ported POC tests for this area pass unchanged in the new project.
@@ -61,7 +61,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DEFECTS:** none targeting these rows.
 **Requirements (verbatim):**
 - **MS10-25** (P0) — Cable-length precedence, DC and AC independently: routed geometry → survey input → documented fallback estimator, with each source stated and zero/negative inputs never treated as a run (`.90–.95`).
-- **MS10-26** (P0) — Prices resolve through the catalog's price book per derivation, with cable rates rounding UP to the next priced size (never understating) (`.97/.152`).
+- **MS10-26** (P0) — Prices resolve per derivation: a component line's rate resolves tenant override → own-SKU rate entry → ABSENT (M01-37, M01-44 — the platform catalog carries no price; owner ruling 2026-09-07); the pack's base rates (MS10-39) price BOS lines only, with cable rates rounding UP to the next priced size (never understating) (`.97/.152`).
 **DONE WHEN:**
 - Given a design, Then all six emitters derive their lines over one context (MS10-21) with worst-tier header confidence and correct subtotal/total composition (MS10-22), stable keys and waste defaults (MS10-23), documented cable-length precedence (MS10-25), price-book resolution rounding up (MS10-26), disjoint mounting buckets (MS10-27) and the full emitter coverage listed (MS10-28).
 - The ported POC tests for this area pass unchanged in the new project.

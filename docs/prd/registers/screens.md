@@ -1240,7 +1240,7 @@ Nothing below is renumbered.*
 | M05-17 | P0 | mixed | SCR-MS-04 · +non-UI: energy source-of-record ladder (PVGIS SARAH3→ERA5); ±10% fallback… | T-MS-101 |
 | M05-18 | P0 | mixed | SCR-MS-04 · +non-UI: async building-insights-class provider; enhancement, never a… | T-MS-101 |
 | M05-19 | P0 | mixed | SCR-MS-04 · +non-UI: relocation >25m wipes all traced geometry; undoable | T-MS-101 |
-| M05-20 | P0 | mixed | SCR-MS-04 · +non-UI: soft cap never blocks; warning travels to readiness and compliance… | T-MS-101 |
+| M05-20 | P0 | mixed | SCR-MS-04, SCR-MS-07, SCR-MS-08 · +non-UI: soft cap never blocks; inverter AC kW × count vs sanctioned kW; warning travels to readiness and compliance… | T-MS-101, T-MS-201 |
 | M05-21 | P0 | screen | SCR-MS-01 | T-MS-363 |
 | M05-22 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-23 | P0 | mixed | SCR-MS-05 · +non-UI: consumes validated M04 artifact only, never raw detector; provenance… | T-MS-102 |
@@ -1468,7 +1468,7 @@ Nothing below is renumbered.*
 | MS4-15 | P0 | mixed | SCR-MS-07 · +non-UI: max-capacity estimation from drawn roofs | T-MS-201 |
 | MS4-16 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-17 | P1 | screen | SCR-MS-07 | T-MS-201 |
-| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price… | T-MS-201 |
+| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price tiebreak among rated candidates, unpriced after | T-MS-201 |
 | MS4-19 | P0 | mixed | SCR-MS-07 · +non-UI: reuses compare sheet's nearest-fit computation | T-MS-201 |
 | MS4-20 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-21 | P0 | screen | SCR-MS-07 | T-MS-201 |
@@ -1479,7 +1479,7 @@ Nothing below is renumbered.*
 | MS4-26 | P2 | context | context → informative | realized-by: Recommended Enhancement, explicitly not v2 scope — the enhancements register and the design spec §10 carry it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
 | MS4-27 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-28 | P0 | screen | SCR-MS-07 | T-MS-201 |
-| MS4-29 | P0 | mixed | SCR-MS-07 · +non-UI: certification-first shortlist ranked by cost-per-watt, capped | T-MS-201 |
+| MS4-29 | P0 | mixed | SCR-MS-07 · +non-UI: certification-first shortlist ranked by ₹/Wp among rated candidates, unpriced after, capped | T-MS-201 |
 | MS4-30 | P0 | mixed | SCR-MS-07 · +non-UI: per-candidate pricing, sizing, simulation, payback, ROI computations | T-MS-201 |
 | MS4-31 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-32 | P0 | mixed | SCR-MS-07 · +non-UI: recommendation rule: feasible AND within clipping limit | T-MS-201 |

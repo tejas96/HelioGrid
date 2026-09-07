@@ -132,8 +132,8 @@ Every requirement row carries exactly one origin tag, plus an exact source point
   `docs/` corpus. The default tag for anything extracted from the corpus.
 - **`BRIEF`** — mandated by the owner's V2 brief, not present in v1 source (e.g. marketing, field
   workforce, HR, Google login, global-first framing).
-- **`REC`** — recommended enhancement. A `REC` requirement lives in its module, for context, **and**
-  in `docs/prd/registers/enhancements.md`, with rationale. **`REC` is never mixed with source truth** —
+- **`REC`** — recommended enhancement. A `REC` requirement lives in ONE home — its module's own `REC`
+  row or **Later** line, with rationale — and nowhere else (`OV-43`). **`REC` is never mixed with source truth** —
   it is never phrased or tabled as if it were `SRC` or `BRIEF`, and a reader must always be able to
   tell, from the tag alone, that a `REC` item is a recommendation the suite is making, not a
   requirement the corpus or the brief already established.

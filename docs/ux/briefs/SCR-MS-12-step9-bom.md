@@ -24,9 +24,9 @@ Reached from: the studio wizard, advancing from Step 8 — SLD & Drawings (SCR-M
 - **MS10-12** (P0) — Add-custom-line, per-section refresh-from-design, and the full 11-column table with an accessible caption (`.27/.42–.44`).
 - **MS10-13** (P0) — Field-level staleness: when an edited value drifts from what the design now derives, the section banner names the field, the item and both values, with a one-tap "take the new value" and a capped list (`.45–.49/.138`).
 - **MS10-14** (P0) — Survey-input card (electrical BOS): average DC/AC run inputs that DISABLE with an inline note when real routed geometry exists — measured beats assumed (`.50–.54`).
-- **MS10-16** (P0) — Include/exclude keeps the line visible and priced at zero rather than deleting it (`.56/.57`).
+- **MS10-16** (P0) — Include/exclude keeps the line visible and priced at zero rather than deleting it (`.56/.57`) — that zero is the excluded state only, distinct from a line whose rate is absent (MS10-18).
 - **MS10-17** (P0) — Every row carries a confidence indicator (measured/derived/estimated/assumed) and a per-field reset; edited fields read as the human's figure while retaining the engine's value for staleness (`.58/.73/.148`). _(non-UI half, build-side: edited fields retain the engine's value so staleness stays exact — for awareness, not for drawing)_
-- **MS10-18** (P0) — Editable fields: item, spec, brand, quantity, unit (constrained list), waste %, rate, GST % — with order quantity, amounts and totals calculated read-only (`.59–.70/.136`).
+- **MS10-18** (P0) — Editable fields: item, spec, brand, quantity, unit (constrained list), waste %, rate, GST % — with order quantity, amounts and totals calculated read-only (`.59–.70/.136`). A component line whose resolved rate is absent (MS10-26) shows the rate as missing per F8-01 — never ₹0 — until a person enters one, and counts in MS10-09's preliminary banner (owner ruling 2026-09-07).
 - **MS10-19** (P0) — Derivation explanations are readable on touch and by screen readers — not tooltip-only (S9-3.3 fixes `.71`).
 - **MS10-20** (P0) — Remove is offered only for custom lines; derived lines are excluded, never deleted (`.72`).
 - **MS10-35** (P0) — A BOM edit re-keys the design fingerprint (money moved) without disturbing field order; section state exposes counts of included and edited lines (`.146/.150`). _(non-UI half, build-side: BOM edit re-keys design fingerprint without disturbing field order — for awareness, not for drawing)_
@@ -73,5 +73,5 @@ The ~286-control screen held to progressive disclosure: the PRD's 40-line BOM sc
 - Preliminary notice count — how many lines are assumed/estimated (M05-73, MS10-09)
 - Average DC run / average AC run — assumed survey inputs that lock when routed geometry exists (measured beats assumed) (M05-71, MS10-14)
 - The site's wind zone / wind conditions on the structure disclaimer — stated for every site (M05-73, MS10-08)
-- Rates — resolved through the catalog with versioned history; sent proposals keep the rate version they were built with (M05-72)
+- Rates — resolved through the catalog with versioned history: tenant override → own-SKU rate → absent, the platform tier supplying no price, and an absent rate reads as missing, never ₹0 (MS10-18, MS10-26); sent proposals keep the rate version they were built with (M05-72)
 - Derivation explanation — the formula in words, per line (M05-72, MS10-19)

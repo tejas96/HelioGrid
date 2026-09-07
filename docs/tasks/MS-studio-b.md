@@ -8,7 +8,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-201 · Step 4 Components — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**PRD rows:** MS4-01 (P0), MS4-02 (P0), MS4-03 (P0), MS4-06 (P0), MS4-07 (P0), MS4-08 (P0), MS4-09 (P0), MS4-10 (P0), MS4-11 (P0), MS4-12 (P0), MS4-14 (P0), MS4-15 (P0), MS4-16 (P0), MS4-17 (P1), MS4-18 (P0), MS4-19 (P0), MS4-20 (P0), MS4-21 (P0), MS4-22 (P0), MS4-24 (P0), MS4-27 (P0), MS4-28 (P0), MS4-29 (P0), MS4-30 (P0), MS4-31 (P0), MS4-32 (P0), MS4-33 (P0)
+**PRD rows:** M05-20 (P0), MS4-01 (P0), MS4-02 (P0), MS4-03 (P0), MS4-06 (P0), MS4-07 (P0), MS4-08 (P0), MS4-09 (P0), MS4-10 (P0), MS4-11 (P0), MS4-12 (P0), MS4-14 (P0), MS4-15 (P0), MS4-16 (P0), MS4-17 (P1), MS4-18 (P0), MS4-19 (P0), MS4-20 (P0), MS4-21 (P0), MS4-22 (P0), MS4-24 (P0), MS4-27 (P0), MS4-28 (P0), MS4-29 (P0), MS4-30 (P0), MS4-31 (P0), MS4-32 (P0), MS4-33 (P0)
 **DESIGN:** SCR-MS-07 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
 **DEFECTS:**
@@ -25,7 +25,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - Given a new design, Then the accordion shows PANEL → CAPACITY → INVERTER → BATTERY, opening at the first incomplete section with summaries on completed headers (MS4-01)
 - tapping an open header collapses it (MS4-02)
 - Next states the blocking reason in order (MS4-03)
-- Given a missing product, Then browse/datasheet-upload/manual all work in-flow, with datasheet extraction reviewed before commit (MS4-06)
+- Given a missing product, Then browse/datasheet-upload/manual all work in-flow, with datasheet extraction reviewed before commit; given a selected component, Then Enter specs manually opens pre-filled with its specs and blank certifications and price, and the save is a new own SKU (MS4-06)
 - Given a tenant-entered SKU, Then its provenance shows on the row and travels to compare and BOM (MS4-07)
 - Given an on-order unit, Then the availability badge shows in the picker, not only in compare (MS4-08)
 - Given an IN-market tenant, Then ALMM/DCR flags show and filter as pack-driven data (MS4-09)
@@ -37,13 +37,14 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - Given a bill on file, Then the suggestion banner activates with Enter AND Space and prints grouped currency (MS4-16)
 - Given a 4.3 kWp single-phase site with no in-band inverter, Then the reason, the nearest fits and the multi-unit/phase suggestions are shown (MS4-19)
 - the list is phase-sorted with badges on incompatible units (MS4-20)
-- a typed count above the maximum is refused (MS4-21)
+- a typed count above the maximum is refused, and the count is of the one selected unit (MS4-21)
 - Given an inverter, Then topology and MLPE selectors show with their hints (MS4-22)
-- Given several inverter×count candidates inside the 0.90–1.35 eligibility band, Then the recommendation is the one whose DC/AC ratio is closest to 1.15, with price breaking ties, and the banner states unit/count/phase/ratio without auto-applying (MS4-18)
+- Given inverter AC kW × count above the sanctioned load, Then the warning names the kW limit, says "verify with the DISCOM" and Continue stays enabled; given a blank or 0 sanctioned load or an open-access site, Then no warning renders (M05-20)
+- Given several one-model inverter×count candidates inside the 0.90–1.35 eligibility band, Then the recommendation is the one whose DC/AC ratio is closest to 1.15, with price breaking ties among rated candidates and unpriced candidates ordered after them, and the banner states unit/count/phase/ratio without auto-applying (MS4-18)
 - Given a hybrid design, Then a battery can be chosen (or explicitly none) via the same three paths (MS4-24)
 - Given no roof, Then Compare is disabled with the reason (MS4-27)
 - given results, Then the basis paragraph states exactly what was simulated and warnings render (MS4-28)
-- the shortlist is certification-first by cost-per-watt with the current choice included (MS4-29)
+- the shortlist is certification-first by ₹/Wp among rated candidates, unpriced after priced, with the current choice included (MS4-29)
 - all 11 columns compute per candidate (MS4-30)
 - infeasible rows cannot be applied and every zero/warn case is explained (MS4-31)
 - the recommendation rule and fixed assumptions are visible (MS4-32)
@@ -63,12 +64,12 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 **Requirements (verbatim):**
 - **MS4-05** (P0) — Every picker (panel, inverter, battery) reads the tenant's RESOLVED catalog — platform market slice + tenant SKUs + tenant overrides (M01-32..46) — the same door the compare matrix, BOM and design fingerprint use. No component list may read a bundled database directly (S4-1 fixes `.8`; `.74` is the correct consumer pattern).
-- **MS4-13** (P0) — Panel spec contract (schema-gated: unique ids, watt > 0, length > width, Voc > Vmp, Isc > Imp, negative temp-coeff, price > 0) — the studio never accepts a module that would break electrical sizing (`.76/.77`).
-- **MS4-23** (P0) — Inverter spec contract: AC kW, phases, MPPT windows (count/min-max V/current/strings), max DC V, efficiency, price, warranty — the fields electrical sizing depends on (`.78/.79`).
+- **MS4-13** (P0) — Panel spec contract (schema-gated: unique ids, watt > 0, length > width, Voc > Vmp, Isc > Imp, negative temp-coeff) — the studio never accepts a module that would break electrical sizing (`.76/.77`). A price is never a condition of picking: a module's rate is the tenant's (M01-37, M01-44), resolved at BOM time (MS10-26), and a module with no tenant rate is pickable (owner ruling 2026-09-07).
+- **MS4-23** (P0) — Inverter spec contract: AC kW, phases, MPPT windows (count/min-max V/current/strings), max DC V, efficiency, warranty — the fields electrical sizing depends on (`.78/.79`); a rate is not a spec — it is the tenant's, resolved at BOM time (M01-37, M01-44, MS10-26; owner ruling 2026-09-07).
 
 **DONE WHEN:**
 - Given a tenant with own SKUs and price overrides, When any picker opens, Then it lists the RESOLVED catalog — identical to what compare and BOM use (MS4-05)
-- Given a catalog entry violating the spec gate, Then it never reaches the picker (MS4-13)
+- Given a catalog entry violating the spec gate, Then it never reaches the picker; given a module with no tenant rate, Then it is still pickable (MS4-13)
 - Given a catalog inverter, Then its MPPT/DC-voltage fields are present for sizing (MS4-23)
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -427,7 +428,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Requirements (verbatim):**
 - **MS7-12** (P0) — The analyzer registry is populated EXPLICITLY — never as a side effect of another screen's module load — so review can never read a false green (S6-5 fixes `.24`).
 - **MS7-35** (P0) — Analyzer substrate: stable dedupe keys, per-analyzer isolation (a failing analyzer never blanks the review), duplicate-id protection, and memoization keyed to the design (`.103–.107`) — the memo key must include shading when any analyzer reads it (`.108`).
-- **MS7-36** (P0) — Commercial and data-quality analyzers are IMPLEMENTED (margin sanity, no-payback, missing tariff/price; estimated-vs-measured irradiance, stale captures, assumed heights, missing provenance) — closing the two declared-but-empty categories (S6-5 fixes `.109`).
+- **MS7-36** (P0) — Commercial and data-quality analyzers are IMPLEMENTED (margin sanity, no-payback, missing tariff/price — the missing-price analyzer is the consumer of every BOM line whose rate is absent (MS10-18; owner ruling 2026-09-07); estimated-vs-measured irradiance, stale captures, assumed heights, missing provenance) — closing the two declared-but-empty categories (S6-5 fixes `.109`).
 - **MS7-37** (P0) — Design analyzers as shipped: roof utilisation, DC/AC ratio, orientation (hemisphere-aware per S2-5.5), row spacing (`.111–.114`).
 - **MS7-38** (P0) — O&M/constructability analyzers with their thresholds stated as ASSUMED pack conventions, never code minimums: cleaning access, module replacement, ladder access, inverter access — none of which block (`.115–.120`).
 - **MS7-39** (P1) — Insight actions are descriptors the surfaces wire to Accept/Dismiss (MS6-05) (`.110`).
@@ -474,7 +475,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step7-proposal.90/.152` — never-paying system reports "25 years"; ranking sorts the sentinel (S6-1a: no-payback state → MS7-32/50; the `.152` ranking half — MS7-50 — is this task's).
 
 **Requirements (verbatim):**
-- **MS7-48** (P0) — Candidate construction: budgeted fill, inverter recommendation with the nearest-fit fallback, certification-first shortlist by cost-per-watt (`.145–.148`).
+- **MS7-48** (P0) — Candidate construction: budgeted fill, inverter recommendation with the nearest-fit fallback, certification-first shortlist by cost-per-watt under MS4-29's rule — ₹/Wp on module nameplate DC among candidates with a tenant rate, unpriced after priced (`.145–.148`).
 - **MS7-50** (P0) — Ranking is computed from corrected figures: no sentinel payback (S6-1a), exact energy (S6-3a) and a correctly named return metric (S6-1b) (fixes `.152`).
 
 **DONE WHEN:**

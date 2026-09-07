@@ -86,7 +86,7 @@ The studio's flagship scale: a 221-panel design. Four tool families with live co
 
 ## Numbers carrying provenance
 
-- Enabled panel count and achieved-vs-target kWp (status pill — M05-50, MS6-29); exceeding target is a design cue, never a cap
+- Enabled panel count and achieved-vs-target kWp (status pill — M05-50, MS6-29); exceeding target is a design cue, never a cap; beside it the sanctioned-load overrun cue — inverter AC kW × count against the sanctioned load in kW, "verify with the DISCOM", never a cap, silent when the load is blank or 0 or the site is open-access (M05-20)
 - DC cable length — routed vs estimate, **labelled which** (M05-50)
 - Heatmap figures: current-month avg access %, avg sun-hrs/day, kWh/m² (M05-45); the heatmap is the same engine as 3D (MS6-10) where kWh/m² carries the source-of-record marker and geometric access numbers deliberately carry none (law at M05-52 on SCR-MS-09)
 - Running cold-weather string voltage in manual stringing, coloured over-limit / under-MPPT-floor / fine (M05-48) — derived
