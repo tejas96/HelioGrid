@@ -59,12 +59,13 @@ export default defineConfig({
       thresholds: {
         'packages/domain/src/calling/**': COMPLETE,
         'packages/domain/src/certification/**': COMPLETE,
-        /* FILES, not the folder: `commerce/`'s other two are closed vocabularies whose consumers
-           have not landed (Law 9), and a test may not restate a constant, so a bar over them buys
-           an import-only test. `meters.ts` earned its bar when `metersBelowCogsFloor` became the
-           first thing to READ `METERS`; `states.ts` and `costs.ts` widen this to `commerce/**`
-           when theirs land. */
+        /* FILES, not the folder: `commerce/`'s remaining two are closed vocabularies whose
+           consumers have not landed (Law 9), and a test may not restate a constant, so a bar over
+           them buys an import-only test. Every other file here has a runtime reader and so has a
+           bar; `states.ts` and `costs.ts` widen this to `commerce/**` when theirs land. */
+        'packages/domain/src/commerce/caps.ts': COMPLETE,
         'packages/domain/src/commerce/meters.ts': COMPLETE,
+        'packages/domain/src/commerce/soft-block.ts': COMPLETE,
         'packages/domain/src/commerce/tiers.ts': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
