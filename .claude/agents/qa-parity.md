@@ -33,7 +33,7 @@ divergence in these classes:
    the values are identical. A mismatch is a **blocker**: record both values verbatim, never
    average, round, or pick the one that looks right.
 
-A divergence recorded in `docs/prd/registers/conflicts.md` is intentional —
+A divergence the PRD row records as deliberate is intentional —
 report it `documented` and cite the row. A divergence with no row is drift, however
 deliberate it looks.
 

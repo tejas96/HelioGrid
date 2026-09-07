@@ -102,5 +102,4 @@ this file: when the path goes, the row goes.
 
 | trap | fix | retire when |
 |---|---|---|
-| `knip` reports the deliberate web/native pair as a duplicate export and cannot see that Law 7 requires it. | Do not "fix" it by deleting a half. `check:unused` stays out of `verify` for this reason. | knip is configured to understand the pair |
 | Measuring a touch target mid-animation lies: overlays animate in over 320ms from `scale(0.97)`. | Wait for `document.getAnimations()` to be quiet, or for `transform` to read `none`. | never |

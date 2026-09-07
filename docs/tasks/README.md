@@ -4,7 +4,8 @@ One file per module (`M01-onboarding.md` … `M13-dashboards.md`), plus `SHELL.m
 shell, `F-core.md` / `F-platform.md` / `F5-customer-link.md` where a foundation builds something
 itself, and the studio split across `MS-studio-a.md` / `-b.md` / `-c.md`. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
-them, so no `T-` ids and no task anatomy. Every task was
+them, so no `T-` ids and no task anatomy. `deferred.md` holds what a task found outside its
+scope; each row there is the next task (`CLAUDE.md` §8). Every task was
 generated from the requirement register — no task exists without requirement rows behind it,
 and no P0 requirement exists without a task (or an explicit `realized-by` pointer to the
 requirement that carries it). The proof lives in `docs/prd/registers/screens.md` §gates.

@@ -29,7 +29,7 @@ Every file in this folder is a byte-verbatim copy of the live design system:
   `.dependency-cruiser.cjs` says it "depends on nothing in the workspace". `tsc` swept them in
   too, via this package's `src/**/*.ts` include (silent only because `skipLibCheck` skips
   declaration files). The `.txt` suffix is the one fix that costs nothing: no tool claims a
-  `.txt`, so boundaries, tsc, biome, knip and jscpd all stop parsing them, **with not one byte
+  `.txt`, so boundaries, tsc, biome and jscpd all stop parsing them, **with not one byte
   of content altered** — still `cmp`-identical to the design system originals. `.d.ts` stays in
   the middle of the name so the file still announces what it is. A re-pull must land them under
   this extension; the reader is `CONTRACT_EXT` in `scripts/ds-contract/contracts.mjs`.

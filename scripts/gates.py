@@ -216,6 +216,14 @@ CLAIM_RE = re.compile(
     re.I,
 )
 MECH_ROW_RE = re.compile(r"\bM\d+\b")
+# A tool name in an instruction file is a gate being described where only its row id belongs
+# (CLAUDE.md §8, "name no gate outside mechanisms.md"). `coverage threshold` and not the bare
+# word: a threshold is GST vocabulary in this product.
+TOOL_RE = re.compile(
+    r"vitest|biome|dependency-cruiser|\bcruiser\b|PreToolUse|jscpd|sherif|gates\.py"
+    r"|check-adherence|coverage thresholds?",
+    re.I,
+)
 
 
 def instruction_files(repo):
@@ -234,15 +242,22 @@ def check_instruction_hygiene(repo):
              "CONFIG ROT: instruction_files() matched nothing")
         return
 
-    dated, over, claims = [], [], []
+    dated, over, claims, tools, headroom = [], [], [], [], []
     for path, rel, budget in files:
         lines = open(path, encoding="utf-8").read().split("\n")
+        in_frontmatter = lines[:1] == ["---"]
         for i, line in enumerate(lines, 1):
+            if in_frontmatter:                      # a rule file's `paths:` block names configs
+                in_frontmatter = not (i > 1 and line == "---")
+                continue
             if DATE_RE.search(line):
                 dated.append(f"{rel}:{i}")
             if CLAIM_RE.search(line) and not MECH_ROW_RE.search(line):
                 claims.append(f"{rel}:{i}")
+            if TOOL_RE.search(line):
+                tools.append(f"{rel}:{i}")
         n = len(lines) - (1 if lines and lines[-1] == "" else 0)
+        headroom.append((budget - n, f"{rel} {n}/{budget}"))
         if n > budget:
             over.append(f"{rel} {n} > {budget}")
 
@@ -258,14 +273,21 @@ def check_instruction_hygiene(repo):
          else "a date is a war story — the trap goes to landmines.md, the story to the commit: "
               + ", ".join(dated[:8]) + (f" (+{len(dated) - 8} more)" if len(dated) > 8 else ""))
 
+    # The pass line shows the files nearest their ceiling: a budget is a ceiling, not a target,
+    # and the trend is only visible if every run prints it.
     gate(23, "every instruction file within its budget", not over,
-         f"{len(files)} files, largest is {max(len(open(f, encoding='utf-8').readlines()) for f, _, _ in files)} lines"
+         "nearest the ceiling: " + " · ".join(h for _, h in sorted(headroom)[:4])
          if not over else "; ".join(over))
 
     gate(24, "no enforcement claim without its mechanism row", not claims,
          "no unsourced claim" if not claims
          else "name the row that proves it (mechanisms.md M<n>), or drop the claim: "
               + ", ".join(claims[:8]) + (f" (+{len(claims) - 8} more)" if len(claims) > 8 else ""))
+
+    gate(25, "no tool named in an instruction file", not tools,
+         "rules cite row ids only" if not tools
+         else "a gate is described only in its mechanisms.md row; leave the row id behind: "
+              + ", ".join(tools[:8]) + (f" (+{len(tools) - 8} more)" if len(tools) > 8 else ""))
 
 
 def run(repo, verbose):

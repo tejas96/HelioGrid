@@ -469,7 +469,6 @@ Each needs updating when phase 3 lands. Listed so none is missed:
 
 - `package.json` — `check:ui-parity` removed; `ds:contract` is the live gate (`ds:check` was removed too — §6)
 - `.dependency-cruiser.cjs` — package boundary rules naming `ui` / `ui-api` / `tokens`
-- `knip.jsonc` — entry points for the deleted packages
 - `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui', '@heliogrid/theme']`
   **done 2026-08-25 (task 2)**
 - `apps/mobile/babel.config.js` — no styling plugin: §3 takes plain `StyleSheet` (ADR-0026)

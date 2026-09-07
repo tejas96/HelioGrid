@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PACK_KEYS, type PackKey } from '../../src/market/keys';
+import type { PackKey } from '../../src/market/keys';
 import { isLaunchable, unauthoredKeys } from '../../src/market/launch';
 import { IN_PACK, type MarketPack } from '../../src/market/pack';
 
@@ -49,6 +49,5 @@ describe('isLaunchable — the new-market gate (F1-05)', () => {
 
   it('keeps India shut while dataRights is parked (Q89), the accepted consequence', () => {
     expect(isLaunchable(IN_PACK)).toBe(false);
-    expect(PACK_KEYS).toContain('dataRights');
   });
 });

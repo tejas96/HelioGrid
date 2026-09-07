@@ -79,5 +79,5 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 
 ## Done means
 
-Pure (the cruiser purity rules green) · consumed by BOTH platforms where a mobile surface exists
+Pure (`M57`) · consumed by BOTH platforms where a mobile surface exists
 (Law 7) · typecheck and lint green.

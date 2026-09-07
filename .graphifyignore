@@ -101,7 +101,6 @@ tsconfig*.json
 packages/config/tsconfig/
 turbo.json
 biome.json
-knip.jsonc
 .jscpd.json
 apps/mobile/app.json
 .claude/settings.json

@@ -16,8 +16,8 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built — architecture, stack, integrations, ADRs | Support, ranked below `prd/` |
 
-`CLAUDE.md` §7 fixes the order: owner rulings → `prd/` → `engineering/architecture.md` →
-contracts. **Nothing in `engineering/` is product truth.** Where the two disagree, `prd/` wins.
+`CLAUDE.md` §7 fixes the order: `prd/` (a row carries its own ruling) →
+`engineering/architecture.md` → contracts. **Nothing in `engineering/` is product truth.** Where the two disagree, `prd/` wins.
 
 ## Inside `engineering/`
 
@@ -26,7 +26,7 @@ contracts. **Nothing in `engineering/` is product truth.** Where the two disagre
 | [`engineering/architecture.md`](engineering/architecture.md) | **PINNED** | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
 | [`engineering/mechanisms.md`](engineering/mechanisms.md) | **PINNED** | **What actually holds each rule** — one row per invariant, its mechanism, its status, and the date it was last seen to fail on an injected violation. The ONLY place enforcement is described: a rule elsewhere cites a row id (`M12`) and never names a gate. |
 | [`engineering/landmines.md`](engineering/landmines.md) | **PINNED** | **Live traps** — one line each: the trap, the fix, and when it retires. Only what is real today and what no mechanism can hold. The story of how it was found stays in the commit. |
-| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-contract.mjs` and `knip.jsonc` name this path. |
+| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-contract.mjs` names this path. |
 | [`engineering/forward-compat.md`](engineering/forward-compat.md) | **PINNED** | What each module's first migration must satisfy. The PR template requires it. |
 | [`engineering/data-model.md`](engineering/data-model.md) | LIVE | **The logical data model and ERD** — 171 entities, 248 relationships, 13 ERDs, derived from `prd/` (answers `Q68`). Carries the V1/V2 and build-block scope per entity, the ⚠ cross-scope hazards, and the studio persistence decision (§5.7a). Logical only — no SQL, and NOT product truth: where it and `prd/` disagree, `prd/` wins. `/migration` step 1 reads it beside `forward-compat.md` before any schema change, and step 5 corrects it where the built tables differ. |
 | [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) | LIVE | How the system runs — request path, tenancy, background work, storage, studio data flow, market packs. |
@@ -49,7 +49,7 @@ Moving one of these breaks a gate silently.
 there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/registers/screens.md`,
 `open-questions.md`, `ux/briefs/`, `ux/claude-design-context.md`,
 `tasks/*.md` and `start-here.md`. `engineering/17-ui-architecture-v2.md` is named by two
-scripts and `knip.jsonc`. `engineering/forward-compat.md` is named by the PR template, and it and
+scripts. `engineering/forward-compat.md` is named by the PR template, and it and
 `engineering/data-model.md` are both named by the `/migration` skill's first step.
 `.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites
 `engineering/03 §7`; `apps/api/CLAUDE.md` and `apps/worker/CLAUDE.md` cite `engineering/02 §2`.

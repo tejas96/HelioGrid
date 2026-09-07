@@ -7,6 +7,7 @@
 #   3.  no raw hex in UI paths  — every visual value comes from @heliogrid/theme
 #   10. app-declared vocabulary — a union, a lookup or a POLICY NUMBER an app writes itself
 #   10b. a brand obtained by a cast — the one hole in an unspeakable fact (CLAUDE.md §8)
+#   13. a test that restates a constant — `expect(CONSTANT).` proves nothing (.claude/rules/testing.md)
 #
 # Numbering is stable; a gap is a check that was retired in place.
 #
@@ -484,5 +485,18 @@ if [ -n "$dated_comments" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment'
+# ── 13. A test never restates a constant ───────────────────────────────────────
+# .claude/rules/testing.md: `expect(SOME_CONSTANT).toBe(...)` asserts a value the source already
+# states, so it passes for ever and proves nothing; what the type guarantees needs no test either.
+# The subject of an `expect` is an OUTCOME — a function's result, a derived value — never an
+# imported UPPER_CASE constant. Scanned: every tracked `*.test.ts` under a `tests/` folder.
+constant_tests=$(git ls-files -z -- '*/tests/*.test.ts' \
+  | xargs -0 grep -HnE 'expect\(\s*[A-Z][A-Z0-9_]+\s*\)\.' 2>/dev/null || true)
+if [ -n "$constant_tests" ]; then
+  printf 'TEST RESTATES A CONSTANT — the subject of an expect is an outcome, never an imported constant (.claude/rules/testing.md):\n%s\n' "$constant_tests"
+  echo '  Delete the assertion, or assert on the function that CONSUMES the constant.'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant'
 exit $fail

@@ -264,7 +264,7 @@ development PKI, bootstrap and the probe scripts that prove identity, durability
 upgrades) — and `infra/temporal/deploy/` — the reviewed, UNDEPLOYED production candidate
 (image, Fly template, rendered config, runbooks, alerts). Allowed deps: none — it is NOT a
 workspace package (`pnpm-workspace.yaml` covers apps/packages/tests only), so it is outside the
-build graph, the lockfile, dep-cruiser and knip. Platform scope: operator tooling. Belongs:
+build graph, the lockfile and dep-cruiser. Platform scope: operator tooling. Belongs:
 anything needed to RUN or DEPLOY a dependency that is not application code. Never: product
 code, a workspace dependency, or a real credential — `pki/` is gitignored development material.
 Extension point: one folder per deployed dependency.

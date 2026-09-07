@@ -16,11 +16,22 @@ cmd = re.sub(r"<<-?\x27?\"?(\w+)\x27?\"?.*?^\1", " ", cmd, flags=re.S | re.M)
 cmd = re.sub(r"\"(?:[^\"\\\\]|\\\\.)*\"", " ", cmd)
 cmd = re.sub(r"\x27[^\x27]*\x27", " ", cmd)
 FORCE = {"-f", "--force", "--force-if-includes"}
+GIT_OPTIONS_WITH_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace"}
+def push_index(words):
+    """Index of the `push` SUBCOMMAND, or None. `git stash push` and `git push` share a word;
+    only the one directly after `git` (past its own options) is the action this guard holds."""
+    if "git" not in words:
+        return None
+    i = words.index("git") + 1
+    while i < len(words) and words[i].startswith("-"):
+        i += 2 if words[i] in GIT_OPTIONS_WITH_VALUE else 1
+    return i if i < len(words) and words[i] == "push" else None
 for segment in re.split(r"[|;&]+|\n", cmd):
     words = segment.split()
-    if "git" not in words or "push" not in words:
+    i = push_index(words)
+    if i is None:
         continue
-    args = words[words.index("push") + 1:]
+    args = words[i + 1:]
     flags = [w for w in args if w.startswith("-")]
     positional = [w for w in args if not w.startswith("-")]
     forced = any(f in FORCE or f.startswith("--force-with-lease") for f in flags)

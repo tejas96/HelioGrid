@@ -92,8 +92,8 @@ there are two.
 
 - it is **frontend-only**, and `/Volumes/works-space/heliogrid`'s backend today is a health check
   (`apps/api`, 342 lines, one module) with no schema in `packages/db`;
-- it does not meet this repo's standards, and `boundaries`, `check:adherence`, `check:dupes` and
-  `check:unused` run on every commit;
+- it does not meet this repo's standards, and `boundaries`, `check:adherence` and `check:dupes`
+  run on every commit;
 - it carries its own defect register at `docs/prd/modules/M05-studio/defect-register.md`.
 
 Porting it first would mean inventing the API, schema and data-layer conventions *while* fighting

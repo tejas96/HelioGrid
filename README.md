@@ -207,7 +207,6 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
 | `pnpm check:env` | The env-centralisation gate standalone (also part of `pnpm lint`) |
 | `pnpm ds:contract` | The design-system contract gate standalone (also part of `pnpm lint`) — prop contracts vs the design system, and web↔RN semantic drift. It REPLACED `check:ui-parity`, which was deleted with the v1 design system (docs/engineering/17 §6); the script no longer exists |
-| `pnpm check:unused` | `knip` — finds unused exports/files (not part of `pnpm verify`, run manually) |
 | `pnpm check:dupes` | `jscpd` — duplicate-code scan (not part of `pnpm verify`, run manually) |
 
 CI (`.github/workflows/ci.yml`) has one job that always runs, `quality`: a Gitleaks secret
@@ -337,8 +336,8 @@ it is how drift enters the repo silently:
 
 ## Git workflow
 
-Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes
-and then pushes and opens the PR itself. Merge is the owner's; `main` is PR-only. A PR is one
+Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes,
+pushes, and prints the PR body; the owner raises the PR and merges. `main` is PR-only. A PR is one
 complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8.
 
 ## Where to find things

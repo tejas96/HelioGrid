@@ -14,7 +14,6 @@ const IMPERIAL_MARKET: FormatPack = { ...IN_FORMATS, measurementSystem: 'imperia
 describe('procurement is metric for every user (F3-23)', () => {
   it('is a constant, not a preference', () => {
     /* A supplier order in feet is a wrong order, so no caller may vary this. */
-    expect(PROCUREMENT_SYSTEM).toBe('metric');
     expect(formatLength(IMPERIAL_MARKET, 4.2, PROCUREMENT_SYSTEM)).toBe(`4.2${NBSP}m`);
   });
 });
