@@ -48,7 +48,9 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
 - **`commerce/` is packaging, not a pack key** — the one folder beside the keys that is NOT one, so
   it sits outside `MarketPack`. It holds structure every market prices against, never a market fact.
-  `costs.ts` is its other half: what the platform pays for instead of selling (`M97`).
+  `costs.ts` is its other half: what the platform pays for instead of selling (`M97`), and
+  `trial.ts` the one non-paying motion there will ever be (`M98`). The trial holds DAYS and
+  no instant: this package has no clock, and the tenant's is the one that counts (`F1-10`).
 - **A rate carries the cost it must clear** (`pricing/`). `WorstCaseCogs` sits on `UnitRate` and on
   each `ChannelRate`, never in a table beside them, so a rate cannot be authored without the figure
   that judges it (`M96`). It has no `verified` field and never gains one (`BM-26`).

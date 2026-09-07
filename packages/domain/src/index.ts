@@ -113,10 +113,12 @@ export {
   BILLING_STATES,
   COUNTED_CREATIONS,
   FREE_UPSTREAMS,
+  isNonPaying,
   METERS,
   NEVER_METERED,
   PROXIED_UPSTREAMS,
   TIERS,
+  TRIAL_DAYS,
   tierBand,
 } from './commerce';
 export type {
@@ -204,6 +206,7 @@ export {
   metersBelowCogsFloor,
   tenMonthYearly,
   tierRow,
+  trialCapacity,
 } from './pricing';
 export type {
   BillingCycle,

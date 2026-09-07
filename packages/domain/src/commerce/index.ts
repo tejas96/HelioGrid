@@ -33,3 +33,4 @@ export type { BillingState } from './states';
 export { BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
+export { isNonPaying, TRIAL_DAYS } from './trial';
