@@ -2102,7 +2102,7 @@ Nothing below is renumbered.*
 | M10-25 | P0 | screen | SCR-M10-05 | T-M10-005 |
 | M10-26 | P1 | screen | SCR-M10-01, SCR-M10-05 | T-M10-001 |
 | M10-27 | P0 | mixed | SCR-M10-06, SCR-M10-01, SCR-M10-05 · +non-UI: no accrual arithmetic; leave types are tenant-configured labels | T-M10-006 |
-| M10-28 | P2 | mixed | SCR-M10-05 · +non-UI: distinct data from F1-50 calling-window holiday calendar | T-M10-005 |
+| M10-28 | P2 | mixed | SCR-M10-05 · +non-UI: distinct data from F1-48 calling-window holiday calendar | T-M10-005 |
 | M10-29 | P1 | policy | policy | LAW |
 | M10-30 | P0 | policy | policy | T-M10-009 |
 | M10-31 | P0 | policy | policy | T-M10-010 |

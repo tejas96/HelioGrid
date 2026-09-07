@@ -6,7 +6,8 @@ contract has a sequence: run `/contract-change`.
 ## What lives here / what must never live here
 
 - ts-rest routers, Zod request/response schemas, the error envelope, shared conventions
-  (pagination, provenance, role and language enums), Temporal workflow messages (`workflows/`),
+  (pagination, provenance, role and language enums — the last two DERIVED from `@heliogrid/domain`,
+  never authored here), Temporal workflow messages (`workflows/`),
   the SESSION PROJECTION (`session.ts`) and its `SessionResolver` port (`ports/session.ts`).
 - **The session projection is the identity-provider seam.** The provider owns user and session
   rows; HelioGrid owns tenants, memberships and roles; `session.ts` joins the two ONCE. A guard,

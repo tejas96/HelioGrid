@@ -80,9 +80,10 @@ new loader per new runtime.
 
 ### contracts — the wire truth
 Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, the
-UI language identity (locale.ts — UI_LANGUAGES/UI_SOURCE_LOCALE/uiLanguageSchema, its own
-file because packages/i18n and the Lingui CLI config read it, and a locale list reached for
-through a grab-bag of pagination schemas is how a second list gets written), and
+UI language identity (locale.ts — uiLanguageSchema over domain's UI_LANGUAGES, re-exported
+with UI_SOURCE_LOCALE; its own file because packages/i18n and the Lingui CLI config read it,
+and a locale list reached for through a grab-bag of pagination schemas is how a second list
+gets written), and
 Temporal workflow messages (`workflows/`, published as the `./workflows` subpath — a
 process-to-process contract that must never reach the OpenAPI artifact or a frontend
 bundle). Emits the committed
@@ -153,7 +154,7 @@ index only.
 
 ### i18n — catalogs, language metadata and the provider
 Owns: Lingui catalogs (compiled messages committed), the LANGUAGE_META table and the
-catalog loaders (both `satisfies Record<UiLanguage, …>` over the contract's UI_LANGUAGES —
+catalog loaders (both `satisfies Record<UiLanguage, …>` over the re-exported UI_LANGUAGES —
 never a second list), the per-mount/per-request runtime and translator factories, the ONE
 React provider both platforms use, the Hermes Intl polyfills, and src/copy/ shared-copy
 modules (React-free /*i18n*/ descriptors — JSX is banned there for the dual-instance
@@ -352,8 +353,9 @@ section records the answer per new file.
    nothing else may build a client or a transport).
 5. Is it form state/validation wiring? → packages/forms.
 6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy. Is it the
-   SET of languages? → packages/contracts/src/locale.ts, and nowhere else — i18n and the
-   Lingui CLI both read it from there.
+   SET of languages? → packages/domain/src/format/languages.ts, and nowhere else — a pack
+   declares a label per language (Q87), and domain imports nothing. contracts derives the
+   z.enum and re-exports, so i18n, the Lingui CLI and the apps still import from contracts.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
    packages/theme (`ds:pull`) — never a literal in a screen, never hand-transcribed.
 8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared

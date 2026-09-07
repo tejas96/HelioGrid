@@ -289,7 +289,9 @@ fi
 # called, if there is one — in the change that creates packages/ui (docs/engineering/17 §5 step 2).
 
 # ── 9. Every contract UI language is fully REGISTERED in packages/i18n ──────
-# `UI_LANGUAGES` in packages/contracts/src/locale.ts is the one place the set is written.
+# `UI_LANGUAGES` in packages/domain/src/format/languages.ts is the one place the set is written
+# (`Q87` moved it there so a pack can declare a label per language; contracts derives and
+# re-exports it, so every consumer still imports from contracts).
 # Two of the three registrations it implies are held by TYPES — LANGUAGE_META and
 # CATALOG_LOADERS are `satisfies Record<UiLanguage, …>`, so a new language fails typecheck
 # until both exist. The THIRD cannot be: the Hermes plural-rule data is a bare side-effect
@@ -299,7 +301,7 @@ fi
 # So this reads the tuple and greps for the import line. It is a grep in an existing gate,
 # not a new script (CLAUDE.md §8 mechanism order) — and it derives its expectation from the
 # source of truth rather than restating the list, so it cannot rot into a fourth locale list.
-LOCALE_FILE='packages/contracts/src/locale.ts'
+LOCALE_FILE='packages/domain/src/format/languages.ts'
 RN_ENTRY='packages/i18n/src/rn/index.ts'
 if [ -e "$LOCALE_FILE" ] && [ -e "$RN_ENTRY" ]; then
   langs=$(sed -n "/UI_LANGUAGES = \[/,/\] as const/p" "$LOCALE_FILE" | grep -oE "'[a-z-]+'" | tr -d "'")

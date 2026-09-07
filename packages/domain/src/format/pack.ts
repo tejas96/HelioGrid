@@ -1,4 +1,8 @@
 import { IN_MARKET, type MarketCode } from '../market/code';
+import { type ChecklistRow, IN_DOCUMENT_CHECKLIST } from './checklist';
+import type { CalendarDate } from './holidays';
+import { IN_UTILITIES, type UtilityDirectory } from './utility';
+import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
 
 /**
  * `pack.formats` — the market's format values (`F1-21`). F1 owns these VALUES; F3 owns the
@@ -83,6 +87,22 @@ export interface FormatPack {
   readonly phone: PhoneFormats;
   /** The market's default (`F1-50`). A per-user preference may override it — never for procurement. */
   readonly measurementSystem: MeasurementSystem;
+  /**
+   * `F1-21`, `F1-48` — the market's own holiday days. A tenant ADDS to this and never
+   * subtracts (`F1-17`); `holidays.ts` is the one place the two are combined.
+   */
+  readonly holidayCalendar: readonly CalendarDate[];
+  /**
+   * `F1-21`, `F1-49` — the calling codes an OTP may be SENT to, per this market's rollout.
+   * A switch, never a code change: enabling a country is a pack revision (`F1-11`).
+   */
+  readonly otpDestinationDialCodes: readonly string[];
+  /** `F1-22` — what a user reads for a canonical machine value. */
+  readonly vocabulary: DisplayVocabulary;
+  /** `F1-22`, `F1-52` — the project document rows; `M08` seeds and states them. */
+  readonly documentChecklist: readonly ChecklistRow[];
+  /** `F1-53` — regions, their network operators, and how long the operator's queue runs. */
+  readonly utilities: UtilityDirectory;
 }
 
 /**
@@ -114,4 +134,15 @@ export const IN_FORMATS: FormatPack = {
   phone: { dialCode: '+91', nsnGroups: [5, 5], nsnLength: 10 },
   /** `F1-50` — metric. */
   measurementSystem: 'metric',
+  /**
+   * `F1-48`, `Q88` — India declares NONE. TCCCPR states no holiday rule and no row names a
+   * date, so every IN holiday is the tenant's own working calendar (`M01-59`). An authored
+   * empty value in the `F1-62`a sense, never a missing one.
+   */
+  holidayCalendar: [],
+  /** `F1-49` — `+91` by default; another country code is a pack revision, not a release. */
+  otpDestinationDialCodes: ['+91'],
+  vocabulary: IN_VOCABULARY,
+  documentChecklist: IN_DOCUMENT_CHECKLIST,
+  utilities: IN_UTILITIES,
 };
