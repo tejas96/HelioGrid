@@ -31,9 +31,9 @@ export interface Share {
 const WHOLE_SHARE: Share = { parts: 1, ofParts: 1 };
 
 /**
- * `amount × rate × share`, rounded ONCE to the minor unit, half away from zero (owner ruling
- * `Q83`). This is the only place money rounds: a second rounding, anywhere, is how a BOM and its
- * proposal come to differ by a paisa (`M11-08`).
+ * `amount × rate × share`, rounded ONCE to the minor unit, half away from zero. This is the only
+ * place money rounds: a second rounding, anywhere, is how a BOM and its proposal come to differ
+ * by a paisa (`M11-08`).
  *
  * BigInt, not float: `amount × rate` passes 2^53 well inside numeric(14,3)'s range, and a float
  * would then carry the wrong paisa without a word.

@@ -10,7 +10,8 @@ import type { PackLabel } from './languages';
  * and `M08`'s stage machine is not authored yet (Law 9) — a closed union would either invent it
  * or block this key on it. A reader returns `null` for an undeclared key rather than guessing.
  *
- * A label is per language (`Q87`, `PackLabel`), so a label change stays a pack revision (`F1-11`)
+ * A label is per language (`PackLabel`) and lives on the pack, not in `packages/i18n`, so a label
+ * change stays a pack revision (`F1-11`)
  * instead of a catalog release. Names in the never-translated set — `DISCOM` above all (`F3-08`,
  * `F1-51`) — carry `en` alone and read identically everywhere by construction.
  */

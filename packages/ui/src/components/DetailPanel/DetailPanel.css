@@ -1,5 +1,5 @@
-/* AN OVERLAY THAT HOLDS THINGS IS A CONTAINER, SO IT SITS ONE STEP BELOW THEM (owner ruling
-   2026-08-28, Q77). --surface-form, not --surface: a control or a card inside is --surface and must
+/* AN OVERLAY THAT HOLDS THINGS IS A CONTAINER, SO IT SITS ONE STEP BELOW THEM.
+   --surface-form, not --surface: a control or a card inside is --surface and must
    be BRIGHTER than what holds it, or it disappears — a white field on a white sheet is the same
    white-on-white defect the ladder exists to prevent. Header and footer match the panel so no seam
    shows when content scrolls beneath them. */

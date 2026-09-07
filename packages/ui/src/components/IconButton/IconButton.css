@@ -3,7 +3,8 @@
 
    The ghost variant reads --control-edge rather than hardcoding `none`: an inline none beats field
    mode's blanket rule, which would leave the lowest-contrast control in the system without an edge
-   in sunlight. --control-edge is `none` in the base scope, and stays so: Q77 raises boxed controls at --e2 instead, and a text button is not one. */
+   in sunlight. --control-edge is `none` in the base scope, and stays so: a boxed control is made
+   findable by raising it at --e2, never by outlining it, and a text button is not one. */
 
 .hg-icon-button {
   min-width: 44px;
@@ -28,7 +29,7 @@
 .hg-icon-button[data-variant="surface"] {
   background: var(--surface);
   color: var(--text-primary);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
 }
 
@@ -45,7 +46,7 @@
 }
 
 .hg-icon-button[data-variant="surface"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  /* Rest is --e2 now (Q77), so hover must clear it — a lift to the SAME step is no lift. */
+  /* Rest is --e2 now, so hover must clear it — a lift to the SAME step is no lift. */
   box-shadow: var(--e3);
 }
 

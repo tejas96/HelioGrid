@@ -19,7 +19,7 @@ those before your first non-trivial change, not after.
 
 | Question | Folder |
 |---|---|
-| What does the product do? | [`docs/prd/`](docs/prd/) — **the source of truth**, with owner rulings in `docs/prd/registers/` |
+| What does the product do? | [`docs/prd/`](docs/prd/) — **the source of truth**; every row carries its own ruling |
 | What does this screen do? | [`docs/ux/briefs/`](docs/ux/briefs/) |
 | What am I building next? | [`docs/tasks/`](docs/tasks/) and [`docs/build-order.md`](docs/build-order.md) |
 | How is the repo built? | [`docs/engineering/`](docs/engineering/) — start at [`docs/README.md`](docs/README.md) |
@@ -67,7 +67,7 @@ authoritative doc for that layer; this table is only the index.
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
 | `<package>/tests` | Unit tests for the logic layers only — domain, contracts, forms, api, worker (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
-| `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the registers | — |
+| `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
 | `docs/ux/` | The 150 screen briefs plus the context file every design session is given | — |
 | `.claude/` | Rules, skills and agent configuration that govern AI-assisted changes here | — |
@@ -357,8 +357,6 @@ complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8
 | [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 95 components, and the gates that hold them |
 | [`docs/prd/foundations/F3-localization.md`](docs/prd/foundations/F3-localization.md) | i18n law (EN/HI/MR) |
 | [`docs/prd/foundations/F7-design-language.md`](docs/prd/foundations/F7-design-language.md) | Design language |
-| [`docs/prd/registers/open-questions.md`](docs/prd/registers/open-questions.md) | Owner rulings — check before re-deciding something already decided |
-| [`docs/prd/registers/conflicts.md`](docs/prd/registers/conflicts.md) | Contradictions found in the spec and how each was resolved |
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |

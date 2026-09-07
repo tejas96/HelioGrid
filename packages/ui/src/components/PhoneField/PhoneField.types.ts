@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
  * shape stored or transported. The grouping is display; the caller never sees it.
  */
 
-/** Size only, matching `Input` — expressive 52px, functional 40px. Never the ground (`Q77`). */
+/** Size only, matching `Input` — expressive 52px, functional 40px. Never the ground. */
 export type PhoneFieldDensity = 'expressive' | 'functional';
 
 export interface PhoneFieldProps {

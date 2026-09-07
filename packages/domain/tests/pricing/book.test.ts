@@ -63,7 +63,7 @@ describe('the yearly cycle is sized at pay-ten-get-twelve, and the book row wins
   });
 });
 
-describe('isSellable — a draft rate is never launch-final (BM-26, Q1/Q17)', () => {
+describe('isSellable — a draft rate is never launch-final (BM-26)', () => {
   it.each(['voice_minutes', 'ai_roof_detections'] as const)(
     'sells %s: its rate is verified',
     (meter) => {

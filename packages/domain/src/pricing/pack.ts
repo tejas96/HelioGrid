@@ -83,7 +83,7 @@ export interface WorstCaseCogs {
  *
  * `draft` is behaviour, not a note. A rate the owner has set but not verified against worst-case
  * unit COGS is carried in the book and is NOT sellable until the rate card verifies
- * (`BM-26`, owner ruling `Q1`). A draft number is never silently treated as launch-final.
+ * (`BM-26`). A draft number is never silently treated as launch-final.
  */
 export interface UnitRate {
   readonly kind: 'per_unit';

@@ -31,7 +31,7 @@ export type Capability = (typeof M01_CAPABILITIES)[number];
  * We carry the phrase VERBATIM rather than inventing a `view-catalog-prices` row the PRD does
  * not have. A boolean guard cannot enforce a sentence, so `limited` grants the act and
  * surfaces the limit for the owning slice to enforce; it never silently drops it, and it
- * never silently widens it either. Recorded as an open question (`Q72`) so the catalog slice
+ * never silently widens it either. Recorded as an open question so the catalog slice
  * splits it into a real row rather than inheriting a string.
  */
 export type CapabilityGrant =

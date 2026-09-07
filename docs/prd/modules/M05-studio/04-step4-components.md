@@ -70,7 +70,7 @@ Edge cases: a capacity above the sanctioned load raises M05-20's informational w
 |---|---|---|---|
 | MS4-24 | BATTERY section with the same three entry paths and the resolved catalog; per-unit specs (usable kWh, chemistry, voltage window, warranty) with the tenant rate where known, and quantity; "None" is a valid, explicit state (S4-1; DD12/M05-37). | `BRIEF` S4-1 | P0 |
 | MS4-25 | Battery selection flows to the BOM, the SLD/electrical step and the proposal's components block; the proposal-side battery card (M06-33 family) consumes it rather than re-asking (S4-1). | `BRIEF` S4-1 | P0 |
-| MS4-26 | Battery ECONOMICS (backup duration, self-consumption/ToU modelling) remains a Recommended Enhancement — not v2 scope (enhancements register, design spec §10). | `REC` | P2 |
+| MS4-26 | Battery ECONOMICS (backup duration, self-consumption/ToU modelling) remains a Recommended Enhancement — not v2 scope (design spec §10; `M06-33` is the proposal-side half). | `REC` | P2 |
 
 ### MS4.7 — Compare options (the decision engine)
 

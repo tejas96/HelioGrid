@@ -85,12 +85,12 @@ at the point of need.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M01-01 | **Self-serve signup, minimal fields.** A company signs itself up: phone number → OTP; then company name, the owner's name, and city. **Nothing else** — no tax registration, no logo, no price book, no team, no payment instrument. The person signing up becomes the tenant's first EPC Owner. | `SRC` — `D11` ("Self-serve signup", the live half post-overlay; *retired: D-census ledger*); `S0.screen.1` ("Phone number → OTP. Company name, your name, city. Nothing else.") | P0 |
-| M01-02 | **Google Login is supported alongside Mobile OTP — as a convenience sign-in bound to the SAME phone-identity account (owner ruling 2026-08-04, Q18).** Both sign-in methods exist on web and mobile; the account identity remains the phone number (M01-18), and a Google identity is **linked** to that phone-identified account at the **first Google sign-in** via the linking flow — never creating a duplicate account, and never standing in for the verified phone. A brand-new signup completes phone verification as part of becoming an account; Google is the convenience door onto it. Architecture stays future-friendly for further methods. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Authentication ("Support Mobile OTP, Google Login. Future-friendly architecture.") · phone-as-identity grounding at `DOC04.user-lifecycle`; linking rule per owner ruling 2026-08-04 (Q18) | P0 |
-| M01-03 | **OTP delivery is SMS-only and never silently degrades — the system uses no fallback mechanism (owner ruling 2026-08-06, Q47).** SMS is the delivery channel, and nothing is retried behind the user's back. The user gets a visible **resend** control, which unlocks at 30 s (M01-04, owner ruling 2026-08-06 Q44), and, if the code still does not arrive, a **"call me instead"** voice-OTP option — **retained as a USER-initiated option, not a system fallback**: the ruling names what "the system should not use", and a user whose SMS path is broken must still have a way in. If delivery fails, login fails loudly with a plain retry-later message — "No silent degradation on the front door," a principle this ruling **strengthens rather than weakens**, because nothing now happens invisibly at all. **When the SMS rail confirms a HARD delivery failure, that loud-failure state releases the resend cooldown immediately and offers the "call me instead" voice OTP in the same state (owner ruling 2026-08-06, Q51)** — the cooldown exists to stop resends while a message is still in flight, and once the network confirms failure nothing is in flight, so the user may act at once. What is released is the cooldown and nothing else: **`M01-04`'s anti-abuse caps are UNCHANGED and still bind** (3 requests per 15 min, 8 per day per phone, 5 failed verifies invalidate the OTP, 3 invalidations lock the number for 15 min) — where a cap is already reached the cap still governs and the honest message says so. *(This row previously read "**OTP delivery is layered and never silently degrades.** SMS is the primary channel, with automatic fallback to a secondary messaging-channel OTP where the market's OTP rail provides one, on delivery failure or a 30 s timeout. The user additionally gets a visible **resend** control and, if the code still does not arrive, a **“call me instead”** voice-OTP option. If every channel fails, login fails loudly with a plain retry-later message — “No silent degradation on the front door.”" — the automatic secondary-channel fallback clause is removed by this ruling; owner's words: "keep only resend feature after 30s that button get enabled, and the system should not use any fallback mechanism.")* *(This row previously stated nothing about the resend control inside that loud-failure state, and nothing about whether the voice OTP was offered there — the silence the Q47 closure pass recorded as M01 §6's open 0–30 s hard-failure question; owner ruling 2026-08-06 (Q51) supplies it and changes nothing else in this row.)* | `SRC` — `DOC07.otp-delivery` (docs/engineering/07; *retired: docs-rules ledger*) — **its automatic-fallback half is SUPERSEDED by owner ruling 2026-08-06 (Q47)**; the citation is kept, not deleted, and the row's surviving halves (SMS delivery, loud failure, no silent degradation) still rest on it; `S0.wrong.2` ("resend after 30s, then offer 'call me instead'") · the OTP rail is a vendor-neutral capability with the v1 reference implementation recorded in F1 (`F1-43`, `F1-49`) · the confirmed-hard-failure state's immediate resend-cooldown release and its in-state voice-OTP offer are added by owner ruling 2026-08-06 (Q51); no `M01-04` cap is touched by it | P0 |
-| M01-04 | **OTP anti-abuse limits are product-visible.** Requests are capped (3 per 15 min and 8 per day per phone); resend has a cooldown; 5 failed verify attempts invalidate the OTP; 3 consecutive invalidations lock the phone number for 15 min with an honest message; invite sends are capped per tenant per day. **The lock is on the SMS channel, not on the account (owner ruling 2026-08-27, `Q73`).** A number under its 15-minute lock cannot request or verify another SMS code, and **Google Login remains available** onto the same phone-identity account (`M01-02`) throughout — the identity is not in question, the code rail is. The honest message names both halves: what paused, and that the other door still works, which is the same pause-honesty this suite requires everywhere (`M12-31`). Google was silent in this row until `Q73`; the reading that closed both doors was considered and rejected — it buys little, since reaching the Google door already requires holding that Google account, and it costs a legitimate person their only remaining way in. **The resend cooldown is 30 seconds (owner ruling 2026-08-06, Q44)** — the value the journey already promises the user ("resend after 30 s", `S0.wrong.2`); docs/engineering/08's 45 s resend cooldown is **superseded**, and the UI resend control respects the ruled 30 s. Every other limit in this row is unchanged by the ruling. **`M01-03`'s delivery path is no longer layered (owner ruling 2026-08-06, Q47)** — its automatic secondary-channel fallback is removed, leaving SMS delivery plus this row's **resend** control and the user-initiated **“call me instead”** voice OTP; that sentence previously read “as is `M01-03`'s layered delivery path (SMS → fallback channel → voice OTP)”. **The cooldown is released immediately when the SMS rail confirms a HARD delivery failure (owner ruling 2026-08-06, Q51)** — the cooldown exists to stop resends while a message is still in flight, and once the network confirms failure nothing is in flight, so in `M01-03`'s loud-failure state the resend control is available at once and the user-initiated **“call me instead”** voice OTP is offered in that same state. **What is released is the cooldown alone: every cap in this row is UNCHANGED and still binds** — 3 requests per 15 min, 8 per day per phone, 5 failed verifies invalidate the OTP, 3 invalidations lock the number for 15 min — so where a cap is already reached the cap still governs and the honest message says so; the ruled 30 s continues to govern the ordinary in-flight case. *(This row previously read "**Recorded, not resolved:** the journey offers resend “after 30 s” (`S0.wrong.2`) while docs/engineering/08 sets a 45 s resend cooldown — the UI resend control must respect whichever cooldown is ruled; the divergence is carried in both source rows and recorded at `registers/conflicts.md` row 9." — that divergence, `registers/conflicts.md` row 9, is closed by this ruling.)* *(The cooldown's behaviour inside a confirmed hard-failure state was previously unstated in this row — the gap the Q47 closure pass recorded as M01 §6's open 0–30 s hard-failure question; owner ruling 2026-08-06 (Q51) supplies it and amends no limit here.)* | `SRC` — `DOC08.otp-limits` (docs/engineering/08); the `S0.wrong.2` divergence formerly recorded in-row is closed by owner ruling 2026-08-06 (Q44) · the in-row cross-reference to `M01-03`'s delivery path is amended by owner ruling 2026-08-06 (Q47); no limit in this row is touched by it · the cooldown's release on a confirmed hard delivery failure is added by owner ruling 2026-08-06 (Q51), which likewise leaves every `DOC08.otp-limits` cap this row carries binding | P0 |
+| M01-02 | **Google Login is supported alongside Mobile OTP — as a convenience sign-in bound to the SAME phone-identity account (owner ruling 2026-08-04).** Both sign-in methods exist on web and mobile; the account identity remains the phone number (M01-18), and a Google identity is **linked** to that phone-identified account at the **first Google sign-in** via the linking flow — never creating a duplicate account, and never standing in for the verified phone. A brand-new signup completes phone verification as part of becoming an account; Google is the convenience door onto it. Architecture stays future-friendly for further methods. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Authentication ("Support Mobile OTP, Google Login. Future-friendly architecture.") · phone-as-identity grounding at `DOC04.user-lifecycle`; linking rule per owner ruling 2026-08-04 | P0 |
+| M01-03 | **OTP delivery is SMS-only and never silently degrades — the system uses no fallback mechanism (owner ruling 2026-08-06).** SMS is the delivery channel, and nothing is retried behind the user's back. The user gets a visible **resend** control, which unlocks at 30 s (M01-04, owner ruling 2026-08-06), and, if the code still does not arrive, a **"call me instead"** voice-OTP option — **retained as a USER-initiated option, not a system fallback**: the ruling names what "the system should not use", and a user whose SMS path is broken must still have a way in. If delivery fails, login fails loudly with a plain retry-later message — "No silent degradation on the front door," a principle this ruling **strengthens rather than weakens**, because nothing now happens invisibly at all. **When the SMS rail confirms a HARD delivery failure, that loud-failure state releases the resend cooldown immediately and offers the "call me instead" voice OTP in the same state (owner ruling 2026-08-06)** — the cooldown exists to stop resends while a message is still in flight, and once the network confirms failure nothing is in flight, so the user may act at once. In that state the failure message never says "later" — the retry is available now and the copy, which is `SCR-M01-01`'s to write, names it. What is released is the cooldown and nothing else: **`M01-04`'s anti-abuse caps are UNCHANGED and still bind** (3 requests per 15 min, 8 per day per phone, 5 failed verifies invalidate the OTP, 3 invalidations lock the number for 15 min) — where a cap is already reached the cap still governs and the honest message says so. *(This row previously read "**OTP delivery is layered and never silently degrades.** SMS is the primary channel, with automatic fallback to a secondary messaging-channel OTP where the market's OTP rail provides one, on delivery failure or a 30 s timeout. The user additionally gets a visible **resend** control and, if the code still does not arrive, a **“call me instead”** voice-OTP option. If every channel fails, login fails loudly with a plain retry-later message — “No silent degradation on the front door.”" — the automatic secondary-channel fallback clause is removed by this ruling; owner's words: "keep only resend feature after 30s that button get enabled, and the system should not use any fallback mechanism.")* *(This row previously stated nothing about the resend control inside that loud-failure state, and nothing about whether the voice OTP was offered there; owner ruling 2026-08-06 supplies it and changes nothing else in this row.)* | `SRC` — `DOC07.otp-delivery` (docs/engineering/07; *retired: docs-rules ledger*) — **its automatic-fallback half is SUPERSEDED by owner ruling 2026-08-06**; the citation is kept, not deleted, and the row's surviving halves (SMS delivery, loud failure, no silent degradation) still rest on it; `S0.wrong.2` ("resend after 30s, then offer 'call me instead'") · the OTP rail is a vendor-neutral capability with the v1 reference implementation recorded in F1 (`F1-43`, `F1-49`) · the confirmed-hard-failure state's immediate resend-cooldown release and its in-state voice-OTP offer are added by owner ruling 2026-08-06; no `M01-04` cap is touched by it | P0 |
+| M01-04 | **OTP anti-abuse limits are product-visible.** Requests are capped (3 per 15 min and 8 per day per phone); resend has a cooldown; 5 failed verify attempts invalidate the OTP; 3 consecutive invalidations lock the phone number for 15 min with an honest message; invite sends are capped per tenant per day. **The lock is on the SMS channel, not on the account (owner ruling 2026-08-27).** A number under its 15-minute lock cannot request or verify another SMS code, and **Google Login remains available** onto the same phone-identity account (`M01-02`) throughout — the identity is not in question, the code rail is. The honest message names both halves: what paused, and that the other door still works, which is the same pause-honesty this suite requires everywhere (`M12-31`). Google was silent in this row until that ruling; the reading that closed both doors was considered and rejected — it buys little, since reaching the Google door already requires holding that Google account, and it costs a legitimate person their only remaining way in. **The resend cooldown is 30 seconds (owner ruling 2026-08-06)** — the value the journey already promises the user ("resend after 30 s", `S0.wrong.2`); docs/engineering/08's 45 s resend cooldown is **superseded**, and the UI resend control respects the ruled 30 s. Every other limit in this row is unchanged by the ruling. **`M01-03`'s delivery path is no longer layered (owner ruling 2026-08-06)** — its automatic secondary-channel fallback is removed, leaving SMS delivery plus this row's **resend** control and the user-initiated **“call me instead”** voice OTP; that sentence previously read “as is `M01-03`'s layered delivery path (SMS → fallback channel → voice OTP)”. **The cooldown is released immediately when the SMS rail confirms a HARD delivery failure (owner ruling 2026-08-06)** — the cooldown exists to stop resends while a message is still in flight, and once the network confirms failure nothing is in flight, so in `M01-03`'s loud-failure state the resend control is available at once and the user-initiated **“call me instead”** voice OTP is offered in that same state. **What is released is the cooldown alone: every cap in this row is UNCHANGED and still binds** — 3 requests per 15 min, 8 per day per phone, 5 failed verifies invalidate the OTP, 3 invalidations lock the number for 15 min — so where a cap is already reached the cap still governs and the honest message says so; the ruled 30 s continues to govern the ordinary in-flight case. *(This row previously read "**Recorded, not resolved:** the journey offers resend “after 30 s” (`S0.wrong.2`) while docs/engineering/08 sets a 45 s resend cooldown — the UI resend control must respect whichever cooldown is ruled; the divergence is carried in both source rows and recorded as a conflict." — that divergence is closed by this ruling.)* *(The cooldown's behaviour inside a confirmed hard-failure state was previously unstated in this row; owner ruling 2026-08-06 supplies it and amends no limit here.)* | `SRC` — `DOC08.otp-limits` (docs/engineering/08); the `S0.wrong.2` divergence formerly recorded in-row is closed by owner ruling 2026-08-06 · the in-row cross-reference to `M01-03`'s delivery path is amended by owner ruling 2026-08-06; no limit in this row is touched by it · the cooldown's release on a confirmed hard delivery failure is added by owner ruling 2026-08-06, which likewise leaves every `DOC08.otp-limits` cap this row carries binding | P0 |
 | M01-05 | **OTP is single-use with a 5-minute TTL, and no passwords exist anywhere in the product.** Sign-in is phone + 6-digit OTP (plus Google Login per M01-02); there is no password to set, store, forget or phish. | `SRC` — `DOC08.auth-phone-otp` (docs/engineering/08 §auth; the design the rebuild implements per R20's residue note) | P0 |
 | M01-06 | **OTP messages are anti-vishing by copy.** Every OTP message states the product name and "we never call to ask for this code"; support never asks for an OTP. | `SRC` — `DOC08.otp-copy` (docs/engineering/08) | P1 |
-| M01-07 | **Session lifetimes and revocation.** Web sessions are 30 days rolling. Mobile has no fixed maximum while the person remains active: seven full days without foreground authenticated use expires the session and requires sign-in again. Opening or using the signed-in app in the foreground resets that inactivity window; background refresh, push handling and scheduled work never reset it. Mobile API tokens remain short-lived (≤10 minutes) and renew silently while the underlying session is valid. Deactivating a user, or a user's own "sign out everywhere", kills every device's access within ≤10 minutes. The revocation surface is the Team screen (M01-19). | `SRC` — `DOC08.session-lifetimes`, refined by owner ruling 2026-08-25 (`Q71`) | P0 |
+| M01-07 | **Session lifetimes and revocation.** Web sessions are 30 days rolling. Mobile has no fixed maximum while the person remains active: seven full days without foreground authenticated use expires the session and requires sign-in again. Opening or using the signed-in app in the foreground resets that inactivity window; background refresh, push handling and scheduled work never reset it. Mobile API tokens remain short-lived (≤10 minutes) and renew silently while the underlying session is valid. Deactivating a user, or a user's own "sign out everywhere", kills every device's access within ≤10 minutes. The revocation surface is the Team screen (M01-19). | `SRC` — `DOC08.session-lifetimes`, refined by owner ruling 2026-08-25 | P0 |
 | M01-08 | **A phone number that is already registered never creates a duplicate company.** Signup with a known phone offers login instead — the account is one account, whatever door it walks in through. | `SRC` — `S0.wrong.1` (*retired: journey-stages ledger*) | P0 |
 | M01-09 | **A second person from the same company is steered to "request to join".** Signup detects a likely-existing workspace by company name + city and offers "request to join" (routed to that tenant's EPC Owner as an invite request) instead of silently creating a second workspace. Creating a new company remains possible — the detection is a steer, not a block. | `SRC` — `S0.wrong.5` | P1 |
 | M01-10 | **Abandoning signup midway loses nothing.** Once the OTP has verified, the person is an account; returning resumes exactly where they left off — no restart, no duplicate. | `SRC` — `S0.wrong.4` | P0 |
@@ -103,7 +103,7 @@ a minute on a phone. The phone number is normalized to the market's phone specif
 (M01-18). Google Login (M01-02) is presented as an alternative on the sign-in screen; because
 the account identity is the phone, a Google sign-in resolves to an account carrying a verified
 phone — the first Google sign-in runs the linking flow onto that same phone-identity account,
-never minting a duplicate (owner ruling 2026-08-04, Q18). OTP entry auto-reads the
+never minting a duplicate (owner ruling 2026-08-04). OTP entry auto-reads the
 code where the platform allows (`S1.screen.2`'s behaviour, shared with invite acceptance).
 Empty/error states carry F7's teaching-empty-state contract; the OTP screen's failure states
 (wrong code, expired code, locked number) each say what happened and what to do next.
@@ -117,7 +117,7 @@ tenant always retains ≥1 EPC Owner) holds from the first moment.
 - *Phone already registered* (`S0.wrong.1`) → login offered, no duplicate company (M01-08).
 - *OTP does not arrive* (`S0.wrong.2`) → visible resend, unlocking at 30 s, then the
   user-initiated "call me instead" voice OTP (M01-03), inside the M01-04 limits; no automatic
-  channel fallback fires (owner ruling 2026-08-06, Q47 — this bullet previously read "automatic
+  channel fallback fires (owner ruling 2026-08-06 — this bullet previously read "automatic
   channel fallback + visible resend + 'call me instead'").
 - *Owner abandons midway* (`S0.wrong.4`) → account exists, resume on return (M01-10).
 - *Two people from the same company sign up* (`S0.wrong.5`) → detect by company name + city,
@@ -127,12 +127,12 @@ tenant always retains ≥1 EPC Owner) holds from the first moment.
 - *SMS delivery fails* → loud failure with retry-later copy (M01-03); the front door never
   pretends to be waiting. This bullet previously read "*Both OTP channels fail*" — there is one
   delivery channel now, the automatic secondary one having been removed by owner ruling
-  2026-08-06 (Q47).
+  2026-08-06.
 - *The failure is a **confirmed hard** delivery failure* → the resend cooldown is released
   immediately, so the resend control is usable at once in that state and the user-initiated
-  "call me instead" voice OTP is offered there too (M01-03, M01-04, owner ruling 2026-08-06,
-  Q51); the M01-04 caps still bind, and a cap already reached governs the state instead, said
-  honestly. *(Bullet added by the Q51 closure pass; the edge list previously stopped at the
+  "call me instead" voice OTP is offered there too (M01-03, M01-04, owner ruling 2026-08-06);
+  the M01-04 caps still bind, and a cap already reached governs the state instead, said
+  honestly. *(Bullet added when that ruling was applied; the edge list previously stopped at the
   loud failure and said nothing about the resend control inside it.)*
 
 **Acceptance criteria.**
@@ -145,26 +145,29 @@ tenant always retains ≥1 EPC Owner) holds from the first moment.
 - Given an OTP that fails to deliver by SMS, when the failure occurs, then no automatic fallback
   to any other channel fires, login fails loudly with a plain retry-later message, and the resend
   control and the user-initiated "call me instead" voice option are the visible ways forward
-  (M01-03, owner ruling 2026-08-06 Q47). *(This criterion previously read "when 30 s elapse or
+  (M01-03, owner ruling 2026-08-06). *(This criterion previously read "when 30 s elapse or
   delivery fails, then the fallback channel fires automatically and resend + voice options are
   visible" — the ruling removes the automatic fallback it tested.)*
 - Given a sent OTP, when the resend control is under its cooldown, then it becomes available
-  again after 30 s (M01-04, owner ruling 2026-08-06 Q44). *(Line added by the Q44 closure pass:
+  again after 30 s (M01-04, owner ruling 2026-08-06). *(Line added when that ruling was applied:
   this block previously asserted no cooldown length at all, because the value was the recorded
   30 s vs 45 s divergence M01-04 carried; the ruling supplies it.)*
 - Given a confirmed hard SMS delivery failure, when the failure state renders, then the resend
   cooldown is released immediately — the resend control is available with no countdown left to
   wait out — and the user-initiated "call me instead" voice option is offered in that same
-  state (M01-03, M01-04, owner ruling 2026-08-06 Q51); given that an M01-04 cap is already
+  state (M01-03, M01-04, owner ruling 2026-08-06); given that an M01-04 cap is already
   reached at that moment, then the cap still governs and the message says so honestly (M01-04).
-  *(Line added by the Q51 closure pass: this block previously asserted nothing about the resend
-  control inside the failure state, the gap M01 §6 carried as the open 0–30 s hard-failure
-  question.)*
+  *(Line added when that ruling was applied: this block previously asserted nothing about the
+  resend control inside the failure state.)*
 - Given 5 failed verify attempts, when the fifth fails, then that OTP is invalid and the user
   is told to request a fresh one; given 3 consecutive invalidations, then the number is locked
   15 min with an explanation (M01-04).
 - Given a signup abandoned after OTP verification, when the person returns, then setup resumes
   where it stopped (M01-10).
+- Given the auth rebuild on web and mobile, when it is accepted, then the parity laws
+  `UXG-PAR-02`–`05` hold as written on both platforms — signed-out routing decided once, the
+  success-dwell timing, an explicit connectivity contract for OTP submission, and visible resend
+  feedback (owner ruling 2026-08-04).
 - Given mobile foreground authenticated use before seven full inactive days, when the app is
   used, then its inactivity window restarts and short-lived API tokens renew without showing
   login; given only background activity, the window does not restart; given seven full inactive
@@ -181,7 +184,7 @@ product name untranslated. Phone formats and the OTP-destination allowlist come 
 OTP verified / failed (reason) · signup completed · signup resumed ·
 duplicate-phone login offered · request-to-join offered/sent. *(This list previously carried an
 "OTP fallback fired" event between "OTP sent (channel)" and "OTP verified / failed (reason)";
-it is removed by owner ruling 2026-08-06 (Q47) — there is no automatic fallback left to
+it is removed by owner ruling 2026-08-06 — there is no automatic fallback left to
 instrument. "OTP sent (channel)" survives and now distinguishes the SMS send from the
 user-initiated voice OTP.)*
 
@@ -206,7 +209,7 @@ the same under-a-minute bar as signup. An invite delivers as a message to the in
 D32); the landing works on both platforms and web. Role explanation copy (M01-15) derives from
 F2's preset definitions so it can never drift from the matrix truth. The first-run landing
 (M01-17) obeys each persona's home from `02-personas.md`; where the person's presets span
-domains, the composition rule is M13's recorded decision (`M13-10`, register Q5 — decision
+domains, the composition rule is M13's recorded decision (`M13-10` — decision
 recorded) — M01 does not invent one.
 Invite expiry produces the `S1.wrong.1` path below; revocation of a pending invite is one tap
 on the Team screen. All role changes write old → new audit entries (F2-22).
@@ -263,11 +266,11 @@ removed (old → new — also audit events) · deactivation.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M01-22 | **The minimum-first law.** The product asks for the minimum to produce one real proposal and collects the rest when it is actually needed. The named trap is a requirement: the product never demands catalog, tax registration, logo, price book or team up front — "most B2B SaaS asks for everything up front… and people abandon." Goal: from "I signed up" to "my team can quote a job" without a training session. | `SRC` — `S0.rule.minimum-first` (journey Stage 0 @119–124); `TC.principle.1` (config as first-class surface) | P0 |
-| M01-23 | **"What do you sell?" seeds defaults.** One step: Residential / C&I / both, and typical system size — used to seed sensible defaults so the first proposal is close. Stored as the tenant's segment + typical-kW declarations. **The unit is `kWp`, and the declarations' later home is the company profile (owner ruling 2026-08-28, `Q74` and `Q75`).** **`kWp`, not `kW`:** the two are different quantities — `kWp` is the DC array at peak, `kW` is the inverter's AC output, and DC runs 10–30% above AC. In residential the two are used interchangeably and land close; in C&I they do not, and this row's own step asks Residential / C&I / **both**. The value seeds the studio's target capacity, which `M05-39` states in `kWp`, so a `kW` declaration would need a DC/AC ratio no row specifies. It is also the market-neutral choice, which a global product needs: `kW` means the sanctioned array in one market and the inverter rating in another, and a stored value whose meaning changes per market is exactly what `F1`'s pack model forbids — while `kWp` is what EPCs price in (per-`kWp` installed) in every market. This row previously read *typical system size* and *typical-kW declarations*; the quantity is unchanged and only the unit is named. **Where they are edited afterwards:** the company profile, `SCR-M01-05` (`M01-24`) — the tenant's one write-point that consumers read by reference and never re-ask (`M01-31`). The row previously named no surface at all, which left `SCR-M01-04`'s *change this later* line and its failed-save escape pointing at nothing. | `SRC` — `S0.screen.2`; `DOC04.tenant-onboarding-fields` (docs/04: segment, typical system kW "seeds first-quote defaults") | P0 |
+| M01-23 | **"What do you sell?" seeds defaults.** One step: Residential / C&I / both, and typical system size — used to seed sensible defaults so the first proposal is close. Stored as the tenant's segment + typical-kW declarations. **The unit is `kWp`, and the declarations' later home is the company profile (owner ruling 2026-08-28).** **`kWp`, not `kW`:** the two are different quantities — `kWp` is the DC array at peak, `kW` is the inverter's AC output, and DC runs 10–30% above AC. In residential the two are used interchangeably and land close; in C&I they do not, and this row's own step asks Residential / C&I / **both**. The value seeds the studio's target capacity, which `M05-39` states in `kWp`, so a `kW` declaration would need a DC/AC ratio no row specifies. It is also the market-neutral choice, which a global product needs: `kW` means the sanctioned array in one market and the inverter rating in another, and a stored value whose meaning changes per market is exactly what `F1`'s pack model forbids — while `kWp` is what EPCs price in (per-`kWp` installed) in every market. This row previously read *typical system size* and *typical-kW declarations*; the quantity is unchanged and only the unit is named. **Where they are edited afterwards:** the company profile, `SCR-M01-05` (`M01-24`) — the tenant's one write-point that consumers read by reference and never re-ask (`M01-31`). The row previously named no surface at all, which left `SCR-M01-04`'s *change this later* line and its failed-save escape pointing at nothing. | `SRC` — `S0.screen.2`; `DOC04.tenant-onboarding-fields` (docs/04: segment, typical system kW "seeds first-quote defaults") | P0 |
 | M01-24 | **The company profile is skippable and prompted in context.** Logo, tax registration, address, bank details are a skippable onboarding step — prompted later, **when the first proposal is about to be sent** (the moment they are actually needed). Tax registrations stay empty until that first proposal; the registration *types* that exist come from the tenant market's `pack.tax` (F1-13). | `SRC` — `S0.screen.3` (the IN-named field of the source is the IN instance of pack tax-registration data — F1); `DOC04.tenant-onboarding-fields` ("tax registrations empty until first proposal") | P0 |
 | M01-25 | **Tax-registration entry validates live, explains the format, and allows skip.** A malformed registration is explained against the market's format (from `pack.tax`), never silently rejected and never a hard wall — skip remains available until the send moment forces the prompt again. | `SRC` — `S0.wrong.3` ("Wrong [tax-ID] format → validate live, explain the format, allow skip"; format is F1 pack data) | P0 |
 | M01-26 | **"You're ready" offers two doors: create your first lead, or open the demo project.** The happy path holds: sign up → pick what you sell → skip the rest → land on an empty Leads screen that teaches → first lead created in under a minute (quick-add itself is `modules/M02-crm-and-leads.md`'s). | `SRC` — `S0.screen.5`; `S0.happy` | P0 |
-| M01-27 | **A demo project ships per market pack, ready on day one.** Every new tenant starts with a finished, realistic demo project supplied as market-pack demo content — a real rooftop of that market's kind, pre-loaded through survey, design and proposal — so new users learn by opening something finished, not an empty state, and the demo is the safe place to learn the design studio "without fear of breaking a real quote". The IN pack's demo content is the source's Pune-class residential rooftop; every other market authors its own. **Placement ruled (owner ruling 2026-08-04, Q19):** the demo project ships as **pack content** — versioned with the pack per `F1-11`, beside the eight rules keys, not a ninth key (`F1-02` carries the note). | `SRC` — `S0.rec.1` (elevated from recommendation to committed scope by `DOC14.coach-demo-seed`: "a demo Pune project seed [is] committed onboarding scope"; `DOC00.demo-rooftop` disposed by Task 3 to this module) · globalized per design spec §6; pack-content placement per owner ruling 2026-08-04 (Q19) | P0 |
+| M01-27 | **A demo project ships per market pack, ready on day one.** Every new tenant starts with a finished, realistic demo project supplied as market-pack demo content — a real rooftop of that market's kind, pre-loaded through survey, design and proposal — so new users learn by opening something finished, not an empty state, and the demo is the safe place to learn the design studio "without fear of breaking a real quote". The IN pack's demo content is the source's Pune-class residential rooftop; every other market authors its own. **Placement ruled (owner ruling 2026-08-04):** the demo project ships as **pack content** — versioned with the pack per `F1-11`, beside the eight rules keys, not a ninth key (`F1-02` carries the note). | `SRC` — `S0.rec.1` (elevated from recommendation to committed scope by `DOC14.coach-demo-seed`: "a demo Pune project seed [is] committed onboarding scope"; `DOC00.demo-rooftop` disposed by Task 3 to this module) · globalized per design spec §6; pack-content placement per owner ruling 2026-08-04 | P0 |
 | M01-28 | **Nothing is required on day one; a tenant with no config at all breaks nothing.** Every setting has a working platform default; a tenant can sign up and send a real proposal without opening settings once. Zero-config fallback is total: "everything falls back to platform defaults and nothing breaks." | `SRC` — `TC.config-ux.1`; `TC.wrong.6` | P0 |
 | M01-29 | **Configure in context, not in a settings maze.** The moment a person needs a thing that is not configured — a component they stock, a logo about to print, a bank detail about to render — the product offers to set it **there**. "Settings screens exist for revisiting, not for setup." The sharpest instance is the catalog's inline add (M01-39). | `SRC` — `TC.config-ux.2` | P0 |
 | M01-30 | **Every config screen shows the effect.** Live preview is the norm: the proposal with your logo, the agent's opening line spoken aloud (M07 surface), the payment tranches as the customer sees them. | `SRC` — `TC.config-ux.3` | P1 |
@@ -591,20 +594,20 @@ default changed.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M01-55 | **Message templates are tenant data, authored per language, for the transactional moments the product composes:** the proposal share message, the follow-up nudge, the reminder. Templates exist in all launch languages as authored content — never translation-catalog strings (F3-10). The composed message **sends from the tenant's connected transactional channel where one exists, and is copy-paste for a person to send where none is** (owner ruling 2026-08-04, Q33 — `M03-03`; on the fallback path the app claims no delivery, D32's surviving discipline). Missing-language behaviour follows the ruled fallback: show the original language with a small note (owner ruling 2026-08-04, Q10; `F3-10`). | `SRC` — `TC.message-templates.1` (journey L1251); `DOC10.templates-are-data` (the template-management-surface half — the content-class law is `F3-10`, Task 8); `DOC14.message-templates` ("Tenant message templates in 3 languages are committed scope"); send rail per owner ruling 2026-08-04 (Q33) | P0 |
+| M01-55 | **Message templates are tenant data, authored per language, for the transactional moments the product composes:** the proposal share message, the follow-up nudge, the reminder. Templates exist in all launch languages as authored content — never translation-catalog strings (F3-10). The composed message **sends from the tenant's connected transactional channel where one exists, and is copy-paste for a person to send where none is** (owner ruling 2026-08-04 — `M03-03`; on the fallback path the app claims no delivery, D32's surviving discipline). Missing-language behaviour follows the ruled fallback: show the original language with a small note (owner ruling 2026-08-04; `F3-10`). | `SRC` — `TC.message-templates.1` (journey L1251); `DOC10.templates-are-data` (the template-management-surface half — the content-class law is `F3-10`, Task 8); `DOC14.message-templates` ("Tenant message templates in 3 languages are committed scope"); send rail per owner ruling 2026-08-04 | P0 |
 
 **Behavior detail.** Each template shows its variables (customer name, proposal link, amount —
 amount rendering obeys F8's staleness and F3's money format) and a live preview per language
 (TC.config-ux.3). Templates serve the share and follow-up surfaces of `modules/M06` /
-`modules/M07`; per the owner ruling of 2026-08-04 (Q33) the composed output now sends from the
+`modules/M07`; per the owner ruling of 2026-08-04 the composed output now sends from the
 tenant's connected transactional channel where one exists, with copy-paste as the no-channel
-fallback (`M03-03`; `registers/conflicts.md` row 4 carries the resolution) — the campaign lane
+fallback (`M03-03`, whose row carries the resolution) — the campaign lane
 (`modules/M03`) remains a separate surface.
 
 Permissions: `F2.M01.manage-tenant-settings` (EPC Owner). **Edge cases:** a template referencing
 a variable the context lacks previews with the gap visible and composes with a safe omission,
 never a raw placeholder in a customer's message; the missing-language case shows the original
-language with a small note per Q10's ruled fallback (owner ruling 2026-08-04; `F3-10`). **Acceptance criteria:** Given a tenant in any launch language, when a rep invokes the
+language with a small note, the ruled fallback (owner ruling 2026-08-04; `F3-10`). **Acceptance criteria:** Given a tenant in any launch language, when a rep invokes the
 share message, then the composed text uses the tenant's template for the recipient-appropriate
 language, with every variable resolved or safely omitted (M01-55). **Localization notes:**
 the whole area is F3-10's content class. **Analytics events:** template edited (which,
@@ -632,7 +635,7 @@ Permissions: `F2.M01.configure-agent` (EPC Owner-only, per the v1 matrix carried
   **blocked by the gate** (calls outside the floor window, do-not-call-registry or opt-out
   violations); the opening-line wording stays owner-editable **within the four hard floors of
   the tiered disclosure law** — never claims human, never denies AI when asked, instant
-  handoff, full transcription (owner ruling 2026-08-04, Q6; `M07-10`, `F1-36`(d)).
+  handoff, full transcription (owner ruling 2026-08-04; `M07-10`, `F1-36`(d)).
 - *Knowledge base contradicts itself* (`TC.wrong.2`) → flagged on save (M07's validation).
 - *Agent config changed mid-campaign* (`TC.wrong.3`) → config is versioned; calls already
   queued use the version they were queued with, and the owner is told (M07/D18).
@@ -728,7 +731,7 @@ later-card viewed · credential added / rotated / probe-failed · holiday added 
 - **From F1:** pack keys and market data — `pack.tax` registration types/formats (M01-24/25),
   `pack.certification-schemes` (M01-34), `pack.formats` (phone spec, calendars, formats —
   M01-03, M01-59), `pack.calling-rules` floor (M01-56), market demo content as pack content
-  (M01-27; placement ruled 2026-08-04, Q19).
+  (M01-27; placement ruled 2026-08-04).
 - **From F2:** the twelve presets, matrix rows `F2.M01.*`, guard rails F2-19/20/21, audit law
   F2-22.
 - **From F3:** per-user language law, template content classes, money/number rendering.
@@ -747,7 +750,7 @@ later-card viewed · credential added / rotated / probe-failed · holiday added 
   **Enterprise white-label packaging**, not a withheld v1 capability — the routing is designed
   at `foundations/F5` (`F5-81`–`F5-83`) and the commercial placement is `BM-15`'s (`CG-18`);
   no tenant-facing domain-configuration surface exists in this release.
-- **No automatic OTP channel fallback (owner ruling 2026-08-06, Q47).** SMS is the delivery
+- **No automatic OTP channel fallback (owner ruling 2026-08-06).** SMS is the delivery
   channel and the system retries nothing behind the user's back; the recovery path is the
   user's own — the **resend** control unlocking at 30 s (M01-04) and the user-initiated **"call
   me instead"** voice OTP, which is retained precisely because the user asks for it. Owner's
@@ -759,9 +762,9 @@ later-card viewed · credential added / rotated / probe-failed · holiday added 
   a delivery failure is now always a loud, plain retry-later message — and where that failure is
   a **confirmed hard** one, the resend cooldown releases immediately so the user can act on the
   message at once, with the user-initiated "call me instead" voice OTP offered in the same state
-  (owner ruling 2026-08-06, Q51). That release is not a bypass of anything: **M01-04's
+  (owner ruling 2026-08-06). That release is not a bypass of anything: **M01-04's
   anti-abuse caps are unchanged and still bind**, and a cap already reached governs the state
-  instead, honestly stated. *(The Q51 clause is added by owner ruling 2026-08-06; this bullet
+  instead, honestly stated. *(The hard-failure clause is added by owner ruling 2026-08-06; this bullet
   previously ended at "a loud, plain retry-later message." and said nothing about when the user
   could act on that message.)*
 - **No billing surfaces in this module** — no plan pick, no payment step, no trial UI at
@@ -789,7 +792,7 @@ later-card viewed · credential added / rotated / probe-failed · holiday added 
 - **No send channel, and no sending surface, in this module** — the templates M01-55 defines are
   authored here and sent elsewhere. The composed message **sends from the tenant's connected
   transactional channel where one exists, and is copy-paste for a person to send where none is**
-  (owner ruling 2026-08-04, Q33 — `M03-03`); only that fallback path claims no delivery (D32's
+  (owner ruling 2026-08-04 — `M03-03`); only that fallback path claims no delivery (D32's
   surviving discipline). Connecting a channel, the campaign lane and every delivery state are
   `modules/M03`'s surface; the consuming flows are `modules/M06`'s and `modules/M07`'s. This
   module owns the template-settings surface and no part of the send. *(This bullet previously
@@ -797,116 +800,5 @@ later-card viewed · credential added / rotated / probe-failed · holiday added 
   model is compose-for-copy-paste (D32, M06's flow); the brief-era marketing channels are M03's
   surface with the conflict already recorded (Task 3)" — the retired manual-only rule stated as
   the current model, contradicting M01-55's own reconciled row in §M01.8; aligned here, as every
-  sibling module's §5 already is — see `registers/conflicts.md` row 4, which carries the
+  sibling module's §5 already is — see `M03-03`, which carries the
   resolution.)*
-
-## 6. Open questions
-
-Mirrored into `registers/open-questions.md` (rollup ids noted):
-
-- **M01-Q1 (register Q18) — RESOLVED (owner ruling 2026-08-04, Q18).** Google Login is a
-  **convenience sign-in bound to the same phone-identity account**: the phone remains the
-  identity, no duplicate accounts are ever created, and the linking flow runs at the first
-  Google sign-in (M01-02). Signup completes phone verification as part of becoming an account;
-  Google never substitutes for it.
-- **M01-Q2 (register Q19) — RESOLVED (owner ruling 2026-08-04, Q19).** Every market pack ships
-  **one demo project as pack content** (IN: the Pune-class rooftop, M01-27) — versioned with
-  the pack per `F1-11`, beside the eight rules keys rather than as a ninth key (`F1-02` notes
-  the placement). The KB seed pack rides the same pack-content family.
-- **M01-Q3 (register Q20) — RESOLVED (owner ruling 2026-08-04, Q20).** The auth-rebuild parity
-  laws (`UXG-PAR-02`–`05`) are **carried as written into the rebuild acceptance list**: (a)
-  signed-out routing decided once for both platforms; (b) the success-dwell timing; (c) the
-  explicit connectivity contract for OTP submission; (d) visible resend
-  feedback on every platform. The rebuild answers all four against that list; none is left to
-  per-platform improvisation.
-- **Register Q44 — RESOLVED (owner ruling 2026-08-06, Q44).** The OTP resend cooldown
-  is **30 seconds** — the value `S0.wrong.2` already promises the user; `DOC08.otp-limits`'
-  45 s is superseded (M01-04). Every other anti-abuse limit is unchanged. *(The clause that
-  followed — "and `M01-03`'s layered delivery path, are unchanged" — was true of Q44 and is
-  overtaken by owner ruling 2026-08-06 (Q47): that layered path no longer exists, its automatic
-  secondary-channel fallback having been removed. Q44's own scope, the cooldown's value, is
-  untouched by Q47.)* *(This bullet previously read "**In-row tension (no new question):** OTP
-  resend 30 s (`S0.wrong.2`) vs 45 s cooldown (`DOC08.otp-limits`) — recorded at M01-04 for the
-  closure pass" — the tension it described is closed, so it can no longer stand as an open
-  divergence; `registers/conflicts.md` row 9 is settled by the same ruling.)*
-- **Register Q47 — RESOLVED (owner ruling 2026-08-06, Q47).** There is **no automatic OTP
-  channel fallback**, so the timer collision this question described cannot occur: only one
-  timer remains, the 30 s resend unlock (M01-04). Owner's words: "keep only resend feature after
-  30s that button get enabled, and the system should not use any fallback mechanism." SMS is the
-  delivery channel; the user's **resend** control unlocks at 30 s and the user acts; the
-  user-initiated **"call me instead"** voice OTP is **retained** (it is the user's act, never a
-  system fallback); every M01-04 anti-abuse limit is unchanged; and a delivery failure fails
-  loudly with a plain retry-later message (M01-03). *(This bullet previously read "**New question
-  raised by the Q44 closure — OPEN, needs a register id.** With the resend cooldown ruled at
-  30 s, it now expires at the same instant as `M01-03`'s automatic channel-fallback timer
-  (“delivery failure or a 30 s timeout”). Under the superseded 45 s value the two were ordered —
-  fallback first, resend after — and the ordering was never stated because it fell out of the
-  numbers. What the user sees at t=30 s when both land together (fallback fires *and* resend
-  unlocks) is not decided by Q44 and is **not decided here**: M01-03 and M01-04 each stand as
-  written. Raised by the Q44 closure pass for the owner." — the ruling removes the fallback timer
-  that was one half of the collision, so the question has no subject left. Any annotation
-  anywhere still describing it as open is false as of 2026-08-06.)*
-- **Register Q51 — RESOLVED (owner ruling 2026-08-06, Q51).** A **confirmed hard delivery
-  failure releases the resend cooldown immediately**: the moment the SMS rail reports a hard
-  failure, the 30 s cooldown is released and the user may act at once, and the user-initiated
-  **"call me instead"** voice OTP is offered in that same state (`M01-03`, `M01-04`). The
-  rationale the owner accepted: the cooldown exists to stop resends while a message is still in
-  flight, and once the network confirms failure nothing is in flight. The release is of the
-  cooldown only — **the anti-abuse caps are unchanged and still apply** (3 requests per 15 min,
-  8 per day per phone, 5 failed verifies invalidate, 3 invalidations lock for 15 min); where a
-  cap is already reached the cap still governs and the honest message says so. The 30 s value
-  itself (Q44) is untouched for the ordinary in-flight case. *(This bullet previously read "**New
-  question raised by the Q47 closure — OPEN, needs a register id.** With the automatic fallback
-  removed, a **hard SMS delivery failure reported before t=30 s** has no stated behaviour for the
-  resend control: `M01-03` says the login fails loudly with a plain retry-later message, while
-  `M01-04` holds the resend control under its 30 s cooldown — so it is not stated whether the
-  loud-failure state releases that cooldown early (the user's only remaining recovery becoming
-  usable at once) or whether the user waits out the 30 s before the retry-later message can be
-  acted on, nor whether "call me instead" is offered immediately in that state. The removed
-  automatic fallback covered exactly this 0–30 s window, which is why the question could not
-  arise before. **Not decided here** — the ruling settled that no fallback exists, not the
-  cooldown's behaviour inside the failure state; `M01-03` and `M01-04` each stand exactly as
-  amended, and no task or brief invents an answer. Raised by the Q47 closure pass for the owner."
-  — the ruling decides exactly what that question asked. Any annotation anywhere still calling
-  it open is false as of 2026-08-06.)*
-- **New question raised by the Q51 closure — OPEN, needs a register id.** The confirmed-hard-failure
-  state now carries two things the PRD words in opposite directions: `M01-03` says that failure
-  "fails loudly with a plain **retry-later** message", while the ruling makes the retry available
-  **immediately** in that same state (resend released, voice OTP offered). What the message
-  actually says is therefore unstated — whether the loud-failure copy keeps its retry-*later*
-  framing while a live resend control sits beside it, or whether the copy names the now-available
-  act and the state's very name (`delivery-failed-retry-later`, `docs/ux/briefs/SCR-M01-01-sign-in.md`)
-  follows. **Not decided here** — Q51 settled *when the user may act*, not *what the failure
-  message says*; `M01-03`'s "retry-later" wording and the brief's state name each stand exactly as
-  written, and no task or brief invents a replacement. Raised by the Q51 closure pass for the
-  owner.
-- **Dependent surfaces outside this module, recorded not edited (Q51 application, 2026-08-06).**
-  Searched, as the ruling's application requires: **no PRD document outside M01 states behaviour
-  for the OTP resend cooldown or the delivery-failure state** — the cooldown is `M01-04`'s and
-  the failure state is `M01-03`'s, and `F1-43`/`F1-18`(c) (OTP delivery as one vendor-neutral
-  rail capability) and `foundations/F5-customer-link.md`'s `F5-44` (OTP-at-accept) consume the
-  delivery capability without referencing a cooldown. What **does** still carry pre-ruling text,
-  in files this module does not own: `registers/open-questions.md`'s `Q51` row (still typed
-  **Open**, "awaiting an owner ruling") and that register's narrative describing `Q51` as
-  unresolved. `registers/conflicts.md` row 9 and `registers/screens.md`'s `M01-04` row are
-  untouched by this ruling — row 9 is the 30 s/45 s divergence Q44 closed, and the screens row's
-  non-UI note names the caps and the cooldown without stating failure-state behaviour. Each is
-  its own owner's act; recorded here, not performed.
-- **Dependent surfaces outside this module, recorded not edited (Q47 application, 2026-08-06).**
-  Searched, as the ruling's application requires: **no PRD document depends on the OTP rail
-  providing a secondary/fallback channel.** `F1-43` declares OTP delivery as one vendor-neutral
-  capability with a v1 reference implementation and requires no second channel; `F1-18`(c) lists
-  OTP delivery among a pack's reference rail adapters with no fallback clause; and
-  `foundations/F5-customer-link.md`'s `F5-44` (OTP-at-accept, default OFF per Q42) consumes that
-  same single delivery capability — nothing there is weakened by Q47. What **does** still carry
-  pre-ruling text, in files this module does not own: `registers/open-questions.md` `Q47` (still
-  typed **Open**); `registers/conflicts.md` row 9 (still states "as is `M01-03`'s layered
-  delivery path (SMS → fallback channel → voice OTP)" and points at `Q47` as an open new
-  question); `registers/screens.md`'s `M01-03` row (non-UI note still reads "layered OTP delivery
-  rail: SMS primary, auto fallback channel on failu…"); and the retired traceability register's
-  `DOC07.otp-delivery` row (typed `live` → `M01-03`, whose automatic-fallback half is now
-  superseded). *retired: docs-rules ledger*'s `DOC07.otp-delivery` row is extracted source
-  and is rewritten by nobody. Each is its own owner's act; recorded here, not performed.
-- **Resolved elsewhere (no new question):** the AI-disclosure question
-  (register **Q6**) was resolved 2026-08-04 by the tiered disclosure law (`F1-36`(d), `M07-10`)
-  — M01-56's edge case now defers to the resolved law.

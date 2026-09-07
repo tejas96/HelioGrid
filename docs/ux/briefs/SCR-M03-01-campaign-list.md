@@ -17,7 +17,7 @@ the PRD's own worked example is a rep who is also a surveyor landing on My Day *
 visits shown inside it**. The person can still switch: the shell's switcher (`SCR-SHELL-01`) lists
 the home of every preset they hold. Design the block seams: this screen must be able to host one
 or more foreign today-blocks without the layout breaking or the screen's own purpose being buried.
-The ladder itself is a product constant, not tenant configuration (`M13-10`, register `Q5`).
+The ladder itself is a product constant, not tenant configuration (`M13-10`).
 
 ## Requirements (verbatim)
 
@@ -59,4 +59,4 @@ Each of these renders with its F8 provenance tier in the design:
 
 ---
 
-*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause claiming no offline capability (register `Q15`). Both are deleted. `channel-stopped-flagged` refers to a marketing channel's connection, not the device's, and is untouched.*
+*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause claiming no offline capability. Both are deleted. `channel-stopped-flagged` refers to a marketing channel's connection, not the device's, and is untouched.*

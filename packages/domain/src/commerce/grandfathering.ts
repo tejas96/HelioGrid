@@ -16,7 +16,7 @@ import type { TierCapacity, TierLimit } from './tiers';
  */
 
 /**
- * `BM-42`, owner ruling `Q43` — whether reaching this state ends the tenant's launch-price
+ * `BM-42` — whether reaching this state ends the tenant's launch-price
  * guarantee. A lapse forfeits: reactivation prices at the CURRENT list book, whether it happens
  * inside the original horizon or after it.
  *
@@ -29,7 +29,7 @@ import type { TierCapacity, TierLimit } from './tiers';
  * An exhaustive `Record`, so a seventh billing state must be given an answer before this compiles
  * rather than defaulting to a protection nobody granted.
  *
- * The owner ruled this AGAINST the standing recommendation, deliberately (`Q43`). Cancellation,
+ * The owner ruled this AGAINST the standing recommendation, deliberately. Cancellation,
  * dunning and win-back copy must say so plainly BEFORE the lapse — that copy is `M12-57`'s.
  */
 const LAPSES: Record<BillingState, boolean> = {

@@ -108,7 +108,7 @@
   border: none;
   outline: none;
   border-radius: var(--r-input-functional);
-  /* A control is --surface at --e2 (Q77) — this is a text field, and it was the one left on the
+  /* A control is --surface at --e2 — this is a text field, and it was the one left on the
      dim ground the ruling was raised to end. */
   background: var(--surface);
   box-shadow: var(--e2);

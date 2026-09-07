@@ -1,6 +1,6 @@
 # MS11 · Studio Step 10 (Done) · sign-off · variants · the installation work order
 
-Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 10 rulings, 2026-08-05) · Depends on: MS6 (design), MS7 (review), MS8 (electrical gate), MS10 (BOM), MS9 (customer surfaces), F8-25 (sign-off law), F2 (Design Engineer approval capability), M08 (R16 installation attribution), Q28
+Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 10 rulings, 2026-08-05) · Depends on: MS6 (design), MS7 (review), MS8 (electrical gate), MS10 (BOM), MS9 (customer surfaces), F8-25 (sign-off law), F2 (Design Engineer approval capability), M08 (R16 installation attribution), M05-12 (no gates in the studio)
 Sources: POC code inventory — done (**132 keys**) + installation (**64 keys**) = 196 · sitting rulings (S10-1…S10-3) · census A.10-11. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS9 (issuance gating), F5 (customer link), M08 (project-side installation checklist).
 
@@ -22,7 +22,7 @@ Design Engineer (finish, duplicate) · Design Engineer with approval capability 
 | MS11-02 | Marking a design ready has a READINESS PRECONDITION — the same review Step 7 shows — and every writer of that state applies it consistently (S10-1/S8-2a fix `.3/.6/.7`) (`.4/.5`). | `SRC-CODE` + `BRIEF` S10-1 | P0 |
 | MS11-03 | The readiness review is SURFACED on Step 10, not only Step 7 (S10-1 fixes `.59`). | `BRIEF` S10-1 | P0 |
 | MS11-04 | Five actions: view proposal · BOM · installation plan · copy share link · done — with copy CONFIRMING success and surfacing failure (S10-3.1 fixes `.21/.22`) (`.17–.20/.23`). | `SRC-CODE` + `BRIEF` S10-3.1 | P0 |
-| MS11-05 | Share actions offer the customer-facing proposal link per Q27 — not only the 3D-only link (`.25/.26` recorded divergence resolved by MS9-14). | `SRC-CODE` + `BRIEF` S8-2c | P0 |
+| MS11-05 | Share actions offer the customer-facing proposal link (`F5-33`) — not only the 3D-only link (`.25/.26` recorded divergence resolved by MS9-14). | `SRC-CODE` + `BRIEF` S8-2c | P0 |
 | MS11-06 | One clear finish control (no duplicate "Done"), with help copy stating what this step does (`.24/.129`). | `SRC-CODE` | P1 |
 
 ### MS11.2 — Pre-proposal review (the shared readiness contract)
@@ -84,7 +84,7 @@ Design Engineer (finish, duplicate) · Design Engineer with approval capability 
 
 ## 4. Cross-module contracts
 
-Consumes: MS6–MS10 (design, review, gate, BOM), F2 (approval capability), F8-25 (sign-off law), M08 (installation checklist + R16 attribution), Q28. Provides: the readiness contract to MS9's issuance gate; sign-off state to the customer surfaces and the installation sheet; the fingerprint system to every staleness surface in the studio; variant lineage to MS6's compare.
+Consumes: MS6–MS10 (design, review, gate, BOM), F2 (approval capability), F8-25 (sign-off law), M08 (installation checklist + R16 attribution), M05-12 (entitlement placement). Provides: the readiness contract to MS9's issuance gate; sign-off state to the customer surfaces and the installation sheet; the fingerprint system to every staleness surface in the studio; variant lineage to MS6's compare.
 
 ## 5. Non-goals
 

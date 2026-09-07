@@ -68,7 +68,7 @@ homeowner. Different money, different module — don't merge them in your head.
 
 Two things about this order are deliberate and worth knowing, so you don't "correct" them:
 
-- **It is not the register's section order.** The register lists documents; this lists the build.
+- **It is not the screens register's section order.** That register lists documents; this lists the build.
   The studio sits sixth even though it is the primary product, because it already exists as
   63,527 frontend-only lines in `Solar-App-POC` against an app whose backend is currently a
   health check. The earlier blocks settle the API, schema and data conventions the port has to
@@ -76,7 +76,7 @@ Two things about this order are deliberate and worth knowing, so you don't "corr
 - **Blocks 1–6 are a shippable product on their own**: lead → won → project → payment. The studio
   lands on top of a system that already works.
 
-Within a block, work top to bottom down the register and **skip every row whose `V` column says
+Within a block, work top to bottom down the screens register and **skip every row whose `V` column says
 `V2`**. Following this order never makes you design a screen whose target doesn't exist yet.
 
 The 20 `M01` screens in block 1 are: Sign In · Company Signup · **Onboarding — Language** ·
@@ -95,7 +95,7 @@ The six in **bold** were added on 2026-08-16 as the lock widened.
 
 ---
 
-## You never choose a brief — the register tells you
+## You never choose a brief — the screens register tells you
 
 Every screen has exactly **one** brief, and its filename is a column in the screen's own row in
 `docs/prd/registers/screens.md` §2. So "picking the brief" isn't a decision; it's a lookup.
@@ -120,7 +120,7 @@ python3 scripts/next-screen.py
 ```
 
 It prints the screen, the two files to paste, and the two `file:line` locations to edit
-afterwards. Run it — do not read the register top to bottom instead.
+afterwards. Run it — do not read the screens register top to bottom instead.
 
 **The register is not in build order.** §2 groups screens by module for auditing; the eight
 blocks above are the order you draw them in, and the two disagree from the very first screen.
@@ -178,7 +178,7 @@ Make sure the right design system is selected — and read this twice, because t
 **Message 1 — all three of these, in this order, in the composer box:**
 
 1. the whole contents of `docs/ux/claude-design-context.md`, unchanged
-2. the whole contents of the brief named by the register — for screen one,
+2. the whole contents of the brief named by the screens register — for screen one,
    `docs/ux/briefs/SCR-SHELL-01-app-shell.md`
 3. this line at the bottom:
 
@@ -277,7 +277,7 @@ AFTER   DESIGN: SCR-SHELL-01 → <link>
 ```
 
 To find these two lines for any screen, search the repo for the `SCR-` id. It appears in exactly
-one register row and one `**DESIGN:**` line.
+one row of the screens register and one `**DESIGN:**` line.
 
 ### Edit 3 — only if the brief said "designer decides"
 
@@ -291,7 +291,7 @@ An unrecorded decision is how two screens end up disagreeing about the same flow
 
 ## How you know you're finished
 
-Count the V1 rows in the register that still say `pending`:
+Count the V1 rows in the screens register that still say `pending`:
 
 ```bash
 grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
@@ -305,11 +305,11 @@ The `^| SCR-` anchor matters: without it the command also counts every non-V1 pe
 99, not under.
 
 The other 51 rows stay `pending` on purpose — they are V2. A plain `grep -c '| pending |'`
-returns **151** — the 150 screen rows plus the register's own documentation of this command —
+returns **151** — the 150 screen rows plus the screens register's own documentation of this command —
 and it never reaches zero during V1. Don't use it as your progress bar.
 
 There is no equivalent count on the task side, because `docs/tasks/` has no `V` column — the scope
-lock lives in the register only. If you want the task-side view of *everything*, designed or not:
+lock lives in the screens register only. If you want the task-side view of *everything*, designed or not:
 
 ```bash
 grep -rhoE 'DESIGN:?\*{0,2} *SCR-[A-Z0-9]+-[0-9]+ *→ *PENDING' docs/tasks/ --include='*.md' --exclude=README.md | wc -l

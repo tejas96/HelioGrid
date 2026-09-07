@@ -4,7 +4,7 @@
  * terms, and it never holds the fact as a module-level constant (`F1-01`).
  *
  * The set is CLOSED. §F1.2 partitions the market surface across exactly these eight with no
- * ninth key; demo content (owner ruling `Q19`) is pack CONTENT, not a key, and arrives with
+ * ninth key; demo content is pack CONTENT, not a key, and arrives with
  * `M01-27`. PRD order, so a reader checks this list against §F1.2 top to bottom.
  *
  * Spelled as the pack's property names: the PRD writes `pack.calling-rules`, this package

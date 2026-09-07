@@ -34,7 +34,7 @@ const PRO_YEARLY = minorUnits(9_999_900);
 const ENTERPRISE_ANCHOR = minorUnits(2_499_900);
 
 /**
- * `BM-17`, `BM-26`, `Q1` — where every worst-case unit cost in this book came from, and why not
+ * `BM-17`, `BM-26` — where every worst-case unit cost in this book came from, and why not
  * one of them is verified.
  *
  * The owner ruled `BM-17`'s floor read BACKWARDS: a published rate already implies the highest
@@ -45,7 +45,7 @@ const ENTERPRISE_ANCHOR = minorUnits(2_499_900);
  * The consequence is stated rather than hidden: four of the six rows clear the floor by nothing
  * at all, so a real cost even a paisa above its ceiling makes that row invalid. That is the
  * ruling's own shape, not a defect — `metersBelowCogsFloor` is what will say so, and the rate
- * cards are `Q1`'s revisit trigger.
+ * cards are what revisit every figure here.
  */
 function rateImpliedCeiling(amount: MinorUnits): WorstCaseCogs {
   return { amount, source: RATE_IMPLIED_CEILING };
@@ -60,7 +60,7 @@ const STARTER: TierBookRow = {
     designCeilingKw: 50,
     creationsPerCycle: { proposals: 30, active_projects: 10 },
     /* `BM-41` — no voice bundle on Starter: minutes are pay-as-you-go, which is a bundle of 0
-       and an overage rate, not a missing row. Tracked seats likewise start at 0 (`Q17`). */
+       and an overage rate, not a missing row. Tracked seats likewise start at 0. */
     meterBundles: {
       voice_minutes: 0,
       ai_roof_detections: 30,
@@ -186,7 +186,7 @@ export const IN_PRICE_BOOK: PriceBookPack = {
     },
     storage: { kind: 'ceiling' },
     /*
-     * `BM-41`, `Q1` — the owner's DRAFT per-channel rates. They stay draft, and the meter stays
+     * `BM-41` — the owner's DRAFT per-channel rates. They stay draft, and the meter stays
      * unsellable, until the channel rate cards verify against worst-case unit COGS (`BM-17`,
      * `BM-26`). WhatsApp bills the upstream's conversation, not the message (`BM-21`).
      */
@@ -214,7 +214,7 @@ export const IN_PRICE_BOOK: PriceBookPack = {
         },
       ],
     },
-    /* `BM-41`, `Q17` — DRAFT ≈₹99 per tracked seat per month beyond the tier's allowance. */
+    /* `BM-41` — DRAFT ≈₹99 per tracked seat per month beyond the tier's allowance. */
     tracked_field_seats: {
       kind: 'per_unit',
       rate: minorUnits(9_900),

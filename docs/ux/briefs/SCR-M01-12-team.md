@@ -74,9 +74,9 @@ The PRD pins no team-size number; design for the small-firm reality the stacking
 
 Every rendered number carries its F8 provenance tier in the design.
 
-**Corrected 2026-08-31 against `Q59`, which outranks a brief (`CLAUDE.md` §7).** Only ONE value here
+**Corrected 2026-08-31 against the owner's recorded-date ruling, which outranks a brief (`CLAUDE.md` §7).** Only ONE value here
 is tiered: **the pending invite's expiry**, computed from sent-on plus a seven-day window, so it
-renders `derived` with the derivation named beside it. **Last-active carries NO tier** — `Q59` rules
+renders `derived` with the derivation named beside it. **Last-active carries NO tier** — the owner ruled
 that a *recorded* date is a record fact showing when it was recorded, and `F8-02`'s four values all
 describe how a QUANTITY was arrived at, none of which describes a timestamp the system wrote down.
 This brief previously listed last-active as tiered and was wrong. No money or business quantity

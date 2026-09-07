@@ -19,7 +19,7 @@ the PRD's own worked example is a rep who is also a surveyor landing on My Day *
 visits shown inside it**. The person can still switch: the shell's switcher (`SCR-SHELL-01`) lists
 the home of every preset they hold. Design the block seams: this screen must be able to host one
 or more foreign today-blocks without the layout breaking or the screen's own purpose being buried.
-The ladder itself is a product constant, not tenant configuration (`M13-10`, register `Q5`).
+The ladder itself is a product constant, not tenant configuration (`M13-10`).
 
 ## Requirements (verbatim)
 

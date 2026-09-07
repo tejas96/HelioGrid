@@ -1,5 +1,5 @@
 /* PhoneField — the dial code is a fixed prefix beside the digits, never characters inside them.
-   The shell is a control, so it is RAISED: --surface at --e2, no line anywhere (Q77). */
+   The shell is a control, so it is RAISED: --surface at --e2, no line anywhere. */
 
 .hg-phone-field {
   display: flex;
@@ -23,7 +23,7 @@
   padding: 0 var(--sp-4);
   background: var(--surface);
   border-radius: var(--r-input-expressive);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }

@@ -125,7 +125,7 @@
   border: none;
   border-radius: var(--r-pill);
   background: var(--surface);
-  /* Try again is a CONTROL, so it stays --surface and is RAISED on the overlay that holds it (Q77). */
+  /* Try again is a CONTROL, so it stays --surface and is RAISED on the overlay that holds it. */
   box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body);

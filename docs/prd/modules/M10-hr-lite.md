@@ -240,7 +240,7 @@ reassigned vs left-unassigned (counts).
 | M10-26 | **Attendance exceptions surface in people-today:** yesterday's unmarked days, days with a start and no end (M09's open check-in / missing day-end state), and corrections awaiting review — each resolvable by looking at the person's own timeline (the persona's stated behaviour), never auto-resolved. Corrections ride M09's correction-by-append (`M09-38`); the register never edits a captured fact. | `BRIEF` — `PS-30` ("today's attendance exceptions"); `02-personas.md` §HR/Admin (checks exceptions "against the technicians' own timelines"); `M09-38` consumed | P1 |
 | M10-27 | **Leave is a request-and-decision record, SME-weight.** Any employee requests their own leave (dates, a type, an optional note); HR/Admin or the EPC Owner decides; the decision lands on the register and the person is notified. Leave **types are tenant-configured labels** (market-neutral — no statutory leave taxonomy is built in; a market's statutory leave rules, if ever encoded, are `pack.data-rights`-family pack data). **No accrual arithmetic exists in v1**: no balances, no carry-forward, no quota enforcement — the register records what was taken; policy lives with the tenant (stated as scope, not gap — SME-weight, §M10.1). | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §HR; `PS-30` ("leave awaiting a decision") | P0 |
 | M10-28 | **The tenant holiday calendar renders on the register.** Tenant-declared holidays appear as holidays (tenant configuration, `F2.M01.manage-tenant-settings`); they imply nothing about any person's day beyond the label. This calendar is distinct from the calling-window holiday calendar the voice compliance gate uses (`F1-48`, M07's consumption) — the two are separate data with separate consequences, and this module touches only its own. | `BRIEF` — SME register need; distinctness note against `F1-50` (cited, not consumed) | P2 |
-| M10-29 | **No shift patterns in v1, and the work-hours window stays M09's — CONFIRMED (owner ruling 2026-08-04, Q39).** This module carries **no per-employee shift pattern**: the ruled window is the worker's day-start → day-end marks with M09's tenant force-stop backstop (default 20:00, owner-set; `M09-44`), employee-visible. The ownership question is closed: the definition stays in M09, exactly as this module's input anticipated; a future shifts feature remains the justified-in-writing enterprise addition M10-01 contemplates. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §HR (avoid enterprise complexity); register `Q39` resolved per owner ruling 2026-08-04 (window concretized in `M09-44`) | P1 |
+| M10-29 | **No shift patterns in v1, and the work-hours window stays M09's — CONFIRMED (owner ruling 2026-08-04).** This module carries **no per-employee shift pattern**: the ruled window is the worker's day-start → day-end marks with M09's tenant force-stop backstop (default 20:00, owner-set; `M09-44`), employee-visible. The ownership question is closed: the definition stays in M09, exactly as this module's input anticipated; a future shifts feature remains the justified-in-writing enterprise addition M10-01 contemplates. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §HR (avoid enterprise complexity); window concretized in `M09-44` per owner ruling 2026-08-04 | P1 |
 | M10-30 | **HR/Admin sees attendance and nothing else of the field.** The register reaches HR/Admin through `F2.M09.attendance-visibility` (All — the attendance slice only); no route, position, geofence event or movement fact is reachable from any register surface, for any preset, ever. `M09-41` states the law; this module's surfaces are built under it. | `BRIEF` — `M09-41` consumed; `F2.M09.attendance-visibility` (Task 22 §F2.5-M09) | P0 |
 
 **Behavior detail.** The register reads M09's published facts — day start/end per person per
@@ -402,7 +402,7 @@ attention shown / resolved.
 ## 5. Non-goals
 
 Each exclusion is a product decision under the brief's own law (M10-01); none is arguable
-enough to carry as a `REC`, so none appears in `registers/enhancements.md`.
+enough to carry as a `REC`, so none is recorded as a REC.
 
 - **No payroll, and no compensation data at all.** No salary field, no payslip, no
   reimbursement, no statutory filing. Payroll is a regulated, market-specific domain whose
@@ -416,7 +416,7 @@ enough to carry as a `REC`, so none appears in `registers/enhancements.md`.
 - **No shift patterns, rostering or scheduling engine.** `modules/M08` §5 already excludes
   crew rostering (`S8.rule.v1-boundary`); this module adds no per-employee shift patterns
   (M10-29) and no scheduling of anyone. The window-ownership half is closed — the owner
-  confirmed the M09 definition (register `Q39`, ruled 2026-08-04).
+  confirmed the M09 definition (owner ruling 2026-08-04).
 - **No org chart beyond the flat manager mapping.** Departments, matrices and hierarchy
   trees are enterprise structure an SME does not maintain (M10-31).
 - **No leave accrual arithmetic** — balances, carry-forward, quota enforcement (M10-27's
@@ -425,11 +425,3 @@ enough to carry as a `REC`, so none appears in `registers/enhancements.md`.
   capture, from the person's own device, under M09's privacy laws.
 - **No training/LMS, onboarding-workflow builder, e-signature or document workflow**
   (M10-38).
-
-## 6. Open questions
-
-Raised or carried by this document, mirrored into `registers/open-questions.md`.
-
-| # | Question | Decision owner |
-|---|---|---|
-| M10-Q1 | **RESOLVED (owner ruling 2026-08-04, Q39).** The owner confirmed this module's input: v1 ships no per-employee shift patterns (M10-29), and the tracking window is concretized in `M09-44` — the worker's day-start → day-end marks with the tenant force-stop backstop (default 20:00, owner-set). Nothing in M10 moves; a future shifts feature stays the written-justification enterprise addition M10-01 contemplates. | Decision recorded 2026-08-04 (register `Q39`) |

@@ -170,7 +170,7 @@ export const STATE_CAPABILITY_MATRIX: Readonly<
     cancelled_post_period: PAUSED,
   },
   /* `BM-36` — a photograph already captured on a field device. The block is on new mutations
-     from the UI, never on what the device is already holding (`F4-21`, ruling `Q16`). */
+     from the UI, never on what the device is already holding (`F4-21`). */
   pending_field_photo_upload: {
     trialing: AVAILABLE,
     active: AVAILABLE,

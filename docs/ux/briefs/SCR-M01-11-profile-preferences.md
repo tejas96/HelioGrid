@@ -57,9 +57,9 @@ Screen-specific:
 7. **Sign-out and the name field are not here.** The shell fixes sign-out to More; name and photo are
    edited on `SCR-M01-09` where they were first set. Two homes for one field is how they drift.
 
-**Owed to the register, not to the board.** The **five push type-groups are drawn, not specified** —
+**Owed to F6's notification catalogue, not to the board.** The **five push type-groups are drawn, not specified** —
 neither this brief nor `F6-15` names them, and a per-group control cannot be specified without the
-groups. Replace them from the notifications register rather than transcribing them from the frame.
+groups. Replace them from F6's notification catalogue rather than transcribing them from the frame.
 
 ## Data volume
 

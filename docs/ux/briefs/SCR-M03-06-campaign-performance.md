@@ -52,4 +52,4 @@ Each of these renders with its F8 provenance tier in the design:
 
 ---
 
-*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause claiming no offline capability (register `Q15`). Both are deleted. The per-recipient `queued` send state is the channel's own reporting, not a sync queue, and is untouched.*
+*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause claiming no offline capability. Both are deleted. The per-recipient `queued` send state is the channel's own reporting, not a sync queue, and is untouched.*

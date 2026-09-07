@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { holidaysInForce, isHoliday } from '../../src/format/holidays';
 import { IN_FORMATS } from '../../src/format/pack';
 
-describe('the market holiday calendar (F1-48, Q88)', () => {
+describe('the market holiday calendar (F1-48)', () => {
   it('is authored EMPTY for India — we supply no holiday of our own', () => {
     expect(IN_FORMATS.holidayCalendar).toEqual([]);
   });

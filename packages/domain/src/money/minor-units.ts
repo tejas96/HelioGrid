@@ -28,7 +28,7 @@ export function sumMinorUnits(amounts: readonly MinorUnits[]): MinorUnits {
 
 /**
  * What a quantity costs at a per-unit amount, rounded ONCE to the minor unit, half away from
- * zero — `applyRate`'s law (`Q83`) for the case a rate cannot express, because a quantity is not
+ * zero — `applyRate`'s law for the case a rate cannot express, because a quantity is not
  * a fraction of anything and runs past 100%. A subsidy ladder's `₹30,000 per kW × 2.5 kWp` is
  * this and not a rate.
  *

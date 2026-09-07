@@ -4,7 +4,7 @@ import { z } from 'zod';
 /**
  * UI language identity — the wire and validation half of the set.
  *
- * **The set itself is authored in `packages/domain`** (`format/languages.ts`, `Q87`): a pack
+ * **The set itself is authored in `packages/domain`** (`format/languages.ts`): a pack
  * declares its display labels per language (`F1-22`), domain owns the pack, and domain imports
  * nothing in the workspace — so the tuple has to sit below this package and this one derives from
  * it, exactly as it does for `ROLE_PRESETS`. Re-exported here so `packages/i18n`, the apps and the

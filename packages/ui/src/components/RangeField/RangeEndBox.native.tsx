@@ -26,11 +26,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-input-functional'],
     backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   boxDisabled: { backgroundColor: theme.colors['canvas-sunken'] },
-  // Focus ADDS a ring; it does not un-raise the control (rest is e2 — Q77).
+  // Focus ADDS a ring; it does not un-raise the control (rest stays e2).
   boxFocus: { borderWidth: 2, borderColor: theme.colors.accent },
   input: {
     flex: 1,

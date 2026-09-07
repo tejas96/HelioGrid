@@ -67,7 +67,7 @@ export function BottomNav({
             className="hg-bottom-nav-plate"
           >
             <path
-              d={`M0 ${rise}Q50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`}
+              d={`M0 ${rise}Q 50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`}
               fill="var(--surface)"
             />
           </svg>

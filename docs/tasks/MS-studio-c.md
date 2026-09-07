@@ -363,7 +363,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - `CODE.shell.55/.51/.102/.83` — dead forgot-password; misleading delete copy; legacy dead route + export (ruling S11-2 → MS12-17/14/27; this task owns the `.55` half — the dead "Forgot password?" control, per MS12-17).
 - `CODE.shell.52-.56/.37/.65-.83/.20` — mock auth, placeholder languages, browser-only storage, no lead scoping (ruling S11-3 → MS12-17/18/20/10; this task owns the `.52–.56` and `.37` halves — mock auth and the placeholder language list, per MS12-17/18).
 **Requirements (verbatim):**
-- **MS12-17** (P0) — Sign-in is the PLATFORM's: mobile OTP and Google (Q18), establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`).
+- **MS12-17** (P0) — Sign-in is the PLATFORM's: mobile OTP and Google, establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`).
 - **MS12-18** (P0) — Languages are the platform's real catalogs — EN/HI/MR at launch (F3) — not a placeholder list (S11-3c fixes `.37`); the user's language and unit preferences persist per user (`.18/.72`).
 - **MS12-19** (P0) — Sign-out clears session state without destroying work (`.36`); brand and tenant identity appear in the top bar (`.35`, M01 branding).
 **DONE WHEN:**

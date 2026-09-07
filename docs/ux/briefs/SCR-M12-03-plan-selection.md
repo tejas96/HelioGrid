@@ -25,7 +25,7 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 ## States
 
 - **loading** — book values / usage-derived preview not yet computed.
-- **empty** — no state where plan choices are absent (plan selection is available in every billing state, M12-55); if a market book has no sellable value for a slot it cannot be sold (Q1 context) — behavior beyond that is not pinned by PRD — designer decides, note the decision.
+- **empty** — no state where plan choices are absent (plan selection is available in every billing state, M12-55); if a market book has no sellable value for a slot it cannot be sold (M12 §M12.5 edge case; `BM-41`'s slots) — behavior beyond that is not pinned by PRD — designer decides, note the decision.
 - **error** — preview computation or book load failed; honest failure, no confirm without a preview (the preview is the consent surface, M12-49).
 - **trial-expiry-entry** — arrived from expiry: the plan-pick moment; read + export still work behind it; expiry must convert, never destroy (M12-53).
 - **post-lapse-reprice-at-current-book** — arrived after a lapse, the guaranteed way back from `halted`/`expired`/`cancelled` (M12-55): for a tenant who was inside a protection horizon, the lapse has ended the price protection, so the prices on this screen are the **current list book's rows**, never the signed-up rows (M12-57 mechanics; the forfeiture disclosure their dunning copy already carried from day 0, M12-39 — SCR-SHELL-06). The screen names the current book's price as the price; nothing here implies the old price survives the lapse, and no win-back framing on this surface may suggest otherwise (M12-41 context). For an unprotected tenant this is the ordinary plan pick and no repricing statement applies.

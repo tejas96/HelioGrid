@@ -29,7 +29,7 @@ Reached from: step 1 of the studio wizard (SCR-MS-03) — the first step a new d
 - **MS1-05** (P0) — Tariff field is auto-filled but always editable; provenance hint states the source and "representative rate; edit to match your actual bill" (`CODE.step1-setup.15/16`, F8 honesty). Manual edits always override auto-fill.
 - **MS1-06** (P0) — Avg Monthly Bill (currency via pack) optional input, nullable-not-zero, feeds the Step-4 size suggestion; hint explains the use (`CODE.step1-setup.17`).
 - **MS1-08** (P1) — First-run interactive walkthrough replaces the POC's decorative tutorial banner: coach marks over the live screen (search → confirm → next), shown once, dismissable forever, reachable from Help. No dead controls anywhere on the step.
-- **MS1-09** (P0) — Ground Mount is a normal, working option on EVERY plan — toggle functional, no PRO badge, no lock, no tier copy. The only capacity limit anywhere is the plan's design-kW ceiling at Save/Generate (Q28 law). _(non-UI half, build-side: Q28 law: only capacity limit is plan design-kW ceiling at Save/Generate — no tier gating anywhere — for awareness, not for drawing)_
+- **MS1-09** (P0) — Ground Mount is a normal, working option on EVERY plan — toggle functional, no PRO badge, no lock, no tier copy. The only capacity limit anywhere is the plan's design-kW ceiling at Save/Generate (M05-12's law). _(non-UI half, build-side: the design-kW ceiling law: only capacity limit is plan design-kW ceiling at Save/Generate — no tier gating anywhere — for awareness, not for drawing)_
 - **MS1-10** (P0) — Site Type segmented control (Residential/Commercial) re-derives tariff on switch; Connection Type (Single/Three Phase); Sanctioned Load (kW, min 0, blank↔0 display rule) (`CODE.step1-setup.12–.14`).
 - **MS1-11** (P0) — The proposal logo comes AUTOMATICALLY from tenant branding (M01); Step 1 shows it read-only with "change for this project" as an optional override for co-branded work. No per-project upload prompt in the default flow.
 - **MS1-12** (P0) — The override upload enforces the stated limits for real: 5 MB max and PNG/JPG validated on selection, clear error on violation; preview at the shipped constraints (max 70×200 px) (`CODE.step1-setup.19–.21`).
@@ -70,7 +70,7 @@ Screen-specific:
 - **tile-fetch-failed-blank-canvas** — tile failure still opens the studio: blank canvas plus manual calibration; never blocks (M05-16).
 - **site-intel-loading / site-intel-unavailable / site-intel-unreachable / site-intel-ok** — the four honest Site Intelligence states; unavailable/unreachable in plain language ("manual design mode"); ok shows provider badge, imagery-quality badge, stats grid, honest footer (M05-18, MS1-23).
 - **sanctioned-load-warning** — the re-edit case only: lowering the sanctioned load below what the design's inverters already deliver (AC kW × count) warns with the actual limit in kW ("this is a real approval blocker", "verify with the DISCOM") and never blocks; the design-time warning renders on SCR-MS-07 and SCR-MS-08 (M05-20).
-- **coming-soon-option** — carried from the Screens Register slice; not pinned to a PRD row in this brief (note: no tier gating or lock copy may exist on any option per MS1-09's Q28 law) — designer confirms the anchor and notes the decision.
+- **coming-soon-option** — carried from the Screens Register slice; not pinned to a PRD row in this brief (note: no tier gating or lock copy may exist on any option — MS1-09's no-tier-gate law) — designer confirms the anchor and notes the decision.
 
 ## Data volume
 

@@ -1,8 +1,8 @@
 # MS6 · Studio Step 6 — Editor (panel layout · 3D scene · structures)
 
-Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 5 rulings, 2026-08-05) · Depends on: MS1 (canvas/worker contract), MS2 (roofs, segment-engine laws, face groups), MS3 (obstructions/bridging), MS4 (module, target, inverter, profiles catalog), F1/F4/F7/F8, Q28
+Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 5 rulings, 2026-08-05) · Depends on: MS1 (canvas/worker contract), MS2 (roofs, segment-engine laws, face groups), MS3 (obstructions/bridging), MS4 (module, target, inverter, profiles catalog), F1/F4/F7/F8, M05-12 (no gates in the studio)
 Sources: POC code inventory — layout (93), scene3d (50), structures (72) = **215 keys**; all area tests pass · sitting rulings (S5-1…S5-5.8) · census A.10-6 (66) + A.10-7 (43). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
-Forward: MS8 (electrical/SLD consumes strings, routes, inverter placements) · MS10 (BOM consumes structure/fasteners/foundations + panel counts) · MS7 (captures, review) · customer share surface (F5/Q27).
+Forward: MS8 (electrical/SLD consumes strings, routes, inverter placements) · MS10 (BOM consumes structure/fasteners/foundations + panel counts) · MS7 (captures, review) · customer share surface (`F5-33`).
 
 ## 1. Purpose & scope
 
@@ -66,7 +66,7 @@ Design Engineer (author) · Design Engineer with sign-off capability (review) ·
 | MS6-26 | String-connections sheet: read-only card per string with colour, inverter/MPPT, counts (`layout.33`). | `SRC-CODE` | P1 |
 | MS6-27 | Live validation banner aggregates layout, structure, route and system issues; every issue card is tap-to-locate; unstrung-panel and MPPT-capacity cards carry an inline "Auto-string now" (`layout.67–.76`). | `SRC-CODE` | P0 |
 | MS6-28 | THE HARD GATE: the step blocks with a plain reason when there are no enabled panels or when electrical validation fails — the studio's one hard gate (R12 asymmetry, MS2 §MS2.1) (`layout.77`). | `SRC-CODE` | P0 |
-| MS6-29 | Status pill shows enabled panels and achieved-vs-target kWp. There is NO studio-side capacity cap: the hardcoded plan limit and demo upgrade prompt are removed; capacity ceilings are platform entitlements checked at Save/Generate (S5-2 fixes `layout.78/.80`, Q28). | `BRIEF` S5-2 | P0 |
+| MS6-29 | Status pill shows enabled panels and achieved-vs-target kWp. There is NO studio-side capacity cap: the hardcoded plan limit and demo upgrade prompt are removed; capacity ceilings are platform entitlements checked at Save/Generate (S5-2 fixes `layout.78/.80`; M05-12). | `BRIEF` S5-2 | P0 |
 
 ### MS6.6 — The 3D scene
 
@@ -79,7 +79,7 @@ Design Engineer (author) · Design Engineer with sign-off capability (review) ·
 | MS6-34 | Per-panel shade attribution on demand ("what is shading this module") and blocker→camera swing to the culprit (`scene3d.25/.26`). | `SRC-CODE` | P0 |
 | MS6-35 | In-scene table editing: tap a module → its table's edit card (view-only inspection state never persists or fingerprints); ghost/isolate rendering; strict dismissal contract (`scene3d.27–.30`, `structures.31/.46`). | `SRC-CODE` | P0 |
 | MS6-36 | Heatmap in 3D: forced map view, roof-aligned grid with adaptive resolution, geometric-access metric with its floor stated in the legend, month track, optional kWh layer when measured weather exists, and 2D-canvas parity (`scene3d.31–.37`). | `SRC-CODE` | P0 |
-| MS6-37 | Scene surfaces: 3D entry from the layout, customer share link (per Q27 the 3D lives inside the proposal link), read-only share rendering, energy-report trigger, and capture mode for proposal hero shots (`scene3d.38–.42`). | `SRC-CODE` | P0 |
+| MS6-37 | Scene surfaces: 3D entry from the layout, customer share link (the 3D lives inside the proposal link, `F5-33`), read-only share rendering, energy-report trigger, and capture mode for proposal hero shots (`scene3d.38–.42`). | `SRC-CODE` | P0 |
 | MS6-38 | Rendering contracts that keep truth and speed together: instanced draws for the whole site, ONE panel frame shared by mesh/engine/2D, shared materials, exact extruded steel sections, structure re-derivation keyed to geometry, position-resolved obstruction grounding, and GPU cleanup on unmount (`scene3d.43–.50`). | `SRC-CODE` | P1 |
 
 ### MS6.7 — Structure model (parametric, honest)
@@ -109,11 +109,11 @@ Design Engineer (author) · Design Engineer with sign-off capability (review) ·
 
 ## 4. Cross-module contracts
 
-Consumes: MS2 roofs/faces/segment-engine laws + obstruction bridging (MS3); MS4 module/target/inverter/profile catalog; MS1 worker + canvas contracts; F1 pack (wind zones, ground tilt rules); Q28 entitlements (MS6-29). Provides: strings/routes/inverter placements → MS8; structure members, fasteners, foundations, counted quantities → MS10; captures + access data → MS9/proposal; the 3D scene → the customer proposal link (Q27, F5). Studio-wide laws reinforced here: ONE shading authority (MS6-33), estimate-not-certified structure (MS6-22/47), nothing gesture-only (MS6-30).
+Consumes: MS2 roofs/faces/segment-engine laws + obstruction bridging (MS3); MS4 module/target/inverter/profile catalog; MS1 worker + canvas contracts; F1 pack (wind zones, ground tilt rules); M05-12's entitlement placement (MS6-29). Provides: strings/routes/inverter placements → MS8; structure members, fasteners, foundations, counted quantities → MS10; captures + access data → MS9/proposal; the 3D scene → the customer proposal link (`F5-33`). Studio-wide laws reinforced here: ONE shading authority (MS6-33), estimate-not-certified structure (MS6-22/47), nothing gesture-only (MS6-30).
 
 ## 5. Non-goals
 
-Studio-side plan/capacity caps (MS6-29, Q28) · structure certification or load calculation (estimate + engineer sign-off only, F8-25) · analytic shading from structure members or decorative neighbours (visual only, stated — MS6-32) · persisting inspection-only view state (MS6-35).
+Studio-side plan/capacity caps (MS6-29, M05-12) · structure certification or load calculation (estimate + engineer sign-off only, F8-25) · analytic shading from structure members or decorative neighbours (visual only, stated — MS6-32) · persisting inspection-only view state (MS6-35).
 
 ## 6. Open items
 
@@ -126,7 +126,7 @@ None — Sitting 5 closed with zero open items (5 rulings covering all 16 defect
 - Given a selection, Then marquee/drag rules keep tables coherent (MS6-12), nudges work by key and by touch control (MS6-13), and the context bar offers the full action set (MS6-14). Given a rotate, Then table settings agree with the layout (MS6-15). Given a mixed selection, Then tilt applies per table (MS6-16). Given delete, Then dependents cascade and locks refuse edits (MS6-17). Given any gesture, Then exactly one undo entry results and Clear-all confirms with counts (MS6-18).
 - Given a table, Then its header states rows×cols/panels/kWp with presets and ground-appropriate options (MS6-19); azimuth presets face the equator for the site's hemisphere (MS6-20); profile cards show section size and kg/m (MS6-21). Given ANY structure sheet including flush, Then the disclaimer and engineer line render (MS6-22).
 - Given stringing, Then auto/manual/clear work with counts (MS6-24); Given Clear strings, Then no surface reports routed cable afterwards (MS6-25). Given validation issues, Then each is tap-to-locate with inline auto-string where applicable (MS6-27), and the step blocks with a plain reason when unsafe (MS6-28). Given any design size, Then the studio never caps capacity; entitlement checks happen at Save/Generate (MS6-29).
-- Given the 3D view, Then visible orbit/zoom/reset controls exist alongside gestures (MS6-30); the date field shows the user's local date and all sun controls share one time basis (MS6-31); real elements cast shadows while decorative ones state their exclusion (MS6-32); per-panel access comes from the headless engine over shared geometry (MS6-33); shade attribution and blocker focus work (MS6-34); in-scene table editing never persists view state (MS6-35); heatmap states its metric and floor in the legend (MS6-36); share/report/capture surfaces behave per Q27 (MS6-37).
+- Given the 3D view, Then visible orbit/zoom/reset controls exist alongside gestures (MS6-30); the date field shows the user's local date and all sun controls share one time basis (MS6-31); real elements cast shadows while decorative ones state their exclusion (MS6-32); per-panel access comes from the headless engine over shared geometry (MS6-33); shade attribution and blocker focus work (MS6-34); in-scene table editing never persists view state (MS6-35); heatmap states its metric and floor in the legend (MS6-36); share/report/capture surfaces keep the 3D inside the proposal link (MS6-37).
 - Given a foundation choice, Then quantities read as ASSUMED with the "engineer to confirm" note, shape overrides apply only where meaningful, and a too-tall foundation is FLAGGED rather than silently clamped (MS6-47). Given the in-scene structure card, Then every control (presets, visibility, profile with specs, foundation, tilt/clearance, MMS, leg plan) commits exactly one undo step through the single choice-applier, and an unavailable card explains why rather than rendering blank (MS6-48).
 - Given a ground table, Then only allowed foundations are offered and none is silently corrected (MS6-39/47/51); topology and members derive deterministically (MS6-40); quoted clearance accounts for the foundation (MS6-41); fasteners and steel are counted per member (MS6-42); unsupported members are flagged (MS6-43); parametric controls revert cleanly (MS6-44); dual-tilt and monorail assumptions are stated (MS6-46); a member click highlights that member (MS6-49); structure language reaches every output (MS6-50); the 2D and 3D structure surfaces agree (MS6-51).
 - Given any change, Then Health re-scores against the current design and never shows a stale score (MS6-52), with row spacing and the inter-row card sharing one pitch model (MS6-53).

@@ -18,7 +18,7 @@ export const COGS_MARKUP_FLOOR: BasisPoints = basisPoints(4_000);
 /**
  * Whether one published rate clears the floor.
  *
- * The floor is a MONEY amount: it rounds once through `applyRate` (`Q83`) and is compared in the
+ * The floor is a MONEY amount: it rounds once through `applyRate` and is compared in the
  * currency's minor unit, which is the finest amount a book can author. Holding it at sub-minor
  * precision would reject rates no one is able to write.
  */

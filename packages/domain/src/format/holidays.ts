@@ -2,7 +2,7 @@
  * `F1-21`, `F1-48` — the market's holiday calendar, and the one rule for combining it with the
  * tenant's own.
  *
- * **India declares NONE** (`Q88`). TCCCPR states no holiday rule and no row of the suite names a
+ * **India declares NONE**. TCCCPR states no holiday rule and no row of the suite names a
  * date, so a platform-authored list would be dates we invented sitting on a statutory floor — and
  * one a tenant could never remove, because `F1-17` lets tenant configuration only NARROW a floor.
  * Every IN holiday is the tenant's own working calendar (`M01-59`). The accepted consequence is

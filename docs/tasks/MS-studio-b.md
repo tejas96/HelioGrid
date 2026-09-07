@@ -171,7 +171,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - shade attribution and blocker focus work (MS6-34)
 - in-scene table editing never persists view state (MS6-35)
 - heatmap states its metric and floor in the legend (MS6-36)
-- share/report/capture surfaces behave per Q27 (MS6-37) — the customer-facing half renders through `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` (T-F5-005), which builds no rows of its own
+- share/report/capture surfaces behave per the one-link law — the 3D lives inside the proposal link, captures the fallback (MS6-37) — the customer-facing half renders through `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` (T-F5-005), which builds no rows of its own
 - Given a foundation choice, Then quantities read as ASSUMED with the "engineer to confirm" note, shape overrides apply only where meaningful, and a too-tall foundation is FLAGGED rather than silently clamped (MS6-47)
 - Given the in-scene structure card, Then every control (presets, visibility, profile with specs, foundation, tilt/clearance, MMS, leg plan) commits exactly one undo step through the single choice-applier, and an unavailable card explains why rather than rendering blank (MS6-48)
 - Given a ground table, Then only allowed foundations are offered and none is silently corrected (MS6-39/47/51) — this screen carries the MS6-47 half
@@ -406,7 +406,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - **MS7-28** (P0) — ONE money path: system cost comes from the BOM total (MS10), never a parallel estimate (`.85`).
 - **MS7-29** (P0) — Subsidy is computed from pack rules by capacity/segment/certification eligibility (`.86`, F1).
 - **MS7-30** (P0) — Financials read EXACT annual energy, not the rounded display figure (S6-3a fixes `.88`) (`.87`).
-- **MS7-32** (P0) — Payback iterates with pack-driven escalation and degradation (S6-4 fixes hardcoded `.91`), and a system that never pays back reports exactly that — never a sentinel year (S6-1a fixes `.90/.140`) (`.89/.94`).
+- **MS7-32** (P0) — Payback iterates with pack-driven escalation and degradation (S6-4 fixes hardcoded `.91`), and a system that never pays back reports exactly that — the binding copy is "Does not pay back within 25 years", never a sentinel year (S6-1a fixes `.90/.140`) (`.89/.94`).
 - **MS7-33** (P0) — Lifetime savings are shown net of lifecycle cost (inverter replacement) or explicitly labelled gross with the assumption list attached (S6-3b fixes `.92`).
 
 **DONE WHEN:**
@@ -665,7 +665,7 @@ readable where it was written; the pointer beside it says who carries it.
 
 | Row | realized-by |
 |---|---|
-| MS4-26 (P2) | Recommended Enhancement, explicitly not v2 scope — the enhancements register and the design spec §10 carry it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
+| MS4-26 (P2) | Recommended Enhancement, explicitly not v2 scope — the design spec §10 carries it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
 
 ---
 
@@ -698,7 +698,7 @@ readable where it was written; the pointer beside it says who carries it.
 | MS4-23 | T-MS-202 |
 | MS4-24 | T-MS-201 |
 | MS4-25 | T-MS-204 |
-| MS4-26 | realized-by: Recommended Enhancement, explicitly not v2 scope — the enhancements register and the design spec §10 carry it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
+| MS4-26 | realized-by: Recommended Enhancement, explicitly not v2 scope — the design spec §10 carries it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
 | MS4-27 | T-MS-201 |
 | MS4-28 | T-MS-201 |
 | MS4-29 | T-MS-201 |

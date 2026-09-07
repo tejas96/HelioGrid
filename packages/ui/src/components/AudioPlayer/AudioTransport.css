@@ -24,7 +24,7 @@
   cursor: pointer;
   background: var(--surface);
   color: var(--text-primary);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
   transition:
     transform var(--dur-micro) var(--ease-standard),
@@ -238,7 +238,7 @@
   border: none;
   border-radius: var(--r-pill);
   background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);

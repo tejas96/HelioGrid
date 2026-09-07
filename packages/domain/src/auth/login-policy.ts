@@ -17,10 +17,8 @@ export const AUTO_VERIFY_DELAY_MS = 140;
 export const CALL_OFFER_AFTER_RESENDS = 2;
 
 /**
- * How long the done step holds before handing off, so "You're signed in" is readable.
- *
- * Spec Q9 leaves this open. Web chose 1400ms and RN chose 900ms; unified here on the longer
- * value because the step exists to be READ and 900ms is short for that. Owner ruling pending
- * — if 900ms is preferred, this is the one line that changes.
+ * How long the done step holds before handing off, so "You're signed in" is readable. One value
+ * for both platforms: the step exists to be READ, and a beat too short to read is
+ * indistinguishable from a stall. Changing the dwell changes this line and nothing else.
  */
 export const DONE_DWELL_MS = 1400;

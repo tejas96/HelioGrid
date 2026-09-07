@@ -36,7 +36,8 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
    task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
-   old research docs, the v1 repo — is a defect in the task.
+   old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
+   id: a PRD row carries its own ruling, and git carries the history.
 3. **`DESIGN: PENDING` blocks build, not start.** Engine/policy/integration/port tasks have no
    design dependency and can start immediately. A screen task may be scaffolded but its UI is
    not "done" until the link is filled and matched.
@@ -44,9 +45,7 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
    its tests; UI is rebuilt to the new design; the defect register is the change list.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
    base states (loading, empty, error) plus brief-listed states exist at both 375px and 1536px
-   with full parity. *(Was "four base states" until 2026-08-16; the fourth was `offline`, removed
-   by owner ruling `Q61` on 2026-08-07. This rule is the completion bar every screen task is
-   measured against, so it outlived the sweep that should have caught it.)*
+   with full parity. This rule is the completion bar every screen task is measured against.
 6. **Every row id shows its tier where it appears.** A verbatim row quote carries it after the
    id — `**M02-02** (P0) — …`; a task that defers its quoting to the brief carries it on the
    `PRD rows:` line instead — `M02-01 (P0), M02-25 (P1)`. A task's own `Tier:` is the highest

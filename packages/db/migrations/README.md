@@ -10,7 +10,7 @@ surgically — the spine had to go whole or not at all.
 
 The next migration is `0001`, authored by the market-pack storage slice (`T-FCORE-016`) when its
 slice begins (Law 9). The pack carries no foreign key out and `tenant` carries the market one, so
-it precedes the identity spine; auth + tenancy follow it (`Q85`). Read
+it precedes the identity spine; auth + tenancy follow it. Read
 `docs/engineering/forward-compat.md` before writing either: the `market pack` and `auth/tenancy` rows
 state what each first migration must already satisfy so later modules are not forced into a refactor.
 

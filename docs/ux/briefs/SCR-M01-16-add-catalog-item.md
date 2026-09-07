@@ -22,7 +22,7 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    and `M01-40` forbids committing them silently, so the tier says so until a person confirms. Values
    the tenant types carry `M01-35`'s **Tenant-provided** label, not an F8 tier: nothing computed them.
 5. **Abandoning a filled sheet is confirmed and un-dismissible**, and the confirm carries the
-   recovery route in words (`Q78`) — nothing was created, so there is nothing to restore, and the
+   recovery route in words — nothing was created, so there is nothing to restore, and the
    sentence says the datasheet can be uploaded again in one tap.
 6. **No progress count.** No *fields filled* figure and no *3 of 12* counter — neither is a fact about
    the product, and a progress count on a form invites the Next-disabled pattern `M06-22` killed.

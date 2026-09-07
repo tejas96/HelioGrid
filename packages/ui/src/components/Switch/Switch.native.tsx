@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   } /* The track flattens when disabled and the knob must too, or a dead switch keeps a raised
-     white knob floating in a sunken groove (Q77). */,
+     white knob floating in a sunken groove. */,
   thumbDisabled: { shadowOpacity: 0, elevation: 0 },
 
   wrap: {

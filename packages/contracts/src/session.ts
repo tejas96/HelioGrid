@@ -57,7 +57,7 @@ export type Membership = z.infer<typeof membershipSchema>;
 export const sessionExpirySchema = z.object({
   expiresAt: z.string().datetime(),
   /**
-   * Server-authoritative last FOREGROUND authenticated use (owner ruling `Q71`). Background
+   * Server-authoritative last FOREGROUND authenticated use. Background
    * refresh, push handling and scheduled work must never write it: the seven-day mobile idle
    * clock is only meaningful if background traffic cannot reset it.
    */

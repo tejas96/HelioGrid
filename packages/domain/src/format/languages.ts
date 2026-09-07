@@ -1,7 +1,7 @@
 /**
  * The UI language set, and what a pack-declared label looks like in it.
  *
- * **The set lives HERE, not in contracts** (`Q87`). A pack label is per-language data on the
+ * **The set lives HERE, not in contracts**. A pack label is per-language data on the
  * pack (`F1-22` declares it, `F1-11` makes a label change a data update rather than a release),
  * so `packages/domain` must be able to name a language — and this package imports nothing in the
  * workspace, so it cannot reach the contract's `UiLanguage`. Contracts derives `z.enum` from this

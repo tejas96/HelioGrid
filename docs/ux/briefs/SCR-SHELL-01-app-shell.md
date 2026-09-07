@@ -49,7 +49,7 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 
 ### docs/prd/modules/M13-dashboards-and-reporting.md
 
-- **M13-10** (P0) — **The composition rule (resolves register `Q5` / F2 `F2-Q1`): one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. _(non-UI half, build-side: fixed preset-precedence ladder derives one home; other presets compose as blocks; ladder is product constant — for awareness, not for drawing)_
+- **M13-10** (P0) — **The composition rule: one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. _(non-UI half, build-side: fixed preset-precedence ladder derives one home; other presets compose as blocks; ladder is product constant — for awareness, not for drawing)_
 
 ### docs/prd/modules/M05-studio/11-shell-and-platform.md
 
@@ -89,7 +89,7 @@ Design the switcher at multiple held presets — the PRD's own worked examples a
 ## Numbers carrying provenance
 
 - The optional until-time on the availability toggle (M07-46) — **a recorded value, so NO tier.**
-  The user set it; nothing computed or estimated it. *(Amended 2026-08-07 by the `Q59` refinement:
+  The user set it; nothing computed or estimated it. *(Amended 2026-08-07 by the recorded-date refinement:
   this line briefly said the until-time carried a tier, under the first form of the ruling that
   tested "has it happened yet". The test is now how the value was arrived at — recorded, or
   computed/guessed — and a value a person typed is recorded.)*

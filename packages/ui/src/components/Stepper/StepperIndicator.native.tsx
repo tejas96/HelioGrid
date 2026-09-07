@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-pill'],
     padding: theme.spacing['sp-1'],
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   nav: {

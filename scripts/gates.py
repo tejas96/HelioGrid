@@ -10,10 +10,10 @@ Exit: 0 all gates pass, 1 otherwise.
 """
 
 import argparse
-import difflib
 import glob
 import os
 import re
+import subprocess
 import sys
 from collections import defaultdict
 
@@ -129,44 +129,6 @@ def record_lines(text):
             marked.update(range(lineno, lineno + n))
         lineno += n + 1
     return marked
-
-
-# A deleted row whose law survives is not silently re-instated — that is an owner's call.
-# It is recorded as an open question and the surface that needed it carries a dated marker.
-# These two patterns are the marker; Gate 12 checks each one resolves to a genuinely open Q.
-# Exactly the two forms the authoring convention uses — deliberately literal. A loose pattern
-# here would forgive ordinary prose and turn the marker into an amnesty for any dead citation.
-HOLE_MARKER = re.compile(
-    r"⚠ Obligation with no live carrier"
-    r"|\*\*UNRESOLVED — this requirement has no live PRD row id")
-
-
-def open_questions(repo):
-    """Q ids in the register that are NOT marked as decided."""
-    f = spec(repo, "prd/registers/open-questions.md")
-    if not os.path.exists(f):
-        return set(), set()
-    allq, openq = set(), set()
-    for line in open(f, encoding="utf-8"):
-        m = re.match(r"\|\s*(Q\d+)\s*\|(.*)", line)
-        if not m:
-            continue
-        allq.add(m.group(1))
-        if "Decision recorded — not open" not in m.group(2):
-            openq.add(m.group(1))
-    return allq, openq
-
-
-def hole_blocks(text):
-    """(line_no_set, {Q ids cited}) for each paragraph carrying a hole marker."""
-    out = []
-    lineno = 1
-    for para in re.split(r"\n\s*\n", text):
-        n = para.count("\n") + 1
-        if HOLE_MARKER.search(para):
-            out.append((set(range(lineno, lineno + n)), set(re.findall(r"\bQ\d+\b", para))))
-        lineno += n + 1
-    return out
 
 
 def cited_rows(text, known_prefixes):
@@ -305,8 +267,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs:
                 continue
@@ -322,12 +282,7 @@ def run(repo, verbose):
     for f in briefs:
         rel = os.path.relpath(f, spec(repo))
         live, _foot = strip_amendment(open(f, encoding="utf-8").read())
-        skip = set()
-        for lines_, _q in hole_blocks(live):
-            skip |= lines_
         for i, line in enumerate(live.split("\n"), 1):
-            if i in skip:
-                continue
             for rid in cited_rows(line, prefixes):
                 if rid not in rows:
                     dangling_b[rid].append(f"{rel}:{i}")
@@ -353,10 +308,11 @@ def run(repo, verbose):
                 continue          # Gate 2 owns that failure
             checked += 1
             a, b = norm(quote), norm(rows[rid][1])
-            if b.startswith(a[:80]) or a.startswith(b[:80]):
+            # Equal, a deliberate truncation of the cell, or the cell plus a suffix ("— Enforced
+            # by: …", "(non-UI half …)"). Anything else is drift, however small.
+            if a == b or b.startswith(a) or a.startswith(b):
                 continue
-            if difflib.SequenceMatcher(None, a, b).ratio() < 0.93:
-                desync.append(f"{rel}:{i} {rid}")
+            desync.append(f"{rel}:{i} {rid}")
     gate(4, "task + brief quotes match live PRD cells", not desync,
          f"{checked} quotes checked, all match" if not desync else f"{len(desync)} desynced: " + "; ".join(desync[:8]))
 
@@ -465,8 +421,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs or is_quote.match(line):
                 continue
@@ -477,7 +431,7 @@ def run(repo, verbose):
          "clean" if not voc else f"{len(voc)} lines: " + " · ".join(voc[:6]))
 
     # --- Gate 11 · the completion contract says THREE base states, not four
-    # N10 was amended by owner ruling Q61: loading, empty, error. A task whose definition of
+    # N10 was amended by the ruling that removed offline capability: loading, empty, error. A task whose definition of
     # done still demands four states would have an engineer reject a correct screen.
     four = re.compile(r"\b(four|4)\s+(base\s+)?states\b|loading,\s*empty,\s*error,?\s*(and\s+)?offline", re.I)
     # Two live product concepts genuinely have four states and are nothing to do with the
@@ -519,29 +473,6 @@ def run(repo, verbose):
          "clean" if not dangling_p else f"{len(dangling_p)} ids, {n} refs: " +
          "; ".join(f"{k} {v}" for k, v in sorted(dangling_p.items())[:5]))
 
-    # --- Gate 12 · every recorded hole resolves to a genuinely open owner question
-    # This is what keeps Gates 2, 3 and 10 honest. They forgive a paragraph that carries a hole
-    # marker; without this gate, that marker would be a way to hide a dangling citation.
-    allq, openq = open_questions(repo)
-    bad_holes = []
-    n_holes = 0
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        for lines_, qs in hole_blocks(body):
-            n_holes += 1
-            ln = min(lines_)
-            if not qs:
-                bad_holes.append(f"{rel}:{ln} hole names no Q id")
-            elif not (qs & openq):
-                closed = sorted(qs & allq)
-                unknown = sorted(qs - allq)
-                why = f"cites only decided question(s) {closed}" if closed else f"cites unknown id(s) {unknown}"
-                bad_holes.append(f"{rel}:{ln} {why}")
-    gate(12, "recorded holes map to open questions", not bad_holes,
-         f"{n_holes} holes, all mapped to open questions ({len(openq)} open: {', '.join(sorted(openq, key=lambda q: int(q[1:])))})"
-         if not bad_holes else f"{len(bad_holes)}: " + " · ".join(bad_holes[:6]))
-
     # --- Gate 14 · the registers cite no deleted row
     # screens.md legitimately keeps rows for deleted requirements — that is its audit
     # trail — but a *marked* row says so. A bare citation is a dangling pointer.
@@ -551,8 +482,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs or "~~" in line:      # a struck row names the id it retired
                 continue
@@ -563,6 +492,25 @@ def run(repo, verbose):
     gate(14, "registers cite no deleted row", not dangling_r,
          "clean" if not dangling_r else f"{len(dangling_r)} ids, {n} refs: " +
          "; ".join(f"{k} {v[:2]}" for k, v in sorted(dangling_r.items())[:5]))
+
+    # --- Gate 26 · no open-question id anywhere: a PRD row carries its own ruling, git the history
+    q_re = re.compile(r"\bQ\d+\b(?!\s*(?:FY|20\d\d))")   # "Q1 FY26" is a display string, not a citation
+    text_ext = (".md", ".ts", ".tsx", ".mts", ".css", ".py", ".sh", ".mjs", ".json", ".jsonc", ".yml", ".yaml")
+    tracked = subprocess.run(["git", "ls-files"], cwd=repo, capture_output=True, text=True).stdout.split("\n")
+    q_sites = []
+    for rel in tracked:
+        if not rel.endswith(text_ext) or rel == "pnpm-lock.yaml" or "/_generated/" in rel:
+            continue
+        try:
+            for i, line in enumerate(open(os.path.join(repo, rel), encoding="utf-8"), 1):
+                if q_re.search(line):
+                    q_sites.append(f"{rel}:{i}")
+        except (UnicodeDecodeError, FileNotFoundError):
+            continue
+    gate(26, "no open-question id anywhere in the tree", not q_sites,
+         f"{len(tracked)} tracked files, none cites a Q id" if not q_sites
+         else f"{len(q_sites)} sites — state the rule in the row, never the id: " + ", ".join(q_sites[:8])
+              + (f" (+{len(q_sites) - 8} more)" if len(q_sites) > 8 else ""))
 
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:
@@ -676,7 +624,6 @@ def run(repo, verbose):
         gate(18, "helper script agrees with the register", False,
              f"{os.path.relpath(helper, repo)} not found — the gate cannot run, so it does not pass")
     else:
-        import subprocess
         try:
             proc = subprocess.run([sys.executable, helper], capture_output=True, text=True, timeout=60, cwd=repo)
             out = proc.stdout

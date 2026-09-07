@@ -17,7 +17,7 @@ interface WebNoConnectionProps extends NoConnectionProps {
  *
  * Three rules are built in:
  * · IT NEVER MENTIONS SYNC. Nothing is queued, nothing uploads later, there is no last-synced
- *   time — the product holds none of that (owner ruling Q61).
+ *   time — the product holds none of that.
  * · RETRY CANNOT LIE (use-retry.ts).
  * · IT DOES NOT BLOCK WHAT STILL WORKS. `children` is the slot for whatever the app CAN show.
  */

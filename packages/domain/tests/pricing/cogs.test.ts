@@ -121,7 +121,7 @@ describe('metersBelowCogsFloor — which rows a book got wrong (BM-17, BM-41)', 
   });
 });
 
-describe('the IN book’s own headroom above the floor (BM-26, Q1)', () => {
+describe('the IN book’s own headroom above the floor (BM-26)', () => {
   it.each([
     { meter: 'voice minutes', rate: 600, cost: 428, floor: 599 },
     { meter: 'AI roof detections', rate: 1_000, cost: 714, floor: 1_000 },

@@ -62,7 +62,7 @@ These bind every studio document; they are stated here once so no screen re-liti
 | **Structure is an estimate; an engineer signs** | S5-1a, S10-1, F8-25 | The disclaimer appears wherever structure is quoted — including flush tables and customer documents — and a real sign-off flow gates issuance. |
 | **One source of truth across documents** | S7-1 | Where a value appears on a drawing AND in the BOM, both read the same engine output. |
 | **Honesty survives printing** | S8-3 | Staleness, provenance, confidence, eligibility and disclaimers appear on paper, not only on screen. |
-| **No studio-side capacity caps** | S5-2, Q28 | Entitlements are checked at Save/Generate, never mid-design. |
+| **No studio-side capacity caps** | S5-2, M05-12 | Entitlements are checked at Save/Generate, never mid-design. |
 | **Market data is pack data** | S1-6, S6-4, S9-1 | Prices, tax, subsidy, escalation, climate bands, standards, compliance checklists and wind tables are market-pack configuration — India ships today's values. |
 | **The catalog is the tenant's** | S4-1 (DD12) | Every picker reads the resolved catalog (platform slice + own SKUs + overrides) with all three entry paths real, plus Battery as a first-class component. |
 | **One hard gate** | MS8-33, MS6-28 | Error-level electrical issues block progress; warnings never do. |

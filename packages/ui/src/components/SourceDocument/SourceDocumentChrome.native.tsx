@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   plainWord: { fontWeight: '500' },
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.surface,
-    // NOT a control — a <View> glyph badge. Nothing presses it (Q77).
+    // NOT a control — a <View> glyph badge. Nothing presses it.
     ...theme.elevation.e1,
   },
   messageTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },

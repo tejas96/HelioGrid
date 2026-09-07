@@ -28,7 +28,7 @@ const withProposals = (proposals: TierLimit): TierCapacity => ({
   creationsPerCycle: { ...PROTECTED.creationsPerCycle, proposals },
 });
 
-describe('forfeitsPriceProtection — a lapse ends the guarantee (BM-42, Q43)', () => {
+describe('forfeitsPriceProtection — a lapse ends the guarantee (BM-42)', () => {
   it.each([
     { state: 'halted', forfeits: true, why: 'the grace ran out — this is the lapse' },
     { state: 'cancelled', forfeits: true, why: 'the tenant left; reactivation is a new price' },

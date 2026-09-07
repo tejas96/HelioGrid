@@ -40,7 +40,7 @@
   outline: none;
   border-radius: var(--r-input-functional);
   background: var(--surface);
-  /* An inline cell editor is a control — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* An inline cell editor is a control — --surface at --e2. */
   box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body);

@@ -1,6 +1,6 @@
 # MS12 · Studio shell — wizard, dashboard, persistence, UI kit
 
-Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 11 rulings, 2026-08-05) · Depends on: F2 (roles), F3 (languages), F4 (data integrity), F7 (design system, a11y), M01 (auth per Q18), M02 (leads), MS6/MS10 (health, BOM), MS11 (fingerprints, duplicate)
+Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 11 rulings, 2026-08-05) · Depends on: F2 (roles), F3 (languages), F4 (data integrity), F7 (design system, a11y), M01 (auth — phone identity, Google as a convenience sign-in, `M01-02`), M02 (leads), MS6/MS10 (health, BOM), MS11 (fingerprints, duplicate)
 Sources: POC code inventory — shell (**131 keys**, 11 test files / 120 tests passing) · sitting rulings (S11-1…S11-3) · census A.10-1. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: every studio document consumes this shell's navigation, gates, persistence and UI kit.
 
@@ -44,7 +44,7 @@ All studio personas (F2). Web primary, mobile parity (F7-30). Accessibility is a
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS12-17 | Sign-in is the PLATFORM's: mobile OTP and Google (Q18), establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`). | `BRIEF` S11-3a/S11-2 | P0 |
+| MS12-17 | Sign-in is the PLATFORM's: mobile OTP and Google, establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`). | `BRIEF` S11-3a/S11-2 | P0 |
 | MS12-18 | Languages are the platform's real catalogs — EN/HI/MR at launch (F3) — not a placeholder list (S11-3c fixes `.37`); the user's language and unit preferences persist per user (`.18/.72`). | `BRIEF` S11-3c | P0 |
 | MS12-19 | Sign-out clears session state without destroying work (`.36`); brand and tenant identity appear in the top bar (`.35`, M01 branding). | `SRC-CODE` | P0 |
 

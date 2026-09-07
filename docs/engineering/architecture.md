@@ -116,7 +116,7 @@ module appends its own capability rows when its slice begins.
 ### db — schema mirror, migrations, backend client
 **STATUS: greenfield.** `src/schema/` and migrations 0001–0006
 were deleted; the market-pack storage slice (`T-FCORE-016`) authors the fresh 0001 and the auth +
-tenancy slice follows it (`Q85`). Today the package is client.ts + migrate.ts + uuid.ts.
+tenancy slice follows it. Today the package is client.ts + migrate.ts + uuid.ts.
 Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
 the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
 plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
@@ -354,7 +354,7 @@ section records the answer per new file.
 5. Is it form state/validation wiring? → packages/forms.
 6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy. Is it the
    SET of languages? → packages/domain/src/format/languages.ts, and nowhere else — a pack
-   declares a label per language (Q87), and domain imports nothing. contracts derives the
+   declares a label per language, and domain imports nothing. contracts derives the
    z.enum and re-exports, so i18n, the Lingui CLI and the apps still import from contracts.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
    packages/theme (`ds:pull`) — never a literal in a screen, never hand-transcribed.

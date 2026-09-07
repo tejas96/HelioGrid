@@ -2,8 +2,8 @@ import type { ClockTime } from './clock-time';
 import type { CallingWindow, MessagingWindow } from './pack';
 
 /**
- * The two window rules `F1-15` and `F1-17` state. Both read ONE clock — the tenant's (`F1-10`,
- * `Q58`) — and neither learns which: a `ClockTime` carries no zone, and the caller holding the
+ * The two window rules `F1-15` and `F1-17` state. Both read ONE clock — the tenant's (`F1-10`)
+ * — and neither learns which: a `ClockTime` carries no zone, and the caller holding the
  * tenant resolves it before asking. That is what stops a floor and its narrowing being compared
  * across two frames.
  */

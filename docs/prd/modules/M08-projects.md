@@ -160,7 +160,7 @@ translated. **Analytics events.** `project_created` (from lead, with proposal ve
 | M08-12 | **Aged cards surface rather than sink.** A project sitting unusually long in one stage rises — to the top of its column, and into the owner's and Operations' views — carrying its days-in-stage and its blocker if it has one. Ageing is **relative**: oldest-first ordering and the days figure itself, with no invented threshold constant anywhere in this module; any notification threshold on top of it is `foundations/F6`'s, and the portfolio aging report is `modules/M13`'s. | `SRC` — `S8.wrong.1` ("stuck in a stage for weeks → aged cards surface to the owner with days-in-stage"); `PS-21` ("aged cards surface rather than sinking"); `PS-34` | P0 |
 | M08-13 | **The board never renders a project as nearly finished.** A system installed but stuck before commissioning for a month is not "90% done" — it is in its stage, with the days it has been there, and the honest thing on the card is that number. *"Days-in-stage tells the truth."* No surface in this module computes completion as a fraction of stages passed. | `SRC` — `S8.wrong.9` (verbatim reasoning) | P0 |
 | M08-14 | **A stage move is recorded on the timeline with its actor and its timestamp, and it is never silently reversible.** Moving a project backwards is allowed — real installations go backwards — and is recorded as its own event with the same weight as moving forward, so the days-in-stage history stays truthful rather than being rewritten. | `SRC` — `DOC04.timeline` (append-only, actor-stamped — cited, `modules/M02`'s row); `S8.rec.2` (days-in-stage integrity) | P1 |
-| M08-15 | **Completing a stage is the module's one automatic trigger, and it does exactly two things: the matching tranche becomes due (§M08.6) and the customer's progress link updates (`foundations/F5`).** Nothing in this module fires on a clock, and no stage change sends anything to anyone by itself — the request remains the coordinator's one-tap act (`M08-38`, which sends via the tenant's connected transactional channel per owner ruling 2026-08-04, Q33, with copy-paste as the no-channel fallback). | `SRC` — `S8.happy` (verbatim spine: "coordinator moves it stage by stage → each stage triggers the matching payment request and updates the customer link"); `S8.rule.tranches`; send rail per owner ruling 2026-08-04 (Q33) | P0 |
+| M08-15 | **Completing a stage is the module's one automatic trigger, and it does exactly two things: the matching tranche becomes due (§M08.6) and the customer's progress link updates (`foundations/F5`).** Nothing in this module fires on a clock, and no stage change sends anything to anyone by itself — the request remains the coordinator's one-tap act (`M08-38`, which sends via the tenant's connected transactional channel per owner ruling 2026-08-04, with copy-paste as the no-channel fallback). | `SRC` — `S8.happy` (verbatim spine: "coordinator moves it stage by stage → each stage triggers the matching payment request and updates the customer link"); `S8.rule.tranches`; send rail per owner ruling 2026-08-04 | P0 |
 
 **Behavior detail.** The board is the module's home. A stage move is a card action (drag on
 desktop, an explicit move on mobile) that opens the confirm with the target stage's pack label;
@@ -372,20 +372,20 @@ audited (`F2-22`).
 | M08-35 | **The accepted proposal version's payment terms *are* the project's collection schedule — the same rows, never re-entered and never re-derived.** This is the connection that makes the module valuable: *"solar businesses die of cash flow, not of bad design software,"* and money owed against a passed milestone is the most common leak. The schedule's rows, states and arithmetic are `modules/M11`'s (`DOC04.tranches-money-path`); this module owns the project-side surfaces that show them and the stage event that moves them. | `SRC` — `S8.rule.tranches` (verbatim: "they are the project's collection schedule", and the rationale verbatim); `M06-13` consumed (step 7 defines the terms); `DOC04.tranches-money-path` (cited — `modules/M11`) | P0 |
 | M08-36 | **Completing a stage makes the matching tranche due**, through the schedule's stage mapping against the canonical chain (`R2`). A tranche mapped to a skipped stage becomes due when the project passes the point that stage occupied, so a skippable stage never strands money; the state transitions themselves — upcoming → due → part-received → received, and waived as terminal — are `modules/M11`'s. | `SRC` — `S8.rule.tranches` ("When a stage completes, the matching tranche becomes due"); `R2` as amended (the `due_on_stage` mapping uses this chain); `DOC04.tranches-money-path` (cited — `modules/M11` owns the states). **The skipped-stage clause is an author completion, stated in-row rather than assumed** (the `M08-34` pattern): the source rules only that *completing* a stage makes its tranche due and is silent on a stage the market's pack marks skippable, so the never-strand-money reading is this suite's, not the source's. The alternative reading — the tranche stays `upcoming` until a person releases it — is available to an owner ruling and would change this rule alone, not the schedule's structure. `modules/M11` reciprocates the same disclosure at `M11-12`, and neither module cites the clause as source truth | P0 |
 | M08-37 | **Every project surface that shows money shows collected against due, and never a stale figure.** The board card, the detail screen's payments block and the portfolio views read the same computed values as the payments screen itself — one figure everywhere (`F8-24`) — recomputed before display (`F8-12`). A projection is never shown here as an amount owed (`F8-23`). | `SRC` — `S8.screen.1` ("payment collected vs due" on the card); `S8.screen.2`; `F8-12`, `F8-23`, `F8-24` consumed | P0 |
-| M08-38 | **When a tranche falls due the coordinator raises the request in one tap — and it sends from the tenant's connected transactional channel where one exists (owner ruling 2026-08-04, Q33).** The message is composed with the project's real figures; with a connected official channel the coordinator's tap sends it under the transactional template class with the channel's honest delivery states (payment links are a named transactional moment); with no channel connected it is ready-to-paste and the person sends it in whatever channel they already use — and on that fallback there is no delivery state anywhere, because the product did not do the sending. | `SRC` — `S8.rule.tranches` ("the coordinator can request a ready-to-paste request message in one tap"); `S8.screen.3` (the copy action — `modules/M11`'s screen); `D32`'s manual rule superseded for transactional moments by owner ruling 2026-08-04 (Q33; lane boundary `M03-03`) | P0 |
+| M08-38 | **When a tranche falls due the coordinator raises the request in one tap — and it sends from the tenant's connected transactional channel where one exists (owner ruling 2026-08-04).** The message is composed with the project's real figures; with a connected official channel the coordinator's tap sends it under the transactional template class with the channel's honest delivery states (payment links are a named transactional moment); with no channel connected it is ready-to-paste and the person sends it in whatever channel they already use — and on that fallback there is no delivery state anywhere, because the product did not do the sending. | `SRC` — `S8.rule.tranches` ("the coordinator can request a ready-to-paste request message in one tap"); `S8.screen.3` (the copy action — `modules/M11`'s screen); `D32`'s manual rule superseded for transactional moments by owner ruling 2026-08-04 (lane boundary `M03-03`) | P0 |
 | M08-39 | **An unpaid due tranche is visible and chased — and never blocks the customer's progress link.** It surfaces on the board card, on the project, and on the owner's dashboard (`modules/M13`), and the rep is prompted to chase the person. The product rule is absolute and this module states it because this is where the temptation lives: ***"never block the customer's progress link over money — chase the person, do not punish the view."*** No stage, document, link or handover behaviour in this module may be made conditional on payment. | `SRC` — `S8.wrong.3` (verbatim; the money-mechanics half is `modules/M11`'s); `C.lifecycle.7` (cited — the link-lifecycle law, `foundations/F5`) | P0 |
 
 **Behavior detail.** The payments block on the project detail is a ledger view of the inherited
 schedule: each row shows its label, its share, its amount, its state and its date where it has
 one, with the due row lifted and carrying the request action — which sends from the tenant's
 connected transactional channel where one exists and composes the ready-to-paste message where
-none is connected (`M08-38`, owner ruling 2026-08-04, Q33; this line previously named it the
-copy-message action, D32's retired manual-only affordance — see `registers/conflicts.md` row 4).
+none is connected (`M08-38`, owner ruling 2026-08-04; this line previously named it the
+copy-message action, D32's retired manual-only affordance).
 The screen where money is actually recorded — mode, reference, receipt file, reversal — is
 `modules/M11`'s, and this module links into it rather than duplicating a control. A project whose accepted proposal carries no
 payment terms shows an empty schedule and says so plainly; it never fabricates rows.
 
-**The OPEX/PPA money surface is ruled (owner ruling 2026-08-04, Q32):** a project behind an
+**The OPEX/PPA money surface is ruled (owner ruling 2026-08-04):** a project behind an
 operating-expense / power-purchase proposal shows the **one-time payments its accepted version
 carries** — deposit, connection fee, whatever the version's terms name — with the **full
 tranche toolset** (states, due-on-stage, request messages, receipts via `modules/M11`), plus an
@@ -415,19 +415,18 @@ Team Member preset shows any of it (`F2-06`, `M08-43`). Payment events are audit
 - Given a coordinator completes the stage a tranche is mapped to, when the move saves, then that
   tranche is due and the request action is available on it — sending from the tenant's connected
   transactional channel where one exists, composing the message for a person to send where none is
-  (M08-36, M08-38, owner ruling 2026-08-04 Q33). *(This line previously named only the
-  copy-message action, D32's retired manual-only affordance — see `registers/conflicts.md` row 4.)*
+  (M08-36, M08-38, owner ruling 2026-08-04). *(This line previously named only the
+  copy-message action, D32's retired manual-only affordance.)*
 - Given a due tranche on a tenant with a connected transactional channel, when the coordinator
   taps the request action, then a message with the project's real figures sends from that official
   channel under the transactional template class, and the channel's delivery states are shown as
-  it reports them (M08-38, owner ruling 2026-08-04 Q33).
+  it reports them (M08-38, owner ruling 2026-08-04).
 - Given a due tranche on a tenant with no connected channel, when the coordinator taps the request
   action, then the same message is composed with the project's real figures for the person to send
   in whatever channel they already use, and no delivery state appears anywhere on the surface
-  (M08-38, owner ruling 2026-08-04 Q33). *(These two lines replace one that carried D32's retired
+  (M08-38, owner ruling 2026-08-04). *(These two lines replace one that carried D32's retired
   manual-only rule — clipboard-only, nothing transmitted, no delivery state on any path — which
-  contradicted M08-38's own row above and §5's "No fabricated delivery state"; see
-  `registers/conflicts.md` row 4.)*
+  contradicted M08-38's own row above and §5's "No fabricated delivery state".)*
 - Given a project with an overdue tranche, when the customer opens their progress link, then the
   link works normally and shows the project's progress (M08-39).
 - Given the board and the payments screen open at once, when both render the same project, then
@@ -491,7 +490,7 @@ translated. **Analytics events.** `installation_step_ticked` (step, has done-by)
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M08-46 | **Handover is one act with four parts: the document pack is assembled from the checklist, shared to the customer, the customer's link becomes the pack, and the project reaches `HANDED_OVER`.** The share rides the transactional lane (owner ruling 2026-08-04, Q33): with a connected channel the handover message sends automatically from the tenant's official channel; with none, the rep downloads and sends the composed message manually and no delivery is claimed. The link's transition into its final — now permanent — phase is `foundations/F5`'s (`F5-70`, Q34). Handover is refused while any checklist row is pending (`M08-32`). | `SRC` — `S8.screen.8` (verbatim: "document pack downloaded and shared by the rep, project closed, referral asked for"); `DOC04.document-checklist` (the handover condition); `C12`, `C.lifecycle.7` (cited — `foundations/F5`); send rail per owner ruling 2026-08-04 (Q33) | P0 |
+| M08-46 | **Handover is one act with four parts: the document pack is assembled from the checklist, shared to the customer, the customer's link becomes the pack, and the project reaches `HANDED_OVER`.** The share rides the transactional lane (owner ruling 2026-08-04): with a connected channel the handover message sends automatically from the tenant's official channel; with none, the rep downloads and sends the composed message manually and no delivery is claimed. The link's transition into its final — now permanent — phase is `foundations/F5`'s (`F5-70`). Handover is refused while any checklist row is pending (`M08-32`). | `SRC` — `S8.screen.8` (verbatim: "document pack downloaded and shared by the rep, project closed, referral asked for"); `DOC04.document-checklist` (the handover condition); `C12`, `C.lifecycle.7` (cited — `foundations/F5`); send rail per owner ruling 2026-08-04 | P0 |
 | M08-47 | **The referral is asked for at handover, because that is the moment the customer decides.** *"Ask for the referral here, while the roof is new and the first bill is about to drop — not six months later."* The ask is part of the handover flow and produces the referral link between the referring customer and any lead that comes from it — the tag and the "came from" chip are `M02-16`'s object, and this module is the surface that starts one. **No credit, no redemption, no balance exists** — the credits ledger is the spec-locked exclusion (§5). | `SRC` — `R15` (RULING — the handover-ask half; the CRM-core tag half is `M02-16`); `UXG-19` (the handover-time ask); `C12` (the timing rule, verbatim); `S8.screen.8` | P0 |
 | M08-48 | **Commissioning artefacts are retained at handover so a future monitoring or service surface can attach without re-collection** — the certificates, the as-built references and the system facts the handover pack contains stay with the project rather than living only inside a downloaded file. Retention is the whole of the commitment: there is no telemetry, no monitoring, no service module and no customer app in v1 (§5). | `SRC` — `CG-6` (docs/12, SKIP-DELIBERATELY: "Commissioning artefacts are retained at handover so an O&M module can attach post-v1 — but no monitoring code, telemetry ingestion or customer app in v1"); `DOC00.nongoal-projects-light` (the retention clause; disposed by Task 3, fulfilled here) | P0 |
 | M08-49 | **Closing is not deleting.** A handed-over project stays readable with its timeline, its documents, its checklist and its money history intact, and its customer link continues to serve the pack (lifecycle per `foundations/F5`). Nothing about closure removes a record from the product. | `SRC` — `S8.screen.8` ("project closed" — closure as a state, not a deletion); `DOC04.timeline` (append-only — cited); `C.lifecycle.7` (cited — `foundations/F5`) | P1 |
@@ -512,8 +511,8 @@ operations of `foundations/F5`'s §F2.5-F5 table; reaching `HANDED_OVER` rides
 - *The customer never opens the pack* → opens are tracked always (`foundations/F5`); delivery is
   claimed only where the tenant's connected channel sent it and reported it, and never on the
   no-channel fallback, where nothing in this module claims the pack arrived (M08-46, owner ruling
-  2026-08-04 Q33). *(This bullet previously denied delivery state on every path under `D32`, the
-  retired manual-only rule — see `registers/conflicts.md` row 4.)*
+  2026-08-04). *(This bullet previously denied delivery state on every path under `D32`, the
+  retired manual-only rule.)*
 - *The customer names a referral months later instead* → the CRM path exists independently
   (`M02-16`); the handover ask is the prompt, not the only door.
 - *A tenant wants to reward the referrer* → there is no credit mechanism to configure; the
@@ -526,12 +525,12 @@ operations of `foundations/F5`'s §F2.5-F5 table; reaching `HANDED_OVER` rides
   checklist, the link becomes the pack and the project reaches `HANDED_OVER` (M08-46).
 - Given handover on a tenant with a connected transactional channel, when the share runs, then the
   handover message sends automatically from that official channel and its delivery state is shown
-  as the channel reports it (M08-46, owner ruling 2026-08-04 Q33).
+  as the channel reports it (M08-46, owner ruling 2026-08-04).
 - Given handover on a tenant with no connected channel, when the share runs, then the rep can
   download the pack and send the composed message themselves, and no delivery is claimed (M08-46,
-  owner ruling 2026-08-04 Q33). *(The manual half was this block's whole share criterion before;
+  owner ruling 2026-08-04). *(The manual half was this block's whole share criterion before;
   the connected-channel branch M08-46's own row and §5 both register had no acceptance line —
-  added here, see `registers/conflicts.md` row 4.)*
+  added here.)*
 - Given the handover flow, when it completes, then the referral ask has been presented in the
   same flow, and any referral it produces is the CRM's referral row with no credit, balance or
   redemption anywhere in the product (M08-47).
@@ -684,17 +683,5 @@ tracker, not project-management software."*
   overrides (`F2-15`/`F2-16`).
 - **No fabricated delivery state.** Request messages and handover-pack sends ride the
   transactional lane — automatic from the tenant's connected channel, composed for a person to
-  send where none is connected (owner ruling 2026-08-04, Q33); the product tracks link opens
+  send where none is connected (owner ruling 2026-08-04); the product tracks link opens
   always, and claims delivery only as a connected channel reports it (`M08-38`, `M03-03`).
-
-## 6. Open questions
-
-Mirrored into `registers/open-questions.md`.
-
-- **M08-Q1 (→ register Q32) — RESOLVED (owner ruling 2026-08-04, Q32).** The money surface of
-  an operating-expense / power-purchase project is the **one-time payments from the accepted
-  version** (deposit / connection fee, as its terms name them), with the **full tranche
-  toolset**, plus the honest note **"monthly energy billing is handled outside this
-  platform"** — nothing fabricated, nothing hidden (§M08.6 behavior detail; `M11-16` states
-  the same from the money side). No recurring invoicing and no meter ingestion exist (`R17`,
-  §5 — unchanged). Q29 (the type is ungated) resolved in the same session.

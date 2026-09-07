@@ -23,7 +23,7 @@ Reached from: the employee's own view is reached from their home surface — the
 - **empty** (a day with no recorded acts: renders as what it is — no record — never as a verdict about the person)
 - **error**
 - **own-view** — the person reading their own day: always available, with no grant and no request to anyone (`M09-66`).
-- **scoped-other-view** — a coordinator or owner reading the same day: the same surface with the same vocabulary, entries and gaps, differing only in whose days are reachable (the register's scoped view; the slice's purpose — same surface for self, coordinator and owner, scoped).
+- **scoped-other-view** — a coordinator or owner reading the same day: the same surface with the same vocabulary, entries and gaps, differing only in whose days are reachable (the screens register's scoped view; the slice's purpose — same surface for self, coordinator and owner, scoped).
 - **gap** — an unrecorded interval rendered as a break with its duration and, where known, its reason; never interpolated, smoothed or bridged (`M09-45`, `M09-56`).
 - **correction-appended** — a correction appears as an appended entry; the original stays readable, never edited away (`M09-56`).
 - **playback-unavailable-untracked** — an untracked person's day: the timeline is complete for what it records, and the surface says movement playback is unavailable because tracking is off, rather than showing an empty map (`M09-54`; the tracked-only playback is `M09-55`'s).

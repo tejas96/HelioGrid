@@ -69,7 +69,7 @@
 }
 
 /* THE THUMB LIVES INSIDE THAT TRACK, so it flattens with it — a raised white knob in a sunken
-   groove reads as a switch you can still throw (Q77). */
+   groove reads as a switch you can still throw. */
 .hg-switch[data-disabled="true"] .hg-switch-thumb {
   box-shadow: none;
 }

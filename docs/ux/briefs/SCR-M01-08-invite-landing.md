@@ -45,7 +45,7 @@ Screen-specific:
    and no sign-in door on the frame: the code proves the number either way.
 5. **The resend gap is inherited, not re-invented.** 30 s, the constant `SCR-M01-01` fixed, stated
    the same way. Two screens sending codes to one number with two different waits is two products.
-6. **The decline is confirmed, and its recovery is words** (owner ruling 2026-08-31, `Q78`).
+6. **The decline is confirmed, and its recovery is words** (owner ruling 2026-08-31).
    Declining voids the invite and notifies the owner, so `N8`'s undo has nothing left to operate on:
    the invite is gone and someone else has been told. The confirm names both consequences and carries
    the recovery — *Rajesh can invite you again* — on the confirm AND the after-state. A grace window

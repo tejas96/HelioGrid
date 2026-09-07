@@ -291,7 +291,7 @@ fi
 
 # ── 9. Every contract UI language is fully REGISTERED in packages/i18n ──────
 # `UI_LANGUAGES` in packages/domain/src/format/languages.ts is the one place the set is written
-# (`Q87` moved it there so a pack can declare a label per language; contracts derives and
+# (the pack-labels ruling put it there so a pack can declare a label per language; contracts derives and
 # re-exports it, so every consumer still imports from contracts).
 # Two of the three registrations it implies are held by TYPES — LANGUAGE_META and
 # CATALOG_LOADERS are `satisfies Record<UiLanguage, …>`, so a new language fails typecheck

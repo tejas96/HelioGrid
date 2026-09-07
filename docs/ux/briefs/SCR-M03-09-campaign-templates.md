@@ -35,4 +35,4 @@ No user-visible counts, money or derived figures are pinned by this screen's PRD
 
 ---
 
-*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause stating authoring was online-only (register `Q15`). Both are deleted.*
+*Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` state and a Context-of-use clause stating authoring was online-only. Both are deleted.*

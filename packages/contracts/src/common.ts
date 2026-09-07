@@ -36,8 +36,8 @@ export const unitsPrefSchema = z.enum(['m', 'ft']);
 export type UnitsPref = z.infer<typeof unitsPrefSchema>;
 
 /**
- * The TWELVE preset roles — F2-01, owner ruling `Q69`, which supersedes the
- * retired six-value set and says it "must not be restored".
+ * The TWELVE preset roles — F2-01. They supersede the retired six-value set, which must
+ * not be restored.
  *
  * Built from `ROLE_PRESETS` in `@heliogrid/domain`, never restated: domain is the bottom
  * layer, so the list is written once and this enum is derived. `z.enum` needs a non-empty

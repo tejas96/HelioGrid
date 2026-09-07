@@ -60,12 +60,12 @@ Decided 2026-08-15 after inspecting both codebases.
 | **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) |
 
 **The `SHELL` task file spans two blocks.** `SCR-SHELL-06` — the billing state banner and its
-denial sheets — sits with the other shell rows in the register, because that is where it renders.
+denial sheets — sits with the other shell rows in the screens register, because that is where it renders.
 It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
 so designing it in block 1 means inventing the states and the destinations `M12` has not defined
 yet. The block-1 count of 23 already excludes it and the block-2 count of 5 already includes it.
 `python3 scripts/next-screen.py` is the sequence made executable — run it rather than reading this
-table against the register by eye.
+table against the screens register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
@@ -142,32 +142,6 @@ Build the consumer after the producer, or stub it deliberately and record the st
 | `M13` dashboards | every module | it reports on their data |
 | every module | `F-core` + `F-platform` | permissions, formats, notifications, honesty |
 
-## Decisions the owner still owes — and none of them blocks a screen
-
-Recorded in `docs/prd/registers/open-questions.md`.
-
-| Q | blocks | what it is |
-|---|---|---|
-| `Q66` | any multi-user field device | a shared phone holding another user's unuploaded photos. `F4-21` (nothing captured is unrecoverable) and tenant isolation contradict each other here, and the PRD currently states both — an implementer must pick, and either choice is defensible |
-| `Q65` | the first breaking API change | what a client too old to talk to the server shows. No screen waits on it: `SCR-SHELL-05` was deleted with the row |
-| `Q53` | nothing at launch | India's statutory messaging window — a regulatory-data gap, not a design choice |
-| `Q56`, `Q60` | nothing | reclassified as designer-decides-and-records, not owner rulings |
-
-**`Q62`, `Q63` and `Q64` were ruled on 2026-08-15 and are closed.** All three the same way and
-for one reason: they were not three questions but one, and `F8-36` had already answered it —
-*"does not silently queue, partially apply, or display an optimistic result."* Each was live law
-in the abstract with no module row making it concrete at the surface where it bites. The three
-restored rows are **`M02-66`** (a duplicate the live check could not see, found on apply),
-**`M02-67`** (assign and junk are server-completed) and **`M09-71`** (an attendance mark is
-recorded only once the server has it).
-
-They carry new ids on purpose: `M02-04`, `M02-26` and `M09-36` genuinely *were* deleted on
-2026-08-07, and the struck register rows saying so have to stay true. Each new row names the one
-it restores.
-
-`SCR-M02-01`, `SCR-M02-02`, `SCR-M02-04` and `SCR-M09-02` are unblocked. **Nothing in the design
-queue is waiting on a ruling.**
-
 ---
 
 ## Verifying
@@ -176,20 +150,18 @@ queue is waiting on a ruling.**
 python3 scripts/gates.py
 ```
 
-Eighteen mechanical gates over the whole suite — no dangling row or task ids anywhere in `docs/prd/`,
-`docs/ux/briefs/`, `docs/tasks/` or the registers; verbatim quotes matching their live PRD cells; every
+The mechanical gates in `scripts/gates.py` run over the whole suite — no dangling row or task ids anywhere in `docs/prd/`,
+`docs/ux/briefs/`, `docs/tasks/` or the screens register; verbatim quotes matching their live PRD cells; every
 screen carrying a brief and a DESIGN task; no offline machinery left in `docs/tasks/`; every one of
-the 1,660 PRD rows dispositioned exactly once in the screens register; and every recorded hole
-mapping to a genuinely open owner question. Ground truth is re-derived from the live PRD on
+the 1,660 PRD rows dispositioned exactly once in the screens register; and no open-question id
+anywhere — a row carries its own ruling. Ground truth is re-derived from the live PRD on
 every run, so a gate cannot pass by agreeing with a stale snapshot.
 
-Two of them exist because of specific ways this suite has been got wrong before. **Gate 12**
-keeps gates 2, 3, 10 and 14 honest: those forgive a paragraph marked as a recorded hole, so
-gate 12 checks each marker resolves to a genuinely *open* question — otherwise the marker
-becomes a way to hide a dead citation. **Gate 15** distinguishes a struck disposition from a
-missing one, because "we deleted the row from the register" and "we recorded that the row was
-deleted" look identical in a count and mean opposite things. **Gate 17** holds the V1 scope lock at 99,
-so scope creeps by an owner decision that moves the number, never by an edit that nobody notices.
+Two of them exist because of specific ways this suite has been got wrong before. **Gate 15**
+distinguishes a struck disposition from a missing one, because "we deleted the row from the
+screens register" and "we recorded that the row was deleted" look identical in a count and mean
+opposite things. **Gate 17** holds the V1 scope lock at 99, so scope creeps by an owner decision
+that moves the number, never by an edit that nobody notices.
 
 Design progress is a separate count:
 

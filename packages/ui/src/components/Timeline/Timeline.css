@@ -292,7 +292,7 @@
   padding-inline: var(--sp-5);
   border-radius: var(--r-pill);
   background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
   font-size: var(--fs-body);
   font-weight: var(--fw-medium);

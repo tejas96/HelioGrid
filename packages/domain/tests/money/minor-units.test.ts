@@ -33,7 +33,7 @@ describe('sumMinorUnits — a total is the sum of its parts (M11-08)', () => {
   });
 });
 
-describe('amountForQuantity — a quantity at a per-unit amount, rounded once (Q83)', () => {
+describe('amountForQuantity — a quantity at a per-unit amount, rounded once', () => {
   it.each([
     [100, 0, 0],
     [100, 1, 100],

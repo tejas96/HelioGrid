@@ -1,6 +1,6 @@
 # MS7 · Studio Step 7 — Proposal (captures · energy · finance · review)
 
-Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 6 rulings, 2026-08-05) · Depends on: MS1 (location/weather provenance), MS4 (module/inverter/catalog), MS6 (layout, shading, captures), F1 (pack: money, climate, escalation), F8 (provenance & staleness law), M06 (the 11-step builder — a DIFFERENT surface), BM/Q28
+Status: draft · Origin mix: SRC-CODE-dominant + BRIEF (Sitting 6 rulings, 2026-08-05) · Depends on: MS1 (location/weather provenance), MS4 (module/inverter/catalog), MS6 (layout, shading, captures), F1 (pack: money, climate, escalation), F8 (provenance & staleness law), M06 (the 11-step builder — a DIFFERENT surface), BM, M05-12 (no gates in the studio)
 Sources: POC code inventory — proposal (**156 keys**, 13 files/132 tests all passing, every numeric claim re-derived live) · sitting rulings (S6-1…S6-7) · census A.10-8 (20/20 matched; 99 rows beyond census — the whole energy/finance model had no census home). The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: MS10 (BOM money path), MS11 (done/review), F5 (customer surface), M06 (proposal builder consumes these numbers).
 
@@ -12,7 +12,7 @@ Step 7 turns a design into a customer-ready story: four shadow captures, a pre-p
 
 ## 2. Personas & surfaces
 
-Design Engineer (author) · Sales Executive (review/generate) · customer (read-only share surface, F5/Q27). Web + mobile parity; touch-accessible data per S6-7.1.
+Design Engineer (author) · Sales Executive (review/generate) · customer (read-only share surface, `F5-33`). Web + mobile parity; touch-accessible data per S6-7.1.
 
 ## 3. Feature areas
 
@@ -120,7 +120,7 @@ Design Engineer (author) · Sales Executive (review/generate) · customer (read-
 
 ## 4. Cross-module contracts & the M06 boundary
 
-Consumes: MS1 (location, weather provenance), MS4 (module/inverter specs, catalog version), MS6 (layout, per-panel shading, captures), MS10 (BOM total = system cost), F1 pack (subsidy, escalation, horizon, climate bands, currency), F8 (provenance/staleness laws). Provides: energy report, financials, financing options, narrative beats, comparison results and captures to M06's builder, F5's customer surface (Q27 3D + hero imagery) and MS9.
+Consumes: MS1 (location, weather provenance), MS4 (module/inverter specs, catalog version), MS6 (layout, per-panel shading, captures), MS10 (BOM total = system cost), F1 pack (subsidy, escalation, horizon, climate bands, currency), F8 (provenance/staleness laws). Provides: energy report, financials, financing options, narrative beats, comparison results and captures to M06's builder, F5's customer surface (3D inside the proposal link + hero imagery) and MS9.
 
 **Recorded M06 conflicts (not silently resolved):** (a) escalation — the studio's pack-driven rate must be the SAME value M06's builder edits, or the two documents will print different lifetime savings for one design; owner ruling S6-4 makes it pack data, and M06's field reads that default. (b) Lease/PPA economics exist in the studio but M06 v1 carries EMI only and treats CAPEX/OPEX as a document type — recorded; the studio may compute more than the current builder renders. (c) Clean seam: the money path is single-sourced (system cost = BOM total, M05 authors).
 
