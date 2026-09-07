@@ -98,7 +98,10 @@ export {
 } from './certification';
 export type {
   AbsorbedCost,
+  BillingCapability,
+  BillingPhase,
   BillingState,
+  CapabilityStanding,
   CountedCreation,
   FreeUpstream,
   Meter,
@@ -110,13 +113,21 @@ export type {
 } from './commerce';
 export {
   ABSORBED_COSTS,
+  BILLING_CAPABILITIES,
+  BILLING_PHASES,
   BILLING_STATES,
+  CAP_GRACE_DAYS,
+  CAP_WARNING_PERCENT,
   COUNTED_CREATIONS,
+  capabilityStanding,
+  capWarningReached,
   FREE_UPSTREAMS,
+  isAlwaysOn,
   isNonPaying,
   METERS,
   NEVER_METERED,
   PROXIED_UPSTREAMS,
+  STATE_CAPABILITY_MATRIX,
   TIERS,
   TRIAL_DAYS,
   tierBand,

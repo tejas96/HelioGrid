@@ -363,6 +363,12 @@ COSTS and what is never charged for at all, and never what counts one.
 
 - **BM-36** (P0) — **The matrix never blocks the field.** A photograph already captured on a field device always uploads and reads while blocked — the block is on new mutations from the UI, never on the device's pending photo uploads (`F4-21`). The formerly open capture-past-grace edge (register Q16) is **ruled (owner ruling 2026-08-04, Q16)**: field capture works through the full grace window and pauses only at `halted`, with a mid-visit halt letting the current visit complete ("never strand a surveyor on a roof"); reads, exports and pending photo uploads stay always-on. Mechanics at `M12-27`/`foundations/F4`.
 
+*The matrix is keyed by PHASE, not by billing state.* Six state names (`BM-33`) produce the seven columns above, because `past_due` behaves as two and `cancelled` is qualified post-period. Which phase a tenant is in RIGHT NOW needs their clock and their period end, and `F1-10` puts every such comparison on the tenant's clock — so `M12` resolves state + time → phase, and this task authors what each phase may do.
+
+*The upload row is split in two, giving twelve rows for the PRD's eleven.* `BM-36` is its own P0 row and its whole point is that the carve-out must never be forgotten; carrying it as a footnote beside the matrix would put it outside the thing `M12` actually reads. `new_file_upload` is the PRD's row unchanged and `pending_field_photo_upload` is `BM-36`. Owner ruling at this task's `/start`.
+
+*The third DONE WHEN line is stale and is recorded, not obeyed.* It requires an enforcement design to cite `Q16` as **open**; `BM-36` in this same task says `Q16` is **ruled**, and the register agrees. Recorded as `docs/prd/registers/conflicts.md` row 14. It binds an enforcement design, which is `T-M12-009`'s and not this task's — this authors the matrix and cites nothing.
+
 *Note:* the tenant-facing surfaces this contract is read through are other buckets' screens — the usage screen (`docs/ux/briefs/SCR-M12-04-usage-screen.md`), billing home (`docs/ux/briefs/SCR-M12-02-billing-home.md`) and the billing-state banner (`docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md`). This task owns the matrix and the three laws themselves as the floor those surfaces and `docs/prd/modules/M12-platform-billing.md`'s gate may never weaken.
 
 **DONE WHEN:**
