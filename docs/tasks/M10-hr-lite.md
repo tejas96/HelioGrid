@@ -7,6 +7,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 ### T-M10-001 · People Today Queue screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-13 (P0), M10-14 (P0), M10-15 (P1), M10-16 (P2), M10-26 (P1)
 **DESIGN:** SCR-M10-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-01-people-today-queue.md`; they are the specification.
@@ -23,6 +24,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 ### T-M10-002 · People List screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-10 (P0), M10-11 (P1)
 **DESIGN:** SCR-M10-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-02-people-list.md`; they are the specification.
@@ -38,6 +40,7 @@ Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delet
 ### T-M10-003 · Employee Record screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-04 (P0), M10-07 (P0), M10-35 (P0), M10-36 (P1)
 **DESIGN:** SCR-M10-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-03-employee-record.md`; they are the specification.
@@ -54,6 +57,7 @@ Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.
 ### T-M10-004 · Offboard Sweep screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-18 (P0), M10-19 (P0), M10-20 (P0), M10-21 (P0), M10-22 (P0)
 **DESIGN:** SCR-M10-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-04-offboard-sweep.md`; they are the specification. M10-20 appears in no brief and is quoted here:
@@ -73,6 +77,7 @@ Non-UI (build-side) halves carried by this task: M10-18 — offboard defined as 
 ### T-M10-005 · Attendance Register screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-25 (P0), M10-28 (P2)
 **DESIGN:** SCR-M10-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-05-attendance-register.md`; they are the specification.
@@ -88,6 +93,7 @@ Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-
 ### T-M10-006 · Leave Request screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-27 (P0)
 **DESIGN:** SCR-M10-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-06-leave-request.md`; they are the specification.
@@ -102,6 +108,7 @@ Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic;
 ### T-M10-007 · Team Structure screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-34 (P0)
 **DESIGN:** SCR-M10-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-07-team-structure.md`; they are the specification.
@@ -116,6 +123,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-008 · Employee record data model bound to M01 identity
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-03, M10-06, M10-08
 **Requirements (verbatim):**
 
@@ -134,6 +142,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-009 · People-records visibility domain enforcement
 
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-05, M10-09, M10-30
 **Requirements (verbatim):**
 
@@ -152,6 +161,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-010 · Manager mapping: membership data, Team-scope resolution & change controls
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-31, M10-32, M10-33
 **Requirements (verbatim):**
 
@@ -171,6 +181,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-011 · Employee document storage: typed documents, replace-with-trail, storage meter & read boundary
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-37, M10-38, M10-39
 **Requirements (verbatim):**
 
@@ -188,6 +199,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-012 · Employee PII data-rights integration
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-12
 **Requirements (verbatim):**
 
@@ -210,8 +222,8 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 - **M10-23** (P0) — **The shared-surface split, honoured from this side.** `modules/M09` owns the field half: capturing day start and day end, correction-by-append and provenance (`M09-35`–`M09-38`). This module owns the HR half: the attendance **register** (per-person per-day view over M09's facts), leave, and the tenant holiday calendar. Neither half restates the other; this module writes no attendance capture and M09 writes no leave.
   *Enforced by:* T-M10-005 and T-M10-006 reading only M09's published facts and owning only register, leave and holiday data; review that no M10 code writes an attendance capture and no M09 code writes leave.
 - **M10-24** (P0) — **Absence is never inferred.** A day with no marks renders as **unmarked** — never as "absent", never red, never a score. The register states what was recorded and what was not; what an unmarked day *means* is the tenant's judgement, made by a person. This is `M09-39`'s law, relied on here exactly as M09 published it.
-  *Enforced by:* T-M10-005's register rendering, whose DONE WHEN carries the shared acceptance line (M10-24, M10-25); review that no absent state, red state or score exists anywhere in the register to render.
-- **M10-29** (P1) — **No shift patterns in v1, and the work-hours window stays M09's — CONFIRMED (owner ruling 2026-08-04, Q39).** This module carries **no per-employee shift pattern**: the ruled window is the worker's day-start → day-end marks with M09's tenant force-stop backstop (default 20:00, owner-set; `M09-44`), employee-visible. The ownership question is closed: the definition stays in M09, exactly as this module's input anticipated; a future shifts feature remains the justified-in-writing enterprise addition M10-01 contemplates.
+  *Enforced by:* T-M10-005's register rendering, whose DONE WHEN carries the shared acceptance line (M10-24, M10-25); review that no absent state, red state or score exists anywhere in the attendance register to render.
+- **M10-29** (P1) — **No shift patterns in v1, and the work-hours window stays M09's — CONFIRMED (owner ruling 2026-08-04).** This module carries **no per-employee shift pattern**: the ruled window is the worker's day-start → day-end marks with M09's tenant force-stop backstop (default 20:00, owner-set; `M09-44`), employee-visible. The ownership question is closed: the definition stays in M09, exactly as this module's input anticipated; a future shifts feature remains the justified-in-writing enterprise addition M10-01 contemplates.
   *Enforced by:* review — no per-employee shift-pattern field or data model exists in any M10 task; the work-hours window definition remains `M09-44`'s.
 
 ---

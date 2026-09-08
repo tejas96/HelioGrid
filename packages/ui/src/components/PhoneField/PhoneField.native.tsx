@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-input-expressive'],
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   shellFunctional: { borderRadius: theme.radius['r-input-functional'] },

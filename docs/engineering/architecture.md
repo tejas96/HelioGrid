@@ -1,3 +1,5 @@
+> **Fate:** §2 (what each package owns and imports) folds into that package's `CLAUDE.md`; §1 and §4 fold into `CLAUDE.md` §6; then this file is deleted.
+
 # HelioGrid architecture — the spine
 
 The single canonical home for inter-package facts: what each package owns, what it may
@@ -116,7 +118,7 @@ module appends its own capability rows when its slice begins.
 ### db — schema mirror, migrations, backend client
 **STATUS: greenfield.** `src/schema/` and migrations 0001–0006
 were deleted; the market-pack storage slice (`T-FCORE-016`) authors the fresh 0001 and the auth +
-tenancy slice follows it (`Q85`). Today the package is client.ts + migrate.ts + uuid.ts.
+tenancy slice follows it. Today the package is client.ts + migrate.ts + uuid.ts.
 Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
 the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
 plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
@@ -264,7 +266,7 @@ development PKI, bootstrap and the probe scripts that prove identity, durability
 upgrades) — and `infra/temporal/deploy/` — the reviewed, UNDEPLOYED production candidate
 (image, Fly template, rendered config, runbooks, alerts). Allowed deps: none — it is NOT a
 workspace package (`pnpm-workspace.yaml` covers apps/packages/tests only), so it is outside the
-build graph, the lockfile, dep-cruiser and knip. Platform scope: operator tooling. Belongs:
+build graph, the lockfile and dep-cruiser. Platform scope: operator tooling. Belongs:
 anything needed to RUN or DEPLOY a dependency that is not application code. Never: product
 code, a workspace dependency, or a real credential — `pki/` is gitignored development material.
 Extension point: one folder per deployed dependency.
@@ -347,14 +349,14 @@ section records the answer per new file.
 3. Is it business logic, a policy number, a protocol constant, a permission rule, or a flow
    view-model both platforms read? → packages/domain (pure TS only). A capability or a
    visibility scope is ALWAYS domain — never an `if role === …` in a handler, which is the
-   repo-wide sweep `docs/engineering/forward-compat.md`'s auth/tenancy row exists to prevent.
+   repo-wide sweep `T-M01-025`'s one deny-by-default guard exists to prevent.
 4. Is it data access (fetch, cache, session store)? → packages/data (react only under
    src/react/ and src/server/; a new repository is registered in src/composition.ts, and
    nothing else may build a client or a transport).
 5. Is it form state/validation wiring? → packages/forms.
 6. Is it user-visible copy needed by both platforms? → packages/i18n/src/copy. Is it the
    SET of languages? → packages/domain/src/format/languages.ts, and nowhere else — a pack
-   declares a label per language (Q87), and domain imports nothing. contracts derives the
+   declares a label per language, and domain imports nothing. contracts derives the
    z.enum and re-exports, so i18n, the Lingui CLI and the apps still import from contracts.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
    packages/theme (`ds:pull`) — never a literal in a screen, never hand-transcribed.

@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 17 — UI architecture V2
 
 **Status:** BUILT. `packages/theme` is generated from the live design system and
@@ -19,8 +21,8 @@ The v1 UI layer implemented a 21-component snapshot of the design system. The li
 system (Claude Design project **HelioGrid Design System**,
 `c8aa4326-21bf-453a-8d11-749cc81dee12`) had already grown well past it through design rounds
 13–17, and the v1 layer still carried components for capabilities the product no longer has —
-an `OfflineBanner` under parity contract on both platforms, after owner ruling **Q61**
-(2026-08-07) removed the offline capability entirely.
+an `OfflineBanner` under parity contract on both platforms, after the owner ruling of
+2026-08-07 removed the offline capability entirely.
 
 Refactoring would have preserved that drift. So the layer was replaced rather than refactored:
 `packages/theme` and `packages/ui` are the result.
@@ -469,7 +471,6 @@ Each needs updating when phase 3 lands. Listed so none is missed:
 
 - `package.json` — `check:ui-parity` removed; `ds:contract` is the live gate (`ds:check` was removed too — §6)
 - `.dependency-cruiser.cjs` — package boundary rules naming `ui` / `ui-api` / `tokens`
-- `knip.jsonc` — entry points for the deleted packages
 - `apps/web/next.config.ts` — `transpilePackages: ['@heliogrid/ui', '@heliogrid/theme']`
   **done 2026-08-25 (task 2)**
 - `apps/mobile/babel.config.js` — no styling plugin: §3 takes plain `StyleSheet` (ADR-0026)

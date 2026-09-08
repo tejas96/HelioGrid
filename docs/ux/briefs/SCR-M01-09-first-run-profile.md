@@ -44,7 +44,7 @@ Screen-specific:
    product tells you rather than one you perform, and the only honest "back" would be un-joining.
 6. **The language control is corridor chrome, not profile capture** — so it does not spend
    `M01-14`'s *that is all* ceiling. It is also **the invitee's whole language step** (owner ruling
-   2026-08-31, `Q79`): `SCR-M01-03` is the signing-up owner's first-run screen and an invited
+   2026-08-31): `SCR-M01-03` is the signing-up owner's first-run screen and an invited
    employee never reaches it, because `F3-03` asks that a picker be REACHABLE at first run, not
    that every user be given a screen for it.
 

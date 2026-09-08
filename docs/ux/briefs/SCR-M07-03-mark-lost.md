@@ -12,7 +12,7 @@ Reached from: a lead in any open stage (M07 §M07.12 behavior detail: "Mark lost
 
 ### docs/prd/modules/M07-sales-execution.md
 
-- **M07-63** (P0) — **Mark lost requires a reason — price · chose competitor · postponed · not reachable · roof unsuitable · financing failed · not interested. "This list is the most valuable data in the product."** The reason drives R9's rules as written: *postponed* auto-resurfaces the lead on the given date; *not interested* suppresses the no-call task for six months. The former vocabulary mismatch is **resolved (owner ruling 2026-08-04, Q21)**: "not interested" is the **seventh Lost reason**, carrying the six-month suppression exactly as R9 intends; the disqualify list is unchanged (`M02-54` is the machine's row; this is its surface). _(non-UI half, build-side: reason drives R9: postponed auto-resurfaces, not-interested suppresses six months — for awareness, not for drawing)_
+- **M07-63** (P0) — **Mark lost requires a reason — price · chose competitor · postponed · not reachable · roof unsuitable · financing failed · not interested. "This list is the most valuable data in the product."** The reason drives R9's rules as written: *postponed* auto-resurfaces the lead on the given date; *not interested* suppresses the no-call task for six months. The former vocabulary mismatch is **resolved (owner ruling 2026-08-04)**: "not interested" is the **seventh Lost reason**, carrying the six-month suppression exactly as R9 intends; the disqualify list is unchanged (`M02-54` is the machine's row; this is its surface). _(non-UI half, build-side: reason drives R9: postponed auto-resurfaces, not-interested suppresses six months — for awareness, not for drawing)_
 
 ## States
 

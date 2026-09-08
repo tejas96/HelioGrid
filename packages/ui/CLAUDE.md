@@ -2,7 +2,7 @@
 
 Primitives plus components, each shipping a web half and a React Native half from one folder.
 The compose-don't-invent and no-raw-values laws are `.claude/rules/ui-adherence.md`, which loads
-with this folder. Traps: `docs/engineering/landmines.md`.
+with this folder. Traps: `.claude/landmines.md`.
 
 **This package is built from the design system AHEAD of the screens that consume it.** Component
 gaps found by a screen are registered in `docs/tasks/UI.md`: fix when you touch the component,

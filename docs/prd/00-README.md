@@ -35,8 +35,8 @@ them, so they can never quietly drift:
 
 **The thread:** a requirement points to its screen, the screen points to its task, the task points
 back at the requirement. Ask "is feature X built?" and you can follow one line from this suite to
-running software. Registers of record for what is still undecided: `registers/conflicts.md` (in-suite
-contradictions, recorded and never silently resolved) and `registers/open-questions.md`.
+running software. Nothing is undecided outside a row: a requirement row carries its own ruling,
+and a question no row answers is the owner's.
 
 ## Document map
 
@@ -71,22 +71,13 @@ The suite tree, matching the approved design spec §4 exactly (paths relative to
 | `modules/M11-payments-and-collections.md` | Tenant-side money (tranches, BYO gateway, receipts) | reviewed-pending-owner |
 | `modules/M12-platform-billing.md` | SaaS subscription lifecycle, entitlements, dunning, invoicing | reviewed-pending-owner |
 | `modules/M13-dashboards-and-reporting.md` | Dashboards and reporting | reviewed-pending-owner |
-| `registers/conflicts.md` | Contradictions + source gaps, recorded not resolved | reviewed-pending-owner |
-| `registers/enhancements.md` | Every `REC` in one place with rationale | reviewed-pending-owner |
-| `registers/open-questions.md` | Decisions V2 still owes an owner ruling | reviewed-pending-owner |
 | *retired: PRD authoring process* | This spec, the authoring plan, task briefs, extraction ledger. Process artifacts — not product content | — (process) |
 
 **Status vocabulary (set by Task 26, the suite-wide consistency pass):** `reviewed-pending-owner`
 means the document has passed its authoring task's review cycle, the Task 26 consistency pass, and now awaits the owner's
 sign-off. The per-document `Status:` header lines keep the template's `draft` value until the
 owner signs off, at which point they flip to `reviewed` — this doc-map column is the suite-level
-status of record in the meantime. The three registers are living documents; their status marks the
-state of their contents as of the Task 26 pass.
-
-**Register-naming note:** the three files under `registers/` use descriptive filenames
-(`conflicts.md`, `enhancements.md`, `open-questions.md`) and are **deliberately
-not R-numbered** — the source corpus already has its own rulings numbered R1–R20, and giving the
-registers numbers of their own would collide with that scheme in conversation and in cross-references.
+status of record in the meantime.
 
 ## The document template
 
@@ -109,7 +100,7 @@ Acceptance criteria (Given/When/Then per P0 requirement)
 Localization notes · Analytics events
 ## 4. Cross-module contracts (what this module expects from / provides to others, product level)
 ## 5. Non-goals              (explicit, with v1 rationale where source-derived)
-## 6. Open questions         (mirrored into registers/open-questions.md)
+## 6. Open questions         (only while one is open; a ruling folds into its row and the question leaves)
 ```
 
 Notes on using the template:
@@ -120,9 +111,8 @@ Notes on using the template:
   subsections — they follow the requirement table in the order shown.
 - Every P0 requirement gets at least one Given/When/Then acceptance criterion. P1/P2 requirements
   get one where the behavior is non-obvious.
-- Section 6 (Open questions) in every document is mirrored into
-  `registers/open-questions.md` — the register is the suite-wide rollup; the module section is
-  the reader's local view.
+- Section 6 (Open questions) holds only what no row yet answers: a ruling folds into the row it
+  binds and the question leaves the section, which goes when it empties.
 
 ## Tag vocabulary (origin, never mixed)
 
@@ -132,8 +122,8 @@ Every requirement row carries exactly one origin tag, plus an exact source point
   `docs/` corpus. The default tag for anything extracted from the corpus.
 - **`BRIEF`** — mandated by the owner's V2 brief, not present in v1 source (e.g. marketing, field
   workforce, HR, Google login, global-first framing).
-- **`REC`** — recommended enhancement. A `REC` requirement lives in its module, for context, **and**
-  in `docs/prd/registers/enhancements.md`, with rationale. **`REC` is never mixed with source truth** —
+- **`REC`** — recommended enhancement. A `REC` requirement lives in ONE home — its module's own `REC`
+  row or **Later** line, with rationale — and nowhere else (`OV-43`). **`REC` is never mixed with source truth** —
   it is never phrased or tabled as if it were `SRC` or `BRIEF`, and a reader must always be able to
   tell, from the tag alone, that a `REC` item is a recommendation the suite is making, not a
   requirement the corpus or the brief already established.
@@ -172,11 +162,11 @@ can assume these were followed:
    acceptance baseline. The census never shrinks: nothing in it is dropped, downgraded, or
    quietly reworded away between this pass and the dedicated studio deep-dive pass (DD13).
 2. **The conflict rule.** Contradictions between source documents — and gaps where cited source
-   material is missing or was deleted — are **recorded in `registers/conflicts.md`, never
+   material is missing or was deleted — are **recorded in the row they touch, never
    silently resolved**. Neither gap is filled by invention; facts that survive only as
    citations are used as-is with the citation noted.
 
 These rules are what keep this suite honest about where a requirement's authority comes
 from — a reader who finds a requirement suspicious can always trace it back to a `SRC` pointer,
-a `BRIEF` mandate, or a `REC` rationale, and can always check the registers for whether it has
-already been flagged as conflicted or open.
+a `BRIEF` mandate, or a `REC` rationale, and a row that was once conflicted or open carries its
+ruling in place.

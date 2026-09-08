@@ -1,6 +1,6 @@
 # @heliogrid/forms — the headless form layer, the ONLY form-state path for apps
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 forms.
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 forms.
 
 ## What lives here / what must never live here
 

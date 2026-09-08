@@ -1,6 +1,6 @@
 # @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN
 
-Traps: `docs/engineering/landmines.md` · deps:
+Traps: `.claude/landmines.md` · deps:
 `architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
 
 ## What lives here / what must never live here
@@ -54,7 +54,7 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
   string — the extractor forks them into duplicate entries and translations are lost. It is also
   why the first paint is correct with no catalog fetched: a missing message renders its id.
 - **The language SET is not written here.** `UI_LANGUAGES` is authored in
-  `packages/domain/src/format/languages.ts` (`Q87`) and re-exported by contracts, which is
+  `packages/domain/src/format/languages.ts` and re-exported by contracts, which is
   where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
   loaders are `satisfies Record<UiLanguage, …>` (`M48`).
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module

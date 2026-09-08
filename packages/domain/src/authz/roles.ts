@@ -1,7 +1,6 @@
 /**
- * The twelve fixed preset roles — `docs/prd/foundations/F2-roles-and-permissions.md` F2-01,
- * and owner ruling `Q69`, which supersedes the retired six-value set and says
- * it "must not be restored".
+ * The twelve fixed preset roles — `docs/prd/foundations/F2-roles-and-permissions.md` F2-01.
+ * They supersede the retired six-value set, which must not be restored.
  *
  * A readonly tuple rather than a Zod enum because domain carries no dependencies — contracts
  * declares `z.enum(ROLE_PRESETS)` from this exact list, so the two can never disagree.

@@ -66,18 +66,18 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 - **A pack LABEL is per language and a pack VOCABULARY is an open set** (`format/`). A label is a
   `PackLabel` — `en` required, the rest optional, because `F3-05` falls back to English and an
   unauthored Hindi label is a content gap, not a failure state. It lives on the pack rather than in
-  `packages/i18n` so a label change stays a pack revision (`F1-11`, `Q87`), which is also why
+  `packages/i18n` so a label change stays a pack revision (`F1-11`), which is also why
   `UI_LANGUAGES` is authored HERE and contracts derives it. Stage, blocker, checklist and
   payment-mode keys are open-set strings validated against the pack (`F1-09`) — a reader returns
   `null` for an undeclared key and never guesses, because the machines that own them are not
   authored yet (Law 9). A never-translated name (`DISCOM`, `ALMM`, `GSTIN`) carries `en` alone.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
-  each, and `money/` is the ONLY slice that rounds (`Q83`) — `applyRate` for a fraction of an
+  each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
   only agree. `tax/breakdown.ts` is the one tax computation and `subsidy/amount.ts` the one incentive
   computation: a module that needs either calls it and never multiplies a rate itself.
 
 ## Done means
 
-Pure (the cruiser purity rules green) · consumed by BOTH platforms where a mobile surface exists
+Pure (`M57`) · consumed by BOTH platforms where a mobile surface exists
 (Law 7) · typecheck and lint green.

@@ -197,7 +197,7 @@
   padding: 0 var(--sp-3);
   border-radius: var(--r-input-functional);
   background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2 (owner ruling 2026-08-28, Q77). */
+  /* A control is raised, not outlined — --surface at --e2. */
   box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
@@ -207,7 +207,7 @@
 }
 
 .hg-range-end-box[data-focus="true"] {
-  /* Focus ADDS a ring, never replaces the elevation: rest is --e2 (Q77), so a ring alone would
+  /* Focus ADDS a ring, never replaces the elevation: rest is --e2, so a ring alone would
      sink the focused box below every unfocused one. */
   box-shadow:
     var(--e2),

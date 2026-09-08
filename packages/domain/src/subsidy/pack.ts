@@ -86,7 +86,7 @@ export type SubsidyPack = NoSubsidy | SubsidyModel;
  *
  * `regionalTopUps` is authored EMPTY. `F1-33` names a state dimension and the suite carries no
  * state's figures, so the axis exists and grants nothing until a state's own ladder is authored
- * as the pack-data update `F1-11` makes it (owner ruling `Q84`).
+ * as the pack-data update `F1-11` makes it.
  */
 export const IN_SUBSIDY: SubsidyModel = {
   offered: true,

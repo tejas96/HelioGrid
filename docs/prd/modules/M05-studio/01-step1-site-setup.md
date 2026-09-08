@@ -38,7 +38,7 @@ Localization: field labels/hints via catalog (F3); pack data is market content. 
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS1-09 | Ground Mount is a normal, working option on EVERY plan — toggle functional, no PRO badge, no lock, no tier copy. The only capacity limit anywhere is the plan's design-kW ceiling at Save/Generate (Q28 law). | `BRIEF` S1-1 (fixes POC-DEFECT `CODE.step1-setup.11`) | P0 |
+| MS1-09 | Ground Mount is a normal, working option on EVERY plan — toggle functional, no PRO badge, no lock, no tier copy. The only capacity limit anywhere is the plan's design-kW ceiling at Save/Generate (M05-12's law). | `BRIEF` S1-1 (fixes POC-DEFECT `CODE.step1-setup.11`) | P0 |
 | MS1-10 | Site Type segmented control (Residential/Commercial) re-derives tariff on switch; Connection Type (Single/Three Phase); Sanctioned Load (kW, min 0, blank↔0 display rule) (`CODE.step1-setup.12–.14`). | `SRC-CODE` .12–.14 | P0 |
 
 Edge cases: switching site type after manual tariff edit re-derives and OVERWRITES only if the user never edited (manual-wins rule MS1-05). Acceptance: Given any plan tier, When Step 1 renders, Then Ground Mount is enabled and functional (MS1-09); Given a site-type switch with no manual tariff edit, Then the tariff re-derives for the new type, and sanctioned load blank round-trips as 0 (MS1-10).
@@ -112,7 +112,7 @@ Consumes: M02 lead fields + M04 survey handoff (MS1-01); M01 tenant branding (MS
 
 ## 5. Non-goals
 
-Per-project logo prompting in the default flow (S1-2) · the decorative tutorial banner (S1-3 replaces) · PRO/tier gating of Ground Mount or anything else (Q28) · India hard-coding of country/regions/utilities/tariffs (S1-6) · survey capture itself (M04's) · wizard chrome (MS12).
+Per-project logo prompting in the default flow (S1-2) · the decorative tutorial banner (S1-3 replaces) · PRO/tier gating of Ground Mount or anything else · India hard-coding of country/regions/utilities/tariffs (S1-6) · survey capture itself (M04's) · wizard chrome (MS12).
 
 ## 6. Open items
 

@@ -23,6 +23,7 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 
 ### T-M06-001 · Proposal Entry — path choice and the Quick-mode toggle
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-05 (P0), M06-18 (P0), M06-19 (P0)
 **DESIGN:** SCR-M06-01 → PENDING
 
@@ -40,6 +41,7 @@ are the specification.
 
 ### T-M06-002 · Proposal Builder shell — chip rail, footer, failure list, Quick-mode view
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-23 (P0), M06-24 (P0)
 **DESIGN:** SCR-M06-02 → PENDING
 
@@ -58,6 +60,7 @@ are the specification.
 
 ### T-M06-003 · Builder Step 1 — Company, and the Proposal Type sheet
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-06 (P0), M06-07 (P0)
 **DESIGN:** SCR-M06-03 → PENDING
 
@@ -73,6 +76,7 @@ are the specification.
 
 ### T-M06-004 · Builder Step 2 — Achievements
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-08 (P0)
 **DESIGN:** SCR-M06-04 → PENDING
 
@@ -87,6 +91,7 @@ are the specification.
 
 ### T-M06-005 · Builder Step 3 — Solar System Setup, battery card and the live payable
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05 → PENDING
 
@@ -105,6 +110,7 @@ are the specification.
 
 ### T-M06-006 · Builder Step 4 — Performance Metrics
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-10 (P0)
 **DESIGN:** SCR-M06-06 → PENDING
 
@@ -119,6 +125,7 @@ are the specification.
 
 ### T-M06-007 · Builder Step 5 — Financial Data
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-11 (P0)
 **DESIGN:** SCR-M06-07 → PENDING
 
@@ -133,6 +140,7 @@ are the specification.
 
 ### T-M06-008 · Builder Step 6 — Project Timeline
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-12 (P0)
 **DESIGN:** SCR-M06-08 → PENDING
 
@@ -147,6 +155,7 @@ are the specification.
 
 ### T-M06-009 · Builder Step 7 — Payment Terms
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-13 (P0)
 **DESIGN:** SCR-M06-09 → PENDING
 
@@ -161,6 +170,7 @@ are the specification.
 
 ### T-M06-010 · Builder Step 8 — Components: the five-category gate, edit sheets and inline add
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0), M06-30 (P0)
 **DESIGN:** SCR-M06-10 → PENDING
 
@@ -180,6 +190,7 @@ are the specification.
 
 ### T-M06-011 · Builder Step 9 — Terms & Conditions
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-15 (P0)
 **DESIGN:** SCR-M06-11 → PENDING
 
@@ -194,6 +205,7 @@ are the specification.
 
 ### T-M06-012 · Builder Step 10 — Client Details
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-16 (P0)
 **DESIGN:** SCR-M06-12 → PENDING
 
@@ -208,6 +220,7 @@ are the specification.
 
 ### T-M06-013 · Builder Step 11 — Bank Details and the closing sheets
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-17 (P0)
 **DESIGN:** SCR-M06-13 → PENDING
 
@@ -222,6 +235,7 @@ are the specification.
 
 ### T-M06-014 · BOM Detail — Path A line items behind the price
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-39 (P0)
 **DESIGN:** SCR-M06-14 → PENDING
 
@@ -236,6 +250,7 @@ the specification.
 
 ### T-M06-015 · Proposal Preview — the customer-eye rendering before sending
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-50 (P0)
 **DESIGN:** SCR-M06-15 → PENDING
 
@@ -250,6 +265,7 @@ they are the specification.
 
 ### T-M06-016 · Proposal Versions — v1 vs v2, what changed and why
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-42 (P0)
 **DESIGN:** SCR-M06-16 → PENDING
 
@@ -264,6 +280,7 @@ they are the specification.
 
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
 
@@ -282,6 +299,7 @@ which belong to another bucket and are dispositioned there; this task owns the M
 
 ### T-M06-018 · Proposal Detail — status, tracking, staleness, upgrade offer and the share sheet
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
 **DESIGN:** SCR-M06-18 → PENDING
 
@@ -292,17 +310,18 @@ they are the specification.
 - Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
 - Given a completed design on a lead with an indicative proposal, when the upgrade is offered, then the changed figures and their tier changes are shown before commit, and declining changes nothing (M06-47).
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
-- Given the share sheet with a connected transactional channel, when the share sends, then it goes from the tenant's official channel under the transactional template class and the same act marks the version shared; and given no connected channel, then Download PDF + Copy link + composed message are offered, nothing sends, and only the explicit mark-shared act changes status and starts the clock (M06-53, owner ruling 2026-08-04 Q33).
-- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is **opened** — before any share act — then the review-needed state is visible on the proposal detail with the superseding survey version named and the route to the design's review offered as the corrective action; the condition is never communicated only by absence, only by a colour, or only after the rep tries to send (`F8-18`; `M05-13`, owner ruling 2026-08-04 Q24). This is a distinct surface from `M06-46` staleness: `M05-13` applies nothing automatically, so no pinned design value has moved and the fingerprint comparison does not fire — Regenerate is not the remedy, the designer's review is. Brief state: `design-survey-review-needed` (`docs/ux/briefs/SCR-M06-18-proposal-detail.md`).
-- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version — a draft proposal on the design cannot send until the review clears, and a proposal already sent stays pinned and never mutates (`M05-13`, owner ruling 2026-08-04 Q24; the marker and the designer notification are raised on the studio side under `M05-13` in `docs/tasks/MS-studio-a.md`; `F8-15`, `F5-40`). The block lands on both of `M06-53`'s send acts — the connected-channel send and the explicit mark-shared act that starts the clock — and the refusal is never the first place the rep learns of the condition (the pre-send criterion above owns that). Brief state: `send-blocked-survey-superseded`.
+- Given the share sheet with a connected transactional channel, when the share sends, then it goes from the tenant's official channel under the transactional template class and the same act marks the version shared; and given no connected channel, then Download PDF + Copy link + composed message are offered, nothing sends, and only the explicit mark-shared act changes status and starts the clock (M06-53, owner ruling 2026-08-04).
+- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is **opened** — before any share act — then the review-needed state is visible on the proposal detail with the superseding survey version named and the route to the design's review offered as the corrective action; the condition is never communicated only by absence, only by a colour, or only after the rep tries to send (`F8-18`; `M05-13`, owner ruling 2026-08-04). This is a distinct surface from `M06-46` staleness: `M05-13` applies nothing automatically, so no pinned design value has moved and the fingerprint comparison does not fire — Regenerate is not the remedy, the designer's review is. Brief state: `design-survey-review-needed` (`docs/ux/briefs/SCR-M06-18-proposal-detail.md`).
+- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version — a draft proposal on the design cannot send until the review clears, and a proposal already sent stays pinned and never mutates (`M05-13`, owner ruling 2026-08-04; the marker and the designer notification are raised on the studio side under `M05-13` in `docs/tasks/MS-studio-a.md`; `F8-15`, `F5-40`). The block lands on both of `M06-53`'s send acts — the connected-channel send and the explicit mark-shared act that starts the clock — and the refusal is never the first place the rep learns of the condition (the pre-send criterion above owns that). Brief state: `send-blocked-survey-superseded`.
 - Given a shared proposal, when tracking renders, then states are shared → opened → viewed-for-how-long, delivery states appear only as the connected channel reported them, the fallback path shows no delivered state anywhere, and an open notifies the rep (M06-54).
-- Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57, Q33 ruling).
+- Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57; owner ruling 2026-08-04 on the transactional lane).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ---
 
 ### T-M06-019 · Proposal List — status, staleness and per-row duplicate
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
 **DESIGN:** SCR-M06-19 → PENDING
 
@@ -313,7 +332,7 @@ are the specification.
 - Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
 - Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
-- Given a draft proposal whose design carries the "survey updated — review needed" marker, when the proposal list renders, then the review-needed state is visible on that row before the rep opens or shares anything, distinct from the `M06-46` stale badge — `F8-18` puts the staleness state "on the object itself — in the list, on the detail screen, in the customer-facing rendering", and M05's behavior detail rules `M05-13` one of the three freshness surfaces that "all follow one pattern: the affected number or surface carries the staleness marker" (`M05-13`, owner ruling 2026-08-04 Q24). The customer-facing leg of `F8-18` needs nothing here: a held proposal is a draft with no customer rendering, and a version already shared stays pinned and never mutates (`F8-15`).
+- Given a draft proposal whose design carries the "survey updated — review needed" marker, when the proposal list renders, then the review-needed state is visible on that row before the rep opens or shares anything, distinct from the `M06-46` stale badge — `F8-18` puts the staleness state "on the object itself — in the list, on the detail screen, in the customer-facing rendering", and M05's behavior detail rules `M05-13` one of the three freshness surfaces that "all follow one pattern: the affected number or surface carries the staleness marker" (`M05-13`, owner ruling 2026-08-04). The customer-facing leg of `F8-18` needs nothing here: a held proposal is a draft with no customer rendering, and a version already shared stays pinned and never mutates (`F8-15`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Counterpart edit required outside this file** (the brief owner makes it; this task cannot close without it): `docs/ux/briefs/SCR-M06-19-proposal-list.md` carries no state for the review-needed condition — its States list has `stale-badge` (the `M06-46` comparison) only, and `M05-13` is not among its verbatim rows. It needs `M05-13` carried verbatim under a `### From docs/prd/modules/M05-design-studio.md` heading and a per-row state — e.g. `design-survey-review-needed` — modelled on the states added to `docs/ux/briefs/SCR-M06-18-proposal-detail.md`. Until then this criterion has a build target and no design, which is exactly the split the detail-side leg was just corrected for.
@@ -322,6 +341,7 @@ are the specification.
 
 ### T-M06-020 · Deal Link Manager — the tenant-side link surface on the deal
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
 **DESIGN:** SCR-M06-20 → PENDING
 
@@ -338,11 +358,12 @@ they are the specification.
 
 ### T-M06-021 · Path A pre-fill map — what a design fills, and at which provenance tier
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-03
 
 **Requirements (verbatim):**
 
-- **M06-03** (P0) — **What a design pre-fills — the pre-fill table, carried faithfully.** Step 3 Solar System Setup: capacity, type, category **derived** (without a design: typed). Step 4 Performance Metrics: generation from the real shading simulation, **derived** (without: AI auto-fill, **estimated**). Step 5 Financial Data: savings/payback from the real BOM pricing, **derived** (without: AI auto-fill, **estimated**). Step 8 Components: the actual BOM, **derived** (without: picked from catalog, **assumed**). Cost: the real bill of materials (without: a typed lump sum). A typed Path B figure carries the conservative tier per F8's recorded reading (`F8-21`, register Q8).
+- **M06-03** (P0) — **What a design pre-fills — the pre-fill table, carried faithfully.** Step 3 Solar System Setup: capacity, type, category **derived** (without a design: typed). Step 4 Performance Metrics: generation from the real shading simulation, **derived** (without: AI auto-fill, **estimated**). Step 5 Financial Data: savings/payback from the real BOM pricing, **derived** (without: AI auto-fill, **estimated**). Step 8 Components: the actual BOM, **derived** (without: picked from catalog, **assumed**). Cost: the real bill of materials (without: a typed lump sum). A typed Path B figure carries the conservative tier per F8's recorded reading (`F8-21`).
 
 **DONE WHEN:**
 - Given a completed design, when Generate proposal is tapped in the studio, then the builder opens on Path A with steps 3/4/5/8 pre-filled `derived` per the pre-fill table (M06-03, M06-05).
@@ -352,6 +373,7 @@ they are the specification.
 
 ### T-M06-022 · The Generate gate evaluator — one checklist for every speed path
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-20, M06-36, M06-37
 
 **Requirements (verbatim):**
@@ -371,6 +393,7 @@ they are the specification.
 
 ### T-M06-023 · Continuous draft save — commit on blur, resumable from the lead
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-25
 
 **Requirements (verbatim):**
@@ -387,6 +410,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-024 · The proposal money block — scheme-generic computation, pack incentive, one value set
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-34, M06-38, M06-41
 
 **Requirements (verbatim):**
@@ -405,6 +429,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-025 · Version records, server numbering and the status machine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-43, M06-44, M06-45
 
 **Requirements (verbatim):**
@@ -424,6 +449,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-026 · Component line resolution provenance, frozen with the version
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-31
 
 **Requirements (verbatim):**
@@ -437,6 +463,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-027 · Tenant template consumption and the save-as-template round-trip
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-49
 
 **Requirements (verbatim):**
@@ -452,6 +479,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-028 · The single entitlement checkpoint at proposal creation
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-26
 
 **Requirements (verbatim):**
@@ -465,6 +493,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-029 · Fact-traceable proposal narrative
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-52
 
 **Requirements (verbatim):**
@@ -478,6 +507,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-030 · The automatic follow-up task on mark-shared
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-55
 
 **Requirements (verbatim):**
@@ -491,6 +521,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-031 · Double-proposal collision — both visible, one withdrawn by a person
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-58
 
 **Requirements (verbatim):**
@@ -540,7 +571,7 @@ never made optional.
 **M06-33** (P2, context) — battery-economics modeling is a recommended enhancement, not v1 scope;
 the transactional battery flow (capacity, chemistry, cost, tax, warranty) is what this bucket
 builds (T-M06-005, T-M06-010).
-*realized-by:* `docs/prd/registers/enhancements.md` (future battery-economics layer riding the F8-23
+*realized-by:* no v1 task — `REC` (a future battery-economics layer riding the F8-23
 honesty laws).
 
 ---
@@ -581,7 +612,7 @@ honesty laws).
 | M06-30 | T-M06-005 |
 | M06-31 | T-M06-026 |
 | M06-32 | LAW |
-| M06-33 | realized-by: docs/prd/registers/enhancements.md |
+| M06-33 | realized-by: no v1 task — REC |
 | M06-34 | T-M06-024 |
 | M06-35 | T-M06-005 |
 | M06-36 | T-M06-022 |

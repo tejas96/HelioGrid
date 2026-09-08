@@ -1,6 +1,6 @@
 # @heliogrid/config — shared tsconfig presets
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 config.
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 config.
 
 ## What lives here / what must never live here
 

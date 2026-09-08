@@ -267,7 +267,7 @@ calibration used · imagery age shown (age band) · roof-changed answered.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M04-14 | **Detection reports honest progress and fails gracefully.** The waiting state names what is actually happening, in the source's own words — *"fetching imagery · detecting roof · estimating shading"* — rather than an unqualified spinner, and each step can fail on its own without taking the survey down with it. A failed step says which step failed and what remains available. | `SRC` — `S4.screen.2` ("Detecting: honest progress — 'fetching imagery · detecting roof · estimating shading'. Fails gracefully"), quoted verbatim; honest-failure law `F8-36`, `F7-43` (loading and error states) | P0 |
-| M04-15 | **A detected roof is never applied silently. The result is an editable overlay and the operator must accept, adjust or reject it.** The outline, the obstructions, the pitch and the area arrive as a proposal from a detector, drawn over the pinned tile, and nothing enters the survey until a person acts on it. **A detected roof that is obviously wrong must always be correctable** — every vertex, every obstruction, every value the detector produced is editable, and rejecting the whole result is a first-class choice that leaves the manual outline available. **The corrector set is final (owner ruling 2026-08-04, Q25): anyone who can run the remote survey — rep, surveyor or designer — accepts, adjusts or rejects**, with studio re-verification and provenance labels as the safety net; the homeowner's route is the link's question affordance (`F5-56`), never an edit. | `SRC` — `S4.screen.3` ("the detected roof as an editable overlay — outline, obstructions, pitch, area. **Accept / adjust / reject — never applied silently**"); `S4.wrong.5` ("the customer must always be able to correct it" — confirmed as the operator per owner ruling 2026-08-04, Q25) | P0 |
+| M04-15 | **A detected roof is never applied silently. The result is an editable overlay and the operator must accept, adjust or reject it.** The outline, the obstructions, the pitch and the area arrive as a proposal from a detector, drawn over the pinned tile, and nothing enters the survey until a person acts on it. **A detected roof that is obviously wrong must always be correctable** — every vertex, every obstruction, every value the detector produced is editable, and rejecting the whole result is a first-class choice that leaves the manual outline available. **The corrector set is final (owner ruling 2026-08-04): anyone who can run the remote survey — rep, surveyor or designer — accepts, adjusts or rejects**, with studio re-verification and provenance labels as the safety net; the homeowner's route is the link's question affordance (`F5-56`), never an edit. | `SRC` — `S4.screen.3` ("the detected roof as an editable overlay — outline, obstructions, pitch, area. **Accept / adjust / reject — never applied silently**"); `S4.wrong.5` ("the customer must always be able to correct it" — confirmed as the operator per owner ruling 2026-08-04) | P0 |
 | M04-16 | **Confidence is shown per detection, beside the thing it qualifies.** Not one score for the survey: the outline, each obstruction and each derived value carry the detector's confidence where they are read, as persistent visible content — never a hover, never colour alone (`F8-07`). A detection whose confidence cannot be established is not presented as a detection. | `SRC` — `S4.screen.3` ("Confidence shown per detection"); `DOC04.survey-provenance` ("remote detection artefacts carry per-detection confidence + source … and prompt version"); rendering law `F8-01`, `F8-07` (consumed) | P0 |
 | M04-17 | **An empty result beats an invented roof.** The detector is instructed not to guess, and returning nothing is a correct and expected outcome that leads straight to manual outlining. No surface in this module fills a missing detection with a plausible shape, a default rectangle or an average pitch. | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07, quoted verbatim: "no-guessing instructions (empty result beats invented roof)"); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
 | M04-18 | **There are two detection paths and both are held to the same honesty rules: elevation-model plane fitting where elevation data exists, and a vision-model fallback that returns shapes only.** The fallback exists because elevation coverage is thinner than imagery coverage; it produces geometry and nothing else — it never returns a figure the product would present as a measurement. **Every detection records its own provenance: which path produced it, against which pinned tile, and at which detector version.** Both paths are required to be **deterministic and schema-constrained** — a detector returning free-form output, or a different answer each time for the same tile, does not satisfy this requirement — and **both exit through the same artifact validation** (M04-24). | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07: "DSM plane-fit primary, vision-model fallback"; deterministic, schema-enforced output, "versioned prompt recorded as provenance"; "both paths exit through artifact validation"); `R5` (the roof-detect photo fallback returns "shapes only") *(shared — the imagery/detection half)*; `DOC04.survey-provenance` ("per-detection confidence + source … + prompt version") · the model, its parameters and the prompt store are implementation (design spec §14/DD4) | P0 |
@@ -283,9 +283,9 @@ with. The overlay sits on the pinned tile at full opacity for the outline and re
 the imagery underneath stays readable; obstructions are individually selectable; pitch, azimuth and
 area render as values with their confidence beside them. **Adjust** is direct manipulation —
 vertices drag, obstructions move and resize, a value can be typed over — and every operator edit
-**re-tiers that value from `derived` to the tier a typed figure carries**, shown at the moment of
-the change (`F8-05`); the open question of which tier a typed figure takes is `F8-Q1`'s and this
-module follows F8's answer rather than inventing one. **Reject** discards the detection whole and
+**re-tiers that value**, shown at the moment of the change (`F8-05`), to the tier F8 assigns it:
+a redrawn outline keeps its `derived`/`estimated` tag, and a typed figure outside the
+physical-survey flow is `assumed` (`F8-21`). **Reject** discards the detection whole and
 leaves the operator on the manual outline with nothing lost.
 
 The confidence display of `M04-16` is not decoration: it is what tells a rep which of tomorrow's
@@ -313,7 +313,7 @@ one.
 
 - *Roof detected but obviously wrong* (`S4.wrong.5`) → accept / adjust / reject, every element
   editable, rejection always available (M04-15). The corrector is anyone who can run the remote
-  survey — rep, surveyor or designer (owner ruling 2026-08-04, Q25; §6 M04-Q2 resolved).
+  survey — rep, surveyor or designer (owner ruling 2026-08-04).
 - *A tall neighbouring building is missed* (`S4.wrong.4`) → shading from above is partial by
   construction; the unseen obstruction is a named gap on the gaps list (M04-30) and the designer is
   told the shading input is `derived` and incomplete, not that it is complete.
@@ -432,16 +432,16 @@ question and puts it on the transactional lane like every other message this mod
 where the tenant has a connected channel it sends from that channel under the transactional
 template class with honest delivery states, and where none is connected it is composed ready to
 paste for the rep to send themselves on their next call, that fallback alone claiming no delivery;
-owner ruling 2026-08-04, Q33, via `M02-47`) and **capture on site** (which adds it to a visit).
+owner ruling 2026-08-04, via `M02-47`) and **capture on site** (which adds it to a visit).
 Two further resolutions close a gap without a visit: **resolved**, where the answer was obtained
 and recorded — the customer confirmed the sanctioned load from their bill, the customer sent a
 photograph of the meter — and **waived**, where the operator judges the gap not to apply, with a
 reason recorded and the waiver visible to the designer. A waived gap is never silently equivalent
 to an answered one.
-*(The ask-the-customer clause above is reconciled to owner ruling 2026-08-04 Q33; it previously
+*(The ask-the-customer clause above is reconciled to owner ruling 2026-08-04; it previously
 read "the product composes, a person sends, `D32` via `M02-47`" — `D32`'s retired manual-only
 rule, cited to a row that now states the opposite (`M02-47`), and contradicting this document's
-own §5 non-goal on survey-side send machinery. See `docs/prd/registers/conflicts.md` row 4.)*
+own §5 non-goal on survey-side send machinery.)*
 
 Gap 5 — *whether the customer actually owns that roof* — deserves its own note because it is the
 one that voids a whole deal rather than degrading a design: it maps directly onto the lead's own
@@ -514,8 +514,9 @@ Permissions: no additional grant — provenance stamping is a property of captur
 
 **Edge cases & what-goes-wrong.**
 
-- *A remote figure typed over by the operator* → that field leaves `derived` and takes the tier
-  `foundations/F8` assigns a typed figure, with the change shown (`F8-05`, `F8-Q1`).
+- *A remote figure typed over by the operator* → that field leaves `derived` and is `assumed`, the
+  tier F8 gives a typed figure outside the physical-survey flow (`F8-21`), with the change shown
+  (`F8-05`).
 - *A physical survey where a height was estimated by eye* → that field is `estimated`, and the
   survey is still a measured one (M04-35).
 - *A surveyor skips a step* → the field is marked skipped-but-flagged, not defaulted, not blank
@@ -765,7 +766,7 @@ queued / completed / failed · customer-sent photograph attached.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M04-57 | **Surveys are versioned-append: a revisit inserts a new version and nothing is overwritten.** A return visit to a site creates a **new survey version**; earlier versions are immutable and remain readable forever, and the person on the roof is told what just happened in one line — *"v2 — v1 kept"* (`F4-25`). The first survey is evidence of what the site looked like on that day and no later visit may erase it. The survey's own states are **draft → in progress → submitted → superseded**. | `SRC` — `DOC04.survey-versioned` (docs/04, verbatim: "a revisit inserts a new version row; nothing mutates"; the four statuses); `S4.wrong.13` ("Two surveys of the same site (revisit) → versioned, not overwritten"); `F4-14`, `F4-25` (consumed) | P0 |
-| M04-58 | **A visit that cannot be completed ends with a reason, a reschedule and exactly one message — sent through the tenant's connected transactional channel where one exists (owner ruling 2026-08-04, Q33).** Where the customer is not home or the gate is locked, the surveyor records **"Could not complete"** with a reason, which opens the reschedule flow. The customer gets **one** message about it: with a connected channel it sends automatically under the transactional template class — the source's *"customer gets one"* wording is now delivered literally — and with no channel connected the product composes it ready to paste, a person sends it, and no delivery is claimed (`M02-47`/`M02-48`'s rule). `registers/conflicts.md` row 4 carries the resolution note. | `SRC` — `S4.wrong.9` (verbatim: "'Could not complete' with a reason → auto-reschedule flow → 'customer gets one WhatsApp'"); send rail per owner ruling 2026-08-04 (Q33), superseding the D32 composed-not-sent reading; `M02-47`, `M02-48` (consumed — one reminder not five) | P0 |
+| M04-58 | **A visit that cannot be completed ends with a reason, a reschedule and exactly one message — sent through the tenant's connected transactional channel where one exists (owner ruling 2026-08-04).** Where the customer is not home or the gate is locked, the surveyor records **"Could not complete"** with a reason, which opens the reschedule flow. The customer gets **one** message about it: with a connected channel it sends automatically under the transactional template class — the source's *"customer gets one"* wording is now delivered literally — and with no channel connected the product composes it ready to paste, a person sends it, and no delivery is claimed (`M02-47`/`M02-48`'s rule). | `SRC` — `S4.wrong.9` (verbatim: "'Could not complete' with a reason → auto-reschedule flow → 'customer gets one WhatsApp'"); send rail per owner ruling 2026-08-04, superseding the D32 composed-not-sent reading; `M02-47`, `M02-48` (consumed — one reminder not five) | P0 |
 | M04-59 | **A wrong address is corrected on the spot, and the correction updates the site record.** A surveyor who arrives at the wrong address fixes it there and then, from the visit; the corrected address propagates to the site record so the next visit, the next design and the next document all use it. | `SRC` — `S4.wrong.11` ("Wrong address → correct it on the spot; it updates the site record"); the remote-side half is M04-12 | P0 |
 | M04-60 | **A visit is a scheduled assignment with its own states — scheduled · in progress · done · cancelled — linked to the survey version it produces.** Booking a visit for open capture-on-site gaps schedules one (M04-32); booking one from a lead is `modules/M02`'s act (`M02-46`) and produces this object. A visit's status only moves forward (`F4-17`). | `SRC` — `DOC04.visits` (docs/04, verbatim: the four states; "linked to the survey version they produce"); `F4-17` (consumed); `M02-46` (the booking act) | P0 |
 | M04-61 | **The survey and its visits are readable by everyone whose scope contains the lead or site, and by nobody else.** Survey visibility follows the lead or site the survey belongs to (`F2.M02.lead-visibility`, `F2-12`–`F2-14`); this module creates no separate visibility domain and no per-person exception (`F2-15`). | `SRC` — `D20` via `F2-12` (consumed); `F2-14` (per-domain resolution); `F2-15` (no exceptions) | P0 |
@@ -786,11 +787,10 @@ it.
 The could-not-complete flow is written for the doorstep: three taps, a reason from a short list, and
 the reschedule offered immediately, with the one customer message riding the transactional lane —
 sent from the tenant's connected channel where one exists, composed ready to paste where none is
-connected (M04-58, owner ruling 2026-08-04 Q33). The visit becomes `cancelled` or is rescheduled,
+connected (M04-58, owner ruling 2026-08-04). The visit becomes `cancelled` or is rescheduled,
 and the lead's timeline records it (`M02-35`) so the rep sees why nothing happened without having
 to ask. *(The send half of this paragraph previously read "with the composed message ready",
-`D32`'s retired manual-only rule; reconciled to M04-58's own row — see
-`docs/prd/registers/conflicts.md` row 4.)*
+`D32`'s retired manual-only rule; reconciled to M04-58's own row.)*
 
 Permissions: `F2.M04.schedule-survey-visits` for scheduling, reassignment and cancellation — held by
 EPC Owner, Sales Manager and Sales Executive, and by the Survey Engineer **for their own assigned
@@ -803,7 +803,7 @@ survey itself.
   notice shown (M04-57).
 - *Customer not home / gate locked* (`S4.wrong.9`) → "Could not complete" with a reason, reschedule,
   exactly one message — sent via the connected transactional channel, or composed for a person to
-  send where none is connected (M04-58, Q33 ruling).
+  send where none is connected (M04-58, owner ruling 2026-08-04).
 - *Wrong address* (`S4.wrong.11`) → corrected on the spot; the site record updates (M04-59).
 - *Two surveyors capture the same site the same day* → two versions, both kept; neither overwrites
   the other (`F4-14`).
@@ -820,10 +820,10 @@ survey itself.
   the surveyor records it, then a reason is required, the reschedule flow opens, and exactly one
   message sends from that channel with honest delivery states; and given no connected channel, then
   that one message is composed for a person to send and the product claims no delivery (M04-58,
-  owner ruling 2026-08-04 Q33). *(This line previously read "exactly one message is composed for a
+  owner ruling 2026-08-04). *(This line previously read "exactly one message is composed for a
   person to send, and no delivery claim is made" on every path — `D32`'s retired manual-only rule;
   it contradicted M04-58's own reconciled row above and this document's §5 non-goal, and is aligned
-  here — see `docs/prd/registers/conflicts.md` row 4.)*
+  here.)*
 - Given a wrong address discovered on site, when it is corrected, then the site record carries the
   corrected address (M04-59).
 - Given a visit, when its status changes, then it moves only forward through scheduled → in progress
@@ -847,7 +847,7 @@ corrected on site.
 | M04-63 | **A submitted survey hands the designer a complete, named brief — not a folder.** The hand-off carries, as one readable thing: the **five capture groups** with every value and its provenance (`M04-35`); every **photograph** with its tag, source and pin (`M04-54`); the **flagged and skipped** items stated as named absences (`M04-51`); the **open gaps** with their states (`M04-31`); the **access constraints** (`M04-44`); the **sanctioned load** (`M04-45`); the **structural observations** as observations (`F8-25`); and, for a remote survey, the **pinned tile**, the **reviewed roof** and the **per-detection confidence and provenance** (`M04-10`, `M04-16`, `M04-18`). | `SRC` — `S4.screen.9` ("Submit hands off to the designer"); `S4.rule.capture` (the groups); `DOC04.photos-reference` ("travel to the designer attached to the survey"); `DOC04.survey-gaps`; `DOC04.survey-provenance` | P0 |
 | M04-64 | **The designer receives what the survey knows and what it does not — with equal prominence.** A missing meter photograph, a waived gap, a skipped step, a low-confidence detection accepted unchanged and an inaccessible roof are all first-class content of the hand-off, not omissions the designer must notice. The absence of a fact is a fact. | `SRC` — `S4.wrong.12` ("if submitted anyway, the designer sees the gap explicitly"); `S4.wrong.10` ("designer sees it before designing"); `S4.rec.1` (the second-trip logic, applied to the receiving end); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
 | M04-65 | **Detected geometry crosses into a design only as a validated artifact, and never as raw detector output.** The doorway of `M04-24` is the only route: version → pinned tile → geometry → bounds → confidence, per-entity, with anything failing validation dropped and its reason stated. `modules/M05-design-studio.md` receives that artifact; it does not read a detector. | `SRC` — `DOC05.ai-doorway` (docs/05; restated in docs/engineering/07 §3) *(shared — the artifact's production and validation are this module's; its application and entity stamping inside a design are `modules/M05`'s)* | P0 |
-| M04-66 | **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04, Q24)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned (`M05-13`). | `SRC` — `DOC04.survey-versioned` (superseded state); `F8-13`, `F8-14`, `F8-15`, `F8-05` (consumed as published requirements) · reconciliation per owner ruling 2026-08-04 (Q24) | P0 |
+| M04-66 | **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned (`M05-13`). | `SRC` — `DOC04.survey-versioned` (superseded state); `F8-13`, `F8-14`, `F8-15`, `F8-05` (consumed as published requirements) · reconciliation per owner ruling 2026-08-04 | P0 |
 
 **Behavior detail.** The hand-off is a screen, not a payload: the designer opens the survey and
 reads it the way a colleague would brief them — here is the roof, here is what it is made of, here
@@ -872,7 +872,7 @@ Design Engineer's assigned scope is what puts a submitted survey in front of the
 - *A revisit lands while a design is in progress* → the newer version is available and visibly
   newer; nothing is rewritten under the designer (M04-66) and the ruled reconciliation applies —
   review-needed marker, designer notified, drafts blocked from sending, sent pinned (owner
-  ruling 2026-08-04, Q24).
+  ruling 2026-08-04).
 - *A detection artifact fails validation entirely* → nothing crosses; the designer starts from the
   pinned tile and traces manually (M04-65, M04-11).
 
@@ -931,7 +931,7 @@ against an in-progress design.
 | `foundations/F8-data-honesty.md` | The four provenance tiers (`F8-02`, `F8-03`), per-detection confidence rendering (`F8-01`, `F8-07`), the shown tier change (`F8-05`), the imagery-basis document line (`F8-22`), the never-computed structural law (`F8-25`), honest failure (`F8-36`) and honest state copy (`F8-34`) |
 | `04-business-model.md` | The AI-detection meter's definition and the manual-path guarantee (`BM-16`, `BM-19`); no rate, bundle size or price appears in this module |
 | `modules/M01-onboarding-and-tenant-config.md` | The site record's fields and the tenant's declared segment; the demo project whose survey is pre-populated per market pack (`M01-27`) |
-| `modules/M02-crm-and-leads.md` | The lead and its address, the booking act that creates a visit (`M02-46`), the transactional send rule — connected-channel automatic with copy-paste fallback per the Q33 ruling (`M02-47`, `M02-48`), the qualification answer that pre-resolves the roof-ownership gap (`M02-39`) and the single activity timeline this module writes into (`M02-35`) |
+| `modules/M02-crm-and-leads.md` | The lead and its address, the booking act that creates a visit (`M02-46`), the transactional send rule — connected-channel automatic with copy-paste fallback by owner ruling 2026-08-04 (`M02-47`, `M02-48`), the qualification answer that pre-resolves the roof-ownership gap (`M02-39`) and the single activity timeline this module writes into (`M02-35`) |
 | `modules/M05-design-studio.md` | Application and entity stamping of the detection artifact; the canvas that renders the same pinned tile; the sanctioned-load soft cap; the design-freshness comparison when a survey version supersedes another |
 | `modules/M12-platform-billing.md` | The server-side detection allowance check and the usage ledger behind `M04-23` |
 | `modules/M13-dashboards-and-reporting.md` | The Survey Engineer's role home into which `M04-38`'s visits list composes |
@@ -967,27 +967,8 @@ against an in-progress design.
 - **No survey-side send machinery of its own.** Every message this module produces — the
   could-not-complete notice, an ask-the-customer question's follow-up — rides the transactional
   lane: automatic from the tenant's connected channel, composed for a person to send where none
-  is connected, with no delivery claimed on that fallback (owner ruling 2026-08-04, Q33;
-  `M04-58`, `M02-47`).
+  is connected, with no delivery claimed on that fallback (owner ruling 2026-08-04; `M04-58`, `M02-47`).
 - **No second provenance vocabulary.** Provenance is described in F8's four tiers (`F8-02`); no
   fifth tier is coined here (`F8-03`).
 - **No separate survey visibility domain** (`F2-14`). Survey visibility follows the lead or site;
   no per-person exception exists (`F2-15`).
-
-## 6. Open questions
-
-Mirrored into `registers/open-questions.md` (rollup ids noted):
-
-- **M04-Q1 (register Q24) — RESOLVED (owner ruling 2026-08-04, Q24).** When a newer survey
-  supersedes the inputs a design was built on, the design is marked **"survey updated — review
-  needed"** and the designer is **notified**; **draft proposals on that design are blocked from
-  sending until the review**; **sent proposals stay pinned** and never mutate (`F8-15`). The
-  same self-stale pattern as catalog releases. The reconciliation surface is `modules/M05`'s
-  (`M05-13`, now final); `M04-66`'s guarantees — newer facts available and visibly newer,
-  nothing rewritten automatically — stand as the survey side of the ruled behaviour.
-- **M04-Q2 (register Q25) — RESOLVED (owner ruling 2026-08-04, Q25).** The corrector is
-  **anyone who can run the remote survey — rep, surveyor or designer** — on the operator
-  surface (`M04-15`), with studio re-verification and provenance labels as the safety net. The
-  homeowner's route stays the customer link's question affordance, a question and never a
-  mutation (`F5-56`); no customer-side write capability is created. The source's "customer"
-  wording is confirmed as meaning the operator.

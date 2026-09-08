@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   underTrack: {

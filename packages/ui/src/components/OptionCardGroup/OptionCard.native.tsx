@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   /* Sunken AND flat — it went sunken and kept e2, so an unavailable option still read as the
-     brightest, most pressable thing in the list (Q77). */
+     brightest, most pressable thing in the list. */
   cardOff: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
   dot: {
     width: 20,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: theme.colors['text-disabled'],
   } /* The white fill measured 1.14:1 on an off card — weaker than its own ring at 1.44:1, so it
-     was never what you read, and it made the dot the brightest thing on a dead card (Q77). */,
+     was never what you read, and it made the dot the brightest thing on a dead card. */,
   dotOff: { backgroundColor: theme.colors['canvas-sunken'] },
 
   dotSelected: { backgroundColor: theme.colors.accent, borderWidth: 0 },

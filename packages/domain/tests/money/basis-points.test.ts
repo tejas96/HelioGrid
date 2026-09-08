@@ -12,7 +12,7 @@ describe('basisPoints — a rate as whole basis points, 1800 for 18%', () => {
   });
 });
 
-describe('applyRate — rounds once, at the minor unit, half away from zero (Q83)', () => {
+describe('applyRate — rounds once, at the minor unit, half away from zero', () => {
   it.each([
     [100_000, 1800, 18_000],
     [100_001, 1800, 18_000],

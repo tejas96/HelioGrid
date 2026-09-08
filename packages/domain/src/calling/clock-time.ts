@@ -10,7 +10,7 @@
  * different job from a value the platform authors.
  *
  * No date and no zone. `F1-10` fixes the clock this is read on — the TENANT's, one clock for the
- * hour and for the window it sits inside (`Q58`) — and the caller holding the tenant applies it.
+ * hour and for the window it sits inside — and the caller holding the tenant applies it.
  */
 declare const CLOCK_TIME: unique symbol;
 

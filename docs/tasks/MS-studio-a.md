@@ -25,6 +25,7 @@ file's slice exactly once.
 ### T-MS-101 · Studio Step 1 — Site Setup (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-14 (P0), M05-15 (P0), M05-16 (P0), M05-17 (P0), M05-18 (P0), M05-19 (P0), M05-20 (P0), MS1-01 (P0), MS1-02 (P0), MS1-03 (P0), MS1-04 (P0), MS1-05 (P0), MS1-06 (P0), MS1-08 (P1), MS1-09 (P0), MS1-10 (P0), MS1-11 (P0), MS1-12 (P0), MS1-13 (P0), MS1-14 (P0), MS1-15 (P0), MS1-16 (P0), MS1-17 (P0), MS1-18 (P0), MS1-20 (P0), MS1-21 (P0), MS1-22 (P0), MS1-23 (P0)
 **DESIGN:** SCR-MS-04 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step1Setup.tsx` · `3d_design_studio/src/features/solar-studio/lib/maps.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/maps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
@@ -39,7 +40,7 @@ file's slice exactly once.
 - Given a tenant of any market, when the form renders, then utility/tariff/currency labels and data come from the market pack and no other market's terms appear (M05-15).
 - Given a confirmed location with the source of record reachable, when the Solar Data card renders, then figures carry the `F8-08` source label naming the database; given it unreachable, then figures carry "±10%" and never switch silently (M05-17).
 - Given a pin move >25 m, when confirmed, then the design resets with an undo available; when cancelled, nothing changes (M05-19).
-- Given a design exceeding sanctioned load, when the overrun occurs, then the warning names the captured limit and the design remains editable (M05-20).
+- Given the sanctioned-load input, when it is lowered below what the design's inverters already deliver (AC kW × count), then the warning names the captured limit in kW and the design remains editable; the design-time warning is T-MS-201's (M05-20).
 - Given a tile fetch failure, when the studio opens, then the canvas opens blank with manual calibration offered, and nothing blocks (M05-16).
 - Given Site Intelligence in any of its four states, when the card renders, then the state is named honestly and no design step depends on the result (M05-18).
 - Given a lead with a completed survey, When the designer opens a new design, Then Step 1 shows customer info + CONFIRMED surveyed location with provenance hints and every field editable (MS1-01); Given an IN tenant, When Step 1 renders, Then region/utility/tariff content equals the IN pack's shipped lists (MS1-03/04); Given a typed tariff edit, When auto-fill would re-derive, Then the manual value wins (MS1-05); Given first use, When Step 1 opens, Then the walkthrough offers and never returns after dismissal (MS1-08).
@@ -57,6 +58,7 @@ file's slice exactly once.
 ### T-MS-102 · Studio Step 2 — Roof drawing surface (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-22 (P0), M05-23 (P0), M05-24 (P0), M05-25 (P0), M05-26 (P0), M05-27 (P0), M05-28 (P0), M05-29 (P0), MS1-29 (P0), MS1-30 (P0), MS2-01 (P0), MS2-02 (P0), MS2-03 (P0), MS2-04 (P0), MS2-05 (P0), MS2-06 (P0), MS2-07 (P0), MS2-08 (P0), MS2-09 (P0), MS2-10 (P1), MS2-11 (P0), MS2-12 (P0), MS2-14 (P0), MS2-15 (P0), MS2-16 (P0), MS2-17 (P0), MS2-18 (P0), MS2-19 (P0), MS2-21 (P0), MS2-23 (P0), MS2-27 (P0), MS2-28 (P0), MS2-29 (P0), MS2-31 (P0), MS2-32 (P0), MS2-34 (P0), MS2-35 (P0), MS2-36 (P0), MS2-37 (P0), MS2-38 (P0), MS2-39 (P0)
 **DESIGN:** SCR-MS-05 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step2Roof.tsx` · `3d_design_studio/src/features/solar-studio/components/EdgeLabels.tsx` · `3d_design_studio/src/features/solar-studio/components/MeasureTool.tsx` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-colors.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas this step consumes) · tests `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`
@@ -98,6 +100,7 @@ file's slice exactly once.
 ### T-MS-103 · Studio Step 3 — Obstructions (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-30 (P0), M05-31 (P0), M05-32 (P0), M05-33 (P0), M05-34 (P0), M05-35 (P0), MS3-01 (P0), MS3-02 (P0), MS3-03 (P0), MS3-04 (P0), MS3-05 (P0), MS3-07 (P0), MS3-08 (P1), MS3-09 (P0), MS3-10 (P1), MS3-11 (P0), MS3-12 (P0), MS3-13 (P0), MS3-16 (P1), MS3-17 (P0), MS3-18 (P0), MS3-19 (P0), MS3-20 (P0), MS3-21 (P0), MS3-22 (P0), MS3-23 (P1), MS3-24 (P0), MS3-25 (P0), MS3-26 (P0), MS3-27 (P0), MS3-28 (P0), MS3-29 (P0), MS3-30 (P0), MS3-32 (P0), MS3-33 (P0)
 **DESIGN:** SCR-MS-06 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step3Obstructions.tsx` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas contract) · `3d_design_studio/src/features/solar-studio/components/ui.tsx` (sitting 10 — the shared slider/number-field primitives the S3-3 rulings correct) · `3d_design_studio/src/features/solar-studio/lib/capabilities.ts` (sitting 4 — the capability resolver these sheets write through)
@@ -135,6 +138,7 @@ file's slice exactly once.
 ### T-MS-104 · Shared canvas frame & analysis-worker resilience
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS1-28, MS1-31
 **PORT:** `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` · `3d_design_studio/src/features/solar-studio/workers/analysis.worker.ts` · `3d_design_studio/src/features/solar-studio/lib/analysis-client.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/analysis-client.test.ts`
 **DEFECTS:** none registered against MS1-28 or MS1-31 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -153,6 +157,7 @@ file's slice exactly once.
 ### T-MS-105 · Calibration, rescale & true-north engine
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS1-25, MS1-26, MS1-27
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/calibration.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/calibration.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`
 **DEFECTS:** none registered against MS1-25, MS1-26 or MS1-27 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -171,6 +176,7 @@ file's slice exactly once.
 ### T-MS-106 · Solar-data & site-intelligence client
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS1-24
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
 **DEFECTS:** none registered against MS1-24 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -187,6 +193,7 @@ file's slice exactly once.
 ### T-MS-107 · Polygon-write normalization & roof cascade-delete
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-13, MS2-20
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-topology.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/lib/segment-ops.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-topology.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/segment-ops.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/segment-grid-pitched.test.ts` (sitting 2 — the deliberately pitched fixture over `reindexSegment`; it straddles this task and T-MS-207's `layout.ts`, and every other fixture in this area is flat, where the two derivations coincide, so it ports here)
 **DEFECTS:** none registered against MS2-13 or MS2-20 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -205,6 +212,7 @@ file's slice exactly once.
 ### T-MS-108 · Roof-type conversion engines (ground array, gable, hip, skeleton, wavefront)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-22, MS2-24, MS2-25, MS2-26
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-gable.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-hip.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-skeleton.ts` · `3d_design_studio/src/features/solar-studio/lib/skeleton-events.ts` · `3d_design_studio/src/features/solar-studio/lib/skeleton-wavefront.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-gable.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-hip.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-skeleton.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/skeleton-events.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/skeleton-wavefront.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-pipeline.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-covering.test.ts`
 **DEFECTS:** none registered against MS2-22, MS2-24, MS2-25 or MS2-26 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -227,6 +235,7 @@ file's slice exactly once.
 ### T-MS-109 · Roof-plane datum math & shared-wall suppression
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-30, MS2-33
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-plane.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-topology.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/eave-ref-plane.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/inset-fuzz.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/flat-azimuth-lattice.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/azimuth-lattice-attacks.test.ts`
 **DEFECTS:** none registered against MS2-30 or MS2-33 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -245,6 +254,7 @@ file's slice exactly once.
 ### T-MS-110 · AI-detection artifact doorway, geometric pipeline & accepted-entity factory
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-40, MS2-41, MS2-43
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/artifact.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/pipeline.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/vectorize.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/plane-fit.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/geotiff-decode.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect.worker.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-artifact.test.ts`
 **DEFECTS:** none registered against MS2-40, MS2-41 or MS2-43 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -265,6 +275,7 @@ file's slice exactly once.
 ### T-MS-111 · Photo-analysis structured-extraction contract
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-42
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/gemini-client.ts` · `3d_design_studio/src/app/api/gemini/route.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/gemini-client.test.ts` (sitting 6 in `docs/prd/modules/M05-studio/poc-file-claims.md`, corrected to sitting 2 in the retired traceability register — the file's only regression net; it also holds the `crossCheckWithGeometry` assertions that T-MS-102's `CODE.step2-roof-ai.72` ruling un-gates, so it ports here and is read from there)
 **DEFECTS:**
@@ -282,6 +293,7 @@ file's slice exactly once.
 ### T-MS-112 · Detection server relay, raster cache & projector alignment gate
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS2-44
 **PORT:** `3d_design_studio/src/app/api/solar/building-insights/route.ts` · `3d_design_studio/src/app/api/solar/data-layers/route.ts` · `3d_design_studio/src/app/api/solar/geotiff/route.ts` · `3d_design_studio/src/app/api/solar/key.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/utm.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts`
 **DEFECTS:** none registered against MS2-44 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -298,6 +310,7 @@ file's slice exactly once.
 ### T-MS-113 · Obstruction factory & per-type capability presets
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS3-14, MS3-15
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` (sitting 2 — the shared factory recorded at `drawing.93/.94`, surfaced at Step 3) · `3d_design_studio/src/features/solar-studio/lib/capabilities.ts` (sitting 4 — the capability resolver) · `3d_design_studio/src/features/solar-studio/screens/Step3Obstructions.tsx` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/capabilities.test.ts`
 **DEFECTS:**
@@ -316,6 +329,7 @@ file's slice exactly once.
 ### T-MS-114 · Bridging reconciliation & live derived obstruction values
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-36, MS3-31, MS3-34
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/capabilities.ts` (sitting 4 — capability resolver + reconcile) · `3d_design_studio/src/features/solar-studio/screens/Step3Obstructions.tsx` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/capabilities.test.ts`
 **DEFECTS:** none registered against M05-36, MS3-31 or MS3-34 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -336,6 +350,7 @@ file's slice exactly once.
 ### T-MS-115 · Obstruction grounding, shadow-parity predicate & 3D model contracts
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS3-36, MS3-37, MS3-38, MS3-39
 **PORT:** `3d_design_studio/src/features/solar-studio/three/ObstructionMesh.tsx` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/obstruction-grounding.test.ts`, `3d_design_studio/src/features/solar-studio/three/__tests__/obstruction-assets.test.ts`
 **DEFECTS:** none registered against MS3-36, MS3-37 or MS3-39 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step3-obstructions.32` is attached to T-MS-103 at MS3-28; this task owns the predicate both sides read.)
@@ -357,6 +372,7 @@ file's slice exactly once.
 ### T-MS-116 · Scale foundation — blocks/tables in the design payload, and the paradigm switch's census guarantee
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-89, M05-90
 **PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends the ported design payload rather than porting an existing one.
 **DEFECTS:** none registered against M05-89 or M05-90 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -376,22 +392,23 @@ file's slice exactly once.
 ### T-MS-117 · Survey supersession — the review-needed marker, the designer notification and the draft-send block
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-13
 **PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no survey-hand-off files; the POC has no survey module and no supersession path at all.
 **DEFECTS:** none registered against M05-13 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
-- **M05-13** (P0) — **When a newer survey version supersedes the one a design was built from, the studio marks the design "survey updated — review needed" and notifies the designer — and applies nothing automatically (owner ruling 2026-08-04, Q24).** The design shows the review-needed banner naming the superseding version and the fields that differ in provenance or value; the designer reviews and chooses what to apply. **Draft proposals built on the design are blocked from SENDING until the review clears; sent proposals stay pinned and never mutate** (`F8-15`). The same self-stale pattern as catalog releases.
+- **M05-13** (P0) — **When a newer survey version supersedes the one a design was built from, the studio marks the design "survey updated — review needed" and notifies the designer — and applies nothing automatically (owner ruling 2026-08-04).** The design shows the review-needed banner naming the superseding version and the fields that differ in provenance or value; the designer reviews and chooses what to apply. **Draft proposals built on the design are blocked from SENDING until the review clears; sent proposals stay pinned and never mutate** (`F8-15`). The same self-stale pattern as catalog releases.
 
 **DONE WHEN:**
-- Given a superseding survey version, when the design is opened, then the review-needed marker names the version and differing fields, the designer was notified, no design value has changed by itself, and a draft proposal on the design cannot send until the review clears (M05-13, owner ruling 2026-08-04 Q24).
+- Given a superseding survey version, when the design is opened, then the review-needed marker names the version and differing fields, the designer was notified, no design value has changed by itself, and a draft proposal on the design cannot send until the review clears (M05-13, owner ruling 2026-08-04).
 - The marker is derived by comparison and never hand-set, per M05-10 and `F8-13` — which requires the design to pin the survey version it was built from. **Prerequisite:** M05-10's pinned-input list and `F8-14`'s (T-FPLAT-028, `docs/tasks/F-platform.md`) enumerate the catalog release, price-book version, market-pack/rules version and engine versions only. This task adds the survey version to the design's pinned inputs; without that pin the comparison has nothing to compare and the marker can never fire.
-- This task owns the three mechanisms behind the row: (1) the review-needed marker state and the diff it names — which superseding version, and which fields differ in provenance or in value; (2) the notification emit to the design's author — the registered `design_survey_superseded` type in `docs/prd/foundations/F6-notifications-and-search.md`'s matrix, never an ad-hoc one (`F6-05`/`F6-10`; recipient and channel resolve there per `F6-16`, and delivery is T-FPLAT-018's in `docs/tasks/F-platform.md`); (3) the design-side state that gates sending, which the proposal share path reads. Nothing is applied automatically; the designer chooses what to apply, edit by edit, and sent proposals stay pinned (`F8-15`, cited).
+- This task owns the three mechanisms behind the row: (1) the review-needed marker state and the diff it names — which superseding version, and which fields differ in provenance or in value; (2) the notification emit to the design's author — the `design_survey_superseded` type registered in `docs/prd/foundations/F6-notifications-and-search.md`'s matrix, never an ad-hoc one (`F6-05`/`F6-10`; recipient and channel resolve there per `F6-16`, and delivery is T-FPLAT-018's in `docs/tasks/F-platform.md`); (3) the design-side state that gates sending, which the proposal share path reads. Nothing is applied automatically; the designer chooses what to apply, edit by edit, and sent proposals stay pinned (`F8-15`, cited).
 - The banner and the persistent marking are drawn by the studio shell — `docs/ux/briefs/SCR-MS-03-studio-shell.md` states `survey-updated-review-needed` and `staleness-marker`, built by T-MS-360 (`docs/tasks/MS-studio-c.md`). The shell renders this task's state; it does not derive it.
 - The survey side of the join is M04-66 in T-M04-015 (`docs/tasks/M04-survey.md`) — versioned append and the superseded state. This task is the design-side reconciliation that M04-66 points at.
 
 **Counterpart edits outside this file — the two this task depends on have landed; one further `M05-13` counterpart, on the proposal-LIST leg, is still open:**
-1. **DONE** — `docs/prd/foundations/F6-notifications-and-search.md`'s event matrix now carries the `design_survey_superseded` row for M05 with recipient "the design's author (own)", push ✓, sourced to `M05-13` (owner ruling 2026-08-04 Q24); `docs/prd/modules/M05-design-studio.md` §4 ("This module provides") registers the same event, so both sides of `F6-10`'s cross-check name it and T-FPLAT-018 (`docs/tasks/F-platform.md`) has a channel for the emit above.
+1. **DONE** — `docs/prd/foundations/F6-notifications-and-search.md`'s event matrix now carries the `design_survey_superseded` row for M05 with recipient "the design's author (own)", push ✓, sourced to `M05-13` (owner ruling 2026-08-04); `docs/prd/modules/M05-design-studio.md` §4 ("This module provides") registers the same event, so both sides of `F6-10`'s cross-check name it and T-FPLAT-018 (`docs/tasks/F-platform.md`) has a channel for the emit above.
 2. **DONE** — carried by T-M06-018's send-gate DONE WHEN (`docs/tasks/M06-proposals.md`): given a design carrying the review-needed marker, when a draft proposal built on it is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version. This task holds the gating state; the send path that honours it is M06's. (`F8-17`'s recompute-in-flight block is a different condition and does not cover this one.)
 3. **OPEN when this note was written — being closed in this same wave** — the proposal-LIST leg of the marker's surface. `docs/ux/briefs/SCR-M06-19-proposal-list.md` carries no state for the review-needed condition (its States list has `stale-badge`, the `M06-46` comparison, only, and `M05-13` is not among its verbatim rows), while T-M06-019 (`docs/tasks/M06-proposals.md`) already makes the review-needed row state a closing condition and records the required brief edit as its own **counterpart edit required outside this file** note. That edit is the brief owner's and is being made this wave; when it lands this item closes with nothing further to do here. It does not gate T-MS-117 — this task owns the marker state and the emit, and the list rendering of the marker is M06's — but it is why the ledger above is not a whole-of-`M05-13` clearance. (This header previously read "**both landed; no open counterpart work remains**"; that wording is quoted here for traceability — it was true of items 1 and 2 and overlooked this third leg.)
 
@@ -400,6 +417,7 @@ file's slice exactly once.
 ### T-MS-118 · Tier B — large-C&I block editing, GPU/CPU shading equivalence and server-side simulation
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M05-91
 **PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and the ported shading engine rather than porting an existing one. That shading engine is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/shading.ts` (MS6-03's measured raycast engine, `docs/tasks/MS-studio-b.md`), given a GPU executor and a permanently retained CPU path, never replaced.
 **DEFECTS:** none registered against M05-91 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -421,6 +439,7 @@ file's slice exactly once.
 ### T-MS-119 · Tier C — single-axis trackers with backtracking, DEM terrain import and terrain-aware row spacing
 
 **Type:** engine · **Tier:** P2
+**Status:** planned
 **PRD rows:** M05-92
 **PORT:** no POC counterpart for the terrain tier — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this extends T-MS-116's payload and T-MS-118's Tier B block model. The winter-solstice shadow-free pitch model this row generalises is T-MS-207's ported `3d_design_studio/src/features/solar-studio/lib/spacing.ts` (MS6-04/MS6-53, `docs/tasks/MS-studio-b.md`), extended to sloped ground at block granularity, never replaced.
 **DEFECTS:** none registered against M05-92 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -442,6 +461,7 @@ file's slice exactly once.
 ### T-MS-120 · Block-level electrical and permit/DXF outputs at scale
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M05-93
 **PORT:** no POC counterpart for the block tier — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no scale-regime files; this layers above the combiner architecture T-MS-271 (`docs/tasks/MS-studio-b.md`) ports, and does not modify it.
 **DEFECTS:** none registered against M05-93 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -476,7 +496,7 @@ file's slice exactly once.
 - **M05-11** (P0) — **A design edited after its proposal exists makes that proposal's pricing visibly stale — the studio's side of the money-never-stale law.** The design surfaces "a proposal was built on an older version of this design" wherever it matters (Done step, BOM, captures review), and the proposal-side staleness display is `modules/M06`'s. Figures inside an already-sent document never move (`F8-15`, cited).
   *Enforced by:* the Done, BOM and captures-review screens (`docs/ux/briefs/SCR-MS-13-done-step.md`, `docs/ux/briefs/SCR-MS-12-step9-bom.md`, `docs/ux/briefs/SCR-MS-10-step7-proposal.md`).
 
-- **M05-12** (P0) — **Entitlement checks touch the studio only at save/creation and at proposal Generate — never mid-edit. The flagship is never interrupted per-keystroke, and existing designs always open.** Gate mechanics, ceilings and upgrade prompts are `modules/M12`'s; this module's law is the placement: no entitlement denial ever interrupts editing, blanks a canvas or locks an open design. **The tension is resolved (owner ruling 2026-08-04, Q28): zero feature gates exist in the studio** — the kW ceiling per tier is the **only** gate, enforced exactly at these checkpoints, and over-ceiling designs stay readable forever; the census's no-tier-gate rule holds as law with the ceiling as its single sanctioned boundary.
+- **M05-12** (P0) — **Entitlement checks touch the studio only at save/creation and at proposal Generate — never mid-edit. The flagship is never interrupted per-keystroke, and existing designs always open.** Gate mechanics, ceilings and upgrade prompts are `modules/M12`'s; this module's law is the placement: no entitlement denial ever interrupts editing, blanks a canvas or locks an open design. **The tension is resolved (owner ruling 2026-08-04): zero feature gates exist in the studio** — the kW ceiling per tier is the **only** gate, enforced exactly at these checkpoints, and over-ceiling designs stay readable forever; the census's no-tier-gate rule holds as law with the ceiling as its single sanctioned boundary.
   *Enforced by:* the shell's Save/Generate paths (`docs/ux/briefs/SCR-MS-03-studio-shell.md`) and review — every studio screen task closes with zero in-surface entitlement checks; MS1-09 in T-MS-101 is the Step-1 instance.
 
 - **M05-56** (P2) — **Yield-uncertainty reporting (P50/P90 exceedance) is designed-for as an additive layer on the same energy model** — no second engine, no re-labelling of existing figures; needed when enterprise/utility tenants arrive.
@@ -609,7 +629,7 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | M05-17 | T-MS-101 |
 | M05-18 | T-MS-101 |
 | M05-19 | T-MS-101 |
-| M05-20 | T-MS-101 |
+| M05-20 | T-MS-101 (the input and the re-edit case); T-MS-201 (the design-time warning on capacity and inverter) |
 | M05-21 | realized-by: T-MS-363 — `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-22 | T-MS-102 |
 | M05-23 | T-MS-102 |

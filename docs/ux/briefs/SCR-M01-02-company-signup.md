@@ -45,7 +45,7 @@ Screen-specific:
 
 *Three states added in design (2026-08-28), each separable — remove one and nothing else moves:*
 
-- **request-sent** — where **request-to-join-offered**'s primary control lands. `M01-09` routes the request to the existing tenant's EPC Owner and names no screen for what the asker then sees, which would have left that control leading nowhere. Drawn as the smallest honest answer: what was sent, to whom, how the answer arrives, and the way back to creating their own company. **Checked 2026-08-28: no other V1 screen owns this acknowledgement** — `M01-09` is dispositioned to `SCR-M01-02` alone — so it stays a state of this screen and adds no row to the register.
+- **request-sent** — where **request-to-join-offered**'s primary control lands. `M01-09` routes the request to the existing tenant's EPC Owner and names no screen for what the asker then sees, which would have left that control leading nowhere. Drawn as the smallest honest answer: what was sent, to whom, how the answer arrives, and the way back to creating their own company. **Checked 2026-08-28: no other V1 screen owns this acknowledgement** — `M01-09` is dispositioned to `SCR-M01-02` alone — so it stays a state of this screen and adds no row to the screens register.
 - **number-invalid** — the phone number is answered on the field when the control is pressed, counted against the market pack's format ("that is 7 digits — an Indian mobile number has 10"), never by gating the primary at rest.
 - **fields-invalid** — a missing company detail says *why* it is needed (a company name goes on every quote), never a scold.
 

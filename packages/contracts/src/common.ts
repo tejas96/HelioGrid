@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 export const uuidSchema = z.string().uuid();
 
-/** E.164 — the only phone shape stored or transported (forward-compat register: auth/tenancy). */
+/** E.164 — the only phone shape stored or transported (`T-M01-025`, the identity spine). */
 export const phoneE164Schema = z
   .string()
   .regex(/^\+[1-9]\d{6,14}$/, 'must be E.164, e.g. +919876543210');
@@ -36,8 +36,8 @@ export const unitsPrefSchema = z.enum(['m', 'ft']);
 export type UnitsPref = z.infer<typeof unitsPrefSchema>;
 
 /**
- * The TWELVE preset roles — F2-01, owner ruling `Q69`, which supersedes the
- * retired six-value set and says it "must not be restored".
+ * The TWELVE preset roles — F2-01. They supersede the retired six-value set, which must
+ * not be restored.
  *
  * Built from `ROLE_PRESETS` in `@heliogrid/domain`, never restated: domain is the bottom
  * layer, so the list is written once and this enum is derived. `z.enum` needs a non-empty

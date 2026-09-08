@@ -12,7 +12,7 @@ Reached from: the tenant-config settings surface map — *Message templates* is 
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
 
-- **M01-55** (P0) — **Message templates are tenant data, authored per language, for the transactional moments the product composes:** the proposal share message, the follow-up nudge, the reminder. Templates exist in all launch languages as authored content — never translation-catalog strings (F3-10). The composed message **sends from the tenant's connected transactional channel where one exists, and is copy-paste for a person to send where none is** (owner ruling 2026-08-04, Q33 — `M03-03`; on the fallback path the app claims no delivery, D32's surviving discipline). Missing-language behaviour follows the ruled fallback: show the original language with a small note (owner ruling 2026-08-04, Q10; `F3-10`). _(non-UI half, build-side: per-language tenant content class; sends via connected transactional channel where one exists, else copy-paste with no delivery claim — for awareness, not for drawing)_
+- **M01-55** (P0) — **Message templates are tenant data, authored per language, for the transactional moments the product composes:** the proposal share message, the follow-up nudge, the reminder. Templates exist in all launch languages as authored content — never translation-catalog strings (F3-10). The composed message **sends from the tenant's connected transactional channel where one exists, and is copy-paste for a person to send where none is** (owner ruling 2026-08-04 — `M03-03`; on the fallback path the app claims no delivery, D32's surviving discipline). Missing-language behaviour follows the ruled fallback: show the original language with a small note (owner ruling 2026-08-04; `F3-10`).
 
 ## States
 
@@ -22,7 +22,7 @@ Reached from: the tenant-config settings surface map — *Message templates* is 
 - **per-language-authoring** — each of the three transactional templates (proposal share message, follow-up nudge, reminder) authored per launch language as tenant content, never translation-catalog strings (M01-55).
 - **variable-preview** — each template shows its variables (customer name, proposal link, amount) and a live preview per language (§M01.8 behavior detail; M01-30's law).
 - **missing-variable-gap-visible** — a template referencing a variable the context lacks previews with the gap visible and composes with a safe omission, never a raw placeholder in a customer's message (§M01.8 edge cases).
-- **missing-language-fallback-note** — the missing-language case shows the original language with a small note per Q10's ruled fallback (M01-55; §M01.8 edge cases).
+- **missing-language-fallback-note** — the missing-language case shows the original language with a small note saying so — the labelled fallback `F3-10` fixes, never silent machine translation (M01-55; §M01.8 edge cases).
 
 ## Data volume
 

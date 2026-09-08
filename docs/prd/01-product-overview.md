@@ -11,7 +11,7 @@ every module, the three audiences it serves, and the vocabulary the whole suite 
 
 It is normative. Where a section below carries a requirement table, those rows are laws that
 bind the foundation and module PRDs: a later document may add detail to them, may say how a
-module honours them, and may record a conflict against them in `registers/conflicts.md` — but no
+module honours them, and may record a conflict against them in its own row — but no
 later document silently contradicts them. Requirement IDs in this document use the prefix
 `OV-<nn>` and follow the ID rules in `00-README.md` §ID scheme.
 
@@ -47,7 +47,7 @@ surfaces* section.
 
 **Audience law.** The customer audience never acquires an account, a password, or a portal. Any
 requirement anywhere in the suite that would give the EPC's customer a login contradicts this
-document and must be recorded in `registers/conflicts.md` rather than written.
+document and is recorded as a conflict in its own row rather than written.
 
 ## 3. Framing areas
 
@@ -76,7 +76,7 @@ the lead, the survey, the design, the proposal, the customer link, the follow-up
 project and the money are facets of a single customer record, not seven systems joined by
 copy-paste. Every cross-module contract in the suite exists to keep that true. Where a module
 would require a user to re-key something an earlier stage already captured, that is a defect
-against OV-04 and belongs in `registers/conflicts.md`.
+against OV-04, ruled in the offending row.
 
 OV-03's box — 1 kW to 100 MW — is a scope commitment, not an aspiration. It appears again as
 OV-44 because the source states it twice, once as the flagship's range and once as a v1
@@ -91,7 +91,7 @@ specified as web-only without an explicit, recorded rationale, OV-08/OV-09 have 
 The ten goals `OV-10` – `OV-19` are the owner's V2 brief stated as product intent. They are
 `BRIEF`-origin: the v1 corpus implies most of them but states none of them as a goal list. Every
 module PRD should be readable as serving at least one of them; a feature area that serves none is
-a candidate for the enhancements register rather than the core suite. `OV-20` closes the table by
+a candidate for a `REC` row rather than the core suite. `OV-20` closes the table by
 recording the source anchor that sits beneath the affordability and scale goals.
 
 | ID | Goal | What it means for the product | Tag + source pointer | Tier |
@@ -121,7 +121,7 @@ never claimed as attribution; and field tracking is an owner-toggled state per e
 ambient property of employment.
 
 **Conformance test.** Take any feature area in any module and name the goal it serves. If the
-answer is "none", the feature area belongs in `registers/enhancements.md` with a rationale, or it
+answer is "none", the feature area is a `REC` row with a rationale, or it
 does not belong in the suite.
 
 ### 01.3 — The three convictions, globalized
@@ -257,16 +257,16 @@ to when a capability depends on an external provider.
 
 **Conformance test.** Each owning document must contain requirements that make its moat row true.
 If an owning document's requirements would leave the claim unsupported, that is a defect recorded
-in `registers/conflicts.md` — the claim is never quietly softened here to match a thinner module.
+in the owning document's row — the claim is never quietly softened here to match a thinner module.
 
 ### 01.6 — The scope commitment
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| OV-43 | **v1 is the entire product.** There is no Launch-2, no v1.1 and no "later" bucket into which a capability can be deferred while still being counted as planned. A capability is either in v1 scope, or it is an explicit non-goal with a recorded rationale, or it is tagged as a recommendation and carried in `registers/enhancements.md`. There is no fourth category. This is a scope law and carries no schedule: the calendar the source attached to it is superseded, and every source phrase of the form "ships in the N-day build" is read throughout this suite as "in v1 scope". | `SRC` — `DOC00.v1-entire-product`, as corrected by owner directive OD-5 (docs/15 §4 directive 5) | P0 |
+| OV-43 | **v1 is the entire product.** There is no Launch-2, no v1.1 and no "later" bucket into which a capability can be deferred while still being counted as planned. A capability is either in v1 scope, or it is an explicit non-goal with a recorded rationale, or it is a recommendation with ONE home — its owning module's own **Later** line or `REC` row, stated with its rationale and never counted as planned. There is no fourth category, and a recommendation is never recorded twice. This is a scope law and carries no schedule: the calendar the source attached to it is superseded, and every source phrase of the form "ships in the N-day build" is read throughout this suite as "in v1 scope". | `SRC` — `DOC00.v1-entire-product`, as corrected by owner directive OD-5 (docs/15 §4 directive 5) | P0 |
 | OV-44 | The only honest exceptions to "shipped at launch" are three, and each is named rather than open-ended: (a) capabilities whose activation waits on a third party's approval process, where the product ships complete and activation follows the third party; (b) the explicitly spec-locked exclusions recorded as non-goals in §6 below; (c) utility-scale studio enhancements that continue immediately afterwards as ongoing investment in the flagship. **1 kW to 100 MW remains a v1 commitment.** | `SRC` — `DOC00.outside-window` | P0 |
 
-**Behaviour detail.** OV-43 is the reason this suite has an enhancements register and a non-goals
+**Behaviour detail.** OV-43 is the reason this suite has `REC` rows and a non-goals
 section in every document. The source's discipline was that a deferral must be either honest
 (named as a non-goal, with the reason) or absent — a "later" bucket lets scope leak while looking
 managed. V2 keeps that discipline and adds the tier system on top of it: P0/P1/P2 rank importance
@@ -322,7 +322,7 @@ meanings; a document that needs a different meaning must introduce a different w
 | **Tranche** | A named instalment of the customer's payment. Tranche templates are tenant configuration, and a tranche falls due on a project stage. Collections run through the tenant's own payment account — the platform never touches the customer's money. | `TC.payment-terms.1`; `DOC01.byo-collections`; R2 |
 | **Project stage** | One of the nine canonical states a won deal moves through, from won to handed over, plus cancellation. Stage enum names are market-neutral; the labels a user reads, and which stages a market skips, are market-pack data. | R2 |
 | **Blocker** | A sub-state riding on any project stage that names who is being waited on — the utility, the customer, materials, or us. Blockers are what make a long wait attributable instead of merely long. | R2 |
-| **Voice agent** | The automated caller that does outbound follow-up and inbound answering in the customer's language, opens naturally under the tiered disclosure law (owner ruling 2026-08-04, Q6: no proactive AI mention at IN launch; never claims to be human, never denies being AI when asked, instant human handoff, full transcription; proactive disclosure is pack data with the TRAI auto-flip — `F1-36`(d)), and writes every call to the lead timeline. Its contribution to a won deal is reported as correlation, never claimed as attribution. | `DOC00.voice-touchpoint` and `CG-moat.1` as amended by owner ruling 2026-08-04 (Q6); D37 |
+| **Voice agent** | The automated caller that does outbound follow-up and inbound answering in the customer's language, opens naturally under the tiered disclosure law (owner ruling 2026-08-04: no proactive AI mention at IN launch; never claims to be human, never denies being AI when asked, instant human handoff, full transcription; proactive disclosure is pack data with the TRAI auto-flip — `F1-36`(d)), and writes every call to the lead timeline. Its contribution to a won deal is reported as correlation, never claimed as attribution. | `DOC00.voice-touchpoint` and `CG-moat.1` as amended by owner ruling 2026-08-04; D37 |
 | **Compliance gate** | The mechanism every outbound call passes through before it is placed. The mechanism itself is fixed and non-swappable; the statutory ruleset it enforces — calling windows, do-not-call handling, disclosure timing, recording retention — is market-pack data. A market with no voice ruleset cannot enable outbound voice. | D36 (as amended 2026-08-02) |
 | **Reference implementation** | The specific external provider used behind a product-owned capability boundary. Naming one is documentation, never a product commitment: swapping it is an adapter change. | `DOC07.ports-vendor-neutral` |
 | **Studio census** | `docs/prd/modules/M05-studio/studio-census.md`, adopted verbatim as the acceptance baseline for the design studio. The census never shrinks: nothing in it is dropped, downgraded or reworded away between this pass and the dedicated studio pass. | design spec §3.2, DD13 |
@@ -375,40 +375,23 @@ explicit exclusion with a rationale, not a deferral — per OV-43 there is no "l
 | Feature flags | Features ship enabled. Billing entitlements are the only runtime gating. | `modules/M12-platform-billing.md` §Non-goals (owner directive; OV-27) |
 | Operational billing behind a power-purchase or operating-expense proposal | The proposal type exists; recurring invoicing and meter ingestion behind it do not. Nothing downstream branches on the type except the rendered document and its honesty label. | `modules/M06-proposals.md` §Non-goals (R17); bounds `modules/M11` |
 | A perpetual free tier | Trial only. A free tier without a transaction-layer business behind it is metered cost with no revenue, and that transaction layer is a business this product deliberately does not enter. | `04-business-model.md` §Non-goals (`CG-12`) |
-| Battery economics modelling beyond the transactional battery flow | The source's battery flow is carried as core; deeper storage economics is a recommendation, not a source or brief commitment. | `registers/enhancements.md` (design spec §10) |
+| Battery economics modelling beyond the transactional battery flow | The source's battery flow is carried as core; deeper storage economics is a recommendation, not a source or brief commitment. | `modules/M06-proposals.md` `M06-33` (design spec §10) |
 
 **Two exclusions the V2 brief supersedes — recorded, not resolved.** The v1 corpus records two
 non-goals that the owner's V2 brief overrides by adding new scope. Per the suite's conflict rule
 these are recorded rather than silently reconciled. Both are dispositioned as `conflict` in
-the retired traceability register, and the owning module documents carry the tension into
-`registers/conflicts.md` with their own scope statements:
+the retired traceability register, and the owning module documents carry the tension in
+their own scope statements:
 
 - **Message sending on the customer's behalf.** v1's non-goal (D32) was that the product composes
   a message and the user pastes it into their own messaging app; link opens are tracked, delivery
   is not. V2's marketing module is brief-mandated to run campaigns across messaging channels
-  including WhatsApp — and the owner's 2026-08-04 ruling (Q33) additionally made the
+  including WhatsApp — and the owner's 2026-08-04 ruling additionally made the
   **transactional lane** real product-wide: proposal links, payment links and status updates send
   automatically from the tenant's connected channel, with copy-paste as the no-channel fallback
-  (D32's manual rule retired; `registers/conflicts.md` rows 4/8 annotated). Owned by
+  (D32's manual rule retired). Owned by
   `modules/M03-marketing.md` and `modules/M06-proposals.md`.
 - **Inbound channel lead capture.** v1's non-goal (D13) limited lead sources to manual entry,
   spreadsheet import and inbound voice, leaving website and messaging channels out. V2's
   marketing module is brief-mandated to feed the pipeline from campaign channels. Owned by
   `modules/M03-marketing.md` and `modules/M02-crm-and-leads.md`.
-
-## 7. Open questions
-
-This document raises no new decision of its own that an owner must rule on: every ambiguity it
-touched was already closed by the source's rulings or by the design spec's locked decisions.
-
-One registered question bears directly on §01.2's affordability and scale goals and is repeated
-here for the reader's convenience rather than re-raised: **Q1** — the India price points and
-bundle sizes carried as the source-derived baseline need owner re-validation given V2's larger
-scope. It lives in `registers/open-questions.md` and is owned by `04-business-model.md` and F1's
-India pack.
-
-Two source gaps recorded in `registers/conflicts.md` also touch this document's framing and are
-noted so a reader does not mistake them for omissions: the missing `docs/research/*` files cited
-by the source's vision and business-model documents, and the deleted per-module extractions cited
-by the source product README. Facts surviving only as citations are used as-is with the citation
-noted, and nothing is invented to fill either gap.

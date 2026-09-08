@@ -1,6 +1,6 @@
 # @heliogrid/contracts — ts-rest + Zod 3, the API review surface
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 contracts. Changing a
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 contracts. Changing a
 contract has a sequence: run `/contract-change`.
 
 ## What lives here / what must never live here
@@ -9,10 +9,10 @@ contract has a sequence: run `/contract-change`.
   (pagination, provenance, role and language enums — the last two DERIVED from `@heliogrid/domain`,
   never authored here), Temporal workflow messages (`workflows/`),
   the SESSION PROJECTION (`session.ts`) and its `SessionResolver` port (`ports/session.ts`).
-- **The session projection is the identity-provider seam.** The provider owns user and session
-  rows; HelioGrid owns tenants, memberships and roles; `session.ts` joins the two ONCE. A guard,
-  repository or screen that reaches past it for a provider type is what makes a provider upgrade
-  a repo-wide sweep.
+- **The session projection is the identity-provider seam.** HelioGrid owns `user_account`,
+  sessions, tenants, memberships and roles; a wrapped identity library owns only its own tables;
+  `session.ts` joins the two ONCE. A guard, repository or screen that reaches past it for a
+  provider type is what makes a provider upgrade a repo-wide sweep.
 - NEVER: an implementation, a db import, a NestJS import, a fetch client, a `zod/v4` import, or
   a role definition — `ROLE_PRESETS` and the capability matrix are `@heliogrid/domain`, because
   permission policy is business truth and the API must answer "may they?" with no contract in

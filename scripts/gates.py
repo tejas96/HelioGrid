@@ -10,10 +10,10 @@ Exit: 0 all gates pass, 1 otherwise.
 """
 
 import argparse
-import difflib
 import glob
 import os
 import re
+import subprocess
 import sys
 from collections import defaultdict
 
@@ -81,8 +81,12 @@ def task_blocks(repo):
         if rel.endswith("README.md"):
             continue
         txt = open(f, encoding="utf-8").read()
-        for part in re.split(r"\n#{2,3} (?=T-)", txt)[1:]:
+        # Split on EVERY level-2/3 heading, keep only task headings: a block ends where the next
+        # heading starts, so a trailing "## Laws" section is never read as the last task's body.
+        for part in re.split(r"\n#{2,3} ", txt)[1:]:
             head = part.split("\n")[0].strip()
+            if not head.startswith("T-"):
+                continue
             tid = head.split("·")[0].strip().strip("`")
             blocks.append({"file": rel, "id": tid, "title": head, "body": part})
     return blocks
@@ -129,44 +133,6 @@ def record_lines(text):
             marked.update(range(lineno, lineno + n))
         lineno += n + 1
     return marked
-
-
-# A deleted row whose law survives is not silently re-instated — that is an owner's call.
-# It is recorded as an open question and the surface that needed it carries a dated marker.
-# These two patterns are the marker; Gate 12 checks each one resolves to a genuinely open Q.
-# Exactly the two forms the authoring convention uses — deliberately literal. A loose pattern
-# here would forgive ordinary prose and turn the marker into an amnesty for any dead citation.
-HOLE_MARKER = re.compile(
-    r"⚠ Obligation with no live carrier"
-    r"|\*\*UNRESOLVED — this requirement has no live PRD row id")
-
-
-def open_questions(repo):
-    """Q ids in the register that are NOT marked as decided."""
-    f = spec(repo, "prd/registers/open-questions.md")
-    if not os.path.exists(f):
-        return set(), set()
-    allq, openq = set(), set()
-    for line in open(f, encoding="utf-8"):
-        m = re.match(r"\|\s*(Q\d+)\s*\|(.*)", line)
-        if not m:
-            continue
-        allq.add(m.group(1))
-        if "Decision recorded — not open" not in m.group(2):
-            openq.add(m.group(1))
-    return allq, openq
-
-
-def hole_blocks(text):
-    """(line_no_set, {Q ids cited}) for each paragraph carrying a hole marker."""
-    out = []
-    lineno = 1
-    for para in re.split(r"\n\s*\n", text):
-        n = para.count("\n") + 1
-        if HOLE_MARKER.search(para):
-            out.append((set(range(lineno, lineno + n)), set(re.findall(r"\bQ\d+\b", para))))
-        lineno += n + 1
-    return out
 
 
 def cited_rows(text, known_prefixes):
@@ -216,6 +182,14 @@ CLAIM_RE = re.compile(
     re.I,
 )
 MECH_ROW_RE = re.compile(r"\bM\d+\b")
+# A tool name in an instruction file is a gate being described where only its row id belongs
+# (CLAUDE.md §8, "name no gate outside mechanisms.md"). `coverage threshold` and not the bare
+# word: a threshold is GST vocabulary in this product.
+TOOL_RE = re.compile(
+    r"vitest|biome|dependency-cruiser|\bcruiser\b|PreToolUse|jscpd|sherif|gates\.py"
+    r"|check-adherence|coverage thresholds?",
+    re.I,
+)
 
 
 def instruction_files(repo):
@@ -234,38 +208,52 @@ def check_instruction_hygiene(repo):
              "CONFIG ROT: instruction_files() matched nothing")
         return
 
-    dated, over, claims = [], [], []
+    dated, over, claims, tools, headroom = [], [], [], [], []
     for path, rel, budget in files:
         lines = open(path, encoding="utf-8").read().split("\n")
+        in_frontmatter = lines[:1] == ["---"]
         for i, line in enumerate(lines, 1):
+            if in_frontmatter:                      # a rule file's `paths:` block names configs
+                in_frontmatter = not (i > 1 and line == "---")
+                continue
             if DATE_RE.search(line):
                 dated.append(f"{rel}:{i}")
             if CLAIM_RE.search(line) and not MECH_ROW_RE.search(line):
                 claims.append(f"{rel}:{i}")
+            if TOOL_RE.search(line):
+                tools.append(f"{rel}:{i}")
         n = len(lines) - (1 if lines and lines[-1] == "" else 0)
+        headroom.append((budget - n, f"{rel} {n}/{budget}"))
         if n > budget:
             over.append(f"{rel} {n} > {budget}")
 
     # The ledger states traps, never when one was found — same rule, different file.
-    ledger = os.path.join(repo, "docs/engineering/landmines.md")
+    ledger = os.path.join(repo, ".claude/landmines.md")
     if os.path.exists(ledger):
         for i, line in enumerate(open(ledger, encoding="utf-8"), 1):
             if DATE_RE.search(line):
-                dated.append(f"docs/engineering/landmines.md:{i}")
+                dated.append(f".claude/landmines.md:{i}")
 
     gate(22, "no dated war story in an instruction file", not dated,
          f"{len(files)} files scanned, none dated" if not dated
          else "a date is a war story — the trap goes to landmines.md, the story to the commit: "
               + ", ".join(dated[:8]) + (f" (+{len(dated) - 8} more)" if len(dated) > 8 else ""))
 
+    # The pass line shows the files nearest their ceiling: a budget is a ceiling, not a target,
+    # and the trend is only visible if every run prints it.
     gate(23, "every instruction file within its budget", not over,
-         f"{len(files)} files, largest is {max(len(open(f, encoding='utf-8').readlines()) for f, _, _ in files)} lines"
+         "nearest the ceiling: " + " · ".join(h for _, h in sorted(headroom)[:4])
          if not over else "; ".join(over))
 
     gate(24, "no enforcement claim without its mechanism row", not claims,
          "no unsourced claim" if not claims
          else "name the row that proves it (mechanisms.md M<n>), or drop the claim: "
               + ", ".join(claims[:8]) + (f" (+{len(claims) - 8} more)" if len(claims) > 8 else ""))
+
+    gate(25, "no tool named in an instruction file", not tools,
+         "rules cite row ids only" if not tools
+         else "a gate is described only in its mechanisms.md row; leave the row id behind: "
+              + ", ".join(tools[:8]) + (f" (+{len(tools) - 8} more)" if len(tools) > 8 else ""))
 
 
 def run(repo, verbose):
@@ -283,8 +271,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs:
                 continue
@@ -300,12 +286,7 @@ def run(repo, verbose):
     for f in briefs:
         rel = os.path.relpath(f, spec(repo))
         live, _foot = strip_amendment(open(f, encoding="utf-8").read())
-        skip = set()
-        for lines_, _q in hole_blocks(live):
-            skip |= lines_
         for i, line in enumerate(live.split("\n"), 1):
-            if i in skip:
-                continue
             for rid in cited_rows(line, prefixes):
                 if rid not in rows:
                     dangling_b[rid].append(f"{rel}:{i}")
@@ -331,10 +312,11 @@ def run(repo, verbose):
                 continue          # Gate 2 owns that failure
             checked += 1
             a, b = norm(quote), norm(rows[rid][1])
-            if b.startswith(a[:80]) or a.startswith(b[:80]):
+            # Equal, a deliberate truncation of the cell, or the cell plus a suffix ("— Enforced
+            # by: …", "(non-UI half …)"). Anything else is drift, however small.
+            if a == b or b.startswith(a) or a.startswith(b):
                 continue
-            if difflib.SequenceMatcher(None, a, b).ratio() < 0.93:
-                desync.append(f"{rel}:{i} {rid}")
+            desync.append(f"{rel}:{i} {rid}")
     gate(4, "task + brief quotes match live PRD cells", not desync,
          f"{checked} quotes checked, all match" if not desync else f"{len(desync)} desynced: " + "; ".join(desync[:8]))
 
@@ -443,8 +425,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs or is_quote.match(line):
                 continue
@@ -455,7 +435,7 @@ def run(repo, verbose):
          "clean" if not voc else f"{len(voc)} lines: " + " · ".join(voc[:6]))
 
     # --- Gate 11 · the completion contract says THREE base states, not four
-    # N10 was amended by owner ruling Q61: loading, empty, error. A task whose definition of
+    # N10 was amended by the ruling that removed offline capability: loading, empty, error. A task whose definition of
     # done still demands four states would have an engineer reject a correct screen.
     four = re.compile(r"\b(four|4)\s+(base\s+)?states\b|loading,\s*empty,\s*error,?\s*(and\s+)?offline", re.I)
     # Two live product concepts genuinely have four states and are nothing to do with the
@@ -497,29 +477,6 @@ def run(repo, verbose):
          "clean" if not dangling_p else f"{len(dangling_p)} ids, {n} refs: " +
          "; ".join(f"{k} {v}" for k, v in sorted(dangling_p.items())[:5]))
 
-    # --- Gate 12 · every recorded hole resolves to a genuinely open owner question
-    # This is what keeps Gates 2, 3 and 10 honest. They forgive a paragraph that carries a hole
-    # marker; without this gate, that marker would be a way to hide a dangling citation.
-    allq, openq = open_questions(repo)
-    bad_holes = []
-    n_holes = 0
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        for lines_, qs in hole_blocks(body):
-            n_holes += 1
-            ln = min(lines_)
-            if not qs:
-                bad_holes.append(f"{rel}:{ln} hole names no Q id")
-            elif not (qs & openq):
-                closed = sorted(qs & allq)
-                unknown = sorted(qs - allq)
-                why = f"cites only decided question(s) {closed}" if closed else f"cites unknown id(s) {unknown}"
-                bad_holes.append(f"{rel}:{ln} {why}")
-    gate(12, "recorded holes map to open questions", not bad_holes,
-         f"{n_holes} holes, all mapped to open questions ({len(openq)} open: {', '.join(sorted(openq, key=lambda q: int(q[1:])))})"
-         if not bad_holes else f"{len(bad_holes)}: " + " · ".join(bad_holes[:6]))
-
     # --- Gate 14 · the registers cite no deleted row
     # screens.md legitimately keeps rows for deleted requirements — that is its audit
     # trail — but a *marked* row says so. A bare citation is a dangling pointer.
@@ -529,8 +486,6 @@ def run(repo, verbose):
         rel = os.path.relpath(f, spec(repo))
         body = open(f, encoding="utf-8").read()
         recs = record_lines(body)
-        for lines_, _q in hole_blocks(body):
-            recs |= lines_
         for i, line in enumerate(body.split("\n"), 1):
             if i in recs or "~~" in line:      # a struck row names the id it retired
                 continue
@@ -541,6 +496,118 @@ def run(repo, verbose):
     gate(14, "registers cite no deleted row", not dangling_r,
          "clean" if not dangling_r else f"{len(dangling_r)} ids, {n} refs: " +
          "; ".join(f"{k} {v[:2]}" for k, v in sorted(dangling_r.items())[:5]))
+
+    # --- Gate 26 · no open-question id anywhere: a PRD row carries its own ruling, git the history
+    q_re = re.compile(r"\bQ\d+\b(?!\s*(?:FY|20\d\d))")   # "Q1 FY26" is a display string, not a citation
+    text_ext = (".md", ".ts", ".tsx", ".mts", ".css", ".py", ".sh", ".mjs", ".json", ".jsonc", ".yml", ".yaml")
+    tracked = subprocess.run(["git", "ls-files"], cwd=repo, capture_output=True, text=True).stdout.split("\n")
+    q_sites = []
+    for rel in tracked:
+        if not rel.endswith(text_ext) or rel == "pnpm-lock.yaml" or "/_generated/" in rel:
+            continue
+        try:
+            for i, line in enumerate(open(os.path.join(repo, rel), encoding="utf-8"), 1):
+                if q_re.search(line):
+                    q_sites.append(f"{rel}:{i}")
+        except (UnicodeDecodeError, FileNotFoundError):
+            continue
+    gate(26, "no open-question id anywhere in the tree", not q_sites,
+         f"{len(tracked)} tracked files, none cites a Q id" if not q_sites
+         else f"{len(q_sites)} sites — state the rule in the row, never the id: " + ", ".join(q_sites[:8])
+              + (f" (+{len(q_sites) - 8} more)" if len(q_sites) > 8 else ""))
+
+    # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
+    # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
+    # planned while a DESIGN link is PENDING; designed once every link is filled; shipped (#PR)
+    # only when main's history names the task. screens.md carries the same state per screen.
+    # Both ticket shapes: `**Status:** x` in a prose block, `Status: x` inside a fenced ticket.
+    status_re = re.compile(r"^\**Status:\**\s*(planned|designed|shipped \(#\d+\))\s*$", re.M)
+    design_re = re.compile(r"DESIGN:\**\s*(SCR-[A-Z0-9]+-\d{2})\s*→\s*(\S+)")
+    main_ref = "origin/main"
+    if subprocess.run(["git", "rev-parse", "--verify", "-q", main_ref], cwd=repo, capture_output=True).returncode != 0:
+        main_ref = "main"
+    main_log = subprocess.run(["git", "log", main_ref, "--format=%s"], cwd=repo, capture_output=True, text=True).stdout
+    screen_state = {}
+    if os.path.exists(reg):
+        for line in open(reg, encoding="utf-8"):
+            m = re.match(r"\|\s*(SCR-[A-Z0-9]+-\d{2})\s*\|(?:[^|]*\|){5}\s*(\w+)\s*\|\s*([^|]*)\|", line)
+            if m:
+                screen_state[m.group(1)] = (m.group(2).strip().lower(), m.group(3).strip())
+    ledger_bad, tally = [], defaultdict(int)
+    for b in blocks:
+        found = status_re.findall(b["body"])
+        if len(found) != 1:
+            ledger_bad.append(f"{b['id']}: {'no' if not found else 'more than one'} Status line")
+            continue
+        state = found[0].split(" ")[0]
+        tally[state] += 1
+        designs = design_re.findall(b["body"])
+        pending = [sid for sid, link in designs if link.upper() == "PENDING"]
+        if state == "planned" and designs and not pending:
+            ledger_bad.append(f"{b['id']}: every DESIGN link is filled, so it is designed, not planned")
+        if state in ("designed", "shipped") and pending:
+            ledger_bad.append(f"{b['id']}: {state} with a PENDING design: {pending[:3]}")
+        if state == "designed" and not designs:
+            ledger_bad.append(f"{b['id']}: designed but carries no DESIGN line")
+        if state == "shipped" and not re.search(r"\b" + re.escape(b["id"]) + r"\b", main_log):
+            ledger_bad.append(f"{b['id']}: shipped, but {main_ref}'s history never names it")
+        for sid, _link in designs:
+            if sid not in screen_state:
+                continue
+            s_state, s_link = screen_state[sid]
+            if s_state != state:
+                ledger_bad.append(f"{sid} is {s_state} in screens.md while {b['id']} is {state}")
+            if s_state in ("designed", "shipped") and not s_link.startswith("http"):
+                ledger_bad.append(f"{sid} is {s_state} in screens.md but carries no design link")
+            if s_state == "planned" and s_link.startswith("http"):
+                ledger_bad.append(f"{sid} is planned in screens.md but carries a design link")
+    gate(27, "the ledger agrees: Status, DESIGN links, screens.md and main", not ledger_bad,
+         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped, all consistent"
+         if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
+
+    # --- Gate 28 · docs/engineering/ only shrinks
+    # Every file there carries its fate at its top; the folder dissolves into the package files
+    # and the tasks. The ceiling is the folder's exact line count today: growth fails, and a cut
+    # fails too until the ceiling is lowered in the same change — so it can only fall.
+    ENGINEERING_LINES = 6629
+    eng_files = [f for f in tracked if f.startswith("docs/engineering/")]
+    eng_lines = 0
+    for rel in eng_files:
+        try:
+            eng_lines += sum(1 for _ in open(os.path.join(repo, rel), encoding="utf-8"))
+        except (UnicodeDecodeError, FileNotFoundError):
+            continue
+    gate(28, "docs/engineering/ only shrinks", eng_lines == ENGINEERING_LINES,
+         f"{eng_lines} lines across {len(eng_files)} files, at the ceiling"
+         if eng_lines == ENGINEERING_LINES
+         else (f"{eng_lines} lines: the folder GREW past its ceiling of {ENGINEERING_LINES} — fold, do not add"
+               if eng_lines > ENGINEERING_LINES
+               else f"{eng_lines} lines: below the ceiling of {ENGINEERING_LINES} — lower ENGINEERING_LINES to {eng_lines} in this change"))
+
+    # --- Gate 29 · a ticket is whole: Why, Data model, Contract, Depends on, Out of scope, a proof per line
+    # docs/tasks/README.md rule 11. A task opts in the moment it carries a Why line — the shape a
+    # task takes at /start before it is built — and from then on every part must be present and
+    # every DONE WHEN line must name its proof.
+    proof_re = re.compile(r"→\s*proof:\s*(unit|invariant|gate|qa-api|qa-web|qa-mobile|qa-parity)\b")
+    ticket_bad, n_tickets = [], 0
+    for b in blocks:
+        body = b["body"]
+        if not re.search(r"^\**Why:\**", body, re.M):
+            continue
+        n_tickets += 1
+        for label in ("Data model", "Contract", "Depends on", "Out of scope"):
+            if not re.search(r"^\**" + re.escape(label) + r":\**", body, re.M):
+                ticket_bad.append(f"{b['id']}: no {label} line")
+        dw = body.find("DONE WHEN")
+        if dw < 0:
+            ticket_bad.append(f"{b['id']}: no DONE WHEN block")
+            continue
+        for line in body[dw:].split("\n"):
+            if re.match(r"^\s*-\s", line) and not line.strip().startswith("---") and not proof_re.search(line):
+                ticket_bad.append(f"{b['id']}: done-when line without a proof: {line.strip()[:60]}…")
+    gate(29, "every ticket with a Why is whole, and every done-when line names its proof", not ticket_bad,
+         f"{n_tickets} tickets, all whole" if not ticket_bad
+         else f"{len(ticket_bad)}: " + " · ".join(ticket_bad[:6]))
 
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:
@@ -654,14 +721,13 @@ def run(repo, verbose):
         gate(18, "helper script agrees with the register", False,
              f"{os.path.relpath(helper, repo)} not found — the gate cannot run, so it does not pass")
     else:
-        import subprocess
         try:
             proc = subprocess.run([sys.executable, helper], capture_output=True, text=True, timeout=60, cwd=repo)
             out = proc.stdout
             m = re.search(r"(\d+) of (\d+) V1 screens designed · (\d+) to go", out)
             v1_pending = len([1 for line in open(reg, encoding="utf-8")
                               if re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line)
-                              and re.search(r"\|\s*V1\s*\|\s*pending\s*\|", line)])
+                              and re.search(r"\|\s*V1\s*\|\s*planned\s*\|", line)])
             v1_total = len([1 for line in open(reg, encoding="utf-8")
                             if re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line)
                             and re.search(r"\|\s*V1\s*\|", line)])
@@ -677,7 +743,7 @@ def run(repo, verbose):
                 if got_total != v1_total:
                     bad.append(f"script says {got_total} V1 screens, register has {v1_total}")
                 if got_togo != v1_pending:
-                    bad.append(f"script says {got_togo} to go, register has {v1_pending} V1 pending")
+                    bad.append(f"script says {got_togo} to go, register has {v1_pending} V1 planned")
                 gate(18, "helper script agrees with the register", not bad,
                      f"next-screen.py: {got_togo} of {got_total} to go, matches the register"
                      if not bad else " · ".join(bad))

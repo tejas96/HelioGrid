@@ -43,8 +43,8 @@ that matters. Add all four before the file moves:
   and explicit grants.
 - A genuinely global table goes in `GLOBAL_TABLES` in
   `tests/invariants/src/table-tenancy-scan.ts` **with its reason** — there is no third option,
-  and the scan fails on any table that is neither. A `PROVISIONAL` entry there fails the scan
-  the moment its table exists, so resolving it is a deliberate edit.
+  and the scan fails on any table that is neither. A wrapped identity library's tables enter
+  that list by their real names, with a reason, in the change that lands them — never before.
 
 Then move the reviewed SQL into `packages/db/migrations/` as the next number above the highest:
 

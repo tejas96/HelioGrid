@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-input-expressive'],
     ...theme.elevation.e2,
   },
-  // Density changes the size, never the ground — a control is `surface` at e2 in both (Q77).
+  // Density changes the size, never the ground — a control is `surface` at e2 in both.
   shellFunctional: { borderRadius: theme.radius['r-input-functional'] },
   /* RN cannot draw an inset ring, so the semantic ring is a 1.5px border of the same colour and
      the same 1.5px width — the one place this half spells a border, and only where web insets one. */

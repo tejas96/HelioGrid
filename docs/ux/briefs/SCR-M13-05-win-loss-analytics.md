@@ -12,7 +12,7 @@ Reached from: not pinned by PRD — designer decides, note the decision. (The ow
 
 ### From docs/prd/modules/M13-dashboards-and-reporting.md
 
-- **M13-23** (P0) — **Both reason lists render, kept distinct.** The early **Disqualify** reasons and the late **Mark lost** reasons are different lessons ("losing a quoted deal is a different lesson from disqualifying a renter on day one") and are never merged: win/loss shows both breakdowns by count and value, sourced from the CRM's own reason sets. The "disqualified early" list is `M02-53`'s state's; the "lost late" list `M02-54`'s — including the `Q21` vocabulary mismatch, carried as the CRM carries it, never repaired here.
+- **M13-23** (P0) — **Both reason lists render, kept distinct.** The early **Disqualify** reasons and the late **Mark lost** reasons are different lessons ("losing a quoted deal is a different lesson from disqualifying a renter on day one") and are never merged: win/loss shows both breakdowns by count and value, sourced from the CRM's own reason sets. The "disqualified early" list is `M02-53`'s state's; the "lost late" list `M02-54`'s — the ruled seven, "not interested" included, carried as the CRM carries them, never repaired here.
 - **M13-26** (P1) — **Referral analytics live inside win/loss.** Referral-sourced deals are visible in the win/loss view via the referral row (`M02-16`) — the "came from" chip's reporting face. No credits, no balances (the spec-locked exclusion stands).
 
 ## States
@@ -24,7 +24,7 @@ Reached from: not pinned by PRD — designer decides, note the decision. (The ow
 - **two-reason-lists** — the defining state: the early **Disqualify** breakdown and the late **Mark lost** breakdown rendered as two distinct lists, by count and value, never merged (M13-23).
 - **referral-row** — referral-sourced deals visible via the referral row — the "came from" chip's reporting face; no credits, no balances anywhere (M13-26).
 - **campaign-caveat** — any figure here that cites a campaign renders with its correlation caveat travelling with it, on screen and in export (per `docs/prd/modules/M13-dashboards-and-reporting.md` §M13.4).
-- **vocabulary-mismatch-carried** — the `Q21` vocabulary mismatch between the two reason sets carried exactly as the CRM carries it, never repaired here (M13-23).
+- **vocabulary-mismatch-carried** — the vocabulary mismatch between the two reason sets (`M02-42`'s six, `M02-54`'s seven) carried exactly as the CRM carries it, never repaired here (M13-23).
 - **empty-teaching** — brand-new tenant or no closed deals yet: the screen teaches what will appear here and why — never a blank or broken chart.
 
 ## Data volume

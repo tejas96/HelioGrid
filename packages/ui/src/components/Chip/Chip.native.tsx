@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   chipRest: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
-  /* One pill, two jobs — a control is raised, a label is not (Q77). The lift follows `onClick`. */
+  /* One pill, two jobs — a control is raised, a label is not. The lift follows `onClick`. */
   chipPressable: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
   chipActive: { backgroundColor: theme.colors['action-primary'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { packLabel, UI_LANGUAGES, UI_SOURCE_LOCALE } from '../../src/format/languages';
+import { packLabel } from '../../src/format/languages';
 import { formatMoney } from '../../src/format/money';
 import { IN_FORMATS } from '../../src/format/pack';
 
@@ -12,11 +12,6 @@ describe('packLabel — the one fallback (F3-05)', () => {
     const label = packLabel({ en: 'Subsidy claimed' }, 'hi');
     expect(label).toBe('Subsidy claimed');
     expect(label).not.toBe('');
-  });
-
-  it('authors messages in English, so the source locale always resolves', () => {
-    expect(UI_SOURCE_LOCALE).toBe('en');
-    expect(UI_LANGUAGES).toContain(UI_SOURCE_LOCALE);
   });
 });
 

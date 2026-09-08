@@ -135,7 +135,7 @@ export const IN_FORMATS: FormatPack = {
   /** `F1-50` — metric. */
   measurementSystem: 'metric',
   /**
-   * `F1-48`, `Q88` — India declares NONE. TCCCPR states no holiday rule and no row names a
+   * `F1-48` — India declares NONE. TCCCPR states no holiday rule and no row names a
    * date, so every IN holiday is the tenant's own working calendar (`M01-59`). An authored
    * empty value in the `F1-62`a sense, never a missing one.
    */

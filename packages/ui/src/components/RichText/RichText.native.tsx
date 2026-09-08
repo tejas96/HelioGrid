@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-input-functional'],
-    // A control is `surface` at e2 (Q77) — this is a text field.
+    // A control is `surface` at e2 — this is a text field.
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
     fontFamily: theme.type.families.mono,

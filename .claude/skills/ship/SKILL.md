@@ -1,12 +1,12 @@
 ---
 name: ship
-description: Close out a task — gates once, a review sized to the diff, the size and done-when checks, then a commit on a yes and the push and PR without one. Use when implementation and /verify are done.
+description: Close out a task — gates once, a review sized to the diff, the done-when check, a commit on a yes, then push and print the PR body for the owner to raise the PR. Use when implementation and /verify are done.
 ---
 
-# `/ship` — gates, review, size, commit on a yes, then push and PR
+# `/ship` — gates, review, done-when, commit on a yes, push, print the PR body
 
 The PR is the one human gate (`CLAUDE.md` §8), so everything before it is mechanical and
-everything in it is written for a five-minute read.
+everything in it is written for a five-minute read. The owner raises the PR; this skill never does.
 
 ## 1. Gates, once
 
@@ -24,6 +24,12 @@ each added or renamed file, name its `architecture.md` §4 step in one line; for
 moved path, grep `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the
 dead pointer. Fix what that finds.
 
+**Then break it.** Read the diff as an attacker and as an EPC expert: correctness, edges, failures,
+null/empty/invalid, unexpected flows, regressions, performance, security, tenancy, money rounding,
+provenance, placement, duplication, complexity, design mismatch, hidden assumptions. An issue
+inside the task's scope is fixed now and its area re-reviewed; one outside it goes to
+`docs/tasks/deferred.md` (`CLAUDE.md` §8).
+
 **Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
 excluded) creates a folder, spans two or more packages or apps, touches `packages/contracts` or
 `packages/db`, or edits `docs/engineering/architecture.md` or `mechanisms.md`. The prompt is this
@@ -40,25 +46,26 @@ this tiering prevents.
 ## 3. Completeness
 
 Every done-when line of the task has its proof — a test, a `/verify` verdict or a gate. A line
-without one is not done, and the PR is not opened. A task that turned out to be two is split
-(`/start` §2), never shipped half.
+without one is not done, and the PR body is not printed. A task that turned out to be two is
+split (`/start` §3), never shipped half.
 
 ## 4. Commit on a yes
 
-Show the file list, the line count and the commit message, then STOP. A commit is never automatic.
-On the yes: commit with the `Co-Authored-By` trailer, never `--no-verify`, never a QA scratchpad or
-artifact directory.
+Show the file list, the line count and the commit message, then END THE TURN. The yes is the
+owner's next message, given to exactly what was shown; a go, a green gate, an event or a yes to
+an earlier commit is not it, and a changed file list needs a new yes. On the yes: commit with the
+`Co-Authored-By` trailer, never `--no-verify`, never a QA scratchpad or artifact directory.
 
-## 5. Push and PR, no further ask
+## 5. Push, print the PR body, stop
 
-`git push -u origin <branch>`, then `gh pr create --base main` with this body, in this order:
+`git push -u origin <branch>`. Then print the PR body in chat for the owner to paste, in this order:
 
 1. **What and why** — one paragraph; the task id is in the title.
-2. **Design** — the three things as decided, and any owner ruling applied, by `Q` id.
+2. **Design** — the three things as decided, and any ruling applied, by row id.
 3. **Done-when** — a table: each line of the task, its proof, where the proof is.
 4. **Verification** — the `/verify` section verbatim, including what was not run.
 5. **Review and risks** — the review tier, its findings and their fate; what is deliberately not
    handled yet.
 
-End with the generated-with line. Report the PR link and stop. Never merge, never push to `main`,
-never force-push, never open a second PR for the same branch.
+End with the generated-with line. Then stop. Never open the PR, never merge, never push to `main`,
+never force-push.

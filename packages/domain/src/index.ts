@@ -57,6 +57,7 @@ export type {
   CallingWindow,
   ClockTime,
   Floor,
+  LawfulSendTime,
   MessagingRuleset,
   MessagingWindow,
   NoVoiceRuleset,

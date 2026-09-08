@@ -12,7 +12,7 @@ Reached from: the tenant's own website, where the tenant embeds the form; a visi
 
 ### docs/prd/modules/M03-marketing.md
 
-- **M03-24** (P0) — **The website form is a channel: a tenant-embeddable enquiry form whose submissions land as leads.** This is the channel `D13` deferred and `UXG-03` rendered as a "later" card; under `DD2` it is live here (`M03-01`). The form collects the fields the CRM's capture requires — **the phone field is present and required on every embed** (owner ruling 2026-08-04, Q35; `M02-03`'s phone-as-identity rule) — carries the tenant's branding (`F7-07`), renders in the visitor's language from the tenant's authored versions (`M03-38`), and is **capture-only — it sends nothing**.
+- **M03-24** (P0) — **The website form is a channel: a tenant-embeddable enquiry form whose submissions land as leads.** This is the channel `D13` deferred and `UXG-03` rendered as a "later" card; under `DD2` it is live here (`M03-01`). The form collects the fields the CRM's capture requires — **the phone field is present and required on every embed** (owner ruling 2026-08-04; `M02-03`'s phone-as-identity rule) — carries the tenant's branding (`F7-07`), renders in the visitor's language from the tenant's authored versions (`M03-38`), and is **capture-only — it sends nothing**.
 
 ## States
 
@@ -20,8 +20,8 @@ Reached from: the tenant's own website, where the tenant embeds the form; a visi
 - **empty** — the form's initial, unfilled presentation, with the consent statement plainly stating what the person is agreeing to receive.
 - **error** — a submission that cannot be delivered over the network; the visitor is not left believing an enquiry was sent when it was not.
 - **normal** — the fields the CRM's capture requires, the tenant's branding, the consent statement, in the visitor's language from the tenant's authored versions (`M03-24`).
-- **phone-required-validation** — the phone field is present and required on every embed; a submission without it does not pass (`M03-24`, owner ruling Q35).
-- **visitor-language-fallback** — the visitor's language has no authored version: the form shows the original language with a small note, never silent machine translation (register `Q10` ruling, M03 §6; the gap is surfaced to the tenant author, not to the visitor as a broken page).
+- **phone-required-validation** — the phone field is present and required on every embed; a submission without it does not pass (`M03-24`, owner ruling).
+- **visitor-language-fallback** — the visitor's language has no authored version: the form shows the original language with a small note, never silent machine translation (`F3-10`'s labelled fallback; the gap is surfaced to the tenant author, not to the visitor as a broken page).
 
 ## Data volume
 

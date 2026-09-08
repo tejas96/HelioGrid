@@ -23,7 +23,7 @@ Reached from: the deal — the PRD pins it as "a tenant-side surface on the deal
 - **link-revoked** — a revoked link's state shown; revoking one named link never affects another link on the same deal (F5 §F5.4 context).
 - **open-history** — the per-link open history: who opened, attributed to the link and its contact.
 - **unattributed-open** — an open on a link minted without a contact — an operational signal, not a failure (F5 §F5.4 analytics note).
-- **sent-on-connected-channel** — the message carrying this link went out from the tenant's connected transactional channel: that channel's delivery state reads alongside the link's own record state, as the channel reports it and no further (`F5-28` reconciled, `M03-03`, owner ruling 2026-08-04 Q33).
+- **sent-on-connected-channel** — the message carrying this link went out from the tenant's connected transactional channel: that channel's delivery state reads alongside the link's own record state, as the channel reports it and no further (`F5-28` reconciled, `M03-03`, owner ruling 2026-08-04).
 - **fallback-share-no-delivery-state** — the link was copied for a person to send: the row carries its label, contact, open history and record state and **no delivery state at all**; the absence is a property of that path only, never generalized to a link the product's own channel sent (`F5-28`).
 
 ## Data volume
@@ -34,5 +34,5 @@ A C&I deal with several labelled links, each addressed to one contact, each carr
 
 - **Open moments per link** — the product's own evidence: an open is the link, the moment and a device class only (F5's open-event law); shown as tracked, attributed to the link and its contact.
 - **Link states** — record facts (active / revoked).
-- **Delivery state, scoped — never generalized from the fallback** (`F5-28` as reconciled by owner ruling 2026-08-04, Q33; `M03-03`): where the tenant's connected transactional channel sent the message carrying a link, that channel's own delivery state renders with the link, exactly as the channel reports it and no further; on the copy-paste fallback path — a person sent from their own device — **no delivery state exists here or anywhere**, because the product did not do the sending. Opens remain the product's own evidence on both paths.
+- **Delivery state, scoped — never generalized from the fallback** (`F5-28` as reconciled by owner ruling 2026-08-04; `M03-03`): where the tenant's connected transactional channel sent the message carrying a link, that channel's own delivery state renders with the link, exactly as the channel reports it and no further; on the copy-paste fallback path — a person sent from their own device — **no delivery state exists here or anywhere**, because the product did not do the sending. Opens remain the product's own evidence on both paths.
 - No money figures appear on this surface.

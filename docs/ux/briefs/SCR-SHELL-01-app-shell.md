@@ -14,7 +14,7 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 2. **Grievance contact (F1-59) and sign-out (MS12-19)** — behind the top-bar avatar, in a two-item `Menu`. Sign-out is not styled destructive: MS12-19 preserves work, so N8's confirm-and-undo has no subject.
 3. **Tenant identity** — the tenant's name as words beside the product `LogoTile`. No monogram, no tenant logo, no tenant colour anywhere in the shell (F7-07).
 4. **Home switcher (M13-10)** — the home title *is* the switcher: `Menu selection="single"`, `menuitemradio` + tick, listing the home of every held preset. Switching swaps which body of work is the home's own and which is composed in.
-5. **Fourth standing destination = Quotes** (Home · Leads · Quotes · More). Visits are composed inline in My Day and need no second route.
+5. **Fourth standing destination = Proposals** (Home · Leads · Proposals · More) — never "Quotes": `F6-22` bans the word from interface strings, and the artboard's label follows at its next revision. Visits are composed inline in My Day and need no second route.
 6. **The centre action's verb follows the home in force** ("Add lead" on My Day, "Start survey" on Today's surveys); the four standing destinations belong to the person and do not change with the home. The plus glyph never changes (F7-22).
 7. **Section frames go flat only where the child renders as cards** — the phone's `RecordCard` work lists and the `StatCard` figures block at both widths. A desktop work block holds `ListRow` glance rows, so it keeps its frame. The working `DataTable` and its F7-27 caption belong to the full list behind "See all", not to this screen.
 8. **The shell bar carries shell things; the home header is the first band of the content region**, at both widths. `AppHeader` holds tenant, search, bell and avatar — no page title. Title-switcher, preset line, availability pill, its recording line and the primary action sit together in the content.
@@ -49,7 +49,7 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 
 ### docs/prd/modules/M13-dashboards-and-reporting.md
 
-- **M13-10** (P0) — **The composition rule (resolves register `Q5` / F2 `F2-Q1`): one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. _(non-UI half, build-side: fixed preset-precedence ladder derives one home; other presets compose as blocks; ladder is product constant — for awareness, not for drawing)_
+- **M13-10** (P0) — **The composition rule: one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. _(non-UI half, build-side: fixed preset-precedence ladder derives one home; other presets compose as blocks; ladder is product constant — for awareness, not for drawing)_
 
 ### docs/prd/modules/M05-studio/11-shell-and-platform.md
 
@@ -89,7 +89,7 @@ Design the switcher at multiple held presets — the PRD's own worked examples a
 ## Numbers carrying provenance
 
 - The optional until-time on the availability toggle (M07-46) — **a recorded value, so NO tier.**
-  The user set it; nothing computed or estimated it. *(Amended 2026-08-07 by the `Q59` refinement:
+  The user set it; nothing computed or estimated it. *(Amended 2026-08-07 by the recorded-date refinement:
   this line briefly said the until-time carried a tier, under the first form of the ruling that
   tested "has it happened yet". The test is now how the value was arrived at — recorded, or
   computed/guessed — and a value a person typed is recorded.)*

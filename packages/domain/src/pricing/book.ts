@@ -34,7 +34,7 @@ export function listedPrice(
 /**
  * `BM-26` — whether this meter's rate may be sold today. A rate the owner has set but not yet
  * verified against worst-case unit COGS is DRAFT, and a draft meter is not sellable however
- * complete the book looks (owner ruling `Q1`; verification is its revisit trigger).
+ * complete the book looks; rate-card verification is what lifts the draft.
  *
  * A ceiling meter is sellable: it has no rate to be draft, because a tenant at the ceiling stops
  * rather than overruns (`BM-20`).

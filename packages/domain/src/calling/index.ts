@@ -31,4 +31,5 @@ export {
 } from './pack';
 export { isCallerLineAllowed } from './routing';
 export { isOutboundVoiceAvailable } from './voice';
+export type { LawfulSendTime } from './window';
 export { isWithinFloor, lawfulSendTime, windowInForce } from './window';

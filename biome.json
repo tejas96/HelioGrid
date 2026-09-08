@@ -117,11 +117,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "**/*.config.{js,ts,mjs,cjs}",
-        ".dependency-cruiser.cjs",
-        "docs/engineering/harness/**"
-      ],
+      "includes": ["**/*.config.{js,ts,mjs,cjs}", ".dependency-cruiser.cjs"],
       "linter": {
         "rules": {
           "style": {

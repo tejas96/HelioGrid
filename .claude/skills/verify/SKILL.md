@@ -34,9 +34,10 @@ Map what remains, paths → surfaces:
 For a shared-code path, **grep the actual consumers** — the symbol may be imported somewhere
 the table does not predict.
 
-**Only surfaces in the blast radius get an agent.** A web-only change runs ONE agent, not
-four. A diff touching only docs, plans or governance ends here: report "no runnable surface",
-which is a complete result, not a skip.
+**Only surfaces in the blast radius get an agent.** Backend-only → `qa-api` alone; web →
+`qa-web`; mobile → `qa-mobile`; both platforms → `qa-parity` too. Never a frontend agent for a
+change no frontend can see. A diff touching only docs, plans or governance ends here: report
+"no runnable surface", which is a complete result, not a skip.
 
 ## 2. Depth — the run costs what the change can break
 
@@ -100,11 +101,11 @@ something that was supposed to be imported (Law 11).
 
 ## 7. Triage
 
-- **bug** — fix it.
-- **product-question** — a missing business rule or spec ambiguity. **Never invent a
-  requirement:** record it in `docs/prd/registers/open-questions.md` or `conflicts.md` and ask the
-  owner. Does not block a clean
-  run.
+- **bug** — inside the task's scope, fix it now; outside, `docs/tasks/deferred.md` and it is the
+  next task (`CLAUDE.md` §8).
+- **product-question** — a missing business rule or spec ambiguity. Between readings the PRD
+  supports, rule it into the row (`CLAUDE.md` §1); a new feature or number is the owner's — ask
+  with a pick. Does not block a clean run.
 - **false-positive** — justify with evidence. Not waved off.
 - **environment** — emulator down, server down. Fix and re-run; does not consume a round.
 

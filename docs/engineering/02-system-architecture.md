@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 02 — System Architecture
 
 How the system runs: the request path, tenancy, background work, realtime, storage, the

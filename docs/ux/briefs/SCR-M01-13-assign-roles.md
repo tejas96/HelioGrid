@@ -41,7 +41,7 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
    confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
    The toast is a `ToastHost`, which owns its own placement and clearance.
 
-**The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31, `Q80`), never
+**The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31), never
 `name + "can" + phrases`. Each language supplies its own template and its own list joiner, so word
 order belongs to the translator rather than to the code — Hindi and Marathi put the verb after the
 list, which is what a concatenation cannot express. **A preset supplies a full CLAUSE, not a

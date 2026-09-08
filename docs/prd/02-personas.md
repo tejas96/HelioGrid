@@ -74,8 +74,8 @@ on all three:
   them) and an `Engineer` (reviews and signs off) as separate presets. The V2 persona **Design Engineer**
   covers the v1 Designer, and the v1 Engineer's sign-off responsibility is documented **inside**
   that persona as a distinct capability (`PS-19`) rather than as a thirteenth persona. Whether
-  sign-off also warrants its own preset **role** is F2's decision, not this document's — see
-  §Open questions.
+  sign-off also warrants its own preset **role** is F2's decision, not this document's — ruled at
+  `F2-03`.
 - **One v1 non-user becomes a persona.** v1's *installer / crew* had no user account at all:
   "InstallationSheet's crew ticks have no crew user in v1", the coordinator runs the checklist,
   and "crew sees no money because crew sees no screen" (`R16`). R16's own consequence names the
@@ -96,7 +96,7 @@ These five rows bind every persona section below and every module that names a p
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | PS-01 | **Role decides the home screen, not a setting.** Every persona lands on the work in front of them, not on a generic dashboard they must navigate away from; the front door is derived from what the person is, never chosen in preferences. The source calls this "the single highest-leverage UX decision in the product". | `SRC` — `S1.rec.1` (*retired: product journey* §Stage 1 Recommendation, L183–186) | P0 |
-| PS-02 | The twelve personas named in §2 are the **fixed persona vocabulary of the suite**. Every module and foundation PRD names its audience from this list, using these exact names; a document that needs a thirteenth persona records the need in `registers/open-questions.md` rather than coining one. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Users | P0 |
+| PS-02 | The twelve personas named in §2 are the **fixed persona vocabulary of the suite**. Every module and foundation PRD names its audience from this list, using these exact names; a document that needs a thirteenth persona raises the need with the owner rather than coining one. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Users | P0 |
 | PS-03 | **A persona is a job; a role is the grant of access.** The two sets are deliberately different sizes, one person may hold several roles at once, and access is resolved by F2's rules — permission granted if **any** held role grants it, lead visibility taking the **widest** scope among them. No persona section in this document grants, implies or restricts a permission. | `SRC` — *retired: product journey* §ROLES & PERMISSIONS L1417–1422, L1479–1481; `DOC08.six-roles`, `DOC08.roles-or` | P0 |
 | PS-04 | **Every persona sits inside one of the three audiences** of `01` §2 — Owner or Employees. No persona in this suite is the EPC's customer, and no persona-level requirement may imply a customer login: the customer reaches the product through one tokenised link and never acquires an account. | `SRC` — `D7` (three audiences), `D5` (customer never logs in) | P0 |
 | PS-05 | **One person, one home.** Someone holding several roles gets a **single** home screen — the one for their widest role, with the other roles' work composed inside it — and can switch, "not two competing home screens". A person who both sells and surveys lands on My Day with today's visits shown inside it. | `SRC` — *retired: product journey* §ROLES & PERMISSIONS Recommendation 2 (L1515–1517) | P1 |
@@ -649,7 +649,7 @@ restructuring anything, because a person already holds any number of roles. The 
 names Installation Teams as primary users
 and requires every persona documented independently, so the persona is documented here in full,
 and the question of whether it gets its own preset role is put to F2 rather than answered here
-(see §Open questions).
+(`F2-05` rules it).
 
 ### Goals
 
@@ -986,11 +986,11 @@ pricing and proposals are not this persona's. Full matrix: **see F2 §Marketing*
 lead scoring, marketing automation, campaign attribution and a website chatbot are all v1
 non-goals (`S2.notv1.1`–`S2.notv1.4`), v1 limited lead sources to manual entry, bulk import and
 inbound voice (`D13`), and v1's product never sent a message on the user's behalf (`D32`). The
-two recorded conflicts are owned by the marketing, CRM and proposal modules
-(`registers/conflicts.md` rows 3–4; the sending half was further resolved by the owner's
-2026-08-04 Q33 ruling — the transactional lane now sends, D32's manual rule retired), and this
-persona additionally gained the whole-base aggregate-only audience builder by the same session's
-Q37 ruling (`M03-10`, F2's M03 matrix).
+two recorded conflicts are owned and ruled by the marketing, CRM and proposal modules
+(`M03-01`, `M03-02`; the sending half was further resolved by the owner's
+2026-08-04 ruling — the transactional lane now sends, D32's manual rule retired), and this
+persona additionally gained the whole-base aggregate-only audience builder by a ruling of the
+same session (`M03-10`, F2's M03 matrix).
 
 ---
 
@@ -1022,9 +1022,9 @@ in §2 that F2 must rule on.
 
 - **No permission matrix, no capability grid, no role names.** F2 owns all three. Every
   permissions line in this document is a summary with a pointer, and where a summary and F2 ever
-  disagree, F2 is correct and the disagreement is recorded in `registers/conflicts.md`.
+  disagree, F2 is correct and the summary is fixed.
 - **No thirteenth persona.** The set is fixed by the brief (`PS-02`). A document that needs one
-  raises an open question instead of coining one.
+  raises the need with the owner instead of coining one.
 - **No screen specifications.** Home screens are named here as persona-level requirements; their
   contents, states and empty states belong to the owning modules.
 - **No org chart, headcount, seat model or job description.** Personas are jobs to be done, not
@@ -1034,20 +1034,6 @@ in §2 that F2 must rule on.
 - **Operations does not mean procurement.** Naming an Operations persona does not reopen
   inventory, purchase orders, rostering engines, dependency charts or maintenance and monitoring,
   all of which remain explicit product non-goals with a v1 rationale (`S8.rule.v1-boundary`, `D9`).
-
-## 6. Open questions
-
-Raised by this document, owned elsewhere. These are to be mirrored into
-`registers/open-questions.md` by the tasks that own them — this document's file scope did not
-include that register.
-
-| # | Question | Decision owner |
-|---|---|---|
-| A | **Does design sign-off warrant its own preset role?** v1 kept `Designer` and `Engineer` as separate presets so that the reviewer is not the author. V2 documents both jobs inside the Design Engineer persona (`PS-17`, `PS-19`). F2 must decide whether the preset set mirrors that convergence or keeps sign-off as a separate grantable preset — noting R16's precedent that roles are already many-to-many and a preset can be added without structural change. | `foundations/F2` (Task 5) |
-| B | **How does the v1 `Manager` preset split?** It carried both the sales-team job and the projects coordinator job ("= the Manager preset — there is no separate coordinator role", `S8.rule.roles`). V2 has three personas across that ground: Sales Manager, Project Manager, Operations. Which presets result, and which one inherits the coordinator capabilities the source assigned to Manager? | `foundations/F2` (Task 5), with `modules/M08` |
-| C | **Does the Installation Team Member get a login?** R16 deferred the Installer preset and gave the crew no screen at all, while naming a later release as the one that adds it. The owner brief names Installation Teams as primary users. If yes, `PS-27` (no commercial figures) becomes a surface obligation rather than a consequence of having no surface; if no, `PS-26` does not ship and `PS-28`'s coordinator attribution remains the only record. | `foundations/F2` (Task 5), with `modules/M08` |
-| D | **Field Technician, Survey Engineer and Installation Team Member overlap in one person.** A single field employee may hold all three. `PS-05` requires one composed home, derived from the widest role — but "widest" is defined for lead visibility, not for field work. F2 and M13 need a composition rule for personas whose scope is not measured in lead visibility. | `foundations/F2` (Task 5), with `modules/M13` |
-| E | **Sales Manager's home is source-derived; the v1 source never named a manager front door.** `S1.rec.1` names five front doors and the Manager is not among them; the manager's home is derived instead from the dashboards section, which assigns the owner dashboard to "Owner (+ manager, team-scoped)". Recorded as a source gap closed by another part of the same source rather than by invention — confirm the reading. | `modules/M13`, at authoring |
 
 ## 7. Verification performed
 

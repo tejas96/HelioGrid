@@ -15,7 +15,7 @@ interface NativeNoConnectionProps extends NoConnectionProps {
 /**
  * The one shared full-screen state for "the device has no connection".
  *
- * · IT NEVER MENTIONS SYNC (owner ruling Q61).
+ * · IT NEVER MENTIONS SYNC.
  * · RETRY CANNOT LIE — the lifecycle is the shared use-retry.ts, so both platforms report the same
  *   outcomes at the same moments.
  * · IT DOES NOT BLOCK WHAT STILL WORKS — `children` is the slot for whatever the app CAN show.

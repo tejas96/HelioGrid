@@ -2,8 +2,7 @@
  * Proves root.tsx's module augmentation landed.
  *
  * Imported by NOTHING — tsc checks every file under src/, so this runs on typecheck
- * regardless. Listed in knip.jsonc for
- * the same reason.
+ * regardless.
  *
  * Its own file on purpose: deleting the augmentation in root.tsx then breaks a DIFFERENT
  * file, so the failure cannot be made to disappear by removing one adjacent line.

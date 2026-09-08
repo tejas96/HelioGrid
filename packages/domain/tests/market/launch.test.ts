@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PACK_KEYS, type PackKey } from '../../src/market/keys';
+import type { PackKey } from '../../src/market/keys';
 import { isLaunchable, unauthoredKeys } from '../../src/market/launch';
 import { IN_PACK, type MarketPack } from '../../src/market/pack';
 
@@ -27,7 +27,7 @@ describe('unauthoredKeys — which of the eight keys a pack has not authored (F1
     expect(unauthoredKeys(packWith(PENDING))).toEqual([]);
   });
 
-  it('names the one key India still owes — dataRights, parked by Q89', () => {
+  it('names the one key India still owes — dataRights, parked until real-customer scale', () => {
     expect(unauthoredKeys(IN_PACK)).toEqual(['dataRights']);
   });
 
@@ -47,8 +47,7 @@ describe('isLaunchable — the new-market gate (F1-05)', () => {
     expect(isLaunchable(packWithout(['subsidy']))).toBe(false);
   });
 
-  it('keeps India shut while dataRights is parked (Q89), the accepted consequence', () => {
+  it('keeps India shut while dataRights is parked, the accepted consequence', () => {
     expect(isLaunchable(IN_PACK)).toBe(false);
-    expect(PACK_KEYS).toContain('dataRights');
   });
 });

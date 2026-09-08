@@ -6,17 +6,17 @@ Read-only 3D behind the proposal link's View-in-3D button; tokenised, no login.
 
 ## Entry & exit
 
-Reached from: the **"View in 3D"** button on the proposal phase of the customer link (SCR-F5-01) — the customer's 3D view ships inside the proposal link (owner ruling Q27, `M05-55`, `F5-33`); no separate customer-facing 3D URL exists. Leads to: back to the proposal page it opened from (back navigation returns to where the reader came from — `MS9-25`, on the proposal surface). No other exit is pinned by the PRD — designer decides, note the decision.
+Reached from: the **"View in 3D"** button on the proposal phase of the customer link (SCR-F5-01) — the customer's 3D view ships inside the proposal link (`M05-55`, `F5-33`); no separate customer-facing 3D URL exists. Leads to: back to the proposal page it opened from (back navigation returns to where the reader came from — `MS9-25`, on the proposal surface). No other exit is pinned by the PRD — designer decides, note the decision.
 
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M05-design-studio.md`
 
-- **M05-55** (P0) — **Chart colours come from the design system's data ramp, never the product accent; the read-only share state hides all edit controls and the share button itself.** The census's original "never brass" phrasing is superseded in premise (that palette is retired); the surviving requirement is data-ramp usage per `foundations/F7`. **The customer's 3D view ships inside the proposal link (owner ruling 2026-08-04, Q27):** the read-only 3D surface renders behind the proposal page's **"View in 3D"** button (`F5-33`) — no separate customer-facing 3D URL exists, and the census's copy-share-link acceptance items are satisfied by the proposal link whose page carries the view; captures/pictures remain the fallback. _(non-UI half, build-side: no separate customer 3D URL, ships inside proposal link; data-ramp chart colours — for awareness, not for drawing)_
+- **M05-55** (P0) — **Chart colours come from the design system's data ramp, never the product accent; the read-only share state hides all edit controls and the share button itself.** The census's original "never brass" phrasing is superseded in premise (that palette is retired); the surviving requirement is data-ramp usage per `foundations/F7`. **The customer's 3D view ships inside the proposal link (owner ruling 2026-08-04):** the read-only 3D surface renders behind the proposal page's **"View in 3D"** button (`F5-33`) — no separate customer-facing 3D URL exists, and the census's copy-share-link acceptance items are satisfied by the proposal link whose page carries the view; captures/pictures remain the fallback. _(non-UI half, build-side: no separate customer 3D URL, ships inside proposal link; data-ramp chart colours — for awareness, not for drawing)_
 
 ### From `docs/prd/modules/M05-studio/05-step6-editor.md`
 
-- **MS6-37** (P0) — Scene surfaces: 3D entry from the layout, customer share link (per Q27 the 3D lives inside the proposal link), read-only share rendering, energy-report trigger, and capture mode for proposal hero shots (`scene3d.38–.42`). _(This screen is the customer-facing half of this row — the read-only share rendering reached from inside the proposal link; the operator-side 3D entry, energy-report trigger and capture mode belong to the studio editor screen.)_
+- **MS6-37** (P0) — Scene surfaces: 3D entry from the layout, customer share link (the 3D lives inside the proposal link, `F5-33`), read-only share rendering, energy-report trigger, and capture mode for proposal hero shots (`scene3d.38–.42`). _(This screen is the customer-facing half of this row — the read-only share rendering reached from inside the proposal link; the operator-side 3D entry, energy-report trigger and capture mode belong to the studio editor screen.)_
 
 ## States
 

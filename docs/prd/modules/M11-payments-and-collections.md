@@ -62,8 +62,8 @@ It owns, at product level:
   handling at product level, and what happens when it is absent, invalid or unavailable.
 - **Payment links on due tranches** — minting on the tenant's account, the send-and-copy flow
   (sent from the tenant's connected transactional channel where one exists, copied for a person to
-  send where none is — owner ruling 2026-08-06, Q45; this read "the copy-and-share flow" before
-  the ruling), the link's lifecycle, and the confirmation that turns a link into a receipt.
+  send where none is — owner ruling 2026-08-06), the link's lifecycle, and the confirmation that
+  turns a link into a receipt.
 - **Manual payment recording** — the market's payment modes, references, receipt attachments,
   part payments, and who may record.
 - **Receipts and confirmation states** — including the distinction between money the tenant's
@@ -99,7 +99,7 @@ Personas (per `02-personas.md`):
 - **Sales Executive** — **read-only** on their own won deals, which is exactly enough to chase a
   customer without asking anyone (`S8.rule.roles`, `M08-18`); the chase message carries no live
   money instrument, so composing it, copying it and **sending** it from the tenant's connected
-  official channel all sit inside that read-only scope (owner ruling 2026-08-06, Q48; `M11-26`, and
+  official channel all sit inside that read-only scope (owner ruling 2026-08-06; `M11-26`, and
   §M11.4's permissions block). *(The send clause is that ruling's; this bullet previously read "the
   chase message carries no live money instrument (`M11-26`, and §M11.4's permissions block)" and
   named no act. The payment link stays out of this preset's reach — minting or sending a link rides
@@ -116,8 +116,7 @@ Personas (per `02-personas.md`):
 **Surface emphasis.** The payments screen is a *functional*-density ledger (`F7-17`): schedule
 rows, states, amounts, dates and receipts. Desktop carries the full ledger and the period view;
 mobile carries the two acts that happen away from a desk — record a payment with a receipt
-photograph, and send or copy a payment link or a request message (owner ruling 2026-08-06, Q45;
-this read "copy a payment link or a request message" before the ruling). Every tranche and receipt
+photograph, and send or copy a payment link or a request message (owner ruling 2026-08-06; this read "copy a payment link or a request message" before the ruling). Every tranche and receipt
 state renders as a label plus a mark, never colour alone (`F7-12`).
 
 **Connection posture.** The product requires a live connection, so **every money act reaches the
@@ -138,7 +137,7 @@ to does not exist until the server accepts it, and the two are never conflated (
 | M11-04 | **Split settlement with the platform as master merchant is rejected for v1, and the rejection carries its trigger.** The alternative — the platform as the account of record, splitting each collection — is documented as an alternate rail adapter and nothing more, because it would make the platform the licence-bearing merchant with the obligations that follow. Revisit only if a marketplace revenue model appears (§5). | `SRC` — `DOC16.route-rejected` (docs/16 §8: rejected for v1, "documented only as an alternate adapter. Revisit only if a marketplace revenue model appears") | P0 |
 | M11-05 | **The collection rail is a capability declared by the market pack, never a vendor requirement.** Which rails a market has — payment links, the payment modes a manual entry may carry, and any payment-data constraints — is `pack.payment-rails` data; the launch market's rail is a *reference implementation* and swapping it is an adapter change, never a product change. No requirement in this module names a payment provider, and no screen in it does either. | `SRC` — `F1-18` consumed (`pack.payment-rails`: modes, rails, adapters, constraints); `DOC07.ports-vendor-neutral` (cited — dispositioned by Task 3: vendor names are v1 reference implementations); `R4` (shared — the named provider is the launch market's rail, `F1-43`) | P0 |
 | M11-06 | **Every money mutation is online-only and is refused, never queued.** Recording a payment, attaching it to a tranche, waiving, reversing and minting a link all require the server; with no connection the act fails fast with an honest reason and leaves nothing pending. There is no offline money in this product, on any surface, at any tier. | `SRC` — `DOC06.server-owns-money` (docs/06 §1 principle 3, published at `F4-04`: every money figure is computed server-side); `F4-07` consumed (a retried submission never duplicates and never silently drops) | P0 |
-| M11-07 | **Every money event is an audit entry, written with the change that caused it.** Tranche edits, payment recorded, reversal posted, waiver applied, link minted, and every credential lifecycle event and decrypt are covered events — actor, time, before and after — and audit rows can never be updated or deleted. **And one act that writes no money is a covered event too: the send of the plain payment-request message from the tenant's connected official channel is an audit entry recorded under the name of the person who sent it (owner ruling 2026-08-06, Q52)** — it leaves the tenant's own official channel and reaches a customer about money, so it is written to the same log with its actor, whatever preset that person holds, the project-visibility-only reader of `F2.M11.send-request-message` included. *(That last sentence is the ruling's; this row previously ended at "…and audit rows can never be updated or deleted." and named no message send, the question standing open at §6 `M11-Q5` and `foundations/F2` §6 `F2-Q2`. Every money event above, the actor/time/before-and-after discipline and the never-updated-never-deleted rule are unchanged, and the entry records the send act and its sender — it is not a delivery state and claims none, `M11-26`.)* **And that covered event is the send from the connected channel and nothing else (owner ruling 2026-08-06, Q57): on `M11-26`'s copy-paste fallback — no channel connected — the product composes the message and places it on the clipboard, a person sends it outside the product, and no audit entry is written at all, neither a compose record nor a copy record nor a send record.** The same chase is therefore attributable when the product sends it and unrecorded when a person does — a deliberate simplification, recorded as one rather than compensated for: this log holds what the product performed, and the product never claims what it did not do. *(Those last two sentences are that ruling's; this row previously stopped at the Q52 clause and stated no boundary for the fallback path, the question standing open at §6 `M11-Q6` and `foundations/F2` §6 `F2-Q3`. Q57 adds no covered event, adds no compensating record, counter or timeline entry, and changes nothing else here: every money event above, the actor/time/before-and-after discipline, the never-updated-never-deleted rule and the Q52 clause's own terms are unchanged.)* | `SRC` — `F2-22` consumed (the covered-events checklist names money events and credential lifecycle explicitly); `DOC04.audit-log` (cited — `foundations/F2` owns the log) — both **unsuperseded**; the message-send clause is `F2-22` consumed **as amended by owner ruling 2026-08-06 (Q52)**, whose checklist now names that send, **bounded to the connected channel by owner ruling 2026-08-06 (Q57)**, which adds no covered event | P0 |
+| M11-07 | **Every money event is an audit entry, written with the change that caused it.** Tranche edits, payment recorded, reversal posted, waiver applied, link minted, and every credential lifecycle event and decrypt are covered events — actor, time, before and after — and audit rows can never be updated or deleted. **And one act that writes no money is a covered event too: the send of the plain payment-request message from the tenant's connected official channel is an audit entry recorded under the name of the person who sent it (owner ruling 2026-08-06)** — it leaves the tenant's own official channel and reaches a customer about money, so it is written to the same log with its actor, whatever preset that person holds, the project-visibility-only reader of `F2.M11.send-request-message` included. *(That last sentence is the ruling's; this row previously ended at "…and audit rows can never be updated or deleted." and named no message send. Every money event above, the actor/time/before-and-after discipline and the never-updated-never-deleted rule are unchanged, and the entry records the send act and its sender — it is not a delivery state and claims none, `M11-26`.)* **And that covered event is the send from the connected channel and nothing else (owner ruling 2026-08-06): on `M11-26`'s copy-paste fallback — no channel connected — the product composes the message and places it on the clipboard, a person sends it outside the product, and no audit entry is written at all, neither a compose record nor a copy record nor a send record.** The same chase is therefore attributable when the product sends it and unrecorded when a person does — a deliberate simplification, recorded as one rather than compensated for: this log holds what the product performed, and the product never claims what it did not do. *(Those last two sentences are that ruling's; this row previously stopped at the send-audit clause and stated no boundary for the fallback path. The fallback ruling adds no covered event, adds no compensating record, counter or timeline entry, and changes nothing else here: every money event above, the actor/time/before-and-after discipline, the never-updated-never-deleted rule and the send-audit clause's own terms are unchanged.)* | `SRC` — `F2-22` consumed (the covered-events checklist names money events and credential lifecycle explicitly); `DOC04.audit-log` (cited — `foundations/F2` owns the log) — both **unsuperseded**; the message-send clause is `F2-22` consumed **as amended by owner ruling 2026-08-06**, whose checklist now names that send, **bounded to the connected channel by owner ruling 2026-08-06**, which adds no covered event | P0 |
 
 **Behavior detail.** The boundary above is not a banner on a screen — it is the shape of every
 flow in this module. When a tenant has connected their own account, the product's role in a
@@ -187,14 +186,14 @@ scope) and no preset gains a money-only scope (`F2-15`).
 - Given the plain payment-request message sent from the tenant's connected official channel, when
   the audit log is read, then the send appears as its own entry under the name of the person who
   sent it — including where that person holds project visibility alone (`M11-07`, `F2-22`;
-  `F2.M11.send-request-message`). *(Added by owner ruling 2026-08-06, Q52, which closed §6
-  `M11-Q5`; no other line in this block changes.)*
+  `F2.M11.send-request-message`). *(Added by owner ruling 2026-08-06; no other line in this block
+  changes.)*
 - Given a tenant with **no** connected official channel, when the same request message is composed,
   copied and sent by a person outside the product, then the audit log holds no entry for that act —
   no compose record, no copy record, no send record — and nothing elsewhere in the product records
-  it either (`M11-07`, `F2-22`; `M11-26`). *(Added by owner ruling 2026-08-06, Q57, which closed §6
-  `M11-Q6` and `foundations/F2` §6 `F2-Q3`: the log records what the product performed, and on that
-  path it performed no send. No other line in this block changes.)*
+  it either (`M11-07`, `F2-22`; `M11-26`). *(Added by owner ruling 2026-08-06: the log records what
+  the product performed, and on that path it performed no send. No other line in this block
+  changes.)*
 
 **Localization notes.** Amounts render only through the single money implementation using the
 tenant market's symbol, grouping and minor unit — the same way in every language (`F3-19`,
@@ -209,11 +208,11 @@ tenant market's symbol, grouping and minor unit — the same way in every langua
 | M11-09 | **The accepted proposal version's payment terms *are* the collection schedule — the same rows, pinned to that version, never re-entered and never re-derived.** The project inherits them at Won by reference (`M08-04`, `M08-35`); the tranche amounts are computed from *that version's* payable and move only when the version in force moves (`M11-14`). A sent document keeps the figures it was sent with, so a later price change never rewrites a schedule a customer already agreed to (`F8-15`). | `SRC` — `DOC04.tranches-money-path` ("the … tranche schedule on a proposal version becomes the project's collection schedule at Won (same rows)"); `S8.rule.tranches` (shared — the project-side surfaces are `M08-35`'s); `M06-13`, `M01-54` consumed; `F8-15` consumed | P0 |
 | M11-10 | **Tranche state is derived from the ledger and can never be typed.** `upcoming → due → part-received → received`, with `waived` terminal: the received states are recomputed from the payment entries that exist, so no person sets "received" as a status and no status can disagree with the receipts behind it. What a person *can* do is add an entry (`M11.5`), reverse one (`M11.7`) or waive the tranche (`M11-49`) — each of which changes the state by changing the facts. | `SRC` — `DOC04.tranches-money-path` (verbatim: "tranche status upcoming → due → part_received → received, waived terminal, recomputed from payments"); `F8-13` consumed (derived-by-comparison, never a stored flag) | P0 |
 | M11-11 | **Completing the stage a tranche is mapped to makes that tranche due.** The mapping is against the canonical project chain with market-neutral stage names (`R2`); the stage event is `modules/M08`'s (`M08-36`) and the transition it causes is this module's. Nothing else makes a tranche due — not a date, not a person's judgement, not the customer's link being opened. | `SRC` — `DOC04.tranches-money-path` ("Stage completion makes the matching tranche due"); `S8.rule.tranches` ("When a stage completes, the matching tranche becomes due" — shared, the stage event is `M08-36`); `R2` as amended (shared — the `due_on_stage` mapping half the ledger routes here) | P0 |
-| M11-12 | **A tranche mapped to a stage the project skips becomes due when the project passes the point that stage occupied — recorded as a reading, not as source text.** Skippable stages are pack data (`F1-22`) and the source is silent on what happens to money mapped to one. `M08-36` states this reading first and this module reciprocates it so the two never diverge; the alternative reading — the tranche stays `upcoming` until a person releases it — is available to an owner ruling and would be a change to this rule, not to the schedule's structure. What is *not* available under any reading is stranding the money silently. | `SRC` — `DOC04.tranches-money-path` (stage completion makes the matching tranche due); `R2` as amended (skippable stages are pack data); `M01-54` consumed (its editor warning defers to "M11's due-derivation rules"). **Author reading, stated as a choice:** the skipped-stage clause itself is *not* source text — it is stated at `M08-36` as an inference, is reciprocated here as a disclosed reading, and is not carried by either module as source truth (§6) | P0 |
+| M11-12 | **A tranche mapped to a stage the project skips becomes due when the project passes the point that stage occupied — recorded as a reading, not as source text.** Skippable stages are pack data (`F1-22`) and the source is silent on what happens to money mapped to one. `M08-36` states this reading first and this module reciprocates it so the two never diverge; the alternative reading — the tranche stays `upcoming` until a person releases it — is available to an owner ruling and would be a change to this rule, not to the schedule's structure. What is *not* available under any reading is stranding the money silently. | `SRC` — `DOC04.tranches-money-path` (stage completion makes the matching tranche due); `R2` as amended (skippable stages are pack data); `M01-54` consumed (its editor warning defers to "M11's due-derivation rules"). **Author reading, stated as a choice:** the skipped-stage clause itself is *not* source text — it is stated at `M08-36` as an inference, is reciprocated here as a disclosed reading, and is not carried by either module as source truth | P0 |
 | M11-13 | **A tranche's amount is the version's arithmetic, and a person never types one.** Percentages come from the terms; amounts come from the payable; the minor-unit remainder is allocated by the same single arithmetic everywhere rather than by whoever is looking (`F8-24`). A tenant who wants different money writes different terms on a new proposal version (`M11-14`) — the schedule is not a scratchpad. | `SRC` — `DOC04.tranches-money-path` (Σ amounts = payable to the minor unit); `DOC04.tranche-templates` (shared — percentages and their 100.00 rule; the template surface is `M01-54`); `F8-24` consumed | P0 |
 | M11-14 | **A new accepted version revises the schedule, and every receipt already taken survives it.** When a change after Won produces a new proposal version with revised terms, the project's schedule follows the version in force while the earlier one stays readable; recorded payments are never rewritten, re-attributed silently or deleted, and the surface shows what has been collected against the *new* total honestly, including the case where more has already been collected than the revised schedule expects. | `SRC` — `S8.wrong.7` (shared — "new proposal version, revised tranches, original preserved"; the project's reference move is `M08-50`); `DOC04.payments-append-only` (nothing is edited); `DOC04.proposal-versions-immutable` (cited — `modules/M06`); `F8-15` consumed | P0 |
-| M11-15 | **Nothing on the money path is fabricated, and an absent schedule renders as absent.** If the accepted version carries no payment terms, the project's money surface says so plainly and offers the honest next act — it does not invent rows, distribute the payable evenly, back-fill a template, or show a projection where an amount owed belongs (`F8-23`). This is the standing rule, and it is what the ruled OPEX/PPA money surface obeys (`M11-16`, final per owner ruling 2026-08-04 Q32). | `SRC` — `F8-23` consumed (a projection is never rendered as an amount owed); `F8-12` consumed; reciprocates `M08-35`'s behavior detail ("shows an empty schedule and says so plainly; it never fabricates rows") | P0 |
-| M11-16 | **FINAL behaviour for an operating-expense or power-purchase project's money surface (owner ruling 2026-08-04, Q32).** Such a project tracks the same stages and the same document checklist as any other (`R17`), and its money surface is the **one-time payments from the accepted version** — deposit, connection fee, whatever its terms name — with the **full tranche toolset** (states, due-on-stage, request messages, receipts), plus the honest note **"monthly energy billing is handled outside this platform."** This module: displays exactly the schedule the accepted version carries, performs **no** recurring billing, generates **no** periodic charge, renders an **absent** schedule as absent (`M11-15`), and adds **no** row of its own — nothing fabricated, nothing hidden. `modules/M08` §M08.6 states the same rule from the project side. | `SRC` — `R17` (shared — the document type is `M06-06`, the post-Won stage behaviour `M08-06`, the projection label `F8-23`); `M06-13` consumed; one-time-payments + honest-note rule per owner ruling 2026-08-04 (Q32), replacing the interim | P0 |
+| M11-15 | **Nothing on the money path is fabricated, and an absent schedule renders as absent.** If the accepted version carries no payment terms, the project's money surface says so plainly and offers the honest next act — it does not invent rows, distribute the payable evenly, back-fill a template, or show a projection where an amount owed belongs (`F8-23`). This is the standing rule, and it is what the ruled OPEX/PPA money surface obeys (`M11-16`, final per owner ruling 2026-08-04). | `SRC` — `F8-23` consumed (a projection is never rendered as an amount owed); `F8-12` consumed; reciprocates `M08-35`'s behavior detail ("shows an empty schedule and says so plainly; it never fabricates rows") | P0 |
+| M11-16 | **FINAL behaviour for an operating-expense or power-purchase project's money surface (owner ruling 2026-08-04).** Such a project tracks the same stages and the same document checklist as any other (`R17`), and its money surface is the **one-time payments from the accepted version** — deposit, connection fee, whatever its terms name — with the **full tranche toolset** (states, due-on-stage, request messages, receipts), plus the honest note **"monthly energy billing is handled outside this platform."** This module: displays exactly the schedule the accepted version carries, performs **no** recurring billing, generates **no** periodic charge, renders an **absent** schedule as absent (`M11-15`), and adds **no** row of its own — nothing fabricated, nothing hidden. `modules/M08` §M08.6 states the same rule from the project side. | `SRC` — `R17` (shared — the document type is `M06-06`, the post-Won stage behaviour `M08-06`, the projection label `F8-23`); `M06-13` consumed; one-time-payments + honest-note rule per owner ruling 2026-08-04, replacing the interim | P0 |
 
 **Behavior detail.** The schedule is a **view of an inheritance**, not a copy: each row shows its
 label, its share, its computed amount, its state, and the date it entered that state where it has
@@ -221,7 +220,7 @@ one. The due row is the one the surface lifts — it is the only row anyone can 
 carries the two acts that collect: the payment link where an account is connected (`M11.4`) and
 the request message in every case (`M08-38`, whose composition is `M01-55`'s template and whose
 sending is the tenant's connected transactional channel's where one exists and a person's where
-none is — owner ruling 2026-08-06, Q45; `M11-26`, `M03-03`). *(This clause previously read "the
+none is — owner ruling 2026-08-06; `M11-26`, `M03-03`). *(This clause previously read "the
 ready-to-paste request message in every case (`M08-38`, whose composition is `M01-55`'s template
 and whose sending is nobody's, `D32`)"; the ready-to-paste copy survives as the fallback.)*
 
@@ -254,7 +253,7 @@ Permissions: reading the schedule rides `F2.M08.project-visibility`; every act o
   rows are fabricated (`M11-15`).
 - *An operating-expense or power-purchase project asks for a recurring charge* → not built, by
   ruling; the surface shows the one-time payments from the accepted version with the honest
-  outside-platform note (`M11-16`, owner ruling 2026-08-04 Q32).
+  outside-platform note (`M11-16`, owner ruling 2026-08-04).
 - *Two surfaces show different amounts for the same tranche* → cannot happen: one arithmetic, one
   figure (`M11-13`, `F8-24`); a disagreement is a defect.
 
@@ -303,7 +302,7 @@ When the connection is absent or failing, the due tranche does not lose an actio
 action: the payment-link actions are not offered — neither the send nor the copy — "Record
 payment" is, and the surface states why in one line rather than showing a disabled control with no
 explanation (`M11-19`, `DOC07`'s fallback). *(The action list is amended per owner ruling
-2026-08-06, Q45; this line previously read ""Copy payment link" is not offered, "Record payment"
+2026-08-06; this line previously read ""Copy payment link" is not offered, "Record payment"
 is". The rule itself — no broken link action, the manual path with the reason stated — is
 unchanged.)*
 
@@ -354,9 +353,9 @@ data and is never a translated product string. **Analytics events.**
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M11-24 | **A due tranche offers the payment link once the tenant has connected an account — sent from the tenant's connected transactional channel where one exists, with "Copy payment link" as the fallback where none is (owner ruling 2026-08-06, Q45, applying owner ruling 2026-08-04 Q33).** The action lives on the due row and mints on the tenant's account for that tranche — one collect action, on the row that owes money. Where a transactional channel is connected, that action **sends** the minted link and its request message from that channel and is the due row's primary act (`M11-26`, `M03-03`); where none is connected, the primary act is the copy the source names and a person sends it. **Copy stays on the due row on both paths** — a person may always take the link themselves. *This row previously read, in full: **A due tranche offers "Copy payment link" once the tenant has connected an account.** The action lives on the due row, mints on the tenant's account for that tranche, and is the whole of the collection flow the source specifies — one action, on the row that owes money. Only the act's shape is amended; the minting behaviour, the account it mints on and the row it lives on are unchanged.* | `SRC` — `UXG-12` (Section D · C9, verbatim: "'Copy payment link' action on the due tranche once tenant connects [the rail]" — the copy act is the source's and survives as the fallback); `DOC14.byo-payment-links`; `C9` (shared — the customer's side of the same moment is `foundations/F5`'s, Task 20); the send is owner ruling 2026-08-06 (Q45) applying owner ruling 2026-08-04 (Q33), lane boundary `M03-03` | P0 |
+| M11-24 | **A due tranche offers the payment link once the tenant has connected an account — sent from the tenant's connected transactional channel where one exists, with "Copy payment link" as the fallback where none is (owner ruling 2026-08-06, applying owner ruling 2026-08-04).** The action lives on the due row and mints on the tenant's account for that tranche — one collect action, on the row that owes money. Where a transactional channel is connected, that action **sends** the minted link and its request message from that channel and is the due row's primary act (`M11-26`, `M03-03`); where none is connected, the primary act is the copy the source names and a person sends it. **Copy stays on the due row on both paths** — a person may always take the link themselves. *This row previously read, in full: **A due tranche offers "Copy payment link" once the tenant has connected an account.** The action lives on the due row, mints on the tenant's account for that tranche, and is the whole of the collection flow the source specifies — one action, on the row that owes money. Only the act's shape is amended; the minting behaviour, the account it mints on and the row it lives on are unchanged.* | `SRC` — `UXG-12` (Section D · C9, verbatim: "'Copy payment link' action on the due tranche once tenant connects [the rail]" — the copy act is the source's and survives as the fallback); `DOC14.byo-payment-links`; `C9` (shared — the customer's side of the same moment is `foundations/F5`'s, Task 20); the send is owner ruling 2026-08-06 applying owner ruling 2026-08-04, lane boundary `M03-03` | P0 |
 | M11-25 | **A link is minted for one tranche and for exactly what that tranche still owes**, in the tenant's currency, to the minor unit — never a rounded figure, never a "convenient" amount, never a lump that spans rows. | `SRC` — `DOC04.tranches-money-path` (amounts to the minor unit; per-tranche collection); `F1-21` consumed; `F8-24` consumed (one figure, one source) | P0 |
-| M11-26 | **The payment link and its request message send from the tenant's connected transactional channel; composed copy-paste is the fallback where no channel is connected (owner ruling 2026-08-06, Q45, applying owner ruling 2026-08-04 Q33).** Where the tenant has a connected official channel — the same connection `modules/M03` establishes — the minted link and its composed request message go out from that channel under the transactional/utility template class (`M03-03`), and that channel's own delivery states ride the sent message honestly: exactly as it reports them and no further (`F5-28`). Where no channel is connected, the link is placed on the clipboard (with the request message where the person wants both) and the rep or coordinator sends it through whatever channel they already use — and **only that fallback path claims no delivery**: no delivery state appears anywhere on the surface for it, because the product will not claim knowledge of a delivery it did not perform. **Only the message is automated.** Money is untouched by this row: collections still settle directly from the customer to the tenant's own account and the platform touches no funds (`M11-01`, unamended). *This row previously read, in full: **The product composes and copies; a person sends.** There is no send capability here and no delivery state anywhere on the surface: the link is placed on the clipboard (with the request message where the person wants both) and the rep or coordinator sends it through whatever channel they already use. The product will not claim knowledge of a delivery it did not perform. That was the pre-Q33 manual-only rule stated unscoped; it is retired here and survives only as the fallback path's no-delivery-claim discipline. The divergence it created with this document's §5 is recorded at `docs/prd/registers/conflicts.md` row 10 and is closed by this amendment.* | `SRC` — `D32` (cited — `modules/M06` owns the messaging non-goal), whose manual-only rule is superseded for the transactional lane by owner ruling 2026-08-04 (Q33) and applied to this row by owner ruling 2026-08-06 (Q45), surviving only as the fallback path's no-delivery-claim discipline; `M03-03` (the lane boundary); `S8.rule.tranches` + `M08-38` (shared — the ready-to-paste request message, whose no-delivery-state law now binds the fallback path alone) | P0 |
+| M11-26 | **The payment link and its request message send from the tenant's connected transactional channel; composed copy-paste is the fallback where no channel is connected (owner ruling 2026-08-06, applying owner ruling 2026-08-04).** Where the tenant has a connected official channel — the same connection `modules/M03` establishes — the minted link and its composed request message go out from that channel under the transactional/utility template class (`M03-03`), and that channel's own delivery states ride the sent message honestly: exactly as it reports them and no further (`F5-28`). Where no channel is connected, the link is placed on the clipboard (with the request message where the person wants both) and the rep or coordinator sends it through whatever channel they already use — and **only that fallback path claims no delivery**: no delivery state appears anywhere on the surface for it, because the product will not claim knowledge of a delivery it did not perform. **Only the message is automated.** Money is untouched by this row: collections still settle directly from the customer to the tenant's own account and the platform touches no funds (`M11-01`, unamended). *This row previously read, in full: **The product composes and copies; a person sends.** There is no send capability here and no delivery state anywhere on the surface: the link is placed on the clipboard (with the request message where the person wants both) and the rep or coordinator sends it through whatever channel they already use. The product will not claim knowledge of a delivery it did not perform. That was the manual-only rule that preceded the transactional-lane ruling, stated unscoped; it is retired here and survives only as the fallback path's no-delivery-claim discipline. The divergence it created with this document's §5 is closed by this amendment.* | `SRC` — `D32` (cited — `modules/M06` owns the messaging non-goal), whose manual-only rule is superseded for the transactional lane by owner ruling 2026-08-04 and applied to this row by owner ruling 2026-08-06, surviving only as the fallback path's no-delivery-claim discipline; `M03-03` (the lane boundary); `S8.rule.tranches` + `M08-38` (shared — the ready-to-paste request message, whose no-delivery-state law now binds the fallback path alone) | P0 |
 | M11-27 | **A tranche becomes received only on confirmation from the tenant's own account, and a repeated confirmation never counts twice.** Confirmation is verified as coming from that tenant's account, is safe to receive more than once, marks the tranche's receipt and attaches the receipt record. Nothing about "the customer said they paid" moves the state — only the account's confirmation, or a person's explicit recorded entry (`M11.5`), which is labelled as exactly that (`M11-42`). | `SRC` — `DOC16.byo-collections` (docs/16 §8: confirmations "are verified with the tenant's own secret, idempotent, mark the tranche received and attach the receipt"); `UXG-12` ("receipt state reflects webhook confirmation" — carried at product level) | P0 |
 | M11-28 | **Between payment and confirmation there is a stated waiting state, never a guess.** A link that has been opened or paid but not yet confirmed renders as awaiting confirmation with that wording — not as received, not as failed, and not as an empty row that makes a person wonder. | `SRC` — `UXG-12` (receipt state follows confirmation — the intermediate state is the honest consequence); `F8-12` consumed (never render an unreconciled money state as final); `DOC07.payment-link-fallback` (the reconciliation that resolves it) | P0 |
 | M11-29 | **Missed confirmations are healed by reconciliation, not by a person chasing the product.** The tranche's status is re-checked against the tenant's account whenever a user views it, and a periodic sweep repairs anything nobody looked at; a repaired state is the same state a live confirmation would have produced, and the receipt it produces is identical. | `SRC` — `DOC07.payment-link-fallback` (docs/engineering/07, verbatim: "Missed webhooks are healed by status-poll reconciliation whenever a user views the tranche, plus a periodic sweep") | P0 |
@@ -372,12 +371,12 @@ transactional template class and its own delivery states ride them honestly; **w
 connected**, both go to the clipboard and the person sends them, and only that path claims no
 delivery (`M11-26`). What comes back is the account's confirmation, which writes the receipt
 (`M11-27`) and moves the tranche's state by changing the ledger, exactly as a manual entry would
-(`M11-10`). *(Amended per owner ruling 2026-08-06, Q45. This paragraph previously opened "The whole
+(`M11-10`). *(Amended per owner ruling 2026-08-06. This paragraph previously opened "The whole
 flow is four steps and none of them is the product sending anything" and ended "and puts it on the
 clipboard with the composed request message (`M01-55`, `M08-38`) → the person sends it" — the
-pre-Q33 manual-only rule, now retired for the connected-channel path. The money steps are
-unchanged: the product still mints on the tenant's own account and never holds the funds,
-`M11-01`.)*
+manual-only rule that preceded the transactional lane, now retired for the connected-channel path.
+The money steps are unchanged: the product still mints on the tenant's own account and never holds
+the funds, `M11-01`.)*
 
 **The waiting state matters more than it looks.** `C9` is the highest-anxiety moment in the whole
 customer journey — *"first real money to a company they met three weeks ago"* — and the three
@@ -395,41 +394,37 @@ Permissions: minting, **sending** or re-copying a **payment link** rides `F2.M11
 it creates or carries a live collection instrument on the tenant's account, so it sits with the
 collection set. The plain **request message**, which carries no instrument, rides the reader's
 project scope (`F2.M08.project-visibility`) — **composing it, copying it and sending it from the
-tenant's connected official channel alike (owner ruling 2026-08-06, Q48)** — which is what lets the
+tenant's connected official channel alike (owner ruling 2026-08-06)** — which is what lets the
 read-only Sales Executive chase their own won deal (`S8.wrong.3`, `M08-18`). Link mints are audited
 (`F2-22`). **So is the send of the plain request message: it is an audited event, written under the
-name of the person who sent it (owner ruling 2026-08-06, Q52; `F2-22` as amended, `M11-07`)** — the
+name of the person who sent it (owner ruling 2026-08-06; `F2-22` as amended, `M11-07`)** — the
 message leaves the tenant's own official channel and reaches a customer about money, and the entry
 names the sender whatever preset they hold, the project-visibility-only reader included. Composing
 and copying write no entry; the **send** is the audited act. *(The send-audit sentences are that
 ruling's; this block previously ended at "Link mints are audited (`F2-22`)." and made no audit claim
-for the message send at all — the question stood open at §6 `M11-Q5` and `foundations/F2` §6
-`F2-Q2`, both now closed. Q52 moves no grant: who may send is Q48's answer, unchanged.)*
-**Where no channel is connected, nothing is written at all (owner ruling 2026-08-06, Q57):** on
+for the message send at all. The send-audit ruling moves no grant: who may send is unchanged.)*
+**Where no channel is connected, nothing is written at all (owner ruling 2026-08-06):** on
 `M11-26`'s copy-paste fallback the product composes the message and places it on the clipboard, the
 person sends it outside the product, and the log carries no compose record, no copy record and no
 send record for that path — and no counter, timeline entry or other compensating record stands in
 for one. The same chase is attributable when the product sends it and unrecorded when a person
 does; that is the simpler rule the owner chose, recorded as a deliberate trade rather than a gap,
 and it follows from what this log is: what the product performed, never what it did not do. *(The
-fallback sentences are Q57's; this block previously stated "Composing and copying write no entry;
-the **send** is the audited act." and left the fallback path's silence unstated, the question
-standing open at §6 `M11-Q6` and `foundations/F2` §6 `F2-Q3`, both now closed. Q57 moves no grant
-and amends no cell of this section — the amended cell is `M11-07`, in §M11.1.)*
-*(**Amended per owner ruling 2026-08-06, Q48 — the question this block recorded as open is now
+fallback sentences are the fallback-silence ruling's; this block previously stated "Composing and
+copying write no entry; the **send** is the audited act." and left the fallback path's silence
+unstated. That ruling moves no grant and amends no cell of this section — the amended cell is
+`M11-07`, in §M11.1.)*
+*(**Amended per owner ruling 2026-08-06 — the question this block recorded as open is now
 settled, and the send of the plain message stays in project scope.** This block previously gave the
-plain request message to the reader's project scope without naming the send, and carried the
-annotation, in full: "**New question raised by applying owner ruling 2026-08-06, Q45 — recorded, not
-decided here.** The ruling settled that the message sends; it did not state whose act the send of
-the **plain request message** is. Whether sending that message from the tenant's own official
-channel — as distinct from composing and copying it — rides the same reader project scope or needs
-its own holder set is open at §6 as `M11-Q4`. Nothing on this surface decides it, and the payment
-link's own authority above is unaffected." The ruling settles it in project scope: the plain message
-carries no money instrument, and keeping the send there preserves the case the PRD explicitly wanted
-— a read-only Sales Executive chasing their own won deal (`S8.wrong.3`, `M08-18`). **The payment
-link is unchanged:** minting and sending an actual link still ride `F2.M11.record-payments`, because
-a link is a live collection instrument. `foundations/F2` §F2.5-M11 now carries the row the absence of
-which raised the question — `F2.M11.send-request-message`.)*
+plain request message to the reader's project scope without naming the send, and recorded as open
+whether sending that message from the tenant's own official channel — as distinct from composing
+and copying it — rides the same reader project scope or needs its own holder set, the payment
+link's own authority being unaffected either way. The ruling settles it in project scope: the plain
+message carries no money instrument, and keeping the send there preserves the case the PRD
+explicitly wanted — a read-only Sales Executive chasing their own won deal (`S8.wrong.3`, `M08-18`).
+**The payment link is unchanged:** minting and sending an actual link still ride
+`F2.M11.record-payments`, because a link is a live collection instrument. `foundations/F2` §F2.5-M11
+now carries the row the absence of which raised the question — `F2.M11.send-request-message`.)*
 
 **Edge cases & what-goes-wrong.**
 - *The customer pays but the confirmation never arrives* → the tranche shows awaiting confirmation
@@ -444,11 +439,11 @@ which raised the question — `F2.M11.send-request-message`.)*
 - *Someone asks whether the customer received the link* → on the connected-channel path the
   product reports exactly what that channel reports and no further (`M11-26`, `F5-28`); on the
   copy fallback the product does not know, says so, and no delivery state exists (`M11-26`).
-  *(Amended per owner ruling 2026-08-06, Q45; this line previously read "→ the product does not
+  *(Amended per owner ruling 2026-08-06; this line previously read "→ the product does not
   know and says so; no delivery state exists (`M11-26`)", stated unscoped.)*
 - *Someone asks who chased the customer on a tranche in a tenant with no connected channel* → the
   audit log has nothing to show, because the product performed no send; it does not guess, and no
-  compose or copy record was kept (`M11-07` as amended, owner ruling 2026-08-06, Q57).
+  compose or copy record was kept (`M11-07` as amended, owner ruling 2026-08-06).
 - *An unpaid tranche tempts someone to hide the customer's progress page* → forbidden outright
   (`M11-32`).
 
@@ -457,7 +452,7 @@ which raised the question — `F2.M11.send-request-message`.)*
   row's collect action mints on that tenant's account for the outstanding amount to the minor unit
   — sending the link and its request message from the tenant's connected transactional channel
   where one is connected, and offering the copy where none is — and the copy action is present on
-  both paths (`M11-24`, `M11-25`, `M11-26`). *(Amended per owner ruling 2026-08-06, Q45; this line
+  both paths (`M11-24`, `M11-25`, `M11-26`). *(Amended per owner ruling 2026-08-06; this line
   previously read "then a "Copy payment link" action is present and mints on that tenant's account
   for the outstanding amount to the minor unit (`M11-24`, `M11-25`)".)*
 - Given a minted link in a tenant with a connected transactional channel, when it goes out, then it
@@ -465,13 +460,13 @@ which raised the question — `F2.M11.send-request-message`.)*
   are shown honestly — exactly as it reports them and no further (`M11-26`, `M03-03`, `F5-28`).
 - Given a minted link in a tenant with no connected channel, when it is copied, then nothing is
   transmitted by the product and no delivery state appears anywhere on the surface (`M11-26`).
-  *(**Closed by owner ruling 2026-08-06, Q45**, which applies owner ruling 2026-08-04 Q33 — whose
-  text already named "payment link" — to this module's rows. These two lines replace a single line
-  that read "Given a minted link, when it is copied, then nothing is transmitted by the product and
-  no delivery state appears anywhere on the surface (`M11-26`)" and carried an **Open — owner
-  decision required** annotation: `M11-24`/`M11-26` stated the pre-Q33 manual-only rule while §5
-  stated the transactional lane, a contradiction recorded at `docs/prd/registers/conflicts.md` row 10
-  and deliberately left unresolved, with the transactional-send path unbuilt for payment links
+  *(**Closed by owner ruling 2026-08-06**, which applies owner ruling 2026-08-04's transactional
+  lane — whose text already named "payment link" — to this module's rows. These two lines replace a
+  single line that read "Given a minted link, when it is copied, then nothing is transmitted by the
+  product and no delivery state appears anywhere on the surface (`M11-26`)" and carried an **Open —
+  owner decision required** annotation: `M11-24`/`M11-26` stated the earlier manual-only rule while
+  §5 stated the transactional lane, a contradiction deliberately left unresolved, with the
+  transactional-send path unbuilt for payment links
   specifically. The cells are now amended, the send is built for payment links as for every other
   transactional moment, and the no-delivery-claim discipline binds the copy fallback alone. Money
   settlement is untouched by the ruling: `M11-01` stands, unamended.)*
@@ -479,31 +474,31 @@ which raised the question — `F2.M11.send-request-message`.)*
   when they open a due tranche, then the plain request message is theirs to compose, to copy **and
   to send from the tenant's connected official channel**, while no payment-link act is offered to
   them (`F2.M08.project-visibility`, `F2.M11.record-payments`; `M11-26`). *(**Added by owner ruling
-  2026-08-06, Q48**, which settled the question §M11.4's permissions block and §6 `M11-Q4` had
-  recorded as open: the plain message carries no money instrument, so its send stays in project
+  2026-08-06**, which settled the question §M11.4's permissions block had recorded as open: the
+  plain message carries no money instrument, so its send stays in project
   scope; minting and sending a **link** are unchanged and still ride `F2.M11.record-payments`. No
   other line in this block changes, and money settlement is untouched — `M11-01` stands,
   unamended.)*
 - Given the plain request message sent from the tenant's connected official channel — including by
   a holder of project visibility alone — when the send completes, then an audit entry records it
   under the name of the person who sent it (`M11-07`, `F2-22`; `F2.M11.send-request-message`).
-  *(**Added by owner ruling 2026-08-06, Q52**, which settled the question §M11.4's permissions block
-  and §6 `M11-Q5` had recorded as open. The entry records **the send act and its sender** — it is
-  not a delivery state and claims none, so `M11-26`'s discipline stands and the copy fallback shows
-  no delivery state anywhere. No requirement cell of §M11.4 is amended by this ruling: `M11-24`,
-  `M11-26`, `M11-52` and `M11-53` stand exactly as Q45 left them and Q48 left them; the amended cell
-  is `M11-07`, in §M11.1. Money settlement is untouched — `M11-01` stands, unamended.)*
+  *(**Added by owner ruling 2026-08-06**, which settled the question §M11.4's permissions block had
+  recorded as open. The entry records **the send act and its sender** — it is not a delivery state
+  and claims none, so `M11-26`'s discipline stands and the copy fallback shows no delivery state
+  anywhere. No requirement cell of §M11.4 is amended by this ruling: `M11-24`, `M11-26`, `M11-52`
+  and `M11-53` stand exactly as the payment-link send and plain-message scope rulings left them; the
+  amended cell is `M11-07`, in §M11.1. Money settlement is untouched — `M11-01` stands, unamended.)*
 - Given the request message on a due tranche in a tenant with **no** connected official channel,
   when it is composed, copied and sent by a person outside the product, then no audit entry exists
   for that act anywhere — no compose record, no copy record, no send record — and no surface states
   or implies that one does (`M11-07` as amended, `F2-22`; `M11-26`). *(**Added by owner ruling
-  2026-08-06, Q57**, which settled what §6 `M11-Q6` and `foundations/F2` §6 `F2-Q3` recorded as
-  open. The owner took the simpler of the two readings and **no compensating record is added** — no
+  2026-08-06**, which settled whether the fallback path leaves any record. The owner took the
+  simpler of the two readings and **no compensating record is added** — no
   compose log, no counter, no timeline entry. The trade is stated at `M11-07`: the same chase is
   attributable when the product sends it and unrecorded when a person does, deliberately. No
   requirement cell of §M11.4 is amended by this ruling — `M11-24`, `M11-26`, `M11-52` and `M11-53`
-  stand exactly as Q45 and Q48 left them; the amended cell is `M11-07`, in §M11.1. Money settlement
-  is untouched — `M11-01` stands, unamended.)*
+  stand exactly as the earlier rulings left them; the amended cell is `M11-07`, in §M11.1. Money
+  settlement is untouched — `M11-01` stands, unamended.)*
 - Given a confirmation from the tenant's account, when it is received, then the tranche's receipt
   is written and its state follows the ledger; and given the same confirmation again, when it is
   received a second time, then no second receipt exists (`M11-27`).
@@ -710,8 +705,8 @@ money implementation (`F3-19`, `F3-20`). **Analytics events.** `payment_reversed
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M11-52 | **The payments screen is one surface and the only place money is written.** It shows the tranche schedule and, per row, the state, the amount, the date and the receipt; on the due row it carries the collect actions — the payment link where an account is connected, sent from the tenant's connected transactional channel where one exists and copied for a person to send where none is (`M11-24`, `M11-26`, owner ruling 2026-08-06, Q45), the request message always, and record-payment. Every other surface in the product links into it rather than duplicating a control — **with one carve-out: the project's money block mirrors the message act on its due row** (`M08-35`'s behavior detail; `M08-38` as reconciled — sent from the connected channel where one exists, ready-to-paste where none is), because composing, sending and copying a message writes no money; every act that *writes* money exists only here *(Final review: carve-out stated so the law matches the conceded surface)*. *Amended per owner ruling 2026-08-06, Q45: the collect-actions clause previously read "the payment link where an account is connected, the ready-to-paste request message always, and record-payment", and the carve-out previously read "the project's money block mirrors the copy-message action on its due row (`M08-35`'s behavior detail), because composing and copying writes no money". The one-surface law, the carve-out's existence and the money-writing boundary are unchanged — the ruling automates the message, never the money (`M11-01`).* | `SRC` — `S8.screen.3` (verbatim, with the market's mode list elided: "Payments: the tranche schedule. Mark received, copy a ready-made request message, record mode …, attach receipt" — the modes named there are the launch market's and are pack data, `F1-42`); `M08-35`'s behavior detail (cited — the project money block links here); `M08-38` (cited — the project-side request act, already reconciled to owner ruling 2026-08-04 Q33); the send is owner ruling 2026-08-06 (Q45) | P0 |
-| M11-53 | **An unpaid due tranche is chased through a person, and the product's job is to make it impossible to miss.** It surfaces on the project, on the stage board and on the owner's dashboard (`modules/M08`, `modules/M13` own those surfaces; this module supplies the facts), and the rep is prompted to chase. The prompt leads to a message — sent from the tenant's connected transactional channel where one exists and composed for a person to send where none is (owner ruling 2026-08-06, Q45; `M11-26`) — never to a product-side sanction against the customer (`M11-32`). *This clause previously read "The prompt leads to a message a person sends — never to a product-side sanction against the customer (`M11-32`)"; the pre-Q33 manual-only half is retired and the never-sanction half is unchanged. The chase is still a person's decision: the product prompts and the person acts.* | `SRC` — `S8.wrong.3` (shared — the money half here: what is owed, since when, and the chase prompt; the board/dashboard surfaces are `M08-39`'s); `S8.rule.tranches` (the money owed against a passed milestone is "the most common leak"); the message's send path is owner ruling 2026-08-06 (Q45) applying owner ruling 2026-08-04 (Q33) — `M11-26` | P0 |
+| M11-52 | **The payments screen is one surface and the only place money is written.** It shows the tranche schedule and, per row, the state, the amount, the date and the receipt; on the due row it carries the collect actions — the payment link where an account is connected, sent from the tenant's connected transactional channel where one exists and copied for a person to send where none is (`M11-24`, `M11-26`, owner ruling 2026-08-06), the request message always, and record-payment. Every other surface in the product links into it rather than duplicating a control — **with one carve-out: the project's money block mirrors the message act on its due row** (`M08-35`'s behavior detail; `M08-38` as reconciled — sent from the connected channel where one exists, ready-to-paste where none is), because composing, sending and copying a message writes no money; every act that *writes* money exists only here *(Final review: carve-out stated so the law matches the conceded surface)*. *Amended per owner ruling 2026-08-06: the collect-actions clause previously read "the payment link where an account is connected, the ready-to-paste request message always, and record-payment", and the carve-out previously read "the project's money block mirrors the copy-message action on its due row (`M08-35`'s behavior detail), because composing and copying writes no money". The one-surface law, the carve-out's existence and the money-writing boundary are unchanged — the ruling automates the message, never the money (`M11-01`).* | `SRC` — `S8.screen.3` (verbatim, with the market's mode list elided: "Payments: the tranche schedule. Mark received, copy a ready-made request message, record mode …, attach receipt" — the modes named there are the launch market's and are pack data, `F1-42`); `M08-35`'s behavior detail (cited — the project money block links here); `M08-38` (cited — the project-side request act, already reconciled to owner ruling 2026-08-04); the send is owner ruling 2026-08-06 | P0 |
+| M11-53 | **An unpaid due tranche is chased through a person, and the product's job is to make it impossible to miss.** It surfaces on the project, on the stage board and on the owner's dashboard (`modules/M08`, `modules/M13` own those surfaces; this module supplies the facts), and the rep is prompted to chase. The prompt leads to a message — sent from the tenant's connected transactional channel where one exists and composed for a person to send where none is (owner ruling 2026-08-06; `M11-26`) — never to a product-side sanction against the customer (`M11-32`). *This clause previously read "The prompt leads to a message a person sends — never to a product-side sanction against the customer (`M11-32`)"; the earlier manual-only half is retired and the never-sanction half is unchanged. The chase is still a person's decision: the product prompts and the person acts.* | `SRC` — `S8.wrong.3` (shared — the money half here: what is owed, since when, and the chase prompt; the board/dashboard surfaces are `M08-39`'s); `S8.rule.tranches` (the money owed against a passed milestone is "the most common leak"); the message's send path is owner ruling 2026-08-06 applying owner ruling 2026-08-04 — `M11-26` | P0 |
 | M11-54 | **Finance's home is money due.** Tranches due now and overdue by project, receipts waiting to be recorded, and the period's collections against what was expected — every figure obeying the money-never-stale law. The composition of the home screen is `modules/M13`'s; the facts, states and figures it composes are this module's. | `BRIEF` — `PS-32` (`02-personas.md`, the Finance persona's home; `docs/prd/owner-brief-2026-08-03.md` §Users) · grounded in source at `S8.rule.tranches`, `S8.wrong.3`, and the money-never-stale law (`F8-12`, `S6.wrong.1`) | P1 |
 | M11-55 | **What this module publishes to the customer's surface, and nothing more:** the due tranche's label and amount, its payment link where one has been minted, the receipts with their confirmation states, and the fact that nothing here may gate the page. `foundations/F5` renders every word the customer reads, decides the page's shape, and owns the token and its lifecycle; this module supplies facts and never copy. | `SRC` — `C9` (shared — the customer's payment-and-receipt moment; F5 owns the rendering, Task 20); `UXG-12` (shared — the tenant-side half of the payment-link handoff is this module's; the question-inbox half is `foundations/F6`/`F5`'s); `DOC02.link-grant` (cited — F5: the link's scopes include paying a tranche via the tenant's own link) | P0 |
 | M11-56 | **No commercial figure from this module reaches a surface that must not carry one.** Nothing in the tranche schedule, the ledger or the collections views may appear on any surface the Installation Team Member preset reaches — a property of the surface, not of the viewer. | `SRC` — `F2-06` consumed (verbatim law); `R16` ("crew sees no money"); `M08-43` (cited — the surface-side statement) | P0 |
@@ -727,7 +722,7 @@ to the customer. There is no gate, no lock, no withheld document, no revoked lin
 composed from the tenant's template (`M01-55`) with the project's real figures (`M08-38`); where
 the tenant has a connected transactional channel it sends from that channel and that channel's
 delivery states are shown as it reports them and no further, and where none is connected the
-product hands it over and forgets it (owner ruling 2026-08-06, Q45; `M11-26`, `M03-03`).
+product hands it over and forgets it (owner ruling 2026-08-06; `M11-26`, `M03-03`).
 *(This sentence previously read "The message a person sends is composed from the tenant's template
 (`M01-55`) with the project's real figures (`M08-38`); the product hands it over and forgets it
 (`D32`)". The chase remains a human act — what changed is the carriage of the message, not who
@@ -743,19 +738,19 @@ Permissions: as §M11.1's permissions block; reading rides `F2.M08.project-visib
 cell is this money scope) and the money acts ride `F2.M11.record-payments` / `F2.M11.waive-tranche` /
 `F2.M11.connect-gateway`. The chase message of `M11-53` is not a money act: composing it, copying it
 and sending it from the tenant's connected official channel ride the reader's own project scope
-(`F2.M11.send-request-message`, owner ruling 2026-08-06, Q48; §M11.4's permissions block). **It is
+(`F2.M11.send-request-message`, owner ruling 2026-08-06; §M11.4's permissions block). **It is
 not a money act and it is still an audited one:** the send is written to the audit log under the
-name of the person who sent it (owner ruling 2026-08-06, Q52; `M11-07`, `F2-22`), because the
+name of the person who sent it (owner ruling 2026-08-06; `M11-07`, `F2-22`), because the
 message leaves the tenant's own official channel and reaches a customer about money. *(The
-chase-message sentence is Q48's; this paragraph previously read "the acts ride
-`F2.M11.record-payments` / `F2.M11.waive-tranche` / `F2.M11.connect-gateway`" and named no scope for
-the message at all. The audit sentence is Q52's, and before it this paragraph made no audit claim
-for the send; who may send is unchanged by it.)* **Where no channel is connected the chase leaves no
-record (owner ruling 2026-08-06, Q57):** the message is composed and copied, the person sends it
+chase-message sentence is the plain-message scope ruling's; this paragraph previously read "the acts
+ride `F2.M11.record-payments` / `F2.M11.waive-tranche` / `F2.M11.connect-gateway`" and named no
+scope for the message at all. The audit sentence is the send-audit ruling's, and before it this
+paragraph made no audit claim for the send; who may send is unchanged by it.)* **Where no channel is connected the chase leaves no
+record (owner ruling 2026-08-06):** the message is composed and copied, the person sends it
 outside the product, and no entry is written — the log holds what the product performed, so the same
 chase is attributable on one path and unrecorded on the other, deliberately (`M11-07` as amended,
-`M11-26`). *(That sentence is Q57's; before it this paragraph stated the audit obligation without
-its boundary, the question standing open at §6 `M11-Q6`.)*
+`M11-26`). *(That sentence is the fallback-silence ruling's; before it this paragraph stated the
+audit obligation without its boundary.)*
 
 **Edge cases & what-goes-wrong.**
 - *The customer is not paying a due tranche* (`S8.wrong.3`) → visible on the board, the project and
@@ -827,16 +822,15 @@ words are `foundations/F5`'s. **Analytics events.** `payments_screen_viewed`,
 - **From `foundations/F2`** — §F2.5-M11's rows, the projects visibility domain this module reads
   through (`F2.M08.project-visibility`) — which is also the scope the compose, copy and **send** of
   the plain request message ride, carried at §F2.5-M11 as `F2.M11.send-request-message` since owner
-  ruling 2026-08-06 (Q48) — the no-commercial-figures law (`F2-06`) and the audit checklist
-  (`F2-22`), **which since owner ruling 2026-08-06 (Q52) names that send among its covered events
-  and records it under the sender's name** — **and which, since owner ruling 2026-08-06 (Q57),
+  ruling 2026-08-06 — the no-commercial-figures law (`F2-06`) and the audit checklist
+  (`F2-22`), **which since owner ruling 2026-08-06 names that send among its covered events
+  and records it under the sender's name** — **and which, since owner ruling 2026-08-06,
   covers that send alone: the copy-paste fallback writes nothing to the log** (`M11-07`). *(The
-  `F2.M11.send-request-message` clause is Q48's; this line previously named the domain alone, and
-  §F2.5-M11 carried no row for the send — that absence is what raised the question closed at §6
-  `M11-Q4`. The checklist clause is Q52's; before it this line expected `F2-22` whole but no covered
-  event for the send, the question standing open at §6 `M11-Q5`. The boundary clause is Q57's;
-  before it this line expected the covered event without its edge, the question standing open at §6
-  `M11-Q6`.)*
+  `F2.M11.send-request-message` clause is the plain-message scope ruling's; this line previously
+  named the domain alone, and §F2.5-M11 carried no row for the send. The checklist clause is the
+  send-audit ruling's; before it this line expected `F2-22` whole but no covered event for the send.
+  The boundary clause is the fallback-silence ruling's; before it this line expected the covered
+  event without its edge.)*
 - **From `foundations/F4`** — the server owns every money figure (`F4-04`), a retried submission
   never duplicates and never drops (`F4-07`), and nothing a field user captured is ever
   unrecoverable — the receipt photograph's carve-out (`F4-21`).
@@ -858,7 +852,7 @@ words are `foundations/F5`'s. **Analytics events.** `payments_screen_viewed`,
 - **No recurring billing engine, no meter ingestion, no periodic invoicing of a tenant's
   customer.** Explicitly ruled out for v1; the commercial document type exists without it, and
   such a project's money surface is `M11-16`'s ruled behaviour — one-time payments from the
-  accepted version plus the honest outside-platform note (owner ruling 2026-08-04, Q32; `R17`).
+  accepted version plus the honest outside-platform note (owner ruling 2026-08-04; `R17`).
 - **No tax document generation for the tenant's own customers.** The market's tax scheme shapes the
   proposal's money block (`modules/M06`, `F1-13`/`F1-31`); issuing a tenant's statutory customer
   invoice is not a v1 capability of this module, and the platform's own statutory invoicing is
@@ -869,170 +863,34 @@ words are `foundations/F5`'s. **Analytics events.** `payments_screen_viewed`,
 - **No collections automation that acts on the customer.** No automatic dunning of a tenant's
   customer, no automated escalation, no service withdrawal, and above all no gating of the
   customer's own page (`M11-32`, `S8.wrong.3`). The product prompts a person; the person acts.
-  *(Scope note, owner ruling 2026-08-06, Q45 — this bullet is not retired by it. Where the
-  person's act is minting a payment link on a due tranche, the message carrying it now sends on
-  the transactional lane (`M11-24`, `M11-26`): that automates the carriage of a person's act and
-  creates no automatic dunning, no escalation, no repetition and no withdrawal, each of which
-  remains forbidden here.)* *(Scope note, owner ruling 2026-08-06, Q48 — this bullet is not
-  retired by that ruling either. Q48 settles **whose** act the send of the plain request message
-  is — anyone with project visibility, the message carrying no money instrument (§M11.4's
-  permissions block, `F2.M11.send-request-message`) — and says nothing about the product acting on
-  its own. Every prohibition above is unchanged: still no automatic dunning, no escalation, no
-  repetition, no service withdrawal and no gating of the customer's page.)*
+  *(Scope note, owner ruling 2026-08-06 on payment-link sends — this bullet is not retired by it.
+  Where the person's act is minting a payment link on a due tranche, the message carrying it now
+  sends on the transactional lane (`M11-24`, `M11-26`): that automates the carriage of a person's
+  act and creates no automatic dunning, no escalation, no repetition and no withdrawal, each of
+  which remains forbidden here.)* *(Scope note, owner ruling 2026-08-06 on the plain message's
+  scope — this bullet is not retired by that ruling either. It settles **whose** act the send of
+  the plain request message is — anyone with project visibility, the message carrying no money
+  instrument (§M11.4's permissions block, `F2.M11.send-request-message`) — and says nothing about
+  the product acting on its own. Every prohibition above is unchanged: still no automatic dunning,
+  no escalation, no repetition, no service withdrawal and no gating of the customer's page.)*
 - **No fabricated delivery state.** Payment links and request messages ride the transactional
   lane — sent from the tenant's connected channel where one exists, composed for a person where
-  none is (owner ruling 2026-08-04, Q33; `M03-03`); on the fallback path there is no delivery
+  none is (owner ruling 2026-08-04; `M03-03`); on the fallback path there is no delivery
   state on any collections surface (`D32` governs that path; `M11-26`). *(Bullet text unchanged.
-  The divergence between this bullet and `M11-24`/`M11-26`, recorded at
-  `docs/prd/registers/conflicts.md` row 10, is **closed by owner ruling 2026-08-06, Q45**: those cells
-  now state the same two-branch rule this bullet has stated since Q33, and the no-delivery-claim
-  discipline binds the copy fallback alone.)* *(Scope note, owner ruling 2026-08-06, Q52 — this
-  bullet is not retired by that ruling either. Q52 makes the **send** of the plain request message
-  an audited event recorded under the sender's name (`M11-07`, §M11.4's permissions block): an audit
-  entry records **who sent what and when**, which is an act record, never a delivery state and never
-  evidence that a message arrived. The copy fallback still carries no delivery state on any
-  collections surface, and no surface may render an audit entry as one.)* *(Scope note, owner ruling
-  2026-08-06, Q57 — this bullet is not retired by that ruling either, and Q57 runs with it rather
-  than against it. Q57 confines the audited act to the send from the connected channel: on the
+  The divergence between this bullet and `M11-24`/`M11-26` is **closed by owner ruling
+  2026-08-06**: those cells now state the same two-branch rule this bullet has stated since the
+  transactional-lane ruling, and the no-delivery-claim discipline binds the copy fallback alone.)*
+  *(Scope note, owner ruling 2026-08-06 on the send audit — this bullet is not retired by that
+  ruling either. It makes the **send** of the plain request message an audited event recorded under
+  the sender's name (`M11-07`, §M11.4's permissions block): an audit entry records **who sent what
+  and when**, which is an act record, never a delivery state and never evidence that a message
+  arrived. The copy fallback still carries no delivery state on any collections surface, and no
+  surface may render an audit entry as one.)* *(Scope note, owner ruling 2026-08-06 on the
+  fallback's silence — this bullet is not retired by that ruling either, and it runs with it rather
+  than against it. It confines the audited act to the send from the connected channel: on the
   fallback path the product performs nothing and records nothing — no compose record, no copy
   record, no send record, no counter — so there is no entry on that path that any surface could
   mistake for a delivery state. Nothing on the fallback path is claimed, rendered or counted.)*
 - **No offline money.** Not a deferral — a boundary (`M11-06`).
 - **No editing or deletion of money records.** Corrections exist only as reversals
   (`DOC04.payments-append-only`, `M11-46`).
-
-## 6. Open questions
-
-- **M11-Q1 — RESOLVED (owner ruling 2026-08-04, Q32).** The money surface of an
-  operating-expense or power-purchase project is the **one-time payments from the accepted
-  version** (deposit / connection fee) with the **full tranche toolset**, plus the honest note
-  **"monthly energy billing is handled outside this platform"** — nothing fabricated, nothing
-  hidden (`M11-16`, now final; `modules/M08` §M08.6 clause for clause, so the two modules
-  cannot drift). No recurring billing, no periodic charge, no meter ingestion (`R17`,
-  unchanged). Q29 (the type is ungated on every tier) resolved in the same session.
-- **M11-Q2 — selling collections capability into a market with no supplier-of-record decision**
-  (register **Q7**, already open — recorded here as a dependency, not re-opened). No market pack
-  beyond the launch market is launchable until that owner-blocked decision exists; this module's
-  rail-neutrality (`M11-05`, `M11-20`) is written so that the answer, when it comes, is a pack and
-  adapter matter rather than a change to any requirement here. *Decision owner: Owner
-  (`foundations/F1` `F1-05`, `F1-26`).*
-- **M11-Q3 — RESOLVED (owner ruling 2026-08-06, Q45).** The payment link on a due tranche
-  **sends automatically from the tenant's connected official channel** (WhatsApp/SMS,
-  transactional template class), with **composed copy-paste as the fallback where no channel is
-  connected** — and only that fallback path claims no delivery. The ruling applies owner ruling
-  2026-08-04 Q33, whose text already named "payment link", to this module's rows: `M11-24`,
-  `M11-26`, `M11-52` and `M11-53` are amended (each recording what it previously said), §M11.4's
-  acceptance block now carries both branches in place of the line annotated **Open — owner
-  decision required**, and the contradiction recorded at `docs/prd/registers/conflicts.md` row 10 —
-  the pre-Q33 cells against this document's §5 — is closed. **Money settlement is untouched:**
-  `M11-01` stands unamended, the platform never touches tenant funds, collections settle directly
-  customer → the tenant's own account, and §5's funds and no-cut bullets are unchanged. Only the
-  message is automated.
-- **M11-Q4 — RESOLVED (owner ruling 2026-08-06, Q48).** The *send* of the **plain request
-  message** from the tenant's connected official channel **stays in project scope**: it remains
-  available to anyone with project visibility (`F2.M08.project-visibility`), because the plain
-  message carries no money instrument, and because keeping it there preserves the case the PRD
-  explicitly wanted — a read-only Sales Executive chasing their own won deal (`S8.wrong.3`,
-  `M08-18`). **Minting and sending an actual payment LINK is unchanged** and still requires
-  `F2.M11.record-payments`, a link being a live collection instrument. Applied at: §M11.4's
-  permissions block and its acceptance block (a new criterion for the project-scope holder), §2's
-  Sales Executive persona bullet, §M11.8's permissions paragraph, §4's `foundations/F2`
-  expectation, and `foundations/F2` §F2.5-M11, which now carries the row whose absence raised this
-  question — `F2.M11.send-request-message`, its cells the project-visibility domain's — with
-  `docs/tasks/M11-payments-collections.md` (T-M11-002, T-M11-016 and the `M11-26` law entry) and
-  `docs/ux/briefs/SCR-M11-02-payments-ledger.md` (its annotation and its **reader-read-only** state)
-  re-synced. **No requirement cell of §M11.4 is amended by this ruling** — `M11-24`, `M11-26`,
-  `M11-52` and `M11-53` stand exactly as Q45 left them — and money settlement is untouched:
-  `M11-01` stands unamended, the platform touches no tenant funds. *(This entry previously read:
-  "**M11-Q4 — NEW, raised by applying Q45 and deliberately not decided here: whose act is the
-  *send* of the plain request message?** §M11.4's permissions block gives minting, sending and
-  re-copying a **payment link** to `F2.M11.record-payments` because a link is a live collection
-  instrument, and gives the **plain request message**, which carries no instrument, to the
-  reader's project scope (`F2.M08.project-visibility`) — which is what lets the read-only Sales
-  Executive chase their own won deal (`S8.wrong.3`, `M08-18`). Q45 settled that the message
-  sends; it did not state whether *sending from the tenant's own official channel* stays inside
-  that reader scope or needs its own holder set, and `foundations/F2` §F2.5-M11 carries no row
-  for it. Recorded, not resolved: no surface, task or brief in this module decides it, and the
-  reader's compose-and-copy act is unchanged in the meantime. *Decision owner: Owner (with
-  `foundations/F2`).*")*
-- **M11-Q5 — RESOLVED (owner ruling 2026-08-06, Q52).** The *send* of the **plain payment-request
-  message** from the tenant's connected official channel **is an audited event, and the entry is
-  recorded under the name of the person who sent it** — for every holder of
-  `F2.M11.send-request-message`, the project-visibility-only reader such as a Sales Executive
-  chasing their own won deal (Q48) included. The rationale the owner accepted: the message leaves
-  the company's official channel and reaches a customer about money, which is exactly what the
-  audit log exists for, and the record answers "who messaged my customer?" instantly. Composing and
-  copying write no entry; the send is the audited act, and the entry records **the act and its
-  sender** — it is not a delivery state and claims none (`M11-26`, §5's no-fabricated-delivery-state
-  bullet, both unchanged). Applied at: `M11-07` (the module's audit row, amended — recording what it
-  previously said), §M11.1's acceptance block, §M11.4's permissions block and acceptance block,
-  §M11.8's permissions paragraph, §4's `foundations/F2` expectation, §5's
-  no-fabricated-delivery-state scope note, and `foundations/F2` — `F2-22`'s covered-events cell
-  (amended), §F2.4's acceptance block, §F2.5-M11's `F2.M11.send-request-message` row and its notes,
-  closing `foundations/F2` §6 `F2-Q2` — with `docs/tasks/M11-payments-collections.md` (T-M11-002,
-  T-M11-009, T-M11-016 and the `M11-26` law entry) and
-  `docs/ux/briefs/SCR-M11-02-payments-ledger.md` re-synced. **No permission cell moves and no grant
-  changes** (Q48's holder set stands), and money settlement is untouched: `M11-01` stands unamended,
-  the platform touches no tenant funds. *(This entry previously read: "**M11-Q5 — NEW, raised by
-  applying Q48 and deliberately not decided here: is the *send* of the plain request message an
-  audit-covered event, and with whose name?** Q48 puts an outbound message from the tenant's **own
-  registered official channel** — addressed to a customer and stating what is owed — inside a
-  **read-only** preset's project scope. `F2-22`'s covered-events checklist does not name a
-  payment-request send (it names money events, link mint/re-mint/revoke and customer-link opens),
-  and §M11.4's permissions block audits **link mints** only. So the product now performs an outbound
-  act in the tenant's name for a holder who writes no money, and no document states whether that act
-  is written to the audit log with its actor. The ruling did not address it. Recorded, not resolved:
-  nothing in this module, its tasks or its briefs decides it; the reader's send is available per Q48
-  in the meantime, and no audit claim is made for it anywhere. *Decision owner: Owner (with
-  `foundations/F2` — `F2-22`'s checklist is where the answer lands, as a cell edit).*" The answer
-  landed exactly where that entry said it would — as a cell edit to `F2-22`, reciprocated at
-  `M11-07`.)*
-
-- **M11-Q6 — RESOLVED (owner ruling 2026-08-06, Q57).** On the copy-paste fallback path **no record
-  is written at all, and none is added**: the audit log records what the *product* performed, Q52
-  audits the send where the product sends from the tenant's connected official channel, and where no
-  channel is connected the product only composes the message and places it on the clipboard while a
-  person sends it outside the product. **No compose record, no copy record, no send record — and no
-  compensating counter, timeline entry or chase marker either.** The owner's words: *"hey keep as
-  much as simple. and dont do overengineering."* The consequence is accepted and recorded rather
-  than engineered around: the same chase, to the same customer, about the same tranche, is
-  attributable when the product sends it and unrecorded when a person does — a deliberate
-  simplification, consistent with the standing law that the product never claims what it did not do
-  (`M11-26`, §5's no-fabricated-delivery-state bullet, both unchanged). Applied at: `M11-07` (the
-  module's audit row, amended — recording what it previously said), §M11.1's acceptance block,
-  §M11.4's permissions block, its edge cases and its acceptance block, §M11.8's permissions
-  paragraph, §4's `foundations/F2` expectation, §5's no-fabricated-delivery-state scope note, and
-  `foundations/F2` — `F2-22`'s covered-events cell (amended), §F2.4's acceptance block, §F2.5-M11's
-  `F2.M11.send-request-message` row and its notes, closing `foundations/F2` §6 `F2-Q3` — with
-  `docs/tasks/M11-payments-collections.md` (T-M11-002, T-M11-009, T-M11-016 and the `M11-26` law entry)
-  and `docs/ux/briefs/SCR-M11-02-payments-ledger.md` re-synced. **No permission cell moves, no grant
-  changes and no covered event is added** (Q52's clause is bounded, not widened), and money
-  settlement is untouched: `M11-01` stands unamended, the platform touches no tenant funds. *(This
-  entry previously read: "**M11-Q6 — NEW, raised by applying Q52 and deliberately not decided here:
-  on the copy-paste fallback path the log says nothing — should the composed-and-copied request
-  message leave any record?** Q52 makes the **send from the tenant's connected official channel** an
-  audited event under the sender's name, and the reason the owner gave is that it answers "who
-  messaged my customer?" instantly. That answer exists only where a channel is connected. Where none
-  is — `M11-26`'s fallback, which `M11-21` keeps first-class because the connected account is an
-  accelerator and never a dependency — the product composes and copies, the person sends outside the
-  product, and, the **send** being the audited act, no entry is written at all. The same chase, to
-  the same customer, about the same tranche, is therefore attributable on one path and invisible on
-  the other. Whether the fallback's compose-or-copy act should itself be recorded — as an act record
-  naming who took it and against which tranche, **never** a delivery claim, which `M11-26` and §5
-  forbid absolutely — or whether the log is deliberately silent where the product performed nothing,
-  is not settled: Q52 addressed the connected-channel send only. Recorded, not resolved: nothing in
-  this module, its tasks or its briefs decides it; no record is written on the fallback path in the
-  meantime, and no delivery, attribution or receipt claim is made for it anywhere. The answer lands
-  as a cell edit to `F2-22` and to `M11-07`. *Decision owner: Owner (with `foundations/F2`);
-  mirrored at `foundations/F2` §6 `F2-Q3`.*" The owner took the second of its two candidate
-  readings, and the answer landed exactly where that entry said it would — as a cell edit to
-  `F2-22`, reciprocated at `M11-07`. The behaviour it described for the meantime is now the ruled
-  behaviour.)*
-
-**Recorded readings, deliberately not raised as questions.** Two rules in this module are author
-readings where the source is silent, and both are disclosed in their rows rather than left to
-inference: the skipped-stage tranche (`M11-12`, reciprocating `M08-36`'s inference — the
-alternative reading is named in the row) and the supersession of a payment link whose amount no
-longer matches what is owed (`M11-30`, derived from `F8-12`/`F8-24`). Neither contradicts any
-source statement, and both are stated so an owner can overturn them by ruling on a single
-requirement.

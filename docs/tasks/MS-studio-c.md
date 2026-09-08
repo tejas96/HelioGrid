@@ -11,6 +11,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-301 · Studio Step 9 — Bill of Materials (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-01 (P0), MS10-02 (P0), MS10-03 (P0), MS10-06 (P0), MS10-07 (P0), MS10-08 (P0), MS10-09 (P0), MS10-10 (P0), MS10-11 (P0), MS10-12 (P0), MS10-13 (P0), MS10-14 (P0), MS10-16 (P0), MS10-17 (P0), MS10-18 (P0), MS10-19 (P0), MS10-20 (P0), MS10-35 (P0)
 **DESIGN:** SCR-MS-12 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step9Bom/index.tsx`, `Step9Bom/BomSection.tsx`, `Step9Bom/BomRow.tsx`, `Step9Bom/DiscountField.tsx`, `Step9Bom/OrphanBanner.tsx`, `Step9Bom/StaleBanner.tsx`, `Step9Bom/SectionInputs.tsx`, `3d_design_studio/src/features/solar-studio/lib/bom/view.ts`, `3d_design_studio/src/features/solar-studio/screens/__tests__/BomRow.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/screens/__tests__/DiscountField.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/lib/__tests__/bom-view.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/bom-stale-detail.test.ts`
@@ -30,7 +31,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - Given a section, Then add-custom-line and refresh-from-design are available and the table renders its full column set with an accessible caption (MS10-12).
 - Given a drifted edited field, Then the banner names item, field and both values with a take-new action (MS10-13).
 - Given routed geometry exists, Then survey-input fields disable with the reason (MS10-14).
-- Given an excluded line, Then it stays visible at zero (MS10-16).
+- Given an excluded line, Then it stays visible at zero (MS10-16); given a line whose rate is absent, Then the rate reads as missing, never zero (MS10-18).
 - Given any row, Then its confidence tier and per-field reset are available (MS10-17), its editable fields behave as specified (MS10-18), its derivation is readable on touch and by screen reader (MS10-19), and only custom lines offer removal (MS10-20).
 - Given an edited field, Then the override records the engine's value for exact staleness, legacy overrides still apply and migrate lazily (MS10-33), retyping the same value creates no override (MS10-34), and the edit re-keys the fingerprint without reordering fields (MS10-35). *(This task owns the MS10-35 half — the section-state counts and the fingerprint re-key on edit; MS10-33/34 are built in T-MS-305.)*
 - The ported POC tests for this area pass unchanged in the new project.
@@ -39,6 +40,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-302 · BOM derivation engine: shared context, six emitters, line-key registry (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-21, MS10-23, MS10-24, MS10-27, MS10-28
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/bom.ts`, `lib/bom/context.ts`, `lib/bom/merge.ts`, `lib/bom/line.ts`, `lib/bom/registry.ts`, `lib/bom/emitters/modules.ts`, `lib/bom/emitters/inverter.ts`, `lib/bom/emitters/mechanical.ts`, `lib/bom/emitters/safety.ts`, `lib/bom/emitters/civil.ts`, `lib/bom/emitters/electrical.ts`, `data/profiles.ts` (sitting 4 — the section catalog `lib/bom/emitters/mechanical.ts` imports `STRUCTURE_PROFILES` from for its kg/m; ported with its guard `lib/__tests__/profiles.test.ts` by T-MS-209, whose array-order invariant the steel lines depend on), tests `lib/__tests__/bom.test.ts`, `bom-golden.test.ts`, `bom-catalog.test.ts`, `bom-custom.test.ts`, `mms-bom.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -56,12 +58,13 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-303 · Cable-length precedence and price-book resolution (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-25, MS10-26
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/bom/emitters/electrical.ts`, `lib/bom/context.ts`, `3d_design_studio/src/features/solar-studio/data/pricebook.ts`, tests `lib/__tests__/bom-inputs.test.ts`, `bom-catalog.test.ts`
 **DEFECTS:** none targeting these rows.
 **Requirements (verbatim):**
 - **MS10-25** (P0) — Cable-length precedence, DC and AC independently: routed geometry → survey input → documented fallback estimator, with each source stated and zero/negative inputs never treated as a run (`.90–.95`).
-- **MS10-26** (P0) — Prices resolve through the catalog's price book per derivation, with cable rates rounding UP to the next priced size (never understating) (`.97/.152`).
+- **MS10-26** (P0) — Prices resolve per derivation: a component line's rate resolves tenant override → own-SKU rate entry → ABSENT (M01-37, M01-44 — the platform catalog carries no price; owner ruling 2026-09-07); the pack's base rates (MS10-39) price BOS lines only, with cable rates rounding UP to the next priced size (never understating) (`.97/.152`).
 **DONE WHEN:**
 - Given a design, Then all six emitters derive their lines over one context (MS10-21) with worst-tier header confidence and correct subtotal/total composition (MS10-22), stable keys and waste defaults (MS10-23), documented cable-length precedence (MS10-25), price-book resolution rounding up (MS10-26), disjoint mounting buckets (MS10-27) and the full emitter coverage listed (MS10-28).
 - The ported POC tests for this area pass unchanged in the new project.
@@ -69,6 +72,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-304 · Money engine: waste, discrete rounding and the locked invariants (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-22, MS10-29, MS10-30, MS10-31
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/bom/money.ts`, `3d_design_studio/src/features/solar-studio/data/gst.ts`, tests `lib/__tests__/bom-money.test.ts`, `bom-discount.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -85,6 +89,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-305 · Per-field overrides, lazy migration, the number-commit contract and mutation routing (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-05, MS10-33, MS10-34
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/bom/edit.ts`, tests `lib/__tests__/bom-overrides.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -100,6 +105,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-306 · Market data pack: price book, tax, subsidy, engineering constants and wind — multi-market resolver (engine)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-32, MS10-39
 **PORT:** `3d_design_studio/src/features/solar-studio/data/rules/india.ts`, `data/gst.ts`, `data/pricebook.ts` (the read path is shared with T-MS-303), tests `lib/__tests__/rules.test.ts`, `bom-catalog.test.ts`
 **DEFECTS:**
@@ -115,6 +121,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-307 · CSV and DXF exports (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-36, MS10-37
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/dxf.ts`, `lib/export-dxf.ts`, `lib/bom.ts`'s CSV serialiser (the file is claimed with T-MS-302's engine core), tests `lib/__tests__/bom-export.test.ts`, `dxf.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -129,6 +136,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-308 · Units: metric storage, display-only conversion, procurement units (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-15, MS10-38
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/units.ts`, tests `lib/__tests__/units.test.ts`, `units-roundtrip.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -143,6 +151,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-309 · One money path and travelling confidence: the BOM's contracts to the customer surfaces (integration)
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS10-04, MS10-40
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/bom/money.ts` (the single engine, ported in T-MS-304) is wired as the one reader for the proposal and comparison surfaces, whose POC files are claimed by the MS7 sitting (`lib/finance.ts`, `lib/comparison.ts`).
 **DEFECTS:** none targeting these rows.
@@ -160,6 +169,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-310 · Studio Step 10 — Done, with the readiness review on the step (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-01 (P0), MS11-03 (P0), MS11-04 (P0), MS11-05 (P0), MS11-06 (P1), MS11-07 (P0), MS11-08 (P0), MS11-09 (P0), MS11-11 (P0)
 **DESIGN:** SCR-MS-13 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step10Done.tsx` (the review engine it reads, `lib/review.ts`, ports in T-MS-311)
@@ -177,6 +187,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-311 · The readiness contract: the precondition every writer applies, and the quantity-confidence item (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-02, MS11-10
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/review.ts`, tests `lib/__tests__/review.test.ts`
 **DEFECTS:**
@@ -192,6 +203,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-312 · Sign-off queue — the approving engineer's home (screen)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-13 (P0)
 **DESIGN:** SCR-MS-15 → PENDING
 **PORT:** none — the POC has no engineer sign-off flow at all, so no file in `docs/prd/modules/M05-studio/poc-file-claims.md` claims this area; ruling S10-1 builds it. Owner ruling S12-1's port-first default cannot apply to a surface that does not exist in `3d_design_studio/`.
@@ -205,6 +217,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-313 · Sign-off review — approve, or return with pinned comments (screen)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-14 (P0)
 **DESIGN:** SCR-MS-16 → PENDING
 **PORT:** none — the POC has no engineer sign-off flow at all (no claimed file in `docs/prd/modules/M05-studio/poc-file-claims.md`); ruling S10-1 builds it. The read-only studio and drawings it composes are the surfaces ported by the earlier studio tasks.
@@ -218,6 +231,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-314 · Sign-off gating: approval bound to the design version, never inherited, never bypassed (policy)
 
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-15, MS11-16, MS11-17
 **PORT:** none for the gate itself — the POC has no sign-off state to port; it attaches to the ported `3d_design_studio/src/features/solar-studio/lib/fingerprints.ts` (T-MS-315) for the version binding and to `lib/project-duplicate.ts` (T-MS-317) for the reset.
 **DEFECTS:**
@@ -232,6 +246,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-315 · The fingerprint system: five layers, exact membership, freshness predicates (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-18, MS11-19, MS11-21, MS11-22
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/fingerprints.ts`, tests `lib/__tests__/fingerprints.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -248,6 +263,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-316 · The normative invalidation table and the fingerprint consumers (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-23, MS11-24
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/fingerprints.ts`'s consumer keys (the module is claimed with T-MS-315), tests `lib/__tests__/fingerprints.test.ts`, `model-version.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -262,6 +278,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-317 · Duplicate: an independent design, an untouched session, and the variant lineage pointer (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-25, MS11-26, MS11-27
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/project-duplicate.ts`, tests `lib/__tests__/project-duplicate.test.ts`
 **DEFECTS:**
@@ -279,6 +296,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-318 · The installation work order — the crew's field document (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS11-28 (P0), MS11-29 (P0), MS11-30 (P0), MS11-31 (P0), MS11-32 (P0), MS11-33 (P0), MS11-34 (P0), MS11-35 (P0), MS11-36 (P0), MS11-37 (P0)
 **DESIGN:** SCR-MS-17 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/InstallationSheet.tsx`, `3d_design_studio/src/features/solar-studio/lib/installation.ts`, tests `lib/__tests__/installation.test.ts`
@@ -300,6 +318,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-360 · Studio shell — the nine-step wizard frame, header, gates and health (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-01 (P0), MS12-03 (P0), MS12-04 (P0), MS12-05 (P0), MS12-06 (P0), MS12-07 (P0), MS12-08 (P0), MS12-09 (P0), MS12-24 (P0)
 **DESIGN:** SCR-MS-03 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Wizard.tsx`, `3d_design_studio/src/app/(studio)/wizard/[step]/page.tsx`, tests `lib/__tests__/step-help.test.ts` (the electrical hard gate the frame calls, `lib/electrical/gate.ts`, is the MS8 sitting's; the health engine the chip and sheet read, `lib/health.ts` + `store/useHealthSync.ts`, is the MS6 sitting's)
@@ -316,6 +335,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-361 · Step navigation: clamping, the remembered step, and prerequisite-gated deep links (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-02, MS12-13
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Wizard.tsx`'s navigation core — `go()`, the clamp and the highest-permitted-step computation (the file is claimed with T-MS-360's frame), `3d_design_studio/src/features/solar-studio/store/store.tsx`'s open-design path, tests `3d_design_studio/src/features/solar-studio/store/store.test.ts`
 **DEFECTS:** none targeting these rows.
@@ -330,6 +350,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-362 · Routing: named routes, post-hydration guards, the hydration gate, dead routes removed (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-27
 **PORT:** `3d_design_studio/src/features/solar-studio/router.ts`, `3d_design_studio/src/app/(studio)/StudioClientLayout.tsx`, `3d_design_studio/src/app/(studio)/layout.tsx`, `3d_design_studio/src/app/(studio)/page.tsx`, `3d_design_studio/src/app/(studio)/projects/page.tsx`, `3d_design_studio/src/app/(studio)/proposal/page.tsx`, `3d_design_studio/src/app/layout.tsx`
 **DEFECTS:**
@@ -343,6 +364,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-363 · Design list — the lead's designs and variants (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-11 (P0), MS12-12 (P0), MS12-14 (P0), MS12-15 (P0)
 **DESIGN:** SCR-MS-01 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Dashboard.tsx` (its route, `3d_design_studio/src/app/(studio)/projects/page.tsx`, is claimed with T-MS-362; the server-backed lead-scoped read it lists from is T-MS-365's)
@@ -357,13 +379,14 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-364 · Platform sign-in, tenancy, languages and the top bar — the studio drops its mock auth (integration)
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-17, MS12-18, MS12-19
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Login.tsx` and `3d_design_studio/src/app/(studio)/login/page.tsx` are retired rather than ported — ruling S11-3a replaces the POC's mock two-phase login with the platform's own sign-in, drawn in `docs/ux/briefs/SCR-M01-01-sign-in.md`, and the top bar the studio signs out from is `docs/ux/briefs/SCR-SHELL-01-app-shell.md`. Owner ruling S12-1's port-first default does not reach behaviour a ruling supersedes outright.
 **DEFECTS:**
 - `CODE.shell.55/.51/.102/.83` — dead forgot-password; misleading delete copy; legacy dead route + export (ruling S11-2 → MS12-17/14/27; this task owns the `.55` half — the dead "Forgot password?" control, per MS12-17).
 - `CODE.shell.52-.56/.37/.65-.83/.20` — mock auth, placeholder languages, browser-only storage, no lead scoping (ruling S11-3 → MS12-17/18/20/10; this task owns the `.52–.56` and `.37` halves — mock auth and the placeholder language list, per MS12-17/18).
 **Requirements (verbatim):**
-- **MS12-17** (P0) — Sign-in is the PLATFORM's: mobile OTP and Google (Q18), establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`).
+- **MS12-17** (P0) — Sign-in is the PLATFORM's: mobile OTP and Google, establishing tenant, user and role context (F2) — replacing the POC's mock two-phase login (S11-3a fixes `.52–.56`); no dead controls (S11-2.1 fixes `.55`).
 - **MS12-18** (P0) — Languages are the platform's real catalogs — EN/HI/MR at launch (F3) — not a placeholder list (S11-3c fixes `.37`); the user's language and unit preferences persist per user (`.18/.72`).
 - **MS12-19** (P0) — Sign-out clears session state without destroying work (`.36`); brand and tenant identity appear in the top bar (`.35`, M01 branding).
 **DONE WHEN:**
@@ -372,6 +395,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-365 · Designs as a server-side record: lead scoping, autosave, quarantine, migration and image GC (engine)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-10, MS12-20
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/persistence/repository.ts`, `lib/persistence/schema.ts`, `lib/persistence/blobs.ts`, `lib/persistence/useImage.ts`, `3d_design_studio/src/features/solar-studio/store/store.tsx`, tests `lib/__tests__/persistence.test.ts`, `3d_design_studio/src/features/solar-studio/store/store.test.ts` — the resilience behaviours port as-is; the storage medium does not, ruling S11-3b making the server the system of record.
 **DEFECTS:**
@@ -387,6 +411,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-366 · Undo model: whole-design snapshots scoped to the open design (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-21
 **PORT:** `3d_design_studio/src/features/solar-studio/store/store.tsx`'s undo/redo core — snapshot push, redo clear, scope-and-clear on switch, restore semantics (the file is claimed with T-MS-365), tests `3d_design_studio/src/features/solar-studio/store/store.test.ts`
 **DEFECTS:** none targeting this row.
@@ -399,6 +424,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-367 · Concurrent editing surfaced, never silently overwritten (engine)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-22, F4-15
 **PORT:** `3d_design_studio/src/features/solar-studio/store/store.tsx`'s external-change reconciliation and `lib/persistence/repository.ts`'s write path (both claimed with T-MS-365), tests `3d_design_studio/src/features/solar-studio/store/store.test.ts`, `lib/__tests__/persistence.test.ts` — the POC's detection ports; its last-writer-wins resolution does not, ruling S11-3b replacing it with the platform's conflict handling.
 **DEFECTS:** none targeting this row.
@@ -416,6 +442,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-368 · Normalise and repair every persisted design on load (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-23
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/persistence/normalize.ts`, `lib/persistence/schema.ts` (claimed with T-MS-365), tests `lib/__tests__/persistence.test.ts`
 **DEFECTS:** none targeting this row.
@@ -428,6 +455,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-369 · The shared UI kit: identical controls everywhere, fields that commit once (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-26
 **PORT:** `3d_design_studio/src/features/solar-studio/components/ui.tsx`, tests `3d_design_studio/src/features/solar-studio/components/__tests__/NumberField.dom.test.tsx`
 **DEFECTS:** none targeting this row.
@@ -440,6 +468,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-370 · The accessibility gate: automated checks, focus trap and restore, Escape, real roles and names (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-25
 **PORT:** `3d_design_studio/src/features/solar-studio/components/__tests__/axe.dom.test.tsx`, `components/__tests__/focus.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/components/ui.tsx`'s roles, names and dialog behaviour (the kit file is claimed with T-MS-369)
 **DEFECTS:** none targeting this row.
@@ -452,6 +481,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-371 · Background recompute hosts: recompute stamped with the geometry actually used (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-28
 **PORT:** `3d_design_studio/src/features/solar-studio/store/useDesignSync.ts`, the `DesignSync` host in `3d_design_studio/src/app/(studio)/StudioClientLayout.tsx` (claimed with T-MS-362); the health sync it mounts alongside, `store/useHealthSync.ts`, is the MS6 sitting's, and the shading fingerprint it keys on is T-MS-315's
 **DEFECTS:** none targeting this row.
@@ -464,6 +494,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-372 · New-design defaults and the share identity created with the design (port)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS12-16
 **PORT:** `3d_design_studio/src/features/solar-studio/store/store.tsx`'s new-design factory and share-id generation (the file is claimed with T-MS-365), tests `3d_design_studio/src/features/solar-studio/store/store.test.ts`; the market values the defaults resolve from are the pack T-MS-306 builds, and the share identity's lifecycle is MS9-09's
 **DEFECTS:** none targeting this row.
@@ -476,6 +507,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-373 · Shared drawing projections: isometric, elevation, fit-to-box, member projection (port)
 
 **Type:** port · **Tier:** P1
+**Status:** planned
 **PRD rows:** MS12-30
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/drawing-project.ts`, tests `lib/__tests__/drawing-project.test.ts`; the drawing surfaces that must all read it are other sittings' (`components/drawing/index.tsx`, `components/drawing/StructureSheet.tsx`, `components/StructurePreview.tsx`, `screens/Step8Sld.tsx`)
 **DEFECTS:** none targeting this row.
@@ -488,6 +520,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-374 · The living design-system reference (port + UI rebuild)
 
 **Type:** screen · **Tier:** P1
+**Status:** planned
 **PRD rows:** MS12-29 (P1)
 **DESIGN:** SCR-MS-18 → PENDING
 **PORT:** `3d_design_studio/src/app/design/page.tsx` — the POC's living reference page; it renders the kit T-MS-369 ports, so the two move together
@@ -501,6 +534,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 ### T-MS-375 · Design Queue — the Design Engineer's home, with the sign-off queue composed in (screen)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-33 (P0), PS-16 (P0), PS-18 (P0)
 **DESIGN:** SCR-MS-02 → PENDING
 **PORT:** none — the POC has no designer home; the queue's content contract is `M05-83`'s, built new against the ported design list (T-MS-363) and the sign-off queue (T-MS-312).
@@ -518,6 +552,7 @@ Cross-bucket note: these three rows are dispositioned in `docs/tasks/M13-dashboa
 ### T-MS-376 · Variant Compare — 2–4 variants side by side, recommendation set here (screen)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-79 (P0)
 **DESIGN:** SCR-MS-14 → PENDING
 **PORT:** none as a surface — the POC has no compare screen; it composes over ported outputs: the fingerprint/variant lineage of T-MS-315/T-MS-316, the money engine of the BOM tasks, and Design Health from T-MS-205 (the health engine ported with the layout editor).

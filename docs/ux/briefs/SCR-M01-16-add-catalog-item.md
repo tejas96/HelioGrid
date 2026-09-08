@@ -22,17 +22,22 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    and `M01-40` forbids committing them silently, so the tier says so until a person confirms. Values
    the tenant types carry `M01-35`'s **Tenant-provided** label, not an F8 tier: nothing computed them.
 5. **Abandoning a filled sheet is confirmed and un-dismissible**, and the confirm carries the
-   recovery route in words (`Q78`) — nothing was created, so there is nothing to restore, and the
+   recovery route in words — nothing was created, so there is nothing to restore, and the
    sentence says the datasheet can be uploaded again in one tap.
 6. **No progress count.** No *fields filled* figure and no *3 of 12* counter — neither is a fact about
    the product, and a progress count on a form invites the Next-disabled pattern `M06-22` killed.
+7. **Enter specs manually from a selection opens pre-filled.** From a picker with a component already
+   selected, the sheet opens with that item's brand, model and typed specs; the scheme-certification
+   flags and the rate fields open blank and the tenant fills them — a spec-edited variant is not the
+   listed model, so nothing that certifies or prices the listed one is copied (`M01-39`; owner ruling
+   2026-09-07). Saving creates a new own SKU; the platform item is untouched (`M01-34`, `M01-36`).
 
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
 
 - **M01-36** (P0) — **Tenants add their own SKUs anytime — self-serve, no approval.** A tenant SKU is a full catalog item (typed specs, rates, per-kind fields) usable everywhere a platform item is; it is theirs alone, invisible to other tenants. Nothing about adding requires the platform's involvement. _(non-UI half, build-side: tenant SKU is full item, private to tenant, no platform approval — for awareness, not for drawing)_
-- **M01-39** (P0) — **Inline add everywhere: the moment a needed product is missing, add it there.** From the proposal builder's and studio's component picker — and from Catalog settings — a person with the grant can add a missing product **in-flow**, by any of three paths: (a) a single-product form, (b) **datasheet PDF extraction** (M01-40), (c) **spreadsheet upload** (M01-41). The new SKU is immediately picked and the flow continues; nobody leaves the builder to go to settings.
+- **M01-39** (P0) — **Inline add everywhere: the moment a needed product is missing, add it there.** From the proposal builder's and studio's component picker — and from Catalog settings — a person with the grant can add a missing product **in-flow**, by any of three paths: (a) a single-product form, (b) **datasheet PDF extraction** (M01-40), (c) **spreadsheet upload** (M01-41). The new SKU is immediately picked and the flow continues; nobody leaves the builder to go to settings. **The single-product form is the one authority on how an add opens:** from the catalog it opens empty; from a picker with a component already selected, **Enter specs manually** opens it **pre-filled** with that item's brand, model and typed specs, and saving creates a new own SKU (M01-36) carrying tenant-provided provenance on every field (M01-35), the platform item untouched (M01-34). **Scheme certifications (ALMM/DCR and any other F1-44 scheme flag) and any price are NEVER copied — the tenant enters them afresh:** a spec-edited variant is not the listed model, so a copied certification would be a false claim at M06-23(f) and on the subsidy path, and a tenant rate is M01-44's dated entry, never a platform fact (owner ruling 2026-09-07).
 - **M01-40** (P0) — **Datasheet PDF extraction is a first-class add path.** Upload a manufacturer datasheet; the product extracts the typed spec fields for that component kind and presents them **for review and correction before the item is created** — extraction output is never committed silently. The created SKU carries tenant-provided provenance, and the source datasheet stays attached to the item. Extraction failure degrades to the manual form with anything salvaged pre-filled — never a dead end. _(non-UI half, build-side: PDF spec-extraction engine; output never committed without review; failure degrades to prefilled manual form — for awareness, not for drawing)_
 
 ## States
@@ -41,6 +46,7 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 - **Empty** — the fresh single-product form for the pre-scoped component kind, before entry.
 - **Error** — save or upload fails; what happened and what to do next.
 - **single-form** — path (a): the single-product form with the component kind's typed spec fields (M01-39, M01-36).
+- **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
@@ -55,6 +61,7 @@ Each carries its F8 provenance tier in the design:
 
 - **Extracted spec values** in the review state — presented for review and correction before the item is created; the created SKU carries **tenant-provided** provenance (M01-40, M01-35 enum).
 - **Manually entered spec and rate values** on the single form — tenant-provided provenance (M01-36, M01-35 enum).
+- **Pre-filled spec values** from a picker's selected item — tenant-provided provenance once saved as the new SKU's own values (M01-39, M01-35 enum); the **scheme-certification flags and the rate** are never copied from the selected item and open blank (M01-39).
 
 ---
 

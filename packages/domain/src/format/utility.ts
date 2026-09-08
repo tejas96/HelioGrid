@@ -8,7 +8,7 @@
  *
  * A region with no declared operator carries an EMPTY list, not an invented entry. The
  * generic "{region} utility" a picker shows in that case is the SCREEN's (`MS1-03`, `MS1-04`) —
- * a composed sentence with a slot belongs to the translator (`Q80`), not to pack data.
+ * a composed sentence with a slot belongs to the translator, not to pack data.
  *
  * Tariffs are NOT here. `MS1-03` calls the representative tariff table pack data, and `F1` has no
  * row for it; that gap belongs to the studio's own task rather than to an invented key here.

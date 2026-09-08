@@ -2,7 +2,7 @@
 
 One package: raw tokens, the RN theme object, the web stylesheets and the fonts. The
 no-raw-values law is `.claude/rules/ui-adherence.md`, which loads with this folder. Traps:
-`docs/engineering/landmines.md`.
+`.claude/landmines.md`.
 
 ## What lives here / what must never live here
 

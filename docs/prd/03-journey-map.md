@@ -90,9 +90,9 @@ after them.
 
 The first is a **conformance test**, and the overview states it as one: open any module PRD; if
 its requirements can be satisfied while a user re-keys something an upstream module already
-holds, `OV-04` has been broken and the defect belongs in
-[`registers/conflicts.md`](registers/conflicts.md). Every cross-module contract in the suite —
-every §4 in every module — exists to keep the thread unbroken.
+holds, `OV-04` has been broken and the defect is ruled in the offending row. Every
+cross-module contract in the suite — every §4 in every module — exists to keep the thread
+unbroken.
 
 The second is that the thread is what makes the stages *stages* rather than *products*. Nothing
 in the story below is a separate application a user switches into. A stage is a moment in one
@@ -362,11 +362,11 @@ preserved exactly as a typed capture is (`M03-07`, `M03-30`, `M03-32`). This mod
 where the suite's two brief-driven supersessions live and are stated rather than hidden: v1
 deferred web and messaging capture channels, and v1 ruled that the product never sends on the
 tenant's behalf. The capture supersession is the campaign lane's; the sending one now reaches
-further — per the owner ruling of 2026-08-04 (`Q33`) the one-to-one messages about a single
+further — per the owner ruling of 2026-08-04 the one-to-one messages about a single
 deal that Stages 3, 4, 6 and 8 produce **send automatically from the tenant's connected
 channel** under the transactional template class, with composed-and-pasted as the no-channel
-fallback (`M03-03`). The original contradictions and their resolution notes are recorded in
-[`registers/conflicts.md`](registers/conflicts.md) rows 3, 4 and 8.
+fallback (`M03-03`). The original contradictions are ruled at `M03-01`, `M03-02` and
+`M06-57`.
 Persona added to the spine: **Marketing**.
 
 **Field workforce rides Stages 4 and 8.** A survey visit and an installation day are both, from
@@ -453,11 +453,10 @@ specified.
 | **C13** — Living with it | Beyond this release. They will want monitoring, cleaning reminders, a service contact and eventually warranty claims. The one live obligation is that handover leaves them knowing exactly who to call. | — | §F5.10 and F5 §5 (non-goals) |
 
 Two of these steps carried a recorded tension that the owner has since resolved (ruling
-2026-08-04, `Q33`): the source describes an **automatic** message to the customer at C4 and an
+2026-08-04): the source describes an **automatic** message to the customer at C4 and an
 acknowledgement **within seconds** at C8 — and both are now the shipped behaviour, sending
 automatically from the tenant's connected transactional channel, with the link's own state plus
-a composed message a person sends as the no-channel fallback (`F5-16`, `F5-48`;
-[`registers/open-questions.md`](registers/open-questions.md) Q33 — decision recorded).
+a composed message a person sends as the no-channel fallback (`F5-16`, `F5-48`).
 
 ## 6. The map: stage ↔ module ↔ persona
 
@@ -492,7 +491,7 @@ belong to all of them. Each has an owner in this suite:
   matrix and the notification centre, plus one search box across the tenant's records scoped by
   role visibility: [`foundations/F6-notifications-and-search.md`](foundations/F6-notifications-and-search.md).
   Both surfaces are **staff-facing only**; nothing there sends to the EPC's customer — the C4
-  and C8 moments send through the transactional lane the owner ruled on 2026-08-04 (Q33; §5),
+  and C8 moments send through the transactional lane the owner ruled on 2026-08-04 (§5),
   which lives with `foundations/F5` and `modules/M03`, not with F6.
 - **Settings** — every surface an EPC makes its own, from the catalog to message templates:
   [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md).
@@ -551,10 +550,8 @@ ever a sale. The law and its whole lifecycle live at
   sequencing, phasing or timeline in this suite ([`00-README.md`](00-README.md)).
 - It is **not a resolution of anything.** Where the source contradicts itself or the overlay —
   the customer messages with no send channel at C4 and C8 being the clearest case — this document
-  repeats the tension and points at
-  [`registers/conflicts.md`](registers/conflicts.md) and
-  [`registers/open-questions.md`](registers/open-questions.md). It resolves nothing on its own
-  authority.
+  repeats the tension and points at the row that rules it (`M03-03` for that case). It resolves
+  nothing on its own authority.
 - It is **not a persona document.** Personas are named here and documented in
   [`02-personas.md`](02-personas.md); a persona's goals, pains and day belong there.
 - It is **not market-specific.** Every market fact the journey touches is named as a pack key's

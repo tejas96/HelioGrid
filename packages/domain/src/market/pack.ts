@@ -15,11 +15,11 @@ import { type PackVersion, packVersion } from './version';
  * (`F1-02`); nothing else is a market fact, and no module keeps one of its own.
  *
  * **The keys land one task at a time (Law 9).** Seven are here because their tasks built them;
- * `dataRights` is the one still owed, parked by owner ruling `Q89` until the tenant base reaches
+ * `dataRights` is the one still owed, parked by the owner until the tenant base reaches
  * real-customer scale. It arrives as a property here, a folder beside `format/`, and its India
  * values on `IN_PACK`; `unauthoredKeys(IN_PACK)` names it until then. Until all eight are present
  * the pack is not launchable, and `launch.ts` says so rather than pretending (`F1-05`) — which is
- * the accepted consequence `Q89` records, not a defect to work around.
+ * the accepted consequence of parking it, not a defect to work around.
  *
  * A pack is DATA, and it is INJECTED: a caller resolves the tenant's pack and passes it in.
  * There is no registry and no default here, because a module-level lookup is the

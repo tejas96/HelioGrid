@@ -60,7 +60,7 @@ import { ADHERENCE, byName, mentions, ROOT, strip, UI, walkFiles } from './lib.m
  * under a `.d.ts` name turbo boundaries parsed all 95 as live TypeScript inside packages/theme
  * and reported 94 react-is-not-a-dependency violations, since that package declares no react by
  * design (`theme-standalone`, .dependency-cruiser.cjs). The `.txt` suffix is what makes every
- * toolchain — turbo boundaries, tsc's `src/**` glob, biome, knip, jscpd — stop claiming them,
+ * toolchain — turbo boundaries, tsc's `src/**` glob, biome, jscpd — stop claiming them,
  * with the bytes untouched. Keep `.d.ts` in the middle so the name still says what they are.
  */
 const CONTRACT_EXT = '.d.ts.txt';

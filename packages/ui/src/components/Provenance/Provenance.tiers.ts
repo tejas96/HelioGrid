@@ -3,9 +3,8 @@
 
    THE TIER VOCABULARY IS OPEN. The four canonical names are conveniences, not a closed enum:
    M12-34 forbids the word "measured" on the usage screen, the catalog (M01-35) needs
-   verified-datasheet / tenant-provided / representative, and the studio picker (MS4-07) needs
-   manufacturer-datasheet / installer-pricebook / tenant-provided. Any string is a tier; an object
-   can borrow a canonical tone for its mark.
+   verified-datasheet / tenant-provided / representative, and the studio picker (MS4-07) reads
+   that same set. Any string is a tier; an object can borrow a canonical tone for its mark.
 
    ABSENCE CAN BE DELIBERATE. M05-52 states that the geometric access numbers carry no marker and
    "that absence is itself required". `tier="unmarked"` renders nothing AND says so in the source,

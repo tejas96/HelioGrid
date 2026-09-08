@@ -1,3 +1,5 @@
+> **Fate:** each decision becomes one line in the package it binds, every code comment that names its ADR id is rewritten in the same change, and the record is deleted.
+
 # Architecture Decision Records
 
 Reference only — why each architecture choice was made. **Nothing here gates a change.**

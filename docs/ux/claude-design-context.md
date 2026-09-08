@@ -13,7 +13,7 @@ Users are salespeople, surveyors, design engineers, project managers, field tech
 customers — often on a phone, outdoors, one-handed, in bright sun.
 
 > **The product requires a connection, and that changes what you draw.** Offline was removed by
-> owner ruling `Q61` (2026-08-07). **Never draw a sync strip, a sync centre, a queued marker, a
+> owner ruling (2026-08-07). **Never draw a sync strip, a sync centre, a queued marker, a
 > staleness banner, a last-synced time or an `offline` state** — on any screen, in any frame, at
 > any breakpoint. Losing the connection shows one shared full-screen state the design system owns.
 > The full rule is the last section of this file; it is repeated here because this paragraph is
@@ -56,7 +56,7 @@ order below are exact; each line then states the operative obligation the rule c
   estimated / assumed — F8-02). F8-01 is absolute: not most numbers, not the headline numbers —
   every number a user can read, including inside generated documents. **A number whose tier
   cannot be established is not rendered as a number; the surface shows what is missing instead.**
-  Money is included. **Dates split, by owner ruling 2026-08-07 (Q59, refined the same day):**
+  Money is included. **Dates split, by owner ruling 2026-08-07 (refined the same day):**
   **the test is how the value was arrived at — was it *recorded*, or was it *computed or
   guessed*?**
   - **Recorded → no tier.** Somebody or something wrote this value down: a payment's received-on
@@ -71,7 +71,7 @@ order below are exact; each line then states the operative obligation the rule c
   which sent scheduled visit times to the tiered side where none of F8's four values fits them.
   Owner refined it 2026-08-07 after the question surfaced on `SCR-SHELL-01`.)*
 
-  **A date follows the MARKET, not the reader (Q81).** The pack owns the order, the calendar and the
+  **A date follows the MARKET, not the reader.** The pack owns the order, the calendar and the
   month name, so `12 Aug 2026` renders identically in Hindi, Marathi and English — the same class as
   `BIS`, `ALMM`, `DISCOM` and `kWp`. Two colleagues in one tenant quote a customer the same date.
 
@@ -87,10 +87,10 @@ order below are exact; each line then states the operative obligation the rule c
 - **N8** — destructive actions are confirmed AND undoable; undo is thumb-reachable on mobile.
   Where an act genuinely CANNOT be undone by the person who did it — it is already someone else's
   knowledge, or the record is gone — the confirm carries the RECOVERY ROUTE IN WORDS instead, on both
-  the confirm and the after-state (owner ruling 2026-08-31, `Q78`). Never drop half of `N8` silently.
+  the confirm and the after-state (owner ruling 2026-08-31). Never drop half of `N8` silently.
 - **N9** — no layout tuned to a fixed viewport.
 - **N10** — loading, empty and error states are part of "done". *(Amended by owner ruling
-  2026-08-07, `Q61`: this rule named four states. The offline capability was removed from the
+  2026-08-07: this rule named four states. The offline capability was removed from the
   product, so there is no `offline` state on any screen.)*
 
 **Light-only (F7-04, P0).** v1 has no dark theme, no per-user theme switch and no dark variant of
@@ -125,7 +125,7 @@ Only spacing and radius differ, and the design system owns both values. Pick the
 the screen *is*, not from the viewport it is being drawn at: a data table is functional at 375px
 too, and a dashboard stays expressive at 1536px.
 
-**The ladder, lightest last (`F7-15`, owner ruling `Q77`).** This is the one composition rule that
+**The ladder, lightest last (`F7-15`, by owner ruling).** This is the one composition rule that
 decides how a form looks. Three steps, each brighter than the one behind it:
 
 - **the page** — `--canvas` (#EEF0F3)
@@ -340,4 +340,4 @@ every screen, every time.
 
 ---
 
-**Offline was removed from this product (owner ruling 2026-08-07, `Q61`).** There is no cache, no sync, no queue, no staleness and **no `offline` state on any screen**. Losing the connection shows one shared full-screen state that the design system owns — never a state you design per screen. The single exception in the whole product is that field **photographs** are held on the device and upload when the connection returns; that status appears on `SCR-M04-07` only. If a brief still asks for an offline state, a staleness banner, a queued marker or a last-synced time, it is residue — do not draw it.
+**Offline was removed from this product (owner ruling 2026-08-07).** There is no cache, no sync, no queue, no staleness and **no `offline` state on any screen**. Losing the connection shows one shared full-screen state that the design system owns — never a state you design per screen. The single exception in the whole product is that field **photographs** are held on the device and upload when the connection returns; that status appears on `SCR-M04-07` only. If a brief still asks for an offline state, a staleness banner, a queued marker or a last-synced time, it is residue — do not draw it.

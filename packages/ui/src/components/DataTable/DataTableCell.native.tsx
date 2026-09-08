@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.body.fontSize,
     color: theme.colors['text-primary'],
-    // An inline cell editor is a control — `surface` at e2 (Q77).
+    // An inline cell editor is a control — `surface` at e2.
     ...theme.elevation.e2,
   },
   editorMono: { fontFamily: theme.type.families.mono },

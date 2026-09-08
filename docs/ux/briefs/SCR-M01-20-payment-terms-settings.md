@@ -16,9 +16,10 @@ Reached from: the tenant-config settings surface map — *Payment terms* is a na
    plus `CANCELLED`. The five-state shorthand is deprecated and appears nowhere. Display labels are
    the pack's (`F1-22`); `F1-51` fixes two of them — *DISCOM inspection*, *Subsidy claimed*.
 2. **A split that must total exactly 100% is an `AllocationMeter`.** Never `ProgressBar` or
-   `UsageMeter`, and **never an `=== 100` test**: `met` is a tolerance of 0.05 of a unit, because
-   three tranches of 33.33% sum to 99.99 and are fully allocated. Read the component's verdict; do
-   not compute a second one beside it. **Over-allocation is `warning`, never `danger`** — the
+   `UsageMeter`. `met` is **exact**: lines are two-decimal percentages and must sum to 100.00
+   (`M01-54`) — three equal tranches are 33.33 / 33.33 / 33.34, and 33.33 × 3 shows its 0.01
+   remainder and stays unsaveable. One domain rule serves the meter and the save; read the
+   component's verdict, do not compute a second one beside it. **Over-allocation is `warning`, never `danger`** — the
    tenant is mid-edit and the block belongs to the act, not to the meter.
 3. **The preview's money comes from a stated sample contract value** — basis `assumed`, per-tranche
    amounts `derived`, both tiers persistent. A customer sees money, so percentages alone fail the

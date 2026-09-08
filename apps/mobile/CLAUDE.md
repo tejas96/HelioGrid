@@ -1,6 +1,6 @@
 # @heliogrid/mobile — bare React Native (iOS + Android), NO Expo anywhere
 
-Traps: `docs/engineering/landmines.md` · deps and platform rules: `architecture.md` §2
+Traps: `.claude/landmines.md` · deps and platform rules: `architecture.md` §2
 apps/mobile, §3 · what both apps share: `CLAUDE.md` §6, `architecture.md` §3 · UI law:
 `.claude/rules/ui-adherence.md`.
 

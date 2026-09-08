@@ -105,7 +105,7 @@ export const IN_TAX: TaxPack = {
       type: 'IN_GST',
       /**
        * GSTIN: state code, PAN, entity number, `Z`, check character — 15 characters. The format
-       * only; the check character is the registry's to verify, and the product says so (`Q76`).
+       * only; the check character is the registry's to verify, and the product says so.
        */
       pattern: '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$',
       /** `F1-29` — a B2B tenant needs it on the invoice for input tax credit. */

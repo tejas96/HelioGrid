@@ -18,7 +18,7 @@ Reached from: the tenant-config settings surface map — *Proposal templates* is
    is never the only signal.
 3. **A timeline phase's fields live in a sheet, not inline in the row.** A 205px inline field cannot
    hold a sentence a customer reads, and the row already spends its width on three 44px controls.
-4. **Terms and conditions cannot be switched off** (`Q82`). Every other section is the tenant's
+4. **Terms and conditions cannot be switched off**. Every other section is the tenant's
    choice; this one is a floor, so the row carries **no toggle** and states the floor by name —
    `ComplianceFloor`'s case, where the control is absent rather than disabled. The wording stays
    the tenant's, through the same standard-terms editor — *whether it prints is not a setting*.

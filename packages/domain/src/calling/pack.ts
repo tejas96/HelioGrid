@@ -46,7 +46,7 @@ export function tenantDefault<T>(value: T): TenantDefault<T> {
 }
 
 /**
- * A window of the tenant's day (`F1-10`, `Q58` — one clock, the tenant's). `closes` is strictly
+ * A window of the tenant's day (`F1-10` — one clock, the tenant's). `closes` is strictly
  * after `opens`: a window crossing midnight is refused at authoring time rather than handled,
  * because no market authors one and every comparison downstream would need a second branch.
  */

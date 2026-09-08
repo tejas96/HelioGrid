@@ -43,12 +43,11 @@ docs/prd/modules/M05-studio/poc-file-claims.md
 # Render harness. Its fixtures carry fabricated product data — invented tariffs, vendors and
 # rupee amounts — which a graph would learn as real market facts, and it describes an
 # apps/web route that does not exist.
-docs/engineering/harness/
 
 # A symlink to CLAUDE.md. Ingesting it doubles every node of the constitution.
 AGENTS.md
 
-# Infra runbook — operational state, same class as docs/engineering/ops/ above.
+# Infra runbook — operational state, same class as infra/ops/ above.
 infra/README.md
 
 # Path-scoped rule deltas. Each restates its package's own CLAUDE.md, which is the closer and
@@ -60,7 +59,7 @@ infra/README.md
 # Real and current, but it is account bookkeeping rather than product or code knowledge,
 # and it churns independently of both. Product truth is docs/prd/; the graph should reach
 # for that instead.
-docs/engineering/ops/
+infra/ops/
 
 # Planning-plugin working state — specs, plans and subagent scratch. Not repo knowledge;
 # CLAUDE.md §8 puts it here rather than in the documentation tree.
@@ -101,7 +100,6 @@ tsconfig*.json
 packages/config/tsconfig/
 turbo.json
 biome.json
-knip.jsonc
 .jscpd.json
 apps/mobile/app.json
 .claude/settings.json

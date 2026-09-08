@@ -86,7 +86,7 @@ dashboard opened (which, scope class) · tile deep-link followed.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M13-09 | **Role decides the home screen, not a setting** — the front door is derived from what the person is (the twelve homes are §M13.5's rows). Nothing in preferences chooses a home; the composition rule below derives it. | `SRC` — `PS-01` (Task 4's disposition of `S1.rec.1`; consumed here per its routing note — not re-appended); journey L1515–1517 | P0 |
-| M13-10 | **The composition rule (resolves register `Q5` / F2 `F2-Q1`): one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. | `BRIEF` — the decision `registers/open-questions.md` `Q5` assigned to this module, taken with `SRC` inputs: `PS-05` (one person, one home, "widest" + compose + switch), `F2-14` (the domain lattice as input, per `F2-Q1`), journey L1515–1517 | P0 |
+| M13-10 | **The composition rule: one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration. | `BRIEF` — the multi-role home decision assigned to this module, taken with `SRC` inputs: `PS-05` (one person, one home, "widest" + compose + switch), `F2-14` (the domain lattice as input), journey L1515–1517 | P0 |
 | M13-11 | **Composition blocks are the owning module's content, unmodified.** The My Day content contract is `M07`'s (§M07.1); the visits block `M04-38`'s; the sign-off queue `M05-83`'s; the people-today queue `M10-14`'s; the field day `M09-62`'s; money due `M11-54`'s. This module owns placement and scoping, never the facts, and a block keeps its own laws inside the composed home (e.g. the agent-activity block stays separate from the person's own tasks — M13-13). | `SRC` — the owning modules' hand-offs as cited; `S4.screen.6` (the composition half routed here by Task 14) | P0 |
 | M13-12 | **Every home and dashboard has a teaching empty state.** A brand-new tenant, an unassigned joiner or an empty scope sees what will appear here, why, and who to ask — never a blank or broken chart. | `SRC` — journey §DASHBOARDS "What goes wrong" (brand-new company); `S1.wrong.3` consumed via M01 | P0 |
 | M13-13 | **Agent activity renders as a separate block, never mixed with the person's own tasks** — the rep must see at a glance what a machine did on their behalf; blurring that line is how people stop trusting the automation. Binding on every home this module composes. | `SRC` — `S7.rec.1` (the M13-layout half, routed here by Task 17; the M07 working-surface half is `M07-03`) | P0 |
@@ -107,7 +107,7 @@ nothing else moves (the rule's shape is the decision; the order is data).
 **Edge cases & what-goes-wrong.**
 
 - *A person holds one preset* → the ladder is trivial; their home is their preset's (M13-09).
-- *Q5's own example — Field Technician + Survey Engineer + Installation Team Member* → home is
+- *The ruling's own example — Field Technician + Survey Engineer + Installation Team Member* → home is
   today's visits (Survey Engineer, highest of the three), with the route block and the
   assigned-installation block composed inside; the switcher offers all three (M13-10).
 - *EPC Owner who also sells* → owner dashboard first (attention list), My Day one switch away;
@@ -165,7 +165,7 @@ inline · monthly summary pushed/opened.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M13-22 | **The pipeline funnel shows conversion between stages and where deals leak, with time-in-stage** — the funnel over the CRM's own stages, for Owner and Sales Manager (team-scoped), read-only. | `SRC` — journey §DASHBOARDS L1545–1548 (Pipeline funnel + win/loss row); `D20` scoping per M13-07 | P0 |
-| M13-23 | **Both reason lists render, kept distinct.** The early **Disqualify** reasons and the late **Mark lost** reasons are different lessons ("losing a quoted deal is a different lesson from disqualifying a renter on day one") and are never merged: win/loss shows both breakdowns by count and value, sourced from the CRM's own reason sets. The "disqualified early" list is `M02-53`'s state's; the "lost late" list `M02-54`'s — including the `Q21` vocabulary mismatch, carried as the CRM carries it, never repaired here. | `SRC` — journey §DASHBOARDS L1546–1548 ("Show BOTH reason lists, kept distinct"); `R9.disqualified` / `R9.lost` (the win-loss list halves routed here by Task 13); register `Q21` (cited, open) | P0 |
+| M13-23 | **Both reason lists render, kept distinct.** The early **Disqualify** reasons and the late **Mark lost** reasons are different lessons ("losing a quoted deal is a different lesson from disqualifying a renter on day one") and are never merged: win/loss shows both breakdowns by count and value, sourced from the CRM's own reason sets. The "disqualified early" list is `M02-53`'s state's; the "lost late" list `M02-54`'s — the ruled seven, "not interested" included, carried as the CRM carries them, never repaired here. | `SRC` — journey §DASHBOARDS L1546–1548 ("Show BOTH reason lists, kept distinct"); `R9.disqualified` / `R9.lost` (the win-loss list halves routed here by Task 13); the seven-reason Lost list ruled at `M02-54` | P0 |
 | M13-24 | **The sales cycle is made measurable, descriptively:** lead-created → won/lost duration (the cycle), duration per funnel stage, and medians per segment — the owner brief's "reduce sales cycle time" goal given its measuring stick. The figures are descriptive facts; where any surface implies a *driver* of cycle change (a campaign, the agent, a process change), the correlation law applies and the caption renders beside the figure. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Primary-goals ("reduce sales cycle time"), made measurable; `SRC` framing per `F8-30`/`F8-31` consumed | P0 |
 | M13-25 | **Days-in-stage is the project board's truth, and the dashboard's.** Project ageing renders days-in-stage per the canonical machine — "this one has been in [stage] for 34 days" is the whole insight; aged projects surface to the Owner and Operations. Stage labels render per market pack through F1. | `SRC` — `R2` (the days-in-stage metrics half, routed here by Tasks 6/18; machine `M08-08`, labels `F1-51`); `S8.rec.2` consumed via M08 | P0 |
 | M13-26 | **Referral analytics live inside win/loss.** Referral-sourced deals are visible in the win/loss view via the referral row (`M02-16`) — the "came from" chip's reporting face. No credits, no balances (the spec-locked exclusion stands). | `SRC` — `R15` (the win/loss analytics half routed here by Task 13; the tag + chip `M02-16`) | P1 |
@@ -184,7 +184,7 @@ and dormant leads excluded from active-pipeline views exactly as My Day excludes
   does not present three deals as a trend (M13-18's rule applied, F8 spirit).
 - *A reopened lost lead closes won* → the cycle counts its full history honestly (reopen
   recorded on the timeline, `R9`'s machine); no cherry-picked restart.
-- *Vocabulary mismatch between the two reason sets* (register `Q21`) → carried as the CRM
+- *Vocabulary mismatch between the two reason sets* → carried as the CRM
   carries it; the two lists render exactly the states' own sets (M13-23).
 
 **Acceptance criteria.**
@@ -362,7 +362,7 @@ money formats. **Analytics events:** dashboard exported (which, scope class).
 | To | What it provides |
 |---|---|
 | Every persona | Their role-decided home, composed under §M13.2's rule (the `PS-01` mechanics both M01 and this module carry; M01 owns the first-run handoff onto it, `M01-17`). |
-| `foundations/F2` | The resolution of `F2-Q1`'s home-composition half (M13-10), with F2-14 as input — recorded at register `Q5`. |
+| `foundations/F2` | The home-composition rule (M13-10), with F2-14 as input. |
 | `foundations/F6-notifications-and-search.md` (Task 23) | Two notification types: the monthly dashboard summary (M13-21) and the monthly agent summary (M13-45) — both owner-facing, in-app. |
 | `modules/M01` | The role homes its first-run handoff lands on (`M01-17`'s reciprocal). |
 
@@ -380,9 +380,3 @@ money formats. **Analytics events:** dashboard exported (which, scope class).
   non-goals, respected here (M13-28; correlation framing only).
 - **No delivered state anywhere** — link reporting shows shared → opened → viewed, never
   "delivered" (`F5-28`'s prohibition, binding on every link figure this module renders).
-
-## 6. Open questions
-
-| # | Question | Decision owner |
-|---|---|---|
-| M13-Q1 | **`Q5` — decision recorded, not open.** The multi-role home composition rule is fixed at M13-10 (fixed preset-precedence ladder over `F2-14`'s lattice; other presets' work composed as blocks; switcher always available). The register row records the decision; the revisit trigger is owner preference on the ladder's order, which is a one-table change (M13.2 behavior detail). | Resolved by this module (Task 23); ladder-order revisit — Owner |

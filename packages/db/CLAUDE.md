@@ -5,10 +5,10 @@
 > surgically because every platform table foreign-keys to it. What survives is `client.ts`,
 > `migrate.ts` and `uuid.ts`. The next migration is `0001`, authored by the market-pack storage
 > slice (`T-FCORE-016`) — the pack carries no foreign key out and `tenant` carries the market one,
-> so the pack precedes the identity spine. Auth and tenancy follow it (`Q85`). Read the `auth/tenancy` row of `forward-compat.md` first. Everything below is what the
+> so the pack precedes the identity spine. Auth and tenancy follow it. Read `T-M01-025`'s Data model block in `docs/tasks/M01-onboarding.md` first. Everything below is what the
 > rebuild must satisfy, not a description of today's contents.
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.
 
 ## What lives here / what must never live here
@@ -53,8 +53,12 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `current_setting('app.tenant_id', true)` · explicit grants. There are no default privileges, so
   a forgotten grant fails closed. `app_admin` is BYPASSRLS and audited.
-- A genuinely global table goes in `GLOBAL_TABLES` in `tests/invariants/src/table-tenancy-scan.ts`
-  **with its reason**. There is no third option, and the scan fails on any table that is neither.
+- A global table is unreachable (`GLOBAL_TABLES` — `app_user` cannot touch it) or readable
+  reference data (`GLOBAL_READABLE_TABLES` — SELECT held, no write privilege, no RLS, for every
+  member of `app_user`; the market pack is one), each listed **with its reason** in
+  `tests/invariants/src/table-tenancy-scan.ts`. Any other table fails the scan (`M12`).
+- A `jsonb` payload column is typed as its ENVELOPE — key names, row identity, re-minted brands —
+  never as the domain aggregate; the whole is parsed in `domain`, never here.
 - **Tenancy is defence in depth, all three always**: guard (session claims) → repository filter
   (tenantId from context, never from client input) → RLS backstop.
 - **Cross-tenant reads return 404, never 403** — never reveal that another tenant's row exists.

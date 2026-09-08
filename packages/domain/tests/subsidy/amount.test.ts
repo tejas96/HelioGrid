@@ -50,7 +50,7 @@ describe('subsidyAmount — PM Surya Ghar over capacity (F1-33)', () => {
 });
 
 describe('subsidyAmount — the geography axis (F1-14, F1-33)', () => {
-  /** IN authors no state top-up, so the axis is exercised on a pack that does (Q84). */
+  /** IN authors no state top-up, so the axis is exercised on a pack that does. */
   const WITH_TOP_UP: SubsidyModel = {
     ...IN_SUBSIDY,
     regionalTopUps: [{ region: 'MH', slabs: [{ kw: 2, perKw: minorUnits(1_000_000) }] }],

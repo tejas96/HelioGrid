@@ -5,13 +5,14 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
 **This file states the invariants.** `docs/engineering/architecture.md` places every file ·
-`mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
-`landmines.md` holds the live traps. Everything else loads when it applies.
+`.claude/mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
+`.claude/landmines.md` holds the live traps. Everything else loads when it applies.
 
 ## 1. Core principles
 
-**Think before coding.** State assumptions. Two readings of a request → present both. Unclear →
-stop and ask; never invent a requirement.
+**Think before coding.** State assumptions. Two readings of a request → present both. **Two readings
+the PRD supports → decide:** the simplest, most standard one, folded into its PRD row with one
+reason, and said out loud. A feature or a number no row implies is the owner's: stop and ask.
 
 **Propose a better approach when you see one** — with an example in *this* codebase and the cost
 to switch. A recommendation you withheld is a decision made for the owner. Never switch silently.
@@ -45,23 +46,37 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 ## 3. Workflow
 
 **`/start` → build, tests first → `/verify` → `/ship`.** `/start` reads the task's own section and the
-PRD only for what it does not quote; `/ship` sizes the review to the diff, then commits on a yes and
-opens the PR. Each skill states its own depth, and a plugin skill fires only when this file asks.
+PRD only for what it does not quote, then explains the task in simple words and waits for the go;
+`/ship` sizes the review to the diff, commits on a yes, pushes and prints the PR body. The owner
+raises the PR. A screen builds only after its module's screens are designed and verified.
 
 Before writing code, say three things: **which package owns each new file** (§6), **which facts are
-new and where their TYPE lives** (§8), and **what will prove it works**. Anything whose shape is
-still in question gets settled with the owner first.
+new and where their TYPE lives** (§8) — every fact the done-when lines need, beside the row that
+carries it — and **what will prove it works**. A fact no row carries is ruled into the row (§1)
+before a line is written.
+
+The whole kit. Nothing outside this table fires, and a plugin skill fires only when it names one.
+
+| kit | step |
+|---|---|
+| the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | design: the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
+| `/start` | task review and explain, before code |
+| `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
+| hooks · `.claude/rules/` · `pnpm check:all` | implement: the guards, loaded by path or run by hand |
+| `/verify` → `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches |
+| `/ship` → `arch-reviewer` for a structural diff | owner review: gates, review, commit on a yes, push, PR body |
 
 ## 4. Stop and ask the owner before
 
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
-- A product-shaped finding (missing rule, UX gap, spec ambiguity) — record it in
-  `docs/prd/registers/open-questions.md` or `conflicts.md` first, then continue.
-- **Committing.** Every commit waits for a yes; an instruction to do work is never approval to
-  commit it. After that yes the push and the PR follow without asking, and the merge is the
-  owner's. `main` is PR-only; never `--no-verify`, never a force-push.
+- A feature or a number no PRD row implies. A finding BETWEEN readings the PRD supports is not an
+  ask: rule it into the row (§1) and continue.
+- **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
+  go, a green gate, an event, or the yes to an earlier commit is never that yes. After it: push the
+  branch, print the PR body, STOP. The owner raises the PR and merges. `main` is PR-only; never
+  `--no-verify`, never a force-push.
 
 ## 5. Commands
 
@@ -102,33 +117,26 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | tree | what it is |
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
-| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and the folder only shrinks. Ranked **below** `docs/prd/`. |
+| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and the two ledgers `mechanisms.md` and `landmines.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
-Everything public is re-exported from a package's `src/index.ts`; consumers import the
-index, never a deep path. Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a folder**:
-every tree is a closed set, and a new category is a plan-time decision. `docs/README.md` maps every
-document; `start-here.md` opens a design session, `build-order.md` a build one, and
-`docs/tasks/<module>.md` holds the work.
-
-**Naming.** A file is named for what it does — never `*-part2`/`*2`/`*-extra`, never for its layer
-(a `components.tsx` grab-bag is the same defect). A split that needs a number is wrong.
+Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never
+a deep path. Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a
+folder**: every tree is a closed set, and a new category is a plan-time decision. `docs/README.md`
+maps every document; `docs/tasks/<module>.md` holds the work.
 
 ## 7. When rules conflict
 
 Higher wins, and don't re-declare at a lower level what a higher one already fixes:
 
-**owner rulings (`docs/prd/registers/open-questions.md`, `conflicts.md`) → the product spec
-(`docs/prd/`) → `docs/engineering/architecture.md` → contracts → design system → this file →
-package `CLAUDE.md` → implementation detail.**
+**the product spec (`docs/prd/`; a row carries its own ruling, and the row IS the ruling) →
+`docs/engineering/architecture.md` → contracts → design system → this file → package `CLAUDE.md`
+→ implementation detail.**
 
 Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule**, being closer to the code;
 and between two records the **later-dated** one wins. If a doc and the code disagree, fix the doc
 or ask.
-
-**A rule is not enforced because it is written.** `mechanisms.md` says what holds each one, and
-how much of it.
 
 ## 8. Coding standards
 
@@ -147,15 +155,18 @@ Every line, every app, every package. No exceptions for "just this once".
   and why we changed it goes in the commit, undated and un-rotting.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified.
-- **Shape.** Files ≲300 lines, split by responsibility · no `any`, `!`, `==` or `console.log` ·
-  style outside the component file · no app-declared enum, union, lookup or policy number ·
-  `process.env` read only in `packages/env`.
+- **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
+  `*2`/`*-extra`, never for a layer · no `any`, `!`, `==` or `console.log` · style outside the
+  component file · no app-declared enum, union, lookup or policy number · `process.env` read only
+  in `packages/env`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
   every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
-- **A bug you find is reported immediately and fixed next** — never silently, and never inside the
-  current change, which hides it in an unrelated diff.
+- **A bug you find is reported at once.** Inside the task's scope it is fixed now and its area
+  re-reviewed. Outside it, it goes to `docs/tasks/deferred.md` — the issue, why not now, what it
+  depends on, who picks it up — and becomes the next task; never inside the current change, which
+  hides it in an unrelated diff, and never parked.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
   the application.
@@ -169,11 +180,11 @@ Writing rules, not code:
   and war stories are how this corpus doubled before. The trap goes to `landmines.md`; when and
   why we changed something is the commit's job. `mechanisms.md` is the one exception: a date there
   is the day a gate was proven red, which is the only date that stays true.
-- **One fact, one file.** Cite a ruling by its id; never restate it. Law 8's sweep covers the
-  ledger and the matrix too.
-- **Name no gate outside `mechanisms.md`**, and cite a row there only once it has been seen to go
-  RED on an injected violation.
-- **No rule about deleted code.** When a file goes, its stories go with it.
+- **One fact, one file.** Cite a rule by its id; never restate it. When a file goes, its stories go
+  with it — Law 8's sweep covers the ledgers too.
+- **Name no gate outside `mechanisms.md`** — not the tool, not the config, not the check: an
+  instruction file cites the row id and nothing else, and cites it only once the row has been seen
+  to go RED on an injected violation.
 - **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
   nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
@@ -188,7 +199,7 @@ Writing rules, not code:
 
 ## 9. Product law
 
-Digest of `docs/prd/registers/open-questions.md` and the foundations `F1`–`F8`, which are canonical.
+Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
 - Money never renders stale — design changed and quote not recomputed reads provisional.

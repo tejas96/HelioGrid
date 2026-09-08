@@ -7,6 +7,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-001 · Survey Mode Chooser screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-05 (P0)
 **DESIGN:** SCR-M04-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md`; they are the specification.
@@ -21,6 +22,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-002 · Remote Address Entry screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-08 (P0), M04-12 (P0)
 **DESIGN:** SCR-M04-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-02-remote-address-entry.md`; they are the specification.
@@ -35,6 +37,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-003 · Remote Roof Review screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-11 (P0), M04-13 (P0), M04-14 (P0), M04-15 (P0), M04-16 (P0), M04-21 (P0), M04-22 (P0), M04-23 (P0)
 **DESIGN:** SCR-M04-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-03-remote-roof-review.md`; they are the specification.
@@ -55,6 +58,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-004 · Coverage Failure screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-26 (P0)
 **DESIGN:** SCR-M04-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-04-coverage-failure.md`; they are the specification.
@@ -68,6 +72,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-005 · Gaps to Fill screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-29 (P0), M04-30 (P0), M04-31 (P0), M04-32 (P0)
 **DESIGN:** SCR-M04-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md`; they are the specification.
@@ -76,7 +81,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given a completed remote detection, when the flow continues, then the gaps screen renders with all five items present (M04-29, M04-30).
 - Given any gap, when it is acted on, then it takes exactly one of the four resolutions and its resolution, actor and reason (where waived) are recorded (M04-31).
 - Given open capture-on-site gaps, when a physical visit is booked, then that visit's guided capture opens with those steps present and identified as the reason for the visit (M04-32).
-- Given a gap resolved as **ask the customer** in a tenant with a connected transactional channel, when the question is produced, then it sends from that channel under the transactional template class with its delivery state shown honestly; and given no connected channel, then it is composed for the rep to send and no delivery is claimed (M04-31 resolution set, `M03-03`, M04 §"No survey-side send machinery of its own", owner ruling 2026-08-04 Q33). This module builds no send machinery of its own.
+- Given a gap resolved as **ask the customer** in a tenant with a connected transactional channel, when the question is produced, then it sends from that channel under the transactional template class with its delivery state shown honestly; and given no connected channel, then it is composed for the rep to send and no delivery is claimed (M04-31 resolution set, `M03-03`, M04 §"No survey-side send machinery of its own", owner ruling 2026-08-04). This module builds no send machinery of its own.
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ---
@@ -84,13 +89,14 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-006 · My Visits Today screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-38 (P0), M04-58 (P0), M04-59 (P0)
 **DESIGN:** SCR-M04-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-06-my-visits-today.md`; they are the specification.
 **DONE WHEN:**
 
 - Given a Survey Engineer signing in, when the app opens, then today's visits are the landing surface with address, customer, time, distance, one-tap navigation and one-tap call (M04-38).
-- Given a visit that cannot be completed in a tenant with a connected transactional channel, when the surveyor records it, then a reason is required, the reschedule flow opens, and exactly one message sends from that channel under the transactional template class with its delivery state shown honestly; and given no connected channel, then that one message is composed for a person to send and no delivery is claimed (M04-58, `M03-03`, owner ruling 2026-08-04 Q33). Exactly one message exists on either branch — no surface may generate a second for the same visit (M04-58, `M02-48`).
+- Given a visit that cannot be completed in a tenant with a connected transactional channel, when the surveyor records it, then a reason is required, the reschedule flow opens, and exactly one message sends from that channel under the transactional template class with its delivery state shown honestly; and given no connected channel, then that one message is composed for a person to send and no delivery is claimed (M04-58, `M03-03`, owner ruling 2026-08-04). Exactly one message exists on either branch — no surface may generate a second for the same visit (M04-58, `M02-48`).
 - Given a wrong address discovered on site, when it is corrected, then the site record carries the corrected address (M04-59).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
@@ -99,6 +105,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-007 · Guided Capture screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-03 (P0), M04-42 (P0), M04-43 (P0), M04-44 (P0), M04-45 (P0), M04-47 (P0), M04-54 (P0)
 **DESIGN:** SCR-M04-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-07-guided-capture.md`; they are the specification.
@@ -118,6 +125,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-008 · Shading Capture Sketch screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-46 (P0)
 **DESIGN:** SCR-M04-08 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md`; they are the specification.
@@ -131,6 +139,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-009 · Review & Submit screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-37 (P0), M04-49 (P0), M04-50 (P0), M04-52 (P0)
 **DESIGN:** SCR-M04-09 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-09-review-submit.md`; they are the specification.
@@ -142,7 +151,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given a submitted survey, when the submission is applied, then the survey is in its submitted state and the design side is notified with the survey, its photographs, its flagged items and its open gaps (M04-52).
 - Given the same submission delivered twice, when the server applies it, then the designer is notified exactly once (M04-52, `F4-07`).
 - Given a completed survey, when the customer is updated, then the update states that the survey is done and names the date by which the proposal will reach them (`F5-14`).
-- Given a physical survey, when its submission commits, then the promise-with-a-date confirmation of `F5-14` — *"Survey done. Your proposal will reach you by <date>."* — is composed from the registry's `survey_complete` template (`F6-26`, `docs/tasks/F-platform.md` T-FPLAT-021) with the date resolved, and sends from the tenant's connected transactional channel; and given no connected channel, then it is composed for a person to copy and send and no delivery is claimed (`F5-14`, `M03-03`, owner ruling 2026-08-04 Q33). Where the survey is remote the customer experiences nothing at this step (`F5-14`), and the submission raises no such confirmation.
+- Given a physical survey, when its submission commits, then the promise-with-a-date confirmation of `F5-14` — *"Survey done. Your proposal will reach you by <date>."* — is composed from the registry's `survey_complete` template (`F6-26`, `docs/tasks/F-platform.md` T-FPLAT-021) with the date resolved, and sends from the tenant's connected transactional channel; and given no connected channel, then it is composed for a person to copy and send and no delivery is claimed (`F5-14`, `M03-03`, owner ruling 2026-08-04). Where the survey is remote the customer experiences nothing at this step (`F5-14`), and the submission raises no such confirmation.
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ---
@@ -150,6 +159,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-010 · Survey Detail (survey → design hand-off) screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-28 (P0), M04-63 (P0), M04-64 (P0)
 **DESIGN:** SCR-M04-10 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-10-survey-detail.md`; they are the specification.
@@ -166,6 +176,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-011 · Mode A remote pipeline: imagery fetch, building-insights and the pinned tile
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-02, M04-09, M04-10
 **Requirements (verbatim):**
 
@@ -184,6 +195,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-012 · AI roof detection engine: two honest, deterministic paths
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-17, M04-18, M04-19, M04-20
 **Requirements (verbatim):**
 
@@ -204,6 +216,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-013 · Validated detection artifact: the only doorway into a design
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-24, M04-65
 **Requirements (verbatim):**
 
@@ -220,6 +233,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-014 · Per-field provenance stamping and skipped-but-flagged markers
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-34, M04-35
 **Requirements (verbatim):**
 
@@ -236,6 +250,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-015 · Survey object, versions and states; the visit object; visibility and attribution
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-01, M04-57, M04-60, M04-61, M04-62, F4-14, F4-17, F4-25
 **Requirements (verbatim):**
 
@@ -266,6 +281,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-016 · Survey draft restore
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-48
 **Requirements (verbatim):**
 
@@ -281,6 +297,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-017 · Photograph capture, resumable upload and version binding
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-55, M04-56, F4-21
 **Requirements (verbatim):**
 
@@ -315,8 +332,8 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
   *Enforced by:* T-M04-009's submit action staying enabled throughout (`F4-27` — a warning informs, it does not gate), with missing and flagged items travelling as named absences into T-M04-010's hand-off. PRD check, verbatim: "Given missing items, when submit is used, then the submission succeeds and the missing items travel to the designer as named absences (M04-51)."
 - **M04-53** (P0) — **Photographs are reference for the designer, never measurement — from any source, including a drone.** The survey captures and attaches photographs of the roof, its obstructions and everything around the building, however they were taken: **by phone on site, sent by the customer, or uploaded from a drone or another camera**. Every one of them travels with the survey to the designer, who uses them while building the design. **The product does not derive numbers from them** — *"the app just does not measure from them."* Every dimension and every height is entered or estimated by a person.
   *Enforced by:* no measurement-from-photograph capability existing anywhere (`docs/prd/modules/M04-survey.md` §5 non-goals); person-entered heights and dimensions in T-M04-007/T-M04-008; review of any surface that attributes a number to a photograph. PRD check, verbatim: "Given a photograph from any source, when it is read anywhere in the product, then it is presented as reference and no dimension, height, area or pitch anywhere is attributed to it (M04-53)."
-- **M04-66** (P0) — **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04, Q24)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned (`M05-13`).
-  *Enforced by:* T-M04-015's versioned-append and superseded state; the ruled design-side reconciliation (`M05-13`, owner ruling 2026-08-04 Q24) in `docs/prd/modules/M05-design-studio.md`; `F8-13`/`F8-14`/`F8-15` (sent-document figures never move). PRD check, verbatim: "Given a design built from survey version 1, when version 2 is submitted, then nothing in the existing design or in any sent document changes automatically and the difference is surfaced (M04-66)."
+- **M04-66** (P0) — **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned (`M05-13`).
+  *Enforced by:* T-M04-015's versioned-append and superseded state; the ruled design-side reconciliation (`M05-13`, owner ruling 2026-08-04) in `docs/prd/modules/M05-design-studio.md`; `F8-13`/`F8-14`/`F8-15` (sent-document figures never move). PRD check, verbatim: "Given a design built from survey version 1, when version 2 is submitted, then nothing in the existing design or in any sent document changes automatically and the difference is surfaced (M04-66)."
 
 ---
 

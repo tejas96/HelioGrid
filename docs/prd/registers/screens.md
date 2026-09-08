@@ -2,9 +2,9 @@
 
 Status: generated 2026-08-06 · machine-verified · Source: all 35 requirement-bearing PRD documents
 · §1, §2 row counts and §4 recomputed 2026-08-15 against the live PRD after the 2026-08-07
-offline/sync removal (owner ruling `Q61`), corrected the same day for a suffixed row id
+offline/sync removal (owner ruling), corrected the same day for a suffixed row id
 (`MS7-24b`) that the first recompute's pattern dropped, and recomputed again the same day for the
-three rows owner rulings `Q62`–`Q64` restored (`M02-66`, `M02-67`, `M09-71` — new ids, not the
+three rows the owner restored by ruling (`M02-66`, `M02-67`, `M09-71` — new ids, not the
 deleted ones); deleted requirements are struck in §3, never removed.
 
 This register answers two questions no single PRD document answers: **how many screens does
@@ -17,7 +17,7 @@ union was verified complete: no row missing, none invented, none counted twice. 
 was struck in place** — still in `foundations/F7-design-language.md`, but with its tier cell set to
 `—`, so it is one of the live PRD's 1,660 table rows and not one of the 1,659 that carry a tier.
 All 43 are dispositioned as struck rows in §3 and none is counted in §1 or §4. **Up 3:** owner
-rulings `Q62`, `Q63` and `Q64` of 2026-08-15 restored three laws that sweep had cut although they
+rulings of 2026-08-15 restored three laws that sweep had cut although they
 were never about connectivity, as the **new** rows `M02-66`, `M02-67` and `M09-71` — new ids, so
 `M02-04`, `M02-26` and `M09-36` stay struck and the deletion record stays true. 1,699 − 43 + 3 =
 1,659. 226 raw screen
@@ -43,8 +43,8 @@ immediately before the restoration; was `150 · 1655 · 1501 · 137 · 17 · 393
 digits and silently dropped **`MS7-24b`**, a live P0 `engine` row that sits beside `MS7-24` in
 `docs/prd/modules/M05-studio/06-step7-proposal.md` and is dispositioned in §3 like any other. Any
 re-derivation of this table must allow an optional lowercase suffix on a row id.
-The second recompute is three rows: owner rulings `Q62`, `Q63` and `Q64` of 2026-08-15 restored
-three laws the `Q61` sweep had cut for the company they kept, as the **new** live rows
+The second recompute is three rows: owner rulings of 2026-08-15 restored
+three laws the offline/sync removal had cut for the company they kept, as the **new** live rows
 **`M02-66`**, **`M02-67`** (`docs/prd/modules/M02-crm-and-leads.md` §M02.2 and §M02.5) and **`M09-71`**
 (`docs/prd/modules/M09-field-workforce.md` §M09.5). All three are P0 and all three are typed `mixed`,
 which is the whole of the delta: **1656 → 1659**, **P0 1502 → 1505**, **mixed 387 → 390**; every
@@ -53,7 +53,7 @@ and `SCR-M02-04` from `M02-66`, `SCR-M02-02` from `M02-67`, `SCR-M09-02` from `M
 restore — `M02-04`, `M02-26`, `M09-36` — stay struck in §3 and are counted here no more than
 before: the new rows carry new ids precisely so the deletion record stays true.
 Screens are counted from §2 — `SCR-SHELL-04` (Sync Center) and `SCR-SHELL-05` (Update Required)
-were deleted 2026-08-07 with the offline/sync capability, owner ruling `Q61`. Requirement rows are
+were deleted 2026-08-07 with the offline/sync capability (owner ruling). Requirement rows are
 counted from the live PRD: a row exists when it has a table row in `docs/prd/foundations/*.md`,
 `docs/prd/modules/**/*.md` or `docs/prd/0*.md` **and carries a tier**. The live PRD holds **1,660** such table
 rows; **1,659** carry a tier and are counted here. The odd one out is `F7-36`, struck in place
@@ -142,31 +142,31 @@ credentials).
 
 **The studio's front door is open by ruling, not by screens.** `M05-21` blocked design start on a
 submitted survey, and survey is V2 — which made the whole 18-screen studio unreachable. Owner
-ruling `Q67` (2026-08-16) scopes its prerequisite set to what the release actually offers. No
+ruling (2026-08-16) scopes its prerequisite set to what the release actually offers. No
 screen was added; the honesty half of the row is untouched.
 
 Progress on the locked scope — anchored to `^| SCR-` so the command cannot count its own
 documentation, which the unanchored form did:
 
 ```bash
-grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
+grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 ```
 
 
 ### App shell & global surfaces
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/SCR-SHELL-01-app-shell.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html | `M02-crm-and-leads:shell-app-navigation`; `11-shell-and-platform:shell-top-bar`; `M13-dashboards-and-reporting:shell-home-switcher`; `M01-onboarding-and-tenant-config:shell-role-home`; ~~`F4-offline-and-sync:shell-sync-indicator`~~ *(proposal withdrawn 2026-08-07 — the global sync indicator was deleted with the offline/sync capability, owner ruling `Q61`; nothing on this screen consumes it, and its tap target `SCR-SHELL-04` no longer exists. Kept struck because this register never deletes an entry. The proposing document was `F4-offline-and-sync.md`, itself deleted; the cell previously named its replacement `F4-data-integrity`, which never contained this element.)*; `F1-global-market-framework:shell-grievance-contact`; `M07-sales-execution:shell-user-presence` |
+| SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/SCR-SHELL-01-app-shell.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html | `M02-crm-and-leads:shell-app-navigation`; `11-shell-and-platform:shell-top-bar`; `M13-dashboards-and-reporting:shell-home-switcher`; `M01-onboarding-and-tenant-config:shell-role-home`; ~~`F4-offline-and-sync:shell-sync-indicator`~~ *(proposal withdrawn 2026-08-07 — the global sync indicator was deleted with the offline/sync capability (owner ruling); nothing on this screen consumes it, and its tap target `SCR-SHELL-04` no longer exists. Kept struck because this register never deletes an entry. The proposing document was `F4-offline-and-sync.md`, itself deleted; the cell previously named its replacement `F4-data-integrity`, which never contained this element.)*; `F1-global-market-framework:shell-grievance-contact`; `M07-sales-execution:shell-user-presence` |
 | SCR-SHELL-02 | **Global Search** | P0 | 2 | `docs/ux/briefs/SCR-SHELL-02-global-search.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-02+Global+Search+-+Mobile.dc.html | — |
 | SCR-SHELL-03 | **Notification Center** | P0 | 5 | `docs/ux/briefs/SCR-SHELL-03-notification-center.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-03+Notification+Center+-+Mobile.dc.html | `M13-dashboards-and-reporting:shell-notification-center` |
-| SCR-SHELL-06 | **Billing State Banner & Denial Sheets** | P0 | 6 | `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md` | V1 | pending | — | — |
-| ~~SCR-SHELL-04~~ | ~~Sync Center~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It existed for `F4-23`, the per-item sync centre — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-04-sync-center.md` was deleted with it. The per-item retry it hosted survives only for photographs and only on `SCR-M04-07` (`F4-21`, `M04-55`). Restored as a struck entry 2026-08-15: §3 records every deleted requirement, and §2 must record every deleted screen for the same reason — a screen that vanishes without a mark cannot be audited. Not counted in the 150.* |
-| ~~SCR-SHELL-05~~ | ~~Update Required~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It existed only for `F4-35` ("an application too old to sync still reads") — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-05-update-required.md` was deleted with it. **What a too-old client should show is now unstated anywhere in the suite**, recorded as OPEN question `Q65` in `registers/open-questions.md`; nothing here re-instates it. Restored as a struck entry 2026-08-15. Not counted in the 150.* |
+| SCR-SHELL-06 | **Billing State Banner & Denial Sheets** | P0 | 6 | `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md` | V1 | planned | — | — |
+| ~~SCR-SHELL-04~~ | ~~Sync Center~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling). It existed for `F4-23`, the per-item sync centre — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-04-sync-center.md` was deleted with it. The per-item retry it hosted survives only for photographs and only on `SCR-M04-07` (`F4-21`, `M04-55`). Restored as a struck entry 2026-08-15: §3 records every deleted requirement, and §2 must record every deleted screen for the same reason — a screen that vanishes without a mark cannot be audited. Not counted in the 150.* |
+| ~~SCR-SHELL-05~~ | ~~Update Required~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling). It existed only for `F4-35` ("an application too old to sync still reads") — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-05-update-required.md` was deleted with it. What a too-old client sees is now `F4-36` (owner ruling 2026-08-26): a plain full-screen block naming the required version and routing to the store — the `update-required` state on `SCR-SHELL-01`, task `T-FPLAT-033`; nothing here re-instates this screen. Restored as a struck entry 2026-08-15. Not counted in the 150.* |
 
 ### M01 · Onboarding & tenant config
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
 | SCR-M01-01 | **Sign In** | P0 | 4 | `docs/ux/briefs/SCR-M01-01-sign-in.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html | `11-shell-and-platform:shell-sign-in` |
 | SCR-M01-02 | **Company Signup** | P0 | 3 | `docs/ux/briefs/SCR-M01-02-company-signup.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html | — |
@@ -188,51 +188,51 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-18 | **Branding Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-18-branding-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html | `F7-design-language:shell-tenant-branding-settings` |
 | SCR-M01-19 | **Proposal Template Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-19+Proposal+Template+-+Mobile.dc.html | — |
 | SCR-M01-20 | **Payment Terms Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-20+Payment+Terms+-+Mobile.dc.html | — |
-| SCR-M01-21 | **Message Template Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-21-message-template-settings.md` | V2 | pending | — | — |
-| SCR-M01-22 | **Capture Settings** | P0 | 4 | `docs/ux/briefs/SCR-M01-22-capture-settings.md` | V2 | pending | — | `M02-crm-and-leads:capture-settings` |
-| SCR-M01-23 | **Locale Defaults** | P1 | 1 | `docs/ux/briefs/SCR-M01-23-locale-defaults.md` | V2 | pending | — | — |
-| SCR-M01-24 | **Integration Credentials** | P0 | 1 | `docs/ux/briefs/SCR-M01-24-integration-credentials.md` | V2 | pending | — | — |
+| SCR-M01-21 | **Message Template Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-21-message-template-settings.md` | V2 | planned | — | — |
+| SCR-M01-22 | **Capture Settings** | P0 | 4 | `docs/ux/briefs/SCR-M01-22-capture-settings.md` | V2 | planned | — | `M02-crm-and-leads:capture-settings` |
+| SCR-M01-23 | **Locale Defaults** | P1 | 1 | `docs/ux/briefs/SCR-M01-23-locale-defaults.md` | V2 | planned | — | — |
+| SCR-M01-24 | **Integration Credentials** | P0 | 1 | `docs/ux/briefs/SCR-M01-24-integration-credentials.md` | V2 | planned | — | — |
 
 ### M02 · CRM & leads
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M02-01 | **Quick Add Lead** | P0 | 9 | `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` | V1 | pending | — | — |
-| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | pending | — | — |
-| SCR-M02-03 | **Leads List** | P0 | 3 | `docs/ux/briefs/SCR-M02-03-leads-list.md` | V1 | pending | — | — |
-| SCR-M02-04 | **Lead Detail** | P0 | 22 | `docs/ux/briefs/SCR-M02-04-lead-detail.md` | V1 | pending | — | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
-| SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md` | V1 | pending | — | — |
-| SCR-M02-06 | **Customer Merge** | P0 | 3 | `docs/ux/briefs/SCR-M02-06-customer-merge.md` | V1 | pending | — | — |
+| SCR-M02-01 | **Quick Add Lead** | P0 | 9 | `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` | V1 | planned | — | — |
+| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | planned | — | — |
+| SCR-M02-03 | **Leads List** | P0 | 3 | `docs/ux/briefs/SCR-M02-03-leads-list.md` | V1 | planned | — | — |
+| SCR-M02-04 | **Lead Detail** | P0 | 22 | `docs/ux/briefs/SCR-M02-04-lead-detail.md` | V1 | planned | — | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
+| SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md` | V1 | planned | — | — |
+| SCR-M02-06 | **Customer Merge** | P0 | 3 | `docs/ux/briefs/SCR-M02-06-customer-merge.md` | V1 | planned | — | — |
 
 ### M03 · Marketing
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M03-01 | **Campaign List (Campaigns Home)** | P0 | 4 | `docs/ux/briefs/SCR-M03-01-campaign-list.md` | V2 | pending | — | `02-personas:shell-campaigns-and-captures`; `M13-dashboards-and-reporting:campaigns-home` |
-| SCR-M03-02 | **Campaign Builder — Audience** | P0 | 2 | `docs/ux/briefs/SCR-M03-02-campaign-builder-audience.md` | V2 | pending | — | — |
-| SCR-M03-03 | **Campaign Builder — Content** | P0 | 3 | `docs/ux/briefs/SCR-M03-03-campaign-builder-content.md` | V2 | pending | — | — |
-| SCR-M03-04 | **Campaign Builder — Review & Schedule** | P0 | 4 | `docs/ux/briefs/SCR-M03-04-campaign-builder-review.md` | V2 | pending | — | — |
-| SCR-M03-05 | **Campaign Detail** | P0 | 4 | `docs/ux/briefs/SCR-M03-05-campaign-detail.md` | V2 | pending | — | — |
-| SCR-M03-06 | **Campaign Performance** | P0 | 7 | `docs/ux/briefs/SCR-M03-06-campaign-performance.md` | V2 | pending | — | — |
-| SCR-M03-07 | **Channel Connections** | P0 | 3 | `docs/ux/briefs/SCR-M03-07-channel-connections.md` | V2 | pending | — | — |
-| SCR-M03-08 | **Channel Health** | P0 | 3 | `docs/ux/briefs/SCR-M03-08-channel-health.md` | V2 | pending | — | — |
-| SCR-M03-09 | **Campaign Templates** | P0 | 1 | `docs/ux/briefs/SCR-M03-09-campaign-templates.md` | V2 | pending | — | — |
-| SCR-M03-10 | **Website Enquiry Form** | P0 | 1 | `docs/ux/briefs/SCR-M03-10-website-enquiry-form.md` | V2 | pending | — | — |
+| SCR-M03-01 | **Campaign List (Campaigns Home)** | P0 | 4 | `docs/ux/briefs/SCR-M03-01-campaign-list.md` | V2 | planned | — | `02-personas:shell-campaigns-and-captures`; `M13-dashboards-and-reporting:campaigns-home` |
+| SCR-M03-02 | **Campaign Builder — Audience** | P0 | 2 | `docs/ux/briefs/SCR-M03-02-campaign-builder-audience.md` | V2 | planned | — | — |
+| SCR-M03-03 | **Campaign Builder — Content** | P0 | 3 | `docs/ux/briefs/SCR-M03-03-campaign-builder-content.md` | V2 | planned | — | — |
+| SCR-M03-04 | **Campaign Builder — Review & Schedule** | P0 | 4 | `docs/ux/briefs/SCR-M03-04-campaign-builder-review.md` | V2 | planned | — | — |
+| SCR-M03-05 | **Campaign Detail** | P0 | 4 | `docs/ux/briefs/SCR-M03-05-campaign-detail.md` | V2 | planned | — | — |
+| SCR-M03-06 | **Campaign Performance** | P0 | 7 | `docs/ux/briefs/SCR-M03-06-campaign-performance.md` | V2 | planned | — | — |
+| SCR-M03-07 | **Channel Connections** | P0 | 3 | `docs/ux/briefs/SCR-M03-07-channel-connections.md` | V2 | planned | — | — |
+| SCR-M03-08 | **Channel Health** | P0 | 3 | `docs/ux/briefs/SCR-M03-08-channel-health.md` | V2 | planned | — | — |
+| SCR-M03-09 | **Campaign Templates** | P0 | 1 | `docs/ux/briefs/SCR-M03-09-campaign-templates.md` | V2 | planned | — | — |
+| SCR-M03-10 | **Website Enquiry Form** | P0 | 1 | `docs/ux/briefs/SCR-M03-10-website-enquiry-form.md` | V2 | planned | — | — |
 
 ### M04 · Survey
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M04-01 | **Survey Mode Chooser** | P0 | 1 | `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md` | V2 | pending | — | — |
-| SCR-M04-02 | **Remote Survey — Address Entry** | P0 | 3 | `docs/ux/briefs/SCR-M04-02-remote-address-entry.md` | V2 | pending | — | — |
-| SCR-M04-03 | **Remote Roof Review** | P0 | 9 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | pending | — | — |
-| SCR-M04-04 | **Coverage Failure** | P0 | 1 | `docs/ux/briefs/SCR-M04-04-coverage-failure.md` | V2 | pending | — | — |
-| SCR-M04-05 | **Gaps to Fill** | P0 | 4 | `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md` | V2 | pending | — | — |
-| SCR-M04-06 | **My Visits Today** | P0 | 5 | `docs/ux/briefs/SCR-M04-06-my-visits-today.md` | V2 | pending | — | `02-personas:shell-todays-site-visits`; `M13-dashboards-and-reporting:todays-visits` |
-| SCR-M04-07 | **Guided Capture** | P0 | 9 | `docs/ux/briefs/SCR-M04-07-guided-capture.md` | V2 | pending | — | — |
-| SCR-M04-08 | **Shading Capture Sketch** | P0 | 1 | `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md` | V2 | pending | — | — |
-| SCR-M04-09 | **Review & Submit** | P0 | 4 | `docs/ux/briefs/SCR-M04-09-review-submit.md` | V2 | pending | — | — |
-| SCR-M04-10 | **Survey Detail (Hand-off Brief)** | P0 | 5 | `docs/ux/briefs/SCR-M04-10-survey-detail.md` | V2 | pending | — | — |
+| SCR-M04-01 | **Survey Mode Chooser** | P0 | 1 | `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md` | V2 | planned | — | — |
+| SCR-M04-02 | **Remote Survey — Address Entry** | P0 | 3 | `docs/ux/briefs/SCR-M04-02-remote-address-entry.md` | V2 | planned | — | — |
+| SCR-M04-03 | **Remote Roof Review** | P0 | 9 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | planned | — | — |
+| SCR-M04-04 | **Coverage Failure** | P0 | 1 | `docs/ux/briefs/SCR-M04-04-coverage-failure.md` | V2 | planned | — | — |
+| SCR-M04-05 | **Gaps to Fill** | P0 | 4 | `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md` | V2 | planned | — | — |
+| SCR-M04-06 | **My Visits Today** | P0 | 5 | `docs/ux/briefs/SCR-M04-06-my-visits-today.md` | V2 | planned | — | `02-personas:shell-todays-site-visits`; `M13-dashboards-and-reporting:todays-visits` |
+| SCR-M04-07 | **Guided Capture** | P0 | 9 | `docs/ux/briefs/SCR-M04-07-guided-capture.md` | V2 | planned | — | — |
+| SCR-M04-08 | **Shading Capture Sketch** | P0 | 1 | `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md` | V2 | planned | — | — |
+| SCR-M04-09 | **Review & Submit** | P0 | 4 | `docs/ux/briefs/SCR-M04-09-review-submit.md` | V2 | planned | — | — |
+| SCR-M04-10 | **Survey Detail (Hand-off Brief)** | P0 | 5 | `docs/ux/briefs/SCR-M04-10-survey-detail.md` | V2 | planned | — | — |
 
 ### M05 · Design Studio
 
@@ -241,149 +241,149 @@ unchanged); the wizard shows **nine visible steps** and the two numberings are n
 No user-visible "step 5" exists. Each studio brief states its own visible n/9 position;
 a design must never render an internal id as the step indicator.
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-MS-01 | **Design List** | P0 | 8 | `docs/ux/briefs/SCR-MS-01-design-list.md` | V1 | pending | — | `11-shell-and-platform:design-list` |
-| SCR-MS-02 | **Design Queue (Designer Home)** | P0 | 3 | `docs/ux/briefs/SCR-MS-02-design-queue.md` | V1 | pending | — | `02-personas:shell-designs-awaiting-work` |
-| SCR-MS-03 | **Studio Shell (Wizard Frame)** | P0 | 18 | `docs/ux/briefs/SCR-MS-03-studio-shell.md` | V1 | pending | — | `11-shell-and-platform:studio-wizard-frame` |
-| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 28 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | pending | — | `M05-design-studio:step1-site-setup` |
-| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 41 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | pending | — | `M05-design-studio:step2-roof-drawing` |
-| SCR-MS-06 | **Studio Step 3 — Obstructions** | P0 | 35 | `docs/ux/briefs/SCR-MS-06-step3-obstructions.md` | V1 | pending | — | `M05-design-studio:step3-obstructions` |
-| SCR-MS-07 | **Studio Step 4 — Components** | P0 | 33 | `docs/ux/briefs/SCR-MS-07-step4-components.md` | V1 | pending | — | `M05-design-studio:step4-components` |
-| SCR-MS-08 | **Studio Step 6 — Layout Editor** | P0 | 37 | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` | V1 | pending | — | `M05-design-studio:step5-6-panel-layout` |
-| SCR-MS-09 | **Studio 3D Scene** | P0 | 22 | `docs/ux/briefs/SCR-MS-09-3d-scene.md` | V1 | pending | — | `M05-design-studio:3d-view`; `03-step3-obstructions:studio-3d-scene` |
-| SCR-MS-10 | **Studio Step 7 — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` | V1 | pending | — | `M05-design-studio:step7-captures-readiness` |
-| SCR-MS-11 | **Studio Step 8 — SLD & Drawings** | P0 | 28 | `docs/ux/briefs/SCR-MS-11-step8-sld.md` | V1 | pending | — | `M05-design-studio:step8-sld-drawings` |
-| SCR-MS-12 | **Studio Step 9 — Bill of Materials** | P0 | 24 | `docs/ux/briefs/SCR-MS-12-step9-bom.md` | V1 | pending | — | `M05-design-studio:step9-bom-pricing` |
-| SCR-MS-13 | **Studio Done** | P0 | 10 | `docs/ux/briefs/SCR-MS-13-done-step.md` | V1 | pending | — | `M05-design-studio:studio-done` |
-| SCR-MS-14 | **Variant Compare** | P0 | 1 | `docs/ux/briefs/SCR-MS-14-variant-compare.md` | V1 | pending | — | — |
-| SCR-MS-15 | **Sign-off Queue** | P0 | 2 | `docs/ux/briefs/SCR-MS-15-signoff-queue.md` | V1 | pending | — | `M05-design-studio:signoff-queue` |
-| SCR-MS-16 | **Sign-off Review** | P0 | 4 | `docs/ux/briefs/SCR-MS-16-signoff-review.md` | V1 | pending | — | `M05-design-studio:design-review` |
-| SCR-MS-17 | **Installation Work Order** | P0 | 11 | `docs/ux/briefs/SCR-MS-17-installation-work-order.md` | V1 | pending | — | `M05-design-studio:installation-plan` |
-| SCR-MS-18 | **Design System Reference** | P1 | 1 | `docs/ux/briefs/SCR-MS-18-design-system-reference.md` | V1 | pending | — | — |
+| SCR-MS-01 | **Design List** | P0 | 8 | `docs/ux/briefs/SCR-MS-01-design-list.md` | V1 | planned | — | `11-shell-and-platform:design-list` |
+| SCR-MS-02 | **Design Queue (Designer Home)** | P0 | 3 | `docs/ux/briefs/SCR-MS-02-design-queue.md` | V1 | planned | — | `02-personas:shell-designs-awaiting-work` |
+| SCR-MS-03 | **Studio Shell (Wizard Frame)** | P0 | 18 | `docs/ux/briefs/SCR-MS-03-studio-shell.md` | V1 | planned | — | `11-shell-and-platform:studio-wizard-frame` |
+| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 28 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | planned | — | `M05-design-studio:step1-site-setup` |
+| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 41 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | planned | — | `M05-design-studio:step2-roof-drawing` |
+| SCR-MS-06 | **Studio Step 3 — Obstructions** | P0 | 35 | `docs/ux/briefs/SCR-MS-06-step3-obstructions.md` | V1 | planned | — | `M05-design-studio:step3-obstructions` |
+| SCR-MS-07 | **Studio Step 4 — Components** | P0 | 33 | `docs/ux/briefs/SCR-MS-07-step4-components.md` | V1 | planned | — | `M05-design-studio:step4-components` |
+| SCR-MS-08 | **Studio Step 6 — Layout Editor** | P0 | 37 | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` | V1 | planned | — | `M05-design-studio:step5-6-panel-layout` |
+| SCR-MS-09 | **Studio 3D Scene** | P0 | 22 | `docs/ux/briefs/SCR-MS-09-3d-scene.md` | V1 | planned | — | `M05-design-studio:3d-view`; `03-step3-obstructions:studio-3d-scene` |
+| SCR-MS-10 | **Studio Step 7 — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` | V1 | planned | — | `M05-design-studio:step7-captures-readiness` |
+| SCR-MS-11 | **Studio Step 8 — SLD & Drawings** | P0 | 28 | `docs/ux/briefs/SCR-MS-11-step8-sld.md` | V1 | planned | — | `M05-design-studio:step8-sld-drawings` |
+| SCR-MS-12 | **Studio Step 9 — Bill of Materials** | P0 | 24 | `docs/ux/briefs/SCR-MS-12-step9-bom.md` | V1 | planned | — | `M05-design-studio:step9-bom-pricing` |
+| SCR-MS-13 | **Studio Done** | P0 | 10 | `docs/ux/briefs/SCR-MS-13-done-step.md` | V1 | planned | — | `M05-design-studio:studio-done` |
+| SCR-MS-14 | **Variant Compare** | P0 | 1 | `docs/ux/briefs/SCR-MS-14-variant-compare.md` | V1 | planned | — | — |
+| SCR-MS-15 | **Sign-off Queue** | P0 | 2 | `docs/ux/briefs/SCR-MS-15-signoff-queue.md` | V1 | planned | — | `M05-design-studio:signoff-queue` |
+| SCR-MS-16 | **Sign-off Review** | P0 | 4 | `docs/ux/briefs/SCR-MS-16-signoff-review.md` | V1 | planned | — | `M05-design-studio:design-review` |
+| SCR-MS-17 | **Installation Work Order** | P0 | 11 | `docs/ux/briefs/SCR-MS-17-installation-work-order.md` | V1 | planned | — | `M05-design-studio:installation-plan` |
+| SCR-MS-18 | **Design System Reference** | P1 | 1 | `docs/ux/briefs/SCR-MS-18-design-system-reference.md` | V1 | planned | — | — |
 
 ### Customer link (F5)
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-F5-01 | **Customer Link — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-F5-01-link-proposal.md` | V1 | pending | — | `08-customer-surfaces:proposal-share-page` |
-| SCR-F5-02 | **Customer Link — Progress** | P0 | 16 | `docs/ux/briefs/SCR-F5-02-link-progress.md` | V1 | pending | — | `M08-projects:shell-customer-progress-link`; `M11-payments-and-collections:shell-customer-receipts`; `M09-field-workforce:shell-customer-link` |
-| SCR-F5-03 | **Customer Link — Handover Pack** | P0 | 9 | `docs/ux/briefs/SCR-F5-03-link-handover.md` | V1 | pending | — | — |
-| SCR-F5-04 | **Link Failure Page** | P0 | 2 | `docs/ux/briefs/SCR-F5-04-link-failure.md` | V1 | pending | — | — |
-| SCR-F5-05 | **Customer 3D View** | P0 | 2 | `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` | V1 | pending | — | `05-step6-editor:customer-proposal-3d-view` |
+| SCR-F5-01 | **Customer Link — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-F5-01-link-proposal.md` | V1 | planned | — | `08-customer-surfaces:proposal-share-page` |
+| SCR-F5-02 | **Customer Link — Progress** | P0 | 16 | `docs/ux/briefs/SCR-F5-02-link-progress.md` | V1 | planned | — | `M08-projects:shell-customer-progress-link`; `M11-payments-and-collections:shell-customer-receipts`; `M09-field-workforce:shell-customer-link` |
+| SCR-F5-03 | **Customer Link — Handover Pack** | P0 | 9 | `docs/ux/briefs/SCR-F5-03-link-handover.md` | V1 | planned | — | — |
+| SCR-F5-04 | **Link Failure Page** | P0 | 2 | `docs/ux/briefs/SCR-F5-04-link-failure.md` | V1 | planned | — | — |
+| SCR-F5-05 | **Customer 3D View** | P0 | 2 | `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` | V1 | planned | — | `05-step6-editor:customer-proposal-3d-view` |
 
 ### M06 · Proposals
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M06-01 | **Proposal Entry** | P0 | 3 | `docs/ux/briefs/SCR-M06-01-proposal-entry.md` | V1 | pending | — | — |
-| SCR-M06-02 | **Proposal Builder** | P0 | 5 | `docs/ux/briefs/SCR-M06-02-proposal-builder.md` | V1 | pending | — | — |
-| SCR-M06-03 | **Builder Step 1 — Company** | P0 | 2 | `docs/ux/briefs/SCR-M06-03-builder-step-1-company.md` | V1 | pending | — | — |
-| SCR-M06-04 | **Builder Step 2 — Achievements** | P0 | 1 | `docs/ux/briefs/SCR-M06-04-builder-step-2-achievements.md` | V1 | pending | — | — |
-| SCR-M06-05 | **Builder Step 3 — Solar System Setup** | P0 | 4 | `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md` | V1 | pending | — | — |
-| SCR-M06-06 | **Builder Step 4 — Performance Metrics** | P0 | 1 | `docs/ux/briefs/SCR-M06-06-builder-step-4-performance.md` | V1 | pending | — | — |
-| SCR-M06-07 | **Builder Step 5 — Financial Data** | P0 | 1 | `docs/ux/briefs/SCR-M06-07-builder-step-5-financial.md` | V1 | pending | — | — |
-| SCR-M06-08 | **Builder Step 6 — Project Timeline** | P0 | 1 | `docs/ux/briefs/SCR-M06-08-builder-step-6-timeline.md` | V1 | pending | — | — |
-| SCR-M06-09 | **Builder Step 7 — Payment Terms** | P0 | 1 | `docs/ux/briefs/SCR-M06-09-builder-step-7-payment-terms.md` | V1 | pending | — | — |
-| SCR-M06-10 | **Builder Step 8 — Components** | P0 | 5 | `docs/ux/briefs/SCR-M06-10-builder-step-8-components.md` | V1 | pending | — | — |
-| SCR-M06-11 | **Builder Step 9 — Terms & Conditions** | P0 | 1 | `docs/ux/briefs/SCR-M06-11-builder-step-9-terms.md` | V1 | pending | — | — |
-| SCR-M06-12 | **Builder Step 10 — Client Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-12-builder-step-10-client-details.md` | V1 | pending | — | — |
-| SCR-M06-13 | **Builder Step 11 — Bank Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-13-builder-step-11-bank-details.md` | V1 | pending | — | — |
-| SCR-M06-14 | **BOM Detail** | P0 | 1 | `docs/ux/briefs/SCR-M06-14-bom-detail.md` | V1 | pending | — | — |
-| SCR-M06-15 | **Proposal Preview** | P0 | 1 | `docs/ux/briefs/SCR-M06-15-proposal-preview.md` | V1 | pending | — | — |
-| SCR-M06-16 | **Proposal Versions** | P0 | 1 | `docs/ux/briefs/SCR-M06-16-proposal-versions.md` | V1 | pending | — | — |
-| SCR-M06-17 | **Proposal Document** | P0 | 20 | `docs/ux/briefs/SCR-M06-17-proposal-document.md` | V1 | pending | — | `08-customer-surfaces:proposal-document` |
-| SCR-M06-18 | **Proposal Detail** | P0 | 6 | `docs/ux/briefs/SCR-M06-18-proposal-detail.md` | V1 | pending | — | — |
-| SCR-M06-19 | **Proposal List** | P0 | 2 | `docs/ux/briefs/SCR-M06-19-proposal-list.md` | V1 | pending | — | — |
-| SCR-M06-20 | **Deal Link Manager** | P0 | 1 | `docs/ux/briefs/SCR-M06-20-deal-link-manager.md` | V1 | pending | — | — |
+| SCR-M06-01 | **Proposal Entry** | P0 | 3 | `docs/ux/briefs/SCR-M06-01-proposal-entry.md` | V1 | planned | — | — |
+| SCR-M06-02 | **Proposal Builder** | P0 | 5 | `docs/ux/briefs/SCR-M06-02-proposal-builder.md` | V1 | planned | — | — |
+| SCR-M06-03 | **Builder Step 1 — Company** | P0 | 2 | `docs/ux/briefs/SCR-M06-03-builder-step-1-company.md` | V1 | planned | — | — |
+| SCR-M06-04 | **Builder Step 2 — Achievements** | P0 | 1 | `docs/ux/briefs/SCR-M06-04-builder-step-2-achievements.md` | V1 | planned | — | — |
+| SCR-M06-05 | **Builder Step 3 — Solar System Setup** | P0 | 4 | `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md` | V1 | planned | — | — |
+| SCR-M06-06 | **Builder Step 4 — Performance Metrics** | P0 | 1 | `docs/ux/briefs/SCR-M06-06-builder-step-4-performance.md` | V1 | planned | — | — |
+| SCR-M06-07 | **Builder Step 5 — Financial Data** | P0 | 1 | `docs/ux/briefs/SCR-M06-07-builder-step-5-financial.md` | V1 | planned | — | — |
+| SCR-M06-08 | **Builder Step 6 — Project Timeline** | P0 | 1 | `docs/ux/briefs/SCR-M06-08-builder-step-6-timeline.md` | V1 | planned | — | — |
+| SCR-M06-09 | **Builder Step 7 — Payment Terms** | P0 | 1 | `docs/ux/briefs/SCR-M06-09-builder-step-7-payment-terms.md` | V1 | planned | — | — |
+| SCR-M06-10 | **Builder Step 8 — Components** | P0 | 5 | `docs/ux/briefs/SCR-M06-10-builder-step-8-components.md` | V1 | planned | — | — |
+| SCR-M06-11 | **Builder Step 9 — Terms & Conditions** | P0 | 1 | `docs/ux/briefs/SCR-M06-11-builder-step-9-terms.md` | V1 | planned | — | — |
+| SCR-M06-12 | **Builder Step 10 — Client Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-12-builder-step-10-client-details.md` | V1 | planned | — | — |
+| SCR-M06-13 | **Builder Step 11 — Bank Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-13-builder-step-11-bank-details.md` | V1 | planned | — | — |
+| SCR-M06-14 | **BOM Detail** | P0 | 1 | `docs/ux/briefs/SCR-M06-14-bom-detail.md` | V1 | planned | — | — |
+| SCR-M06-15 | **Proposal Preview** | P0 | 1 | `docs/ux/briefs/SCR-M06-15-proposal-preview.md` | V1 | planned | — | — |
+| SCR-M06-16 | **Proposal Versions** | P0 | 1 | `docs/ux/briefs/SCR-M06-16-proposal-versions.md` | V1 | planned | — | — |
+| SCR-M06-17 | **Proposal Document** | P0 | 20 | `docs/ux/briefs/SCR-M06-17-proposal-document.md` | V1 | planned | — | `08-customer-surfaces:proposal-document` |
+| SCR-M06-18 | **Proposal Detail** | P0 | 6 | `docs/ux/briefs/SCR-M06-18-proposal-detail.md` | V1 | planned | — | — |
+| SCR-M06-19 | **Proposal List** | P0 | 2 | `docs/ux/briefs/SCR-M06-19-proposal-list.md` | V1 | planned | — | — |
+| SCR-M06-20 | **Deal Link Manager** | P0 | 1 | `docs/ux/briefs/SCR-M06-20-deal-link-manager.md` | V1 | planned | — | — |
 
 ### M07 · Sales execution
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M07-01 | **My Day** | P0 | 7 | `docs/ux/briefs/SCR-M07-01-my-day.md` | V1 | pending | — | `02-personas:shell-my-day`; `M13-dashboards-and-reporting:my-day` |
-| SCR-M07-02 | **Mark Won** | P0 | 1 | `docs/ux/briefs/SCR-M07-02-mark-won.md` | V1 | pending | — | — |
-| SCR-M07-03 | **Mark Lost** | P0 | 1 | `docs/ux/briefs/SCR-M07-03-mark-lost.md` | V1 | pending | — | — |
-| SCR-M07-04 | **Reopen Lead** | P0 | 1 | `docs/ux/briefs/SCR-M07-04-reopen-lead.md` | V1 | pending | — | — |
-| SCR-M07-05 | **Agent Setup & Settings** | P0 | 7 | `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md` | V1 | pending | — | `M01-onboarding-and-tenant-config:shell-agent-voice-settings` |
-| SCR-M07-06 | **Calling Window** | P0 | 1 | `docs/ux/briefs/SCR-M07-06-calling-window.md` | V1 | pending | — | — |
-| SCR-M07-07 | **Test Agent** | P0 | 1 | `docs/ux/briefs/SCR-M07-07-test-agent.md` | V2 | pending | — | — |
-| SCR-M07-08 | **Agent Config History** | P0 | 1 | `docs/ux/briefs/SCR-M07-08-agent-config-history.md` | V2 | pending | — | — |
-| SCR-M07-09 | **Knowledge Base** | P0 | 3 | `docs/ux/briefs/SCR-M07-09-knowledge-base.md` | V1 | pending | — | — |
-| SCR-M07-10 | **Unanswered Questions** | P0 | 3 | `docs/ux/briefs/SCR-M07-10-unanswered-questions.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-unanswered-questions` |
-| SCR-M07-11 | **Corrections Review Queue** | P0 | 1 | `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md` | V2 | pending | — | — |
-| SCR-M07-12 | **Agent Call Queue** | P0 | 5 | `docs/ux/briefs/SCR-M07-12-agent-call-queue.md` | V1 | pending | — | — |
-| SCR-M07-13 | **Call Record Detail** | P0 | 2 | `docs/ux/briefs/SCR-M07-13-call-record-detail.md` | V1 | pending | — | — |
-| SCR-M07-14 | **Escalations** | P0 | 1 | `docs/ux/briefs/SCR-M07-14-escalations.md` | V1 | pending | — | — |
-| SCR-M07-15 | **Routing Rules Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md` | V2 | pending | — | — |
-| SCR-M07-16 | **IVR Flow Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md` | V2 | pending | — | — |
-| SCR-M07-17 | **Number Provisioning Wizard** | P0 | 3 | `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md` | V2 | pending | — | — |
-| SCR-M07-18 | **Agent Performance** | P0 | 8 | `docs/ux/briefs/SCR-M07-18-agent-performance.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-performance-dashboard`; `M13-dashboards-and-reporting:agent-per-rep-view` |
-| SCR-M07-19 | **Call Log** | P0 | 2 | `docs/ux/briefs/SCR-M07-19-call-log.md` | V1 | pending | — | `M13-dashboards-and-reporting:agent-call-log` |
-| SCR-M07-20 | **Agent Usage** | P0 | 2 | `docs/ux/briefs/SCR-M07-20-agent-usage.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-usage-report` |
+| SCR-M07-01 | **My Day** | P0 | 7 | `docs/ux/briefs/SCR-M07-01-my-day.md` | V1 | planned | — | `02-personas:shell-my-day`; `M13-dashboards-and-reporting:my-day` |
+| SCR-M07-02 | **Mark Won** | P0 | 1 | `docs/ux/briefs/SCR-M07-02-mark-won.md` | V1 | planned | — | — |
+| SCR-M07-03 | **Mark Lost** | P0 | 1 | `docs/ux/briefs/SCR-M07-03-mark-lost.md` | V1 | planned | — | — |
+| SCR-M07-04 | **Reopen Lead** | P0 | 1 | `docs/ux/briefs/SCR-M07-04-reopen-lead.md` | V1 | planned | — | — |
+| SCR-M07-05 | **Agent Setup & Settings** | P0 | 7 | `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md` | V1 | planned | — | `M01-onboarding-and-tenant-config:shell-agent-voice-settings` |
+| SCR-M07-06 | **Calling Window** | P0 | 1 | `docs/ux/briefs/SCR-M07-06-calling-window.md` | V1 | planned | — | — |
+| SCR-M07-07 | **Test Agent** | P0 | 1 | `docs/ux/briefs/SCR-M07-07-test-agent.md` | V2 | planned | — | — |
+| SCR-M07-08 | **Agent Config History** | P0 | 1 | `docs/ux/briefs/SCR-M07-08-agent-config-history.md` | V2 | planned | — | — |
+| SCR-M07-09 | **Knowledge Base** | P0 | 3 | `docs/ux/briefs/SCR-M07-09-knowledge-base.md` | V1 | planned | — | — |
+| SCR-M07-10 | **Unanswered Questions** | P0 | 3 | `docs/ux/briefs/SCR-M07-10-unanswered-questions.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-unanswered-questions` |
+| SCR-M07-11 | **Corrections Review Queue** | P0 | 1 | `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md` | V2 | planned | — | — |
+| SCR-M07-12 | **Agent Call Queue** | P0 | 5 | `docs/ux/briefs/SCR-M07-12-agent-call-queue.md` | V1 | planned | — | — |
+| SCR-M07-13 | **Call Record Detail** | P0 | 2 | `docs/ux/briefs/SCR-M07-13-call-record-detail.md` | V1 | planned | — | — |
+| SCR-M07-14 | **Escalations** | P0 | 1 | `docs/ux/briefs/SCR-M07-14-escalations.md` | V1 | planned | — | — |
+| SCR-M07-15 | **Routing Rules Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md` | V2 | planned | — | — |
+| SCR-M07-16 | **IVR Flow Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md` | V2 | planned | — | — |
+| SCR-M07-17 | **Number Provisioning Wizard** | P0 | 3 | `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md` | V2 | planned | — | — |
+| SCR-M07-18 | **Agent Performance** | P0 | 8 | `docs/ux/briefs/SCR-M07-18-agent-performance.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-performance-dashboard`; `M13-dashboards-and-reporting:agent-per-rep-view` |
+| SCR-M07-19 | **Call Log** | P0 | 2 | `docs/ux/briefs/SCR-M07-19-call-log.md` | V1 | planned | — | `M13-dashboards-and-reporting:agent-call-log` |
+| SCR-M07-20 | **Agent Usage** | P0 | 2 | `docs/ux/briefs/SCR-M07-20-agent-usage.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-usage-report` |
 
 ### M08 · Projects
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | pending | — | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` |
-| SCR-M08-02 | **Project Detail** | P0 | 7 | `docs/ux/briefs/SCR-M08-02-project-detail.md` | V1 | pending | — | `M11-payments-and-collections:shell-project-money-block` |
-| SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | pending | — | — |
-| SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | pending | — | `F2-roles-and-permissions:installation-checklist` |
-| SCR-M08-05 | **Installer Job Home** | P0 | 3 | `docs/ux/briefs/SCR-M08-05-installer-job-home.md` | V1 | pending | — | `02-personas:shell-todays-installation`; `M13-dashboards-and-reporting:todays-installation` |
-| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | pending | — | — |
+| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | planned | — | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` |
+| SCR-M08-02 | **Project Detail** | P0 | 7 | `docs/ux/briefs/SCR-M08-02-project-detail.md` | V1 | planned | — | `M11-payments-and-collections:shell-project-money-block` |
+| SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | planned | — | — |
+| SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | planned | — | `F2-roles-and-permissions:installation-checklist` |
+| SCR-M08-05 | **Installer Job Home** | P0 | 3 | `docs/ux/briefs/SCR-M08-05-installer-job-home.md` | V1 | planned | — | `02-personas:shell-todays-installation`; `M13-dashboards-and-reporting:todays-installation` |
+| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | planned | — | — |
 
 ### M09 · Field workforce
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M09-01 | **Tracking Settings** | P0 | 7 | `docs/ux/briefs/SCR-M09-01-tracking-settings.md` | V2 | pending | — | — |
-| SCR-M09-02 | **My Day (Route)** | P0 | 15 | `docs/ux/briefs/SCR-M09-02-my-day-route.md` | V2 | pending | — | `02-personas:shell-my-route-today`; `M13-dashboards-and-reporting:todays-route` |
-| SCR-M09-03 | **Visit Stop Detail** | P0 | 2 | `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md` | V2 | pending | — | — |
-| SCR-M09-04 | **Team Field Day** | P0 | 6 | `docs/ux/briefs/SCR-M09-04-team-field-day.md` | V2 | pending | — | — |
-| SCR-M09-05 | **Activity Timeline** | P0 | 4 | `docs/ux/briefs/SCR-M09-05-activity-timeline.md` | V2 | pending | — | — |
-| SCR-M09-06 | **Day Playback** | P0 | 2 | `docs/ux/briefs/SCR-M09-06-day-playback.md` | V2 | pending | — | — |
-| SCR-M09-07 | **Site Geofence** | P0 | 2 | `docs/ux/briefs/SCR-M09-07-site-geofence.md` | V2 | pending | — | — |
+| SCR-M09-01 | **Tracking Settings** | P0 | 7 | `docs/ux/briefs/SCR-M09-01-tracking-settings.md` | V2 | planned | — | — |
+| SCR-M09-02 | **My Day (Route)** | P0 | 15 | `docs/ux/briefs/SCR-M09-02-my-day-route.md` | V2 | planned | — | `02-personas:shell-my-route-today`; `M13-dashboards-and-reporting:todays-route` |
+| SCR-M09-03 | **Visit Stop Detail** | P0 | 2 | `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md` | V2 | planned | — | — |
+| SCR-M09-04 | **Team Field Day** | P0 | 6 | `docs/ux/briefs/SCR-M09-04-team-field-day.md` | V2 | planned | — | — |
+| SCR-M09-05 | **Activity Timeline** | P0 | 4 | `docs/ux/briefs/SCR-M09-05-activity-timeline.md` | V2 | planned | — | — |
+| SCR-M09-06 | **Day Playback** | P0 | 2 | `docs/ux/briefs/SCR-M09-06-day-playback.md` | V2 | planned | — | — |
+| SCR-M09-07 | **Site Geofence** | P0 | 2 | `docs/ux/briefs/SCR-M09-07-site-geofence.md` | V2 | planned | — | — |
 
 ### M10 · HR lite
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M10-01 | **People Today Queue** | P0 | 10 | `docs/ux/briefs/SCR-M10-01-people-today-queue.md` | V2 | pending | — | `02-personas:shell-people-today`; `M13-dashboards-and-reporting:people-today-home` |
-| SCR-M10-02 | **People List** | P0 | 3 | `docs/ux/briefs/SCR-M10-02-people-list.md` | V2 | pending | — | — |
-| SCR-M10-03 | **Employee Record** | P0 | 5 | `docs/ux/briefs/SCR-M10-03-employee-record.md` | V2 | pending | — | — |
-| SCR-M10-04 | **Offboard Sweep** | P0 | 4 | `docs/ux/briefs/SCR-M10-04-offboard-sweep.md` | V2 | pending | — | — |
-| SCR-M10-05 | **Attendance Register** | P0 | 4 | `docs/ux/briefs/SCR-M10-05-attendance-register.md` | V2 | pending | — | — |
-| SCR-M10-06 | **Leave Request** | P0 | 1 | `docs/ux/briefs/SCR-M10-06-leave-request.md` | V2 | pending | — | — |
-| SCR-M10-07 | **Team Structure** | P0 | 1 | `docs/ux/briefs/SCR-M10-07-team-structure.md` | V2 | pending | — | — |
+| SCR-M10-01 | **People Today Queue** | P0 | 10 | `docs/ux/briefs/SCR-M10-01-people-today-queue.md` | V2 | planned | — | `02-personas:shell-people-today`; `M13-dashboards-and-reporting:people-today-home` |
+| SCR-M10-02 | **People List** | P0 | 3 | `docs/ux/briefs/SCR-M10-02-people-list.md` | V2 | planned | — | — |
+| SCR-M10-03 | **Employee Record** | P0 | 5 | `docs/ux/briefs/SCR-M10-03-employee-record.md` | V2 | planned | — | — |
+| SCR-M10-04 | **Offboard Sweep** | P0 | 4 | `docs/ux/briefs/SCR-M10-04-offboard-sweep.md` | V2 | planned | — | — |
+| SCR-M10-05 | **Attendance Register** | P0 | 4 | `docs/ux/briefs/SCR-M10-05-attendance-register.md` | V2 | planned | — | — |
+| SCR-M10-06 | **Leave Request** | P0 | 1 | `docs/ux/briefs/SCR-M10-06-leave-request.md` | V2 | planned | — | — |
+| SCR-M10-07 | **Team Structure** | P0 | 1 | `docs/ux/briefs/SCR-M10-07-team-structure.md` | V2 | planned | — | — |
 
 ### M11 · Payments & collections
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | pending | — | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` |
-| SCR-M11-02 | **Payments Ledger** | P0 | 15 | `docs/ux/briefs/SCR-M11-02-payments-ledger.md` | V1 | pending | — | `M08-projects:shell-payments-screen` |
-| SCR-M11-03 | **Record Payment** | P0 | 7 | `docs/ux/briefs/SCR-M11-03-record-payment.md` | V1 | pending | — | — |
-| SCR-M11-04 | **Collections Settings** | P0 | 2 | `docs/ux/briefs/SCR-M11-04-collections-settings.md` | V1 | pending | — | — |
+| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | planned | — | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` |
+| SCR-M11-02 | **Payments Ledger** | P0 | 15 | `docs/ux/briefs/SCR-M11-02-payments-ledger.md` | V1 | planned | — | `M08-projects:shell-payments-screen` |
+| SCR-M11-03 | **Record Payment** | P0 | 7 | `docs/ux/briefs/SCR-M11-03-record-payment.md` | V1 | planned | — | — |
+| SCR-M11-04 | **Collections Settings** | P0 | 2 | `docs/ux/briefs/SCR-M11-04-collections-settings.md` | V1 | planned | — | — |
 
 ### M12 · Platform billing
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M12-01 | **Pricing Page** | P0 | 2 | `docs/ux/briefs/SCR-M12-01-pricing-page.md` | V1 | pending | — | — |
-| SCR-M12-02 | **Billing Home** | P0 | 6 | `docs/ux/briefs/SCR-M12-02-billing-home.md` | V1 | pending | — | `04-business-model:shell-billing` |
-| SCR-M12-03 | **Plan Selection & Conversion** | P0 | 5 | `docs/ux/briefs/SCR-M12-03-plan-selection.md` | V1 | pending | — | — |
-| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | pending | — | `04-business-model:shell-usage-screen` |
+| SCR-M12-01 | **Pricing Page** | P0 | 2 | `docs/ux/briefs/SCR-M12-01-pricing-page.md` | V1 | planned | — | — |
+| SCR-M12-02 | **Billing Home** | P0 | 6 | `docs/ux/briefs/SCR-M12-02-billing-home.md` | V1 | planned | — | `04-business-model:shell-billing` |
+| SCR-M12-03 | **Plan Selection & Conversion** | P0 | 5 | `docs/ux/briefs/SCR-M12-03-plan-selection.md` | V1 | planned | — | — |
+| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | planned | — | `04-business-model:shell-usage-screen` |
 
 ### M13 · Dashboards & reporting
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M13-01 | **Owner Dashboard** | P0 | 11 | `docs/ux/briefs/SCR-M13-01-owner-dashboard.md` | V1 | pending | — | — |
-| SCR-M13-02 | **Pipeline Dashboard (Rep's own step-back)** | P0 | 1 | `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` | V2 | pending | — | `02-personas:shell-pipeline-dashboard` |
-| SCR-M13-03 | **Operations Home** | P0 | 4 | `docs/ux/briefs/SCR-M13-03-operations-home.md` | V2 | pending | — | `02-personas:shell-blockers-by-party` |
-| SCR-M13-04 | **Pipeline Funnel** | P0 | 3 | `docs/ux/briefs/SCR-M13-04-pipeline-funnel.md` | V2 | pending | — | — |
-| SCR-M13-05 | **Win/Loss Analytics** | P0 | 2 | `docs/ux/briefs/SCR-M13-05-win-loss-analytics.md` | V2 | pending | — | — |
+| SCR-M13-01 | **Owner Dashboard** | P0 | 11 | `docs/ux/briefs/SCR-M13-01-owner-dashboard.md` | V1 | planned | — | — |
+| SCR-M13-02 | **Pipeline Dashboard (Rep's own step-back)** | P0 | 1 | `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` | V2 | planned | — | `02-personas:shell-pipeline-dashboard` |
+| SCR-M13-03 | **Operations Home** | P0 | 4 | `docs/ux/briefs/SCR-M13-03-operations-home.md` | V2 | planned | — | `02-personas:shell-blockers-by-party` |
+| SCR-M13-04 | **Pipeline Funnel** | P0 | 3 | `docs/ux/briefs/SCR-M13-04-pipeline-funnel.md` | V2 | planned | — | — |
+| SCR-M13-05 | **Win/Loss Analytics** | P0 | 2 | `docs/ux/briefs/SCR-M13-05-win-loss-analytics.md` | V2 | planned | — | — |
 
 ## 3. Row disposition — every requirement, where it lands
 
@@ -444,7 +444,7 @@ question that records it and does **not** invent a replacement.
 | OV-36 | P0 | policy | policy | LAW |
 | OV-37 | P0 | context | context → M07-sales-execution, F1-global-market-framework | realized-by: `docs/prd/modules/M07-sales-execution.md`, `docs/prd/foundations/F1-global-market-framework.md` |
 | OV-38 | P0 | context | context → F8-data-honesty | realized-by: `docs/prd/foundations/F8-data-honesty.md` |
-| ~~OV-39~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the competitive-moat claim — offline field capture of surveys and photographs — struck by the owner in the same ruling as `BM-05`'s public pricing-page feature line, "because a product that requires a connection cannot advertise an offline field app". Nothing live restates it, and nothing should: the residue — photographs held on the device until they upload (`F4-21` / `M04-55`) — is a recovery guarantee, not a differentiator. The moat table's other five entries (`OV-37`, `OV-38`, `OV-40`, `OV-41`, `OV-42`) are untouched and keep their numbering.* | — |
+| ~~OV-39~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the competitive-moat claim — offline field capture of surveys and photographs — struck by the owner in the same ruling as `BM-05`'s public pricing-page feature line, "because a product that requires a connection cannot advertise an offline field app". Nothing live restates it, and nothing should: the residue — photographs held on the device until they upload (`F4-21` / `M04-55`) — is a recovery guarantee, not a differentiator. The moat table's other five entries (`OV-37`, `OV-38`, `OV-40`, `OV-41`, `OV-42`) are untouched and keep their numbering.* | — |
 | OV-40 | P0 | context | context → F3-localization, F7-design-language, F1 (grouping) | realized-by: `docs/prd/foundations/F3-localization.md`, `docs/prd/foundations/F7-design-language.md`, `docs/prd/foundations/F1-global-market-framework.md` (grouping) |
 | OV-41 | P0 | context | context → M01-onboarding-and-tenant-config | realized-by: `docs/prd/modules/M01-onboarding-and-tenant-config.md` |
 | OV-42 | P0 | context | context → 04-business-model.md | realized-by: `docs/prd/04-business-model.md` |
@@ -478,7 +478,7 @@ question that records it and does **not** invent a replacement.
 | PS-21 | P0 | screen | SCR-M08-01 | T-M08-001 |
 | PS-22 | P0 | context | context → F2 §Field Technician; M09-field-workforce | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Field Technician · `docs/prd/modules/M09-field-workforce.md` |
 | PS-23 | P1 | screen | SCR-M09-02 | T-M09-002 |
-| ~~PS-24~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`) — swept for the company it kept rather than for what it said, and `docs/prd/02-personas.md` carries no strike note where it stood, between the surviving `PS-23` and `PS-25`. The Field Technician platform law it held, "mobile sessions are long-lived", was never a connectivity rule and is live with a concrete value at `M01-07`, built by `T-M01-025` (recorded in `docs/tasks/F-core.md`). Nothing is re-instated here.* | — |
+| ~~PS-24~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling) — swept for the company it kept rather than for what it said, and `docs/prd/02-personas.md` carries no strike note where it stood, between the surviving `PS-23` and `PS-25`. The Field Technician platform law it held, "mobile sessions are long-lived", was never a connectivity rule and is live with a concrete value at `M01-07`, built by `T-M01-025` (recorded in `docs/tasks/F-core.md`). Nothing is re-instated here.* | — |
 | PS-25 | P0 | context | context → F2 §Installation Team Member; M08-projects | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Installation Team Member · `docs/prd/modules/M08-projects.md` |
 | PS-26 | P1 | screen | SCR-M08-05 | T-M08-005 |
 | PS-27 | P0 | policy | policy | LAW |
@@ -680,7 +680,7 @@ question that records it and does **not** invent a replacement.
 ### docs/prd/foundations/F4-data-integrity.md
 
 *This section was `docs/prd/foundations/F4-offline-and-sync.md`'s. That document was deleted whole
-2026-08-07 by owner ruling `Q61` and replaced by `F4-data-integrity.md`, which keeps ten of its 35
+2026-08-07 by owner ruling and replaced by `F4-data-integrity.md`, which keeps ten of its 35
 rows — the ones that were never about connectivity — with their original ids. **The other 25 rows
 (`F4-01`–`F4-03`, `F4-05`, `F4-06`, `F4-08`–`F4-13`, `F4-18`, `F4-20`, `F4-22`–`F4-24`, `F4-26`,
 `F4-28`–`F4-35`) are struck, not removed.** They had been dropped from this register outright,
@@ -688,50 +688,50 @@ which is the one thing it may never do; they were restored as struck rows 2026-0
 under this heading, so that all 35 ids of the deleted document are accounted for here exactly once
 and forever. **Restoring them changes no count in §1 or §4** — a struck row is not a live
 requirement and claims no build obligation — but it did raise §3's own total from 1,674 rows to
-1,699 and this register's struck total from 18 to **43**. *(§3's total moved once more the same day, to **1,702**, when the three rows ruled at `Q62`–`Q64` were added as live dispositions; the struck total is unchanged at 43. §4 carries the current figures.)* Where each row's law went is recorded
+1,699 and this register's struck total from 18 to **43**. *(§3's total moved once more the same day, to **1,702**, when the three rows the owner restored by ruling were added as live dispositions; the struck total is unchanged at 43. §4 carries the current figures.)* Where each row's law went is recorded
 key-by-key in the retired traceability register's Task 10 block and is summarised in its note below; two
-of them left holes that are open owner questions rather than losses to absorb — `F4-35` is `Q65` (a
-client too old to talk to the server) and `F4-32` is `Q66` (a shared field phone holding another
-user's unuploaded photographs) — and those two cite the question rather than naming a carrier.
+of them left holes the owner later ruled on rather than losses to absorb — `F4-35` (a client too
+old to talk to the server) is answered by `F4-36`, and `F4-32` (a shared field phone holding another
+user's unuploaded photographs) by `F4-37` — and those two rows name the ruling that answered them.
 Nothing below is renumbered.*
 
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
-| ~~F4-01~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the three-term vocabulary — offline-full, online-only, degraded reads — that named the sets `R14`'s offline-scope boundary was drawn between. `Q61` overrode `R14` wholesale, so there is no boundary left to have a vocabulary for: the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble) and losing it is an ordinary network error. `DOC06.online-only-set` is SUPERSEDED in the retired traceability register's Task 10 block, not excluded, because the ruling absorbed the set rather than declaring it a non-goal. `docs/ux/briefs/SCR-M01-01-sign-in.md` dropped the OTP connectivity contract stated in this row's vocabulary in the same sweep.* | — |
-| ~~F4-02~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It quoted `DOC06.reads-local` verbatim — "Reads are local, always", every synced entity served from an on-device store — which is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "The product does not read from a cache"). **Nothing live carries a local read**, and none is needed: every read is a server read. The one clause of its neighbourhood with independent life, no spinner wall and no pre-emptively disabled primary action, is live at `F4-27` under `DOC06.sync-status-ux`, and is not claimed here. `docs/tasks/F-platform.md` `T-FPLAT-011` lost "the local-first core" from its title for the same reason.* | — |
-| ~~F4-03~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the durable device write queue for offline mutations — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "does not queue mutations"), and `M04-55` now rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else". The half of `DOC06.writes-queued` that survives — the server is the only writer of record — is stated at live `F4-04`, and the never-silently-drop guarantee it neighboured is live at `F4-21`; neither is claimed as this row's carrier. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped the `Offline` base state this row supported.* | — |
+| ~~F4-01~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the three-term vocabulary — offline-full, online-only, degraded reads — that named the sets `R14`'s offline-scope boundary was drawn between. The ruling overrode `R14` wholesale, so there is no boundary left to have a vocabulary for: the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble) and losing it is an ordinary network error. `DOC06.online-only-set` is SUPERSEDED in the retired traceability register's Task 10 block, not excluded, because the ruling absorbed the set rather than declaring it a non-goal. `docs/ux/briefs/SCR-M01-01-sign-in.md` dropped the OTP connectivity contract stated in this row's vocabulary in the same sweep.* | — |
+| ~~F4-02~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It quoted `DOC06.reads-local` verbatim — "Reads are local, always", every synced entity served from an on-device store — which is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "The product does not read from a cache"). **Nothing live carries a local read**, and none is needed: every read is a server read. The one clause of its neighbourhood with independent life, no spinner wall and no pre-emptively disabled primary action, is live at `F4-27` under `DOC06.sync-status-ux`, and is not claimed here. `docs/tasks/F-platform.md` `T-FPLAT-011` lost "the local-first core" from its title for the same reason.* | — |
+| ~~F4-03~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the durable device write queue for offline mutations — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1: "does not queue mutations"), and `M04-55` now rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else". The half of `DOC06.writes-queued` that survives — the server is the only writer of record — is stated at live `F4-04`, and the never-silently-drop guarantee it neighboured is live at `F4-21`; neither is claimed as this row's carrier. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped the `Offline` base state this row supported.* | — |
 | F4-04 | P0 | policy | policy | T-FPLAT-011 |
-| ~~F4-05~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It is the one id of these 25 whose content this register cannot state: no source key in the retired traceability register's Task 10 block names it, no live row cites it, no brief or task note mentions it, and the deleted document was its only record — a grep of the suite for `F4-05` returns nothing outside this register. It is struck here so the id is accounted for rather than silently absent. Nothing is re-instated, no carrier is claimed, and this is **not** one of `Q62`–`Q66`: an unrecoverable row text is a records gap, not an open product question.* | — |
-| ~~F4-06~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It carried the online-first-is-a-move-in-TIME-only half of `DOC06.online-first-until-offline` and of `OD-10 · studio-and-offline-last` — deferring offline was "never a reduction in scope or quality", with online-first an interim state qualifying `R14`'s boundary. `Q61` falsified both clauses at once: the move was in scope, permanently, and there is no target-state boundary left to be interim to, so `OD-10 · studio-and-offline-last` takes the SUPERSEDED mark in the Task 10 block. *(Corrected 2026-08-15: this read "both keys take the SUPERSEDED mark". `DOC06.online-first-until-offline` is dispositioned **live** at `F4-07` — which is what the next clause says — because the write-model guarantees it carried never depended on the offline layer arriving.)* The two guarantees the source tied to the **write model** rather than to connectivity — versioned-append surveys, idempotent submission — are live and unchanged at `F4-07`.* | — |
+| ~~F4-05~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It is the one id of these 25 whose content this register cannot state: no source key in the retired traceability register's Task 10 block names it, no live row cites it, no brief or task note mentions it, and the deleted document was its only record — a grep of the suite for `F4-05` returns nothing outside this register. It is struck here so the id is accounted for rather than silently absent. Nothing is re-instated, no carrier is claimed, and this is **not** one of the five holes the sweep left for owner ruling (now `M02-66`, `M02-67`, `M09-71`, `F4-36`, `F4-37`): an unrecoverable row text is a records gap, not a product question.* | — |
+| ~~F4-06~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It carried the online-first-is-a-move-in-TIME-only half of `DOC06.online-first-until-offline` and of `OD-10 · studio-and-offline-last` — deferring offline was "never a reduction in scope or quality", with online-first an interim state qualifying `R14`'s boundary. The ruling falsified both clauses at once: the move was in scope, permanently, and there is no target-state boundary left to be interim to, so `OD-10 · studio-and-offline-last` takes the SUPERSEDED mark in the Task 10 block. *(Corrected 2026-08-15: this read "both keys take the SUPERSEDED mark". `DOC06.online-first-until-offline` is dispositioned **live** at `F4-07` — which is what the next clause says — because the write-model guarantees it carried never depended on the offline layer arriving.)* The two guarantees the source tied to the **write model** rather than to connectivity — versioned-append surveys, idempotent submission — are live and unchanged at `F4-07`.* | — |
 | F4-07 | P0 | policy | policy | T-FPLAT-011 |
-| ~~F4-08~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the eight-capability **offline-full set** and its table — survey capture, survey photos, quick-add lead, activity/visit logging, task ticks, My Day and the read cache — which is exactly the capability the ruling removed; the cache and the mutation queue are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). **Exactly one of the eight survives, and only as the carve-out:** field photographs held on the device until they upload (`F4-21` / `M04-55`), status on `SCR-M04-07` only. Rows that consumed this table by row number — `M09-20`, `M02-22` — are struck in their own sections, and the briefs that cited it (`SCR-M02-01`, `SCR-M02-04`) dropped the state.* | — |
-| ~~F4-09~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the nine-capability **online-only set** and its table, which existed only as the contrast half of `R14`'s boundary; `Q61` made the whole product online-only, so the set has nothing to contrast with and `DOC06.online-only-set` is SUPERSEDED rather than excluded. Its two named instances are separately live on their own merits and are **not** this row's carriers: money mutations are online-only and refused, never queued (`M11-06`), and design saves take a server version check (`M05-09` / `F4-15`). Struck `M02-22` was the row that placed lead import on this table.* | — |
-| ~~F4-10~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the stale-read law — a read served from cache says so, behind a staleness banner — and both halves are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 "does not read from a cache", bullet 2 "no staleness or freshness banner"). The money half it pointed at deleted `F8-16` is not lost: it is `F8-12`'s law, "money must never render as final while stale", carried at `M06-41`. `docs/ux/briefs/SCR-M02-02-lead-inbox.md` and `SCR-M02-03-leads-list.md` dropped their `offline-stale-banner` state in the same sweep.* | — |
-| ~~F4-11~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It said designs are not in the mobile offline set and that the web studio tolerates a connectivity blip — local geometry, layout and electrical with recomputes and saves queued. The first half is moot, since nothing is in that set; the second is a queue, a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The **substantive** half of `DOC06.designs-not-mobile-offline` survives whole at live `F4-15`: every design save carries the version it was based on, a mismatch is refused, the client reloads server state and the user re-applies — "No merge, ever" — now an ordinary concurrency law. The editor and its reload prompt stay `M05-09`'s.* | — |
-| ~~F4-12~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its surviving headline — no device prints a customer-facing price computed locally — is live twice over and already cited: `F4-04` (every money figure computed server-side, no device computes, assigns or finalises one) and `M06-41` (the module surface, verbatim). What died with the queue and the cache is the rest of the row: the offline proposal-draft request a user could queue, and "every figure shown from local data renders provisional". The provisional-rendering obligation itself is `F8-12`'s, not deleted `F8-16`'s. `DOC06.no-local-price` stays **live** in the Task 10 block on `F4-04` / `M06-41`.* | — |
-| ~~F4-13~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the convention that a module may never restate the offline boundary differently from `R14`, and it recorded the `Q15` ruled set — attendance day-start/day-end taps and geofence events staying online-first. With `R14` superseded there is no boundary to restate and the convention is void; `Q15` is stamped SUPERSEDED 2026-08-07 by `Q61` in `registers/open-questions.md`. `M09-52` survives on its own merits — a crossing is evaluated and recorded server-side — not as a position relative to a boundary; `M09-20` and `M09-36` are struck in their own section.* | — |
+| ~~F4-08~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the eight-capability **offline-full set** and its table — survey capture, survey photos, quick-add lead, activity/visit logging, task ticks, My Day and the read cache — which is exactly the capability the ruling removed; the cache and the mutation queue are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). **Exactly one of the eight survives, and only as the carve-out:** field photographs held on the device until they upload (`F4-21` / `M04-55`), status on `SCR-M04-07` only. Rows that consumed this table by row number — `M09-20`, `M02-22` — are struck in their own sections, and the briefs that cited it (`SCR-M02-01`, `SCR-M02-04`) dropped the state.* | — |
+| ~~F4-09~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the nine-capability **online-only set** and its table, which existed only as the contrast half of `R14`'s boundary; the ruling made the whole product online-only, so the set has nothing to contrast with and `DOC06.online-only-set` is SUPERSEDED rather than excluded. Its two named instances are separately live on their own merits and are **not** this row's carriers: money mutations are online-only and refused, never queued (`M11-06`), and design saves take a server version check (`M05-09` / `F4-15`). Struck `M02-22` was the row that placed lead import on this table.* | — |
+| ~~F4-10~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the stale-read law — a read served from cache says so, behind a staleness banner — and both halves are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 "does not read from a cache", bullet 2 "no staleness or freshness banner"). The money half it pointed at deleted `F8-16` is not lost: it is `F8-12`'s law, "money must never render as final while stale", carried at `M06-41`. `docs/ux/briefs/SCR-M02-02-lead-inbox.md` and `SCR-M02-03-leads-list.md` dropped their `offline-stale-banner` state in the same sweep.* | — |
+| ~~F4-11~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It said designs are not in the mobile offline set and that the web studio tolerates a connectivity blip — local geometry, layout and electrical with recomputes and saves queued. The first half is moot, since nothing is in that set; the second is a queue, a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The **substantive** half of `DOC06.designs-not-mobile-offline` survives whole at live `F4-15`: every design save carries the version it was based on, a mismatch is refused, the client reloads server state and the user re-applies — "No merge, ever" — now an ordinary concurrency law. The editor and its reload prompt stay `M05-09`'s.* | — |
+| ~~F4-12~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its surviving headline — no device prints a customer-facing price computed locally — is live twice over and already cited: `F4-04` (every money figure computed server-side, no device computes, assigns or finalises one) and `M06-41` (the module surface, verbatim). What died with the queue and the cache is the rest of the row: the offline proposal-draft request a user could queue, and "every figure shown from local data renders provisional". The provisional-rendering obligation itself is `F8-12`'s, not deleted `F8-16`'s. `DOC06.no-local-price` stays **live** in the Task 10 block on `F4-04` / `M06-41`.* | — |
+| ~~F4-13~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the convention that a module may never restate the offline boundary differently from `R14`, and it recorded the 2026-08-04 ruled set — attendance day-start/day-end taps and geofence events staying online-first. With `R14` superseded there is no boundary to restate and the convention is void, and that ruling fell with it; its consequence survives unconditionally at `M09-71` — a day start and the tracking window it opens happen when the server has them. `M09-52` survives on its own merits — a crossing is evaluated and recorded server-side — not as a position relative to a boundary; `M09-20` and `M09-36` are struck in their own section.* | — |
 | F4-14 | P0 | policy | policy | T-M04-015 |
 | F4-15 | P0 | policy | policy | T-MS-367 |
 | F4-16 | P0 | policy | policy | T-M02-012 |
 | F4-17 | P0 | policy | policy | T-M04-015 |
-| ~~F4-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It carried the conflict matrix's two device-store entries — the catalog read-only on the device, notification read-state up-only on the device — and with no on-device store neither has a subject. Its up-only read-state contract is live at `F6-07` on its own merits (reading on one device reads everywhere and nothing un-reads); the catalog laws `M01-46` and `M01-48` are untouched, while the device-copy row `M01-47` is struck in its own section, as is the notification-side `F6-18`. `DOC06.conflict-matrix` stays **live** on `F4-14`–`F4-19` with this row dropped from its ref. The loss is a direct consequence of the removal and is **not** one of `Q62`–`Q66`.* | — |
+| ~~F4-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It carried the conflict matrix's two device-store entries — the catalog read-only on the device, notification read-state up-only on the device — and with no on-device store neither has a subject. Its up-only read-state contract is live at `F6-07` on its own merits (reading on one device reads everywhere and nothing un-reads); the catalog laws `M01-46` and `M01-48` are untouched, while the device-copy row `M01-47` is struck in its own section, as is the notification-side `F6-18`. `DOC06.conflict-matrix` stays **live** on `F4-14`–`F4-19` with this row dropped from its ref. The loss is a direct consequence of the removal and is **not** one of the five holes left for owner ruling.* | — |
 | F4-19 | P0 | policy | policy | T-M02-012 |
-| ~~F4-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the queue's acknowledgement lifecycle — every mutation applied-or-rejected, the item leaving the queue, server truth replacing local state on next sync, rejections surfacing in the attention tray. With no queue and no local state there is nothing to acknowledge and nothing to replace (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1), and the attention tray is a sync surface (bullet 2), so `DOC06.rejects-ack` is excluded. The law inside it does not die and is already cited elsewhere: a rejected submission is never a silent disappearance (`F4-21`, preserve-and-badge) and never a raw error (`F8-36`, honest refusal).* | — |
-| F4-21 | P0 | mixed | SCR-M04-07 · +non-UI: validation-failure preservation; photo hold-and-upload | T-M04-017 *(`T-SHELL-004` removed 2026-08-07: it was the Sync Center task, and its screen `SCR-SHELL-04` was deleted with the offline/sync capability by owner ruling `Q61`. `F4-21`'s surviving surface is `SCR-M04-07` alone. Cited as `D3` until 2026-08-15: `D3` was a local row label in the offline-removal plan, but in this suite's source vocabulary `D3` is the superseded brand-identity decision of *retired: D-census ledger*, so the ruling id is the only unambiguous authority.)* |
-| ~~F4-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the persistent **global sync indicator** in the app shell, with its counts sentence ("3 surveys waiting · 47 photos · will upload on Wi-Fi") and its last-sync time. Killed by name: `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2 forbids a global connection indicator, and the shell shows no connectivity state at all. `docs/ux/briefs/SCR-SHELL-01-app-shell.md` is amended and `docs/tasks/SHELL.md` `T-SHELL-001` loses the element; §2 keeps the withdrawn `shell-sync-indicator` merge proposal struck at `SCR-SHELL-01` for the same audit reason this row is struck here.* | — |
-| ~~F4-23~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the **sync centre** — the one surface that listed everything waiting, per item, with a retry. A sync surface is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2) and its screen `SCR-SHELL-04` was deleted by the same ruling, taking `T-SHELL-004` with it. The per-item retry it hosted survives **only for photographs and only on the capture screen** — `SCR-M04-07` and nowhere else (`F4-21`, `M04-55`). No live row and no screen replaces it.* | — |
-| ~~F4-24~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the per-record sync chip — queued → syncing → synced, with a fourth attention state — and the chip is excised by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2: "no queued or unsynced marker on any record"). Its fourth state survives verbatim at live `F4-21`: a record that fails validation is preserved and **badged for attention**, with a reason and a retry, on the capture screen itself; `docs/tasks/F-platform.md` repoints that acceptance line to `T-FPLAT-013` rather than deleting it. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped its `offline-queued` state with this row.* | — |
+| ~~F4-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the queue's acknowledgement lifecycle — every mutation applied-or-rejected, the item leaving the queue, server truth replacing local state on next sync, rejections surfacing in the attention tray. With no queue and no local state there is nothing to acknowledge and nothing to replace (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1), and the attention tray is a sync surface (bullet 2), so `DOC06.rejects-ack` is excluded. The law inside it does not die and is already cited elsewhere: a rejected submission is never a silent disappearance (`F4-21`, preserve-and-badge) and never a raw error (`F8-36`, honest refusal).* | — |
+| F4-21 | P0 | mixed | SCR-M04-07 · +non-UI: validation-failure preservation; photo hold-and-upload | T-M04-017 *(`T-SHELL-004` removed 2026-08-07: it was the Sync Center task, and its screen `SCR-SHELL-04` was deleted with the offline/sync capability by owner ruling. `F4-21`'s surviving surface is `SCR-M04-07` alone. Cited as `D3` until 2026-08-15: `D3` was a local row label in the offline-removal plan, but in this suite's source vocabulary `D3` is the superseded brand-identity decision of *retired: D-census ledger*, so the ruling is cited by what it removed, never by that label.)* |
+| ~~F4-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the persistent **global sync indicator** in the app shell, with its counts sentence ("3 surveys waiting · 47 photos · will upload on Wi-Fi") and its last-sync time. Killed by name: `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2 forbids a global connection indicator, and the shell shows no connectivity state at all. `docs/ux/briefs/SCR-SHELL-01-app-shell.md` is amended and `docs/tasks/SHELL.md` `T-SHELL-001` loses the element; §2 keeps the withdrawn `shell-sync-indicator` merge proposal struck at `SCR-SHELL-01` for the same audit reason this row is struck here.* | — |
+| ~~F4-23~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the **sync centre** — the one surface that listed everything waiting, per item, with a retry. A sync surface is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2) and its screen `SCR-SHELL-04` was deleted by the same ruling, taking `T-SHELL-004` with it. The per-item retry it hosted survives **only for photographs and only on the capture screen** — `SCR-M04-07` and nowhere else (`F4-21`, `M04-55`). No live row and no screen replaces it.* | — |
+| ~~F4-24~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the per-record sync chip — queued → syncing → synced, with a fourth attention state — and the chip is excised by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2: "no queued or unsynced marker on any record"). Its fourth state survives verbatim at live `F4-21`: a record that fails validation is preserved and **badged for attention**, with a reason and a retry, on the capture screen itself; `docs/tasks/F-platform.md` repoints that acceptance line to `T-FPLAT-013` rather than deleting it. `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` dropped its `offline-queued` state with this row.* | — |
 | F4-25 | P0 | policy | policy | T-M04-015 |
-| ~~F4-26~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the stale-read banner and its non-dismissibility — a banner that stated when the data was last synced and disappeared only when the read was fresh again. Excised by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2: "no staleness or freshness banner"); with no cache there is no stale read to announce. Nothing live replaces it, and the money-staleness law it was often confused with is separate and untouched at `F8-12` / `M06-41`. `docs/ux/briefs/SCR-M02-03-leads-list.md` dropped the `offline-stale-banner` state, and the non-dismissible-kind rule survives generally in the design language.* | — |
+| ~~F4-26~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the stale-read banner and its non-dismissibility — a banner that stated when the data was last synced and disappeared only when the read was fresh again. Excised by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2: "no staleness or freshness banner"); with no cache there is no stale read to announce. Nothing live replaces it, and the money-staleness law it was often confused with is separate and untouched at `F8-12` / `M06-41`. `docs/ux/briefs/SCR-M02-03-leads-list.md` dropped the `offline-stale-banner` state, and the non-dismissible-kind rule survives generally in the design language.* | — |
 | F4-27 | P0 | policy | policy | T-FPLAT-014 |
-| ~~F4-28~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It required that all five sync surfaces be translated, honest and complete. Once the five surfaces are gone (`F4-10`, `F4-22`, `F4-23`, `F4-24`, `F4-26` — non-goals under `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2) the row has no subject, and every obligation it imposed is already binding generally: `F3-01`/`F3-06` and `F3-19`/`F3-22` on translation and formatting, `F7-42` and `F7-43`'s Definition of Done on state completeness — now three base states, not four, by the same ruling. It needs **no hole**: nothing was lost, only the surfaces it applied to.* | — |
-| ~~F4-29~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`) — but this is the **carve-out**, relocated rather than lost. Its content is claimed by name at live `M04-55`: a photograph is written to the device the moment it is taken, uploads when the connection returns, is resumable, defaults to Wi-Fi-or-charging with a per-batch "upload now", and is never blocked or degraded to fit a network; `F4-21` carries F4's own half (held on the device until uploaded, count and retry on the capture screen). Two clauses did not survive: "small mutations always upload immediately", which presupposed a mutation queue, and the sync centre the per-batch override was reached from, replaced by `SCR-M04-07` alone.* | — |
-| ~~F4-30~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its pipeline content moved to `M04-55` with `F4-29` and `F4-31`, but **one detail did not travel**: the device keeping a thumbnail so the record still looks complete after the full-resolution original is pruned. No live row restates it. `docs/tasks/F-platform.md` `T-FPLAT-015` flags it to the owner as **detail lost in the move, not law lost** — the retention guarantee itself is carried by `M04-55`'s eviction order plus `F4-21`'s "held on the device until it has uploaded". It is **not** one of `Q62`–`Q66` and no carrier is invented for it here.* | — |
-| ~~F4-31~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It set the device storage cap and its eviction order. The order is live and mechanised at `M04-55` — acknowledged originals evicted first, an unacknowledged original **never** evicted — which is the only place the never-silently-drop rule still bites. Two details did not travel and are flagged in `docs/tasks/F-platform.md` `T-FPLAT-015` as detail lost in the move: the **2 GB** cap figure, and the rule that when the cap is reached with nothing acknowledged to evict the product tells the user rather than choosing for them. Neither is a `Q62`–`Q66` hole.* | — |
-| ~~F4-32~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`), and it left a hole: **OPEN owner question `Q66`** in `registers/open-questions.md`. Its first half — local reads and writes continuing indefinitely while the session token is expired — died correctly with the local-first store (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). Its second half did **not** become moot, because the photograph carve-out survived: when a different user signs in on a device holding another user's unuploaded photographs, tenant isolation was to win, the held photographs discarded first and their owner told before it happens. `Q66` records that no live row carries it and blocks any multi-user field device. Not re-instated, and no carrier is named here.* | — |
-| ~~F4-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It said a billing block never stops the queue draining. Its law survives precisely and by name in M12 — `M12-26`: a photograph already captured in the field always uploads, in every billing state, and no gate may inspect, delay or refuse it; `M12-24` puts that upload in the never-gated list. Only its words "offline-captured survey data still syncs" needed cutting: there is no survey queue to drain, the one piece of work the product holds on the device being the photograph. `DOC16.offline-drain-never-blocked` stays **live** in the Task 10 block, routed to M12.* | — |
-| ~~F4-34~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its **mechanism** — entitlement cached on the device with a 72-hour grace, so a dead zone is not read as an absent payment — dies with the cache (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The two rulings it carried are live and their citations land in M12 rather than vanishing: field capture is never cut off by elapsed time, running through the full dunning grace and pausing only at `halted`, with a mid-visit halt letting the visit complete (`M12-27`), and read and export always work (`M12-22`, `M12-24`). `Q16` is **PARTLY SUPERSEDED** 2026-08-07 — closed, not open.* | — |
-| ~~F4-35~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`), and it left a hole: **OPEN owner question `Q65`** in `registers/open-questions.md`. "An application too old to sync still reads" was built entirely on the sync contract — its trigger was a sync-contract change and its mitigation was that local reads keep working — so with no local store the soft lockout it required is impossible rather than merely unnecessary, and its only screen, `SCR-SHELL-05`, was deleted with it. But the product still ships client versions, and no live row anywhere covers version skew. `Q65` records that; it blocks no screen and blocks the first breaking API change. Not re-instated, and no carrier is named here.* | — |
+| ~~F4-28~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It required that all five sync surfaces be translated, honest and complete. Once the five surfaces are gone (`F4-10`, `F4-22`, `F4-23`, `F4-24`, `F4-26` — non-goals under `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2) the row has no subject, and every obligation it imposed is already binding generally: `F3-01`/`F3-06` and `F3-19`/`F3-22` on translation and formatting, `F7-42` and `F7-43`'s Definition of Done on state completeness — now three base states, not four, by the same ruling. It needs **no hole**: nothing was lost, only the surfaces it applied to.* | — |
+| ~~F4-29~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling) — but this is the **carve-out**, relocated rather than lost. Its content is claimed by name at live `M04-55`: a photograph is written to the device the moment it is taken, uploads when the connection returns, is resumable, defaults to Wi-Fi-or-charging with a per-batch "upload now", and is never blocked or degraded to fit a network; `F4-21` carries F4's own half (held on the device until uploaded, count and retry on the capture screen). Two clauses did not survive: "small mutations always upload immediately", which presupposed a mutation queue, and the sync centre the per-batch override was reached from, replaced by `SCR-M04-07` alone.* | — |
+| ~~F4-30~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its pipeline content moved to `M04-55` with `F4-29` and `F4-31`, but **one detail did not travel**: the device keeping a thumbnail so the record still looks complete after the full-resolution original is pruned. No live row restates it. `docs/tasks/F-platform.md` `T-FPLAT-015` flags it to the owner as **detail lost in the move, not law lost** — the retention guarantee itself is carried by `M04-55`'s eviction order plus `F4-21`'s "held on the device until it has uploaded". It is **not** one of the five holes left for owner ruling and no carrier is invented for it here.* | — |
+| ~~F4-31~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It set the device storage cap and its eviction order. The order is live and mechanised at `M04-55` — acknowledged originals evicted first, an unacknowledged original **never** evicted — which is the only place the never-silently-drop rule still bites. Two details did not travel and are flagged in `docs/tasks/F-platform.md` `T-FPLAT-015` as detail lost in the move: the **2 GB** cap figure, and the rule that when the cap is reached with nothing acknowledged to evict the product tells the user rather than choosing for them. Neither is one of the five holes left for owner ruling.* | — |
+| ~~F4-32~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling), and it left a hole the owner closed on 2026-08-26 as **`F4-37`**. Its first half — local reads and writes continuing indefinitely while the session token is expired — died correctly with the local-first store (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). Its second half did **not** become moot, because the photograph carve-out survived: when a different user signs in on a device holding another user's unuploaded photographs, tenant isolation wins — `F4-37` discards the held work after telling its owner what is lost and offering the chance to upload first, the one carve-out from `F4-21`; state `switch-discards-held-work` on `SCR-M01-01`, task `T-M01-025`. This id is not re-instated.* | — |
+| ~~F4-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It said a billing block never stops the queue draining. Its law survives precisely and by name in M12 — `M12-26`: a photograph already captured in the field always uploads, in every billing state, and no gate may inspect, delay or refuse it; `M12-24` puts that upload in the never-gated list. Only its words "offline-captured survey data still syncs" needed cutting: there is no survey queue to drain, the one piece of work the product holds on the device being the photograph. `DOC16.offline-drain-never-blocked` stays **live** in the Task 10 block, routed to M12.* | — |
+| ~~F4-34~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its **mechanism** — entitlement cached on the device with a 72-hour grace, so a dead zone is not read as an absent payment — dies with the cache (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The two rulings it carried are live and their citations land in M12 rather than vanishing: field capture is never cut off by elapsed time, running through the full dunning grace and pausing only at `halted`, with a mid-visit halt letting the visit complete (`M12-27`), and read and export always work (`M12-22`, `M12-24`). The earlier ruling on that grace closed with it: its always-on half lives at those rows, its cache half is gone.* | — |
+| ~~F4-35~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling), and it left a hole the owner closed on 2026-08-26 as **`F4-36`**. "An application too old to sync still reads" was built entirely on the sync contract — its trigger was a sync-contract change and its mitigation was that local reads keep working — so with no local store the soft lockout it required is impossible rather than merely unnecessary, and its only screen, `SCR-SHELL-05`, was deleted with it. But the product still ships client versions, and version skew now has its row: below the server-declared minimum version the app shows a plain full-screen block naming the required version and routing to the store, never a bare error — state `update-required` on `SCR-SHELL-01`, task `T-FPLAT-033`. This id is not re-instated.* | — |
 | F4-36 | P0 | mixed | SCR-SHELL-01 · +non-UI: server-declared minimum client version… | T-FPLAT-033 |
 | F4-37 | P0 | mixed | SCR-M01-01 · +non-UI: held work discarded on user switch, after warning… | T-M01-025 |
 
@@ -844,7 +844,7 @@ Nothing below is renumbered.*
 | F6-15 | P2 | mixed | SCR-M01-11 · +non-UI: in-app record always lands; owner billing/compliance push never… | T-FPLAT-018 |
 | F6-16 | P0 | policy | policy | T-FPLAT-018 |
 | F6-17 | P0 | screen | SCR-SHELL-03 | T-SHELL-003 |
-| ~~F6-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its two surviving halves were rehomed, not lost: the up-only read-state contract to `F6-07`, the never-blocking clause to `F4-27`. Kept as a struck row because this register never deletes rows. It carried `T-FPLAT-019`; the Task cell is normalised to `—` 2026-08-15 so that no struck row claims a build obligation or counts toward §4's tasked total — `T-FPLAT-019` itself is alive (it is the notification centre's data contract, and `F6-19` still carries it).* | — |
+| ~~F6-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its two surviving halves were rehomed, not lost: the up-only read-state contract to `F6-07`, the never-blocking clause to `F4-27`. Kept as a struck row because this register never deletes rows. It carried `T-FPLAT-019`; the Task cell is normalised to `—` 2026-08-15 so that no struck row claims a build obligation or counts toward §4's tasked total — `T-FPLAT-019` itself is alive (it is the notification centre's data contract, and `F6-19` still carries it).* | — |
 | F6-19 | P2 | mixed | SCR-SHELL-03 · +non-UI: bounded retention horizon; underlying facts persist on record… | T-FPLAT-019, T-SHELL-003 |
 | F6-20 | P0 | screen | SCR-SHELL-02 | T-SHELL-002 |
 | F6-21 | P0 | policy | policy | T-FPLAT-020 |
@@ -894,7 +894,7 @@ Nothing below is renumbered.*
 | F7-33 | P0 | policy | policy | LAW |
 | F7-34 | P0 | policy | policy | LAW |
 | F7-35 | P0 | policy | policy | LAW |
-| ~~F7-36~~ | — | **excluded** | *Principle 7 — "offline is a visible state on every surface, never a silent one", requiring a connection indicator, a per-record queued/unsynced state and a staleness banner on cached reads — **struck in place 2026-08-07 by owner ruling `Q61`, and deliberately not renumbered**, so Principles 8–12 keep their citations. All three surfaces it required are non-goals (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2). Unlike the other struck rows in this register it is still physically present in `docs/prd/foundations/F7-design-language.md` with its tier cell set to `—`; it is dispositioned here but is not a live requirement and is not counted in §1 or §4. **Row restored to this register 2026-08-15** — it had been removed rather than struck, and was the only id carrying a table row in the live PRD that this register did not disposition. `N10`, amended by the same ruling from four base states to three, belongs to `F7-23` and is unaffected as a row.* | — |
+| ~~F7-36~~ | — | **excluded** | *Principle 7 — "offline is a visible state on every surface, never a silent one", requiring a connection indicator, a per-record queued/unsynced state and a staleness banner on cached reads — **struck in place 2026-08-07 by the owner ruling that removed the offline/sync capability, and deliberately not renumbered**, so Principles 8–12 keep their citations. All three surfaces it required are non-goals (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2). Unlike the other struck rows in this register it is still physically present in `docs/prd/foundations/F7-design-language.md` with its tier cell set to `—`; it is dispositioned here but is not a live requirement and is not counted in §1 or §4. **Row restored to this register 2026-08-15** — it had been removed rather than struck, and was the only id carrying a table row in the live PRD that this register did not disposition. `N10`, amended by the same ruling from four base states to three, belongs to `F7-23` and is unaffected as a row.* | — |
 | F7-37 | P0 | policy | policy | LAW |
 | F7-38 | P0 | policy | policy | LAW |
 | F7-39 | P0 | policy | policy | LAW |
@@ -924,7 +924,7 @@ Nothing below is renumbered.*
 | F8-13 | P0 | engine | engine | T-FPLAT-028 |
 | F8-14 | P0 | policy | policy | T-FPLAT-028 |
 | F8-15 | P0 | policy | policy | T-FPLAT-028 |
-| ~~F8-16~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It read "money read from cache, or produced away from the server, renders provisional" and died with its subject: there is no cache and no away-from-server computation (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The obligation itself is not lost — it is the general money law, fully live at `F8-12` ("money must never render as final while stale"), with `F8-13`'s compare-not-flag and `F4-04`'s server-owns-money beside it, and the module surfaces at `M06-41` and `M11-06`. It carried `T-FPLAT-028`, which is alive and still builds `F8-12`, `F8-15` and `F8-17`. **Flagged, outside this file's ownership:** live PRD rows still cite `F8-16` (`M02-38`, `M08-37`, plus pointers in `M05` and `M11`) and should be repointed to `F8-12`; `docs/tasks/F-platform.md` records the same finding.* | — |
+| ~~F8-16~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It read "money read from cache, or produced away from the server, renders provisional" and died with its subject: there is no cache and no away-from-server computation (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The obligation itself is not lost — it is the general money law, fully live at `F8-12` ("money must never render as final while stale"), with `F8-13`'s compare-not-flag and `F4-04`'s server-owns-money beside it, and the module surfaces at `M06-41` and `M11-06`. It carried `T-FPLAT-028`, which is alive and still builds `F8-12`, `F8-15` and `F8-17`. **Flagged, outside this file's ownership:** live PRD rows still cite `F8-16` (`M02-38`, `M08-37`, plus pointers in `M05` and `M11`) and should be repointed to `F8-12`; `docs/tasks/F-platform.md` records the same finding.* | — |
 | F8-17 | P0 | policy | policy | T-FPLAT-028 |
 | F8-18 | P0 | policy | policy | T-FPLAT-028 |
 | F8-19 | P0 | policy | policy | T-FPLAT-028 |
@@ -966,7 +966,7 @@ Nothing below is renumbered.*
 | M01-14 | P0 | screen | SCR-M01-09 | T-M01-009 |
 | M01-15 | P1 | screen | SCR-M01-10 | T-M01-010 |
 | M01-16 | P1 | screen | SCR-SHELL-01 | T-SHELL-001 |
-| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-025, T-SHELL-001 |
+| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-028, T-SHELL-001 |
 | M01-18 | P0 | policy | policy | T-M01-025 |
 | M01-19 | P0 | screen | SCR-M01-12 | T-M01-012 |
 | M01-20 | P0 | screen | SCR-M01-13 | T-M01-013 |
@@ -976,7 +976,7 @@ Nothing below is renumbered.*
 | M01-24 | P0 | screen | SCR-M01-05 | T-M01-005 |
 | M01-25 | P0 | screen | SCR-M01-05 | T-M01-005 |
 | M01-26 | P0 | screen | SCR-M01-06 | T-M01-006 |
-| M01-27 | P0 | policy | policy | T-M01-026 |
+| M01-27 | P0 | policy | policy | T-M01-029 |
 | M01-28 | P0 | policy | policy | T-M01-026 |
 | M01-29 | P0 | policy | policy | LAW |
 | M01-30 | P1 | policy | policy | LAW |
@@ -990,14 +990,14 @@ Nothing below is renumbered.*
 | M01-38 | P0 | mixed | SCR-M01-15 · +non-UI: one search over both tiers, preferred-first ranking, shared with the… | T-M01-015 |
 | M01-39 | P0 | screen | SCR-M01-16 | T-M01-016 |
 | M01-40 | P0 | mixed | SCR-M01-16 · +non-UI: PDF spec-extraction engine; output never committed without review… | T-M01-016 |
-| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017 |
+| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017, T-M01-030 |
 | M01-42 | P0 | policy | policy | T-M01-027 |
 | M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release… | T-M01-015 |
 | M01-44 | P0 | policy | policy | T-M01-027 |
 | M01-45 | P1 | policy | policy | T-M01-027 |
 | M01-46 | P0 | policy | policy | LAW |
-| ~~M01-47~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It held the catalog and price book read-only on the device; with no on-device store the rule has no subject, and a read cache is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 — "The product does not read from a cache"). No live row replaces it and none is needed: the catalog is read from the server like every other read, and its own laws (`M01-46`, `M01-48`) are untouched. `docs/tasks/M01-onboarding.md` records the same removal under `T-M01-027`, which is alive.* | — |
-| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015 |
+| ~~M01-47~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It held the catalog and price book read-only on the device; with no on-device store the rule has no subject, and a read cache is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 — "The product does not read from a cache"). No live row replaces it and none is needed: the catalog is read from the server like every other read, and its own laws (`M01-46`, `M01-48`) are untouched. `docs/tasks/M01-onboarding.md` records the same removal under `T-M01-027`, which is alive.* | — |
+| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015, T-M01-031 |
 | M01-49 | P0 | policy | policy | LAW |
 | M01-50 | P0 | mixed | SCR-M01-18 · +non-UI: computational contrast re-verify on palette save; compliant shades… | T-M01-018 |
 | M01-51 | P0 | screen | SCR-M01-19 | T-M01-019 |
@@ -1018,7 +1018,7 @@ Nothing below is renumbered.*
 | M02-01 | P0 | screen | SCR-M02-01 | T-M02-001 |
 | M02-02 | P0 | policy | policy | T-M02-007 |
 | M02-03 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: nothing rejected for incompleteness, nothing invented to fill gaps | T-M02-001 |
-| ~~M02-04~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`) — and this one leaves a hole, recorded as **OPEN owner question `Q62`** in `registers/open-questions.md`, which blocks `SCR-M02-01` and `SCR-M02-04`; both briefs carry dated UNRESOLVED notes, and each names its own state for the unresolved case — `SCR-M02-04` carries `possible-duplicate-flag`, `SCR-M02-01` carries `check-inconclusive`, the same requirement seen from the capture side, where the check has not answered by the time the save proceeds. **(State names corrected 2026-08-15: this cell previously claimed `possible-duplicate-flag` on both briefs, and `SCR-M02-01` has never carried it.)** The row stated that a duplicate the live pre-save check could not see is never resolved silently: both records are flagged "possible duplicate" and the rep resolves them through the standard three-choice sheet on next open, never an automatic merge. It was cut because its wording was framed around a device that had saved without the server, but the race is an ordinary online one — `M02-07` runs the live check strictly before the save. Nothing live carries it (`M02-12` covers only the deliberate "Create anyway" duplicate; `M02-59`/`M02-60` are the different-number manual merge). Not re-instated here and no replacement invented — `Q62` is the owner's call. `Q22`, the 2026-08-04 ruling that made this row final, is SUPERSEDED 2026-08-07 by `Q61`.* **(Amended 2026-08-15: `Q62` is no longer open. The owner ruled and **restored this law as new live row `M02-66`**, in `docs/prd/modules/M02-crm-and-leads.md` §M02.2, dispositioned in this section on `SCR-M02-01` and `SCR-M02-04`; `M02-66`'s source column names `M02-04` as the row it restores. **This row stays struck and this id is not resurrected** — `M02-04` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked briefs, `Q62` open, no live row carrying the law — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
+| ~~M02-04~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling) — and this one leaves a hole — closed later by restoring the law as **`M02-66`** — which blocks `SCR-M02-01` and `SCR-M02-04`; both briefs carry dated UNRESOLVED notes, and each names its own state for the unresolved case — `SCR-M02-04` carries `possible-duplicate-flag`, `SCR-M02-01` carries `check-inconclusive`, the same requirement seen from the capture side, where the check has not answered by the time the save proceeds. **(State names corrected 2026-08-15: this cell previously claimed `possible-duplicate-flag` on both briefs, and `SCR-M02-01` has never carried it.)** The row stated that a duplicate the live pre-save check could not see is never resolved silently: both records are flagged "possible duplicate" and the rep resolves them through the standard three-choice sheet on next open, never an automatic merge. It was cut because its wording was framed around a device that had saved without the server, but the race is an ordinary online one — `M02-07` runs the live check strictly before the save. Nothing live carries it (`M02-12` covers only the deliberate "Create anyway" duplicate; `M02-59`/`M02-60` are the different-number manual merge). Not re-instated here and no replacement invented — the restoration is the owner's call. The 2026-08-04 ruling that made this row final fell with it.* **(Amended 2026-08-15: the owner ruled and **restored this law as new live row `M02-66`**, in `docs/prd/modules/M02-crm-and-leads.md` §M02.2, dispositioned in this section on `SCR-M02-01` and `SCR-M02-04`; `M02-66`'s source column names `M02-04` as the row it restores. **This row stays struck and this id is not resurrected** — `M02-04` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked briefs, no live row carrying the law — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
 | M02-05 | P0 | mixed | SCR-M02-01 · +non-UI: segment rides the lead to its proposal, never re-asked | T-M02-001 |
 | M02-06 | P0 | screen | SCR-M02-01, SCR-SHELL-01 | T-M02-001, T-SHELL-001 |
 | M02-07 | P0 | policy | policy | T-M02-008 |
@@ -1036,11 +1036,11 @@ Nothing below is renumbered.*
 | M02-19 | P0 | screen | SCR-M02-05 | T-M02-005 |
 | M02-20 | P0 | mixed | SCR-M02-05 · +non-UI: skip is default; create-anyway needs audited reason per row | T-M02-005 |
 | M02-21 | P0 | mixed | SCR-M02-05 · +non-UI: async background job; landed rows never rolled back on partial… | T-M02-005 |
-| ~~M02-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). "Import is online-only" existed only to place lead import on the offline boundary, and there is no boundary left to place it on — the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble), so the statement is true of everything and worth stating of nothing. Its citation of `F4-09` (the online-only capability table) points at a deleted row. The import behaviour itself is untouched: `M02-18`–`M02-21` still own mapping, preview, duplicate handling and the background job, and `SCR-M02-05`'s `importing-progress` keeps the server-side continuation of a connection drop mid-import.* | — |
+| ~~M02-22~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). "Import is online-only" existed only to place lead import on the offline boundary, and there is no boundary left to place it on — the whole product requires a live connection (`foundations/F4-data-integrity.md` preamble), so the statement is true of everything and worth stating of nothing. Its citation of `F4-09` (the online-only capability table) points at a deleted row. The import behaviour itself is untouched: `M02-18`–`M02-21` still own mapping, preview, duplicate handling and the background job, and `SCR-M02-05`'s `importing-progress` keeps the server-side continuation of a connection drop mid-import.* | — |
 | M02-23 | P0 | screen | SCR-M02-02 | T-M02-002 |
 | M02-24 | P0 | screen | SCR-M02-02 | T-M02-002 |
 | M02-25 | P1 | screen | SCR-M02-02 | T-M02-002 |
-| ~~M02-26~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its cache-read-with-staleness-banner half is a non-goal twice over (`foundations/F4-data-integrity.md` §5 · Non-goals, bullets 1–2). Its other half is **not** about connectivity and leaves a hole, recorded as **OPEN owner question `Q63`**, which blocks `SCR-M02-02` (dated UNRESOLVED note and an `assign-waiting` state on the brief): the inbox's triage actions are server-completed — assignment and junking reach the server to complete and say so while they wait, nothing applied optimistically. No live row carries it; `M02-28` pushes the other way ("choosing one assigns immediately without a confirm step") and `F8-36` governs only the failure path. The shape exists elsewhere at `M11-06`/`M11-39` and `M05-09`. Not re-instated and no replacement invented — `Q63` is the owner's call.* **(Amended 2026-08-15: `Q63` is no longer open. The owner ruled and **restored this law as new live row `M02-67`**, in `docs/prd/modules/M02-crm-and-leads.md` §M02.5, dispositioned in this section on `SCR-M02-02`; `M02-67`'s source column names `M02-26` as the row it restores, and it carries the junk decision (`M02-24`, `M02-55`) that this row's deletion had left covered by nothing. **This row stays struck and this id is not resurrected** — `M02-26` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked brief, `Q63` open, no live row carrying the law — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
+| ~~M02-26~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its cache-read-with-staleness-banner half is a non-goal twice over (`foundations/F4-data-integrity.md` §5 · Non-goals, bullets 1–2). Its other half is **not** about connectivity and leaves a hole — closed later by restoring the law as **`M02-67`** — which blocks `SCR-M02-02` (dated UNRESOLVED note and an `assign-waiting` state on the brief): the inbox's triage actions are server-completed — assignment and junking reach the server to complete and say so while they wait, nothing applied optimistically. No live row carries it; `M02-28` pushes the other way ("choosing one assigns immediately without a confirm step") and `F8-36` governs only the failure path. The shape exists elsewhere at `M11-06`/`M11-39` and `M05-09`. Not re-instated and no replacement invented — the restoration is the owner's call.* **(Amended 2026-08-15: the owner ruled and **restored this law as new live row `M02-67`**, in `docs/prd/modules/M02-crm-and-leads.md` §M02.5, dispositioned in this section on `SCR-M02-02`; `M02-67`'s source column names `M02-26` as the row it restores, and it carries the junk decision (`M02-24`, `M02-55`) that this row's deletion had left covered by nothing. **This row stays struck and this id is not resurrected** — `M02-26` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked brief, no live row carrying the law — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
 | M02-27 | P0 | policy | policy | LAW |
 | M02-28 | P0 | screen | SCR-M02-02, SCR-M02-04 | T-M02-002 |
 | M02-29 | P0 | screen | SCR-M02-02, SCR-M02-04 | T-M02-002 |
@@ -1077,7 +1077,7 @@ Nothing below is renumbered.*
 | M02-60 | P0 | mixed | SCR-M02-06 · +non-UI: re-points every reference to survivor; loser becomes tombstone, never  | T-M02-016 |
 | M02-61 | P0 | policy | policy | T-M02-016 |
 | M02-62 | P0 | policy | policy | T-M02-016 |
-| M02-63 | P0 | mixed | SCR-M02-06 · +non-UI: both records must be in actor's visibility scope; the merge completes on the server; no undo *(2026-08-07: "online-first" replaced — the three-term connectivity vocabulary was `F4-01`'s and was deleted with the offline/sync capability, `Q61`; the behaviour is unchanged)* | T-M02-006 |
+| M02-63 | P0 | mixed | SCR-M02-06 · +non-UI: both records must be in actor's visibility scope; the merge completes on the server; no undo *(2026-08-07: "online-first" replaced — the three-term connectivity vocabulary was `F4-01`'s and was deleted with the offline/sync capability (owner ruling); the behaviour is unchanged)* | T-M02-006 |
 | M02-64 | P0 | mixed | SCR-M01-22 · +non-UI: toggle governs new capture only; existing leads untouched; manual… | T-M02-017 |
 | M02-65 | P0 | screen | SCR-M01-22 | T-M02-017 |
 | M02-66 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: apply-time collision flags both records and cross-links them (`M02-12`); nothing ever merged automatically | T-M02-008 |
@@ -1102,8 +1102,8 @@ Nothing below is renumbered.*
 | M03-13 | P0 | policy | policy | T-M03-011 |
 | M03-14 | P0 | mixed | SCR-M03-06 · +non-UI: audience re-resolved at send time against current records | T-M03-006 |
 | M03-15 | P1 | screen | SCR-M03-03 | T-M03-003 |
-| M03-16 | P2 | context | context → registers/enhancements.md (REC, not v1 scope) | realized-by: docs/prd/registers/enhancements.md (REC, not v1 scope) |
-| M03-17 | P2 | context | context → registers/enhancements.md (REC, not v1 scope) | realized-by: docs/prd/registers/enhancements.md (REC, not v1 scope) |
+| M03-16 | P2 | context | context → its own REC row, not v1 scope | realized-by: REC row — its one home (`OV-43`), not v1 scope |
+| M03-17 | P2 | context | context → its own REC row, not v1 scope | realized-by: REC row — its one home (`OV-43`), not v1 scope |
 | M03-18 | P0 | policy | policy | LAW |
 | M03-19 | P0 | mixed | SCR-M03-07 · +non-UI: connection state machine; forms without required phone field refused… | T-M03-007 |
 | M03-20 | P0 | integration | integration | T-M03-014 |
@@ -1123,13 +1123,13 @@ Nothing below is renumbered.*
 | M03-34 | P0 | mixed | SCR-M02-04 · +non-UI: consent ledger auto-recorded per contact per channel class; import… | T-M03-013 |
 | M03-35 | P1 | engine | engine | T-M03-018 |
 | M03-36 | P0 | mixed | SCR-M03-08 · +non-UI: capture-failure log records what arrived and why unusable | T-M03-008 |
-| M03-37 | P2 | context | context → registers/enhancements.md (REC); modules/M07 would own implementation | realized-by: docs/prd/registers/enhancements.md (REC); modules/M07 would own implementation |
+| M03-37 | P2 | context | context → its own REC row; modules/M07 would own implementation | realized-by: REC row — its one home (`OV-43`); modules/M07 would own implementation |
 | M03-38 | P0 | mixed | SCR-M03-03 · +non-UI: never machine-translated or auto-substituted; missing-language gap… | T-M03-003 |
 | M03-39 | P0 | mixed | SCR-M03-09 · +non-UI: only approved template schedulable; third-party approval clock gates… | T-M03-009 |
 | M03-40 | P0 | policy | policy | T-M03-009 |
 | M03-41 | P0 | mixed | SCR-M03-03 · +non-UI: send-time token resolution: fallback or exclude recipient, never… | T-M03-003 |
 | M03-42 | P1 | policy | policy | LAW |
-| M03-43 | P2 | context | context → registers/enhancements.md (REC; Q6 disclosure floor an input) | realized-by: docs/prd/registers/enhancements.md (REC; Q6 disclosure floor an input) |
+| M03-43 | P2 | context | context → its own REC row; the tiered AI-disclosure law `F1-36`(d) an input | realized-by: REC row — its one home (`OV-43`); `F1-36`(d) an input |
 | M03-44 | P0 | screen | SCR-M03-04 | T-M03-004 |
 | M03-45 | P0 | mixed | SCR-M03-04, SCR-M03-05 · +non-UI: 80% pre-warn; overage needs approve-campaign-spend grant; mid-send… | T-M03-004 |
 | M03-46 | P0 | policy | policy | T-M03-013 |
@@ -1188,9 +1188,9 @@ Nothing below is renumbered.*
 | M04-36 | P0 | policy | policy | LAW |
 | M04-37 | P0 | mixed | SCR-M04-09 · +non-UI: both versions survive; earlier version never overwritten | T-M04-009 |
 | M04-38 | P0 | screen | SCR-M04-06 | T-M04-006 |
-| ~~M04-39~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It carried offline physical capture and local-first survey saves — "offline is the normal case, not the edge case", "everything saves locally first" — which is precisely the capability the ruling removed and a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The guided capture experience itself is untouched in §M04.7–§M04.8; what is gone is the promise that it works without a connection, and `Q61` records the accepted cost: a surveyor on a roof with no signal cannot open their assigned work. `docs/prd/modules/M04-survey.md` §M04.7 carries the matching strike note.* | — |
-| ~~M04-40~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the durable survey queue — the device holding captured surveys until they uploaded. `M04-55` now rules the photograph queue "the product's one and only device-held queue", holding photographs and nothing else; any other queue is a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The one surviving piece of deferred work is the photo carve-out (`F4-21`, `M04-55`), whose status appears on `SCR-M04-07` alone.* | — |
-| ~~M04-41~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It was the survey-side status system — what a queued survey and its photographs said about themselves on `SCR-M04-06` and `SCR-M04-10` — and every queued or unsynced marker on any record is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2). The one status surface left is the photo waiting-count and retry on the capture screen (`F4-21`, `M04-55`, `SCR-M04-07` only). `SCR-M04-06` and `SCR-M04-10` each lose one row from their §2 count as a result.* | — |
+| ~~M04-39~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It carried offline physical capture and local-first survey saves — "offline is the normal case, not the edge case", "everything saves locally first" — which is precisely the capability the ruling removed and a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The guided capture experience itself is untouched in §M04.7–§M04.8; what is gone is the promise that it works without a connection, and the ruling records the accepted cost: a surveyor on a roof with no signal cannot open their assigned work. `docs/prd/modules/M04-survey.md` §M04.7 carries the matching strike note.* | — |
+| ~~M04-40~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the durable survey queue — the device holding captured surveys until they uploaded. `M04-55` now rules the photograph queue "the product's one and only device-held queue", holding photographs and nothing else; any other queue is a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The one surviving piece of deferred work is the photo carve-out (`F4-21`, `M04-55`), whose status appears on `SCR-M04-07` alone.* | — |
+| ~~M04-41~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It was the survey-side status system — what a queued survey and its photographs said about themselves on `SCR-M04-06` and `SCR-M04-10` — and every queued or unsynced marker on any record is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 2). The one status surface left is the photo waiting-count and retry on the capture screen (`F4-21`, `M04-55`, `SCR-M04-07` only). `SCR-M04-06` and `SCR-M04-10` each lose one row from their §2 count as a result.* | — |
 | M04-42 | P0 | screen | SCR-M04-07 | T-M04-007 |
 | M04-43 | P0 | screen | SCR-M04-07 | T-M04-007 |
 | M04-44 | P0 | screen | SCR-M04-07, SCR-M04-10 | T-M04-007 |
@@ -1240,7 +1240,7 @@ Nothing below is renumbered.*
 | M05-17 | P0 | mixed | SCR-MS-04 · +non-UI: energy source-of-record ladder (PVGIS SARAH3→ERA5); ±10% fallback… | T-MS-101 |
 | M05-18 | P0 | mixed | SCR-MS-04 · +non-UI: async building-insights-class provider; enhancement, never a… | T-MS-101 |
 | M05-19 | P0 | mixed | SCR-MS-04 · +non-UI: relocation >25m wipes all traced geometry; undoable | T-MS-101 |
-| M05-20 | P0 | mixed | SCR-MS-04 · +non-UI: soft cap never blocks; warning travels to readiness and compliance… | T-MS-101 |
+| M05-20 | P0 | mixed | SCR-MS-04, SCR-MS-07, SCR-MS-08 · +non-UI: soft cap never blocks; inverter AC kW × count vs sanctioned kW; warning travels to readiness and compliance… | T-MS-101, T-MS-201 |
 | M05-21 | P0 | screen | SCR-MS-01 | T-MS-363 |
 | M05-22 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-23 | P0 | mixed | SCR-MS-05 · +non-UI: consumes validated M04 artifact only, never raw detector; provenance… | T-MS-102 |
@@ -1329,7 +1329,7 @@ Nothing below is renumbered.*
 | MS1-06 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-07 | P1 | policy | policy | LAW |
 | MS1-08 | P1 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-09 | P0 | mixed | SCR-MS-04 · +non-UI: Q28 law: only capacity limit is plan design-kW ceiling at… | T-MS-101 |
+| MS1-09 | P0 | mixed | SCR-MS-04 · +non-UI: the only capacity limit anywhere is the plan's design-kW ceiling at Save/Generate (`M05-12`'s law) | T-MS-101 |
 | MS1-10 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-11 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-12 | P0 | screen | SCR-MS-04 | T-MS-101 |
@@ -1468,7 +1468,7 @@ Nothing below is renumbered.*
 | MS4-15 | P0 | mixed | SCR-MS-07 · +non-UI: max-capacity estimation from drawn roofs | T-MS-201 |
 | MS4-16 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-17 | P1 | screen | SCR-MS-07 | T-MS-201 |
-| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price… | T-MS-201 |
+| MS4-18 | P0 | mixed | SCR-MS-07 · +non-UI: candidate scan, DC/AC band 0.90-1.35, closest-to-1.15 pick, price tiebreak among rated candidates, unpriced after | T-MS-201 |
 | MS4-19 | P0 | mixed | SCR-MS-07 · +non-UI: reuses compare sheet's nearest-fit computation | T-MS-201 |
 | MS4-20 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-21 | P0 | screen | SCR-MS-07 | T-MS-201 |
@@ -1476,10 +1476,10 @@ Nothing below is renumbered.*
 | MS4-23 | P0 | policy | policy | T-MS-202 |
 | MS4-24 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-25 | P0 | policy | policy | T-MS-204 |
-| MS4-26 | P2 | context | context → informative | realized-by: Recommended Enhancement, explicitly not v2 scope — the enhancements register and the design spec §10 carry it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
+| MS4-26 | P2 | context | context → informative | realized-by: Recommended Enhancement, explicitly not v2 scope — the design spec §10 carries it, and §5 non-goals of `docs/prd/modules/M05-studio/04-step4-components.md` records the exclusion ("battery economics modelling (MS4-26, REC)"). No v2 task builds it. |
 | MS4-27 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-28 | P0 | screen | SCR-MS-07 | T-MS-201 |
-| MS4-29 | P0 | mixed | SCR-MS-07 · +non-UI: certification-first shortlist ranked by cost-per-watt, capped | T-MS-201 |
+| MS4-29 | P0 | mixed | SCR-MS-07 · +non-UI: certification-first shortlist ranked by ₹/Wp among rated candidates, unpriced after, capped | T-MS-201 |
 | MS4-30 | P0 | mixed | SCR-MS-07 · +non-UI: per-candidate pricing, sizing, simulation, payback, ROI computations | T-MS-201 |
 | MS4-31 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-32 | P0 | mixed | SCR-MS-07 · +non-UI: recommendation rule: feasible AND within clipping limit | T-MS-201 |
@@ -1679,7 +1679,7 @@ Nothing below is renumbered.*
 | MS9-27 | P0 | policy | policy | T-F5-011 |
 | MS9-28 | P0 | policy | policy | T-F5-012 |
 | MS9-29 | P0 | mixed | SCR-F5-01, SCR-M06-17 · +non-UI: stage/progress, document pack and permanence surfaces are consumed… | T-F5-001 |
-| ~~MS9-30~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`) — swept for its wording, not its content. "Link issuance is an ONLINE operation, never a silent local-only mint" is a security and attribution law, not a connectivity one, and it is live at `F5-80`, with mint attribution at `F5-31`/`F5-79`. The source it closed, `CODE.share.104`, is still closed — now under `F5-80`. `docs/tasks/F5-customer-link.md` records the same removal; `T-F5-011` is alive.* | — |
+| ~~MS9-30~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling) — swept for its wording, not its content. "Link issuance is an ONLINE operation, never a silent local-only mint" is a security and attribution law, not a connectivity one, and it is live at `F5-80`, with mint attribution at `F5-31`/`F5-79`. The source it closed, `CODE.share.104`, is still closed — now under `F5-80`. `docs/tasks/F5-customer-link.md` records the same removal; `T-F5-011` is alive.* | — |
 
 ### docs/prd/modules/M05-studio/09-step9-bom.md
 
@@ -1832,7 +1832,7 @@ Nothing below is renumbered.*
 | M06-22 | P0 | mixed | SCR-M06-02 · +non-UI: R12 law: free navigation everywhere, validation only at Generate… | T-M06-002 |
 | M06-23 | P0 | mixed | SCR-M06-02 · +non-UI: one-pass gate: components, battery validity, payable floor, tranches,  | T-M06-002 |
 | M06-24 | P0 | screen | SCR-M06-02 | T-M06-002 |
-| M06-25 | P0 | mixed | SCR-M02-04 · +non-UI: every field commits on blur; a draft exists from the first commit and is resumable from the lead *(2026-08-07: the "editing online-first, generate/share/render online-only" connectivity clause is deleted — the vocabulary was `F4-01`'s and the boundary `F4-09`'s, both removed with the offline/sync capability, `Q61`; the live row now speaks only of losing a network mid-build)* | T-M06-023 |
+| M06-25 | P0 | mixed | SCR-M02-04 · +non-UI: every field commits on blur; a draft exists from the first commit and is resumable from the lead *(2026-08-07: the "editing online-first, generate/share/render online-only" connectivity clause is deleted — the vocabulary was `F4-01`'s and the boundary `F4-09`'s, both removed with the offline/sync capability (owner ruling); the live row now speaks only of losing a network mid-build)* | T-M06-023 |
 | M06-26 | P0 | policy | policy | T-M06-028 |
 | M06-27 | P0 | mixed | SCR-M06-10 · +non-UI: D22: all categories mandatory before Generate — the counter is the… | T-M06-010 |
 | M06-28 | P0 | mixed | SCR-M06-10 · +non-UI: DD12 one-picker law: M05 §M05.6 pattern cited, never restated; no… | T-M06-010 |
@@ -1840,7 +1840,7 @@ Nothing below is renumbered.*
 | M06-30 | P0 | mixed | SCR-M06-05, SCR-M06-10 · +non-UI: OFFGRID/HYBRID without battery: notice at step 3, hard block only at… | T-M06-005 |
 | M06-31 | P0 | policy | policy | T-M06-026 |
 | M06-32 | P0 | policy | policy | LAW |
-| M06-33 | P2 | context | context → registers/enhancements.md (future battery-economics layer riding F8-23 honesty laws) | realized-by: docs/prd/registers/enhancements.md |
+| M06-33 | P2 | context | context → its own REC row (future battery-economics layer riding F8-23 honesty laws) | realized-by: REC row — its one home (`OV-43`); design spec §10 |
 | M06-34 | P0 | engine | engine | T-M06-024 |
 | M06-35 | P0 | screen | SCR-M06-05 | T-M06-005 |
 | M06-36 | P0 | policy | policy | T-M06-022 |
@@ -1860,7 +1860,7 @@ Nothing below is renumbered.*
 | M06-50 | P0 | screen | SCR-M06-15 | T-M06-015 |
 | M06-51 | P0 | mixed | SCR-M06-17 · +non-UI: one computed value set feeds document, link, exports; render… | T-M06-017 |
 | M06-52 | P0 | policy | policy | T-M06-029 |
-| M06-53 | P0 | mixed | SCR-M06-18 · +non-UI: auto-send via connected transactional channel (Q33 integration)… | T-M06-018 |
+| M06-53 | P0 | mixed | SCR-M06-18 · +non-UI: auto-send via the tenant's connected transactional channel (owner ruling 2026-08-04)… | T-M06-018 |
 | M06-54 | P0 | mixed | SCR-M06-18 · +non-UI: delivery states only as connected channel reports; fallback never… | T-M06-018 |
 | M06-55 | P0 | policy | policy | T-M06-030 |
 | M06-56 | P0 | mixed | SCR-M06-17 · +non-UI: exactly one recommended variant by default; variants only when… | T-M06-017 |
@@ -1874,7 +1874,7 @@ Nothing below is renumbered.*
 | M07-01 | P0 | screen | SCR-M07-01 | T-M07-001 |
 | M07-02 | P0 | screen | SCR-M07-01 | T-M07-001 |
 | M07-03 | P0 | screen | SCR-M07-01 | T-M07-001 |
-| M07-04 | P0 | mixed | SCR-M07-01 · +non-UI: renders M02 lead-machine output only; invents no timer *(2026-08-07: the trailing "offline reads" clause is deleted with the offline/sync capability, `Q61` — My Day reads from the server like every other read, and the live `M07-04` never mentioned connectivity)* | T-M07-001 |
+| M07-04 | P0 | mixed | SCR-M07-01 · +non-UI: renders M02 lead-machine output only; invents no timer *(2026-08-07: the trailing "offline reads" clause is deleted with the offline/sync capability (owner ruling) — My Day reads from the server like every other read, and the live `M07-04` never mentioned connectivity)* | T-M07-001 |
 | M07-05 | P0 | policy | policy | T-M07-021 |
 | M07-06 | P0 | mixed | SCR-M07-01 · +non-UI: auto-created tasks record provenance rule and land on a named person,  | T-M07-001 |
 | M07-07 | P0 | engine | engine | T-M07-021 |
@@ -1954,7 +1954,7 @@ Nothing below is renumbered.*
 | M08-11 | P0 | screen | SCR-M08-01 | T-M08-001 |
 | M08-12 | P0 | screen | SCR-M08-01 | T-M08-001 |
 | M08-13 | P0 | policy | policy | LAW |
-| M08-14 | P1 | mixed | SCR-M08-01 · +non-UI: append-only actor-stamped timeline event; a backward stage move is allowed and recorded with the same weight as a forward one *(2026-08-07: "online-first write" replaced — the vocabulary was `F4-01`'s, deleted with the offline/sync capability, `Q61`; a stage move is an ordinary server write)* | T-M08-001 |
+| M08-14 | P1 | mixed | SCR-M08-01 · +non-UI: append-only actor-stamped timeline event; a backward stage move is allowed and recorded with the same weight as a forward one *(2026-08-07: "online-first write" replaced — the vocabulary was `F4-01`'s, deleted with the offline/sync capability (owner ruling); a stage move is an ordinary server write)* | T-M08-001 |
 | M08-15 | P0 | engine | engine | T-M08-009 |
 | M08-16 | P0 | screen | SCR-M08-02 | T-M08-002 |
 | M08-17 | P0 | mixed | SCR-M08-02 · +non-UI: single polymorphic append-only stream owned by M02; project and… | T-M08-002 |
@@ -1973,18 +1973,18 @@ Nothing below is renumbered.*
 | M08-30 | P0 | mixed | SCR-M08-03 · +non-UI: row set seeded once from market pack per segment at creation; module… | T-M08-003 |
 | M08-31 | P0 | mixed | SCR-M08-03 · +non-UI: verification is a separate audited act recording who and when; upload  | T-M08-003 |
 | M08-32 | P0 | policy | policy | T-M08-012 |
-| ~~M08-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It kept the local original of a captured project document until the server confirmed it held the file. `M04-55` rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else", so no retained local original exists for project documents; a device write queue is a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The guarantee on a failed upload is now the general one: the act fails fast and honestly rather than appearing to succeed (`F8-36`). `M08-32`, the neighbouring capture law, is untouched, as is `T-M08-012`.* | — |
+| ~~M08-33~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It kept the local original of a captured project document until the server confirmed it held the file. `M04-55` rules the photograph queue the product's one and only device-held queue, holding "photographs and nothing else", so no retained local original exists for project documents; a device write queue is a non-goal (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The guarantee on a failed upload is now the general one: the act fails fast and honestly rather than appearing to succeed (`F8-36`). `M08-32`, the neighbouring capture law, is untouched, as is `T-M08-012`.* | — |
 | M08-34 | P0 | policy | policy | T-M08-008 |
 | M08-35 | P0 | policy | policy | T-M08-009 |
 | M08-36 | P0 | engine | engine | T-M08-009 |
 | M08-37 | P0 | policy | policy | T-M08-011 |
 | M08-38 | P0 | mixed | SCR-M08-02 · +non-UI: sends via tenant's connected transactional channel with honest… | T-M08-002 |
 | M08-39 | P0 | policy | policy | T-M08-011 |
-| ~~M08-40~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It forbade a money-bearing offline write on a project surface; with no queue there is no such write left to forbid. The surviving money rule is `M11-06` — every money mutation is online-only and is refused, never queued — which `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3 cites by name ("No offline money, on any surface, at any tier"). `M08-39` and `T-M08-011` are untouched.* | — |
+| ~~M08-40~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It forbade a money-bearing offline write on a project surface; with no queue there is no such write left to forbid. The surviving money rule is `M11-06` — every money mutation is online-only and is refused, never queued — which `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3 cites by name ("No offline money, on any surface, at any tier"). `M08-39` and `T-M08-011` are untouched.* | — |
 | M08-41 | P0 | mixed | SCR-M08-04 · +non-UI: steps are the design's derived work order (M05-76); this module… | T-M08-004 |
 | M08-42 | P0 | mixed | SCR-M08-04 · +non-UI: attribution law per R16: tick attributed to coordinator/ticker; never  | T-M08-004 |
 | M08-43 | P0 | policy | policy | T-M08-014 |
-| ~~M08-44~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). It made installation-checklist ticks offline-capable and queued them; both halves are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The checklist itself is untouched at `M08-43` and `M08-45` — a tick is now an ordinary server write that fails fast and honestly when it cannot reach the server (`F8-36`). `T-M08-014` is alive.* | — |
+| ~~M08-44~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It made installation-checklist ticks offline-capable and queued them; both halves are non-goals by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1). The checklist itself is untouched at `M08-43` and `M08-45` — a tick is now an ordinary server write that fails fast and honestly when it cannot reach the server (`F8-36`). `T-M08-014` is alive.* | — |
 | M08-45 | P1 | screen | SCR-M08-05 | T-M08-005 |
 | M08-46 | P0 | mixed | SCR-M08-06 · +non-UI: link becomes the pack (F5's transition); share rides transactional… | T-M08-006 |
 | M08-47 | P0 | mixed | SCR-M08-06 · +non-UI: produces M02-16's referral row on both records; no credit, redemption  | T-M08-006 |
@@ -1999,13 +1999,13 @@ Nothing below is renumbered.*
 
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
-| M09-01 | P0 | context | context → M09.2-M09.10 feature-area rows; registers/enhancements.md | realized-by: docs/prd/modules/M09-field-workforce.md §M09.2–§M09.10 rows (this file); docs/prd/registers/enhancements.md |
+| M09-01 | P0 | context | context → M09.2-M09.10 feature-area rows, the module's REC rows among them | realized-by: docs/prd/modules/M09-field-workforce.md §M09.2–§M09.10 rows (this file), each REC row its own one home (`OV-43`) |
 | M09-02 | P0 | policy | policy | T-M09-009 |
 | M09-03 | P0 | policy | policy | T-M09-009 |
 | M09-04 | P0 | mixed | SCR-M09-01 · +non-UI: billing unit is tracked-seat-months; ledger, proration and invoicing… | T-M09-001 |
 | M09-05 | P0 | policy | policy | T-M09-009 |
 | M09-06 | P0 | context | context → M09 §5 non-goals; M09-09 | realized-by: docs/prd/modules/M09-field-workforce.md §5 non-goals; M09-09 (LAW) |
-| M09-07 | P0 | context | context → M09-25, M09-33, M09-34, M09-63; registers/enhancements.md | T-M09-014 |
+| M09-07 | P0 | context | context → M09-25, M09-33, M09-34, M09-63 (the module's REC rows, each its own one home per `OV-43`) | T-M09-014 |
 | M09-08 | P0 | policy | policy | LAW |
 | M09-09 | P0 | policy | policy | LAW |
 | M09-10 | P0 | policy | policy | T-M09-008 |
@@ -2018,7 +2018,7 @@ Nothing below is renumbered.*
 | M09-17 | P0 | policy | policy | T-M09-009 |
 | M09-18 | P0 | policy | policy | T-M09-009 |
 | M09-19 | P0 | mixed | SCR-M09-02 · +non-UI: record schema: who, site/visit, capture time, position with accuracy,  | T-M09-002 |
-| ~~M09-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`). Its durable offline queue for site check-in and check-out died with the capability — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1) — and its acceptance line, which tested the no-connection half, went with it. Its two surviving halves are live in the concurrency law and were never about connectivity: a visit's status only moves forward (`F4-17`), and last-writer-wins is resolved by server apply order and never by a device clock (`F4-19`), both built in `docs/tasks/F-platform.md`. The check-in/check-out capability itself is unchanged at `M09-18`, `M09-19` and `M09-21`–`M09-24`.* | — |
+| ~~M09-20~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its durable offline queue for site check-in and check-out died with the capability — a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1) — and its acceptance line, which tested the no-connection half, went with it. Its two surviving halves are live in the concurrency law and were never about connectivity: a visit's status only moves forward (`F4-17`), and last-writer-wins is resolved by server apply order and never by a device clock (`F4-19`), both built in `docs/tasks/F-platform.md`. The check-in/check-out capability itself is unchanged at `M09-18`, `M09-19` and `M09-21`–`M09-24`.* | — |
 | M09-21 | P0 | mixed | SCR-M09-02 · +non-UI: never backfill position from site coords, last-known, or network… | T-M09-002 |
 | M09-22 | P0 | policy | policy | T-M09-010 |
 | M09-23 | P1 | screen | SCR-M09-02 | T-M09-002 |
@@ -2029,12 +2029,12 @@ Nothing below is renumbered.*
 | M09-28 | P0 | mixed | SCR-M09-02, SCR-M02-04 · +non-UI: moves no lead stage; facts ride the lead's own scope | T-M09-002 |
 | M09-29 | P0 | policy | policy | T-M09-015 |
 | M09-30 | P0 | policy | policy | T-M09-015 |
-| M09-31 | P0 | mixed | SCR-M09-03 · +non-UI: three outcomes, mandatory reason on could-not-complete; forward-only status, a regressing write refused (`F4-17`) *(2026-08-07: "offline write … corrected on sync" reworded — there is no queue and no sync to correct on, `Q61`; `F4-17` survived the sweep and is the live source)* | T-M09-003 |
+| M09-31 | P0 | mixed | SCR-M09-03 · +non-UI: three outcomes, mandatory reason on could-not-complete; forward-only status, a regressing write refused (`F4-17`) *(2026-08-07: "offline write … corrected on sync" reworded — there is no queue and no sync to correct on (owner ruling); `F4-17` survived the sweep and is the live source)* | T-M09-003 |
 | M09-32 | P1 | screen | SCR-M09-02 | T-M09-002 |
 | M09-33 | P2 | mixed | SCR-M09-02 · +non-UI: geography/window ordering suggestion engine; acceptable or ignorable,  | T-M09-002 |
 | M09-34 | P2 | screen | SCR-F5-02 | T-M09-017 |
 | M09-35 | P0 | screen | SCR-M09-02 | T-M09-002 |
-| ~~M09-36~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling `Q61`), and it leaves the most consequential hole of the sweep — recorded as **OPEN owner question `Q64`**, which blocks `SCR-M09-02` (dated UNRESOLVED note and an `attendance-waiting` state on the brief). The row stated that marking a day start or a day end reaches the server to complete: until the server has it, the action shows as waiting and never as recorded. No live row replaces it — `M09-35` governs who marks it, `M09-37` what a check-in may propose, `M09-38` correction-by-append, `M09-39` absence — so an optimistic local tick on an attendance mark is currently unforbidden, in the one area where a fabricated or lost record reads as a judgement about a person and drives payroll. Not re-instated and no replacement invented — `Q64` is the owner's call. `Q15`, the 2026-08-04 ruling this row's "offline set not extended" clause cited, is SUPERSEDED 2026-08-07 by `Q61`.* **(Amended 2026-08-15: `Q64` is no longer open. The owner ruled and **restored this law as new live row `M09-71`**, in `docs/prd/modules/M09-field-workforce.md` §M09.5, dispositioned in this section on `SCR-M09-02`; `M09-71`'s source column names `M09-36` as the row it restores, and it restores only the honesty half — the connectivity half died correctly with the boundary and is not re-instated. **This row stays struck and this id is not resurrected** — `M09-36` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked brief, `Q64` open, the optimistic tick unforbidden — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
+| ~~M09-36~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling), and it leaves the most consequential hole of the sweep — closed later by restoring the law as **`M09-71`** — which blocks `SCR-M09-02` (dated UNRESOLVED note and an `attendance-waiting` state on the brief). The row stated that marking a day start or a day end reaches the server to complete: until the server has it, the action shows as waiting and never as recorded. No live row replaces it — `M09-35` governs who marks it, `M09-37` what a check-in may propose, `M09-38` correction-by-append, `M09-39` absence — so an optimistic local tick on an attendance mark is currently unforbidden, in the one area where a fabricated or lost record reads as a judgement about a person and drives payroll. Not re-instated and no replacement invented — the restoration is the owner's call. The 2026-08-04 ruling this row's "offline set not extended" clause cited fell with the boundary.* **(Amended 2026-08-15: the owner ruled and **restored this law as new live row `M09-71`**, in `docs/prd/modules/M09-field-workforce.md` §M09.5, dispositioned in this section on `SCR-M09-02`; `M09-71`'s source column names `M09-36` as the row it restores, and it restores only the honesty half — the connectivity half died correctly with the boundary and is not re-instated. **This row stays struck and this id is not resurrected** — `M09-36` genuinely was deleted on 2026-08-07 and every dated task and register record saying so stays true. Everything above — the hole, the blocked brief, the optimistic tick unforbidden — was true from 2026-08-07 until that ruling and is left standing as the record of it.)** | — |
 | M09-37 | P0 | mixed | SCR-M09-02 · +non-UI: never writes attendance without the person's confirming act | T-M09-002 |
 | M09-38 | P0 | policy | policy | T-M09-016 |
 | M09-39 | P0 | policy | policy | LAW |
@@ -2046,7 +2046,7 @@ Nothing below is renumbered.*
 | M09-45 | P0 | mixed | SCR-M09-05, SCR-M09-06 · +non-UI: no line, curve or estimate fitted across unobserved intervals | T-M09-005 |
 | M09-46 | P0 | policy | policy | T-M09-010 |
 | M09-47 | P0 | policy | policy | LAW |
-| M09-48 | P0 | mixed | SCR-M09-04 · +non-UI: a live position needs the server; the last known position is rendered with the time it was taken, plainly labelled, never as current *(2026-08-07: the `F4-09` citation is dropped — the online-only capability table was deleted with the offline/sync capability, `Q61`; the live sources are `F8-18` and `F8-34`)* | T-M09-004 |
+| M09-48 | P0 | mixed | SCR-M09-04 · +non-UI: a live position needs the server; the last known position is rendered with the time it was taken, plainly labelled, never as current *(2026-08-07: the `F4-09` citation is dropped — the online-only capability table was deleted with the offline/sync capability (owner ruling); the live sources are `F8-18` and `F8-34`)* | T-M09-004 |
 | M09-49 | P0 | mixed | SCR-M09-07 · +non-UI: no place creation; anchors are M08/M04/M02 sites; wrong fence = fix… | T-M09-007 |
 | M09-50 | P0 | mixed | SCR-M09-07, SCR-M09-01 · +non-UI: radius below typical fix accuracy refused with reason named | T-M09-007 |
 | M09-51 | P0 | mixed | SCR-M09-02 · +non-UI: ignored prompt writes nothing; fence crossing recorded as fence's… | T-M09-002 |
@@ -2157,7 +2157,7 @@ Nothing below is renumbered.*
 | M11-36 | P0 | mixed | SCR-M11-03, SCR-M11-02 · +non-UI: many entries per tranche; state follows entries; surplus never… | T-M11-002 |
 | M11-37 | P0 | mixed | SCR-M11-03 · +non-UI: receipt file rides capture-and-upload pipeline; entry is server-only… | T-M11-003 |
 | M11-38 | P1 | mixed | SCR-M11-03 · +non-UI: the ledger write path refuses a non-positive amount from any… | T-M11-003 |
-| M11-39 | P0 | mixed | SCR-M11-03 · +non-UI: recording requires the server, is refused with an honest reason, and nothing is held (`M11-06`) *(2026-08-07: the `F4-09` row-2 citation is dropped — the online-only capability table was deleted with the offline/sync capability, `Q61`; the money rule it pointed at is live and unchanged at `M11-06`, cited by `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3)* | T-M11-003 |
+| M11-39 | P0 | mixed | SCR-M11-03 · +non-UI: recording requires the server, is refused with an honest reason, and nothing is held (`M11-06`) *(2026-08-07: the `F4-09` row-2 citation is dropped — the online-only capability table was deleted with the offline/sync capability (owner ruling); the money rule it pointed at is live and unchanged at `M11-06`, cited by `foundations/F4-data-integrity.md` §5 · Non-goals, bullet 3)* | T-M11-003 |
 | M11-40 | P0 | policy | policy | T-M11-007 |
 | M11-41 | P0 | mixed | SCR-M11-02, SCR-F5-02 · +non-UI: receipt record contents: amount, tranche, date, mode, reference… | T-M11-002 |
 | M11-42 | P0 | mixed | SCR-M11-02 · +non-UI: claim never upgraded to confirmation; qualifier never dropped in… | T-M11-002 |
@@ -2303,7 +2303,7 @@ Nothing below is renumbered.*
 Recomputed 2026-08-15 against the live PRD, corrected the same day, and recomputed again the same
 day for the three restored rows. The live set is every id
 carrying a tiered table row in `docs/prd/foundations/*.md`, `docs/prd/modules/**/*.md` or `docs/prd/0*.md`:
-**1,659 rows** (was 1,656 before owner rulings `Q62`–`Q64` restored `M02-66`, `M02-67` and
+**1,659 rows** (was 1,656 before owner rulings of 2026-08-15 restored `M02-66`, `M02-67` and
 `M09-71` as new live rows; was 1,655 before that — the first recompute's id pattern stopped at the
 digits and dropped the
 suffixed `MS7-24b`, a live P0 `engine` row; every count below allows an optional lowercase suffix).
@@ -2312,7 +2312,7 @@ The live PRD holds 1,660 table rows in all; `F7-36` is the 1,660th and carries n
 live requirements and are counted in no total below. The struck total was 18 until 2026-08-15,
 when the 25 `F4-offline-and-sync` rows that had been dropped from this register outright were
 restored as struck rows under `foundations/F4-data-integrity.md`; that restoration adds no live
-row and changes no number in this section. **The struck total stays 43 through the `Q62`–`Q64`
+row and changes no number in this section. **The struck total stays 43 through the 2026-08-15
 restoration**: `M02-04`, `M02-26` and `M09-36` were genuinely deleted and stay struck, and the
 rows carrying their law forward are new ids counted among the 1,659 live. §3's own total was
 1,699 — equal to the pre-sweep live set — until that restoration and is now **1,702**: 1,659 live
@@ -2321,11 +2321,11 @@ three restored rows.
 
 | Gate | Result |
 |---|---|
-| Union completeness — register ids vs ground truth | **1659/1659** *(was 1656/1656 before owner rulings `Q62`–`Q64` restored `M02-66`, `M02-67` and `M09-71` later on 2026-08-15; was 1655/1655 earlier that day, which had dropped `MS7-24b`; 1699/1699 at generation. Every live id has exactly one §3 row and every §3 row that is not struck resolves to a live id — verified by set difference in both directions, empty both ways, with row ids matched as `<prefix>-<digits><optional lowercase suffix>`.)* |
+| Union completeness — register ids vs ground truth | **1659/1659** *(was 1656/1656 before owner rulings restored `M02-66`, `M02-67` and `M09-71` later on 2026-08-15; was 1655/1655 earlier that day, which had dropped `MS7-24b`; 1699/1699 at generation. Every live id has exactly one §3 row and every §3 row that is not struck resolves to a live id — verified by set difference in both directions, empty both ways, with row ids matched as `<prefix>-<digits><optional lowercase suffix>`.)* |
 | All screen proposals consumed exactly once | **221/221** *(was "226 · PASS". §2 lists 150 canonical screens plus 72 merged-from sources = 222 entries; `F4-offline-and-sync:shell-sync-indicator` is struck at `SCR-SHELL-01` and consumed by nothing, leaving 221. No merged-from source appears twice. **Not reconcilable entry-by-entry:** the proposals that went with `SCR-SHELL-04` and `SCR-SHELL-05` were removed from §2 rather than struck, so the drop from 226 to 222 cannot be audited from this file alone.)* |
 | Every row-side screen reference resolves | PASS *(every `SCR-…` in the Where cell of a **live** §3 row matches a screen in §2. **Struck rows are carved out and must be**: `~~F4-23~~` names `SCR-SHELL-04` and `~~F4-35~~` names `SCR-SHELL-05` precisely because those screens were deleted with them — a struck row records where a deleted requirement used to land, which is the audit trail, not a dangling pointer. `F4-21`'s Task cell names `SCR-SHELL-04` for the same reason. Carve-out added 2026-08-15, when restoring the 25 rows made the unqualified claim false.)* |
 | Every screen/mixed row on ≥1 screen; no empty screens | PASS *(all 783 live screen/mixed rows carry ≥1 screen id — was 780 before the three restored `mixed` rows; all 150 screens carry ≥1 live row, and no screen was added or removed by the restoration)* |
-| Every row dispositioned exactly once | **1659/1659** *(was 1656/1656 before the `Q62`–`Q64` restoration later on 2026-08-15; 1655/1655 earlier that day; 1699/1699 at generation)* |
-| — of which carry a task id | **1381** *(was 1378 before the `Q62`–`Q64` restoration — `M02-66` carries `T-M02-008`, `M02-67` `T-M02-002` and `M09-71` `T-M09-002`; was 1377 earlier on 2026-08-15 — `MS7-24b` carries `T-MS-262`; 1419 at generation)* |
-| — of which are dispositioned `LAW` or `realized-by` (policy/context rows that build nothing directly) | **278** *(unchanged by the `Q62`–`Q64` restoration — all three restored rows are tasked, not `LAW`; unchanged by the suffix correction too, `MS7-24b` being a tasked row; 280 at generation. 1381 + 278 = 1659)* |
-| Every *buildable* row (screen/mixed/engine/integration) resolves to a task that exists | **PASS with 4 stated exceptions** *(was an unqualified PASS. 365 distinct task ids are cited across §3 and every one of them is present in `docs/tasks/`. Four rows typed buildable are dispositioned `LAW` and cite no task at all — `BM-05`, `BM-07`, `F2-07` (mixed) and `M05-56` (P2, engine); this predates the offline/sync removal and none of the four was touched by it, but the gate cannot honestly be claimed unqualified while they stand. The one task id the sweep removed, `T-SHELL-004` (Sync Center), is named only inside `F4-21`'s explanatory note and is claimed by no row. The 365 is unchanged by both 2026-08-15 movements: recovering `MS7-24b` adds a tasked row but no new task id — its `T-MS-262` is already cited by `MS7-15`, `MS7-16` and four others — and the three rows restored by `Q62`–`Q64` cite `T-M02-008`, `T-M02-002` and `T-M09-002`, each already cited by rows of its own module. The four stated exceptions are also unchanged: all three restored rows are typed `mixed` and all three carry a task.)* |
+| Every row dispositioned exactly once | **1659/1659** *(was 1656/1656 before the three-row restoration later on 2026-08-15; 1655/1655 earlier that day; 1699/1699 at generation)* |
+| — of which carry a task id | **1381** *(was 1378 before the three-row restoration — `M02-66` carries `T-M02-008`, `M02-67` `T-M02-002` and `M09-71` `T-M09-002`; was 1377 earlier on 2026-08-15 — `MS7-24b` carries `T-MS-262`; 1419 at generation)* |
+| — of which are dispositioned `LAW` or `realized-by` (policy/context rows that build nothing directly) | **278** *(unchanged by the three-row restoration — all three restored rows are tasked, not `LAW`; unchanged by the suffix correction too, `MS7-24b` being a tasked row; 280 at generation. 1381 + 278 = 1659)* |
+| Every *buildable* row (screen/mixed/engine/integration) resolves to a task that exists | **PASS with 4 stated exceptions** *(was an unqualified PASS. 365 distinct task ids are cited across §3 and every one of them is present in `docs/tasks/`. Four rows typed buildable are dispositioned `LAW` and cite no task at all — `BM-05`, `BM-07`, `F2-07` (mixed) and `M05-56` (P2, engine); this predates the offline/sync removal and none of the four was touched by it, but the gate cannot honestly be claimed unqualified while they stand. The one task id the sweep removed, `T-SHELL-004` (Sync Center), is named only inside `F4-21`'s explanatory note and is claimed by no row. The 365 is unchanged by both 2026-08-15 movements: recovering `MS7-24b` adds a tasked row but no new task id — its `T-MS-262` is already cited by `MS7-15`, `MS7-16` and four others — and the three restored rows cite `T-M02-008`, `T-M02-002` and `T-M09-002`, each already cited by rows of its own module. The four stated exceptions are also unchanged: all three restored rows are typed `mixed` and all three carry a task.)* |

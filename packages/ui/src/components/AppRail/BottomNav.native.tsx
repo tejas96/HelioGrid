@@ -71,7 +71,7 @@ export function BottomNav({
             <Path
               d={
                 curved
-                  ? `M0 ${rise}Q50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`
+                  ? `M0 ${rise}Q 50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`
                   : notchPath(barWidth, height, notchRadius)
               }
               fill={theme.colors.surface}

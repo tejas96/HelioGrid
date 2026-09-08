@@ -5,17 +5,20 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-001 · Pricing Page
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
 **DESIGN:** SCR-M12-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-01-pricing-page.md`; they are the specification.
 **DONE WHEN:**
 - Given any tier and any module, when a tenant on that tier opens that module, then no capability is absent that a higher tier has (BM-05) — only ceilings, counts and bundle sizes differ.
 - Given any cap in any tier, when the pricing page and the usage screen render, then the cap is published and visible on both, and reaching it produces §04.5's soft-block with an upgrade path — never a feature withdrawal and never a surprise (BM-07).
+- Given the per-tier service terms (support in-app / in-app + WhatsApp / priority + onboarding call / named contact), when the pricing page renders them, then they are Tier-keyed screen copy from this screen under the i18n convention, read from no book field, and no entitlement, invoice or gate reads them (BM-14, BM-41; owner ruling 2026-09-07).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M12-002 · Billing Home
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
@@ -30,6 +33,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-003 · Plan Selection & Conversion
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
 **DESIGN:** SCR-M12-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
@@ -43,6 +47,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-004 · Usage
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
 **DESIGN:** SCR-M12-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
@@ -56,6 +61,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-005 · Subscription lifecycle machine
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-04, M12-05, M12-06, M12-07, M12-13, M12-14, M12-52
 **Requirements (verbatim):**
 - **M12-04** (P0) — **The lifecycle is one machine, six states, history append-only:** `trialing` → (pay) `active` · `trialing` → (14 days unconverted) `expired` [terminal] · `active` → (charge fails) `past_due` → (7 days unpaid) `halted` → (payment) `active` · `active` → (owner cancels) `cancelled` (runs to the paid period end, then behaves as `halted`). One non-terminal subscription per tenant. The six names are `BM-33`'s suite vocabulary and no other state name exists anywhere.
@@ -79,6 +85,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-006 · Charge truth, reconciliation & billing timers
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-09, M12-43
 **Requirements (verbatim):**
 - **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring.
@@ -90,6 +97,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-007 · Provider-neutral billing ports: hosted checkout, mandate rails & plan objects
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-03, M12-10, M12-11, M12-12
 **Requirements (verbatim):**
 - **M12-03** (P0) — **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change.
@@ -104,22 +112,24 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-008 · Entitlement engine
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-16, M12-17, M12-18, M12-19, M12-27
 **Requirements (verbatim):**
 - **M12-16** (P0) — **Entitlements are the current effective limits per key, recomputed on every charge and plan change**, sourced from plan, trial, or a manual grant — and queried on the hot path by every gate. No mechanism in the entitlement model can hold data hostage: read + export work regardless of any entitlement value.
 - **M12-17** (P0) — **Plans carry trial days and the included bundles** (voice minutes, AI detections, OTP fair-use — not billed v1, storage, plus the V2 meters); capacity ceilings (single-design kW, proposal counts, Starter's active projects) live in the plan definition. Seats are reserved and always unlimited — no per-seat pricing exists (the sole seat-counting exception is the tracked-seat add-on, `BM-22`, metered in §M12.5).
 - **M12-18** (P0) — **Entitlement checks run before the action; metering never blocks the action.** Billable usage (voice, detections) checks entitlements first; the metering write itself never fails or delays the request it records. Non-billable metrics are still metered for quotas and cost visibility.
 - **M12-19** (P1) — **Support-issued goodwill credits are entitlement-override records — audited, never manual edits.** Every override names who, what, why and when, and appears in the audit log (`F2-22`'s "entitlement overrides").
-- **M12-27** (P0) — **New field capture is never cut off before `halted` (owner ruling 2026-08-04, Q16).** No enforcement mechanic cuts off new field capture during dunning — capture works through the **full dunning grace** (the `past_due` window, M12-39) and **pauses only at `halted`**; a **halt that lands mid-visit lets the current visit complete** ("never strand a surveyor on a roof"); reads, exports and the upload of already-captured photographs are unchanged, always-on (M12-24, M12-26).
+- **M12-27** (P0) — **New field capture is never cut off before `halted` (owner ruling 2026-08-04).** No enforcement mechanic cuts off new field capture during dunning — capture works through the **full dunning grace** (the `past_due` window, M12-39) and **pauses only at `halted`**; a **halt that lands mid-visit lets the current visit complete** ("never strand a surveyor on a roof"); reads, exports and the upload of already-captured photographs are unchanged, always-on (M12-24, M12-26).
 **DONE WHEN:**
 - Given a plan change or charge, when it commits, then effective entitlements recompute in the same act and every subsequent check uses them (M12-16).
 - Given a metered action within allowance, when the meter write fails internally, then the action still succeeds and the miss is repaired by reconciliation — never a user-facing failure (M12-18).
-- Given a photograph already captured in the field on a tenant in any billing state, when it uploads, then no gate delays or refuses it; and given new field capture during dunning, then it continues — pausing only at `halted`, with a visit under way allowed to complete (M12-26, M12-27; owner ruling 2026-08-04 Q16).
+- Given a photograph already captured in the field on a tenant in any billing state, when it uploads, then no gate delays or refuses it; and given new field capture during dunning, then it continues — pausing only at `halted`, with a visit under way allowed to complete (M12-26, M12-27; owner ruling 2026-08-04).
 - (M12-17 and M12-19 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — plans carry trial days, the included bundles and the capacity ceilings, seats are reserved and always unlimited with no per-seat pricing beyond the tracked-seat add-on (M12-17); support-issued goodwill credits are entitlement-override records — audited, never manual edits — each naming who, what, why and when and appearing in the audit log (M12-19). M12-19's audit half is exercised by M12-58's line under the Laws section, whose `F2-22` covered-events list names entitlement overrides.)
 
 ### T-M12-009 · Soft-block enforcement gates & cap ladder
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-21, M12-22, M12-23, M12-30, M12-31
 **Requirements (verbatim):**
 - **M12-21** (P0) — **Every UI mutation is gated by the billing-state matrix; denial is typed and honest.** A blocked mutation returns a typed entitlement-blocked error; the UI renders the state banner and a "Reactivate" (or upgrade) path. This module implements `BM-35`'s matrix as the gate on every mutation and **may add enforcement detail but may never move a ✓ to a block** — the matrix is 04's law.
@@ -134,7 +144,7 @@ The closed table M12-23 names, copied verbatim from `docs/prd/modules/M12-platfo
 
 | Gate | Fires at | Never fires at | Denial experience |
 |---|---|---|---|
-| Design kW ceiling | Design save/creation · proposal Generate | Mid-edit, per-keystroke — "the flagship is never interrupted"; opening existing designs | Save blocked with upgrade prompt; existing designs always open (`M05-12`) — **confirmed as the studio's only gate, owner ruling 2026-08-04 (Q28)** |
+| Design kW ceiling | Design save/creation · proposal Generate | Mid-edit, per-keystroke — "the flagship is never interrupted"; opening existing designs | Save blocked with upgrade prompt; existing designs always open (`M05-12`) — **confirmed as the studio's only gate, owner ruling 2026-08-04** |
 | Proposal count / month | Proposal create only | Editing, duplicating, sharing existing proposals; reads/exports | 80% banner → 100% banner + 7-day grace → new creation pauses with upgrade/cycle note (`M06-26`) |
 | Active projects (Starter) | Mark-won → project create | Anything on existing projects — never strand a live installation | Mark-won blocked with upgrade prompt; existing projects fully workable (`M08-07`) |
 | Voice minutes | Queue insert **and** again before dial | Mid-call | Blocked entry marked + owner notified; AI-inbound over allowance falls to ring group/voicemail per tenant IVR (`M07-37`, `M07-50`) |
@@ -153,6 +163,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-010 · Usage metering ledger & rollups
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-32, M12-33, M12-37
 **Requirements (verbatim):**
 - **M12-32** (P0) — **The ledger is the bill.** Usage metering is an append-only ledger and no other counter exists: every event carries provenance (the call, the detection, the send, the document) and an idempotency key, so a retried job or duplicate webhook can never double-meter; rollups are always reproducible from the ledger — the same discipline as the money path. Internal cost estimates are never customer-facing.
@@ -165,11 +176,12 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-011 · Dunning ladder & trial nudges
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-39, M12-40, M12-41, M12-42
 **Requirements (verbatim):**
-- **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04, Q43):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
+- **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
 - **M12-40** (P0) — **Dunning channels are the market pack's stack, and platform→tenant messaging is ours to send.** The IN stack: in-app banner (owner + managers), push, SMS on registered templates (`F1-38`), and a business-messaging utility template where the owner opted in. D32 constrains tenant→customer messaging only — it does not restrict the platform messaging its own tenants. A future market's pack names its own channel stack.
-- **M12-41** (P0) — **All dunning copy is honest about state — no data-deletion threats, ever, because nothing is deleted.** Copy names the state, the consequence that will actually occur, and the resolving action; pre-debit notifications are the gateway's and may be referenced, not imitated. Consequences that **will** occur include the grandfathering forfeiture where the tenant is protected (owner ruling 2026-08-04, Q43): dunning and win-back copy names the price-protection loss honestly, and win-back offers never imply the old price survives the lapse.
+- **M12-41** (P0) — **All dunning copy is honest about state — no data-deletion threats, ever, because nothing is deleted.** Copy names the state, the consequence that will actually occur, and the resolving action; pre-debit notifications are the gateway's and may be referenced, not imitated. Consequences that **will** occur include the grandfathering forfeiture where the tenant is protected (owner ruling 2026-08-04): dunning and win-back copy names the price-protection loss honestly, and win-back offers never imply the old price survives the lapse.
 - **M12-42** (P1) — **Trial nudges reuse the dunning pipeline:** day 7 ("half way"), day 12, day 14 (expiry) — same channels, same honesty.
 **DONE WHEN:**
 - Given a first failed charge, when the ladder runs unpaid to day 7, then each rung fires with its stated content, day 4's message names the paused set exactly, and day 7's confirms what still works (M12-39, M12-41).
@@ -179,6 +191,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-012 · Subscription invoicing
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-44, M12-45
 **Requirements (verbatim):**
 - **M12-44** (P0) — **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons.
@@ -190,22 +203,23 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-013 · Grandfathered price-row selection
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M12-57
 **Requirements (verbatim):**
-- **M12-57** (P1) — **Grandfathering mechanics:** a protected tenant bills against the plan-price rows they signed up on until their market book's protection horizon lapses; repricing never applies mid-cycle or retroactively; an upgrade moves them to the new tier under their protection terms; once the horizon lapses, repricing reaches them at the next cycle. **Forfeiture on lapse (owner ruling 2026-08-04, Q43):** a lapse — `cancelled` or `halted` — **ends the price protection**; reactivation, whether inside or after the original horizon, bills against the **current list book's rows**, never the signed-up rows. Cancellation, dunning and win-back copy states the forfeiture plainly before the lapse (M12-39/M12-41's honesty duty; `BM-42` carries the law). The row-selection arithmetic is this module's.
+- **M12-57** (P1) — **Grandfathering mechanics:** a protected tenant bills against the plan-price rows they signed up on until their market book's protection horizon lapses; repricing never applies mid-cycle or retroactively; an upgrade moves them to the new tier under their protection terms; once the horizon lapses, repricing reaches them at the next cycle. **Forfeiture on lapse (owner ruling 2026-08-04):** a lapse — `cancelled` or `halted` — **ends the price protection**; reactivation, whether inside or after the original horizon, bills against the **current list book's rows**, never the signed-up rows. Cancellation, dunning and win-back copy states the forfeiture plainly before the lapse (M12-39/M12-41's honesty duty; `BM-42` carries the law). The row-selection arithmetic is this module's.
 **DONE WHEN:**
 - Given a grandfathered tenant, when the book reprices, then their bill is unchanged until their horizon lapses and never changes mid-cycle (M12-57).
-- Given a protected tenant who lapses to `cancelled` or `halted`, when they reactivate at any later date, then they bill against the current list book — protection forfeited on lapse — and the dunning/cancellation copy they saw stated the forfeiture before it happened (M12-57, M12-39, M12-41; owner ruling 2026-08-04 Q43).
+- Given a protected tenant who lapses to `cancelled` or `halted`, when they reactivate at any later date, then they bill against the current list book — protection forfeited on lapse — and the dunning/cancellation copy they saw stated the forfeiture before it happened (M12-57, M12-39, M12-41; owner ruling 2026-08-04).
 
 ## Laws (enforced through screens and review, no standalone build)
 
 - **M12-01** (P0) — **Two money systems that never mix — this module is the platform side.** (1) Platform SaaS billing: the tenant pays us, on our merchant account, under this module. (2) Tenant customer-collections: the customer pays the EPC via the tenant's own gateway account, under `modules/M11`. The platform never touches tenant funds; no surface here shows a collections figure, no total mixes the two, and the vocabularies stay disjoint — *subscription, plan, invoice* here; *collections, tranches, receipts* there (`M11-02`'s reciprocal). — *Enforced by:* content review of every M12 surface (T-M12-001…T-M12-004 and SCR-SHELL-06) and M11's reciprocal law; its acceptance line: Given every surface in this module, when audited for content, then no collections figure, tranche or customer-payment fact appears, and vice versa for M11 (M12-01).
 - **M12-02** (P0) — **Every number this module enforces is `04-business-model.md`'s.** Tier names (`BM-11`), prices/caps/bundles (`BM-41` for the launch book), the meter list (`BM-16`–`BM-22`), the billing-state vocabulary (`BM-33`), the soft-block law and matrix (`BM-32`–`BM-36`), cap law with the 80% pre-warning (`BM-34`), trial law (`BM-28`–`BM-31`), grandfathering (`BM-42`) and the supplier-of-record posture (`BM-40`) are defined there once. This module adds transitions, timers, gates, screens and records — never a second definition of any fact. — *Enforced by:* every task in this file sourcing values from book data via entitlements (T-M12-008) and review; its acceptance line: Given any price, cap or bundle rendered here, when traced, then it resolves to the market book via entitlements and to no constant of this module's own (M12-02).
 - **M12-15** (P0) — **There are no feature flags in this product; the single runtime gate is billing entitlements.** Features ship enabled when merged. A user's feature availability is determined only by plan entitlements (ceilings and booleans) plus usage allowances (metered bundles) — no per-tenant toggles, no beta flags, no dark launches, anywhere. — *Enforced by:* T-M12-008 and T-M12-009 being the product's only gating, and review (a feature flag anywhere is a defect); its acceptance line: Given the whole product, when searched for runtime gating, then every gate resolves to a billing entitlement or billing state and nothing else (M12-15).
-- **M12-20** (P0) — **Ceilings gate at product boundaries, never inside engines — CONFIRMED FINAL (owner rulings 2026-08-04, Q28/Q29).** No kW clamp exists inside the design engine: the single-design ceiling is a billing entitlement enforced at M12-21's checkpoints only (`DOC05.no-kw-clamp`). The owner confirmed both formerly open restraints as law: **Q28** — **zero feature gates in the studio**; the design-kW ceiling is the only gate, enforced at Save/Generate (never mid-edit), over-ceiling designs readable forever, and no studio entitlement key beyond it exists; **Q29** — the **OPEX/PPA proposal type is ungated on every tier** (the never-gate-features law holds; the kW ceiling applies naturally) and **no proposal-type entitlement key exists**, ever, in this module. — *Enforced by:* T-M12-009 implementing only the closed enforcement-point table, and review of the entitlement key set; its acceptance line: Given the entitlement key set, when audited, then no key gates a studio capability beyond design-kW and none references a proposal type (M12-20 — confirmed final, owner rulings 2026-08-04 Q28/Q29).
+- **M12-20** (P0) — **Ceilings gate at product boundaries, never inside engines — CONFIRMED FINAL (owner rulings 2026-08-04).** No kW clamp exists inside the design engine: the single-design ceiling is a billing entitlement enforced at M12-21's checkpoints only (`DOC05.no-kw-clamp`). The owner confirmed both formerly open restraints as law: **zero feature gates in the studio** — the design-kW ceiling is the only gate, enforced at Save/Generate (never mid-edit), over-ceiling designs readable forever, and no studio entitlement key beyond it exists; and the **OPEX/PPA proposal type is ungated on every tier** (the never-gate-features law holds; the kW ceiling applies naturally) and **no proposal-type entitlement key exists**, ever, in this module. — *Enforced by:* T-M12-009 implementing only the closed enforcement-point table, and review of the entitlement key set; its acceptance line: Given the entitlement key set, when audited, then no key gates a studio capability beyond design-kW and none references a proposal type (M12-20 — confirmed final, owner rulings 2026-08-04).
 - **M12-24** (P0) — **The never-gated list is law:** reads · search · exports · customer links · billing screens · **engineer sign-off on already-submitted designs** (a safety workflow) · the upload of photographs already captured in the field. No enforcement design may touch any of them, in any state, for any cap. — *Enforced by:* T-M12-009's gates carrying these as hard exclusions, and review of every enforcement design; its acceptance line: Given every item on the never-gated list in every billing state, when exercised, then it works (M12-24).
 - **M12-25** (P0) — **When halted, inbound agent calls degrade to a missed-call log + voicemail** — no AI minutes burn, the caller is never told about billing, and the degradation surface is `modules/M07`'s (`M07-50`); this module owns the state that triggers it. — *Enforced by:* the `halted` state T-M12-005 produces, consumed by M07's degradation ladder (`docs/tasks/M07-sales-execution.md` T-M07-028).
-- **M12-26** (P0) — **A photograph already captured in the field always uploads, in every billing state.** The block is on new mutations from the interface, never on the upload of a photograph the field user has already taken — the one piece of work the product holds on the device (`F4-21`). No gate may inspect, delay or refuse that upload, and reads work while blocked. — *Enforced by:* T-M12-009's gates never touching the upload path, verified by T-M12-008's DONE WHEN upload line: Given a photograph already captured in the field on a tenant in any billing state, when it uploads, then no gate delays or refuses it; and given new field capture during dunning, then it continues — pausing only at `halted`, with a visit under way allowed to complete (M12-26, M12-27; owner ruling 2026-08-04 Q16).
+- **M12-26** (P0) — **A photograph already captured in the field always uploads, in every billing state.** The block is on new mutations from the interface, never on the upload of a photograph the field user has already taken — the one piece of work the product holds on the device (`F4-21`). No gate may inspect, delay or refuse that upload, and reads work while blocked. — *Enforced by:* T-M12-009's gates never touching the upload path, verified by T-M12-008's DONE WHEN upload line: Given a photograph already captured in the field on a tenant in any billing state, when it uploads, then no gate delays or refuses it; and given new field capture during dunning, then it continues — pausing only at `halted`, with a visit under way allowed to complete (M12-26, M12-27; owner ruling 2026-08-04).
 - **M12-28** (P0) — **Read + export always work — the pre-committed law, enforced here.** "Never hold a customer's data hostage": tenant-level read and export work in every billing state, and trial expiry pauses only new creation. This is the one clause of the dead deferred-era billing section that survives, kept verbatim, and it outranks every enforcement idea. — *Enforced by:* T-M12-009's unconditional always-on set (M12-22) and review — it outranks every enforcement idea in this file.
 - **M12-29** (P0) — **No billing surface, state, or dunning behaviour ever reaches a customer link.** Links stay live — view and respond — in every state; the EPC's customer never learns the EPC's billing state from us. `foundations/F5` states the standing constraint (`F5-23`, `F5-60`); this module is bound by it at every gate. — *Enforced by:* T-M12-009's gates and T-M12-011's channels never addressing a customer link, and review against F5's standing law.
 - **M12-38** (P0) — **The agent usage view reads this ledger — the same numbers as billed.** `modules/M07`'s usage view (`M07-59`) and any dashboard usage figure (`modules/M13`) read M12's rollups; whether a cap applies is entitlement data from here; the deferred-era "no plan cap by design" claim is dead and appears nowhere. — *Enforced by:* T-M12-010's rollups being the single source consumed by the agent usage screen (`docs/tasks/M07-sales-execution.md` T-M07-020) and M13's dashboards; review that no consumer keeps a second counter.

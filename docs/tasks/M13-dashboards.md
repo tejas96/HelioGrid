@@ -5,6 +5,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-001 · Owner Dashboard
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-14 (P0), M13-15 (P0), M13-16 (P0), M13-20 (P1), M13-29 (P0), M13-30 (P0)
 **DESIGN:** SCR-M13-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M13-01-owner-dashboard.md`; they are the specification. (This is the single EPC Owner / Sales Manager home. M13-29 and M13-30 are the rows the PRD tags "`PS-07` consumed" and "`PS-09` consumed" — so the attention list, cash, pipeline, this-period, forecast and win/loss that `docs/prd/02-personas.md`'s PS-07 and PS-09 describe are built once, here, with the manager's rendering the same screen team-scoped. T-M13-002 / SCR-M13-02 is the Sales Executive's own-scoped step-back and builds none of it.)
@@ -19,6 +20,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-002 · Pipeline Dashboard (Rep's own step-back)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-31 (P0)
 **DESIGN:** SCR-M13-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md`; they are the specification. (This screen is the Sales Executive's own-scoped step-back only. The EPC Owner's and Sales Manager's home is SCR-M13-01 / T-M13-001, which carries M13-29 and M13-30 — the rows the PRD tags "`PS-07` consumed" and "`PS-09` consumed". PS-07 and PS-09 are quoted verbatim in this screen's brief because `docs/tasks/F-core.md` disposes them to it, but the brief now routes their rendering to SCR-M13-01; PS-09's own text requires one screen serving both scopes, "rather than building a second one". Nothing owner- or manager-scoped is built here.)
@@ -30,6 +32,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-003 · Operations Home
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-25 (P0), M13-39 (P0), M13-47 (P0)
 **DESIGN:** SCR-M13-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M13-03-operations-home.md`; they are the specification.
@@ -43,6 +46,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-004 · Pipeline Funnel
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-22 (P0)
 **DESIGN:** SCR-M13-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M13-04-pipeline-funnel.md`; they are the specification.
@@ -53,6 +57,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-005 · Win/Loss Analytics
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-23 (P0), M13-26 (P1)
 **DESIGN:** SCR-M13-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M13-05-win-loss-analytics.md`; they are the specification.
@@ -64,9 +69,10 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-006 · Home composition engine (preset ladder, composed blocks, switcher)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-10
 **Requirements (verbatim):**
-- **M13-10** (P0) — **The composition rule (resolves register `Q5` / F2 `F2-Q1`): one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration.
+- **M13-10** (P0) — **The composition rule: one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration.
 (M13-10's surface half — the switcher and the composed home in the app shell — ships in `T-SHELL-001` / `docs/ux/briefs/SCR-SHELL-01-app-shell.md`; this task builds the derivation: the fixed preset-precedence ladder as a product constant, the home resolution from held presets, and the composition of every other held preset's today-block from the owning modules' content contracts, unmodified.)
 **DONE WHEN:**
 - Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10).
@@ -75,6 +81,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-007 · Revenue and forecast read-model
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-03, M13-04
 **Requirements (verbatim):**
 - **M13-03** (P0) — **Forecast is a projection, never revenue.** Weighted pipeline (value × stage likelihood), labelled *expected, not promised*, and **never in the same total as won**. Lead estimated value is a weighted-pipeline input — forecast ≠ revenue, anywhere, ever.
@@ -86,6 +93,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-008 · Monthly targets — inline goal storage and derived actuals
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M13-17
 **Requirements (verbatim):**
 - **M13-17** (P1) — **Targets are optional, inline, and never a nag.** The dashboard works without a target; if used, a monthly target (tenant or per-user scope, one per scope+month) is set **inline on the dashboard** — there is no separate targets settings screen in v1. Stored as the goal only; actuals derive from proposals/payments at read time.
@@ -96,6 +104,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-009 · Descriptive statistics — medians, outlier flags, cycle-time measurement
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-18, M13-24
 **Requirements (verbatim):**
 - **M13-18** (P1) — **The outlier rule:** where one deal skews an average, the dashboard shows medians or flags the outlier — one outsized C&I deal must not make the pipeline look healthier than it is (the source's example is a single large C&I deal distorting the averages).
@@ -109,6 +118,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-010 · Monthly in-app summaries (dashboard and agent)
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M13-21, M13-45
 **Requirements (verbatim):**
 - **M13-21** (P1) — **If the owner never opens it, a short monthly summary is pushed in-app** — where they actually read things; the same fix as Agent performance's. The notification type registers with `foundations/F6`.
@@ -120,6 +130,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-011 · Trial-to-paid conversion reporting
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M13-51
 **Requirements (verbatim):**
 - **M13-51** (P1) — **Trial-to-paid conversion is the launch conversion metric this module reports** — the one acquisition measure named by source; its event taxonomy lands here.
@@ -129,6 +140,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-012 · Dashboard export
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M13-52, M13-53, M13-54
 **Requirements (verbatim):**
 - **M13-52** (P0) — **Every dashboard read is exportable, and export works in every billing state** — the read + export law applied to reporting (dashboards and search are in the always-on set; export is never gated).

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2 (Q77).
+    // A control is raised, not outlined — `surface` at e2.
     ...theme.elevation.e2,
   },
   buttonText: {

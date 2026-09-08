@@ -1,6 +1,6 @@
 # MS9 · Studio customer surfaces — the proposal document & the share link
 
-Status: draft · Origin mix: SRC-CODE + BRIEF (Sitting 8 rulings, 2026-08-05) · Depends on: F5 (customer-link laws), Q27 (3D inside the proposal link), Q42 (OTP default off), Q34 (permanent link), F8 (provenance/staleness), M01 (branding), M06 (proposal document + pinning), MS6/MS7/MS8 (the numbers, imagery and drawings)
+Status: draft · Origin mix: SRC-CODE + BRIEF (Sitting 8 rulings, 2026-08-05) · Depends on: F5 (customer-link laws), F5-33 (3D inside the proposal link), F5-44 (OTP default off), F5-70 (permanent link), F8 (provenance/staleness), M01 (branding), M06 (proposal document + pinning), MS6/MS7/MS8 (the numbers, imagery and drawings)
 Sources: POC code inventory — share (**109 keys**, 35 POC-DEFECTs — the pass's largest crop; zero automated coverage found on these files) · sitting rulings (S8-1…S8-4) · census A.10-8 share rows + A.10-11 link rows. The ledger index is retired; the POC repository named in `docs/build-order.md` is the source, and the sitting rulings are carried by the rows below.
 Forward: F5 (the main-suite customer-link framework this must satisfy) · M06 (the builder that issues the document) · MS11 (installation sheet).
 
@@ -38,12 +38,12 @@ The EPC's customer (no login — F5's law) · Sales Executive/Design Engineer (i
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS9-09 | Links follow F5: per-recipient NAMED links, revocable and re-mintable, with open attribution — not one permanent unnamed id per project (S8-2c fixes `.98/.99/.11`); permanence of the customer's own view follows Q34 (`.10`). | `BRIEF` S8-2c | P0 |
-| MS9-10 | The customer's acceptance path exists on the link (accept / ask a question / negotiate per F5), with OTP-at-accept available per tenant and OFF by default (Q42) (S8-2c fixes `.100`). | `BRIEF` S8-2c | P0 |
+| MS9-09 | Links follow F5: per-recipient NAMED links, revocable and re-mintable, with open attribution — not one permanent unnamed id per project (S8-2c fixes `.98/.99/.11`); the customer's own view is permanent — the link lives forever (`F5-70`; `.10`). | `BRIEF` S8-2c | P0 |
+| MS9-10 | The customer's acceptance path exists on the link (accept / ask a question / negotiate per F5), with OTP-at-accept available per tenant and OFF by default (S8-2c fixes `.100`). | `BRIEF` S8-2c | P0 |
 | MS9-11 | The link opens the customer's own surface — not the operator's editor chrome: no operator-only alerts, tool rails, or internal instructions; branding is the tenant's (S8-4.2 fixes `.8/.18/.20/.64`). | `SRC-CODE` + `BRIEF` S8-4 | P0 |
 | MS9-12 | The share page loads ONLY that design's data — never the operator's whole project store (S8-4.1 fixes `.106`, privacy). | `BRIEF` S8-4.1 | P0 |
 | MS9-13 | Read-only means read-only: opening a share link never triggers background recompute or persisted writes (S8-4.11 fixes `.7`) (`.19`). | `SRC-CODE` + `BRIEF` S8-4.11 | P0 |
-| MS9-14 | The 3D moment lives INSIDE the proposal link per Q27 — one link, with the 3D model card, working copy-link feedback and a scannable QR that fails visibly rather than silently (S8-4.8/.12 fix `.41/.53`) (`.49/.51/.52/.55`). | `SRC-CODE` + `BRIEF` S8-4 | P0 |
+| MS9-14 | The 3D moment lives INSIDE the proposal link (`F5-33`) — one link, with the 3D model card, working copy-link feedback and a scannable QR that fails visibly rather than silently (S8-4.8/.12 fix `.41/.53`) (`.49/.51/.52/.55`). | `SRC-CODE` + `BRIEF` S8-4 | P0 |
 | MS9-15 | Link resolution is robust: hydration shows a loading state rather than a blank page (S8-4.10 fixes `.4`); a deep link never crashes (S8-4.6 fixes `.5`); a valid link to an incomplete design gets an honest message, not "invalid link" (S8-4.6 fixes `.13`) (`.6/.9/.12`). | `SRC-CODE` + `BRIEF` S8-4.6/.10 | P0 |
 
 ### MS9.4 — Honesty on the customer artefact
@@ -77,7 +77,7 @@ The EPC's customer (no login — F5's law) · Sales Executive/Design Engineer (i
 
 ## 4. Cross-module contracts
 
-Consumes: MS6 (3D scene, captures), MS7 (energy, finance, narrative, review verdict), MS8 (drawings, sized ratings), M01 (branding), F1 (currency/scheme rules), F8 (provenance/staleness), F5 (link framework), M06 (document lifecycle + pinning), Q27/Q34/Q42. Provides: the studio's contribution to the customer artefact and the 3D experience inside the proposal link.
+Consumes: MS6 (3D scene, captures), MS7 (energy, finance, narrative, review verdict), MS8 (drawings, sized ratings), M01 (branding), F1 (currency/scheme rules), F8 (provenance/staleness), F5 (link framework), M06 (document lifecycle + pinning), F5-33/F5-70/F5-44. Provides: the studio's contribution to the customer artefact and the 3D experience inside the proposal link.
 
 **Recorded alignment note:** the POC inverts F5's model (its web page is login-gated and the customer's route to numbers is an operator-produced PDF, `.102`). V2 follows F5: the customer's link is the primary surface and the PDF is an artefact of it. Recorded, ruled by S8-2c, not silently reconciled.
 
@@ -87,7 +87,7 @@ Operator tooling on customer surfaces (MS9-11) · unbounded permanent unnamed li
 
 ## 6. Open items
 
-None — Sitting 8 closed with zero open items (4 rulings covering all 35 defects and the F5/Q42 alignment gaps, 2026-08-05).
+None — Sitting 8 closed with zero open items (4 rulings covering all 35 defects and the F5 alignment gaps, 2026-08-05).
 
 ## Acceptance criteria (P0 coverage)
 

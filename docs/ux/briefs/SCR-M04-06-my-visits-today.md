@@ -17,14 +17,14 @@ the PRD's own worked example is a rep who is also a surveyor landing on My Day *
 visits shown inside it**. The person can still switch: the shell's switcher (`SCR-SHELL-01`) lists
 the home of every preset they hold. Design the block seams: this screen must be able to host one
 or more foreign today-blocks without the layout breaking or the screen's own purpose being buried.
-The ladder itself is a product constant, not tenant configuration (`M13-10`, register `Q5`).
+The ladder itself is a product constant, not tenant configuration (`M13-10`).
 
 ## Requirements (verbatim)
 
 ### docs/prd/modules/M04-survey.md
 
 - **M04-38** (P0) — **The Survey Engineer's home screen is today's visits.** Each row carries address, customer, time and distance, with **one-tap navigation** and **one-tap call**. It is the front door of the surveyor's day.
-- **M04-58** (P0) — **A visit that cannot be completed ends with a reason, a reschedule and exactly one message — sent through the tenant's connected transactional channel where one exists (owner ruling 2026-08-04, Q33).** Where the customer is not home or the gate is locked, the surveyor records **"Could not complete"** with a reason, which opens the reschedule flow. The customer gets **one** message about it: with a connected channel it sends automatically under the transactional template class — the source's *"customer gets one"* wording is now delivered literally — and with no channel connected the product composes it ready to paste, a person sends it, and no delivery is claimed (`M02-47`/`M02-48`'s rule). `registers/conflicts.md` row 4 carries the resolution note. _(non-UI half, build-side: exactly one message: auto via connected channel, else composed — for awareness, not for drawing)_
+- **M04-58** (P0) — **A visit that cannot be completed ends with a reason, a reschedule and exactly one message — sent through the tenant's connected transactional channel where one exists (owner ruling 2026-08-04).** Where the customer is not home or the gate is locked, the surveyor records **"Could not complete"** with a reason, which opens the reschedule flow. The customer gets **one** message about it: with a connected channel it sends automatically under the transactional template class — the source's *"customer gets one"* wording is now delivered literally — and with no channel connected the product composes it ready to paste, a person sends it, and no delivery is claimed (`M02-47`/`M02-48`'s rule). _(non-UI half, build-side: exactly one message: auto via connected channel, else composed — for awareness, not for drawing)_
 - **M04-59** (P0) — **A wrong address is corrected on the spot, and the correction updates the site record.** A surveyor who arrives at the wrong address fixes it there and then, from the visit; the corrected address propagates to the site record so the next visit, the next design and the next document all use it. _(non-UI half, build-side: correction propagates to the site record — for awareness, not for drawing)_
 
 ### docs/prd/modules/M13-dashboards-and-reporting.md
