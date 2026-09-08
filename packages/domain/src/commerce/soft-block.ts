@@ -14,8 +14,8 @@
 
 /**
  * The matrix's column axis — and it is NOT `BillingState` (`BM-33`). Six state names produce
- * seven columns, because `past_due` behaves as two: days 0–3 keep full function behind a banner,
- * days 4–7 pause the metered features. `cancelled` is qualified too — it runs out its paid period
+ * seven columns, because `past_due` behaves as two: first full function behind a banner, then
+ * the metered features paused. `cancelled` is qualified too — it runs out its paid period
  * behaving as `active`, and only afterwards reads as its own column.
  *
  * Which phase a tenant is in RIGHT NOW is `M12`'s to resolve, because it needs the tenant's clock
@@ -180,7 +180,7 @@ export const STATE_CAPABILITY_MATRIX: Readonly<
     expired: AVAILABLE,
     cancelled_post_period: AVAILABLE,
   },
-  /* "Voice agent (outbound + AI inbound)" — metered, so it pauses from `past_due` day 4. */
+  /* "Voice agent (outbound + AI inbound)" — metered, so it pauses in `past_due`'s second phase. */
   voice_agent: {
     trialing: WITHIN_ALLOWANCE,
     active: WITHIN_ALLOWANCE,

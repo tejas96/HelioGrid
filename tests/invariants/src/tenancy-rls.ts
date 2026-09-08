@@ -35,34 +35,48 @@ export async function runTenancyInvariants(adminUrl: string) {
   const suffix = tenantA.slice(0, 8);
 
   try {
-    const [tableCount] = await sql<{ n: number }[]>`
-      select count(*)::int as n from pg_class c
-      join pg_namespace n on n.oid = c.relnamespace
-      where n.nspname = 'public' and c.relkind in ('r', 'p')
-        and c.relname <> 'schema_migrations'`;
-    const tables = tableCount?.n ?? 0;
+    // TENANT tables — those carrying tenant_id — identified from the catalog, never by name.
+    // Partition children are excluded STRUCTURALLY via pg_inherits: a `not like 'audit_log_%'`
+    // filter was a guess about naming, and a real tenant table called `usage_events_rollup`
+    // matched the prefix, dropped out of this list, and escaped BOTH the arming check and the
+    // leak loop below while table-tenancy-scan vouched for it as tenant-scoped. relkind
+    // ('r','p') also keeps views out, which information_schema.columns did not.
+    //
+    // This count, not the count of every public table, is what the greenfield guards below
+    // read: global reference data (the market pack) is migrated before any tenant table, and
+    // proving nothing about it here is correct — table-tenancy-scan holds its grants.
+    const tenantTables = (
+      await sql`select c.relname as table_name
+        from pg_class c
+        join pg_namespace n on n.oid = c.relnamespace
+        join pg_attribute a on a.attrelid = c.oid and a.attname = 'tenant_id' and a.attnum > 0
+        where n.nspname not in ('pg_catalog', 'information_schema', 'pg_toast')
+          and n.nspname not like 'pg\\_temp%' and n.nspname not like 'pg\\_toast%'
+          and c.relkind in ('r', 'p')
+          and not exists (select 1 from pg_inherits i where i.inhrelid = c.oid)
+        order by c.relname`
+    ).map((r) => r.table_name as string);
 
     const roleRow =
       await sql`select rolbypassrls, rolsuper from pg_roles where rolname = 'app_user'`;
 
     /*
      * Fires when NO `app_user` role exists. Every db-backed check below names that role, so
-     * postgres raises 42704 and they cannot run at all rather than running vacuously.
+     * postgres raises 42704 and they cannot run at all rather than running vacuously. Roles are
+     * cluster objects from `infra/postgres/init/01-roles.sql`, which CI runs before it
+     * migrates and `pnpm infra:up` runs on first boot.
      *
-     * Still every CI run — a bare `postgres:16` service with no init SQL. Never locally:
-     * `pnpm infra:up` provisions the role from `infra/postgres/init/01-roles.sql`, so a reset
-     * database has roles and zero tables and takes the `tables === 0` branch below.
-     *
-     * Fail CLOSED where it still means something: tables without roles is a broken database,
-     * not a greenfield one.
+     * Fail CLOSED where it still means something: tenant tables without the role is a broken
+     * database, not an unprovisioned one.
      */
     if (roleRow.length === 0) {
-      assert(tables === 0, 'app_user role exists (schema is present, so the role must be too)');
+      assert(
+        tenantTables.length === 0,
+        'app_user role exists (tenant tables are present, so the role must be too)',
+      );
       console.warn(
-        'tenancy invariants VACUOUS — the database was never migrated: 0 application tables ' +
-          'and no app_user role (greenfield). NOTHING about ' +
-          'tenancy is proven. Real coverage returns with the auth + tenancy module’s first ' +
-          'migration, which re-creates the roles it asserts.',
+        'tenancy invariants VACUOUS — no tenant table and no app_user role: the database was ' +
+          'never provisioned. NOTHING about tenancy is proven.',
       );
       return;
     }
@@ -93,21 +107,18 @@ export async function runTenancyInvariants(adminUrl: string) {
       });
 
     /*
-     * GREENFIELD GUARD. The auth teardown deleted every migration,
-     * so `tenants` and `users` do not exist and nothing below can seed or exercise them.
-     * The catalog half would still "pass" over zero tables, which is worse than useless —
-     * it would report tenancy as proven when nothing was proven at all.
-     *
-     * This branch is the roles-survived case: a database migrated before the teardown still
-     * carries app_user, so the assertions above ran and mean something. A never-migrated
-     * database returned earlier, above.
+     * GREENFIELD GUARD. Until the identity spine lands, no table carries tenant_id, so
+     * nothing below can seed or exercise one — and the catalog half would still "pass" over
+     * zero tenant tables, which is worse than useless: it would report tenancy as proven when
+     * nothing was proven at all. Keyed on TENANT tables: the market pack tables exist before
+     * this returns, and they are readable global reference data with nothing to isolate.
      */
-    if (tables === 0) {
+    if (tenantTables.length === 0) {
       console.warn(
-        'tenancy invariants VACUOUS — 0 application tables (greenfield). ' +
-          'Verified only that app_user exists without BYPASSRLS/superuser and that the ' +
-          'connecting role can SET ROLE app_user. CROSS-TENANT ISOLATION IS UNPROVEN until ' +
-          'the auth + tenancy module lands its first migration.',
+        'tenancy invariants VACUOUS — no table carries tenant_id (only global reference data ' +
+          'is migrated). Verified only that app_user exists without BYPASSRLS/superuser and ' +
+          'that the connecting role can SET ROLE app_user. CROSS-TENANT ISOLATION IS UNPROVEN ' +
+          "until the identity spine's migration lands (T-M01-025).",
       );
       return;
     }
@@ -120,23 +131,6 @@ export async function runTenancyInvariants(adminUrl: string) {
       (${userA}, ${tenantA}, 'User A', ${`+91900000${suffix.slice(0, 4)}1`}),
       (${userB}, ${tenantB}, 'User B', ${`+91900000${suffix.slice(0, 4)}2`})`;
 
-    // Partition children are identified STRUCTURALLY via pg_inherits, never by name. The
-    // former `not like 'audit_log_%'` filter was a guess about naming: a real tenant table
-    // called `usage_events_rollup` or `audit_log_retention` matched the prefix, dropped out of
-    // this list, and escaped BOTH the arming check and the leak loop below while
-    // table-tenancy-scan vouched for it as tenant-scoped. relkind ('r','p') also keeps views
-    // out, which information_schema.columns did not.
-    const tenantTables = (
-      await sql`select c.relname as table_name
-        from pg_class c
-        join pg_namespace n on n.oid = c.relnamespace
-        join pg_attribute a on a.attrelid = c.oid and a.attname = 'tenant_id' and a.attnum > 0
-        where n.nspname not in ('pg_catalog', 'information_schema', 'pg_toast')
-          and n.nspname not like 'pg\\_temp%' and n.nspname not like 'pg\\_toast%'
-          and c.relkind in ('r', 'p')
-          and not exists (select 1 from pg_inherits i where i.inhrelid = c.oid)
-        order by c.relname`
-    ).map((r) => r.table_name as string);
     assert(
       tenantTables.length >= 7,
       `schema scan found tenant tables (got ${tenantTables.length})`,

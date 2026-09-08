@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { minorUnits } from '../../src/money/minor-units';
+import { METERS } from '../../src/commerce/meters';
+import { type MinorUnits, minorUnits } from '../../src/money/minor-units';
 import { clearsCogsFloor, metersBelowCogsFloor } from '../../src/pricing/cogs';
 import { IN_PRICE_BOOK } from '../../src/pricing/india';
 import type { MeterOverage, PriceBookPack, WorstCaseCogs } from '../../src/pricing/pack';
@@ -121,17 +122,44 @@ describe('metersBelowCogsFloor — which rows a book got wrong (BM-17, BM-41)', 
   });
 });
 
-describe('the IN book’s own headroom above the floor (BM-26)', () => {
-  it.each([
-    { meter: 'voice minutes', rate: 600, cost: 428, floor: 599 },
-    { meter: 'AI roof detections', rate: 1_000, cost: 714, floor: 1_000 },
-    { meter: 'WhatsApp conversations', rate: 150, cost: 107, floor: 150 },
-    { meter: 'SMS messages', rate: 35, cost: 25, floor: 35 },
-    { meter: 'email messages', rate: 10, cost: 7, floor: 10 },
-    { meter: 'tracked seat-months', rate: 9_900, cost: 7_071, floor: 9_899 },
-  ])('holds $meter at $rate paise against a floor of $floor', ({ rate, cost, floor }) => {
-    expect(rate).toBeGreaterThanOrEqual(floor);
-    expect(clearsCogsFloor(minorUnits(floor), costing(cost))).toBe(true);
-    expect(clearsCogsFloor(minorUnits(floor - 1), costing(cost))).toBe(false);
-  });
+/** The largest whole-paise cost a rate survives under the floor — the figure `BM-26`'s ruling authors. */
+function largestSurvivableCost(rate: MinorUnits): number {
+  let cost = 0;
+  while (clearsCogsFloor(rate, costing(cost + 1))) cost += 1;
+  return cost;
+}
+
+interface PublishedRate {
+  label: string;
+  rate: MinorUnits;
+  authored: WorstCaseCogs;
+}
+
+/** The rates one meter's overage publishes, each with the worst-case figure authored beside it. */
+function ratesOf(meter: string, overage: MeterOverage): PublishedRate[] {
+  if (overage.kind === 'ceiling') return [];
+  if (overage.kind === 'per_unit') {
+    return [{ label: meter, rate: overage.rate, authored: overage.worstCaseCogs }];
+  }
+  return overage.channels.map((channel) => ({
+    label: `${meter} · ${channel.channel}`,
+    rate: channel.rate,
+    authored: channel.worstCaseCogs,
+  }));
+}
+
+/** Every rate the IN book publishes — read from the book, never retyped. */
+function publishedRates(): PublishedRate[] {
+  return METERS.flatMap((meter) => ratesOf(meter, IN_PRICE_BOOK.overage[meter]));
+}
+
+describe('the IN book’s worst-case figures are the ceilings its own rates imply (BM-17, BM-26)', () => {
+  it.each(publishedRates())(
+    '$label: the authored figure is the largest cost its rate survives',
+    ({ rate, authored }) => {
+      expect(authored.amount).toBe(largestSurvivableCost(rate));
+      expect(clearsCogsFloor(rate, authored)).toBe(true);
+      expect(clearsCogsFloor(rate, costing(authored.amount + 1))).toBe(false);
+    },
+  );
 });

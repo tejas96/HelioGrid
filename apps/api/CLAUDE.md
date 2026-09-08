@@ -13,8 +13,9 @@ Traps: `.claude/landmines.md` · what holds a rule: `mechanisms.md` · deps:
 ## Folder shape — a closed set; never invent a folder
 
 ```
-src/{config,common,modules}
+src/{config,common,modules,scripts}
 src/modules/<m>/    <m>.module|public|controller|service|repository.ts · tokens.ts · internal/
+src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
 ```
 
 Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).
@@ -27,13 +28,15 @@ env var still wins — Fly secrets and CI are never overridden.
 
 ```
 pnpm --filter @heliogrid/api dev | build | typecheck     # dev = tsx watch, API_PORT 8084
+pnpm --filter @heliogrid/api pack:publish                # the typed pack as its market's next revision
 curl localhost:8084/health                               # liveness · /health/ready = readiness
 ```
 
 ## Local conventions
 
 - **db and drizzle are legal ONLY in `*.repository.ts`.** Services take repositories by DI and
-  never see a `tx` or a table; cross-tenant work lives in `*.admin.repository.ts`.
+  never see a `tx` or a table; cross-tenant and platform-authored writes live in
+  `*.admin.repository.ts`. A `src/scripts/` command drives a service, never a repository.
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - `common/` is framework plumbing two or more modules need. It may never import a module, and
   business behaviour belongs in `packages/domain` instead.

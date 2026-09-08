@@ -1,8 +1,8 @@
 /**
  * The commercial structure vocabularies — how this product is packaged and sold, market-neutral
- * and currency-free (`BM-11`, `BM-12`, `BM-16`, `BM-33`). Ten closed lists and two maps.
+ * and currency-free (`BM-11`, `BM-12`, `BM-16`, `BM-33`).
  *
- * Four say what a tenant is SOLD; four say what the platform pays for instead (`costs.ts` —
+ * Some say what a tenant is SOLD; some say what the platform pays for instead (`costs.ts` —
  * `BM-23`, `BM-24`, `BM-25`); two are the axes of the soft-block matrix (`soft-block.ts` —
  * `BM-32`, `BM-35`, `BM-36`), which says what a tenant may still do when they have not paid. The
  * second group exists because an absence reads as an oversight: a cost the product promised to

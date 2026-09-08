@@ -1,35 +1,23 @@
+import { schema as dbSchema } from '@heliogrid/db';
 import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
-
-/**
- * GREENFIELD: `@heliogrid/db` exports no `schema` right now, so there
- * is no Drizzle model to compare and `dbSchema` below is empty. The comparison code is kept
- * INTACT — the auth + tenancy module re-adds `packages/db/src/schema/` with its first
- * migration, and this import comes back as `import { schema as dbSchema } from '@heliogrid/db'`
- * on that day.
- *
- * Meanwhile the run is not vacuous: with no model, the database must be empty too. A table
- * that exists with nothing modelling it is exactly the drift this file was written to catch,
- * and it is MORE likely during a rebuild, not less.
- */
-const dbSchema: Record<string, unknown> = {};
 
 /**
  * Drizzle model ↔ migrated database parity.
  *
  * Migrations are hand-written SQL (packages/db/migrations/*.sql). `packages/db/src/schema/` is
  * a SECOND, hand-maintained description of the same tables — the one the application actually
- * queries through. Nothing compared them: a column added in SQL and not in the model, or the
- * reverse, typechecks, lints, passes boundaries and passes every other invariant. drizzle-kit
- * is installed with a config file and no script, so it was never going to catch it either.
+ * queries through. Nothing else compares them: a column added in SQL and not in the model, or
+ * the reverse, typechecks, lints, passes boundaries and passes every other invariant.
+ * drizzle-kit only DRAFTS the SQL, so it was never going to catch it either.
  *
  * The failure this prevents is quiet and expensive: a column the model does not know about is
  * invisible to every query builder call, and a column the model invents produces a runtime
  * `column does not exist` on a path nobody exercised before deploy.
  *
- * SCOPE, honestly: names and nullability, not types. Comparing Postgres types to Drizzle's
- * type constructors means maintaining a mapping table that would itself drift — and a
- * NAME-level mismatch is the shape this defect actually takes. Partitioned parents are
- * included; their children are not (they inherit their columns).
+ * SCOPE, honestly: tables both ways, then names and nullability, not types. Comparing Postgres
+ * types to Drizzle's type constructors means maintaining a mapping table that would itself
+ * drift — and a NAME-level mismatch is the shape this defect actually takes. Partitioned
+ * parents are included; their children are not (they inherit their columns).
  */
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -41,11 +29,11 @@ type ColumnRow = { table_name: string; column_name: string; is_nullable: string 
 /** One table's worth of the comparison — split out so the caller stays a flat loop. */
 function compareTableColumns(
   table: string,
-  exported: unknown,
+  exported: Table,
   liveCols: Map<string, boolean>,
   problems: string[],
 ): void {
-  for (const [, col] of Object.entries(getTableColumns(exported as Table))) {
+  for (const [, col] of Object.entries(getTableColumns(exported))) {
     const liveNullable = liveCols.get(col.name);
     if (liveNullable === undefined) {
       problems.push(`${table}.${col.name} is in the Drizzle model but not in the database`);
@@ -62,7 +50,7 @@ function compareTableColumns(
   }
   // The other direction: a column the migration added and the model never learned about.
   const modelCols = new Set(
-    Object.values(getTableColumns(exported as Table)).map((c) => (c as { name: string }).name),
+    Object.values(getTableColumns(exported)).map((c) => (c as { name: string }).name),
   );
   for (const name of liveCols.keys()) {
     if (!modelCols.has(name)) {
@@ -91,8 +79,8 @@ export async function runSchemaParity(adminUrl: string) {
     }
 
     const problems: string[] = [];
-    for (const exported of Object.values(dbSchema)) {
-      if (!is(exported, Table)) continue;
+    const modelled: Table[] = Object.values(dbSchema).filter((exported) => is(exported, Table));
+    for (const exported of modelled) {
       const table = getTableName(exported);
       const liveCols = liveByTable.get(table);
       if (!liveCols) {
@@ -100,6 +88,16 @@ export async function runSchemaParity(adminUrl: string) {
         continue;
       }
       compareTableColumns(table, exported, liveCols, problems);
+    }
+
+    // Tables the other way: one the migrations built that nothing models — a per-key pack table
+    // beside the one payload column, a table a deleted model left behind — is drift too, and
+    // the more likely kind during a rebuild. The migration ledger is bookkeeping, not schema.
+    const modelledNames = new Set<string>(modelled.map(getTableName));
+    for (const table of liveByTable.keys()) {
+      if (table !== 'schema_migrations' && !modelledNames.has(table)) {
+        problems.push(`table "${table}" is in the database but not in the Drizzle model`);
+      }
     }
 
     assert(
@@ -111,26 +109,16 @@ export async function runSchemaParity(adminUrl: string) {
         '  someone makes them — change them in the SAME slice (/migration).',
     );
 
-    const modelled = Object.values(dbSchema).filter((t) => is(t, Table)).length;
-    if (modelled === 0) {
-      // The greenfield direction: nothing modelled, so nothing may exist.
-      const orphans = [...liveByTable.keys()].filter((t) => t !== 'schema_migrations');
-      assert(
-        orphans.length === 0,
-        `no Drizzle model exists, but the database holds ${orphans.length} table(s): ` +
-          `${orphans.join(', ')}. Either the model was deleted without the tables, or a ` +
-          'migration ran that nothing models. Both are the drift this invariant exists for.',
-      );
+    if (modelled.length === 0) {
       console.log(
-        'schema parity VACUOUS — no Drizzle model and no tables (greenfield). ' +
-          'Proves nothing about column parity; only that the two are ' +
-          'consistently empty.',
+        'schema parity VACUOUS — no Drizzle model and no application table. Proves nothing ' +
+          'about column parity; only that the two are consistently empty.',
       );
       return;
     }
     console.log(
-      `schema parity OK — ${modelled} Drizzle tables match the migrated database ` +
-        '(names + nullability; types are out of scope)',
+      `schema parity OK — ${modelled.length} Drizzle tables match the migrated database ` +
+        '(tables both ways, names + nullability; types are out of scope)',
     );
   } finally {
     await sql.end();

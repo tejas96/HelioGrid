@@ -191,8 +191,29 @@ export {
   UI_SOURCE_LOCALE,
   weekdayNames,
 } from './format';
-export type { MarketCode, MarketPack, PackKey, PackVersion } from './market';
-export { IN_MARKET, IN_PACK, isLaunchable, PACK_KEYS, unauthoredKeys } from './market';
+export type {
+  MarketCode,
+  MarketPack,
+  PackEnvelope,
+  PackKey,
+  PackPayload,
+  PackPin,
+  PackVersion,
+  TenantReadableKey,
+} from './market';
+export {
+  envelopeOf,
+  IN_MARKET,
+  IN_PACK,
+  isLaunchable,
+  nextEnvelope,
+  PACK_KEYS,
+  packFromEnvelope,
+  stalePinnedKeys,
+  TENANT_READABLE_KEYS,
+  tenantReadablePayload,
+  unauthoredKeys,
+} from './market';
 export type { BasisPoints, MinorUnits, Share } from './money';
 export { amountForQuantity, applyRate, basisPoints, minorUnits, sumMinorUnits } from './money';
 export type {

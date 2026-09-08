@@ -22,3 +22,15 @@ export const PACK_KEYS = [
 ] as const;
 
 export type PackKey = (typeof PACK_KEYS)[number];
+
+export type TenantReadableKey = Exclude<PackKey, 'priceBook'>;
+
+/**
+ * What a tenant-facing read serves: every key but the book, whose interior — worst-case unit
+ * COGS, benchmark provenance — is owner-only and reaches the billing path alone (`F1-25`,
+ * `BM-17`). Derived from `PACK_KEYS`, so the contract, the read and the projection share one
+ * list and a ninth key is served the day it is authored.
+ */
+export const TENANT_READABLE_KEYS: readonly TenantReadableKey[] = PACK_KEYS.filter(
+  (key): key is TenantReadableKey => key !== 'priceBook',
+);

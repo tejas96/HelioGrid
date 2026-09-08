@@ -4,10 +4,10 @@
  * the dunning and the reactivation are `M12`'s; none of them is here, and a seventh name invented
  * by a screen is a defect against this list.
  *
- * What each name carries, so a reader does not go hunting: `past_due` is a 7-day grace in two
- * phases — days 0–3 full function behind a banner, days 4–7 metered features paused; `expired` is
- * a trial that ended unconverted and behaves exactly as `halted`; `cancelled` runs to the end of
- * the paid period and then behaves as `halted`.
+ * What each name carries, so a reader does not go hunting (`BM-33`): `past_due` is a grace
+ * window in two phases — full function behind a banner, then metered features paused; `expired`
+ * is a trial that ended unconverted and behaves exactly as `halted`; `cancelled` runs to the end
+ * of the paid period and then behaves as `halted`.
  *
  * Six names are ENOUGH because no state ever stops a tenant reading, exporting, opening a billing
  * screen, or their own customer opening a link — the soft-block law and its capability matrix

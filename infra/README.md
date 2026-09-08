@@ -73,7 +73,8 @@ docker network rm heliogrid-temporal_default
 ### QA read-only role
 
 `qa_readonly` is created by `infra/postgres/init/01-roles.sql` — no longer by hand. It can
-connect and holds no write grants. Its `SELECT` grants arrive with migration `0001`.
+connect and holds no write grants. Its `SELECT` grants come from the migrations, through its
+`app_user` membership — `0001` grants the market pack tables.
 
 **`qa_readonly`'s membership in `app_user` is load-bearing, and the reason is a trap worth
 understanding.** Every tenant table is RLS ENABLED and FORCEd

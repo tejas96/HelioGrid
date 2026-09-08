@@ -58,7 +58,7 @@ authoritative doc for that layer; this table is only the index.
 | `apps/worker` | NestJS standalone worker — durable orchestration (Temporal, ADR-0025) + heavy compute | [apps/worker/CLAUDE.md](apps/worker/CLAUDE.md) |
 | `packages/contracts` | ts-rest + Zod API contracts — the single source of truth for the API surface | [packages/contracts/CLAUDE.md](packages/contracts/CLAUDE.md) |
 | `packages/data` | Frontend SDK — the **only** data path for web + mobile: transport, ts-rest client, repositories, session, React Query adapter | [packages/data/CLAUDE.md](packages/data/CLAUDE.md) |
-| `packages/db` | Drizzle schema + append-only SQL migrations + RLS/tenancy — **greenfield since 2026-08-01**, awaiting the auth+tenancy rebuild's `0001` | [packages/db/CLAUDE.md](packages/db/CLAUDE.md) |
+| `packages/db` | Drizzle schema + append-only SQL migrations + RLS/tenancy — `0001` is the market pack; the identity spine follows | [packages/db/CLAUDE.md](packages/db/CLAUDE.md) |
 | `packages/domain` | Pure, isomorphic domain logic (formatters, policy, invariants) — bottom of the graph | [packages/domain/CLAUDE.md](packages/domain/CLAUDE.md) |
 | `packages/env` | The **only** package allowed to read a raw environment source | [packages/env/CLAUDE.md](packages/env/CLAUDE.md) |
 | `packages/i18n` | One Lingui catalog (EN/HI/MR) shared by web + mobile | [packages/i18n/CLAUDE.md](packages/i18n/CLAUDE.md) |
@@ -100,9 +100,8 @@ cp .env.example .env.local                # then fill in DATABASE_URL (app_runti
                                           # DATABASE_ADMIN_URL (app_admin) — values in
                                           # infra/README.md §"Local dev"
 
-pnpm --filter @heliogrid/db migrate       # schema. NOTE: greenfield since
-                                          # 2026-08-01 — there are no migrations
-                                          # to apply until the auth+tenancy rebuild lands.
+pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
+pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1
 pnpm verify                               # lint · boundaries · typecheck · test · build
 ```
 

@@ -2,8 +2,9 @@
 -- first start and after `pnpm infra:reset`.
 --
 -- Roles live here rather than in a migration because they are CLUSTER objects; tables, grants
--- and policies are DATABASE objects and belong to migration 0001. Production matches: Fly
--- Postgres roles are an operator command.
+-- and policies are DATABASE objects and belong to the migrations, which name these roles in
+-- their GRANTs — so this runs first, in CI as locally. Production matches: Fly Postgres roles
+-- are an operator command.
 --
 -- Guards check EXISTENCE only, never attributes. A role already present with the wrong
 -- attributes is left alone, not corrected.

@@ -8,11 +8,13 @@
     "predev": "kill-port 8084",
     "dev": "tsx watch --env-file-if-exists=../../.env.local src/main.ts",
     "prestart": "kill-port 8084",
-    "start": "node --env-file-if-exists=../../.env.local dist/main.js"
+    "start": "node --env-file-if-exists=../../.env.local dist/main.js",
+    "pack:publish": "tsx --env-file-if-exists=../../.env.local src/scripts/publish-pack.ts"
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/db": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
     "@heliogrid/env": "workspace:*",
     "@nestjs/common": "11.1.28",
     "@nestjs/core": "11.1.28",
@@ -20,6 +22,7 @@
     "@temporalio/client": "1.22.0",
     "@ts-rest/core": "3.52.1",
     "@ts-rest/nest": "3.52.1",
+    "drizzle-orm": "0.44.7",
     "express": "5.2.1",
     "nestjs-pino": "4.6.1",
     "pino": "9.14.0",

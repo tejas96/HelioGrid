@@ -20,6 +20,15 @@
       "port": 8084
     },
     {
+      "name": "api-built",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti:8084 | xargs -r kill -9; exec pnpm --filter @heliogrid/api start"
+      ],
+      "port": 8084
+    },
+    {
       "name": "mobile-metro",
       "runtimeExecutable": "bash",
       "runtimeArgs": [

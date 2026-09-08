@@ -5,11 +5,12 @@ import { CommonModule } from './common/common.module';
 import { pinoHttpOptions } from './common/logging';
 import { TemporalModule } from './common/temporal/temporal.module';
 import { HealthModule } from './modules/health/health.public';
+import { MarketModule } from './modules/market/market.public';
 
 /**
- * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — modules
- * land with their tracks: auth, tenancy, crm, survey, design, proposal, customer-link,
- * projects, billing, catalog, agent, notifications, admin.
+ * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — health and
+ * the market pack today; the rest land with their slices: auth, tenancy, crm, survey, design,
+ * proposal, customer-link, projects, billing, catalog, agent, notifications, admin.
  *
  * Auth was removed to greenfield (owner ruling) and returns with
  * its rebuild. The deny-by-default APP_GUARD went with it: there is no session to check, so
@@ -23,6 +24,7 @@ import { HealthModule } from './modules/health/health.public';
     CommonModule,
     TemporalModule,
     HealthModule,
+    MarketModule,
   ],
 })
 export class AppModule {}
