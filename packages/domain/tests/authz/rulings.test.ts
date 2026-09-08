@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Capability } from '../../src/authz/capabilities';
-import { can, capabilityLimit, visibilityIn } from '../../src/authz/policy';
+import { can, limitsOn, visibilityIn } from '../../src/authz/policy';
 import { ROLE_PRESETS } from '../../src/authz/roles';
 
 describe('F2-03 — design sign-off is a capability of the Design Engineer preset', () => {
@@ -35,6 +35,7 @@ describe('F2-08 — Sales Manager is the direct successor of the v1 Manager pres
       scope: 'team',
       includesAssigned: false,
       through: [],
+      grantedBy: ['sales_manager'],
     });
   });
 });
@@ -48,10 +49,11 @@ describe('F2-14 — a cell that reads through another domain is carried, never f
       scope: 'none',
       includesAssigned: false,
       through: [{ domain: 'projects', scope: rung }],
+      grantedBy: [],
     });
   });
 
   it('sees company reports team-scoped, the one v1 grant that carries a phrase', () => {
-    expect(capabilityLimit(['sales_manager'], 'reports.company_reports')).toBe('team-scoped');
+    expect(limitsOn(['sales_manager'], 'reports.company_reports')).toEqual(['team-scoped']);
   });
 });

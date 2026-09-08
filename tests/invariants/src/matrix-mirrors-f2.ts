@@ -153,11 +153,13 @@ function visibilityOf(cell: string, domain: VisibilityDomain): VisibilityCell {
   const word = SCOPE_WORDS[first];
   if (word === undefined) return { scope: 'all', qualifier: text };
   const qualifier = rest.join(' ');
-  const throughProjects =
+  if (
     domain !== 'projects' &&
     isRung('projects', word) &&
-    (!isRung(domain, word) || qualifier.startsWith('projects'));
-  if (throughProjects) return { scope: word, qualifier, through: 'projects' };
+    (!isRung(domain, word) || qualifier.startsWith('projects'))
+  ) {
+    return { scope: word, qualifier, through: 'projects' };
+  }
   return rest.length === 0 ? { scope: word } : { scope: word, qualifier };
 }
 

@@ -68,11 +68,20 @@ export type VisibilityScope = LadderScope | 'assigned' | 'none';
  * leads one. Such a cell names `through`, so a fold over this domain's ladder never mistakes it
  * for a rung it does not have, and never drops it.
  */
-export interface VisibilityCell {
+export interface OwnDomainCell {
   readonly scope: VisibilityScope;
   readonly qualifier?: string;
-  readonly through?: VisibilityDomain;
+  readonly through?: undefined;
 }
+
+/** A through-cell always names a rung of the other domain's ladder — never `assigned`, never `none`. */
+export interface ThroughCell {
+  readonly scope: LadderScope;
+  readonly qualifier: string;
+  readonly through: VisibilityDomain;
+}
+
+export type VisibilityCell = OwnDomainCell | ThroughCell;
 
 export const none: VisibilityCell = { scope: 'none' };
 export const scope = (word: VisibilityScope, qualifier?: string): VisibilityCell =>
