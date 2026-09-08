@@ -436,7 +436,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-025 · Identity, sessions and tenant creation
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#40)
 **Why:** An installer signs up with a phone and one OTP and owns a workspace on the spot, and any teammate's access can be ended from one place within ten minutes; without this spine no tenant, no session and no role exists for any other module to build on.
 **PRD rows:** M01-05, M01-06, M01-07, M01-10, M01-18, F4-37
 **Requirements (verbatim):**

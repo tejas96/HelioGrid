@@ -1,146 +1,50 @@
-import type { CapabilityRowKey, RolePreset } from './roles';
+import { BILLING_ROWS } from './billing';
+import { CRM_ROWS } from './crm';
+import { CUSTOMER_LINK_ROWS } from './customer-link';
+import { FIELD_ROWS } from './field';
+import { HR_ROWS } from './hr';
+import { MARKETING_ROWS } from './marketing';
+import { ONBOARDING_ROWS } from './onboarding';
+import { PAYMENTS_ROWS } from './payments';
+import { PROJECTS_ROWS } from './projects';
+import { PROPOSALS_ROWS } from './proposals';
+import { REPORTS_ROWS } from './reports';
+import { SALES_ROWS } from './sales';
+import { STUDIO_ROWS } from './studio';
+import { SURVEY_ROWS } from './survey';
 
 /**
- * Capabilities — the rows of `docs/prd/foundations/F2-roles-and-permissions.md` §F2.5.
+ * The capability matrix — the rows of `docs/prd/foundations/F2-roles-and-permissions.md`
+ * §F2.5, one file per product area beside this one, named for what it holds and never for the
+ * PRD's module number, joined here so the guard's argument is exhaustively typed across the
+ * suite.
  *
- * **Only M01's rows are here** (Law 9: a module authors its own slice). Each later module
- * appends its own file beside this one when its slice begins; the union below grows with
- * them, and the guard's `@Capability(...)` argument stays exhaustively typed the whole way.
+ * Only a row the PRD already FIXES is here. A placeholder row lands in its module's file with
+ * that module's first slice (Law 9) and joins the union the moment it does; the union is never
+ * widened by a screen or a handler.
  *
  * Rows are phrased as ACTS, never as CRUD on entities (F2-25, journey L1440–1441). "Manage
  * team and roles" is a row; "update users" is not.
  */
-export const M01_CAPABILITIES = [
-  'm01.manage_team',
-  'm01.configure_agent',
-  'm01.manage_catalog',
-  'm01.manage_tenant_settings',
-  'm01.add_own_catalog_items',
-] as const;
-
-export type Capability = (typeof M01_CAPABILITIES)[number];
-
-/**
- * How a preset holds a row.
- *
- * `granted` and `denied` are the ✓ and — cells. `limited` is F2's third cell form, which the
- * matrix calls "a phrase in a cell is a scoped grant": Finance holds `manage-catalog` as
- * *"view prices & margins"*, which is neither a full grant nor one of the four visibility
- * scopes — it is a NARROWER ACT.
- *
- * We carry the phrase VERBATIM rather than inventing a `view-catalog-prices` row the PRD does
- * not have. A boolean guard cannot enforce a sentence, so `limited` grants the act and
- * surfaces the limit for the owning slice to enforce; it never silently drops it, and it
- * never silently widens it either. Recorded as an open question so the catalog slice
- * splits it into a real row rather than inheriting a string.
- */
-export type CapabilityGrant =
-  | { readonly held: false }
-  | { readonly held: true }
-  | { readonly held: true; readonly limitedTo: string };
-
-const DENIED: CapabilityGrant = { held: false };
-const GRANTED: CapabilityGrant = { held: true };
-const limited = (limitedTo: string): CapabilityGrant => ({
-  held: true,
-  limitedTo,
-});
-
-export interface CapabilityRow {
-  /** The binding cell in the PRD. Where this file and that cell differ, the CELL wins. */
-  readonly rowKey: CapabilityRowKey;
-  readonly grants: Readonly<Record<RolePreset, CapabilityGrant>>;
-}
+export const CAPABILITY_MATRIX = {
+  ...BILLING_ROWS,
+  ...CRM_ROWS,
+  ...CUSTOMER_LINK_ROWS,
+  ...FIELD_ROWS,
+  ...HR_ROWS,
+  ...MARKETING_ROWS,
+  ...ONBOARDING_ROWS,
+  ...PAYMENTS_ROWS,
+  ...PROJECTS_ROWS,
+  ...PROPOSALS_ROWS,
+  ...REPORTS_ROWS,
+  ...SALES_ROWS,
+  ...STUDIO_ROWS,
+  ...SURVEY_ROWS,
+} as const;
 
 /**
- * `Record<Capability, …>` and `Record<RolePreset, …>` are the mechanism, not decoration:
- * a new capability or a thirteenth preset fails to compile until every cell is stated. There
- * is no default — an unstated cell is exactly how a permission silently appears.
+ * Every capability the suite knows, by id: `crm.add_edit_leads` for row `F2.M02.add-edit-leads`.
+ * The code names the area, the PRD numbers it.
  */
-export const CAPABILITY_MATRIX: Readonly<Record<Capability, CapabilityRow>> = {
-  'm01.manage_team': {
-    rowKey: 'F2.M01.manage-team',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
-      survey_engineer: DENIED,
-      design_engineer: DENIED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: DENIED,
-      operations: DENIED,
-      marketing: DENIED,
-    },
-  },
-  'm01.configure_agent': {
-    rowKey: 'F2.M01.configure-agent',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
-      survey_engineer: DENIED,
-      design_engineer: DENIED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: DENIED,
-      operations: DENIED,
-      marketing: DENIED,
-    },
-  },
-  'm01.manage_catalog': {
-    rowKey: 'F2.M01.manage-catalog',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
-      survey_engineer: DENIED,
-      design_engineer: DENIED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: limited('view prices & margins'),
-      operations: GRANTED,
-      marketing: DENIED,
-    },
-  },
-  'm01.manage_tenant_settings': {
-    rowKey: 'F2.M01.manage-tenant-settings',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
-      survey_engineer: DENIED,
-      design_engineer: DENIED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: DENIED,
-      operations: DENIED,
-      marketing: DENIED,
-    },
-  },
-  'm01.add_own_catalog_items': {
-    rowKey: 'F2.M01.add-own-catalog-items',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: GRANTED,
-      sales_executive: GRANTED,
-      survey_engineer: DENIED,
-      design_engineer: GRANTED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: DENIED,
-      operations: GRANTED,
-      marketing: DENIED,
-    },
-  },
-};
+export type Capability = keyof typeof CAPABILITY_MATRIX;

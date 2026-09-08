@@ -33,10 +33,12 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   what makes behaviour reproducible and stops RN's suspended-timer behaviour becoming a platform
   special case. `new Date(…)` is banned here, parsing included: use `Date.parse` and pass the
   epoch to Intl (`M57`).
-- **A capability matrix with a default is a matrix with a hole.** `CAPABILITY_MATRIX` writes out
-  every cell, and `Record` is what makes a thirteenth preset a compile error in every row rather
-  than a quiet `undefined`. A module appends its OWN capability rows when its slice begins
-  (Law 9), in its own file beside `capabilities.ts`.
+- **A capability matrix with a default is a matrix with a hole.** Every cell is written out, and
+  `Record` is what makes a thirteenth preset a compile error in every row rather than a quiet
+  `undefined`. The rows `F2` §F2.5 fixes live in `authz/<area>.ts`, one file per product area named for
+  what it holds (`survey.ts`, never the PRD's `m04`), joined in `capabilities.ts` and
+  `visibility.ts`; a module appends its placeholder rows to ITS file when its slice begins
+  (Law 9), and the PRD-reading invariant holds every cell to the book (`M108`).
 - **`format/pack.ts` is FLAT, and that is not a style choice.** The design system's pulled
   `MarketProvider` contract fixes `id`, `locale`, `currency`, `currencyFractionDigits`, `clock`
   and `taxIdLabel` as names, and `ds:contract` fails on a dropped one. Grouping them into

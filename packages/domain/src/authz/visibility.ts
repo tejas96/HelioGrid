@@ -1,81 +1,83 @@
-/**
- * Visibility scope — F2-12 (the D20 law), F2-13 (widest wins) and F2-14 (per domain).
- *
- * "Reps see only their own leads. Managers see the team's, owner sees everything." Every
- * list, board, report and dashboard is THE SAME SURFACE, scoped — never a different surface
- * per role.
- *
- * A scope is a REPOSITORY POLICY INPUT, not a permission: the guard answers "may they act",
- * the repository answers "over which rows". Keeping them apart is what stops visibility
- * becoming a per-row permission system, which F2 §5 rules out absolutely.
- */
+import type { LadderScope, VisibilityCell, VisibilityDomain, VisibilityRow } from './cells';
+import { CRM_VISIBILITY } from './crm';
+import { FIELD_VISIBILITY } from './field';
+import { HR_VISIBILITY } from './hr';
+import { MARKETING_VISIBILITY } from './marketing';
+import { PROJECTS_VISIBILITY } from './projects';
 
 /**
- * Ordered WIDEST-LAST. The order IS the comparison — `widestScope` indexes this tuple, so a
- * new scope must be inserted at its true rank, not appended.
- *
- * `assigned` sits BESIDE `own`, not above it (F2-14): a Survey Engineer sees the leads
- * assigned to them, which is neither a subset nor a superset of "the ones they created".
- * They are unioned rather than ranked — see `resolveVisibility`.
+ * Each domain's ladder, narrowest first (F2-14): leads Own ⊂ Team ⊂ All; projects Own ⊂ Team ⊂
+ * Portfolio ⊂ All — F2-14 names the rungs that differ from leads, and §F2.5-M08's Team cell for
+ * Sales Manager is the fourth; field work Own ⊂ Team ⊂ All; people and money Own ⊂ All;
+ * campaigns has All alone, its one narrower cell being a read of results carried as a
+ * qualifier. Widest wins INSIDE a domain and a wide scope in one domain never widens another.
  */
-export const VISIBILITY_LADDER = ['own', 'team', 'all'] as const;
-export type LadderScope = (typeof VISIBILITY_LADDER)[number];
-
-/** Every scope a matrix cell can carry. */
-export type VisibilityScope = LadderScope | 'assigned' | 'none';
-
-/**
- * The domains visibility resolves in, INDEPENDENTLY (F2-14). Holding a wide scope in one
- * never widens another: a Sales Manager + Field Technician sees the team's leads and only
- * their own route.
- *
- * Named here rather than in each module because the independence is the law; a module adding
- * a domain is amending this list, which is the point at which someone must ask whether it
- * really is a new domain.
- */
-export const VISIBILITY_DOMAINS = [
-  'leads',
-  'projects',
-  'field_work',
-  'people',
-  'money',
-  'campaigns',
-] as const;
-export type VisibilityDomain = (typeof VISIBILITY_DOMAINS)[number];
+export const DOMAIN_LADDERS: Readonly<Record<VisibilityDomain, readonly LadderScope[]>> = {
+  leads: ['own', 'team', 'all'],
+  projects: ['own', 'team', 'portfolio', 'all'],
+  field_work: ['own', 'team', 'all'],
+  people: ['own', 'all'],
+  money: ['own', 'all'],
+  campaigns: ['all'],
+};
 
 /**
- * What a caller gets: the widest LADDER scope any held role grants, plus whether any held
- * role grants `assigned`. Both, because they are not comparable — a person holding Sales
- * Executive (own) and Survey Engineer (assigned) sees their own leads AND the ones assigned
- * to them, and collapsing that to one word loses half the rows.
+ * The visibility rows §F2.5 fixes, by domain. `money` has no fixed row: F2-14 names the domain
+ * and no table carries its cells, so it stays ABSENT until the payments slice appends one —
+ * absent resolves to none, never to a guess.
  */
+export const VISIBILITY_MATRIX: Readonly<Partial<Record<VisibilityDomain, VisibilityRow>>> = {
+  ...CRM_VISIBILITY,
+  ...MARKETING_VISIBILITY,
+  ...PROJECTS_VISIBILITY,
+  ...FIELD_VISIBILITY,
+  ...HR_VISIBILITY,
+};
+
+/** A reach into this domain THROUGH another domain's rung — never folded onto this ladder, never dropped. */
+export interface ReachedThrough {
+  readonly domain: VisibilityDomain;
+  readonly scope: LadderScope;
+}
+
 export interface ResolvedVisibility {
-  scope: LadderScope | 'none';
-  includesAssigned: boolean;
+  readonly scope: LadderScope | 'none';
+  /** An assigned-only preset sees what is assigned to it beside — never instead of — its rung. */
+  readonly includesAssigned: boolean;
+  readonly through: readonly ReachedThrough[];
 }
 
 export const NO_VISIBILITY: ResolvedVisibility = {
   scope: 'none',
   includesAssigned: false,
+  through: [],
 };
 
-function rank(scope: VisibilityScope): number {
-  const index = VISIBILITY_LADDER.indexOf(scope as LadderScope);
-  return index; // -1 for 'assigned' and 'none', which never win the ladder comparison
-}
-
 /**
- * Widest wins, within one domain (F2-13). `assigned` is unioned, never ranked.
- * Order-independent by construction: it is a fold over a total order, so the same set of
- * scopes gives the same answer whatever order the roles arrive in.
+ * Widest wins on the domain's ladder (F2-13); `assigned` is noted beside it, `none` never wins,
+ * and a cell that reads through another domain is carried out whole for the caller to join.
  */
-export function resolveVisibility(scopes: readonly VisibilityScope[]): ResolvedVisibility {
+export function resolveVisibility(
+  cells: readonly VisibilityCell[],
+  ladder: readonly LadderScope[],
+): ResolvedVisibility {
   let best = -1;
   let includesAssigned = false;
-  for (const scope of scopes) {
-    if (scope === 'assigned') includesAssigned = true;
-    best = Math.max(best, rank(scope));
+  const through: ReachedThrough[] = [];
+  for (const cell of cells) {
+    if (cell.through !== undefined) {
+      if (cell.scope !== 'assigned' && cell.scope !== 'none') {
+        through.push({ domain: cell.through, scope: cell.scope });
+      }
+      continue;
+    }
+    if (cell.scope === 'assigned') {
+      includesAssigned = true;
+      continue;
+    }
+    if (cell.scope === 'none') continue;
+    best = Math.max(best, ladder.indexOf(cell.scope));
   }
-  const widest = VISIBILITY_LADDER[best];
-  return { scope: widest ?? 'none', includesAssigned };
+  const widest = ladder[best];
+  return { scope: widest ?? 'none', includesAssigned, through };
 }

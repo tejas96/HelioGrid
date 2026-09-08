@@ -1,11 +1,12 @@
 import { CAPABILITY_MATRIX, type Capability } from './capabilities';
+import type { VisibilityDomain } from './cells';
 import type { RolePreset } from './roles';
 import {
+  DOMAIN_LADDERS,
   NO_VISIBILITY,
   type ResolvedVisibility,
   resolveVisibility,
-  type VisibilityDomain,
-  type VisibilityScope,
+  VISIBILITY_MATRIX,
 } from './visibility';
 
 /**
@@ -59,34 +60,18 @@ export function grantedCapabilities(roles: readonly RolePreset[]): Capability[] 
 }
 
 /**
- * Per-domain visibility scopes a preset carries. Each module appends its domain's cells when
- * its slice begins; a domain no preset has landed cells for resolves to `none`, which is
- * fail-closed and is the correct answer before that module exists.
- *
- * M01 owns no visibility domain: its rows are all acts. The table is here, empty, because the
- * SHAPE is the thing later modules must fill — F2-14's independence is a property of this
- * table being per-domain, and discovering that after three modules have each invented their
- * own is the sweep the forward-compat register exists to prevent.
- *
- * Not exported: `visibilityIn` is the only way to read it, so no caller can index it directly
- * and skip the widest-wins fold. A module fills it by editing here, beside the function that
- * enforces the law on it.
- */
-const VISIBILITY_MATRIX: Readonly<
-  Partial<Record<VisibilityDomain, Readonly<Partial<Record<RolePreset, VisibilityScope>>>>>
-> = {};
-
-/**
- * Widest wins, inside ONE domain (F2-13, F2-14). Holding `all` in `leads` never widens
- * `field_work` — a Sales Manager + Field Technician sees the team's leads and only their own
- * route, and that sentence is this function's whole contract.
+ * The widest scope the held presets carry in ONE domain (F2-13, F2-14): the domain's row in
+ * `VISIBILITY_MATRIX`, folded over the domain's own ladder. A domain with no fixed row yet
+ * resolves to `none` — fail-closed, and the correct answer before that module exists.
  */
 export function visibilityIn(
   roles: readonly RolePreset[],
   domain: VisibilityDomain,
 ): ResolvedVisibility {
-  const cells = VISIBILITY_MATRIX[domain];
-  if (!cells) return NO_VISIBILITY;
-  const scopes = roles.map((role) => cells[role]).filter((s): s is VisibilityScope => Boolean(s));
-  return resolveVisibility(scopes);
+  const row = VISIBILITY_MATRIX[domain];
+  if (!row) return NO_VISIBILITY;
+  return resolveVisibility(
+    roles.map((role) => row.cells[role]),
+    DOMAIN_LADDERS[domain],
+  );
 }

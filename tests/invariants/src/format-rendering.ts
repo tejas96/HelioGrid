@@ -10,6 +10,7 @@ import {
   IN_FORMATS,
   PROCUREMENT_SYSTEM,
 } from '@heliogrid/domain';
+import { REPO_ROOT } from './repo-root';
 
 /**
  * The format layer's invariants — `F3-19` through `F3-24`, with the IN pack's values at
@@ -19,12 +20,6 @@ import {
  * invisible in review — `92 lakh` and `92L` both look like reasonable code, and only the PRD
  * cell says which is right — so every expected string below is quoted from its row.
  */
-
-/* `git rev-parse` rather than a path walk from this file: the package compiles to CommonJS, so
-   `import.meta` is unavailable, and cwd differs between `pnpm --filter` and `turbo test`. */
-const REPO_ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], {
-  encoding: 'utf8',
-}).trim();
 
 /** Anything that is a digit but is not Latin 0–9 (`F3-21`, `F1-47`). */
 const NON_LATIN_DIGIT = /\p{Nd}/gu;
