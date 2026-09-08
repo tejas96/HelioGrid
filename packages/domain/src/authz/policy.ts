@@ -1,6 +1,6 @@
 import { CAPABILITY_MATRIX, type Capability } from './capabilities';
 import type { VisibilityDomain } from './cells';
-import type { RolePreset } from './roles';
+import { ROLE_PRESETS, type RolePreset } from './roles';
 import {
   DOMAIN_LADDERS,
   NO_VISIBILITY,
@@ -36,22 +36,23 @@ export function can(roles: readonly RolePreset[], capability: Capability): boole
 }
 
 /**
- * The limit phrase, when the ONLY way a person holds a capability is a limited cell.
+ * The limit phrases, when the ONLY way a person holds a capability is through limited cells —
+ * every distinct phrase, in matrix order, because two narrower acts compose to both of them.
  *
- * Returns `undefined` when they hold it outright — a person who is both Finance and
- * Operations manages the catalog fully, because OR takes the wider grant. Returning the limit
- * anyway would narrow a grant the matrix gives, which F2-11 forbids ("a preset can only add").
+ * Empty when they hold it outright (a person who is both Finance and Operations manages the
+ * catalog fully: OR takes the wider grant, and returning a limit would narrow a grant the
+ * matrix gives, which F2-11 forbids) and empty when they do not hold it at all — `can` says
+ * which.
  */
-export function capabilityLimit(
-  roles: readonly RolePreset[],
-  capability: Capability,
-): string | undefined {
+export function limitsOn(roles: readonly RolePreset[], capability: Capability): readonly string[] {
   const { grants } = CAPABILITY_MATRIX[capability];
-  const held = roles.map((role) => grants[role]).filter((grant) => grant.held);
-  if (held.length === 0) return undefined;
-  if (held.some((grant) => !('limitedTo' in grant))) return undefined;
-  const first = held[0];
-  return first && 'limitedTo' in first ? first.limitedTo : undefined;
+  const held = heldPresets(roles)
+    .map((role) => grants[role])
+    .filter((grant) => grant.held);
+  const phrases = held.flatMap((grant) => ('limitedTo' in grant ? [grant.limitedTo] : []));
+  // Fewer phrases than held grants means one grant is outright, and outright wins.
+  if (held.length === 0 || phrases.length < held.length) return [];
+  return [...new Set(phrases)];
 }
 
 /** Every capability the held roles grant, in matrix order — the "Rajesh can sell, survey and design" line's input. */
@@ -71,7 +72,16 @@ export function visibilityIn(
   const row = VISIBILITY_MATRIX[domain];
   if (!row) return NO_VISIBILITY;
   return resolveVisibility(
-    roles.map((role) => row.cells[role]),
+    heldPresets(roles).map((role) => [role, row.cells[role]] as const),
     DOMAIN_LADDERS[domain],
   );
+}
+
+/**
+ * The SET of held presets, in matrix order (F2-25 fixes it): every answer here is a function of
+ * the set alone (F2-15), so the order a caller assembled the roles in — a database row, a token
+ * claim, a chip list — can never show through.
+ */
+function heldPresets(roles: readonly RolePreset[]): readonly RolePreset[] {
+  return ROLE_PRESETS.filter((preset) => roles.includes(preset));
 }

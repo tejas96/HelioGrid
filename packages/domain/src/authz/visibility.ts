@@ -4,6 +4,7 @@ import { FIELD_VISIBILITY } from './field';
 import { HR_VISIBILITY } from './hr';
 import { MARKETING_VISIBILITY } from './marketing';
 import { PROJECTS_VISIBILITY } from './projects';
+import type { RolePreset } from './roles';
 
 /**
  * Each domain's ladder, narrowest first (F2-14): leads Own ⊂ Team ⊂ All; projects Own ⊂ Team ⊂
@@ -45,39 +46,68 @@ export interface ResolvedVisibility {
   /** An assigned-only preset sees what is assigned to it beside — never instead of — its rung. */
   readonly includesAssigned: boolean;
   readonly through: readonly ReachedThrough[];
+  /** The held presets whose cell IS the winning rung — "which role is doing the work" (F2-13). */
+  readonly grantedBy: readonly RolePreset[];
 }
 
 export const NO_VISIBILITY: ResolvedVisibility = {
   scope: 'none',
   includesAssigned: false,
   through: [],
+  grantedBy: [],
 };
+
+/** One held preset's cell in the domain being resolved. */
+export type HeldCell = readonly [RolePreset, VisibilityCell];
+
+interface Fold {
+  includesAssigned: boolean;
+  /** Keyed by domain and rung, so two presets reaching through the same rung count once. */
+  readonly through: Map<string, ReachedThrough>;
+  readonly rungOf: Map<RolePreset, LadderScope>;
+}
+
+/** One preset's cell into the fold: a through-cell is carried, `assigned` is noted, a rung is ranked. */
+function foldCell(
+  fold: Fold,
+  preset: RolePreset,
+  cell: VisibilityCell,
+  ladder: readonly LadderScope[],
+): void {
+  if (cell.through !== undefined) {
+    fold.through.set(`${cell.through}:${cell.scope}`, { domain: cell.through, scope: cell.scope });
+    return;
+  }
+  if (cell.scope === 'assigned') {
+    fold.includesAssigned = true;
+    return;
+  }
+  if (cell.scope === 'none' || !ladder.includes(cell.scope)) return;
+  fold.rungOf.set(preset, cell.scope);
+}
 
 /**
  * Widest wins on the domain's ladder (F2-13); `assigned` is noted beside it, `none` never wins,
- * and a cell that reads through another domain is carried out whole for the caller to join.
+ * a cell that reads through another domain is carried out whole for the caller to join, and the
+ * presets whose cell is the winning rung are named in the order they were given — `visibilityIn`
+ * gives them in matrix order, once each (F2-15: the answer is a function of the SET of presets).
  */
 export function resolveVisibility(
-  cells: readonly VisibilityCell[],
+  held: readonly HeldCell[],
   ladder: readonly LadderScope[],
 ): ResolvedVisibility {
-  let best = -1;
-  let includesAssigned = false;
-  const through: ReachedThrough[] = [];
-  for (const cell of cells) {
-    if (cell.through !== undefined) {
-      if (cell.scope !== 'assigned' && cell.scope !== 'none') {
-        through.push({ domain: cell.through, scope: cell.scope });
-      }
-      continue;
-    }
-    if (cell.scope === 'assigned') {
-      includesAssigned = true;
-      continue;
-    }
-    if (cell.scope === 'none') continue;
-    best = Math.max(best, ladder.indexOf(cell.scope));
-  }
-  const widest = ladder[best];
-  return { scope: widest ?? 'none', includesAssigned, through };
+  const fold: Fold = { includesAssigned: false, through: new Map(), rungOf: new Map() };
+  for (const [preset, cell] of held) foldCell(fold, preset, cell, ladder);
+  const widest = [...fold.rungOf.values()].reduce<LadderScope | undefined>(
+    (best, rung) =>
+      best === undefined || ladder.indexOf(rung) > ladder.indexOf(best) ? rung : best,
+    undefined,
+  );
+  const { includesAssigned } = fold;
+  const through = [...fold.through.values()];
+  if (widest === undefined) return { scope: 'none', includesAssigned, through, grantedBy: [] };
+  const grantedBy = [...fold.rungOf]
+    .filter(([, rung]) => rung === widest)
+    .map(([preset]) => preset);
+  return { scope: widest, includesAssigned, through, grantedBy };
 }
