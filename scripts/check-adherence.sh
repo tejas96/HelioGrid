@@ -377,7 +377,7 @@ fi
 # a rule like this ever has.
 ROLE_PRESETS_RE="epc_owner|sales_manager|sales_executive|survey_engineer|design_engineer|project_manager|field_technician|installation_team_member|hr_admin|finance|operations|marketing"
 
-role_literals=$(git ls-files apps packages 2>/dev/null | grep -E '\.tsx?$' \
+role_literals=$(git ls-files --cached --others --exclude-standard apps packages 2>/dev/null | grep -E '\.tsx?$' \
   | grep -v '^packages/domain/\|^packages/contracts/' \
   | xargs grep -nE "'(${ROLE_PRESETS_RE})'" 2>/dev/null)
 if [ -n "$role_literals" ]; then
@@ -387,7 +387,7 @@ if [ -n "$role_literals" ]; then
   fail=1
 fi
 
-app_sql=$(git ls-files apps 2>/dev/null | grep -E '\.tsx?$' \
+app_sql=$(git ls-files --cached --others --exclude-standard apps 2>/dev/null | grep -E '\.tsx?$' \
   | xargs grep -niE "'(select |insert into |update .* set |delete from )" 2>/dev/null)
 if [ -n "$app_sql" ]; then
   printf 'SQL IN AN APP — queries belong to packages/db:\n%s\n' "$app_sql"
@@ -412,7 +412,7 @@ BRANDS='MarketCode:packages/domain/ PackVersion:packages/domain/ MinorUnits:pack
 cast_escapes=''
 for entry in $BRANDS; do
   brand="${entry%%:*}"; owner="${entry#*:}"
-  hits=$(git ls-files apps packages | grep -E '\.tsx?$' \
+  hits=$(git ls-files --cached --others --exclude-standard apps packages | grep -E '\.tsx?$' \
          | grep -v "^${owner}" \
          | xargs grep -nE "\bas[[:space:]]+(unknown[[:space:]]+as[[:space:]]+)?${brand}\b" 2>/dev/null)
   [ -n "$hits" ] && cast_escapes="${cast_escapes}${hits}
@@ -474,7 +474,7 @@ fi
 # trees. A quoted date is an example VALUE and passes — `2026-03-12` → `12 Mar 2026` is the
 # format rule's own sample, not a story. Not seen: a docstring, a string that reads as a
 # comment, a date written without hyphens.
-dated_comments=$(git ls-files -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' \
+dated_comments=$(git ls-files --cached --others --exclude-standard -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' \
   | grep -zvE '^docs/|/_generated/|/openapi/|/dist/' \
   | xargs -0 grep -HnE '(^[[:space:]]*(//|/?\*|#)|(^|[^:])//|[[:space:]]#).*\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b' 2>/dev/null \
   | grep -vE "[\`\"']20[0-9]{2}-[0-9]{2}-[0-9]{2}[\`\"']" || true)
@@ -489,8 +489,8 @@ fi
 # .claude/rules/testing.md: `expect(SOME_CONSTANT).toBe(...)` asserts a value the source already
 # states, so it passes for ever and proves nothing; what the type guarantees needs no test either.
 # The subject of an `expect` is an OUTCOME — a function's result, a derived value — never an
-# imported UPPER_CASE constant. Scanned: every tracked `*.test.ts` under a `tests/` folder.
-constant_tests=$(git ls-files -z -- '*/tests/*.test.ts' \
+# imported UPPER_CASE constant. Scanned: every tracked or new `*.test.ts` under a `tests/` folder.
+constant_tests=$(git ls-files --cached --others --exclude-standard -z -- '*/tests/*.test.ts' \
   | xargs -0 grep -HnE 'expect\(\s*[A-Z][A-Z0-9_]+\s*\)\.' 2>/dev/null || true)
 if [ -n "$constant_tests" ]; then
   printf 'TEST RESTATES A CONSTANT — the subject of an expect is an outcome, never an imported constant (.claude/rules/testing.md):\n%s\n' "$constant_tests"

@@ -32,6 +32,9 @@ export const ROLE_PRESETS = [
 
 export type RolePreset = (typeof ROLE_PRESETS)[number];
 
+/** The role the person who creates a company holds from its first second (M01-01). */
+export const FOUNDER_ROLE = 'epc_owner' satisfies RolePreset;
+
 /**
  * The row-key prefix convention F2-25 fixes: `F2.M<nn>.<slug>`. Every capability below
  * carries its row key so a reader can find the binding cell in the PRD rather than trusting

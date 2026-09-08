@@ -1,5 +1,5 @@
 import { type Db, membershipRole, tenant, tenantMembership, userAccount } from '@heliogrid/db';
-import type { UiLanguage } from '@heliogrid/domain';
+import { FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
@@ -68,7 +68,7 @@ export class TenantAdminRepository {
       if (!membership) throw new Error('tenant_membership insert returned no row');
       await tx
         .insert(membershipRole)
-        .values({ tenantId: created.id, membershipId: membership.id, rolePreset: 'epc_owner' });
+        .values({ tenantId: created.id, membershipId: membership.id, rolePreset: FOUNDER_ROLE });
       // The signer's name is a signup fact (`M01-01`); it lands on the account with the company.
       await tx
         .update(userAccount)

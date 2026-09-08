@@ -16,7 +16,7 @@ this file: when the path goes, the row goes.
 | trap | fix | retire when |
 |---|---|---|
 | A deleted source file leaves a stale `dist/`, so `boundaries` stays red on code that is gone. | `pnpm turbo build --force` | never |
-| In zsh a bare glob matching nothing aborts the whole command and prints nothing — it reads as "clean". | Enumerate with `git ls-files`. | never |
+| In zsh a bare glob matching nothing aborts the whole command and prints nothing — it reads as "clean". A plain `git ls-files` has the same silence for a NEW file: it lists tracked paths only, so an uncommitted file is invisible to every gate that enumerates with it. | Enumerate with `git ls-files --cached --others --exclude-standard`. | never |
 | `zod` must resolve to ONE 3.25.x instance. Otherwise pnpm gives ts-rest's peer a zod 4 and the typed client silently collapses to `never`. | The pin in every manifest; `sherif` compares them. | a `pnpm.overrides` entry replaces the per-manifest pins |
 | dependency-cruiser resolves a workspace import through the target's `dist/`, so before a build every dist-targeting rule reports clean. | Build before you cruise. `pnpm verify` already does. | never |
 
