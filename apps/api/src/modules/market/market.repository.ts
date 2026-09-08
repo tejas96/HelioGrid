@@ -14,7 +14,12 @@ export class MarketPackRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
 
-  /** The market's current revision — the latest published — or null for a market with none. */
+  /**
+   * The market's current revision, or null for a market with none. Ordered by the revision the
+   * server assigned, never by `published_at`: that instant is the publishing machine's clock,
+   * and a skewed clock must not make an older revision read as current. The primary key serves
+   * this read; nothing sorts on the date here.
+   */
   async currentEnvelope(marketCode: string): Promise<PackEnvelope | null> {
     const [row] = await this.db
       .select({
@@ -25,9 +30,7 @@ export class MarketPackRepository {
       })
       .from(marketPackVersion)
       .where(eq(marketPackVersion.marketCode, marketCode))
-      /* `market_pack_version_current_idx` serves this order; revision breaks a tie that cannot
-         occur — two revisions never share an instant — and keeps the read deterministic. */
-      .orderBy(desc(marketPackVersion.publishedAt), desc(marketPackVersion.revision))
+      .orderBy(desc(marketPackVersion.revision))
       .limit(1);
     if (!row) return null;
     return { ...row, publishedAt: row.publishedAt.toISOString() };

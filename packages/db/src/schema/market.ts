@@ -49,7 +49,7 @@ export const marketPackVersion = pgTable(
   },
   (table) => [
     primaryKey({ columns: [table.marketCode, table.revision] }),
-    /** The current-version read and the staleness comparison; the primary key serves pinned reads. */
+    /** Reads by date — the staleness comparison; the primary key serves the current read and pinned reads. */
     index('market_pack_version_current_idx').on(table.marketCode, table.publishedAt.desc()),
     check('market_pack_version_revision_positive', sql`${table.revision} >= 1`),
   ],
