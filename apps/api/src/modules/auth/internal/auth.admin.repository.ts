@@ -130,6 +130,9 @@ export class AuthAdminRepository {
     id: string,
     touch: { expiresAt: number | null; lastForegroundActivityAt: number | null },
   ): Promise<void> {
+    // A backgrounded mobile refresh extends nothing and marks no activity: it only mints a
+    // token, and an UPDATE with nothing to set is a query error, not a no-op.
+    if (touch.expiresAt === null && touch.lastForegroundActivityAt === null) return;
     await this.db
       .update(session)
       .set({
