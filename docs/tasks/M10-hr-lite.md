@@ -52,6 +52,9 @@ Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.
 - (M10-07 and M10-35 carry no dedicated Given/When/Then line in the PRD's acceptance blocks — §M10.2's block covers M10-06, M10-08, M10-10 and M10-09/M10-05, and §M10.7's covers M10-36 and M10-39; the requirement text in the brief is the binding criterion for both. M10-07's testable form is the SME-weight field set — identity from the account and the M01 profile, the optional employment facts, presets held rendering as read-only chips — plus the brief's own line "No compensation figure exists anywhere on this screen (M10-07)", which is what "nothing else is asked" checks as: no grade, band, cost centre, salary or compensation field anywhere in the record (§5). M10-35's testable form is the brief's `documents-list` state — documents with type label, upload date, expiry where set and uploader — and `replaced-document-trail`, where replace keeps the prior file visible in the trail (append, never overwrite).)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Which module owns the document-expiry lead time — ruled: M10-local — one tenant-scoped setting row of this module, authored with its document slice, its default a `domain` policy number, edited under `F2.M10.people-records` (Law 9 keeps an M10 fact out of M01's settings table, `M10-04`'s never-widen rule points the same way, and M01's closed settings set gains nothing).
+
 ---
 
 ### T-M10-004 · Offboard Sweep screen
@@ -71,6 +74,10 @@ Non-UI (build-side) halves carried by this task: M10-18 — offboard defined as 
 - Given an offboard that would remove the last EPC Owner, when it is attempted, then it is blocked with an explanation and audited (M10-21).
 - Given an HR/Admin holder, when they open an offboard, then the sweep renders read-only with no revocation act available (M10-22).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle at /start:**
+- Whether a prepared offboard is stored between HR's preparing and the Owner's executing — pick: a preparation marker on `employee_record` (prepared by, prepared at, cleared when the Owner executes or withdraws) that people-today lists for the Owner, with the sweep's rows recomposed from the owning modules on every open and never stored (`M10-19` composes the sweep live, so a stored copy would drop work opened since, and `M10-22` needs only something to hand over; cost if wrong: HR's per-item suggested assignees, if the owner wants them carried across, need a small prepared-item table at that slice, and nothing stored by then is wrong).
+- The per-item left-unassigned mark and the offboard counts — ruled: no offboard-sweep record exists here; leaving an item unassigned puts it into the owning module's unassigned state with the offboard named on that item's timeline, exactly as a reassignment is, and the reassigned-versus-left-unassigned counts are computed at completion and carried only in the completion analytics event (`M10-19` gives every item's state to its owning module and `M10-20` forbids this module a record of its own over other modules' work).
 
 ---
 
@@ -102,6 +109,10 @@ Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic;
 
 - Given a leave request, when it is decided, then the decision is attributed (who, when), the requester is notified, and approved days render as leave on the register (M10-27).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle at /start:**
+- The `leave_type` vocabulary shape — ruled: a tenant-scoped row with a stable id, its label tenant content per language (`F3-10`'s shape, `T-FPLAT-006`), an `archived` flag for retirement in the `tranche_template` pattern (an archived label leaves the picker and stays on every request that references it; nothing is deleted), and rename edits the label in place so existing requests render the new name (`M10-27` makes the labels tenant data, and a label is a name, not a record fact — a request's own facts are its dates and its decision).
+- Leave granularity and overlap — ruled: whole days only, and a second request overlapping approved days is permitted — each request keeps its own decision and the register paints a day as leave when any approved request covers it (`M10-27` asks for dates and no arithmetic, and the changed-plan rule — a new request, never an edit — cannot work without overlap).
 
 ---
 
@@ -136,6 +147,10 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 - Given any person visible in this module, when their record is opened, then it resolves to an M01 user with the same phone identity and status, and no second account exists (M10-03).
 - Given an invite sent, when the people list renders, then the person appears with status invited and a record exists (M10-06).
 - Given a record, when identity fields are compared with the M01 profile, then they are the same values from the same source, and editing them here is not possible (M10-08).
+
+**Settle at /start:**
+- The parent of `employee_record` — ruled: `tenant_membership`, one record per membership, so a person in two tenants has two records; phone, identity fields and status are read through the membership from `user_account` and never stored twice (`M10-06` creates the record at invite, the act that creates a membership; `M10-03` keys it by the phone `M01-18` makes global; `M10-08` forbids a second copy; and the membership is the only row that is both that person and this tenant).
+- The manager mapping's home and shape — ruled: one nullable `manager_ref` column on `employee_record` pointing at another `employee_record` of the same tenant — no team entity and no edge table — and a Team scope resolves as the records whose `manager_ref` is the viewer's record (`M10-31` allows one manager per employee and no transitive tree, `M10-32` gives this module the membership data, the record is this module's tenant-scoped row, and `F6-16` and every Team cell read that one column).
 
 ---
 
@@ -193,6 +208,9 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 
 - Given a manager with Team scope who is not HR/Admin or Owner, when they open a report's record surfaces available to them, then no document is reachable (M10-39).
 - No dedicated Given/When/Then line exists for M10-37 or M10-38 in the PRD's acceptance blocks; the requirement text above is the binding criterion for both.
+
+**Settle at /start:**
+- The `employee_document_type` vocabulary shape — ruled: the shape ruled for `leave_type` at T-M10-006 — stable id, label per language, `archived`, rename in place — one shape for both vocabularies (`M10-35` and `M10-27` describe the same kind of tenant label, and a second shape would be a second definition).
 
 ---
 

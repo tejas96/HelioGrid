@@ -125,6 +125,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 - Given a second contact captured with a role label, when the customer is next matched on that contact's number, then deduplication treats it as the same customer (M02-34, M02-02).
 - Given a customer record, when it is opened, then consent, do-not-disturb status, do-not-call, quiet flag and preferred language are present and readable by the gate (M02-37).
 
+**Settle at /start:**
+
+- Consent grain — ruled: two structures, never one ledger with two anchors — the customer row carries the current calling-compliance facts of M02-37 (voice consent, recording consent, DND status, do-not-call, quiet flag, preferred language), each with its recorded moment and source, so F1-58's pre-dial read and export are one row; `consent_record` is M03-34's messaging ledger only, per contact per channel class, authored with M03 (M02-37 fixes the gate's read at one customer row per dial and M03-34 fixes the ledger's grain at the contact; every change to a calling fact is also an activity, M02-35, so the history behind the current value is never lost).
+
 ---
 
 ### T-M02-008 · Duplicate detection & the shared dedupe sheet
@@ -151,6 +155,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 - Given two captures of the same number applied in the same moment, so that neither saw the other in the live check, when the server finds the collision on apply, then both records are flagged "possible duplicate", each shows the other, nothing is merged automatically, and the three-choice sheet fires on the next open of either record (M02-66, owner ruling 2026-08-15).
 - Given a possible-duplicate flag on a record the viewer cannot see under their visibility scope, when the sheet fires, then the flag still shows and Open-existing resolves to a request-to-owner (M02-66, M02-08).
 
+**Settle at /start:**
+
+- Duplicate-link grain — ruled: `duplicate_link` pairs two customer rows, never two leads (the collision is on the customer's number, M02-02, and its resolution is customer merge, M02-59); the sheet's owner, stage and last-contact facts (M02-08) are read from the linked customer's current lead, and the possible-duplicate flag of M02-66 renders on every lead of either customer, so "each shows the other" (M02-12) needs no second link.
+
 ---
 
 ### T-M02-009 · Capture channels: source set, inbound-call intake & referral link
@@ -169,6 +177,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 - Given any lead, when it is listed anywhere, then a source badge from the closed v1 set is shown (M02-13).
 - Given an unanswered inbound call, when the agent captures an enquiry, then a lead exists with source = inbound call, its capture appears on the timeline, and a matching existing number raises the same dedupe sheet (M02-14).
 - Given a lead created from an existing customer's referral, when either record is opened, then the link is visible on both and the referred lead carries the "came from" chip; and when any surface in the product is inspected, then no credit balance, redemption or monetary reward exists (M02-16).
+
+**Settle at /start:**
+
+- Non-customer referrer — ruled: the "came from" chip reads a free-text name field on the lead when the referrer is not a customer of the tenant, and no `referral` row and no customer row is created; a `referral` row exists only when the referrer is an existing customer (M02-16's own edge case: the chip records the free-text name without creating a customer record, and only an existing customer produces a linked referral row).
 
 ---
 
@@ -229,6 +241,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 
 *(Moved here from `T-FPLAT-012`, deleted by owner decision: the conflict rules land with the module that uses them (Law 9) rather than as a block 0 engine nothing consumes yet.)*
 
+**Settle at /start:**
+
+- Activity anchoring — ruled: every `activity` row carries its customer ref as the stream anchor and an optional lead ref; the single stream of M02-35 is every row on that customer in server apply order, a lead's timeline is the subset carrying its lead ref, and merge re-points the customer ref (M02-60) so the survivor's stream composes every merged lead's rows with no junction (the customer ref is the one thing merge already re-points; a project anchor is M08's slice to add, M08-16).
+
 ---
 
 ### T-M02-013 · Transactional message send & copy-paste fallback
@@ -248,6 +264,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 - Given a completed booking with a connected transactional channel, when the confirmation is produced, then it sends from the tenant's official channel with honest delivery states; and given no connected channel, then it is text the rep sends themselves and the product claims no delivery (M02-47, owner ruling 2026-08-04).
 - Given a no-show, when the reschedule flow is used, then a new visit is booked and at most one reminder is generated for that visit (M02-48).
 
+**Settle at /start:**
+
+- Where a transactional send is recorded — pick: no send row on the copy-paste path — the composed text is a timeline activity (M02-35) that claims nothing, M02-48's one-reminder mark is a field on the booking row settled at T-M02-014, and the record of a send the product itself made is the `transactional_send` entity settled at `docs/tasks/M03-marketing.md` T-M03-007, since no channel exists to send from before M03 (F5-28: a delivery state exists only where the product actually sent; cost if wrong: block 3 authors a send table that M03's one record must later absorb).
+
 ---
 
 ### T-M02-014 · Site-visit booking hand-off to survey
@@ -262,6 +282,10 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **DONE WHEN:**
 
 - Given a lead, when a visit is booked, then date, time, surveyor and confirmed address are captured, a visit exists for the survey module, and the booking appears on the lead's timeline (M02-46).
+
+**Settle at /start:**
+
+- Where the V1 booking writes, `survey_visit` being M04's V2 table that block 3 may not author (Law 9) — pick: block 3 authors M02's own lead-side booking row — lead ref, date and time in the tenant timezone, surveyor user ref, confirmed address, no-show reschedule successor ref and M02-48's one-reminder mark — and "a visit exists for the survey module" is proven when M04's `survey_visit` references the booking that opened it (M02-46 gives this module the lead-side record in its own words, and book-visit is a V1 P0 action on lead detail; cost if wrong: one booking-to-`survey_visit` re-mapping migration when M04's slice begins).
 
 ---
 
@@ -297,6 +321,11 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 - Given a reopen from any of Lost, Disqualified, Dormant or Junk, when it completes, then the lead re-enters at its prior funnel stage and the timeline records the reopen (M02-56).
 - Given a lead reaching won, when the transition completes, then a project exists for it without any further step and without re-entering the customer (M02-57).
 - Given each state, when the surfaces named in the ruling are inspected, then it appears on those and on no others (M02-58).
+
+**Settle at /start:**
+
+- Prior stage, reopen count and the closed period — ruled: funnel stage and R9 state are two fields on the lead and no parking or terminal transition touches the stage (M02-41 makes them orthogonal), so "returns to its prior stage" (M02-51, M02-56) is clearing the state and no prior-stage field exists; reopen_count and the current close (reason, moment, actor) are stored on the lead, and every funnel or R9 move is also an append-only `lead_stage_transition` row (from, to, actor, moment, cause) where every earlier closed period stays and M13's time-in-stage and cycle reads resolve (M13-22, M13-24) — never a derivation from the timeline (the 09:00 sweep of M02-49 is a one-row read, and the timeline is audit, not state).
+- Reopened — ruled: a transition, never a stored state — a reopen clears the terminal or parking state, increments reopen_count and writes one transition row with cause reopen beside the timeline entry (M02-56 gives it no resting rule and M02-58 no surface; the lead re-enters its prior funnel stage at once).
 
 ---
 

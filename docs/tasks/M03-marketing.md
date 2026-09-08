@@ -23,6 +23,8 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 - Given an audience, when the campaign reaches its review step, then matched, each exclusion reason, and the number that will actually be sent to are all stated before scheduling is possible (`M03-11`).
 - Given a record with no accepted consent for the channel's class, when the audience is resolved and again when it is sent, then that record is excluded and the exclusion is itemised (`M03-46`, `M03-11`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**Settle at /start:**
+- "Campaign history" as an audience filter — ruled: derived at resolution from `lead_capture_record` (the campaign that captured the record, M03-31) and `campaign_send` (the campaigns that sent to it, M03-04), never a dedicated campaign-touch structure (the two records already hold every touch the PRD defines, and a third copy diverges).
 
 ### T-M03-003 · Campaign Builder — Content
 **Type:** screen · **Tier:** P0
@@ -89,6 +91,8 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 - Given a disconnected channel, when leads it previously captured are opened, then they are intact with their original source badge (`M03-27`).
 - Given a channel that breaks mid-send, when the break is detected, then the campaign pauses with that reason, the owner is notified, and unsent messages are reported as waiting rather than dropped (`M03-28`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**Settle at /start:**
+- The transactional lane's send record (M03-03) — channel-reported delivery states shown honestly (F5-28), a send audited under its sender's name, one-reminder-per-visit facts (M02-48) — which the PRD names nowhere and the model holds locally on `payment_link`, `survey_visit` and M02's booking row — pick: one `transactional_send` entity authored here beside `channel_connection`: one row per moment the product itself sent, with the moment's kind from the closed set of M03-03's lane, the anchoring record, the sender, the `channel_connection` ref and the delivery state exactly as the channel reports it; never a row for a copy-paste send, which is a timeline activity claiming nothing; the local delivery facts become references to it as each owning module's slice reaches them (one lane, one record — Law 5 — and no channel exists before this task, so no earlier row is re-homed; cost if wrong: `payment_link.channel_delivery_states` and `survey_visit`'s message record stay two more copies of the same states).
 
 ### T-M03-008 · Channel Health
 **Type:** screen · **Tier:** P0
@@ -116,6 +120,8 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 - Given a connected business-messaging channel with no approved template, when a campaign on it is scheduled, then scheduling is refused and the registration state is named (`M03-21`, `M03-39`).
 - Given campaign templates, when they are managed, then they are the tenant's existing message-template content class with a channel binding and a registration state — not a second template system (`M03-40`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**Settle at /start:**
+- Template channel binding — ruled: one `campaign_template` row binds exactly one channel and carries exactly one registration state; the same content on a second channel is a second row over the same `message_template` parent (M03-40 names the two additions in the singular, and M03-39's per-channel state is then the state with that one bound channel — a state matrix across channels would be the second template system M03-40 forbids).
 
 ### T-M03-010 · Website Enquiry Form
 **Type:** screen · **Tier:** P0
@@ -150,6 +156,9 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 - Given any capture this module produces, when it is created, then it exists in `modules/M02`'s unassigned inbox with a source badge and has passed M02's dedupe sheet (`M03-30`, `M03-32`).
 - Given a capture carrying a phone number that matches an existing customer, when it is system-created, then the enquiry is logged on the existing lead, the owner is notified, and no second lead exists (`M03-32`).
 - Given a lead captured by a campaign, when its timeline is read, then the channel, the campaign and the arrival time are all present (`M03-31`).
+**Settle at /start:**
+- Unverified identity — ruled: `lead_capture_record` carries no unverified-identity flag or state, and no capture path without a phone exists (M03-33's row text is the binding criterion — every connected form requires the phone — so the §M03.4 lines that describe the flag are pre-ruling and are not built).
+- Campaign reference on `lead_capture_record` — ruled: optional — null for an organic submission on a standing website embed (M03-24), exactly one campaign when that campaign's link, form or reply produced the enquiry (M03-31), never more than one.
 
 ### T-M03-013 · Consent ledger, suppression & send-window gating
 **Type:** engine · **Tier:** P0
@@ -167,6 +176,9 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 - Given an opt-out, when any later campaign resolves its audience, then that customer is excluded automatically with no person having to apply a filter and no override available (`M03-47`).
 - Given a run that reaches the close of the market's declared messaging window, when it stops, then it pauses with that reason and resumes at the next opening, and no send is silently moved (`M03-48`).
 - Given the email channel, when a campaign sends on it, then it sends from the tenant's own proven sending identity and every message carries an opt-out affordance that feeds the suppression list (`M03-20`, `M03-47`).
+**Settle at /start:**
+- Recipient grain — ruled: a `campaign_send` row targets one contact — the primary contact of the matched lead's customer — and carries that lead ref for attribution; consent stays per contact per channel class (M03-34), suppression per customer per channel class (M03-47) and is read through the contact's customer, so a customer-level opt-out covers every contact (each row already pins its own grain; the contact is the only entity that holds an address, and a customer has exactly one primary contact, M02-34).
+- Consent grain — ruled: `consent_record` holds messaging classes only, per contact per channel class, and this migration adds no customer anchor to it (the customer's calling, recording and DND facts are fields on the customer row, settled at `docs/tasks/M02-crm-leads.md` T-M02-007).
 
 ### T-M03-014 · Email channel integration
 **Type:** integration · **Tier:** P0

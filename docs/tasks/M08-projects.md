@@ -109,6 +109,10 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given a project with any row still pending, when handover is attempted, then it is refused and the pending rows are named; given every row past pending and the pack shared on the link, then handover proceeds (M08-32).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- The handover pack's storage (`M08-46`, `M08-49`) — ruled: the pack is a live view over the checklist's verified `project_document_file` rows in pack order, and nothing is snapshotted at handover (`M08-46` assembles the pack from the checklist, `M08-49` has the link continue to serve the pack, and document files are append-only with every replacement retained under `M08-31`, so the current verified set and its history stay readable and a stored copy of the same references would be a second truth).
+- The referral-ask outcome — named, declined or skipped (`M08-47`) — ruled: no durable field on the project or on the referral; a named outcome is the `M02-16` referral row the ask creates, and declined and skipped exist only as the `project_referral_asked` analytics event of §M08.8 and the handover's own timeline line (the PRD gives a declined or skipped ask no product consequence — nothing re-asks and nothing gates on it — so a stored outcome would be a fact no surface reads).
+
 ---
 
 ### T-M08-007 · Project creation at the won transition
@@ -126,6 +130,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **DONE WHEN:**
 - Given a rep confirms Mark won on a lead, when the act completes, then a project exists immediately with a server-assigned number, in `WON`, with no re-entry of customer data and no separate create step anywhere in the flow (M08-02, M08-03).
 - Given the project has just been created, when it opens, then the customer, site, approved design, accepted proposal version and the accepted version's tranche schedule are present by reference, and the document checklist is seeded for this project's segment from the tenant's market pack (M08-04, M08-05).
+
+**Settle at /start:**
+- Nothing in V1 authors a `site` row, yet the project references one (`M08-04`) and the utility blocker reads its selection (`M08-28`) — pick: the project's site reference stays empty in V1 and the detail screen says so, no slice of this module writes a site, the studio's address and pin stay on the design (`M05-15`), and a V1 utility blocker names the party and no utility body until a site exists (`site` is `modules/M04`'s table and Law 9 forbids this slice authoring it; the reference is already optional and §M08.1 already makes the emptiness honest; cost if wrong: V1 utility blockers name no body although the approved design already holds the utility, and `M09-49`'s geofence has no project anchor until M04 lands and creates site rows from the pins already on record, nothing re-collected).
 
 ---
 
@@ -146,6 +153,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given a tenant in any market, when the board renders, then every stage shows the pack's label for its market-neutral value, and no stage name originates in this module (M08-09).
 - Given a blocked project, when the board and the detail screen render, then the project is still in its own stage with its true days-in-stage, and the blocker rides on top of it (M08-22).
 - Given a pending checklist row, when a stage move is attempted, then the move succeeds (M08-34).
+
+**Settle at /start:**
+- Stage history's storage shape — days-in-stage (`M08-11`) and the customer link's stage history with dates (`M08-29`) both need per-project access, and `M08-14` records the move on the one timeline (`M08-17`) — pick: one append-only `project_stage_transition` row per move (from, to, moved at, actor, backward flag) is the fact; the timeline's stage-moved activity entry points at that row and copies none of its fields; `project.stage` and `stage_entered_at` are the board's indexed current position, rewritten only by the same write (a typed, index-backed per-project read for days-in-stage and the link without parsing a polymorphic body, and one fact in one row; cost if wrong: an unneeded table whose rows fold into the activity body, lossless because both are append-only).
 
 ---
 
@@ -187,6 +197,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given a blocker with party `customer` and a start date, when the customer opens their progress link, then the wait and its start are visible to them (M08-24, M08-29).
 - Given a material blocker with an internal note naming a supplier, when the customer's page renders, then the internal note is not on it (M08-25).
 - Given a market pack that declares a typical wait for utility inspection, when a utility blocker renders on the customer's page, then the framing is the pack's and this module supplies only the party, reason and dates (M08-26, M08-28, M08-29).
+
+**Settle at /start:**
+- The blocker `reason_class` vocabulary (`M08-29`) — ruled: a closed, market-neutral set owned by `contracts`, the pack supplying only its labels exactly as it does for the party set and the stages (`M08-20`, `M08-09`, `F1-22`); the internal reason stays tenant-typed free text per §M08.4 and is never the published class (`M08-25`) (a class the customer link must render in three languages cannot be free text, the module's own party set is the precedent, and a new class is a ruling rather than a tenant setting).
 
 ---
 
@@ -269,6 +282,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given a customer changes scope after Won, when a new proposal version is accepted, then the project references the new version, the earlier version remains readable, and the collection schedule follows the version in force (M08-50).
 - Given any project in any state, when a user looks for a delete action, then there is none (M08-52).
 - Given a cancelled project that had received payments, when it is opened, then its receipts, documents and timeline are readable and any reversal appears as its own entry (M08-53).
+
+**Settle at /start:**
+- Commissioning artefacts retained with the project rather than only inside a downloaded file (`M08-48`) — pick: no distinct stored object; retention is the checklist's verified `project_document_file` rows, which are never deleted (`M08-49`), and the system facts are the project's own references and fields — the approved design, the version in force, the system size and the `COMMISSIONED` move's date — held once and inherited by reference (`M08-04`), with which rows are certificates or as-built references read from the pack's checklist row keys (`M08-30`) (the rows the requirement names already survive as data, and a second object would copy the same references; cost if wrong: a later monitoring or service module adds a tagging table over the same file rows, with nothing to backfill because nothing was deleted).
 
 ---
 

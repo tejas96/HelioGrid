@@ -12,6 +12,9 @@ This file carries every engineering task for the tenant's own collections: the t
 - Given a Finance user, when their home renders, then it shows due, overdue, receipts awaiting recording and the period's collections, each obeying the freshness law (`M11-54`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- "Receipts waiting to be recorded" (`M11-54`) has no stored object of its own, because an entry does not exist until it is recorded — pick: the block is the set of minted links the tenant's account reports paid with no ledger entry against them yet — `M11-28`'s awaiting-confirmation set as the on-view re-check and the sweep report it (`M11-29`) — counted and summed from the links, and no pending-receipt object is created for anything a person has not yet recorded (the only receipt the product can honestly know is waiting is one the tenant's account has reported, and a customer's claim to have paid is not a product fact under `M11-27`; cost if wrong: the block reads zero for tenants with no link rail, and the brief's day-in-the-life reading needs an expected-receipt object the PRD has not given — an owner ruling, not a slice).
+
 ### T-M11-002 · Payments Ledger
 **Type:** screen · **Tier:** P0
 **Status:** planned
@@ -80,6 +83,9 @@ This file carries every engineering task for the tenant's own collections: the t
 **DONE WHEN:**
 - Given an accepted proposal version, when its project's schedule renders, then the rows, their shares and their amounts are that version's, unentered by any person, and the amounts sum to that version's payable to the minor unit (`M11-08`, `M11-09`, `M11-13`).
 
+**Settle at /start:**
+- How much of a tranche is a stored row (`M11-09`, `M11-10`) — pick: the `tranche` row is the project-side identity only — the project, the pinned proposal version and its `proposal_tranche` row, and the waiver's reason, actor and time — while label, share and amount are read through the `proposal_tranche` reference and never copied, and state, outstanding and since-when are derived at read time from the ledger and the stage history and never stored (`M11-09` inherits the same rows never re-entered, `M11-10` and `F8-13` forbid a typed or stored state, and a copied amount is a second figure `F8-24` forbids; cost if wrong: Finance's portfolio-wide due and overdue read needs a materialised state projection later, addable without changing any fact).
+
 ### T-M11-006 · Tranche state derivation and due-ness transitions
 **Type:** engine · **Tier:** P0
 **Status:** planned
@@ -92,6 +98,9 @@ This file carries every engineering task for the tenant's own collections: the t
 - Given a tranche with recorded payments, when its state renders, then the state is the one the entries imply and no control exists that sets it directly (`M11-10`).
 - Given a project whose coordinator completes the stage a tranche is mapped to, when the stage move saves, then that tranche is due (`M11-11`).
 - Given a market pack that marks a mapped stage skippable and a project that skips it, when the project passes the point that stage occupied, then the tranche becomes due rather than remaining upcoming (`M11-12`).
+
+**Settle at /start:**
+- Skipped-stage due-ness (`M11-12`, `M08-36`) — ruled: the tranche becomes due when the project passes the point the skipped stage occupied, with no release act and no stored release field on the tranche (both rows carry this reading as the requirement and this task's own DONE WHEN tests it; the alternative — upcoming until a person releases it — is an owner ruling that amends the row, and this task builds the row as written).
 
 ### T-M11-007 · Append-only payments ledger and its entry write path
 **Type:** engine · **Tier:** P0
@@ -144,6 +153,10 @@ This file carries every engineering task for the tenant's own collections: the t
 - Given a tenant with no connected account, when they work any collections surface, then every capability except link-minting is available and nothing is blocked (`M11-20`, `M11-21`).
 - Given any collections flow, when its network activity is examined, then no tenant credential leaves the server and no call to the rail originates from a client (`M11-22`).
 
+**Settle at /start:**
+- One collections account per tenant (`M11-17`) — ruled: exactly one `collections_account_connection` row per tenant, unique on the tenant, whose state moves in place — disconnect, rotation and reconnection change that one row and are recorded in the audit log (`M11-07`, `M11-23`), never as a second row (the PRD speaks only in the singular — "their own collections account", one settings surface, "that account is where everything happens" — and a second account would need a choice at mint time no row provides).
+- Non-launch-market collections and the supplier-of-record decision (`F1-05`, `BM-40`) — ruled: no collections row or adapter reads a supplier-of-record posture; the tenant is merchant of record for its own collections (`M11-17`), a non-launch market's only collections dependency is its pack's `pack.payment-rails` declaration (`M11-05`, `M11-20`), and the supplier-of-record decision is the pack's launch gate and a subscription-invoice fact of `modules/M12`, settled there (the posture governs what the platform sells the tenant, never what the tenant collects from its customer, and `M11-02` keeps the two money systems apart).
+
 ### T-M11-011 · Payment-link minting on the tenant's account
 **Type:** integration · **Tier:** P0
 **Status:** planned
@@ -154,6 +167,10 @@ This file carries every engineering task for the tenant's own collections: the t
 - Given a due tranche in a tenant with a connected account, when a holder opens it, then the due row's collect action mints on that tenant's account for the outstanding amount to the minor unit — sending the link and its request message from the tenant's connected transactional channel where one is connected, and offering the copy where none is — and the copy action is present on both paths (`M11-24`, `M11-25`, `M11-26`). *(Amended per owner ruling 2026-08-06, which put the payment link on the transactional lane; this line previously read "then a "Copy payment link" action is present and mints on that tenant's account for the outstanding amount to the minor unit (`M11-24`, `M11-25`)".)*
 - Given a minted link in a tenant with a connected transactional channel, when it goes out, then it is handed to that channel's transactional send under the transactional template class (`M03-03`, the `payment_reminder` key of T-FPLAT-021's registry) and the channel's delivery states ride it honestly; and given no connected channel, then it goes to the clipboard only and nothing anywhere claims a delivery (`M11-26` as amended by owner ruling 2026-08-06 — the requirement cell itself carries both branches; see the M11-26 law below).
 - Given the minting path in any tenant, when the settlement is examined, then the send changed nothing about it: the link is minted on the tenant's own account and the money moves customer → tenant with no platform-held balance at any point (`M11-01`, unamended).
+
+**Settle at /start:**
+- Payment-link lifecycle (`M11-30`) — ruled: the link's stored states are `minted` and `superseded` only, supersession being its one transition and written with its reason; "confirmed" is never a link state — it is the existence of a ledger entry carrying the link's reference (`M11-27`) — and "awaiting confirmation" is what the tenant's account reports at the on-view re-check and the sweep (`M11-28`, `M11-29`), both derived at read time (`M11-10` and `F8-13`: a state the ledger and the account already hold is not stored a second time).
+- Channel delivery states on a sent link (`M11-26`) — ruled: the link stores its send path and a reference to the send record the transactional lane wrote, in whatever shape `modules/M03`'s slice gives that record, and never a copy of a delivery state; every surface reads delivery live through that reference (`F5-28` shows delivery exactly as the channel reports it and no further, and a stored copy would be a second, staling truth of a fact `M03-03`'s lane owns).
 
 ### T-M11-012 · Confirmation intake and reconciliation
 **Type:** integration · **Tier:** P0

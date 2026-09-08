@@ -107,6 +107,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 **DONE WHEN:**
 - Given a hybrid design, Then a battery can be chosen (or explicitly none) via the same three paths (MS4-24), and it flows to BOM, SLD and the proposal components block without re-asking (MS4-25) — the MS4-24 half is T-MS-201's; this task owns the flow-through half.
 
+**Settle at /start:**
+- Battery in v1 — ruled: the selection, or the explicit "None", persists in the design payload's electrical layer and emits its BOM lines (MS4-24 and MS4-25 are P0 V1 rows, which resolves M05-37's "recorded, not resolved" battery as present in v1; the selection joins the electrical fingerprint layer, MS11-19, like every other component).
+
 ---
 
 ### T-MS-205 · Step 6 Layout Editor — port + UI rebuild
@@ -357,6 +360,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - Given a stale capture set as cover, Then it stays marked stale and readiness reflects it (MS7-09/MS7-10) — this task carries the MS7-09 half
 - the ported POC tests for this area pass unchanged in the new project.
 
+**Settle at /start:**
+- Capture bytes — pick: one JPEG per capture at the canvas's rendered size and the POC's 0.85 quality, stored server-side as an `image_blob` the design references and never inside the payload (MS7-07), capped by a policy number held in `domain` (1 MB per capture, four per design), retained while referenced and freed only by MS12-20's reverse-reference collector, with no time-based expiry (a capture is proposal evidence under M05-60; cost if wrong: a re-encode of stored captures, or a storage surprise under BM-20).
+
 ---
 
 ### T-MS-262 · The one energy model: capacity, losses, provenance paths & the lifetime projection
@@ -406,6 +412,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - ladder/timeouts behave so the honest message wins (MS7-25)
 - MS7-27 is P1 and carries no line in the doc's P0 acceptance list; the fetch-at-location-confirm boundary (MS1-22) is the acceptance and travels with the ported suite.
 - the ported POC tests for this area pass unchanged in the new project.
+
+**Settle at /start:**
+- `weather_dataset` ownership — ruled: it hangs on the design, not on a site or lead record; it is fetched at the design's location confirm (MS7-27) and guarded by the design's own pin stamp (MS7-18), so the design is the only record that can say whether it is stale, each variant of a lead holds its own row, and the billed fetch is already deduplicated by the coordinate-keyed `solar_data_cache` (MS1-24, MS2-44) so nothing is paid twice (a shared site row would hand the studio a parent that no V1 writer authors).
 
 ---
 

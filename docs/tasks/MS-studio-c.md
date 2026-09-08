@@ -118,6 +118,9 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - Given a non-India market pack, Then prices, tax, subsidy, constants and wind data come from that pack (MS10-39).
 - The ported POC tests for this area pass unchanged in the new project — with India's shipped values as the golden fixture, so the resolver's first market reproduces today's numbers exactly.
 
+**Settle at /start:**
+- `pack_rate_entry` attach point — ruled: it attaches to `market_pack_version`, never to the pack (pack content is versioned as one unit, F1-11, and T-FCORE-016 stores the pack per revision, so a BOS rate row belongs to the revision that carried it and a design's price-book pin resolves rates from exactly that revision, MS10-39, MS10-26).
+
 ### T-MS-307 · CSV and DXF exports (port)
 
 **Type:** port · **Tier:** P0
@@ -311,6 +314,9 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - The ported POC tests for this area pass unchanged in the new project.
 - Three base states + brief-listed states present at 375px and 1536px with full parity.
 
+**Settle at /start:**
+- `installation_plan_tick` ownership — ruled: the studio's table, keyed by design and the deterministic step id, never by M08's project (the step id exists only against the design's own roofs and tables, MS11-28; MS11-35's "per project" is the POC's word for the design; MS11-16 starts a duplicate's ticks clean, which only a design-scoped key can do; M08's `installation_checklist_step` is a different entity with its own evidence rules, M05-76, and reads the design's ticks rather than owning them).
+
 ---
 
 ## Shell & platform — wizard, design list, sign-in, persistence, UI kit (MS12)
@@ -331,6 +337,10 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - Given a failed save, Then a persistent alert states the design is not saved and no work is silently lost (MS12-24).
 - The ported POC tests for this area pass unchanged in the new project.
 - Three base states + brief-listed states present at 375px and 1536px with full parity.
+
+**Settle at /start:**
+- Per-step states — ruled: derived, never stored; not started / in progress / done / has errors (M05-03) is one pure function in `domain` over payload completeness and the live validation results, recomputed on every edit and on open, and the only stored navigation fact is the remembered step (MS12-02, T-MS-361) (no surface reads a step state across designs — MS12-11 filters by status alone — and a stored state would be the hand-set flag M05-10 forbids).
+- Design Health persistence — ruled: a stamped per-save snapshot on the design row — score, band, per-category scores and deductions, stamped with the design fingerprint they were computed over — written by T-MS-205's health engine on save; the chip reads the stamp (MS12-06), "since last save" is the live recompute against it (M05-06), a fingerprint mismatch renders provisional, and Variant Compare reads the stamped score across designs (M05-79), which is why it is a column and not a recompute.
 
 ### T-MS-361 · Step navigation: clamping, the remembered step, and prerequisite-gated deep links (port)
 
@@ -392,6 +402,9 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DONE WHEN:**
 - Given sign-in, Then mobile OTP and Google work and establish tenant/role context with no dead controls (MS12-17); language and units persist per user with real catalogs (MS12-18); sign-out preserves work (MS12-19).
 
+**Settle at /start:**
+- The header's m/ft toggle — ruled: one home, `user_account.unit_preference` (T-M01-025's column), read and written through the platform's preference route, with no per-design or per-tenant unit and every readout converting for display only over metric storage (MS10-38) (M05-04 calls the toggle global across the studio and MS12-18 says the preference persists per user).
+
 ### T-MS-365 · Designs as a server-side record: lead scoping, autosave, quarantine, migration and image GC (engine)
 
 **Type:** engine · **Tier:** P0
@@ -408,6 +421,11 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-20 half; MS12-24's visible alert is T-MS-360's, MS12-21 is T-MS-366, MS12-22 is T-MS-367 and MS12-23 is T-MS-368.)*
 - The ported POC tests for this area pass unchanged in the new project.
 
+**Settle at /start:**
+- Design history — ruled: a counter, not snapshots; `design.server_version` increments on every accepted save (`F4-15`) and no design-version table exists, because everything that pins a version pins the fingerprint beside it and keeps its own copy of what it needs — `design_signoff` (M05-85, MS11-14, MS11-15), the proposal version's frozen lines (MS9-08) and the capture's own image (M05-60) — so nothing ever replays an older design state, and M05-11's staleness is the comparison of those pins with the live values.
+- `design.status` — ruled: the closed set draft | ready in `contracts`, with sign-off state derived; ready is the mark MS11-02's precondition writes and MS9-07's issuing routes set consistently, reset to draft by duplicate (MS11-25), while awaiting / returned with comments / engineer approved are read from the latest `design_signoff` row against the current fingerprint (M05-85 drops approval on a mismatch by comparison, never by a flag), and MS12-11's status filters combine the two.
+- Delete — ruled: a soft delete; `deleted_at` on the design excludes it from the lead's list, Variant Compare and the sign-off queue, while it stays readable through every pinned proposal and customer link (`F8-15`, `F5-70`) and its `design_signoff` history (`F8-26`); its `image_blob` rows stay referenced so MS12-20's collector never frees them, V1 has no hard delete or purge, and MS12-14's confirmation on T-MS-363 states exactly that set.
+
 ### T-MS-366 · Undo model: whole-design snapshots scoped to the open design (port)
 
 **Type:** port · **Tier:** P0
@@ -420,6 +438,9 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DONE WHEN:**
 - Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-21 half; the clean undo history a newly opened design starts with is T-MS-361's, and duplication's must-not-destroy-undo rule is MS11-26's in T-MS-317.)*
 - The ported POC tests for this area pass unchanged in the new project.
+
+**Settle at /start:**
+- The pre-wipe state of a >25 m pin move — ruled: it lives in the in-memory undo stack and nowhere else; the wipe is one undo entry like every cascade (M05-19, MS2-13), undo snapshots are never persisted server-side, a reopened design starts with a clean history (MS12-13), and once saved and closed the wipe is final exactly as any other edit is under `F4-15`'s one-document rule.
 
 ### T-MS-367 · Concurrent editing surfaced, never silently overwritten (engine)
 
@@ -503,6 +524,9 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DONE WHEN:**
 - Given a tenant user, Then the design list shows that tenant's lead-scoped designs on any device (MS12-10) with counts, filters, search and sort (MS12-11); cards are keyboard-operable with correct menus (MS12-12); opening resumes at the saved step with clean undo (MS12-13); delete confirms accurately (MS12-14); empty and unreadable-record states are honest (MS12-15); new designs get market-aware defaults and a share identity (MS12-16). *(This task owns the MS12-16 half; a duplicate's fresh share identity is MS11-25's in T-MS-317.)*
 - The ported POC tests for this area pass unchanged in the new project — with the India pack's shipped defaults as the golden fixture, so the first market reproduces today's new-design values exactly.
+
+**Settle at /start:**
+- The share identity — ruled: a root id, not a link; a server-assigned opaque id on the design row, created with it (MS12-16), which F5's per-recipient named links resolve through the proposal (MS9-09); the design mints no URL of its own, because the 3D view ships inside the proposal link and no second link exists, and a duplicate gets a fresh id (MS11-25).
 
 ### T-MS-373 · Shared drawing projections: isometric, elevation, fit-to-box, member projection (port)
 
