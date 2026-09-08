@@ -36,6 +36,7 @@ row UP this order over widening the script that currently holds it.
 | M3 | A package exposes only its index | dependency-cruiser `package-index-only` | HELD | Enumerates five packages by name with per-package entry regexes. A new package is unlisted, so unguarded. |
 | M4 | An app never touches the wire or the form library directly | biome `noRestrictedImports` · dependency-cruiser | HELD | — |
 | M5 | `process.env` is read only in `packages/env` | biome `noProcessEnv` · `check:env` | HELD · red 2026-09-03 | Deliberately doubled: widening the biome allowlist alone does not let a read through. |
+| M109 | No secret enters the tree | gitleaks · pre-commit `check:secrets` on the staged change · CI `Secret scan` on every commit | HELD · red 2026-09-08 | Both run the default rules plus `.gitleaks.toml`, the ONE place a false positive is answered (the matrix `rowKey` pointer read as a generic key). The hook fails closed when the binary is missing. Neither can see a secret pasted into a document the rules do not recognise. |
 
 ## Tenancy and data
 

@@ -1,0 +1,14 @@
+# gitleaks — the default rule set, plus the one shape this repo knows is not a secret.
+# CI runs it on every commit (ci.yml "Secret scan"); the pre-commit hook runs it on the staged
+# change (scripts/check-secrets.sh), so a false positive is answered HERE, once, never by a
+# rename or a skip.
+
+title = "HelioGrid"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "A permission-matrix row key is a pointer into the PRD (`rowKey: 'F2.M02.add-edit-leads'`), not a key of any kind; the generic-api-key rule reads the word Key and a long token."
+regexTarget = "line"
+regexes = ['''rowKey: 'F2\.[A-Z][0-9]*\.[a-z0-9-]+',''']
