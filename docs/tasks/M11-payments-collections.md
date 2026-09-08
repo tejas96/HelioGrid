@@ -4,6 +4,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-001 · Finance Home (Money Due)
 **Type:** screen · **Tier:** P1
+**Status:** planned
 **PRD rows:** M11-54 (P1)
 **DESIGN:** SCR-M11-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-01-finance-home.md`; they are the specification.
@@ -13,6 +14,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-002 · Payments Ledger
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-14 (P0), M11-15 (P0), M11-16 (P0), M11-19 (P0), M11-24 (P0), M11-28 (P0), M11-30 (P1), M11-31 (P0), M11-36 (P0), M11-41 (P0), M11-42 (P0), M11-46 (P0), M11-47 (P0), M11-49 (P0), M11-52 (P0)
 **DESIGN:** SCR-M11-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-02-payments-ledger.md`; they are the specification. Every row of this task is carried verbatim in that brief; no row is quoted here.
@@ -41,6 +43,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-003 · Record Payment
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-33 (P0), M11-34 (P0), M11-35 (P0), M11-36 (P0), M11-37 (P0), M11-38 (P1), M11-39 (P0)
 **DESIGN:** SCR-M11-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-03-record-payment.md`; they are the specification. Every row of this task is carried verbatim in that brief; no row is quoted here.
@@ -57,6 +60,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-004 · Collections Settings
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-19 (P0), M11-23 (P1)
 **DESIGN:** SCR-M11-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-04-collections-settings.md`; they are the specification. Every row of this task is carried verbatim in that brief; no row is quoted here.
@@ -67,6 +71,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-005 · Schedule derivation from the accepted version — one money path to the minor unit
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-08, M11-09, M11-13
 **Requirements (verbatim):**
 - **M11-08** (P0) — **One money path, reconciling end to end to the currency's minor unit.** The bill of materials, the proposal's money block, the tranche schedule and the payments recorded against it are one chain, not four records that resemble each other: the schedule's percentages sum to exactly 100.00 for a version, its amounts sum to that version's payable, and the receipts reconcile against those amounts — all to the minor unit the market pack declares (`F1-21`). A disagreement anywhere in that chain is a defect, never a rounding style.
@@ -77,6 +82,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-006 · Tranche state derivation and due-ness transitions
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-10, M11-11, M11-12
 **Requirements (verbatim):**
 - **M11-10** (P0) — **Tranche state is derived from the ledger and can never be typed.** `upcoming → due → part-received → received`, with `waived` terminal: the received states are recomputed from the payment entries that exist, so no person sets "received" as a status and no status can disagree with the receipts behind it. What a person *can* do is add an entry (`M11.5`), reverse one (`M11.7`) or waive the tranche (`M11-49`) — each of which changes the state by changing the facts.
@@ -89,6 +95,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-007 · Append-only payments ledger and its entry write path
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-40, M11-38
 **Requirements (verbatim):**
 - **M11-40** (P0) — **The payments ledger is append-only: entries are added, never edited, never deleted.** Every payment — hand-recorded or confirmed by the tenant's account — is an entry in one ledger per project, and the schedule's states are readings of it. Nothing in the product exposes an "edit payment" control, and no correction path removes an entry (`M11.7`).
@@ -100,6 +107,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-008 · The online-only money-mutation boundary
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-06
 **Requirements (verbatim):**
 - **M11-06** (P0) — **Every money mutation is online-only and is refused, never queued.** Recording a payment, attaching it to a tranche, waiving, reversing and minting a link all require the server; with no connection the act fails fast with an honest reason and leaves nothing pending. There is no offline money in this product, on any surface, at any tier.
@@ -108,6 +116,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-009 · Money-event audit trail with named actors
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-07, M11-51
 **Requirements (verbatim):**
 - **M11-07** (P0) — **Every money event is an audit entry, written with the change that caused it.** Tranche edits, payment recorded, reversal posted, waiver applied, link minted, and every credential lifecycle event and decrypt are covered events — actor, time, before and after — and audit rows can never be updated or deleted. **And one act that writes no money is a covered event too: the send of the plain payment-request message from the tenant's connected official channel is an audit entry recorded under the name of the person who sent it (owner ruling 2026-08-06)** — it leaves the tenant's own official channel and reaches a customer about money, so it is written to the same log with its actor, whatever preset that person holds, the project-visibility-only reader of `F2.M11.send-request-message` included. *(That last sentence is the ruling's; this row previously ended at "…and audit rows can never be updated or deleted." and named no message send. Every money event above, the actor/time/before-and-after discipline and the never-updated-never-deleted rule are unchanged, and the entry records the send act and its sender — it is not a delivery state and claims none, `M11-26`.)* **And that covered event is the send from the connected channel and nothing else (owner ruling 2026-08-06): on `M11-26`'s copy-paste fallback — no channel connected — the product composes the message and places it on the clipboard, a person sends it outside the product, and no audit entry is written at all, neither a compose record nor a copy record nor a send record.** The same chase is therefore attributable when the product sends it and unrecorded when a person does — a deliberate simplification, recorded as one rather than compensated for: this log holds what the product performed, and the product never claims what it did not do. *(Those last two sentences are that ruling's; this row previously stopped at the send-audit clause and stated no boundary for the fallback path. The fallback ruling adds no covered event, adds no compensating record, counter or timeline entry, and changes nothing else here: every money event above, the actor/time/before-and-after discipline, the never-updated-never-deleted rule and the send-audit clause's own terms are unchanged.)* _(cell amended at source by owner rulings 2026-08-06 — quoted here as amended; the send this clause covers is `F2.M11.send-request-message`'s, whose holder set is unchanged, and the fallback ruling adds no covered event: it bounds the clause to the connected channel and leaves the copy-paste fallback writing nothing)_
@@ -120,6 +129,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-010 · Collections-account connection: vendor-neutral rail adapter and credential handling
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-05, M11-17, M11-18, M11-20, M11-22
 **Requirements (verbatim):**
 - **M11-05** (P0) — **The collection rail is a capability declared by the market pack, never a vendor requirement.** Which rails a market has — payment links, the payment modes a manual entry may carry, and any payment-data constraints — is `pack.payment-rails` data; the launch market's rail is a *reference implementation* and swapping it is an adapter change, never a product change. No requirement in this module names a payment provider, and no screen in it does either.
@@ -136,6 +146,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-011 · Payment-link minting on the tenant's account
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-25
 **Requirements (verbatim):**
 - **M11-25** (P0) — **A link is minted for one tranche and for exactly what that tranche still owes**, in the tenant's currency, to the minor unit — never a rounded figure, never a "convenient" amount, never a lump that spans rows.
@@ -146,6 +157,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-012 · Confirmation intake and reconciliation
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-27, M11-29
 **Requirements (verbatim):**
 - **M11-27** (P0) — **A tranche becomes received only on confirmation from the tenant's own account, and a repeated confirmation never counts twice.** Confirmation is verified as coming from that tenant's account, is safe to receive more than once, marks the tranche's receipt and attaches the receipt record. Nothing about "the customer said they paid" moves the state — only the account's confirmation, or a person's explicit recorded entry (`M11.5`), which is labelled as exactly that (`M11-42`).
@@ -156,6 +168,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-013 · Reversal restatement and the cancelled-project money rule
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-48, M11-50
 **Requirements (verbatim):**
 - **M11-48** (P0) — **A reversal restates the tranche's state by restating its facts.** Because state is derived (`M11-10`), a reversal moves a received tranche back to part-received or due automatically; nobody re-types a status, and no state can survive a reversal that contradicts it.
@@ -166,6 +179,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-014 · The single collected-versus-due figure and its freshness law
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-43, M11-44
 **Requirements (verbatim):**
 - **M11-43** (P0) — **Collected-against-due is one computed figure, and every surface that shows it shows the same one.** The payments screen, the project's money block, the board card, the owner's dashboard, an export and the customer's rendering are renderings of one value — they never recompute independently, round differently or drop a qualifier the others carry.
@@ -176,6 +190,7 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-015 · Publishing receipts and payment facts to the customer surface
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-45, M11-55
 **Requirements (verbatim):**
 - **M11-45** (P1) — **The receipt is one of the three things that carry the customer through their most anxious moment, and this module owns its half.** The source names them: *"an instant receipt, a named person to contact, and a clear statement of what happens next and when."* This module produces the receipt the instant the money is confirmed or recorded, and publishes it to the customer's surface; the named contact and the what-happens-next line are `foundations/F5`'s rendering of `modules/M08`'s facts.
@@ -187,6 +202,7 @@ This task builds the fact-supply half only. The customer-facing rendering is SCR
 
 ### T-M11-016 · Overdue facts and the chase prompt supplied to the project, board and dashboard
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M11-53
 **Requirements (verbatim):**
 - **M11-53** (P0) — **An unpaid due tranche is chased through a person, and the product's job is to make it impossible to miss.** It surfaces on the project, on the stage board and on the owner's dashboard (`modules/M08`, `modules/M13` own those surfaces; this module supplies the facts), and the rep is prompted to chase. The prompt leads to a message — sent from the tenant's connected transactional channel where one exists and composed for a person to send where none is (owner ruling 2026-08-06; `M11-26`) — never to a product-side sanction against the customer (`M11-32`). *This clause previously read "The prompt leads to a message a person sends — never to a product-side sanction against the customer (`M11-32`)"; the earlier manual-only half is retired and the never-sanction half is unchanged. The chase is still a person's decision: the product prompts and the person acts.*

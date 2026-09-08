@@ -7,6 +7,7 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 ### T-M09-001 · Tracking Settings screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-04 (P0), M09-12 (P0), M09-14 (P0), M09-16 (P0), M09-44 (P0), M09-68 (P0)
 **DESIGN:** SCR-M09-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-01-tracking-settings.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-50 (the per-site radius rule) is also quoted verbatim in this brief because the tenant default radius is set here; it is dispositioned at T-M09-007.
@@ -25,6 +26,7 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 ### T-M09-002 · My Day (Route) screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-13 (P0), M09-19 (P0), M09-21 (P0), M09-23 (P1), M09-24 (P0), M09-28 (P0), M09-32 (P1), M09-33 (P2), M09-35 (P0), M09-37 (P0), M09-51 (P0), M09-66 (P0), M09-71 (P0), PS-23 (P1), M13-35 (P0)
 **DESIGN:** SCR-M09-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-02-my-day-route.md`; they are the specification. Every PRD row of this task is quoted in full in that brief, `M09-71` included. *(This sentence carved out `M09-71` as an exception — true when written and false within minutes: the brief was amended in the same 2026-08-15 wave and its quote is byte-identical to the live cell.)* M09-24 also binds SCR-M09-04 and M09-66 also binds SCR-M09-05 — both are quoted verbatim in those briefs too; they are dispositioned here. M09-28's lead-side half binds SCR-M02-04 (Lead Detail; see `docs/tasks/M02-crm-leads.md`); the field half — the stop on the route and its check-in/out — is this task's. **Exception — `M09-71`:** the row was added to `docs/prd/modules/M09-field-workforce.md` §M09.5 by owner ruling 2026-08-15, restoring the law of `M09-36`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The brief does not yet quote it — and still carries the stale `M09-36` pointer noted below — so it is quoted verbatim here and this quote is the specification for it until the brief owner carries it across:
@@ -62,6 +64,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-003 · Visit Stop Detail screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-27 (P0), M09-31 (P0)
 **DESIGN:** SCR-M09-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here.
@@ -76,6 +79,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-004 · Team Field Day screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-43 (P0), M09-48 (P0), M09-59 (P0), M09-61 (P0), M09-63 (P2)
 **DESIGN:** SCR-M09-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-04-team-field-day.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-24 (open check-in surfacing) is also quoted verbatim in this brief because the exception rows surface here too; it is dispositioned at T-M09-002.
@@ -94,6 +98,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-005 · Activity Timeline screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-45 (P0), M09-54 (P0), M09-56 (P0)
 **DESIGN:** SCR-M09-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-05-activity-timeline.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-45 also binds SCR-M09-06 (Day Playback) and is quoted verbatim in that brief too; it is dispositioned here. M09-66 (the own-record right) is also quoted verbatim in this brief; it is dispositioned at T-M09-002.
@@ -110,6 +115,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-006 · Day Playback screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-55 (P0)
 **DESIGN:** SCR-M09-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-06-day-playback.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-45 (gaps never interpolated) is also quoted verbatim in this brief and binds this screen's replay; it is dispositioned at T-M09-005. M09-57's retention window bounds which days are replayable; it is dispositioned at T-M09-012.
@@ -124,6 +130,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-007 · Site Geofence screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-49 (P0), M09-50 (P0)
 **DESIGN:** SCR-M09-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-07-site-geofence.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-50 also binds SCR-M09-01 (the tenant default radius) and is quoted verbatim in that brief too; it is dispositioned here.
@@ -138,6 +145,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-008 · Tracked-seat toggle service
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-10, M09-11, M09-15, M09-65
 **Requirements (verbatim):**
 
@@ -158,6 +166,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-009 · Capability gating: the included set and the tracked bundle
 
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-02, M09-03, M09-05, M09-17, M09-18, M09-42, M09-53
 **Requirements (verbatim):**
 
@@ -185,6 +194,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-010 · Location capture pipeline & work-hours collection gate
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-22, M09-46, M09-64
 **Requirements (verbatim):**
 
@@ -203,6 +213,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-011 · Geofence crossing evaluation service
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-52
 **Requirements (verbatim):**
 
@@ -217,6 +228,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-012 · Location retention & data-rights reach
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-57, M09-69
 **Requirements (verbatim):**
 
@@ -233,6 +245,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-013 · Field audit events, including location-read audit
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-70
 **Requirements (verbatim):**
 
@@ -247,6 +260,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-014 · REC: lone-worker open check-in escalation
 
 **Type:** engine · **Tier:** P2
+**Status:** planned
 **PRD rows:** M09-25
 **Requirements (verbatim):**
 
@@ -261,6 +275,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-015 · Field visit object & cross-module stop integration
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-26, M09-29, M09-30
 **Requirements (verbatim):**
 
@@ -279,6 +294,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-016 · Attendance corrections: append-only store
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M09-38
 **Requirements (verbatim):**
 
@@ -294,6 +310,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 ### T-M09-017 · REC: arrival window on the customer link (M09 side)
 
 **Type:** integration · **Tier:** P2
+**Status:** planned
 **PRD rows:** M09-34
 **Requirements (verbatim):**
 

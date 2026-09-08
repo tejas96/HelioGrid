@@ -23,6 +23,7 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 
 ### T-M06-001 · Proposal Entry — path choice and the Quick-mode toggle
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-05 (P0), M06-18 (P0), M06-19 (P0)
 **DESIGN:** SCR-M06-01 → PENDING
 
@@ -40,6 +41,7 @@ are the specification.
 
 ### T-M06-002 · Proposal Builder shell — chip rail, footer, failure list, Quick-mode view
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-23 (P0), M06-24 (P0)
 **DESIGN:** SCR-M06-02 → PENDING
 
@@ -58,6 +60,7 @@ are the specification.
 
 ### T-M06-003 · Builder Step 1 — Company, and the Proposal Type sheet
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-06 (P0), M06-07 (P0)
 **DESIGN:** SCR-M06-03 → PENDING
 
@@ -73,6 +76,7 @@ are the specification.
 
 ### T-M06-004 · Builder Step 2 — Achievements
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-08 (P0)
 **DESIGN:** SCR-M06-04 → PENDING
 
@@ -87,6 +91,7 @@ are the specification.
 
 ### T-M06-005 · Builder Step 3 — Solar System Setup, battery card and the live payable
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05 → PENDING
 
@@ -105,6 +110,7 @@ are the specification.
 
 ### T-M06-006 · Builder Step 4 — Performance Metrics
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-10 (P0)
 **DESIGN:** SCR-M06-06 → PENDING
 
@@ -119,6 +125,7 @@ are the specification.
 
 ### T-M06-007 · Builder Step 5 — Financial Data
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-11 (P0)
 **DESIGN:** SCR-M06-07 → PENDING
 
@@ -133,6 +140,7 @@ are the specification.
 
 ### T-M06-008 · Builder Step 6 — Project Timeline
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-12 (P0)
 **DESIGN:** SCR-M06-08 → PENDING
 
@@ -147,6 +155,7 @@ are the specification.
 
 ### T-M06-009 · Builder Step 7 — Payment Terms
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-13 (P0)
 **DESIGN:** SCR-M06-09 → PENDING
 
@@ -161,6 +170,7 @@ are the specification.
 
 ### T-M06-010 · Builder Step 8 — Components: the five-category gate, edit sheets and inline add
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0), M06-30 (P0)
 **DESIGN:** SCR-M06-10 → PENDING
 
@@ -180,6 +190,7 @@ are the specification.
 
 ### T-M06-011 · Builder Step 9 — Terms & Conditions
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-15 (P0)
 **DESIGN:** SCR-M06-11 → PENDING
 
@@ -194,6 +205,7 @@ are the specification.
 
 ### T-M06-012 · Builder Step 10 — Client Details
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-16 (P0)
 **DESIGN:** SCR-M06-12 → PENDING
 
@@ -208,6 +220,7 @@ are the specification.
 
 ### T-M06-013 · Builder Step 11 — Bank Details and the closing sheets
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-17 (P0)
 **DESIGN:** SCR-M06-13 → PENDING
 
@@ -222,6 +235,7 @@ are the specification.
 
 ### T-M06-014 · BOM Detail — Path A line items behind the price
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-39 (P0)
 **DESIGN:** SCR-M06-14 → PENDING
 
@@ -236,6 +250,7 @@ the specification.
 
 ### T-M06-015 · Proposal Preview — the customer-eye rendering before sending
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-50 (P0)
 **DESIGN:** SCR-M06-15 → PENDING
 
@@ -250,6 +265,7 @@ they are the specification.
 
 ### T-M06-016 · Proposal Versions — v1 vs v2, what changed and why
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-42 (P0)
 **DESIGN:** SCR-M06-16 → PENDING
 
@@ -264,6 +280,7 @@ they are the specification.
 
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
 
@@ -282,6 +299,7 @@ which belong to another bucket and are dispositioned there; this task owns the M
 
 ### T-M06-018 · Proposal Detail — status, tracking, staleness, upgrade offer and the share sheet
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
 **DESIGN:** SCR-M06-18 → PENDING
 
@@ -303,6 +321,7 @@ they are the specification.
 
 ### T-M06-019 · Proposal List — status, staleness and per-row duplicate
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
 **DESIGN:** SCR-M06-19 → PENDING
 
@@ -322,6 +341,7 @@ are the specification.
 
 ### T-M06-020 · Deal Link Manager — the tenant-side link surface on the deal
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
 **DESIGN:** SCR-M06-20 → PENDING
 
@@ -338,6 +358,7 @@ they are the specification.
 
 ### T-M06-021 · Path A pre-fill map — what a design fills, and at which provenance tier
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-03
 
 **Requirements (verbatim):**
@@ -352,6 +373,7 @@ they are the specification.
 
 ### T-M06-022 · The Generate gate evaluator — one checklist for every speed path
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-20, M06-36, M06-37
 
 **Requirements (verbatim):**
@@ -371,6 +393,7 @@ they are the specification.
 
 ### T-M06-023 · Continuous draft save — commit on blur, resumable from the lead
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-25
 
 **Requirements (verbatim):**
@@ -387,6 +410,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-024 · The proposal money block — scheme-generic computation, pack incentive, one value set
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-34, M06-38, M06-41
 
 **Requirements (verbatim):**
@@ -405,6 +429,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-025 · Version records, server numbering and the status machine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-43, M06-44, M06-45
 
 **Requirements (verbatim):**
@@ -424,6 +449,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-026 · Component line resolution provenance, frozen with the version
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-31
 
 **Requirements (verbatim):**
@@ -437,6 +463,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-027 · Tenant template consumption and the save-as-template round-trip
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-49
 
 **Requirements (verbatim):**
@@ -452,6 +479,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-028 · The single entitlement checkpoint at proposal creation
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-26
 
 **Requirements (verbatim):**
@@ -465,6 +493,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-029 · Fact-traceable proposal narrative
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-52
 
 **Requirements (verbatim):**
@@ -478,6 +507,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-030 · The automatic follow-up task on mark-shared
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-55
 
 **Requirements (verbatim):**
@@ -491,6 +521,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 
 ### T-M06-031 · Double-proposal collision — both visible, one withdrawn by a person
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M06-58
 
 **Requirements (verbatim):**

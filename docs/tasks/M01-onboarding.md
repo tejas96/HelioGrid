@@ -8,6 +8,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-001 · Sign In
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-02 (P0), M01-03 (P0), M01-04 (P0), MS12-17 (P0)
 **DESIGN:** SCR-M01-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-01-sign-in.md`; they are the specification.
@@ -22,6 +23,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-002 · Company Signup
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-01 (P0), M01-08 (P0), M01-09 (P1)
 **DESIGN:** SCR-M01-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-02-company-signup.md`; they are the specification.
@@ -34,6 +36,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** F3-03 (P0)
 **DESIGN:** SCR-M01-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-03-onboarding-language.md`; they are the specification.
@@ -44,6 +47,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-23 (P0)
 **DESIGN:** SCR-M01-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-04+What+You+Sell+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md`; they are the specification.
@@ -53,6 +57,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-005 · Business Profile
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-24 (P0), M01-25 (P0), M01-31 (P0)
 **DESIGN:** SCR-M01-05 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-05+Business+Profile+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-05-business-profile.md`; they are the specification.
@@ -64,6 +69,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-26 (P0)
 **DESIGN:** SCR-M01-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-06+Youre+Ready+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-06-setup-ready.md`; they are the specification.
@@ -73,6 +79,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-007 · Invite Teammate
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-12 (P0), F2-21 (P1)
 **DESIGN:** SCR-M01-07 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-07+Invite+Teammate+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-07-invite-teammate.md`; they are the specification.
@@ -83,6 +90,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-008 · Invite Landing
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-13 (P0)
 **DESIGN:** SCR-M01-08 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-08+Invite+Landing+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-08-invite-landing.md`; they are the specification.
@@ -92,6 +100,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-009 · First-Run Profile
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-14 (P0)
 **DESIGN:** SCR-M01-09 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-09+First-Run+Profile+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-09-first-run-profile.md`; they are the specification.
@@ -101,6 +110,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-010 · Role Explainer
 **Type:** screen · **Tier:** P1
+**Status:** designed
 **PRD rows:** M01-15 (P1)
 **DESIGN:** SCR-M01-10 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-10+Role+Explainer+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-10-role-explainer.md`; they are the specification.
@@ -111,6 +121,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-011 · Profile & Preferences
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** F3-03 (P0), F3-23 (P1), F6-15 (P2), F7-16 (P1)
 **DESIGN:** SCR-M01-11 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-11-profile-preferences.md`; they are the specification.
@@ -123,6 +134,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-012 · Team
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-19 (P0), F2-10 (P0), F2-19 (P0)
 **DESIGN:** SCR-M01-12 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-12-team.md`; they are the specification.
@@ -136,6 +148,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-013 · Assign Roles
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-20 (P0)
 **DESIGN:** SCR-M01-13 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-13+Assign+Roles+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-13-assign-roles.md`; they are the specification.
@@ -145,6 +158,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-014 · Roles Reference
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-21 (P0)
 **DESIGN:** SCR-M01-14 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-14+Roles+Reference+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-14-roles-reference.md`; they are the specification.
@@ -154,6 +168,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-015 · Catalog Settings
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-32 (P0), M01-34 (P0), M01-35 (P0), M01-37 (P0), M01-38 (P0), M01-43 (P0), M01-48 (P0)
 **DESIGN:** SCR-M01-15 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html
   · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+States.dc.html
@@ -171,6 +186,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-016 · Add Catalog Item
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-36 (P0), M01-39 (P0), M01-40 (P0)
 **DESIGN:** SCR-M01-16 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html
   · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+States.dc.html
@@ -184,6 +200,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-017 · Catalog Import Wizard
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-41 (P0)
 **DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
@@ -194,6 +211,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-018 · Branding Settings
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-50 (P0), F7-07 (P0)
 **DESIGN:** SCR-M01-18 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-18-branding-settings.md`; they are the specification.
@@ -205,6 +223,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-019 · Proposal Template Settings
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-51 (P0), M01-52 (P1)
 **DESIGN:** SCR-M01-19 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-19+Proposal+Template+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md`; they are the specification.
@@ -216,6 +235,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-020 · Payment Terms Settings
 **Type:** screen · **Tier:** P0
+**Status:** designed
 **PRD rows:** M01-54 (P0)
 **DESIGN:** SCR-M01-20 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-20+Payment+Terms+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md`; they are the specification.
@@ -226,6 +246,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-021 · Message Template Settings
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-55 (P0)
 **DESIGN:** SCR-M01-21 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-21-message-template-settings.md`; they are the specification.
@@ -235,6 +256,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-022 · Capture Settings
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-58 (P0), M02-17 (P0), M02-64 (P0), M02-65 (P0)
 **DESIGN:** SCR-M01-22 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-22-capture-settings.md`; they are the specification.
@@ -247,6 +269,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-023 · Locale Defaults
 **Type:** screen · **Tier:** P1
+**Status:** planned
 **PRD rows:** M01-59 (P1)
 **DESIGN:** SCR-M01-23 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-23-locale-defaults.md`; they are the specification.
@@ -256,6 +279,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-024 · Integration Credentials
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-60 (P0)
 **DESIGN:** SCR-M01-24 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-24-integration-credentials.md`; they are the specification.
@@ -270,6 +294,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-025 · Auth, session & account-lifecycle engine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-05, M01-06, M01-07, M01-10, M01-17, M01-18, F4-37
 **Requirements (verbatim):**
 - **M01-05** (P0) — **OTP is single-use with a 5-minute TTL, and no passwords exist anywhere in the product.** Sign-in is phone + 6-digit OTP (plus Google Login per M01-02); there is no password to set, store, forget or phish.
@@ -294,6 +319,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-026 · Tenant bootstrap engine: platform defaults, demo project seed & Quick-mode defaults
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-27, M01-28, M01-53
 **Requirements (verbatim):**
 - **M01-27** (P0) — **A demo project ships per market pack, ready on day one.** Every new tenant starts with a finished, realistic demo project supplied as market-pack demo content — a real rooftop of that market's kind, pre-loaded through survey, design and proposal — so new users learn by opening something finished, not an empty state, and the demo is the safe place to learn the design studio "without fear of breaking a real quote". The IN pack's demo content is the source's Pune-class residential rooftop; every other market authors its own. **Placement ruled (owner ruling 2026-08-04):** the demo project ships as **pack content** — versioned with the pack per `F1-11`, beside the eight rules keys, not a ninth key (`F1-02` carries the note).
@@ -310,6 +336,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-027 · Catalog data engine: market scoping, archive semantics, rate versioning, MLPE kinds
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M01-33, M01-42, M01-44, M01-45
 **Requirements (verbatim):**
 - **M01-33** (P0) — **The platform master catalog is market-scoped.** There is one global platform catalog; every item carries market availability, and a tenant sees exactly **their market's slice** plus their own SKUs. No tenant ever browses another market's items; no market's regulatory colour leaks into another's picker.

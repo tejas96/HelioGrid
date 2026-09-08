@@ -5,6 +5,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-001 · My Day
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-01 (P0), M07-02 (P0), M07-03 (P0), M07-04 (P0), M07-06 (P0)
 **DESIGN:** SCR-M07-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-01-my-day.md`; they are the specification.
@@ -18,6 +19,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-002 · Mark won
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-62 (P0)
 **DESIGN:** SCR-M07-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-02-mark-won.md`; they are the specification.
@@ -28,6 +30,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-003 · Mark lost
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-63 (P0)
 **DESIGN:** SCR-M07-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-03-mark-lost.md`; they are the specification.
@@ -38,6 +41,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-004 · Reopen lead
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-64 (P0)
 **DESIGN:** SCR-M07-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-04-reopen-lead.md`; they are the specification.
@@ -49,6 +53,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-005 · Agent setup & settings
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-08 (P0), M07-09 (P0), M07-10 (P0), M07-11 (P0), M07-15 (P0), M07-34 (P0)
 **DESIGN:** SCR-M07-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md`; they are the specification.
@@ -63,6 +68,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-006 · Calling window
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-12 (P0)
 **DESIGN:** SCR-M07-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-06-calling-window.md`; they are the specification.
@@ -73,6 +79,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-007 · Test the agent
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-13 (P0)
 **DESIGN:** SCR-M07-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-07-test-agent.md`; they are the specification.
@@ -83,6 +90,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-008 · Agent config history
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-14 (P0)
 **DESIGN:** SCR-M07-08 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-08-agent-config-history.md`; they are the specification.
@@ -94,6 +102,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-009 · Knowledge base
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-16 (P0), M07-19 (P0), M07-21 (P1)
 **DESIGN:** SCR-M07-09 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-09-knowledge-base.md`; they are the specification.
@@ -106,6 +115,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-010 · Unanswered questions
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-18 (P0), M07-58 (P0)
 **DESIGN:** SCR-M07-10 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-10-unanswered-questions.md`; they are the specification.
@@ -117,6 +127,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-011 · Corrections review queue
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-26 (P0)
 **DESIGN:** SCR-M07-11 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md`; they are the specification.
@@ -127,6 +138,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-012 · Agent call queue
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-28 (P0), M07-30 (P0), M07-35 (P0), M07-36 (P0), M07-37 (P0)
 **DESIGN:** SCR-M07-12 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-12-agent-call-queue.md`; they are the specification.
@@ -142,6 +154,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-013 · Call record detail
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-25 (P0), M07-38 (P0)
 **DESIGN:** SCR-M07-13 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-13-call-record-detail.md`; they are the specification.
@@ -153,6 +166,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-014 · Escalations
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-42 (P0)
 **DESIGN:** SCR-M07-14 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-14-escalations.md`; they are the specification.
@@ -163,6 +177,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-015 · Routing rules editor
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-44 (P0)
 **DESIGN:** SCR-M07-15 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md`; they are the specification.
@@ -173,6 +188,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-016 · IVR flow editor
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-47 (P0)
 **DESIGN:** SCR-M07-16 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md`; they are the specification.
@@ -183,6 +199,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-017 · Number provisioning wizard
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-51 (P0), M07-52 (P0), M07-53 (P0)
 **DESIGN:** SCR-M07-17 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md`; they are the specification.
@@ -194,6 +211,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-018 · Agent performance
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-55 (P0), M07-56 (P0), M07-60 (P1), M07-61 (P0)
 **DESIGN:** SCR-M07-18 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-18-agent-performance.md`; they are the specification.
@@ -207,6 +225,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-019 · Call log
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-57 (P0)
 **DESIGN:** SCR-M07-19 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-19-call-log.md`; they are the specification.
@@ -217,6 +236,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-020 · Agent usage
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-59 (P0)
 **DESIGN:** SCR-M07-20 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-20-agent-usage.md`; they are the specification.
@@ -227,6 +247,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-021 · Follow-up task system (model, provenance, trigger feed)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-05, M07-07
 **Requirements (verbatim):**
 - **M07-05** (P0) — **A task carries an assignee, a kind — follow-up · site visit · call · custom — a due date and a status. Overdue is derived from the due date, never a stored state.**
@@ -238,6 +259,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-022 · Agent conversation runtime (defaults, holds-back, opener floors, lead scoping, spoken figures)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-20, M07-22, M07-23, M07-24, M07-41
 **Requirements (verbatim):**
 - **M07-20** (P0) — **The agent's context is scoped to the single lead matched by the verified caller number; the knowledge base is per-tenant and read-only to the agent; the agent writes nothing beyond the call-outcome record.** No cross-customer retrieval exists.
@@ -254,6 +276,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-023 · Seeded knowledge-base default pack
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-17
 **Requirements (verbatim):**
 - **M07-17** (P0) — **Seeded, not empty.** Every new tenant starts with a solar-industry default pack — generic but correct answers for the market's staple questions (the IN seed's subsidy/net-metering content is pack material, F1). *"Day one it works; week four it sounds like them."*
@@ -263,6 +286,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-024 · Compliance gate (mechanism, fail-closed, opt-out, tiered disclosure enforcement)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-27, M07-29, M07-31, M07-32
 **Requirements (verbatim):**
 - **M07-27** (P0) — **The compliance gate is product code — one concrete implementation, non-swappable, no alternate adapter, ever, and no override flag.** It runs before **every** dial, on every leg, inbound and outbound. Its statutory **ruleset is data from the market pack** (`pack.calling-rules`, F1-15…F1-17; the IN instance is F1-36): the mechanism never varies per market; the ruleset always does. **A market with no voice ruleset in its pack cannot enable outbound voice** (F1-16 consumed). *"Tenants configure within the law, not around it."*
@@ -278,6 +302,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-025 · Agent triggers (safety net, on-demand, requested-callback lane)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-33
 **Requirements (verbatim):**
 - **M07-33** (P0) — **The agent triggers two ways: automatically as a safety net — proposal unopened 3 days (`M06-55` consumed) · rep task overdue 2 days (M07-07) · three failed manual call attempts (`M02-43` consumed) — and on demand, when a rep hands a lead to it.** A customer-requested callback also queues (callback-requested) — and under the **requested-callback lane** (owner ruling 2026-08-04; F1-36(b) lane 3) it may be scheduled **outside the statutory window only on an explicitly recorded, timestamped customer request for that time** (transcript, message or rep note): the call opens by referencing the request, the consent trail is stored as evidence, and a single "stop" ends the lane for that customer; the lane is product law, per-tenant enable/disable only. The owner chooses which automatic triggers are live (M07-34).
@@ -287,6 +312,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-026 · Call execution honesty (record always written, stall ladder, wrong number)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-39, M07-40
 **Requirements (verbatim):**
 - **M07-39** (P0) — **Call failure is honest: the call record is always written.** A mid-call media drop attempts one apology line, else hangs up with outcome recorded as dropped; a provider outage pauses outbound and lets inbound fall to voicemail; speech/understanding stalls follow a defined ladder ending in hand-to-human or voicemail per tenant config — never dead air, never a silent no-op.
@@ -298,6 +324,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-027 · Escalation notification, handoff context and presence
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-43, M07-45, M07-46
 **Requirements (verbatim):**
 - **M07-43** (P0) — **A price question is an immediate escalation: the rep gets a notification, not a task buried in a list.** The notification deep-links to the live context. Notification delivery contracts are `foundations/F6`'s (`agent_escalation` type registered there).
@@ -312,6 +339,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-028 · Inbound answer, capture and degradation ladders
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-48, M07-50
 **Requirements (verbatim):**
 - **M07-48** (P0) — **The agent answers inbound when nobody picks and captures the enquiry — name, city, bill amount, interest — into the CRM capture flow, meeting the same dedupe sheet as every channel** (`modules/M02`'s surface, UXG-02 reuse — cited). An after-hours capture queues its callback window-shifted (M07-35); the customer is served at capture time, called back lawfully.
@@ -323,6 +351,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 ### T-M07-029 · Telephony capability framework and DTMF traversal
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M07-49, M07-54
 **Requirements (verbatim):**
 - **M07-49** (P0) — **Automated menu traversal on outbound calls is a declared, negotiated capability — and it degrades honestly.** Where the rail declares DTMF-send, the call record gains a *"navigated an IVR (N steps)"* line and transcript markers. Where it does not — **the v1 reference rail does not provide it** — the step is skipped and the call is flagged for human follow-up; the record states what did not happen rather than looking like a failed call. *"Stuck in IVR — escalated"* is a required failure state either way.

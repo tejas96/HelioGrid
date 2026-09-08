@@ -5,6 +5,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-001 · Pricing Page
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
 **DESIGN:** SCR-M12-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-01-pricing-page.md`; they are the specification.
@@ -17,6 +18,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-002 · Billing Home
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
@@ -31,6 +33,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-003 · Plan Selection & Conversion
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
 **DESIGN:** SCR-M12-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
@@ -44,6 +47,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-004 · Usage
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
 **DESIGN:** SCR-M12-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
@@ -57,6 +61,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-005 · Subscription lifecycle machine
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-04, M12-05, M12-06, M12-07, M12-13, M12-14, M12-52
 **Requirements (verbatim):**
 - **M12-04** (P0) — **The lifecycle is one machine, six states, history append-only:** `trialing` → (pay) `active` · `trialing` → (14 days unconverted) `expired` [terminal] · `active` → (charge fails) `past_due` → (7 days unpaid) `halted` → (payment) `active` · `active` → (owner cancels) `cancelled` (runs to the paid period end, then behaves as `halted`). One non-terminal subscription per tenant. The six names are `BM-33`'s suite vocabulary and no other state name exists anywhere.
@@ -80,6 +85,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-006 · Charge truth, reconciliation & billing timers
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-09, M12-43
 **Requirements (verbatim):**
 - **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring.
@@ -91,6 +97,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-007 · Provider-neutral billing ports: hosted checkout, mandate rails & plan objects
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-03, M12-10, M12-11, M12-12
 **Requirements (verbatim):**
 - **M12-03** (P0) — **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change.
@@ -105,6 +112,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-008 · Entitlement engine
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-16, M12-17, M12-18, M12-19, M12-27
 **Requirements (verbatim):**
 - **M12-16** (P0) — **Entitlements are the current effective limits per key, recomputed on every charge and plan change**, sourced from plan, trial, or a manual grant — and queried on the hot path by every gate. No mechanism in the entitlement model can hold data hostage: read + export work regardless of any entitlement value.
@@ -121,6 +129,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-009 · Soft-block enforcement gates & cap ladder
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-21, M12-22, M12-23, M12-30, M12-31
 **Requirements (verbatim):**
 - **M12-21** (P0) — **Every UI mutation is gated by the billing-state matrix; denial is typed and honest.** A blocked mutation returns a typed entitlement-blocked error; the UI renders the state banner and a "Reactivate" (or upgrade) path. This module implements `BM-35`'s matrix as the gate on every mutation and **may add enforcement detail but may never move a ✓ to a block** — the matrix is 04's law.
@@ -154,6 +163,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-010 · Usage metering ledger & rollups
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-32, M12-33, M12-37
 **Requirements (verbatim):**
 - **M12-32** (P0) — **The ledger is the bill.** Usage metering is an append-only ledger and no other counter exists: every event carries provenance (the call, the detection, the send, the document) and an idempotency key, so a retried job or duplicate webhook can never double-meter; rollups are always reproducible from the ledger — the same discipline as the money path. Internal cost estimates are never customer-facing.
@@ -166,6 +176,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-011 · Dunning ladder & trial nudges
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-39, M12-40, M12-41, M12-42
 **Requirements (verbatim):**
 - **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
@@ -180,6 +191,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-012 · Subscription invoicing
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M12-44, M12-45
 **Requirements (verbatim):**
 - **M12-44** (P0) — **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons.
@@ -191,6 +203,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-013 · Grandfathered price-row selection
 
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M12-57
 **Requirements (verbatim):**
 - **M12-57** (P1) — **Grandfathering mechanics:** a protected tenant bills against the plan-price rows they signed up on until their market book's protection horizon lapses; repricing never applies mid-cycle or retroactively; an upgrade moves them to the new tier under their protection terms; once the horizon lapses, repricing reaches them at the next cycle. **Forfeiture on lapse (owner ruling 2026-08-04):** a lapse — `cancelled` or `halted` — **ends the price protection**; reactivation, whether inside or after the original horizon, bills against the **current list book's rows**, never the signed-up rows. Cancellation, dunning and win-back copy states the forfeiture plainly before the lapse (M12-39/M12-41's honesty duty; `BM-42` carries the law). The row-selection arithmetic is this module's.

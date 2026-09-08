@@ -512,6 +512,55 @@ def run(repo, verbose):
          else f"{len(q_sites)} sites — state the rule in the row, never the id: " + ", ".join(q_sites[:8])
               + (f" (+{len(q_sites) - 8} more)" if len(q_sites) > 8 else ""))
 
+    # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
+    # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
+    # planned while a DESIGN link is PENDING; designed once every link is filled; shipped (#PR)
+    # only when main's history names the task. screens.md carries the same state per screen.
+    # Both ticket shapes: `**Status:** x` in a prose block, `Status: x` inside a fenced ticket.
+    status_re = re.compile(r"^\**Status:\**\s*(planned|designed|shipped \(#\d+\))\s*$", re.M)
+    design_re = re.compile(r"DESIGN:\**\s*(SCR-[A-Z0-9]+-\d{2})\s*→\s*(\S+)")
+    main_ref = "origin/main"
+    if subprocess.run(["git", "rev-parse", "--verify", "-q", main_ref], cwd=repo, capture_output=True).returncode != 0:
+        main_ref = "main"
+    main_log = subprocess.run(["git", "log", main_ref, "--format=%s"], cwd=repo, capture_output=True, text=True).stdout
+    screen_state = {}
+    if os.path.exists(reg):
+        for line in open(reg, encoding="utf-8"):
+            m = re.match(r"\|\s*(SCR-[A-Z0-9]+-\d{2})\s*\|(?:[^|]*\|){5}\s*(\w+)\s*\|\s*([^|]*)\|", line)
+            if m:
+                screen_state[m.group(1)] = (m.group(2).strip().lower(), m.group(3).strip())
+    ledger_bad, tally = [], defaultdict(int)
+    for b in blocks:
+        found = status_re.findall(b["body"])
+        if len(found) != 1:
+            ledger_bad.append(f"{b['id']}: {'no' if not found else 'more than one'} Status line")
+            continue
+        state = found[0].split(" ")[0]
+        tally[state] += 1
+        designs = design_re.findall(b["body"])
+        pending = [sid for sid, link in designs if link.upper() == "PENDING"]
+        if state == "planned" and designs and not pending:
+            ledger_bad.append(f"{b['id']}: every DESIGN link is filled, so it is designed, not planned")
+        if state in ("designed", "shipped") and pending:
+            ledger_bad.append(f"{b['id']}: {state} with a PENDING design: {pending[:3]}")
+        if state == "designed" and not designs:
+            ledger_bad.append(f"{b['id']}: designed but carries no DESIGN line")
+        if state == "shipped" and not re.search(r"\b" + re.escape(b["id"]) + r"\b", main_log):
+            ledger_bad.append(f"{b['id']}: shipped, but {main_ref}'s history never names it")
+        for sid, _link in designs:
+            if sid not in screen_state:
+                continue
+            s_state, s_link = screen_state[sid]
+            if s_state != state:
+                ledger_bad.append(f"{sid} is {s_state} in screens.md while {b['id']} is {state}")
+            if s_state in ("designed", "shipped") and not s_link.startswith("http"):
+                ledger_bad.append(f"{sid} is {s_state} in screens.md but carries no design link")
+            if s_state == "planned" and s_link.startswith("http"):
+                ledger_bad.append(f"{sid} is planned in screens.md but carries a design link")
+    gate(27, "the ledger agrees: Status, DESIGN links, screens.md and main", not ledger_bad,
+         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped, all consistent"
+         if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
+
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:
     #   PRD carries the row (live)      -> register carries a plain disposition
@@ -630,7 +679,7 @@ def run(repo, verbose):
             m = re.search(r"(\d+) of (\d+) V1 screens designed · (\d+) to go", out)
             v1_pending = len([1 for line in open(reg, encoding="utf-8")
                               if re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line)
-                              and re.search(r"\|\s*V1\s*\|\s*pending\s*\|", line)])
+                              and re.search(r"\|\s*V1\s*\|\s*planned\s*\|", line)])
             v1_total = len([1 for line in open(reg, encoding="utf-8")
                             if re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line)
                             and re.search(r"\|\s*V1\s*\|", line)])
@@ -646,7 +695,7 @@ def run(repo, verbose):
                 if got_total != v1_total:
                     bad.append(f"script says {got_total} V1 screens, register has {v1_total}")
                 if got_togo != v1_pending:
-                    bad.append(f"script says {got_togo} to go, register has {v1_pending} V1 pending")
+                    bad.append(f"script says {got_togo} to go, register has {v1_pending} V1 planned")
                 gate(18, "helper script agrees with the register", not bad,
                      f"next-screen.py: {got_togo} of {got_total} to go, matches the register"
                      if not bad else " · ".join(bad))

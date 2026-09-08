@@ -10,6 +10,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-001 · Project Board
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-10 (P0), M08-11 (P0), M08-12 (P0), M08-14 (P1), M08-51 (P0)
 **DESIGN:** SCR-M08-01 → PENDING
 
@@ -26,6 +27,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-002 · Project Detail
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-16 (P0), M08-17 (P0), M08-21 (P0), M08-27 (P0), M08-38 (P0)
 **DESIGN:** SCR-M08-02 → PENDING
 
@@ -46,6 +48,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-003 · Document Checklist
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-30 (P0), M08-31 (P0)
 **DESIGN:** SCR-M08-03 → PENDING
 
@@ -60,6 +63,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-004 · Installation Checklist
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-41 (P0), M08-42 (P0)
 **DESIGN:** SCR-M08-04 → PENDING
 
@@ -74,6 +78,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-005 · Installer Job Home
 **Type:** screen · **Tier:** P1
+**Status:** planned
 **PRD rows:** M08-45 (P1)
 **DESIGN:** SCR-M08-05 → PENDING
 
@@ -89,6 +94,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-006 · Handover Flow
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-46 (P0), M08-47 (P0)
 **DESIGN:** SCR-M08-06 → PENDING
 
@@ -107,6 +113,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-007 · Project creation at the won transition
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-02, M08-03, M08-04, M08-05
 
 **Requirements (verbatim):**
@@ -124,6 +131,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-008 · The canonical stage machine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-08, M08-09, M08-22, M08-34
 
 **Requirements (verbatim):**
@@ -143,6 +151,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-009 · Stage-completion trigger: tranche due and customer-link update
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-15, M08-35, M08-36
 
 **Requirements (verbatim):**
@@ -160,6 +169,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-010 · Blocker attribution engine and the customer-link fact feed
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-20, M08-23, M08-24, M08-25, M08-26, M08-28, M08-29
 
 **Requirements (verbatim):**
@@ -182,6 +192,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-011 · Project money surfaces: one figure everywhere, overdue never gates
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-37, M08-39
 
 **Requirements (verbatim):**
@@ -198,6 +209,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-012 · The handover condition
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-32
 
 **Requirements (verbatim):**
@@ -212,6 +224,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-013 · The active-project definition the entitlement gate counts
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M08-07
 
 **Requirements (verbatim):**
@@ -225,6 +238,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-014 · Installation surface: no commercial figures
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-43
 
 **Requirements (verbatim):**
@@ -239,6 +253,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-015 · Change after Won, cancellation and closure retention
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M08-48, M08-49, M08-50, M08-52, M08-53
 
 **Requirements (verbatim):**

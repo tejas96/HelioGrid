@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """What do I design next?
 
-Reads the screen register and prints the pending V1 screens in build order, with the
+Reads the screen register and prints the V1 screens still to design, in build order, with the
 exact brief file to paste and the exact two lines to edit when you're done.
 
-    python3 scripts/next-screen.py            # next 10 pending V1 screens
+    python3 scripts/next-screen.py            # next 10 V1 screens to design
     python3 scripts/next-screen.py SHELL      # only the SHELL module
     python3 scripts/next-screen.py M06 40     # M06, up to 40 rows
-    python3 scripts/next-screen.py all        # every pending V1 screen
+    python3 scripts/next-screen.py all        # every V1 screen still to design
     python3 scripts/next-screen.py v2         # the deferred V2 screens, for reference only
 
 Columns are located by NAME from the register's own header row, never by position. When the
@@ -82,7 +82,7 @@ for line in open(REG, encoding='utf-8'):
         'nrows': get('Rows'),
         'brief': get('Brief').strip('`'),
         'v': get('V'),
-        'status': get('UX status').lower(),
+        'status': get('Status').lower(),
         'section': section,
     })
 
@@ -111,8 +111,8 @@ for i, line in enumerate(open(REG, encoding='utf-8'), 1):
 
 # --- progress, within the locked scope --------------------------------------------------
 scoped = [r for r in rows if r['v'] == scope]
-done = sum(1 for r in scoped if r['status'] != 'pending')
-pending = [r for r in scoped if r['status'] == 'pending']
+done = sum(1 for r in scoped if r['status'] != 'planned')
+pending = [r for r in scoped if r['status'] == 'planned']
 
 other = 'V2' if scope == 'V1' else 'V1'
 n_other = sum(1 for r in rows if r['v'] == other)
@@ -127,14 +127,14 @@ by_block = collections.defaultdict(int)
 for r in pending:
     by_block[block_of(r['sid'])] += 1
 if by_block:
-    print("  still pending: " + "  ".join(
+    print("  not yet designed: " + "  ".join(
         (f"{name.split(' · ')[0]}:{n}" if i < 90 else f"deferred:{n}")
         for (i, name), n in sorted(by_block.items())))
 
 if module:
     pending = [r for r in pending if r['sid'].split('-')[1] == module]
     if not pending:
-        print(f"\n  nothing pending in {module} within {scope}\n")
+        print(f"\n  nothing left to design in {module} within {scope}\n")
         sys.exit(0)
 
 if not pending:

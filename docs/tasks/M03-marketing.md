@@ -4,6 +4,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-001 · Campaign List (Campaigns Home)
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-08 (P0)
 **DESIGN:** SCR-M03-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-01-campaign-list.md`; they are the specification.
@@ -13,6 +14,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-002 · Campaign Builder — Audience
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-10 (P0), M03-11 (P0)
 **DESIGN:** SCR-M03-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-02-campaign-builder-audience.md`; they are the specification.
@@ -24,6 +26,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-003 · Campaign Builder — Content
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-15 (P1), M03-38 (P0), M03-41 (P0)
 **DESIGN:** SCR-M03-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-03-campaign-builder-content.md`; they are the specification.
@@ -35,6 +38,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-004 · Campaign Builder — Review
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-12 (P0), M03-44 (P0), M03-45 (P0)
 **DESIGN:** SCR-M03-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-04-campaign-builder-review.md`; they are the specification.
@@ -47,6 +51,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-005 · Campaign Detail
 **Type:** screen · **Tier:** P1
+**Status:** planned
 **PRD rows:** M03-50 (P1)
 **DESIGN:** SCR-M03-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-05-campaign-detail.md`; they are the specification.
@@ -56,6 +61,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-006 · Campaign Performance
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-04 (P0), M03-14 (P0), M03-26 (P0), M03-49 (P0), M03-53 (P0), M03-55 (P0), M03-56 (P0)
 **DESIGN:** SCR-M03-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-06-campaign-performance.md`; they are the specification.
@@ -73,6 +79,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-007 · Channel Connections
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-19 (P0), M03-27 (P0), M03-28 (P0)
 **DESIGN:** SCR-M03-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-07-channel-connections.md`; they are the specification.
@@ -85,6 +92,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-008 · Channel Health
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-29 (P1), M03-36 (P0), M03-52 (P1)
 **DESIGN:** SCR-M03-08 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-08-channel-health.md`; they are the specification.
@@ -96,6 +104,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-009 · Campaign Templates
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-39 (P0), M03-40 (P0)
 **DESIGN:** SCR-M03-09 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-09-campaign-templates.md`; they are the specification. `M03-40` is not present in any brief and is quoted in full:
@@ -110,6 +119,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-010 · Website Enquiry Form
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-24 (P0)
 **DESIGN:** SCR-M03-10 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M03-10-website-enquiry-form.md`; they are the specification.
@@ -119,6 +129,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-011 · Campaign lifecycle state machine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-09, M03-13
 **Requirements (verbatim):**
 - **M03-09** (P0) — **The campaign state set is closed and each state says what is true:** `draft` (nothing sent, freely editable) · `scheduled` (audience resolved, waiting for its time) · `sending` (in progress, with a running count) · `paused` (stopped mid-run by a person or by the product, resumable) · `completed` (the run finished, with its own honest partial-completion report) · `cancelled` (stopped and not resumable). There is no seventh state and no state that means "we are not sure".
@@ -129,6 +140,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-012 · Capture pipeline & hand-off into M02
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-30, M03-31, M03-32
 **Requirements (verbatim):**
 - **M03-30** (P0) — **Everything this module captures enters `modules/M02` — the same unassigned inbox, the same dedupe sheet, unchanged.** This is the reciprocal of the guarantee M02 already makes (`M02-17`: "whatever M03 lands arrives in this module's inbox (`M02-23`), carries its own source badge, and passes through this module's dedupe sheet (`M02-10`) unchanged"). This module creates no lead list of its own, no parallel queue, and no capture that bypasses the sheet. Captured leads land **unassigned** (`M02-50`) so triage is unchanged by volume.
@@ -141,6 +153,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-013 · Consent ledger, suppression & send-window gating
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-34, M03-46, M03-47, M03-48
 **Requirements (verbatim):**
 - **M03-34** (P0) — **The consent ledger: per contact, per channel class — opt-in source and timestamp auto-recorded at capture (owner ruling 2026-08-04).** Every capture surface this module owns states plainly what the person is agreeing to receive, and the product **auto-records** the consent at its own capture points: when, where (the collecting surface) and what was agreed, per channel class, on the contact's record. For **imported/legacy lists**, consent enters via a **tenant declaration checkbox** at import — the tenant attests the list's consent basis, and that declaration (who, when) is the recorded source. Opt-outs are honored suite-wide; campaign sends **auto-filter on the ledger** (`M03-46`); and **proof is one tap** — any contact's consent trail (source + timestamp per channel) opens from their record. The consent classes, regime and freshness duty remain pack data (`F1-15`).
@@ -157,6 +170,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-014 · Email channel integration
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-20
 **Requirements (verbatim):**
 - **M03-20** (P0) — **Email is a channel: the tenant connects a sending identity it controls, and campaigns send from it.** The identity is the tenant's own address and domain; the product requires whatever proof of control the channel demands before the first send, and shows that requirement as an `action needed` state rather than failing at send time. Unsubscribe handling is mandatory on every campaign email and feeds the suppression list (`M03-47`).
@@ -165,6 +179,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-015 · Business messaging (WhatsApp) channel integration
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-21
 **Requirements (verbatim):**
 - **M03-21** (P0) — **Business messaging (WhatsApp) is a channel: the tenant connects its own business number, owns its reputation, and campaigns send from it.** Sending requires a template registered with the channel and approved (`M03-39`); the pack declares the registration duty and the consent class (`F1-15`; IN instance `F1-38`). This is the capability `D32` withheld from v1 and `M03-02` assigns here — **for campaigns**; the transactional lane is unchanged (`M03-03`).
@@ -173,6 +188,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-016 · SMS channel integration
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-22
 **Requirements (verbatim):**
 - **M03-22** (P0) — **SMS is a channel: the tenant connects its own sender identity and campaigns send from it.** Where the market requires registered sender headers and templates, that registration gates **activation, not scope** — the capability exists and the channel activates when the registration clears (`F1-38`'s activation-clock law consumed; the India DLT instance is the reference case and its content stays in the pack).
@@ -181,6 +197,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-017 · Facebook/Instagram channel integration
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M03-23
 **Requirements (verbatim):**
 - **M03-23** (P0) — **Facebook and Instagram are channels in two distinct senses, and the product keeps them apart:** (a) the tenant connects its own page/account as an **identity**, and (b) that identity's **lead forms** deliver enquiries into capture (§M03.4) — and only forms with a **required phone field** are connectable (owner ruling 2026-08-04; `M03-19`/`M03-33`). Campaign *spend* on a social network settles **tenant-direct with the network** — the product neither holds the budget nor bills for those sends, and says so on the surface (`BM-21`'s explicit boundary: "channels where spend settles tenant-direct with the ad network … are not platform meters"). What the product owns is the connection, the capture, the attribution and the reporting.
@@ -189,6 +206,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-018 · Campaign link tracking
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M03-35
 **Requirements (verbatim):**
 - **M03-35** (P1) — **A campaign-tagged link is the product's own tracking, and it carries no personal data.** Links a campaign sends carry a reference to the campaign that sent them, so an arriving enquiry can be attributed to it. The reference is opaque and identifies a campaign, never a person: **no customer data in any URL** and **no third-party scripts, fonts or analytics** on any customer-facing page (`F5-77`, `DOC08.open-tracking` consumed). Where a tenant's own external tagging convention is used, the product carries it as data on the link and reads it back on capture; it does not build a second analytics system.
@@ -197,6 +215,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 
 ### T-M03-019 · Campaign reporting publication & exports
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** M03-57, M03-58
 **Requirements (verbatim):**
 - **M03-57** (P1) — **Cross-campaign and cross-channel reporting is `modules/M13`'s; this module owns the campaign-local view.** What this module publishes for M13 to report on is fixed here: campaign identity, channel, audience size, send outcomes, captures, and the correlation caveat that must travel with any figure derived from them. M13 may not present those figures without the caveat (`M03-53`, `F8-30`).

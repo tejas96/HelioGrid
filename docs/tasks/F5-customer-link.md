@@ -17,6 +17,7 @@ bucket exactly once.
 ### T-F5-001 · Customer Link — Proposal page (SCR-F5-01)
 
 **Type:** screen (port + UI rebuild — the POC share page implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-07 (P0), F5-32 (P0), F5-33 (P0), F5-35 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0), MS9-10 (P0), MS9-11 (P0), MS9-14 (P0), MS9-15 (P0), MS9-17 (P0), MS9-23 (P0), MS9-24 (P0), MS9-25 (P1), MS9-29 (P0)
 **DESIGN:** SCR-F5-01 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` · `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
@@ -59,6 +60,7 @@ bucket exactly once.
 ### T-F5-002 · Customer Link — Progress page (SCR-F5-02)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-57 (P0), F5-58 (P0), F5-59 (P0), F5-61 (P0), F5-62 (P0), F5-63 (P0), F5-68 (P0)
 **DESIGN:** SCR-F5-02 → PENDING
 
@@ -83,6 +85,7 @@ bucket exactly once.
 ### T-F5-003 · Customer Link — Handover Pack page (SCR-F5-03)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-70 (P0), F5-71 (P0), F5-72 (P0), F5-73 (P0)
 **DESIGN:** SCR-F5-03 → PENDING
 
@@ -100,6 +103,7 @@ bucket exactly once.
 ### T-F5-004 · Link Failure Page (SCR-F5-04)
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-25 (P0), F5-78 (P0)
 **DESIGN:** SCR-F5-04 → PENDING
 
@@ -115,6 +119,7 @@ bucket exactly once.
 ### T-F5-005 · Customer 3D View (SCR-F5-05)
 
 **Type:** screen (port + UI rebuild — the POC read-only share rendering implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
+**Status:** planned
 **PRD rows:** none from this bucket — this line claims no row. The screen is realized by `M05-55` (cross-ref, P0, dispositioned in `docs/tasks/MS-studio-a.md`) and `MS6-37` (cross-ref, P0, claimed by T-MS-206 in `docs/tasks/MS-studio-b.md`); `F5-33` (cross-ref, P0, claimed by T-F5-001) is the "View in 3D" entry on the carrying proposal page.
 **DESIGN:** SCR-F5-05 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (the POC read-only share rendering host — share-sitting claim) · `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` (read-only 3D presentation consumed here; the scene-engine port itself is claimed by the step-6 sitting and owned by the studio editor task file, per `docs/prd/modules/M05-studio/poc-file-claims.md`)
@@ -131,6 +136,7 @@ bucket exactly once.
 ### T-F5-006 · Link token service & lifecycle (mint, scopes, phases, permanence, revocation, billing independence)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-19, F5-20, F5-21, F5-22, F5-23, F5-24, F5-74, F5-75, F5-76, F5-80
 
 **Requirements (verbatim):**
@@ -162,6 +168,7 @@ bucket exactly once.
 ### T-F5-007 · Named links, open attribution, PII-free tracking and link audit
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-26, F5-27, F5-28, F5-29, F5-30, F5-31, F5-77, F5-79
 
 **Requirements (verbatim):**
@@ -190,6 +197,7 @@ bucket exactly once.
 ### T-F5-008 · Acceptance record, challenge shape and tenant notification
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-45, F5-46, F5-49
 
 **Requirements (verbatim):**
@@ -207,6 +215,7 @@ bucket exactly once.
 ### T-F5-009 · Proposal render gates & version currency (unapproved-design gate, one value set, latest-version/pinning)
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-34, F5-38, F5-40
 
 **Requirements (verbatim):**
@@ -224,6 +233,7 @@ bucket exactly once.
 ### T-F5-010 · Day-two design-wait update — automatic transactional send
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** F5-16
 
 **Requirements (verbatim):**
@@ -239,6 +249,7 @@ bucket exactly once.
 ### T-F5-011 · Studio share page & link plumbing — port to the F5 framework
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS9-09, MS9-12, MS9-13, MS9-26, MS9-27
 **PORT:** `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
 **DEFECTS:**
@@ -267,6 +278,7 @@ bucket exactly once.
 ### T-F5-012 · Proposal document render — port (identity, pagination, structure, print honesty)
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS9-01, MS9-02, MS9-03, MS9-04, MS9-05, MS9-16, MS9-18, MS9-19, MS9-20, MS9-21, MS9-22, MS9-28
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` (share-sitting claim, `docs/prd/modules/M05-studio/poc-file-claims.md`; the narrative library `3d_design_studio/src/features/solar-studio/lib/proposal-narrative.ts` and its tests are the step-7 sitting's claim and port with that bucket)
 **DEFECTS:**
@@ -305,6 +317,7 @@ defect set against it.
 ### T-F5-013 · Issuance gating & version pinning — port
 
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS9-06, MS9-07, MS9-08
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`; the defect register locates S8-2a in "ProposalView + routes" and S8-2b in ShareViewer)
 **DEFECTS:**

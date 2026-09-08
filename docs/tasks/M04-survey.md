@@ -7,6 +7,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-001 · Survey Mode Chooser screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-05 (P0)
 **DESIGN:** SCR-M04-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md`; they are the specification.
@@ -21,6 +22,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-002 · Remote Address Entry screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-08 (P0), M04-12 (P0)
 **DESIGN:** SCR-M04-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-02-remote-address-entry.md`; they are the specification.
@@ -35,6 +37,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-003 · Remote Roof Review screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-11 (P0), M04-13 (P0), M04-14 (P0), M04-15 (P0), M04-16 (P0), M04-21 (P0), M04-22 (P0), M04-23 (P0)
 **DESIGN:** SCR-M04-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-03-remote-roof-review.md`; they are the specification.
@@ -55,6 +58,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-004 · Coverage Failure screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-26 (P0)
 **DESIGN:** SCR-M04-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-04-coverage-failure.md`; they are the specification.
@@ -68,6 +72,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-005 · Gaps to Fill screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-29 (P0), M04-30 (P0), M04-31 (P0), M04-32 (P0)
 **DESIGN:** SCR-M04-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md`; they are the specification.
@@ -84,6 +89,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-006 · My Visits Today screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-38 (P0), M04-58 (P0), M04-59 (P0)
 **DESIGN:** SCR-M04-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-06-my-visits-today.md`; they are the specification.
@@ -99,6 +105,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-007 · Guided Capture screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-03 (P0), M04-42 (P0), M04-43 (P0), M04-44 (P0), M04-45 (P0), M04-47 (P0), M04-54 (P0)
 **DESIGN:** SCR-M04-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-07-guided-capture.md`; they are the specification.
@@ -118,6 +125,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-008 · Shading Capture Sketch screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-46 (P0)
 **DESIGN:** SCR-M04-08 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md`; they are the specification.
@@ -131,6 +139,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-009 · Review & Submit screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-37 (P0), M04-49 (P0), M04-50 (P0), M04-52 (P0)
 **DESIGN:** SCR-M04-09 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-09-review-submit.md`; they are the specification.
@@ -150,6 +159,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-010 · Survey Detail (survey → design hand-off) screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-28 (P0), M04-63 (P0), M04-64 (P0)
 **DESIGN:** SCR-M04-10 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-10-survey-detail.md`; they are the specification.
@@ -166,6 +176,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-011 · Mode A remote pipeline: imagery fetch, building-insights and the pinned tile
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-02, M04-09, M04-10
 **Requirements (verbatim):**
 
@@ -184,6 +195,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-012 · AI roof detection engine: two honest, deterministic paths
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-17, M04-18, M04-19, M04-20
 **Requirements (verbatim):**
 
@@ -204,6 +216,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-013 · Validated detection artifact: the only doorway into a design
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-24, M04-65
 **Requirements (verbatim):**
 
@@ -220,6 +233,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-014 · Per-field provenance stamping and skipped-but-flagged markers
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-34, M04-35
 **Requirements (verbatim):**
 
@@ -236,6 +250,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-015 · Survey object, versions and states; the visit object; visibility and attribution
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-01, M04-57, M04-60, M04-61, M04-62, F4-14, F4-17, F4-25
 **Requirements (verbatim):**
 
@@ -266,6 +281,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-016 · Survey draft restore
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-48
 **Requirements (verbatim):**
 
@@ -281,6 +297,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 ### T-M04-017 · Photograph capture, resumable upload and version binding
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M04-55, M04-56, F4-21
 **Requirements (verbatim):**
 

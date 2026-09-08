@@ -6,6 +6,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-001 · Market pack framework — versioned pack unit, eight keys, lifecycle and validation
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#15)
 **PRD rows:** F1-01, F1-02, F1-03, F1-04, F1-05, F1-06, F1-09, F1-10, F1-11, F1-12
 **Requirements (verbatim):**
 
@@ -35,6 +36,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-002 · Market-generic money and scheme-neutral tax (pack.tax) + the IN GST instance
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#19)
 **PRD rows:** F1-07, F1-08, F1-13, F1-28, F1-29, F1-30, F1-31
 **Requirements (verbatim):**
 
@@ -58,6 +60,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-003 · Subsidy model framework (pack.subsidy) + the IN PM Surya Ghar computation
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#22)
 **PRD rows:** F1-14, F1-33, F1-34, F1-35
 **Requirements (verbatim):**
 
@@ -76,6 +79,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-004 · Communications-compliance ruleset key (pack.calling-rules) + the IN TRAI ruleset data
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#23)
 **PRD rows:** F1-15, F1-16, F1-17, F1-36, F1-39, F1-62
 **Requirements (verbatim):**
 
@@ -108,6 +112,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-005 · IN telephony and messaging compliance routes — 140-series CLI + DLT-registered SMS
 **Type:** integration · **Tier:** P0
+**Status:** shipped (#24)
 **PRD rows:** F1-37, F1-38
 **Requirements (verbatim):**
 
@@ -124,6 +129,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-006 · Payment rails pack key (pack.payment-rails) + the IN rails: mandate ladder, mandate types, payment modes, reference adapters
 **Type:** integration · **Tier:** P0
+**Status:** shipped (#25)
 **PRD rows:** F1-18, F1-40, F1-41, F1-42, F1-43
 **Requirements (verbatim):**
 
@@ -144,6 +150,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-007 · Certification schemes and standards labels (pack.certification-schemes) + the IN ALMM/DCR entries
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#26)
 **PRD rows:** F1-19, F1-20, F1-44, F1-45
 **Requirements (verbatim):**
 
@@ -162,6 +169,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-008 · Formats and display-vocabulary pack key (pack.formats) + the IN locale, label, checklist and DISCOM data
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#28)
 **PRD rows:** F1-21, F1-22, F1-46, F1-47, F1-48, F1-49, F1-50, F1-51, F1-52, F1-53
 **Requirements (verbatim):**
 
@@ -189,6 +197,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-009 · Data-rights pack key (pack.data-rights), erasure/anonymisation workflow + the IN DPDP determination
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F1-23, F1-24, F1-32, F1-54, F1-55, F1-56, F1-57, F1-58, F1-59
 **Requirements (verbatim):**
 
@@ -219,6 +228,7 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ### T-FCORE-010 · Market price-book law (pack.price-book) + the India book
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#32)
 *Builds after `T-FCORE-012`:* the book prices the four `BM-11` tiers and bundles the five `BM-16`
 meters, and both vocabularies are `T-FCORE-012`'s — a book authored first would have to spell them
 a second time. Owner ruling at `T-FCORE-010`'s `/start`.
@@ -260,6 +270,7 @@ a service term, and `SCR-M12-01` renders them as Tier-keyed screen copy under th
 
 ### T-FCORE-011 · Meter definitions and platform cost policy — five meters, COGS floors, absorbed costs, quota containment
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#33)
 *Builds after `T-FCORE-010` and `T-FCORE-012`:* the meter list and the tier capacity axis are
 `T-FCORE-012`'s and the rates are `T-FCORE-010`'s; this adds the cost each rate must clear and the
 lists of what is never charged for at all.
@@ -297,6 +308,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-012 · Commercial structure vocabularies — tier names, capacity axis, meter list, billing-state names
 **Type:** engine · **Tier:** P0
+**Status:** shipped (#30)
 **PRD rows:** BM-11, BM-12, BM-16, BM-33
 **Requirements (verbatim):**
 
@@ -317,6 +329,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-013 · The trial contract — 14 days, full-feature, book-defined caps, payment at conversion, soft expiry
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#34)
 **PRD rows:** BM-28, BM-29, BM-30
 **Requirements (verbatim):**
 
@@ -339,6 +352,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-014 · The soft-block contract — state capability matrix, cap enforcement, usage transparency, the field carve-out
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#35)
 **PRD rows:** BM-27, BM-32, BM-34, BM-35, BM-36
 **Requirements (verbatim):**
 
@@ -385,6 +399,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-015 · Grandfathering — the price-protection horizon and its forfeiture on lapse
 **Type:** policy · **Tier:** P0
+**Status:** shipped (#36)
 **PRD rows:** BM-42
 **Requirements (verbatim):**
 
@@ -407,6 +422,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-016 · Market pack storage — a pack revision is a row change, not a deploy
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
 **Requirements:** `F1-04` calls launching a market "configuration, not a product change" and `F1-11` calls a pack revision "a versioned, dated data update — never a product release". Both hold structurally: the pack is injected, so no module branches on a market name. Neither holds operationally while `IN_PACK` is a TypeScript constant, which makes a GST-rate revision a pull request and a deploy. The owner ruled the slice rather than narrowing the promises: a storage slice is scheduled, and the implementation moves to meet them.
 
@@ -437,6 +453,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-017 · The stored-pack parser — a pack read from a row is validated whole
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** none of its own — the three rows this task serves are quoted and dispositioned at `T-FCORE-001`, as `T-FCORE-016` says of its two; the disposition index names this task beside `T-FCORE-016` where the storage row is dispositioned. Quoting them a second time here would be the duplicate this suite forbids.
 **Requirements:** `T-FCORE-016` validates a stored pack's ENVELOPE only — key names, market, revision, brands re-minted — because typed code is the only writer of the payload in that slice, and a payload typed code wrote already has the shape `MarketPack` declares. That stops being true at the first writer that is not typed code: an admin path, or a file import. From then on a row's interior is untrusted, and `F1-01`'s "versioned as one unit" and `F1-02`'s eight keys are promises a reader keeps only by validating the whole (owner ruling 2026-09-07). This task is that parser.
 

@@ -16,6 +16,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 T-M02-001 · Quick Add Lead
 Type: screen            (screen | engine | policy | integration | port)
 Tier: P0
+Status: planned         (planned | designed | shipped (#PR) — the one ledger; screens.md mirrors it per screen)
 PRD:    M02-01 (P0), M02-03 (P0), M02-<nn> (P0), M02-05 (P0), M02-06 (P0)
 DESIGN: SCR-<module>-<nn> → PENDING               — filled when the screen is approved
 PORT:   (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
@@ -29,6 +30,10 @@ DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never 
 
 ## Binding rules
 
+0. **`Status:` is the ledger.** `planned` until every `DESIGN:` link is filled, `designed` until the
+   PR merges, `shipped (#PR)` after — and a shipped id must be in `main`'s history. `screens.md`
+   carries the same state per screen. Build, tests and QA are proven inside the PR, never tracked
+   as states.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`,

@@ -7,6 +7,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 ### T-M10-001 · People Today Queue screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-13 (P0), M10-14 (P0), M10-15 (P1), M10-16 (P2), M10-26 (P1)
 **DESIGN:** SCR-M10-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-01-people-today-queue.md`; they are the specification.
@@ -23,6 +24,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 ### T-M10-002 · People List screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-10 (P0), M10-11 (P1)
 **DESIGN:** SCR-M10-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-02-people-list.md`; they are the specification.
@@ -38,6 +40,7 @@ Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delet
 ### T-M10-003 · Employee Record screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-04 (P0), M10-07 (P0), M10-35 (P0), M10-36 (P1)
 **DESIGN:** SCR-M10-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-03-employee-record.md`; they are the specification.
@@ -54,6 +57,7 @@ Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.
 ### T-M10-004 · Offboard Sweep screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-18 (P0), M10-19 (P0), M10-20 (P0), M10-21 (P0), M10-22 (P0)
 **DESIGN:** SCR-M10-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-04-offboard-sweep.md`; they are the specification. M10-20 appears in no brief and is quoted here:
@@ -73,6 +77,7 @@ Non-UI (build-side) halves carried by this task: M10-18 — offboard defined as 
 ### T-M10-005 · Attendance Register screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-25 (P0), M10-28 (P2)
 **DESIGN:** SCR-M10-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-05-attendance-register.md`; they are the specification.
@@ -88,6 +93,7 @@ Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-
 ### T-M10-006 · Leave Request screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-27 (P0)
 **DESIGN:** SCR-M10-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-06-leave-request.md`; they are the specification.
@@ -102,6 +108,7 @@ Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic;
 ### T-M10-007 · Team Structure screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-34 (P0)
 **DESIGN:** SCR-M10-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-07-team-structure.md`; they are the specification.
@@ -116,6 +123,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-008 · Employee record data model bound to M01 identity
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-03, M10-06, M10-08
 **Requirements (verbatim):**
 
@@ -134,6 +142,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-009 · People-records visibility domain enforcement
 
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-05, M10-09, M10-30
 **Requirements (verbatim):**
 
@@ -152,6 +161,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-010 · Manager mapping: membership data, Team-scope resolution & change controls
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-31, M10-32, M10-33
 **Requirements (verbatim):**
 
@@ -171,6 +181,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-011 · Employee document storage: typed documents, replace-with-trail, storage meter & read boundary
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-37, M10-38, M10-39
 **Requirements (verbatim):**
 
@@ -188,6 +199,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 ### T-M10-012 · Employee PII data-rights integration
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M10-12
 **Requirements (verbatim):**
 

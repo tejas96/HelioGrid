@@ -166,5 +166,5 @@ that moves the number, never by an edit that nobody notices.
 Design progress is a separate count:
 
 ```bash
-grep -c '| pending |' docs/prd/registers/screens.md
+grep -c '| planned |' docs/prd/registers/screens.md
 ```

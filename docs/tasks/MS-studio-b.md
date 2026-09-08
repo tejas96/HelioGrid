@@ -8,6 +8,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-201 · Step 4 Components — port + UI rebuild
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M05-20 (P0), MS4-01 (P0), MS4-02 (P0), MS4-03 (P0), MS4-06 (P0), MS4-07 (P0), MS4-08 (P0), MS4-09 (P0), MS4-10 (P0), MS4-11 (P0), MS4-12 (P0), MS4-14 (P0), MS4-15 (P0), MS4-16 (P0), MS4-17 (P1), MS4-18 (P0), MS4-19 (P0), MS4-20 (P0), MS4-21 (P0), MS4-22 (P0), MS4-24 (P0), MS4-27 (P0), MS4-28 (P0), MS4-29 (P0), MS4-30 (P0), MS4-31 (P0), MS4-32 (P0), MS4-33 (P0)
 **DESIGN:** SCR-MS-07 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
@@ -57,6 +58,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-202 · Resolved-catalog access door & component spec contracts
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS4-05, MS4-13, MS4-23
 **PORT:** `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
 **DEFECTS:**
@@ -77,6 +79,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-203 · Step 4 derived-state recomputation & compare memo keying
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS4-34
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/lib/comparison.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts`
 **DEFECTS:** none recorded against MS4-34 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -92,6 +95,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-204 · Battery flow-through to BOM, SLD and the proposal components block
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS4-25
 **PORT:** no POC counterpart — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no battery file (`BATTERY (absent entirely)`, grep: 0 hits); this extends the ported design payload and its downstream consumers rather than porting an existing path.
 **DEFECTS:**
@@ -107,6 +111,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-205 · Step 6 Layout Editor — port + UI rebuild
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-01 (P0), MS6-02 (P0), MS6-05 (P0), MS6-06 (P0), MS6-07 (P0), MS6-08 (P0), MS6-09 (P0), MS6-10 (P0), MS6-11 (P1), MS6-12 (P0), MS6-13 (P0), MS6-14 (P0), MS6-16 (P0), MS6-17 (P0), MS6-18 (P0), MS6-19 (P0), MS6-20 (P0), MS6-21 (P0), MS6-22 (P0), MS6-23 (P1), MS6-24 (P0), MS6-26 (P1), MS6-27 (P0), MS6-28 (P0), MS6-29 (P0), MS6-51 (P0), MS6-52 (P0)
 **DESIGN:** SCR-MS-08 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step6Editor.tsx` · `3d_design_studio/src/features/solar-studio/screens/step6-erase.ts` · `3d_design_studio/src/features/solar-studio/components/StructurePreview.tsx` · `3d_design_studio/src/features/solar-studio/lib/health.ts` · `3d_design_studio/src/features/solar-studio/store/useHealthSync.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-move.ts` · tests `3d_design_studio/src/features/solar-studio/screens/__tests__/step6-erase.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health-coverage.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-move.test.ts`
@@ -153,6 +158,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-206 · Step 6 3D scene & in-scene structure card — port + UI rebuild
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-30 (P0), MS6-31 (P0), MS6-32 (P0), MS6-33 (P0), MS6-34 (P0), MS6-35 (P0), MS6-36 (P0), MS6-37 (P0), MS6-44 (P0), MS6-45 (P1), MS6-46 (P0), MS6-47 (P0), MS6-48 (P0), MS6-49 (P0)
 **DESIGN:** SCR-MS-09 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` · `3d_design_studio/src/features/solar-studio/three/HeatmapLayer.tsx` · `3d_design_studio/src/features/solar-studio/three/PanelsInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructEditPanel.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureNodesInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/LegPlanEditor.tsx` · `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts` · `3d_design_studio/src/features/solar-studio/lib/sun.ts` · `3d_design_studio/src/features/solar-studio/lib/sim-time.ts` · `3d_design_studio/src/features/solar-studio/lib/solar-heatmap.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-view.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/leg-plan-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/scene-model.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sim-time.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solar-heatmap.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-view.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-parametrics.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/mms-customize.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/monorail.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundation-clamp.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-inspector.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/scene-model.test.ts`, `3d_design_studio/src/features/solar-studio/three/__tests__/LegPlanEditor.dom.test.tsx`
@@ -186,6 +192,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-207 · Measured roof ranking, fill-engine laws & the shared shadow-free pitch model
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-03, MS6-04, MS6-53
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/auto-design.ts` · `3d_design_studio/src/features/solar-studio/lib/layout.ts` · `3d_design_studio/src/features/solar-studio/lib/spacing.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-pose.ts` · `3d_design_studio/src/features/solar-studio/lib/shading.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/auto-design.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/layout.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/spacing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/row-shading.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/shading.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/shading-beam-availability.test.ts`
 **DEFECTS:** none recorded against MS6-03, MS6-04 or MS6-53 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -204,6 +211,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-208 · Editor mutation coherence: rotate/azimuth agreement & string→route cascade
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-15, MS6-25
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step6Editor.tsx` · `3d_design_studio/src/features/solar-studio/lib/layout.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-move.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/layout.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-move.test.ts`
 **DEFECTS:**
@@ -223,6 +231,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-209 · Racking resolution chain, foundation validity & topology/member emission
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-39, MS6-40
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/ground.ts` · `3d_design_studio/src/features/solar-studio/lib/foundation.ts` · `3d_design_studio/src/features/solar-studio/data/profiles.ts` (sitting 4 — the steel section catalog whose kg/m the structural BOM multiplies; *retired: studio inventory* records structure as its only consumer, and *retired: studio inventory* §I states it from the owner's side) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/structure.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-golden.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/ground-mount.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundations.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/profiles.test.ts` (sitting 4 — the catalog's guard; it is also the only net over `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts`, which T-MS-206 ports)
 **DEFECTS:**
@@ -242,6 +251,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-210 · Height chain, counted fasteners/foundations & structure DRC
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-41, MS6-42, MS6-43
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/foundation.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/drc-structure.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundations.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundation-grounding.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/live-structure-geometry.test.ts`
 **DEFECTS:** none recorded against MS6-41, MS6-42 or MS6-43 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -261,6 +271,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-211 · Scene rendering contracts: instancing, one shared panel frame, GPU cleanup
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** MS6-38
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/scene-frame.ts` · `3d_design_studio/src/features/solar-studio/three/PanelsInstanced.tsx` (the instanced-draw path, shared with T-MS-206's scene shell) · `3d_design_studio/src/features/solar-studio/three/textures.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/one-frame.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/frame-parity.test.ts`
 **DEFECTS:** none recorded against MS6-38 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -276,6 +287,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-212 · Structure reaches the outputs with its preliminary language
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS6-50
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/structure.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/dxf-structure.test.ts` (sitting 5 — the structural-layer regression net over sitting 8's `3d_design_studio/src/features/solar-studio/lib/dxf.ts` and `lib/export-dxf.ts`) · `3d_design_studio/src/features/solar-studio/components/drawing/StructureSheet.tsx` (sitting 2 — the structural drawing sheet this row feeds)
 **DEFECTS:** none recorded against MS6-50 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step6-layout.65` is attached to T-MS-205 at MS6-22; this task owns the outputs the disclaimer travels to.)
@@ -291,6 +303,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-260 · Step 7 Proposal — port + UI rebuild
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-01 (P0), MS7-02 (P0), MS7-03 (P0), MS7-04 (P0), MS7-06 (P0), MS7-07 (P1), MS7-08 (P0), MS7-10 (P0), MS7-11 (P0), MS7-13 (P0), MS7-14 (P0), MS7-20 (P0), MS7-22 (P0), MS7-31 (P0), MS7-34 (P0), MS7-40 (P0), MS7-41 (P0), MS7-42 (P0), MS7-47 (P0), MS7-49 (P0), MS7-51 (P0)
 **DESIGN:** SCR-MS-10 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step7Proposal.tsx` · `3d_design_studio/src/features/solar-studio/components/EnergyReportSheet.tsx` · `3d_design_studio/src/features/solar-studio/lib/financing.ts` · `3d_design_studio/src/features/solar-studio/lib/poa.ts` · `3d_design_studio/src/features/solar-studio/lib/comparison.ts` (shared with T-MS-203 and T-MS-267 — this task owns the compare surface, not the ranking core) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/financing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/poa.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts`
@@ -329,6 +342,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-261 · Capture persistence & the cover-freshness stamp
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-05, MS7-09
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step7Proposal.tsx` (the capture/cover record path, shared with T-MS-260's surface)
 **DEFECTS:**
@@ -347,6 +361,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-262 · The one energy model: capacity, losses, provenance paths & the lifetime projection
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-15, MS7-16, MS7-17, MS7-18, MS7-19, MS7-23, MS7-24b
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/solar.ts` · `3d_design_studio/src/features/solar-studio/lib/poa.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/solar.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/poa.test.ts`
 **DEFECTS:**
@@ -376,6 +391,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-263 · Measured-weather ingestion: server proxy, source ladder & the all-or-nothing mapper
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-25, MS7-26, MS7-27
 **PORT:** `3d_design_studio/src/app/api/pvgis/route.ts` · `3d_design_studio/src/features/solar-studio/lib/pvgis.ts` · `3d_design_studio/src/features/solar-studio/lib/weatherApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/pvgis.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/weatherApi.test.ts`
 **DEFECTS:** none recorded against MS7-25, MS7-26 or MS7-27 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -395,6 +411,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-264 · The money model: one cost path, subsidy, payback & lifetime savings
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-28, MS7-29, MS7-30, MS7-32, MS7-33
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/finance.ts` · `3d_design_studio/src/features/solar-studio/lib/financing.ts` (the cost-basis half, shared with T-MS-260's financing surface) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/finance.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/financing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/tariff.test.ts`
 **DEFECTS:**
@@ -420,6 +437,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-265 · Insight substrate, the explicit registry & the analyzer set
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-12, MS7-35, MS7-36, MS7-37, MS7-38, MS7-39
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/insights/registry.ts` · `3d_design_studio/src/features/solar-studio/lib/insights/analyzers.ts` · `3d_design_studio/src/features/solar-studio/lib/insights/analyzers-access.ts` · `3d_design_studio/src/features/solar-studio/lib/insights/types.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/insights.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/insights-analyzers.test.ts`, `3d_design_studio/src/features/solar-studio/lib/insights/__tests__/analyzers-access.test.ts`
 **DEFECTS:**
@@ -446,6 +464,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-266 · Proposal narrative: pure beats with symmetric provenance
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-43, MS7-44, MS7-45, MS7-46
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/proposal-narrative.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/proposal-narrative.test.ts`
 **DEFECTS:**
@@ -469,6 +488,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-267 · Comparison engine: candidate construction & ranking on corrected figures
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS7-48, MS7-50
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/comparison.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts` (shared with T-MS-203's memo-keying half and T-MS-260's compare surface)
 **DEFECTS:**
@@ -486,6 +506,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-268 · Step 8 SLD & Drawings — port + UI rebuild
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-01 (P0), MS8-02 (P0), MS8-03 (P0), MS8-04 (P0), MS8-05 (P1), MS8-06 (P0), MS8-07 (P0), MS8-08 (P0), MS8-09 (P0), MS8-10 (P0), MS8-11 (P0), MS8-12 (P0), MS8-13 (P0), MS8-14 (P0), MS8-15 (P0), MS8-16 (P0), MS8-17 (P0), MS8-18 (P0), MS8-19 (P0), MS8-21 (P0), MS8-23 (P0)
 **DESIGN:** SCR-MS-11 → PENDING
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step8Sld.tsx` · `3d_design_studio/src/features/solar-studio/lib/sld.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/temps.ts` (the provenance read-out half; the resolver core is T-MS-270's) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sld.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/earthing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-temps.test.ts` · `3d_design_studio/src/features/solar-studio/components/drawing/index.tsx` (sitting 2 — the sheet renderers this step hosts) · `3d_design_studio/src/features/solar-studio/components/drawing/StructureSheet.tsx` (sitting 2 — the structure tab's sheet, shared with T-MS-212) · `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx` (sitting 2) · `3d_design_studio/src/features/solar-studio/lib/drawing-project.ts` + `3d_design_studio/src/features/solar-studio/lib/__tests__/drawing-project.test.ts` (sitting 10 — the shared plan transform MS8-15 rides on)
@@ -518,6 +539,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-269 · Derived drawing parameters, the override merge & pack-sourced standards
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-20, MS8-22
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/sld.ts` · `3d_design_studio/src/features/solar-studio/screens/Step8Sld.tsx` (the parameter/override plumbing behind T-MS-268's surface) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sld.test.ts`
 **DEFECTS:** none recorded against MS8-20 or MS8-22 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired dialog defect `CODE.step8-sld.52` is attached to T-MS-268 at MS8-21; this task owns the effective-value merge the dialog seeds from.)
@@ -535,6 +557,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-270 · Temperature-corrected string window & parallel-string capacity
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-24, MS8-25
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/temps.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/window.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-temps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/stringing.test.ts`
 **DEFECTS:** none recorded against MS8-24 or MS8-25 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -552,6 +575,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-271 · Grouping engine & the pure string planner with its combiner plan
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-26, MS8-27
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/grouping.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/autostring.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/combiner.ts` · `3d_design_studio/src/features/solar-studio/lib/stringing.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/grouping-plane.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/autostring.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/combiner.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/stringing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/mlpe.test.ts`
 **DEFECTS:** none recorded against MS8-26 or MS8-27 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired surface defect `CODE.step8-sld.16/.84` — Step 8's auto-string using a degraded legacy shim and swallowing refusals — is attached to T-MS-268 at MS8-07; this task owns the REAL planner that entry point must call.)
@@ -569,6 +593,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-272 · Live validation, the published rule table & THE HARD GATE
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-28, MS8-29, MS8-30, MS8-31, MS8-32, MS8-33
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical/gate.ts` · `3d_design_studio/src/features/solar-studio/lib/drc.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-gate.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/drc.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/drc-structure.test.ts` (sitting 5 — the structure-DRC regression net, shared with T-MS-210)
 **DEFECTS:** none recorded against MS8-28…MS8-33 in `docs/prd/modules/M05-studio/defect-register.md`.
@@ -594,6 +619,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-273 · DC & AC protection sizing from the pack ladders
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-34, MS8-35
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/electrical-sizing.ts` · `3d_design_studio/src/features/solar-studio/lib/bom/emitters/electrical.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-sizing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/ac-cable-sizing.test.ts`
 **DEFECTS:** none recorded against MS8-34 or MS8-35 in `docs/prd/modules/M05-studio/defect-register.md`. (The paired drawing defect `CODE.step8-sld.35` — the SLD printing legacy 10/6 mm2 AC cable while the BOM sizes properly — is attached to T-MS-268 at MS8-12; this task owns the one engine both must read, per the S7-1 one-source-of-truth law.)
@@ -611,6 +637,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-274 · Cable routing, route-derived warnings & atomic cascades
 **Type:** port · **Tier:** P0
+**Status:** planned
 **PRD rows:** MS8-36, MS8-37, MS8-38, MS8-39
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/routing.ts` · `3d_design_studio/src/features/solar-studio/lib/cascade.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/routing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/cascade.test.ts`
 **DEFECTS:** none recorded against MS8-36…MS8-39 in `docs/prd/modules/M05-studio/defect-register.md`. (MS8-39 pairs with MS6-25, whose defect `CODE.step6-layout.32` is attached to T-MS-208.)
@@ -632,6 +659,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-275 · Nominal node hardware without double-counting the foundations
 **Type:** port · **Tier:** P1
+**Status:** planned
 **PRD rows:** MS8-40
 **PORT:** `3d_design_studio/src/features/solar-studio/lib/hardware.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/hardware.test.ts`
 **DEFECTS:** none recorded against MS8-40 in `docs/prd/modules/M05-studio/defect-register.md`.

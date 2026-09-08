@@ -149,24 +149,24 @@ Progress on the locked scope — anchored to `^| SCR-` so the command cannot cou
 documentation, which the unanchored form did:
 
 ```bash
-grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
+grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 ```
 
 
 ### App shell & global surfaces
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
 | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/SCR-SHELL-01-app-shell.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html | `M02-crm-and-leads:shell-app-navigation`; `11-shell-and-platform:shell-top-bar`; `M13-dashboards-and-reporting:shell-home-switcher`; `M01-onboarding-and-tenant-config:shell-role-home`; ~~`F4-offline-and-sync:shell-sync-indicator`~~ *(proposal withdrawn 2026-08-07 — the global sync indicator was deleted with the offline/sync capability (owner ruling); nothing on this screen consumes it, and its tap target `SCR-SHELL-04` no longer exists. Kept struck because this register never deletes an entry. The proposing document was `F4-offline-and-sync.md`, itself deleted; the cell previously named its replacement `F4-data-integrity`, which never contained this element.)*; `F1-global-market-framework:shell-grievance-contact`; `M07-sales-execution:shell-user-presence` |
 | SCR-SHELL-02 | **Global Search** | P0 | 2 | `docs/ux/briefs/SCR-SHELL-02-global-search.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-02+Global+Search+-+Mobile.dc.html | — |
 | SCR-SHELL-03 | **Notification Center** | P0 | 5 | `docs/ux/briefs/SCR-SHELL-03-notification-center.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-03+Notification+Center+-+Mobile.dc.html | `M13-dashboards-and-reporting:shell-notification-center` |
-| SCR-SHELL-06 | **Billing State Banner & Denial Sheets** | P0 | 6 | `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md` | V1 | pending | — | — |
+| SCR-SHELL-06 | **Billing State Banner & Denial Sheets** | P0 | 6 | `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md` | V1 | planned | — | — |
 | ~~SCR-SHELL-04~~ | ~~Sync Center~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling). It existed for `F4-23`, the per-item sync centre — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-04-sync-center.md` was deleted with it. The per-item retry it hosted survives only for photographs and only on `SCR-M04-07` (`F4-21`, `M04-55`). Restored as a struck entry 2026-08-15: §3 records every deleted requirement, and §2 must record every deleted screen for the same reason — a screen that vanishes without a mark cannot be audited. Not counted in the 150.* |
 | ~~SCR-SHELL-05~~ | ~~Update Required~~ | — | 0 | *brief deleted* | — | **struck** | — | *Screen deleted 2026-08-07 with the offline/sync capability (owner ruling). It existed only for `F4-35` ("an application too old to sync still reads") — struck in §3 — and its brief `docs/ux/briefs/SCR-SHELL-05-update-required.md` was deleted with it. What a too-old client sees is now `F4-36` (owner ruling 2026-08-26): a plain full-screen block naming the required version and routing to the store — the `update-required` state on `SCR-SHELL-01`, task `T-FPLAT-033`; nothing here re-instates this screen. Restored as a struck entry 2026-08-15. Not counted in the 150.* |
 
 ### M01 · Onboarding & tenant config
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
 | SCR-M01-01 | **Sign In** | P0 | 4 | `docs/ux/briefs/SCR-M01-01-sign-in.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html | `11-shell-and-platform:shell-sign-in` |
 | SCR-M01-02 | **Company Signup** | P0 | 3 | `docs/ux/briefs/SCR-M01-02-company-signup.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html | — |
@@ -188,51 +188,51 @@ grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
 | SCR-M01-18 | **Branding Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-18-branding-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-18+Branding+Settings+-+Mobile.dc.html | `F7-design-language:shell-tenant-branding-settings` |
 | SCR-M01-19 | **Proposal Template Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-19+Proposal+Template+-+Mobile.dc.html | — |
 | SCR-M01-20 | **Payment Terms Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-20+Payment+Terms+-+Mobile.dc.html | — |
-| SCR-M01-21 | **Message Template Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-21-message-template-settings.md` | V2 | pending | — | — |
-| SCR-M01-22 | **Capture Settings** | P0 | 4 | `docs/ux/briefs/SCR-M01-22-capture-settings.md` | V2 | pending | — | `M02-crm-and-leads:capture-settings` |
-| SCR-M01-23 | **Locale Defaults** | P1 | 1 | `docs/ux/briefs/SCR-M01-23-locale-defaults.md` | V2 | pending | — | — |
-| SCR-M01-24 | **Integration Credentials** | P0 | 1 | `docs/ux/briefs/SCR-M01-24-integration-credentials.md` | V2 | pending | — | — |
+| SCR-M01-21 | **Message Template Settings** | P0 | 1 | `docs/ux/briefs/SCR-M01-21-message-template-settings.md` | V2 | planned | — | — |
+| SCR-M01-22 | **Capture Settings** | P0 | 4 | `docs/ux/briefs/SCR-M01-22-capture-settings.md` | V2 | planned | — | `M02-crm-and-leads:capture-settings` |
+| SCR-M01-23 | **Locale Defaults** | P1 | 1 | `docs/ux/briefs/SCR-M01-23-locale-defaults.md` | V2 | planned | — | — |
+| SCR-M01-24 | **Integration Credentials** | P0 | 1 | `docs/ux/briefs/SCR-M01-24-integration-credentials.md` | V2 | planned | — | — |
 
 ### M02 · CRM & leads
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M02-01 | **Quick Add Lead** | P0 | 9 | `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` | V1 | pending | — | — |
-| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | pending | — | — |
-| SCR-M02-03 | **Leads List** | P0 | 3 | `docs/ux/briefs/SCR-M02-03-leads-list.md` | V1 | pending | — | — |
-| SCR-M02-04 | **Lead Detail** | P0 | 22 | `docs/ux/briefs/SCR-M02-04-lead-detail.md` | V1 | pending | — | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
-| SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md` | V1 | pending | — | — |
-| SCR-M02-06 | **Customer Merge** | P0 | 3 | `docs/ux/briefs/SCR-M02-06-customer-merge.md` | V1 | pending | — | — |
+| SCR-M02-01 | **Quick Add Lead** | P0 | 9 | `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` | V1 | planned | — | — |
+| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | planned | — | — |
+| SCR-M02-03 | **Leads List** | P0 | 3 | `docs/ux/briefs/SCR-M02-03-leads-list.md` | V1 | planned | — | — |
+| SCR-M02-04 | **Lead Detail** | P0 | 22 | `docs/ux/briefs/SCR-M02-04-lead-detail.md` | V1 | planned | — | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
+| SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md` | V1 | planned | — | — |
+| SCR-M02-06 | **Customer Merge** | P0 | 3 | `docs/ux/briefs/SCR-M02-06-customer-merge.md` | V1 | planned | — | — |
 
 ### M03 · Marketing
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M03-01 | **Campaign List (Campaigns Home)** | P0 | 4 | `docs/ux/briefs/SCR-M03-01-campaign-list.md` | V2 | pending | — | `02-personas:shell-campaigns-and-captures`; `M13-dashboards-and-reporting:campaigns-home` |
-| SCR-M03-02 | **Campaign Builder — Audience** | P0 | 2 | `docs/ux/briefs/SCR-M03-02-campaign-builder-audience.md` | V2 | pending | — | — |
-| SCR-M03-03 | **Campaign Builder — Content** | P0 | 3 | `docs/ux/briefs/SCR-M03-03-campaign-builder-content.md` | V2 | pending | — | — |
-| SCR-M03-04 | **Campaign Builder — Review & Schedule** | P0 | 4 | `docs/ux/briefs/SCR-M03-04-campaign-builder-review.md` | V2 | pending | — | — |
-| SCR-M03-05 | **Campaign Detail** | P0 | 4 | `docs/ux/briefs/SCR-M03-05-campaign-detail.md` | V2 | pending | — | — |
-| SCR-M03-06 | **Campaign Performance** | P0 | 7 | `docs/ux/briefs/SCR-M03-06-campaign-performance.md` | V2 | pending | — | — |
-| SCR-M03-07 | **Channel Connections** | P0 | 3 | `docs/ux/briefs/SCR-M03-07-channel-connections.md` | V2 | pending | — | — |
-| SCR-M03-08 | **Channel Health** | P0 | 3 | `docs/ux/briefs/SCR-M03-08-channel-health.md` | V2 | pending | — | — |
-| SCR-M03-09 | **Campaign Templates** | P0 | 1 | `docs/ux/briefs/SCR-M03-09-campaign-templates.md` | V2 | pending | — | — |
-| SCR-M03-10 | **Website Enquiry Form** | P0 | 1 | `docs/ux/briefs/SCR-M03-10-website-enquiry-form.md` | V2 | pending | — | — |
+| SCR-M03-01 | **Campaign List (Campaigns Home)** | P0 | 4 | `docs/ux/briefs/SCR-M03-01-campaign-list.md` | V2 | planned | — | `02-personas:shell-campaigns-and-captures`; `M13-dashboards-and-reporting:campaigns-home` |
+| SCR-M03-02 | **Campaign Builder — Audience** | P0 | 2 | `docs/ux/briefs/SCR-M03-02-campaign-builder-audience.md` | V2 | planned | — | — |
+| SCR-M03-03 | **Campaign Builder — Content** | P0 | 3 | `docs/ux/briefs/SCR-M03-03-campaign-builder-content.md` | V2 | planned | — | — |
+| SCR-M03-04 | **Campaign Builder — Review & Schedule** | P0 | 4 | `docs/ux/briefs/SCR-M03-04-campaign-builder-review.md` | V2 | planned | — | — |
+| SCR-M03-05 | **Campaign Detail** | P0 | 4 | `docs/ux/briefs/SCR-M03-05-campaign-detail.md` | V2 | planned | — | — |
+| SCR-M03-06 | **Campaign Performance** | P0 | 7 | `docs/ux/briefs/SCR-M03-06-campaign-performance.md` | V2 | planned | — | — |
+| SCR-M03-07 | **Channel Connections** | P0 | 3 | `docs/ux/briefs/SCR-M03-07-channel-connections.md` | V2 | planned | — | — |
+| SCR-M03-08 | **Channel Health** | P0 | 3 | `docs/ux/briefs/SCR-M03-08-channel-health.md` | V2 | planned | — | — |
+| SCR-M03-09 | **Campaign Templates** | P0 | 1 | `docs/ux/briefs/SCR-M03-09-campaign-templates.md` | V2 | planned | — | — |
+| SCR-M03-10 | **Website Enquiry Form** | P0 | 1 | `docs/ux/briefs/SCR-M03-10-website-enquiry-form.md` | V2 | planned | — | — |
 
 ### M04 · Survey
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M04-01 | **Survey Mode Chooser** | P0 | 1 | `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md` | V2 | pending | — | — |
-| SCR-M04-02 | **Remote Survey — Address Entry** | P0 | 3 | `docs/ux/briefs/SCR-M04-02-remote-address-entry.md` | V2 | pending | — | — |
-| SCR-M04-03 | **Remote Roof Review** | P0 | 9 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | pending | — | — |
-| SCR-M04-04 | **Coverage Failure** | P0 | 1 | `docs/ux/briefs/SCR-M04-04-coverage-failure.md` | V2 | pending | — | — |
-| SCR-M04-05 | **Gaps to Fill** | P0 | 4 | `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md` | V2 | pending | — | — |
-| SCR-M04-06 | **My Visits Today** | P0 | 5 | `docs/ux/briefs/SCR-M04-06-my-visits-today.md` | V2 | pending | — | `02-personas:shell-todays-site-visits`; `M13-dashboards-and-reporting:todays-visits` |
-| SCR-M04-07 | **Guided Capture** | P0 | 9 | `docs/ux/briefs/SCR-M04-07-guided-capture.md` | V2 | pending | — | — |
-| SCR-M04-08 | **Shading Capture Sketch** | P0 | 1 | `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md` | V2 | pending | — | — |
-| SCR-M04-09 | **Review & Submit** | P0 | 4 | `docs/ux/briefs/SCR-M04-09-review-submit.md` | V2 | pending | — | — |
-| SCR-M04-10 | **Survey Detail (Hand-off Brief)** | P0 | 5 | `docs/ux/briefs/SCR-M04-10-survey-detail.md` | V2 | pending | — | — |
+| SCR-M04-01 | **Survey Mode Chooser** | P0 | 1 | `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md` | V2 | planned | — | — |
+| SCR-M04-02 | **Remote Survey — Address Entry** | P0 | 3 | `docs/ux/briefs/SCR-M04-02-remote-address-entry.md` | V2 | planned | — | — |
+| SCR-M04-03 | **Remote Roof Review** | P0 | 9 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | planned | — | — |
+| SCR-M04-04 | **Coverage Failure** | P0 | 1 | `docs/ux/briefs/SCR-M04-04-coverage-failure.md` | V2 | planned | — | — |
+| SCR-M04-05 | **Gaps to Fill** | P0 | 4 | `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md` | V2 | planned | — | — |
+| SCR-M04-06 | **My Visits Today** | P0 | 5 | `docs/ux/briefs/SCR-M04-06-my-visits-today.md` | V2 | planned | — | `02-personas:shell-todays-site-visits`; `M13-dashboards-and-reporting:todays-visits` |
+| SCR-M04-07 | **Guided Capture** | P0 | 9 | `docs/ux/briefs/SCR-M04-07-guided-capture.md` | V2 | planned | — | — |
+| SCR-M04-08 | **Shading Capture Sketch** | P0 | 1 | `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md` | V2 | planned | — | — |
+| SCR-M04-09 | **Review & Submit** | P0 | 4 | `docs/ux/briefs/SCR-M04-09-review-submit.md` | V2 | planned | — | — |
+| SCR-M04-10 | **Survey Detail (Hand-off Brief)** | P0 | 5 | `docs/ux/briefs/SCR-M04-10-survey-detail.md` | V2 | planned | — | — |
 
 ### M05 · Design Studio
 
@@ -241,149 +241,149 @@ unchanged); the wizard shows **nine visible steps** and the two numberings are n
 No user-visible "step 5" exists. Each studio brief states its own visible n/9 position;
 a design must never render an internal id as the step indicator.
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-MS-01 | **Design List** | P0 | 8 | `docs/ux/briefs/SCR-MS-01-design-list.md` | V1 | pending | — | `11-shell-and-platform:design-list` |
-| SCR-MS-02 | **Design Queue (Designer Home)** | P0 | 3 | `docs/ux/briefs/SCR-MS-02-design-queue.md` | V1 | pending | — | `02-personas:shell-designs-awaiting-work` |
-| SCR-MS-03 | **Studio Shell (Wizard Frame)** | P0 | 18 | `docs/ux/briefs/SCR-MS-03-studio-shell.md` | V1 | pending | — | `11-shell-and-platform:studio-wizard-frame` |
-| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 28 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | pending | — | `M05-design-studio:step1-site-setup` |
-| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 41 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | pending | — | `M05-design-studio:step2-roof-drawing` |
-| SCR-MS-06 | **Studio Step 3 — Obstructions** | P0 | 35 | `docs/ux/briefs/SCR-MS-06-step3-obstructions.md` | V1 | pending | — | `M05-design-studio:step3-obstructions` |
-| SCR-MS-07 | **Studio Step 4 — Components** | P0 | 33 | `docs/ux/briefs/SCR-MS-07-step4-components.md` | V1 | pending | — | `M05-design-studio:step4-components` |
-| SCR-MS-08 | **Studio Step 6 — Layout Editor** | P0 | 37 | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` | V1 | pending | — | `M05-design-studio:step5-6-panel-layout` |
-| SCR-MS-09 | **Studio 3D Scene** | P0 | 22 | `docs/ux/briefs/SCR-MS-09-3d-scene.md` | V1 | pending | — | `M05-design-studio:3d-view`; `03-step3-obstructions:studio-3d-scene` |
-| SCR-MS-10 | **Studio Step 7 — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` | V1 | pending | — | `M05-design-studio:step7-captures-readiness` |
-| SCR-MS-11 | **Studio Step 8 — SLD & Drawings** | P0 | 28 | `docs/ux/briefs/SCR-MS-11-step8-sld.md` | V1 | pending | — | `M05-design-studio:step8-sld-drawings` |
-| SCR-MS-12 | **Studio Step 9 — Bill of Materials** | P0 | 24 | `docs/ux/briefs/SCR-MS-12-step9-bom.md` | V1 | pending | — | `M05-design-studio:step9-bom-pricing` |
-| SCR-MS-13 | **Studio Done** | P0 | 10 | `docs/ux/briefs/SCR-MS-13-done-step.md` | V1 | pending | — | `M05-design-studio:studio-done` |
-| SCR-MS-14 | **Variant Compare** | P0 | 1 | `docs/ux/briefs/SCR-MS-14-variant-compare.md` | V1 | pending | — | — |
-| SCR-MS-15 | **Sign-off Queue** | P0 | 2 | `docs/ux/briefs/SCR-MS-15-signoff-queue.md` | V1 | pending | — | `M05-design-studio:signoff-queue` |
-| SCR-MS-16 | **Sign-off Review** | P0 | 4 | `docs/ux/briefs/SCR-MS-16-signoff-review.md` | V1 | pending | — | `M05-design-studio:design-review` |
-| SCR-MS-17 | **Installation Work Order** | P0 | 11 | `docs/ux/briefs/SCR-MS-17-installation-work-order.md` | V1 | pending | — | `M05-design-studio:installation-plan` |
-| SCR-MS-18 | **Design System Reference** | P1 | 1 | `docs/ux/briefs/SCR-MS-18-design-system-reference.md` | V1 | pending | — | — |
+| SCR-MS-01 | **Design List** | P0 | 8 | `docs/ux/briefs/SCR-MS-01-design-list.md` | V1 | planned | — | `11-shell-and-platform:design-list` |
+| SCR-MS-02 | **Design Queue (Designer Home)** | P0 | 3 | `docs/ux/briefs/SCR-MS-02-design-queue.md` | V1 | planned | — | `02-personas:shell-designs-awaiting-work` |
+| SCR-MS-03 | **Studio Shell (Wizard Frame)** | P0 | 18 | `docs/ux/briefs/SCR-MS-03-studio-shell.md` | V1 | planned | — | `11-shell-and-platform:studio-wizard-frame` |
+| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 28 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | planned | — | `M05-design-studio:step1-site-setup` |
+| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 41 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | planned | — | `M05-design-studio:step2-roof-drawing` |
+| SCR-MS-06 | **Studio Step 3 — Obstructions** | P0 | 35 | `docs/ux/briefs/SCR-MS-06-step3-obstructions.md` | V1 | planned | — | `M05-design-studio:step3-obstructions` |
+| SCR-MS-07 | **Studio Step 4 — Components** | P0 | 33 | `docs/ux/briefs/SCR-MS-07-step4-components.md` | V1 | planned | — | `M05-design-studio:step4-components` |
+| SCR-MS-08 | **Studio Step 6 — Layout Editor** | P0 | 37 | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` | V1 | planned | — | `M05-design-studio:step5-6-panel-layout` |
+| SCR-MS-09 | **Studio 3D Scene** | P0 | 22 | `docs/ux/briefs/SCR-MS-09-3d-scene.md` | V1 | planned | — | `M05-design-studio:3d-view`; `03-step3-obstructions:studio-3d-scene` |
+| SCR-MS-10 | **Studio Step 7 — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` | V1 | planned | — | `M05-design-studio:step7-captures-readiness` |
+| SCR-MS-11 | **Studio Step 8 — SLD & Drawings** | P0 | 28 | `docs/ux/briefs/SCR-MS-11-step8-sld.md` | V1 | planned | — | `M05-design-studio:step8-sld-drawings` |
+| SCR-MS-12 | **Studio Step 9 — Bill of Materials** | P0 | 24 | `docs/ux/briefs/SCR-MS-12-step9-bom.md` | V1 | planned | — | `M05-design-studio:step9-bom-pricing` |
+| SCR-MS-13 | **Studio Done** | P0 | 10 | `docs/ux/briefs/SCR-MS-13-done-step.md` | V1 | planned | — | `M05-design-studio:studio-done` |
+| SCR-MS-14 | **Variant Compare** | P0 | 1 | `docs/ux/briefs/SCR-MS-14-variant-compare.md` | V1 | planned | — | — |
+| SCR-MS-15 | **Sign-off Queue** | P0 | 2 | `docs/ux/briefs/SCR-MS-15-signoff-queue.md` | V1 | planned | — | `M05-design-studio:signoff-queue` |
+| SCR-MS-16 | **Sign-off Review** | P0 | 4 | `docs/ux/briefs/SCR-MS-16-signoff-review.md` | V1 | planned | — | `M05-design-studio:design-review` |
+| SCR-MS-17 | **Installation Work Order** | P0 | 11 | `docs/ux/briefs/SCR-MS-17-installation-work-order.md` | V1 | planned | — | `M05-design-studio:installation-plan` |
+| SCR-MS-18 | **Design System Reference** | P1 | 1 | `docs/ux/briefs/SCR-MS-18-design-system-reference.md` | V1 | planned | — | — |
 
 ### Customer link (F5)
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-F5-01 | **Customer Link — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-F5-01-link-proposal.md` | V1 | pending | — | `08-customer-surfaces:proposal-share-page` |
-| SCR-F5-02 | **Customer Link — Progress** | P0 | 16 | `docs/ux/briefs/SCR-F5-02-link-progress.md` | V1 | pending | — | `M08-projects:shell-customer-progress-link`; `M11-payments-and-collections:shell-customer-receipts`; `M09-field-workforce:shell-customer-link` |
-| SCR-F5-03 | **Customer Link — Handover Pack** | P0 | 9 | `docs/ux/briefs/SCR-F5-03-link-handover.md` | V1 | pending | — | — |
-| SCR-F5-04 | **Link Failure Page** | P0 | 2 | `docs/ux/briefs/SCR-F5-04-link-failure.md` | V1 | pending | — | — |
-| SCR-F5-05 | **Customer 3D View** | P0 | 2 | `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` | V1 | pending | — | `05-step6-editor:customer-proposal-3d-view` |
+| SCR-F5-01 | **Customer Link — Proposal** | P0 | 25 | `docs/ux/briefs/SCR-F5-01-link-proposal.md` | V1 | planned | — | `08-customer-surfaces:proposal-share-page` |
+| SCR-F5-02 | **Customer Link — Progress** | P0 | 16 | `docs/ux/briefs/SCR-F5-02-link-progress.md` | V1 | planned | — | `M08-projects:shell-customer-progress-link`; `M11-payments-and-collections:shell-customer-receipts`; `M09-field-workforce:shell-customer-link` |
+| SCR-F5-03 | **Customer Link — Handover Pack** | P0 | 9 | `docs/ux/briefs/SCR-F5-03-link-handover.md` | V1 | planned | — | — |
+| SCR-F5-04 | **Link Failure Page** | P0 | 2 | `docs/ux/briefs/SCR-F5-04-link-failure.md` | V1 | planned | — | — |
+| SCR-F5-05 | **Customer 3D View** | P0 | 2 | `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` | V1 | planned | — | `05-step6-editor:customer-proposal-3d-view` |
 
 ### M06 · Proposals
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M06-01 | **Proposal Entry** | P0 | 3 | `docs/ux/briefs/SCR-M06-01-proposal-entry.md` | V1 | pending | — | — |
-| SCR-M06-02 | **Proposal Builder** | P0 | 5 | `docs/ux/briefs/SCR-M06-02-proposal-builder.md` | V1 | pending | — | — |
-| SCR-M06-03 | **Builder Step 1 — Company** | P0 | 2 | `docs/ux/briefs/SCR-M06-03-builder-step-1-company.md` | V1 | pending | — | — |
-| SCR-M06-04 | **Builder Step 2 — Achievements** | P0 | 1 | `docs/ux/briefs/SCR-M06-04-builder-step-2-achievements.md` | V1 | pending | — | — |
-| SCR-M06-05 | **Builder Step 3 — Solar System Setup** | P0 | 4 | `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md` | V1 | pending | — | — |
-| SCR-M06-06 | **Builder Step 4 — Performance Metrics** | P0 | 1 | `docs/ux/briefs/SCR-M06-06-builder-step-4-performance.md` | V1 | pending | — | — |
-| SCR-M06-07 | **Builder Step 5 — Financial Data** | P0 | 1 | `docs/ux/briefs/SCR-M06-07-builder-step-5-financial.md` | V1 | pending | — | — |
-| SCR-M06-08 | **Builder Step 6 — Project Timeline** | P0 | 1 | `docs/ux/briefs/SCR-M06-08-builder-step-6-timeline.md` | V1 | pending | — | — |
-| SCR-M06-09 | **Builder Step 7 — Payment Terms** | P0 | 1 | `docs/ux/briefs/SCR-M06-09-builder-step-7-payment-terms.md` | V1 | pending | — | — |
-| SCR-M06-10 | **Builder Step 8 — Components** | P0 | 5 | `docs/ux/briefs/SCR-M06-10-builder-step-8-components.md` | V1 | pending | — | — |
-| SCR-M06-11 | **Builder Step 9 — Terms & Conditions** | P0 | 1 | `docs/ux/briefs/SCR-M06-11-builder-step-9-terms.md` | V1 | pending | — | — |
-| SCR-M06-12 | **Builder Step 10 — Client Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-12-builder-step-10-client-details.md` | V1 | pending | — | — |
-| SCR-M06-13 | **Builder Step 11 — Bank Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-13-builder-step-11-bank-details.md` | V1 | pending | — | — |
-| SCR-M06-14 | **BOM Detail** | P0 | 1 | `docs/ux/briefs/SCR-M06-14-bom-detail.md` | V1 | pending | — | — |
-| SCR-M06-15 | **Proposal Preview** | P0 | 1 | `docs/ux/briefs/SCR-M06-15-proposal-preview.md` | V1 | pending | — | — |
-| SCR-M06-16 | **Proposal Versions** | P0 | 1 | `docs/ux/briefs/SCR-M06-16-proposal-versions.md` | V1 | pending | — | — |
-| SCR-M06-17 | **Proposal Document** | P0 | 20 | `docs/ux/briefs/SCR-M06-17-proposal-document.md` | V1 | pending | — | `08-customer-surfaces:proposal-document` |
-| SCR-M06-18 | **Proposal Detail** | P0 | 6 | `docs/ux/briefs/SCR-M06-18-proposal-detail.md` | V1 | pending | — | — |
-| SCR-M06-19 | **Proposal List** | P0 | 2 | `docs/ux/briefs/SCR-M06-19-proposal-list.md` | V1 | pending | — | — |
-| SCR-M06-20 | **Deal Link Manager** | P0 | 1 | `docs/ux/briefs/SCR-M06-20-deal-link-manager.md` | V1 | pending | — | — |
+| SCR-M06-01 | **Proposal Entry** | P0 | 3 | `docs/ux/briefs/SCR-M06-01-proposal-entry.md` | V1 | planned | — | — |
+| SCR-M06-02 | **Proposal Builder** | P0 | 5 | `docs/ux/briefs/SCR-M06-02-proposal-builder.md` | V1 | planned | — | — |
+| SCR-M06-03 | **Builder Step 1 — Company** | P0 | 2 | `docs/ux/briefs/SCR-M06-03-builder-step-1-company.md` | V1 | planned | — | — |
+| SCR-M06-04 | **Builder Step 2 — Achievements** | P0 | 1 | `docs/ux/briefs/SCR-M06-04-builder-step-2-achievements.md` | V1 | planned | — | — |
+| SCR-M06-05 | **Builder Step 3 — Solar System Setup** | P0 | 4 | `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md` | V1 | planned | — | — |
+| SCR-M06-06 | **Builder Step 4 — Performance Metrics** | P0 | 1 | `docs/ux/briefs/SCR-M06-06-builder-step-4-performance.md` | V1 | planned | — | — |
+| SCR-M06-07 | **Builder Step 5 — Financial Data** | P0 | 1 | `docs/ux/briefs/SCR-M06-07-builder-step-5-financial.md` | V1 | planned | — | — |
+| SCR-M06-08 | **Builder Step 6 — Project Timeline** | P0 | 1 | `docs/ux/briefs/SCR-M06-08-builder-step-6-timeline.md` | V1 | planned | — | — |
+| SCR-M06-09 | **Builder Step 7 — Payment Terms** | P0 | 1 | `docs/ux/briefs/SCR-M06-09-builder-step-7-payment-terms.md` | V1 | planned | — | — |
+| SCR-M06-10 | **Builder Step 8 — Components** | P0 | 5 | `docs/ux/briefs/SCR-M06-10-builder-step-8-components.md` | V1 | planned | — | — |
+| SCR-M06-11 | **Builder Step 9 — Terms & Conditions** | P0 | 1 | `docs/ux/briefs/SCR-M06-11-builder-step-9-terms.md` | V1 | planned | — | — |
+| SCR-M06-12 | **Builder Step 10 — Client Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-12-builder-step-10-client-details.md` | V1 | planned | — | — |
+| SCR-M06-13 | **Builder Step 11 — Bank Details** | P0 | 1 | `docs/ux/briefs/SCR-M06-13-builder-step-11-bank-details.md` | V1 | planned | — | — |
+| SCR-M06-14 | **BOM Detail** | P0 | 1 | `docs/ux/briefs/SCR-M06-14-bom-detail.md` | V1 | planned | — | — |
+| SCR-M06-15 | **Proposal Preview** | P0 | 1 | `docs/ux/briefs/SCR-M06-15-proposal-preview.md` | V1 | planned | — | — |
+| SCR-M06-16 | **Proposal Versions** | P0 | 1 | `docs/ux/briefs/SCR-M06-16-proposal-versions.md` | V1 | planned | — | — |
+| SCR-M06-17 | **Proposal Document** | P0 | 20 | `docs/ux/briefs/SCR-M06-17-proposal-document.md` | V1 | planned | — | `08-customer-surfaces:proposal-document` |
+| SCR-M06-18 | **Proposal Detail** | P0 | 6 | `docs/ux/briefs/SCR-M06-18-proposal-detail.md` | V1 | planned | — | — |
+| SCR-M06-19 | **Proposal List** | P0 | 2 | `docs/ux/briefs/SCR-M06-19-proposal-list.md` | V1 | planned | — | — |
+| SCR-M06-20 | **Deal Link Manager** | P0 | 1 | `docs/ux/briefs/SCR-M06-20-deal-link-manager.md` | V1 | planned | — | — |
 
 ### M07 · Sales execution
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M07-01 | **My Day** | P0 | 7 | `docs/ux/briefs/SCR-M07-01-my-day.md` | V1 | pending | — | `02-personas:shell-my-day`; `M13-dashboards-and-reporting:my-day` |
-| SCR-M07-02 | **Mark Won** | P0 | 1 | `docs/ux/briefs/SCR-M07-02-mark-won.md` | V1 | pending | — | — |
-| SCR-M07-03 | **Mark Lost** | P0 | 1 | `docs/ux/briefs/SCR-M07-03-mark-lost.md` | V1 | pending | — | — |
-| SCR-M07-04 | **Reopen Lead** | P0 | 1 | `docs/ux/briefs/SCR-M07-04-reopen-lead.md` | V1 | pending | — | — |
-| SCR-M07-05 | **Agent Setup & Settings** | P0 | 7 | `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md` | V1 | pending | — | `M01-onboarding-and-tenant-config:shell-agent-voice-settings` |
-| SCR-M07-06 | **Calling Window** | P0 | 1 | `docs/ux/briefs/SCR-M07-06-calling-window.md` | V1 | pending | — | — |
-| SCR-M07-07 | **Test Agent** | P0 | 1 | `docs/ux/briefs/SCR-M07-07-test-agent.md` | V2 | pending | — | — |
-| SCR-M07-08 | **Agent Config History** | P0 | 1 | `docs/ux/briefs/SCR-M07-08-agent-config-history.md` | V2 | pending | — | — |
-| SCR-M07-09 | **Knowledge Base** | P0 | 3 | `docs/ux/briefs/SCR-M07-09-knowledge-base.md` | V1 | pending | — | — |
-| SCR-M07-10 | **Unanswered Questions** | P0 | 3 | `docs/ux/briefs/SCR-M07-10-unanswered-questions.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-unanswered-questions` |
-| SCR-M07-11 | **Corrections Review Queue** | P0 | 1 | `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md` | V2 | pending | — | — |
-| SCR-M07-12 | **Agent Call Queue** | P0 | 5 | `docs/ux/briefs/SCR-M07-12-agent-call-queue.md` | V1 | pending | — | — |
-| SCR-M07-13 | **Call Record Detail** | P0 | 2 | `docs/ux/briefs/SCR-M07-13-call-record-detail.md` | V1 | pending | — | — |
-| SCR-M07-14 | **Escalations** | P0 | 1 | `docs/ux/briefs/SCR-M07-14-escalations.md` | V1 | pending | — | — |
-| SCR-M07-15 | **Routing Rules Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md` | V2 | pending | — | — |
-| SCR-M07-16 | **IVR Flow Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md` | V2 | pending | — | — |
-| SCR-M07-17 | **Number Provisioning Wizard** | P0 | 3 | `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md` | V2 | pending | — | — |
-| SCR-M07-18 | **Agent Performance** | P0 | 8 | `docs/ux/briefs/SCR-M07-18-agent-performance.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-performance-dashboard`; `M13-dashboards-and-reporting:agent-per-rep-view` |
-| SCR-M07-19 | **Call Log** | P0 | 2 | `docs/ux/briefs/SCR-M07-19-call-log.md` | V1 | pending | — | `M13-dashboards-and-reporting:agent-call-log` |
-| SCR-M07-20 | **Agent Usage** | P0 | 2 | `docs/ux/briefs/SCR-M07-20-agent-usage.md` | V2 | pending | — | `M13-dashboards-and-reporting:agent-usage-report` |
+| SCR-M07-01 | **My Day** | P0 | 7 | `docs/ux/briefs/SCR-M07-01-my-day.md` | V1 | planned | — | `02-personas:shell-my-day`; `M13-dashboards-and-reporting:my-day` |
+| SCR-M07-02 | **Mark Won** | P0 | 1 | `docs/ux/briefs/SCR-M07-02-mark-won.md` | V1 | planned | — | — |
+| SCR-M07-03 | **Mark Lost** | P0 | 1 | `docs/ux/briefs/SCR-M07-03-mark-lost.md` | V1 | planned | — | — |
+| SCR-M07-04 | **Reopen Lead** | P0 | 1 | `docs/ux/briefs/SCR-M07-04-reopen-lead.md` | V1 | planned | — | — |
+| SCR-M07-05 | **Agent Setup & Settings** | P0 | 7 | `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md` | V1 | planned | — | `M01-onboarding-and-tenant-config:shell-agent-voice-settings` |
+| SCR-M07-06 | **Calling Window** | P0 | 1 | `docs/ux/briefs/SCR-M07-06-calling-window.md` | V1 | planned | — | — |
+| SCR-M07-07 | **Test Agent** | P0 | 1 | `docs/ux/briefs/SCR-M07-07-test-agent.md` | V2 | planned | — | — |
+| SCR-M07-08 | **Agent Config History** | P0 | 1 | `docs/ux/briefs/SCR-M07-08-agent-config-history.md` | V2 | planned | — | — |
+| SCR-M07-09 | **Knowledge Base** | P0 | 3 | `docs/ux/briefs/SCR-M07-09-knowledge-base.md` | V1 | planned | — | — |
+| SCR-M07-10 | **Unanswered Questions** | P0 | 3 | `docs/ux/briefs/SCR-M07-10-unanswered-questions.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-unanswered-questions` |
+| SCR-M07-11 | **Corrections Review Queue** | P0 | 1 | `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md` | V2 | planned | — | — |
+| SCR-M07-12 | **Agent Call Queue** | P0 | 5 | `docs/ux/briefs/SCR-M07-12-agent-call-queue.md` | V1 | planned | — | — |
+| SCR-M07-13 | **Call Record Detail** | P0 | 2 | `docs/ux/briefs/SCR-M07-13-call-record-detail.md` | V1 | planned | — | — |
+| SCR-M07-14 | **Escalations** | P0 | 1 | `docs/ux/briefs/SCR-M07-14-escalations.md` | V1 | planned | — | — |
+| SCR-M07-15 | **Routing Rules Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md` | V2 | planned | — | — |
+| SCR-M07-16 | **IVR Flow Editor** | P0 | 1 | `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md` | V2 | planned | — | — |
+| SCR-M07-17 | **Number Provisioning Wizard** | P0 | 3 | `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md` | V2 | planned | — | — |
+| SCR-M07-18 | **Agent Performance** | P0 | 8 | `docs/ux/briefs/SCR-M07-18-agent-performance.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-performance-dashboard`; `M13-dashboards-and-reporting:agent-per-rep-view` |
+| SCR-M07-19 | **Call Log** | P0 | 2 | `docs/ux/briefs/SCR-M07-19-call-log.md` | V1 | planned | — | `M13-dashboards-and-reporting:agent-call-log` |
+| SCR-M07-20 | **Agent Usage** | P0 | 2 | `docs/ux/briefs/SCR-M07-20-agent-usage.md` | V2 | planned | — | `M13-dashboards-and-reporting:agent-usage-report` |
 
 ### M08 · Projects
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | pending | — | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` |
-| SCR-M08-02 | **Project Detail** | P0 | 7 | `docs/ux/briefs/SCR-M08-02-project-detail.md` | V1 | pending | — | `M11-payments-and-collections:shell-project-money-block` |
-| SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | pending | — | — |
-| SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | pending | — | `F2-roles-and-permissions:installation-checklist` |
-| SCR-M08-05 | **Installer Job Home** | P0 | 3 | `docs/ux/briefs/SCR-M08-05-installer-job-home.md` | V1 | pending | — | `02-personas:shell-todays-installation`; `M13-dashboards-and-reporting:todays-installation` |
-| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | pending | — | — |
+| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | planned | — | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` |
+| SCR-M08-02 | **Project Detail** | P0 | 7 | `docs/ux/briefs/SCR-M08-02-project-detail.md` | V1 | planned | — | `M11-payments-and-collections:shell-project-money-block` |
+| SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | planned | — | — |
+| SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | planned | — | `F2-roles-and-permissions:installation-checklist` |
+| SCR-M08-05 | **Installer Job Home** | P0 | 3 | `docs/ux/briefs/SCR-M08-05-installer-job-home.md` | V1 | planned | — | `02-personas:shell-todays-installation`; `M13-dashboards-and-reporting:todays-installation` |
+| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | planned | — | — |
 
 ### M09 · Field workforce
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M09-01 | **Tracking Settings** | P0 | 7 | `docs/ux/briefs/SCR-M09-01-tracking-settings.md` | V2 | pending | — | — |
-| SCR-M09-02 | **My Day (Route)** | P0 | 15 | `docs/ux/briefs/SCR-M09-02-my-day-route.md` | V2 | pending | — | `02-personas:shell-my-route-today`; `M13-dashboards-and-reporting:todays-route` |
-| SCR-M09-03 | **Visit Stop Detail** | P0 | 2 | `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md` | V2 | pending | — | — |
-| SCR-M09-04 | **Team Field Day** | P0 | 6 | `docs/ux/briefs/SCR-M09-04-team-field-day.md` | V2 | pending | — | — |
-| SCR-M09-05 | **Activity Timeline** | P0 | 4 | `docs/ux/briefs/SCR-M09-05-activity-timeline.md` | V2 | pending | — | — |
-| SCR-M09-06 | **Day Playback** | P0 | 2 | `docs/ux/briefs/SCR-M09-06-day-playback.md` | V2 | pending | — | — |
-| SCR-M09-07 | **Site Geofence** | P0 | 2 | `docs/ux/briefs/SCR-M09-07-site-geofence.md` | V2 | pending | — | — |
+| SCR-M09-01 | **Tracking Settings** | P0 | 7 | `docs/ux/briefs/SCR-M09-01-tracking-settings.md` | V2 | planned | — | — |
+| SCR-M09-02 | **My Day (Route)** | P0 | 15 | `docs/ux/briefs/SCR-M09-02-my-day-route.md` | V2 | planned | — | `02-personas:shell-my-route-today`; `M13-dashboards-and-reporting:todays-route` |
+| SCR-M09-03 | **Visit Stop Detail** | P0 | 2 | `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md` | V2 | planned | — | — |
+| SCR-M09-04 | **Team Field Day** | P0 | 6 | `docs/ux/briefs/SCR-M09-04-team-field-day.md` | V2 | planned | — | — |
+| SCR-M09-05 | **Activity Timeline** | P0 | 4 | `docs/ux/briefs/SCR-M09-05-activity-timeline.md` | V2 | planned | — | — |
+| SCR-M09-06 | **Day Playback** | P0 | 2 | `docs/ux/briefs/SCR-M09-06-day-playback.md` | V2 | planned | — | — |
+| SCR-M09-07 | **Site Geofence** | P0 | 2 | `docs/ux/briefs/SCR-M09-07-site-geofence.md` | V2 | planned | — | — |
 
 ### M10 · HR lite
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M10-01 | **People Today Queue** | P0 | 10 | `docs/ux/briefs/SCR-M10-01-people-today-queue.md` | V2 | pending | — | `02-personas:shell-people-today`; `M13-dashboards-and-reporting:people-today-home` |
-| SCR-M10-02 | **People List** | P0 | 3 | `docs/ux/briefs/SCR-M10-02-people-list.md` | V2 | pending | — | — |
-| SCR-M10-03 | **Employee Record** | P0 | 5 | `docs/ux/briefs/SCR-M10-03-employee-record.md` | V2 | pending | — | — |
-| SCR-M10-04 | **Offboard Sweep** | P0 | 4 | `docs/ux/briefs/SCR-M10-04-offboard-sweep.md` | V2 | pending | — | — |
-| SCR-M10-05 | **Attendance Register** | P0 | 4 | `docs/ux/briefs/SCR-M10-05-attendance-register.md` | V2 | pending | — | — |
-| SCR-M10-06 | **Leave Request** | P0 | 1 | `docs/ux/briefs/SCR-M10-06-leave-request.md` | V2 | pending | — | — |
-| SCR-M10-07 | **Team Structure** | P0 | 1 | `docs/ux/briefs/SCR-M10-07-team-structure.md` | V2 | pending | — | — |
+| SCR-M10-01 | **People Today Queue** | P0 | 10 | `docs/ux/briefs/SCR-M10-01-people-today-queue.md` | V2 | planned | — | `02-personas:shell-people-today`; `M13-dashboards-and-reporting:people-today-home` |
+| SCR-M10-02 | **People List** | P0 | 3 | `docs/ux/briefs/SCR-M10-02-people-list.md` | V2 | planned | — | — |
+| SCR-M10-03 | **Employee Record** | P0 | 5 | `docs/ux/briefs/SCR-M10-03-employee-record.md` | V2 | planned | — | — |
+| SCR-M10-04 | **Offboard Sweep** | P0 | 4 | `docs/ux/briefs/SCR-M10-04-offboard-sweep.md` | V2 | planned | — | — |
+| SCR-M10-05 | **Attendance Register** | P0 | 4 | `docs/ux/briefs/SCR-M10-05-attendance-register.md` | V2 | planned | — | — |
+| SCR-M10-06 | **Leave Request** | P0 | 1 | `docs/ux/briefs/SCR-M10-06-leave-request.md` | V2 | planned | — | — |
+| SCR-M10-07 | **Team Structure** | P0 | 1 | `docs/ux/briefs/SCR-M10-07-team-structure.md` | V2 | planned | — | — |
 
 ### M11 · Payments & collections
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | pending | — | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` |
-| SCR-M11-02 | **Payments Ledger** | P0 | 15 | `docs/ux/briefs/SCR-M11-02-payments-ledger.md` | V1 | pending | — | `M08-projects:shell-payments-screen` |
-| SCR-M11-03 | **Record Payment** | P0 | 7 | `docs/ux/briefs/SCR-M11-03-record-payment.md` | V1 | pending | — | — |
-| SCR-M11-04 | **Collections Settings** | P0 | 2 | `docs/ux/briefs/SCR-M11-04-collections-settings.md` | V1 | pending | — | — |
+| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | planned | — | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` |
+| SCR-M11-02 | **Payments Ledger** | P0 | 15 | `docs/ux/briefs/SCR-M11-02-payments-ledger.md` | V1 | planned | — | `M08-projects:shell-payments-screen` |
+| SCR-M11-03 | **Record Payment** | P0 | 7 | `docs/ux/briefs/SCR-M11-03-record-payment.md` | V1 | planned | — | — |
+| SCR-M11-04 | **Collections Settings** | P0 | 2 | `docs/ux/briefs/SCR-M11-04-collections-settings.md` | V1 | planned | — | — |
 
 ### M12 · Platform billing
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M12-01 | **Pricing Page** | P0 | 2 | `docs/ux/briefs/SCR-M12-01-pricing-page.md` | V1 | pending | — | — |
-| SCR-M12-02 | **Billing Home** | P0 | 6 | `docs/ux/briefs/SCR-M12-02-billing-home.md` | V1 | pending | — | `04-business-model:shell-billing` |
-| SCR-M12-03 | **Plan Selection & Conversion** | P0 | 5 | `docs/ux/briefs/SCR-M12-03-plan-selection.md` | V1 | pending | — | — |
-| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | pending | — | `04-business-model:shell-usage-screen` |
+| SCR-M12-01 | **Pricing Page** | P0 | 2 | `docs/ux/briefs/SCR-M12-01-pricing-page.md` | V1 | planned | — | — |
+| SCR-M12-02 | **Billing Home** | P0 | 6 | `docs/ux/briefs/SCR-M12-02-billing-home.md` | V1 | planned | — | `04-business-model:shell-billing` |
+| SCR-M12-03 | **Plan Selection & Conversion** | P0 | 5 | `docs/ux/briefs/SCR-M12-03-plan-selection.md` | V1 | planned | — | — |
+| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | planned | — | `04-business-model:shell-usage-screen` |
 
 ### M13 · Dashboards & reporting
 
-| SCR | Screen | Tier | Rows | Brief | V | UX status | Design link | Merged from |
+| SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M13-01 | **Owner Dashboard** | P0 | 11 | `docs/ux/briefs/SCR-M13-01-owner-dashboard.md` | V1 | pending | — | — |
-| SCR-M13-02 | **Pipeline Dashboard (Rep's own step-back)** | P0 | 1 | `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` | V2 | pending | — | `02-personas:shell-pipeline-dashboard` |
-| SCR-M13-03 | **Operations Home** | P0 | 4 | `docs/ux/briefs/SCR-M13-03-operations-home.md` | V2 | pending | — | `02-personas:shell-blockers-by-party` |
-| SCR-M13-04 | **Pipeline Funnel** | P0 | 3 | `docs/ux/briefs/SCR-M13-04-pipeline-funnel.md` | V2 | pending | — | — |
-| SCR-M13-05 | **Win/Loss Analytics** | P0 | 2 | `docs/ux/briefs/SCR-M13-05-win-loss-analytics.md` | V2 | pending | — | — |
+| SCR-M13-01 | **Owner Dashboard** | P0 | 11 | `docs/ux/briefs/SCR-M13-01-owner-dashboard.md` | V1 | planned | — | — |
+| SCR-M13-02 | **Pipeline Dashboard (Rep's own step-back)** | P0 | 1 | `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` | V2 | planned | — | `02-personas:shell-pipeline-dashboard` |
+| SCR-M13-03 | **Operations Home** | P0 | 4 | `docs/ux/briefs/SCR-M13-03-operations-home.md` | V2 | planned | — | `02-personas:shell-blockers-by-party` |
+| SCR-M13-04 | **Pipeline Funnel** | P0 | 3 | `docs/ux/briefs/SCR-M13-04-pipeline-funnel.md` | V2 | planned | — | — |
+| SCR-M13-05 | **Win/Loss Analytics** | P0 | 2 | `docs/ux/briefs/SCR-M13-05-win-loss-analytics.md` | V2 | planned | — | — |
 
 ## 3. Row disposition — every requirement, where it lands
 

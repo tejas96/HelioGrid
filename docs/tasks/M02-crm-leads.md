@@ -7,6 +7,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-001 · Quick Add Lead screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-01 (P0), M02-03 (P0), M02-05 (P0), M02-06 (P0)
 **DESIGN:** SCR-M02-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-01-quick-add-lead.md`; they are the specification.
@@ -23,6 +24,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-002 · Lead Inbox screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-23 (P0), M02-24 (P0), M02-25 (P1), M02-28 (P0), M02-29 (P0), M02-67 (P0)
 **DESIGN:** SCR-M02-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-02-lead-inbox.md`; they are the specification. **Exception — `M02-67`:** the row was added to `docs/prd/modules/M02-crm-and-leads.md` §M02.5 by owner ruling 2026-08-15, restoring the law of `M02-26`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The brief now quotes it in full (verified byte-identical to the live cell), so the brief remains the specification for every row of this task without exception; the quote is repeated here for a reader working from the task file alone. *(This sentence read "does not yet quote it… until the brief owner carries it across" — true at the moment it was written, and false within minutes: the brief and this file were amended in the same 2026-08-15 wave.)*
@@ -46,6 +48,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-003 · Leads List screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-40 (P0)
 **DESIGN:** SCR-M02-03 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-03-leads-list.md`; they are the specification.
@@ -59,6 +62,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-004 · Lead Detail screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-32 (P0), M02-34 (P0), M02-39 (P0), M02-42 (P0)
 **DESIGN:** SCR-M02-04 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-04-lead-detail.md`; they are the specification.
@@ -75,6 +79,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-005 · Lead Import Wizard screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-18 (P0), M02-19 (P0), M02-20 (P0), M02-21 (P0)
 **DESIGN:** SCR-M02-05 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md`; they are the specification.
@@ -91,6 +96,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-006 · Customer Merge screen
 
 **Type:** screen · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-59 (P0), M02-63 (P0)
 **DESIGN:** SCR-M02-06 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-06-customer-merge.md`; they are the specification.
@@ -106,6 +112,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-007 · Customer identity & compliance fields on the customer record
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-02, M02-37
 **Requirements (verbatim):**
 
@@ -123,6 +130,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-008 · Duplicate detection & the shared dedupe sheet
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-07, M02-08, M02-09, M02-10, M02-11, M02-12, M02-66
 **Requirements (verbatim):** `M02-66` was added to `docs/prd/modules/M02-crm-and-leads.md` §M02.2 by owner ruling 2026-08-15, restoring the law of `M02-04`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. It is realized on `SCR-M02-01` (the capture the sheet fires over) and on `SCR-M02-04` (the possible-duplicate flag and the sheet on the next open of either record); both briefs now quote it in full (verified byte-identical to the live cell); the quote below is repeated for a reader working from the task file alone. *(This sentence read "neither brief quotes it yet" — true when written and false within minutes, as both briefs were amended in the same 2026-08-15 wave.)*
 
@@ -148,6 +156,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-009 · Capture channels: source set, inbound-call intake & referral link
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-13, M02-14, M02-16
 **Requirements (verbatim):**
 
@@ -166,6 +175,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-010 · Call-back window, attempt log & dial suppression
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-15, M02-43, M02-44
 **Requirements (verbatim):**
 
@@ -184,6 +194,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-011 · Assignment history & assignee notification
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-30, M02-31
 **Requirements (verbatim):**
 
@@ -199,6 +210,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-012 · Activity timeline service
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-35, M02-36, F4-16, F4-19
 **Requirements (verbatim):**
 
@@ -222,6 +234,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-013 · Transactional message send & copy-paste fallback
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-33, M02-47, M02-48
 **Requirements (verbatim):**
 
@@ -240,6 +253,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-014 · Site-visit booking hand-off to survey
 
 **Type:** integration · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-46
 **Requirements (verbatim):**
 
@@ -254,6 +268,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-015 · Lead lifecycle state machine (R9): funnel, parking & terminal states
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-41, M02-49, M02-50, M02-51, M02-52, M02-53, M02-54, M02-55, M02-56, M02-57, M02-58
 **Requirements (verbatim):**
 
@@ -288,6 +303,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-016 · Merge execution: re-point, tombstone, audit, money-free
 
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-60, M02-61, M02-62
 **Requirements (verbatim):**
 
@@ -306,6 +322,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-017 · Capture-channel policy behind the settings surface
 
 **Type:** policy · **Tier:** P0
+**Status:** planned
 **PRD rows:** M02-17, M02-64, M02-65
 
 The settings surface itself is M01's (SCR-M01-22, `docs/ux/briefs/SCR-M01-22-capture-settings.md`); this task builds what it renders — the channel registry, each channel's true state, the toggle semantics, and the later-card facts for deferred channels.

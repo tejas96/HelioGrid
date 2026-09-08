@@ -17,8 +17,9 @@ what is done; this folder is its working material.
 7. Then run the self-audit (bottom of the context file): PASS/FAIL per requirement row, with
    the satisfying element named. Fix every FAIL in the same session.
 8. Record the result in **two** places — both, or the trail breaks:
-   - `docs/prd/registers/screens.md`: the screen's row, `UX status` → `designed`, `Design link` → the artifact.
-   - `docs/tasks/<module>.md`: that screen's `DESIGN: SCR-… → PENDING` line → the artifact link.
+   - `docs/prd/registers/screens.md`: the screen's row, `Status` → `designed`, `Design link` → the artifact.
+   - `docs/tasks/<module>.md`: that screen's `DESIGN: SCR-… → PENDING` line → the artifact link, and
+     the task's `Status:` → `designed` once every link it carries is filled. Gate-checked.
 9. If the brief said **"not pinned by PRD — designer decides"** anywhere and you made the call,
    write the decision back into the brief so the next screen inherits it.
 

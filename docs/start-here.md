@@ -109,7 +109,7 @@ Tier         : P0
 Rows         : 8
 Brief        : docs/ux/briefs/SCR-SHELL-01-app-shell.md   ← this is the file you paste
 V            : V1                                    ← V2 rows are skipped entirely
-UX status    : pending                               ← this is how you know it's not done
+Status       : planned                               ← this is how you know it's not done
 Design link  : —
 ```
 
@@ -128,8 +128,8 @@ The one that trips people is `SCR-SHELL-06` — it sits with the other shell row
 renders a tenant's M12 billing state, so it belongs to block 2 and cannot be drawn before M12.
 
 **Doing it by hand:** take the blocks above in order; inside a block, take that module's §2 rows
-in order; skip every row whose `V` is `V2`, and every row whose `UX status` is already `designed`.
-A `V2` row is never today's screen — it stays `pending` for the whole of V1, and that is correct,
+in order; skip every row whose `V` is `V2`, and every row whose `Status` is already `designed`.
+A `V2` row is never today's screen — it stays `planned` for the whole of V1, and that is correct,
 not a backlog you are falling behind on.
 
 ### Finding the two lines to edit afterwards
@@ -258,10 +258,10 @@ Only after you've approved the design.
 
 ### Edit 1 — `docs/prd/registers/screens.md` (screen one is line 160)
 
-Change `pending` → `designed`, and `—` → your Claude Design link. Leave the `V` column alone:
+Change `planned` → `designed`, and `—` → your Claude Design link. Leave the `V` column alone:
 
 ```
-BEFORE  | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/…` | V1 | pending | — | …
+BEFORE  | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/…` | V1 | planned | — | …
 AFTER   | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/…` | V1 | designed | <link> | …
 ```
 
@@ -291,20 +291,20 @@ An unrecorded decision is how two screens end up disagreeing about the same flow
 
 ## How you know you're finished
 
-Count the V1 rows in the screens register that still say `pending`:
+Count the V1 rows in the screens register that still say `planned`:
 
 ```bash
-grep -c '^| SCR-.*| V1 | pending |' docs/prd/registers/screens.md
+grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 ```
 
 **99 today. 0 when you're done.** That is your whole progress bar, and it reads the same file
 you're working from.
 
-The `^| SCR-` anchor matters: without it the command also counts every non-V1 pending row too
+The `^| SCR-` anchor matters: without it the command also counts every non-V1 planned row too
 (struck rows, V2 rows written as prose elsewhere in the file), and reports 100 — one over the true
 99, not under.
 
-The other 51 rows stay `pending` on purpose — they are V2. A plain `grep -c '| pending |'`
+The other 51 rows stay `planned` on purpose — they are V2. A plain `grep -c '| planned |'`
 returns **151** — the 150 screen rows plus the screens register's own documentation of this command —
 and it never reaches zero during V1. Don't use it as your progress bar.
 

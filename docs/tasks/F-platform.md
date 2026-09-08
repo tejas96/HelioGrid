@@ -8,6 +8,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 
 ### T-FPLAT-001 · The twelve fixed presets and the per-module capability matrix
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F2-01, F2-02, F2-03, F2-05, F2-08, F2-09, F2-16, F2-25, F2-26
 **Requirements (verbatim):**
 
@@ -32,6 +33,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-002 · Permission resolution — OR across held presets, per-domain visibility scope, widest-wins
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F2-10, F2-11, F2-12, F2-13, F2-14, F2-15, F2-17, F2-18
 **Requirements (verbatim):**
 
@@ -55,6 +57,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-003 · Role-administration guarded transitions — last Owner, last Manage-team, deactivation, zero-role invite
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F2-19, F2-20, F2-21
 **Requirements (verbatim):**
 
@@ -71,6 +74,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-004 · The append-only audit log, its tenant-scoped export and the impersonation record
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F2-22, F2-23, F2-24
 **Requirements (verbatim):**
 
@@ -87,6 +91,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-005 · The message catalog and runtime language resolution — per-user language, silent English fallback, reader-language rendering
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F3-01, F3-02, F3-04, F3-05, F3-06, F3-07
 **Requirements (verbatim):**
 
@@ -108,6 +113,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-006 · Content classes — the never-translated set, canonical identity, the one-term law, tenant-authored per-language content
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F3-08, F3-10, F3-11, F3-12
 **Requirements (verbatim):**
 
@@ -127,6 +133,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-007 · Script rendering — bundled matched faces at every sanctioned weight, document shaping, per-script line height
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F3-09, F3-13, F3-14, F3-15, F3-17
 **Requirements (verbatim):**
 
@@ -146,6 +153,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-008 · The four format implementations — money, non-money numbers, dates and times, measurements
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F3-19, F3-20, F3-21, F3-22, F3-23, F3-24
 **Requirements (verbatim):**
 
@@ -168,6 +176,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-009 · The language-set boundary — the readiness gate and the add-a-language playbook
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F3-26, F3-27, F3-28
 **Requirements (verbatim):**
 
@@ -185,6 +194,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-010 · STRUCK 2026-08-07 — the offline vocabulary and the capability boundary registry
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — every row this task carried was deleted 2026-08-07.
 
 **Struck in place by owner decision 2026-08-07**, which removed the offline/sync capability from the product and replaced `docs/prd/foundations/F4-offline-and-sync.md` with `docs/prd/foundations/F4-data-integrity.md`. Everything this task built was the boundary itself — the closed three-term vocabulary, the one-boundary-both-platforms parity rule, the time-not-scope commitment, the ruled offline-capable and online-only sets and their per-capability tables, the design-editing carve-out, the queued proposal-draft rule, and the boundary-governance row with its ruling that attendance and geofence events never joined the offline-capable set. With no connectivity boundary there is nothing to name, classify, police or move by ruling, and `docs/prd/foundations/F4-data-integrity.md` §5 makes losing the connection an ordinary network error. Nothing is built here. **The task id is struck in place and not renumbered**, so `T-FPLAT-011` onward keep their numbers and every existing citation still resolves.
@@ -199,6 +209,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-011 · Server-owned truth and money, and idempotent apply
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F4-04, F4-07
 **Requirements (verbatim):**
 
@@ -216,6 +227,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-012 · STRUCK 2026-09-04 — the conflict-policy engine
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — all five moved to the modules that consume them.
 
 **Struck in place by owner decision 2026-09-04.** The concurrency law is real and unchanged; what
@@ -238,6 +250,7 @@ read-state line this task used to carry belongs to `T-FPLAT-017` (`F6-07`) and w
 ---
 ### T-FPLAT-013 · STRUCK 2026-09-04 — nothing captured is unrecoverable
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — `F4-21` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The guarantee is unchanged; it lands with the
@@ -251,6 +264,7 @@ module that captures photographs rather than as a block 0 engine (Law 9).
 
 ### T-FPLAT-014 · STRUCK 2026-09-04 — the version-kept notice
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — `F4-25` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The notice belongs where the version is created.
@@ -263,6 +277,7 @@ module that captures photographs rather than as a block 0 engine (Law 9).
 
 ### T-FPLAT-033 · The too-old client — server-declared minimum version and the forced-upgrade screen
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F4-36
 **Requirements (verbatim):**
 
@@ -278,6 +293,7 @@ module that captures photographs rather than as a block 0 engine (Law 9).
 ---
 ### T-FPLAT-034 · STRUCK 2026-09-04 — shared-device user switch
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — `F4-37` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The switch happens at sign-in and its screen half
@@ -291,6 +307,7 @@ was already `SCR-M01-01`, so the rule sits with the session engine rather than i
 
 ### T-FPLAT-015 · STRUCK 2026-09-04 — the device-held photograph queue
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — both were already carried elsewhere.
 
 **Struck in place by owner decision 2026-09-04.** This task duplicated work its module already
@@ -306,6 +323,7 @@ by removing it, and the product keeps one device-held queue, specified once, in 
 
 ### T-FPLAT-016 · STRUCK 2026-09-04 — continuity under a billing block
 **Type:** — · **Tier:** —
+**Status:** planned
 **PRD rows:** none — all four were already carried elsewhere.
 
 **Struck in place by owner decision 2026-09-04.** This task restated billing rules its own module
@@ -323,6 +341,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 
 ### T-FPLAT-017 · The notification type registry and the record-of-truth model
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F6-01, F6-02, F6-05, F6-06, F6-07, F6-08, F6-09
 **Requirements (verbatim):**
 
@@ -345,6 +364,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-018 · Notification delivery — the event matrix, channels, urgency classes, quiet hours, per-user mutes, recipient resolution
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F6-10, F6-11, F6-13, F6-14, F6-15, F6-16
 **Requirements (verbatim):**
 
@@ -367,6 +387,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-019 · The notification centre's data contract — up-only read state and the bounded horizon
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F6-19 · F6-07 (the centre's read-state contract; the row is quoted and built at `T-FPLAT-017`)
 **Requirements (verbatim):**
 
@@ -383,6 +404,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-020 · Global search — scope-enforced results, the alias law, junk leads and plain ranking
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F6-21, F6-22, F6-23, F6-24, F6-25
 **Requirements (verbatim):**
 
@@ -403,6 +425,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-021 · The message-template registry
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F6-26, F6-27
 **Requirements (verbatim):**
 
@@ -421,6 +444,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-022 · Tenant branding scope and the contrast re-verification engine
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F7-07
 **Requirements (verbatim):**
 
@@ -433,6 +457,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-023 · The design-system adherence build gate
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F7-03, F7-26
 **Requirements (verbatim):**
 
@@ -449,6 +474,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-024 · Opt-in high-contrast field mode as a per-user capability
 **Type:** engine · **Tier:** P1
+**Status:** planned
 **PRD rows:** F7-16
 **Requirements (verbatim):**
 
@@ -461,6 +487,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-025 · Role-adaptive shell centre-verb resolution
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F7-22
 **Requirements (verbatim):**
 
@@ -473,6 +500,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-026 · The provenance model — four closed tiers, weakest-member aggregation, shown tier changes, configuration-proof labels
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-01, F8-02, F8-03, F8-04, F8-05, F8-06, F8-07
 **Requirements (verbatim):**
 
@@ -495,6 +523,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-027 · Energy source labelling and the fallback chain
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-08, F8-09, F8-10, F8-11
 **Requirements (verbatim):**
 
@@ -514,6 +543,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-028 · Money never renders stale — version pinning, comparison-derived staleness, provisional rendering, sent-document immutability
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-12, F8-13, F8-14, F8-15, F8-17, F8-18, F8-19
 **Requirements (verbatim):**
 
@@ -539,6 +569,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-029 · Document-level disclosure and one-figure-one-source
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-20, F8-21, F8-22, F8-23, F8-24
 **Requirements (verbatim):**
 
@@ -558,6 +589,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-030 · Structural adequacy — never computed, sign-off recorded and pinned, disclaimer travels, customer gate
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-25, F8-26, F8-27, F8-28, F8-29
 **Requirements (verbatim):**
 
@@ -578,6 +610,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-031 · The correlation-not-attribution reporting contract
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-30, F8-31, F8-32
 **Requirements (verbatim):**
 
@@ -594,6 +627,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-032 · Honest state, usage figures and declared degradation
 **Type:** engine · **Tier:** P0
+**Status:** planned
 **PRD rows:** F8-33, F8-34, F8-35, F8-36
 **Requirements (verbatim):**
 
