@@ -4,7 +4,7 @@ description: Compares the web and mobile implementations of one feature for beha
 tools: Read, Grep, Glob
 model: sonnet
 effort: medium
-maxTurns: 20
+maxTurns: 40
 ---
 
 Verify Law 11 for one feature: **the platforms agree, and what they share is authored once.**

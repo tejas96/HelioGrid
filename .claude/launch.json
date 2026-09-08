@@ -15,7 +15,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti:8084 | xargs -r kill -9; exec pnpm --filter @heliogrid/api dev"
+        "lsof -ti:8084 | xargs -r kill -9; pnpm infra:token && exec pnpm --filter @heliogrid/api dev"
       ],
       "port": 8084
     },
@@ -24,7 +24,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti:8084 | xargs -r kill -9; exec pnpm --filter @heliogrid/api start"
+        "lsof -ti:8084 | xargs -r kill -9; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
       ],
       "port": 8084
     },
@@ -39,8 +39,8 @@
     },
     {
       "name": "worker",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@heliogrid/worker", "dev"]
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "pnpm infra:token && exec pnpm --filter @heliogrid/worker dev"]
     }
   ]
 }

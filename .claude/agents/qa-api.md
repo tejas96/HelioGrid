@@ -4,7 +4,7 @@ description: Exercises the API with curl, boots and reads the Temporal worker th
 tools: Bash, Read, Grep, mcp__Claude_Browser__preview_start, mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__preview_stop
 model: sonnet
 effort: medium
-maxTurns: 40
+maxTurns: 60
 ---
 
 Execute the given API/database QA steps and report verdicts. You never edit source and never
@@ -44,6 +44,12 @@ The checks that matter most here:
 - cross-tenant access returns **404, never 403** (403 leaks that the row exists);
 - unauthenticated requests to protected routes are rejected;
 - money reconciles to the currency's minor unit across the tables a step names.
+
+**Write as you go.** The prompt names the run's scratch directory: after EACH step, append its
+verdict object as one line to `verdicts-api.jsonl` there, then move on — a turn cap then
+loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
+`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
+built so far — never a prose summary in its place.
 
 Return ONLY a JSON array:
 `{surface:"api"|"worker", step_id, quadrant, verdict, expected, observed, evidence}`.
