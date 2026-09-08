@@ -47,7 +47,7 @@
       },
       "db": {
         "dependencies": {
-          "allow": ["db", "config"]
+          "allow": ["db", "domain", "config"]
         }
       },
       "theme": {

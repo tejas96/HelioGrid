@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerErrorInterceptor } from 'nestjs-pino';
-import { dbProviders } from './db/db.providers';
+import { dbProviders, dbProviderTokens } from './db/db.providers';
 import { EnvelopeExceptionFilter } from './filters/envelope-exception.filter';
 
 /**
@@ -24,6 +24,6 @@ import { EnvelopeExceptionFilter } from './filters/envelope-exception.filter';
     { provide: APP_INTERCEPTOR, useClass: LoggerErrorInterceptor },
   ],
   // Repositories across every module inject these; nothing else should.
-  exports: [...dbProviders.map((p) => (p as { provide: symbol }).provide)],
+  exports: dbProviderTokens,
 })
 export class CommonModule {}

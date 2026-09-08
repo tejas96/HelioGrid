@@ -1,18 +1,14 @@
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import { schema } from './schema';
 
 export type Db = ReturnType<typeof createDb>['db'];
 
-/**
- * No `schema` argument: the greenfield reset deleted the Drizzle
- * models, so there is nothing to describe and the relational query API (`db.query.*`) has
- * no tables to build. The market-pack storage slice re-adds `src/schema/` with
- * migration 0001 and passes it back in here; auth + tenancy follow it.
- */
+/** The pool factory. `schema` is what lets a repository query through the Drizzle mirror. */
 export function createDb(databaseUrl: string, options: { max?: number } = {}) {
   const client = postgres(databaseUrl, { max: options.max ?? 10, prepare: false });
-  const db = drizzle(client);
+  const db = drizzle(client, { schema });
   return { db, client };
 }
 

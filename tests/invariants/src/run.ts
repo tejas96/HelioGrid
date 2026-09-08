@@ -7,9 +7,8 @@ import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdInBody } from './tenant-id-in-body';
 
 /**
- * Locked invariant runner. Sets: tenancy (live), enum parity (live), format rendering (static,
- * F3-19…F3-24), money (lands with the proposal module), billing (lands with the billing
- * module), migrations (Track A).
+ * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
+ * schema parity (live), tenant-id-in-body (static), format rendering (static, F3-19…F3-24).
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -32,67 +31,77 @@ async function main() {
     console.warn('SKIP invariants: DATABASE_URL/DATABASE_ADMIN_URL not set (local run only)');
     return;
   }
-  const { tables, hasRlsSubjectRole } = await inspectDatabase(url);
-  const empty = tables === 0;
+  const { tables, tenantTables, hasRlsSubjectRole } = await inspectDatabase(url);
 
   /*
-   * NEVER MIGRATED — no tables AND no `app_user`. Every db-backed invariant below reaches for
-   * that role by name (`pg_has_role(…, 'app_user', …)` in three files), and postgres raises
-   * 42704 when it does not exist, so they cannot run at all rather than running vacuously.
+   * NEVER PROVISIONED — no application table AND no `app_user`. Every db-backed invariant below
+   * reaches for that role by name (`pg_has_role(…, 'app_user', …)`), and postgres raises 42704
+   * when it does not exist, so they cannot run at all rather than running vacuously.
    *
-   * This is CI on a fresh service container: the teardown deleted migration 0004,
-   * which created the role. Roles are CLUSTER-wide, so a long-lived dev database still has it
-   * and this whole condition is invisible locally — main goes red
-   * while local runs look green.
-   *
-   * Tables WITHOUT the role is a different thing entirely — a broken database, not a
-   * greenfield one — and `runTenancyInvariants` still fails closed on it.
+   * Roles are CLUSTER objects from infra/postgres/init/01-roles.sql: a local database has them
+   * from its first boot, and CI runs that file before it migrates. Tables WITHOUT the role is a
+   * different thing entirely — a broken database, not an unprovisioned one — and the scan below
+   * fails on it rather than skipping.
    */
-  if (empty && !hasRlsSubjectRole) {
+  if (tables === 0 && !hasRlsSubjectRole) {
     console.warn(
-      '\n  INVARIANTS NOT RUN: the database was never migrated — 0 application tables and no\n' +
-        '  app_user role (greenfield). NOTHING is proven here:\n' +
-        '  not tenancy, not table scoping, not enum or schema parity. Real coverage returns\n' +
-        "  with the auth + tenancy module's first migration, which re-creates the role.\n",
+      '\n  INVARIANTS NOT RUN: the database was never provisioned or migrated — 0 application\n' +
+        '  tables and no app_user role. NOTHING is proven here: not tenancy, not table\n' +
+        '  scoping, not enum or schema parity. Run infra/postgres/init/01-roles.sql, then\n' +
+        '  migrate.\n',
     );
     return;
   }
 
-  if (empty) {
-    // Not a gate — the database is LEGITIMATELY empty after the teardown
-    // But a green run below must never read as "tenancy is proven", which is
-    // exactly how the tenancy gate went unexecuted for the whole foundation phase.
+  if (tenantTables === 0) {
+    // A tenant table is one that carries tenant_id. Global reference data (the market pack)
+    // is migrated before any tenant table exists, and it IS inspected below — but a green
+    // tenancy run over zero tenant tables must never read as "isolation is proven".
     console.warn(
-      '\n  INVARIANTS VACUOUS: 0 application tables. Tenancy, table scoping, enum parity and\n' +
-        '  schema parity all have nothing to compare, so their passing below means NOTHING.\n' +
-        "  Real coverage returns with the auth + tenancy module's first migration.\n",
+      '\n  TENANCY VACUOUS: no table carries tenant_id yet, so cross-tenant isolation has\n' +
+        '  nothing to compare and its passing below means NOTHING. The global reference\n' +
+        '  tables ARE inspected — readable-global grants and the schema mirror are proven,\n' +
+        "  tenancy is not. Isolation coverage returns with the identity spine's migration.\n",
     );
   }
   await runTenancyInvariants(url);
   await runTableTenancyScan(url);
   await runEnumParity(url);
   await runSchemaParity(url);
-  console.log(empty ? 'invariants green (vacuously — see the banner above)' : 'invariants green');
+  console.log(
+    tenantTables === 0
+      ? 'invariants green — tenancy vacuously (see the banner above)'
+      : 'invariants green',
+  );
 }
 
 /**
- * What this database actually has, before anything assumes it. Application tables only —
- * the migration ledger is bookkeeping, not schema — plus whether the RLS-subject role the
- * invariants query by name exists at all.
+ * What this database actually has, before anything assumes it: application tables (the
+ * migration ledger is bookkeeping, not schema), how many of them are tenant tables, and whether
+ * the RLS-subject role the invariants query by name exists at all.
  */
 async function inspectDatabase(
   url: string,
-): Promise<{ tables: number; hasRlsSubjectRole: boolean }> {
+): Promise<{ tables: number; tenantTables: number; hasRlsSubjectRole: boolean }> {
   const sql = (await import('postgres')).default(url, { max: 1, onnotice: () => {} });
   try {
-    const [row] = await sql<{ n: number }[]>`
-      select count(*)::int as n from pg_class c
+    const [row] = await sql<{ tables: number; tenant_tables: number }[]>`
+      select count(*)::int as tables,
+             count(*) filter (where exists (
+               select 1 from pg_attribute a
+               where a.attrelid = c.oid and a.attname = 'tenant_id'
+                 and a.attnum > 0 and not a.attisdropped))::int as tenant_tables
+      from pg_class c
       join pg_namespace n on n.oid = c.relnamespace
       where n.nspname = 'public' and c.relkind in ('r', 'p')
         and c.relname <> 'schema_migrations'`;
     const [role] = await sql<{ n: number }[]>`
       select count(*)::int as n from pg_roles where rolname = 'app_user'`;
-    return { tables: row?.n ?? 0, hasRlsSubjectRole: (role?.n ?? 0) > 0 };
+    return {
+      tables: row?.tables ?? 0,
+      tenantTables: row?.tenant_tables ?? 0,
+      hasRlsSubjectRole: (role?.n ?? 0) > 0,
+    };
   } finally {
     await sql.end();
   }

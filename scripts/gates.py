@@ -569,7 +569,7 @@ def run(repo, verbose):
     # Every file there carries its fate at its top; the folder dissolves into the package files
     # and the tasks. The ceiling is the folder's exact line count today: growth fails, and a cut
     # fails too until the ceiling is lowered in the same change — so it can only fall.
-    ENGINEERING_LINES = 6425
+    ENGINEERING_LINES = 6423
     eng_files = [f for f in tracked if f.startswith("docs/engineering/")]
     eng_lines = 0
     for rel in eng_files:

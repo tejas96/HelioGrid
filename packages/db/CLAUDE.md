@@ -1,12 +1,8 @@
 # @heliogrid/db — append-only, tenant-scoped, fail-closed
 
-> **GREENFIELD.** Migrations `0001`–`0006` and all of `src/schema/` were deleted on an explicit
-> owner ruling that overrode the append-only law: the identity spine could not be removed
-> surgically because every platform table foreign-keys to it. What survives is `client.ts`,
-> `migrate.ts` and `uuid.ts`. The next migration is `0001`, authored by the market-pack storage
-> slice (`T-FCORE-016`) — the pack carries no foreign key out and `tenant` carries the market one,
-> so the pack precedes the identity spine. Auth and tenancy follow it. Read `T-M01-025`'s Data model block in `docs/tasks/M01-onboarding.md` first. Everything below is what the
-> rebuild must satisfy, not a description of today's contents.
+> `0001` is the market pack, readable global reference data with no foreign key out; `tenant`
+> (`T-M01-025`, `0002`) carries the market one, so the identity spine follows it. Read that task's
+> Data model block in `docs/tasks/M01-onboarding.md` before authoring it.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.
@@ -15,11 +11,10 @@ a sequence: run `/migration`.
 
 - The Drizzle schema, the connection factory and `withTenantTransaction`, the migration runner,
   and the migrations themselves.
-- **The entities come from `docs/engineering/data-model.md` §2** — what each one is, who owns it,
-  its key fields and the PRD rows behind it, with a Block column saying when Law 9 lets you author
-  it. This package holds the PHYSICAL answer; that document holds the logical one, and neither
-  restates the other. `forward-compat.md` is the third: what your first migration must already
-  satisfy.
+- **The entities come from the owning task's Data model block** in `docs/tasks/` — what each one
+  is, its key fields, its tenancy and the PRD rows behind it. This package holds the PHYSICAL
+  answer; the task holds the logical one, and neither restates the other. `forward-compat.md` is
+  the third: what your first migration must already satisfy.
 - The `./uuid` subpath is backend-only; `node:crypto` cannot resolve in a browser or Metro bundle.
 - NEVER: business logic, a contract import, an app import, or a table or column that is not in a
   migration.

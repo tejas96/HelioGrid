@@ -31,17 +31,18 @@ import type postgres from 'postgres';
  */
 const CANONICAL_POLICY_EXPRESSIONS: Record<string, string> = {
   "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)":
-    'the standard tenant-scoped table policy (migration 0001)',
+    'the standard tenant-scoped table policy',
   "(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)":
-    'the tenants registry, which is keyed by id rather than tenant_id (migration 0001)',
+    'the tenant registry, which is keyed by id rather than tenant_id',
 };
 
 /**
  * SECURITY DEFINER functions in `public`, each with a written reason. Empty today.
  *
- * Every table is owned by a SUPERUSER, and 0005 records that FORCE cannot restrain one. A
- * SECURITY DEFINER function therefore reads through RLS entirely. plans exactly
- * such a path for public customer-link reads, so this list exists before that module does.
+ * Every table is owned by the migration role, which holds BYPASSRLS, and FORCE cannot restrain
+ * a role that bypasses. A SECURITY DEFINER function therefore reads through RLS entirely. The
+ * customer link plans exactly such a path for its public reads, so this list exists before
+ * that module does.
  */
 const SECURITY_DEFINER_ALLOWED: Record<string, string> = {};
 
@@ -138,10 +139,7 @@ export async function assertRlsArmed(sql: postgres.Sql, tables: string[]) {
       r.rls_enabled,
       `${table}: RLS ENABLED — 'alter table ${table} enable row level security'`,
     );
-    assert(
-      r.rls_forced,
-      `${table}: RLS FORCED — 'alter table ${table} force row level security' (see 0005)`,
-    );
+    assert(r.rls_forced, `${table}: RLS FORCED — 'alter table ${table} force row level security'`);
 
     const own = policies.filter((p) => p.table_name === table);
     assert(
@@ -190,7 +188,7 @@ export async function assertPartitionChildrenUngranted(sql: postgres.Sql) {
     -- production connects as app_runtime, which is a MEMBER of it, and a grant to app_runtime
     -- was completely invisible. Deriving the set means a future login role is covered the day
     -- it is created. app_admin and the owner are excluded because they hold BYPASSRLS/superuser
-    -- by design (0004, 0005) — RLS was never restraining them and this check would be noise.
+    -- by design — RLS was never restraining them and this check would be noise.
     cross join lateral (
       select r.rolname from pg_roles r
       where pg_has_role(r.rolname, 'app_user', 'MEMBER')
@@ -219,7 +217,7 @@ export async function assertPartitionChildrenUngranted(sql: postgres.Sql) {
 
 /**
  * Views and SECURITY DEFINER functions run as their OWNER. Every relation here is owned by a
- * superuser, which 0005 records that FORCE cannot restrain — so a view without
+ * role that bypasses RLS, which FORCE cannot restrain — so a view without
  * `security_invoker = true` reads every tenant's rows regardless of the caller's policies.
  */
 export async function assertNoRlsBypassingRoutes(sql: postgres.Sql) {

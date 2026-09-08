@@ -26,4 +26,4 @@ GRANT USAGE   ON SCHEMA   public        TO app_runtime, app_admin, qa_readonly;
 GRANT CREATE ON SCHEMA public TO app_admin;
 
 -- No extensions, no table grants, no default privileges. Law 9 — a migration authors each when
--- its module needs it. Until 0001 lands, qa_readonly can connect and sees nothing.
+-- its module needs it; a table no migration has granted is invisible to qa_readonly.

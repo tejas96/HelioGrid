@@ -139,6 +139,137 @@
           }
         }
       }
+    },
+    "/market-packs/{marketCode}": {
+      "get": {
+        "summary": "The current published version of one market pack, without the price book",
+        "tags": [
+          "marketPack"
+        ],
+        "parameters": [
+          {
+            "name": "marketCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "market": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{2}$"
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "tax": {
+                      "nullable": true
+                    },
+                    "subsidy": {
+                      "nullable": true
+                    },
+                    "callingRules": {
+                      "nullable": true
+                    },
+                    "paymentRails": {
+                      "nullable": true
+                    },
+                    "certificationSchemes": {
+                      "nullable": true
+                    },
+                    "formats": {
+                      "nullable": true
+                    },
+                    "dataRights": {
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "market",
+                    "revision",
+                    "publishedAt",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "info": {

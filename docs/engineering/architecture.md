@@ -116,14 +116,13 @@ Extension point: one folder per module slice (authz/, auth/, tenancy/, calling/,
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client
-**STATUS: greenfield.** `src/schema/` and migrations 0001–0006
-were deleted; the market-pack storage slice (`T-FCORE-016`) authors the fresh 0001 and the auth +
-tenancy slice follows it. Today the package is client.ts + migrate.ts + uuid.ts.
-Owns: append-only migrations and the Drizzle schema mirror (both re-authored per above),
-the migrate runner (sha256-locked, advisory-locked), the pool factory `createDb` plus RLS
-plumbing (withTenantTransaction, the runtime-role assertion, ping), and the uuid subpath.
+Owns: append-only migrations (0001 is the market pack; the identity spine follows it) and the
+Drizzle schema mirror in `src/schema/`, the migrate runner (sha256-locked, advisory-locked),
+the pool factory `createDb` plus RLS plumbing (withTenantTransaction, the runtime-role
+assertion, ping), and the uuid subpath.
 The admin/runtime pool PAIR is not here — apps/api constructs it (admin-pool-fenced).
-Allowed deps: config. Platform scope: backend only. The ./uuid subpath is for backend use
+Allowed deps: config, domain (a jsonb column is typed as domain's envelope, never as the
+aggregate). Platform scope: backend only. The ./uuid subpath is for backend use
 (repositories, common/db); the Node-only frontend exemption is retired — no app ever
 imported it and node:crypto cannot resolve in a browser or Metro bundle.
 Belongs: DDL for the current module's slice (Law 9).
@@ -164,8 +163,7 @@ ESM/CJS hazard). It also owns the @lingui and @formatjs DEPENDENCIES: neither ap
 them. THREE entry points: `.` React-free (createTranslator for a server render or a job) ·
 `./react` the provider and hooks · `./rn` the Hermes polyfills, separate because importing
 them has global side effects a web bundle must never take. Allowed deps:
-contracts, domain (the money/format helpers when domain's money slice lands — the turbo
-i18n tag already permits this edge), config; react is a PEER. Platform scope: shared
+contracts, domain (the money/format helpers), config; react is a PEER. Platform scope: shared
 frontend. Belongs: copy both platforms render (Law 11). Never: macro imports (lint-banned);
 a module-scope i18n instance (one shared mutable locale across concurrent server renders);
 locale-default number formats for money
@@ -232,9 +230,9 @@ log shape and its redaction (common/logging.ts — the ONE authoring; there is n
 packages/config/logging.ts), the explicit body limit and its canonical 413, the tenancy
 runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
 common/db (fenced by admin-pool-fenced — db provides the factory, this app builds the
-pair). Allowed deps: contracts, domain, db, env, config (domain consumer is re-added with
-the auth rebuild). Platform scope: backend only (Node). Belongs: the HTTP edge and its
-repositories. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
+pair). Allowed deps: contracts, domain, db, env, config. Platform scope: backend only
+(Node). Belongs: the HTTP edge, its repositories, and `src/scripts/` commands that drive a
+service. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
 boundary tag); raw process.env (env owns it). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
@@ -273,8 +271,8 @@ Extension point: one folder per deployed dependency.
 
 ### tests/invariants — the proof layer
 Owns: executable invariants (tenancy/RLS, table scoping, enum parity, schema parity,
-tenant-id-in-body) run by pnpm turbo test; fail-closed under CI, loud-skip locally
-without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
+tenant-id-in-body, format rendering) run by pnpm turbo test; fail-closed under CI, loud-skip
+locally without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven
 mechanically against the live schema or contracts. Never: a UNIT test — one lives at

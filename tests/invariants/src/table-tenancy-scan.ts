@@ -4,18 +4,17 @@ import postgres from 'postgres';
  * Inverse tenancy scan — the other half of tenancy-rls.ts.
  *
  * tenancy-rls.ts scans for tables that ALREADY carry tenant_id and proves isolation on
- * those. Its only presence check is a count floor (`length >= 7`), so a table created
- * WITHOUT tenant_id never appears in the scan and escapes both the invariant and RLS
- * entirely. That made "every tenant-owned table carries tenant_id" prose wearing a
- * mechanical costume.
+ * those. Its only presence check is a count floor, so a table created WITHOUT tenant_id never
+ * appears in the scan and escapes both the invariant and RLS entirely. That made "every
+ * tenant-owned table carries tenant_id" prose wearing a mechanical costume.
  *
  * This proves the complement: every base table in `public` either carries tenant_id or is
- * justified below. There is no third option.
+ * justified below, in one of exactly two global categories. There is no fourth option.
  */
 
 /**
- * Tables that are genuinely global. Each needs a WRITTEN reason — a silent entry here is
- * indistinguishable from a table that slipped through.
+ * Tables that are genuinely global AND unreachable by any RLS-subject role. Each needs a WRITTEN
+ * reason — a silent entry here is indistinguishable from a table that slipped through.
  *
  * HelioGrid owns the account, tenant, membership, role, invitation and session tables, so
  * none of them belongs here except the tenant registry itself. A wrapped identity library
@@ -30,22 +29,81 @@ const GLOBAL_TABLES: Record<string, string> = {
 };
 
 /**
- * UNIQUE indexes on a tenant table that deliberately do NOT lead with tenant_id, by index name
- * with a written reason. Empty today — migration 0003 scoped every one of them.
+ * Readable global reference data: no tenant_id, no RLS, SELECT held by every RLS-subject role
+ * and NO write privilege — INSERT, UPDATE, DELETE and TRUNCATE all absent. Every tenant reads
+ * its market's pack and none writes it; the publish command on the admin path is the only
+ * writer (`F1-12`). Same rule as GLOBAL_TABLES: a reason, or the entry is a hole.
  */
-const GLOBAL_UNIQUES: Record<string, string> = {
-  users_phone_e164_key:
-    'users: "login identity; unique global (auth owns verification)". One phone is ' +
-    'one platform identity — the OTP verifies the number, so the same person cannot hold ' +
-    'two accounts. Contrast customers.phone_e164, which is correctly (tenant_id, phone_e164) ' +
-    'because two EPCs may legitimately serve the same homeowner.',
-  invites_token_hash_key:
-    'the invite token is looked up BEFORE any tenant context exists — the recipient follows a ' +
-    'link and is not yet authenticated — so the hash must be globally unique to resolve at all.',
+const GLOBAL_READABLE_TABLES: Record<string, string> = {
+  market_pack:
+    'the market registry: the versioned unit of a market’s configuration and the source of a ' +
+    'tenant’s market (F1-01); every tenant reads it, the publish command alone writes it',
+  market_pack_version:
+    'one published, dated pack revision as ONE jsonb payload (F1-11); pinned by every priced ' +
+    'output, superseded and never deleted, written only by the publish command',
 };
+
+/**
+ * UNIQUE indexes on a tenant table that deliberately do NOT lead with tenant_id, by index name
+ * with a written reason. Empty: an exemption is listed by its real index name in the change
+ * that lands the table, never ahead of it. The shape a reason takes: a login phone is one
+ * platform identity, so its unique is global; a customer phone is (tenant_id, phone), because
+ * two EPCs may legitimately serve the same homeowner.
+ */
+const GLOBAL_UNIQUES: Record<string, string> = {};
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(`table-tenancy: ${msg}`);
+}
+
+/**
+ * The readable-global category, from the catalog: for every listed table that exists, RLS is
+ * off, and every RLS-subject role — members of app_user without BYPASSRLS, derived rather than
+ * spelled — holds SELECT and holds no write. Column-level for INSERT and UPDATE, because a
+ * `grant insert (pack)` is a complete write the table-level question answers false for.
+ */
+async function assertReadableGlobals(sql: postgres.Sql): Promise<number> {
+  const listed = Object.keys(GLOBAL_READABLE_TABLES);
+  const problems = await sql<{ table_name: string; problem: string }[]>`
+    select distinct c.relname as table_name, p.problem
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    cross join lateral (
+      select r.rolname from pg_roles r
+      where pg_has_role(r.rolname, 'app_user', 'MEMBER')
+        and not r.rolbypassrls and not r.rolsuper and r.rolname not like 'pg\\_%'
+    ) as sub
+    cross join lateral (values
+      ('RLS is enabled — readable reference data carries no policy', c.relrowsecurity),
+      ('SELECT is not held by ' || sub.rolname,
+        not has_table_privilege(sub.rolname, c.oid, 'SELECT')),
+      ('INSERT is held by ' || sub.rolname,
+        has_any_column_privilege(sub.rolname, c.oid, 'INSERT')),
+      ('UPDATE is held by ' || sub.rolname,
+        has_any_column_privilege(sub.rolname, c.oid, 'UPDATE')),
+      ('DELETE is held by ' || sub.rolname, has_table_privilege(sub.rolname, c.oid, 'DELETE')),
+      ('TRUNCATE is held by ' || sub.rolname,
+        has_table_privilege(sub.rolname, c.oid, 'TRUNCATE'))
+    ) as p(problem, failed)
+    where n.nspname not in ('pg_catalog', 'information_schema', 'pg_toast')
+      and c.relkind in ('r', 'p')
+      and c.relname = any(${listed})
+      and p.failed
+    order by c.relname, p.problem`;
+  assert(
+    problems.length === 0,
+    `${problems.length} readable-global violation(s) — reference data is SELECT for every ` +
+      'RLS-subject role and nothing else, with no RLS:\n' +
+      problems.map((p) => `  - ${p.table_name}: ${p.problem}`).join('\n') +
+      '\n\n  A write privilege here lets a tenant role rewrite what every tenant prices on;\n' +
+      '  revoke it — the admin path is the only writer. RLS here would either deny every\n' +
+      '  read or need a policy that keys on nothing.',
+  );
+  const [present] = await sql<{ n: number }[]>`
+    select count(*)::int as n from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relkind in ('r', 'p') and c.relname = any(${listed})`;
+  return present?.n ?? 0;
 }
 
 export async function runTableTenancyScan(adminUrl: string) {
@@ -73,9 +131,8 @@ export async function runTableTenancyScan(adminUrl: string) {
         await sql<{ table_name: string }[]>`
           -- pg_attribute, not information_schema.columns: that view is PRIVILEGE-FILTERED, so
           -- a table the connecting role cannot see simply vanishes from the completeness
-          -- oracle — and this check exists to prove completeness. tenancy-rls.ts was rewritten
-          -- off information_schema for the same reason; both halves now read the catalog the
-          -- same way.
+          -- oracle — and this check exists to prove completeness. tenancy-rls.ts reads the
+          -- catalog the same way, so the two halves cannot disagree about what a table is.
           select c.relname as table_name
           from pg_class c
           join pg_namespace n on n.oid = c.relnamespace
@@ -86,7 +143,11 @@ export async function runTableTenancyScan(adminUrl: string) {
       ).map((r) => r.table_name),
     );
 
-    const offenders = tables.filter((t) => !withTenant.has(t) && !(t in GLOBAL_TABLES));
+    // Object.hasOwn, never `in`: `in` walks Object.prototype, so a table named `constructor`
+    // would read as justified.
+    const justified = (t: string) =>
+      Object.hasOwn(GLOBAL_TABLES, t) || Object.hasOwn(GLOBAL_READABLE_TABLES, t);
+    const offenders = tables.filter((t) => !withTenant.has(t) && !justified(t));
 
     if (offenders.length) {
       throw new Error(
@@ -94,18 +155,20 @@ export async function runTableTenancyScan(adminUrl: string) {
           `  - ${offenders.join('\n  - ')}\n\n` +
           '  Add tenant_id (plus a composite index leading with it, a fail-closed RLS policy\n' +
           '  for app_user, and explicit grants) — or, if the table is genuinely global, add it\n' +
-          '  to GLOBAL_TABLES in this file WITH THE REASON. A table that escapes tenancy is\n' +
-          '  readable across every tenant.',
+          '  to GLOBAL_TABLES (unreachable) or GLOBAL_READABLE_TABLES (SELECT only) in this\n' +
+          '  file WITH THE REASON. A table that escapes tenancy is readable across every tenant.',
       );
     }
 
-    // Guard the allowlist against rot: an entry for a table that does not exist hides the
+    // Guard the allowlists against rot: an entry for a table that does not exist hides the
     // fact that nobody has revisited these exemptions. A warning, not a failure — an entry
     // is legitimately absent until the migration that owns its table has run.
-    const stale = Object.keys(GLOBAL_TABLES).filter((t) => !tables.includes(t));
+    const stale = [...Object.keys(GLOBAL_TABLES), ...Object.keys(GLOBAL_READABLE_TABLES)].filter(
+      (t) => !tables.includes(t),
+    );
     if (stale.length) {
       console.warn(
-        `table-tenancy: GLOBAL_TABLES lists ${stale.length} table(s) not present in this ` +
+        `table-tenancy: the global lists name ${stale.length} table(s) not present in this ` +
           `database — expected until the migration that owns it has run: ${stale.join(', ')}`,
       );
     }
@@ -136,10 +199,11 @@ export async function runTableTenancyScan(adminUrl: string) {
         'GLOBAL_TABLES.',
     );
 
+    const readable = await assertReadableGlobals(sql);
+
     // Every UNIQUE key on a tenant table must LEAD WITH tenant_id — otherwise it is global,
-    // and tenant B cannot create a row whose natural key tenant A already used. Migration 0003
-    // exists solely to repair that (`0003_tenant_scope_global_uniques`), and nothing prevented
-    // the next module reintroducing it. A catalog question, cheap and exact.
+    // and tenant B cannot create a row whose natural key tenant A already used. Nothing but
+    // this stops a module introducing one. A catalog question, cheap and exact.
     const globalUniques = await sql<{ table_name: string; index_name: string }[]>`
       select c.relname as table_name, i.relname as index_name
       from pg_index x
@@ -148,8 +212,8 @@ export async function runTableTenancyScan(adminUrl: string) {
       join pg_namespace n on n.oid = c.relnamespace
       where x.indisunique
         -- NOT primary keys: a surrogate uuid id PK is globally unique BY DESIGN and that is
-        -- correct. 0003's actual target was natural-key uniques (usage_events.idempotency_key,
-        -- sync_mutations.mutation_id) — the ones where tenant B is blocked by tenant A's value.
+        -- correct. The target is natural-key uniques (an idempotency key, a mutation id) — the
+        -- ones where tenant B is blocked by tenant A's value.
         -- (No backticks in this template literal: one terminates the string. Cost 2 debugs.)
         and not x.indisprimary
         -- Partition children inherit their parent's keys; the parent is checked once.
@@ -160,7 +224,9 @@ export async function runTableTenancyScan(adminUrl: string) {
         and not exists (select 1 from pg_attribute a
                         where a.attrelid = c.oid and a.attname = 'tenant_id'
                           and a.attnum = x.indkey[0])`;
-    const offendingUniques = globalUniques.filter((u) => !(u.index_name in GLOBAL_UNIQUES));
+    const offendingUniques = globalUniques.filter(
+      (u) => !Object.hasOwn(GLOBAL_UNIQUES, u.index_name),
+    );
     assert(
       offendingUniques.length === 0,
       `${offendingUniques.length} UNIQUE key(s) on a tenant table do not lead with tenant_id:\n` +
@@ -168,14 +234,15 @@ export async function runTableTenancyScan(adminUrl: string) {
         '\n\n  A global unique means tenant B cannot use a value tenant A already took —\n' +
         '  cross-tenant information leakage AND a hard collision. Make it\n' +
         '  `unique (tenant_id, …)`, or add the index name to GLOBAL_UNIQUES in this file\n' +
-        '  WITH THE REASON it is deliberately global. See migration 0003.',
+        '  WITH THE REASON it is deliberately global.',
     );
 
-    const globals = tables.filter((t) => t in GLOBAL_TABLES).length;
+    const unreachable = tables.filter((t) => Object.hasOwn(GLOBAL_TABLES, t)).length;
+    const tenantScoped = tables.length - unreachable - readable;
     console.log(
-      `table tenancy scan OK — ${tables.length} base tables: ${tables.length - globals} ` +
-        `tenant-scoped, ${globals} justified global; every unique key on a tenant table ` +
-        'leads with tenant_id',
+      `table tenancy scan OK — ${tables.length} base tables: ${tenantScoped} tenant-scoped, ` +
+        `${unreachable} unreachable global, ${readable} readable global (SELECT only, no RLS); ` +
+        'every unique key on a tenant table leads with tenant_id',
     );
   } finally {
     await sql.end();

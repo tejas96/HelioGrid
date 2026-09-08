@@ -106,23 +106,22 @@ export async function runEnumParity(adminUrl: string) {
     }
     if (dbEnums.size === 0) {
       /*
-       * This guard exists to catch "you pointed the invariants at an unmigrated database",
-       * which used to be indistinguishable from a passing run. After the
-       * greenfield reset zero enums is the CORRECT state — but only if there are
-       * also zero tables. Enums missing while tables exist is still the original defect.
+       * Zero enums is the correct state of a migrated database whose migrations declare none —
+       * and the original defect when nothing was migrated at all, which used to be
+       * indistinguishable from a passing run. The migration LEDGER tells the two apart, not a
+       * table count: a readable-global table is not an enum, and its presence must not fail
+       * this guard. A missing ledger reads as zero applied migrations.
        */
-      const [tables] = await sql<{ n: number }[]>`
-        select count(*)::int as n from pg_class c
-        join pg_namespace n on n.oid = c.relnamespace
-        where n.nspname = 'public' and c.relkind in ('r', 'p')
-          and c.relname <> 'schema_migrations'`;
+      const [ledger] = await sql<{ n: number }[]>`
+        select count(*)::int as n from schema_migrations`.catch(() => [{ n: 0 }]);
       assert(
-        (tables?.n ?? 0) === 0,
-        `no pg enums in public, but ${tables?.n} table(s) exist — is the database migrated?`,
+        (ledger?.n ?? 0) > 0,
+        'no pg enums in public and no applied migration in schema_migrations — is the ' +
+          'database migrated?',
       );
       console.log(
-        'enum parity VACUOUS — no pg enums and no tables (greenfield). ' +
-          'Contract↔database enum drift is UNCHECKED until the first migration lands.',
+        'enum parity VACUOUS — the applied migrations declare no pg enum yet. ' +
+          'Contract↔database enum drift is UNCHECKED until the first migration that adds one.',
       );
       return;
     }
