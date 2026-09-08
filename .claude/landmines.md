@@ -19,6 +19,7 @@ this file: when the path goes, the row goes.
 | In zsh a bare glob matching nothing aborts the whole command and prints nothing — it reads as "clean". A plain `git ls-files` has the same silence for a NEW file: it lists tracked paths only, so an uncommitted file is invisible to every gate that enumerates with it. | Enumerate with `git ls-files --cached --others --exclude-standard`. | never |
 | `zod` must resolve to ONE 3.25.x instance. Otherwise pnpm gives ts-rest's peer a zod 4 and the typed client silently collapses to `never`. | The pin in every manifest; `sherif` compares them. | a `pnpm.overrides` entry replaces the per-manifest pins |
 | dependency-cruiser resolves a workspace import through the target's `dist/`, so before a build every dist-targeting rule reports clean. | Build before you cruise. `pnpm verify` already does. | never |
+| The db-write hook reads the WHOLE Bash command text, heredocs included: a file written by heredoc that mentions `psql` beside a write word is blocked as if it were a query. | Write such files with the Write tool. | the hook parses command position only |
 
 ## apps/api
 
@@ -52,6 +53,7 @@ this file: when the path goes, the row goes.
 | `pod install` fails with `Unicode Normalization not appropriate for ASCII-8BIT` unless the shell locale is UTF-8. | Prefix `LANG=en_US.UTF-8`. | never |
 | `use_modular_headers!` in the Podfile is required by react-native-firebase. | Keep it. | react-native-firebase goes |
 | Biome `a11y/useValidAriaRole` is OFF for this app on purpose: `AppText`'s `role` is a TYPOGRAPHY role, not an ARIA one, and it fired only on static literals. | Do not re-enable it. Real RN a11y goes through `accessibilityRole`. | `AppText` renames the prop |
+| Port 8081 is Metro's default for EVERY React Native project on this machine, and the preview tool refuses to start over a foreign process on it. | Stop the other project's Metro by hand before mobile QA; never fall back to another port. | Metro moves to a dedicated port |
 | The native splash colour has no generator. Both artifacts were emitted by a deleted package and are FROZEN; a build does not refresh them. | Do not hand-edit. Re-emitting is owed by the mobile slice. | `packages/theme` re-emits them |
 
 ## packages/config

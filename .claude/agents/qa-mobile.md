@@ -36,6 +36,12 @@ never a fail** — wait and re-read. Launch once to pre-warm before the step lis
 legitimately takes ~2× web's wall clock. **RN suspends timers when backgrounded** — a
 countdown step asserts wall-clock behaviour, not interval decrement.
 
+**Write as you go.** The prompt names the run's scratch directory: after EACH step, append its
+verdict object as one line to `verdicts-<platform>.jsonl` there, then move on — a turn cap then
+loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
+`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
+built so far — never a prose summary in its place.
+
 Return ONLY a JSON array, one object per step per platform:
 `{surface:"ios"|"android", step_id, quadrant, verdict, expected, observed, evidence}`.
 
