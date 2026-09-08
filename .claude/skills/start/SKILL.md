@@ -46,6 +46,8 @@ propose the slices in order. A slice that cannot pass its done-when alone is not
 ## 4. Explain, branch, stop
 
 Explain the task to the owner in simple words: what we build, why, and what proves it. Then
+confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
+branch starts), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows — and stop for the go.
 

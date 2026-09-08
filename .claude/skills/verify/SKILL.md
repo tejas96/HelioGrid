@@ -59,7 +59,9 @@ steps per (surface × quadrant) before dispatching; **a zero cell aborts the run
 gap.** Small is fine; lopsided is not.
 
 Each step: `{id, surface, quadrant, actions[], expected, severity_if_failed}`. `expected` must
-be a literal string comparison — if it cannot be written as one, it is not yet a step.
+be a literal string comparison — if it cannot be written as one, it is not yet a step. It states
+what the task's rows or the brief state; where they are silent, the step RECORDS the observed value
+for a ruling and never fails on the planner's guess.
 
 **Severity is decided HERE, never by an executor.** Money, tenancy or provenance → `blocker`.
 
@@ -77,6 +79,10 @@ a workflow through the API route that starts it, and reads the worker log and th
 the outcome. Several surfaces → dispatch in ONE message so they run concurrently; they
 share no state. Order each surface's steps so state flows; relaunch only where a cold start
 IS the test.
+
+Each agent is given the run's scratch directory and appends one verdict line per step to
+`verdicts-<surface>.jsonl` there. Read those files, not only the final message: an agent that hit
+its turn cap has still recorded every step it ran, and only the steps it never reached are open.
 
 A surface returning nothing, unparseable output, or dying is `inconclusive` — never a pass,
 and never the whole run.

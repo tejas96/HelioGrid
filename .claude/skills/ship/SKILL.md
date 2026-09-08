@@ -69,3 +69,8 @@ an earlier commit is not it, and a changed file list needs a new yes. On the yes
 
 End with the generated-with line. Then stop. Never open the PR, never merge, never push to `main`,
 never force-push.
+
+When the PR exists — the owner's, or one the owner told you to open — watch its checks
+(`gh pr checks <n> --watch`) and report the verdict. A red lane is fixed on the same branch before
+the merge, each commit with its own yes; CI runs only on the PR, so this is the first time the
+committed tree is checked whole.
