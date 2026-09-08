@@ -53,6 +53,11 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:40
+msgid "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
+msgstr "यह व्यक्ति कंपनी का एकमात्र EPC Owner है। कंपनी में हमेशा कम से कम एक EPC Owner और टीम का प्रबंधन कर सकने वाला एक व्यक्ति रहना ज़रूरी है।"
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:12
 msgid "This value is too large."
 msgstr "यह मान बहुत बड़ा है।"

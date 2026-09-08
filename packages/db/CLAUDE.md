@@ -1,8 +1,9 @@
 # @heliogrid/db — append-only, tenant-scoped, fail-closed
 
 > `0001` is the market pack, readable global reference data with no foreign key out; `0002` the
-> identity spine that carries the market key. The next is the invitation table (`T-M01-028`,
-> `0003`): read its Data model block in `docs/tasks/M01-onboarding.md` before authoring it.
+> identity spine that carries the market key; `0003` the grants that open the role-set write path
+> under it. The next is the invitation table (`T-M01-028`, `0004`): read its Data model block in
+> `docs/tasks/M01-onboarding.md` before authoring it.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.

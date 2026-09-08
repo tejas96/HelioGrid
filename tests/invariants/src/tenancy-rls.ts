@@ -205,6 +205,30 @@ export async function runTenancyInvariants(adminUrl: string) {
       assert(updated.length === 0, 'update of tenant B membership affects zero rows');
     });
 
+    // The role-set write path (migration 0003): under tenant A's pin a role row for its own
+    // membership is accepted, and the SAME insert pointed at tenant B is refused by WITH CHECK.
+    // The acceptance comes first, so a missing grant cannot pass as a policy refusal.
+    await sql.begin(async (tx) => {
+      await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+      await tx`set local role app_user`;
+      const inserted =
+        await tx`insert into membership_role (id, tenant_id, membership_id, role_preset)
+        values (${randomUUID()}, ${tenantA}, ${membershipA}, 'sales_manager') returning id`;
+      assert(inserted.length === 1, 'membership_role: own-tenant insert accepted under RLS');
+      const removed =
+        await tx`delete from membership_role where tenant_id = ${tenantB} returning id`;
+      assert(removed.length === 0, 'membership_role: a delete aimed at tenant B touches zero rows');
+    });
+    await expectFail(
+      sql.begin(async (tx) => {
+        await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+        await tx`set local role app_user`;
+        await tx`insert into membership_role (id, tenant_id, membership_id, role_preset)
+          values (${randomUUID()}, ${tenantB}, ${membershipB}, 'sales_manager')`;
+      }),
+      'inserting a tenant B role row from tenant A session must fail',
+    );
+
     // Fail closed: no app.tenant_id set → zero rows everywhere, the armed tables included
     await sql.begin(async (tx) => {
       await tx`set local role app_user`;

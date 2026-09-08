@@ -1,4 +1,4 @@
-import type { BaseErrorCode } from '@heliogrid/contracts';
+import type { BaseErrorCode, TenantErrorCode } from '@heliogrid/contracts';
 
 /**
  * The ONE definition of base error-code copy (foundation-dx spec §3.2), swept by the
@@ -31,15 +31,29 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
   INTERNAL: /*i18n*/ { id: 'Something went wrong on our side. Try again.' },
 };
 
+/**
+ * Route codes that carry user-facing words — the guard-rail explanations F2 §F2.3 translates.
+ * A `Record` over each contract's own code enum, so a route code without copy fails compile
+ * here, once, for both platforms.
+ */
+const ROUTE_COPY: Record<TenantErrorCode, { id: string }> = {
+  LAST_OWNER: /*i18n*/ {
+    id: 'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
+  },
+};
+
 export interface ApiErrorLike {
   code: string;
   message: string;
   requestId?: string;
 }
 
-/** Catalog id for a known base code; undefined → render `error.message` (route-specific). */
+/** Catalog id for a code this package has words for — base or route; undefined → render `error.message`. */
 export function apiErrorMessageId(code: string): string | undefined {
-  return (COPY as Partial<Record<string, { id: string }>>)[code]?.id;
+  return (
+    (COPY as Partial<Record<string, { id: string }>>)[code]?.id ??
+    (ROUTE_COPY as Partial<Record<string, { id: string }>>)[code]?.id
+  );
 }
 
 /** Support-reference suffix — INTERNAL failures carry the trace id into the ticket. */

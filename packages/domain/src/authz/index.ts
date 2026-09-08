@@ -6,6 +6,8 @@
  * requires ONE deny-by-default guard over exactly this, so that a new role is never a
  * repo-wide sweep of `if role === …`.
  */
+
+export { acceptsAdministration, keepsControl } from './administration';
 export type { Capability } from './capabilities';
 export { CAPABILITY_MATRIX } from './capabilities';
 export type {
