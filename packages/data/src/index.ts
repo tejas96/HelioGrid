@@ -10,6 +10,7 @@
  * factory would hand apps back the raw wire that the `apps-never-touch-the-wire` gate exists
  * to keep away from them.
  */
+export type { AuthRepository } from './auth/repository';
 export { queryKeys } from './cache/keys';
 export type { DataLayer, DataLayerConfig, Repositories } from './data-layer';
 export { createDataLayer } from './data-layer';
@@ -24,12 +25,17 @@ export {
   UnauthorizedError,
 } from './errors/errors';
 export type { HealthRepository } from './health/repository';
+export type { HeldWork, HeldWorkSummary } from './session/held-work';
+export { NO_HELD_WORK } from './session/held-work';
 export type {
   OtpResult,
+  PendingSwitch,
   SessionApi,
   SessionSnapshot,
   SessionStatus,
   SessionStore,
   SessionUser,
 } from './session/types';
+export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';
+export type { UserRepository } from './user/repository';

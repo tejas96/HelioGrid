@@ -14,6 +14,7 @@ Traps: `.claude/landmines.md` · what holds a rule: `mechanisms.md` · deps:
 
 ```
 src/{config,common,modules,scripts}
+src/common/auth/    the guard, the route-access map, the cookies, the session context
 src/modules/<m>/    <m>.module|public|controller|service|repository.ts · tokens.ts · internal/
 src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
 ```
@@ -58,8 +59,15 @@ curl localhost:8084/health                               # liveness · /health/r
   CONTRACT from `@heliogrid/contracts/workflows`; the gateway derives the id from it. `start()`
   is idempotent by construction, which is not a licence to dual-write: the durable handoff is an
   outbox row in the SAME transaction (`forward-compat.md`, orchestration handoff).
-- **NO GUARD EXISTS — every route ships public** (`M15`). A new controller is unauthenticated and
-  nothing warns you. Restoring the guard is the auth module's job, not a local fix.
+- **Every controller declares its routes' access with `RouteAccessMap`**, beside `@TsRestHandler`:
+  `public`, `session-cookie`, `session`, `member` or `{ capability }`. The map is typed against the
+  router, so a route the contract gains fails to compile until it says what it needs, and the
+  guard denies a route with no entry — silence is denial (`M15`). Never an inline role test: the
+  capability is domain's. The session a handler needs is `sessionOf(req)`; cookies are set through
+  `responseOf(req)`, never an injected `@Res()`.
+- **In development the sign-in code is written to the log** (`OTP for +91…`), because the
+  delivery port is bound to the development adapter; the SMS adapter replaces it and the
+  development one refuses to run in production.
 - List endpoints: `orderBy(<sort key> DESC, id DESC)`, limit/offset from `paginationQuerySchema`,
   `totalCount` counted with the SAME `where` — never a divergent count query.
 

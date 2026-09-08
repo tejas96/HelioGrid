@@ -1,5 +1,12 @@
-import { rolePresetSchema, uiLanguageSchema, unitsPrefSchema } from '@heliogrid/contracts';
-import { TENANT_SEGMENTS } from '@heliogrid/domain';
+import {
+  measurementSystemSchema,
+  membershipStatusSchema,
+  otpChannelSchema,
+  platformKindSchema,
+  rolePresetSchema,
+  tenantSegmentSchema,
+  uiLanguageSchema,
+} from '@heliogrid/contracts';
 import postgres from 'postgres';
 
 /**
@@ -17,14 +24,19 @@ import postgres from 'postgres';
 
 /** pg enum type name → the contract schema whose values it must match, exactly. */
 const MAPPED: Record<string, { options: readonly string[]; contract: string }> = {
-  tenant_segment: { options: TENANT_SEGMENTS, contract: 'TENANT_SEGMENTS (@heliogrid/domain)' },
+  tenant_segment: { options: tenantSegmentSchema.options, contract: 'tenantSegmentSchema' },
   ui_language: { options: uiLanguageSchema.options, contract: 'uiLanguageSchema' },
-  unit_pref: { options: unitsPrefSchema.options, contract: 'unitsPrefSchema' },
+  measurement_system: {
+    options: measurementSystemSchema.options,
+    contract: 'measurementSystemSchema',
+  },
   role_preset: { options: rolePresetSchema.options, contract: 'rolePresetSchema' },
-  // tenant_status, user_status and invite_status were mapped to contract enums that the
-  // auth teardown deleted. The pg enums go with the greenfield reset,
-  // so there is nothing on EITHER side to compare; the rebuild re-authors both halves and
-  // re-adds the rows here. Leaving stale entries would fail on a database that is correct.
+  membership_status: {
+    options: membershipStatusSchema.options,
+    contract: 'membershipStatusSchema',
+  },
+  platform_kind: { options: platformKindSchema.options, contract: 'platformKindSchema' },
+  otp_channel: { options: otpChannelSchema.options, contract: 'otpChannelSchema' },
 };
 
 /**

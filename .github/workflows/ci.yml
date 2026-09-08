@@ -99,9 +99,9 @@ jobs:
     env:
       DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
       DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
-      # No auth secret is set here: apps/api's env
-      # schema no longer declares one, and Turborepo strict env mode would flag an undeclared
-      # variable. The auth module re-adds both the variable and the CI value together.
+      # A CI-only signing secret for the api's token; nothing outside this workflow ever
+      # verifies a token signed with it. Declared in turbo.json's `env` list where a task reads it.
+      AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
     steps:
       - uses: actions/checkout@v4
         with:

@@ -29,6 +29,7 @@ this file: when the path goes, the row goes.
 | `redact` reaches structured fields only — `req.query.phone` is censored while the same value inside the raw `req.url` string is not. | `logging.ts` strips the query string from the logged URL. A new PII field needs a path there. | never |
 | A ts-rest `RequestValidationError` carries the submitted data, and some Zod issue codes include the VALUE. | `logging.ts` serialises errors through an ALLOWLIST. Never turn it into a denylist. | never |
 | `flyctl deploy` needs the workspace lockfile. | Build from the repo root. | never |
+| `@Res({ passthrough: true })` on a `@TsRestHandler` method marks the response handled, so the handler's returned body never leaves the process: the request hangs with no error. | Read the paired response off the request — `responseOf(req)` in `common/auth/cookies.ts`. | ts-rest's Nest handler honours passthrough |
 
 ## apps/web
 

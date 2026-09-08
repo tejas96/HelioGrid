@@ -10,10 +10,9 @@ import { rolePresetSchema, uuidSchema } from './common';
  * type is where the two are joined, once, at the boundary — so a provider upgrade is a
  * mapping change in one adapter rather than a sweep through every handler.
  *
- * STATUS: contract-only. No handler, guard or table exists yet — the M01 slice lands those.
- * It is authored first on purpose: the roadmap sequences requirements → contract → schema →
- * implementation, and a projection invented alongside its first consumer is a projection
- * shaped by that consumer.
+ * Authored before its first consumer on purpose: the roadmap sequences requirements → contract
+ * → schema → implementation, and a projection invented alongside its first handler is a
+ * projection shaped by that handler. `T-M01-025` lands the guard, the resolver and the tables.
  */
 
 /**
@@ -67,7 +66,25 @@ export type SessionExpiry = z.infer<typeof sessionExpirySchema>;
 
 export const sessionProjectionSchema = z.object({
   actor: actorSchema,
-  membership: membershipSchema,
+  /**
+   * `null` for a verified account with no company yet — the abandoned signup that resumes at
+   * the company step (`M01-10`). Every tenant-scoped route refuses such a session; the signup
+   * and profile routes are exactly the ones that accept it.
+   */
+  membership: membershipSchema.nullable(),
   expiry: sessionExpirySchema,
 });
 export type SessionProjection = z.infer<typeof sessionProjectionSchema>;
+
+/**
+ * What the API token carries, and NOTHING more (`M01-07`): who, which session, and the
+ * membership acted under. The guard compares `membership.authorizationVersion` to the row on
+ * every call, so a token is never trusted for its remaining life. `exp` is the JWT's own claim
+ * and is not restated here.
+ */
+export const sessionClaimsSchema = z.object({
+  sub: uuidSchema,
+  sid: uuidSchema,
+  membership: membershipSchema.nullable(),
+});
+export type SessionClaims = z.infer<typeof sessionClaimsSchema>;

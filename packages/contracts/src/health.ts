@@ -1,6 +1,6 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { errorEnvelope } from './error';
+import { baseError, errorEnvelope } from './error';
 
 const c = initContract();
 
@@ -34,7 +34,7 @@ export const healthContract = c.router({
         status: z.literal('ok'),
         checks: z.record(z.enum(['ok', 'skipped', 'failed'])),
       }),
-      503: errorEnvelope(z.literal('INTERNAL')),
+      503: errorEnvelope(baseError('INTERNAL')),
     },
   },
 });

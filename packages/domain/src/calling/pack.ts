@@ -1,3 +1,4 @@
+import type { PackLabel } from '../format/languages';
 import { type ClockTime, clockTime } from './clock-time';
 
 /**
@@ -143,6 +144,12 @@ export interface MessagingRuleset {
   readonly scheduledSendHour: TenantDefault<ClockTime>;
   /** `F1-38` — what must be registered before a send is carried. A FLOOR; `null` where the market demands none. */
   readonly senderRegistration: Floor<SenderRegistration | null>;
+  /**
+   * `M01-06` — the sign-in code message, per language, with `{code}` where the code goes. The
+   * text a market registers with its sender platform, so it is pack data and a change is a pack
+   * revision: the product name stays untranslated, and every language carries the never-call line.
+   */
+  readonly otpMessage: PackLabel;
 }
 
 export interface CallingRulesPack {
@@ -198,5 +205,11 @@ export const IN_CALLING_RULES: CallingRulesPack = {
      * which is the market fact. Registration is a third-party clock gating activation, not scope.
      */
     senderRegistration: floor({ platform: 'DLT', levels: ['entity', 'header', 'template'] }),
+    /** `M01-06` — the product name, the code, the never-call line; nothing else, in every language. */
+    otpMessage: {
+      en: 'HelioGrid: your sign-in code is {code}. We never call to ask for this code.',
+      hi: 'HelioGrid: आपका साइन-इन कोड {code} है। हम यह कोड पूछने के लिए कभी कॉल नहीं करते।',
+      mr: 'HelioGrid: तुमचा साइन-इन कोड {code} आहे. हा कोड विचारण्यासाठी आम्ही कधीही कॉल करत नाही.',
+    },
   },
 };

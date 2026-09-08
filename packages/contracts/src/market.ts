@@ -1,7 +1,7 @@
 import { TENANT_READABLE_KEYS, type TenantReadableKey } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { errorEnvelope } from './error';
+import { baseError, errorEnvelope } from './error';
 
 const c = initContract();
 
@@ -51,7 +51,7 @@ export const marketPackContract = c.router({
     summary: 'The current published version of one market pack, without the price book',
     responses: {
       200: marketPackReadSchema,
-      404: errorEnvelope(z.literal('NOT_FOUND')),
+      404: errorEnvelope(baseError('NOT_FOUND')),
     },
   },
 });

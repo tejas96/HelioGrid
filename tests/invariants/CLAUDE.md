@@ -26,9 +26,9 @@ pnpm turbo test                              # the same, through the gate
 - **A skipped invariant that reports success is worse than no invariant.** `run.ts` skips loudly
   without `DATABASE_URL` and fails closed under CI. A green local `pnpm verify` on a machine with
   no database has NOT proven tenancy.
-- **Vacuity is not a pass.** A db-backed invariant with nothing to compare says so explicitly.
-  Read the output, not the exit code: tenancy (`M13`), enum parity (`M17`) and tenant-id-in-body
-  (`M14`) report VACUOUS until a tenant table, a pgEnum and a body schema exist.
+- **Vacuity is not a pass.** A db-backed invariant with nothing to compare says so explicitly,
+  and a reset store makes them say it again. Read the output, not the exit code: the summary
+  lines name what was exercised, and "OK" over zero rows is what they are written to refuse.
 - **Static invariants run before the `DATABASE_URL` check**, so they never skip.
   `tenant-id-in-body` is the pattern: anything provable without a database goes above that early
   return.

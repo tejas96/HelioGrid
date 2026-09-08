@@ -30,15 +30,9 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 
 ## 2. Authentication
 
-> **STATUS 2026-08-01: none of this section is built.** Auth was removed to greenfield on an
-> owner ruling — the api module, the session guard, the auth contract
-> and the identity tables are all gone, every API route is currently unauthenticated, and
-> both login screens run on a walkthrough stub. What follows is the DESIGN the rebuild
-> implements, not a description of the running system. Read it as the target; read> for what must be restored and in what order.
-
-**No authentication is installed.** `apps/api` ships no guard and every route is
-unauthenticated today. The auth module authors the session model, the token format and the OTP
-verification path. This document states only the constraints that bind whatever it picks.
+> Built by `T-M01-025` (`docs/tasks/M01-onboarding.md`): server-side session rows, a ten-minute
+> HS256 token, phone-OTP, and the deny-by-default guard. That task's docs describe the running
+> system; this section states only the constraints that bound it.
 
 ### Constraints on the auth rebuild
 
@@ -50,7 +44,7 @@ verification path. This document states only the constraints that bind whatever 
   payload and nothing more:
 
 ```json
-{ "sub": "<user_id>", "tenant_id": "<uuid>", "roles": ["sales_rep","surveyor"], "exp": ... }
+{ "sub": "<user_id>", "sid": "<session_id>", "membership": { "tenantId": "<uuid>", "roles": ["sales_rep","surveyor"], "authorizationVersion": 3 }, "exp": ... }
 ```
 
 - **Customer links never touch it.** They are separate stateless HMAC-signed grants; the
@@ -71,7 +65,7 @@ lead time gates OTP SMS at launch.
 JWT claims — the entire authz payload, nothing more:
 
 ```json
-{ "sub": "<user_id>", "tenant_id": "<uuid>", "roles": ["sales_rep","surveyor"], "exp": ... }
+{ "sub": "<user_id>", "sid": "<session_id>", "membership": { "tenantId": "<uuid>", "roles": ["sales_rep","surveyor"], "authorizationVersion": 3 }, "exp": ... }
 ```
 
 Sessions are server-side rows → deactivating a user (or "sign out everywhere") kills every device inside one JWT TTL (≤10 min).
@@ -102,7 +96,7 @@ Rules (all product law, enforced in code):
 - **Always ≥1 Owner**; always ≥1 person with Manage team. Both enforced as guarded transitions, not UI-only.
 - Mid-task permission loss: current in-flight action completes; restriction applies from the next action (no mid-flight 403 storms).
 
-Implementation: `@Capability('proposals.edit')` decorator → NestJS `CapabilityGuard` reads `roles[]` from the verified JWT and evaluates against a static preset→capability map in `packages/domain` (pure TS, injected — testable without Nest). Lead-visibility scoping is applied in the repository layer as a mandatory query predicate (`All`/`Team`/`Own`/`Assigned`), never in the client.
+Implementation: the controller's `RouteAccessMap` names the capability — `{ capability: 'proposals.edit' }` — and the `SessionGuard` (`APP_GUARD`) evaluates it through `can` in `packages/domain` (pure TS — testable without Nest). Lead-visibility scoping is applied in the repository layer as a mandatory query predicate (`All`/`Team`/`Own`/`Assigned`), never in the client.
 
 ---
 
@@ -110,7 +104,7 @@ Implementation: `@Capability('proposals.edit')` decorator → NestJS `Capability
 
 Single DB, shared schema, `tenant_id` on every tenant-owned row (BLUEPRINT §Data layer). No layer trusts the one above it.
 
-**Layer 1 — request guard.** `TenantContextGuard` extracts `tenant_id` from the verified JWT and binds it to request-scoped context (AsyncLocalStorage). No handler ever reads tenant from params/body.
+**Layer 1 — request guard.** `SessionGuard` verifies the token, checks the session row is live, and attaches the admitted session to the request; the tenant is the membership's. No handler ever reads tenant from params/body.
 
 **Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
 
@@ -121,8 +115,8 @@ ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE leads FORCE ROW LEVEL SECURITY;   -- table owner does NOT bypass
 
 CREATE POLICY tenant_isolation ON leads
-  USING      (tenant_id = current_setting('app.tenant_id')::uuid)
-  WITH CHECK (tenant_id = current_setting('app.tenant_id')::uuid);
+  USING      (tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid)
+  WITH CHECK (tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid);
 ```
 
 Per request, inside the transaction the repository layer opens:

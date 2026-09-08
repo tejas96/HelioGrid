@@ -12,12 +12,19 @@ import type { SessionProjection } from '../session';
  * actor in this product. A route that genuinely needs no session is marked public explicitly;
  * silence is denial.
  *
- * STATUS: no implementation and no consumer yet. The M01 slice lands the guard, the resolver
- * and the tables together.
+ * `T-M01-025` lands the guard, the resolver and the tables together.
  */
+
+/** What resolving a request yields: the projection every screen sees, and WHICH session it is. */
+export interface ResolvedSession {
+  readonly session: SessionProjection;
+  /** The session row's id — what a sign-out revokes and a company signup binds. Never a secret. */
+  readonly sessionId: string;
+}
+
 export interface SessionResolver {
   /** Resolve the CURRENT request's session. Implementations must not cache across requests. */
-  resolve(request: unknown): Promise<SessionProjection | null>;
+  resolve(request: unknown): Promise<ResolvedSession | null>;
 }
 
 /**

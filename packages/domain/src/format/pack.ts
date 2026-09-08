@@ -43,7 +43,12 @@ export interface PhoneFormats {
   readonly nsnLength: number;
 }
 
-export type MeasurementSystem = 'metric' | 'imperial';
+/**
+ * The two systems a reader may see lengths in (`F1-50`). A readonly tuple, so contracts derives
+ * its `z.enum` and the migration mirrors the pgEnum for a person's preference from this one list.
+ */
+export const MEASUREMENT_SYSTEMS = ['metric', 'imperial'] as const;
+export type MeasurementSystem = (typeof MEASUREMENT_SYSTEMS)[number];
 
 export interface FormatPack {
   /** The market's code (`market/code.ts`), never a label (`F1-09`). */

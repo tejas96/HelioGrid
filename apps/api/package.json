@@ -24,6 +24,7 @@
     "@ts-rest/nest": "3.52.1",
     "drizzle-orm": "0.44.7",
     "express": "5.2.1",
+    "jose": "6.2.12",
     "nestjs-pino": "4.6.1",
     "pino": "9.14.0",
     "pino-http": "11.0.0",

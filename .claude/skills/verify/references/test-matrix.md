@@ -8,6 +8,19 @@ handing off, and a zero cell aborts the run naming the gap.
 > this matrix use +91 phones, Devanagari strings and paisa-level reconciliation; a future
 > market's runs derive the equivalents (phone spec, scripts, minor unit) from its pack.
 
+## Signing in during a run
+
+**Signing in during a run (the development sign-in path).** No SMS is sent locally. Request a
+code for ANY `+91` ten-digit number — `POST /auth/otp/request` with `{"phoneE164": "+919845027746",
+"channel": "sms"}` — and read the code from the API's log: the line `OTP for +91… via sms: …
+code is 123456` (`preview_logs` with search `OTP for` when the api runs in the preview, else its
+stdout). Verify with `POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API
+sets two HttpOnly cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the
+ten-minute API token); with curl keep a jar (`-c jar -b jar`). A first-time number has no company:
+`POST /tenants` with `{"companyName", "ownerName", "city"}` creates one and rotates the token.
+Three requests per fifteen minutes and eight per day per number are the real caps — use a fresh
+number rather than waiting one out.
+
 ## Quadrant 1 — happy path (does it do the job?)
 
 - The complete designed flow, start to finish, with valid input and no interference.
@@ -108,7 +121,8 @@ Every run includes at least one step for each:
 - Tenancy isolation — a cross-tenant read returns 404.
 - Money reconciliation — BOM ↔ proposal ↔ tranches agree to the minor unit of the tenant's
   currency (paisa for IN).
-- Auth — an unauthenticated request to a protected route is rejected.
+- Auth — an unauthenticated request to a protected route is rejected (401), and a session with
+  no company is refused a tenant-scoped route (403).
 
 ## Evidence standard
 

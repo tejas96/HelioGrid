@@ -13,18 +13,24 @@ import postgres from 'postgres';
  */
 
 /**
- * Tables that are genuinely global AND unreachable by any RLS-subject role. Each needs a WRITTEN
- * reason — a silent entry here is indistinguishable from a table that slipped through.
- *
- * HelioGrid owns the account, tenant, membership, role, invitation and session tables, so
- * none of them belongs here except the tenant registry itself. A wrapped identity library
- * owns ONLY its own tables under its own migrator; those enter this list by their real names,
- * with a reason, in the change that lands them — never before, because an exemption written
- * for a library that has not landed would let a HelioGrid table of the same name land under
- * it unread.
+ * Platform tables: genuinely global, and either UNREACHABLE by any RLS-subject role or ARMED —
+ * RLS enabled and forced with a canonical policy, which `rls-armed.ts` proves. Each needs a
+ * WRITTEN reason — a silent entry here is indistinguishable from a table that slipped through.
+ * The reachability check below skips an armed table, because its policy is what confines it.
  */
 const GLOBAL_TABLES: Record<string, string> = {
-  tenants: 'the tenant registry itself — RLS restricts it to the caller’s own row',
+  tenant:
+    'the tenant registry itself — ARMED: RLS restricts it to the caller’s own row; a new tenant ' +
+    'is written on the admin path only, because signup crosses tenancy (T-M01-025)',
+  user_account:
+    'the global platform account, keyed by phone — ARMED: RLS shows a row only to a tenant ' +
+    'that holds a membership on it; every write runs on the admin path (T-M01-025)',
+  otp_challenge:
+    'a sign-in code keyed to a phone before any account exists — unreachable, the admin path ' +
+    'alone reads and writes it (T-M01-025)',
+  session:
+    'a device session, the refresh grant — unreachable, the admin path alone; the token every ' +
+    'call carries is verified, never looked up (T-M01-025)',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 };
 
@@ -174,10 +180,9 @@ export async function runTableTenancyScan(adminUrl: string) {
     }
 
     // A GLOBAL_TABLES entry exempts a table from tenancy; it must therefore be UNREACHABLE by
-    // the RLS-subject roles, or the exemption is just a hole with a comment on it. A wrapped
-    // identity library's tables have RLS off and zero policies by design (they are keyed by
-    // its own identity model) — what makes that safe is that app_user cannot touch them, and
-    // this asserts it. Armed tables are exempt from this rule: `tenants` protects itself.
+    // the RLS-subject roles, or the exemption is just a hole with a comment on it. An ARMED
+    // table is exempt from this rule — `tenant` and `user_account` protect themselves, and
+    // tenancy-rls.ts proves their policies are the canonical ones.
     const reachableGlobals = await sql<{ table_name: string; grantee: string }[]>`
       select c.relname as table_name, sub.rolname as grantee
       from pg_class c
@@ -237,12 +242,17 @@ export async function runTableTenancyScan(adminUrl: string) {
         '  WITH THE REASON it is deliberately global.',
     );
 
-    const unreachable = tables.filter((t) => Object.hasOwn(GLOBAL_TABLES, t)).length;
-    const tenantScoped = tables.length - unreachable - readable;
+    // An armed platform table carries RLS; the rest of GLOBAL_TABLES is unreachable.
+    const [armedRow] = await sql<{ n: number }[]>`
+      select count(*)::int as n from pg_class c
+      where c.relname = any(${Object.keys(GLOBAL_TABLES)}) and c.relrowsecurity`;
+    const armed = armedRow?.n ?? 0;
+    const unreachable = tables.filter((t) => Object.hasOwn(GLOBAL_TABLES, t)).length - armed;
+    const tenantScoped = tables.length - unreachable - armed - readable;
     console.log(
       `table tenancy scan OK — ${tables.length} base tables: ${tenantScoped} tenant-scoped, ` +
-        `${unreachable} unreachable global, ${readable} readable global (SELECT only, no RLS); ` +
-        'every unique key on a tenant table leads with tenant_id',
+        `${armed} armed platform, ${unreachable} unreachable global, ${readable} readable ` +
+        'global (SELECT only, no RLS); every unique key on a tenant table leads with tenant_id',
     );
   } finally {
     await sql.end();

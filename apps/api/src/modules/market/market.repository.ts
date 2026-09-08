@@ -1,4 +1,4 @@
-import { type Db, marketPackVersion } from '@heliogrid/db';
+import { type Db, marketPack, marketPackVersion } from '@heliogrid/db';
 import type { PackEnvelope } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
@@ -13,6 +13,12 @@ import { RUNTIME_DB } from '../../common/db/runtime.token';
 export class MarketPackRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+
+  /** Every authored market's code — the list a phone's dial code is resolved against. */
+  async marketCodes(): Promise<string[]> {
+    const rows = await this.db.select({ marketCode: marketPack.marketCode }).from(marketPack);
+    return rows.map((row) => row.marketCode);
+  }
 
   /**
    * The market's current revision, or null for a market with none. Ordered by the revision the

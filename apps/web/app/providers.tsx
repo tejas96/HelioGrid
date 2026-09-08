@@ -23,9 +23,9 @@ export function Providers({ children }: { children: ReactNode }) {
    * Built PER MOUNT, never at module scope. The session store holds mutable state in a
    * closure, and Next evaluates this module on the SERVER too, where module scope is
    * shared across every request — one visitor's session would be readable by the next.
-   * Harmless while the walkthrough stub starts anonymous; a live identity leak the moment
-   * a real SessionStore lands behind the same interface. Same reason DataProvider builds
-   * its QueryClient in a useState initialiser.
+   * A module-scope store would be a live identity leak, because the store asks the server
+   * who the cookies belong to. Same reason DataProvider builds its QueryClient in a useState
+   * initialiser.
    *
    * The i18n runtime is here for the SAME reason and used to be the counter-example: a
    * module-level `setupI18n('en')` meant one shared, mutable active locale for every
