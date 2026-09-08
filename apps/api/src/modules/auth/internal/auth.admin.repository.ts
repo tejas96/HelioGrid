@@ -167,6 +167,20 @@ export class AuthAdminRepository {
       .where(and(eq(session.userAccountId, userAccountId), isNull(session.revokedAt)));
   }
 
+  /** Every live session of one account acting under one company — what a deactivation ends (`F2-20`). */
+  async revokeSessionsUnder(userAccountId: string, tenantId: string, at: number): Promise<void> {
+    await this.db
+      .update(session)
+      .set({ revokedAt: new Date(at) })
+      .where(
+        and(
+          eq(session.userAccountId, userAccountId),
+          eq(session.activeTenantId, tenantId),
+          isNull(session.revokedAt),
+        ),
+      );
+  }
+
   /** The membership an account holds in one tenant, with its presets; null when it holds none. */
   async membership(userAccountId: string, tenantId: string): Promise<MembershipRow | null> {
     const [row] = await this.db

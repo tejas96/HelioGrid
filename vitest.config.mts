@@ -18,6 +18,22 @@ const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
  * list — all three in both places, because a hook and its backstop that disagree are worse
  * than either alone.
  */
+/*
+ * `.env.local` reaches the tests, exactly as it reaches the invariants (whose runner passes
+ * `--env-file-if-exists`). A test needing the local database — the role-administration
+ * transitions are the first — would otherwise SKIP on every developer machine and run only in
+ * CI, which is the "a skipped proof reports success" trap this repo refuses. Node's own loader,
+ * so no dependency and no second dotenv parser; absent, CI's real variables stand as they are.
+ */
+try {
+  process.loadEnvFile('.env.local');
+} catch (error) {
+  // No local file is the ordinary case — CI supplies the variables directly, and a machine with
+  // neither skips loudly. Anything else (an unreadable or malformed file) is a real problem and
+  // must not be swallowed: a silently ignored env file is how a proof stops running unnoticed.
+  if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+}
+
 export default defineConfig({
   /*
    * The transform is given its compiler options INLINE rather than reading the package's

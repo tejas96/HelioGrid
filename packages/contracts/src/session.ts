@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { rolePresetSchema, uuidSchema } from './common';
+import { roleSetSchema, uuidSchema } from './common';
 
 /**
  * The HelioGrid session PROJECTION — the shape every guard, repository, screen and contract
@@ -39,7 +39,7 @@ export type Actor = z.infer<typeof actorSchema>;
 export const membershipSchema = z.object({
   tenantId: uuidSchema,
   /** Every preset held in THIS tenant. Stacking is the design (F2-10); OR is the check (F2-11). */
-  roles: z.array(rolePresetSchema).min(1),
+  roles: roleSetSchema,
   /**
    * Bumped whenever anything that changes what this person may do changes — a role granted or
    * removed, membership suspended, tenant switched, session revoked.

@@ -1,4 +1,5 @@
 import type {
+  AssignRoles,
   CreateTenant,
   Member,
   Paginated,
@@ -7,24 +8,30 @@ import type {
   Tenant,
 } from '@heliogrid/contracts';
 import { marketOfPhone } from '@heliogrid/domain';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
-import { type MemberRow, TenantRepository } from './tenant.repository';
+import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
 
 /**
- * Company signup and the tenant reads (`M01-01`, `M01-19`). The server assigns market and
- * currency from the owner's phone and the market's pack (`F1-07`); nothing about the company
- * beyond the three signup fields is stored here.
+ * Company signup, the tenant reads and role administration (`M01-01`, `M01-19`, `M01-20`). The
+ * server assigns market and currency from the owner's phone and the market's pack (`F1-07`);
+ * nothing about the company beyond the three signup fields is stored here.
  */
 @Injectable()
 export class TenantService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
-    @Inject(TenantAdminRepository) private readonly writes: TenantAdminRepository,
-    @Inject(TenantRepository) private readonly reads: TenantRepository,
+    @Inject(TenantAdminRepository) private readonly crossTenant: TenantAdminRepository,
+    @Inject(TenantRepository) private readonly scoped: TenantRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(AuthService) private readonly auth: AuthService,
   ) {}
@@ -43,7 +50,7 @@ export class TenantService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    const created = await this.writes.createWithOwner({
+    const created = await this.crossTenant.createWithOwner({
       companyName: body.companyName,
       city: body.city,
       marketCode: pack.market,
@@ -58,12 +65,12 @@ export class TenantService {
   }
 
   async me(tenantId: string): Promise<Tenant | null> {
-    const row = await this.reads.me(tenantId);
+    const row = await this.scoped.me(tenantId);
     return row === null ? null : toTenant(row);
   }
 
   async members(tenantId: string, query: PaginationQuery): Promise<Paginated<Member>> {
-    const page = await this.reads.members(tenantId, {
+    const page = await this.scoped.members(tenantId, {
       limit: query.limit,
       offset: (query.page - 1) * query.limit,
     });
@@ -71,8 +78,38 @@ export class TenantService {
   }
 
   async similar(companyName: string, city: string) {
-    const rows = await this.writes.similar(companyName, city);
+    const rows = await this.crossTenant.similar(companyName, city);
     return rows.map((row) => ({ tenantId: row.id, companyName: row.companyName, city: row.city }));
+  }
+
+  /** The presets a person holds, replaced as a whole and guarded (`M01-20`, `F2-19`). */
+  async assignRoles(tenantId: string, membershipId: string, body: AssignRoles): Promise<Member> {
+    return toMember(admitted(await this.scoped.assignRoles(tenantId, membershipId, body.roles)));
+  }
+
+  /** Deactivated, never deleted (`F2-20`): the row flips, then every session under this company ends. */
+  async deactivateMember(tenantId: string, membershipId: string, now: number): Promise<Member> {
+    const member = admitted(await this.scoped.deactivate(tenantId, membershipId));
+    await this.auth.revokeSessionsUnder(tenantId, member.userId, now);
+    return toMember(member);
+  }
+}
+
+/** The row a transition produced, or its refusal as the contract declares it. */
+function admitted(result: TransitionOutcome): MemberRow {
+  switch (result.outcome) {
+    case 'done':
+      return result.member;
+    case 'not-found':
+      throw new NotFoundException('That person is not on this team.');
+    case 'not-active':
+      throw new ConflictException('Only an active person can be changed.');
+    case 'last-owner':
+      throw new ContractException(
+        'LAST_OWNER',
+        'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
   }
 }
 

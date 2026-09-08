@@ -150,8 +150,9 @@ export const tenantMembership = pgTable(
 
 /**
  * One preset stacked onto one membership (`F2-10`, `F2-11`): a person's grants OR across
- * their rows, and stacking is the only way to widen access. The last-Owner and last-Manage-team
- * guards are `T-FPLAT-003`'s transitions over this table. Tenant-scoped, all four always.
+ * their rows, and stacking is the only way to widen access. Rows are replaced only through the
+ * guarded role-set transition, which judges `F2-19` inside the same transaction; migration 0003
+ * grants that path INSERT and DELETE under the policy. Tenant-scoped, all four always.
  */
 export const membershipRole = pgTable(
   'membership_role',

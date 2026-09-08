@@ -25,6 +25,8 @@ export class TenantController {
     me: 'member',
     members: 'member',
     similar: 'session',
+    assignRoles: { capability: 'onboarding.manage_team' },
+    deactivateMember: { capability: 'onboarding.manage_team' },
   })
   handler(@Req() req: Request) {
     const res = responseOf(req);
@@ -51,6 +53,14 @@ export class TenantController {
       similar: async ({ query }) => ({
         status: 200,
         body: { items: await this.tenants.similar(query.companyName, query.city) },
+      }),
+      assignRoles: async ({ params, body }) => ({
+        status: 200,
+        body: await this.tenants.assignRoles(tenantIdOf(req), params.membershipId, body),
+      }),
+      deactivateMember: async ({ params }) => ({
+        status: 200,
+        body: await this.tenants.deactivateMember(tenantIdOf(req), params.membershipId, Date.now()),
       }),
     });
   }

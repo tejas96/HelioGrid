@@ -56,6 +56,14 @@ export type MeasurementSystem = z.infer<typeof measurementSystemSchema>;
 export const rolePresetSchema = z.enum(ROLE_PRESETS);
 export type RolePreset = z.infer<typeof rolePresetSchema>;
 
+/**
+ * The presets a person holds — at least one, always (F2-21): a person with no role signs in and
+ * sees nothing, so the invite, the role-set write and the session projection all refuse the
+ * empty set through this ONE schema. Ending access is a deactivation, never an empty set.
+ */
+export const roleSetSchema = z.array(rolePresetSchema).min(1);
+export type RoleSet = z.infer<typeof roleSetSchema>;
+
 /** What an EPC sells — `TENANT_SEGMENTS` in domain, derived here, mirrored as a pgEnum (`M17`). */
 export const tenantSegmentSchema = z.enum(TENANT_SEGMENTS);
 export type TenantSegment = z.infer<typeof tenantSegmentSchema>;

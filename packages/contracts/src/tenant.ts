@@ -6,6 +6,7 @@ import {
   paginationQuerySchema,
   phoneE164Schema,
   rolePresetSchema,
+  roleSetSchema,
   tenantSegmentSchema,
   uuidSchema,
 } from './common';
@@ -58,6 +59,25 @@ export const memberSchema = z.object({
 });
 export type Member = z.infer<typeof memberSchema>;
 
+/**
+ * The presets a person will hold after the write — the whole set, old → new (`M01-20`), never a
+ * delta. At least one (`roleSetSchema`, F2-21).
+ */
+export const assignRolesSchema = z.object({ roles: roleSetSchema });
+export type AssignRoles = z.infer<typeof assignRolesSchema>;
+
+/**
+ * The refusals only the tenant's guarded transitions raise (F2-19). `LAST_OWNER`: the change
+ * would leave the company without an EPC Owner — and so without anyone who can manage the team,
+ * which in this matrix is the same person. A route code, so the wire carries the reason and the
+ * screen the words (`packages/i18n` keeps copy as a `Record` over this enum).
+ */
+export const tenantErrorCodes = ['LAST_OWNER'] as const;
+export const tenantErrorCodeSchema = z.enum(tenantErrorCodes);
+export type TenantErrorCode = z.infer<typeof tenantErrorCodeSchema>;
+
+const memberParamsSchema = z.object({ membershipId: uuidSchema });
+
 export const similarTenantsQuerySchema = z.object({
   companyName: companyNameSchema,
   city: citySchema,
@@ -71,6 +91,8 @@ export const similarTenantSchema = z.object({
 });
 
 const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
+const forbidden = errorEnvelope(baseError('FORBIDDEN'));
+const notFound = errorEnvelope(baseError('NOT_FOUND'));
 
 export const tenantContract = c.router({
   create: {
@@ -91,7 +113,7 @@ export const tenantContract = c.router({
     responses: {
       200: tenantSchema,
       401: unauthenticated,
-      404: errorEnvelope(baseError('NOT_FOUND')),
+      404: notFound,
     },
   },
   members: {
@@ -103,7 +125,40 @@ export const tenantContract = c.router({
     responses: {
       200: paginated(memberSchema),
       401: unauthenticated,
-      404: errorEnvelope(baseError('NOT_FOUND')),
+      404: notFound,
+    },
+  },
+  assignRoles: {
+    method: 'PUT',
+    path: '/tenants/me/members/:membershipId/roles',
+    pathParams: memberParamsSchema,
+    body: assignRolesSchema,
+    summary:
+      'Replace the presets a person holds, old → new — refused when it would remove the last EPC Owner',
+    responses: {
+      200: memberSchema,
+      401: unauthenticated,
+      403: forbidden,
+      404: notFound,
+      /** Not active: a deactivated person keeps their presets as history, an invited one has not joined. */
+      409: errorEnvelope(baseError('CONFLICT')),
+      422: errorEnvelope(tenantErrorCodeSchema),
+    },
+  },
+  deactivateMember: {
+    method: 'POST',
+    path: '/tenants/me/members/:membershipId/deactivate',
+    pathParams: memberParamsSchema,
+    body: c.noBody(),
+    summary:
+      'End a person’s access — deactivated, never deleted; refused when they are the last EPC Owner',
+    responses: {
+      200: memberSchema,
+      401: unauthenticated,
+      403: forbidden,
+      404: notFound,
+      409: errorEnvelope(baseError('CONFLICT')),
+      422: errorEnvelope(tenantErrorCodeSchema),
     },
   },
   similar: {

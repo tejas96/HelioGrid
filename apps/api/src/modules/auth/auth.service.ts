@@ -79,6 +79,14 @@ export class AuthService {
   }
 
   /**
+   * Every device the person uses in THIS company, in one write; a membership they hold elsewhere
+   * keeps its sessions (`F2-20`). Each token dies with its life, as a sign-out-everywhere's does.
+   */
+  async revokeSessionsUnder(tenantId: string, userId: string, now: number): Promise<void> {
+    await this.store.revokeSessionsUnder(userId, tenantId, now);
+  }
+
+  /**
    * Binds a company to a session — the signup that just created one (`M01-01`) — and mints the
    * token that carries the new membership.
    */
