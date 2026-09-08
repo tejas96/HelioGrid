@@ -19,7 +19,7 @@ export {
   visibilityIn,
 } from './policy';
 export type { CapabilityRowKey, RolePreset } from './roles';
-export { ROLE_PRESETS } from './roles';
+export { FOUNDER_ROLE, ROLE_PRESETS } from './roles';
 export type {
   LadderScope,
   ResolvedVisibility,

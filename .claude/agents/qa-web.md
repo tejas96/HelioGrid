@@ -12,6 +12,10 @@ source; a step you cannot run is `inconclusive`, never a pass.
 
 `preview_start {name: "web"}` (dev server, port 3002), then per step:
 
+**Signing in during a run.** No SMS is sent locally: type any `+91` ten-digit number, then read
+the code from the API's log — `preview_logs` on the api server with search `OTP for` (the line
+`… code is 123456`). The API must be running (`preview_start {name: "api"}` or `api-built`).
+
 1. Perform the actions.
 2. Read the criterion with `read_page` — the accessibility tree, NOT a screenshot. **`expected`
    is a literal string: the tree contains it or the step fails.** "Renders correctly" is not a

@@ -1,4 +1,11 @@
-import { ROLE_PRESETS } from '@heliogrid/domain';
+import {
+  MEASUREMENT_SYSTEMS,
+  MEMBERSHIP_STATUSES,
+  OTP_CHANNELS,
+  PLATFORM_KINDS,
+  ROLE_PRESETS,
+  TENANT_SEGMENTS,
+} from '@heliogrid/domain';
 import { z } from 'zod';
 
 /** Shared conventions every feature contract builds on. */
@@ -31,9 +38,9 @@ export const percentSchema = z
 export const provenanceTierSchema = z.enum(['measured', 'derived', 'estimated', 'assumed']);
 export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
 
-/** Per-USER measurement units preference. */
-export const unitsPrefSchema = z.enum(['m', 'ft']);
-export type UnitsPref = z.infer<typeof unitsPrefSchema>;
+/** Per-USER measurement preference — `MEASUREMENT_SYSTEMS` in domain, derived here, mirrored as a pgEnum (`M17`). */
+export const measurementSystemSchema = z.enum(MEASUREMENT_SYSTEMS);
+export type MeasurementSystem = z.infer<typeof measurementSystemSchema>;
 
 /**
  * The TWELVE preset roles — F2-01. They supersede the retired six-value set, which must
@@ -48,6 +55,22 @@ export type UnitsPref = z.infer<typeof unitsPrefSchema>;
  */
 export const rolePresetSchema = z.enum(ROLE_PRESETS);
 export type RolePreset = z.infer<typeof rolePresetSchema>;
+
+/** What an EPC sells — `TENANT_SEGMENTS` in domain, derived here, mirrored as a pgEnum (`M17`). */
+export const tenantSegmentSchema = z.enum(TENANT_SEGMENTS);
+export type TenantSegment = z.infer<typeof tenantSegmentSchema>;
+
+/** A person's state inside ONE company (`M01-18`) — on the membership, never on the account. */
+export const membershipStatusSchema = z.enum(MEMBERSHIP_STATUSES);
+export type MembershipStatus = z.infer<typeof membershipStatusSchema>;
+
+/** Which platform a session was opened on; the lifetime rules differ (`M01-07`). */
+export const platformKindSchema = z.enum(PLATFORM_KINDS);
+export type PlatformKind = z.infer<typeof platformKindSchema>;
+
+/** How a code is delivered: SMS, or the user-initiated voice call (`M01-03`). */
+export const otpChannelSchema = z.enum(OTP_CHANNELS);
+export type OtpChannel = z.infer<typeof otpChannelSchema>;
 
 /**
  * The customer-journey pipeline status shared by leads, proposals and projects, and by
@@ -111,7 +134,6 @@ export type Paginated<T> = { items: T[]; totalCount: number };
  * backstop). Contracts therefore never declare a tenantId input field on tenant-scoped
  * routes. The rule outlives the auth teardown; it constrains every module still to come.
  *
- * `tenantClaimSchema` and `sessionClaimsSchema` lived here and existed
- * solely for the session guard, which was deleted with auth. The rebuild
- * re-authors them alongside the guard that consumes them.
+ * The token's claims are `sessionClaimsSchema` in `session.ts`, beside the projection the
+ * guard resolves them into; the tenant claim inside them IS `membershipSchema`.
  */

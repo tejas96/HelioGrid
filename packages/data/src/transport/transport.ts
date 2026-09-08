@@ -18,9 +18,13 @@ export type RequestHeaders =
   | Readonly<Record<string, string | readonly string[] | undefined>>;
 
 type TransportConfig =
-  | { mode: 'browser' }
-  | { mode: 'mobile'; storage: TokenStorage }
+  | { mode: 'browser'; baseUrl: string }
+  | { mode: 'mobile'; storage: TokenStorage; baseUrl: string }
   | { mode: 'server'; headers: RequestHeaders };
+
+const UNAUTHENTICATED = 401;
+const OK = 200;
+const AUTH_PATH_PREFIX = '/auth/';
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -146,6 +150,37 @@ async function sendRequest(
 }
 
 /**
+ * The ten-minute API token is renewed from the session cookie (`M01-07`): a 401 on any route
+ * outside `/auth/` is answered by ONE refresh and ONE retry. A refresh that fails leaves the
+ * original 401 to the caller, which is how a screen learns the person is signed out. A server
+ * render never refreshes: it holds no jar and must not rotate a visitor's cookies.
+ */
+async function refreshedOnce(
+  config: TransportConfig,
+  args: ApiFetcherArgs,
+  signal: AbortSignal,
+  first: Awaited<ReturnType<ApiFetcher>>,
+): Promise<Awaited<ReturnType<ApiFetcher>>> {
+  if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
+  if (new URL(args.path).pathname.startsWith(AUTH_PATH_PREFIX)) return first;
+  const refreshed = await sendRequest(
+    config,
+    {
+      ...args,
+      path: `${config.baseUrl}${AUTH_PATH_PREFIX}refresh`,
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ foreground: true }),
+      rawBody: { foreground: true },
+      contentType: 'application/json',
+      validateResponse: false,
+    },
+    signal,
+  );
+  return refreshed.status === OK ? sendRequest(config, args, signal) : first;
+}
+
+/**
  * EVERY request in both apps passes through here. Retry, logging, tracing and token refresh
  * land in THIS function and nowhere else — that is the whole reason this layer exists.
  *
@@ -167,7 +202,8 @@ export function createTransport(config: TransportConfig): ApiFetcher {
 
     const deadline = openRequestDeadline(callerSignal);
     try {
-      return await sendRequest(config, args, deadline.signal);
+      const first = await sendRequest(config, args, deadline.signal);
+      return await refreshedOnce(config, args, deadline.signal, first);
     } catch (error) {
       // ts-rest runs client response validation INSIDE the fetcher, so a contract mismatch
       // surfaces here as a raw ZodError. It is a bad response, not a bad network: pass it

@@ -1,4 +1,6 @@
+import type { OtpChannel, RolePreset } from '@heliogrid/contracts';
 import type { OtpFailure } from '@heliogrid/domain';
+import type { HeldWorkSummary } from './held-work';
 
 export type SessionStatus = 'checking' | 'anonymous' | 'authenticated';
 
@@ -6,13 +8,25 @@ export interface SessionUser {
   id: string;
   name: string;
   phoneE164: string;
-  /** Null until onboarding completes — the redirect rule both platforms already encode. */
-  tenant: { id: string; name: string } | null;
+  /** Null until a company exists — the signup that resumes at the company step (`M01-10`). */
+  tenant: { id: string; roles: readonly RolePreset[] } | null;
+}
+
+/**
+ * A different user verified on a device still holding another user's work (`F4-37`): the
+ * switch waits here until the person whose work is named confirms it, and no data of the new
+ * user loads before then.
+ */
+export interface PendingSwitch {
+  readonly previousUserId: string;
+  readonly heldWork: HeldWorkSummary;
+  readonly next: SessionUser;
 }
 
 export interface SessionSnapshot {
   status: SessionStatus;
   user: SessionUser | null;
+  switch: PendingSwitch | null;
 }
 
 /**
@@ -25,19 +39,24 @@ export type OtpResult = { ok: true } | { ok: false; failure: OtpFailure };
 /**
  * Framework-free session state. It is a STORE, not a plain object: a bare `status` field
  * could never re-render a screen. The React layer reads it through useSyncExternalStore.
- * The auth rebuild implements this interface and nothing in a screen changes.
  */
 export interface SessionStore {
   getSnapshot(): SessionSnapshot;
   subscribe(listener: () => void): () => void;
-  requestOtp(phoneE164: string): Promise<OtpResult>;
-  verifyOtp(phoneE164: string, code: string): Promise<OtpResult>;
+  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpResult>;
+  /** Verifies the code of the challenge `requestOtp` opened; the store holds the challenge id. */
+  verifyOtp(code: string): Promise<OtpResult>;
+  /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
+  completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
+  signOutEverywhere(): Promise<void>;
 }
 
-/** What `useSession()` returns — the snapshot flattened onto the three calls. */
+/** What `useSession()` returns — the snapshot flattened onto the calls. */
 export interface SessionApi extends SessionSnapshot {
-  requestOtp(phoneE164: string): Promise<OtpResult>;
-  verifyOtp(phoneE164: string, code: string): Promise<OtpResult>;
+  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpResult>;
+  verifyOtp(code: string): Promise<OtpResult>;
+  completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
+  signOutEverywhere(): Promise<void>;
 }

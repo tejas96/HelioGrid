@@ -1,6 +1,7 @@
 import { healthContract } from '@heliogrid/contracts';
 import { Controller, HttpStatus, Inject } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
+import { RouteAccessMap } from '../../common/auth/access';
 import { ContractException } from '../../common/errors/contract-exception';
 import { ENV } from '../../config/env';
 import { HealthRepository } from './health.repository';
@@ -9,10 +10,8 @@ const SERVICE = 'heliogrid-api';
 const VERSION = ENV.FLY_MACHINE_VERSION;
 
 /**
- * Carried `@Public()` while auth existed, where it was LOAD-BEARING against the global
- * deny-by-default SessionGuard — without it Fly's probes 401'd and the machine failed its
- * health checks. The guard and the decorator went with the auth teardown. When
- * the guard returns, THIS controller needs the opt-out back or deployment breaks.
+ * Both probes are PUBLIC, and that mark is load-bearing: the deny-by-default guard refuses a
+ * route that declares nothing, and a 401 on the liveness probe fails the machine's health checks.
  */
 @Controller()
 export class HealthController {
@@ -20,6 +19,7 @@ export class HealthController {
   constructor(@Inject(HealthRepository) private readonly repo: HealthRepository) {}
 
   @TsRestHandler(healthContract)
+  @RouteAccessMap(healthContract, { liveness: 'public', readiness: 'public' })
   handler() {
     return tsRestHandler(healthContract, {
       liveness: async () => ({

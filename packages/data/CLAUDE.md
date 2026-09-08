@@ -46,9 +46,10 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -b (composite; emits d
   into another's. Never a tenant header.
 - Paginated screens use `usePaginatedList` (accumulating) or `usePagedList` (numbered pager),
   never a hand-wired `useInfiniteQuery`.
-- **`session/walkthrough.ts` is a deliberate stub** — it reaches no server and accepts any 6-digit
-  code, and `data-layer.ts` wires it unconditionally (`M15`). The auth rebuild DELETES it and the
-  app injects a real implementation instead. Do not extend it.
+- **`session/store.ts` is the one session store, both platforms.** It starts `checking`, asks
+  the server who the cookies belong to, and never sees a credential: the transport carries the
+  cookies and renews the ten-minute token once on a 401. A shared device changing hands consults
+  `HeldWork` (`F4-37`) before the new user's data loads; `NO_HELD_WORK` is V1's answer.
 
 ## Done means
 

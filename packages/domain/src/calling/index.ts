@@ -7,6 +7,7 @@
  */
 export type { ClockTime } from './clock-time';
 export { clockTime, clockTimeHhmm } from './clock-time';
+export { OTP_CODE_SLOT, otpMessage } from './otp-message';
 export type {
   CallerLineSeries,
   CallingRulesPack,

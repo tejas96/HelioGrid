@@ -32,6 +32,8 @@ export async function runTenancyInvariants(adminUrl: string) {
   const tenantB = randomUUID();
   const userA = randomUUID();
   const userB = randomUUID();
+  const membershipA = randomUUID();
+  const membershipB = randomUUID();
   const suffix = tenantA.slice(0, 8);
 
   try {
@@ -123,22 +125,37 @@ export async function runTenancyInvariants(adminUrl: string) {
       return;
     }
 
-    // Seed two tenants + one user each (admin context)
-    await sql`insert into tenants (id, name, slug) values
-      (${tenantA}, 'Invariant A', ${`inv-a-${suffix}`}),
-      (${tenantB}, 'Invariant B', ${`inv-b-${suffix}`})`;
-    await sql`insert into users (id, tenant_id, name, phone_e164) values
-      (${userA}, ${tenantA}, 'User A', ${`+91900000${suffix.slice(0, 4)}1`}),
-      (${userB}, ${tenantB}, 'User B', ${`+91900000${suffix.slice(0, 4)}2`})`;
+    /*
+     * Seed two tenants, one account each, one active owner membership each — admin context.
+     * The market row the tenant references is the real market code; a bare registry row is
+     * harmless reference data and needs no cleanup.
+     */
+    await sql`insert into market_pack (market_code) values ('IN') on conflict do nothing`;
+    await sql`insert into tenant (id, company_name, city, market_code, currency_code,
+        default_language, timezone, created_at) values
+      (${tenantA}, 'Invariant A', 'Pune', 'IN', 'INR', 'en', 'Asia/Kolkata', now()),
+      (${tenantB}, 'Invariant B', 'Pune', 'IN', 'INR', 'en', 'Asia/Kolkata', now())`;
+    await sql`insert into user_account (id, phone_e164, name, interface_language,
+        unit_preference, created_at) values
+      (${userA}, ${`+91900000${suffix.slice(0, 4)}1`}, 'User A', 'en', 'metric', now()),
+      (${userB}, ${`+91900000${suffix.slice(0, 4)}2`}, 'User B', 'en', 'metric', now())`;
+    await sql`insert into tenant_membership (id, tenant_id, user_account_id, status,
+        coach_marks_dismissed, authorization_version, created_at) values
+      (${membershipA}, ${tenantA}, ${userA}, 'active', 0, 0, now()),
+      (${membershipB}, ${tenantB}, ${userB}, 'active', 0, 0, now())`;
+    await sql`insert into membership_role (id, tenant_id, membership_id, role_preset) values
+      (${randomUUID()}, ${tenantA}, ${membershipA}, 'epc_owner'),
+      (${randomUUID()}, ${tenantB}, ${membershipB}, 'epc_owner')`;
 
     assert(
-      tenantTables.length >= 7,
-      `schema scan found tenant tables (got ${tenantTables.length})`,
+      tenantTables.length >= 2,
+      `schema scan found the membership and role tables (got ${tenantTables.length})`,
     );
 
-    // `tenants` carries no tenant_id (it IS the registry, keyed by id) so the scan above
-    // never returns it — but it is tenant-scoped and must be armed like the rest.
-    await assertRlsArmed(sql, [...tenantTables, 'tenants']);
+    // `tenant` and `user_account` carry no tenant_id, so the scan above never returns them —
+    // but both are ARMED and must prove it like the rest: enabled, forced, a canonical policy.
+    const armed = [...tenantTables, 'tenant', 'user_account'];
+    await assertRlsArmed(sql, armed);
     await assertPartitionChildrenUngranted(sql);
     await assertNoRlsBypassingRoutes(sql);
 
@@ -152,39 +169,49 @@ export async function runTenancyInvariants(adminUrl: string) {
           where tenant_id = ${tenantB}`;
         assert(leaked[0]?.n === 0, `${table}: tenant A session sees zero tenant B rows`);
       }
-      const visible = await tx`select count(*)::int as n from users`;
-      assert(visible[0]?.n >= 1, 'tenant A sees its own users');
-      const tenantsVisible = await tx`select id from tenants`;
+      const visible = await tx`select count(*)::int as n from tenant_membership`;
+      assert(visible[0]?.n >= 1, 'tenant A sees its own memberships');
+      const tenantsVisible = await tx`select id from tenant`;
       assert(
         tenantsVisible.length === 1 && tenantsVisible[0]?.id === tenantA,
-        'tenants: only own row visible',
+        'tenant: only own row visible',
+      );
+      // The account policy: a member's account is readable, a stranger's is not.
+      const accountsVisible = await tx`select id from user_account
+        where id in (${userA}, ${userB})`;
+      assert(
+        accountsVisible.length === 1 && accountsVisible[0]?.id === userA,
+        'user_account: only the accounts of own members visible',
       );
     });
 
-    // Cross-tenant WRITE must fail (WITH CHECK)
+    // Cross-tenant WRITE must fail (WITH CHECK): moving a row to tenant B under tenant A's pin
+    // is refused by the policy itself — UPDATE is granted, so the refusal is RLS and nothing else.
     await expectFail(
       sql.begin(async (tx) => {
         await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
         await tx`set local role app_user`;
-        await tx`insert into users (id, tenant_id, name, phone_e164)
-          values (${randomUUID()}, ${tenantB}, 'Evil', ${`+91900000${suffix.slice(0, 4)}3`})`;
+        await tx`update tenant_membership set tenant_id = ${tenantB} where id = ${membershipA}`;
       }),
-      'insert into tenant B from tenant A session must fail',
+      'moving a membership into tenant B from tenant A session must fail',
     );
 
     // Cross-tenant UPDATE touches zero rows
     await sql.begin(async (tx) => {
       await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
       await tx`set local role app_user`;
-      const updated = await tx`update users set name = 'Owned' where id = ${userB} returning id`;
-      assert(updated.length === 0, 'update of tenant B user affects zero rows');
+      const updated = await tx`update tenant_membership set coach_marks_dismissed = 1
+        where id = ${membershipB} returning id`;
+      assert(updated.length === 0, 'update of tenant B membership affects zero rows');
     });
 
-    // Fail closed: no app.tenant_id set → zero rows everywhere
+    // Fail closed: no app.tenant_id set → zero rows everywhere, the armed tables included
     await sql.begin(async (tx) => {
       await tx`set local role app_user`;
-      const rows = await tx`select count(*)::int as n from users`;
-      assert(rows[0]?.n === 0, 'no tenant context → zero rows (fail closed)');
+      for (const table of armed) {
+        const rows = await tx`select count(*)::int as n from ${tx(table)}`;
+        assert(rows[0]?.n === 0, `${table}: no tenant context → zero rows (fail closed)`);
+      }
     });
 
     // Append-only ledgers: asserted from the CATALOG, over every mutating privilege and every
@@ -222,13 +249,17 @@ export async function runTenancyInvariants(adminUrl: string) {
     // right for a schema nobody has written yet.
     console.log(
       `tenancy invariants OK — RLS armed (enabled+forced+canonical policy expression) on ` +
-        `${tenantTables.length + 1} tables: ${[...tenantTables, 'tenants'].join(', ')}; ` +
+        `${armed.length} tables: ${armed.join(', ')}; ` +
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
-        `isolation behaviourally exercised on tenants, users only`,
+        `isolation behaviourally exercised on tenant, user_account, tenant_membership, membership_role`,
     );
   } finally {
-    await sql`delete from users where id in (${userA}, ${userB})`.catch(() => {});
-    await sql`delete from tenants where id in (${tenantA}, ${tenantB})`.catch(() => {});
+    // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
+    const tenants = [tenantA, tenantB];
+    await sql`delete from membership_role where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from tenant_membership where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from user_account where id in (${userA}, ${userB})`.catch(() => {});
+    await sql`delete from tenant where id in ${sql(tenants)}`.catch(() => {});
     await sql.end();
   }
 }

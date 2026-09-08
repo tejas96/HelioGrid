@@ -221,7 +221,8 @@ AsyncStorage (owner rulings). Extension point: a new screen is a new src/screens
 folder. Platform rules: §3.
 
 ### apps/api — NestJS BFF
-Owns: API modules (health today; feature modules land per slice), the Temporal gateway
+Owns: API modules (one per contract router), the session guard and the typed route-access
+map (common/auth — every route declares its access, deny by default), the Temporal gateway
 (common/temporal — the ONE place workflows are started, signalled and queried, every payload
 validated against its contract), the ContractException
 error envelope, global ts-rest response validation, the request-id seam (common/request-id.ts

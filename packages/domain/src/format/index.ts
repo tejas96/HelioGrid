@@ -38,7 +38,7 @@ export type {
   MeasurementSystem,
   PhoneFormats,
 } from './pack';
-export { IN_FORMATS } from './pack';
+export { IN_FORMATS, MEASUREMENT_SYSTEMS } from './pack';
 export { formatPhone, nationalNumber, type PhoneOptions } from './phone';
 export {
   IN_UTILITIES,

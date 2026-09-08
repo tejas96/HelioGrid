@@ -5,7 +5,7 @@ import type postgres from 'postgres';
  *
  * Its own file because it proves a different thing from tenancy-rls.ts. That file proves
  * BEHAVIOUR (tenant A's session cannot read or write tenant B's rows) and can only prove it
- * where tenant B actually HAS rows — the runner seeds `tenants` and `users` only, so on every
+ * where tenant B actually HAS rows — the runner seeds the identity spine only, so on every
  * other table its `count(*) where tenant_id = B` is 0 because the table is empty, true no
  * matter what RLS does. This file proves the MECHANISM from pg_catalog, which does not care
  * whether a table has rows.
@@ -27,13 +27,24 @@ import type postgres from 'postgres';
  * keys on nothing, and leaks every tenant while the gate printed "tenant-keyed policy".
  *
  * A new policy shape must be added HERE, deliberately, with a reason — the same discipline
- * GLOBAL_TABLES already imposes in table-tenancy-scan.ts.
+ * GLOBAL_TABLES already imposes in table-tenancy-scan.ts. Three shapes exist: the tenant-scoped
+ * predicate, the tenant's own row, and the account visible through a membership.
  */
+/** Postgres renders this policy across three lines; the key is its exact rendering. */
+const ACCOUNT_VISIBLE_THROUGH_MEMBERSHIP = [
+  '(EXISTS ( SELECT 1',
+  '   FROM tenant_membership m',
+  "  WHERE ((m.user_account_id = user_account.id) AND (m.tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid))))",
+].join('\n');
+
 const CANONICAL_POLICY_EXPRESSIONS: Record<string, string> = {
   "(tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)":
     'the standard tenant-scoped table policy',
   "(id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid)":
     'the tenant registry, which is keyed by id rather than tenant_id',
+  [ACCOUNT_VISIBLE_THROUGH_MEMBERSHIP]:
+    'the account registry: a row is visible to the tenant that holds a membership on it, so the ' +
+    'roster and every picker read names under RLS and no tenant ever reads a stranger',
 };
 
 /**

@@ -23,6 +23,17 @@ without a tenant pin is `inconclusive`, never a pass** — see `infra/README.md`
 **Never create a container, clone a database, run a migration, or write a row.** If the
 container is not running, report `inconclusive` naming it — do not start one.
 
+**Signing in during a run (the development sign-in path).** No SMS is sent locally. Request a
+code for ANY `+91` ten-digit number — `POST /auth/otp/request` with `{"phoneE164": "+919845027746",
+"channel": "sms"}` — and read the code from the API's log: the line `OTP for +91… via sms: …
+code is 123456` (`preview_logs` with search `OTP for` when the api runs in the preview, else its
+stdout). Verify with `POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API
+sets two HttpOnly cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the
+ten-minute API token); with curl keep a jar (`-c jar -b jar`). A first-time number has no company:
+`POST /tenants` with `{"companyName", "ownerName", "city"}` creates one and rotates the token.
+Three requests per fifteen minutes and eight per day per number are the real caps — use a fresh
+number rather than waiting one out.
+
 Per step: issue the request or query exactly as named; assert on exact bytes (status line,
 the `code` in the error envelope, or the scalar psql returns); capture the `curl -i` head and
 relevant body fragment, or the psql output, as evidence.

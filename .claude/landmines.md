@@ -16,7 +16,7 @@ this file: when the path goes, the row goes.
 | trap | fix | retire when |
 |---|---|---|
 | A deleted source file leaves a stale `dist/`, so `boundaries` stays red on code that is gone. | `pnpm turbo build --force` | never |
-| In zsh a bare glob matching nothing aborts the whole command and prints nothing — it reads as "clean". | Enumerate with `git ls-files`. | never |
+| In zsh a bare glob matching nothing aborts the whole command and prints nothing — it reads as "clean". A plain `git ls-files` has the same silence for a NEW file: it lists tracked paths only, so an uncommitted file is invisible to every gate that enumerates with it. | Enumerate with `git ls-files --cached --others --exclude-standard`. | never |
 | `zod` must resolve to ONE 3.25.x instance. Otherwise pnpm gives ts-rest's peer a zod 4 and the typed client silently collapses to `never`. | The pin in every manifest; `sherif` compares them. | a `pnpm.overrides` entry replaces the per-manifest pins |
 | dependency-cruiser resolves a workspace import through the target's `dist/`, so before a build every dist-targeting rule reports clean. | Build before you cruise. `pnpm verify` already does. | never |
 
@@ -29,6 +29,7 @@ this file: when the path goes, the row goes.
 | `redact` reaches structured fields only — `req.query.phone` is censored while the same value inside the raw `req.url` string is not. | `logging.ts` strips the query string from the logged URL. A new PII field needs a path there. | never |
 | A ts-rest `RequestValidationError` carries the submitted data, and some Zod issue codes include the VALUE. | `logging.ts` serialises errors through an ALLOWLIST. Never turn it into a denylist. | never |
 | `flyctl deploy` needs the workspace lockfile. | Build from the repo root. | never |
+| `@Res({ passthrough: true })` on a `@TsRestHandler` method marks the response handled, so the handler's returned body never leaves the process: the request hangs with no error. | Read the paired response off the request — `responseOf(req)` in `common/auth/cookies.ts`. | ts-rest's Nest handler honours passthrough |
 
 ## apps/web
 

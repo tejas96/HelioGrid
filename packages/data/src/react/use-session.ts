@@ -23,7 +23,9 @@ export function useSession(): SessionApi {
       ...snapshot,
       requestOtp: session.requestOtp,
       verifyOtp: session.verifyOtp,
+      completeSwitch: session.completeSwitch,
       signOut: session.signOut,
+      signOutEverywhere: session.signOutEverywhere,
     }),
     [snapshot, session],
   );

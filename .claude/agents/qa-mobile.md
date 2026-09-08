@@ -16,6 +16,11 @@ cannot run is `inconclusive`, never a pass.
 `adb shell input tap X Y` / `input text`, `adb shell uiautomator dump /sdcard/v.xml && adb
 shell cat /sdcard/v.xml` for the view tree, `adb logcat -d` for runtime errors.
 
+**Signing in during a run.** No SMS is sent locally: type any `+91` ten-digit number, then read
+the code from the API's log — `preview_logs` on the api server with search `OTP for` (the line
+`… code is 123456`). The API must be running and reachable from the device (`API_URL` in
+`apps/mobile/src/env.ts`: the Android emulator reaches the host at `10.0.2.2`).
+
 Run the platforms in sequence within your turn. Per step:
 
 1. Perform the actions.

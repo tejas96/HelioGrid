@@ -211,7 +211,7 @@ API-polling reconciliation (§6) is the at-least-once backstop.
 
 ## 4. Tenancy model
 
-Single database, shared schema, `tenant_id` (uuid, NOT NULL, FK → `tenants`) on every
+Single database, shared schema, `tenant_id` (uuid, NOT NULL, FK → `tenant`) on every
 tenant-owned row.
 
 - **Primary: app-layer scoping.** Every query path goes through the tenant-scoped
@@ -382,8 +382,7 @@ design by making them injected.
 
 **Injection, not resolution.** `RulesContext`/`CatalogContext` are resolved once per
 request (api), per job (worker) and per call session (voice) from
-`tenants.country_code` + `tenants.state_code` (v1: `'IN'` only, matching
-`market_rules_packs`) plus in-market overlays (state wind zone, DISCOM
+`tenant.market_code` (v1: `'IN'` only, the `market_pack` key) plus in-market overlays (state wind zone, DISCOM
 tariffs), then passed as explicit parameters into every `packages/domain` call. Domain
 code cannot read a market fact any other way — dependency-cruiser blocks the import path.
 

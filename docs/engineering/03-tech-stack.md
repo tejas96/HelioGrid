@@ -132,11 +132,8 @@ Sources: [Tigris locations](https://www.tigrisdata.com/docs/buckets/locations/) 
 
 ## 10. Auth
 
-**No authentication is installed.** There is no auth dependency in any manifest, and
-`apps/api` ships no guard — every route is unauthenticated today. The auth choice is made and
-recorded when the auth module is built; nothing here pre-commits it.
-
-The constraints that bind whatever it picks:
+**Auth is our own code** (`T-M01-025`): sessions are rows, `jose` signs the ten-minute token,
+no identity library. The constraints that bound the choice:
 
 | Constraint | Why |
 |---|---|

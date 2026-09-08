@@ -6,6 +6,7 @@ import {
   nodeEnvSchema,
   originSchema,
   portSchema,
+  secretSchema,
   temporalAddressSchema,
   temporalNamespaceSchema,
 } from './fragments';
@@ -27,10 +28,12 @@ export const apiEnvSchema = z.object({
 
   WEB_ORIGIN: originSchema.default('http://localhost:3002'),
 
-  /*
-   * No auth or SMS variable exists yet. The slice that needs one declares it HERE and in
-   * .env.example — Law 9: a variable is authored when its owning module's slice begins.
+  /**
+   * Signs the ten-minute API token (`M01-07`). A secret: no default, and an absent value stops
+   * the boot. Rotating it signs every live token out within one token life, which is the
+   * revocation bound by design. The SMS provider's own variables arrive with its adapter.
    */
+  AUTH_TOKEN_SECRET: secretSchema,
 
   /*
    * Temporal (ADR-0025) — the API STARTS and SIGNALS workflows; the worker executes them.

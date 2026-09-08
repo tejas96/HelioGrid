@@ -31,8 +31,16 @@ export const errorDetailSchema = z.object({
 export type ErrorDetail = z.infer<typeof errorDetailSchema>;
 
 /**
+ * A single BASE code for a route's envelope, checked against the platform list — a typo does not
+ * compile. A route-specific code has no list to check against and stays a `z.literal`.
+ * Usage: `errorEnvelope(baseError('NOT_FOUND'))`.
+ */
+export const baseError = <C extends BaseErrorCode>(code: C) => z.literal(code);
+
+/**
  * Build the envelope for a route's declared code union.
- * Usage: `errorEnvelope(z.enum(['NOT_FOUND', 'LEAD_ALREADY_WON']))`.
+ * Usage: `errorEnvelope(z.enum(['NOT_FOUND', 'LEAD_ALREADY_WON']))` for a list,
+ * `errorEnvelope(baseError('NOT_FOUND'))` for one base code.
  */
 export function errorEnvelope<C extends z.ZodTypeAny>(code: C) {
   return z.object({

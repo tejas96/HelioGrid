@@ -1,11 +1,17 @@
+import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
 import { createHealthRepository, type HealthRepository } from './health/repository';
+import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import { createTransport, type RequestHeaders } from './transport/transport';
+import { createUserRepository, type UserRepository } from './user/repository';
 
 /** Every repository an app can reach. One entry per contract router. */
 export interface Repositories {
+  auth: AuthRepository;
   health: HealthRepository;
+  tenant: TenantRepository;
+  user: UserRepository;
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
@@ -23,12 +29,15 @@ type RepositoryRegistryConfig = { baseUrl: string } & (
 export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repositories {
   const transport =
     config.mode === 'mobile'
-      ? createTransport({ mode: 'mobile', storage: config.storage })
+      ? createTransport({ mode: 'mobile', storage: config.storage, baseUrl: config.baseUrl })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })
-        : createTransport({ mode: 'browser' });
+        : createTransport({ mode: 'browser', baseUrl: config.baseUrl });
   const api = createApiClient(config.baseUrl, transport);
   return {
+    auth: createAuthRepository(api),
     health: createHealthRepository(api),
+    tenant: createTenantRepository(api),
+    user: createUserRepository(api),
   };
 }

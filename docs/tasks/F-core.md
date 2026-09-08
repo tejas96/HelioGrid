@@ -425,7 +425,7 @@ COSTS and what is never charged for at all, and never what counts one.
 
 ### T-FCORE-016 · Market pack storage — a pack revision is a row change, not a deploy
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#39)
 **Why:** A GST rate, a subsidy slab or a DISCOM name changes as a published data row that every installer's next proposal reads the same day, and every output can name the pack revision it priced on; without it each market fact stays a TypeScript constant, so a rate change is a pull request and a deploy, and no proposal can say which pack it was computed under.
 **PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
 **Requirements:** `F1-04` calls launching a market "configuration, not a product change" and `F1-11` calls a pack revision "a versioned, dated data update — never a product release". Both hold structurally: the pack is injected, so no module branches on a market name. Neither holds operationally while `IN_PACK` is a TypeScript constant, which makes a GST-rate revision a pull request and a deploy. The owner ruled the slice rather than narrowing the promises: a storage slice is scheduled, and the implementation moves to meet them.

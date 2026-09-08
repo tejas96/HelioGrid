@@ -7,8 +7,12 @@
  * why this lives here rather than in either screen.
  */
 
-/** The three steps of the OTP login flow. */
-export type LoginStep = 'phone' | 'otp' | 'done';
+/**
+ * The steps of the OTP login flow. `switch` is the shared-device step (`F4-37`): a different
+ * user verified on a device still holding another user's work, and what will be lost is named
+ * before the switch completes. A device holding nothing skips it.
+ */
+export type LoginStep = 'phone' | 'otp' | 'switch' | 'done';
 
 /**
  * Why an OTP attempt failed.

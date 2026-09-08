@@ -28,6 +28,19 @@ export class MarketPackService {
     @Inject(MarketPackAdminRepository) private readonly publisher: MarketPackAdminRepository,
   ) {}
 
+  /**
+   * Every authored market's current pack, whole, for the server's own use — the market a phone
+   * resolves to, the currency a signup assigns, the template a code message uses. Never served
+   * to a tenant as is: the book rides inside.
+   */
+  async currentPacks(): Promise<MarketPack[]> {
+    const codes = await this.packs.marketCodes();
+    const envelopes = await Promise.all(codes.map((code) => this.packs.currentEnvelope(code)));
+    return envelopes
+      .filter((envelope): envelope is PackEnvelope => envelope !== null)
+      .map(packFromEnvelope);
+  }
+
   /** The tenant-facing read: the envelope and the tenant-readable keys, never the book (`F1-25`). */
   async current(marketCode: string): Promise<MarketPackRead | null> {
     const envelope = await this.packs.currentEnvelope(marketCode);
