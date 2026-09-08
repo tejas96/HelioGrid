@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 08 — Security & Tenancy
 
 The security and tenancy model: the threat table, the three-layer tenant-isolation defence,

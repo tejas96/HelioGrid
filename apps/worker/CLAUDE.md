@@ -2,7 +2,7 @@
 
 Runs TEMPORAL (ADR-0025); BullMQ is gone and re-adding it is a build failure. The local stack,
 its runbooks and its measured traps live in `infra/temporal/README.md`. Repo traps:
-`docs/engineering/landmines.md` · deps: `architecture.md` §2 apps/worker.
+`.claude/landmines.md` · deps: `architecture.md` §2 apps/worker.
 
 ## What lives here / what must never live here
 

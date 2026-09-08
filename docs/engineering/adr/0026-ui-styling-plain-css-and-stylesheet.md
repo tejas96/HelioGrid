@@ -49,7 +49,7 @@ The drift the section warned against is exactly what happened, which is why this
 
 - **"Style out of the component file" is now true on web and false on native**, because a native
   half holds its `StyleSheet.create` inline. That is the cost of this decision, it is recorded as
-  `M42` in `docs/engineering/mechanisms.md` with status NONE, and closing it means a
+  `M42` in `.claude/mechanisms.md` with status NONE, and closing it means a
   `<Name>.styles.ts` per component plus a filename rule. Until then the rule is web-only in
   practice and must not be stated as though it holds everywhere.
 - **Density mode has no mechanism.** If the product ships the Expressive/Functional switch, this

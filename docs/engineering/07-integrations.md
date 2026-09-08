@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 07 — Integrations: Ports & Adapters
 
 Every external system sits behind a **port** — a plain TS interface owned by us — with one

@@ -8,7 +8,7 @@
 > so the pack precedes the identity spine. Auth and tenancy follow it. Read the `auth/tenancy` row of `forward-compat.md` first. Everything below is what the
 > rebuild must satisfy, not a description of today's contents.
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.
 
 ## What lives here / what must never live here

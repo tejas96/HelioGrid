@@ -1,3 +1,5 @@
+> **Fate:** each row moves into its module's first-migration task when that task is split to PR size; then this file is deleted.
+
 # Forward-compatibility register
 
 > **Mandatory reading before any module's first migration or contract.** Each row states what

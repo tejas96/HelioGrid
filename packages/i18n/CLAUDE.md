@@ -1,6 +1,6 @@
 # @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN
 
-Traps: `docs/engineering/landmines.md` · deps:
+Traps: `.claude/landmines.md` · deps:
 `architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
 
 ## What lives here / what must never live here

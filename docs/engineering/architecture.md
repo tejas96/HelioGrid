@@ -1,3 +1,5 @@
+> **Fate:** §2 (what each package owns and imports) folds into that package's `CLAUDE.md`; §1 and §4 fold into `CLAUDE.md` §6; then this file is deleted.
+
 # HelioGrid architecture — the spine
 
 The single canonical home for inter-package facts: what each package owns, what it may

@@ -5,8 +5,8 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
 **This file states the invariants.** `docs/engineering/architecture.md` places every file ·
-`mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
-`landmines.md` holds the live traps. Everything else loads when it applies.
+`.claude/mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
+`.claude/landmines.md` holds the live traps. Everything else loads when it applies.
 
 ## 1. Core principles
 
@@ -117,8 +117,8 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | tree | what it is |
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built. Ranked **below** `docs/prd/`. |
-| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and the folder only shrinks. Ranked **below** `docs/prd/`. |
+| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and the two ledgers `mechanisms.md` and `landmines.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never

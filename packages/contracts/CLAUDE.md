@@ -1,6 +1,6 @@
 # @heliogrid/contracts — ts-rest + Zod 3, the API review surface
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 contracts. Changing a
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 contracts. Changing a
 contract has a sequence: run `/contract-change`.
 
 ## What lives here / what must never live here

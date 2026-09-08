@@ -1,6 +1,6 @@
 # @heliogrid/api — NestJS modular monolith, the only tenant-facing HTTP surface
 
-Traps: `docs/engineering/landmines.md` · what holds a rule: `mechanisms.md` · deps:
+Traps: `.claude/landmines.md` · what holds a rule: `mechanisms.md` · deps:
 `architecture.md` §2 apps/api.
 
 ## What lives here / what must never live here

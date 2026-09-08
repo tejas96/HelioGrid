@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 03 — Tech Stack: Choices, Pins, Rejections
 
 Every technology in HelioGrid, one decision per layer. Each table row records the choice, the

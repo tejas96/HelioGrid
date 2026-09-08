@@ -1,3 +1,5 @@
+> **Fate:** what is still true moves into the package `CLAUDE.md` it binds as that module is built; the rest is deleted with this file.
+
 # 09 — Observability & Ops (incl. THE Postgres runbook)
 
 Small team, AI-assisted development, one region. The observability stack is deliberately

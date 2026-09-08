@@ -224,11 +224,11 @@ def check_instruction_hygiene(repo):
             over.append(f"{rel} {n} > {budget}")
 
     # The ledger states traps, never when one was found — same rule, different file.
-    ledger = os.path.join(repo, "docs/engineering/landmines.md")
+    ledger = os.path.join(repo, ".claude/landmines.md")
     if os.path.exists(ledger):
         for i, line in enumerate(open(ledger, encoding="utf-8"), 1):
             if DATE_RE.search(line):
-                dated.append(f"docs/engineering/landmines.md:{i}")
+                dated.append(f".claude/landmines.md:{i}")
 
     gate(22, "no dated war story in an instruction file", not dated,
          f"{len(files)} files scanned, none dated" if not dated
@@ -560,6 +560,25 @@ def run(repo, verbose):
     gate(27, "the ledger agrees: Status, DESIGN links, screens.md and main", not ledger_bad,
          f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped, all consistent"
          if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
+
+    # --- Gate 28 · docs/engineering/ only shrinks
+    # Every file there carries its fate at its top; the folder dissolves into the package files
+    # and the tasks. The ceiling is the folder's exact line count today: growth fails, and a cut
+    # fails too until the ceiling is lowered in the same change — so it can only fall.
+    ENGINEERING_LINES = 7121
+    eng_files = [f for f in tracked if f.startswith("docs/engineering/")]
+    eng_lines = 0
+    for rel in eng_files:
+        try:
+            eng_lines += sum(1 for _ in open(os.path.join(repo, rel), encoding="utf-8"))
+        except (UnicodeDecodeError, FileNotFoundError):
+            continue
+    gate(28, "docs/engineering/ only shrinks", eng_lines == ENGINEERING_LINES,
+         f"{eng_lines} lines across {len(eng_files)} files, at the ceiling"
+         if eng_lines == ENGINEERING_LINES
+         else (f"{eng_lines} lines: the folder GREW past its ceiling of {ENGINEERING_LINES} — fold, do not add"
+               if eng_lines > ENGINEERING_LINES
+               else f"{eng_lines} lines: below the ceiling of {ENGINEERING_LINES} — lower ENGINEERING_LINES to {eng_lines} in this change"))
 
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:

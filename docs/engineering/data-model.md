@@ -1,3 +1,5 @@
+> **Fate:** each entity's rows move into the task that authors it, when that task is split to PR size; the §8 questions become conditions inside those tasks; then this file is deleted.
+
 # HelioGrid — logical data model & ERD
 
 Status: design-time deliverable · derived from `docs/prd/` · **not product truth** — where this

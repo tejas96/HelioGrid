@@ -436,7 +436,7 @@ fi
 # This is the one of the four render-harness probes that does NOT need a browser — the CSS
 # declares the shrink range itself, so it is caught here rather than at runtime. The other
 # three (empty containers, Devanagari overflow, the quiet role on load-bearing text) need
-# computed layout or human judgement: docs/engineering/harness/README.md owns those.
+# computed layout or human judgement: the QA agents at /verify own those.
 shrink_range=$(
   find packages/ui/src -type f -name '*.css' 2>/dev/null \
   | while IFS= read -r f; do

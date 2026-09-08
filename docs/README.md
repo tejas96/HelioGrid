@@ -14,29 +14,25 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
 | [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
-| [`engineering/`](engineering/) | How this repo is built — architecture, stack, integrations, ADRs | Support, ranked below `prd/` |
+| [`engineering/`](engineering/) | How this repo is built — dissolving into the package files and the tasks; each file carries its fate | Support, ranked below `prd/` |
 
 `CLAUDE.md` §7 fixes the order: `prd/` (a row carries its own ruling) →
 `engineering/architecture.md` → contracts. **Nothing in `engineering/` is product truth.** Where the two disagree, `prd/` wins.
 
 ## Inside `engineering/`
 
-| Path | Status | What it is |
-|---|---|---|
-| [`engineering/architecture.md`](engineering/architecture.md) | **PINNED** | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
-| [`engineering/mechanisms.md`](engineering/mechanisms.md) | **PINNED** | **What actually holds each rule** — one row per invariant, its mechanism, its status, and the date it was last seen to fail on an injected violation. The ONLY place enforcement is described: a rule elsewhere cites a row id (`M12`) and never names a gate. |
-| [`engineering/landmines.md`](engineering/landmines.md) | **PINNED** | **Live traps** — one line each: the trap, the fix, and when it retires. Only what is real today and what no mechanism can hold. The story of how it was found stays in the commit. |
-| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | **PINNED** | The UI layer. `scripts/ds-contract.mjs` names this path. |
-| [`engineering/forward-compat.md`](engineering/forward-compat.md) | **PINNED** | What each module's first migration must satisfy. The PR template requires it. |
-| [`engineering/data-model.md`](engineering/data-model.md) | LIVE | **The logical data model and ERD** — 167 entities, 244 relationships, 13 ERDs, derived from `prd/`. Carries the V1/V2 and build-block scope per entity, the ⚠ cross-scope hazards, and the studio persistence decision (§5.7a). Logical only — no SQL, and NOT product truth: where it and `prd/` disagree, `prd/` wins. `/migration` step 1 reads it beside `forward-compat.md` before any schema change, and step 5 corrects it where the built tables differ. |
-| [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) | LIVE | How the system runs — request path, tenancy, background work, storage, studio data flow, market packs. |
-| [`engineering/03-tech-stack.md`](engineering/03-tech-stack.md) | LIVE | Every technology choice, its pin, and what lost. |
-| [`engineering/07-integrations.md`](engineering/07-integrations.md) | LIVE | Ports and adapters — 14 external systems behind interfaces we own. |
-| [`engineering/08-security-and-tenancy.md`](engineering/08-security-and-tenancy.md) | LIVE | Threat model, three-layer tenant isolation, credentials, residency. |
-| [`engineering/09-observability-and-ops.md`](engineering/09-observability-and-ops.md) | LIVE | Logging, tracing, metrics, and the Postgres runbook. |
-| [`engineering/adr/`](engineering/adr/) | LIVE | Why each architecture choice was made. Reference only — never a gate. |
-| [`engineering/ops/`](engineering/ops/) | LIVE | External-account setup state and what is blocked on company registration. |
-| [`engineering/harness/`](engineering/harness/) | LIVE | The render harness that proves `packages/ui` mounts. |
+Every file here is dissolving: its first line names its fate, and the folder's line count only
+falls (`M107`). The two agent ledgers moved to `.claude/` — `mechanisms.md` (what holds each rule)
+and `landmines.md` (live traps). External-account setup notes moved to `infra/ops/`.
+
+| Path | What it is, until its fate lands |
+|---|---|
+| [`engineering/architecture.md`](engineering/architecture.md) | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
+| [`engineering/data-model.md`](engineering/data-model.md) | The logical data model and ERD, derived from `prd/` and ranked below it; `/migration` step 1 reads it beside `forward-compat.md`. |
+| [`engineering/forward-compat.md`](engineering/forward-compat.md) | What each module's first migration must satisfy. |
+| [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | The UI layer. `scripts/ds-contract.mjs` names this path. |
+| [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) · [`03-tech-stack.md`](engineering/03-tech-stack.md) · [`07-integrations.md`](engineering/07-integrations.md) · [`08-security-and-tenancy.md`](engineering/08-security-and-tenancy.md) · [`09-observability-and-ops.md`](engineering/09-observability-and-ops.md) | How the system runs, the stack and its pins, ports and adapters, the threat model, observability. |
+| [`engineering/adr/`](engineering/adr/) | Why each architecture choice was made. Reference only — never a gate. |
 
 Numbered gaps are deliberate. A missing number is a document that was removed — the same
 convention `CLAUDE.md` §2 uses for the Laws and `engineering/adr/` uses for ADRs.
@@ -49,7 +45,7 @@ Moving one of these breaks a gate silently.
 there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/registers/screens.md`,
 `ux/briefs/`, `ux/claude-design-context.md`,
 `tasks/*.md` and `start-here.md`. `engineering/17-ui-architecture-v2.md` is named by two
-scripts. `engineering/forward-compat.md` is named by the PR template, and it and
+scripts. `engineering/forward-compat.md` and
 `engineering/data-model.md` are both named by the `/migration` skill's first step.
 `.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites
 `engineering/03 §7`; `apps/api/CLAUDE.md` and `apps/worker/CLAUDE.md` cite `engineering/02 §2`.

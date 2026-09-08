@@ -1,6 +1,6 @@
 # @heliogrid/data — the frontend SDK, the ONLY data path for web and RN
 
-Traps: `docs/engineering/landmines.md` · deps: `architecture.md` §2 data.
+Traps: `.claude/landmines.md` · deps: `architecture.md` §2 data.
 
 ## What lives here / what must never live here
 
