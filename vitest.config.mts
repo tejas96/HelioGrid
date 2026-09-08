@@ -58,6 +58,11 @@ export default defineConfig({
        */
       thresholds: {
         'packages/domain/src/auth/**': COMPLETE,
+        /* authz: the presets and the matrix land with T-FPLAT-001; the resolution files
+           (`policy.ts`, `visibility.ts`) take their bar with T-FPLAT-002. */
+        'packages/domain/src/authz/{capabilities,cells,roles}.ts': COMPLETE,
+        'packages/domain/src/authz/{billing,crm,customer-link,field,hr,marketing,onboarding,payments,projects,proposals,reports,sales,studio,survey}.ts':
+          COMPLETE,
         'packages/domain/src/calling/**': COMPLETE,
         'packages/domain/src/certification/**': COMPLETE,
         /* FILES, not the folder: `commerce/`'s remaining two are closed vocabularies whose

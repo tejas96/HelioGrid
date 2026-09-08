@@ -6,28 +6,21 @@
  * requires ONE deny-by-default guard over exactly this, so that a new role is never a
  * repo-wide sweep of `if role === …`.
  */
+export type { Capability } from './capabilities';
+export { CAPABILITY_MATRIX } from './capabilities';
 export type {
-  Capability,
   CapabilityGrant,
   CapabilityRow,
-} from './capabilities';
-export { CAPABILITY_MATRIX, M01_CAPABILITIES } from './capabilities';
-export {
-  can,
-  capabilityLimit,
-  grantedCapabilities,
-  visibilityIn,
-} from './policy';
-export type { CapabilityRowKey, RolePreset } from './roles';
-export { FOUNDER_ROLE, ROLE_PRESETS } from './roles';
-export type {
+  CapabilityRowKey,
   LadderScope,
-  ResolvedVisibility,
+  VisibilityCell,
   VisibilityDomain,
+  VisibilityRow,
   VisibilityScope,
-} from './visibility';
-export {
-  resolveVisibility,
-  VISIBILITY_DOMAINS,
-  VISIBILITY_LADDER,
-} from './visibility';
+} from './cells';
+export { VISIBILITY_DOMAINS } from './cells';
+export { can, capabilityLimit, grantedCapabilities, visibilityIn } from './policy';
+export type { RolePreset } from './roles';
+export { FOUNDER_ROLE, ROLE_PRESETS } from './roles';
+export type { ReachedThrough, ResolvedVisibility } from './visibility';
+export { DOMAIN_LADDERS, resolveVisibility, VISIBILITY_MATRIX } from './visibility';

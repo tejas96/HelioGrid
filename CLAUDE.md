@@ -156,9 +156,9 @@ Every line, every app, every package. No exceptions for "just this once".
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified.
 - **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
-  `*2`/`*-extra`, never for a layer · no `any`, `!`, `==` or `console.log` · style outside the
-  component file · no app-declared enum, union, lookup or policy number · `process.env` read only
-  in `packages/env`.
+  `*2`/`*-extra`, never for a layer or a document id (`survey.ts`, not `m04.ts`) · no `any`, `!`,
+  `==` or `console.log` · style outside the component file · no app-declared enum, union, lookup or
+  policy number · `process.env` read only in `packages/env`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
   every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or

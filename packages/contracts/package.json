@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "typecheck": "tsc -b",
+    "typecheck": "tsc -b && tsc -p tests/tsconfig.json",
     "openapi": "node dist/scripts/emit-openapi.js"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
     "@types/node": "22.20.1",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "5.0.0"
   }
 }

@@ -6,8 +6,8 @@ an invariant proves the seam between them.
 ## What lives here / what must never live here
 
 - The locked invariant set: tenancy RLS, table tenancy scan, enum parity, schema parity,
-  tenant-id-in-body, format rendering. **Additions require explicit owner approval** — the set is
-  deliberately small so a green run means something.
+  tenant-id-in-body, format rendering, matrix-mirrors-f2. **Additions require explicit owner
+  approval** — the set is deliberately small so a green run means something.
 - NEVER a unit test. Those live at `<package>/tests/**/*.test.ts` and prove one DECISION at its
   edges; an invariant proves a property of the SYSTEM against real state. Neither replaces the
   other.
