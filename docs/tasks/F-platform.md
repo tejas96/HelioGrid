@@ -88,6 +88,12 @@ This file dispositions every requirement row of the suite's six platform foundat
 - Given a tenant administrator, when they export the audit log, then they receive their own tenant's entries and no other tenant's (F2-23).
 - Given a platform-staff access to tenant data, when it occurs, then it is read-only and an audit entry records it (F2-24).
 
+**Settle at /start:**
+- The archive tier after 24 months hot (F2-23) — its location, format, access path and whether export reads it — pick: not authored in this migration: every entry stays in the one table with no `retention_tier` column and the tenant export returns all of it; the move is its own task, authored when the first entry ages out, with the tier's storage an owner decision under CLAUDE.md §4 (no entry can reach the cut-off inside V1's first two years, and an unexercisable path is speculative; cost if wrong: one bulk move of aged rows to the tier the owner picks and an export widened to read both)
+- How a platform-staff actor is referenced in a tenant's log (F2-24) — the actor set is wider than the tenant's members — pick: `actor_kind` (`tenant_user` | `platform_staff`, a string-literal union in `contracts`) beside `actor_ref`, which is a `user_account` id for both kinds and never a foreign key: `user_account` is a platform table, so a staff member is a `user_account` holding no `tenant_membership` in that tenant, and the row's own `tenant_id` says whose log it is (one identity table for every human, and an append-only row must outlive any deactivation; cost if wrong: a third `actor_kind` value whose ref points at a staff table, with no rewrite of written rows)
+- The polymorphic subject reference on `audit_log_entry` and `notification` (F2-22, F6-02, F6-16) — ruled: the pair `T-FPLAT-035`'s `file` already carries — `subject_kind`, a string-literal union in `contracts` naming every record kind a subject may be, plus `subject_ref`, the record's id with no foreign key — one union serving all three tables; an audit entry is never re-pointed, it records the subject as it was and the merge is itself an entry, while `notification` rows are re-pointed to the survivor inside the merge transaction (M02-60's re-point-every-reference law, F6 §F6.2's merge edge) (one shape for every polymorphic pointer in the suite, and an append-only log that rewrites itself is not append-only)
+- Analytics event streams (F2 §F2.4, M13-51, BM-47) — ruled: `event_type` is closed to the F2-22 checklist and no analytics event — notification emitted, pushed or read; search performed; template copied; a trial-conversion step — is ever a row here; the streams' own store is settled where M13-51 lands (`T-M13-011`), never in this migration (F2 §F2.4 says the log is not an analytics stream, and a closed event vocabulary is what keeps the export the tenant's own)
+
 ---
 ### T-FPLAT-005 · The message catalog and runtime language resolution — per-user language, silent English fallback, reader-language rendering
 **Type:** engine · **Tier:** P0
@@ -109,6 +115,9 @@ This file dispositions every requirement row of the suite's six platform foundat
 - Given a string with no translation in the active language, when the surface renders, then the English string appears in its place and no identifier, blank or error is shown (`F3-05`).
 - Given a notification or a customer-facing rendering, when it is emitted or opened, then it is in the recipient's or customer's language, not the originating user's (`F3-06`).
 - Given any product-supplied user-visible string, when the language set is enumerated, then a translation exists for it in every language or `F3-05`'s fallback applies — and no string is designated permanently English-only (`F3-07`).
+
+**Settle at /start:**
+- Where per-language translations of the pack's display labels live (F1-22, F3-07) — ruled: in the pack, versioned with it, one value per language of `UI_LANGUAGES`; the message catalog carries no pack label, and a label missing a language falls back under F3-05 like any other string (F1-22 makes the labels pack data and F1-11 makes a label change a pack revision, so a catalog copy would be a second home that drifts)
 
 ---
 ### T-FPLAT-006 · Content classes — the never-translated set, canonical identity, the one-term law, tenant-authored per-language content
@@ -361,6 +370,10 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a language switch, when the inbox renders, then old items keep their emit-time language and new items use the new language (F6-08).
 - (F6-01, F6-07 and F6-09 carry no dedicated Given/When/Then lines in the PRD's acceptance block; the requirement texts above are the binding criteria)
 
+**Settle at /start:**
+- Whether a notification's recipient binds to the platform-global `user_account` or to the `tenant_membership` (F6-04, M01-18) — ruled: `recipient_user_ref` is a `user_account` id and the row's own `tenant_id` names the tenant, so the pair is the membership with no foreign key to it, and `notification_preference` (`T-FPLAT-018`) binds the same way (`user_account` is the one home of a person, a membership can be deactivated, and a delivered record must keep resolving to the person who received it)
+- `notification.subject_ref` and its re-pointing on a customer merge — ruled: the pair and the re-point rule settled at `T-FPLAT-004` (one polymorphic shape in the suite; nothing to decide here)
+
 ---
 ### T-FPLAT-018 · Notification delivery — the event matrix, channels, urgency classes, quiet hours, per-user mutes, recipient resolution
 **Type:** engine · **Tier:** P0
@@ -384,6 +397,12 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the matrix this task builds, when its M05 rows are inspected, then `design_survey_superseded` stands beside `signoff_requested` and `design_returned` with recipient "the design's author (own)" and push marked, sourced to M05-13 (owner ruling 2026-08-04); and given the supersession emitter (`docs/tasks/MS-studio-a.md` T-MS-117) raising that event when a newer survey version supersedes a design's inputs, then delivery resolves that author through F2 scope, the in-app record lands, and the push carries the standard class F6-13 assigns to everything outside its immediate pair — no ad-hoc type anywhere in the path (F6-10, F6-13, F6-16, owner ruling 2026-08-04).
 - (F6-11 and F6-15 carry no dedicated Given/When/Then lines in the PRD's acceptance block; the requirement texts above are the binding criteria)
 
+**Settle at /start:**
+- Whether the type-group behind mutes (F6-15) and centre filters (F6-17) is the grouping class F6-12 registers — ruled: one taxonomy, not two: `type_group` is the one closed attribute of `notification_type` that mutes and the centre's filter read, and F6-12's grouping is not a vocabulary at all — records group by `type_key` × subject class within a day, and whether a type groups is its urgency class (immediate never groups, F6-13) — so the registry carries no `grouping_class` column (a grouping key over records is derived from facts the row already holds, and one vocabulary cannot drift from itself)
+- The members of `type_group` — F6 never enumerates them and `SCR-M01-11` draws five without naming them — pick: five, assigned by the matrix's own "Raised by" column — `sales` (M02, M03, M06, M07, F5), `delivery` (M04, M05, M08, M09), `payments` (M11), `team` (M01, M10, M13, system) and `billing` (every row M12 raises) — one string-literal union in `contracts`, every `notification_type` registered to exactly one, display names in `i18n` (the raising module is the only grouping F6 itself offers, and five is what the preferences surface was drawn for; cost if wrong: a re-registration of type rows and a rewrite of the small mute table, no record touched)
+- The Owner billing/compliance types that can never be push-muted (F6-15) — ruled: not a hand-kept list but the `billing` type-group entire, guarded for a holder of the EPC Owner preset only — a mute row for `billing` is refused at write for such a holder and disregarded at push for anyone holding the preset when the push resolves, while every other group mutes freely (F6-15 names the class and not the members, and every M12 row in the matrix addresses the Owner, so the group is the list)
+- Push delivery mechanics — per-device tokens, the dead token, the held push in quiet hours (F6-06, F6-14) — pick: one `push_device` table on `user_account` (device platform, token, `registered_at`, `last_seen_at`), a platform table listed in `GLOBAL_TABLES` beside `user_account` because a person's phones follow the person across tenants; a token the provider reports invalid is deleted and never retried (F6 §F6.2's edge); and the held push is no state of its own — `notification` carries `push_due_at`, set at emit to now or to the end of the tenant's quiet window, and one Temporal schedule sends every row whose `push_sent_marker` is false and whose `push_due_at` has passed (cost if wrong: a due-time column swapped for a state enum and a tenant key added to the token table, both before any row exists)
+
 ---
 ### T-FPLAT-019 · The notification centre's data contract — up-only read state and the bounded horizon
 **Type:** engine · **Tier:** P0
@@ -400,6 +419,9 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - (F6-19 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text above is the binding criterion. The centre's read-state acceptance is `F6-07`'s at `T-FPLAT-017`.)
 
 *(Swept 2026-08-07 for the removal of the offline/sync capability. `F6-18` — "the centre works offline: cached items read, read-state syncs up-only, new items arrive with sync" — was deleted. Its cached-items and arrive-with-sync clauses die with the cache; its read-state clause is live and verbatim at `F6-07`, and its never-blocking clause is live at `F4-27`, so the citation is repointed rather than excised — a plain excise would have left the centre's read-state contract with no row at all. The airplane-mode acceptance line is deleted, and the task title lost "offline cached reads".)*
+
+**Settle at /start:**
+- The centre's practical horizon (F6-19) — the PRD bounds it and names no number, no retention and no purge — pick: 90 days from `emitted_at`, one policy number in `domain`; the centre reads only inside it and says so at its edge, and a daily Temporal schedule deletes rows older than the horizon, read state included, because the fact lives on the record's timeline and not here (F6-19's own words are an inbox, not an archive; cost if wrong: the number moves, and rows already purged are gone while their facts are not)
 
 ---
 ### T-FPLAT-020 · Global search — scope-enforced results, the alias law, junk leads and plain ranking
@@ -909,7 +931,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F4-16 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
 | F4-17 | moved to T-M04-015 (`docs/tasks/M04-survey.md`) |
 | F4-19 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
-| F4-21 | T-FPLAT-013 (preserved submissions and attention items) · T-FPLAT-015 (the device-held photograph queue) |
+| F4-21 | moved to `docs/tasks/M04-survey.md` T-M04-017 (the module that captures photographs, Law 9) |
 | F4-25 | T-FPLAT-014 |
 | F4-27 | LAW |
 | F6-01 | T-FPLAT-017 |

@@ -224,6 +224,9 @@ This file dispositions every requirement row of the suite's four core documents 
 - Given a customer who declines call recording, when the call proceeds, then they are still served and the declination lands as a consent record with timestamp and source (F1-39, F1-58).
 - Given a breach event, when duties trigger, then the Data Protection Board and affected principals are notified and the grievance contact is published in-app (F1-59).
 
+**Settle at /start:**
+- Data-rights request record — ruled: no stored request entity; an export or erasure request and its completion are the two `audit_log_entry` rows F2-22 names, the F1-56 30-day SLA is the gap between them, export runs as the support-backed workflow, erasure as the product-side anonymisation action, and correction as the ordinary record edit with no request at all (F1-56 names support tooling, F1-24/F1-57 a product action and F2-22 the audit entries — no row asks for a request state, SLA clock or outcome beyond those two entries, and a dedicated entity would be a shape nothing in the PRD reads).
+
 ---
 
 ### T-FCORE-010 · Market price-book law (pack.price-book) + the India book

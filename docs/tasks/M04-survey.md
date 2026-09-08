@@ -83,6 +83,11 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given open capture-on-site gaps, when a physical visit is booked, then that visit's guided capture opens with those steps present and identified as the reason for the visit (M04-32).
 - Given a gap resolved as **ask the customer** in a tenant with a connected transactional channel, when the question is produced, then it sends from that channel under the transactional template class with its delivery state shown honestly; and given no connected channel, then it is composed for the rep to send and no delivery is claimed (M04-31 resolution set, `M03-03`, M04 §"No survey-side send machinery of its own", owner ruling 2026-08-04). This module builds no send machinery of its own.
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**Settle at /start:**
+
+- Gap closed-state semantics — ruled: only `resolved` and `waived` close a gap; `ask_customer` and `capture_on_site` are open routes, counted in the open-gap count until one of the two closing resolutions lands (§M04.5 names only those two as closing a gap, and M04-31 keeps a gap visible until it is closed).
+- Gap taxonomy — ruled: the gap type is a closed vocabulary in `contracts` of the source's five plus `designer_raised`, the sixth carrying a required free-text description; the five are seeded on every remote survey version and never dropped, and a designer-raised gap is an additional row that routes like any other (M04-30 fixes the five; §M04.12 lets the designer raise a fact the survey does not hold).
+- Gap↔visit re-pull after a could-not-complete reschedule — ruled: `visit_gap_agenda_entry` rows are append-only history — the successor visit gets fresh entries for every gap still open at reschedule time and the earlier visit keeps its own; no entry is ever re-pointed (both visits are retained with the reason on the earlier one, M04-58, and a re-pointed entry would leave the cancelled visit's agenda unreadable, against M04-62).
 
 ---
 
@@ -119,6 +124,9 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given low device storage, when a capture is about to start, then the surveyor is warned first and offered compression, and no unacknowledged original is evicted (M04-47).
 - Given any photograph, when it is attached, then it carries a tag and a source, and where it concerns an obstruction it can be pinned to that obstruction (M04-54).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**Settle at /start:**
+
+- Sanctioned load, captured per site but stored per version — ruled: `site` carries no sanctioned-load figure in any scope. The one input M05-20's overrun warning reads is the design's own Step 1 sanctioned-load field (M05-15, MS1-10): V1 fills it by hand with no survey in existence, and once this module lands the design's pinned survey version fills it; two versions disagreeing is exactly the difference M04-66's ruled reconciliation surfaces as review-needed on the design (M05-13), never a site-level pick (M04-45 says the figure is carried to the design, and a second copy on `site` would be the duplication CLAUDE.md §8 forbids).
 
 ---
 
@@ -275,6 +283,10 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 - Given a revisit that creates a new survey version, when it is created, then the user is told in one line what happened, naming the source version and the new one (`F4-25`).
 
 *(`F4-14`, `F4-17` and `F4-25` moved here from struck `T-FPLAT-012` and `T-FPLAT-014`: the survey and visit rules land with the module that owns those objects (Law 9), rather than as a block 0 engine nothing consumes yet.)*
+**Settle at /start:**
+
+- Where the lead reference anchors — ruled: on the survey header, through `site.lead ref`, and on no version; a `survey_version` carries only its `survey` ref, and M04-61's visibility resolves survey → site → lead (M04-01 gives the survey one identity per site, `site` already carries the lead, and a per-version lead ref would be a second copy of that fact).
+- When an in-progress version becomes immutable — ruled: at submit (M04-52's explicit action) and never before; appending the next version moves the earlier one's status to `superseded` and touches nothing else, and an unsubmitted draft or in-progress version stays editable by its author alone, last-writer-wins by server apply order, even after a later version exists (F4-14; §M04.11 keeps a partial draft as a draft version when its visit is cancelled).
 
 ---
 
@@ -291,6 +303,9 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **DONE WHEN:**
 
 - Given a survey in progress, when the application is killed or the device dies, then reopening restores the same step with every field, note and photograph intact (M04-48).
+**Settle at /start:**
+
+- Draft storage locus — ruled: server-held. Every field, note and step pointer of a draft or in-progress version is written to the server as it is entered, over the live connection the app requires, and restore is re-reading that version at its recorded step; the device holds nothing but the photograph queue of M04-55, whose entries the draft references (§5 non-goal — no device-held store but the photograph queue; F4-14 resolves in-progress edits by server apply order, which only a server-held draft can do).
 
 ---
 
@@ -309,6 +324,14 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 
 - Given photographs taken while the connection is down, then each is stored on the device immediately and uploads resumably when the connection returns, without user action, with the queue's status shown on the capture screen and on no other surface (M04-55).
 - Given a revisit, when its photographs are captured, then they belong to the new survey version and the earlier version's photographs are unchanged (M04-56).
+- Given a photograph captured in the field, when it has not yet uploaded, then it is held on the device until it has, and a submission that fails validation is preserved rather than discarded (`F4-21`).
+
+*(`F4-21` moved here from struck `T-FPLAT-013`: the rule lands with the module that captures photographs (Law 9).)*
+
+**Settle at /start:**
+
+- Where `quarantined_submission` rows live and how long — ruled: server-held, written when the server refuses or fails to validate a submission, badged to its author, and kept until that author recovers or discards it — closed by state, never auto-purged (§5 non-goal admits no device-held store but the photograph queue; F4-21 preserves the payload for recovery; a server row also stays outside F4-37's shared-device discard).
+- Device photograph-storage cap value and its owner — the owner is `domain`, as a policy number (CLAUDE.md §8: policy numbers live there, and a setting for one caller is config the standards forbid); the value — pick: 1 GB of acknowledged originals, evicted oldest-first, unacknowledged never (M04-55 fixes the order and nothing fixes the size, and a cache of server-confirmed originals loses nothing at any size; cost if wrong: too small re-downloads acknowledged originals for review more often, too large trips M04-47's low-storage warning sooner on small devices).
 
 ---
 
@@ -406,8 +429,5 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 | M04-66 | LAW |
 | F4-14 | T-M04-015 (moved from T-FPLAT-012) |
 | F4-17 | T-M04-015 (moved from T-FPLAT-012) |
-- Given a photograph captured in the field, when it has not yet uploaded, then it is held on the device until it has, and a submission that fails validation is preserved rather than discarded (`F4-21`).
-
-*(`F4-21` moved here from struck `T-FPLAT-013`: the rule lands with the module that captures photographs (Law 9).)*
 | F4-21 | T-M04-017 |
 | F4-25 | T-M04-015 |

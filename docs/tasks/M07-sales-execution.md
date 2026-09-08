@@ -112,6 +112,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given the knowledge-base configuration screen, when knowledge is edited, then the preview shows the agent **using** that knowledge, so a tone or knowledge mismatch is caught before it goes live (`M07-21`, the `M01-30` live-preview law).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Knowledge-base change-history granularity and the per-call effective KB (§M07.4, M07-26) — ruled: the change history is one append-only revision row per section save (section, language, content, actor, saved-at); a call's effective KB is each section's latest revision at the call's start, derived by query, and the call record stores no KB pin (§M07.4 says calls pin the config version and never KB content, and M07-26's KB version in the audit pairing is exactly that revision lookup).
+
 ### T-M07-010 · Unanswered questions
 
 **Type:** screen · **Tier:** P0
@@ -123,6 +126,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given the agent could not answer "does hail damage panels?", when the owner opens the list, then the question shows with its asked-count, and one tap on an answer writes it into the named section, live for the next call (M07-18).
 - Given any listed call, when tapped, then transcript and recording (where consented and within retention) open (M07-57); given the unanswered list, then one tap answers into the KB (M07-58).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle at /start:**
+- The aggregation identity behind asked_count (M07-18) — pick: exact match on the normalised question text per agent language — lower-cased, punctuation stripped, whitespace collapsed — with no semantic clustering in V1 (the row's identity is then a plain unique key and the count a plain increment; cost if wrong: near-duplicate phrasings split one question across rows, and a later semantic merge is additive — merge rows, sum counts).
 
 ### T-M07-011 · Corrections review queue
 
@@ -150,6 +156,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given allowance exhausted between insert and dial, when the dial moment arrives, then the entry blocks, is marked, and the owner is notified (M07-37).
 - Given a config version published after a call was queued, when that call dials, then it runs the version it was queued with and the queue view names the difference (M07-36).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle at /start:**
+- Queue-entry uniqueness scope and post-dial entry states (M07-35, §M07.7) — ruled: one live entry per lead, not per lead plus number — a partial unique key on the lead over entries in `queued` — and the closed set `queued → blocked | cancelled | done | exhausted`, where a retryable outcome (no answer, busy) returns the same entry to `queued` with its attempt count incremented and a window-shifted not-before, and reaching the configured maximum moves it to `exhausted` with the rep task (§M07.7 fixes one entry per lead with attempts counted once, and M07-35 counts attempts on the entry, so the entry must outlive a dial).
 
 ### T-M07-013 · Call record detail
 
@@ -185,6 +194,10 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given an escalation chain where no level answers, when the timeouts elapse, then the terminal fallback (callback queue or voicemail) takes the call — a dead end is impossible by construction (M07-44).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- The seeded escalation chain's per-level ring timeout (M07-44) — pick: 30 seconds, a `domain` policy number written onto the seeded `routing_policy_version` row as ordinary tenant data (a ring timeout is product policy, not a market fact, and F1 declares no pack key for it, so none is invented at seed time; cost if wrong: one value on one seeded row per tenant, changed by a data fix or by this editor, never a schema move).
+- How a named ring destination is stored when the PRD defines no ring-group surface (M07-44, M07-46, M07-47, M07-50, §M07.9) — ruled: a typed target descriptor (kind + ref) on every chain level, handoff target and IVR destination, resolved through `user_presence` at ring time; the V1 kinds are only those the seed and M07-47 route to — the lead's owner, a named user, the AI agent, voicemail, the callback queue — and no `ring_group` kind or table exists until a surface authors one (nothing in V1 could write a group row; the descriptor is the seam V2 widens with a new kind without migrating a stored target; what it forgoes — a tenant naming a group apart from a preset — no V1 surface shows).
+
 ### T-M07-016 · IVR flow editor
 
 **Type:** screen · **Tier:** P0
@@ -195,6 +208,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **DONE WHEN:**
 - Given a tenant edits their IVR flow, when they publish, then the whole flow versions and in-flight calls finish on the version they started (M07-47).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+**Settle at /start:**
+- What the seeded default IVR greeting plays (M07-47, §M07.9) — ruled: the published `agent_config_version`'s opening line, per offered agent language, by reference — the seeded `ivr_flow_version` row stores no greeting text of its own, and tenant-authored greeting text overrides it only when this editor writes it (F1's pack schema declares no greeting key and none is invented at seed time; the opening line is the one platform-seeded, tenant-editable piece of spoken copy that already exists, M07-08, M07-09).
 
 ### T-M07-017 · Number provisioning wizard
 
@@ -256,6 +272,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given a task due yesterday, when any surface renders it, then it is overdue by derivation — and if its due date is edited to tomorrow, it is nowhere overdue, with no stored flag to clear (M07-05).
 - Given a proposal marked shared on Monday, when Wednesday arrives with no rep action, then the auto-created follow-up task exists, is owned by the sending rep, and names its provenance rule (M07-06); given it is still open two days past due, then it is visible to the agent's task-overdue trigger (M07-07).
 
+**Settle at /start:**
+- The task status vocabulary and its transitions (M07-05) — ruled: `open | done | cancelled`, with open → done, open → cancelled and done → open (an untick), cancelled terminal; overdue is derived on `open` rows only, and a snoozed lead hides its tasks by the lead's own state, never by a task status (every consumer — My Day, the overdue-2d trigger, the snooze hide-and-return — reads only whether a task is still open, and M07-05 forbids storing overdue).
+
 ### T-M07-022 · Agent conversation runtime (defaults, holds-back, opener floors, lead scoping, spoken figures)
 
 **Type:** engine · **Tier:** P0
@@ -299,6 +318,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given scrub data older than the pack's freshness duty, when promotional dialing is due, then it is paused and the owner alarmed while transactional calls continue (M07-29).
 - Given any connected agent call, when it completes, then the record shows the opener version played and — where the customer asked — that the AI question was answered honestly with a human offered; where the pack's proactive-disclosure flag is ON, the record shows the proactive line played (M07-32, owner ruling 2026-08-04).
 
+**Settle at /start:**
+- `dnd_scrub_entry`'s data boundary and shape (`F1-36`, `F1-15`) — ruled: platform-owned and platform-wide — one row per E.164 number carrying the registry verdict and its scrubbed-at time, written by the daily refresh sweep before the window opens and read per dial against the dialing tenant's pack freshness duty; no per-tenant copy and no stored batch verdict (`F1-36`(a) defines the scrub as a registry cache refreshed daily, and a number's registration is a fact about the number, not about the tenant dialing it — a tenant-scoped copy would be a second copy of one fact, and the batch is the refresh, not a record).
+
 ### T-M07-025 · Agent triggers (safety net, on-demand, requested-callback lane)
 
 **Type:** engine · **Tier:** P0
@@ -308,6 +330,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - **M07-33** (P0) — **The agent triggers two ways: automatically as a safety net — proposal unopened 3 days (`M06-55` consumed) · rep task overdue 2 days (M07-07) · three failed manual call attempts (`M02-43` consumed) — and on demand, when a rep hands a lead to it.** A customer-requested callback also queues (callback-requested) — and under the **requested-callback lane** (owner ruling 2026-08-04; F1-36(b) lane 3) it may be scheduled **outside the statutory window only on an explicitly recorded, timestamped customer request for that time** (transcript, message or rep note): the call opens by referencing the request, the consent trail is stored as evidence, and a single "stop" ends the lane for that customer; the lane is product law, per-tenant enable/disable only. The owner chooses which automatic triggers are live (M07-34).
 **DONE WHEN:**
 - Given a proposal three days unopened, a task two days overdue, or a third failed manual attempt, when the safety net runs, then a queue entry exists naming that reason — and given a rep hands a lead over, then it queues on demand (M07-33).
+
+**Settle at /start:**
+- Lane-3 activation's operator-side consent-registration data (M07-33; `F1-36`(b), `F1-38`) — pick: no product record in V1 — lane 3 is a per-tenant enable the platform flips when the operator-side registration clears, the same activation-not-scope shape as `F1-38`'s template registration, and the per-call consent evidence stays on the queue entry as M07-33 already stores it (no row states what the scheme would require of a record, so authoring one would invent it; cost if wrong: a registration entity is added beside the queue's evidence, additive, and lane 3 stays disabled until it lands).
 
 ### T-M07-026 · Call execution honesty (record always written, stall ladder, wrong number)
 
@@ -320,6 +345,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **DONE WHEN:**
 - Given the agent reaches a wrong or reassigned number, when the call ends, then the record's outcome is wrong-number, the number is marked unverified, and no further automated attempt occurs until a person confirms it (M07-40).
 - Given any completed, dropped or failed call, when the lead timeline renders, then the call record exists with its typed outcome, summary, language and config version, with transcript on tap (M07-38, M07-39); and given the customer declined recording, then no recording exists but the call proceeded and the transcript survives per the pack's rules (M07-38).
+
+**Settle at /start:**
+- Whether the call record pins the routing-policy and IVR-flow versions or only the agent config (M07-38, M07-44, M07-47) — ruled: it pins both — nullable refs to the `routing_policy_version` in force when the call started and, on inbound, the `ivr_flow_version` that answered it, written beside the agent-config pin (both are versioned-append and platform-seeded before the first call; M07-44 and M07-47 promise that in-flight calls keep their starting version, and that promise is auditable only from the record; a nullable ref costs nothing, and reconstructing the version later by timestamp is the guess M07-14's config pin already rejects).
 
 ### T-M07-027 · Escalation notification, handoff context and presence
 
@@ -347,6 +375,9 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **DONE WHEN:**
 - Given an unknown caller the agent serves at 11 pm, when capture completes, then the lead exists via the standard dedupe path and any callback is queued no earlier than the window opening (M07-48).
 - Given AI-inbound over allowance, when a call arrives, then it routes per the tenant's IVR fallback and is logged (M07-50).
+
+**Settle at /start:**
+- Whether the missed-call log is a distinct record type or a view over the call ledger (M07-38, M07-50, §M07.9) — ruled: a view — a missed call is an inbound `call_record` no person or agent answered (outcome no answer or voicemail), and its lead-timeline entry is that row; no second table (M07-38 ledgers every call, human and agent, inbound and outbound, so a separate log would be a second copy of a ledgered call).
 
 ### T-M07-029 · Telephony capability framework and DTMF traversal
 

@@ -55,6 +55,10 @@ bucket exactly once.
 - (`F5-48`'s PRD acceptance line — quoted above — is the **pre-ruling** wording, retained here for traceability: it covers the page-state half only. **That PRD line now carries the automatic-send half itself at `docs/prd/foundations/F5-customer-link.md` §F5.6's acceptance block, annotated to the owner ruling of 2026-08-04 — the gap this note was opened for is closed, and the send line above is now the PRD's own criterion rather than a supplement to it.** The reconciled `F5-48` requirement text quoted in `docs/ux/briefs/SCR-F5-01-link-proposal.md` and `M03-03` remain the binding criteria.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Question acknowledgement persistence — ruled: every question the link has received is listed on the page in every phase with its acknowledgement state, for the life of the link, and the states are exactly submitted → received with no answered state (§F5.7's edge case has the page show the earlier question as received; the reply is a call the page never claims, `F5-53`; the rows are lead timeline entries and the link is permanent, `F5-22`, so nothing ages out).
+- The named person with a phone number in every phase, surviving project close (`F5-55`, `F5-73`) — pick: the proposal phase names the lead's owner and the progress and handover phases name the project's current coordinator assignment, falling back to the lead's owner where none exists, each rendered as that user's name and login phone (`M01-18`); the source survives close because users are deactivated, never deleted (`F2-20`) and assignments are append-only (the lead owner and the coordinator are the only per-phase person fields any row names; cost if wrong: one resolver swaps its source field and no row changes shape).
+
 ---
 
 ### T-F5-002 · Customer Link — Progress page (SCR-F5-02)
@@ -114,6 +118,9 @@ bucket exactly once.
 - Given a link exceeding a viewing or responding ceiling, when it is used, then the customer is shown the honest page with a named contact rather than a blank or an error (`F5-78`).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Rate-limit counter persistence — pick: ephemeral, no counter table — the per-link view and respond ceilings are a trailing-hour count over the link's own append-only rows the audit law already requires, and the global public-route ceiling is an in-process counter that persists nothing (the network address is transient and never persisted, `F5-29`; every access is already a row, `F5-79`; no surface reads a counter back; cost if wrong: a process restart forgets the global count for at most one hour).
+
 ---
 
 ### T-F5-005 · Customer 3D View (SCR-F5-05)
@@ -163,6 +170,11 @@ bucket exactly once.
 - Given every customer-facing share surface in the product, when they are enumerated, then each is a tokenised link under this framework and no local-only share path exists (`F5-80`).
 - (`F5-74` carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text above is the binding criterion — the link keeps serving the pack after the project closes, permanently, so closing is not de-provisioning.)
 
+**Settle at /start:**
+- Link vs token — ruled: two entities, a customer_link (label, contact, lead, scope set) served by many link_token rows, each individually revocable, with no expiry column on either — a respond scope's lifetime is derived at read from the deal's phase, never stored (`F5-22` re-mints a fresh token for the same link and lets both serve until one is revoked; `F5-21` makes effective rights scopes ∩ phase; no token was ever minted under the pre-ruling horizon — the POC's local share ids are replaced, not migrated, `F5-80` — so `expired` stays in the contracts vocabulary `F5-22` keeps and no row can reach it).
+- The link's deal reference — ruled: the link holds a lead reference only; the progress and handover phases resolve the project through lead → project, which the won transition creates 1:1 (`M07-62`, `M08-02`), and the phase is read from the deal's state on every open (§F5.3: the link is the deal's identity and holds no state machine; a second reference would be a copy that can diverge).
+- White-label custom domain — ruled: no custom-domain field on the tenant record or the link at launch; link resolution is domain-independent, so the first Enterprise slice adds a tenant → domain routing mapping that touches no link row (`F5-82` builds on the first Enterprise ask; Law 9 authors no schema before its slice).
+
 ---
 
 ### T-F5-007 · Named links, open attribution, PII-free tracking and link audit
@@ -192,6 +204,9 @@ bucket exactly once.
 - Given any mint, re-mint, revoke, open, accept, negotiate or decline, when it occurs, then an audit entry records it with attribution, and the tenant can export their own log (`F5-79`).
 - (`F5-28`'s acceptance line above previously departed from the PRD's own acceptance block, which carried the unscoped ban on any delivered state that preceded the transactional-lane ruling and repeated it as the M13 cross-module contract line — *"the standing prohibition on a delivered state (`F5-28`)"*. **Both PRD lines are now reconciled to the two-branch shape at `docs/prd/foundations/F5-customer-link.md` (§F5.4 acceptance block and §4's M13 contract row), annotated to the owner ruling of 2026-08-04 — the divergence is closed and the build line above matches the PRD's.** The reconciled `F5-28` requirement text quoted in full above, with `M03-03`, remains the binding criterion.)
 
+**Settle at /start:**
+- Stored link events vs analytics — ruled: link_event holds exactly the five append-only events its source names — opened, section viewed (with section and duration), accepted, negotiate requested, declined — and every name under the PRD's "Analytics events" lists rides the suite's separate analytics stream and is never a link_event row (`F5-27`'s source names the five; `F5-28` makes viewed-for-how-long the product's own evidence; the analytics stream is a separate store by the suite's rule, `F2` §F2.4).
+
 ---
 
 ### T-F5-008 · Acceptance record, challenge shape and tenant notification
@@ -209,6 +224,10 @@ bucket exactly once.
 - Given a satisfied challenge, when the product is inspected afterwards, then no account, password or persistent session exists for that customer (`F5-45`).
 - Given a completed acceptance, when the record is read, then it names the link, the contact, the challenge outcome, the network address and the user agent (`F5-46`).
 - Given a successful Accept, when it is recorded, then the tenant is notified and no project exists until a person marks the deal won (`F5-49`).
+
+**Settle at /start:**
+- Accepted proposal-version reference on acceptance_record — ruled: stored, as the version the server validated as current at the moment of accept (`F5-47` re-checks that exact version; `F5-48`'s confirmation states what was accepted; `F5-40` pins sent versions, so the reference names a version that never changes underneath the record; without it the record cannot say what was committed to).
+- Contact attribution on a contact-less link — ruled: acceptance_record's contact reference is the link's own at the moment of accept and is absent exactly where the link's is; the record still names the link, the challenge outcome, the network address and the user agent, and accept is never refused for want of a contact (`F5-47`'s re-check is version, deal state and challenge only; `F5-44` makes named-link attribution the evidence of record; §F5.4 calls a contact-less link an operational signal, not a failure).
 
 ---
 

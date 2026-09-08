@@ -78,6 +78,9 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10).
 - Given a composed home, when its blocks are compared with the owning modules' contracts, then the content is identical and every block law (separate agent block, no-commercial-figures surfaces, gap statements) still holds (M13-11, M13-13).
 
+**Settle at /start:**
+- The home-preset ladder (M13-10) is an ordered constant beside the twelve-preset union in `contracts`, never a table — ruled: M13-10 calls it a product constant, no tenant or runtime writes it, and the UI-language list in `packages/contracts/src/locale.ts` is the standing precedent for a product-level list that is never a table; a re-order is a commit.
+
 ### T-M13-007 · Revenue and forecast read-model
 
 **Type:** engine · **Tier:** P0
@@ -100,6 +103,9 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 (M13-17's inline set/edit surface is SCR-M13-01's — `docs/ux/briefs/SCR-M13-01-owner-dashboard.md` carries the verbatim row; this task builds the storage — one goal per scope+month, goal only — and the read-time derivation of actuals from proposals/payments.)
 **DONE WHEN:**
 - Given a target unset, when the dashboard renders, then no nag appears anywhere and every section works; given a target set inline, then "this period" compares against it (M13-17).
+
+**Settle at /start:**
+- The monthly target's unit (M13-17, M13-14) is money — an integer in the tenant currency's minor unit, the one actual the dashboard compares (M13-14's won/signed value against the target) — ruled: no unit column and no count target; a second metric is a new row, not a column.
 
 ### T-M13-009 · Descriptive statistics — medians, outlier flags, cycle-time measurement
 
@@ -136,6 +142,9 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - **M13-51** (P1) — **Trial-to-paid conversion is the launch conversion metric this module reports** — the one acquisition measure named by source; its event taxonomy lands here.
 **DONE WHEN:**
 - (M13-51 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion. The PRD's analytics-events note for §M13.8 names the event: trial-to-paid conversion recorded (M13-51).)
+
+**Settle at /start:**
+- No analytics event-stream store in V1: trial-to-paid (M13-51, BM-47) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
 
 ### T-M13-012 · Dashboard export
 

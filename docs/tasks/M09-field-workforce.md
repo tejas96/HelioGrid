@@ -59,6 +59,9 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - *Row removed 2026-08-07 by owner decision: `M09-36` (the attendance day-start / day-end mark) was deleted with the offline/sync capability, and its acceptance line went with it. Its connectivity half — the consequence that in a no-signal area the day and the tracking window start only when the mark reaches the server — died correctly with the boundary. **Its other half did not, and no live row carries it:** an attendance day-start or day-end mark is recorded only when the server has it — until then the action is shown to the person as waiting, never as a success, and no attendance record is displayed as recorded before it is acknowledged. `M09-35` establishes only that attendance is two marks a day; `M09-37` governs only that a first check-in offers the day start rather than deriving it; `M09-39` governs absence, not acknowledgement; and `F8-36`'s no-optimistic-result clause is conditioned on an action that cannot be performed — the failure branch, not the in-flight branch this obligation governs. **Open for the owner: this obligation has no live carrier and is built by no task in this file.** Compounding it, `docs/ux/briefs/SCR-M09-02-my-day-route.md` carries no 2026-08-07 amendment note — it still prints `M09-36` as a requirement and still specifies an `attendance-waiting` state citing it; the brief owner must resolve that pointer, and this task cannot close against an `M09-36` state.* **Closed 2026-08-15:** the owner ruled on that open question and the orphaned obligation is now carried by the new live row `M09-71`, quoted verbatim above and built by this task — `M09-36` itself stays deleted, this record of its deletion stays true, and the brief was repointed in the same wave — `docs/ux/briefs/SCR-M09-02-my-day-route.md` now quotes `M09-71` in full and its `attendance-waiting` state cites it, with `M09-36` surviving there only inside the file's own dated amendment notes. Nothing is left outstanding on either side.
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- An attendance day that crosses midnight — which tenant-timezone day the pair belongs to and what a day end after the boundary closes — ruled: `attendance_record.day` is the tenant-timezone date of the day-start mark, unique per (employee, day); a day end closes that open day start whatever date the server records it on, and a day end with no open day start is refused with the reason (`M09-35` makes the start–end pair the unit of a day, `F3-22` fixes the timezone, and `M09-71` already lets the server refuse a mark; nothing is inferred).
+
 ---
 
 ### T-M09-003 · Visit Stop Detail screen
@@ -110,6 +113,9 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given a correction to a timeline-bearing record, when it is applied, then the original entry remains readable and the correction appears as an appended entry (`M09-56`, `M09-38`).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Whether the activity timeline is a stored stream or a view — ruled: a derived read over the field records (attendance marks and their corrections, check-ins and check-outs, visit outcomes, unplanned stops, notes and photos, geofence crossings) unioned in server capture order, with unrecorded intervals computed at read time from the position gaps and the entry-kind vocabulary (person act · system-observed event · unrecorded interval) a `contracts` union; no timeline table exists (`M09-56`'s append-only law is inherited from every source record being append-only, `M09-54` names each entry as a record this module already holds, and a second store would be a copy that drifts).
+
 ---
 
 ### T-M09-006 · Day Playback screen
@@ -140,6 +146,9 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given a geofenced site, when its radius is set, then a radius below the typical accuracy of a consumer position fix is refused with the reason named, and a site with no radius has no fence (`M09-50`).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+**Settle at /start:**
+- Which places a geofence may anchor to — ruled: `geofence.site_ref` is a plain foreign key to `site`, the one anchor kind; a fence is created only where a `site` row already exists, and a confirmed address or corrected site that has not materialised as one cannot carry a fence — the user is directed to the owning module, which is this task's first done-when line (`M09-49` says a fence follows the site and never invents a place; whether `M02-46` and `M04-12` write `site` rows is that entity's own slice to settle, and this module consumes whatever exists).
+
 ---
 
 ### T-M09-008 · Tracked-seat toggle service
@@ -160,6 +169,9 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given a user who is not the EPC Owner, when they open an employee's record, then no control that moves the tracking toggle is present or reachable (`M09-11`).
 - Given two people signing into the same shared device, when their tracking states are read, then each state follows the person rather than the device, and a second tracked seat exists only if that second person is toggled on (`M09-15`).
 - Given any mechanism in the product other than the EPC Owner's per-employee toggle, when it is exercised, then no employee becomes tracked as a result (`M09-65`).
+
+**Settle at /start:**
+- How the tracked seat is stored and handed to M12 — ruled: one current-state row per employee (`employee_tracking_state`, unique on the employee) plus one appended toggle event per move (actor, subject, direction, server time, idempotency key); the current row is what every position and seat count reads, the event rows are the only thing M12's tracked-seat meter reads when its V2 slice begins, no `usage_event` is written here, and no state is derived from events at read time (`M09-42` evaluates the tracked set on every position, `M09-12` shows the count before and after, `M09-70` audits every move, `M12-33` meters from the toggle events, and `M09-04` keeps the accounting out of this module).
 
 ---
 
@@ -240,6 +252,9 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given any billing state, when a tenant exports their field records, then the export succeeds (`M09-57`, `F1-24`(a)).
 - Given any billing state, when a tenant exports its field and location records, then the export succeeds; and given an erasure request, then records are anonymised rather than deleted (`M09-69`, `F1-24`).
 
+**Settle at /start:**
+- Which retention bucket holds `geofence_crossing_event` — ruled: the movement-trail bucket, purged with `location_position` on the same 90-day rolling window or the stricter pack period (`M09-52` says a crossing exists only by evaluating the position stream a tracked seat produces and `M09-56` classes it as an event the system observed, not a person's act; the business records `M09-57` retains are the person's own acts, and the check-in a prompt led to is one of those and stays).
+
 ---
 
 ### T-M09-013 · Field audit events, including location-read audit
@@ -288,6 +303,10 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given a survey visit and an ad-hoc field stop, when each is read, then the survey visit resolves to `modules/M04`'s object with its own states and capture flow and the field stop to this module's, and neither document is contradicted (`M09-26`).
 - Given a survey visit, when it is read in this module, then it renders as a stop with its presence record and no survey content, version or capture surface is duplicated here (`M09-29`).
 - Given a visit to a project site, when it is completed here, then a presence record exists and no project stage, blocker, document or checklist state was written (`M09-30`, `M09-08`).
+
+**Settle at /start:**
+- survey_visit and field_visit storage — ruled: two rows, one per module — a `field_visit` row is created for every `survey_visit` with `origin_ref` pointing at it, one-to-one, and the presence record (`check_in_record`) attaches to the `field_visit` row only, never to the survey visit (`M09-26` names them different objects, `M09-29` says this module adds only what M04 does not own, and `M09-08` lets this module write the field record and nothing of M04's).
+- The check-in anchor — ruled: `check_in_record` anchors to one `field_visit` row, never polymorphically to a site; an unplanned stop is a `field_visit` row flagged unplanned whose place is a `site_ref` where the product already holds the site and otherwise the captured place (label and position) on that row; no act in this module creates a `site` row, and a geofence prompt with no planned stop creates an unplanned stop at the fence's site (`M09-32` makes every unplanned presence a stop with a place, `M09-49` forbids inventing a place, and `M09-08` names place as the field record's own fact).
 
 ---
 

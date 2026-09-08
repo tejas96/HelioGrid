@@ -81,6 +81,8 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 - Given a new tenant, when the trial starts, then no payment instrument exists anywhere and every tier capability works within the caps (M12-52).
 - (M12-07 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — `expired` is terminal and behaves exactly as `halted`: soft-block, data retained indefinitely, reactivation permanently offered. Its soft-block half is exercised by T-M12-009's M12-22 line, which names `expired` in the always-on set, and its path forward by T-M12-003's M12-53 line.)
 - (M12-13 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — no pause state exists in the machine, and a gateway pause/resume event is logged and alerted, never applied. The state-name half is exercised by M12-04's line above, which admits exactly the six `BM-33` names.)
+**Settle at /start:**
+- `trialing` is a `subscription` row from signup — null gateway subscription and mandate references, no billed `plan_price` until conversion — and trial nudges parent on that row, so `dunning_event` has one parent (M12-04, M12-52, M12-54) — ruled: the trial is the machine's first state on the tenant's one non-terminal subscription, and only the gateway object waits for conversion (M12-04 makes `trialing` a state of the one machine and M12-52's "in-app only" speaks of the gateway object, not the row; one parent keeps the ladder and its history one shape).
 
 ### T-M12-006 · Charge truth, reconciliation & billing timers
 
@@ -93,6 +95,8 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 **DONE WHEN:**
 - Given a successful charge, when it lands, then window + payment + invoice + dunning-clear all follow from that one event, and no out-of-order event can undo it (M12-09).
 - (M12-43 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — the trial-expiry sweep and the 6-hour reconciliation cadence are fixed product timers, carried as product timers and not as calendar language. The sweep's outcome is exercised by T-M12-003's M12-53 line and the cadence's repair duty by M12-09's line above.)
+**Settle at /start:**
+- A failed charge writes no `subscription_payment` and no invoice (M12-09, M12-39, M12-44) — pick: the failure writes the `charge failure` state-history row and the day-0 `dunning_event`, both keyed by the gateway attempt reference for idempotency; `subscription_payment` records successful charges only, and the invoice status `failed` is reachable only on an invoice issued ahead of collection — the yearly link/invoice rail of M12-11 (M12-09 names the successful charge as the sole writer of payment and invoice; cost if wrong: a failed attempt has no row of its own and the invoice list never shows a failed cycle, and an attempt record added later is additive).
 
 ### T-M12-007 · Provider-neutral billing ports: hosted checkout, mandate rails & plan objects
 
@@ -108,6 +112,8 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 - Given the module body, when searched for vendor names, then the only occurrence is M12-03's reference-implementation naming (M12-03).
 - Given conversion, when checkout confirms, then the subscription exists at the gateway, the mandate rides the pack's rail, and entitlements are active immediately (M12-54 — dispositioned to T-M12-003; carried here as well because these ports are what it exercises end-to-end, and it is the only PRD acceptance line that touches hosted checkout and the mandate rail).
 - (M12-10, M12-11 and M12-12 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — checkout is the gateway's hosted flow and the platform never sees a payment instrument (M12-10); the mandate is established at conversion, never at signup, on the market pack's rails, with pre-debit notification the gateway's duty (M12-11); every tier exists as two gateway plan objects, monthly and yearly, mirrored 1:1 by per-currency plan-price rows, with our tables the source of truth for entitlements and the gateway's for money, and a cycle switch following M12-48's tier-upgrade mechanics exactly (M12-12). M12-14's line under T-M12-005 exercises M12-11's "never at signup" half; M12-48's line under T-M12-003 exercises M12-12's cycle-switch half.)
+**Settle at /start:**
+- Enterprise custom pricing has no self-serve row (BM-15, BM-41, M12-11, M12-12) — pick: the V1 slice bills the three self-serve tiers' book rows only, Enterprise renders as "contact us" and no Enterprise subscription is creatable self-serve; the first signed Enterprise contract is entered as a per-tenant `plan_price` row — tier Enterprise, the tenant's currency, the contract's amount, pinned to the book version whose anchor it was negotiated against, with its own gateway plan object — never a per-contract book row (the book is market data under M12-02 and a negotiated number is tenant data; cost if wrong: a contract entity is added later and the row references it, additive).
 
 ### T-M12-008 · Entitlement engine
 
@@ -125,6 +131,8 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 - Given a metered action within allowance, when the meter write fails internally, then the action still succeeds and the miss is repaired by reconciliation — never a user-facing failure (M12-18).
 - Given a photograph already captured in the field on a tenant in any billing state, when it uploads, then no gate delays or refuses it; and given new field capture during dunning, then it continues — pausing only at `halted`, with a visit under way allowed to complete (M12-26, M12-27; owner ruling 2026-08-04).
 - (M12-17 and M12-19 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — plans carry trial days, the included bundles and the capacity ceilings, seats are reserved and always unlimited with no per-seat pricing beyond the tracked-seat add-on (M12-17); support-issued goodwill credits are entitlement-override records — audited, never manual edits — each naming who, what, why and when and appearing in the audit log (M12-19). M12-19's audit half is exercised by M12-58's line under the Laws section, whose `F2-22` covered-events list names entitlement overrides.)
+**Settle at /start:**
+- Entitlement history is not kept (M12-16, M12-58) — ruled: `entitlement` holds one current effective row per tenant × key, recomputed in place; the change record is the audit entry of the causing act — plan change, charge, override — plus the `subscription_state_history` and `entitlement_override` rows that caused it (M12-16 defines an entitlement as the current effective limit and M12-58 puts change visibility on the audit trail; a history table would be a second copy of what the causing records already hold).
 
 ### T-M12-009 · Soft-block enforcement gates & cap ladder
 
@@ -159,6 +167,8 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 - Given each gate in the enforcement-point table, when its fire point and denial are tested, then they match the table exactly and no other enforcement point exists (M12-23).
 - Given a cap reaching 80%, when the usage screen renders, then the pre-warning is present before any gate has fired (M12-30, M12-34).
 - (M12-31 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — every pause message states exactly what paused and what still works, specifically, never a generic "account limited". Its message content is exercised by M12-39's line under T-M12-011, "day 4's message names the paused set exactly", and by SCR-SHELL-06's rendering half in `docs/tasks/SHELL.md`.)
+**Settle at /start:**
+- The storage gate reads the latest `storage_gauge_snapshot` — the figure the usage screen shows — and nothing sums bytes between snapshots (M12-23, M12-33, M12-34) — ruled: the 10% headroom above the ceiling is the allowance for a day's uploads between nightly snapshots (M12-33 forbids a counter and M12-34 requires the gate and the screen to read the same figure; a tenant can overshoot by at most one day's uploads, which the headroom exists to absorb).
 
 ### T-M12-010 · Usage metering ledger & rollups
 
@@ -172,6 +182,10 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **DONE WHEN:**
 - Given any usage figure on the usage screen, when compared with what enforcement checks and the invoice bills, then all three come from the same rollup of the same ledger (M12-32, M12-34 — M12-34 is dispositioned to T-M12-004; the PRD's own line cites both rows, and this is the ledger half of it).
 - (M12-33 and M12-37 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — the per-meter rules are M12-33's closed set (one event per completed call for voice; AI detections bill only when a result was returned and failures never bill; OTP tracked for cost visibility, fair-use capped, not billed in v1; storage a nightly gauge snapshot, never a counter; tracked seats and marketing sends V2), and proxied third-party services are metered per tenant with quotas as platform cost lines that never appear on the tenant's bill (M12-37). M12-32's line above exercises the reproducibility and idempotency discipline both rules ride on.)
+**Settle at /start:**
+- Usage rollups are derived queries over `usage_event`, never materialized rows (M12-32, M12-34, M12-38, M13-50) — ruled: one rollup query, index-backed on tenant + meter + billing period, serves the usage screen, every gate, the invoice's overage lines and M13's dashboards (M12-32 names the ledger the only counter and M12-34 says "same query, same numbers"; a materialized rollup is a second counter that can drift, and adding one later for load is additive).
+- A V2 meter whose book rate is `draft` — `marketing_sends`, `tracked_field_seats` — is a key in the closed meter set from day one (M12-33, BM-26) — ruled: sellability is the book's `draft` flag (T-FCORE-010), never a ledger fact; the ledger meters its events whenever a V2 surface writes them, the entitlement engine issues no bundle and the invoice emits no overage line while the rate is draft, and the usage screen shows activity with no rate (§M12.5's edge case says exactly this, and the book already holds a trial cap of 0 for both meters).
+- Internal cost metering — the proxied third-party services of M12-37 and the absorbed lines of BM-24 — rides the same `usage_event` ledger under a disjoint non-billable meter vocabulary in `contracts`, never on the bill, the invoice or the usage screen (M12-37, BM-24, BM-25, M12-18) — ruled: per-tenant quotas are `domain` policy numbers, never tenant configuration, and read their rollups like any cap, with fair-use enforcement riding the soft-block law (M12-18 says non-billable metrics are still metered for quotas and cost visibility, M12-32 allows no counter but the ledger, and BM-24's fair-use enforcement follows the soft-block law, which reads product data — ops telemetry can gate nothing).
 
 ### T-M12-011 · Dunning ladder & trial nudges
 
@@ -187,6 +201,8 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 - Given a first failed charge, when the ladder runs unpaid to day 7, then each rung fires with its stated content, day 4's message names the paused set exactly, and day 7's confirms what still works (M12-39, M12-41).
 - Given all dunning copy in all languages, when audited, then no message threatens deletion or any consequence that will not occur (M12-41).
 - (M12-40 and M12-42 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — the dunning channel stack is the market pack's, platform→tenant messaging is ours to send and D32 constrains tenant→customer messaging only (M12-40); trial nudges reuse the dunning pipeline at day 7, day 12 and day 14, same channels, same honesty (M12-42). M12-41's audit line above covers the honesty half of both.)
+**Settle at /start:**
+- `dunning_event` is a record of its own — one row per fired rung per subscription, carrying its clearance — not a view over F6's notification log (M12-39, M12-55, F6-11) — ruled: the per-recipient F6 notifications and the pack-channel SMS and business-messaging legs of a rung fan out from that row and name it as their subject, and trial nudges parent on the subscription row T-M12-005 rules (the scheduler and the billing screen need the last rung and its clearance as one fact per subscription, and F6's record is per recipient and in-app/push only, so a rung's out-of-app legs would have no row at all).
 
 ### T-M12-012 · Subscription invoicing
 
@@ -199,6 +215,8 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **DONE WHEN:**
 - Given a paid cycle, when its invoice issues, then it carries the scheme's breakdown per the pack, the supplier-of-record identifiers, and any ledgered overage add-ons (M12-44, M12-45).
 - Given overage accruing, when the next invoice issues, then its add-on lines equal the ledgered overage at the book's published rates (M12-35 — dispositioned to T-M12-004; carried here as well because the add-on lines are this task's invoice output, and T-M12-004 owns the same line's usage-screen half).
+**Settle at /start:**
+- An upgrade's proration is one document kind (M12-48, §M12.7) — ruled: a `subscription_invoice` with `kind` = one-time proration, whose `invoice_line` rows are the proration lines; the next cycle invoice carries the plan line at the new tier and no proration line (M12-48's row and its acceptance line say a one-time prorated invoice, and §M12.7's "proration lines" are that invoice's line items; one document kind keeps the invoice list, PDF, tax lines and export uniform).
 
 ### T-M12-013 · Grandfathered price-row selection
 
@@ -210,6 +228,8 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **DONE WHEN:**
 - Given a grandfathered tenant, when the book reprices, then their bill is unchanged until their horizon lapses and never changes mid-cycle (M12-57).
 - Given a protected tenant who lapses to `cancelled` or `halted`, when they reactivate at any later date, then they bill against the current list book — protection forfeited on lapse — and the dunning/cancellation copy they saw stated the forfeiture before it happened (M12-57, M12-39, M12-41; owner ruling 2026-08-04).
+**Settle at /start:**
+- `price_protection` is a tenant-level fact pinning the market book VERSION current at signup, not individual `plan_price` rows, and no pin junction exists (M12-57, BM-42) — ruled: row selection at billing time resolves tier × cycle × currency inside the pinned book version, so a protected upgrade or cycle switch bills the new tier's row from that same version, and forfeiture is recorded on the same row with its lapse cause (BM-42 protects "the pricing they signed up on" — a book, not one row — and T-FCORE-015 runs the horizon from signup, before any row is billed; a pinned version answers every later row selection without a junction, and book rows are immutable and retained indefinitely under M12-12 and M12-57).
 
 ## Laws (enforced through screens and review, no standalone build)
 
