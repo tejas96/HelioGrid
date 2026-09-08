@@ -966,7 +966,7 @@ Nothing below is renumbered.*
 | M01-14 | P0 | screen | SCR-M01-09 | T-M01-009 |
 | M01-15 | P1 | screen | SCR-M01-10 | T-M01-010 |
 | M01-16 | P1 | screen | SCR-SHELL-01 | T-SHELL-001 |
-| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-025, T-SHELL-001 |
+| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-028, T-SHELL-001 |
 | M01-18 | P0 | policy | policy | T-M01-025 |
 | M01-19 | P0 | screen | SCR-M01-12 | T-M01-012 |
 | M01-20 | P0 | screen | SCR-M01-13 | T-M01-013 |
@@ -976,7 +976,7 @@ Nothing below is renumbered.*
 | M01-24 | P0 | screen | SCR-M01-05 | T-M01-005 |
 | M01-25 | P0 | screen | SCR-M01-05 | T-M01-005 |
 | M01-26 | P0 | screen | SCR-M01-06 | T-M01-006 |
-| M01-27 | P0 | policy | policy | T-M01-026 |
+| M01-27 | P0 | policy | policy | T-M01-029 |
 | M01-28 | P0 | policy | policy | T-M01-026 |
 | M01-29 | P0 | policy | policy | LAW |
 | M01-30 | P1 | policy | policy | LAW |
@@ -990,14 +990,14 @@ Nothing below is renumbered.*
 | M01-38 | P0 | mixed | SCR-M01-15 · +non-UI: one search over both tiers, preferred-first ranking, shared with the… | T-M01-015 |
 | M01-39 | P0 | screen | SCR-M01-16 | T-M01-016 |
 | M01-40 | P0 | mixed | SCR-M01-16 · +non-UI: PDF spec-extraction engine; output never committed without review… | T-M01-016 |
-| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017 |
+| M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017, T-M01-030 |
 | M01-42 | P0 | policy | policy | T-M01-027 |
 | M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release… | T-M01-015 |
 | M01-44 | P0 | policy | policy | T-M01-027 |
 | M01-45 | P1 | policy | policy | T-M01-027 |
 | M01-46 | P0 | policy | policy | LAW |
 | ~~M01-47~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It held the catalog and price book read-only on the device; with no on-device store the rule has no subject, and a read cache is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 — "The product does not read from a cache"). No live row replaces it and none is needed: the catalog is read from the server like every other read, and its own laws (`M01-46`, `M01-48`) are untouched. `docs/tasks/M01-onboarding.md` records the same removal under `T-M01-027`, which is alive.* | — |
-| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015 |
+| M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015, T-M01-031 |
 | M01-49 | P0 | policy | policy | LAW |
 | M01-50 | P0 | mixed | SCR-M01-18 · +non-UI: computational contrast re-verify on palette save; compliant shades… | T-M01-018 |
 | M01-51 | P0 | screen | SCR-M01-19 | T-M01-019 |

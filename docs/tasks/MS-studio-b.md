@@ -60,7 +60,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** MS4-05, MS4-13, MS4-23
-**PORT:** `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
+**PORT:** `3d_design_studio/src/features/solar-studio/data/catalog.ts` (the picker envelope only — `panels.ts`, `inverters.ts` and `lib/__tests__/catalog.test.ts` port with `T-M01-027`'s spec envelopes, which the own-SKU create consumes first)
 **DEFECTS:**
 - `CODE.step4-components.8` — pickers bypass resolved catalog envelope (S4-1: DD12 alignment → MS4-05).
 

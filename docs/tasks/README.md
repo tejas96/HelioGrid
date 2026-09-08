@@ -25,8 +25,18 @@ PORT:   (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-
         `tests/` tree, or into tests/invariants where it is a property of the system.
         CLAUDE.md §8 fixes the name and the place; check-adherence.sh fails on either.
 DEFECTS:(studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
-DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased
+Why:    one line, in EPC terms — what an installer gains and what breaks without it
+Data model: the entity rows this task AUTHORS (a table copied from the data model), with the
+        migration number and each table's tenancy; or "none — reads <entities> authored by T-…"
+Contract: the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
+Depends on: task ids and migration numbers that must land first
+Out of scope: what this task deliberately leaves to which other task
+DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
+        each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
 ```
+
+A task takes this whole shape at `/start`, before it is built, and keeps it; a task with a `Why:`
+line and any part missing fails the docs gate.
 
 ## Binding rules
 

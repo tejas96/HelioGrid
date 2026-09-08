@@ -81,8 +81,12 @@ def task_blocks(repo):
         if rel.endswith("README.md"):
             continue
         txt = open(f, encoding="utf-8").read()
-        for part in re.split(r"\n#{2,3} (?=T-)", txt)[1:]:
+        # Split on EVERY level-2/3 heading, keep only task headings: a block ends where the next
+        # heading starts, so a trailing "## Laws" section is never read as the last task's body.
+        for part in re.split(r"\n#{2,3} ", txt)[1:]:
             head = part.split("\n")[0].strip()
+            if not head.startswith("T-"):
+                continue
             tid = head.split("·")[0].strip().strip("`")
             blocks.append({"file": rel, "id": tid, "title": head, "body": part})
     return blocks
@@ -565,7 +569,7 @@ def run(repo, verbose):
     # Every file there carries its fate at its top; the folder dissolves into the package files
     # and the tasks. The ceiling is the folder's exact line count today: growth fails, and a cut
     # fails too until the ceiling is lowered in the same change — so it can only fall.
-    ENGINEERING_LINES = 7121
+    ENGINEERING_LINES = 6629
     eng_files = [f for f in tracked if f.startswith("docs/engineering/")]
     eng_lines = 0
     for rel in eng_files:
@@ -579,6 +583,31 @@ def run(repo, verbose):
          else (f"{eng_lines} lines: the folder GREW past its ceiling of {ENGINEERING_LINES} — fold, do not add"
                if eng_lines > ENGINEERING_LINES
                else f"{eng_lines} lines: below the ceiling of {ENGINEERING_LINES} — lower ENGINEERING_LINES to {eng_lines} in this change"))
+
+    # --- Gate 29 · a ticket is whole: Why, Data model, Contract, Depends on, Out of scope, a proof per line
+    # docs/tasks/README.md rule 11. A task opts in the moment it carries a Why line — the shape a
+    # task takes at /start before it is built — and from then on every part must be present and
+    # every DONE WHEN line must name its proof.
+    proof_re = re.compile(r"→\s*proof:\s*(unit|invariant|gate|qa-api|qa-web|qa-mobile|qa-parity)\b")
+    ticket_bad, n_tickets = [], 0
+    for b in blocks:
+        body = b["body"]
+        if not re.search(r"^\**Why:\**", body, re.M):
+            continue
+        n_tickets += 1
+        for label in ("Data model", "Contract", "Depends on", "Out of scope"):
+            if not re.search(r"^\**" + re.escape(label) + r":\**", body, re.M):
+                ticket_bad.append(f"{b['id']}: no {label} line")
+        dw = body.find("DONE WHEN")
+        if dw < 0:
+            ticket_bad.append(f"{b['id']}: no DONE WHEN block")
+            continue
+        for line in body[dw:].split("\n"):
+            if re.match(r"^\s*-\s", line) and not line.strip().startswith("---") and not proof_re.search(line):
+                ticket_bad.append(f"{b['id']}: done-when line without a proof: {line.strip()[:60]}…")
+    gate(29, "every ticket with a Why is whole, and every done-when line names its proof", not ticket_bad,
+         f"{n_tickets} tickets, all whole" if not ticket_bad
+         else f"{len(ticket_bad)}: " + " · ".join(ticket_bad[:6]))
 
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:

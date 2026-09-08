@@ -30,7 +30,7 @@ Fifteen domains, four ownership boundaries. The entity list groups them into twe
 | 2 | Market framework | §2.2 | Versioned market packs — one payload of the eight keys (tax, subsidy, calling rules, payment rails, certification schemes, formats with the display labels and the utility directory, data rights, price book), DND scrub, demo content | market-pack |
 | 3 | Platform billing & entitlements | §2.3 | Plans, plan prices mirrored from the pack's price book, subscription lifecycle, usage meters, entitlements, invoices, dunning, grandfathering | platform + tenant |
 | 4 | Tenant configuration | §2.4 | Business profile, tax registrations, branding, templates, integrations, onboarding resume state | tenant |
-| 5 | Catalog & rates | §2.4 | Platform catalog + releases, tenant SKUs and overrides, append-only rate history, tenant price book, pack BOM rates | platform + tenant + market-pack |
+| 5 | Catalog & rates | §2.4 | Pack BOM rates and the steel-profile catalog — the platform catalog, tenant SKUs, overrides, rate history and price book moved to `docs/tasks/M01-onboarding.md` | platform + market-pack |
 | 6 | CRM & marketing | §2.5 | Customers, contacts, leads, timeline, consent ledger, campaigns, capture, referrals | tenant |
 | 7 | Site & survey | §2.6 | Sites; and the V2 (M04) **alternative** capture path — versioned-append surveys, visits, gaps, photographs, survey-side roof obstructions. Not the studio's upstream: the imagery tile and AI detection live in domain 8, because the V1 studio draws its own roof | tenant |
 | 8 | Design studio | §2.7 | Designs and their geometry (roofs, obstructions, panels, tables, blocks, strings, cables), the pinned imagery tile and the in-canvas AI roof detection the studio runs itself (MS2-37/38/40), BOM, SLD overrides, sign-off, captures | tenant |
@@ -61,7 +61,6 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | Block | Hazard |
 |---|---|---|
-| `demo_project_content` | 1 | Its payload is 'localized survey/design/proposal content' but survey_version (§2.6) is V2 — M04. The ruling that a survey is never a studio prerequisite settles the direction rather than leaving two options open: the studio draws its own roof, so a demo with no survey chapter is a complete demo, not a truncated one — V1 seeds lead → design → proposal, and the survey chapter joins the pack content when M04 lands. What is still owed to M01's slice is the payload's shape and seeding format, never a survey-shaped row faked to satisfy a parent. Do not discover it at seed time. |
 | `message_template` | V1 | 1 | **Stays V1 — the copy-paste path still needs the text to copy.** The M01 *message templates* SETTINGS SCREEN is one of the four M01 V2 screens, but the table and its platform-seeded keys are read by V1 blocks 3 (`M02-33`/`M02-47`/`M02-48`), 5 (`M11` payment reminder), 6 (follow-up nudge) and 8 (`F5` pre-link messages, `M06-53`/`M06-54`). Block 1 authors the table and seeds the keys; the tenant-facing editor waits for V2. |
 | `integration_credential` | V2 — M01 settings | M11's collections_account_connection (V1, block 5) and M03's channel_connection carry the same write-only encrypted-secret + last-4 + probe + audited-decrypt shape (§5.13 rows 2535/2549). The encryption, rotation and decrypt-audit seam is a cross-cutting concern (forward-compat register) that block 5 must build even though this table and its screen are V2 — do not let 'credentials = V2' defer the seam. |
 | `consent_record` | 6 | Its leading PRD refs are M03-34/M03-46 and it sits in the marketing sub-domain, but M03 is entirely V2. A naive 'M03 → V2' mapping defers the ledger that the V1 calling gate (block 6, M07-28/31/40) and the V1 callback_request consent evidence (F5-54, block 8) both require. Author the calling/DND classes in block 6; only the per-contact messaging-class rows wait for M03. |
@@ -74,30 +73,11 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | `telephony_number` | 6 | **SETTLED — the table and the platform row are V1; the BYO half is V2.** V1 runs outbound agent calling and the platform-provisioned number is *"the only outbound origin"*, so the row cannot wait for the V2 wizard; M07-51's acceptance is that a new tenant opening voice settings finds a platform number available instantly. Block 6 therefore provisions the `kind = platform` row server-side. *(at tenant creation, or when voice is provisioned? — M07-51 vs M12 entitlement, M07-27/F1-16; §8)* **What waits for the *Number Provisioning Wizard* (`SCR-M07-17`):** the whole BYO half — `kind = byo_forwarding`, the requested → verifying → active → failed status machine, its failure reason and retry. Those columns exist from block 6 and stay null in V1. |
 | `payment_link` | 5 | **Resolved with `channel_connection` above.** `send_path` has one live value in V1 — copy — and `channel_delivery_states` stays null and unread until a channel exists, under the transactional lane's no-delivery-claim discipline on the fallback path. The link itself is minted on the tenant's own gateway (`M11-17`/`M11-24`) and is unaffected; only its delivery is manual. `message_template`'s `payment_reminder` key is seeded in block 1, so block 5 has its text. |
 
-### 2.1 Identity & tenancy
-
-| Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
-|---|---|---|---|---|---|---|---|
-| tenant | V1 | 1 | One EPC company's isolated workspace — root scope for data, market, currency, subscription and team *(white-label custom-domain field provisioned at launch or deferred? — F5-82)*  | platform | company_name; city; market_key (exactly one); tenant_currency (exactly one); default_language; timezone; segment; typical_system_kw; quiet_hours_window; tracking_force_stop_hour (default 20:00, owner-set — M09-44); geofence_default_radius (M09-50) | — | M01-01, M01-23, F1-07, F1-10, OV-06, BM-01, F6-14 |
-| user_account | V1 | 1 | Global platform account keyed by verified phone; one account whatever door it enters; Google identity links to it *(user status placement open — user_account vs tenant_membership; multi-tenant person unstated)*  | platform | phone_e164 (natural key, unique globally); name; photo; linked_google_identity; status; interface_language (F3; a value validated against the contract's `UiLanguage` — there is no language table); unit_preference (F3) | invited → active → deactivated (never deleted) | M01-18, M01-02, M01-08, M01-14, F2-20, OV-31 |
-| tenant_membership | V1 | 1 | Attaches a user_account to a tenant with stacked preset roles; created atomically at invite-OTP verification *(may carry user status instead of user_account; multi-tenant membership unstated)*  | tenant | tenant ref; user_account ref; last_active; first-run/coach-mark dismissal state (≤3) | — (status home ambiguous, see open questions) | M01-13, M01-19, M01-20, M01-16, F2-10 |
-| membership_role | V1 | 1 | Junction stacking one F2 preset onto one membership; OR-composition of grants across a person's rows | tenant | tenant_membership ref; role_preset ref | assigned → removed (guarded; audited old → new) | M01-12, M01-20, F2-10, F2-11, F2-19 |
-| role_preset | V1 | 0 | One of exactly twelve fixed platform presets named 1:1 for the personas — all twelve ship at launch and the retired six-value enum is never restored; read-only, no role editor *(stored table or shipped product configuration? — F2 §1, F2-25)*  | platform | canonical_english_name (natural key); per-language display names (open language set — F3-25); plain-language description phrases; default per-domain visibility scopes | — (fixed product data) | F2-01, F2-02, F2-16, M01-20, M01-21, PS-02 |
-| capability | V1 | 0 | One row of the per-module permission matrices — the only permission truth in the suite *(matrix as tables or code? F2 deliberately carries no schema — F2 §1, F2-25)*  | platform | row_key `F2.M<nn>.<slug>` (natural key, stable); plain-language phrase (never CRUD); owning module (M01–M13, F5) | — (extended only by product release) | F2-25, F2-26, F2-11 |
-| role_capability | V1 | 0 | Junction holding one matrix cell: a preset's grant on a capability — check-mark or scope word *(matrix cells as rows or shipped configuration — F2 §1, F2-25)*  | platform | role_preset ref; capability ref; grant_cell (✓ / scope word: All/Team/Own/Assigned/Portfolio) | — (fixed product data; cell change is a product release) | F2-25, F2-26, F2-11, F2 §F2.5 |
-| invitation | V1 | 1 | Phone-keyed team invite carrying ≥1 preset role; accepting creates user + membership + roles in one atomic step *(is 'declined' a distinct state or folded into revoked? — M01-12) · (request-to-join: stored record or transient notification? no entity modeled — M01-09)*  | tenant | invitee_name; invitee_phone_e164; inviter ref; carried preset roles (≥1); expiry; status | pending → accepted \| declined (voids) \| expired \| revoked | M01-12, M01-13, F2-21, PS-30 |
-| invitation_role | V1 | 1 | Junction: one preset role carried by one invitation (≥1 per invite); accepted invite materialises as membership_role rows | tenant | invitation ref; role_preset ref | — | F2-21, M01-12 |
-| otp_challenge | V1 | 1 | Single-use 6-digit OTP keyed to a phone (pre-account), with TTL, delivery state and per-phone anti-abuse counters | platform | phone_e164; code (single-use); channel (sms / user-initiated voice); ttl_expiry (5 min); failed_verify_count; delivery_state; request counters (3/15min, 8/day); lock_state (15 min) | sent → verified \| invalidated \| expired | M01-03, M01-04, M01-05 |
-| session | V1 | 1 | A device session for a user; web 30 days rolling, mobile 90; revocable everywhere within ≤10 minutes | platform | user_account ref; platform_kind (web/mobile); rolling_expiry; revoked state | active → expired \| revoked | M01-07, F2-20 |
-
 ### 2.2 Market framework & localization
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| market_pack | V1 | 0 | The one versioned unit of a market's configuration and the source of a tenant's market; readable global reference data — every tenant reads its market's pack and none writes it (owner ruling 2026-09-07). The server-assigned currency and the two launch-gate facts (residency determination, supplier-of-record decision) DERIVE from the current version's payload and are never columns — one fact, one home. | market-pack | market_code (natural key) | authored → launch-gated → live (gate: F1-05, computed from the payload) | F1-01, F1-02, F1-05, F1-06, F1-07, F1-12 |
-| market_pack_version | V1 | 0 | One published, dated revision of the pack, versioned as one unit; pinned by every money/engineering-bearing computed output together with the keys it read. One version per pack, never per key: F1-01 versions the eight keys as one unit, so an output pins one identifier, the market code plus the revision, re-minted through `packVersion` (F1-11; a slab or ruleset change under F1-14/F1-33 is a revision of the whole pack). The payload is ONE `jsonb` column whose every top-level property is a `PACK_KEYS` name — `priceBook` among them, so there is no price-book table; an unauthored key is omitted and reported, never rejected; a ninth key is a data change, not a migration; the column is typed as its envelope, never as the domain aggregate (owner ruling 2026-09-07). Readable global reference data, as market_pack. | market-pack | market_code; revision (unique with market_code); published_at; pack (tax; subsidy; callingRules incl. ai_disclosure_flag and statutory windows; paymentRails; certificationSchemes incl. the standards labels; formats incl. currency/date/phone/holiday/OTP-allowlist/units, the display labels and the utility directory; dataRights; priceBook — owner-only interior, never served by the tenant-facing read) | published → superseded (never deleted; pinned versions live forever) | F1-01, F1-11, F1-13, F1-14, F1-15, F1-18, F1-19, F1-21, F1-22, F1-23, F1-25, F1-53, F1 §F1.3 |
 | dnd_scrub_entry | V1 | 6 | Cached DND-registry scrub verdict per phone number, refreshed daily before the calling window; consumed by the pre-dial compliance gate. *(platform-wide or per-tenant; per-number cache or batch verdicts — F1-36/15)*  | platform | phone_e164; dnd_registered_status; scrubbed_at (24 h freshness threshold) | fresh (<24 h) → stale (promotional dialing pauses fail-closed) | F1-36, F1-15, F1-17 |
-| demo_project_content | V1 | 1 ⚠ | One finished, realistic demo project per market pack (V1: lead → design → proposal; the survey chapter joins the pack content when M04 lands), shipped as pack content versioned with the pack; instantiated per new tenant. *(content shape and seeding format deferred to M01-27 — F1-02)*  | market-pack | market_code; pack_version_pin; localized design/proposal content (survey content added with M04) | — | F1-02, M01-27 |
 
 ### 2.3 Platform billing & entitlements
 
@@ -124,31 +104,11 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| business_profile | V1 | 1 | Single write-point for company identity facts fed to proposal, agent script, customer link and invoice; skippable until first proposal send *(tenant OTP-at-accept threshold has no carrier entity — 01 §4 Glossary)*  | tenant | company_name; logo; address; bank_details | — | M01-24, M01-31, M01-51 |
-| tax_registration | V1 | 1 | A tenant tax registration of a pack-declared type, live-validated against the pack format; empty until the first proposal forces the prompt *(config domain or billing data? capture surface is conversion — M12-44, F1-13/29)*  | tenant | registration_type (from pack.tax); value (pack-format validated) | — | M01-24, M01-25 |
-| onboarding_progress | V1 | 1 | Persisted signup/setup resume point with per-step completed/skipped state and exactly one tracked later prompt-point per skipped fact | tenant | resume_step; per_step_state (completed/skipped); prompt_point_state per skipped fact (fired/completed/declined) | — | M01-10, M01-22, M01-29 |
-| branding_settings | V1 | 1 | Tenant branding for customer documents only — logo, letterhead, brand colour with derived compliant shades; never restyles the operator app | tenant | logo; letterhead; brand_colour; derived_compliant_shades | — | M01-50, M01-28 |
-| proposal_template_settings | V1 | 1 | Document defaults the proposal builder and Quick mode consume: cover, included sections, default T&C, bank details referencing the business profile *(T&C save-as-template implies a template entity; count and defaults unstated — M01-51)*  | tenant | cover; sections_included; default_terms (save-as-template round-trip); bank_details_ref → business_profile | — | M01-51, M01-53 |
-| timeline_template | V1 | 1 | Tenant default project-timeline template: ordered, editable, reorderable phases with descriptions, consumed as the builder's timeline-step default *(one default per tenant or multiple named templates? — M01-52)*  | tenant | ordered_phases (name + description) | — | M01-52, M01-28 |
 | message_template | V1 | 1 ⚠ | One key × language registry: platform-seeded exhaustive key list plus tenant-authored keys; variables resolved or safely omitted; never translation-catalog strings *(pack display-label translations: here or versioned inside the pack? — F1-22 vs F3-07)*  | tenant | template_key (7 seeded keys: proposal_share, follow_up_nudge, payment_reminder, visit_confirmation, survey_complete, handover, crew_arrival; plus tenant keys); language; body_with_variables; origin (seeded/tenant-authored) | — | M01-55, F6-26 |
 | integration_credential | V2 | V2 — M01 settings ⚠ | Tenant-supplied write-only credential (BYO gateway, messaging/voice): last-4 display, scheduled probes, every decrypt audit-logged, tenant-rotatable | tenant | kind/owning_module (M11 gateway, M07 messaging/voice); encrypted_secret (write-only, no read-back); last4_display; probe_status; last_probe_result | stored → probe_ok \| probe_failed → rotated | M01-60 |
 | lead_channel_setting | V2 | V2 — M01 settings | Per-tenant capture state for each lead source: live channels toggleable; not-yet channels rendered as toggle-less "later" cards | tenant | channel_key (set owned by M02); availability (live/not_yet); enabled (live channels only) | not_yet → live | M01-58 |
-| tenant_holiday | V1 | 1 | A tenant-added holiday narrowing the pack calling calendar; never widens past the statutory floor; read by scheduling consumers | tenant | date; label | — | M01-59 |
-| tranche_template | V1 | 1 | Named payment-term template; two standards seeded at tenant creation, exactly one default; archives never deletes; feeds builder, Quick mode and M11 | tenant | name (tenant data per language); is_default (exactly one per tenant); archived | active → archived | M01-53, M01-54 |
-| catalog_item_market_availability | V1 | 1 | Junction: one platform catalog item's availability in one market; a tenant sees exactly their market's slice | platform | catalog_item ref; market_pack ref | — | M01-33 |
-| catalog_item_certification | V1 | 1 | Junction: one scheme-keyed certification held by one platform catalog item; drives picker badges and subsidy-path gates | platform | catalog_item ref; scheme_key (a value validated against the tenant market's pack.certificationSchemes, not a foreign key) | — | M01-34, F1-44 |
-| catalog_release_line | V1 | 1 | One changed-item line of a catalog release — what a release contains is inspectable | platform | catalog_release ref; catalog_item ref; change_kind | — (immutable with the release) | M01-43 |
-| tranche_template_line | V1 | 1 | One row of a payment-term template: label + percentage + canonical stage + order; rows sum to exactly 100.00 | tenant | tranche_template ref; label (per language); percentage; due_on_stage (canonical); order | — | M01-54 |
-| catalog_item | V1 | 1 | Platform-curated master-catalog component with typed per-kind specs and market-scoped availability; read-only to tenants — overrides are the only tenant write | platform | component_kind (incl. MLPE); brand (never translated); model (never translated); typed per-kind spec fields; market_availability; certifications (scheme-keyed); provenance_label (verified-datasheet/representative); no price — a component's rate is tenant_catalog_override's or catalog_rate_entry's, never the platform's; archived; out_of_stock/discontinued | active → archived | M01-33, M01-34, M01-35, M01-42, M01-45, MS10-26 |
-| tenant_catalog_item | V1 | 1 | A tenant's own full SKU, usable everywhere a platform item is, invisible to other tenants; created via form (empty, or pre-filled from a picker's selected item — M01-39), datasheet-PDF extraction or spreadsheet import; scheme certifications are entered by the tenant, never inherited from a platform item, and no derived-from reference to the source item is kept (owner ruling 2026-09-07) *(preferred flag: override-only or also on tenant SKUs? — M01-37/38)*  | tenant | component_kind; brand; model; typed per-kind spec fields (same gates as platform); certifications (scheme-keyed, tenant-entered); provenance_label (tenant-provided); source_datasheet (stays attached); archived | active → archived | M01-36, M01-39, M01-40, M01-42, MS4-06, MS4-13 |
-| tenant_catalog_override | V1 | 1 | Sparse per-tenant override on one platform item — only changed fields stored, unset fields fall through (tax to the pack's category rate; price to nothing — there is no platform price); at most one per platform item per tenant | tenant | catalog_item_ref; price (sparse, tenant currency); tax_rate (sparse); hidden (pickers only, never history); preferred (pins forward in ranking) | created → cleared | M01-37, M01-32, M01-41 |
-| catalog_rate_entry | V1 | 1 | Append-only dated rate-history entry on a tenant SKU or override so any past output can name the rate it used; never an in-place edit; with the override's price, the only source of a component's rate *(does dated history cover tax-rate changes or price only? — M01-44/37)*  | tenant | parent (tenant SKU xor override); rate_value (tenant currency); entry_date | — (append-only, immutable) | M01-44, M01-41 |
-| catalog_release | V1 | 1 | Labelled append-only publish of catalog changes; the label is pinned by design fingerprints and proposal versions; a publish self-stales older pins by comparison *(ownership contested — M01-43 vs F8-14; tenant publish grant vs platform publication)*  | platform (registry; scope contested — see open questions) | label (human-readable); publish_date; contents (which items changed, inspectable) | — (append-only) | M01-43, M01-49, F8-13, F8-14, F8-15 |
-| catalog_import_job | V1 | 1 | Async spreadsheet (Excel/CSV) import run with column mapping, smart matching, inline row fixing, visible progress and a kept, re-openable per-row report | tenant | source_file; column_mapping (auto-guessed, any language); entry_point (onboarding/settings/in-flow); status/progress; counts (matched→overrides, new SKUs, needs-attention); per_row_report (kept) | uploaded → mapped → previewed → running → completed (report kept) | M01-41 |
 | steel_profile | V1 | 7 | Structural steel profile catalog (8 sections) with mass rules by shape family, derived labels and default ordering, consumed by the BOM structure emitter | platform | section_id (8 sections); shape_family; mass_rule; derived_label; default_profile_order | — | MS4 §4 (.87–.92), MS10-28 |
 | pack_rate_entry | V1 | 7 | Pack-supplied BOM base rate for non-component (BOS) lines, which the six emitters resolve through per derivation — never a component's rate; size-stepped for cables (round-up lookup); tenant overrides win via catalog resolution *(attaches to market_pack or market_pack_version? unstated — MS10-39, F1-11)*  | market-pack | item_key; size_step (cables); unit_rate (pack currency) | — | MS10-39, MS10-26, MS4-05 |
-| price_book_version | V1 | 1 | Immutable version of the tenant's non-catalog rates; exactly one active per tenant; default margin rides the version; pinned by proposals at generation *(seeded active version at tenant creation, or none until first publish? — M01-48 vs M01-28)*  | tenant | publish_date; change_summary; default_margin_pct; active_flag (exactly one per tenant); currency (tenant single currency) | active → superseded (immutable throughout) | M01-48, M01-49, F8-14 |
-| price_book_rate | V1 | 1 | A non-catalog rate row inside a price-book version: service and installation charges, engineering fees, per-kW adders and comparable rates *(rate_kind: fixed vocabulary or tenant-defined structure? — M01-48, M01 §M01.5)*  | tenant | rate_name (tenant data, per-language); rate_kind (service/installation charge, engineering fee, per-kW adder); amount (tenant currency) | — (immutable with version) | M01-48, M01 §M01.5 |
 
 ### 2.5 CRM & marketing
 
@@ -302,34 +262,15 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | notification_preference | V1 | 0 | A per-user push mute for one notification type-group. Push only — never the in-app record, never Owner billing/compliance events. *(binds to user_account or tenant_membership? — F6-04, M01-18/19)*  | tenant | user_ref; type_group; push_muted (boolean); natural key user × type_group | — | F6-15 |
 | target | V1 | 6 | The optional monthly dashboard goal — the one sanctioned dashboard write. Goal only; actuals derive from proposals/payments at read time. *(goal unit/metric never declared — money implied by 'signed value vs target' — M13-17/14)*  | tenant | scope (tenant \| per-user); scope_user_ref (when per-user); month; goal_value (unit unstated — money implied, tenant currency); natural key scope + month | — | M13-02, M13-17, M13-31 |
 | home_preset_ladder | V1 | 6 | The fixed preset-precedence ladder ordering the twelve persona presets for home-screen composition — a product constant whose order is data, never tenant configuration. *(table-vs-constant open — M13-10)*  | platform | preset_ref (one of twelve, unique); ladder_position (unique, per M13-10 order EPC Owner … Installation Team Member) | — | M13-09, M13-10 |
-| file | V1 | 0 | The one files table `forward-compat.md` mandates by name: every stored byte-stream in the suite is one row here — survey photographs, studio capture blobs, project checklist documents, employee documents, receipts. The domain carriers (survey_photograph, image_blob, project_document_file, employee_document) stay: they hold the domain facts (tag, source, checklist linkage, verification, expiry). The bytes/storage facts — size, checksum, content type, object-store location — live only here, and storage_gauge_snapshot (M12-23) measures per-tenant bytes over these rows. | tenant | subject_kind + subject_ref (the owning domain record); provider + external_id (the object-store reference pair, per `forward-compat.md`'s provider-ref law — never a bare id or a path string); content_type; byte_size; checksum; uploaded_by; uploaded_at | uploaded → superseded (replace retains the prior row) → unreferenced (collected only where the owning module sanctions GC) | M12-23, M12-33, M04-55, M08-31, M10-38, MS12-20, F4-21 |
 
 ## 3. Relationship Matrix
 
 A relationship appears once, in the domain of its child (reference-holding) entity. Required? = the child needs the parent. N:M rows name their junction entity in the Relationship column. Tenant scoping rows are omitted unless the tenant is the true business parent.
 
-### 3.1 Identity & tenancy
-
-| From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
-|---|---|---|---|---|---|---|
-| market_pack | is the one market for | tenant | 1:N | yes | Packs are versioned (F1-11); never deleted from under a tenant | M01-23, M01-33, OV-23, F1-11 |
-| tenant | has members through | tenant_membership | 1:N | yes | Deactivate, never delete; history stays attributed forever | M01-13, M01-18, M01-19, F2-20 |
-| user_account | joins a tenant through | tenant_membership | 1:N | yes | Deactivate, never delete; every session ends within ≤10 min | M01-13, M01-18, M01-07, F2-20 |
-| tenant_membership | membership_role (stacked presets, ≥1 at creation) | role_preset | N:M | yes | Removal is an audited old → new transition; last-EPC-Owner / last-Manage-team removals blocked and the attempt audited | M01-12, M01-19, M01-20, F2-10, F2-19, F2-22 |
-| role_preset | role_capability (matrix grant cell) | capability | N:M | yes | Fixed product data — tenants never edit a cell; a cell change is a product release / owner ruling | F2-25, F2-26, F2-02, F2-11 |
-| tenant | issues | invitation | 1:N | yes | Revocation/decline are states, never deletes; PRD silent on purging expired invites | M01-12, F2-21 |
-| user_account | sends as inviter | invitation | 1:N | yes | PRD silent; inviter attribution survives deactivation (re-invite request notifies the inviter) | M01-13, F2-20, F6.3 matrix |
-| invitation | invitation_role (carried preset roles, ≥1) | role_preset | N:M | yes (≥1) | PRD silent | F2-21, M01-12 |
-| user_account | holds device sessions | session | 1:N | yes | Deactivation or sign-out-everywhere revokes every device's session within ≤10 minutes | M01-07, F2-20 |
-
-(otp_challenge has no parent: it is keyed to a phone pre-account, before any user_account exists — M01-03, M01-05.)
-
 ### 3.2 Market framework & localization
 
 | From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
 |---|---|---|---|---|---|---|
-| market_pack | is published as | market_pack_version | 1:N | yes | Versions effectively permanent: computed outputs pin them, sent proposals keep them forever; a revision supersedes, never rewrites (F1-11); the price book is the payload's priceBook key, and a version without one is the defined cannot-sell state, not a deletion path | F1-01, F1-11, F1-33, F1-25, F1-26, BM-37 |
-| market_pack | ships one demo project as pack content | demo_project_content | 1:1 | yes | Versioned with the pack; tenant demo instances are resettable; PRD silent on removal | F1-02, M01-27 |
 
 (dnd_scrub_entry has no PRD-grounded business parent: it is a per-phone-number platform cache; its platform-wide vs per-tenant/market boundary is an open question below.)
 
@@ -362,26 +303,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 
 | From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
 |---|---|---|---|---|---|---|
-| tenant | has one profile (single write-point) | business_profile | 1:1 | yes | PRD silent on row deletion; no data deleted for non-payment (BM-32) | M01-31, M01-24 |
-| tenant | tracks setup progress in | onboarding_progress | 1:1 | yes | PRD silent; abandonment loses nothing (M01-10) | M01-10, M01-29 |
-| tenant | has customer-document branding | branding_settings | 1:1 | yes | PRD silent; generated documents never restyle retroactively (F8-15) | M01-50, M01-28 |
-| tenant | has proposal document defaults | proposal_template_settings | 1:1 | yes | Sent documents unchanged; new generations use the new template | M01-51, M01-53 |
-| tenant | has one default timeline template | timeline_template | 1:1 | yes | PRD silent | M01-52, M01-28 |
-| business_profile | holds registrations of pack-declared types | tax_registration | 1:N | yes | PRD silent; skippable/empty until first proposal | M01-24, M01-25 |
-| market_pack | declares type and format of (pack.tax) | tax_registration | 1:N | yes | Packs versioned (F1-11), never deleted from under a tenant | M01-24, M01-25 |
-| business_profile | supplies bank details to (one write-point reference) | proposal_template_settings | 1:1 | no (profile skippable; platform defaults stand in) | PRD silent | M01-51, M01-31, M01-28 |
-| market_pack | catalog_item_market_availability (market-scoped availability) | catalog_item | N:M | yes (every item carries market availability) | PRD silent | M01-33 |
-| catalog_item | catalog_item_certification (certifications keyed by a scheme value validated against pack.certificationSchemes) | market_pack_version | N:M | no (empty scheme set = no badges, never an error) | A value, not a foreign key: a scheme a revision drops leaves the certification row in place and its badge un-rendered; PRD silent otherwise | M01-34, F1-44, F1-19 |
-| catalog_release | lists changed items as | catalog_release_line | 1:N | yes | Immutable with the release (append-only) | M01-43 |
-| catalog_item | is named changed in | catalog_release_line | 1:N | yes | Archived items keep serving old references | M01-43, M01-42 |
-| tranche_template | is composed of | tranche_template_line | 1:N | yes (rows sum to exactly 100.00) | Template archives never delete | M01-53, M01-54 |
-| catalog_item | is overridden per tenant by (one per item per tenant) | tenant_catalog_override | 1:N | yes | Platform items archive, never delete; hidden affects pickers only; archived items keep serving old references (M01-42) | M01-37, M01-42 |
-| catalog_import_job | creates price overrides for matched rows | tenant_catalog_override | 1:N | no (overrides also authored manually) | Import report kept, re-openable; PRD silent on job purge | M01-41 |
-| catalog_import_job | creates tenant SKUs for unknown rows | tenant_catalog_item | 1:N | no (SKUs also via form/datasheet paths) | PRD silent | M01-41, M01-39 |
-| tenant_catalog_item | accrues dated rate history | catalog_rate_entry | 1:N | yes (parent is SKU xor override — exclusive arc) | Append-only; never edited or deleted so past outputs stay nameable (M01-44) | M01-44 |
-| tenant_catalog_override | accrues dated rate history | catalog_rate_entry | 1:N | yes (exclusive arc, other branch) | Append-only; import re-runs append new entries, never edits (M01-41) | M01-44, M01-41 |
 | market_pack | supplies base BOM rates | pack_rate_entry | 1:N | yes | Pack content is versioned (F1-11); never deleted from under a tenant | MS10-39, MS10-26 |
-| price_book_version | contains immutable rate rows | price_book_rate | 1:N | yes | Immutable with the version; past versions browsable read-only, never mutated or deleted (M01-48) | M01-48 |
 
 ### 3.5 CRM & marketing
 
@@ -623,17 +545,13 @@ The complete ERD is the set of twelve domain diagrams (4.1–4.12): every entity
 exactly once, and every relationship-matrix row is drawn once, in the domain of its child
 entity. The 4.0 context diagram is an illustrative overlay of the spine — it repeats a subset
 of those relationships (plus the implicit tenant scoping of leads) and matches the domain
-diagrams edge for edge. Two matrix rows are not drawable as single edges and are carried as
-footnotes instead: notification's polymorphic subject (3.12) and catalog_rate_entry's
-exclusive arc (3.4).
+diagrams edge for edge. One matrix row is not drawable as a single edge and is carried as a
+footnote instead: notification's polymorphic subject (3.12).
 
 ### 4.0 Context — the spine
 
 ```mermaid
 erDiagram
-    USER_ACCOUNT ||--o{ TENANT_MEMBERSHIP : "joins tenants via"
-    TENANT ||--o{ TENANT_MEMBERSHIP : "has members"
-    MARKET_PACK ||--o{ TENANT : "governs market facts of"
     TENANT ||--o{ SUBSCRIPTION : "is billed through"
     TENANT ||--o{ LEAD : "captures"
     CUSTOMER ||--o{ LEAD : "is person behind"
@@ -654,119 +572,15 @@ erDiagram
     PROJECT ||--o{ PROJECT_BLOCKER : "attributes waits via"
 ```
 
-### 4.1 Identity & tenancy
-
-```mermaid
-erDiagram
-    TENANT {
-        string company_name
-        string city
-        string market_key FK
-        string tenant_currency
-        string default_language
-        string timezone
-        string segment
-    }
-    USER_ACCOUNT {
-        string phone_e164 UK
-        string name
-        string linked_google_identity
-        string status
-        string interface_language
-        string unit_preference
-    }
-    TENANT_MEMBERSHIP {
-        string tenant_id FK
-        string user_account_id FK
-        datetime last_active
-        string coachmark_dismissal_state
-    }
-    MEMBERSHIP_ROLE {
-        string tenant_membership_id FK
-        string role_preset_id FK
-    }
-    ROLE_PRESET {
-        string canonical_english_name UK
-        string display_names_en_hi_mr
-        string description_phrases
-        string default_visibility_scopes
-    }
-    CAPABILITY {
-        string row_key UK
-        string phrase
-        string owning_module
-    }
-    ROLE_CAPABILITY {
-        string role_preset_id FK
-        string capability_row_key FK
-        string grant_cell
-    }
-    INVITATION {
-        string tenant_id FK
-        string inviter_user_id FK
-        string invitee_name
-        string invitee_phone_e164
-        string status
-        datetime expires_at
-    }
-    OTP_CHALLENGE {
-        string phone_e164
-        string code
-        string channel
-        string delivery_state
-        datetime ttl_expires_at
-        int failed_verify_count
-        string lock_state
-    }
-    SESSION {
-        string user_account_id FK
-        string platform_kind
-        datetime rolling_expiry
-        boolean revoked
-    }
-    MARKET_PACK ||--o{ TENANT : "is the one market for"
-    TENANT ||--o{ TENANT_MEMBERSHIP : "has members through"
-    USER_ACCOUNT ||--o{ TENANT_MEMBERSHIP : "joins a tenant through"
-    TENANT_MEMBERSHIP ||--|{ MEMBERSHIP_ROLE : "stacks presets via"
-    ROLE_PRESET ||--o{ MEMBERSHIP_ROLE : "is held through"
-    ROLE_PRESET ||--o{ ROLE_CAPABILITY : "is granted cells via"
-    CAPABILITY ||--o{ ROLE_CAPABILITY : "grants through"
-    TENANT ||--o{ INVITATION : "issues"
-    USER_ACCOUNT ||--o{ INVITATION : "sends as inviter"
-    INVITATION_ROLE {
-        string invitation_id FK
-        string role_preset_id FK
-    }
-    INVITATION ||--|{ INVITATION_ROLE : "carries roles via"
-    ROLE_PRESET ||--o{ INVITATION_ROLE : "is carried by"
-    USER_ACCOUNT ||--o{ SESSION : "holds device sessions"
-```
-
 ### 4.2 Market framework & localization
 
 ```mermaid
 erDiagram
-  MARKET_PACK {
-    string market_code PK
-  }
-  MARKET_PACK_VERSION {
-    string market_code FK
-    int revision
-    datetime published_at
-    json pack
-  }
-  DEMO_PROJECT_CONTENT {
-    string market_code FK
-    string pack_version_pin
-    json localized_content
-  }
   DND_SCRUB_ENTRY {
     string phone_e164 PK
     string dnd_registered_status
     datetime scrubbed_at
   }
-  MARKET_PACK ||--|{ MARKET_PACK_VERSION : "is published as"
-  MARKET_PACK ||--|| DEMO_PROJECT_CONTENT : "ships one demo project"
 ```
 
 ### 4.3 Platform billing & entitlements
@@ -931,58 +745,8 @@ erDiagram
 
 ```mermaid
 erDiagram
-  TENANT ||--o| BUSINESS_PROFILE : "has one profile"
-  TENANT ||--|| ONBOARDING_PROGRESS : "tracks setup progress in"
-  TENANT ||--o| BRANDING_SETTINGS : "has customer-document branding"
-  TENANT ||--o| PROPOSAL_TEMPLATE_SETTINGS : "has document defaults"
-  TENANT ||--o| TIMELINE_TEMPLATE : "has default timeline template"
-  BUSINESS_PROFILE ||--o{ TAX_REGISTRATION : "holds registrations"
-  MARKET_PACK ||--o{ TAX_REGISTRATION : "declares type and format of"
-  BUSINESS_PROFILE |o--o| PROPOSAL_TEMPLATE_SETTINGS : "supplies bank details to"
-  MARKET_PACK ||--o{ CATALOG_ITEM_MARKET_AVAILABILITY : "scopes availability via"
-  CATALOG_ITEM ||--|{ CATALOG_ITEM_MARKET_AVAILABILITY : "is available via"
-  CATALOG_ITEM ||--o{ CATALOG_ITEM_CERTIFICATION : "holds certifications via"
-  CATALOG_RELEASE ||--|{ CATALOG_RELEASE_LINE : "lists changed items as"
-  CATALOG_ITEM ||--o{ CATALOG_RELEASE_LINE : "is named changed in"
-  TRANCHE_TEMPLATE ||--|{ TRANCHE_TEMPLATE_LINE : "is composed of"
-  CATALOG_ITEM ||--o{ TENANT_CATALOG_OVERRIDE : "is overridden per tenant by"
-  CATALOG_IMPORT_JOB |o--o{ TENANT_CATALOG_OVERRIDE : "creates price overrides"
-  CATALOG_IMPORT_JOB |o--o{ TENANT_CATALOG_ITEM : "creates tenant SKUs"
-  TENANT_CATALOG_ITEM |o--o{ CATALOG_RATE_ENTRY : "accrues dated rate history"
-  TENANT_CATALOG_OVERRIDE |o--o{ CATALOG_RATE_ENTRY : "accrues dated rate history"
   MARKET_PACK ||--o{ PACK_RATE_ENTRY : "supplies base rates"
-  PRICE_BOOK_VERSION ||--|{ PRICE_BOOK_RATE : "contains immutable rate rows"
 
-  BUSINESS_PROFILE {
-    string company_name
-    string logo
-    string address
-    string bank_details
-  }
-  TAX_REGISTRATION {
-    string registration_type FK
-    string value
-  }
-  ONBOARDING_PROGRESS {
-    string resume_step
-    string per_step_state
-    string prompt_point_state
-  }
-  BRANDING_SETTINGS {
-    string logo
-    string letterhead
-    string brand_colour
-    string derived_shades
-  }
-  PROPOSAL_TEMPLATE_SETTINGS {
-    string cover
-    string sections_included
-    string default_terms
-    string bank_details_ref FK
-  }
-  TIMELINE_TEMPLATE {
-    string ordered_phases
-  }
   MESSAGE_TEMPLATE {
     string template_key
     string language
@@ -1000,56 +764,6 @@ erDiagram
     string availability
     boolean enabled
   }
-  TENANT_HOLIDAY {
-    date holiday_date
-    string label
-  }
-  TRANCHE_TEMPLATE {
-    string name
-    boolean is_default
-    boolean archived
-  }
-  CATALOG_ITEM {
-    string item_id PK
-    string component_kind
-    string brand
-    string model
-    string provenance_label
-    boolean archived
-    boolean out_of_stock
-  }
-  TENANT_CATALOG_ITEM {
-    string component_kind
-    string brand
-    string model
-    string provenance_label
-    string source_datasheet
-    boolean archived
-  }
-  TENANT_CATALOG_OVERRIDE {
-    string catalog_item_ref FK
-    decimal price
-    decimal tax_rate
-    boolean hidden
-    boolean preferred
-  }
-  CATALOG_RATE_ENTRY {
-    string parent_ref FK
-    decimal rate_value
-    date entry_date
-  }
-  CATALOG_RELEASE {
-    string label
-    date publish_date
-    string contents
-  }
-  CATALOG_IMPORT_JOB {
-    string source_file
-    string column_mapping
-    string entry_point
-    string status
-    string per_row_report
-  }
   STEEL_PROFILE {
     string section_id PK
     string shape_family
@@ -1061,38 +775,6 @@ erDiagram
     string item_key
     string size_step
     decimal unit_rate
-  }
-  PRICE_BOOK_VERSION {
-    date publish_date
-    string change_summary
-    decimal default_margin_pct
-    boolean active_flag
-    string currency
-  }
-  PRICE_BOOK_RATE {
-    string rate_name
-    string rate_kind
-    decimal amount
-  }
-  CATALOG_ITEM_MARKET_AVAILABILITY {
-    string catalog_item_ref FK
-    string market_code FK
-  }
-  CATALOG_ITEM_CERTIFICATION {
-    string catalog_item_ref FK
-    string scheme_key
-  }
-  CATALOG_RELEASE_LINE {
-    string catalog_release_ref FK
-    string catalog_item_ref FK
-    string change_kind
-  }
-  TRANCHE_TEMPLATE_LINE {
-    string tranche_template_ref FK
-    string label
-    decimal percentage
-    string due_on_stage
-    int order_index
   }
 ```
 
@@ -2233,40 +1915,9 @@ erDiagram
   nothing authors is the defect this law exists to prevent (§M07.8 "the routing layer's seed",
   M07-11, M07-47, M07-51).
 
-### 5.1 Identity & tenancy
-
-- phone_e164 is the login identity, unique globally; a known phone at signup offers login and never creates a duplicate account or company. (M01-08, M01-18, OV-31)
-- No passwords exist anywhere; sign-in is phone + single-use OTP, or a linked Google identity bound to the SAME phone account — never a duplicate account. (M01-02, M01-05)
-- Exactly twelve fixed preset roles named verbatim for the personas; no tenant create/edit/rename/delete/duplicate; canonical identity is the fixed English name, display names localized EN/HI/MR. (F2-01, F2-02, F2-16, PS-02)
-- Permission resolution is exactly OR across held presets' matrix cells — no AND, no precedence, no negative grant; a preset can only add. (F2-11)
-- No per-person permission exceptions may exist as data — every grant is explicable as "holds preset X"; role-change audit entries (old → new set) keep this honest. (F2-15, F2-22)
-- Visibility resolves per domain (leads, projects, field work, people records, money, campaigns), widest-wins within a domain, never leaking across domains; EPC Owner is All everywhere. (F2-12, F2-13, F2-14)
-- A tenant always retains ≥1 EPC Owner and ≥1 Manage-team holder — guarded at the transition, not UI-only; blocked attempts are themselves audit entries. (F2-19, M01-19, F2-22)
-- The signup actor becomes the tenant's first EPC Owner server-side, so F2-19 holds from the first moment. (M01-01)
-- Users are deactivated, never deleted: sessions revoked ≤10 min, hidden from assignment pickers, open work reassigned, all history stays attributed forever. (F2-20, M01-18, M01-07)
-- An invitation must carry ≥1 preset role — zero-role invites are blocked before sending; invite sends are capped per tenant per day (value unspecified). (F2-21, M01-12, M01-04)
-- Invite acceptance is atomic: OTP verification creates user_account + tenant_membership + membership_role rows in one step — no half-joined state. (M01-13)
-- capability rows carry stable keys `F2.M<nn>.<slug>` and the matrices are the ONLY permission truth — modules reference row keys, never restate grants; a scope word in the cell IS the grant. (F2-25, F2-26)
-- Matrix cells and presets are fixed product data; the sole v1 grant-set supersession is DD11 (catalog: Owner + Operations manage, Finance views prices/margins). (F2-02, F2-26)
-- OTP is single-use with 5-min TTL; per-phone caps 3/15 min and 8/day; 5 failed verifies invalidate; 3 consecutive invalidations lock the phone 15 min; a confirmed hard delivery failure releases only the resend cooldown. (M01-03, M01-04, M01-05)
-- No automatic OTP channel fallback; SMS delivers, voice is user-initiated only, failure fails loudly. (M01-03)
-- otp_challenge is keyed by phone pre-account — anti-abuse counters and lock state attach to the phone, never to a user_account. (M01-03, M01-04)
-- Session lifetimes are fixed: web 30 days rolling, mobile 90 days; deactivation or sign-out-everywhere ends every session within ≤10 minutes. (M01-07)
-- Roles bind only to tenant users (Owner/Employee audiences); the customer never holds an account, role or matrix cell and reaches the product only via the F5 token link. (F2-18, PS-04, OV-32)
-- Mid-task permission loss is graceful: the in-flight action completes; restriction applies from the next action. (F2-17)
-- One market and one currency per tenant, set at creation; every market fact resolves from the versioned market pack, never a stored constant. (F1-07, M01-23, OV-23)
-- Signup stores exactly phone, company name, owner name, city — nothing else (no tax, logo, team, plan or payment data). (M01-01, M01-11)
-- Tenant default_language governs customer-facing document defaults and the new-invite default only; interface language is always per-user on user_account. (M01-59, F3)
-- Stacking presets is the only way to widen access; one person may hold several presets, shown as chips. (M01-20, F2-10)
-- Invitation decline voids the invite and notifies the EPC Owner; an expired invite supports a one-tap re-invite request to the inviter. (F2-21, F6.3 matrix)
-- No commercial figure may appear on any surface reachable through Installation Team Member grants — a surface property that stacking never weakens, enforced through the money-domain grant cells. (F2-06, PS-27)
-
 ### 5.2 Market framework & localization
 
 - Packs are platform-authored, never tenant-editable; statutory-floor items can only be narrowed by tenant config (shorter window, extra holidays), never widened — no override flag, no support-side bypass. (F1-12, F1-17, F1-36)
-- Pack data versions as one unit; a revision is a dated data update; computed outputs pin the pack/rules version and the keys they read, and self-stale on revision only where a key they read changed — a price-book revision never stales a customer design (owner ruling 2026-09-07) — never recompute; running work keeps its version, new work takes the new one; sent proposals keep their versions forever. (F1-01, F1-11, F8-13, F8-14)
-- The stored pack is ONE payload keyed by the eight PACK_KEYS names; an unauthored key is omitted and reported, never rejected; a ninth key is a data change, not a migration; the column is typed as its envelope — key names, market, revision, brands re-minted — and the whole is parsed in domain before any writer that is not typed code exists. (F1-01, F1-02; owner ruling 2026-09-07)
-- Launch gate: pack.tax, pack.formats, pack.data-rights and the market price book can never be empty; a privacy/residency determination must exist before any tenant, a supplier-of-record decision before any sale — both derived by the launch gate from the current version's payload, never stored as columns. (F1-05)
 - An absent voice ruleset hard-disables outbound voice — never a permissive default. pack.subsidy may be `none`; an empty certification-scheme set means no badges and no gates — never an error. (F1-16, F1-14, F1-19)
 - Pack internal consistency is validated at authoring (a subsidy requiring a scheme the scheme set lacks makes the pack invalid); pack validation is a platform-ops duty, never resolved locally by a module. (F1 §F1.2)
 - No market fact is ever a module-level constant; every market fact resolves from the versioned pack through the eight keys. (F1-01, F1-04, OV-23)
@@ -2280,11 +1931,7 @@ erDiagram
 - Utility/DISCOM names and the scheme keys are proper nouns, never translated — stored and rendered byte-identical in every language. (F1-53, F3-08)
 - Format values (currency symbol/grouping/minor unit, digit rules, date style, default timezone, holiday calendar, phone spec, OTP allowlist, unit defaults) live only in pack.formats — stated once, never duplicated, never role/plan/tenant-configurable. (F1-21, F3 §5, F1-12)
 - The OTP-destination allowlist is pack data (+91 default); enabling another country code is a data switch, not a code change. (F1-49, F1-21)
-- One demo project per pack, versioned with the pack — pack content, not a ninth rules key; tenant instances are labelled demo, resettable, excluded from reports. (F1-02, M01-27)
-- market_code is unique (one pack per market); market_code + revision is unique, and the pair is the pack version outputs pin; exactly one authored pack exists at launch (IN) on global-safe schemas. (F1-01, F1-06)
-- Pack authoring and change control are platform operations outside the tenant role system: every change versioned, dated and audited; no tenant-facing surface edits pack data. (F1 §4, F1-11, F1-12)
 - The pack supplies only the market default timezone; the tenant's actual timezone is tenant data. (F1-10, F1-21)
-- No FX-converted pricing ever rides the pack; the market's commercial book is the pack's own priceBook key, authored in the pack and versioned with it, whose absence is the defined cannot-sell state; its interior (worst-case COGS, benchmark provenance) is owner-only and never served by the tenant-facing pack read — the billing path alone reads it. (F1-25, F1-26, F1-27, BM-17; owner ruling 2026-09-07)
 
 ### 5.3 Platform billing & entitlements
 
@@ -2315,31 +1962,10 @@ erDiagram
 
 ### 5.4 Tenant configuration, catalog & rates
 
-- Catalog resolution order is fixed and per-field: tenant override → tenant own item → platform item; unset override fields fall through (M01-32, M01-37).
-- At most one override per platform item per tenant; overrides are sparse — exactly price, tax rate, hide, preferred (M01-37).
-- Archive, never delete: catalog items, tenant SKUs and tranche templates archive; every existing reference (old proposals, drafts, BOM lines) keeps resolving; deletion does not exist (M01-42, M01-54).
-- Rate changes on tenant SKUs and overrides are append-only dated entries, never in-place edits — any past output can name the rate it used (M01-44).
-- Catalog releases are labelled and append-only; designs and proposal versions pin the release label; a publish self-stales older pins by comparison, never silent recompute; sent proposals keep their pins forever (M01-43, M01-49, F8-13/14/15).
-- Price-book versions are immutable; exactly one active per tenant; the default margin percentage rides the version; rates are in the tenant's single currency; publishing is serialized server-side (M01-48, M01 §M01.5).
-- Every catalog item carries exactly one of three provenance labels — verified-datasheet / tenant-provided / representative — and the label rides into the picker (M01-35, F8-06).
-- Platform items are read-only to tenants; the sparse override is the only tenant-side write on them (M01-34, M01-37).
-- The platform catalog is market-scoped: a tenant reads only its market's slice plus its own SKUs; tenant SKUs are invisible to other tenants (M01-33, M01-36).
-- Import smart matching: rows matching platform products become price overrides (never duplicate SKUs, never spec edits); unknown rows become tenant SKUs; re-running the same file appends new rate entries on the overrides (M01-41, M01-37, M01-44).
-- Datasheet-PDF extraction is review-before-commit — never committed silently; the source datasheet stays attached; failure degrades to the manual form (M01-40).
-- Tenant SKUs pass the same spec gates as platform items (panel: watt>0, length>width, Voc>Vmp, Isc>Imp, negative temp coefficient; inverter electrical contract — a price is never a gate); a violating entry never reaches a picker (MS4-13, MS4-23, MS4-06).
-- The business profile is the single write-point for company identity facts; every consumer (proposal, agent script, customer link, invoice) references it and never re-asks (M01-31, M01-51).
-- Tax registrations stay empty until the first proposal send forces the prompt; types and formats come from pack.tax; validation is live and skippable, never a hard wall (M01-24, M01-25).
-- Zero-config fallback is total: every setting has a working platform default; a tenant with zero configuration can send a real proposal (M01-28, M01-22).
-- Each skipped onboarding fact keeps exactly one later in-context prompt-point, tracked in onboarding_progress (M01-29, M01-10).
-- Tranche-template percentages sum to exactly 100.00 (save blocked otherwise); two standard templates (10/60/20/10, 30/60/10) seeded at tenant creation; exactly one is default; editing never changes documents already generated (M01-54).
-- Branding applies to customer documents only; a palette is never rejected — compliant shades are derived computationally; the operator app is never restyled per tenant (M01-50).
 - Message templates are tenant-authored content per key × language; a missing language falls back to the original language with a note; the seeded key list is exhaustive and platform-owned (M01-55, F6-26).
 - Integration credentials are write-only: last-4 display only, no read-back; scheduled probes; every platform decrypt audit-logged; invalid credential raises alert plus persistent nag — never silent failure (M01-60).
-- Tenant holiday additions only narrow calling availability, never widen past the pack's statutory floor (M01-59).
-- Catalog neutrality is product law: no sponsored ranking or pay-to-play data on any catalog surface; no tenant request-queue entity exists (M01 §5 CG-13, M01-46).
 - Pack rate resolution rounds cable rates UP to the next priced size — never understating; all commercial market data is pack-driven with tenant overrides winning via catalog resolution (MS10-26, MS10-39).
-- Search ranks preferred first, then relevance; archived items appear only under the archived filter (M01-38).
-- Catalog, price-book, branding, template and credential changes are audit events; concurrent catalog edits resolve last-write-wins per server apply order with both attempts in the audit trail (M01 §M01.4, §M01.5, M01-60, F2-22).
+- Credential changes are audit events (M01-60, F2-22).
 
 ### 5.5 CRM & marketing
 
@@ -2605,24 +2231,11 @@ erDiagram
 
 ### 5.13 Sensitive data register
 
-#### Identity & tenancy
-
-| Entity.field(s) | Class | Handling noted in PRD |
-|---|---|---|
-| user_account.phone_e164 | PII | Global login identity and natural key; also the invite identity; anti-vishing rules apply around it (M01-06, M01-18) |
-| user_account.name, photo | PII | Captured at first run; history stays attributed to deactivated people forever (M01-14, F2-20) |
-| user_account.linked_google_identity | PII / credential-adjacent | Third-party auth identity bound to the phone account; never a duplicate account (M01-02) |
-| otp_challenge.code, counters, lock_state | credential-secret | Single-use, 5-min TTL, per-phone abuse caps and lock; delivery is an absorbed cost line (M01-04, M01-05, BM-24) |
-| session (token/device) | credential-secret | Hard revocation guarantee: all devices within ≤10 minutes on deactivation or sign-out-everywhere (M01-07) |
-| invitation.invitee_phone_e164, invitee_name | PII | Phone-keyed invites; invite sends capped per tenant per day (M01-12, M01-04) |
-| tenant.company_name, city | PII (business) | Signup minimum facts; used for likely-existing-workspace matching (M01-01, M01-09) |
-
 #### Market framework & localization
 
 | Entity.field(s) | Class (PII / credential-secret / financial / location / biometric-none / imagery) | Handling noted in PRD |
 |---|---|---|
 | dnd_scrub_entry.phone_e164, dnd_registered_status | PII | Regulated third-party compliance data with a 24 h freshness duty; staleness fail-closes promotional dialing; read pre-dial | 
-| market_pack, market_pack_version (the pack payload, priceBook excepted below), demo_project_content (all fields) | — (none) | Platform-authored market configuration and fictional demo content; no personal data |
 
 #### Platform billing & entitlements
 
@@ -2640,14 +2253,7 @@ erDiagram
 
 | Entity.field(s) | Class (PII / credential-secret / financial / location / biometric-none / imagery) | Handling noted in PRD |
 |---|---|---|
-| business_profile.bank_details | financial | Entered once at the single write-point; rendered on proposals and customer documents (M01-24, M01-31, M01-51) |
-| business_profile.address | PII | Business PII in the profile; skippable until first proposal (M01-24, M01-31) |
-| tax_registration.value | PII (regulated business identifier) | Live pack-format validation, skippable; types from pack.tax (M01-24, M01-25) |
 | integration_credential.encrypted_secret, last4_display | credential-secret | Write-only, encrypted, last-4 display only, no read-back; every platform decrypt audit-logged; tenant-rotated (M01-60) |
-| tenant_catalog_override.price, tax_rate; catalog_rate_entry.rate_value | financial | Tenant money data; catalog and price changes are audit events; money renders only to presets with the money grant (M01-44, M01 §M01.4 permissions) |
-| price_book_version.default_margin_pct; price_book_rate.amount | financial | Margin figures never render without a money grant (Finance views; Operations/Owner administer) (M01-48, M01 §M01.5 permissions) |
-| branding_settings.logo, letterhead | imagery | Customer-document branding only; never restyles the operator app (M01-50) |
-| tenant_catalog_item.source_datasheet | imagery (document attachment) | Source datasheet stays attached to the SKU created via the PDF path (M01-40) |
 
 #### CRM & marketing
 
@@ -2758,32 +2364,12 @@ erDiagram
 
 Logical level only — access paths the PRD itself evidences. Every tenant-owned path is implicitly prefixed by the tenant scope.
 
-### 6.1 Identity & tenancy
-
-| Entity | Suggested index / access path | Justifying access pattern (from the PRD) | PRD refs |
-|---|---|---|---|
-| user_account | unique on phone_e164 | Sign-up/sign-in lookup by phone; duplicate-phone detection offering login instead of a new company | M01-08, M01-18 |
-| tenant | (company_name, city) | Likely-existing-workspace detection at signup to offer request-to-join | M01-09 |
-| tenant_membership | by tenant_id (with status, last_active) | Team screen: list the tenant's people with role chips, status, last-active; assignment pickers excluding deactivated | M01-19, F2-13, F2-20 |
-| tenant_membership | unique (tenant_id, user_account_id) | Check whether an invited phone is already a member of the tenant | M01-12 |
-| membership_role | by (tenant, role_preset_id) | Roles reference: count holders per preset, including zero | M01-21 |
-| membership_role | by tenant_membership_id | Permission check on every action: collect the actor's held presets, OR the cells | F2-11 |
-| role_capability | by capability row_key | Resolve a capability's grant cells across the actor's presets on every action; per-domain widest-scope resolution | F2-11, F2-12, F2-25 |
-| session | by user_account_id | Find all sessions of a user for revocation within the ≤10-minute window | M01-07 |
-| otp_challenge | by phone_e164 over rolling time windows | Per-phone request counters (3/15 min, 8/day), failed-verify counts and lock state | M01-04 |
-| invitation | by tenant_id + status (with expiry) | Pending-invite listing with expiry processing; HR home shows pending/expired invites | M01-12, PS-30 |
-| invitation | by invitee_phone_e164 | Invite landing / acceptance by phone; already-member check before send | M01-12, M01-13 |
-
 ### 6.2 Market framework & localization
 
 | Entity | Suggested index / access path | Justifying access pattern (from the PRD) | PRD refs |
 |---|---|---|---|
-| market_pack | market_code (unique) | Tenant creation fixes market and server-assigns currency from the pack; every market-fact resolution starts at the tenant's pack | F1-07, F1-01 |
-| market_pack_version | (market_code, published_at desc) | Fetch the current version for new work; staleness evaluation compares an output's pinned version, per key read, to the current one | F1-11, F1-33 |
-| market_pack_version | (market_code, revision) unique — the pair packVersion re-mints | Pinned reads: sent proposals, designs and subsidy computations resolve the exact version they pinned | F1-11, F1-33 |
 | dnd_scrub_entry | phone_e164 (unique) | Pre-dial gate reads the scrub verdict for the number about to be dialed, before every dial | F1-36, F1-39 |
 | dnd_scrub_entry | (scrubbed_at) | Daily refresh sweep before the calling window opens; freshness check (age < 24 h) pauses promotional dialing fail-closed | F1-36, F1-15 |
-| demo_project_content | (market_code) | Instantiated for every new tenant at creation; reset re-reads the pack content | M01-27, F1-02 |
 
 ### 6.3 Platform billing & entitlements
 
@@ -2807,20 +2393,9 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 
 | Entity | Suggested index / access path | Justifying access pattern (from the PRD) | PRD refs |
 |---|---|---|---|
-| catalog_item | (market, component_kind, archived) + text/spec-range search path (brand, model, wattage, technology, scheme badges, preferred) | Unified picker/search over the tenant's market slice with source/kind/spec/certification/preferred/archived filters, preferred-first ranking; shared with DD12 picker | M01-33, M01-38 |
-| tenant_catalog_item | (tenant, component_kind, archived) | Own-SKU half of unified search; other tenants must never see these rows | M01-36, M01-38 |
-| tenant_catalog_override | unique (tenant, catalog_item_ref) | One override per platform item per tenant; effective-item resolution and rates-panel "which tier supplied each field" | M01-37, M01-32 |
-| catalog_rate_entry | (parent_ref, entry_date) | Rate-at-date lookup so any past output names the dated entry it used | M01-44 |
-| catalog_release | (label) and (publish_date desc) | Staleness derivation: compare a design's/draft's pinned label to the latest published release; release-contents inspection | M01-43, F8-13 |
-| price_book_version | partial-unique (tenant) where active; (tenant, publish_date desc) | Fetch the single active version; browse past versions read-only; draft staleness check against active | M01-48, M01-49 |
-| price_book_rate | (price_book_version) | Render a version's rates; Quick mode and builder consume the active version's rows | M01-48, M01-53 |
 | message_template | (tenant, template_key, language) | Lookup by transactional moment + recipient-appropriate language with fallback to original language | M01-55 |
 | integration_credential | (probe_status, last_probe_at) per tenant | Scheduled credential probe sweep; surface failing credentials as alert + persistent settings nag | M01-60 |
-| onboarding_progress | (tenant) | Resume lookup for a returning account — resumes exactly where it stopped; prompt-point checks at moment of need | M01-10, M01-29 |
-| catalog_import_job | (tenant, created_at desc) | Kept, re-openable per-row import report; visible progress on async runs | M01-41 |
 | pack_rate_entry | (market_pack, item_key, size_step) | Per-derived-line price resolution; cable lookup = smallest priced size ≥ required (round up) | MS10-26, MS10-39 |
-| tranche_template | (tenant, archived, is_default) | Template list with seeded pair present and exactly one default; archived excluded from pickers | M01-54 |
-| tenant_holiday | (tenant, date) | Working-calendar re-read by scheduling consumers (M07 calling window, M02 snooze wake-ups) | M01-59 |
 | lead_channel_setting | (tenant, channel_key) | Capture-settings render: every lead source with real live/not-yet status and toggle state | M01-58 |
 
 ### 6.5 CRM & marketing
@@ -2979,23 +2554,12 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
-| F2 §F2.1 | Fixed role registry — twelve presets, no editor (F2-01/02/05/09/16) | role_preset | yes |
-| F2 | Stacking and OR resolution (F2-10/11; manager fan-out F2-08) | tenant_membership, membership_role, role_capability | yes |
-| F2 | Visibility-scope law per domain, widest wins (F2-12/13/14) | role_capability.grant_cell (scope words) | yes |
-| F2 | No per-person exceptions (F2-15) | absence of any per-user override entity (by design) | yes |
 | F2 | Sign-off capability and record (F2-03/04) | design_signoff (studio domain) via F2.M05 capability rows | yes |
-| F2 | No commercial figures on installer surfaces (F2-06) | n/a (no stored data — surface law enforced via role_capability money cells) | n/a (no stored data) |
 | F2 | Checklist tick attribution incl. no-login crew (F2-07, PS-28) | installation_checklist_step (projects domain) | yes |
-| F2 | Mid-task permission grace (F2-17) | n/a (no stored data — enforcement behaviour) | n/a (no stored data) |
 | F2 | Audience law: customer never a user (F2-18) | user_account vs customer_link (customer-link domain) separation | yes |
 | F2 | Owner/Manage-team guard rails (F2-19) | membership_role guarded transitions + audit_log_entry | yes |
-| F2 | Deactivate never delete (F2-20) | user_account.status, session revocation, attributed history | yes |
-| F2 | Invitation carries ≥1 role (F2-21) | invitation + invitation_role junction | yes |
 | F2 §F2.4 | Append-only audit log, covered events, retention, export (F2-22/23) | audit_log_entry (platform-services domain) | yes |
 | F2 | Platform-staff read-only, always audited (F2-24) | audit_log_entry actor reference | partial (cross-tenant actor representation open) |
-| F2 §F2.5 | Capability matrices as sole permission truth, stable row keys (F2-25/26) | capability, role_capability | yes |
-| F2 §F2.5-M02/M09/M10/M11/F5 | Per-module grant cells (dedupe override, tracking, people records, money, links) | role_capability cells; subject data in owning domains | yes |
-| 02-personas | Persona ↔ preset 1:1 identity; Owner/Employee audiences (PS-02, PS-04) | role_preset (names verbatim), user_account | yes |
 | 02-personas | Persona home-screen queries (PS-07/11/13/16/18/21/26/30/32/34/36) | n/a (no stored data — query compositions over other domains' entities) | n/a (no stored data) |
 | 02-personas | Phone as identity and dedupe key (PS-37) | user_account.phone_e164; customer/lead phone (crm domain) | yes |
 
@@ -3003,25 +2567,20 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
-| F1 §F1.1 | Pack as versioned unit, eight keys, no market constants, platform-authored (F1-01..04, F1-06, F1-11, F1-12) | market_pack, market_pack_version; market_pack→market_pack_version | yes |
-| F1 §F1.1 | New-market launch gate: residency determination, supplier-of-record decision (F1-05) | market_pack — the two gate facts derive from market_pack_version.pack, never stored | yes |
-| F1 | Tenant market/currency/timezone assignment (F1-07, F1-10) | tenant [identity] child of market_pack (identity domain writes the row) | yes |
 | F1 pack.tax | Scheme-neutral tax + IN GST/IRN/retention (F1-08, F1-13, F1-28..32) | market_pack_version.pack.tax; tax_registration [config]; subscription_invoice [billing] | yes |
 | F1 pack.subsidy | Versioned subsidy model, DCR gate, incentive stage (F1-14, F1-33..35) | market_pack_version.pack.subsidy; pack.certificationSchemes | yes |
 | F1 pack.calling-rules | Voice/messaging floors, DND scrub, consent, AI disclosure (F1-15..17, F1-36..39) | market_pack_version.pack.callingRules; dnd_scrub_entry; consent_record [crm] | yes |
 | F1 pack.payment-rails | Mandate ladder/caps, payment-mode open sets, localisation (F1-18, F1-40..43) | market_pack_version.pack.paymentRails; payment_mandate [billing] | yes |
-| F1 pack.certification-schemes + standards | Scheme set, catalog badging, engineering-standards labels (F1-19, F1-20, F1-44, F1-45) | market_pack_version.pack.certificationSchemes; catalog_item [catalog] scheme-keyed certifications (values) | yes |
+| F1 pack.certification-schemes + standards | Scheme set, catalog badging, engineering-standards labels (F1-19, F1-20, F1-44, F1-45) | market_pack_version.pack.certificationSchemes; scheme-keyed certifications as values on catalog items (`T-M01-027`) | yes |
 | F1 pack.formats | Currency/digits/date/timezone/holidays/phone/OTP/units (F1-21, F1-46..50) | market_pack_version.pack.formats | yes |
 | F1 pack.display-labels | Stage/blocker labels, skippable set, document checklist (F1-22, F1-51, F1-52) | market_pack_version.pack.formats (display labels) | yes |
 | F1 | Utility directory and wait attribution (F1-53) | market_pack_version.pack.formats (utility directory); site [survey] holds the selected utility as a value | yes |
 | F1 pack.data-rights | DPDP roles, residency, rights map, erasure/retention (F1-23, F1-24, F1-54..59) | market_pack_version.pack.dataRights; consent_record [crm]; erasure = anonymisation on owning entities | partial — whether rights requests (export/erasure/correction) are tracked as stored records is open |
 | F1 price book | Per-market book, per-currency plan rows, draft add-on rates (F1-25..27, F1-60, F1-61) | market_pack_version.pack.priceBook, plan_price [billing] | yes |
-| F1-02 | One demo project as versioned pack content | demo_project_content; market_pack→demo_project_content | yes |
 | F3 | Product-level language set + readiness gate (F3-01, F3-25..27) | no entity: the set is `UI_LANGUAGES` in domain, consumed by contracts; readiness is a build fact — fonts, plurals, catalogs — that no stored flag can make true (owner ruling 2026-09-07) | n/a (no stored data) |
-| F3 | Per-user interface language and unit preference (F3-02, F3-23) | user_account [identity] fields | yes |
 | F3 | Runtime English fallback, reader-language render, translated catalog content (F3-05..07) | product translation catalog is shipped content, not tenant-stored data | n/a (no stored data) |
 | F3 | Never-translated set, naming law, closed vocabularies (F3-08, F3-11, F3-12) | storage constraints across all entities (byte-identical values, neutral machine values) | n/a (no stored data) |
-| F3 | Tenant-authored per-language content (F3-10) | message_template [config]; price_book_rate names [catalog] | yes |
+| F3 | Tenant-authored per-language content (F3-10) | message_template [config]; price-book rate names (`T-M01-031`) | yes |
 | F3 | Formatted values carry provenance/staleness/disclosures everywhere (F3-24) | rendering duty; provenance fields live on owning domain entities | n/a (no stored data) |
 | F3 | Voice-agent language set independent of interface set (F3-29) | agent_config_version [sales]; where the per-customer language is captured is open (M02/F5/M07) | partial |
 
@@ -3060,29 +2619,9 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
-| M01 §M01.1 | Signup & tenant creation (M01-01, -11, -22, -23) | tenant (identity domain: company_name, city, segment, typical_system_kw, market, currency) | yes |
-| M01 §M01.1 | Duplicate detection & request-to-join (M01-08, -09) | user_account phone-unique lookup; no request-to-join entity — storage vs transient notification unstated | partial |
-| M01 §M01.1–.2 | Auth: OTP, Google link, no passwords, sessions (M01-02, -03, -04, -05, -07) | user_account, otp_challenge, session (identity domain) | yes |
-| M01 §M01.3 | Resume & skipped-fact prompt-points (M01-10, -29) | onboarding_progress; tenant → onboarding_progress 1:1 | yes |
-| M01 §M01.2 | Invites & atomic join (M01-12, -13) | invitation, tenant_membership, membership_role (identity domain) | yes |
-| M01 §M01.2 | Profile capture (M01-14) | user_account (name, photo) | yes |
-| M01 §M01.2 | Team, roles, guard rails, deactivation (M01-18, -19, -20, -21) | tenant_membership, role_preset, membership_role, audit_log_entry | yes |
-| M01 §M01.3 | Company profile & tax registrations (M01-24, -25, -31) | business_profile, tax_registration; business_profile → tax_registration; market_pack → tax_registration | yes |
-| M01 §M01.3 | Demo project (M01-27) | demo_project_content (market domain), versioned with the pack as pack content | yes |
-| M01 §M01.3 | Zero-config platform defaults (M01-28) | — (platform defaults are product behaviour, not tenant rows) | n/a (no stored data) |
-| M01 §M01.4 | Catalog structure, scoping, specs, provenance, archive, MLPE, no queue (M01-32..38, -42, -45, -46) | catalog_item, tenant_catalog_item, tenant_catalog_override, scheme values from market_pack_version.pack.certificationSchemes; catalog_item → tenant_catalog_override | partial (junctions present — catalog_item_market_availability, catalog_item_certification; residue: tenant-SKU certification/preferred handling open, §8) |
-| M01 §M01.4 | Add paths & spreadsheet import (M01-39, -40, -41) | catalog_import_job, tenant_catalog_item, tenant_catalog_override, catalog_rate_entry; import → SKU/override relationships | yes |
-| M01 §M01.4 | Catalog releases & pinning (M01-43, -49) | catalog_release; pins held by design, proposal_version (studio/proposals domains) | partial (release publisher/scope unresolved — see open questions) |
-| M01 §M01.4 | Rate history (M01-44) | catalog_rate_entry; SKU/override → catalog_rate_entry append-only | yes |
-| M01 §M01.5 | Price book (M01-48) | price_book_version, price_book_rate; version → rate 1:N | yes |
-| M01 §M01.6 | Branding (M01-50) | branding_settings; tenant → branding_settings 1:1 | yes |
-| M01 §M01.6 | Proposal template defaults & Quick mode (M01-51, -53) | proposal_template_settings; business_profile → proposal_template_settings bank-details reference | partial (multi-T&C-template round-trip unmodeled) |
-| M01 §M01.6 | Timeline template (M01-52) | timeline_template; tenant → timeline_template 1:1 | yes |
-| M01 §M01.7 | Tranche templates (M01-54) | tranche_template + tranche_template_line | yes |
 | M01 §M01.8 | Message templates (M01-55) | message_template (key × language, seeded + tenant-authored) | yes |
 | M01 §M01.9 | Agent & voice config with versioned history (M01-56, -57) | agent_config_version (sales domain); statutory floor from market_pack | yes |
 | M01 §M01.10 | Capture channel settings (M01-58) | lead_channel_setting | yes |
-| M01 §M01.10 | Locale, timezone & holidays (M01-59) | tenant fields (default_language, timezone); tenant_holiday | yes |
 | M01 §M01.10 | Integration credentials (M01-60) | integration_credential; decrypt events in audit_log_entry | yes |
 
 ### 7.5 CRM & marketing
@@ -3364,15 +2903,6 @@ Every question below that bears on a specific entity is **also inlined as an ita
   locally: `payment_link.channel_delivery_states`, `survey_visit`'s one customer-message record,
   M02's reminder mark. A unified `transactional_send` entity is the natural shape, but the PRD
   never names one — owner ruling owed before M03's first migration.
-- **`catalog_release` publish scope is contested PRD text.** M01 §M01.4 places "publishing
-  releases" inside the tenant grant `F2.M01.manage-catalog`, while F8 §F8.3 and the overview
-  glossary describe platform publication of the platform catalog. Both readings are live; this
-  model keeps the entity platform-owned and flags the ruling as owed (M01-43 vs F8-14).
-- **Per-tenant demo instance marking.** M01-27 requires the instantiated demo project to be
-  labelled demo on every surface, excluded from reports, and resettable — a stored demo marker
-  (or demo_instance record) on the instantiated lead/survey/design/proposal rows. The pack side
-  (demo_project_content) is modeled; the tenant-side marker's shape is owed with M01's first
-  migration.
 - **Data-rights request record.** F1-24/F1-56 give erasure and a 30-day-SLA export/correction
   workflow; whether rights requests are tracked as stored records (state, SLA clock, outcome) or
   handled as support tooling plus audit entries is unstated.
@@ -3415,12 +2945,6 @@ Every question below that bears on a specific entity is **also inlined as an ita
 
 #### Identity & tenancy
 
-- Where does user status (invited/active/deactivated) live — on the global user_account or the per-tenant tenant_membership — and can one phone hold memberships in multiple tenants? Request-to-join implies joining an existing tenant but multi-tenancy of a person is unstated. (M01-18, M01-13, M01-09, OV-31)
-- Is "declined" a distinct invitation state or folded into revoked? M01 lists pending/accepted/expired/revoked, yet declining "voids the invite". (M01-12, M01 §M01.2 edges S1.wrong.2)
-- Are the twelve presets and the capability matrices stored data or shipped product configuration? F2 deliberately carries no schema, yet row keys have stable identities the whole suite references. (F2 §1, F2-25)
-- Can an existing user's role set be reduced to zero? Only zero-role invites are blocked and only last-Owner/last-Manage-team removals are guarded. (F2-19, F2-21)
-- The per-tenant daily invite cap exists but its value is never specified. (M01-04, M01-12)
-- Is "request to join" stored data (an invite-request routed to the EPC Owner) or a transient notification? Analytics names the events but no lifecycle is given. (M01-09)
 - Manager/team mapping (M10-32) resolves every Team-visibility scope and manager-scoped notification recipient, but its representation (first-class entity vs manager edges, and whether it lives on employee_record or tenant_membership) is M10's to define — identity-domain permission resolution depends on the answer. (F2 §F2.5-M10, F6-16)
 - How platform-staff actors (F2-24 read-only access entries) are identified — the actor reference is wider than the tenant's user_account set; affects how audit_log_entry points into identity. (F2-24)
 
@@ -3428,7 +2952,6 @@ Every question below that bears on a specific entity is **also inlined as an ita
 
 - dnd_scrub_entry data boundary and shape: platform-wide per market, or per-tenant; per-number cache vs batch verdicts — F1 fixes only the freshness duty and the cache's existence; mechanism is M07's. (F1-36, F1-15)
 - Where do per-language translations of pack display labels live — versioned with the pack, or in the product message catalog? F1-22 and F3-07 each half-claim it. (F1-22, F3-07)
-- Demo content shape and seeding format are deferred to M01-27; whether reset restores the creation-time pack version or the current pack version is unstated. (F1-02, M01-27)
 
 #### Platform billing & entitlements
 
@@ -3439,22 +2962,12 @@ Every question below that bears on a specific entity is **also inlined as an ita
 - Grandfathering storage level (tenant vs subscription) and which plan_price rows a protected upgrade pins ("the new tier under their protection terms") are unstated. (M12-57)
 - Dunning history shape: distinct dunning_event records owned here, or derived from F6's notification log (dunning types register in F6's matrix)? (M12-39, M12-55)
 - Is entitlement history kept, or only the current effective row per key, with change visibility solely via the F2-22 audit trail? (M12-16, M12-58)
-- Where does the tenant's tax registration live — M01 tenant identity vs billing data? Registry places `tax_registration` in config; the capture surface is conversion. (M12-44, F1-13, F1-29)
 - V2 meter book slots (tracked seats, marketing sends): how an unsellable meter's ledger/usage-screen behaviour is modelled while the book's draft rates await rate-card verification. (M12-33, M12 §M12.5, BM-26)
 - Storage gate reads ceiling × 1.1 at upload issuance, but the gauge is a nightly snapshot "never a counter" — what figure the gate reads intra-day is unspecified. (M12-23, M12-33)
 
 #### Tenant configuration, catalog & rates
 
-- Catalog release scope — tenant or platform? The registry marks catalog_release platform-owned, but M01 §M01.4 states "a release is the publish act of catalog administration" and the tenant grant `F2.M01.manage-catalog` (EPC Owner + Operations) includes "publishing releases", while F8 §F8.3 behavior detail and the overview glossary say releases are "published by the platform" over the platform catalog. Both readings are in the PRD; no ruling settles it. (M01-43, M01 §M01.4 permissions, F8-14, F8 §F8.3)
-- Does append-only rate history cover tax-rate changes on overrides, or only price ("every price change… is a new dated entry")? (M01-44, M01-37)
-- Do tenant own SKUs carry scheme-keyed certifications and badges, or only platform items? M01-34 speaks of platform items; M01-36 says a tenant SKU is "a full catalog item". (M01-34, M01-36)
-- Does `preferred` exist on tenant own SKUs, or only on overrides of platform items? DD8/M01-37 place it on the override; the M01-38 preferred filter and preferred-first ranking span the whole unified list. (M01-37, M01-38)
-- Timeline template cardinality: one default template per tenant (M01-52 is singular) or multiple named templates? (M01-52)
-- The T&C save-as-template round-trip (M06 S6B.step.9) implies multiple stored T&C templates; their count, naming and default semantics are unstated in M01 — proposal_template_settings currently holds one default_terms. (M01-51, M01 §M01.6)
-- Does a fresh tenant get a seeded active price_book_version (M01-48 requires exactly one active) or does the platform default stand in with no version row until first publish (M01-28 zero-config law)? (M01-48, M01-28)
-- Is the price-book rate_kind set a fixed vocabulary or tenant-defined structure? Rate names are tenant data per language; the kind taxonomy is unstated. (M01-48, M01 §M01.5)
 - Does pack_rate_entry attach to market_pack or to market_pack_version? Pack content is versioned (F1-11) and MS10-39 names the price book pack data, but the attach point of rate rows across pack revisions is unstated. (MS10-39, F1-11)
-- Where does the tenant-set OTP-at-accept value threshold live? The glossary says it exists (tenant-set, tenant currency); F5/M01 own its model, and no config-domain entity in the registry carries it. (01 §4 Glossary:OTP-at-accept)
 
 #### CRM & marketing
 

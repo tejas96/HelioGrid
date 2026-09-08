@@ -5,7 +5,7 @@
 > surgically because every platform table foreign-keys to it. What survives is `client.ts`,
 > `migrate.ts` and `uuid.ts`. The next migration is `0001`, authored by the market-pack storage
 > slice (`T-FCORE-016`) — the pack carries no foreign key out and `tenant` carries the market one,
-> so the pack precedes the identity spine. Auth and tenancy follow it. Read the `auth/tenancy` row of `forward-compat.md` first. Everything below is what the
+> so the pack precedes the identity spine. Auth and tenancy follow it. Read `T-M01-025`'s Data model block in `docs/tasks/M01-onboarding.md` first. Everything below is what the
 > rebuild must satisfy, not a description of today's contents.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has

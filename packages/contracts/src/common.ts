@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 export const uuidSchema = z.string().uuid();
 
-/** E.164 — the only phone shape stored or transported (forward-compat register: auth/tenancy). */
+/** E.164 — the only phone shape stored or transported (`T-M01-025`, the identity spine). */
 export const phoneE164Schema = z
   .string()
   .regex(/^\+[1-9]\d{6,14}$/, 'must be E.164, e.g. +919876543210');

@@ -646,6 +646,32 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given an action the product cannot complete, when a user attempts it, then it fails at the attempt with a plain-language reason and is never queued, partially applied, or shown as having succeeded (`F8-36`).
 
 ---
+### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Every photograph, datasheet, logo and document an installer stores is bytes somewhere; one table that knows where, how big and whose keeps storage measurable per tenant and keeps file bytes out of the API.
+**PRD rows:** none of its own — it serves the rows that store a file (`M01-40` datasheets, `M01-50` logo and letterhead, M04 photographs, M08 documents, M10 employee documents, `M12-23` the storage gauge); each stays dispositioned on its own task.
+**Requirements (verbatim):** none quoted here; the duties below are the facts the data model and the first-migration register carried for this table.
+**Data model:** migration number taken at `/start` — after 0001 and 0002, before the first slice that stores a file. One tenant-scoped table: `tenant_id`, a composite index leading with it, a fail-closed RLS policy for `app_user`, explicit grants.
+
+| entity | key fields | rules | rows |
+|---|---|---|---|
+| `file` | subject_kind + subject_ref (the owning domain record); provider + external_id (the object-store reference pair, per `forward-compat.md`'s provider-ref law — never a bare id or a path string); content_type; byte_size; checksum; uploaded_by; uploaded_at | The one files table `forward-compat.md` mandates by name: every stored byte-stream in the suite is one row here — survey photographs, studio capture blobs, project checklist documents, employee documents, receipts. The domain carriers (survey_photograph, image_blob, project_document_file, employee_document) stay: they hold the domain facts (tag, source, checklist linkage, verification, expiry). The bytes/storage facts — size, checksum, content type, object-store location — live only here, and storage_gauge_snapshot (M12-23) measures per-tenant bytes over these rows. Owner: tenant. | M12-23, M12-33, M04-55, M08-31, M10-38, MS12-20, F4-21 |
+
+The four carriers that hold the bytes' domain facts — `survey_photograph`, `image_blob`, `project_document_file`, `employee_document` — stay in their modules; each references exactly one `file` row and its relationship is drawn there.
+**Contract:** `packages/contracts/src/file.ts` — POST /files (declare: subject kind and ref, content type, size → the row id and a presigned upload URL) · POST /files/{id}/complete (checksum confirmed; the row becomes readable) · GET /files/{id}/download-url (presigned, short-lived). File bytes never pass through `apps/api`: the 1 MiB JSON body limit is deliberate and stays; the client uploads direct to storage.
+**Depends on:** `T-FCORE-016` (migration 0001 and the readable-global pattern) · `T-M01-025` (migration 0002, `tenant`, the tenant-scoped pattern).
+**Out of scope:** the domain carriers above (their modules' first migrations); the storage gauge over these rows (M12); erasure and anonymisation per `pack.data-rights` (`T-FCORE-009`, parked); the datasheet-extraction job (its own engine ticket at `T-M01-016`'s `/start`).
+**DONE WHEN:**
+
+- Given a declared file, when the client uploads to the presigned URL and calls complete, then the row holds provider, external id, size, checksum and content type, and a read returns a short-lived download URL → proof: qa-api declare · upload · complete · download round trip.
+- Given a file of another tenant, when its id is read, then the response is 404 and no download URL is issued → proof: invariant tenancy-rls over `file`.
+- Given a JSON body above 1 MiB on any route, when it is sent, then the edge refuses with 413 and no file route ever accepts bytes → proof: qa-api 413 on a 2 MiB JSON body.
+- Given the tenancy scan after this migration, when it runs, then `file` passes as tenant-scoped with `tenant_id`, its composite index, a fail-closed policy and explicit grants → proof: invariant table-tenancy-scan.
+- Given the Drizzle model, when schema parity runs, then the model and the migration agree on every column → proof: invariant schema-parity.
+
+---
+
 ## Laws (enforced through screens and review, no standalone build)
 
 These rows state properties of the product that engineering does not build as a component: they are satisfied by the screens other buckets build, by the shared design-system components, and by the review gates named against each row. They are reproduced verbatim because the wording is the requirement.

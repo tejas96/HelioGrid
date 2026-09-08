@@ -349,7 +349,7 @@ section records the answer per new file.
 3. Is it business logic, a policy number, a protocol constant, a permission rule, or a flow
    view-model both platforms read? → packages/domain (pure TS only). A capability or a
    visibility scope is ALWAYS domain — never an `if role === …` in a handler, which is the
-   repo-wide sweep `docs/engineering/forward-compat.md`'s auth/tenancy row exists to prevent.
+   repo-wide sweep `T-M01-025`'s one deny-by-default guard exists to prevent.
 4. Is it data access (fetch, cache, session store)? → packages/data (react only under
    src/react/ and src/server/; a new repository is registered in src/composition.ts, and
    nothing else may build a client or a transport).
