@@ -23,6 +23,7 @@
     "check:secrets": "bash scripts/check-secrets.sh",
     "check:catalogs": "c() { find packages/i18n/src/locales -type f -print0 | sort -z | xargs -0 git hash-object; }; before=$(c); pnpm --filter @heliogrid/i18n extract >/dev/null; if [ \"$before\" = \"$(c)\" ]; then echo \"catalogs OK - extraction produced no change\"; else echo \"catalogs STALE - copy changed without re-running extract:\"; git diff --stat packages/i18n/src/locales; exit 1; fi",
     "check:openapi": "node scripts/check-openapi-breaking.mjs",
+    "tools:oasdiff": "bash scripts/install-oasdiff.sh",
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:env": "node scripts/check-env-access.mjs",
     "ds:contract": "node scripts/ds-contract.mjs",

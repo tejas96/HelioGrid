@@ -506,7 +506,7 @@ Also: `sessionClaimsSchema` and `tenantClaimSchema` re-authored in `session.ts` 
 
 ### T-M01-028 · Invitations and the atomic accept
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#47)
 **Why:** A teammate taps an invite, enters one OTP and lands on their role's home with real work in it, never half-joined; without it a company stays one owner and the Team screen has nothing to manage.
 **PRD rows:** M01-17
 **Requirements (verbatim):**
