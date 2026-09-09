@@ -26,6 +26,7 @@ export function useSession(): SessionApi {
       completeSwitch: session.completeSwitch,
       signOut: session.signOut,
       signOutEverywhere: session.signOutEverywhere,
+      setInterfaceLanguage: session.setInterfaceLanguage,
     }),
     [snapshot, session],
   );

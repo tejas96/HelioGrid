@@ -32,7 +32,7 @@ export async function createTranslator(locale: UiLanguage): Promise<Translator> 
 export interface I18nRuntime {
   /** The Lingui instance this mount owns — hand it to `<I18nProvider>`, never share it. */
   readonly i18n: I18n;
-  locale: UiLanguage;
+  readonly locale: UiLanguage;
   /** Async because a catalog is fetched. Both platforms get the same signature. */
   setLocale(next: UiLanguage): Promise<void>;
   t(id: string, values?: Record<string, unknown>): string;
@@ -75,9 +75,6 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
     i18n,
     get locale() {
       return current;
-    },
-    set locale(next: UiLanguage) {
-      current = next;
     },
     async setLocale(next) {
       if (next === current) return;

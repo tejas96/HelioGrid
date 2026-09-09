@@ -1,4 +1,4 @@
-import type { OtpChannel, RolePreset } from '@heliogrid/contracts';
+import type { OtpChannel, RolePreset, UiLanguage } from '@heliogrid/contracts';
 import type { OtpFailure } from '@heliogrid/domain';
 import type { HeldWorkSummary } from './held-work';
 
@@ -8,6 +8,8 @@ export interface SessionUser {
   id: string;
   name: string;
   phoneE164: string;
+  /** The person's own interface language (`F3-02`) — what the i18n provider follows. */
+  interfaceLanguage: UiLanguage;
   /** Null until a company exists — the signup that resumes at the company step (`M01-10`). */
   tenant: { id: string; roles: readonly RolePreset[] } | null;
 }
@@ -50,6 +52,13 @@ export interface SessionStore {
   completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
+  /**
+   * The person chose a language (`F3-04`): the snapshot moves at once and the choice is
+   * persisted through `PATCH /users/me`. Resolves true once the server holds it. A failed
+   * persist keeps the choice for this mount — the server's value wins at the next sign-in —
+   * because a switch that waits on a round trip, or undoes itself, is F3-04's own failure.
+   */
+  setInterfaceLanguage(next: UiLanguage): Promise<boolean>;
 }
 
 /** What `useSession()` returns — the snapshot flattened onto the calls. */
@@ -59,4 +68,5 @@ export interface SessionApi extends SessionSnapshot {
   completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
+  setInterfaceLanguage(next: UiLanguage): Promise<boolean>;
 }

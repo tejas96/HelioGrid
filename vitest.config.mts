@@ -63,6 +63,9 @@ export default defineConfig({
         'packages/domain/src/**/*.ts',
         'packages/contracts/src/**/*.ts',
         'packages/forms/src/**/*.ts',
+        /* `runtime.ts` alone: the provider, the loaders and the polyfills are proven by running
+           (testing.md), and a bar over them would buy an import-only test. */
+        'packages/i18n/src/runtime.ts',
         'apps/api/src/**/*.ts',
         'apps/worker/src/**/*.ts',
       ],
@@ -94,6 +97,7 @@ export default defineConfig({
         'packages/domain/src/rails/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
+        'packages/i18n/src/runtime.ts': COMPLETE,
       },
     },
   },

@@ -11,7 +11,9 @@ paths:
 The rule for every unit test in the repo. `CLAUDE.md` §8 points here; `mechanisms.md` says what
 holds each line and how much of it.
 
-- **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker`. Not
+- **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker` ·
+  `i18n`'s `runtime.ts` alone (the fallback and the per-reader translator have edges running
+  cannot see; its provider, loaders and polyfills are proven by running). Not
   the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
   client, `db` by migrations and `tests/invariants/`.
 - **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,

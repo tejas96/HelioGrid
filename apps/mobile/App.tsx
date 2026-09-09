@@ -1,8 +1,10 @@
 import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
 import { createDataLayer } from '@heliogrid/data';
-import { DataProvider } from '@heliogrid/data/react';
+import { DataProvider, useSession } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
-import { useState } from 'react';
+import type { I18nRuntime } from '@heliogrid/i18n';
+import type { LocaleChange } from '@heliogrid/i18n/react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
@@ -44,12 +46,36 @@ export default function App() {
   return (
     <DataProvider layer={dataLayer}>
       <ReactQueryHost />
-      <HelioI18nProvider runtime={i18nRuntime}>
+      <LanguageFollowsUser runtime={i18nRuntime}>
         <SafeAreaProvider>
           <StatusBar barStyle="dark-content" />
           <AppNavigation />
         </SafeAreaProvider>
-      </HelioI18nProvider>
+      </LanguageFollowsUser>
     </DataProvider>
+  );
+}
+
+/**
+ * Inside `DataProvider`, because the language the mount follows is the signed-in person's
+ * (`F3-02`) and only the session knows who that is. The follow itself is the provider's; this
+ * hands a choice the person made here to the one persist path both platforms share (`F3-04`).
+ */
+function LanguageFollowsUser({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
+  const { user, setInterfaceLanguage } = useSession();
+  const onLocaleChange = useCallback(
+    ({ locale, source }: LocaleChange) => {
+      if (source === 'user') void setInterfaceLanguage(locale);
+    },
+    [setInterfaceLanguage],
+  );
+  return (
+    <HelioI18nProvider
+      runtime={runtime}
+      follow={user?.interfaceLanguage ?? null}
+      onLocaleChange={onLocaleChange}
+    >
+      {children}
+    </HelioI18nProvider>
   );
 }

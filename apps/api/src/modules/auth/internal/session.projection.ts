@@ -29,7 +29,12 @@ export function projectionOf(
   row: SessionRow,
 ): SessionProjection {
   return {
-    actor: { userId: account.id, phoneE164: account.phoneE164, displayName: account.name ?? '' },
+    actor: {
+      userId: account.id,
+      phoneE164: account.phoneE164,
+      displayName: account.name ?? '',
+      interfaceLanguage: account.interfaceLanguage,
+    },
     membership: claimsOf(account.id, row.id, membership).membership,
     expiry: {
       expiresAt: row.expiresAt.toISOString(),

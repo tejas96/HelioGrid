@@ -29,6 +29,8 @@ src/catalog-loader.ts         web: one import() chunk per language
 src/catalog-loader.native.ts  RN: static imports (Metro substitutes it — see the landmine)
 src/react/                    the ONE provider and hooks both platforms use
 src/rn/                       Hermes Intl polyfills — global side effects, own entry
+tests/runtime.test.ts         the fallback and per-reader proofs, against the REAL catalogs — the
+                              one unit-tested file here (`.claude/rules/testing.md`)
 ```
 
 ## Three entry points
@@ -57,6 +59,9 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
   `packages/domain/src/format/languages.ts` and re-exported by contracts, which is
   where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
   loaders are `satisfies Record<UiLanguage, …>` (`M48`).
+- **The provider FOLLOWS the session.** A root passes `follow={user?.interfaceLanguage ?? null}`
+  and persists only on `source === 'user'` in `onLocaleChange`; a screen calls `setLocale` and
+  never writes the profile itself — the store is the one persist path (`F3-02`, `F3-04`).
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module
   once per server process and shares it across every request, so a module-level `setupI18n()` is
   one mutable active locale for every concurrent visitor.

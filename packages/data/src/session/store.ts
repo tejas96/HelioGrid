@@ -1,6 +1,7 @@
 import type { PlatformKind, SessionProjection } from '@heliogrid/contracts';
 import type { AuthRepository } from '../auth/repository';
 import { ApiError, UnauthorizedError } from '../errors/errors';
+import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
 import type { OtpResult, SessionSnapshot, SessionStore, SessionUser } from './types';
 
@@ -12,6 +13,7 @@ function userOf(projection: SessionProjection): SessionUser {
     id: projection.actor.userId,
     name: projection.actor.displayName,
     phoneE164: projection.actor.phoneE164,
+    interfaceLanguage: projection.actor.interfaceLanguage,
     tenant:
       projection.membership === null
         ? null
@@ -26,6 +28,7 @@ function userOf(projection: SessionProjection): SessionUser {
  */
 export function createSessionStore(config: {
   auth: AuthRepository;
+  user: UserRepository;
   platform: PlatformKind;
   heldWork: HeldWork;
 }): SessionStore {
@@ -105,6 +108,24 @@ export function createSessionStore(config: {
     async signOut() {
       await config.auth.signOut().catch(() => undefined);
       signedOut();
+    },
+    /**
+     * Optimistic on purpose (`F3-04`): the snapshot moves first and the server catches up. A
+     * failed persist leaves the choice standing — the server's value wins at the next sign-in —
+     * because a switch that waits on a round trip, or undoes itself, is the failure F3-04 names.
+     */
+    async setInterfaceLanguage(next) {
+      const user = snapshot.user;
+      if (user === null) return false;
+      if (user.interfaceLanguage !== next) {
+        emit({ ...snapshot, user: { ...user, interfaceLanguage: next } });
+      }
+      try {
+        await config.user.updateMe({ interfaceLanguage: next });
+        return true;
+      } catch {
+        return false;
+      }
     },
     async signOutEverywhere() {
       await config.auth.signOutEverywhere().catch(() => undefined);

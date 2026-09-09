@@ -6,5 +6,10 @@
  */
 export type { TransProps } from '@lingui/react';
 export { Trans, useLingui } from '@lingui/react';
-export type { HelioI18nProviderProps, I18nControls } from './provider';
+export type {
+  HelioI18nProviderProps,
+  I18nControls,
+  LocaleChange,
+  LocaleChangeSource,
+} from './provider';
 export { HelioI18nProvider, useI18n, useTranslate } from './provider';
