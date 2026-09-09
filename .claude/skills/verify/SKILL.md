@@ -92,8 +92,13 @@ and never the whole run.
 1. Every `pass` carries an `observed` value and evidence. **A pass without evidence becomes
    `inconclusive`.**
 2. Read every failure in full.
-3. Spot-check every `blocker` step plus two others against their evidence.
-4. **A spot-check that contradicts the report makes the whole run untrusted** — re-run it, do
+3. **Read every PASS's evidence for a workaround.** A pass whose evidence describes something the
+   executor had to do to reach the expected result — a retry, a second sign-in, a step taken out
+   of plan order, a precondition it created for itself — is a FINDING, not a pass. The step was
+   blind to the very thing the workaround stepped over, and an executor that reached `expected`
+   will report `pass` and say what it did in one line. That line is the defect.
+4. Spot-check every `blocker` step plus two others against their evidence.
+5. **A spot-check that contradicts the report makes the whole run untrusted** — re-run it, do
    not quietly correct one row.
 
 ## 6. Parity — only when drift is possible

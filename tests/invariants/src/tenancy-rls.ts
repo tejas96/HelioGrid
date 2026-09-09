@@ -229,6 +229,28 @@ export async function runTenancyInvariants(adminUrl: string) {
       'inserting a tenant B role row from tenant A session must fail',
     );
 
+    // The audit log, written on the tenant-scoped path a guarded transition uses (`F2-22`).
+    await sql.begin(async (tx) => {
+      await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+      await tx`set local role app_user`;
+      const written = await tx`insert into audit_log_entry (id, tenant_id, event_type, actor_kind,
+        actor_ref, occurred_at, blocked, subject_kind, subject_ref) values
+        (${randomUUID()}, ${tenantA}, 'team.roles_changed', 'tenant_user', ${userA}, now(), false,
+         'tenant_membership', ${membershipA}) returning id`;
+      assert(written.length === 1, 'audit_log_entry: own-tenant insert accepted under RLS');
+    });
+    await expectFail(
+      sql.begin(async (tx) => {
+        await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+        await tx`set local role app_user`;
+        await tx`insert into audit_log_entry (id, tenant_id, event_type, actor_kind, actor_ref,
+          occurred_at, blocked, subject_kind, subject_ref) values
+          (${randomUUID()}, ${tenantB}, 'team.roles_changed', 'tenant_user', ${userA}, now(), false,
+           'tenant_membership', ${membershipB})`;
+      }),
+      'writing a tenant B audit entry from a tenant A session must fail',
+    );
+
     // Fail closed: no app.tenant_id set → zero rows everywhere, the armed tables included
     await sql.begin(async (tx) => {
       await tx`set local role app_user`;
@@ -239,13 +261,14 @@ export async function runTenancyInvariants(adminUrl: string) {
     });
 
     // Append-only ledgers: asserted from the CATALOG, over every mutating privilege and every
-    // RLS-subject role.
+    // RLS-subject role. The list names the ledgers that EXIST, and is asserted non-empty below.
     //
     // The previous form ran `update <ledger>` under app_user and required it to throw. Two
     // problems, both real: it tested UPDATE only — DELETE and TRUNCATE were ungated and the
     // grants permitted neither being checked — and `expectFail` accepts ANY exception, so a
     // typo'd table name or a connection blip read as "append-only holds". A privilege question
     // answers all of it at once and cannot be fooled by an unrelated error.
+    const ledgerNames = ['audit_log_entry'];
     const ledgerGrants = await sql<{ ledger: string; privilege: string; grantee: string }[]>`
       select c.relname as ledger, priv.privilege, sub.rolname as grantee
       from pg_class c
@@ -256,10 +279,17 @@ export async function runTenancyInvariants(adminUrl: string) {
         where pg_has_role(r.rolname, 'app_user', 'MEMBER')
           and not r.rolbypassrls and not r.rolsuper and r.rolname not like 'pg\\_%'
       ) as sub
-      where c.relname in ('audit_log', 'usage_events', 'sync_mutations')
+      where c.relname in ${sql(ledgerNames)}
         and case when priv.privilege in ('DELETE', 'TRUNCATE')
                  then has_table_privilege(sub.rolname, c.oid, priv.privilege)
                  else has_any_column_privilege(sub.rolname, c.oid, priv.privilege) end`;
+    // Two questions, two messages: a check over an empty list reports "0 grants", which reads
+    // exactly like a pass, and that is how the previous list of tables nobody built survived.
+    assert(
+      ledgerNames.length > 0,
+      'the append-only ledger list is EMPTY, so this check proved nothing. Name every ledger ' +
+        'that exists; a table nobody built matches no catalog row and passes silently.',
+    );
     assert(
       ledgerGrants.length === 0,
       `append-only ledgers hold ${ledgerGrants.length} mutating grant(s):\n` +
@@ -275,11 +305,14 @@ export async function runTenancyInvariants(adminUrl: string) {
       `tenancy invariants OK — RLS armed (enabled+forced+canonical policy expression) on ` +
         `${armed.length} tables: ${armed.join(', ')}; ` +
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
-        `isolation behaviourally exercised on tenant, user_account, tenant_membership, membership_role`,
+        `append-only proven on ${ledgerNames.join(', ')}; ` +
+        `isolation behaviourally exercised on tenant, user_account, tenant_membership, ` +
+        `membership_role, audit_log_entry`,
     );
   } finally {
     // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
     const tenants = [tenantA, tenantB];
+    await sql`delete from audit_log_entry where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from membership_role where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tenant_membership where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from user_account where id in (${userA}, ${userB})`.catch(() => {});

@@ -5,6 +5,7 @@ import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
 import { sessionIdOf, sessionOf } from '../../common/auth/session-context';
+import type { Act } from './tenant.repository';
 import { TenantService } from './tenant.service';
 
 /** The membership the guard admitted; `member` access guarantees it is there. */
@@ -12,6 +13,11 @@ function tenantIdOf(req: Request): string {
   const membership = sessionOf(req).membership;
   if (membership === null) throw new NotFoundException('This session has no company.');
   return membership.tenantId;
+}
+
+/** Who is asking and when — what the audit entry a guarded transition writes is recorded under. */
+function actOf(req: Request): Act {
+  return { actorUserId: sessionOf(req).actor.userId, now: Date.now() };
 }
 
 @Controller()
@@ -56,11 +62,16 @@ export class TenantController {
       }),
       assignRoles: async ({ params, body }) => ({
         status: 200,
-        body: await this.tenants.assignRoles(tenantIdOf(req), params.membershipId, body),
+        body: await this.tenants.assignRoles(
+          tenantIdOf(req),
+          params.membershipId,
+          body,
+          actOf(req),
+        ),
       }),
       deactivateMember: async ({ params }) => ({
         status: 200,
-        body: await this.tenants.deactivateMember(tenantIdOf(req), params.membershipId, Date.now()),
+        body: await this.tenants.deactivateMember(tenantIdOf(req), params.membershipId, actOf(req)),
       }),
     });
   }

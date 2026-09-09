@@ -96,7 +96,7 @@ export class AuthService {
     tenantId: string,
     now: number,
   ): Promise<{ projection: SessionProjection; token: { token: string; expiresAt: number } }> {
-    await this.store.setActiveTenant(sessionId, tenantId);
+    await this.store.setActiveTenant(sessionId, tenantId, now);
     const [account, row, membership] = await Promise.all([
       this.store.accountById(userId),
       this.store.sessionById(sessionId),

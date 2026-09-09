@@ -1,4 +1,7 @@
 import {
+  auditActorKindSchema,
+  auditEventTypeSchema,
+  auditSubjectKindSchema,
   measurementSystemSchema,
   membershipStatusSchema,
   otpChannelSchema,
@@ -37,6 +40,12 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   },
   platform_kind: { options: platformKindSchema.options, contract: 'platformKindSchema' },
   otp_channel: { options: otpChannelSchema.options, contract: 'otpChannelSchema' },
+  audit_event_type: { options: auditEventTypeSchema.options, contract: 'auditEventTypeSchema' },
+  audit_actor_kind: { options: auditActorKindSchema.options, contract: 'auditActorKindSchema' },
+  audit_subject_kind: {
+    options: auditSubjectKindSchema.options,
+    contract: 'auditSubjectKindSchema',
+  },
 };
 
 /**

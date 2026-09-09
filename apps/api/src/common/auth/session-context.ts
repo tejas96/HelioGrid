@@ -24,6 +24,17 @@ export function sessionOf(req: Request): SessionProjection {
   return resolvedOf(req).session;
 }
 
+/**
+ * The company this session acts under. The guard admits a `member` or capability route only with
+ * a membership, so an absent one is a broken guard rather than a request to answer: it throws
+ * loudly instead of inventing a status the route never declared.
+ */
+export function tenantIdOf(req: Request): string {
+  const membership = sessionOf(req).membership;
+  if (membership === null) throw new Error('the guard admitted a capability route with no company');
+  return membership.tenantId;
+}
+
 /** The session row's id — for a sign-out and for binding a new company to this device. */
 export function sessionIdOf(req: Request): string {
   return resolvedOf(req).sessionId;

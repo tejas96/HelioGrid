@@ -1,6 +1,279 @@
 {
   "openapi": "3.0.2",
   "paths": {
+    "/tenants/me/audit-log": {
+      "get": {
+        "summary": "The tenant's own entries, newest first — their data to export, in every billing state",
+        "tags": [
+          "audit"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "eventType": {
+                            "type": "string",
+                            "enum": [
+                              "auth.signed_in",
+                              "auth.signed_out",
+                              "auth.signed_out_everywhere",
+                              "team.roles_changed",
+                              "team.member_deactivated"
+                            ]
+                          },
+                          "actorKind": {
+                            "type": "string",
+                            "enum": [
+                              "tenant_user",
+                              "platform_staff"
+                            ]
+                          },
+                          "actorRef": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "occurredAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "blocked": {
+                            "type": "boolean"
+                          },
+                          "subjectKind": {
+                            "type": "string",
+                            "enum": [
+                              "user_account",
+                              "tenant_membership"
+                            ]
+                          },
+                          "subjectRef": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "changePayload": {
+                            "type": "object",
+                            "properties": {
+                              "from": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "epc_owner",
+                                    "sales_manager",
+                                    "sales_executive",
+                                    "survey_engineer",
+                                    "design_engineer",
+                                    "project_manager",
+                                    "field_technician",
+                                    "installation_team_member",
+                                    "hr_admin",
+                                    "finance",
+                                    "operations",
+                                    "marketing"
+                                  ]
+                                }
+                              },
+                              "to": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "epc_owner",
+                                    "sales_manager",
+                                    "sales_executive",
+                                    "survey_engineer",
+                                    "design_engineer",
+                                    "project_manager",
+                                    "field_technician",
+                                    "installation_team_member",
+                                    "hr_admin",
+                                    "finance",
+                                    "operations",
+                                    "marketing"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "from",
+                              "to"
+                            ],
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "eventType",
+                          "actorKind",
+                          "actorRef",
+                          "occurredAt",
+                          "blocked",
+                          "subjectKind",
+                          "subjectRef",
+                          "changePayload"
+                        ]
+                      }
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "totalCount"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/otp/request": {
       "post": {
         "summary": "Send a sign-in code to a phone — the send, the resend and the user-initiated voice option",

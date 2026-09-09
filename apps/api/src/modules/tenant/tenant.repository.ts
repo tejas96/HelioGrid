@@ -7,14 +7,18 @@ import {
   withTenantTransaction,
 } from '@heliogrid/db';
 import {
+  type AuditChangePayload,
+  type AuditEventType,
   acceptsAdministration,
   keepsControl,
   type MembershipStatus,
+  ROLE_PRESETS,
   type RolePreset,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, inArray, ne, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
 import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { recordAuditEntry } from '../audit/audit.public';
 import { type TenantRow, tenantColumns } from './tenant.admin.repository';
 
 export interface MemberRow {
@@ -37,6 +41,18 @@ export type TransitionOutcome =
   | { readonly outcome: 'not-found' | 'not-active' | 'last-owner' };
 
 type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
+
+/** Who asked for the change and when — what the entry this transition writes is recorded under. */
+export interface Act {
+  readonly actorUserId: string;
+  readonly now: number;
+}
+
+/** What the change did, and the old → new the log records for it — written either way. */
+interface ChangeOutcome {
+  readonly outcome: 'done' | 'last-owner';
+  readonly changePayload: AuditChangePayload | null;
+}
 
 /**
  * The tenant-facing reads and the tenant-scoped writes, on the runtime pool inside the tenant
@@ -85,37 +101,64 @@ export class TenantRepository {
     tenantId: string,
     membershipId: string,
     roles: readonly RolePreset[],
+    act: Act,
   ): Promise<TransitionOutcome> {
-    return this.transition(tenantId, membershipId, async (tx, othersHold) => {
-      if (!keepsControl([...othersHold, ...roles])) return 'last-owner';
-      await tx
-        .delete(membershipRole)
-        .where(
-          and(eq(membershipRole.tenantId, tenantId), eq(membershipRole.membershipId, membershipId)),
-        );
-      // The wire carries a list; the table holds a SET (one row per preset), so a repeated
-      // preset is written once rather than tripping the unique key.
-      await tx
-        .insert(membershipRole)
-        .values([...new Set(roles)].map((rolePreset) => ({ tenantId, membershipId, rolePreset })));
-      await tx
-        .update(tenantMembership)
-        .set({ authorizationVersion: nextAuthorizationVersion() })
-        .where(and(eq(tenantMembership.tenantId, tenantId), eq(tenantMembership.id, membershipId)));
-      return 'done';
-    });
+    return this.transition(
+      tenantId,
+      membershipId,
+      'team.roles_changed',
+      act,
+      async (tx, othersHold, subjectHolds) => {
+        // The wire carries a list; the table holds a SET (one row per preset), so a repeated
+        // preset is written once rather than tripping the unique key. Both sides of the record
+        // are put in matrix order, so two entries for the same set read as the same set.
+        const to = inMatrixOrder(new Set(roles));
+        // Old → new, on the refusal as much as on the write: a blocked attempt records what was
+        // attempted, because silence about it is how lockout disputes become unanswerable.
+        const changePayload = { from: inMatrixOrder(new Set(subjectHolds)), to };
+        if (!keepsControl([...othersHold, ...roles]))
+          return { outcome: 'last-owner', changePayload };
+        await tx
+          .delete(membershipRole)
+          .where(
+            and(
+              eq(membershipRole.tenantId, tenantId),
+              eq(membershipRole.membershipId, membershipId),
+            ),
+          );
+        await tx
+          .insert(membershipRole)
+          .values(to.map((rolePreset) => ({ tenantId, membershipId, rolePreset })));
+        await tx
+          .update(tenantMembership)
+          .set({ authorizationVersion: nextAuthorizationVersion() })
+          .where(
+            and(eq(tenantMembership.tenantId, tenantId), eq(tenantMembership.id, membershipId)),
+          );
+        return { outcome: 'done', changePayload };
+      },
+    );
   }
 
   /** Ends a person's access — deactivated, never deleted (`F2-20`) — under the same guard. */
-  async deactivate(tenantId: string, membershipId: string): Promise<TransitionOutcome> {
-    return this.transition(tenantId, membershipId, async (tx, othersHold) => {
-      if (!keepsControl(othersHold)) return 'last-owner';
-      await tx
-        .update(tenantMembership)
-        .set({ status: 'deactivated', authorizationVersion: nextAuthorizationVersion() })
-        .where(and(eq(tenantMembership.tenantId, tenantId), eq(tenantMembership.id, membershipId)));
-      return 'done';
-    });
+  async deactivate(tenantId: string, membershipId: string, act: Act): Promise<TransitionOutcome> {
+    return this.transition(
+      tenantId,
+      membershipId,
+      'team.member_deactivated',
+      act,
+      async (tx, othersHold) => {
+        // The event name IS the whole change: the person keeps every preset they held, as history.
+        if (!keepsControl(othersHold)) return { outcome: 'last-owner', changePayload: null };
+        await tx
+          .update(tenantMembership)
+          .set({ status: 'deactivated', authorizationVersion: nextAuthorizationVersion() })
+          .where(
+            and(eq(tenantMembership.tenantId, tenantId), eq(tenantMembership.id, membershipId)),
+          );
+        return { outcome: 'done', changePayload: null };
+      },
+    );
   }
 
   /**
@@ -128,7 +171,13 @@ export class TenantRepository {
   private async transition(
     tenantId: string,
     membershipId: string,
-    change: (tx: Tx, othersHold: readonly RolePreset[]) => Promise<'done' | 'last-owner'>,
+    eventType: AuditEventType,
+    act: Act,
+    change: (
+      tx: Tx,
+      othersHold: readonly RolePreset[],
+      subjectHolds: readonly RolePreset[],
+    ) => Promise<ChangeOutcome>,
   ): Promise<TransitionOutcome> {
     return withTenantTransaction(this.db, tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
@@ -141,24 +190,35 @@ export class TenantRepository {
         .from(tenantMembership)
         .where(subjectWhere)
         .limit(1);
+      // Neither refusal is one of F2-22's blocked attempts — that list names the last-Owner and
+      // last-Manage-team guards — and there is no subject in this company to record either under.
       if (!subject) return { outcome: 'not-found' };
       if (!acceptsAdministration(subject.status)) return { outcome: 'not-active' };
-      const othersHold = await tx
-        .select({ rolePreset: membershipRole.rolePreset })
+      const held = await tx
+        .select({
+          membershipId: membershipRole.membershipId,
+          rolePreset: membershipRole.rolePreset,
+        })
         .from(membershipRole)
         .innerJoin(tenantMembership, eq(tenantMembership.id, membershipRole.membershipId))
-        .where(
-          and(
-            eq(membershipRole.tenantId, tenantId),
-            eq(tenantMembership.status, 'active'),
-            ne(tenantMembership.id, membershipId),
-          ),
-        );
-      const outcome = await change(
-        tx,
-        othersHold.map((row) => row.rolePreset),
-      );
-      if (outcome === 'last-owner') return { outcome };
+        .where(and(eq(membershipRole.tenantId, tenantId), eq(tenantMembership.status, 'active')));
+      const presetsOf = (mine: boolean) =>
+        held.filter((row) => (row.membershipId === membershipId) === mine).map((r) => r.rolePreset);
+      const result = await change(tx, presetsOf(false), presetsOf(true));
+      // Written with the change that caused it and inside the same transaction (`F2-22`): they
+      // commit together, and a refusal — which wrote nothing else — still commits its record.
+      await recordAuditEntry(tx, {
+        tenantId,
+        eventType,
+        actorKind: 'tenant_user',
+        actorRef: act.actorUserId,
+        occurredAt: new Date(act.now),
+        blocked: result.outcome === 'last-owner',
+        subjectKind: 'tenant_membership',
+        subjectRef: membershipId,
+        changePayload: result.changePayload,
+      });
+      if (result.outcome === 'last-owner') return { outcome: 'last-owner' };
       const [member] = await withRoles(tx, tenantId, await memberQuery(tx).where(subjectWhere));
       if (!member) throw new Error('the membership vanished inside its own transaction');
       return { outcome: 'done', member };
@@ -206,6 +266,15 @@ async function withRoles(
     ...row,
     roles: held.filter((r) => r.membershipId === row.membershipId).map((r) => r.rolePreset),
   }));
+}
+
+/**
+ * The presets a person holds, in the order `F2` §F2.5 lists them — the enum's declaration order,
+ * which is also the order the chips render in. A record of a set must not depend on the order
+ * the request happened to type it, or two entries for the same set stop comparing equal.
+ */
+function inMatrixOrder(presets: ReadonlySet<RolePreset>): RolePreset[] {
+  return ROLE_PRESETS.filter((preset) => presets.has(preset));
 }
 
 /**

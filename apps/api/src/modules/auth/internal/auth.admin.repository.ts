@@ -1,8 +1,14 @@
 import { type Db, membershipRole, session, tenantMembership, userAccount } from '@heliogrid/db';
-import type { MeasurementSystem, PlatformKind, UiLanguage } from '@heliogrid/domain';
+import type {
+  AuditEventType,
+  MeasurementSystem,
+  PlatformKind,
+  UiLanguage,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../../common/db/admin.token';
+import { recordAuditEntry } from '../../audit/audit.public';
 
 export interface AccountRow {
   readonly id: string;
@@ -92,20 +98,29 @@ export class AuthAdminRepository {
     foreground: boolean;
     now: number;
   }): Promise<SessionRow> {
-    const [inserted] = await this.db
-      .insert(session)
-      .values({
-        userAccountId: row.userAccountId,
-        tokenHash: row.tokenHash,
-        platformKind: row.platformKind,
-        activeTenantId: row.activeTenantId,
-        expiresAt: new Date(row.expiresAt),
-        lastForegroundActivityAt: row.foreground ? new Date(row.now) : null,
-        createdAt: new Date(row.now),
-      })
-      .returning(sessionColumns());
-    if (!inserted) throw new Error('session insert returned no row');
-    return inserted;
+    return this.db.transaction(async (tx) => {
+      const [inserted] = await tx
+        .insert(session)
+        .values({
+          userAccountId: row.userAccountId,
+          tokenHash: row.tokenHash,
+          platformKind: row.platformKind,
+          activeTenantId: row.activeTenantId,
+          expiresAt: new Date(row.expiresAt),
+          lastForegroundActivityAt: row.foreground ? new Date(row.now) : null,
+          createdAt: new Date(row.now),
+        })
+        .returning(sessionColumns());
+      if (!inserted) throw new Error('session insert returned no row');
+      await this.recordAuthAct(
+        tx,
+        'auth.signed_in',
+        row.userAccountId,
+        row.activeTenantId,
+        row.now,
+      );
+      return inserted;
+    });
   }
 
   async sessionByTokenHash(tokenHash: string): Promise<SessionRow | null> {
@@ -145,29 +160,59 @@ export class AuthAdminRepository {
       .where(eq(session.id, id));
   }
 
-  async setActiveTenant(sessionId: string, tenantId: string): Promise<void> {
-    await this.db
-      .update(session)
-      .set({ activeTenantId: tenantId })
-      .where(eq(session.id, sessionId));
+  /**
+   * Binds a company to a session, and records the sign-in that company never saw (`F2-22`). The
+   * signer verified their code BEFORE the company existed, so nothing was written then; this is
+   * the moment they begin acting under it, and without the entry every company's founding log
+   * opens with a sign-OUT that has no sign-in.
+   */
+  async setActiveTenant(sessionId: string, tenantId: string, at: number): Promise<void> {
+    await this.db.transaction(async (tx) => {
+      const [bound] = await tx
+        .update(session)
+        .set({ activeTenantId: tenantId })
+        .where(eq(session.id, sessionId))
+        .returning({ userAccountId: session.userAccountId });
+      if (!bound) return;
+      await this.recordAuthAct(tx, 'auth.signed_in', bound.userAccountId, tenantId, at);
+    });
   }
 
   async revokeSession(id: string, at: number): Promise<void> {
-    await this.db
-      .update(session)
-      .set({ revokedAt: new Date(at) })
-      .where(and(eq(session.id, id), isNull(session.revokedAt)));
+    await this.db.transaction(async (tx) => {
+      const [revoked] = await tx
+        .update(session)
+        .set({ revokedAt: new Date(at) })
+        .where(and(eq(session.id, id), isNull(session.revokedAt)))
+        .returning({ userAccountId: session.userAccountId, tenantId: session.activeTenantId });
+      // A second sign-out on the same session revokes nothing and records nothing: the log holds
+      // what the product performed, and it performed nothing.
+      if (!revoked) return;
+      await this.recordAuthAct(tx, 'auth.signed_out', revoked.userAccountId, revoked.tenantId, at);
+    });
   }
 
   /** Every live session of one account, in ONE write — the revocation sweep (`M01-07`). */
   async revokeAllSessions(userAccountId: string, at: number): Promise<void> {
-    await this.db
-      .update(session)
-      .set({ revokedAt: new Date(at) })
-      .where(and(eq(session.userAccountId, userAccountId), isNull(session.revokedAt)));
+    await this.db.transaction(async (tx) => {
+      const revoked = await tx
+        .update(session)
+        .set({ revokedAt: new Date(at) })
+        .where(and(eq(session.userAccountId, userAccountId), isNull(session.revokedAt)))
+        .returning({ tenantId: session.activeTenantId });
+      // One act, one entry in each company the person was signed into: an audit log is a
+      // tenant's own, so a sweep across several of them is several tenants' news.
+      for (const tenantId of new Set(revoked.map((row) => row.tenantId))) {
+        await this.recordAuthAct(tx, 'auth.signed_out_everywhere', userAccountId, tenantId, at);
+      }
+    });
   }
 
-  /** Every live session of one account acting under one company — what a deactivation ends (`F2-20`). */
+  /**
+   * Every live session of one account acting under one company — what a deactivation ends
+   * (`F2-20`). It writes no entry of its own: the deactivation that called it already recorded
+   * the act, and the log records acts rather than their consequences.
+   */
   async revokeSessionsUnder(userAccountId: string, tenantId: string, at: number): Promise<void> {
     await this.db
       .update(session)
@@ -220,6 +265,32 @@ export class AuthAdminRepository {
       .orderBy(desc(tenantMembership.createdAt))
       .limit(1);
     return row ? this.membership(userAccountId, row.tenantId) : null;
+  }
+
+  /**
+   * One auth act, in the SAME transaction as the session write it belongs to (`F2-22`). An
+   * account signing in or out of no company writes nothing: the log is a tenant's own (`F2-23`)
+   * and there is no tenant to own the entry. The person is both actor and subject.
+   */
+  private async recordAuthAct(
+    tx: Parameters<Parameters<Db['transaction']>[0]>[0],
+    eventType: AuditEventType,
+    userAccountId: string,
+    tenantId: string | null,
+    at: number,
+  ): Promise<void> {
+    if (tenantId === null) return;
+    await recordAuditEntry(tx, {
+      tenantId,
+      eventType,
+      actorKind: 'tenant_user',
+      actorRef: userAccountId,
+      occurredAt: new Date(at),
+      blocked: false,
+      subjectKind: 'user_account',
+      subjectRef: userAccountId,
+      changePayload: null,
+    });
   }
 }
 

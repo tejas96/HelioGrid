@@ -10,6 +10,7 @@
  * factory would hand apps back the raw wire that the `apps-never-touch-the-wire` gate exists
  * to keep away from them.
  */
+export type { AuditRepository } from './audit/repository';
 export type { AuthRepository } from './auth/repository';
 export { queryKeys } from './cache/keys';
 export type { DataLayer, DataLayerConfig, Repositories } from './data-layer';

@@ -1,3 +1,4 @@
+import { type AuditRepository, createAuditRepository } from './audit/repository';
 import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
 import { createHealthRepository, type HealthRepository } from './health/repository';
@@ -8,6 +9,7 @@ import { createUserRepository, type UserRepository } from './user/repository';
 
 /** Every repository an app can reach. One entry per contract router. */
 export interface Repositories {
+  audit: AuditRepository;
   auth: AuthRepository;
   health: HealthRepository;
   tenant: TenantRepository;
@@ -35,6 +37,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
         : createTransport({ mode: 'browser', baseUrl: config.baseUrl });
   const api = createApiClient(config.baseUrl, transport);
   return {
+    audit: createAuditRepository(api),
     auth: createAuthRepository(api),
     health: createHealthRepository(api),
     tenant: createTenantRepository(api),
