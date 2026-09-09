@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
-  type Db,
   membershipRole,
   tenantMembership,
   withTenantTransaction,
@@ -27,19 +26,19 @@ import {
 /**
  * The append-only log against REAL state (`F2-22`, `F2-23`, `F2-24`). What only a database can
  * show: that an entry is written INSIDE the transaction that caused it, that a refused act still
- * records itself while changing nothing, that no role can edit or remove an entry, that one
- * company's export carries no other company's rows, and that a platform-staff actor needs no
- * membership in the company whose log they appear in.
+ * records itself while changing nothing, that one company's export carries no other company's
+ * rows, and that a platform-staff actor needs no membership in the company whose log they
+ * appear in.
  *
- * The repositories are driven directly, as the services compose them. Migration 0004's grants —
- * SELECT and INSERT, and nothing else — are what this leans on; the policy over them is the
- * tenancy invariant's.
+ * The repositories are driven directly, as the services compose them. That NO role may edit or
+ * remove an entry is NOT proven here: it is a property of the system read from the catalog over
+ * every RLS-subject role, which `tests/invariants` owns and this file must not restate. Asked
+ * here it would also be a lie in CI, where the connecting role is a superuser that bypasses RLS
+ * and holds every privilege — the attempt would succeed, and the DELETE would empty the table.
  */
 
 /** A page wide enough that every entry one case writes is on it. */
 const WHOLE_LOG = { limit: 50, offset: 0 };
-/** Postgres `insufficient_privilege` — what a table with no UPDATE and no DELETE grant answers. */
-const INSUFFICIENT_PRIVILEGE = '42501';
 
 const OWNER = FOUNDER_ROLE;
 const SPARE = ROLE_PRESETS.find((preset) => preset !== OWNER) as RolePreset;
@@ -172,23 +171,6 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
     expect(await countOfEntries()).toBe(before);
   });
 
-  it.each([
-    { act: 'an UPDATE', run: (db: Db) => db.update(auditLogEntry).set({ blocked: true }) },
-    { act: 'a DELETE', run: (db: Db) => db.delete(auditLogEntry) },
-  ])(
-    'refuses $act as the runtime role — append-only is a privilege, not a promise',
-    async ({ run }) => {
-      // No tenant pin is set: a privilege is checked BEFORE any policy, so this refusal is the
-      // grant's and not RLS's. Postgres answers 42501, insufficient_privilege, because migration
-      // 0004 granted SELECT and INSERT alone — the error reaches us wrapped by the query builder.
-      const refusal = await run(pools.runtime.db).then(
-        () => null,
-        (error: unknown) => error,
-      );
-      expect(codeOf(refusal)).toBe(INSUFFICIENT_PRIVILEGE);
-    },
-  );
-
   it("gives a company its own entries and no other company's, newest first", async () => {
     await tenants.assignRoles(elsewhere.tenantId, ownerElsewhere.membershipId, [OWNER, SPARE], {
       actorUserId: spare.userId,
@@ -238,15 +220,6 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
       subjectRef: owner.userId,
       changePayload: null,
     };
-  }
-
-  /** The driver's own SQLSTATE, under whatever wrapper the query builder threw it in. */
-  function codeOf(error: unknown): string | null {
-    for (const level of [error, (error as { cause?: unknown })?.cause]) {
-      const code = (level as { code?: unknown })?.code;
-      if (typeof code === 'string') return code;
-    }
-    return null;
   }
 
   /** A session opened the way sign-in opens one; the company is what decides whether it is logged. */
