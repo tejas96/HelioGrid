@@ -103,7 +103,7 @@ cp .env.example .env.local                # then fill in DATABASE_URL (app_runti
 pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
 pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
-# Sign in locally with any +91 number: the code is in the api log (`OTP for +91…`), no SMS.
+# Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
 pnpm verify                               # lint · boundaries · typecheck · test · build
 ```
 

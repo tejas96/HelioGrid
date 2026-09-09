@@ -39,3 +39,13 @@ export function tenantIdOf(req: Request): string {
 export function sessionIdOf(req: Request): string {
   return resolvedOf(req).sessionId;
 }
+
+/** Who asked for a change and when — what the audit entry the change writes is recorded under. */
+export interface Act {
+  readonly actorUserId: string;
+  readonly now: number;
+}
+
+export function actOf(req: Request): Act {
+  return { actorUserId: sessionOf(req).actor.userId, now: Date.now() };
+}

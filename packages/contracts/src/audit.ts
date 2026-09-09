@@ -1,7 +1,13 @@
 import { AUDIT_ACTOR_KINDS, AUDIT_EVENT_TYPES, AUDIT_SUBJECT_KINDS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { paginated, paginationQuerySchema, rolePresetSchema, uuidSchema } from './common';
+import {
+  extensibleEnum,
+  paginated,
+  paginationQuerySchema,
+  rolePresetSchema,
+  uuidSchema,
+} from './common';
 import { baseError, errorEnvelope } from './error';
 
 const c = initContract();
@@ -9,12 +15,13 @@ const c = initContract();
 /**
  * The act an entry records (`F2-22`). Built from `AUDIT_EVENT_TYPES` in `@heliogrid/domain`,
  * never restated: the migration mirrors the same tuple as a pgEnum (`M17`), so a value on one
- * side alone is a row the API can never return or a value the database rejects.
+ * side alone is a row the API can never return or a value the database rejects. This closed
+ * form is the WRITE side and the mirror; the log's read carries the growing form below.
  */
 export const auditEventTypeSchema = z.enum(AUDIT_EVENT_TYPES);
 export type AuditEventType = z.infer<typeof auditEventTypeSchema>;
 
-/** Who acted — a tenant's own person, or platform staff reading that tenant (`F2-24`). */
+/** Who acted — a tenant's own person, or platform staff reading that tenant (`F2-24`). A fixed pair. */
 export const auditActorKindSchema = z.enum(AUDIT_ACTOR_KINDS);
 export type AuditActorKind = z.infer<typeof auditActorKindSchema>;
 
@@ -43,14 +50,16 @@ export type AuditChangePayload = z.infer<typeof auditChangePayloadSchema>;
  */
 export const auditLogEntrySchema = z.object({
   id: uuidSchema,
-  eventType: auditEventTypeSchema,
+  /** Grows with every module's slice (Law 9); a reader keeps a fallback for a value it does not know. */
+  eventType: extensibleEnum(AUDIT_EVENT_TYPES),
   actorKind: auditActorKindSchema,
   /** A `user_account` id for BOTH kinds — one identity table for every human (`F2-24`). */
   actorRef: uuidSchema,
   occurredAt: z.string().datetime(),
   /** True when the act was REFUSED (`F2-19`): silence about a blocked act is how lockout disputes become unanswerable. */
   blocked: z.boolean(),
-  subjectKind: auditSubjectKindSchema,
+  /** Grows as modules land their subjects (`F6-02`); the same fallback rule as `eventType`. */
+  subjectKind: extensibleEnum(AUDIT_SUBJECT_KINDS),
   subjectRef: uuidSchema,
   changePayload: auditChangePayloadSchema,
 });

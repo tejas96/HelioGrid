@@ -21,6 +21,7 @@
     "openapi": "node dist/scripts/emit-openapi.js"
   },
   "dependencies": {
+    "@anatine/zod-openapi": "^1.14.2",
     "@heliogrid/domain": "workspace:*",
     "@ts-rest/core": "3.52.1",
     "@ts-rest/open-api": "3.52.1",

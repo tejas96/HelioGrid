@@ -15,16 +15,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
-import {
-  type Act,
-  type MemberRow,
-  TenantRepository,
-  type TransitionOutcome,
-} from './tenant.repository';
+import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
 
 /**
  * Company signup, the tenant reads and role administration (`M01-01`, `M01-19`, `M01-20`). The

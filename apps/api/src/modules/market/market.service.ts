@@ -1,12 +1,14 @@
 import type { MarketPackRead } from '@heliogrid/contracts';
 import {
   type MarketPack,
+  marketOfPhone,
   nextEnvelope,
   type PackEnvelope,
   packFromEnvelope,
   tenantReadablePayload,
 } from '@heliogrid/domain';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackAdminRepository } from './market.admin.repository';
 import { MarketPackRepository } from './market.repository';
 
@@ -39,6 +41,26 @@ export class MarketPackService {
     return envelopes
       .filter((envelope): envelope is PackEnvelope => envelope !== null)
       .map(packFromEnvelope);
+  }
+
+  /**
+   * The pack a phone belongs to, for a message the platform sends to it — refusing a number no
+   * market's allowlist covers (`F1-49`). One answer for the code and the invite, so the two can
+   * never disagree about where the rail reaches.
+   */
+  async deliverablePack(phoneE164: string): Promise<MarketPack> {
+    const pack = marketOfPhone(await this.currentPacks(), phoneE164);
+    const allowed = pack?.formats.otpDestinationDialCodes.some((code) =>
+      phoneE164.startsWith(code),
+    );
+    if (!pack || !allowed) {
+      throw new ContractException(
+        'DOMAIN_RULE_VIOLATION',
+        'We cannot send messages to that country yet.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    return pack;
   }
 
   /** The tenant-facing read: the envelope and the tenant-readable keys, never the book (`F1-25`). */

@@ -365,6 +365,9 @@ importers:
 
   packages/contracts:
     dependencies:
+      '@anatine/zod-openapi':
+        specifier: ^1.14.2
+        version: 1.14.2(openapi3-ts@2.0.2)(zod@3.25.76)
       '@heliogrid/domain':
         specifier: workspace:*
         version: link:../domain

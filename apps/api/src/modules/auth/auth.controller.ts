@@ -56,6 +56,7 @@ export class AuthController {
           body.code,
           body.platform,
           languageOf(req),
+          cookieOf(req, SESSION_COOKIE),
           Date.now(),
         );
         setSessionCookie(res, opened.session.secret, opened.session.expiresAt);

@@ -1,17 +1,15 @@
 import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
-import { OTP_DELIVERY, type OtpChallenge, type OtpDelivery } from '@heliogrid/contracts';
+import { MESSAGE_DELIVERY, type MessageDelivery, type OtpChallenge } from '@heliogrid/contracts';
 import {
-  type MarketPack,
-  marketOfPhone,
   OTP_LENGTH,
   type OtpChannel,
   type OtpHistory,
   type OtpRequestDecision,
   otpHistorySince,
   otpLockedUntil,
-  otpMessage,
   otpRequestDecision,
   otpVerifyDecision,
+  platformMessage,
   type UiLanguage,
 } from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
@@ -32,7 +30,7 @@ export class OtpService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
     @Inject(OtpAdminRepository) private readonly codes: OtpAdminRepository,
-    @Inject(OTP_DELIVERY) private readonly delivery: OtpDelivery,
+    @Inject(MESSAGE_DELIVERY) private readonly delivery: MessageDelivery,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
   ) {}
 
@@ -44,7 +42,7 @@ export class OtpService {
   ): Promise<OtpChallenge> {
     const decision = otpRequestDecision(await this.history(phoneE164, now), now);
     if (decision.kind !== 'allowed') throw refusedRequest(decision);
-    const pack = await this.marketOf(phoneE164);
+    const pack = await this.markets.deliverablePack(phoneE164);
     const code = randomCode();
     const challengeId = await this.codes.createChallenge({
       phoneE164,
@@ -56,7 +54,7 @@ export class OtpService {
       await this.delivery.send({
         phoneE164,
         channel,
-        message: otpMessage(pack.callingRules, language, code),
+        message: platformMessage(pack.callingRules, 'sign_in_code', language, { code }),
       });
     } catch {
       await this.codes.markDeliveryFailed(challengeId, now);
@@ -103,22 +101,6 @@ export class OtpService {
       throw refusedVerify('OTP_INVALIDATED', 'That code was already used. Request a fresh one.');
     }
     return { phoneE164: challenge.phoneE164 };
-  }
-
-  /** The pack a phone belongs to, refusing a number no market's allowlist covers (`F1-49`). */
-  async marketOf(phoneE164: string): Promise<MarketPack> {
-    const pack = marketOfPhone(await this.markets.currentPacks(), phoneE164);
-    const allowed = pack?.formats.otpDestinationDialCodes.some((code) =>
-      phoneE164.startsWith(code),
-    );
-    if (!pack || !allowed) {
-      throw new ContractException(
-        'DOMAIN_RULE_VIOLATION',
-        'We cannot send codes to that country yet.',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-    return pack;
   }
 
   private async history(phoneE164: string, now: number): Promise<OtpHistory> {

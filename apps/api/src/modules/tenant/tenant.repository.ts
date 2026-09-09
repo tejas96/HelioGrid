@@ -10,13 +10,14 @@ import {
   type AuditChangePayload,
   type AuditEventType,
   acceptsAdministration,
+  inMatrixOrder,
   keepsControl,
   type MembershipStatus,
-  ROLE_PRESETS,
   type RolePreset,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
+import type { Act } from '../../common/auth/session-context';
 import { RUNTIME_DB } from '../../common/db/runtime.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { type TenantRow, tenantColumns } from './tenant.admin.repository';
@@ -41,12 +42,6 @@ export type TransitionOutcome =
   | { readonly outcome: 'not-found' | 'not-active' | 'last-owner' };
 
 type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
-
-/** Who asked for the change and when — what the entry this transition writes is recorded under. */
-export interface Act {
-  readonly actorUserId: string;
-  readonly now: number;
-}
 
 /** What the change did, and the old → new the log records for it — written either way. */
 interface ChangeOutcome {
@@ -112,10 +107,10 @@ export class TenantRepository {
         // The wire carries a list; the table holds a SET (one row per preset), so a repeated
         // preset is written once rather than tripping the unique key. Both sides of the record
         // are put in matrix order, so two entries for the same set read as the same set.
-        const to = inMatrixOrder(new Set(roles));
+        const to = inMatrixOrder(roles);
         // Old → new, on the refusal as much as on the write: a blocked attempt records what was
         // attempted, because silence about it is how lockout disputes become unanswerable.
-        const changePayload = { from: inMatrixOrder(new Set(subjectHolds)), to };
+        const changePayload = { from: inMatrixOrder(subjectHolds), to };
         if (!keepsControl([...othersHold, ...roles]))
           return { outcome: 'last-owner', changePayload };
         await tx
@@ -266,15 +261,6 @@ async function withRoles(
     ...row,
     roles: held.filter((r) => r.membershipId === row.membershipId).map((r) => r.rolePreset),
   }));
-}
-
-/**
- * The presets a person holds, in the order `F2` §F2.5 lists them — the enum's declaration order,
- * which is also the order the chips render in. A record of a set must not depend on the order
- * the request happened to type it, or two entries for the same set stop comparing equal.
- */
-function inMatrixOrder(presets: ReadonlySet<RolePreset>): RolePreset[] {
-  return ROLE_PRESETS.filter((preset) => presets.has(preset));
 }
 
 /**

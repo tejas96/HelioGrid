@@ -1,4 +1,3 @@
-import { createHash, randomBytes } from 'node:crypto';
 import type { SessionProjection } from '@heliogrid/contracts';
 import {
   isSessionLive,
@@ -8,12 +7,12 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { hashSecret, randomSecret } from '../../common/auth/secrets';
+import { MarketPackService } from '../market/market.public';
 import { type AccountRow, AuthAdminRepository } from './internal/auth.admin.repository';
 import { OtpService } from './internal/otp.service';
 import { claimsOf, lifeOf, projectionOf } from './internal/session.projection';
 import { TokenService } from './internal/token.service';
-
-const SESSION_SECRET_BYTES = 32;
 
 /** What opening a session hands the controller: the projection, and the two credentials to set. */
 export interface OpenedSession {
@@ -34,16 +33,25 @@ export class AuthService {
     @Inject(AuthAdminRepository) private readonly store: AuthAdminRepository,
     @Inject(OtpService) private readonly otp: OtpService,
     @Inject(TokenService) private readonly tokens: TokenService,
+    @Inject(MarketPackService) private readonly markets: MarketPackService,
   ) {}
 
+  /**
+   * A verified code opens a session. `handedOverFrom` is the session cookie the device still
+   * carried: on a shared field phone the next person's sign-in ENDS the previous person's session
+   * (`F4-37`) rather than leaving it live until its own expiry, so nothing of the first user
+   * survives the switch on the server either.
+   */
   async verifyOtp(
     challengeId: string,
     code: string,
     platform: PlatformKind,
     language: UiLanguage,
+    handedOverFrom: string | undefined,
     now: number,
   ): Promise<OpenedSession> {
     const { phoneE164 } = await this.otp.verify(challengeId, code, now);
+    if (handedOverFrom !== undefined) await this.endHandedOverSession(handedOverFrom, now);
     const account =
       (await this.store.accountByPhone(phoneE164)) ??
       (await this.createAccount(phoneE164, language, now));
@@ -107,12 +115,18 @@ export class AuthService {
     return { projection: projectionOf(account, membership, row), token };
   }
 
+  /** A stale or unknown cookie ends nothing: the device simply carried no live session. */
+  private async endHandedOverSession(sessionSecret: string, now: number): Promise<void> {
+    const previous = await this.store.sessionByTokenHash(hashSecret(sessionSecret));
+    if (previous !== null) await this.store.revokeSession(previous.id, now);
+  }
+
   private async createAccount(
     phoneE164: string,
     language: UiLanguage,
     now: number,
   ): Promise<AccountRow> {
-    const pack = await this.otp.marketOf(phoneE164);
+    const pack = await this.markets.deliverablePack(phoneE164);
     return this.store.createAccount({
       phoneE164,
       interfaceLanguage: language,
@@ -127,7 +141,7 @@ export class AuthService {
     now: number,
   ): Promise<OpenedSession> {
     const membership = await this.store.latestActiveMembership(account.id);
-    const secret = randomBytes(SESSION_SECRET_BYTES).toString('base64url');
+    const secret = randomSecret();
     const row = await this.store.createSession({
       userAccountId: account.id,
       tokenHash: hashSecret(secret),
@@ -144,8 +158,4 @@ export class AuthService {
       token,
     };
   }
-}
-
-function hashSecret(secret: string): string {
-  return createHash('sha256').update(secret).digest('hex');
 }

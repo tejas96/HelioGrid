@@ -2,6 +2,7 @@ import { type AuditRepository, createAuditRepository } from './audit/repository'
 import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
 import { createHealthRepository, type HealthRepository } from './health/repository';
+import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import { createTransport, type RequestHeaders } from './transport/transport';
@@ -12,6 +13,7 @@ export interface Repositories {
   audit: AuditRepository;
   auth: AuthRepository;
   health: HealthRepository;
+  invitation: InvitationRepository;
   tenant: TenantRepository;
   user: UserRepository;
 }
@@ -40,6 +42,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     audit: createAuditRepository(api),
     auth: createAuthRepository(api),
     health: createHealthRepository(api),
+    invitation: createInvitationRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),
   };

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { membershipRole, session, tenantMembership } from '@heliogrid/db';
+import { session, tenantMembership } from '@heliogrid/db';
 import { FOUNDER_ROLE, ROLE_PRESETS, type RolePreset } from '@heliogrid/domain';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -15,6 +15,7 @@ import {
   aPerson,
   type Fixture,
   openPools,
+  rolesHeldBy,
   seed,
   skipWithoutDatabase,
   unseed,
@@ -117,7 +118,7 @@ describe.skipIf(skip)(
         by(),
       );
       expect(refused.outcome).toBe('last-owner');
-      expect(await rolesOf(ownerHere.membershipId)).toEqual([OWNER]);
+      expect(await rolesHeldBy(pools.admin.db, ownerHere.membershipId)).toEqual([OWNER]);
       expect(await versionOf(ownerHere.membershipId)).toBe(before);
     });
 
@@ -185,15 +186,6 @@ describe.skipIf(skip)(
         throw new Error(`expected a completed transition, got ${result.outcome}`);
       }
       return result.member;
-    }
-
-    async function rolesOf(membershipId: string): Promise<RolePreset[]> {
-      const rows = await pools.admin.db
-        .select({ rolePreset: membershipRole.rolePreset })
-        .from(membershipRole)
-        .where(eq(membershipRole.membershipId, membershipId))
-        .orderBy(membershipRole.rolePreset);
-      return rows.map((row) => row.rolePreset);
     }
 
     async function versionOf(membershipId: string): Promise<number> {
