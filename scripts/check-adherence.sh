@@ -60,7 +60,7 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
 #             compiles tests into `dist/`, which then ships.
 #   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
 #             driving the real client, `packages/db` by migrations plus tests/invariants/.
-UNIT_TEST_PACKAGES='packages/domain packages/contracts packages/forms apps/api apps/worker'
+UNIT_TEST_PACKAGES='packages/domain packages/contracts packages/forms packages/i18n apps/api apps/worker'
 
 bad_name=$(
   find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" 2>/dev/null

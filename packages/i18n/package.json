@@ -23,7 +23,7 @@
     "extract": "lingui extract --clean",
     "compile": "lingui compile --typescript",
     "build": "lingui compile --typescript && tsc -b",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b && tsc -p tests/tsconfig.json"
   },
   "dependencies": {
     "@formatjs/intl-locale": "5.3.10",
@@ -38,7 +38,8 @@
     "@types/node": "22.20.1",
     "@types/react": "19.2.17",
     "react": "19.2.3",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "5.0.0"
   },
   "peerDependencies": {
     "react": "19.2.3"

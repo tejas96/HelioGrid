@@ -26,15 +26,15 @@ if [[ "$(basename "$rel")" == *.spec.* ]]; then
 fi
 
 # The tree a test may live in, and the packages that may hold one.
-if [[ ! "$rel" =~ ^(packages|apps)/[a-z-]+/tests/ ]]; then
+if [[ ! "$rel" =~ ^(packages|apps)/[a-z0-9-]+/tests/ ]]; then
   echo "Blocked: a unit test lives at \`<package>/tests/**/*.test.ts\`, never beside the source (CLAUDE.md §8). \`$rel\` is not in a package's tests/ tree — inside src/ the package build would compile it into dist/." >&2
   exit 2
 fi
 
 case "$rel" in
-  packages/domain/tests/*|packages/contracts/tests/*|packages/forms/tests/*|apps/api/tests/*|apps/worker/tests/*)
+  packages/domain/tests/*|packages/contracts/tests/*|packages/forms/tests/*|packages/i18n/tests/*|apps/api/tests/*|apps/worker/tests/*)
     exit 0 ;;
 esac
 
-echo "Blocked: \`${rel%%/tests/*}\` is not a unit-tested layer (CLAUDE.md §8). Unit tests cover DECISIONS — domain, contracts, forms, api, worker. Frontend is proven by running it; packages/data by driving the real client; packages/db by migrations and tests/invariants/." >&2
+echo "Blocked: \`${rel%%/tests/*}\` is not a unit-tested layer (CLAUDE.md §8). Unit tests cover DECISIONS — domain, contracts, forms, i18n (runtime.ts alone), api, worker. Frontend is proven by running it; packages/data by driving the real client; packages/db by migrations and tests/invariants/." >&2
 exit 2

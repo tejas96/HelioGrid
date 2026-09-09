@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { roleSetSchema, uuidSchema } from './common';
+import { uiLanguageSchema } from './locale';
 
 /**
  * The HelioGrid session PROJECTION — the shape every guard, repository, screen and contract
@@ -28,6 +29,12 @@ export const actorSchema = z.object({
    */
   phoneE164: z.string(),
   displayName: z.string(),
+  /**
+   * The person's own interface language (`F3-02`) — what every mount follows from its first
+   * paint after sign-in, so the app never boots in a language the person did not choose. Per
+   * USER, never per tenant; written by `PATCH /users/me`.
+   */
+  interfaceLanguage: uiLanguageSchema,
 });
 export type Actor = z.infer<typeof actorSchema>;
 

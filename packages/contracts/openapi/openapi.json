@@ -562,12 +562,21 @@
                         },
                         "displayName": {
                           "type": "string"
+                        },
+                        "interfaceLanguage": {
+                          "type": "string",
+                          "enum": [
+                            "en",
+                            "hi",
+                            "mr"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
-                        "displayName"
+                        "displayName",
+                        "interfaceLanguage"
                       ]
                     },
                     "membership": {
@@ -1077,12 +1086,21 @@
                         },
                         "displayName": {
                           "type": "string"
+                        },
+                        "interfaceLanguage": {
+                          "type": "string",
+                          "enum": [
+                            "en",
+                            "hi",
+                            "mr"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
-                        "displayName"
+                        "displayName",
+                        "interfaceLanguage"
                       ]
                     },
                     "membership": {
@@ -1540,12 +1558,21 @@
                         },
                         "displayName": {
                           "type": "string"
+                        },
+                        "interfaceLanguage": {
+                          "type": "string",
+                          "enum": [
+                            "en",
+                            "hi",
+                            "mr"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
-                        "displayName"
+                        "displayName",
+                        "interfaceLanguage"
                       ]
                     },
                     "membership": {

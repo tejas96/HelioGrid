@@ -32,6 +32,7 @@ export function createDataLayer({ baseUrl, storage, heldWork }: DataLayerConfig)
     repositories,
     session: createSessionStore({
       auth: repositories.auth,
+      user: repositories.user,
       platform: storage ? 'mobile' : 'web',
       heldWork: heldWork ?? NO_HELD_WORK,
     }),
