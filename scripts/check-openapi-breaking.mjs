@@ -5,9 +5,12 @@
  *   1. FRESHNESS: the openapi.json on disk already matches what the contract emits.
  *      A stale committed surface is a lie told to every reader. This is the CI gate.
  *   2. BREAKING CHANGES: the emitted surface introduces no breaking change against the
- *      base branch, via oasdiff. Under CI this is a GATE (`M26`): an absent tool, a tool
- *      that cannot compare, or an unfetched base fails closed. Locally the same cases skip
- *      and say so, so `pnpm check:openapi` degrades to the freshness half on any machine.
+ *      base branch, via oasdiff — the ONE build `scripts/oasdiff-pin.json` names, installed
+ *      by `pnpm tools:oasdiff` into .tools/. A GATE (`M26`) on every machine: the tool absent
+ *      or at another version is RED, here as under CI, because one release grades a finding a
+ *      level lower than the next and a local pass with another build proves nothing. Only an
+ *      unfetched base is a labelled skip locally (a clone with no `origin/main` has nothing
+ *      to compare); under CI that too fails closed.
  *
  * Freshness is decided by hashing the file BEFORE and AFTER a fresh emit — not by asking
  * git. Two reasons: (a) the emit reads packages/contracts/dist, so we build first, and a
@@ -28,9 +31,31 @@ const ROOT = resolve(import.meta.dirname, '..');
 const SPEC = join(ROOT, 'packages/contracts/openapi/openapi.json');
 const BASE = process.env.OPENAPI_BASE_REF ?? 'origin/main';
 const UNDER_CI = Boolean(process.env.CI) && process.env.CI !== 'false';
+const PIN = JSON.parse(readFileSync(join(ROOT, 'scripts/oasdiff-pin.json'), 'utf8'));
+const OASDIFF = join(ROOT, '.tools/oasdiff/oasdiff');
 
 const run = (cmd, args, opts = {}) =>
   execFileSync(cmd, args, { cwd: ROOT, encoding: 'utf8', ...opts });
+
+/**
+ * The judge must be the pinned build, or its verdict is not this repo's verdict. Absent or at
+ * another version it is RED everywhere — never a skip, because a skip reads as a pass in a log.
+ */
+function assertPinnedJudge() {
+  let installed = null;
+  try {
+    installed = run(OASDIFF, ['--version']).trim().split(/\s+/).at(-1);
+  } catch {
+    /* absent, or not executable — reported below by the same message */
+  }
+  if (installed === PIN.version) return;
+  console.error(
+    `\nOPENAPI BREAKING-CHANGE JUDGE MISSING: oasdiff ${PIN.version} is not installed at\n` +
+      `.tools/oasdiff (found: ${installed ?? 'nothing'}). Run \`pnpm tools:oasdiff\` — the pinned\n` +
+      'build is the only one whose grading this gate trusts (M26).\n',
+  );
+  process.exit(1);
+}
 
 // ── 1. Freshness (git-independent) ──────────────────────────────────────────────
 // Snapshot the bytes, rebuild + re-emit, compare. Build before emit: the emit reads
@@ -52,10 +77,12 @@ if (before === null || !before.equals(after)) {
 console.log('openapi freshness OK — committed spec matches the contract');
 
 // ── 2. Breaking changes vs the base branch ────────────────────────────────────
+assertPinnedJudge();
+
 /**
  * A compare that cannot run is not a pass. Under CI it is a failure (`M26` fails closed);
- * locally it is a labelled skip, because a developer without oasdiff is not a broken build.
- * Returns the exit code the caller should use.
+ * locally an unfetched base is a labelled skip, because a clone with no `origin/main` has
+ * nothing to compare. Returns the exit code the caller should use.
  */
 function inconclusive(reason) {
   if (UNDER_CI) {
@@ -103,14 +130,16 @@ const dir = mkdtempSync(join(tmpdir(), 'oasdiff-'));
 let code = 0;
 try {
   writeFileSync(join(dir, 'base.json'), baseSpec);
-  const out = run('oasdiff', ['breaking', join(dir, 'base.json'), SPEC, '--fail-on', 'ERR']);
-  console.log(out.trim() || 'openapi breaking-change check OK — no breaking changes');
+  const out = run(OASDIFF, ['breaking', join(dir, 'base.json'), SPEC, '--fail-on', 'ERR']);
+  console.log(
+    `${out.trim() || 'openapi breaking-change check OK — no breaking changes'} (oasdiff ${PIN.version})`,
+  );
 } catch (err) {
   // oasdiff exit codes are distinct: 1 = breaking changes found (report on stdout);
-  // ENOENT = binary absent; 100 = bad flag/usage; 102 = unparseable/missing input. Only a
-  // status of 1 is a real break — every other failure is the tool unable to compare, which
-  // is a SKIP, not a verdict. Misreporting tool drift as a breaking change is a false alarm
-  // that trains people to ignore the gate.
+  // 100 = bad flag/usage; 102 = unparseable/missing input. Only a status of 1 is a real
+  // break — every other failure is the tool unable to compare, which is a SKIP, not a
+  // verdict. Misreporting tool drift as a breaking change is a false alarm that trains
+  // people to ignore the gate. (An absent binary was refused above, before any compare.)
   if (err.status === 1) {
     console.error(`\nOPENAPI BREAKING CHANGE vs ${BASE}:\n`);
     console.error((err.stdout || err.message).trim());
@@ -120,11 +149,7 @@ try {
     );
     code = 1;
   } else {
-    code = inconclusive(
-      err.code === 'ENOENT'
-        ? 'oasdiff is not installed'
-        : `oasdiff could not compare (exit ${err.status})`,
-    );
+    code = inconclusive(`oasdiff could not compare (exit ${err.status})`);
   }
 } finally {
   rmSync(dir, { recursive: true, force: true });

@@ -1,0 +1,8 @@
+{
+  "version": "1.31.0",
+  "archives": {
+    "darwin_all": "920639cc49da700e37ec070b6981686d6fa2f02d036aa18aeb62e1445ffd9286",
+    "linux_amd64": "0177d4bc0bf04f4061e9277795b77335ee100a43b508e94fce5c46de083bbede",
+    "linux_arm64": "5df49123030eb0816ccd440ed8f1caa8bab8dcb50aa725485d02226a0c82f49f"
+  }
+}

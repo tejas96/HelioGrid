@@ -15,10 +15,6 @@ concurrency:
 
 env:
   TURBO_TELEMETRY_DISABLED: '1'
-  # The breaking-change half of check:openapi (M26). Version and checksum are bumped TOGETHER;
-  # the checksum is the linux_amd64 tar.gz line of that release's checksums.txt.
-  OASDIFF_VERSION: 1.31.0
-  OASDIFF_SHA256: 0177d4bc0bf04f4061e9277795b77335ee100a43b508e94fce5c46de083bbede
 
 jobs:
   # Which lanes this change can reach. `quality` never asks; it always runs. The three mobile
@@ -140,20 +136,10 @@ jobs:
           key: turbo-${{ runner.os }}-${{ github.sha }}
           restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
+      # The same pinned build a developer installs with `pnpm tools:oasdiff` (M26): the pin —
+      # version and per-archive checksum — is scripts/oasdiff-pin.json, one file for both.
       - name: Install oasdiff (the breaking-change half of check:openapi — M26)
-        run: |
-          set -euo pipefail
-          dir="$RUNNER_TEMP/oasdiff"
-          mkdir -p "$dir"
-          curl -fsSL -o "$dir/oasdiff.tar.gz" \
-            "https://github.com/oasdiff/oasdiff/releases/download/v${OASDIFF_VERSION}/oasdiff_${OASDIFF_VERSION}_linux_amd64.tar.gz"
-          echo "${OASDIFF_SHA256}  $dir/oasdiff.tar.gz" | sha256sum -c -
-          tar -xzf "$dir/oasdiff.tar.gz" -C "$dir"
-          bin=$(find "$dir" -type f -name oasdiff | head -1)
-          [ -n "$bin" ] || { echo '::error::no oasdiff binary in the release archive'; exit 1; }
-          chmod +x "$bin"
-          dirname "$bin" >> "$GITHUB_PATH"
-          "$bin" --version
+        run: bash scripts/install-oasdiff.sh
       - name: Cluster roles (infra/postgres/init/01-roles.sql)
         # Roles are CLUSTER objects and infra owns them; the service container runs no init SQL,
         # so this is what a local `pnpm infra:up` does on first boot. It must precede migrate:
