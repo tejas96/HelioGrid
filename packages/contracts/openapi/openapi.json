@@ -47,7 +47,7 @@
                           },
                           "eventType": {
                             "type": "string",
-                            "enum": [
+                            "x-extensible-enum": [
                               "auth.signed_in",
                               "auth.signed_out",
                               "auth.signed_out_everywhere",
@@ -78,7 +78,7 @@
                           },
                           "subjectKind": {
                             "type": "string",
-                            "enum": [
+                            "x-extensible-enum": [
                               "user_account",
                               "tenant_membership",
                               "invitation"

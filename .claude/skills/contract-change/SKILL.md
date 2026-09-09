@@ -61,6 +61,10 @@ Removing a field, tightening a type, renaming a key or changing a declared statu
 breaks every existing client. Additive changes — a new optional field, a new endpoint — do
 not. A genuine break needs an owner ruling, stated in the change itself, before it merges.
 
-For a mechanical second opinion, `pnpm check:openapi` diffs the emitted surface against
-`origin/main` with `oasdiff` (install it locally: `brew install oasdiff`). It is advisory,
-not a CI gate — a human reads the break and decides.
+`pnpm check:openapi` diffs the emitted surface against `origin/main` with `oasdiff`, and
+under CI that diff is a GATE (`M26`): an error-level finding fails the lane. Locally it runs
+only when `oasdiff` is installed, and it must be the version the workflow pins — an older
+build grades the same finding a level lower and passes what CI refuses. A value added to a
+response enum is error-level: a set that grows by design is declared `extensibleEnum` in
+`common.ts` (the rule in this package's `CLAUDE.md`); anything else is a genuine break and
+needs the owner's ruling, stated in the change, before it merges.

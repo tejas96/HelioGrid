@@ -1,3 +1,4 @@
+import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import {
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
@@ -10,7 +11,28 @@ import { z } from 'zod';
 
 /** Shared conventions every feature contract builds on. */
 
+// Lets a schema carry OpenAPI metadata the emitter writes through — `extensibleEnum` below is the
+// one caller. Run once, here, because every contract file imports this module first.
+extendZodWithOpenApi(z);
+
 export const uuidSchema = z.string().uuid();
+
+/**
+ * A vocabulary that GROWS with the slices (Law 9) — the audit events, later the notification
+ * types — as a RESPONSE carries it. A closed `z.enum` here would make every module's new value a
+ * breaking change: a client built before it, a mobile app in the field above all, validates the
+ * response and refuses the whole list. So the wire accepts every known value AND any value a
+ * newer server has learned, and the known list travels as `x-extensible-enum` for readers and
+ * for the breaking-change judge (`M26`). The closed `z.enum` still exists beside it for every
+ * WRITE and for the pgEnum mirror (`M17`); a consumer rendering one of these keeps a fallback for
+ * a value it does not know, never a `Record` that must be total. A FIXED set — the twelve presets,
+ * a membership's status — stays a closed enum: growing one IS a product release.
+ */
+export function extensibleEnum<const K extends readonly [string, ...string[]]>(
+  known: K,
+): z.ZodType<K[number] | (string & {})> {
+  return z.string().openapi({ 'x-extensible-enum': [...known] });
+}
 
 /** E.164 — the only phone shape stored or transported (`T-M01-025`, the identity spine). */
 export const phoneE164Schema = z

@@ -47,6 +47,9 @@ pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER
   variant map is `Record<TheEnum, …>`, so a new value fails to compile rather than rendering
   blank. A set both layers need is written in `@heliogrid/domain` and derived here — the
   direction is contracts → domain, never back.
+- **A set that GROWS with the slices (Law 9) — audit events, notification types — is
+  `extensibleEnum(...)` where a RESPONSE carries it**, its reader keeps a fallback, and the closed
+  `z.enum` stays beside it for writes and the pgEnum mirror. A FIXED set stays closed on both sides.
 - pgEnum values in `packages/db` hand-mirror these lists, because `db-no-upward` forbids the
   import. Change both sides in the same slice, via `/migration` (`M17`).
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are UPPER_SNAKE
