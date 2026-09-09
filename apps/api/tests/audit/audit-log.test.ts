@@ -1,10 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import {
-  auditLogEntry,
-  membershipRole,
-  tenantMembership,
-  withTenantTransaction,
-} from '@heliogrid/db';
+import { auditLogEntry, tenantMembership, withTenantTransaction } from '@heliogrid/db';
 import { FOUNDER_ROLE, ROLE_PRESETS, type RolePreset, sessionExpiresAt } from '@heliogrid/domain';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -18,6 +13,7 @@ import {
   aPerson,
   type Fixture,
   openPools,
+  rolesHeldBy,
   seed,
   skipWithoutDatabase,
   unseed,
@@ -115,14 +111,14 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
   });
 
   it('records a REFUSED last-Owner attempt as a blocked entry, with the set that was attempted', async () => {
-    const rolesBefore = await rolesOf(ownerHere.membershipId);
+    const rolesBefore = await rolesHeldBy(pools.admin.db, ownerHere.membershipId);
     const refused = await tenants.assignRoles(here.tenantId, ownerHere.membershipId, [SPARE], {
       actorUserId: owner.userId,
       now: Date.now(),
     });
     expect(refused.outcome).toBe('last-owner');
     // The change wrote nothing — but the attempt is on the record.
-    expect(await rolesOf(ownerHere.membershipId)).toEqual(rolesBefore);
+    expect(await rolesHeldBy(pools.admin.db, ownerHere.membershipId)).toEqual(rolesBefore);
     const blocked = (await entriesOf('team.roles_changed')).filter((entry) => entry.blocked);
     expect(blocked).toHaveLength(1);
     expect(blocked[0]).toMatchObject({
@@ -253,14 +249,5 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
       .from(auditLogEntry)
       .where(inArray(auditLogEntry.tenantId, [here.tenantId, elsewhere.tenantId]));
     return rows.length;
-  }
-
-  async function rolesOf(membershipId: string): Promise<RolePreset[]> {
-    const rows = await pools.admin.db
-      .select({ rolePreset: membershipRole.rolePreset })
-      .from(membershipRole)
-      .where(eq(membershipRole.membershipId, membershipId))
-      .orderBy(membershipRole.rolePreset);
-    return rows.map((row) => row.rolePreset);
   }
 });

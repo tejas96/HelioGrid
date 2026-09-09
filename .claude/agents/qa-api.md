@@ -25,7 +25,7 @@ container is not running, report `inconclusive` naming it — do not start one.
 
 **Signing in during a run (the development sign-in path).** No SMS is sent locally. Request a
 code for ANY `+91` ten-digit number — `POST /auth/otp/request` with `{"phoneE164": "+919845027746",
-"channel": "sms"}` — and read the code from the API's log: the line `OTP for +91… via sms: …
+"channel": "sms"}` — and read the code from the API's log: the line `Message for +91… via sms: …
 code is 123456` (`preview_logs` with search `OTP for` when the api runs in the preview, else its
 stdout). Verify with `POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API
 sets two HttpOnly cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the

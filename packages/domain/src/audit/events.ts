@@ -13,6 +13,9 @@ export const AUDIT_EVENT_TYPES = [
   'auth.signed_out_everywhere',
   'team.roles_changed',
   'team.member_deactivated',
+  'team.invite_sent',
+  'team.invite_revoked',
+  'team.invite_accepted',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 
@@ -29,7 +32,7 @@ export type AuditActorKind = (typeof AUDIT_ACTOR_KINDS)[number];
  * which `notification` and `file` read when they land. An audit entry records the subject as it
  * WAS and is never re-pointed; only the kinds a landed act can name are listed.
  */
-export const AUDIT_SUBJECT_KINDS = ['user_account', 'tenant_membership'] as const;
+export const AUDIT_SUBJECT_KINDS = ['user_account', 'tenant_membership', 'invitation'] as const;
 export type AuditSubjectKind = (typeof AUDIT_SUBJECT_KINDS)[number];
 
 /**

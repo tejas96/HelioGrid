@@ -1,5 +1,16 @@
 export type { Admission, MembershipStanding, TokenClaims } from './admission';
 export { admit } from './admission';
+export type { InvitationLife, InvitationStatus } from './invitation-policy';
+export {
+  INVITATION_EXPIRY_DAYS,
+  INVITATION_STATUSES,
+  INVITATIONS_PER_TENANT_PER_DAY,
+  invitationExpiresAt,
+  invitationStatus,
+  invitationsSince,
+  inviteCapReached,
+  inviteLandingPath,
+} from './invitation-policy';
 export {
   AUTO_VERIFY_DELAY_MS,
   CALL_OFFER_AFTER_RESENDS,

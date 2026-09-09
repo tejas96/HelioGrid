@@ -34,3 +34,13 @@ export type RolePreset = (typeof ROLE_PRESETS)[number];
 
 /** The role the person who creates a company holds from its first second (M01-01). */
 export const FOUNDER_ROLE = 'epc_owner' satisfies RolePreset;
+
+/**
+ * A set of presets in the order the matrix fixes (F2-25) — the order chips render in and records
+ * compare in, so one set always reads the same whatever order a request typed it, and a preset
+ * typed twice is held once.
+ */
+export function inMatrixOrder(presets: Iterable<RolePreset>): RolePreset[] {
+  const held = new Set(presets);
+  return ROLE_PRESETS.filter((preset) => held.has(preset));
+}

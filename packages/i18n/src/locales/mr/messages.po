@@ -13,6 +13,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:44
+msgid "An invite already went to this number and is still open."
+msgstr "या नंबरवर आधीच एक आमंत्रण पाठवले आहे आणि ते अजून खुले आहे."
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "योग्य मूल्य प्रविष्ट करा."
@@ -48,9 +53,24 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "ही विनंती खूप मोठी आहे. ती लहान करून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:51
+msgid "The invite could not be sent. Try again in a moment."
+msgstr "आमंत्रण पाठवता आले नाही. थोड्या वेळाने पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "हे फील्ड आवश्यक आहे."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:50
+msgid "This invite has run out. Ask to be invited again."
+msgstr "या आमंत्रणाची मुदत संपली आहे. पुन्हा आमंत्रित करण्यास सांगा."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:43
+msgid "This number is already on your team."
+msgstr "हा नंबर आधीच तुमच्या टीममध्ये आहे."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:40
@@ -81,6 +101,11 @@ msgstr "तुम्हाला हे करण्याची परवान
 #: src/copy/api-error.ts:17
 msgid "You're signed out. Sign in to continue."
 msgstr "तुम्ही साइन आउट आहात. सुरू ठेवण्यासाठी साइन इन करा."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:47
+msgid "Your company has sent today’s invites. Try again tomorrow."
+msgstr "तुमच्या कंपनीने आजची आमंत्रणे पाठवली आहेत. उद्या पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:19

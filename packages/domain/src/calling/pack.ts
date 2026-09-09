@@ -2,6 +2,17 @@ import type { PackLabel } from '../format/languages';
 import { type ClockTime, clockTime } from './clock-time';
 
 /**
+ * The messages the PLATFORM sends to a phone on its own rail (`M01-03`, `M01-12`): the sign-in
+ * code and the team invite. A closed set, because each is a template a market REGISTERS with its
+ * sender platform before the carrier will pass it (`F1-38`) — so the text is pack data and a
+ * change is a pack revision (`F1-11`), never catalog copy, which translators edit freely and no
+ * carrier has seen. A kind added here demands its text in every market's `templates` before
+ * anything compiles. Everything a person reads on a SCREEN stays in `packages/i18n`.
+ */
+export const PLATFORM_MESSAGE_KINDS = ['sign_in_code', 'team_invite'] as const;
+export type PlatformMessageKind = (typeof PLATFORM_MESSAGE_KINDS)[number];
+
+/**
  * `pack.calling-rules` — the market's communications-compliance ruleset, VOICE AND MESSAGING in
  * the one key (`F1-15`). §F1.2 partitions communications law into a single key on purpose, so a
  * second declaration for messaging would split the key against that partition.
@@ -145,11 +156,12 @@ export interface MessagingRuleset {
   /** `F1-38` — what must be registered before a send is carried. A FLOOR; `null` where the market demands none. */
   readonly senderRegistration: Floor<SenderRegistration | null>;
   /**
-   * `M01-06` — the sign-in code message, per language, with `{code}` where the code goes. The
-   * text a market registers with its sender platform, so it is pack data and a change is a pack
-   * revision: the product name stays untranslated, and every language carries the never-call line.
+   * `F1-38` — every message the platform sends to a phone, one registered template per kind, per
+   * language, with `{slot}`s where the facts go. The text a market registers with its sender
+   * platform, so it is pack data and a change is a pack revision; a `Record`, so a kind added to
+   * `PLATFORM_MESSAGE_KINDS` demands its text here before anything compiles.
    */
-  readonly otpMessage: PackLabel;
+  readonly templates: Readonly<Record<PlatformMessageKind, PackLabel>>;
 }
 
 export interface CallingRulesPack {
@@ -205,11 +217,19 @@ export const IN_CALLING_RULES: CallingRulesPack = {
      * which is the market fact. Registration is a third-party clock gating activation, not scope.
      */
     senderRegistration: floor({ platform: 'DLT', levels: ['entity', 'header', 'template'] }),
-    /** `M01-06` — the product name, the code, the never-call line; nothing else, in every language. */
-    otpMessage: {
-      en: 'HelioGrid: your sign-in code is {code}. We never call to ask for this code.',
-      hi: 'HelioGrid: आपका साइन-इन कोड {code} है। हम यह कोड पूछने के लिए कभी कॉल नहीं करते।',
-      mr: 'HelioGrid: तुमचा साइन-इन कोड {code} आहे. हा कोड विचारण्यासाठी आम्ही कधीही कॉल करत नाही.',
+    templates: {
+      /** `M01-06` — the product name, the code, the never-call line; nothing else, in every language. */
+      sign_in_code: {
+        en: 'HelioGrid: your sign-in code is {code}. We never call to ask for this code.',
+        hi: 'HelioGrid: आपका साइन-इन कोड {code} है। हम यह कोड पूछने के लिए कभी कॉल नहीं करते।',
+        mr: 'HelioGrid: तुमचा साइन-इन कोड {code} आहे. हा कोड विचारण्यासाठी आम्ही कधीही कॉल करत नाही.',
+      },
+      /** `M01-13` — who invited, to which company, and the one link; the product name untranslated. */
+      team_invite: {
+        en: 'HelioGrid: {inviter} invited you to join {company}. Tap to accept: {link}',
+        hi: 'HelioGrid: {inviter} ने आपको {company} में शामिल होने के लिए आमंत्रित किया है। स्वीकार करने के लिए खोलें: {link}',
+        mr: 'HelioGrid: {inviter} यांनी तुम्हाला {company} मध्ये सामील होण्यासाठी आमंत्रित केले आहे. स्वीकारण्यासाठी उघडा: {link}',
+      },
     },
   },
 };

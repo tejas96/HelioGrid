@@ -7,7 +7,6 @@
  */
 export type { ClockTime } from './clock-time';
 export { clockTime, clockTimeHhmm } from './clock-time';
-export { OTP_CODE_SLOT, otpMessage } from './otp-message';
 export type {
   CallerLineSeries,
   CallingRulesPack,
@@ -16,6 +15,7 @@ export type {
   MessagingRuleset,
   MessagingWindow,
   NoVoiceRuleset,
+  PlatformMessageKind,
   RulesetItem,
   SenderRegistration,
   TenantDefault,
@@ -27,9 +27,11 @@ export {
   floor,
   IN_CALLING_RULES,
   NO_WINDOW,
+  PLATFORM_MESSAGE_KINDS,
   TRAFFIC_CLASSES,
   tenantDefault,
 } from './pack';
+export { platformMessage } from './platform-message';
 export { isCallerLineAllowed } from './routing';
 export { isOutboundVoiceAvailable } from './voice';
 export type { LawfulSendTime } from './window';

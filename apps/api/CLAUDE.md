@@ -68,9 +68,9 @@ curl localhost:8084/health                               # liveness · /health/r
   guard denies a route with no entry — silence is denial (`M15`). Never an inline role test: the
   capability is domain's. The session a handler needs is `sessionOf(req)`; cookies are set through
   `responseOf(req)`, never an injected `@Res()`.
-- **In development the sign-in code is written to the log** (`OTP for +91…`), because the
-  delivery port is bound to the development adapter; the SMS adapter replaces it and the
-  development one refuses to run in production.
+- **In development the sign-in code and the invite link are written to the log**
+  (`Message for +91…`), because the message rail is bound to the development adapter; the SMS
+  adapter replaces it and the development one refuses to run in production.
 - List endpoints: `orderBy(<sort key> DESC, id DESC)`, limit/offset from `paginationQuerySchema`,
   `totalCount` counted with the SAME `where` — never a divergent count query.
 

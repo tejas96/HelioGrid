@@ -2,6 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
 import { healthContract } from './health';
+import { invitationContract } from './invitation';
 import { marketPackContract } from './market';
 import { tenantContract } from './tenant';
 import { userContract } from './user';
@@ -13,15 +14,15 @@ export * from './auth';
 export * from './common';
 export * from './error';
 export * from './health';
+// The team invite (`T-M01-028`): the send, the Team list, the landing and the one-step accept.
+export * from './invitation';
 // UI language identity: its own file because non-contract consumers (packages/i18n, the
 // Lingui CLI config) read it. Re-exported here so no import path changes.
 export * from './locale';
 // The market pack read (`T-FCORE-016`): the envelope and the tenant-readable keys, never the book.
 export * from './market';
-// The session projection and its port. Contract-only until the M01 slice lands the guard,
-// the resolver and the tables — authored first because a projection invented alongside its
-// first consumer is a projection shaped by that consumer.
-export * from './ports/otp-delivery';
+// The platform message rail (the code and the invite), the session projection and its port.
+export * from './ports/message-delivery';
 export * from './ports/session';
 export * from './session';
 // The tenant (`T-M01-025`): signup, the tenant facts, the roster, the request-to-join steer.
@@ -41,6 +42,7 @@ export const apiContract = c.router(
     audit: auditContract,
     auth: authContract,
     health: healthContract,
+    invitation: invitationContract,
     marketPack: marketPackContract,
     tenant: tenantContract,
     user: userContract,

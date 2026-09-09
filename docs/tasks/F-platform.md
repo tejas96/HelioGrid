@@ -141,7 +141,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-005 · The message catalog and runtime language resolution — per-user language, silent English fallback, reader-language rendering
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#46)
 **Why:** A Marathi-speaking surveyor and an English-speaking owner open the same lead and each must see their own language around the same data — and today neither does: the catalog, the provider and the switch all exist in `packages/i18n`, but both apps boot in English and stay there, because the session never says which language the person chose. Without this the first designed screen has nothing to follow, the picker screens (`T-M01-003`, `T-M01-011`) have nothing to write to that the app will honour, and every engine that must render for a READER — a notification, a customer link — has no proven seam to call.
 **PRD rows:** F3-01, F3-02, F3-04, F3-05, F3-06, F3-07
 **Design:** none — an engine task. The pickers that CALL it are designed and built elsewhere: `SCR-M01-03` (`T-M01-003`) and `SCR-M01-11` (`T-M01-011`), whose brief fixes the behaviour this task must honour — *every preference applies as it is touched; no Save, no confirmation; the whole application redraws*. `packages/ui`'s `LanguageSwitcher` is M07's AGENT-language strip, not the user's picker, and is not this task's.
@@ -432,6 +432,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 **Settle at /start:**
 - Whether a notification's recipient binds to the platform-global `user_account` or to the `tenant_membership` (F6-04, M01-18) — ruled: `recipient_user_ref` is a `user_account` id and the row's own `tenant_id` names the tenant, so the pair is the membership with no foreign key to it, and `notification_preference` (`T-FPLAT-018`) binds the same way (`user_account` is the one home of a person, a membership can be deactivated, and a delivered record must keep resolving to the person who received it)
 - `notification.subject_ref` and its re-pointing on a customer merge — ruled: the pair and the re-point rule settled at `T-FPLAT-004` (one polymorphic shape in the suite; nothing to decide here)
+- Three types the team invite already owes this registry (ruled at `T-M01-028`'s `/start`): the EPC Owner's "X declined your invite", emitted from `invitation.declined_at`; the inviter's "X asks to be invited again", emitted from `invitation.reinvite_requested_at` (stamped once, so it fires once); and the Owner's "X asks to join" for `M01-09`'s request — a request is NOT an invitation row, it is this notification, with the act "invite this person" opening `SCR-M01-07` pre-filled — raised by `T-M01-002`'s steer
 
 ---
 ### T-FPLAT-018 · Notification delivery — the event matrix, channels, urgency classes, quiet hours, per-user mutes, recipient resolution

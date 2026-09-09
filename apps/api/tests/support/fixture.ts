@@ -3,6 +3,8 @@ import {
   auditLogEntry,
   createDb,
   type Db,
+  invitation,
+  invitationRole,
   marketPack,
   membershipRole,
   session,
@@ -10,9 +12,14 @@ import {
   tenantMembership,
   userAccount,
 } from '@heliogrid/db';
-import { type RolePreset, sessionExpiresAt } from '@heliogrid/domain';
+import {
+  type InvitationStatus,
+  invitationExpiresAt,
+  type RolePreset,
+  sessionExpiresAt,
+} from '@heliogrid/domain';
 import { loadInvariantsEnv } from '@heliogrid/env/server';
-import { inArray } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 /**
  * The real-database fixture every `apps/api` proof seeds: two companies, the people in them and
@@ -24,7 +31,7 @@ import { inArray } from 'drizzle-orm';
  */
 
 /** Enough digits to keep one run's phone numbers clear of every other run's. */
-const PHONE_SUFFIX_DIGITS = 6;
+const PHONE_SUFFIX_DIGITS = 8;
 const env = loadInvariantsEnv();
 export const databaseUrl = env.DATABASE_URL ?? env.DATABASE_ADMIN_URL ?? '';
 export const adminUrl = env.DATABASE_ADMIN_URL ?? databaseUrl;
@@ -51,6 +58,8 @@ export interface Company {
 export interface Person {
   readonly userId: string;
   readonly name: string;
+  /** The login identity, unique globally (`M01-18`); an invite is keyed to one of these. */
+  readonly phoneE164: string;
 }
 
 export interface Membership {
@@ -66,11 +75,31 @@ export interface Device {
   readonly under: Company;
 }
 
+/** A team invite as the store holds it; `expiresAt` follows the policy unless a proof needs it run out. */
+export interface Invite {
+  readonly invitationId: string;
+  readonly of: Company;
+  readonly by: Person;
+  readonly inviteeName: string;
+  readonly phoneE164: string;
+  readonly roles: readonly RolePreset[];
+  readonly tokenHash: string;
+  readonly status: InvitationStatus;
+  readonly sentAt: number;
+  readonly expiresAt: number;
+}
+
 export const aCompany = (companyName: string): Company => ({
   tenantId: randomUUID(),
   companyName,
 });
-export const aPerson = (name: string): Person => ({ userId: randomUUID(), name });
+/** The phone is minted from the id, so two people in one run — or two runs — never share one. */
+export const aPerson = (name: string): Person => {
+  const userId = randomUUID();
+  return { userId, name, phoneE164: aPhone(userId) };
+};
+export const aPhone = (seed: string = randomUUID()): string =>
+  `+9198${seed.replace(/\D/g, '').slice(0, PHONE_SUFFIX_DIGITS).padEnd(PHONE_SUFFIX_DIGITS, '0')}`;
 export const aMembership = (
   of: Company,
   held: Person,
@@ -81,12 +110,34 @@ export const aDevice = (of: Person, under: Company): Device => ({
   of,
   under,
 });
+export const anInvite = (
+  of: Company,
+  by: Person,
+  invitee: { name: string; phoneE164: string },
+  roles: readonly RolePreset[],
+  standing: { status?: InvitationStatus; sentAt?: number } = {},
+): Invite => {
+  const sentAt = standing.sentAt ?? Date.now();
+  return {
+    invitationId: randomUUID(),
+    of,
+    by,
+    inviteeName: invitee.name,
+    phoneE164: invitee.phoneE164,
+    roles,
+    tokenHash: randomUUID(),
+    status: standing.status ?? 'pending',
+    sentAt,
+    expiresAt: invitationExpiresAt(sentAt),
+  };
+};
 
 export interface Fixture {
   readonly companies: readonly Company[];
   readonly people: readonly Person[];
   readonly memberships: readonly Membership[];
   readonly devices?: readonly Device[];
+  readonly invites?: readonly Invite[];
 }
 
 /** Both pools a proof drives: the runtime role under RLS, and the admin role that seeds and reads. */
@@ -102,12 +153,6 @@ export function openPools() {
 
 export async function seed(db: Db, fixture: Fixture): Promise<void> {
   const now = new Date();
-  // The suffix keeps this run's phones clear of a concurrent run's, since the number is unique
-  // globally and every proof seeds the same handful of people.
-  const suffix = (fixture.companies[0]?.tenantId ?? randomUUID())
-    .replace(/\D/g, '')
-    .slice(0, PHONE_SUFFIX_DIGITS)
-    .padEnd(PHONE_SUFFIX_DIGITS, '0');
   await db.insert(marketPack).values({ marketCode: 'IN' }).onConflictDoNothing();
   await db.insert(tenant).values(
     fixture.companies.map((company) => ({
@@ -122,9 +167,9 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
     })),
   );
   await db.insert(userAccount).values(
-    fixture.people.map((person, index) => ({
+    fixture.people.map((person) => ({
       id: person.userId,
-      phoneE164: `+9198${suffix}${index}`,
+      phoneE164: person.phoneE164,
       name: person.name,
       interfaceLanguage: 'en' as const,
       unitPreference: 'metric' as const,
@@ -166,6 +211,29 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
       })),
     );
   }
+  if (fixture.invites?.length) {
+    await db.insert(invitation).values(
+      fixture.invites.map((invite) => ({
+        id: invite.invitationId,
+        tenantId: invite.of.tenantId,
+        inviterUserId: invite.by.userId,
+        inviteeName: invite.inviteeName,
+        inviteePhoneE164: invite.phoneE164,
+        tokenHash: invite.tokenHash,
+        status: invite.status,
+        sentAt: new Date(invite.sentAt),
+        expiresAt: new Date(invite.expiresAt),
+      })),
+    );
+    const carried = fixture.invites.flatMap((invite) =>
+      invite.roles.map((rolePreset) => ({
+        tenantId: invite.of.tenantId,
+        invitationId: invite.invitationId,
+        rolePreset,
+      })),
+    );
+    if (carried.length > 0) await db.insert(invitationRole).values(carried);
+  }
 }
 
 /** In dependency order, so a failure mid-run still leaves the database as it was found. */
@@ -173,9 +241,21 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   const companies = fixture.companies.map((company) => company.tenantId);
   const people = fixture.people.map((person) => person.userId);
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
+  await db.delete(invitation).where(inArray(invitation.tenantId, companies));
   await db.delete(membershipRole).where(inArray(membershipRole.tenantId, companies));
   await db.delete(session).where(inArray(session.userAccountId, people));
   await db.delete(tenantMembership).where(inArray(tenantMembership.tenantId, companies));
   await db.delete(userAccount).where(inArray(userAccount.id, people));
   await db.delete(tenant).where(inArray(tenant.id, companies));
+}
+
+/** The presets one membership holds, in matrix order — read on the ADMIN path, so a read failure is never mistaken for a policy refusal. */
+export async function rolesHeldBy(db: Db, membershipId: string): Promise<RolePreset[]> {
+  const rows = await db
+    .select({ rolePreset: membershipRole.rolePreset })
+    .from(membershipRole)
+    .where(eq(membershipRole.membershipId, membershipId))
+    .orderBy(membershipRole.rolePreset);
+  return rows.map((row) => row.rolePreset);
 }

@@ -34,6 +34,8 @@ export async function runTenancyInvariants(adminUrl: string) {
   const userB = randomUUID();
   const membershipA = randomUUID();
   const membershipB = randomUUID();
+  const invitationA = randomUUID();
+  const invitationB = randomUUID();
   const suffix = tenantA.slice(0, 8);
 
   try {
@@ -146,6 +148,17 @@ export async function runTenancyInvariants(adminUrl: string) {
     await sql`insert into membership_role (id, tenant_id, membership_id, role_preset) values
       (${randomUUID()}, ${tenantA}, ${membershipA}, 'epc_owner'),
       (${randomUUID()}, ${tenantB}, ${membershipB}, 'epc_owner')`;
+    // One pending invite per tenant, so the leak loop below reads the invitation tables over
+    // real rows rather than over an empty table that is isolated whatever RLS does.
+    await sql`insert into invitation (id, tenant_id, inviter_user_id, invitee_name,
+        invitee_phone_e164, token_hash, status, sent_at, expires_at) values
+      (${invitationA}, ${tenantA}, ${userA}, 'Invitee A', ${`+91900000${suffix.slice(0, 4)}3`},
+       ${`invariant-${invitationA}`}, 'pending', now(), now() + interval '7 days'),
+      (${invitationB}, ${tenantB}, ${userB}, 'Invitee B', ${`+91900000${suffix.slice(0, 4)}4`},
+       ${`invariant-${invitationB}`}, 'pending', now(), now() + interval '7 days')`;
+    await sql`insert into invitation_role (id, tenant_id, invitation_id, role_preset) values
+      (${randomUUID()}, ${tenantA}, ${invitationA}, 'sales_executive'),
+      (${randomUUID()}, ${tenantB}, ${invitationB}, 'sales_executive')`;
 
     assert(
       tenantTables.length >= 2,
@@ -229,6 +242,36 @@ export async function runTenancyInvariants(adminUrl: string) {
       'inserting a tenant B role row from tenant A session must fail',
     );
 
+    // The invite write path (migration 0005): under tenant A's pin an invite for its own tenant
+    // is accepted, a revoke aimed at tenant B's invite touches zero rows, and the SAME insert
+    // pointed at tenant B is refused by WITH CHECK.
+    await sql.begin(async (tx) => {
+      await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+      await tx`set local role app_user`;
+      const invited = await tx`insert into invitation (id, tenant_id, inviter_user_id,
+          invitee_name, invitee_phone_e164, token_hash, status, sent_at, expires_at) values
+        (${randomUUID()}, ${tenantA}, ${userA}, 'Invitee A2', ${`+91900000${suffix.slice(0, 4)}5`},
+         ${`invariant-${randomUUID()}`}, 'pending', now(), now() + interval '7 days') returning id`;
+      assert(invited.length === 1, 'invitation: own-tenant insert accepted under RLS');
+      const revoked = await tx`update invitation set status = 'revoked'
+        where id = ${invitationB} returning id`;
+      assert(
+        revoked.length === 0,
+        "invitation: a revoke aimed at tenant B's invite touches zero rows",
+      );
+    });
+    await expectFail(
+      sql.begin(async (tx) => {
+        await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
+        await tx`set local role app_user`;
+        await tx`insert into invitation (id, tenant_id, inviter_user_id, invitee_name,
+          invitee_phone_e164, token_hash, status, sent_at, expires_at) values
+          (${randomUUID()}, ${tenantB}, ${userB}, 'Invitee B2', ${`+91900000${suffix.slice(0, 4)}6`},
+           ${`invariant-${randomUUID()}`}, 'pending', now(), now() + interval '7 days')`;
+      }),
+      'inserting a tenant B invitation from a tenant A session must fail',
+    );
+
     // The audit log, written on the tenant-scoped path a guarded transition uses (`F2-22`).
     await sql.begin(async (tx) => {
       await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
@@ -307,12 +350,14 @@ export async function runTenancyInvariants(adminUrl: string) {
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
         `append-only proven on ${ledgerNames.join(', ')}; ` +
         `isolation behaviourally exercised on tenant, user_account, tenant_membership, ` +
-        `membership_role, audit_log_entry`,
+        `membership_role, invitation, invitation_role, audit_log_entry`,
     );
   } finally {
     // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
     const tenants = [tenantA, tenantB];
     await sql`delete from audit_log_entry where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from invitation_role where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from invitation where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from membership_role where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tenant_membership where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from user_account where id in (${userA}, ${userB})`.catch(() => {});

@@ -23,6 +23,6 @@ export type {
 export { VISIBILITY_DOMAINS } from './cells';
 export { can, grantedCapabilities, limitsOn, visibilityIn } from './policy';
 export type { RolePreset } from './roles';
-export { FOUNDER_ROLE, ROLE_PRESETS } from './roles';
+export { FOUNDER_ROLE, inMatrixOrder, ROLE_PRESETS } from './roles';
 export type { HeldCell, ReachedThrough, ResolvedVisibility } from './visibility';
 export { DOMAIN_LADDERS, resolveVisibility, VISIBILITY_MATRIX } from './visibility';

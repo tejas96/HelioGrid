@@ -2,6 +2,7 @@ import {
   auditActorKindSchema,
   auditEventTypeSchema,
   auditSubjectKindSchema,
+  invitationStatusSchema,
   measurementSystemSchema,
   membershipStatusSchema,
   otpChannelSchema,
@@ -45,6 +46,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   audit_subject_kind: {
     options: auditSubjectKindSchema.options,
     contract: 'auditSubjectKindSchema',
+  },
+  invitation_status: {
+    options: invitationStatusSchema.options,
+    contract: 'invitationStatusSchema',
   },
 };
 

@@ -13,6 +13,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:44
+msgid "An invite already went to this number and is still open."
+msgstr "An invite already went to this number and is still open."
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "Enter a valid value."
@@ -48,9 +53,24 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "That request is too large. Reduce it and retry."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:51
+msgid "The invite could not be sent. Try again in a moment."
+msgstr "The invite could not be sent. Try again in a moment."
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "This field is required."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:50
+msgid "This invite has run out. Ask to be invited again."
+msgstr "This invite has run out. Ask to be invited again."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:43
+msgid "This number is already on your team."
+msgstr "This number is already on your team."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:40
@@ -81,6 +101,11 @@ msgstr "You don't have access to do that."
 #: src/copy/api-error.ts:17
 msgid "You're signed out. Sign in to continue."
 msgstr "You're signed out. Sign in to continue."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:47
+msgid "Your company has sent today’s invites. Try again tomorrow."
+msgstr "Your company has sent today’s invites. Try again tomorrow."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:19

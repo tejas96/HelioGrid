@@ -1,4 +1,4 @@
-import type { BaseErrorCode, TenantErrorCode } from '@heliogrid/contracts';
+import type { BaseErrorCode, InvitationErrorCode, TenantErrorCode } from '@heliogrid/contracts';
 
 /**
  * The ONE definition of base error-code copy (foundation-dx spec §3.2), swept by the
@@ -36,9 +36,20 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
  * A `Record` over each contract's own code enum, so a route code without copy fails compile
  * here, once, for both platforms.
  */
-const ROUTE_COPY: Record<TenantErrorCode, { id: string }> = {
+const ROUTE_COPY: Record<TenantErrorCode | InvitationErrorCode, { id: string }> = {
   LAST_OWNER: /*i18n*/ {
     id: 'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
+  },
+  ALREADY_MEMBER: /*i18n*/ { id: 'This number is already on your team.' },
+  ALREADY_INVITED: /*i18n*/ {
+    id: 'An invite already went to this number and is still open.',
+  },
+  INVITE_CAP_REACHED: /*i18n*/ {
+    id: 'Your company has sent today’s invites. Try again tomorrow.',
+  },
+  INVITE_EXPIRED: /*i18n*/ { id: 'This invite has run out. Ask to be invited again.' },
+  INVITE_DELIVERY_FAILED: /*i18n*/ {
+    id: 'The invite could not be sent. Try again in a moment.',
   },
 };
 

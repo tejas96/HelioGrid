@@ -56,7 +56,11 @@ const GLOBAL_READABLE_TABLES: Record<string, string> = {
  * platform identity, so its unique is global; a customer phone is (tenant_id, phone), because
  * two EPCs may legitimately serve the same homeowner.
  */
-const GLOBAL_UNIQUES: Record<string, string> = {};
+const GLOBAL_UNIQUES: Record<string, string> = {
+  invitation_token_hash_key:
+    'the hash of the secret in an invite link: the landing resolves a link before any tenant is ' +
+    'known, and the secret is 32 random bytes, so no two tenants can meet on it (T-M01-028)',
+};
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(`table-tenancy: ${msg}`);
