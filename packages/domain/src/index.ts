@@ -14,6 +14,7 @@
  * matched nothing.
  */
 
+export * from './audit';
 export * from './auth';
 export * from './authz';
 export * from './calling';

@@ -19,7 +19,12 @@ import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
-import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
+import {
+  type Act,
+  type MemberRow,
+  TenantRepository,
+  type TransitionOutcome,
+} from './tenant.repository';
 
 /**
  * Company signup, the tenant reads and role administration (`M01-01`, `M01-19`, `M01-20`). The
@@ -83,14 +88,23 @@ export class TenantService {
   }
 
   /** The presets a person holds, replaced as a whole and guarded (`M01-20`, `F2-19`). */
-  async assignRoles(tenantId: string, membershipId: string, body: AssignRoles): Promise<Member> {
-    return toMember(admitted(await this.scoped.assignRoles(tenantId, membershipId, body.roles)));
+  async assignRoles(
+    tenantId: string,
+    membershipId: string,
+    body: AssignRoles,
+    act: Act,
+  ): Promise<Member> {
+    return toMember(
+      admitted(await this.scoped.assignRoles(tenantId, membershipId, body.roles, act)),
+    );
   }
 
   /** Deactivated, never deleted (`F2-20`): the row flips, then every session under this company ends. */
-  async deactivateMember(tenantId: string, membershipId: string, now: number): Promise<Member> {
-    const member = admitted(await this.scoped.deactivate(tenantId, membershipId));
-    await this.auth.revokeSessionsUnder(tenantId, member.userId, now);
+  async deactivateMember(tenantId: string, membershipId: string, act: Act): Promise<Member> {
+    const member = admitted(await this.scoped.deactivate(tenantId, membershipId, act));
+    // The revocation is this act's consequence, not an act of its own: `team.member_deactivated`
+    // already records it, so the sweep writes no second entry (`F2-20`, `F2-22`).
+    await this.auth.revokeSessionsUnder(tenantId, member.userId, act.now);
     return toMember(member);
   }
 }

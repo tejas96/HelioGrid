@@ -39,6 +39,9 @@ curl localhost:8084/health                               # liveness · /health/r
   never see a `tx` or a table; cross-tenant and platform-authored writes live in
   `*.admin.repository.ts`. A `src/scripts/` command drives a service, never a repository.
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
+- **The audit module is a LEAF and stays one**: other modules' repositories import
+  `recordAuditEntry` from it, so a `.public.ts` import in the other direction closes a cycle.
+  An entry records ids; whoever renders a name resolves it on the read side.
 - `common/` is framework plumbing two or more modules need. It may never import a module, and
   business behaviour belongs in `packages/domain` instead.
 - **Every non-2xx response is the canonical envelope**, including the body-parser's 413, which

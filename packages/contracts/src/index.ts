@@ -1,10 +1,13 @@
 import { initContract } from '@ts-rest/core';
+import { auditContract } from './audit';
 import { authContract } from './auth';
 import { healthContract } from './health';
 import { marketPackContract } from './market';
 import { tenantContract } from './tenant';
 import { userContract } from './user';
 
+// The tenant's own append-only record of what the product performed (`T-FPLAT-004`).
+export * from './audit';
 // The front door (`T-M01-025`): a phone and a code, the session, the token life.
 export * from './auth';
 export * from './common';
@@ -35,6 +38,7 @@ const c = initContract();
  */
 export const apiContract = c.router(
   {
+    audit: auditContract,
     auth: authContract,
     health: healthContract,
     marketPack: marketPackContract,

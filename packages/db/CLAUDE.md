@@ -2,8 +2,10 @@
 
 > `0001` is the market pack, readable global reference data with no foreign key out; `0002` the
 > identity spine that carries the market key; `0003` the grants that open the role-set write path
-> under it. The next is the invitation table (`T-M01-028`, `0004`): read its Data model block in
-> `docs/tasks/M01-onboarding.md` before authoring it.
+> under it; `0004` the append-only audit log every guarded transition writes to. The next is the
+> invitation table (`T-M01-028`, `0005`): read its Data model block in
+> `docs/tasks/M01-onboarding.md` before authoring it. A number is taken in LANDING order, so a
+> task that lands out of the planned sequence takes the next free one and sweeps the docs.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.
@@ -62,11 +64,9 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
 - **Cross-tenant reads return 404, never 403** — never reveal that another tenant's row exists.
 - ids are UUIDv7 generated **app-side** via `$defaultFn`; tables carry no DB-side id default, so a
   raw SQL insert must supply ids.
-- Append-only ledgers (`audit_log`, `usage_events`, `sync_mutations`) get no UPDATE or DELETE
-  grants.
+- Append-only ledgers (`audit_log_entry` today) get no UPDATE or DELETE grants, and the tenancy
+  invariant asserts it from the catalog over every RLS-subject role.
 - pgEnum values hand-mirror the contract `z.enum`s (`M17`); change both sides in the same slice.
-- `audit_log` and `usage_events` are PARTITIONED and drizzle-kit cannot express that, so their DDL
-  is hand-authored and the Drizzle model is the query surface via the parent.
 - `usage_events` dedupe is `(idempotency_key, period_key)`; a producer MUST derive `period_key`
   from `occurred_at` or retries stop being no-ops.
 - An identity provider's own tables are owned by ITS migrator, never authored here.

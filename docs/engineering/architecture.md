@@ -283,14 +283,14 @@ real state; anything needing a mock. Extension point: one file per invariant + a
 
 ### `<package>/tests/` — unit tests, beside the package they prove
 Owns: `*.test.ts` for the LOGIC layers only — `packages/domain`, `packages/contracts`,
-`packages/forms`, `apps/api`, `apps/worker` — run by `pnpm test:unit` (vitest, config at
-`vitest.config.mts`). Outside `src/`, so the package's own `tsc -b` never compiles a test into
-`dist/`. Allowed deps: the package's own `src/`, by RELATIVE path — `@heliogrid/<pkg>` resolves
-to built `dist/` and would test the last build. Platform scope: shared. Belongs: the boundary
-value, the one either side of it, the empty, the negative. Never: a frontend package (proven by
-running it), `packages/data` (proven by driving the real client), a mock of something this repo
-owns. Extension point: a per-glob coverage threshold in `vitest.config.mts`, landing with the
-slice it covers.
+`packages/forms`, `apps/api`, `apps/worker` — run by `pnpm test:unit`. Outside `src/`, so the
+package's own `tsc -b` never compiles a test into `dist/`. Allowed deps: the package's own `src/`,
+by RELATIVE path — `@heliogrid/<pkg>` resolves to built `dist/` and would test the last build.
+Platform scope: shared. Belongs: the boundary value, the one either side of it, the empty, the
+negative. A seed two suites share is `tests/support/<what>.ts`: it asserts nothing, so proofs of
+one real state cannot drift. Never: a frontend package (proven by running it), `packages/data`
+(proven by driving the real client), a mock of something this repo owns. Extension point: a
+per-glob coverage threshold in `vitest.config.mts`, landing with the slice it covers.
 
 ## §3 Platform rules — React Native · Next.js · shared
 
