@@ -27,12 +27,16 @@ export {
 } from './errors/errors';
 export type { HealthRepository } from './health/repository';
 export type { InvitationRepository } from './invitation/repository';
+export { hasCompany, homeOf } from './session/company';
+export type { DoorView } from './session/door-view';
+export { doorView } from './session/door-view';
 export type { HeldWork, HeldWorkSummary } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
 export type {
   OtpVerifyResult,
   PendingSwitch,
   SessionApi,
+  SessionPhase,
   SessionSnapshot,
   SessionStatus,
   SessionStore,

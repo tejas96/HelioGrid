@@ -5,6 +5,7 @@ import { DataProvider, useSession } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import { createFormsValidationMessage, createI18nRuntime, type I18nRuntime } from '@heliogrid/i18n';
 import { HelioI18nProvider, type LocaleChange } from '@heliogrid/i18n/react';
+import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { API_URL } from '../lib/env';
 
@@ -41,7 +42,13 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <DataProvider layer={dataLayer}>
-      <LanguageFollowsUser runtime={i18nRuntime}>{children}</LanguageFollowsUser>
+      <LanguageFollowsUser runtime={i18nRuntime}>
+        {/* The launch market until a tenant's pack is read — the door runs before any tenant exists
+            — and the ONE portal host every menu, sheet and modal escapes its screen through. */}
+        <MarketProvider>
+          <PortalHost>{children}</PortalHost>
+        </MarketProvider>
+      </LanguageFollowsUser>
     </DataProvider>
   );
 }

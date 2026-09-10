@@ -84,6 +84,7 @@ export function PhoneField({
   helper,
   disabled = false,
   announceError = false,
+  autoFocus = false,
   style,
 }: NativePhoneFieldProps) {
   const mkt = useFormat();
@@ -119,6 +120,7 @@ export function PhoneField({
       >
         <Text style={styles.dial}>{dialCode}</Text>
         <TextInput
+          autoFocus={autoFocus}
           // The whole number, so the reader hears one number rather than a code and some groups.
           accessibilityLabel={`${label}, ${mkt.phone(value)}`}
           editable={!disabled}

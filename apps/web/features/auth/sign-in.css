@@ -1,0 +1,220 @@
+/* The door — screen-level layout only; component pixels belong to @heliogrid/ui, every value a
+   token var(). Two compositions, one DOM: the phone's single column, and from the door's own
+   breakpoint the export's two fields — identity left, the one task right. The breakpoint is the
+   door's to own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
+   2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. */
+
+.hg-door {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.hg-door-bloom-desktop {
+  display: none;
+}
+
+.hg-door-page {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6) var(--screen-pad-mobile);
+}
+
+/* The door's title block sits sp-8 under the header on the phone (the export's normal frame);
+   the code family's sits sp-5 (its column's gap), so only the door adds the difference. */
+.hg-door-intro {
+  padding-top: var(--sp-3);
+}
+
+.hg-door-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-door-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-left: auto;
+}
+
+.hg-door-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.hg-door-identity,
+.hg-door-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-door-task {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-5);
+  width: 100%;
+  max-width: 420px;
+}
+
+.hg-door-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-door-signup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: auto;
+  padding-top: var(--sp-2);
+}
+
+.hg-door-centred {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-door-call {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-door-tinted {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-door-tinted[data-tone="danger"] {
+  background: var(--danger-bg);
+}
+
+.hg-door-tinted[data-tone="warning"] {
+  background: var(--warning-bg);
+}
+
+.hg-door-dwell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-6);
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.hg-door-dwell-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--sp-20);
+  height: var(--sp-20);
+  border-radius: var(--r-pill);
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-door-dwell-words {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-door-switch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-5);
+}
+
+.hg-door-switch-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+}
+
+.hg-door-switch-mark {
+  display: grid;
+  place-items: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-door-switch-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 968px) {
+  .hg-door-bloom-phone {
+    display: none;
+  }
+
+  .hg-door-bloom-desktop {
+    display: block;
+  }
+
+  .hg-door-page {
+    padding: var(--sp-8) var(--screen-pad-desktop);
+  }
+
+  .hg-door-intro {
+    padding-top: 0;
+  }
+
+  .hg-door-wordmark {
+    display: none;
+  }
+
+  .hg-door-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--sp-16);
+    padding-bottom: var(--sp-16);
+  }
+
+  .hg-door-identity {
+    max-width: 560px;
+    justify-self: end;
+    gap: var(--sp-6);
+  }
+
+  .hg-door-task {
+    flex: initial;
+    width: 420px;
+  }
+
+  .hg-door-signup {
+    margin-top: 0;
+    align-self: center;
+  }
+}

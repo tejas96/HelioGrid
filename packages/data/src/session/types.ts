@@ -4,6 +4,13 @@ import type { HeldWorkSummary } from './held-work';
 
 export type SessionStatus = 'checking' | 'anonymous' | 'authenticated';
 
+/**
+ * The three phases both navigators partition the session into: `booting` while the store is
+ * still asking who the cookies belong to, `signedIn` once a session is settled, `signedOut` for
+ * the anonymous visitor AND the sign-in beat — the door stays mounted while its done step plays.
+ */
+export type SessionPhase = 'booting' | 'signedOut' | 'signedIn';
+
 export interface SessionUser {
   id: string;
   name: string;

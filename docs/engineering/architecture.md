@@ -314,7 +314,8 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 
 ### Next.js (apps/web)
 - UI composes from @heliogrid/ui ONLY (raw elements lint-banned across app/ and
-  features/). app/ routes; features/ own capability; page.tsx never holds logic.
+  features/). app/ routes, every page under one session group — (door), (open), (inside) —
+  whose layout is its gate; features/ own capability; page.tsx never holds logic.
 - Server/Client boundary: product screens are client components ("use client" at the
   screen/feature level, not sprinkled per-widget); server components are the default only
   for pure-render routes. DOM-only APIs (window, navigator) live in

@@ -25,6 +25,8 @@ export interface PhoneFieldProps {
   /** A sentence beside the field. `--text-secondary`, because a caller passing one expects it read. */
   helper?: string;
   disabled?: boolean;
+  /** Takes focus on mount — the desktop door, where the number is the one task. The phone never raises its keyboard uninvited. */
+  autoFocus?: boolean;
   /**
    * Announces the refusal instead of only describing it — for a refusal that happens under the
    * user's finger. A gate that jumps you to an already-failing field leaves this off.

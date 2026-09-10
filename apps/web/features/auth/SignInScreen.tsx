@@ -1,35 +1,40 @@
+'use client';
 import { doorView, homeOf } from '@heliogrid/data';
 import { useSession, useSignIn } from '@heliogrid/data/react';
 import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { useFormat } from '@heliogrid/ui';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'next/navigation';
+import './sign-in.css';
 import { CodeStep } from './components/CodeStep';
 import { PhoneStep } from './components/PhoneStep';
 import { SuccessDwell } from './components/SuccessDwell';
-import { SwitchSheet } from './components/SwitchSheet';
+import { SwitchPanel } from './components/SwitchPanel';
 
 /**
- * The front door (`SCR-M01-01`): phone, then code, then the success beat — which stays mounted
- * for `DONE_DWELL_MS` because the navigator swaps groups only after the dwell (`phase.tsx`).
- * The flow is `useSignIn`'s and the session's; this composes.
+ * The front door on the web (`SCR-M01-01` at 1536): the two-field composition over the flow the
+ * phone runs — `useSignIn` decides, `signInWords` speaks, this composes. The success beat stays
+ * mounted because the route's gate holds the door until the dwell is over.
  */
-export function LoginScreen() {
+export function SignInScreen({ companySignupHref }: { companySignupHref: string }) {
   const t = useTranslate();
-  const navigation = useNavigation();
+  const router = useRouter();
   const session = useSession();
   const { pack } = useFormat();
   const signIn = useSignIn(pack);
-  const toCompanySignup = () => navigation.navigate('CompanySignup');
+  const toCompanySignup = () => router.push(companySignupHref);
 
   const view = doorView(session, signIn.state.step);
 
   if (view === 'switch' && session.switch !== null) {
     return (
-      <>
-        <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />
-        <SwitchSheet pending={session.switch} onConfirm={() => void session.completeSwitch()} />
-      </>
+      <PhoneStep
+        signIn={signIn}
+        onCreateCompany={toCompanySignup}
+        task={
+          <SwitchPanel pending={session.switch} onConfirm={() => void session.completeSwitch()} />
+        }
+      />
     );
   }
   if (view === 'done') {

@@ -8,5 +8,8 @@ export { useLiveness } from './use-health';
 export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export { useSession } from './use-session';
+export { useSessionPhase } from './use-session-phase';
 export type { SignIn } from './use-sign-in';
 export { useSignIn } from './use-sign-in';
+export type { SignInDwell } from './use-sign-in-dwell';
+export { useSignInDwell } from './use-sign-in-dwell';
