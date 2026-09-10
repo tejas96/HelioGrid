@@ -21,7 +21,7 @@ A new category is a plan-time call, and it changes this line and `CLAUDE.md` §6
 src/screens/<name>/       same shape as web's feature, in RN's location
   <Name>Screen.tsx        composes; holds no state; ≤80 lines
   components/<Part>.tsx   one file per component or coherent group
-  hooks/use-<thing>.ts    state, network, timers
+  hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
 src/navigation/           React Navigation static config
@@ -65,6 +65,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep chang
 - Repository types are INFERRED from contracts, never re-declared. Protocol constants
   (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) come from `@heliogrid/domain`; the calling code and
   national-number length do NOT — those are market facts in `pack.formats`.
+- **A screen owns no flow.** Its state machine is a `@heliogrid/domain` reducer and its round trips
+  and timers a `@heliogrid/data` hook, both imported (Law 11, `M80`); a `useState` here holds a
+  purely visual fact — an open sheet, a focused field.
 - A screen component body is capped at 80 lines. **Never a `components.tsx` or `hooks.ts`
   grab-bag** — a file named for its layer instead of its job is the same defect as `*-part2`.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`. API failures

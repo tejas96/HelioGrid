@@ -27,8 +27,8 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 
 ## Local conventions
 
-- Reducers are `(state, event) => state` — total, synchronous, no timers. The APP owns timers,
-  navigation, storage and rendering; the reducer owns the decision.
+- Reducers are `(state, event) => state` — total, synchronous, no timers. `packages/data`'s hook
+  owns timers and I/O, the app navigation and rendering; the reducer owns the decision.
 - **Time enters as a parameter (`now: number`)**, never `Date.now()` inside a reducer. That is
   what makes behaviour reproducible and stops RN's suspended-timer behaviour becoming a platform
   special case. `new Date(…)` is banned here, parsing included: use `Date.parse` and pass the

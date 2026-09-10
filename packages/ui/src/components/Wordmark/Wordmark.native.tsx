@@ -1,47 +1,26 @@
 import { theme } from '@heliogrid/theme';
-import { useId } from 'react';
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { StyleSheet, View } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { useId, useState } from 'react';
+import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { Text as RNText, StyleSheet, View } from 'react-native';
+import Svg, { Rect, Text as SvgText } from 'react-native-svg';
 /* The primitive's NATIVE half is imported by path: tsc has no `moduleSuffixes` configured, so
    the barrel would hand this file the web signature. Metro resolves the explicit path
    identically, and no web bundler ever reads a .native.tsx. */
 import { Text } from '../../primitives/Text/Text.native';
+import { BrandGradientDefs } from '../../utils/brand-gradient.native';
 import type { LogoTileProps, WordmarkProps } from './Wordmark.types';
 
 /** −0.03em, the system's own display tracking, expressed against the caller's size. */
 const TRACKING = -0.03;
-
-/** The brand gradient's three stops. RN cannot consume the CSS gradient string. */
-const RAMP: readonly [string, string, string] = [
-  theme.colors['iris-violet'],
-  theme.colors['iris-blue'],
-  theme.colors['iris-magenta'],
-];
-
+/** Where Geist Bold's baseline sits in a line box as tall as the size — measured on the web half. */
+const BASELINE = 0.78;
+/** Geist Bold's "Grid" is about 2.2 em wide; the measuring twin corrects it on first layout. */
+const GRID_WIDTH_EM = 2.2;
 const GRID = 'Grid';
-
-/**
- * WEB → RN MAPPING: the web half fills the word with `--gradient-brand` through
- * `background-clip: text`, which RN has no equivalent for without a masking library. The
- * iridescence is kept by ramping the four letters of "Grid" across the same three stops —
- * same hues, same direction, sampled per glyph instead of per pixel.
- */
-function letterColour(index: number, count: number): string {
-  const t = count > 1 ? index / (count - 1) : 0;
-  if (t < 0.34) {
-    return RAMP[0];
-  }
-  if (t < 0.67) {
-    return RAMP[1];
-  }
-  return RAMP[2];
-}
 
 interface NativeWordmarkProps extends WordmarkProps {
   style?: StyleProp<TextStyle>;
 }
-
 interface NativeLogoTileProps extends LogoTileProps {
   style?: StyleProp<ViewStyle>;
 }
@@ -58,27 +37,56 @@ function baseType(size: number, tone: WordmarkProps['tone']): TextStyle {
 }
 
 /**
- * The HelioGrid wordmark. Geist Bold, −0.03em, iridescence on "Grid" only. No logo mark
- * exists — none was ever provided, and one is not invented here.
+ * The identity. "Helio" is type in ink; "Grid" is the same type filled with `--gradient-brand`
+ * — real gradient TYPE, as the web half clips it, never a colour per letter. RN cannot clip a
+ * gradient to text, so "Grid" is drawn as SVG text filled by `BrandGradientDefs`, sized by an
+ * invisible measuring twin so the run is exactly as wide as the type it replaces.
  */
 export function Wordmark({ size = 22, tone = 'default', style }: NativeWordmarkProps) {
   const base = baseType(size, tone);
+  const gradientId = `hg-wordmark-${useId()}`;
+  const [gridWidth, setGridWidth] = useState(size * GRID_WIDTH_EM);
+  const measured = (event: LayoutChangeEvent) => setGridWidth(event.nativeEvent.layout.width);
   if (tone === 'mono') {
     return <Text style={[base, style]}>HelioGrid</Text>;
   }
   return (
-    <Text style={[base, style]}>
-      Helio
-      {GRID.split('').map((glyph, index) => (
-        <Text key={glyph} style={[base, { color: letterColour(index, GRID.length) }]}>
-          {glyph}
-        </Text>
-      ))}
-    </Text>
+    <View accessible accessibilityRole="text" accessibilityLabel="HelioGrid" style={styles.row}>
+      <Text style={[base, style]}>Helio</Text>
+      <View style={{ width: gridWidth, height: size }}>
+        <RNText
+          onLayout={measured}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          style={[base, styles.twin]}
+        >
+          {GRID}
+        </RNText>
+        <Svg width={gridWidth} height={size}>
+          <BrandGradientDefs id={gradientId} />
+          <SvgText
+            x={0}
+            y={size * BASELINE}
+            fontFamily={theme.type.families.sans}
+            fontSize={size}
+            fontWeight="700"
+            letterSpacing={size * TRACKING}
+            fill={`url(#${gradientId})`}
+          >
+            {GRID}
+          </SvgText>
+        </Svg>
+      </View>
+    </View>
   );
 }
 
-/** Gradient app tile — the rail/launcher mark. Radius follows the density, never a circle. */
+const styles = StyleSheet.create({
+  row: { flexDirection: 'row', alignItems: 'flex-end' },
+  /* Laid out, never seen: it measures the run the gradient text must match. */
+  twin: { position: 'absolute', left: 0, top: 0, opacity: 0 },
+});
+
 export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps) {
   const gradientId = `hg-logo-tile-${useId()}`;
   const frame: ViewStyle = {
@@ -97,14 +105,7 @@ export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps)
       style={[frame, theme.elevation.e2, style]}
     >
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
-        <Defs>
-          {/* 135deg = top-left → bottom-right, the same axis as --gradient-brand. */}
-          <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={RAMP[0]} />
-            <Stop offset="0.45" stopColor={RAMP[1]} />
-            <Stop offset="1" stopColor={RAMP[2]} />
-          </LinearGradient>
-        </Defs>
+        <BrandGradientDefs id={gradientId} />
         <Rect
           x="0"
           y="0"

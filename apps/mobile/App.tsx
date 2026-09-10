@@ -4,6 +4,7 @@ import { DataProvider, useSession } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import type { I18nRuntime } from '@heliogrid/i18n';
 import type { LocaleChange } from '@heliogrid/i18n/react';
+import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -47,10 +48,18 @@ export default function App() {
     <DataProvider layer={dataLayer}>
       <ReactQueryHost />
       <LanguageFollowsUser runtime={i18nRuntime}>
-        <SafeAreaProvider>
-          <StatusBar barStyle="dark-content" />
-          <AppNavigation />
-        </SafeAreaProvider>
+        {/* The launch market until a tenant's pack is read: the door runs before any tenant
+            exists, and its phone field reads the dial code and the number's length from here. */}
+        <MarketProvider>
+          <SafeAreaProvider>
+            {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
+                screen through here; without it a Portal renders in place (Portal.native). */}
+            <PortalHost>
+              <StatusBar barStyle="dark-content" />
+              <AppNavigation />
+            </PortalHost>
+          </SafeAreaProvider>
+        </MarketProvider>
       </LanguageFollowsUser>
     </DataProvider>
   );

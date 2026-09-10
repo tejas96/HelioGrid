@@ -13,14 +13,321 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:113
+msgid "{chain} codes were invalidated in a row"
+msgstr "लगातार {chain} कोड अमान्य हुए"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:71
+msgid "{left, plural, one {# try left} other {# tries left}} on this code. HelioGrid invalidates a code after {tries} wrong tries, and then you need a new one."
+msgstr "इस कोड पर {left, plural, one {# कोशिश बची है} other {# कोशिशें बची हैं}}। HelioGrid {tries} गलत कोशिशों के बाद कोड को अमान्य कर देता है, और फिर आपको नया कोड चाहिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:23
+msgid "{n}-digit code"
+msgstr "{n} अंकों का कोड"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:102
+msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
+msgstr "{windowMinutes} मिनट में {perWindow} कोड की सीमा है"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:114
+msgid "{tries} wrong tries invalidate a code, and three invalidated codes lock the number. HelioGrid’s rule, and {lockMinutes} minutes is the wait."
+msgstr "{tries} गलत कोशिशें एक कोड को अमान्य कर देती हैं, और तीन अमान्य कोड नंबर को लॉक कर देते हैं। यह HelioGrid का नियम है, और {lockMinutes} मिनट का इंतज़ार है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:80
+msgid "{tries} wrong tries use a code up"
+msgstr "{tries} गलत कोशिशें एक कोड को खर्च कर देती हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:75
+msgid "A code lasts {codeMinutes} minutes"
+msgstr "एक कोड {codeMinutes} मिनट तक चलता है"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:62
+msgid "A code works for {codeMinutes} minutes."
+msgstr "एक कोड {codeMinutes} मिनट तक काम करता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:136
+msgid "A rep must never reach another rep’s customer photographs, so nothing captured survives the identity that captured it."
+msgstr "कोई प्रतिनिधि किसी दूसरे प्रतिनिधि के ग्राहक की फ़ोटो तक कभी नहीं पहुँचना चाहिए, इसलिए जो भी लिया गया वह लेने वाली पहचान के बाद नहीं बचता।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:52
 msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:49
+msgid "Answer the call and type what you hear."
+msgstr "कॉल उठाएँ और जो सुनें वह टाइप करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:35
+msgid "Call again"
+msgstr "फिर से कॉल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:39
+msgid "Call me with the code"
+msgstr "कोड के साथ मुझे कॉल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:15
+msgid "Campaigns"
+msgstr "कैंपेन"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:21
+msgid "Change language"
+msgstr "भाषा बदलें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:22
+msgid "Change number"
+msgstr "नंबर बदलें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:106
+msgid "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
+msgstr "{windowMinutes} मिनट पूरे होने तक बंद है। इसे कुछ भी छोटा नहीं करता।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:117
+msgid "Closed while the number is locked."
+msgstr "नंबर लॉक रहने तक बंद है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:51
+msgid "Code filled from your SMS"
+msgstr "आपके SMS से कोड भर गया"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:130
+msgid "company setup"
+msgstr "कंपनी सेटअप"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:20
+msgid "Create a company account"
+msgstr "कंपनी खाता बनाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:19
+msgid "Design Queue"
+msgstr "डिज़ाइन क्यू"
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "मान्य मान दर्ज करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:67
+msgid "Enter all {n} digits."
+msgstr "सभी {n} अंक भरें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:24
+msgid "Enter the code"
+msgstr "कोड दर्ज करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:50
+msgid "Filled from the SMS on this phone. Check it, or type over it."
+msgstr "इस फ़ोन पर आए SMS से भरा गया। जाँच लें, या इसके ऊपर टाइप करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:16
+msgid "Finance Home"
+msgstr "फ़ाइनेंस होम"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:38
+msgid "Get the code by call"
+msgstr "कॉल पर कोड पाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:22
+msgid "Installer Job Home"
+msgstr "इंस्टॉलर जॉब होम"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:31
+msgid "Locked for"
+msgstr "इस नंबर के लिए लॉक"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:15
+msgid "Locked while the code is sent."
+msgstr "कोड भेजे जाने तक लॉक है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:44
+msgid "Locked."
+msgstr "लॉक है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:13
+msgid "Mobile number"
+msgstr "मोबाइल नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:18
+#: src/copy/homes.ts:21
+msgid "My Day"
+msgstr "मेरा दिन"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:20
+msgid "My Visits Today"
+msgstr "आज की मेरी विज़िट"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:19
+msgid "New company on HelioGrid?"
+msgstr "HelioGrid पर नई कंपनी?"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:42
+msgid "No code to type yet."
+msgstr "अभी टाइप करने के लिए कोई कोड नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:92
+msgid "No countdown here: the {gap} s gap exists to stop two messages crossing and nothing is in flight."
+msgstr "यहाँ कोई उलटी गिनती नहीं: {gap} सेकंड का अंतराल दो संदेशों को टकराने से रोकने के लिए है, और अभी कुछ रास्ते में नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:125
+msgid "No error code reaches a field user. If it keeps failing, your company admin can raise it with HelioGrid."
+msgstr "फ़ील्ड उपयोगकर्ता तक कोई एरर कोड नहीं पहुँचता। अगर यह बार-बार विफल हो, तो आपकी कंपनी के एडमिन इसे HelioGrid तक पहुँचा सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:101
+msgid "No more codes for {windowMinutes} minutes"
+msgstr "{windowMinutes} मिनट तक और कोड नहीं"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:98
+msgid "Not your number — the step after it did not complete. Try again."
+msgstr "आपके नंबर की गलती नहीं — उसके बाद का चरण पूरा नहीं हुआ। फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:122
+msgid "Not your number and not your code — the step after them did not complete."
+msgstr "न आपके नंबर की गलती, न कोड की — उनके बाद का चरण पूरा नहीं हुआ।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:89
+msgid "Nothing is on its way, so there is nothing to wait for."
+msgstr "कुछ भी रास्ते में नहीं है, इसलिए इंतज़ार करने के लिए कुछ नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:109
+msgid "Nothing is retried behind you, and nothing about this is your network’s doing."
+msgstr "आपकी जानकारी के बिना कुछ भी दोबारा नहीं किया जाता, और इसमें आपके नेटवर्क का कोई हाथ नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:43
+msgid "Nothing to type until a new code is sent."
+msgstr "नया कोड भेजे जाने तक टाइप करने के लिए कुछ नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:52
+msgid "Only some phones fill this in. On the rest it is typed, and nothing else about the step changes."
+msgstr "सिर्फ़ कुछ फ़ोन इसे खुद भरते हैं। बाकी पर इसे टाइप किया जाता है, और इस चरण में और कुछ नहीं बदलता।"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:13
+msgid "Operations Home"
+msgstr "ऑपरेशंस होम"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:11
+#: src/copy/homes.ts:12
+msgid "Owner Dashboard"
+msgstr "ओनर डैशबोर्ड"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:48
+msgid "Paste the whole code if that is easier — it fills every box."
+msgstr "आसान हो तो पूरा कोड पेस्ट करें — वह हर बॉक्स भर देता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:17
+msgid "People Today"
+msgstr "आज के लोग"
+
+#. js-lingui-explicit-id
+#: src/copy/homes.ts:14
+msgid "Project Board"
+msgstr "प्रोजेक्ट बोर्ड"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:37
+msgid "Resend code"
+msgstr "कोड दोबारा भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:33
+msgid "Send a new code"
+msgstr "नया कोड भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:17
+msgid "Send code"
+msgstr "कोड भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:34
+msgid "Send it again"
+msgstr "फिर से भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:36
+msgid "Send the SMS again"
+msgstr "SMS फिर से भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:18
+msgid "Sending the code"
+msgstr "कोड भेजा जा रहा है"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:47
+msgid "Sent a moment ago."
+msgstr "कुछ पल पहले भेजा गया।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:25
+msgid "Sent by SMS to"
+msgstr "SMS से इस नंबर पर भेजा"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:46
+msgid "Sent just now. SMS is the only channel."
+msgstr "अभी-अभी भेजा गया। SMS ही एकमात्र माध्यम है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:9
+msgid "Sign in"
+msgstr "साइन इन करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:143
+msgid "Sign in and discard"
+msgstr "साइन इन करें और हटा दें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:131
+msgid "Signing in as {name} discards {count} photographs"
+msgstr "{name} के रूप में साइन इन करने से {count} फ़ोटो हट जाएँगे"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:19
@@ -33,9 +340,19 @@ msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "आपके संपादन के दौरान किसी और ने इसे बदल दिया। रीफ़्रेश करके फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:97
+msgid "Something on our side failed"
+msgstr "हमारी ओर से कुछ विफल हुआ"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:36
 msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:129
+msgid "Taking you to {destination}"
+msgstr "आपको {destination} पर ले जा रहे हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:31
@@ -43,9 +360,34 @@ msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:66
+msgid "That code did not match"
+msgstr "वह कोड मेल नहीं खाया"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:74
+msgid "That code has expired"
+msgstr "उस कोड की अवधि समाप्त हो गई"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:79
+msgid "That code is used up"
+msgstr "वह कोड खर्च हो चुका है"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:65
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:16
+msgid "That is {typed} digits. A mobile number here has {needed}."
+msgstr "यह {typed} अंक हैं। यहाँ मोबाइल नंबर में {needed} अंक होते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:68
+msgid "That is not the code we sent. Check the last SMS, or ask for a new one."
+msgstr "यह वह कोड नहीं है जो हमने भेजा। आख़िरी SMS जाँचें, या नया कोड माँगें।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:27
@@ -58,14 +400,54 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "यह अनुरोध बहुत बड़ा है। इसे छोटा करके फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:90
+msgid "The call did not go through"
+msgstr "कॉल नहीं लगी"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:103
+msgid "The cap holds even when sending fails — {perWindow} every {windowMinutes} minutes, {day} a day for one number. HelioGrid’s rule."
+msgstr "भेजना विफल होने पर भी सीमा लागू रहती है — एक नंबर के लिए हर {windowMinutes} मिनट में {perWindow}, दिन में {day}। यह HelioGrid का नियम है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:87
+msgid "The code did not send"
+msgstr "कोड भेजा नहीं जा सका"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:30
+msgid "The code we checked was for"
+msgstr "हमने जो कोड जाँचा वह इस नंबर के लिए था"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:59
 msgid "The invite could not be sent. Try again in a moment."
 msgstr "आमंत्रण भेजा नहीं जा सका। थोड़ी देर में फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:91
+msgid "The phone network turned it away"
+msgstr "फ़ोन नेटवर्क ने उसे लौटा दिया"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:88
+msgid "The SMS network turned it away"
+msgstr "SMS नेटवर्क ने इसे लौटा दिया"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:62
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "किस्तों का योग ठीक 100% होना चाहिए। सेव करने से पहले बची हुई राशि रखें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:118
+msgid "The wait is the whole remedy — nothing you or your admin does shortens it."
+msgstr "इंतज़ार ही पूरा उपाय है — आप या आपके एडमिन का कुछ भी करना इसे छोटा नहीं करता।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:132
+msgid "They were captured on this phone on {date} and have not reached HelioGrid yet. Signing in as someone else deletes them, and this cannot be undone."
+msgstr "ये इस फ़ोन पर {date} को लिए गए थे और अभी HelioGrid तक नहीं पहुँचे हैं। किसी और के रूप में साइन इन करने से ये मिट जाते हैं, और इसे पलटा नहीं जा सकता।"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:9
@@ -78,9 +460,29 @@ msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:135
+msgid "This is the one thing in HelioGrid that cannot be got back"
+msgstr "HelioGrid में यही एक चीज़ है जो वापस नहीं मिल सकती"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:51
 msgid "This number is already on your team."
 msgstr "यह नंबर पहले से आपकी टीम में है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:112
+msgid "This number is locked for {lockMinutes} minutes"
+msgstr "यह नंबर {lockMinutes} मिनट के लिए लॉक है"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:81
+msgid "This one has had them, so it will not work even typed correctly. HelioGrid’s rule, not your network’s."
+msgstr "इस पर वे कोशिशें हो चुकी हैं, इसलिए सही टाइप करने पर भी काम नहीं करेगा। यह HelioGrid का नियम है, आपके नेटवर्क का नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:76
+msgid "This one is past that, so it will not work even typed correctly. HelioGrid’s limit, not your network’s."
+msgstr "यह उससे आगे निकल चुका है, इसलिए सही टाइप करने पर भी काम नहीं करेगा। यह HelioGrid की सीमा है, आपके नेटवर्क की नहीं।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:48
@@ -98,9 +500,104 @@ msgid "This value is too small."
 msgstr "यह मान बहुत छोटा है।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:63
+msgid "This wait stops existing the moment the network confirms the SMS failed."
+msgstr "जैसे ही नेटवर्क पुष्टि करता है कि SMS विफल हुआ, यह इंतज़ार खत्म हो जाता है।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:35
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:41
+msgid "Try again"
+msgstr "फिर से कोशिश करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:139
+msgid "Upload them first"
+msgstr "पहले इन्हें अपलोड करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:140
+msgid "Uploading held photographs arrives with the survey capture."
+msgstr "रोके गए फ़ोटो अपलोड करने की सुविधा सर्वे कैप्चर के साथ आएगी।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:32
+msgid "Verify and sign in"
+msgstr "जाँचें और साइन इन करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:40
+msgid "We call {phone} and read it out."
+msgstr "हम {phone} पर कॉल करके कोड पढ़कर सुनाते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:29
+msgid "We call and read the code out to"
+msgstr "हम कॉल करके इस नंबर पर कोड पढ़कर सुनाते हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:96
+msgid "We could not place the call"
+msgstr "हम कॉल नहीं कर सके"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:95
+msgid "We could not send the code"
+msgstr "हम कोड नहीं भेज सके"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:121
+msgid "We could not sign you in"
+msgstr "हम आपको साइन इन नहीं कर सके"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:28
+msgid "We read the code out to"
+msgstr "हमने कॉल पर इस नंबर को कोड पढ़कर सुनाया"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:27
+msgid "We tried to call"
+msgstr "हमने कॉल करने की कोशिश की"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:26
+msgid "We tried to send by SMS to"
+msgstr "हमने SMS से इस नंबर पर भेजने की कोशिश की"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:14
+msgid "We'll send a code by SMS to this number."
+msgstr "हम इस नंबर पर SMS से एक कोड भेजेंगे।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:128
+msgid "You are in"
+msgstr "आप अंदर हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:84
+msgid "You asked for this call. HelioGrid never switches to one on its own — when SMS fails it says so instead."
+msgstr "यह कॉल आपने माँगी थी। HelioGrid अपने आप कभी कॉल पर नहीं जाता — SMS विफल हो तो वह बता देता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:61
+msgid "You can ask for a new code in {seconds} s."
+msgstr "आप {seconds} सेकंड में नया कोड माँग सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:58
+msgid "You can ask for a new code in {seconds} s. HelioGrid waits {gap} s so two messages do not cross."
+msgstr "आप {seconds} सेकंड में नया कोड माँग सकते हैं। HelioGrid {gap} सेकंड रुकता है ताकि दो संदेश आपस में न टकराएँ।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:55
+msgid "You can ask for a new code in {seconds} s. The gap is HelioGrid’s, so a message still in flight is not cancelled by a second one."
+msgstr "आप {seconds} सेकंड में नया कोड माँग सकते हैं। यह अंतराल HelioGrid का है, ताकि रास्ते में मौजूद संदेश दूसरे संदेश से रद्द न हो।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:23
@@ -113,6 +610,11 @@ msgid "You're signed out. Sign in to continue."
 msgstr "आप साइन आउट हैं। जारी रखने के लिए साइन इन करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:45
+msgid "Your code was fine."
+msgstr "आपका कोड सही था।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:55
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "आपकी कंपनी आज के आमंत्रण भेज चुकी है। कल फिर से कोशिश करें।"
@@ -121,3 +623,8 @@ msgstr "आपकी कंपनी आज के आमंत्रण भे�
 #: src/copy/api-error.ts:24
 msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:10
+msgid "Your mobile number is your HelioGrid account. There is no password to remember."
+msgstr "आपका मोबाइल नंबर ही आपका HelioGrid खाता है। याद रखने के लिए कोई पासवर्ड नहीं है।"

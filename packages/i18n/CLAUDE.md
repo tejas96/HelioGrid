@@ -65,7 +65,7 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module
   once per server process and shares it across every request, so a module-level `setupI18n()` is
   one mutable active locale for every concurrent visitor.
-- `t(id, values)` in hooks and handlers · `<Trans>` in markup · `createTranslator(locale)` off the
+- `t(COPY.key, values)` in hooks and handlers — the descriptor itself, never `.id` · `<Trans>` in markup · `createTranslator(locale)` off the
   React tree. Store message IDs plus data, never a translated business record — that is wrong for
   every other reader of it.
 - **UI language is not the tenant MARKET.** Language is per user; currency grouping, tax scheme

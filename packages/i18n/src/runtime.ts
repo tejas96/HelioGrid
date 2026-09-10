@@ -2,12 +2,21 @@ import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import { type I18n, setupI18n } from '@lingui/core';
 import { LANGUAGE_META, loadCatalog, SOURCE_CATALOG } from './languages';
 
-/** What a caller needs to turn a message id into a string. No React, no globals. */
+/** A sentence as a copy module authors it: the id IS the English source text — THE CONVENTION. */
+export interface MessageRef {
+  readonly id: string;
+}
+
+/** What a caller needs to turn a message into a string. No React, no globals. */
 export interface Translator {
   readonly locale: UiLanguage;
   readonly dir: 'ltr' | 'rtl';
-  /** `id` IS the English source text — THE CONVENTION (packages/i18n/CLAUDE.md). */
-  t(id: string, values?: Record<string, unknown>): string;
+  /** Takes a copy module's descriptor as is, or its id (THE CONVENTION, packages/i18n/CLAUDE.md). */
+  t(message: string | MessageRef, values?: Record<string, unknown>): string;
+}
+
+function idOf(message: string | MessageRef): string {
+  return typeof message === 'string' ? message : message.id;
 }
 
 /**
@@ -35,14 +44,14 @@ export interface I18nRuntime {
   readonly locale: UiLanguage;
   /** Async because a catalog is fetched. Both platforms get the same signature. */
   setLocale(next: UiLanguage): Promise<void>;
-  t(id: string, values?: Record<string, unknown>): string;
+  t(message: string | MessageRef, values?: Record<string, unknown>): string;
 }
 
 function translatorFor(i18n: I18n, locale: UiLanguage): Translator {
   return {
     locale,
     dir: LANGUAGE_META[locale].dir,
-    t: (id, values) => i18n._(id, values),
+    t: (message, values) => i18n._(idOf(message), values),
   };
 }
 
@@ -81,6 +90,6 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
       i18n.loadAndActivate({ locale: next, messages: await loadCatalog(next) });
       current = next;
     },
-    t: (id, values) => i18n._(id, values),
+    t: (message, values) => i18n._(idOf(message), values),
   };
 }

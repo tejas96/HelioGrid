@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { type FormatPack, IN_FORMATS } from '../../src/format/pack';
-import { formatPhone, nationalNumber } from '../../src/format/phone';
+import {
+  formatPhone,
+  nationalNumber,
+  type PhoneDigitsMismatch,
+  phoneDigitsMismatch,
+} from '../../src/format/phone';
 
 /** A market that declares no grouping — the digits stay one run. */
 const UNGROUPED: FormatPack = {
@@ -68,5 +73,19 @@ describe('nationalNumber — the one derivation a display and a compliance check
 
   it('strips nothing where the market declares no calling code', () => {
     expect(nationalNumber(NO_DIAL_CODE, '919845027746')).toBe('919845027746');
+  });
+});
+
+describe('phoneDigitsMismatch — the front door answers a short or long number on the field (M01 §M01.1)', () => {
+  const cases: readonly [string, PhoneDigitsMismatch | null, string][] = [
+    ['+919820041', { typed: 7, needed: 10 }, 'seven digits typed against a ten-digit market'],
+    ['982004', { typed: 6, needed: 10 }, 'a national number without its code'],
+    ['+9198200411234', { typed: 11, needed: 10 }, 'one digit too many'],
+    ['', { typed: 0, needed: 10 }, 'nothing typed'],
+    ['+919820041123', null, 'the complete number'],
+    ['98200 41123', null, 'complete, national, grouped'],
+  ];
+  it.each(cases)('answers %s with %o — %s', (value, expected) => {
+    expect(phoneDigitsMismatch(IN_FORMATS, value)).toEqual(expected);
   });
 });

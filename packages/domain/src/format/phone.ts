@@ -72,3 +72,20 @@ export function formatPhone(pack: FormatPack, value: string, options?: PhoneOpti
   if (raw.startsWith('+')) return raw;
   return groupNationalNumber(digits, pack.phone.nsnGroups);
 }
+
+export interface PhoneDigitsMismatch {
+  readonly typed: number;
+  readonly needed: number;
+}
+
+/**
+ * Why a typed number cannot be sent a code: its national part has the wrong number of digits
+ * for this market (`pack.phone.nsnLength`). `null` when it has exactly the right count. The
+ * front door answers this ON THE FIELD when the primary is pressed, never by gating the
+ * primary (`SCR-M01-01` decision 2b); the sentence is the screen's, the rule the pack's.
+ */
+export function phoneDigitsMismatch(pack: FormatPack, value: string): PhoneDigitsMismatch | null {
+  const typed = nationalNumber(pack, value).length;
+  const needed = pack.phone.nsnLength;
+  return typed === needed ? null : { typed, needed };
+}

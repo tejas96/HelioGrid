@@ -129,7 +129,7 @@ row UP this order over widening the script that currently holds it.
 
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
-| M80 | A flow is authored once; screens render and hold no policy (Law 11) | — | **NONE** | No flow exists yet. Closing it: the reference slice, plus `qa-parity` at `/verify` once two screens exist. |
+| M80 | A flow is authored once; screens render and hold no policy (Law 11) | Biome `noRestrictedGlobals` (`setTimeout`, `setInterval`) on `apps/mobile/src/screens/**`, `apps/web/app/**` and `apps/web/features/**` · `noRestrictedImports` (`react`'s `useReducer`) on every app file | PARTIAL · red 2026-09-10 | Holds a timer and a reducer out of a screen — the two shapes a flow built in the wrong place takes first. A machine built on `useState` is review-only: `/start` §3 names the reducer and the hook before the go, and `qa-parity` at `/verify` once two screens exist. Reference slice: `T-M01-001` — `loginReducer` and `loginFrame` in domain, `useSignIn` in data, the words in i18n. |
 | M81 | A deliberate per-platform difference is recorded | — | **NONE** | Review-only; the difference is recorded in the owning PRD row. |
 
 ## Docs and governance

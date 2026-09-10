@@ -20,7 +20,7 @@ export interface I18nControls {
   meta: LanguageMeta;
   /** Async on BOTH platforms — the catalog is fetched. Never a synchronous variant on one. */
   setLocale(next: UiLanguage): Promise<void>;
-  t(id: string, values?: Record<string, unknown>): string;
+  t: I18nRuntime['t'];
 }
 
 /** Why the language moved: the person chose it on this mount, or the mount followed their choice. */

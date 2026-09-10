@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../../config/env';
 
+const UNDELIVERABLE_SUFFIX = '0000';
+
 /**
  * The development adapter behind the `MessageDelivery` port: the code and the invite link go to
  * the API log, not to a phone, so anyone running the stack signs in or joins with any number in
@@ -21,7 +23,17 @@ export class DevelopmentMessageDelivery implements MessageDelivery {
     this.logger.setContext(DevelopmentMessageDelivery.name);
   }
 
+  /**
+   * A national part ending in `0000` is turned away, the way a network confirms a hard failure —
+   * the ONE way the door's loud-failure frame can be driven before an SMS rail exists
+   * (`M01-03`). Development only: this class refuses to construct in production.
+   */
   async send({ phoneE164, channel, message }: MessageDeliveryRequest): Promise<void> {
+    if (phoneE164.endsWith(UNDELIVERABLE_SUFFIX)) {
+      throw new Error(
+        `Development delivery refuses ${phoneE164}: numbers ending in ${UNDELIVERABLE_SUFFIX} never send.`,
+      );
+    }
     this.logger.warn(`Message for ${phoneE164} via ${channel}: ${message}`);
   }
 }

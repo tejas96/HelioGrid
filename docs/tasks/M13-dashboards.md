@@ -69,7 +69,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 ### T-M13-006 · Home composition engine (preset ladder, home in force, composed presets, switcher list)
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#52)
 **Why:** A rep who also surveys signs in and lands on ONE home — My Day with today's visits inside it — and an installer who also surveys lands on today's visits with the route and the job composed in; without one fixed ladder every screen would pick its own front door, a person with two roles would get two competing homes, and the centre verb and the slots (`T-FPLAT-025`) would have no preset to key from.
 **PRD rows:** M13-10
 **Design:** none — an engine task. The surface is `SCR-SHELL-01` (`T-SHELL-001`, `docs/ux/briefs/SCR-SHELL-01-app-shell.md`): the home title IS the switcher, one `menuitemradio` per held preset's home, and switching swaps which body of work is the home's own and which is composed in (decision 4).

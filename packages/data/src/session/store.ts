@@ -1,12 +1,35 @@
 import type { PlatformKind, SessionProjection } from '@heliogrid/contracts';
+import {
+  OTP_MAX_FAILED_VERIFIES,
+  type OtpRequestOutcome,
+  type OtpVerifyOutcome,
+} from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
-import { ApiError, UnauthorizedError } from '../errors/errors';
+import { ApiError } from '../errors/errors';
 import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
-import type { OtpResult, SessionSnapshot, SessionStore, SessionUser } from './types';
+import type { OtpVerifyResult, SessionSnapshot, SessionStore, SessionUser } from './types';
 
 /** The refusals that mean "the code, not the connection" (`M01-04`). */
-const CODE_REFUSALS = new Set(['OTP_MISMATCH', 'OTP_EXPIRED', 'OTP_INVALIDATED', 'OTP_LOCKED']);
+/**
+ * The wire's refusal codes (`packages/contracts/src/auth.ts`), each to the one word the door
+ * renders a frame for. A code the wire did not name is `failed` — never guessed from a message.
+ */
+const REQUEST_OUTCOME_BY_CODE: Record<string, OtpRequestOutcome> = {
+  OTP_COOLDOWN: 'cooldown',
+  OTP_CAPPED: 'capped',
+  OTP_LOCKED: 'locked',
+  OTP_DELIVERY_FAILED: 'delivery-failed',
+};
+const VERIFY_OUTCOME_BY_CODE: Record<string, OtpVerifyOutcome> = {
+  OTP_MISMATCH: 'mismatch',
+  OTP_EXPIRED: 'expired',
+  OTP_INVALIDATED: 'invalidated',
+  OTP_LOCKED: 'locked',
+};
+function codeOf(error: unknown): string {
+  return error instanceof ApiError ? error.code : '';
+}
 
 function userOf(projection: SessionProjection): SessionUser {
   return {
@@ -34,6 +57,7 @@ export function createSessionStore(config: {
 }): SessionStore {
   let snapshot: SessionSnapshot = { status: 'checking', user: null, switch: null };
   let challengeId: string | null = null;
+  let wrongTries = 0;
   const listeners = new Set<() => void>();
 
   const emit = (next: SessionSnapshot) => {
@@ -65,17 +89,19 @@ export function createSessionStore(config: {
         listeners.delete(listener);
       };
     },
-    async requestOtp(phoneE164, channel): Promise<OtpResult> {
+    async requestOtp(phoneE164, channel): Promise<OtpRequestOutcome> {
       try {
         const challenge = await config.auth.requestOtp(phoneE164, channel);
         challengeId = challenge.challengeId;
-        return { ok: true };
-      } catch {
-        return { ok: false, failure: 'resend-failed' };
+        wrongTries = 0;
+        return 'sent';
+      } catch (error) {
+        return REQUEST_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
       }
     },
-    async verifyOtp(code): Promise<OtpResult> {
-      if (challengeId === null) return { ok: false, failure: 'verify-failed' };
+    async verifyOtp(code): Promise<OtpVerifyResult> {
+      const triesLeft = () => Math.max(OTP_MAX_FAILED_VERIFIES - wrongTries, 0);
+      if (challengeId === null) return { outcome: 'failed', triesLeft: triesLeft() };
       try {
         const next = userOf(await config.auth.verifyOtp(challengeId, code, config.platform));
         challengeId = null;
@@ -91,12 +117,11 @@ export function createSessionStore(config: {
         } else {
           signedIn(next);
         }
-        return { ok: true };
+        return { outcome: 'verified', triesLeft: triesLeft() };
       } catch (error) {
-        const refused =
-          (error instanceof UnauthorizedError || error instanceof ApiError) &&
-          CODE_REFUSALS.has(error.code);
-        return { ok: false, failure: refused ? 'mismatch' : 'verify-failed' };
+        const outcome = VERIFY_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
+        if (outcome === 'mismatch') wrongTries += 1;
+        return { outcome, triesLeft: triesLeft() };
       }
     },
     async completeSwitch() {

@@ -19,6 +19,7 @@ export * from './components/Avatar';
 export * from './components/BandedFigure';
 export * from './components/Banner';
 export * from './components/Block';
+export * from './components/BrandBloom';
 export * from './components/BrandColorField';
 export * from './components/Breadcrumb';
 export * from './components/Button';

@@ -34,6 +34,11 @@ describe('createTranslator — one reader, one language (F3-06)', () => {
 });
 
 describe('createI18nRuntime — one mount, switchable in place (F3-04)', () => {
+  it('takes a copy module descriptor as is, the same sentence as by its id', () => {
+    const runtime = createI18nRuntime('en');
+    expect(runtime.t({ id: HELD })).toBe(runtime.t(HELD));
+  });
+
   it('starts on the source language synchronously, with real messages, before any fetch', () => {
     const runtime = createI18nRuntime();
     expect(runtime.locale).toBe('en');
