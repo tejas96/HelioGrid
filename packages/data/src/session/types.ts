@@ -1,4 +1,4 @@
-import type { OtpChannel, RolePreset, UiLanguage } from '@heliogrid/contracts';
+import type { CreateTenant, OtpChannel, RolePreset, UiLanguage } from '@heliogrid/contracts';
 import type { OtpRequestOutcome, OtpVerifyOutcome } from '@heliogrid/domain';
 import type { HeldWorkSummary } from './held-work';
 
@@ -32,10 +32,32 @@ export interface PendingSwitch {
   readonly next: SessionUser;
 }
 
+/**
+ * Which door a code is verified on. The sign-in door signs the person straight in; the signup
+ * door holds a number that already has a company back as a `KnownAccount` (`M01-08`), so the
+ * person chooses before anything of that account loads.
+ */
+export type SignInDoor = 'sign-in' | 'signup';
+
+/**
+ * The signup door verified a number that already has a company (`M01-08`): the server session is
+ * open, but the snapshot waits here — anonymous — until the person chooses to enter that account
+ * or to leave it and start again with another number. Nothing of the account loads before then.
+ */
+export interface KnownAccount {
+  readonly next: SessionUser;
+}
+
 export interface SessionSnapshot {
   status: SessionStatus;
   user: SessionUser | null;
   switch: PendingSwitch | null;
+  known: KnownAccount | null;
+  /**
+   * The boot check found a live session on this device — the person is BACK, not newly signed
+   * in — which is what a resumed signup greets (`M01-10`). False once a code verifies here.
+   */
+  restored: boolean;
 }
 
 /**
@@ -61,10 +83,23 @@ export interface SessionStore {
   getSnapshot(): SessionSnapshot;
   subscribe(listener: () => void): () => void;
   requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpRequestOutcome>;
-  /** Verifies the code of the challenge `requestOtp` opened; the store holds the challenge id. */
-  verifyOtp(code: string): Promise<OtpVerifyResult>;
+  /**
+   * Verifies the code of the challenge `requestOtp` opened; the store holds the challenge id. On
+   * the signup door a number that already has a company is held as `known` rather than signed in.
+   */
+  verifyOtp(code: string, door?: SignInDoor): Promise<OtpVerifyResult>;
   /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
   completeSwitch(): Promise<void>;
+  /** The person chose the account their number already has: it signs in (`M01-08`). */
+  enterKnownAccount(): void;
+  /** The person wants another number: the held account's session ends and the door is clear again. */
+  leaveKnownAccount(): Promise<void>;
+  /**
+   * Company signup's last step (`M01-01`): the tenant, the owner membership and the owner role in
+   * one server transaction, after which this session acts under the new company. Rejects with the
+   * `DataError` the wire answered; nothing is created on a rejection.
+   */
+  createCompany(input: CreateTenant): Promise<void>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
   /**
@@ -79,8 +114,11 @@ export interface SessionStore {
 /** What `useSession()` returns — the snapshot flattened onto the calls. */
 export interface SessionApi extends SessionSnapshot {
   requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpRequestOutcome>;
-  verifyOtp(code: string): Promise<OtpVerifyResult>;
+  verifyOtp(code: string, door?: SignInDoor): Promise<OtpVerifyResult>;
   completeSwitch(): Promise<void>;
+  enterKnownAccount(): void;
+  leaveKnownAccount(): Promise<void>;
+  createCompany(input: CreateTenant): Promise<void>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
   setInterfaceLanguage(next: UiLanguage): Promise<boolean>;

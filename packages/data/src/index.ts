@@ -32,7 +32,10 @@ export type { DoorView } from './session/door-view';
 export { doorView } from './session/door-view';
 export type { HeldWork, HeldWorkSummary } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
+export type { SignupView } from './session/signup-view';
+export { signupView } from './session/signup-view';
 export type {
+  KnownAccount,
   OtpVerifyResult,
   PendingSwitch,
   SessionApi,
@@ -41,6 +44,7 @@ export type {
   SessionStatus,
   SessionStore,
   SessionUser,
+  SignInDoor,
 } from './session/types';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';

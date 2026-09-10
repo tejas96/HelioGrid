@@ -94,7 +94,7 @@ schema they report VACUOUS. Neither is a pass. **Read gate output, not exit code
 weaken a gate to make a change pass.
 
 **Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
-`5544` · temporal UI `8233` · worker has no listener. A busy port is a stale service: kill it,
+`5544` · temporal UI `8233` · design exports `3004` · worker has no listener. A busy port is a stale service: kill it,
 never fall back to another. Start web/api/metro through the browser preview tool;
 `pnpm --filter @heliogrid/mobile ios|android` drives metro.
 

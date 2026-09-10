@@ -950,15 +950,15 @@ Nothing below is renumbered.*
 
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
-| M01-01 | P0 | screen | SCR-M01-02 | T-M01-002 |
+| M01-01 | P0 | screen | SCR-M01-02 | T-M01-002, T-M01-034, T-M01-036 |
 | M01-02 | P0 | mixed | SCR-M01-01 · +non-UI: Google identity links onto same phone-identity account at first… | T-M01-032, T-M01-001, T-M01-033 |
 | M01-03 | P0 | mixed | SCR-M01-01 · +non-UI: layered OTP delivery rail: SMS primary, auto fallback channel on… | T-M01-001, T-M01-033 |
 | M01-04 | P0 | mixed | SCR-M01-01 · +non-UI: rate limits: 3/15min and 8/day per phone, resend cooldown, 5-fail… | T-M01-001, T-M01-033 |
 | M01-05 | P0 | policy | policy | T-M01-025 |
 | M01-06 | P1 | policy | policy | T-M01-025 |
 | M01-07 | P0 | policy | policy | T-M01-025 |
-| M01-08 | P0 | mixed | SCR-M01-02 · +non-UI: one account per phone number globally; no duplicate company | T-M01-002 |
-| M01-09 | P1 | screen | SCR-M01-02 | T-M01-002 |
+| M01-08 | P0 | mixed | SCR-M01-02 · +non-UI: one account per phone number globally; no duplicate company | T-M01-002, T-M01-034, T-M01-036 |
+| M01-09 | P1 | screen | SCR-M01-02 | T-M01-035 |
 | M01-10 | P0 | policy | policy | T-M01-025 |
 | M01-11 | P0 | policy | policy | LAW |
 | M01-12 | P0 | screen | SCR-M01-07 | T-M01-007 |

@@ -168,6 +168,11 @@ export interface SignInFacts {
   readonly phoneShown: string;
 }
 
+/** The one word the two doors say differently: what a verified code leads to (`SCR-M01-02`). */
+export interface SignInLabels {
+  readonly verify?: MessageRef;
+}
+
 /** Every string a code frame draws; `null` where the frame has no such part. */
 export interface SignInWords {
   readonly title: string;
@@ -190,6 +195,7 @@ export function signInWords(
   translate: Translator['t'],
   frame: LoginFrame,
   facts: SignInFacts,
+  labels: SignInLabels = {},
 ): SignInWords {
   const values = {
     ...POLICY_VALUES,
@@ -206,7 +212,7 @@ export function signInWords(
     block: block === null ? null : { tone: block.tone, title: t(block.title), body: t(block.body) },
     helper: frame.helper === null ? '' : t(HELPER[frame.helper]),
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
-    primary: frame.primary === null ? null : t(PRIMARY[frame.primary.label]),
+    primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
     resend: resend?.kind === 'live' ? t(RESEND[resend.label]) : null,
     wait: resend?.kind === 'wait' ? t(WAIT[resend.reason]) : null,
     call: frame.callOffered
@@ -214,4 +220,8 @@ export function signInWords(
       : null,
     foot: frame.foot === null ? null : t(FOOT[frame.foot]),
   };
+}
+
+function primaryOf(label: PrimaryLabel, labels: SignInLabels): MessageRef {
+  return label === 'verify' && labels.verify !== undefined ? labels.verify : PRIMARY[label];
 }
