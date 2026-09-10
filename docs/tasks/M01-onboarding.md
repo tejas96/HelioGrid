@@ -8,7 +8,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-001 · Sign In — mobile
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped (#53)
 **Why:** Every installer and every field hand enters through this one door with a phone and a code, never a password, and a shared field phone signs the next person in within a minute without handing them a colleague's unuploaded photographs; without it nobody reaches a tenant, a role or a home — and today nothing signs a person in on either platform, so no other screen can be proven. The phone lands first (`M01` §2: employees arrive "phone, almost always"); the desktop door is `T-M01-033`, the Google door `T-M01-032`.
 **PRD rows:** M01-03 (P0), M01-04 (P0), M01-05 (P0), MS12-17 (P0)
 **DESIGN:** SCR-M01-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html
@@ -50,7 +50,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-033 · Sign In — web
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#55)
 **Why:** The owner is often on a laptop: the same phone-and-code door, drawn as the two-field desktop composition, over the same flow the phone uses; without it the web product has no way in and the phone and the desktop would drift on the one screen every person passes through.
 **PRD rows:** M01-03 (P0), M01-04 (P0), M01-05 (P0), MS12-17 (P0)
 **BRIEF:** docs/ux/briefs/SCR-M01-01-sign-in.md
