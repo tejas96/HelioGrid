@@ -84,7 +84,7 @@ This file covers module M01 — company signup and authentication, team invites 
 
 ### T-M01-036 · Company Signup — the flow
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#57)
 **Why:** Company signup's decisions — which panel a door shows, a known number held back for the person's own choice, the one company write that moves a session under its new tenant — authored once, so the phone and the web render one flow and never two; without it each screen would hold its own copy of the door and the two would drift on the one screen every company passes through.
 **PRD rows:** M01-01 (P0), M01-08 (P0)
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-02-company-signup.md`; they are the specification.
