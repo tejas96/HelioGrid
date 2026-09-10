@@ -109,3 +109,4 @@ this file: when the path goes, the row goes.
 | trap | fix | retire when |
 |---|---|---|
 | Measuring a touch target mid-animation lies: overlays animate in over 320ms from `scale(0.97)`. | Wait for `document.getAnimations()` to be quiet, or for `transform` to read `none`. | never |
+| Native clips a `Text`'s ink to its own box, and the heading roles' line boxes are shorter than Devanagari's ink: ो ी ं lose their tops and look covered, which reads as a spacing bug. | `Text.native.tsx` pads the shortfall and pays it back with margin; a parent's `overflow: hidden` on a heading's top edge brings the clip back. | never |

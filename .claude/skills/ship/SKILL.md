@@ -10,6 +10,12 @@ everything in it is written for a five-minute read. The owner raises the PR; thi
 
 ## 1. Gates, once
 
+**The stamp first (`M113`).** The task's section carries `**Verified:** digest …` and
+`scripts/verify-digest.sh` prints the same twelve characters for the working tree; missing or
+stale means `/verify` runs NOW, in full, before any gate. The author's own driving never stands in
+for the agents' verdicts. A tree whose runtime digest equals `origin/main`'s — docs, ci, config —
+carries no stamp and needs none.
+
 `pnpm verify:clean` — the proof in CI's room (`M112`): a fresh clone of what git would commit, CI's
 environment, every stage read for its verdict, never for the exit code. If it already ran green
 on this exact tree in this session (nothing changed since: `git status --short` and
@@ -46,7 +52,7 @@ this tiering prevents.
 
 ## 3. Completeness
 
-Every done-when line of the task has its proof — a test, a `/verify` verdict or a gate. A line
+Every done-when line of the task has its proof — a test, the `/verify` run's verdict or a gate. A line
 without one is not done, and the PR body is not printed. A task that turned out to be two is
 split (`/start` §3), never shipped half.
 

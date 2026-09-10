@@ -1,3 +1,4 @@
+// biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
@@ -32,6 +33,7 @@ export function PhoneField({
   helper,
   disabled = false,
   announceError = false,
+  autoFocus = false,
   id,
   className,
   style,
@@ -79,6 +81,7 @@ export function PhoneField({
           autoComplete="tel-national"
           value={shown}
           disabled={disabled}
+          autoFocus={autoFocus}
           aria-invalid={error === undefined ? undefined : true}
           aria-describedby={message === undefined ? undefined : messageId}
           onChange={(e) => commit(e.target.value)}

@@ -1,9 +1,10 @@
 import type { PendingSwitch } from '@heliogrid/data';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Sheet, Text, useFormat } from '@heliogrid/ui';
+import { Button, Sheet, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from '../styles';
+import { TintedBlock } from './TintedBlock';
 
 /**
  * The one deliberately unrecoverable act in the product (`F4-37`, the carve-out from `F4-21`):
@@ -32,14 +33,11 @@ export function SwitchSheet({
       subtitle={t(SIGN_IN.switchSubtitle, { date: date(heldWork.capturedAt) })}
     >
       <View style={styles.sheetBody}>
-        <View style={[styles.tinted, styles.tintedDanger]}>
-          <Text variant="body-sm" color="danger">
-            {t(SIGN_IN.switchBlockTitle)}
-          </Text>
-          <Text variant="caption" color="secondary">
-            {t(SIGN_IN.switchBlockBody)}
-          </Text>
-        </View>
+        <TintedBlock
+          tone="danger"
+          title={t(SIGN_IN.switchBlockTitle)}
+          body={t(SIGN_IN.switchBlockBody)}
+        />
         <View style={styles.sheetActions}>
           <Button
             variant="secondary"

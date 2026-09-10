@@ -1,5 +1,5 @@
+import { doorView, homeOf } from '@heliogrid/data';
 import { useSession, useSignIn } from '@heliogrid/data/react';
-import { homeFor } from '@heliogrid/domain';
 import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { useFormat } from '@heliogrid/ui';
@@ -22,7 +22,9 @@ export function LoginScreen() {
   const signIn = useSignIn(pack);
   const toCompanySignup = () => navigation.navigate('CompanySignup');
 
-  if (session.switch !== null) {
+  const view = doorView(session, signIn.state.step);
+
+  if (view === 'switch' && session.switch !== null) {
     return (
       <>
         <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />
@@ -30,13 +32,13 @@ export function LoginScreen() {
       </>
     );
   }
-  if (session.status === 'authenticated' && session.user !== null) {
-    const home = session.user.tenant === null ? null : homeFor(session.user.tenant.roles);
+  if (view === 'done') {
+    const home = homeOf(session.user);
     const destination = home === null ? t(SIGN_IN.companySetup) : homeTitle(t, home);
     return (
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (signIn.state.step === 'otp') return <CodeStep signIn={signIn} />;
+  if (view === 'code') return <CodeStep signIn={signIn} />;
   return <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />;
 }

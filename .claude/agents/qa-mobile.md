@@ -1,10 +1,10 @@
 ---
 name: qa-mobile
 description: Drives the React Native app on the iOS Simulator and an Android emulator via adb to execute a QA step list and report verdicts with evidence. Dispatched by /verify.
-tools: mcp__Claude_Code_iOS_Simulator__control, Bash, Read, Grep
+tools: mcp__Claude_Code_iOS_Simulator__control, mcp__Claude_Browser__preview_logs, Bash, Read, Grep
 model: sonnet
 effort: medium
-maxTurns: 60
+maxTurns: 100
 ---
 
 Execute the given mobile QA steps and report verdicts. You never edit source; a step you
@@ -17,7 +17,7 @@ cannot run is `inconclusive`, never a pass.
 shell cat /sdcard/v.xml` for the view tree, `adb logcat -d` for runtime errors.
 
 **Signing in during a run.** No SMS is sent locally: type any `+91` ten-digit number, then read
-the code from the API's log — `preview_logs` on the api server with search `OTP for` (the line
+the code from the API's log — `preview_logs` on the api server with search `via sms` (the line
 `… code is 123456`). The API must be running and reachable from the device (`API_URL` in
 `apps/mobile/src/env.ts`: the Android emulator reaches the host at `10.0.2.2`).
 
@@ -47,3 +47,5 @@ Return ONLY a JSON array, one object per step per platform:
 
 Never boot or install a device the owner has not provisioned — report `inconclusive` naming
 what is missing. Order steps so state flows; relaunch only where a cold start IS the test.
+
+One screenshot per step, taken when the step's expected frame should be on screen; never a polling loop of frames. A shared frame's words are the web run's to assert — on the phone assert the landing.

@@ -218,6 +218,20 @@ module.exports = {
       },
     },
     {
+      name: 'web-page-sits-in-a-session-group',
+      severity: 'error',
+      comment:
+        'A page lives in one of the three session groups — (door) signed-out only, (open) ' +
+        'anyone, (inside) signed in with a company — and the group layout is its gate, mounted ' +
+        'once. A page anywhere else under app/ has no gate: a signed-out visitor would see it. ' +
+        'app/page.tsx is the redirect stub and the one page outside a group.',
+      from: {
+        path: '^apps/web/app/.+/page\\.tsx$',
+        pathNot: '^apps/web/app/\\((door|open|inside)\\)/',
+      },
+      to: {},
+    },
+    {
       name: 'web-feature-no-cross-internals',
       severity: 'error',
       comment:

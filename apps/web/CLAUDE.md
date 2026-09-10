@@ -14,7 +14,9 @@ Traps: `.claude/landmines.md` · deps and platform rules: `architecture.md` §2 
 ## Where files go — a closed set; never invent a folder
 
 ```
-app/<route>/page.tsx   routing ONLY — reads params, renders one screen, ≤50 lines
+app/(<group>)/<route>/page.tsx  routing ONLY — reads params, renders one screen, ≤50 lines; the
+                       group is the gate: (door) signed-out only · (open) anyone · (inside) signed in
+                       with a company — its layout.tsx mounts the session gate once (M114)
 app/                   layout · providers · loading · error · not-found · route (BFF glue)
 features/<capability>/ <Name>Screen.tsx composes · components/ one per component ·
                        hooks/use-<thing>.ts the platform adapter only (DOM, router, clipboard) ·

@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Run end-to-end QA after development — derive the blast radius, plan four quadrants, drive only the affected surfaces via subagents, check parity, triage and loop until clean. Use before calling any work done.
+description: Run end-to-end QA after development — derive the blast radius, plan four quadrants, drive only the affected surfaces via subagents, check parity, triage and loop until clean, then stamp the ticket with the digest of the tree that was driven. Use before calling any work done; /ship refuses an unstamped runtime tree.
 ---
 
 # `/verify` — plan here, execute in agents, loop until clean
@@ -46,9 +46,13 @@ change no frontend can see. A diff touching only docs, plans or governance ends 
   screen reaches yet, a script, a config): boot each surface in the radius once yourself, read the
   console and the page tree, one `curl -i`, or the worker's log through its Temporal connection,
   and record it as smoke. No agents, no quadrants.
-- **full** — new or changed behaviour: the four quadrants below, one agent per surface.
+- **delta** — the task already carries a full-run stamp and this change alters part of its
+  behaviour: the agents run only the steps that behaviour touches plus ONE landing path per
+  surface. What the earlier run proved is not run again; its stamp is cited.
+- **full** — NEW behaviour with no earlier stamp: the four quadrants below, one agent per surface.
 
-State the depth and why in the report. A wrong `smoke` is a finding against this skill, never a
+A refactor — gates green, no behaviour changed, the diff says how — has no runtime depth: the
+gates are the proof and no agent runs. State the depth and why in the report. A wrong `smoke` is a finding against this skill, never a
 reason to run `full` on everything.
 
 ## 3. Plan — four quadrants, no empty cells
@@ -57,6 +61,12 @@ Walk `references/test-matrix.md` and author the step list in the scratchpad. Eve
 the radius gets steps in all four quadrants (happy · edge · negative · adversarial). Count
 steps per (surface × quadrant) before dispatching; **a zero cell aborts the run naming the
 gap.** Small is fine; lopsided is not.
+
+**Size the plan to the run.** At most ten steps per agent dispatch — a step costs two to four
+tool calls and an agent that hits its turn cap re-reads, re-signs-in and re-does. Each surface
+signs in at most twice in a run (once without a company, once as the owner); the steps are
+ordered so every session is reused, and a shared fact — the beat copy, a frame's words — is
+asserted on ONE surface, the other asserting only its landing.
 
 Each step: `{id, surface, quadrant, actions[], expected, severity_if_failed}`. `expected` must
 be a literal string comparison — if it cannot be written as one, it is not yet a step. It states
@@ -72,6 +82,10 @@ not landed` — never passed, never dropped from the plan — and the money step
 domain's one computation.
 
 ## 4. Execute
+
+**The author does not drive the plan.** Driving a surface by hand is for diagnosing a failure,
+never for proving a step: a flow driven by the author and then by an agent is the same work
+twice, and only the agent's verdict counts (`M113`).
 
 Dispatch one agent per surface in the radius — `qa-web`, `qa-mobile`, `qa-api` — each with
 only its own steps. `qa-api` also takes the worker: it boots it through the preview tool, drives
@@ -125,9 +139,9 @@ flow — the QA agents never edit source.
 
 ## 8. Fix and re-run
 
-Each round re-runs the failed steps **plus a fresh blast radius for the code the fix touched**,
-so a fix that breaks something adjacent is caught in the same round. A clean round ends the
-loop.
+Each round re-runs the failed steps, plus the ONE landing path of any surface whose behaviour
+the fix changed. A fix that is a refactor — gates green, the same decisions in one place — needs
+no round: the gates are its proof. A clean round ends the loop.
 
 The full re-run in fresh context — the certify pass — is **opt-in**: offer it, run it when the
 owner asks or the change touches money, tenancy or auth. It doubles the cost, and the previous
@@ -147,3 +161,17 @@ failure with its observed value, every parity comparison with both values, and a
 recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1440
 happy / wrong-code paths; curl 409 returns ALREADY_ONBOARDED", never "verified working". A
 surface that could not run is stated plainly, never omitted so the silence implies a pass.
+
+## 10. Stamp the ticket
+
+A clean run ends with the stamp, and only a run that happened writes one. `scripts/verify-digest.sh`
+prints the digest of the runtime tree this run drove (`apps/` and `packages/`, `.md` files aside).
+Write one line into the task's section, above `**DONE WHEN:**`, replacing an earlier one:
+
+`**Verified:** digest <12 hex> · <date> · <surface: pass/fail/inconclusive> … · parity <verdict>`
+
+The commit hook reads it (`M113`): a commit whose staged runtime tree carries no stamp with its
+digest is refused, so a fix after the run re-runs the failed steps and re-stamps. Work with no
+rows and no runtime change — docs, ci, config — has no stamp and needs none. Never write the line
+by hand, never for a `smoke` run that should have been `full`, and never in place of the agents:
+the author driving the surfaces is not verification.
