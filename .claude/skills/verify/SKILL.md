@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Run end-to-end QA after development — derive the blast radius, plan four quadrants, drive only the affected surfaces via subagents, check parity, triage and loop until clean. Use before calling any work done.
+description: Run end-to-end QA after development — derive the blast radius, plan four quadrants, drive only the affected surfaces via subagents, check parity, triage and loop until clean, then stamp the ticket with the digest of the tree that was driven. Use before calling any work done; /ship refuses an unstamped runtime tree.
 ---
 
 # `/verify` — plan here, execute in agents, loop until clean
@@ -147,3 +147,17 @@ failure with its observed value, every parity comparison with both values, and a
 recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1440
 happy / wrong-code paths; curl 409 returns ALREADY_ONBOARDED", never "verified working". A
 surface that could not run is stated plainly, never omitted so the silence implies a pass.
+
+## 10. Stamp the ticket
+
+A clean run ends with the stamp, and only a run that happened writes one. `scripts/verify-digest.sh`
+prints the digest of the runtime tree this run drove (`apps/` and `packages/`, `.md` files aside).
+Write one line into the task's section, above `**DONE WHEN:**`, replacing an earlier one:
+
+`**Verified:** digest <12 hex> · <date> · <surface: pass/fail/inconclusive> … · parity <verdict>`
+
+The commit hook reads it (`M113`): a commit whose staged runtime tree carries no stamp with its
+digest is refused, so a fix after the run re-runs the failed steps and re-stamps. Work with no
+rows and no runtime change — docs, ci, config — has no stamp and needs none. Never write the line
+by hand, never for a `smoke` run that should have been `full`, and never in place of the agents:
+the author driving the surfaces is not verification.

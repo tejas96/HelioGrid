@@ -31,6 +31,8 @@ Data model: the entity rows this task AUTHORS (a table copied from the data mode
 Contract: the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
 Depends on: task ids and migration numbers that must land first
 Out of scope: what this task deliberately leaves to which other task
+Verified: digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
+        tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
 DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
         each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
 ```
