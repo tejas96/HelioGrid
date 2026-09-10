@@ -103,6 +103,7 @@ export default defineConfig({
         'packages/domain/src/pricing/**': COMPLETE,
         'packages/domain/src/projects/**': COMPLETE,
         'packages/domain/src/rails/**': COMPLETE,
+        'packages/domain/src/shell/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
         'packages/domain/src/tenancy/onboarding-steps.ts': COMPLETE,
