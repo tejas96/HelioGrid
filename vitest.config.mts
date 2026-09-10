@@ -78,6 +78,7 @@ export default defineConfig({
       thresholds: {
         'packages/domain/src/auth/**': COMPLETE,
         'packages/domain/src/authz/**': COMPLETE,
+        'packages/domain/src/branding/**': COMPLETE,
         'packages/domain/src/calling/**': COMPLETE,
         'packages/domain/src/certification/**': COMPLETE,
         /* FILES, not the folder: `commerce/`'s remaining two are closed vocabularies whose
@@ -85,6 +86,12 @@ export default defineConfig({
            them buys an import-only test. Every other file here has a runtime reader and so has a
            bar; `states.ts` and `costs.ts` widen this to `commerce/**` when theirs land. */
         'packages/domain/src/commerce/caps.ts': COMPLETE,
+        'packages/domain/src/commerce/effective-settings.ts': COMPLETE,
+        'packages/domain/src/commerce/proposal-template-defaults.ts': COMPLETE,
+        'packages/domain/src/commerce/rich-text.ts': COMPLETE,
+        'packages/domain/src/commerce/timeline-template-defaults.ts': COMPLETE,
+        'packages/domain/src/commerce/tranche-allocation.ts': COMPLETE,
+        'packages/domain/src/commerce/tranche-template-defaults.ts': COMPLETE,
         'packages/domain/src/commerce/grandfathering.ts': COMPLETE,
         'packages/domain/src/commerce/meters.ts': COMPLETE,
         'packages/domain/src/commerce/soft-block.ts': COMPLETE,
@@ -94,9 +101,11 @@ export default defineConfig({
         'packages/domain/src/market/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,
         'packages/domain/src/pricing/**': COMPLETE,
+        'packages/domain/src/projects/**': COMPLETE,
         'packages/domain/src/rails/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
+        'packages/domain/src/tenancy/onboarding-steps.ts': COMPLETE,
         'packages/i18n/src/runtime.ts': COMPLETE,
       },
     },

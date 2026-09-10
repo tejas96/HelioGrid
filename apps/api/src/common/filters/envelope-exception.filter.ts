@@ -98,7 +98,12 @@ function envelopeFor(exception: unknown): Envelope {
   if (exception instanceof ContractException) {
     // The route's contract declares this exact literal — never overwrite it with the generic
     // base code for the status (e.g. ALREADY_ONBOARDED must not become CONFLICT).
-    return { status, code: exception.code, message: httpExceptionMessage(exception) };
+    return {
+      status,
+      code: exception.code,
+      message: httpExceptionMessage(exception),
+      details: exception.details,
+    };
   }
   const code = Object.entries(errorHttpStatusByCode).find(([, value]) => value === status)?.[0];
   // A status the code→status map does not name is one no contract declares — including the

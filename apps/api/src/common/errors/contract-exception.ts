@@ -1,3 +1,4 @@
+import type { ErrorDetail } from '@heliogrid/contracts';
 import { HttpException, type HttpStatus } from '@nestjs/common';
 
 /**
@@ -21,6 +22,8 @@ export class ContractException extends HttpException {
     readonly code: string,
     message: string,
     status: HttpStatus | number,
+    /** Field-addressable, the schema field path — what a refusal explains per field (`M01-25`). */
+    readonly details?: ErrorDetail[],
   ) {
     super(message, status);
   }

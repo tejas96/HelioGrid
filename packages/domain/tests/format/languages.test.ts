@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { packLabel } from '../../src/format/languages';
+import { inLanguage, packLabel } from '../../src/format/languages';
 import { formatMoney } from '../../src/format/money';
 import { IN_FORMATS } from '../../src/format/pack';
 
@@ -12,6 +12,12 @@ describe('packLabel — the one fallback (F3-05)', () => {
     const label = packLabel({ en: 'Subsidy claimed' }, 'hi');
     expect(label).toBe('Subsidy claimed');
     expect(label).not.toBe('');
+  });
+
+  it('is the same fallback for any per-language value, a document body included', () => {
+    const body = { en: { blocks: 1 }, mr: { blocks: 2 } };
+    expect(inLanguage(body, 'mr')).toEqual({ blocks: 2 });
+    expect(inLanguage(body, 'hi')).toEqual({ blocks: 1 });
   });
 });
 

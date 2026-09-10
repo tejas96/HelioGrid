@@ -3,10 +3,11 @@
 > `0001` is the market pack, readable global reference data with no foreign key out; `0002` the
 > identity spine that carries the market key; `0003` the grants that open the role-set write path
 > under it; `0004` the append-only audit log every guarded transition writes to; `0005` the team
-> invite and the presets it carries. The next is tenant settings (`T-M01-026`, `0006`): read its
-> Data model block in `docs/tasks/M01-onboarding.md` before authoring it. A number is taken in
-> LANDING order, so a task that lands out of the planned sequence takes the next free one and
-> sweeps the docs.
+> invite and the presets it carries; `0006` the tenant settings and the setup corridor — nine
+> tables, no settings JSONB. The next is whichever M01 slice lands first — the catalog
+> (`T-M01-027`) or the demo seed (`T-M01-029`): read its Data model block in
+> `docs/tasks/M01-onboarding.md` before authoring it. A number is taken in LANDING order, so a
+> task that lands out of the planned sequence takes the next free one and sweeps the docs.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.

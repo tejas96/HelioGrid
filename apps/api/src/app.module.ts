@@ -11,12 +11,13 @@ import { AuthModule } from './modules/auth/auth.public';
 import { HealthModule } from './modules/health/health.public';
 import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
+import { SettingsModule } from './modules/settings/settings.public';
 import { TenantModule } from './modules/tenant/tenant.public';
 import { UserModule } from './modules/user/user.public';
 
 /**
  * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — health,
- * the market pack, auth, the audit log, tenant, user and invitation today; the rest land with
+ * the market pack, auth, the audit log, tenant, user, invitation and settings today; the rest land with
  * their slices: crm, survey, design, proposal, customer-link, projects, billing, catalog, agent,
  * notifications, admin.
  *
@@ -37,6 +38,7 @@ import { UserModule } from './modules/user/user.public';
     TenantModule,
     UserModule,
     InvitationModule,
+    SettingsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: SessionGuard }],
 })

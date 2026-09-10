@@ -49,6 +49,11 @@ Every done-when line of the task has its proof — a test, a `/verify` verdict o
 without one is not done, and the PR body is not printed. A task that turned out to be two is
 split (`/start` §3), never shipped half.
 
+**The ceiling holds here too (`M111`).** Count the diff — `git diff --stat origin/main` plus
+`git ls-files --others --exclude-standard`. Above **25 files or 1,500 lines**, or more than one
+migration or one contract router, the PR body is not printed and the work goes back to `/start`
+§3 to be split — unless the owner has ruled, in chat, that this one task ships whole.
+
 ## 4. Commit on a yes
 
 Show the file list, the line count and the commit message, then END THE TURN. The yes is the

@@ -13,6 +13,11 @@
  * market adds price rows and changes no product code. The numbers live in that market's price
  * book (`T-FCORE-010`), and the lifecycle, the ledger and the entitlement gates live in `M12`.
  *
+ * The tenant's DOCUMENT DEFAULTS sit here too (`M01-51`–`M01-54`, `M01-28`): what every proposal
+ * is made of before a tenant says otherwise — the section set, the terms, the timeline phases, the
+ * two standard payment splits, and the one resolver that fills them in. Market-neutral, priced
+ * against nothing, and read by both screens and the server.
+ *
  * `STANDING_METER` is not exported on purpose. It exists to keep storage out of the per-cycle
  * bundle record (`BM-12`, `BM-20`), and the TYPE already carries that everywhere it matters — a
  * consumer reads the shape, never the exception behind it.
@@ -31,9 +36,44 @@ export {
   NEVER_METERED,
   PROXIED_UPSTREAMS,
 } from './costs';
+export type {
+  BankDetails,
+  BrandingInForce,
+  BrandingSettings,
+  BusinessProfileSettings,
+  CompanyIdentity,
+  EffectiveSettings,
+  EffectiveSettingsInput,
+  Letterhead,
+  LocaleInForce,
+  ProposalTemplateSettings,
+  Resolved,
+  SettingSource,
+  TaxRegistration,
+  TenantFacts,
+  TenantHoliday,
+  TenantSettings,
+  TimelineTemplateSettings,
+  TrancheLine,
+  TrancheTemplate,
+  TrancheTemplateContent,
+  TrancheTemplateInForce,
+} from './effective-settings';
+export { absentFacts, resolveEffectiveSettings, SETTING_SOURCES } from './effective-settings';
 export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
 export type { Meter } from './meters';
 export { METERS } from './meters';
+export type { ProposalCover, ProposalSection } from './proposal-template-defaults';
+export {
+  DEFAULT_SECTIONS_INCLUDED,
+  DEFAULT_TERMS,
+  isSectionFloor,
+  PROPOSAL_SECTIONS,
+  SECTION_FLOOR,
+  sectionsIncluded,
+} from './proposal-template-defaults';
+export type { RichTextBlock, RichTextSpan, RichTextValue } from './rich-text';
+export { richTextParagraphs } from './rich-text';
 export type { BillingCapability, BillingPhase, CapabilityStanding } from './soft-block';
 export {
   BILLING_CAPABILITIES,
@@ -46,4 +86,10 @@ export type { BillingState } from './states';
 export { BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
+export type { TimelinePhase } from './timeline-template-defaults';
+export { DEFAULT_TIMELINE_PHASES } from './timeline-template-defaults';
+export type { AllocationVerdict } from './tranche-allocation';
+export { allocationVerdict, WHOLE_ALLOCATION } from './tranche-allocation';
+export type { TrancheLineDefault, TrancheTemplateDefault } from './tranche-template-defaults';
+export { STANDARD_TRANCHE_TEMPLATES } from './tranche-template-defaults';
 export { isNonPaying, TRIAL_DAYS } from './trial';

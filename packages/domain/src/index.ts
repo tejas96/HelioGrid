@@ -17,6 +17,7 @@
 export * from './audit';
 export * from './auth';
 export * from './authz';
+export * from './branding';
 export * from './calling';
 export * from './certification';
 export * from './commerce';
@@ -24,6 +25,7 @@ export * from './format';
 export * from './market';
 export * from './money';
 export * from './pricing';
+export * from './projects';
 export * from './rails';
 export * from './subsidy';
 export * from './tax';

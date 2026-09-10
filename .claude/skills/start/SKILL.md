@@ -43,6 +43,12 @@ types, the schema plan, then code.
 each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
 propose the slices in order. A slice that cannot pass its done-when alone is not a slice.
 
+**The ceiling (`M111`).** One task is one PR a reviewer reads in five minutes: at most **25 files
+or 1,500 lines** changed, **one migration**, **one contract router**. A ticket whose reach would
+exceed any of these is split HERE, before the go, at a layer seam in Law 3's order — domain, then
+contract, then schema, then the app — each slice a ticket of its own with its own done-when
+lines. The number is the owner's; the split is not optional and never waits for `/ship`.
+
 ## 4. Explain, branch, stop
 
 Explain the task to the owner in simple words: what we build, why, and what proves it. Then

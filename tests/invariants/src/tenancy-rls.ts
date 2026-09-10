@@ -5,26 +5,13 @@ import {
   assertPartitionChildrenUngranted,
   assertRlsArmed,
 } from './rls-armed';
+import { assert, assertSettingsWritePath, expectFail } from './tenancy-write-paths';
 
 /**
  * Tenancy invariant (CLAUDE.md §Testing): with RLS on, tenant A's session cannot
  * read or write any tenant B row — generated over the schema (every table carrying
  * tenant_id), not hand-listed. Uses SET ROLE app_user to run under the RLS-subject role.
  */
-
-function assert(cond: unknown, msg: string): asserts cond {
-  if (!cond) throw new Error(`tenancy: ${msg}`);
-}
-
-async function expectFail(p: Promise<unknown>, msg: string) {
-  let failed = false;
-  try {
-    await p;
-  } catch {
-    failed = true;
-  }
-  assert(failed, msg);
-}
 
 export async function runTenancyInvariants(adminUrl: string) {
   const sql = postgres(adminUrl, { max: 1, onnotice: () => {} });
@@ -36,6 +23,8 @@ export async function runTenancyInvariants(adminUrl: string) {
   const membershipB = randomUUID();
   const invitationA = randomUUID();
   const invitationB = randomUUID();
+  const templateA = randomUUID();
+  const templateB = randomUUID();
   const suffix = tenantA.slice(0, 8);
 
   try {
@@ -159,6 +148,12 @@ export async function runTenancyInvariants(adminUrl: string) {
     await sql`insert into invitation_role (id, tenant_id, invitation_id, role_preset) values
       (${randomUUID()}, ${tenantA}, ${invitationA}, 'sales_executive'),
       (${randomUUID()}, ${tenantB}, ${invitationB}, 'sales_executive')`;
+    // One payment-term template per tenant (migration 0006), so the settings tables are read
+    // over real rows below rather than over an empty table that is isolated whatever RLS does.
+    await sql`insert into tranche_template (id, tenant_id, name, is_default, archived, created_at)
+      values
+      (${templateA}, ${tenantA}, '{"en":"Invariant split A"}'::jsonb, true, false, now()),
+      (${templateB}, ${tenantB}, '{"en":"Invariant split B"}'::jsonb, true, false, now())`;
 
     assert(
       tenantTables.length >= 2,
@@ -272,6 +267,8 @@ export async function runTenancyInvariants(adminUrl: string) {
       'inserting a tenant B invitation from a tenant A session must fail',
     );
 
+    await assertSettingsWritePath(sql, { tenantA, tenantB, templateB });
+
     // The audit log, written on the tenant-scoped path a guarded transition uses (`F2-22`).
     await sql.begin(async (tx) => {
       await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
@@ -350,12 +347,14 @@ export async function runTenancyInvariants(adminUrl: string) {
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
         `append-only proven on ${ledgerNames.join(', ')}; ` +
         `isolation behaviourally exercised on tenant, user_account, tenant_membership, ` +
-        `membership_role, invitation, invitation_role, audit_log_entry`,
+        `membership_role, invitation, invitation_role, tranche_template, audit_log_entry`,
     );
   } finally {
     // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
     const tenants = [tenantA, tenantB];
     await sql`delete from audit_log_entry where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from tranche_template_line where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from tranche_template where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from invitation_role where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from invitation where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from membership_role where tenant_id in ${sql(tenants)}`.catch(() => {});
