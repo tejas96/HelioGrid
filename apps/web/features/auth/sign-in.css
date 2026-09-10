@@ -32,6 +32,10 @@
   padding-top: var(--sp-3);
 }
 
+.hg-door-wordmark-desktop {
+  display: none;
+}
+
 .hg-door-header {
   display: flex;
   align-items: center;
@@ -192,6 +196,10 @@
 
   .hg-door-wordmark {
     display: none;
+  }
+
+  .hg-door-wordmark-desktop {
+    display: block;
   }
 
   .hg-door-body {
