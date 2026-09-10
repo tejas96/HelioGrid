@@ -569,7 +569,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-025 · Role-adaptive shell centre-verb resolution
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#51)
 **Why:** A rep in a customer's living room reaches Add lead under their thumb and a surveyor on a roof reaches Start survey the same way — the arc centre is the product's highest-frequency act, and the shell must know which act that is for the person holding the phone without asking a screen. Without this `T-SHELL-001` has no fact to render: each screen would type its own verb and its own slot set, the centre would one day offer an act the person's presets forbid, and the two-minutes-to-useful-work promise would land on a button that does the wrong thing.
 **PRD rows:** F7-22
 **Design:** none — an engine task. The surface is `SCR-SHELL-01` (`T-SHELL-001`, `docs/ux/briefs/SCR-SHELL-01-app-shell.md`), whose design decisions this task honours: the verb follows the home in force and the standing destinations belong to the person and do not change with it (decision 6); the fourth destination is Proposals — Home · Leads · Proposals · More, never a fifth slot (decision 5).
