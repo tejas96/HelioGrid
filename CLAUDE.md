@@ -84,7 +84,7 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 |---|---|
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
 | `pnpm check:all` | Every gate that runs without a database, DURING the work. It builds, because typecheck does. |
-| `pnpm verify` | **The proof.** Build · lint · boundaries · typecheck · gates · unit tests · invariants. |
+| `pnpm verify:clean` | **The proof, in CI's room.** A fresh clone of what git would commit, CI's environment, then `pnpm verify`: build · lint · boundaries · typecheck · gates · unit tests · invariants. |
 | `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
 | `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
 | `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |

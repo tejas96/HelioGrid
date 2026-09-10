@@ -20,6 +20,8 @@ this file: when the path goes, the row goes.
 | `zod` must resolve to ONE 3.25.x instance. Otherwise pnpm gives ts-rest's peer a zod 4 and the typed client silently collapses to `never`. | The pin in every manifest; `sherif` compares them. | a `pnpm.overrides` entry replaces the per-manifest pins |
 | dependency-cruiser resolves a workspace import through the target's `dist/`, so before a build every dist-targeting rule reports clean. | Build before you cruise. `pnpm verify` already does. | never |
 | The db-write hook reads the WHOLE Bash command text, heredocs included: a file written by heredoc that mentions `psql` beside a write word is blocked as if it were a query. | Write such files with the Write tool. | the hook parses command position only |
+| Green in `pnpm verify:clean`, red on GitHub: the room is a Mac and CI is ubuntu. A path that differs only by case, a tool that exists here and not there, a line ending. | Read the lane's log for the first Linux-only word; `act` reproduces it in Docker. | `act` runs the quality job locally |
+| A branch switch leaves `dist/` from the other branch: `turbo boundaries` and dependency-cruiser read `dist/`, so `pnpm verify` reports an import the checked-out source never makes. | `pnpm verify:clean` — its room has no `dist/`; or `pnpm turbo build --force` first. | `pnpm verify` is retired for `pnpm verify:clean` |
 
 ## apps/api
 
