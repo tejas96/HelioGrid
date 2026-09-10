@@ -18,6 +18,7 @@
     "boundaries": "turbo boundaries",
     "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:adherence && pnpm check:dupes && pnpm ds:contract && pnpm check:openapi && pnpm check:catalogs && pnpm check:env && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "verify:ci": "pnpm verify",
+    "verify:clean": "bash scripts/verify-clean.sh",
     "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
     "check:adherence": "bash scripts/check-adherence.sh",
     "check:secrets": "bash scripts/check-secrets.sh",

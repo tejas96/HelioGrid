@@ -10,7 +10,8 @@ everything in it is written for a five-minute read. The owner raises the PR; thi
 
 ## 1. Gates, once
 
-`pnpm verify` — every stage, read for its verdict, never for the exit code. If it already ran green
+`pnpm verify:clean` — the proof in CI's room (`M112`): a fresh clone of what git would commit, CI's
+environment, every stage read for its verdict, never for the exit code. If it already ran green
 on this exact tree in this session (nothing changed since: `git status --short` and
 `git diff --stat` identical), cite that run instead of running again. If the invariants ran
 vacuously, say so — a green run has NOT proven tenancy. Never weaken a gate. Deleted a source
