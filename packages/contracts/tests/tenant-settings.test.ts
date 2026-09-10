@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { calendarDateSchema, hexColourSchema, trancheLineSchema } from '../src';
+import {
+  calendarDateSchema,
+  hexColourSchema,
+  taxRegistrationsSchema,
+  trancheLineSchema,
+} from '../src';
 import { packLabelSchema, richTextValueSchema } from '../src/document-content';
 
 describe('a per-language value on the wire — English required, a stranger language refused (F3-05)', () => {
@@ -63,5 +68,25 @@ describe('the small shapes at their edges', () => {
     expect(trancheLineSchema.safeParse({ ...line, dueOnStage: 'cancelled' }).success).toBe(false);
     expect(trancheLineSchema.safeParse({ ...line, percent: '10' }).success).toBe(false);
     expect(trancheLineSchema.safeParse({ ...line, percent: '100.01' }).success).toBe(false);
+  });
+});
+
+describe('tax registrations on the wire — one entry per type (M01-24)', () => {
+  const one = { registrationType: 'IN_GST', value: '27ABCDE1234F1Z5' };
+
+  it('accepts one entry per type, and an empty list', () => {
+    expect(taxRegistrationsSchema.safeParse({ registrations: [one] }).success).toBe(true);
+    expect(taxRegistrationsSchema.safeParse({ registrations: [] }).success).toBe(true);
+  });
+
+  it('refuses a second entry of a type already listed, on that entry’s field', () => {
+    const result = taxRegistrationsSchema.safeParse({
+      registrations: [one, { ...one, value: '29ABCDE1234F1Z5' }],
+    });
+    expect(result.success).toBe(false);
+    if (result.success) throw new Error('expected a refusal');
+    expect(result.error.issues.map((issue) => issue.path)).toEqual([
+      ['registrations', 1, 'registrationType'],
+    ]);
   });
 });

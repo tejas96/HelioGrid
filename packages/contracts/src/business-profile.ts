@@ -41,7 +41,25 @@ export const taxRegistrationSchema = z.object({
 });
 export type TaxRegistration = z.infer<typeof taxRegistrationSchema>;
 
-export const taxRegistrationsSchema = z.object({
-  registrations: z.array(taxRegistrationSchema),
-});
+/**
+ * The registrations as one list, replaced whole. One entry per type: a second entry of a type
+ * already in the list is refused on that entry's field, never silently collapsed.
+ */
+export const taxRegistrationsSchema = z
+  .object({
+    registrations: z.array(taxRegistrationSchema),
+  })
+  .superRefine(({ registrations }, ctx) => {
+    const seen = new Set<string>();
+    registrations.forEach((registration, index) => {
+      if (seen.has(registration.registrationType)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['registrations', index, 'registrationType'],
+          message: 'one registration per type',
+        });
+      }
+      seen.add(registration.registrationType);
+    });
+  });
 export type TaxRegistrations = z.infer<typeof taxRegistrationsSchema>;
