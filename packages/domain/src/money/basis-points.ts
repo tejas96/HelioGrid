@@ -48,3 +48,21 @@ export function applyRate(
   const rounded = (2n * numerator + denominator) / (2n * denominator);
   return minorUnits(Number(amount < 0 ? -rounded : rounded));
 }
+
+/**
+ * The wire's two-decimal percent (`percentSchema`, `"18.00"`) as whole basis points — read from
+ * the text, never through a float, so `10.00` is exactly 1000 and `33.33 × 3` still leaves 1.
+ */
+export function percentToBasisPoints(percent: string): BasisPoints {
+  const match = /^(\d{1,3})\.(\d{2})$/.exec(percent);
+  if (match === null) {
+    throw new RangeError(`a percent is two-decimal text, 0.00 to 100.00, not ${percent}`);
+  }
+  const [, whole = '', fraction = ''] = match;
+  return basisPoints(Number(whole) * 100 + Number(fraction));
+}
+
+/** Whole basis points as the wire's two-decimal percent: 1800 reads `"18.00"`. Any whole number: a remainder may exceed the whole. */
+export function basisPointsToPercent(rate: number): string {
+  return `${Math.floor(rate / 100)}.${String(rate % 100).padStart(2, '0')}`;
+}

@@ -1,3 +1,4 @@
+import type { PackLabel } from '../format/languages';
 import { type BasisPoints, basisPoints } from '../money/basis-points';
 import { type MinorUnits, minorUnits } from '../money/minor-units';
 
@@ -49,6 +50,12 @@ export interface TaxRegistrationType {
   readonly pattern: string;
   /** At conversion: a paying tenant needs it on its invoice, and not before (`F1-29`). */
   readonly capturedAt: 'conversion';
+  /**
+   * The format in words, per language — what a refusal explains a malformed value against
+   * (`M01-25`). A pack label, because the product never names one market's tax id itself
+   * (`F1-22`); the example inside it is the scheme's own shape and stays untranslated.
+   */
+  readonly format: PackLabel;
 }
 
 /** How the platform's own subscription sale is taxed in this market (`F1-13`, `BM-40`). */
@@ -110,6 +117,11 @@ export const IN_TAX: TaxPack = {
       pattern: '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$',
       /** `F1-29` — a B2B tenant needs it on the invoice for input tax credit. */
       capturedAt: 'conversion',
+      format: {
+        en: '15 characters: a 2-digit state code, the 10-character PAN, an entity digit, Z and a check character — like 27ABCDE1234F1Z5',
+        hi: '15 अक्षर: 2 अंकों का राज्य कोड, 10 अक्षरों का PAN, एक इकाई अंक, Z और एक जाँच अक्षर — जैसे 27ABCDE1234F1Z5',
+        mr: '15 अक्षरे: 2 अंकी राज्य कोड, 10 अक्षरी PAN, एक संस्था अंक, Z आणि एक तपासणी अक्षर — जसे 27ABCDE1234F1Z5',
+      },
     },
   ],
   /**

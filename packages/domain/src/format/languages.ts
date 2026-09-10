@@ -31,9 +31,18 @@ export const UI_SOURCE_LOCALE = 'en' satisfies UiLanguage;
  * never-translated set (`F3-08`), so their label carries `en` alone and reads identically in every
  * language by construction rather than by three identical strings.
  */
-export type PackLabel = Readonly<{ en: string } & Partial<Record<UiLanguage, string>>>;
+export type PerLanguage<T> = Readonly<{ en: T } & Partial<Record<UiLanguage, T>>>;
+export type PackLabel = PerLanguage<string>;
 
-/** `F3-05` — the one fallback, so no surface writes `label[lang] ?? label.en` for itself. */
+/**
+ * `F3-05` — the one fallback, so no surface writes `value[lang] ?? value.en` for itself. Generic
+ * because tenant-authored document text (`F3-10`) and the platform's own defaults take the same
+ * shape as a label: a T&C body per language falls back exactly as a stage name does.
+ */
+export function inLanguage<T>(value: PerLanguage<T>, language: UiLanguage): T {
+  return value[language] ?? value.en;
+}
+
 export function packLabel(label: PackLabel, language: UiLanguage): string {
-  return label[language] ?? label.en;
+  return inLanguage(label, language);
 }

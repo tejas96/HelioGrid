@@ -1,4 +1,9 @@
-import type { BaseErrorCode, InvitationErrorCode, TenantErrorCode } from '@heliogrid/contracts';
+import type {
+  BaseErrorCode,
+  InvitationErrorCode,
+  TenantErrorCode,
+  TenantSettingsErrorCode,
+} from '@heliogrid/contracts';
 
 /**
  * The ONE definition of base error-code copy (foundation-dx spec §3.2), swept by the
@@ -36,7 +41,10 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
  * A `Record` over each contract's own code enum, so a route code without copy fails compile
  * here, once, for both platforms.
  */
-const ROUTE_COPY: Record<TenantErrorCode | InvitationErrorCode, { id: string }> = {
+const ROUTE_COPY: Record<
+  TenantErrorCode | InvitationErrorCode | TenantSettingsErrorCode,
+  { id: string }
+> = {
   LAST_OWNER: /*i18n*/ {
     id: 'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
   },
@@ -50,6 +58,12 @@ const ROUTE_COPY: Record<TenantErrorCode | InvitationErrorCode, { id: string }> 
   INVITE_EXPIRED: /*i18n*/ { id: 'This invite has run out. Ask to be invited again.' },
   INVITE_DELIVERY_FAILED: /*i18n*/ {
     id: 'The invite could not be sent. Try again in a moment.',
+  },
+  TRANCHES_NOT_WHOLE: /*i18n*/ {
+    id: 'The tranches must add up to exactly 100%. Place the remainder before saving.',
+  },
+  TAX_REGISTRATION_MALFORMED: /*i18n*/ {
+    id: 'That does not read as a registration of this type. Check it against the format shown.',
   },
 };
 

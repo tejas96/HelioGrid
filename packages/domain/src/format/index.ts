@@ -12,7 +12,9 @@ export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './ch
 export { formatDate, formatMonthYear, formatTime, monthNames, weekdayNames } from './datetime';
 export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
 export {
+  inLanguage,
   type PackLabel,
+  type PerLanguage,
   packLabel,
   UI_LANGUAGES,
   UI_SOURCE_LOCALE,

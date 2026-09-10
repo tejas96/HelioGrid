@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:44
+#: src/copy/api-error.ts:52
 msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
 
@@ -23,39 +23,49 @@ msgid "Enter a valid value."
 msgstr "मान्य मान दर्ज करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:14
+#: src/copy/api-error.ts:19
 msgid "Some fields need attention. Check the form and retry."
 msgstr "कुछ फ़ील्ड्स पर ध्यान देना ज़रूरी है। फ़ॉर्म जाँचकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:23
+#: src/copy/api-error.ts:28
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "आपके संपादन के दौरान किसी और ने इसे बदल दिया। रीफ़्रेश करके फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:31
+#: src/copy/api-error.ts:36
 msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:26
+#: src/copy/api-error.ts:31
 msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:22
+#: src/copy/api-error.ts:65
+msgid "That does not read as a registration of this type. Check it against the format shown."
+msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:27
 msgid "That record isn't available."
 msgstr "वह रिकॉर्ड उपलब्ध नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:27
+#: src/copy/api-error.ts:32
 msgid "That request is too large. Reduce it and retry."
 msgstr "यह अनुरोध बहुत बड़ा है। इसे छोटा करके फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:51
+#: src/copy/api-error.ts:59
 msgid "The invite could not be sent. Try again in a moment."
 msgstr "आमंत्रण भेजा नहीं जा सका। थोड़ी देर में फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:62
+msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
+msgstr "किस्तों का योग ठीक 100% होना चाहिए। सेव करने से पहले बची हुई राशि रखें।"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:9
@@ -63,17 +73,17 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:50
+#: src/copy/api-error.ts:58
 msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:43
+#: src/copy/api-error.ts:51
 msgid "This number is already on your team."
 msgstr "यह नंबर पहले से आपकी टीम में है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:40
+#: src/copy/api-error.ts:48
 msgid "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 msgstr "यह व्यक्ति कंपनी का एकमात्र EPC Owner है। कंपनी में हमेशा कम से कम एक EPC Owner और टीम का प्रबंधन कर सकने वाला एक व्यक्ति रहना ज़रूरी है।"
 
@@ -88,26 +98,26 @@ msgid "This value is too small."
 msgstr "यह मान बहुत छोटा है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:30
+#: src/copy/api-error.ts:35
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:18
+#: src/copy/api-error.ts:23
 msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:17
+#: src/copy/api-error.ts:22
 msgid "You're signed out. Sign in to continue."
 msgstr "आप साइन आउट हैं। जारी रखने के लिए साइन इन करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:47
+#: src/copy/api-error.ts:55
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "आपकी कंपनी आज के आमंत्रण भेज चुकी है। कल फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:19
+#: src/copy/api-error.ts:24
 msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"

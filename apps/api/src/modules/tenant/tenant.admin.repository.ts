@@ -3,6 +3,7 @@ import { FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
+import { seedTenantSettings } from '../settings/settings.public';
 
 export interface TenantRow {
   readonly id: string;
@@ -74,6 +75,9 @@ export class TenantAdminRepository {
         .update(userAccount)
         .set({ name: input.ownerName })
         .where(eq(userAccount.id, input.ownerUserId));
+      // What a company has before its owner touches a setting (`M01-28`): the corridor, the
+      // empty profile, the two standard splits — in this transaction, so none is ever missing.
+      await seedTenantSettings(tx, { tenantId: created.id, now: input.now });
       return created;
     });
   }

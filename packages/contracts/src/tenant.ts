@@ -17,8 +17,8 @@ import { sessionProjectionSchema } from './session';
 
 const c = initContract();
 
-const companyNameSchema = z.string().trim().min(1).max(120);
-const citySchema = z.string().trim().min(1).max(80);
+export const companyNameSchema = z.string().trim().min(1).max(120);
+export const citySchema = z.string().trim().min(1).max(80);
 const personNameSchema = z.string().trim().min(1).max(120);
 
 /** Company signup from a verified OTP (`M01-01`): exactly these three, nothing else. */

@@ -22,3 +22,4 @@ export type {
   TaxStrategy,
 } from './pack';
 export { IN_TAX, TAX_STRATEGIES } from './pack';
+export { checkTaxRegistration, type TaxRegistrationCheck } from './registration';

@@ -7,7 +7,7 @@ import type {
   SessionProjection,
   Tenant,
 } from '@heliogrid/contracts';
-import { marketOfPhone } from '@heliogrid/domain';
+import { marketOfPhone, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import {
   ConflictException,
   HttpStatus,
@@ -56,7 +56,7 @@ export class TenantService {
       city: body.city,
       marketCode: pack.market,
       currencyCode: pack.formats.currency,
-      defaultLanguage: 'en',
+      defaultLanguage: UI_SOURCE_LOCALE,
       timezone: pack.formats.timeZone,
       ownerUserId: session.actor.userId,
       ownerName: body.ownerName,

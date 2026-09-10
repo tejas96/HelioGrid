@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { applyRate, basisPoints } from '../../src/money/basis-points';
+import {
+  applyRate,
+  basisPoints,
+  basisPointsToPercent,
+  percentToBasisPoints,
+} from '../../src/money/basis-points';
 import { minorUnits } from '../../src/money/minor-units';
 
 describe('basisPoints — a rate as whole basis points, 1800 for 18%', () => {
@@ -38,4 +43,24 @@ describe('applyRate — rounds once, at the minor unit, half away from zero', ()
   ])('%d at %d bps taking share %o is %d', (amount, rate, share, expected) => {
     expect(applyRate(minorUnits(amount), basisPoints(rate), share)).toBe(expected);
   });
+});
+
+describe('percentToBasisPoints / basisPointsToPercent — the wire’s two-decimal percent, exactly', () => {
+  it.each([
+    ['0.00', 0],
+    ['0.01', 1],
+    ['10.00', 1000],
+    ['33.33', 3333],
+    ['100.00', 10_000],
+  ])('%s is %d basis points and reads back the same', (percent, rate) => {
+    expect(percentToBasisPoints(percent)).toBe(rate);
+    expect(basisPointsToPercent(basisPoints(rate))).toBe(percent);
+  });
+
+  it.each([['100.01'], ['10'], ['10.0'], ['10.000'], ['-1.00'], ['abc'], ['']])(
+    'refuses %o',
+    (percent) => {
+      expect(() => percentToBasisPoints(percent)).toThrow(RangeError);
+    },
+  );
 });

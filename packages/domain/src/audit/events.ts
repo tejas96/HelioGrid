@@ -16,6 +16,16 @@ export const AUDIT_EVENT_TYPES = [
   'team.invite_sent',
   'team.invite_revoked',
   'team.invite_accepted',
+  'settings.business_profile_changed',
+  'settings.tax_registrations_changed',
+  'settings.branding_changed',
+  'settings.proposal_template_changed',
+  'settings.timeline_template_changed',
+  'settings.tranche_template_created',
+  'settings.tranche_template_changed',
+  'settings.tranche_template_archived',
+  'settings.tranche_template_default_changed',
+  'settings.holidays_changed',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 
@@ -32,7 +42,18 @@ export type AuditActorKind = (typeof AUDIT_ACTOR_KINDS)[number];
  * which `notification` and `file` read when they land. An audit entry records the subject as it
  * WAS and is never re-pointed; only the kinds a landed act can name are listed.
  */
-export const AUDIT_SUBJECT_KINDS = ['user_account', 'tenant_membership', 'invitation'] as const;
+export const AUDIT_SUBJECT_KINDS = [
+  'user_account',
+  'tenant_membership',
+  'invitation',
+  'business_profile',
+  'branding_settings',
+  'proposal_template_settings',
+  'timeline_template',
+  'tranche_template',
+  /** The tenant itself, for a setting that is a whole list rather than a row — its holidays. */
+  'tenant',
+] as const;
 export type AuditSubjectKind = (typeof AUDIT_SUBJECT_KINDS)[number];
 
 /**

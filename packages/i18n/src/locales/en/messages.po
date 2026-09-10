@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:44
+#: src/copy/api-error.ts:52
 msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
@@ -23,39 +23,49 @@ msgid "Enter a valid value."
 msgstr "Enter a valid value."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:14
+#: src/copy/api-error.ts:19
 msgid "Some fields need attention. Check the form and retry."
 msgstr "Some fields need attention. Check the form and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:23
+#: src/copy/api-error.ts:28
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "Someone changed this while you were editing. Refresh and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:31
+#: src/copy/api-error.ts:36
 msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:26
+#: src/copy/api-error.ts:31
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:22
+#: src/copy/api-error.ts:65
+msgid "That does not read as a registration of this type. Check it against the format shown."
+msgstr "That does not read as a registration of this type. Check it against the format shown."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:27
 msgid "That record isn't available."
 msgstr "That record isn't available."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:27
+#: src/copy/api-error.ts:32
 msgid "That request is too large. Reduce it and retry."
 msgstr "That request is too large. Reduce it and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:51
+#: src/copy/api-error.ts:59
 msgid "The invite could not be sent. Try again in a moment."
 msgstr "The invite could not be sent. Try again in a moment."
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:62
+msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
+msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:9
@@ -63,17 +73,17 @@ msgid "This field is required."
 msgstr "This field is required."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:50
+#: src/copy/api-error.ts:58
 msgid "This invite has run out. Ask to be invited again."
 msgstr "This invite has run out. Ask to be invited again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:43
+#: src/copy/api-error.ts:51
 msgid "This number is already on your team."
 msgstr "This number is already on your team."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:40
+#: src/copy/api-error.ts:48
 msgid "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 msgstr "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 
@@ -88,26 +98,26 @@ msgid "This value is too small."
 msgstr "This value is too small."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:30
+#: src/copy/api-error.ts:35
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "Too many attempts. Wait a moment and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:18
+#: src/copy/api-error.ts:23
 msgid "You don't have access to do that."
 msgstr "You don't have access to do that."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:17
+#: src/copy/api-error.ts:22
 msgid "You're signed out. Sign in to continue."
 msgstr "You're signed out. Sign in to continue."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:47
+#: src/copy/api-error.ts:55
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "Your company has sent today’s invites. Try again tomorrow."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:19
+#: src/copy/api-error.ts:24
 msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."

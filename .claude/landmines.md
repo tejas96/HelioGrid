@@ -68,6 +68,7 @@ this file: when the path goes, the row goes.
 | trap | fix | retire when |
 |---|---|---|
 | A new BASE error code no route's union names is invisible to the emitted OpenAPI — "spec unchanged" is NOT evidence that nothing happened. | Check the three edits by hand: `baseErrorCodes`, `errorHttpStatusByCode`, then the i18n copy `Record`, which fails to compile until it exists. | never |
+| Zod 3 runs a `.refine` even after an earlier check on the same string FAILED (it collects every issue), so a refine that can THROW on malformed input — `toISOString()` on an invalid date, `JSON.parse` — turns a 400 into an opaque 500. | Guard the refine so it returns false instead of throwing. | Zod 4, which short-circuits |
 | Every name in `src/workflows/` is permanent once a durable history exists: a type name is written into history, a task queue is what a running worker polls, a workflow id is an outbox dedupe key. | Choose once. Renaming later is a migration, not a rename. | never |
 
 ## packages/data

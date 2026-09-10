@@ -1,15 +1,24 @@
 import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
+  brandingSettings,
+  businessProfile,
   createDb,
   type Db,
   invitation,
   invitationRole,
   marketPack,
   membershipRole,
+  onboardingProgress,
+  proposalTemplateSettings,
   session,
+  taxRegistration,
   tenant,
+  tenantHoliday,
   tenantMembership,
+  timelineTemplate,
+  trancheTemplate,
+  trancheTemplateLine,
   userAccount,
 } from '@heliogrid/db';
 import {
@@ -154,40 +163,46 @@ export function openPools() {
 export async function seed(db: Db, fixture: Fixture): Promise<void> {
   const now = new Date();
   await db.insert(marketPack).values({ marketCode: 'IN' }).onConflictDoNothing();
-  await db.insert(tenant).values(
-    fixture.companies.map((company) => ({
-      id: company.tenantId,
-      companyName: company.companyName,
-      city: 'Pune',
-      marketCode: 'IN',
-      currencyCode: 'INR',
-      defaultLanguage: 'en' as const,
-      timezone: 'Asia/Kolkata',
-      createdAt: now,
-    })),
-  );
-  await db.insert(userAccount).values(
-    fixture.people.map((person) => ({
-      id: person.userId,
-      phoneE164: person.phoneE164,
-      name: person.name,
-      interfaceLanguage: 'en' as const,
-      unitPreference: 'metric' as const,
-      createdAt: now,
-    })),
-  );
-  await db.insert(tenantMembership).values(
-    fixture.memberships.map((membership) => ({
-      id: membership.membershipId,
-      tenantId: membership.of.tenantId,
-      userAccountId: membership.held.userId,
-      status: 'active' as const,
-      lastActiveAt: now,
-      coachMarksDismissed: 0,
-      authorizationVersion: 0,
-      createdAt: now,
-    })),
-  );
+  if (fixture.companies.length > 0) {
+    await db.insert(tenant).values(
+      fixture.companies.map((company) => ({
+        id: company.tenantId,
+        companyName: company.companyName,
+        city: 'Pune',
+        marketCode: 'IN',
+        currencyCode: 'INR',
+        defaultLanguage: 'en' as const,
+        timezone: 'Asia/Kolkata',
+        createdAt: now,
+      })),
+    );
+  }
+  if (fixture.people.length > 0) {
+    await db.insert(userAccount).values(
+      fixture.people.map((person) => ({
+        id: person.userId,
+        phoneE164: person.phoneE164,
+        name: person.name,
+        interfaceLanguage: 'en' as const,
+        unitPreference: 'metric' as const,
+        createdAt: now,
+      })),
+    );
+  }
+  if (fixture.memberships.length > 0) {
+    await db.insert(tenantMembership).values(
+      fixture.memberships.map((membership) => ({
+        id: membership.membershipId,
+        tenantId: membership.of.tenantId,
+        userAccountId: membership.held.userId,
+        status: 'active' as const,
+        lastActiveAt: now,
+        coachMarksDismissed: 0,
+        authorizationVersion: 0,
+        createdAt: now,
+      })),
+    );
+  }
   const roles = fixture.memberships.flatMap((membership) =>
     membership.roles.map((rolePreset) => ({
       tenantId: membership.of.tenantId,
@@ -241,6 +256,19 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   const companies = fixture.companies.map((company) => company.tenantId);
   const people = fixture.people.map((person) => person.userId);
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  for (const setting of [
+    trancheTemplateLine,
+    trancheTemplate,
+    taxRegistration,
+    tenantHoliday,
+    businessProfile,
+    brandingSettings,
+    proposalTemplateSettings,
+    timelineTemplate,
+    onboardingProgress,
+  ]) {
+    await db.delete(setting).where(inArray(setting.tenantId, companies));
+  }
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
   await db.delete(invitation).where(inArray(invitation.tenantId, companies));
   await db.delete(membershipRole).where(inArray(membershipRole.tenantId, companies));
