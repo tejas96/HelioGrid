@@ -43,6 +43,11 @@ msgid "{tries} wrong tries use a code up"
 msgstr "{tries} wrong tries use a code up"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:83
+msgid "A city is needed — it is where your company is based."
+msgstr "A city is needed — it is where your company is based."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:75
 msgid "A code lasts {codeMinutes} minutes"
 msgstr "A code lasts {codeMinutes} minutes"
@@ -53,9 +58,19 @@ msgid "A code works for {codeMinutes} minutes."
 msgstr "A code works for {codeMinutes} minutes."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:79
+msgid "A company name is needed — it goes on every quote and proposal you send."
+msgstr "A company name is needed — it goes on every quote and proposal you send."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:136
 msgid "A rep must never reach another rep’s customer photographs, so nothing captured survives the identity that captured it."
 msgstr "A rep must never reach another rep’s customer photographs, so nothing captured survives the identity that captured it."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:19
+msgid "Already on HelioGrid?"
+msgstr "Already on HelioGrid?"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:52
@@ -93,6 +108,11 @@ msgid "Change number"
 msgstr "Change number"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:40
+msgid "City"
+msgstr "City"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:106
 msgid "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
 msgstr "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
@@ -103,9 +123,19 @@ msgid "Closed while the number is locked."
 msgstr "Closed while the number is locked."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:23
+msgid "Code"
+msgstr "Code"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:51
 msgid "Code filled from your SMS"
 msgstr "Code filled from your SMS"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:35
+msgid "Company name"
+msgstr "Company name"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:130
@@ -113,9 +143,29 @@ msgid "company setup"
 msgstr "company setup"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:21
+msgid "Create a company"
+msgstr "Create a company"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:20
 msgid "Create a company account"
 msgstr "Create a company account"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:43
+msgid "Create company"
+msgstr "Create company"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:12
+msgid "Create your company"
+msgstr "Create your company"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:44
+msgid "Creating your company"
+msgstr "Creating your company"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:19
@@ -151,6 +201,11 @@ msgstr "Finance Home"
 #: src/copy/sign-in.ts:38
 msgid "Get the code by call"
 msgstr "Get the code by call"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:60
+msgid "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
+msgstr "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:22
@@ -204,6 +259,11 @@ msgid "No countdown here: the {gap} s gap exists to stop two messages crossing a
 msgstr "No countdown here: the {gap} s gap exists to stop two messages crossing and nothing is in flight."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:52
+msgid "No error code reaches a field user. If it keeps failing, signing in later with this number returns you to exactly this step."
+msgstr "No error code reaches a field user. If it keeps failing, signing in later with this number returns you to exactly this step."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:125
 msgid "No error code reaches a field user. If it keeps failing, your company admin can raise it with HelioGrid."
 msgstr "No error code reaches a field user. If it keeps failing, your company admin can raise it with HelioGrid."
@@ -224,6 +284,11 @@ msgid "Not your number and not your code — the step after them did not complet
 msgstr "Not your number and not your code — the step after them did not complete."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:16
+msgid "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
+msgstr "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:89
 msgid "Nothing is on its way, so there is nothing to wait for."
 msgstr "Nothing is on its way, so there is nothing to wait for."
@@ -237,6 +302,11 @@ msgstr "Nothing is retried behind you, and nothing about this is your network’
 #: src/copy/sign-in.ts:43
 msgid "Nothing to type until a new code is sent."
 msgstr "Nothing to type until a new code is sent."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:49
+msgid "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
+msgstr "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:52
@@ -268,6 +338,16 @@ msgstr "People Today"
 #: src/copy/homes.ts:14
 msgid "Project Board"
 msgstr "Project Board"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:41
+msgid "Pune"
+msgstr "Pune"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:38
+msgid "Rajesh Kulkarni"
+msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:37
@@ -325,9 +405,29 @@ msgid "Sign in and discard"
 msgstr "Sign in and discard"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:20
+msgid "Sign in instead"
+msgstr "Sign in instead"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:63
+msgid "Sign in with this number"
+msgstr "Sign in with this number"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:131
 msgid "Signing in as {name} discards {count} photographs"
 msgstr "Signing in as {name} discards {count} photographs"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:56
+msgid "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
+msgstr "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:59
+msgid "Signing up again would not make a second company"
+msgstr "Signing up again would not make a second company"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:19
@@ -348,6 +448,11 @@ msgstr "Something on our side failed"
 #: src/copy/api-error.ts:36
 msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:36
+msgid "Suryodaya Solar Solutions"
+msgstr "Suryodaya Solar Solutions"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:129
@@ -388,6 +493,11 @@ msgstr "That is {typed} digits. A mobile number here has {needed}."
 #: src/copy/sign-in.ts:68
 msgid "That is not the code we sent. Check the last SMS, or ask for a new one."
 msgstr "That is not the code we sent. Check the last SMS, or ask for a new one."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:55
+msgid "That number already has an account"
+msgstr "That number already has an account"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:27
@@ -443,6 +553,11 @@ msgstr "The tranches must add up to exactly 100%. Place the remainder before sav
 #: src/copy/sign-in.ts:118
 msgid "The wait is the whole remedy — nothing you or your admin does shortens it."
 msgstr "The wait is the whole remedy — nothing you or your admin does shortens it."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:45
+msgid "These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so."
+msgstr "These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:132
@@ -505,6 +620,11 @@ msgid "This wait stops existing the moment the network confirms the SMS failed."
 msgstr "This wait stops existing the moment the network confirms the SMS failed."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:30
+msgid "Three things, and you're in. Everything else comes later, inside the product."
+msgstr "Three things, and you're in. Everything else comes later, inside the product."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:35
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "Too many attempts. Wait a moment and retry."
@@ -525,9 +645,29 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "Uploading held photographs arrives with the survey capture."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:64
+msgid "Use a different number"
+msgstr "Use a different number"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:34
+msgid "Verified"
+msgstr "Verified"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:25
+msgid "Verify and continue"
+msgstr "Verify and continue"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:32
 msgid "Verify and sign in"
 msgstr "Verify and sign in"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:26
+msgid "Verifying the code makes the account. The company itself is created by the next step, and until then nothing has been written down."
+msgstr "Verifying the code makes the account. The company itself is created by the next step, and until then nothing has been written down."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:40
@@ -538,6 +678,11 @@ msgstr "We call {phone} and read it out."
 #: src/copy/sign-in.ts:29
 msgid "We call and read the code out to"
 msgstr "We call and read the code out to"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:48
+msgid "We could not create the company"
+msgstr "We could not create the company"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:96
@@ -575,6 +720,16 @@ msgid "We'll send a code by SMS to this number."
 msgstr "We'll send a code by SMS to this number."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:65
+msgid "Welcome back — carry on"
+msgstr "Welcome back — carry on"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:42
+msgid "Where you're based."
+msgstr "Where you're based."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:128
 msgid "You are in"
 msgstr "You are in"
@@ -583,6 +738,11 @@ msgstr "You are in"
 #: src/copy/sign-in.ts:84
 msgid "You asked for this call. HelioGrid never switches to one on its own — when SMS fails it says so instead."
 msgstr "You asked for this call. HelioGrid never switches to one on its own — when SMS fails it says so instead."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:39
+msgid "You become this company's first EPC owner."
+msgstr "You become this company's first EPC owner."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:61
@@ -610,9 +770,20 @@ msgid "You're signed out. Sign in to continue."
 msgstr "You're signed out. Sign in to continue."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:33
+msgid "Your account"
+msgstr "Your account"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:45
 msgid "Your code was fine."
 msgstr "Your code was fine."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:24
+#: src/copy/company-signup.ts:29
+msgid "Your company"
+msgstr "Your company"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:55
@@ -625,6 +796,31 @@ msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:13
+msgid "Your mobile number becomes your HelioGrid account. Two steps to verify it, then three details about your company — that is the whole signup."
+msgstr "Your mobile number becomes your HelioGrid account. Two steps to verify it, then three details about your company — that is the whole signup."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:10
 msgid "Your mobile number is your HelioGrid account. There is no password to remember."
 msgstr "Your mobile number is your HelioGrid account. There is no password to remember."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:37
+msgid "Your name"
+msgstr "Your name"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:82
+msgid "Your name is needed — you become this company's first EPC owner."
+msgstr "Your name is needed — you become this company's first EPC owner."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:22
+msgid "Your number"
+msgstr "Your number"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:66
+msgid "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
+msgstr "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
