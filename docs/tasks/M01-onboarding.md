@@ -537,7 +537,7 @@ Also: `sessionClaimsSchema` and `tenantClaimSchema` re-authored in `session.ts` 
 
 ### T-M01-026 · Tenant settings and defaults engine
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#49)
 **Why:** An owner who never opens settings still sends a real proposal on day one, and every setting they do touch has one home that every document reads; without it the first proposal demands a settings maze and a skipped fact has nowhere to be asked for later.
 **PRD rows:** M01-28, M01-53
 **Requirements (verbatim):**
