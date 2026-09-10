@@ -32,7 +32,8 @@ export const styles = StyleSheet.create({
   caption: { marginTop: theme.spacing['sp-4'] },
   spacer: { flex: 1, minHeight: theme.spacing['sp-6'] },
   door: { alignItems: 'center', gap: theme.spacing['sp-2'] },
-  codeColumn: { gap: theme.spacing['sp-5'] },
+  /** The export's code column: `sp-5` between the header row and the title, then `sp-5` throughout. */
+  codeColumn: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-5'] },
   codeTitle: { gap: theme.spacing['sp-1'] },
   centred: { alignItems: 'center' },
   callBlock: { gap: theme.spacing['sp-2'] },

@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import type { StyleProp, TextStyle } from 'react-native';
-import { Text as RNText } from 'react-native';
+import type { DimensionValue, StyleProp, TextStyle } from 'react-native';
+import { Text as RNText, StyleSheet } from 'react-native';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
 const R = theme.type.roles;
@@ -107,6 +107,47 @@ const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
   end: 'right',
 };
 
+/* Native clips a Text's ink to its own box, where the web lets it spill over the line. The heading
+   roles' line boxes are shorter than the Devanagari fallback's ink line — Kohinoor Devanagari inks
+   1.05 em above the baseline and 0.51 em below it — so हिन्दी and मराठी vowel signs lose their tops.
+   The shortfall is padding at both ends paid back by margin, merged with the consumer's own box so
+   a Text may still carry a margin: the layout box stays the theme's, only the drawn box grows. */
+const DEVANAGARI_INK_LINE_EM = 1.56;
+
+function inkRoom(variant: TextVariant, style: StyleProp<TextStyle>): TextStyle | undefined {
+  const { fontSize, lineHeight } = VARIANT[variant];
+  if (fontSize === undefined || lineHeight === undefined) return undefined;
+  const room = Math.ceil(DEVANAGARI_INK_LINE_EM * fontSize - lineHeight);
+  if (room <= 0) return undefined;
+  const own = StyleSheet.flatten(style) ?? {};
+  const top = roomedEdge(
+    own.marginTop ?? own.marginVertical ?? own.margin,
+    own.paddingTop ?? own.paddingVertical ?? own.padding,
+    room,
+  );
+  const bottom = roomedEdge(
+    own.marginBottom ?? own.marginVertical ?? own.margin,
+    own.paddingBottom ?? own.paddingVertical ?? own.padding,
+    room,
+  );
+  return {
+    ...(top && { marginTop: top.margin, paddingTop: top.padding }),
+    ...(bottom && { marginBottom: bottom.margin, paddingBottom: bottom.padding }),
+  };
+}
+
+/** An 'auto' or percentage edge is the consumer's alone; only a numeric one can pay the room back. */
+function roomedEdge(
+  margin: DimensionValue | undefined,
+  padding: DimensionValue | undefined,
+  room: number,
+) {
+  const numeric = (value: DimensionValue | undefined) =>
+    value === undefined || typeof value === 'number';
+  if (!numeric(margin) || !numeric(padding)) return undefined;
+  return { margin: (margin ?? 0) - room, padding: (padding ?? 0) + room };
+}
+
 interface NativeTextProps extends TextProps {
   style?: StyleProp<TextStyle>;
 }
@@ -128,6 +169,7 @@ export function Text({
         { color: COLOR[color] },
         align !== undefined ? { textAlign: ALIGN[align] } : undefined,
         style,
+        inkRoom(variant, style),
       ]}
       accessibilityLanguage={lang}
       accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
