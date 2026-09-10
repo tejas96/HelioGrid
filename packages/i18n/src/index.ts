@@ -13,9 +13,14 @@
  */
 export type { ApiErrorLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
+export { homeTitle } from './copy/homes';
+export type { SignInCopyKey } from './copy/sign-in';
+export { SIGN_IN } from './copy/sign-in';
+export type { SignInFacts, SignInWords } from './copy/sign-in-frames';
+export { signInWords } from './copy/sign-in-frames';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';
 export type { LanguageMeta } from './languages';
 export { LANGUAGE_META, loadCatalog } from './languages';
-export type { I18nRuntime, Translator } from './runtime';
+export type { I18nRuntime, MessageRef, Translator } from './runtime';
 export { createI18nRuntime, createTranslator } from './runtime';

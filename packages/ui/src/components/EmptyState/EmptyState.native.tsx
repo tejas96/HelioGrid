@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import type { EmptyStateProps } from './EmptyState.types';
 
 interface NativeEmptyStateProps extends EmptyStateProps {
@@ -20,7 +21,7 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.art}>
-        {glow ? <View style={styles.glow} /> : null}
+        {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
         {icon ? <View style={styles.icon}>{icon}</View> : null}
       </View>
@@ -37,6 +38,9 @@ export function EmptyState({
   );
 }
 
+/** The web half's 180px bloom — an art dimension, off the scale on purpose. */
+const BLOOM_SIZE = 180;
+
 const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
@@ -48,17 +52,6 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing['sp-3'],
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  /* --glow-brand is a radial gradient and RN draws none without a gradient dependency, so the
-     bloom is the flat accent wash the gradient fades from. Atmosphere either way — it never
-     carries information, so the approximation costs the reader nothing. */
-  glow: {
-    position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['accent-subtle'],
-    opacity: 0.6,
   },
   icon: {
     width: 72,

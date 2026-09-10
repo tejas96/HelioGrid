@@ -41,7 +41,13 @@ export type {
   PhoneFormats,
 } from './pack';
 export { IN_FORMATS, MEASUREMENT_SYSTEMS } from './pack';
-export { formatPhone, nationalNumber, type PhoneOptions } from './phone';
+export {
+  formatPhone,
+  nationalNumber,
+  type PhoneDigitsMismatch,
+  type PhoneOptions,
+  phoneDigitsMismatch,
+} from './phone';
 export {
   IN_UTILITIES,
   operatorsForRegion,

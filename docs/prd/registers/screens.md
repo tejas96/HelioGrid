@@ -608,7 +608,7 @@ question that records it and does **not** invent a replacement.
 | F1-56 | P0 | policy | policy | T-FCORE-009 |
 | F1-57 | P0 | policy | policy | T-FCORE-009 |
 | F1-58 | P0 | policy | policy | T-FCORE-009 |
-| F1-59 | P0 | mixed | SCR-SHELL-01 · +non-UI: breach-notification duty to Data Protection Board and affected… | T-FCORE-009, T-SHELL-001 |
+| F1-59 | P0 | mixed | SCR-SHELL-01 · +non-UI: breach-notification duty to Data Protection Board and affected… | T-FCORE-009, T-SHELL-001, T-SHELL-008 |
 | F1-60 | P0 | policy | policy | T-FCORE-010 |
 | F1-61 | P0 | policy | policy | T-FCORE-010 |
 
@@ -880,7 +880,7 @@ Nothing below is renumbered.*
 | F7-19 | P0 | policy | policy | LAW |
 | F7-20 | P1 | policy | policy | LAW |
 | F7-21 | P0 | policy | policy | LAW |
-| F7-22 | P0 | mixed | SCR-SHELL-01 · +non-UI: centre-verb resolution reads role presets (F2-01); composition rule… | T-FPLAT-025, T-SHELL-001 |
+| F7-22 | P0 | mixed | SCR-SHELL-01 · +non-UI: centre-verb resolution reads role presets (F2-01); composition rule… | T-FPLAT-025, T-SHELL-001, T-SHELL-008 |
 | F7-23 | P0 | policy | policy | LAW |
 | F7-24 | P0 | policy | policy | LAW |
 | F7-25 | P0 | policy | policy | LAW |
@@ -951,9 +951,9 @@ Nothing below is renumbered.*
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M01-01 | P0 | screen | SCR-M01-02 | T-M01-002 |
-| M01-02 | P0 | mixed | SCR-M01-01 · +non-UI: Google identity links onto same phone-identity account at first… | T-M01-001 |
-| M01-03 | P0 | mixed | SCR-M01-01 · +non-UI: layered OTP delivery rail: SMS primary, auto fallback channel on… | T-M01-001 |
-| M01-04 | P0 | mixed | SCR-M01-01 · +non-UI: rate limits: 3/15min and 8/day per phone, resend cooldown, 5-fail… | T-M01-001 |
+| M01-02 | P0 | mixed | SCR-M01-01 · +non-UI: Google identity links onto same phone-identity account at first… | T-M01-032, T-M01-001, T-M01-033 |
+| M01-03 | P0 | mixed | SCR-M01-01 · +non-UI: layered OTP delivery rail: SMS primary, auto fallback channel on… | T-M01-001, T-M01-033 |
+| M01-04 | P0 | mixed | SCR-M01-01 · +non-UI: rate limits: 3/15min and 8/day per phone, resend cooldown, 5-fail… | T-M01-001, T-M01-033 |
 | M01-05 | P0 | policy | policy | T-M01-025 |
 | M01-06 | P1 | policy | policy | T-M01-025 |
 | M01-07 | P0 | policy | policy | T-M01-025 |
@@ -965,8 +965,8 @@ Nothing below is renumbered.*
 | M01-13 | P0 | mixed | SCR-M01-08 · +non-UI: OTP verification atomically creates user plus tenant membership plus… | T-M01-008 |
 | M01-14 | P0 | screen | SCR-M01-09 | T-M01-009 |
 | M01-15 | P1 | screen | SCR-M01-10 | T-M01-010 |
-| M01-16 | P1 | screen | SCR-SHELL-01 | T-SHELL-001 |
-| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-028, T-SHELL-001 |
+| M01-16 | P1 | screen | SCR-SHELL-01 | T-SHELL-007, T-SHELL-001, T-SHELL-008 |
+| M01-17 | P0 | mixed | SCR-SHELL-01 · +non-UI: handoff law: onboarding ends on the role-decided home with real… | T-M01-028, T-SHELL-001, T-SHELL-008 |
 | M01-18 | P0 | policy | policy | T-M01-025 |
 | M01-19 | P0 | screen | SCR-M01-12 | T-M01-012 |
 | M01-20 | P0 | screen | SCR-M01-13 | T-M01-013 |
@@ -1791,7 +1791,7 @@ Nothing below is renumbered.*
 | MS12-16 | P0 | policy | policy | T-MS-372 |
 | MS12-17 | P0 | mixed | SCR-M01-01 · +non-UI: establishes tenant, user and role context; replaces mock login | T-MS-364 |
 | MS12-18 | P0 | policy | policy | T-MS-364 |
-| MS12-19 | P0 | mixed | SCR-SHELL-01 · +non-UI: sign-out clears session state without destroying work | T-MS-364, T-SHELL-001 |
+| MS12-19 | P0 | mixed | SCR-SHELL-01 · +non-UI: sign-out clears session state without destroying work | T-MS-364, T-SHELL-007, T-SHELL-001, T-SHELL-008 |
 | MS12-20 | P0 | engine | engine | T-MS-365 |
 | MS12-21 | P0 | engine | engine | T-MS-366 |
 | MS12-22 | P0 | mixed | SCR-MS-03 · +non-UI: conflict detection supersedes last-writer-wins | T-MS-367 |
@@ -1916,7 +1916,7 @@ Nothing below is renumbered.*
 | M07-43 | P0 | policy | policy | T-M07-027 |
 | M07-44 | P0 | mixed | SCR-M07-15 · +non-UI: chains ring level-by-level with timeouts, mandatory terminal… | T-M07-015 |
 | M07-45 | P0 | engine | engine | T-M07-027 |
-| M07-46 | P0 | screen | SCR-SHELL-01 | T-M07-027, T-SHELL-001 |
+| M07-46 | P0 | screen | SCR-SHELL-01 | T-M07-027 |
 | M07-47 | P0 | mixed | SCR-M07-16 · +non-UI: flows versioned and published whole; in-flight calls keep their… | T-M07-016 |
 | M07-48 | P0 | engine | engine | T-M07-028 |
 | M07-49 | P0 | integration | integration | T-M07-029 |
@@ -2252,7 +2252,7 @@ Nothing below is renumbered.*
 | M13-07 | P0 | policy | policy | LAW |
 | M13-08 | P0 | policy | policy | LAW |
 | M13-09 | P0 | policy | policy | LAW |
-| M13-10 | P0 | mixed | SCR-SHELL-01 · +non-UI: fixed preset-precedence ladder derives one home; other presets… | T-M13-006, T-SHELL-001 |
+| M13-10 | P0 | mixed | SCR-SHELL-01 · +non-UI: fixed preset-precedence ladder derives one home; other presets… | T-M13-006, T-SHELL-001, T-SHELL-008 |
 | M13-11 | P0 | policy | policy | LAW |
 | M13-12 | P0 | policy | policy | LAW |
 | M13-13 | P0 | policy | policy | LAW |

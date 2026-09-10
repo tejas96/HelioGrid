@@ -12,7 +12,7 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 | Tree | What it is | Authority |
 |---|---|---|
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
-| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context | **Source of truth** |
+| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the exported artboards and decisions records live in `HelioGrid-UX/` at the repo root, ignored by git — each machine holds its own export | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built — dissolving into the package files and the tasks; each file carries its fate | Support, ranked below `prd/` |
 

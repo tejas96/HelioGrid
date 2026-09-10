@@ -221,10 +221,24 @@
       "linter": {
         "rules": {
           "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "fetch": "The wire is packages/data's, and an app that calls fetch has its own transport: no cookie mode, no timeout, no error envelope, no retry policy (ADR-0023). Use the typed client.",
+                  "setTimeout": "A timer in a screen is flow policy — a countdown, a retry, a beat. It lives in the packages/data hook a packages/domain reducer drives (Law 11); the screen renders what that hook returns.",
+                  "setInterval": "A timer in a screen is flow policy — a countdown, a retry, a beat. It lives in the packages/data hook a packages/domain reducer drives (Law 11); the screen renders what that hook returns."
+                }
+              }
+            },
             "noRestrictedImports": {
               "level": "error",
               "options": {
                 "paths": {
+                  "react": {
+                    "importNames": ["useReducer"],
+                    "message": "A state machine is a packages/domain reducer, driven by the packages/data hook both platforms import (Law 11). A screen or a route keeps a purely visual fact in useState and nothing more."
+                  },
                   "react-native": {
                     "importNames": [
                       "Text",
@@ -255,6 +269,18 @@
       "includes": ["apps/web/app/**", "apps/web/features/**"],
       "linter": {
         "rules": {
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "fetch": "The wire is packages/data's, and an app that calls fetch has its own transport: no cookie mode, no timeout, no error envelope, no retry policy (ADR-0023). Use the typed client.",
+                  "setTimeout": "A timer in a screen is flow policy — a countdown, a retry, a beat. It lives in the packages/data hook a packages/domain reducer drives (Law 11); the screen renders what that hook returns.",
+                  "setInterval": "A timer in a screen is flow policy — a countdown, a retry, a beat. It lives in the packages/data hook a packages/domain reducer drives (Law 11); the screen renders what that hook returns."
+                }
+              }
+            }
+          },
           "correctness": {
             "noRestrictedElements": {
               "level": "error",
@@ -297,6 +323,10 @@
               "level": "error",
               "options": {
                 "paths": {
+                  "react": {
+                    "importNames": ["useReducer"],
+                    "message": "A state machine is a packages/domain reducer, driven by the packages/data hook both platforms import (Law 11). A screen or a route keeps a purely visual fact in useState and nothing more."
+                  },
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupted translations once (2026-07-26).",

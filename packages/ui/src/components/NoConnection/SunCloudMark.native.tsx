@@ -1,30 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Easing, StyleSheet, View } from 'react-native';
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
 
 const SIZE = 132;
-
-/**
- * `--glow-brand` for RN. The token is a CSS radial-gradient; its three stops are --iris-violet at
- * 22%, --iris-blue at 14% and a transparent edge, so the same gradient is rebuilt from those
- * tokens rather than from any raw colour.
- */
-function Glow() {
-  return (
-    <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
-      <Defs>
-        <RadialGradient id="hgGlow" cx="50%" cy="50%" r="50%">
-          <Stop offset="0" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
-          <Stop offset="0.4" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
-          <Stop offset="0.72" stopColor={theme.colors.surface} stopOpacity={0} />
-        </RadialGradient>
-      </Defs>
-      <Rect x="0" y="0" width="100%" height="100%" fill="url(#hgGlow)" />
-    </Svg>
-  );
-}
 
 /** `prefers-reduced-motion` for RN — the same query the web half reads from CSS. */
 function useReduceMotion() {
@@ -106,7 +86,7 @@ export function SunCloudMark({ animate = true }: { animate?: boolean }) {
           moving ? { transform: [{ scale: breatheScale }], opacity: breatheOpacity } : null,
         ]}
       >
-        <Glow />
+        <BrandBloom />
       </Animated.View>
       <View style={styles.sun}>
         <BrandGradientFill />

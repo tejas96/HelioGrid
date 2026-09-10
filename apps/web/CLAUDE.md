@@ -17,7 +17,7 @@ Traps: `.claude/landmines.md` · deps and platform rules: `architecture.md` §2 
 app/<route>/page.tsx   routing ONLY — reads params, renders one screen, ≤50 lines
 app/                   layout · providers · loading · error · not-found · route (BFF glue)
 features/<capability>/ <Name>Screen.tsx composes · components/ one per component ·
-                       hooks/use-<thing>.ts the controller, which belongs to the SCREEN ·
+                       hooks/use-<thing>.ts the platform adapter only (DOM, router, clipboard) ·
                        <screen>.css token var() only · constants.ts · types.ts ·
                        shared/ when two SCREENS here share · index.ts the barrel
 lib/                   app infrastructure (env.ts)
@@ -36,8 +36,9 @@ pnpm --filter @heliogrid/web dev | build | typecheck      # dev = localhost:3002
 
 ## Rules
 
-- **`app/` ROUTES, `features/` OWNS.** `page.tsx` renders one screen and holds no work; the
-  controller hook belongs to the SCREEN.
+- **`app/` ROUTES, `features/` OWNS.** `page.tsx` renders one screen and holds no work. A screen
+  owns no flow: its reducer is `@heliogrid/domain`'s and its hook `@heliogrid/data`'s, both
+  imported (Law 11, `M80`); a `useState` here holds a purely visual fact.
 - **The Server/Client boundary is `architecture.md` §3**, not restated here. What it means at edit
   time: a `'use client'` at the route level opts every child in, so know which level you are on.
 - **DOM-only APIs (`window`, `document`, `navigator`, `localStorage`) never appear in a shared

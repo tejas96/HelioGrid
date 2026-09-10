@@ -78,3 +78,5 @@ coverage/
 
 # Pinned tools installed by scripts/install-*.sh (never committed; the pin file is)
 .tools/
+
+HelioGrid-UX/

@@ -31,13 +31,17 @@ rounding, market rules, tenancy); platform parity. Fix the task text where it is
 reason in the commit. A choice between readings the PRD supports is ruled into the row
 (`CLAUDE.md` §1); a new feature or number is asked, with a pick.
 
-## 3. Say the three things, then the reach
+## 3. Say the three things, the flow, then the reach
 
 `CLAUDE.md` §3: which package owns each new file (`architecture.md` §4); which facts are new and
 where each TYPE lives — every number, name and shape the done-when lines need, beside the row
 that carries it, so nothing is discovered at build time; and what will prove it works. Then the
-reach: the files that will change. Contract before code (Law 3): the contract diff, the domain
-types, the schema plan, then code.
+FLOW, for any task with a state: which `packages/domain` reducer decides it and which
+`packages/data` hook drives it (Law 11), or "none — the screen holds only its form fields"; a
+flow first met in an app hook is the defect `M80` names. Then the reach: a file list PER LAYER —
+domain, contracts, db, data, i18n and its six generated catalog files per copy change, ui, each
+app, docs — never a count; a guessed reach is how the ceiling is first met at `/ship`. Contract
+before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
 **A task that is really two tasks is split now, not shipped half.** Split at a seam that leaves
 each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
