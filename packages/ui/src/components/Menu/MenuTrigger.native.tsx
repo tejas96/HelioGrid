@@ -5,8 +5,12 @@ import { StyleSheet } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { OverflowGlyph } from './MenuGlyphs.native';
 
-/** What the wrapper hands a caller-supplied trigger. Its own handler still runs first. */
-type TriggerElement = ReactElement<{ disabled?: boolean; onPress?: () => void }>;
+/**
+ * What the wrapper hands a caller-supplied trigger. Its own handler still runs first. The
+ * handler is `onClick` on both platforms: that is every design-system control's contract
+ * (Law 7), and a trigger handed `onPress` here was a dead control on the phone.
+ */
+type TriggerElement = ReactElement<{ disabled?: boolean; onClick?: () => void }>;
 
 interface MenuTriggerProps {
   disabled: boolean;
@@ -28,8 +32,8 @@ export function MenuTrigger({ disabled, label, onToggle, open, trigger }: MenuTr
   if (trigger !== undefined) {
     return cloneElement(trigger as TriggerElement, {
       disabled,
-      onPress: () => {
-        (trigger as TriggerElement).props.onPress?.();
+      onClick: () => {
+        (trigger as TriggerElement).props.onClick?.();
         onToggle();
       },
     });

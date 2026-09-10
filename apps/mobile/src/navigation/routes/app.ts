@@ -1,4 +1,6 @@
+import { CompanySignupScreen } from '../../screens/company-signup';
 import { HomeScreen } from '../../screens/home';
+import { useHasNoTenant, useHasTenant } from '../guards';
 
 /**
  * Authenticated routes.
@@ -15,5 +17,7 @@ import { HomeScreen } from '../../screens/home';
  * (docs/engineering/17-ui-architecture-v2.md) and re-enters here when it is built.
  */
 export const appScreens = {
-  Home: { screen: HomeScreen },
+  Home: { screen: HomeScreen, if: useHasTenant },
+  /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1). */
+  CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
 };

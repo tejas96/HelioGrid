@@ -46,7 +46,7 @@ line and any part missing fails the docs gate.
    as states.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
-2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`,
+2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen — a git-ignored folder at the repo root that each machine exports itself),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`

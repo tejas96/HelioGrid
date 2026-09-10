@@ -1,3 +1,4 @@
+import { useSession } from '@heliogrid/data/react';
 import { useNavigationPhase } from './phase';
 
 /**
@@ -10,6 +11,13 @@ import { useNavigationPhase } from './phase';
 export const useIsBooting = () => useNavigationPhase() === 'booting';
 export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
+
+/**
+ * Inside the App group, WHICH first screen: a person with a company lands on their home, a
+ * verified number without one on the company step (`SCR-M01-01` decision 1, `T-M01-002`).
+ */
+export const useHasTenant = () => useSession().user?.tenant != null;
+export const useHasNoTenant = () => useSession().user?.tenant == null;
 
 /*
  * `useIsDevBuild` lived here and gated the Dev group. Removed with the v1

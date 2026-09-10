@@ -1,0 +1,37 @@
+/* BrandBloom — --glow-brand placed the way the artboards place it. The bloom is atmosphere:
+   `pointer-events: none`, `aria-hidden`, and gone in field mode because the token is `none`
+   there. Geometry arrives as per-instance vars set by the component, never typed by a screen. */
+
+.hg-brand-bloom {
+  position: absolute;
+  background: var(--glow-brand);
+  border-radius: var(--r-pill);
+  pointer-events: none;
+}
+
+.hg-brand-bloom[data-mode="fill"] {
+  inset: 0;
+}
+
+.hg-brand-bloom[data-mode="art"] {
+  width: var(--hg-bloom-w);
+  height: var(--hg-bloom-h);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hg-brand-bloom[data-mode="centred"] {
+  width: var(--hg-bloom-w);
+  height: var(--hg-bloom-h);
+  top: var(--hg-bloom-top);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hg-brand-bloom[data-mode="placed"] {
+  width: var(--hg-bloom-w);
+  height: var(--hg-bloom-h);
+  top: var(--hg-bloom-top);
+  left: var(--hg-bloom-left);
+}

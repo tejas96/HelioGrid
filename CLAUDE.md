@@ -119,7 +119,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and the folder only shrinks. Ranked **below** `docs/prd/`. |
 | `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and the two ledgers `mechanisms.md` and `landmines.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
-| `infra/` | deployment and local-stack material that is NOT application code. |
+| `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen, rendering from disk with the bundle in `_ds/` — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, kept at the repo root and ignored by git (each machine holds its own export). |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never
 a deep path. Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a

@@ -30,7 +30,7 @@ export type { InvitationRepository } from './invitation/repository';
 export type { HeldWork, HeldWorkSummary } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
 export type {
-  OtpResult,
+  OtpVerifyResult,
   PendingSwitch,
   SessionApi,
   SessionSnapshot,

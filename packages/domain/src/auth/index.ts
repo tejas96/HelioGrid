@@ -11,13 +11,38 @@ export {
   inviteCapReached,
   inviteLandingPath,
 } from './invitation-policy';
+export type { FrameKind, LoginFrame } from './login-frame';
+export { frameKindOf, loginFrame } from './login-frame';
+export type {
+  CodeError,
+  CodeHelper,
+  FootLine,
+  FrameControl,
+  FrameTone,
+  PrimaryLabel,
+  ResendLabel,
+  ResendSlot,
+  SubLine,
+  WaitReason,
+} from './login-frame-parts';
 export {
-  AUTO_VERIFY_DELAY_MS,
-  CALL_OFFER_AFTER_RESENDS,
+  COUNTDOWN_TICK_MS,
   DONE_DWELL_MS,
   RESEND_SECONDS,
+  resendOpensAt,
+  resendSecondsLeft,
 } from './login-policy';
-export type { LoginStep, OtpFailure } from './login-state';
+export type {
+  LoginEvent,
+  LoginPress,
+  LoginState,
+  LoginStep,
+  OtpRequestOutcome,
+  OtpVerifyOutcome,
+  PendingCall,
+  SignInStep,
+} from './login-state';
+export { INITIAL_LOGIN_STATE, loginReducer } from './login-state';
 export { OTP_EXPIRY_SECONDS, OTP_LENGTH } from './otp';
 export type {
   OtpChallengeState,

@@ -1,5 +1,5 @@
 import type { OtpChannel, RolePreset, UiLanguage } from '@heliogrid/contracts';
-import type { OtpFailure } from '@heliogrid/domain';
+import type { OtpRequestOutcome, OtpVerifyOutcome } from '@heliogrid/domain';
 import type { HeldWorkSummary } from './held-work';
 
 export type SessionStatus = 'checking' | 'anonymous' | 'authenticated';
@@ -36,7 +36,15 @@ export interface SessionSnapshot {
  * transport failure, so the distinction belongs in the return type where typecheck sees it.
  * `failure` reuses domain's existing union — no new vocabulary.
  */
-export type OtpResult = { ok: true } | { ok: false; failure: OtpFailure };
+/**
+ * How a code check ended, with the tries left ON THIS CODE — counted on the device, because the
+ * challenge is this device's and a resend mints a new one; the server's count is the one that
+ * invalidates (`T-M01-025`), this one is the one that speaks ("3 tries left on this code").
+ */
+export interface OtpVerifyResult {
+  readonly outcome: OtpVerifyOutcome;
+  readonly triesLeft: number;
+}
 
 /**
  * Framework-free session state. It is a STORE, not a plain object: a bare `status` field
@@ -45,9 +53,9 @@ export type OtpResult = { ok: true } | { ok: false; failure: OtpFailure };
 export interface SessionStore {
   getSnapshot(): SessionSnapshot;
   subscribe(listener: () => void): () => void;
-  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpResult>;
+  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpRequestOutcome>;
   /** Verifies the code of the challenge `requestOtp` opened; the store holds the challenge id. */
-  verifyOtp(code: string): Promise<OtpResult>;
+  verifyOtp(code: string): Promise<OtpVerifyResult>;
   /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
   completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
@@ -63,8 +71,8 @@ export interface SessionStore {
 
 /** What `useSession()` returns — the snapshot flattened onto the calls. */
 export interface SessionApi extends SessionSnapshot {
-  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpResult>;
-  verifyOtp(code: string): Promise<OtpResult>;
+  requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpRequestOutcome>;
+  verifyOtp(code: string): Promise<OtpVerifyResult>;
   completeSwitch(): Promise<void>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
