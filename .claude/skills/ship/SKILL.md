@@ -82,7 +82,10 @@ an earlier commit is not it, and a changed file list needs a new yes. On the yes
 End with the generated-with line. Then stop. Never open the PR, never merge, never push to `main`,
 never force-push.
 
-When the PR exists — the owner's, or one the owner told you to open — watch its checks
+When the PR exists — the owner's, or one the owner told you to open — **flip the ledger on this
+same branch**: the task's `Status:` to `shipped (#n)` and its screens in `screens.md`, one commit
+with its own yes, pushed to the same PR as its last commit. A flip never gets a PR of its own
+(`docs/tasks/README.md` rule 0, `M106`). Then watch its checks
 (`gh pr checks <n> --watch`) and report the verdict. A red lane is fixed on the same branch before
 the merge, each commit with its own yes; CI runs only on the PR, so this is the first time the
 committed tree is checked whole.

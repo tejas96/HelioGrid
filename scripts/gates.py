@@ -519,13 +519,12 @@ def run(repo, verbose):
     # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
     # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
     # planned while a DESIGN link is PENDING; designed once every link is filled; shipped (#PR)
-    # only when main's history names the task. screens.md carries the same state per screen.
-    # Both ticket shapes: `**Status:** x` in a prose block, `Status: x` inside a fenced ticket.
+    # only when the checked-out history names the task — the task's own branch, whose flip is its
+    # last commit once the PR is open, or main after the merge. screens.md carries the same state
+    # per screen. Both ticket shapes: `**Status:** x` in a prose block, `Status: x` in a fenced ticket.
     status_re = re.compile(r"^\**Status:\**\s*(planned|designed|shipped \(#\d+\))\s*$", re.M)
     design_re = re.compile(r"DESIGN:\**\s*(SCR-[A-Z0-9]+-\d{2})\s*→\s*(\S+)")
-    main_ref = "origin/main"
-    if subprocess.run(["git", "rev-parse", "--verify", "-q", main_ref], cwd=repo, capture_output=True).returncode != 0:
-        main_ref = "main"
+    main_ref = "HEAD"
     main_log = subprocess.run(["git", "log", main_ref, "--format=%s"], cwd=repo, capture_output=True, text=True).stdout
     screen_state = {}
     if os.path.exists(reg):
