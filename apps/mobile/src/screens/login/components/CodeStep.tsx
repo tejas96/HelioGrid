@@ -66,7 +66,13 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
         ) : null}
         {resend?.kind === 'wait' ? (
           <View style={styles.centred}>
-            <Button variant="ghost" size="md" fullWidth disabled disabledReason={words.wait ?? ''}>
+            <Button
+              variant="ghost"
+              size="md"
+              fullWidth
+              disabled
+              disabledReason={{ reason: words.wait ?? '', align: 'center' }}
+            >
               {t(SIGN_IN.resendCode)}
             </Button>
           </View>
@@ -81,7 +87,7 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
             >
               {words.call.label}
             </Button>
-            <Text variant="caption" color="secondary">
+            <Text variant="caption" color="secondary" align="center">
               {words.call.note}
             </Text>
           </View>

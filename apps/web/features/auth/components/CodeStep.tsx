@@ -69,7 +69,13 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
       ) : null}
       {resend?.kind === 'wait' ? (
         <div className="hg-door-centred">
-          <Button variant="ghost" size="md" fullWidth disabled disabledReason={words.wait ?? ''}>
+          <Button
+            variant="ghost"
+            size="md"
+            fullWidth
+            disabled
+            disabledReason={{ reason: words.wait ?? '', align: 'center' }}
+          >
             {t(SIGN_IN.resendCode)}
           </Button>
         </div>
@@ -84,7 +90,7 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
           >
             {words.call.label}
           </Button>
-          <Text variant="caption" color="secondary">
+          <Text variant="caption" color="secondary" align="center">
             {words.call.note}
           </Text>
         </div>
