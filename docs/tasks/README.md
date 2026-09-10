@@ -43,9 +43,9 @@ line and any part missing fails the docs gate.
 ## Binding rules
 
 0. **`Status:` is the ledger.** `planned` until every `DESIGN:` link is filled, `designed` until the
-   PR merges, `shipped (#PR)` after — and a shipped id must be in `main`'s history. `screens.md`
-   carries the same state per screen. Build, tests and QA are proven inside the PR, never tracked
-   as states.
+   task ships, `shipped (#PR)` as the task branch's LAST commit once its PR is open — never a PR of
+   its own — and a shipped id is named by the branch's own history. `screens.md` carries the same
+   state per screen. Build, tests and QA are proven inside the PR, never tracked as states.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen — a git-ignored folder at the repo root that each machine exports itself),
