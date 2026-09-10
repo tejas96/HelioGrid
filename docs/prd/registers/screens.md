@@ -168,7 +168,7 @@ grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 
 | SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from |
 |---|---|---|---|---|---|---|---|---|
-| SCR-M01-01 | **Sign In** | P0 | 4 | `docs/ux/briefs/SCR-M01-01-sign-in.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html | `11-shell-and-platform:shell-sign-in` |
+| SCR-M01-01 | **Sign In** | P0 | 4 | `docs/ux/briefs/SCR-M01-01-sign-in.md` | V1 | shipped | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html | `11-shell-and-platform:shell-sign-in` |
 | SCR-M01-02 | **Company Signup** | P0 | 3 | `docs/ux/briefs/SCR-M01-02-company-signup.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html | — |
 | SCR-M01-03 | **Onboarding — Language** | P0 | 1 | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html | — |
 | SCR-M01-04 | **Setup — What You Sell** | P0 | 1 | `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-04+What+You+Sell+-+Mobile.dc.html | — |
