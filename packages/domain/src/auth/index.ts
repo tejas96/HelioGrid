@@ -16,6 +16,7 @@ export { frameKindOf, loginFrame } from './login-frame';
 export type {
   CodeError,
   CodeHelper,
+  DoorRoad,
   FootLine,
   FrameControl,
   FrameTone,

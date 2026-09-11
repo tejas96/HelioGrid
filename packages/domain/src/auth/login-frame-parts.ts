@@ -8,6 +8,17 @@ import type { LoginPress } from './login-state';
 /** The tint of the block above a locked code field — the words carry the reason, the tint is the second channel. */
 export type FrameTone = 'danger' | 'warning';
 
+/**
+ * The road at the foot of the number step: the question, the label, and where it goes
+ * (`SCR-M01-02`). Both doors draw one, and the other door is where it leads. A screen fills
+ * it from its words and its navigator; both platforms read this one shape.
+ */
+export interface DoorRoad {
+  readonly question: string;
+  readonly label: string;
+  readonly onPress: () => void;
+}
+
 /** The line under the title that names the number: what was done to it. */
 export type SubLine =
   | 'sent-by-sms'
