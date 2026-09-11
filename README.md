@@ -63,7 +63,7 @@ authoritative doc for that layer; this table is only the index.
 | `packages/env` | The **only** package allowed to read a raw environment source | [packages/env/CLAUDE.md](packages/env/CLAUDE.md) |
 | `packages/i18n` | One Lingui catalog (EN/HI/MR) shared by web + mobile | [packages/i18n/CLAUDE.md](packages/i18n/CLAUDE.md) |
 | `packages/theme` | Tokens, semantic layer and the RN theme object — GENERATED from the live design system, never hand-edited | — |
-| `packages/ui` | The design system, BOTH platforms: 95 components as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
+| `packages/ui` | The design system, BOTH platforms: 98 components as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
 | `<package>/tests` | Unit tests for the logic layers only — domain, contracts, forms, api, worker (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
@@ -81,7 +81,15 @@ authoritative doc for that layer; this table is only the index.
   need to install a specific pnpm globally, just have any recent pnpm/Corepack available.
 - **Docker** (or a local Postgres 16) — for `DATABASE_URL`. Most gates skip loudly without it;
   they never silently pass.
-- **Xcode + Android Studio** — only if you're running `apps/mobile` on a simulator/emulator.
+- **Python 3** — `pnpm verify` and `pnpm check:all` run the doc gates (`pnpm check:docs`) with it.
+- **openssl** — `pnpm infra:up` mints the development PKI with it.
+- **gitleaks** and the pinned **oasdiff** — installed in the cold start below; the pre-commit hook
+  and `pnpm verify` refuse to run without them.
+- **Xcode + Android Studio** — only if you're running `apps/mobile` on a simulator/emulator. iOS
+  also needs Ruby 3.1 with Bundler and CocoaPods: `bundle install` in `apps/mobile`, then
+  `bundle exec pod install` in `apps/mobile/ios`, with a git-ignored `apps/mobile/.bundle/config`
+  holding `BUNDLE_FORCE_RUBY_PLATFORM: "1"` (the lock resolves the `ruby` platform only). Android
+  needs JDK 17.
 
 ## First-time setup (cold start)
 
@@ -99,14 +107,21 @@ pnpm infra:up                             # container + all three databases + ro
 cp .env.example .env.local                # then fill in DATABASE_URL (app_runtime) and
                                           # DATABASE_ADMIN_URL (app_admin) — values in
                                           # infra/README.md §"Local dev"
+sed -i '' "s|/ABSOLUTE/PATH/TO|$PWD|g" .env.local   # the four TEMPORAL_* paths MUST be absolute — the api
+                                          # refuses to boot on the placeholders (GNU sed: drop the '')
+set -a; . ./.env.local; set +a            # db migrate and the invariants read the URL from the
+                                          # SHELL, not from the file — export it for this session
 
 pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
 pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
 pnpm tools:oasdiff                        # the pinned breaking-change judge; `pnpm verify` is red without it
 # Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
-pnpm verify                               # lint · boundaries · typecheck · test · build
+pnpm verify                               # build · lint · boundaries · typecheck · gates · unit tests · invariants
 ```
+
+The header of `.env.example` carries this same order; that header is the canonical one, and this
+block mirrors it.
 
 `pnpm install` also installs this repo's git pre-commit hook automatically (via the root
 `prepare` script — see [Code quality gates](#code-quality-gates--pre-commit-hook)).
@@ -117,6 +132,8 @@ Each app has its own dev server; there is no single "start everything" command t
 `apps/*` are wired into one `turbo run dev` invocation in this repo — run what you need):
 
 ```bash
+pnpm infra:token                        # the Temporal token lives ONE HOUR — re-mint it before starting
+                                        # api or worker (.claude/launch.json does this for you)
 pnpm --filter @heliogrid/api dev        # NestJS, tsx watch, http://localhost:8084
 pnpm --filter @heliogrid/web dev        # Next.js, http://localhost:3002
 pnpm --filter @heliogrid/mobile start   # Metro bundler (default port 8081)
@@ -167,7 +184,7 @@ exactly where.
 
 **To add or change a variable:**
 1. Edit the relevant schema in `packages/env/src/schema/` (`api.ts`, `web.ts`, `worker.ts`,
-   `native.ts`, or a shared fragment in `fragments.ts`). Non-secret defaults live **in the
+   `mobile.ts`, `invariants.ts`, or a shared fragment in `fragments.ts`). Non-secret defaults live **in the
    schema** (`.default(...)`) — never as a `??` fallback at the call site. Secrets never carry
    a default (a missing secret must fail loudly at startup, not silently ship a dev key).
 2. Add it to `.env.example` with a comment.
@@ -200,16 +217,18 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm test` | `turbo run test` — runs `tests/invariants/` against real state |
 | `pnpm test:unit` | vitest over `<package>/tests/**/*.test.ts` — the LOGIC layers only, never the frontend (owner ruling 2026-09-03) |
 | `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
-| `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, web↔RN prop parity. Runs every gate and reports all failures, not just the first |
+| `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, the design-system contract (`ds:contract`). Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
-| `pnpm verify` | The full local gate: `build && lint && boundaries && typecheck && test && check:openapi && check:catalogs`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
-| `pnpm precommit` | The subset of `verify` the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck |
+| `pnpm check:all` | **Every gate that runs without a database, DURING the work:** `lint:fix`, then typecheck (which builds), `lint`, boundaries, dupes, openapi, catalogs, the doc gates, unit tests, and the invariants — the db-backed ones skip loudly without `DATABASE_URL` |
+| `pnpm verify` | The full local gate: `turbo build && lint && boundaries && turbo typecheck && check:dupes && check:openapi && check:catalogs && check:docs && test:unit && turbo test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
+| `pnpm verify:clean` | **The proof, in CI's room:** a fresh clone of what git would commit, CI's own environment, then `pnpm verify`. What `/ship` runs before a commit |
+| `pnpm precommit` | What the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck + `check:adherence` + the secret scan (`check:secrets`, which needs gitleaks) |
 | `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) — test files, source size, raw hex, domain purity, unwrapped copy, untranslated messages, and that every contract UI language is registered in `packages/i18n` |
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
 | `pnpm check:env` | The env-centralisation gate standalone (also part of `pnpm lint`) |
 | `pnpm ds:contract` | The design-system contract gate standalone (also part of `pnpm lint`) — prop contracts vs the design system, and web↔RN semantic drift. It REPLACED `check:ui-parity`, which was deleted with the v1 design system (docs/engineering/17 §6); the script no longer exists |
-| `pnpm check:dupes` | `jscpd` — duplicate-code scan (not part of `pnpm verify`, run manually) |
+| `pnpm check:dupes` | `jscpd` — the duplicate-code ratchet (part of `pnpm verify` and `pnpm check:all`) |
 
 CI (`.github/workflows/ci.yml`) has one job that always runs, `quality`: a Gitleaks secret
 scan, the append-only migration guard, migrations applied to a real CI Postgres, then
@@ -295,9 +314,6 @@ none of them error on a dangling reference, they just silently rot:
 - Its tag may still be referenced in other packages' `turbo.json boundaries.tags.<tag>.allow`
   arrays in root `turbo.json` — harmless but worth cleaning up.
 - `.dependency-cruiser.cjs` may still name it in an enumerated regex alternation.
-- Root `tsconfig.json`'s `references` array explicitly lists `packages/contracts` and
-  `packages/db` by path (not a glob) — if you ever remove one of those two specific packages,
-  edit this by hand.
 - `.github/workflows/ci.yml` has a few package-specific steps by name (`@heliogrid/db migrate`,
   `@heliogrid/i18n extract`) — only relevant if you're removing one of those two.
 
@@ -349,14 +365,14 @@ complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
 | [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the one file a design session starts from |
-| [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals |
+| [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals — and the **glossary** (EPC, tenant, market pack, tranche, provenance tier) |
 | [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens, 99 locked to V1, and which are designed |
 | [`docs/build-order.md`](docs/build-order.md) | Build order across modules |
 | [`docs/engineering/architecture.md`](docs/engineering/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
 | `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage, studio data flow |
 | `docs/engineering/03-tech-stack.md` | Every technology choice, pinned and justified |
 | `docs/engineering/08-security-and-tenancy.md` | Security & tenancy model |
-| [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 95 components, and the gates that hold them |
+| [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 98 components, and the gates that hold them |
 | [`docs/prd/foundations/F3-localization.md`](docs/prd/foundations/F3-localization.md) | i18n law (EN/HI/MR) |
 | [`docs/prd/foundations/F7-design-language.md`](docs/prd/foundations/F7-design-language.md) | Design language |
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
@@ -364,6 +380,9 @@ complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
 | `.claude/skills/` | `/start`, `/verify`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
 | `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer — Sonnet 5, medium effort, a turn cap each |
+| [`.claude/landmines.md`](.claude/landmines.md) | **Troubleshooting** — the live traps, one line each, every one with its fix |
+| `packages/contracts/openapi/openapi.json` | The API surface as OpenAPI 3.0.2 — emitted from the contract and gate-checked; no Swagger UI is served |
+| `HelioGrid-UX/` | The pixel-perfect design exports every screen task is measured against — git-ignored; each machine exports its own from the design system (`docs/tasks/README.md`) |
 
 ## Per-package gotchas index
 

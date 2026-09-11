@@ -48,7 +48,7 @@ are a closed vocabulary read by `ds:contract`.
   (`M35`), so the types file is what you must keep honest.
 - Anything shared by both halves goes in a `<Name>.logic.ts`, a `use<Name>.ts` hook or a
   `<name>-model.ts` — never copied into each half.
-- **This package still carries hardcoded English** (`M50`). Real debt. Do not add more: write the
+- **This package still carries hardcoded English** (`M50`, review-only). Real debt. Do not add more: write the
   prop.
 
 ## Done means

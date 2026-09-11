@@ -5,6 +5,9 @@
 # binds administrators.
 set -euo pipefail
 
+# A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
+command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it (M93)." >&2; exit 2; }
+
 input="$(cat)"
 branch="$(git -C "${CLAUDE_PROJECT_DIR:-.}" branch --show-current 2>/dev/null || true)"
 
@@ -37,11 +40,12 @@ for segment in re.split(r"[|;&]+|\n", cmd):
     forced = any(f in FORCE or f.startswith("--force-with-lease") for f in flags)
     if forced or any(p.startswith("+") for p in positional):
         print("force"); sys.exit(0)
-    if len(positional) >= 2:
-        destination = positional[1].split(":")[-1].removeprefix("refs/heads/")
+    # Every refspec after the remote is a destination; `git push origin feat/x main` pushes both.
+    for spec in positional[1:]:
+        destination = spec.split(":")[-1].removeprefix("refs/heads/")
         if destination == "main":
             print("main"); sys.exit(0)
-    elif os.environ.get("CURRENT_BRANCH") == "main":
+    if len(positional) < 2 and os.environ.get("CURRENT_BRANCH") == "main":
         print("bare"); sys.exit(0)
 print("ok")
 ')"

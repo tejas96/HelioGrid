@@ -32,13 +32,10 @@ gives — an invented number spends a code cap the plan counted.
 **Signing out on iOS.** The phone keeps its session across a cold relaunch, as it should. The reset
 is `xcrun simctl keychain <udid> reset`, then a cold relaunch; nothing else is a sign-out.
 
-**Signing in during a run.** The development number in `.env.local` (`DEV_OTP_PHONE`) signs in
-with `DEV_OTP_CODE`, sends nothing and counts against no cap — use it for every step that needs an
-owner or a returning account. A step that needs a NEW account types a fresh `+91` ten-digit
-number and reads the code from the API's log — the line `… code is 123456` (`preview_logs` on the api server
-with search `via sms`, or the log file the run names). The API must be running and reachable from
-the device (`API_URL` in `apps/mobile/src/env.ts`: the Android emulator reaches the host at
-`10.0.2.2`).
+**Signing in during a run.** The one procedure is `.claude/skills/verify/references/test-matrix.md`
+§"Signing in during a run" — the development number for an existing account, a fresh `+91` number
+plus the API log for a new one. The API must be running and reachable from the device (`API_URL`
+in `apps/mobile/src/env.ts`: the Android emulator reaches the host at `10.0.2.2`).
 
 Run the platforms in sequence within your turn. Per step:
 

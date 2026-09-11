@@ -6,8 +6,14 @@
 # origin/main's — docs, ci, config — needs no stamp. The author's own driving is not a stamp.
 #
 # The index is the truth here, so staging and committing in ONE command is refused: stage in one
-# call, commit in the next, and the hook reads what the commit will write.
+# call, commit in the next, and the hook reads what the commit will write. `-a`/`--all` stages at
+# commit time and is refused for the same reason.
 set -euo pipefail
+
+# A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
+for tool in python3 shasum; do
+  command -v "$tool" >/dev/null || { echo "Blocked: this guard needs $tool on PATH and cannot run without it (M113)." >&2; exit 2; }
+done
 
 cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')"
 args="$(printf '%s' "$cmd" | python3 -c '
@@ -21,10 +27,12 @@ print(s)
 
 is_commit() { printf '%s' "$args" | grep -qE '(^|[[:space:];&|(])git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?commit([[:space:]]|$)'; }
 is_add() { printf '%s' "$args" | grep -qE '(^|[[:space:];&|(])git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?add([[:space:]]|$)'; }
+commit_segment() { printf '%s' "$args" | tr ';|&\n' '\n\n\n\n' | grep -E 'git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?commit([[:space:]]|$)' || true; }
+stages_at_commit() { commit_segment | grep -qE '[[:space:]](--all|-[A-Za-z]*a[A-Za-z]*)([[:space:]]|=|$)'; }
 
 is_commit || exit 0
-if is_add; then
-  echo "Blocked: stage in one call and commit in the next. The commit hook reads the INDEX for /verify's stamp (M113), and a command that stages and commits together hides what it will write." >&2
+if is_add || stages_at_commit; then
+  echo "Blocked: stage in one call and commit in the next — never \`git add && git commit\`, never \`-a\`/\`--all\`. The commit hook reads the INDEX for /verify's stamp (M113), and a command that stages at commit time hides what it will write." >&2
   exit 2
 fi
 
