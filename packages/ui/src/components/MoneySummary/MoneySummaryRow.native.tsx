@@ -9,8 +9,8 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
-import type { MoneyLine } from '../../utils/money-lines';
 import { useFormat } from '../MarketProvider/market-context';
+import type { MoneyLine } from './MoneySummary.types';
 
 const styles = StyleSheet.create({
   row: {
@@ -55,7 +55,7 @@ export function MoneySummaryRow({
         </Text>
       ) : (
         <Text variant="mono" style={line.strong ? styles.amountStrong : undefined}>
-          {`${line.kind === 'deduct' ? '− ' : ''}${mkt.money(line.amount)}`}
+          {`${line.kind === 'deduct' ? '− ' : ''}${mkt.amount(line.amount)}`}
         </Text>
       )}
     </View>

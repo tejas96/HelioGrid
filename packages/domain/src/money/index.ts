@@ -10,4 +10,15 @@ export {
   percentToBasisPoints,
   type Share,
 } from './basis-points';
+export {
+  type EquationSign,
+  type PayableLine,
+  type PayableReconcileSpec,
+  type PayableReconciliation,
+  type PayableSpec,
+  type ResolvedPayable,
+  type ResolvedPayableLine,
+  reconcileMinorUnits,
+  resolvePayable,
+} from './equation';
 export { amountForQuantity, type MinorUnits, minorUnits, sumMinorUnits } from './minor-units';

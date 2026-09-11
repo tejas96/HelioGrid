@@ -1,3 +1,4 @@
+import type { MinorUnits } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type {
   RichTextBlock,
@@ -31,7 +32,8 @@ export interface DocumentTranche {
   when?: string;
   /** The share, already worded — "30%". */
   share?: string;
-  amount: number | string;
+  /** Whole minor units, formatted by the active market pack; a string passes through untouched. */
+  amount: MinorUnits | string;
 }
 
 /** One entry of `SCR-M01-19`'s included-sections list. A bare string is a label with no meta. */
@@ -47,8 +49,8 @@ export type DocumentSectionInput = DocumentSection | string;
 /** Which bands to draw, always in document order. */
 export type DocumentPart = 'cover' | 'items' | 'sections' | 'tranches' | 'terms';
 
-/** `[description, amount]`. Amounts are numbers; a string passes through untouched. */
-export type DocumentLineItem = [string, number | string];
+/** `[description, amount]`. An amount is whole minor units; a string passes through untouched. */
+export type DocumentLineItem = [string, MinorUnits | string];
 
 /**
  * The authored T&C body is `RichText`'s value — the SAME block list the editor writes and
@@ -105,8 +107,9 @@ export interface DocumentPreviewProps {
    */
   parts?: DocumentPart[];
   /**
-   * `[description, amount]` pairs. Amounts are **numbers**, formatted by the active market pack
-   * (`F1` / `F3-20`); a string passes through untouched for a caller that owns the text.
+   * `[description, amount]` pairs. An amount is **whole minor units** (`MinorUnits`), printed to
+   * the minor unit by the active market pack (`F1-07` / `F3-20`); a string passes through
+   * untouched for a caller that owns the text.
    */
   lineItems?: DocumentLineItem[];
   /**
@@ -115,9 +118,9 @@ export interface DocumentPreviewProps {
    * prints (`SCR-M06-14` — a disagreement is a defect, not a display difference). Omit it in
    * normal use.
    */
-  total?: number | string;
+  total?: MinorUnits | string;
   /** Deducted under the total; the payable in the subsidy line is **computed**, never stated. */
-  subsidyAmount?: number;
+  subsidyAmount?: MinorUnits;
   subsidyLabel?: string;
   /** Overrides the whole generated subsidy sentence — including its computed payable. */
   subsidyNote?: string;

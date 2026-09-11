@@ -1,5 +1,5 @@
+import type { MinorUnits, PayableReconcileSpec } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { MoneyReconcileSpec } from '../../utils/money-lines';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote';
@@ -28,18 +28,18 @@ export interface DataTableTotalRow {
   label: string;
   /** By column key. A number is formatted by the market pack; a node is rendered as given. */
   values?: Record<string, ReactNode | number>;
-  /** The sum this row states, as a number — required for `reconcile` to mean anything. */
-  amount?: number;
+  /** The sum this row states, in whole minor units — required for `reconcile` to mean anything. */
+  amount?: MinorUnits;
   /**
    * The other figure this must equal (`SCR-M06-14`). A disagreement renders as a defect.
    *
-   * **It is `MoneySummary`'s own `MoneyReconcileSpec`**, not a second declaration of it: the
-   * comparison is `utils/money-lines`' `reconcileAmounts` — the one that surface runs — so a gap
-   * this table calls a defect is a gap that block calls a defect too. A local copy that made
-   * `label` and `amount` optional let a caller write a reconciliation with neither, and dropped
-   * `against` entirely.
+   * **It is `@heliogrid/domain`'s `PayableReconcileSpec`**, the same one `MoneySummary` takes,
+   * not a second declaration of it: the comparison is the domain's `reconcileMinorUnits` — the
+   * one every surface runs — so a gap this table calls a defect is a gap that block calls a
+   * defect too. A local copy that made `label` and `amount` optional let a caller write a
+   * reconciliation with neither, and dropped `against` entirely.
    */
-  reconcile?: MoneyReconcileSpec;
+  reconcile?: PayableReconcileSpec;
   /** Overrides the automatic "all 40 lines" scope line under the label. */
   scope?: ReactNode;
   /** The total's own tier or standing. Rendered under the row, both forms. */

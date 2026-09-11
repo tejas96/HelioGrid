@@ -20,10 +20,10 @@ export interface MoneyReconcileSpec {
   /** What the other figure is — "Bill of materials". */
   label: string;
   amount: number;
-  /** The line key it must equal. Defaults to the first `add` line. */
+  /** The line key it must equal. Defaults to the first `add` line; with none, the gross. */
   against?: string;
-  /** Currency units. Default 0.5 — half a rupee. */
-  tolerance?: number;
+  /** What the compared figure is called when no line carries a label for it — the caller's words. */
+  againstLabel?: string;
 }
 
 export interface MoneySummaryProps {
@@ -46,12 +46,10 @@ export interface ResolvedMoney {
   lines: MoneyLine[];
   gross: number;
   deductions: number;
-  /** The part of the deductions the gross could absorb. */
-  applied: number;
-  /** What did not fit. Named on screen, never dropped, never a negative payable. */
-  unapplied: number;
+  /** `gross − deductions` — negative when the deductions exceed the gross; shown, never floored. */
   payable: number;
-  overDeducted: boolean;
+  /** A deduction drove the payable to zero or below: the card warns (`M06-35`). No deduction, no warning. */
+  zeroOrBelow: boolean;
   unresolved: string[];
   reconciliation: { label: string; amount: number; againstLabel: string; target: number; delta: number; agrees: boolean } | null;
   /** No unresolved line and no failed reconciliation — may this document state a price? */
@@ -65,12 +63,13 @@ export interface ResolvedMoney {
  *
  * A `StatCard` would render the answer and drop the four figures a customer argues with;
  * `DataTable.totalRow` is the one line a *table of lines* adds up to. Both exist, both run through
- * `money-lines.js`, and they cannot disagree about a payable, a floor or a failed reconciliation.
+ * `money-lines.js`, and they cannot disagree about a payable or a failed reconciliation.
  *
- * **Zero never renders negative, and the excess is named.** A discount larger than the cost is a real
- * input, so the payable floors at zero *and* the part that did not fit is stated — *"₹12,400 is
- * unapplied — it is not a refund."* Clamping in silence prints a payable the arithmetic does not
- * support; −₹12,400 promises a refund nobody agreed to. (The **entry** side of the same problem is
+ * **A payable at or below zero is shown, with a warning.** `M06-35` (P0): *"warning the moment a
+ * discount drives payable to zero or below — the warning shows the negative figure rather than hiding
+ * it."* A discount larger than the cost is a real input; the card is feedback and the block is
+ * Generate's (`M06-36`). Clamping to zero would print a payable the arithmetic does not support and
+ * hide the very figure the row asks to show. (The **entry** side of the same problem is
  * `NumberField outOfRange="refuse"`.)
  *
  * **A failed reconciliation prints no price.** `SCR-M06-14`: *"**a disagreement is a defect, not a
@@ -82,7 +81,7 @@ export interface ResolvedMoney {
  * **It survives a page break** (`§1` item 5): `data-keep-together` keeps the equation whole,
  * `PagedDocument`'s `keepWithLast` keeps it with real lines rather than alone on a last sheet.
  *
- * @startingPoint section="Data display" subtitle="The money summary — an itemised equation, floored at zero" viewport="900x620"
+ * @startingPoint section="Data display" subtitle="The money summary — an itemised equation, shown even below zero" viewport="900x620"
  */
 export function MoneySummary(props: MoneySummaryProps): JSX.Element;
 

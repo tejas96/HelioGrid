@@ -1,3 +1,4 @@
+import type { MinorUnits } from '../money/minor-units';
 import { formatCompact, isRenderableNumber, type Numberish } from './number';
 import type { FormatPack } from './pack';
 
@@ -67,6 +68,16 @@ export function formatMoney(pack: FormatPack, amount: Numberish, options?: Money
     currency: pack.currency,
     ...fractionDigits,
   }).format(Number(amount));
+}
+
+/**
+ * A minor-unit amount as the reader sees it, printed TO the minor unit — `4527101` paise →
+ * `₹45,271.01` under the IN pack. An amount that must reconcile (`F1-07`, `M11-08`) is never
+ * rounded on the way out, so the digits are the pack's `minorUnitDigits`, not its screen default.
+ */
+export function formatMinorUnits(pack: FormatPack, amount: MinorUnits): string {
+  const perMajorUnit = 10 ** pack.minorUnitDigits;
+  return formatMoney(pack, amount / perMajorUnit, { digits: pack.minorUnitDigits });
 }
 
 /** The compact figure with the currency on it — `₹92L`, `₹1.4 Cr` (`F1-46`). */

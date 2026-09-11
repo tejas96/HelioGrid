@@ -1,6 +1,6 @@
+import { minorUnits, reconcileMinorUnits } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
-import { reconcileAmounts } from '../../utils/money-lines';
 import type { DataTableTotalRow } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
 
@@ -38,15 +38,14 @@ function totalScope(
 /**
  * **Whether the two figures agree, and the sentence that says so.**
  *
- * The comparison is `reconcileAmounts` — the same one `MoneySummary` runs — which rounds **both**
- * sides through `r2` and allows **half a rupee** by default. Re-deriving it here with a zero
- * tolerance is how a sub-rupee float gap one surface calls "reconciles" becomes a `role="alert"`
- * on this one, calling the same pair of numbers a defect.
+ * The comparison is `@heliogrid/domain`'s `reconcileMinorUnits` — the same one `MoneySummary`
+ * runs — over whole minor units, so the two figures agree only when they are equal and no
+ * surface can call a gap "reconciles" that another calls a defect.
  *
  * A disagreement is stated in the market pack's own money (`SCR-M06-14`): an unsymbolled
  * locale-default number is not the figure a reader is reconciling against.
  *
- * The spec is `MoneySummary`'s `MoneyReconcileSpec`, whose `label` and `amount` are **required** —
+ * The spec is the domain's `PayableReconcileSpec`, whose `label` and `amount` are **required** —
  * a reconciliation with neither is not a reconciliation, and the fallback words a local copy needed
  * ("The other figure") only existed to paper over a shape the shared type never allowed.
  */
@@ -58,17 +57,13 @@ function reconcileNotes(
   if (reconcile === undefined || totalRow.amount === undefined) {
     return { defectNote: null, agreeNote: null };
   }
-  const { delta, agrees } = reconcileAmounts(
-    reconcile.amount,
-    totalRow.amount,
-    reconcile.tolerance,
-  );
+  const { delta, agrees } = reconcileMinorUnits(reconcile.amount, totalRow.amount);
   if (agrees) {
     return { defectNote: null, agreeNote: `Reconciles with ${reconcile.label.toLowerCase()}.` };
   }
-  const gap = `${format.money(Math.abs(delta))} apart`;
+  const gap = `${format.amount(minorUnits(Math.abs(delta)))} apart`;
   return {
-    defectNote: `${reconcile.label} is ${format.money(
+    defectNote: `${reconcile.label} is ${format.amount(
       reconcile.amount,
     )} — ${gap}. A disagreement is a defect, not a display difference.`,
     agreeNote: null,

@@ -9,11 +9,10 @@ import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
-import type { ResolvedMoney } from '../../utils/money-lines';
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { noPriceSentence } from './MoneySummary.sentences';
-import type { MoneySummaryProps } from './MoneySummary.types';
+import type { MoneySummaryProps, ResolvedMoney } from './MoneySummary.types';
 
 /* THE DOCUMENT STEPS ARE PRINT TOKENS. `--doc-fs-figure` (22px) is emitted to CSS only — the RN
    theme object carries no `doc` family — so the payable maps to the NEAREST theme type role rather
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
   },
   payableLabel: { fontWeight: '700', letterSpacing: -0.15 },
   defect: { fontWeight: '500' },
-  unapplied: { marginTop: 6 },
+  belowZero: { marginTop: 6 },
   provenance: { marginTop: 6 },
   reconciled: { marginTop: 6 },
   note: { marginTop: theme.spacing['sp-2'] },
@@ -54,7 +53,7 @@ export function MoneySummaryTotal({
   variant,
   smallVariant,
 }: {
-  /** The arithmetic, already resolved by `resolveMoneySummary` — the one money path. */
+  /** The arithmetic, already resolved by `resolvePayable` — the one money path. */
   money: ResolvedMoney;
   payableLabel: string;
   provenance?: MoneySummaryProps['provenance'];
@@ -82,20 +81,22 @@ export function MoneySummaryTotal({
               {payableLabel}
             </Text>
             <Text variant="mono" style={figureStyle}>
-              {mkt.money(money.payable)}
+              {mkt.amount(money.payable)}
             </Text>
           </View>
-          {money.overDeducted ? (
-            <Text variant={smallVariant} color="warning" style={styles.unapplied}>
-              {`The deductions exceed the amount by ${mkt.money(money.unapplied)}. The payable is ${mkt.money(0)} and ${mkt.money(money.unapplied)} is unapplied — it is not a refund.`}
-            </Text>
+          {money.zeroOrBelow ? (
+            <View accessibilityRole="alert" accessibilityLiveRegion="assertive">
+              <Text variant={smallVariant} color="warning" style={styles.belowZero}>
+                {`The deductions bring the payable to ${mkt.amount(money.payable)}. A figure at or below zero is not a refund — a warning here, a block at Generate.`}
+              </Text>
+            </View>
           ) : null}
           {provenance ? (
             <View style={styles.provenance}>{renderProvenance(provenance, { size: 12 })}</View>
           ) : null}
           {money.reconciliation?.agrees ? (
             <Text variant={smallVariant} color="secondary" style={styles.reconciled}>
-              {`${money.reconciliation.label} reconciles · ${mkt.money(money.reconciliation.amount)}`}
+              {`${money.reconciliation.label} reconciles · ${mkt.amount(money.reconciliation.amount)}`}
             </Text>
           ) : null}
         </>

@@ -120,8 +120,8 @@
   text-wrap: pretty;
 }
 
-/* ZERO NEVER RENDERS NEGATIVE — and what did not fit is named rather than dropped. */
-.hg-money-summary-unapplied {
+/* A PAYABLE AT OR BELOW ZERO IS SHOWN, WITH A WARNING (M06-35) — the figure, never hidden. */
+.hg-money-summary-below-zero {
   margin: 6px 0 0;
   font-size: var(--fs-body-sm);
   line-height: 1.5;
@@ -157,7 +157,7 @@
 
 .hg-money-summary[data-surface="document"] .hg-money-summary-line-note,
 .hg-money-summary[data-surface="document"] .hg-money-summary-unresolved,
-.hg-money-summary[data-surface="document"] .hg-money-summary-unapplied,
+.hg-money-summary[data-surface="document"] .hg-money-summary-below-zero,
 .hg-money-summary[data-surface="document"] .hg-money-summary-reconciled,
 .hg-money-summary[data-surface="document"] .hg-money-summary-note {
   font-size: var(--doc-fs-small);
