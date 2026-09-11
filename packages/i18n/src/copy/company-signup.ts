@@ -6,7 +6,7 @@
  * steer's words arrive with `T-M01-035`.
  */
 import type { CreateTenant } from '@heliogrid/contracts';
-import type { MessageRef } from '../runtime';
+import type { MessageRef, Translator } from '../runtime';
 
 export const COMPANY_SIGNUP = {
   createYourCompany: /*i18n*/ { id: 'Create your company' },
@@ -82,3 +82,21 @@ export const COMPANY_FIELD_NEEDED: Record<keyof CreateTenant, MessageRef> = {
   ownerName: /*i18n*/ { id: "Your name is needed — you become this company's first EPC owner." },
   city: /*i18n*/ { id: 'A city is needed — it is where your company is based.' },
 };
+
+/** The refusal types that mean nothing was typed — the forms layer's own codes for an empty field. */
+const MISSING_VALUE = new Set(['too_small', 'invalid_type']);
+
+/**
+ * What a company field says under itself when Create company is pressed: a missing detail says
+ * why it is needed, never a scold (`COMPANY_FIELD_NEEDED`); any other refusal keeps the wire's
+ * words. Both platforms' fields call this, so the rule is written once (Law 11).
+ */
+export function companyFieldRefusal(
+  translate: Translator['t'],
+  field: keyof CreateTenant,
+  error: { readonly type?: string; readonly message?: string } | undefined,
+): string | undefined {
+  if (error === undefined) return undefined;
+  if (MISSING_VALUE.has(String(error.type))) return translate(COMPANY_FIELD_NEEDED[field]);
+  return error.message;
+}

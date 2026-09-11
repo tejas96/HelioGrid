@@ -2,15 +2,22 @@
    token var(). Two compositions, one DOM: the phone's single column, and from the door's own
    breakpoint the export's two fields — identity left, the one task right. The breakpoint is the
    door's to own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
-   2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. */
+   2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. The task measure is the
+   screen's (`SCR-M01-02` decision 14): the door's 420, the signup's 480 — never wider than its
+   track, so the signup's column takes the track between the breakpoint and the width two 480s fit. */
 
 .hg-door {
+  --door-measure: 420px;
   position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
   overflow: hidden;
   background: var(--canvas);
+}
+
+.hg-door[data-door="signup"] {
+  --door-measure: 480px;
 }
 
 .hg-door-bloom-desktop {
@@ -34,6 +41,16 @@
 
 .hg-door-wordmark-desktop {
   display: none;
+}
+
+/* Under the breakpoint the phone arrangement is one column at the task measure, centred — a
+   window between a phone and the two-field composition never shows a 420 column hugging its
+   left edge. Both rows share the cap so the wordmark stays over the column. */
+.hg-door-header,
+.hg-door-body {
+  width: 100%;
+  max-width: var(--door-measure);
+  margin-inline: auto;
 }
 
 .hg-door-header {
@@ -70,7 +87,7 @@
   flex-direction: column;
   gap: var(--sp-5);
   width: 100%;
-  max-width: 420px;
+  max-width: var(--door-measure);
 }
 
 .hg-door-form {
@@ -113,6 +130,10 @@
 
 .hg-door-tinted[data-tone="warning"] {
   background: var(--warning-bg);
+}
+
+.hg-door-tinted[data-tone="info"] {
+  background: var(--info-bg);
 }
 
 .hg-door-dwell {
@@ -194,6 +215,10 @@
     padding-top: 0;
   }
 
+  .hg-door-header {
+    max-width: none;
+  }
+
   .hg-door-wordmark {
     display: none;
   }
@@ -203,8 +228,9 @@
   }
 
   .hg-door-body {
+    max-width: none;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
     gap: var(--sp-16);
     padding-bottom: var(--sp-16);
@@ -218,7 +244,6 @@
 
   .hg-door-task {
     flex: initial;
-    width: 420px;
   }
 
   .hg-door-signup {

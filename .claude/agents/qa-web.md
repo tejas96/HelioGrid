@@ -22,6 +22,10 @@ the code from the API's log — `preview_logs` on the api server with search `OT
    criterion; `Welcome back` present and `Loading` absent is.
 3. Capture evidence: the matched tree excerpt, plus console/network output where the step
    concerns errors or requests.
+4. Record the wire: every API call the step's actions made, from `read_network_requests` —
+   method, path, status, and the request body where the step sent data — against the step's
+   `wire` list. A call the plan did not name, the same call made twice, or a body carrying the
+   wrong data is a finding, written into `observed` even when the visible outcome matched.
 
 A console error or failed request produced by the step's actions fails it, even when the
 visible outcome looks right.
