@@ -37,16 +37,25 @@ const DEFAULT_TIMEOUT_MS = 10_000;
 const FORWARDED_SERVER_HEADERS = ['authorization', 'cookie', REQUEST_ID_HEADER] as const;
 
 /**
- * Merge Set-Cookie rotations into the stored jar, keyed by cookie name.
- * Read with getSetCookie(), NEVER headers.get('set-cookie'): .get() joins multiple
- * Set-Cookie headers lossily and the server then rejects the session.
+ * A joined `set-cookie` value split back into its cookies. React Native's fetch has no
+ * `getSetCookie()` and joins repeated headers with `, ` — so a response that rotates both the
+ * session and the token arrives as ONE string, and reading only its first pair is how the phone
+ * lost its token on every sign-in and forgot the session on the next restart. A cookie value
+ * never contains a comma; the comma inside `Expires=Wed, 11 Sep …` is followed by a digit, not
+ * by a `name=`, so the split lands only between cookies.
  */
-async function absorbRotation(headers: Headers, storage: TokenStorage): Promise<void> {
+const BETWEEN_COOKIES = /,\s*(?=[^;,\s=]+=)/;
+
+function cookiesOf(headers: Headers): string[] {
   const getSetCookie = (headers as HeadersWithSetCookie).getSetCookie;
-  const setCookies =
-    typeof getSetCookie === 'function'
-      ? getSetCookie.call(headers)
-      : [headers.get('set-cookie')].filter((v): v is string => v !== null);
+  if (typeof getSetCookie === 'function') return getSetCookie.call(headers);
+  const joined = headers.get('set-cookie');
+  return joined === null ? [] : joined.split(BETWEEN_COOKIES);
+}
+
+/** Merge Set-Cookie rotations into the stored jar, keyed by cookie name. */
+async function absorbRotation(headers: Headers, storage: TokenStorage): Promise<void> {
+  const setCookies = cookiesOf(headers);
   if (setCookies.length === 0) return;
 
   const jar = new Map<string, string>();
@@ -151,9 +160,11 @@ async function sendRequest(
 
 /**
  * The ten-minute API token is renewed from the session cookie (`M01-07`): a 401 on any route
- * outside `/auth/` is answered by ONE refresh and ONE retry. A refresh that fails leaves the
- * original 401 to the caller, which is how a screen learns the person is signed out. A server
- * render never refreshes: it holds no jar and must not rotate a visitor's cookies.
+ * but the refresh itself is answered by ONE refresh and ONE retry — the boot check
+ * (`GET /auth/session`) included, which is how a restarted phone whose token has lapsed comes
+ * back signed in. A refresh that fails leaves the original 401 to the caller, which is how a
+ * screen learns the person is signed out. A server render never refreshes: it holds no jar and
+ * must not rotate a visitor's cookies.
  */
 async function refreshedOnce(
   config: TransportConfig,
@@ -162,7 +173,7 @@ async function refreshedOnce(
   first: Awaited<ReturnType<ApiFetcher>>,
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
-  if (new URL(args.path).pathname.startsWith(AUTH_PATH_PREFIX)) return first;
+  if (new URL(args.path).pathname === `${AUTH_PATH_PREFIX}refresh`) return first;
   const refreshed = await sendRequest(
     config,
     {

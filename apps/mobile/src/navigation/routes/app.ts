@@ -18,6 +18,6 @@ import { useHasNoTenant, useHasTenant } from '../guards';
  */
 export const appScreens = {
   Home: { screen: HomeScreen, if: useHasTenant },
-  /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1). */
+  /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1, `M01-10`). */
   CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
 };

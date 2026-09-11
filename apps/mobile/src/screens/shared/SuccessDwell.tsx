@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { BrandBloom, Icon, Text } from '@heliogrid/ui';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { styles } from '../styles';
+import { styles } from './door-styles';
 
 /**
  * The 1.2 s beat after the code is accepted (`DONE_DWELL_MS`): on a bad connection this is the

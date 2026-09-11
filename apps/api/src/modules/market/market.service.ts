@@ -1,10 +1,10 @@
 import type { MarketPackRead } from '@heliogrid/contracts';
 import {
   type MarketPack,
-  marketOfPhone,
   nextEnvelope,
   type PackEnvelope,
   packFromEnvelope,
+  phoneReach,
   tenantReadablePayload,
 } from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -45,22 +45,20 @@ export class MarketPackService {
 
   /**
    * The pack a phone belongs to, for a message the platform sends to it — refusing a number no
-   * market's allowlist covers (`F1-49`). One answer for the code and the invite, so the two can
-   * never disagree about where the rail reaches.
+   * market's allowlist covers, and one whose national part is not the length that market fixes
+   * (`F1-49`, `phoneReach`). One answer for the code and the invite, so the two can never
+   * disagree about where the rail reaches, and a number no rail reaches never becomes an account.
    */
   async deliverablePack(phoneE164: string): Promise<MarketPack> {
-    const pack = marketOfPhone(await this.currentPacks(), phoneE164);
-    const allowed = pack?.formats.otpDestinationDialCodes.some((code) =>
-      phoneE164.startsWith(code),
+    const reach = phoneReach(await this.currentPacks(), phoneE164);
+    if (reach.kind === 'reachable') return reach.pack;
+    throw new ContractException(
+      'DOMAIN_RULE_VIOLATION',
+      reach.kind === 'wrong-length'
+        ? `That is ${reach.typed} digits. A mobile number in this market has ${reach.needed}.`
+        : 'We cannot send messages to that country yet.',
+      HttpStatus.UNPROCESSABLE_ENTITY,
     );
-    if (!pack || !allowed) {
-      throw new ContractException(
-        'DOMAIN_RULE_VIOLATION',
-        'We cannot send messages to that country yet.',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-    return pack;
   }
 
   /** The tenant-facing read: the envelope and the tenant-readable keys, never the book (`F1-25`). */

@@ -1,27 +1,45 @@
 import type { SignIn } from '@heliogrid/data/react';
 import { OTP_LENGTH } from '@heliogrid/domain';
-import { SIGN_IN, signInWords } from '@heliogrid/i18n';
+import { SIGN_IN, type SignInLabels, signInWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, OtpInput, PhoneValue, Text, useFormat } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import { styles } from '../styles';
 import { DoorFrame } from './DoorFrame';
+import { styles } from './door-styles';
 import { TintedBlock } from './TintedBlock';
 
 /**
- * The code family — one frame per outcome, drawn once (`SCR-M01-01`, the `m-*` code states).
- * The frame is domain's, the words i18n's; this draws them and raises the presses.
+ * The code family — one frame per outcome, drawn once (`SCR-M01-01`, the `m-*` code states) and
+ * shared by both doors (`SCR-M01-02`: "the same component and the same words"). The frame is
+ * domain's, the words i18n's; this draws them and raises the presses. Signup passes its step
+ * header as `lead`, the one label it says differently, and the note its frame always carries.
  */
-export function CodeStep({ signIn }: { signIn: SignIn }) {
+export function CodeStep({
+  signIn,
+  lead,
+  labels,
+  note,
+}: {
+  signIn: SignIn;
+  lead?: ReactNode;
+  labels?: SignInLabels;
+  note?: string;
+}) {
   const t = useTranslate();
   const { phone } = useFormat();
   const { state, frame, busy } = signIn;
   const { primary, resend } = frame;
-  const words = signInWords(t, frame, {
-    cooldownLeft: state.cooldownLeft,
-    triesLeft: state.triesLeft,
-    phoneShown: phone(state.phone),
-  });
+  const words = signInWords(
+    t,
+    frame,
+    {
+      cooldownLeft: state.cooldownLeft,
+      triesLeft: state.triesLeft,
+      phoneShown: phone(state.phone),
+    },
+    labels,
+  );
   return (
     <DoorFrame
       trailing={
@@ -30,7 +48,8 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
         </Button>
       }
     >
-      <View style={styles.codeColumn}>
+      {lead}
+      <View style={lead === undefined ? styles.codeColumn : styles.codeColumnAfterLead}>
         <View style={styles.codeTitle}>
           <Text variant="h2">{words.title}</Text>
           <PhoneValue label={words.sub} value={state.phone} />
@@ -95,6 +114,11 @@ export function CodeStep({ signIn }: { signIn: SignIn }) {
         {words.foot === null ? null : (
           <Text variant="caption" color="secondary">
             {words.foot}
+          </Text>
+        )}
+        {note === undefined ? null : (
+          <Text variant="caption" color="secondary">
+            {note}
           </Text>
         )}
       </View>
