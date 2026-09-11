@@ -1,15 +1,10 @@
 import type { CreateTenant } from '@heliogrid/contracts';
-import { Controller, type FieldErrors, type UseFormReturn } from '@heliogrid/forms';
-import { COMPANY_FIELD_NEEDED, COMPANY_SIGNUP } from '@heliogrid/i18n';
+import { Controller, type UseFormReturn } from '@heliogrid/forms';
+import { COMPANY_SIGNUP, companyFieldRefusal } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Input } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from '../styles';
-
-/** A missing detail says why it is needed, never a scold; any other refusal keeps the wire's words. */
-const MISSING = new Set(['too_small', 'invalid_type']);
-
-type FieldRefusal = FieldErrors<CreateTenant>[keyof CreateTenant];
 
 /**
  * The three fields and no fourth (`M01-01`). Each answers for itself when Create company is
@@ -25,10 +20,6 @@ export function CompanyFields({
   afterBlock: boolean;
 }) {
   const t = useTranslate();
-  const refusal = (field: keyof CreateTenant, error: FieldRefusal) => {
-    if (error === undefined) return undefined;
-    return MISSING.has(String(error.type)) ? t(COMPANY_FIELD_NEEDED[field]) : error.message;
-  };
   return (
     <View style={[styles.fields, afterBlock ? styles.fieldsAfterBlock : null]}>
       <Controller
@@ -40,7 +31,7 @@ export function CompanyFields({
             placeholder={t(COMPANY_SIGNUP.companyNameExample)}
             value={field.value}
             onChange={field.onChange}
-            error={refusal('companyName', fieldState.error)}
+            error={companyFieldRefusal(t, 'companyName', fieldState.error)}
           />
         )}
       />
@@ -54,7 +45,7 @@ export function CompanyFields({
             value={field.value}
             onChange={field.onChange}
             helper={t(COMPANY_SIGNUP.firstOwner)}
-            error={refusal('ownerName', fieldState.error)}
+            error={companyFieldRefusal(t, 'ownerName', fieldState.error)}
           />
         )}
       />
@@ -68,7 +59,7 @@ export function CompanyFields({
             value={field.value}
             onChange={field.onChange}
             helper={t(COMPANY_SIGNUP.whereBased)}
-            error={refusal('city', fieldState.error)}
+            error={companyFieldRefusal(t, 'city', fieldState.error)}
           />
         )}
       />

@@ -69,8 +69,11 @@ signs in at most twice in a run (once without a company, once as the owner); the
 ordered so every session is reused, and a shared fact — the beat copy, a frame's words — is
 asserted on ONE surface, the other asserting only its landing.
 
-Each step: `{id, surface, quadrant, actions[], expected, severity_if_failed}`. `expected` must
-be a literal string comparison — if it cannot be written as one, it is not yet a step. It states
+Each step: `{id, surface, quadrant, actions[], expected, wire[], severity_if_failed}`. `wire` names
+every API call the step may make — method, path, status, count — and what the body carries where
+the step sends data; the executor records every call the step actually made, and a call the plan
+did not name, a call made twice, or a body carrying the wrong data is a finding, not a pass.
+`expected` must be a literal string comparison — if it cannot be written as one, it is not yet a step. It states
 what the task's rows or the brief state; where they are silent, the step RECORDS the observed value
 for a ruling and never fails on the planner's guess.
 

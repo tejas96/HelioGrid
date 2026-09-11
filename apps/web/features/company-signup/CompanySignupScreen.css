@@ -1,9 +1,0 @@
-/* CompanySignupScreen — a placeholder's layout only, gone with `T-M01-002`. All values via theme var(). */
-
-.hg-company-signup-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100dvh;
-  background-color: var(--canvas);
-}

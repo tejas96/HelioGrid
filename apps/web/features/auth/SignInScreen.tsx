@@ -22,7 +22,11 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   const session = useSession();
   const { pack } = useFormat();
   const signIn = useSignIn(pack);
-  const toCompanySignup = () => router.push(companySignupHref);
+  const road = {
+    question: t(SIGN_IN.newCompany),
+    label: t(SIGN_IN.createCompany),
+    onPress: () => router.push(companySignupHref),
+  };
 
   const view = doorView(session, signIn.state.step);
 
@@ -30,7 +34,9 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
     return (
       <PhoneStep
         signIn={signIn}
-        onCreateCompany={toCompanySignup}
+        title={t(SIGN_IN.signIn)}
+        intro={t(SIGN_IN.intro)}
+        road={road}
         task={
           <SwitchPanel pending={session.switch} onConfirm={() => void session.completeSwitch()} />
         }
@@ -45,5 +51,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
     );
   }
   if (view === 'code') return <CodeStep signIn={signIn} />;
-  return <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />;
+  return (
+    <PhoneStep signIn={signIn} title={t(SIGN_IN.signIn)} intro={t(SIGN_IN.intro)} road={road} />
+  );
 }

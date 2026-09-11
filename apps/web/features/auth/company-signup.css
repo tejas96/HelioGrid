@@ -1,0 +1,73 @@
+/* Company signup — screen-level layout only, over the door's frame (sign-in.css); component pixels
+   belong to @heliogrid/ui, every value a token var(). The `d-*` frames at 1536: the account surface
+   and every finding about the person in the identity half, the step header, the fields, the facts
+   and the roads in the 480 task column; the phone arrangement stacks the same DOM. */
+
+.hg-door[data-door="signup"] .hg-door-task {
+  gap: var(--sp-6);
+}
+
+/* The step header: the phone's track and counter, or the desktop's numbered form — one of the two. */
+.hg-signup-progress-desktop {
+  display: none;
+}
+
+.hg-signup-fields,
+.hg-signup-two-up,
+.hg-signup-roads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on one surface. */
+.hg-signup-account {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  align-self: flex-start;
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e1);
+}
+
+/* A finding about the person, in the identity half at the export's measure. */
+.hg-signup-finding {
+  align-self: flex-start;
+  max-width: 520px;
+}
+
+/* The three values as facts while they are written: one surface, sp-4 between rows. */
+.hg-signup-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: var(--surface);
+  border-radius: var(--r-card-expressive);
+  box-shadow: var(--e1);
+}
+
+.hg-signup-fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+@media (min-width: 968px) {
+  .hg-signup-progress-phone {
+    display: none;
+  }
+
+  .hg-signup-progress-desktop {
+    display: block;
+  }
+
+  /* Your name and City share the row beneath the company name (`SCR-M01-02` decision 12). */
+  .hg-signup-two-up {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--sp-4);
+  }
+}
