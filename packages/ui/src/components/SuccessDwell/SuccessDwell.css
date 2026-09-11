@@ -1,0 +1,32 @@
+/* The success beat — a centred mark that owns the whole page; every value a token var(). */
+
+.hg-success-dwell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-6);
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.hg-success-dwell-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--sp-20);
+  height: var(--sp-20);
+  border-radius: var(--r-pill);
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-success-dwell-words {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}

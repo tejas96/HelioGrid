@@ -15,6 +15,8 @@ export type { ApiErrorLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
 export type { CompanySignupCopyKey } from './copy/company-signup';
 export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
+export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
+export { companySignupWords } from './copy/company-signup-frames';
 export { homeTitle } from './copy/homes';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';

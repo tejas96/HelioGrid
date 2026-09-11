@@ -1,0 +1,141 @@
+/* The door's frame — the chrome both doors share (`SCR-M01-01`, `SCR-M01-02`): the canvas, the
+   bloom, the header row, and from the door's own breakpoint the export's two fields — identity
+   left, the one task right; under it, the phone's single column. The breakpoint is the door's to
+   own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
+   2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. The task measure is the
+   screen's (`SCR-M01-02` decision 14): the front door's one field at 420, the signup's three steps
+   at 480 — never wider than its track. Component pixels belong to the primitives; every other
+   value here is a token var(). */
+
+.hg-door {
+  --door-measure: 420px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.hg-door[data-measure="steps"] {
+  --door-measure: 480px;
+}
+
+.hg-door-bloom-desktop {
+  display: none;
+}
+
+.hg-door-page {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6) var(--screen-pad-mobile);
+}
+
+.hg-door-wordmark-desktop {
+  display: none;
+}
+
+/* Under the breakpoint the phone arrangement is one column at the task measure, centred — a
+   window between a phone and the two-field composition never shows a 420 column hugging its
+   left edge. The rows share the cap so the wordmark stays over the column. */
+.hg-door-header,
+.hg-door-body,
+.hg-door-footer {
+  width: 100%;
+  max-width: var(--door-measure);
+  margin-inline: auto;
+}
+
+.hg-door-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-door-trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-left: auto;
+}
+
+.hg-door-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.hg-door-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-door-task {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-5);
+  width: 100%;
+  max-width: var(--door-measure);
+}
+
+.hg-door[data-measure="steps"] .hg-door-task {
+  gap: var(--sp-6);
+}
+
+/* An action that stays under the column — `sp-6` under the last line, as the phone draws it. */
+.hg-door-footer {
+  padding-top: var(--sp-6);
+}
+
+@media (min-width: 968px) {
+  .hg-door-bloom-phone {
+    display: none;
+  }
+
+  .hg-door-bloom-desktop {
+    display: block;
+  }
+
+  .hg-door-page {
+    padding: var(--sp-8) var(--screen-pad-desktop);
+  }
+
+  .hg-door-header,
+  .hg-door-footer {
+    max-width: none;
+  }
+
+  .hg-door-wordmark {
+    display: none;
+  }
+
+  .hg-door-wordmark-desktop {
+    display: block;
+  }
+
+  .hg-door-body {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--sp-16);
+    padding-bottom: var(--sp-16);
+  }
+
+  .hg-door-identity {
+    max-width: 560px;
+    justify-self: end;
+    gap: var(--sp-6);
+  }
+
+  .hg-door-task {
+    flex: initial;
+  }
+}
