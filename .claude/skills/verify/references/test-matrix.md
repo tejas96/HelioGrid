@@ -10,16 +10,23 @@ handing off, and a zero cell aborts the run naming the gap.
 
 ## Signing in during a run
 
-**Signing in during a run (the development sign-in path).** No SMS is sent locally. Request a
-code for ANY `+91` ten-digit number — `POST /auth/otp/request` with `{"phoneE164": "+919845027746",
-"channel": "sms"}` — and read the code from the API's log: the line `Message for +91… via sms: …
-code is 123456` (`preview_logs` with search `via sms` when the api runs in the preview, else its
-stdout). Verify with `POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API
-sets two HttpOnly cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the
-ten-minute API token); with curl keep a jar (`-c jar -b jar`). A first-time number has no company:
-`POST /tenants` with `{"companyName", "ownerName", "city"}` creates one and rotates the token.
-Three requests per fifteen minutes and eight per day per number are the real caps — use a fresh
-number rather than waiting one out.
+The ONE statement of the development sign-in path; the surface agents point here and add only
+what their surface needs (the sign-out reset, the device's route to the API).
+
+**An existing account** — the development number in `.env.local` (`DEV_OTP_PHONE`) signs in with
+`DEV_OTP_CODE`, sends nothing and counts against no cap. Use it for every step that needs an owner
+or a returning account.
+
+**A new account** — no SMS is sent locally. Request a code for ANY fresh `+91` ten-digit number —
+`POST /auth/otp/request` with `{"phoneE164": "+919845027746", "channel": "sms"}` — and read the
+code from the API's log: the line `Message for +91… via sms: … code is 123456` (`preview_logs` on
+the api server with search `via sms`, else its stdout or the log file the run names). Verify with
+`POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API sets two HttpOnly
+cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the ten-minute API token);
+with curl keep a jar (`-c jar -b jar`). A first-time number has no company: `POST /tenants` with
+`{"companyName", "ownerName", "city"}` creates one and rotates the token. Three requests per fifteen
+minutes and eight per day per number are the real caps — use a fresh number rather than waiting
+one out. The API must be running for either path.
 
 ## Quadrant 1 — happy path (does it do the job?)
 
@@ -75,12 +82,13 @@ screen". It will confidently guess, and it guesses in the direction of a pass: a
 loading frame has been reported as a fully rendered screen because the step's criterion was a
 picture.
 
-**Every surface has a machine-readable view tree. Use it as the criterion:**
+**Every surface but iOS has a machine-readable view tree. Use it as the criterion; on iOS the
+criterion is still a literal string, read from the step's one shrunk screenshot:**
 
 | Surface | Read the tree with | Assert |
 |---|---|---|
 | web | `read_page` (accessibility tree) · `javascript_tool` for computed values | exact strings, exact computed values |
-| iOS | Simulator MCP — accessibility tree | the tree contains the exact label |
+| iOS | no tree exists here — one shrunk screenshot per step (`qa-mobile`) | the step's exact words are on the frame |
 | Android | `adb shell uiautomator dump` → XML | `text="…"` attributes match exactly |
 | api | `curl -i` | status line and body bytes |
 | db | read-only `psql -tAc` against `heliogrid-pg-local` | the scalar returned |

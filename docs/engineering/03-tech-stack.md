@@ -2,6 +2,11 @@
 
 # 03 — Tech Stack: Choices, Pins, Rejections
 
+**Status:** MIXED. The version pins were checked against the manifests, but the rows do not mark
+"installed" apart from "chosen": a library named here with no `package.json` entry is a decision
+that has not landed, not a fact about the tree. Check the manifest before citing a row; a row
+found wrong is corrected in place.
+
 Every technology in HelioGrid, one decision per layer. Each table row records the choice, the
 version pin, why it won, and what lost. Where a user directive overrode a research
 recommendation, the row says so — the directive wins, the research stays cited.
@@ -31,7 +36,7 @@ flags; the 3D studio is the flagship and is never compromised.
 |---|---|---|---|
 | Package manager | **pnpm** 10.x workspaces | Strict node_modules, fast, standard | npm/yarn (weaker workspace hygiene) |
 | Task runner | **Turborepo** 2.x (≥2.4 for Boundaries) | Truth lives in plain `package.json` + `turbo.json` — deterministic and legible for AI agents; free/self-hostable remote cache | Nx (project.json/executors/inferred graph = magic agents must reverse-engineer; Nx Cloud is credit-metered) · moon (~50k weekly downloads — too thin an ecosystem/training corpus) |
-| Type graph | **TypeScript** 5.8.x **project references**, ship source | Incremental `tsc -b`, hard type boundaries between `domain`/`contracts`/`db`/`ui`; Next.js and Metro bundle source downstream — references exist purely for typecheck ordering + boundaries | Single bundler-mode graph (no enforced boundaries) · pre-built dist packages (slower loop, stale-artifact bugs) |
+| Type graph | **TypeScript** 5.8.x, `tsc -b` per package; consumers resolve a workspace package through its built `dist/` (cross-package project references were removed — ADR-0001) | Hard type boundaries between `domain`/`contracts`/`db`/`ui`, held by the build graph rather than by references; `packages/ui` alone ships source and is transpiled by Next and Metro | Single bundler-mode graph (no enforced boundaries) · project references (ordering that Turbo already owns) |
 
 Sources: [Turborepo Boundaries](https://turborepo.com/docs/reference/boundaries) · [TS monorepo 2026](https://hsb.horse/en/blog/typescript-monorepo-best-practice-2026/).
 

@@ -2,10 +2,8 @@
 
 # 08 — Security & Tenancy
 
-The security and tenancy model: the threat table, the three-layer tenant-isolation defence,
-archived BLUEPRINT — originally its §Auth / §Data layer / §Security & honesty). Sources:
-. Schemas referenced here are defined in
-the owning module's migration.
+The security and tenancy model: the threat table, the three-layer tenant-isolation defence, and
+the constraints the identity spine was built to. Schemas referenced here are defined in the owning module's migration.
 
 ---
 
@@ -62,14 +60,6 @@ Non-threats we explicitly do not engineer for in v1: nation-state actors, malici
 DLT registration (principal entity + headers + templates) is a critical-path item: 1–2 weeks
 lead time gates OTP SMS at launch.
 
-JWT claims — the entire authz payload, nothing more:
-
-```json
-{ "sub": "<user_id>", "sid": "<session_id>", "membership": { "tenantId": "<uuid>", "roles": ["sales_rep","surveyor"], "authorizationVersion": 3 }, "exp": ... }
-```
-
-Sessions are server-side rows → deactivating a user (or "sign out everywhere") kills every device inside one JWT TTL (≤10 min).
-
 
 ---
 
@@ -106,7 +96,7 @@ Single DB, shared schema, `tenant_id` on every tenant-owned row (BLUEPRINT §Dat
 
 **Layer 1 — request guard.** `SessionGuard` verifies the token, checks the session row is live, and attaches the admitted session to the request; the tenant is the membership's. No handler ever reads tenant from params/body.
 
-**Layer 2 — tenant-scoped repositories (primary).** All data access goes through `packages/db` repositories that take tenant context from ALS and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
+**Layer 2 — tenant-scoped repositories (primary).** All data access goes through the repositories in `apps/api` (`modules/<m>/*.repository.ts`), which run inside `withTenantTransaction` with the admitted session's tenant and append `WHERE tenant_id = $ctx` to every read and stamp it on every write. Raw `db.select` outside a repository is a lint violation (dependency-cruiser `db-access-in-repositories-only`).
 
 **Layer 3 — Postgres RLS (backstop).** Every tenant-owned table:
 
@@ -127,7 +117,7 @@ SET LOCAL app.tenant_id = '<uuid from verified JWT claim>';
 
 `SET LOCAL` scopes to the transaction — pool-safe. Unset GUC → `current_setting` errors → query fails closed.
 
-**BYPASSRLS warning (verified the hard way in research — [RLS multi-tenant](https://dev.to/josh_blair/multi-tenant-auth-with-cognito-and-postgresql-row-level-security-part-2-5d30)):** RLS silently no-ops for superusers and roles with `BYPASSRLS`. Therefore: the app connects as `heliogrid_app` (`NOSUPERUSER NOBYPASSRLS`, no DDL); migrations run under a separate `heliogrid_migrator` role in CI/deploy only; the postgres-flex default `postgres` superuser is never a connection string in any app. `FORCE ROW LEVEL SECURITY` is mandatory because the table owner otherwise bypasses its own policies. A startup assertion queries `pg_roles` and refuses to boot if the runtime role has `rolsuper` or `rolbypassrls`.
+**BYPASSRLS warning (verified the hard way in research — [RLS multi-tenant](https://dev.to/josh_blair/multi-tenant-auth-with-cognito-and-postgresql-row-level-security-part-2-5d30)):** RLS silently no-ops for superusers and roles with `BYPASSRLS`. Therefore: the app connects as `app_runtime` (a member of `app_user`: `NOSUPERUSER NOBYPASSRLS`, no DDL — `infra/postgres/init/01-roles.sql`); migrations run under `app_admin` (`BYPASSRLS`, the migrator) only; the `postgres` superuser is never a connection string in any app. `FORCE ROW LEVEL SECURITY` is mandatory because the table owner otherwise bypasses its own policies. A startup assertion queries `pg_roles` and refuses to boot if the runtime role has `rolsuper` or `rolbypassrls`.
 
 Exception: `platform_catalog_*` tables (shared, read-only to tenants) carry no tenant RLS; admin/back-office paths use a separate service with its own role and explicit audit.
 
@@ -192,7 +182,7 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 | OWASP 2021 | HelioGrid control |
 |---|---|
 | A01 Broken access control | Capability guards + tenant-scoped repos + RLS (§3–4); locked cross-tenant invariant tests; lead-visibility predicates in repo layer; no client-trusted ids |
-| A02 Cryptographic failures | TLS everywhere (Fly edge); EdDSA JWTs via JWKS; HMAC-SHA256 link tokens; AES-256-GCM envelope-encrypted tenant credentials; OTPs hashed; no passwords exist at all (phone-OTP only) |
+| A02 Cryptographic failures | TLS everywhere (Fly edge); HS256 session tokens over server-side session rows (an asymmetric algorithm is a later decision); HMAC-SHA256 link tokens; AES-256-GCM envelope-encrypted tenant credentials; OTPs hashed; no passwords exist at all (phone-OTP only) |
 | A03 Injection | Drizzle parameterised queries only; Zod validation on every ts-rest boundary; no string-built SQL (lint-banned); Devanagari-safe output encoding via framework defaults |
 | A04 Insecure design | This threat model; honesty/provenance rules as product law; ComplianceGate non-swappable; designed-for D33 mitigation pre-wired |
 | A05 Security misconfiguration | Fly secrets; `NOBYPASSRLS` boot assertion; `FORCE RLS`; helmet defaults on Nest; separate migrator role; no debug endpoints in prod |

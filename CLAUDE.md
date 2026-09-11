@@ -183,8 +183,8 @@ Writing rules, not code:
 - **One fact, one file.** Cite a rule by its id; never restate it. When a file goes, its stories go
   with it — Law 8's sweep covers the ledgers too.
 - **Name no gate outside `mechanisms.md`** — not the tool, not the config, not the check: an
-  instruction file cites the row id and nothing else, and cites it only once the row has been seen
-  to go RED on an injected violation.
+  instruction file cites the row id and nothing else — bare for a HELD or PARTIAL row, with the
+  word `review-only` beside it for a NONE row, so a citation is never read as enforcement.
 - **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
   nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
