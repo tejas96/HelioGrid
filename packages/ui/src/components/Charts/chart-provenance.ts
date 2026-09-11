@@ -1,3 +1,4 @@
+import { type ProvenanceTier, provenanceTierSchema } from '@heliogrid/contracts';
 import type { ChartFrameProps } from './Charts.types';
 
 /**
@@ -19,7 +20,7 @@ import type { ChartFrameProps } from './Charts.types';
  * renderer to match — a real change, tracked in the port notes, not a mechanical import.
  */
 
-type TierName = 'measured' | 'derived' | 'estimated' | 'assumed';
+type TierName = ProvenanceTier;
 
 interface TierObject {
   label: string;
@@ -84,10 +85,9 @@ function toLabel(raw: string): string {
     : raw;
 }
 
+/** The owner's schema decides — this file never spells the four words itself. */
 function isTierName(value: string): value is TierName {
-  return (
-    value === 'measured' || value === 'derived' || value === 'estimated' || value === 'assumed'
-  );
+  return provenanceTierSchema.safeParse(value).success;
 }
 
 /** Resolves any accepted tier spelling to a label plus a mark colour — or null for a deliberate absence. */

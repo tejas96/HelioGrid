@@ -6,7 +6,7 @@ different orders and mixing them up is the main way this goes wrong:
 | | order | source of truth | unit |
 |---|---|---|---|
 | **Design** | the eight blocks below, V1 rows only | `docs/prd/registers/screens.md` §2 (`V` column) | **99** of 150 screens |
-| **Build** | the same eight blocks | this file | 372 tasks |
+| **Build** | the same eight blocks | this file | 388 tasks |
 
 Since 2026-08-15 the two orders are **the same order** — the design run follows the build blocks,
 V1 rows only. That is the whole point of the scope lock.
@@ -27,12 +27,12 @@ requirement register; this file only says what order to take them in and why.
 `scripts/gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
-**222 of the 372 tasks have no design dependency at all.**
+**234 of the 388 tasks have no design dependency at all.**
 
 | | tasks | can start |
 |---|---|---|
-| Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 150 | when their screen is approved |
-| Engine · policy · integration · port tasks | 222 | **today** |
+| Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 154 | when their screen is approved |
+| Engine · policy · integration · port tasks | 234 — seven of them the struck F-platform stubs, which only name where their rows went | **today** |
 
 Per `docs/tasks/README.md` rule 3, `DESIGN: PENDING` **blocks build, not start**. So engineering is
 not waiting on the design run.
@@ -74,7 +74,7 @@ purpose (`M12` §2: Finance's money scope is the tenant's customers' money, neve
 bill). Owner decision 2026-08-16: self-serve billing ships in V1, so `M12` sits early — a
 prospect meets the pricing page before they have an account.
 
-**Phase 0 starts today.** 43 foundation tasks, zero screens: roles and the twelve presets,
+**Phase 0 starts today.** 52 foundation tasks, zero screens: roles and the twelve presets,
 permission resolution, the audit log, the message catalog, the four format implementations,
 script rendering, notification delivery, the data-honesty engine. Everything else consumes them.
 **Six F-platform tasks were struck 2026-09-04 and their rows moved to the modules that consume

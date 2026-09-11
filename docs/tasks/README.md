@@ -13,27 +13,27 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 ## Task anatomy
 
 ```
-T-M02-001 · Quick Add Lead
-Type: screen            (screen | engine | policy | integration | port)
-Tier: P0
-Status: planned         (planned | designed | shipped (#PR) — the one ledger; screens.md mirrors it per screen)
-PRD:    M02-01 (P0), M02-03 (P0), M02-<nn> (P0), M02-05 (P0), M02-06 (P0)
-DESIGN: SCR-<module>-<nn> → PENDING               — filled when the screen is approved
-PORT:   (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
+### T-M02-001 · Quick Add Lead
+**Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
+**Status:** planned                    (planned | designed | shipped (#PR) — the one ledger; screens.md mirrors it per screen)
+**PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved
+**PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
         POC `*.test.ts`; port the LOGIC it proves into the studio package's own
         `tests/` tree, or into tests/invariants where it is a property of the system.
         CLAUDE.md §8 fixes the name and the place; check-adherence.sh fails on either.
-DEFECTS:(studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
-Why:    one line, in EPC terms — what an installer gains and what breaks without it
-Data model: the entity rows this task AUTHORS (a table copied from the data model), with the
+**DEFECTS:** (studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
+**Why:** one line, in EPC terms — what an installer gains and what breaks without it
+**Data model:** the entity rows this task AUTHORS (a table copied from the data model), with the
         migration number and each table's tenancy; or "none — reads <entities> authored by T-…"
-Contract: the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
-Depends on: task ids and migration numbers that must land first
-Out of scope: what this task deliberately leaves to which other task
-Verified: digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
+**Contract:** the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
+**Depends on:** task ids and migration numbers that must land first
+**Out of scope:** what this task deliberately leaves to which other task
+**Settle at /start:** the readings the PRD leaves open, each ruled with one reason before the go
+**Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
         tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
-DONE WHEN: the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
+**DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
         each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
 ```
 

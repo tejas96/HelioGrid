@@ -2,7 +2,7 @@
   "name": "@heliogrid/domain",
   "version": "0.0.1",
   "private": true,
-  "description": "Pure isomorphic domain logic — no framework, no storage, no env, no fetch (ADR-0021)",
+  "description": "Pure isomorphic domain logic — no framework, no storage, no env, no fetch (packages/domain/CLAUDE.md)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

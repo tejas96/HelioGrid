@@ -1,3 +1,4 @@
+import type { ProvenanceTier } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 /**
  * The system's one surface-state vocabulary — `unavailable` is the fourth state: neutral, stated
@@ -7,10 +8,8 @@ import type { ReactNode } from 'react';
  */
 import type { SurfaceState } from '../UnavailableNote';
 
-/**
- * The four canonical provenance tiers. **Not a closed set** — any string is a valid tier.
- */
-type ProvenanceTierName = 'measured' | 'derived' | 'estimated' | 'assumed';
+/** The four canonical provenance tiers are `contracts`' (`F8-02`). **Not a closed set** here — any string is a valid tier. */
+type ProvenanceTierName = ProvenanceTier;
 
 /**
  * A tier. Either a canonical name, any free word (`'Verified datasheet'`), an object that

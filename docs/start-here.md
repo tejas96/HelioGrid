@@ -1,6 +1,6 @@
 # Start here — designing the first screen
 
-> ## ▶ Blocks 1–6 are ready. Start at `SCR-SHELL-01`.
+> ## ▶ Blocks 1–6 are ready. Run `python3 scripts/next-screen.py` — it prints the next screen.
 >
 > A component audit of all 99 briefs against the live design system found **57 gaps**. Rounds 13–17
 > closed **51** of them; the remaining six are the 3D canvas, which waits for the studio port and
@@ -20,8 +20,9 @@
 > When a screen finds a gap — and one will — record it in that register and keep drawing. It should
 > be a trickle now, not 57.
 
-You have **99 screens** to design for V1. This file is how you do **one** of them. Then you
-repeat it 98 more times. Nothing else in this repository needs your attention while you do that.
+You have **99 screens** to design for V1; `python3 scripts/next-screen.py` says how many are done
+and which comes next. This file is how you do **one** of them. Then you repeat it until the script
+prints nothing. Nothing else in this repository needs your attention while you do that.
 
 *(The register holds 150. The owner locked V1 to 84 on 2026-08-15 and widened it to 95, then 98, then 99, on 2026-08-16 — the `V` column in
 `docs/prd/registers/screens.md` §2 says which. **You skip every `V2` row.** They are real scope, but
@@ -43,9 +44,9 @@ Everything else in this repo is the reasoning behind those briefs — you never 
 
 ## The order is the V1 build order. `V2` rows are skipped.
 
-**Your first screen is `SCR-SHELL-01` — App Shell & Navigation.** Everything renders inside it,
-so nothing else can be drawn honestly until it exists. Do not invent a different starting point,
-however tempting a smaller brief looks.
+**Your next screen is the first one `python3 scripts/next-screen.py` prints.** `SCR-SHELL-01` —
+App Shell & Navigation — came first because everything renders inside it, and it is designed.
+Do not invent a different starting point, however tempting a smaller brief looks.
 
 The eight blocks, in order, with the V1 count in each:
 
