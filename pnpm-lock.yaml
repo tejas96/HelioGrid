@@ -566,6 +566,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@heliogrid/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@heliogrid/domain':
         specifier: workspace:*
         version: link:../domain

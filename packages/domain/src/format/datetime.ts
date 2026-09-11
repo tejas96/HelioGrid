@@ -28,7 +28,7 @@ const HHMM = /^([01]?\d|2[0-3]):([0-5]\d)$/;
  * Epoch milliseconds, or `null` for anything unparseable.
  *
  * `Date.parse` rather than `new Date(…)`: constructing a Date is how a clock read gets into a
- * pure package, so `check:adherence` bans the spelling outright (ADR-0021). Parsing a stamp the
+ * pure package, so `check:adherence` bans the spelling outright (`packages/domain/CLAUDE.md`). Parsing a stamp the
  * caller already holds reads no clock, and `Intl.DateTimeFormat` formats an epoch directly.
  */
 function toEpoch(value: string | Date | number): number | null {

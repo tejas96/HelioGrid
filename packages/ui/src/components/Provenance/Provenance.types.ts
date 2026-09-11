@@ -1,8 +1,12 @@
+import type { ProvenanceTier } from '@heliogrid/contracts';
+
 /**
- * The four canonical tiers. **Not a closed set** — any string is a valid tier, because three
- * surfaces need vocabularies these names don't contain and one screen forbids "measured" outright.
+ * The four canonical tiers are `contracts`' (`F8-02`) — this is the design system's name for the
+ * same set, never a second list. **Not a closed set** here — any string is a valid tier, because
+ * three surfaces need vocabularies these names don't contain and one screen forbids "measured"
+ * outright.
  */
-export type ProvenanceTierName = 'measured' | 'derived' | 'estimated' | 'assumed';
+export type ProvenanceTierName = ProvenanceTier;
 
 /**
  * A mark colour, named as a DS colour token rather than as a CSS colour string — the web half

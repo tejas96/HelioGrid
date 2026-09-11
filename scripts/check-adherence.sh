@@ -175,7 +175,7 @@ if [ -n "$hex" ]; then
 fi
 
 # ── 4. packages/domain purity: no ambient clock, randomness or I/O ───────────
-# ADR-0021 and packages/domain/CLAUDE.md require reducers to be total and deterministic —
+# packages/domain/CLAUDE.md requires reducers to be total and deterministic —
 # "time enters as a parameter (now: number), never Date.now() inside a reducer", and a
 # module-level mutable cache is named there as THE anti-pattern the package exists to prevent.
 # Both documents read as though a gate covered that. Nothing did: the dependency-cruiser
@@ -187,12 +187,12 @@ done
 if [ -e packages/domain/src ]; then
   # Aliased and indirect forms count: `const now = Date.now` then `now()`, crypto.randomUUID,
   # performance.now and the timer family are all ambient nondeterminism, which is what
-  # ADR-0021 actually forbids — not the literal spelling `Date.now(`.
+  # packages/domain/CLAUDE.md actually forbids — not the literal spelling `Date.now(`.
   impure=$(grep -rnE '(Date\.now|Math\.random|new Date\(|\bfetch\(|XMLHttpRequest|crypto\.randomUUID|performance\.now|\bset(Timeout|Interval)\()' \
              packages/domain/src --include='*.ts' --include='*.mts' --include='*.cts' 2>/dev/null \
            | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(/\*|\*|//)')
   if [ -n "$impure" ]; then
-    printf 'IMPURITY in packages/domain (ADR-0021 — no clock, no randomness, no I/O):\n%s\n' "$impure"
+    printf 'IMPURITY in packages/domain (packages/domain/CLAUDE.md — no clock, no randomness, no I/O):\n%s\n' "$impure"
     echo '  Time and randomness ENTER AS PARAMETERS (`now: number`, an injected id source) so a'
     echo '  reducer is total and replayable. I/O belongs to the app that calls it.'
     fail=1
@@ -393,6 +393,49 @@ if [ -n "$app_sql" ]; then
   printf 'SQL IN AN APP — queries belong to packages/db:\n%s\n' "$app_sql"
   echo '  packages/db owns schema, the tenant predicate and the index-backed read. A query'
   echo '  written in an app carries none of them.'
+  fail=1
+fi
+
+# ── 10d. A vocabulary is declared once — a package never copies an owner's list ──────
+# Check 10 holds the APPS to their owners. A package is free to declare its own vocabulary — a
+# component's `size: 'sm' | 'md'` is packages/ui's to own — so the same shape cannot be applied
+# there: it fires on every prop union. What a package may never do is COPY a list contracts or
+# domain already declares, because the copy drifts the day the owner changes (the provenance
+# tiers were declared four times). So this compares SETS: every string-literal list of three or
+# more members that contracts or domain declares — a `z.enum([...])`, an `as const` tuple, a
+# union type — against every literal list a non-owner file declares, exported or not. Equal set,
+# same words: a copy. Three or more, because a pair (`'add' | 'deduct'`) is too often two
+# unrelated concepts that happen to share words. Tests and generated trees are outside it, and
+# a restatement written as an `===` chain rather than a list is not seen.
+vocab_copies=$(python3 - <<'PYCODE'
+import re, subprocess
+tracked = subprocess.run(['git', 'ls-files', '--cached', '--others', '--exclude-standard', 'apps', 'packages'],
+                         capture_output=True, text=True).stdout.split('\n')
+files = [f for f in tracked if f.endswith(('.ts', '.tsx')) and not f.endswith('.d.ts')
+         and '/tests/' not in f and '/_generated/' not in f and '/dist/' not in f and '/node_modules/' not in f]
+owners = [f for f in files if f.startswith(('packages/contracts/src/', 'packages/domain/src/'))]
+others = [f for f in files if f not in owners]
+LIST = re.compile(r"\[\s*((?:'[^']+'\s*,\s*)+'[^']+'\s*,?)\s*\]", re.S)
+UNION = re.compile(r"^[ \t]*(?:export[ \t]+)?type[ \t]+\w+\s*=\s*((?:'[^']+'\s*\|\s*)+'[^']+')", re.M)
+def literal_sets(text):
+    for pattern in (LIST, UNION):
+        for m in pattern.finditer(text):
+            yield frozenset(re.findall(r"'([^']+)'", m.group(1))), text.count('\n', 0, m.start()) + 1
+owned = {}
+for f in owners:
+    for members, line in literal_sets(open(f, encoding='utf-8').read()):
+        if len(members) >= 3:
+            owned.setdefault(members, f'{f}:{line}')
+for f in others:
+    for members, line in literal_sets(open(f, encoding='utf-8').read()):
+        if len(members) >= 3 and members in owned:
+            print(f'  {f}:{line}: copies {owned[members]} ({", ".join(sorted(members))})')
+PYCODE
+)
+if [ -n "$vocab_copies" ]; then
+  printf 'A VOCABULARY DECLARED TWICE — the second copy drifts the day the owner changes:\n%s\n' "$vocab_copies"
+  echo '  Import the owner'"'"'s type or tuple (contracts for a wire enum, domain for a policy list);'
+  echo '  never restate its members (Law 5, CLAUDE.md §8).'
   fail=1
 fi
 
