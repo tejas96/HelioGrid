@@ -139,7 +139,7 @@ This file covers module M01 — company signup and authentication, team invites 
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-mobile every base and brief-listed state at 375px less `M01-09`'s two (`T-M01-035`) — normal, loading, error, duplicate-phone-login-offered, resume-after-abandon, number-invalid, fields-invalid — the colour-literal lint clean; 1536 and parity are `T-M01-034`'s
 ### T-M01-034 · Company Signup — web
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#59)
 **Why:** The owner signs the company up "usually on a laptop, often with a salesperson on a call": the same five inputs, drawn as the two-field desktop composition over the flow the phone runs; without it the web product has no way to make a tenant, and the two doors would drift on the one screen every company passes through.
 **PRD rows:** M01-01 (P0), M01-08 (P0)
 **BRIEF:** docs/ux/briefs/SCR-M01-02-company-signup.md
