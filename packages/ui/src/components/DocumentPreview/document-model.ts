@@ -1,13 +1,19 @@
+import {
+  type MinorUnits,
+  minorUnits,
+  type ResolvedPayable,
+  reconcileMinorUnits,
+  resolvePayable,
+} from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { asWordOnPaper, bestTextOn, NEAR_BLACK, normaliseHex } from '../../utils/color-contrast';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
-import type { ResolvedMoney } from '../../utils/money-lines';
-import { reconcileAmounts, resolveMoneySummary } from '../../utils/money-lines';
 import type {
   DocumentLetterhead,
+  DocumentLineItem,
   DocumentPart,
   DocumentPreviewProps,
   DocumentSection,
@@ -78,22 +84,19 @@ function letterheadSpec(value: DocumentLetterhead | ReactNode): DocumentLetterhe
 }
 
 function equationFor(
-  lineItems: [string, number | string][],
-  subsidyAmount: number | undefined,
+  lineItems: readonly DocumentLineItem[],
+  subsidyAmount: MinorUnits | undefined,
   subsidyLabel: string,
-): ResolvedMoney | null {
-  const numeric =
-    lineItems.length > 0 && lineItems.every(([, amount]) => typeof amount === 'number');
-  if (!numeric) {
+): ResolvedPayable | null {
+  const worded = lineItems.some(([, amount]) => typeof amount === 'string');
+  if (lineItems.length === 0 || worded) {
     return null;
   }
-  return resolveMoneySummary({
+  return resolvePayable({
     lines: [
-      ...lineItems.map(([label, amount], index) => ({
-        key: `l${index}`,
-        label,
-        amount: Number(amount),
-      })),
+      ...lineItems.flatMap(([label, amount], index) =>
+        typeof amount === 'string' ? [] : [{ key: `l${index}`, label, amount }],
+      ),
       ...(subsidyAmount
         ? [{ key: 'subsidy', kind: 'deduct' as const, label: subsidyLabel, amount: subsidyAmount }]
         : []),
@@ -103,10 +106,10 @@ function equationFor(
 
 function subsidySentence(
   subsidyNote: string | undefined,
-  equation: ResolvedMoney | null,
-  subsidyAmount: number | undefined,
+  equation: ResolvedPayable | null,
+  subsidyAmount: MinorUnits | undefined,
   subsidyLabel: string,
-  money: MarketFormat['money'],
+  money: MarketFormat['amount'],
 ): string | null {
   if (subsidyNote !== undefined) {
     return subsidyNote;
@@ -147,13 +150,13 @@ export function resolveDocument(
     docDate = '2026-08-16',
     parts = ['cover', 'items'],
     lineItems = [
-      ['Mono PERC modules 545 W × 16', 261600],
-      ['String inverter 8 kW', 68400],
-      ['Mounting structure & BOS', 74200],
-      ['Installation & commissioning', 48271],
+      ['Mono PERC modules 545 W × 16', minorUnits(26_160_000)],
+      ['String inverter 8 kW', minorUnits(6_840_000)],
+      ['Mounting structure & BOS', minorUnits(7_420_000)],
+      ['Installation & commissioning', minorUnits(4_827_100)],
     ],
     total,
-    subsidyAmount = 78000,
+    subsidyAmount = minorUnits(7_800_000),
     subsidyLabel = 'PM Surya Ghar subsidy',
     subsidyNote,
     sections = [],
@@ -168,14 +171,14 @@ export function resolveDocument(
 
   /* A line amount may legitimately be a WORD — "Included", "At cost" — so the string spelling
      passes through. That is a call-site distinction, not a second money formatter. */
-  const amountText = (value: number | string): string =>
-    typeof value === 'string' ? value : format.money(value);
+  const amountText = (value: MinorUnits | string): string =>
+    typeof value === 'string' ? value : format.amount(value);
 
   const equation = equationFor(lineItems, subsidyAmount, subsidyLabel);
   if (
     equation !== null &&
     typeof total === 'number' &&
-    !reconcileAmounts(total, equation.gross).agrees
+    !reconcileMinorUnits(total, equation.gross).agrees
   ) {
     console.warn(
       `DocumentPreview: total={${total}} disagrees with the line items, which sum to ${equation.gross}. A disagreement is a defect (SCR-M06-14) — printing the sum of the lines.`,
@@ -207,7 +210,7 @@ export function resolveDocument(
       amountText: amountText(amount),
     })),
     totalText: shownTotal === undefined ? '' : amountText(shownTotal),
-    subsidyLine: subsidySentence(subsidyNote, equation, subsidyAmount, subsidyLabel, format.money),
+    subsidyLine: subsidySentence(subsidyNote, equation, subsidyAmount, subsidyLabel, format.amount),
     sections: normaliseSections(sections),
     sectionsTitle,
     tranches: tranches.map((tranche) => ({

@@ -3,12 +3,14 @@ import {
   formatCompact,
   formatCompactMoney,
   formatDate,
+  formatMinorUnits,
   formatMoney,
   formatMonthYear,
   formatNumber,
   formatPhone,
   formatTime,
   IN_FORMATS,
+  type MinorUnits,
   moneySymbol,
   monthNames,
   type Numberish,
@@ -39,6 +41,11 @@ export interface MarketFormat {
   pack: FormatPack;
   number: (value: Numberish, options?: NumberOptions) => string;
   money: (value: Numberish, options?: { fractionDigits?: number }) => string;
+  /**
+   * A whole-minor-unit amount (`MinorUnits`) printed TO the minor unit — the equation's figures, a
+   * tranche, a receipt. `money` is for a major-unit figure that makes no minor-unit claim.
+   */
+  amount: (value: MinorUnits) => string;
   /**
    * **The resolved symbol** — the pack's if it writes one, else Intl's, else the ISO code.
    * `NumberField` renders a money field's adornment from this, which is how no component ends
@@ -75,6 +82,7 @@ export function createFormat(pack: FormatPack = IN_FORMATS): MarketFormat {
     pack,
     number: (value, options) => formatNumber(pack, value, options),
     money: (value, options) => formatMoney(pack, value, { digits: options?.fractionDigits }),
+    amount: (value) => formatMinorUnits(pack, value),
     currencySymbol: moneySymbol(pack),
     symbolPosition: pack.symbolPosition,
     compact: (value) => formatCompact(pack, value),

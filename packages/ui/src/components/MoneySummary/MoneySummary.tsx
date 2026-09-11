@@ -1,7 +1,7 @@
+import { resolvePayable } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { resolveMoneySummary } from '../../utils/money-lines';
-import type { MoneySummaryProps } from './MoneySummary.types';
+import type { MoneySummaryProps, MoneySummarySpec } from './MoneySummary.types';
 import { MoneySummaryRow } from './MoneySummaryRow';
 import { MoneySummaryTotal } from './MoneySummaryTotal';
 
@@ -14,9 +14,10 @@ interface WebMoneySummaryProps extends MoneySummaryProps {
  * **What the forty lines add up to.** `M06-35` (P0) / `SCR-M06-05`: cost + battery − incentive −
  * discount = payable, RECOMPUTING ON EVERY CHANGE — an ITEMISED EQUATION, not a single stat.
  *
- * **Zero never renders negative, and the excess is named.** **A failed reconciliation prints no
- * price** (`SCR-M06-14`: a disagreement is a defect, not a display difference), and neither does
- * an unresolved line — no figure without a resolved value.
+ * **A payable at or below zero is shown, with a warning** (`M06-35`: the negative figure, never
+ * hidden; the block is Generate's). **A failed reconciliation prints no price** (`SCR-M06-14`: a
+ * disagreement is a defect, not a display difference), and neither does an unresolved line — no
+ * figure without a resolved value. The arithmetic is `@heliogrid/domain`'s, in whole minor units.
  *
  * It survives a page break: `data-keep-together` pairs with `tokens/print.css`.
  *
@@ -35,7 +36,7 @@ export function MoneySummary({
   className,
   style,
 }: WebMoneySummaryProps) {
-  const m = resolveMoneySummary({ lines, reconcile });
+  const m = resolvePayable({ lines, reconcile });
 
   return (
     <section
@@ -64,7 +65,6 @@ export function MoneySummary({
 }
 
 /** The same test as a boolean, for a send path: may this document state a price? */
-MoneySummary.stands = (spec: Parameters<typeof resolveMoneySummary>[0] = {}) =>
-  resolveMoneySummary(spec).payableStandsUp;
+MoneySummary.stands = (spec: MoneySummarySpec = {}) => resolvePayable(spec).payableStandsUp;
 /** The resolved arithmetic, for a caller that needs the numbers as well as the rendering. */
-MoneySummary.resolve = resolveMoneySummary;
+MoneySummary.resolve = (spec: MoneySummarySpec = {}) => resolvePayable(spec);

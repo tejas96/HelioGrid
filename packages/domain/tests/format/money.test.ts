@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { formatCompactMoney, formatMoney, moneySymbol } from '../../src/format/money';
+import {
+  formatCompactMoney,
+  formatMinorUnits,
+  formatMoney,
+  moneySymbol,
+} from '../../src/format/money';
 import { type FormatPack, IN_FORMATS } from '../../src/format/pack';
+import { minorUnits } from '../../src/money/minor-units';
 
 /** NON-BREAKING space — `F3-08` forbids a value and its unit separating across a line. */
 const NBSP = ' ';
@@ -97,5 +103,26 @@ describe('formatCompactMoney (F1-46)', () => {
 
   it('trails the symbol where the market does', () => {
     expect(formatCompactMoney(TRAILING, 9_200_000)).toBe(`92L${NBSP}₹`);
+  });
+});
+
+describe('formatMinorUnits — paise printed to the minor unit, in the market’s own money (F1-07)', () => {
+  it.each([
+    [4_527_101, '₹45,271.01'],
+    [100, '₹1.00'],
+    [1, '₹0.01'],
+    [0, '₹0.00'],
+    [-2_000_000, '₹-20,000.00'],
+  ])('%d minor units renders %s', (amount, expected) => {
+    expect(formatMinorUnits(IN_FORMATS, minorUnits(amount))).toBe(expected);
+  });
+
+  it("follows the pack's minor-unit digits, so a market with no minor unit prints none", () => {
+    expect(formatMinorUnits({ ...IN_FORMATS, minorUnitDigits: 0 }, minorUnits(452))).toBe('₹452');
+  });
+
+  it('never rounds to the screen default: the last paisa is shown even where screens hide it', () => {
+    expect(formatMoney(IN_FORMATS, 45271.01)).toBe('₹45,271');
+    expect(formatMinorUnits(IN_FORMATS, minorUnits(4_527_101))).toBe('₹45,271.01');
   });
 });

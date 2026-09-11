@@ -4,8 +4,8 @@
    withholds the payable on the strength of it. A deduction carries its sign here rather than in the
    arithmetic: `amount` is a magnitude and `kind` is what it does to the total. */
 
-import type { MoneyLine } from '../../utils/money-lines';
 import { useFormat } from '../MarketProvider';
+import type { MoneyLine } from './MoneySummary.types';
 
 export function MoneySummaryRow({ line }: { line: MoneyLine }) {
   const mkt = useFormat();
@@ -20,7 +20,7 @@ export function MoneySummaryRow({ line }: { line: MoneyLine }) {
           /* An unresolved line is not a zero. It says so, in its own footprint. */
           <span className="hg-money-summary-unresolved">not resolved yet</span>
         ) : (
-          `${line.kind === 'deduct' ? '− ' : ''}${mkt.money(line.amount)}`
+          `${line.kind === 'deduct' ? '− ' : ''}${mkt.amount(line.amount)}`
         )}
       </span>
     </div>

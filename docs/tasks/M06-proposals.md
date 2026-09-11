@@ -97,10 +97,12 @@ are the specification.
 **Status:** planned
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05 → PENDING
+**Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix; `MoneySummary`, `DataTable.totalRow` and `DocumentPreview` run through it, and this screen composes it.
 
 **Requirements (verbatim):** Verbatim rows live in
 `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md`; they are the specification.
 
+**Verified:** digest 685b6c3d27ab · 2026-09-11 · smoke (a shared module no screen reaches yet) · web pass — the running dev server on 3002 compiled this tree, `/login` renders the "Sign in" heading, the one console error is `GET /auth/session` refused because no api was running (environment) · mobile bundle pass — Metro resolved the tree to a 3.1 MB bundle; ios/android not booted, no screen mounts `MoneySummary`, `DataTable.totalRow` or `DocumentPreview` · api/worker n/a · parity n/a — both halves call one domain function, `qa-parity` not dispatched · unit 1048 pass, `money/**` and `format/**` at 100% · design-system contract green after the `MoneySummary` re-pull
 **DONE WHEN:**
 - Given step 3, when capacity, type, category, AMC and the money fields are filled, then the client-payable card updates live with every change, and every tax and incentive field carries the pack's scheme labels — no hard-coded market term (M06-09; `F1-13`/`F1-14`).
 - Given cost, battery, incentive and discount values, when any changes, then the payable card recomputes live and shows a negative payable the moment it goes ≤ 0 (M06-35).

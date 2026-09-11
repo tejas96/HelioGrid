@@ -1,25 +1,37 @@
-import type { ReactNode } from 'react';
 import type {
-  MoneyLine,
-  MoneyReconcileSpec,
-  MoneyReconciliation,
-  MoneySummarySpec,
-  ResolvedMoney,
-} from '../../utils/money-lines';
+  PayableLine,
+  PayableReconcileSpec,
+  PayableSpec,
+  ResolvedPayable,
+} from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
 /**
- * The equation's data shapes are DECLARED in `utils/money-lines` — the one arithmetic this block
- * and `DataTable.totalRow` both run through, so the two can never disagree about a payable, a
- * floor at zero or a failed reconciliation. Re-exported here as the component's contract.
+ * The arithmetic is `@heliogrid/domain`'s `resolvePayable`, in whole minor units — the one
+ * equation this block, `DataTable.totalRow` and `DocumentPreview` all run through, so no two
+ * surfaces can disagree about a payable or a failed reconciliation. This file adds only what a
+ * RENDERED line carries beyond the arithmetic.
  */
-export type { MoneyLine, MoneyReconcileSpec, MoneyReconciliation, MoneySummarySpec, ResolvedMoney };
+
+/** One member of the equation as this block renders it: the domain's line plus its presentation. */
+export type MoneyLine = PayableLine & {
+  /** A second line under the label — "PM Surya Ghar, credited by the National Portal". */
+  note?: ReactNode;
+  strong?: boolean;
+};
+
+/** What `MoneySummary.resolve` and `MoneySummary.stands` take. */
+export type MoneySummarySpec = PayableSpec<MoneyLine>;
+
+/** The equation resolved over this block's lines. */
+export type ResolvedMoney = ResolvedPayable<MoneyLine>;
 
 export interface MoneySummaryProps {
   /** The equation's members, in reading order: cost · battery · tax · incentive · discount. */
   lines: MoneyLine[];
   /** `SCR-M06-14`'s other figure — the BOM total this summary must agree with. */
-  reconcile?: MoneyReconcileSpec;
+  reconcile?: PayableReconcileSpec;
   payableLabel?: string;
   overline?: string;
   /** `screen` — a quote screen or a phone card. `document` — on a sheet, at document type. */

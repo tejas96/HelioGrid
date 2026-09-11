@@ -25,7 +25,13 @@ export {
   PROCUREMENT_SYSTEM,
   resolveMeasurementSystem,
 } from './measurement';
-export { formatCompactMoney, formatMoney, type MoneyOptions, moneySymbol } from './money';
+export {
+  formatCompactMoney,
+  formatMinorUnits,
+  formatMoney,
+  type MoneyOptions,
+  moneySymbol,
+} from './money';
 export {
   formatCompact,
   formatNumber,

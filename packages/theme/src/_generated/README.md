@@ -4,7 +4,8 @@ Pulled **2026-08-19** from Claude Design project `c8aa4326-21bf-453a-8d11-749cc8
 (HelioGrid Design System) via **DesignSync**. Four contracts re-pulled **2026-09-02** after their
 components were changed on both sides: `feedback/Toast`, `feedback/ToastHost`,
 `navigation/SegmentedControl`, `overlays/Modal`. A partial pull is named so the date above is not
-read as covering them.
+read as covering them. `data/MoneySummary` re-pulled **2026-09-11** after `M06-35`'s ruling
+replaced its floor at zero with the shown negative payable, on both sides.
 
 Every file in this folder is a byte-verbatim copy of the live design system:
 
