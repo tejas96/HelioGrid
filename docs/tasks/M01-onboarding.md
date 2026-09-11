@@ -106,7 +106,7 @@ This file covers module M01 — company signup and authentication, team invites 
 - Given a signup abandoned after OTP verification, when the person returns, then setup resumes where it stopped (M01-10). → proof: qa-api verify, drop the layer, boot a new one on the same jar: the session comes back `restored` with no company and the signup view is the company step, no code requested · qa-mobile + qa-web the sign-in door still signs in and lands home on both platforms, because the shared verify path changed
 ### T-M01-002 · Company Signup — mobile
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped (#58)
 **Why:** An owner types a phone, a code, a company name, their name and a city and owns a workspace in under a minute with no plan, card or tax number in the way; without it there is no tenant for anything else to happen in. The phone lands first, as the sign-in door did (`T-M01-001`); the desktop composition is `T-M01-034`, the join steer `T-M01-035`.
 **PRD rows:** M01-01 (P0), M01-08 (P0)
 **DESIGN:** SCR-M01-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html
