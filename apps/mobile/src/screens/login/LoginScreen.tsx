@@ -4,9 +4,9 @@ import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { useFormat } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import { CodeStep } from './components/CodeStep';
-import { PhoneStep } from './components/PhoneStep';
-import { SuccessDwell } from './components/SuccessDwell';
+import { CodeStep } from '../shared/CodeStep';
+import { PhoneStep } from '../shared/PhoneStep';
+import { SuccessDwell } from '../shared/SuccessDwell';
 import { SwitchSheet } from './components/SwitchSheet';
 
 /**
@@ -20,14 +20,18 @@ export function LoginScreen() {
   const session = useSession();
   const { pack } = useFormat();
   const signIn = useSignIn(pack);
-  const toCompanySignup = () => navigation.navigate('CompanySignup');
+  const door = {
+    question: t(SIGN_IN.newCompany),
+    label: t(SIGN_IN.createCompany),
+    onPress: () => navigation.navigate('CompanySignup'),
+  };
 
   const view = doorView(session, signIn.state.step);
 
   if (view === 'switch' && session.switch !== null) {
     return (
       <>
-        <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />
+        <PhoneStep signIn={signIn} title={t(SIGN_IN.signIn)} intro={t(SIGN_IN.intro)} door={door} />
         <SwitchSheet pending={session.switch} onConfirm={() => void session.completeSwitch()} />
       </>
     );
@@ -40,5 +44,7 @@ export function LoginScreen() {
     );
   }
   if (view === 'code') return <CodeStep signIn={signIn} />;
-  return <PhoneStep signIn={signIn} onCreateCompany={toCompanySignup} />;
+  return (
+    <PhoneStep signIn={signIn} title={t(SIGN_IN.signIn)} intro={t(SIGN_IN.intro)} door={door} />
+  );
 }

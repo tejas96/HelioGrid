@@ -41,3 +41,13 @@ the exact string you read. No prose outside the array.
 
 Never mark a step passed on a screenshot alone, never skip one silently, and never restart
 the dev server unless a cold start IS the criterion.
+
+**Signing out between runs.** The pane keeps the HttpOnly session across runs and the placeholder
+home has no control: from any page on the app's origin, `javascript_tool`
+`await fetch('http://localhost:8084/auth/sign-out', {method: 'POST', credentials: 'include'})`,
+then open `/login` — the door must show "Sign in" before a step that signs in.
+
+**Signing in during a run.** The development number in `.env.local` (`DEV_OTP_PHONE`) signs in
+with `DEV_OTP_CODE`, sends nothing and counts against no cap — use it for every step that needs an
+owner or a returning account. A step that needs a NEW account types a fresh `+91` ten-digit number
+and reads the code from the API's log (`Message for +91… code is 123456`).

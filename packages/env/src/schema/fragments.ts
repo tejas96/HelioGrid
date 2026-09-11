@@ -58,3 +58,8 @@ export const temporalAddressSchema = z.string().min(3);
 export const temporalNamespaceSchema = z.string().min(1);
 /** A path that must exist at boot; the caller asserts readability, the schema asserts shape. */
 export const filePathSchema = z.string().min(1);
+
+/** E.164, as the front door stores it: a plus, then seven to fifteen digits, no leading zero. */
+export const developmentPhoneSchema = z.string().regex(/^\+[1-9]\d{6,14}$/);
+/** The six digits of a sign-in code, leading zeros included. */
+export const developmentCodeSchema = z.string().regex(/^\d{6}$/);

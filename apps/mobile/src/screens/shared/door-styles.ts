@@ -2,9 +2,9 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
 
 /**
- * The door's frame at 375, as `SCR-M01-01` draws it: the canvas, the brand bloom (`BrandBloom`,
- * the design system's) behind the top of the column, `--sp-6` above and below, the market's
- * mobile screen padding at the sides.
+ * The door's frame at 375, as `SCR-M01-01` and `SCR-M01-02` draw it: the canvas, the brand bloom
+ * (`BrandBloom`, the design system's) behind the top of the column, `--sp-6` above and below, the
+ * market's mobile screen padding at the sides. Shared by the sign-in door and company signup.
  */
 export const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: theme.colors.canvas },
@@ -27,6 +27,13 @@ export const styles = StyleSheet.create({
     paddingTop: theme.spacing['sp-8'],
     paddingBottom: theme.spacing['sp-6'],
   },
+  /** With a footer the column's bottom padding moves to the footer, so the action sits `sp-6` under the last line. */
+  columnAboveFooter: { paddingBottom: 0 },
+  footer: {
+    paddingTop: theme.spacing['sp-6'],
+    paddingBottom: theme.spacing['sp-6'],
+    paddingHorizontal: theme.layout['screen-pad-mobile'],
+  },
   form: { gap: theme.spacing['sp-5'] },
   or: { alignItems: 'center', gap: theme.spacing['sp-3'] },
   caption: { marginTop: theme.spacing['sp-4'] },
@@ -34,6 +41,8 @@ export const styles = StyleSheet.create({
   door: { alignItems: 'center', gap: theme.spacing['sp-2'] },
   /** The export's code column: `sp-5` between the header row and the title, then `sp-5` throughout. */
   codeColumn: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-5'] },
+  /** Under a step header the code column keeps the title block's `sp-8` (the signup export). */
+  codeColumnAfterLead: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-8'] },
   codeTitle: { gap: theme.spacing['sp-1'] },
   centred: { alignItems: 'center' },
   callBlock: { gap: theme.spacing['sp-2'] },
@@ -44,6 +53,7 @@ export const styles = StyleSheet.create({
   },
   tintedDanger: { backgroundColor: theme.colors['danger-bg'] },
   tintedWarning: { backgroundColor: theme.colors['warning-bg'] },
+  tintedInfo: { backgroundColor: theme.colors['info-bg'] },
   dwell: {
     flex: 1,
     alignItems: 'center',

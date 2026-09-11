@@ -62,8 +62,9 @@ the radius gets steps in all four quadrants (happy · edge · negative · advers
 steps per (surface × quadrant) before dispatching; **a zero cell aborts the run naming the
 gap.** Small is fine; lopsided is not.
 
-**Size the plan to the run.** At most ten steps per agent dispatch — a step costs two to four
-tool calls and an agent that hits its turn cap re-reads, re-signs-in and re-does. Each surface
+**Size the plan to the run.** At most ten steps per agent dispatch, six on the phone — a step
+costs two to four tool calls on the web and eight to twelve on a simulator, and an agent that
+hits its turn cap re-reads, re-signs-in and re-does. Each surface
 signs in at most twice in a run (once without a company, once as the owner); the steps are
 ordered so every session is reused, and a shared fact — the beat copy, a frame's words — is
 asserted on ONE surface, the other asserting only its landing.
