@@ -22,7 +22,7 @@
     "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
     "check:adherence": "bash scripts/check-adherence.sh",
     "check:secrets": "bash scripts/check-secrets.sh",
-    "check:catalogs": "c() { find packages/i18n/src/locales -type f -print0 | sort -z | xargs -0 git hash-object; }; before=$(c); pnpm --filter @heliogrid/i18n extract >/dev/null; if [ \"$before\" = \"$(c)\" ]; then echo \"catalogs OK - extraction produced no change\"; else echo \"catalogs STALE - copy changed without re-running extract:\"; git diff --stat packages/i18n/src/locales; exit 1; fi",
+    "check:catalogs": "c() { find packages/i18n/src/locales -type f -print0 | sort -z | xargs -0 git hash-object; }; before=$(c); pnpm --filter @heliogrid/i18n extract >/dev/null; if [ \"$before\" = \"$(c)\" ]; then echo \"catalogs OK - extraction produced no change\"; else echo \"catalogs STALE - this check re-ran extract, so the tree now holds the fresh catalogs; commit them:\"; git diff --stat packages/i18n/src/locales; exit 1; fi",
     "check:openapi": "node scripts/check-openapi-breaking.mjs",
     "tools:oasdiff": "bash scripts/install-oasdiff.sh",
     "check:dupes": "jscpd --config .jscpd.json apps packages",

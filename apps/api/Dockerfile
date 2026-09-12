@@ -7,7 +7,7 @@ RUN pnpm install --frozen-lockfile --filter @heliogrid/api...
 RUN pnpm --filter @heliogrid/api... run build
 # `--legacy` is REQUIRED on pnpm 10: without it `deploy` aborts with
 # ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE unless the workspace sets
-# inject-workspace-packages=true. Verified 2026-07-30 — the image could not build.
+# inject-workspace-packages=true. Without the flag the image does not build at all.
 RUN pnpm --filter @heliogrid/api --prod --legacy deploy /out
 
 FROM node:22-slim

@@ -6,7 +6,7 @@ different orders and mixing them up is the main way this goes wrong:
 | | order | source of truth | unit |
 |---|---|---|---|
 | **Design** | the eight blocks below, V1 rows only | `docs/prd/registers/screens.md` §2 (`V` column) | **99** of 150 screens |
-| **Build** | the same eight blocks | this file | 391 tasks |
+| **Build** | the same eight blocks | this file | 392 tasks |
 
 Since 2026-08-15 the two orders are **the same order** — the design run follows the build blocks,
 V1 rows only. That is the whole point of the scope lock.
@@ -27,7 +27,7 @@ requirement register; this file only says what order to take them in and why.
 `scripts/gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
-**234 of the 391 tasks have no design dependency at all.**
+**234 of the 392 tasks have no design dependency at all.**
 
 | | tasks | can start |
 |---|---|---|

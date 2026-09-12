@@ -14,9 +14,8 @@ FROM temporalio/server:1.30.6@sha256:c8ade0075f9d9da43c206de2b255c80be49db384045
 USER root
 # `postgresql-client` is NOT optional dressing: `scripts/backup.sh` runs `pg_dump` and the
 # server image does not ship it. Without this the backup runbook fails on the machine, at the
-# moment an operator most needs it to work — found by running the script in the image
-# (2026-08-26). The client MAJOR must be >= the server's; pinning the alpine package keeps the
-# image reproducible.
+# moment an operator most needs it to work. The client MAJOR must be >= the server's; pinning
+# the alpine package keeps the image reproducible.
 RUN apk add --no-cache postgresql16-client curl
 
 # temporal-sql-tool, the CLI and the schema files, at the server's exact version.
@@ -31,7 +30,7 @@ RUN chmod +x /etc/temporal/deploy-scripts/*.sh
 
 # The config is RENDERED at start (see render-config.sh) and the server is told exactly where
 # to read it: a file at the conventional ./config/<env>.yaml is IGNORED in favour of an
-# embedded env-driven template — measured 2026-08-25.
+# embedded env-driven template.
 ENV TEMPORAL_SERVER_CONFIG_FILE_PATH=/etc/temporal/config/server.yaml
 # internal-frontend must be STARTED, not merely configured: the default service list is
 # frontend,history,matching,worker and Temporal's own system worker then has nothing to call.
