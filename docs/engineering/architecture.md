@@ -172,7 +172,8 @@ tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
 ### theme — tokens, the semantic layer and the provider
-Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull`), the semantic
+Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull` — a session action, not a
+script), the semantic
 role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
 the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
 scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (the v1
@@ -194,7 +195,7 @@ divergence a type error instead.
 
 ### apps/web — Next.js
 Owns: routes (app/ — routing only), features/ (capability owners), web screens, and lib/
-(app infrastructure: ApiErrorText + its css, and env.ts — the allowlisted literal
+(app infrastructure: env.ts — the allowlisted literal
 NEXT_PUBLIC_* read; see §2 env). Allowed deps: contracts, data, domain, env, forms, i18n,
 theme, ui, config. Platform scope: web (browser + Next server runtime). Belongs: screen
 composition, web-only hooks (DOM APIs) under features/*/shared/. Never: db (web-no-db — uuid subpath included), @ts-rest/* or any HTTP client (apps-never-touch-the-wire,
@@ -358,7 +359,7 @@ section records the answer per new file.
    declares a label per language, and domain imports nothing. contracts derives the
    z.enum and re-exports, so i18n, the Lingui CLI and the apps still import from contracts.
 7. Is it a visual value (color, spacing, type scale)? → the live design system via
-   packages/theme (`ds:pull`) — never a literal in a screen, never hand-transcribed.
+   packages/theme (`ds:pull` — a session action, not a script) — never a literal in a screen.
 8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared
    `<Name>.types.ts` plus `<Name>.tsx` (web) and `<Name>.native.tsx` (RN), one change
    (Law 7).

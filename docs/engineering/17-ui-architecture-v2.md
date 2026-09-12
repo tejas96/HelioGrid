@@ -183,7 +183,8 @@ which components it uses and in what form. Building ahead of that is what produc
 
 Three scripts, all mechanical.
 
-**`ds:pull`** — fetches the live design system's tokens, component manifest and
+**`ds:pull`** (a session action, NOT a pnpm script) — fetches the live design system's tokens,
+component manifest and
 per-component typings (as `.d.ts.txt`) into `packages/theme/src/_generated/`. Output is committed.
 Hand-editing anything in `_generated/` is a bug.
 

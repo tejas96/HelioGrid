@@ -25,7 +25,7 @@ owner-approved operation.
 | Dev Postgres (Fly) | ⏳ blocked on card — use local Docker meanwhile (below) |
 | Upstash Redis | ⏳ blocked on card (plan selection requires billing; no free path pre-card) |
 | Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |
-| GitHub CI | ✅ green (quality + android + iOS lanes); branch protection requires all three |
+| GitHub CI | ✅ green (changes, quality, mobile-js, android, iOS); the mobile lanes run only when their own paths change |
 
 ## Local dev
 
