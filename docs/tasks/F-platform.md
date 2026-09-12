@@ -782,7 +782,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-038 · The unit-test corpus, declared once
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#70)
 **Why:** Four things decide where a unit test may live — the runner, the write guard, the adherence check and the boundary rule — and while each carried its own copy of the list they could disagree; the runner collected from ANY package, so a test in a layer three guards refuse would run and pass, and a reader could not tell which answer was the rule.
 **PRD rows:** none of its own — it serves every row whose proof is a unit test, by making the layers that may hold one a single fact.
 **Data model:** none.
