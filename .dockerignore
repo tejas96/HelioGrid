@@ -7,7 +7,9 @@
 # Deny-nothing-by-default is deliberate here: the build needs the sources, and enumerating
 # what to KEEP would silently drop a new package the day it is created.
 
-# Secrets — never, under any name.
+# Secrets — never, under any name. A credential that reaches any image layer has leaked, so the
+# list covers the shapes a credential takes here: the env files, the key and certificate
+# extensions, and the signed Temporal token, which is a bare file with no extension to catch.
 .env
 .env.*
 !.env.example
@@ -16,6 +18,8 @@
 *.p8
 *.p12
 *.keystore
+.temporal-token
+.temporal-token.*
 google-services.json
 GoogleService-Info.plist
 
@@ -50,3 +54,8 @@ coverage
 # Docs. The server images render none of it, and docs/ alone is a large tree of markdown.
 docs
 README.md
+
+# Local material no image needs: the design exports read from disk at build time by a person,
+# and the pinned tools a gate downloads. Both are large and neither is application code.
+HelioGrid-UX
+.tools
