@@ -6,9 +6,13 @@
  * src/_generated/tokens/colors.css; this gate re-derives it on every build so a re-pulled
  * colour cannot silently drop a pair under its floor.
  *
- * The v1 coverage scan (findUndeclaredPairs over packages/ui CSS) is deliberately not here:
- * packages/ui does not exist yet. Restore it in the change that creates packages/ui
- * (docs/engineering/17 §5 step 2), or a pairing a component uses but nobody declared is unchecked.
+ * The maths below is `packages/domain`'s `branding/contrast.ts`, written out a second time
+ * because this package depends on nothing in the workspace (`M1`) — it is generated from the
+ * live design system and its build must run before any package is built. The two are one
+ * formula: a change to WCAG's constants is a change to both files.
+ *
+ * The coverage scan over `packages/ui`'s CSS — a pairing a component uses that nobody declared
+ * below — is not here; `docs/tasks/deferred.md` carries what it must do.
  */
 
 function relativeLuminance(hex: string): number {
