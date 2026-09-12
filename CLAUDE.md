@@ -74,9 +74,9 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 - A feature or a number no PRD row implies. A finding BETWEEN readings the PRD supports is not an
   ask: rule it into the row (§1) and continue.
 - **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
-  go, a green gate, an event, or the yes to an earlier commit is never that yes. After it: push the
-  branch, print the PR body, STOP. The owner raises the PR and merges. `main` is PR-only; never
-  `--no-verify`, never a force-push.
+  go, a green gate, an event, or the yes to an earlier commit is never that yes. After it: push,
+  raise the PR, then flip the ledger — the one commit needing no yes, carrying the number just
+  shown. The owner merges. `main` is PR-only; never `--no-verify`, never a force-push.
 
 ## 5. Commands
 

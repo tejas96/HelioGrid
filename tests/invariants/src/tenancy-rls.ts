@@ -80,6 +80,22 @@ export async function runTenancyInvariants(adminUrl: string) {
       'app_user has no BYPASSRLS/superuser',
     );
 
+    /*
+     * The role the application actually CONNECTS as, proven here and not only where the api
+     * boots. `assertRuntimeRoleIsNotPrivileged` runs at that boot, and nothing in the gate lane
+     * boots the api — so a runtime role granted BYPASSRLS would leave every check green and RLS
+     * a silent no-op in production. Absent is not a failure: a database provisioned without it
+     * cannot be the one the application connects to, and `01-roles.sql` creates it.
+     */
+    const runtimeRow =
+      await sql`select rolbypassrls, rolsuper from pg_roles where rolname = 'app_runtime'`;
+    if (runtimeRow.length > 0) {
+      assert(
+        !runtimeRow[0]?.rolbypassrls && !runtimeRow[0]?.rolsuper,
+        'app_runtime has no BYPASSRLS/superuser (it is the role the api connects as)',
+      );
+    }
+
     // This whole suite proves RLS by BECOMING app_user, so the connecting role must be able to
     // `set local role app_user`. app_admin — which .env.example mandates for
     // DATABASE_ADMIN_URL, and which infra/README tells operators to run this command with —

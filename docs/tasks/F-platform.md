@@ -766,7 +766,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-037 · What the server images run as, and what may enter their build context
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#68)
 **Why:** The two images that carry this product to a machine decide what an intruder inherits and what a developer's laptop hands to a registry; a process running as root turns one broken dependency into a rewritten application, and a credential that reaches any image layer has leaked even if a later stage discards it.
 **PRD rows:** none of its own — it serves every row that runs on a server, by making what ships unprivileged and clean.
 **Data model:** none.

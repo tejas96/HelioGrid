@@ -6,7 +6,7 @@ description: Close out a task — gates once, a review sized to the diff, the do
 # `/ship` — gates, review, done-when, commit on a yes, push, print the PR body
 
 The PR is the one human gate (`CLAUDE.md` §8), so everything before it is mechanical and
-everything in it is written for a five-minute read. The owner raises the PR; this skill never does.
+everything in it is written for a five-minute read. This skill raises the PR; the owner merges.
 
 ## 1. Gates, once
 
@@ -68,9 +68,9 @@ owner's next message, given to exactly what was shown; a go, a green gate, an ev
 an earlier commit is not it, and a changed file list needs a new yes. On the yes: commit with the
 `Co-Authored-By` trailer, never `--no-verify`, never a QA scratchpad or artifact directory.
 
-## 5. Push, print the PR body, stop
+## 5. Push, raise the PR, flip the ledger
 
-`git push -u origin <branch>`. Then print the PR body in chat for the owner to paste, in this order:
+`git push -u origin <branch>`, then open the PR with a body in this order:
 
 1. **What and why** — one paragraph; the task id is in the title.
 2. **Design** — the three things as decided, and any ruling applied, by row id.
@@ -79,13 +79,14 @@ an earlier commit is not it, and a changed file list needs a new yes. On the yes
 5. **Review and risks** — the review tier, its findings and their fate; what is deliberately not
    handled yet.
 
-End with the generated-with line. Then stop. Never open the PR, never merge, never push to `main`,
-never force-push.
+End with the generated-with line, and print it in chat too — the owner reads it there. Never
+merge, never push to `main`, never force-push.
 
-When the PR exists — the owner's, or one the owner told you to open — **flip the ledger on this
-same branch**: the task's `Status:` to `shipped (#n)` and its screens in `screens.md`, one commit
-with its own yes, pushed to the same PR as its last commit. A flip never gets a PR of its own
-(`docs/tasks/README.md` rule 0, `M106`). Then watch its checks
+Then, at once, **flip the ledger on this same branch**: the task's `Status:` to `shipped (#n)` and
+its screens in `screens.md`, pushed to the same PR as its last commit. This is the ONE commit that
+needs no yes (`M105`) — it is mechanical, and it carries the number just shown. Waiting for one
+loses the window: the owner merges, and the ledger is then wrong until another branch carries it
+(`M106`). A flip never gets a PR of its own (`docs/tasks/README.md` rule 0). Then watch its checks
 (`gh pr checks <n> --watch`) and report the verdict. A red lane is fixed on the same branch before
-the merge, each commit with its own yes; CI runs only on the PR, so this is the first time the
+the merge, each fix commit with its own yes; CI runs only on the PR, so this is the first time the
 committed tree is checked whole.
