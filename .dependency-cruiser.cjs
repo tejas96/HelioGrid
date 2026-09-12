@@ -11,6 +11,13 @@
  * for ones the importer does not declare — a pattern covering only one form is inert in
  * exactly the case it exists to catch. Four rules in this file were inert on that basis.
  */
+/* The apps a unit test may live in, from the one file that states the corpus — so this rule
+ * cannot fence a different set than the runner collects or the guard admits. */
+const TEST_APPS = require('./packages/config/unit-test-packages.json')
+  .packages.filter((p) => p.startsWith('apps/'))
+  .map((p) => p.slice('apps/'.length));
+if (TEST_APPS.length === 0) throw new Error('unit-test-packages.json names no app');
+
 module.exports = {
   forbidden: [
     {
@@ -441,7 +448,7 @@ module.exports = {
         'Unit tests are welcome in the LOGIC layers, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
       from: {
         path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$',
-        pathNot: '^apps/(api|worker)/tests/',
+        pathNot: `^apps/(${TEST_APPS.join('|')})/tests/`,
       },
       to: { path: '.*' },
     },

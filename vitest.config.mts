@@ -1,4 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
+
+/* The layers a unit test may live in, read from the one file that states them
+   (`packages/config/unit-test-packages.json`). A JSON read rather than an import so this
+   config needs no resolver and no build step to know the corpus. */
+const { packages: UNIT_TEST_PACKAGES, coverage: COVERED_SOURCES } = JSON.parse(
+  readFileSync(new URL('./packages/config/unit-test-packages.json', import.meta.url), 'utf8'),
+) as { packages: string[]; coverage: string[] };
 
 /** Every line, branch and function of a slice: the bar each glob below lands at (CLAUDE.md §8). */
 const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
@@ -44,7 +52,10 @@ export default defineConfig({
    */
   oxc: { tsconfigRaw: { compilerOptions: { target: 'es2022', verbatimModuleSyntax: true } } },
   test: {
-    include: ['{packages,apps}/*/tests/**/*.test.ts'],
+    /* The corpus is `@heliogrid/config`'s, so the runner cannot disagree with the guards: a
+       test in a package outside it used to RUN and pass while three checks said it may not
+       exist. Collecting from the same list is what makes the refusal true. */
+    include: UNIT_TEST_PACKAGES.map((pkg) => `${pkg}/tests/**/*.test.ts`),
     /*
      * A test imports `../../src/…`, never `@heliogrid/<pkg>`. The package entry resolves to
      * BUILT `dist/`, so a test written that way passes against the last build and says nothing
@@ -59,16 +70,10 @@ export default defineConfig({
       /* `all` counts an untested file as 0% rather than omitting it — a file with no test is
          the gap you are looking for, and a report that hides it is worse than no report. */
       all: true,
-      include: [
-        'packages/domain/src/**/*.ts',
-        'packages/contracts/src/**/*.ts',
-        'packages/forms/src/**/*.ts',
-        /* `runtime.ts` alone: the provider, the loaders and the polyfills are proven by running
-           (testing.md), and a bar over them would buy an import-only test. */
-        'packages/i18n/src/runtime.ts',
-        'apps/api/src/**/*.ts',
-        'apps/worker/src/**/*.ts',
-      ],
+      /* The same one list. `packages/i18n` contributes `runtime.ts` alone: the provider, the
+         loaders and the polyfills are proven by running (testing.md), and a bar over them would
+         buy an import-only test. */
+      include: COVERED_SOURCES,
       exclude: ['**/index.ts', '**/*.d.ts', 'packages/contracts/src/scripts/**'],
       /*
        * Thresholds are per-slice and land WITH the slice (Law 9), not as one global number

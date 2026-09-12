@@ -2,11 +2,13 @@
   "name": "@heliogrid/config",
   "version": "0.0.1",
   "private": true,
-  "description": "Shared tsconfig presets for the HelioGrid workspace",
+  "description": "Shared build configuration for the HelioGrid workspace — tsconfig presets and the unit-test corpus",
   "files": [
-    "tsconfig"
+    "tsconfig",
+    "unit-test-packages.json"
   ],
   "exports": {
-    "./tsconfig/*": "./tsconfig/*"
+    "./tsconfig/*": "./tsconfig/*",
+    "./unit-test-packages.json": "./unit-test-packages.json"
   }
 }
