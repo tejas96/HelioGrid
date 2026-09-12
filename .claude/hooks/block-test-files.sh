@@ -34,10 +34,16 @@ if [[ ! "$rel" =~ ^(packages|apps)/[a-z0-9-]+/tests/ ]]; then
   exit 2
 fi
 
-case "$rel" in
-  packages/domain/tests/*|packages/contracts/tests/*|packages/forms/tests/*|packages/i18n/tests/*|apps/api/tests/*|apps/worker/tests/*)
-    exit 0 ;;
-esac
+# The corpus is `packages/config/unit-test-packages.json`, read rather than retyped: this guard
+# and `scripts/check-adherence.sh` check 1 apply one rule, and a second copy is how they drift.
+corpus="$CLAUDE_PROJECT_DIR/packages/config/unit-test-packages.json"
+[ -f "$corpus" ] || { echo "Blocked: this guard reads $corpus and it is missing (M70)." >&2; exit 2; }
+if python3 -c 'import json,sys
+rel, path = sys.argv[1], sys.argv[2]
+pkgs = json.load(open(path))["packages"]
+sys.exit(0 if any(rel.startswith(p + "/tests/") for p in pkgs) else 1)' "$rel" "$corpus"; then
+  exit 0
+fi
 
 echo "Blocked: \`${rel%%/tests/*}\` is not a unit-tested layer (CLAUDE.md §8). Unit tests cover DECISIONS — domain, contracts, forms, i18n (runtime.ts alone), api, worker. Frontend is proven by running it; packages/data by driving the real client; packages/db by migrations and tests/invariants/." >&2
 exit 2

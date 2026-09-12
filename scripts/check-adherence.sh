@@ -60,7 +60,9 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
 #             compiles tests into `dist/`, which then ships.
 #   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
 #             driving the real client, `packages/db` by migrations plus tests/invariants/.
-UNIT_TEST_PACKAGES='packages/domain packages/contracts packages/forms packages/i18n apps/api apps/worker'
+# The corpus, from the one file that states it — never retyped here (see that file's comment).
+UNIT_TEST_PACKAGES=$(python3 -c 'import json;print(" ".join(json.load(open("packages/config/unit-test-packages.json"))["packages"]))')
+[ -n "$UNIT_TEST_PACKAGES" ] || { echo 'check-adherence: packages/config/unit-test-packages.json names no package'; exit 1; }
 
 bad_name=$(
   find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" 2>/dev/null

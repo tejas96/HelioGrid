@@ -1,0 +1,19 @@
+{
+  "comment": "The layers a unit test may live in, written ONCE. The test runner collects from here, the write guard admits a path from here, the adherence check lists the same set back, and the boundary rule fences apps by it. Which layers and why is `.claude/rules/testing.md`; changing the set is changing that rule, and this file is how the four readers agree with it.",
+  "packages": [
+    "packages/domain",
+    "packages/contracts",
+    "packages/forms",
+    "packages/i18n",
+    "apps/api",
+    "apps/worker"
+  ],
+  "coverage": [
+    "packages/domain/src/**/*.ts",
+    "packages/contracts/src/**/*.ts",
+    "packages/forms/src/**/*.ts",
+    "packages/i18n/src/runtime.ts",
+    "apps/api/src/**/*.ts",
+    "apps/worker/src/**/*.ts"
+  ]
+}

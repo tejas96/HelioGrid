@@ -780,6 +780,22 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a developer's working tree, when an image is built from it, then no credential, design export or downloaded tool reaches the build context. → proof: qa-api list the build stage's own tree in each image and find none of the three
 
 ---
+### T-FPLAT-038 · The unit-test corpus, declared once
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#70)
+**Why:** Four things decide where a unit test may live — the runner, the write guard, the adherence check and the boundary rule — and while each carried its own copy of the list they could disagree; the runner collected from ANY package, so a test in a layer three guards refuse would run and pass, and a reader could not tell which answer was the rule.
+**PRD rows:** none of its own — it serves every row whose proof is a unit test, by making the layers that may hold one a single fact.
+**Data model:** none.
+**Contract:** none — no route or schema changes. `@heliogrid/config` gains `unit-test-packages.json`: the layers, and the sources coverage is measured over. The four readers take it from there and nothing else restates it; which layers and why stays `.claude/rules/testing.md`.
+**Depends on:** nothing.
+**Out of scope:** that all four still key on `*.test.*`, so a file named `money-tests.ts` evades every one, and that the write guard fires on `Write` alone — both recorded in `M70`'s gap.
+**Found by:** the architecture review of 2026-09-11 (its `H12`, and `L9` for the locked invariant set).
+**Verified:** digest 2e533c571d48 · 2026-09-12 · none — no runtime path changed; the change is what the gates read · gate pass (the corpus proven load-bearing by adding `apps/web` to it and watching all four readers admit it — the guard allowed `apps/web/tests/`, the boundary fence became `^apps/(api|worker|web)/tests/`, the runner's collection grew — then reverting and watching all four refuse it again) · unit 80 files, 1081 tests pass, the same suite the six-copy arrangement collected · web/ios/android/api n/a · parity n/a
+**DONE WHEN:**
+- Given the runner, the write guard, the adherence check and the boundary rule, when the corpus changes, then all four change with it and none states the list itself. → proof: gate add a package to `unit-test-packages.json` and read all four back, then revert
+- Given a test written into a layer outside the corpus, when it is written, then it is refused rather than silently collected. → proof: gate the write guard refuses `packages/db/tests/` and `packages/ui/tests/` while admitting `packages/domain/tests/` and `apps/api/tests/`
+
+---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** planned

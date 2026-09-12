@@ -15,7 +15,10 @@ holds each line and how much of it.
   `i18n`'s `runtime.ts` alone (the fallback and the per-reader translator have edges running
   cannot see; its provider, loaders and polyfills are proven by running). Not
   the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
-  client, `db` by migrations and `tests/invariants/`.
+  client, `db` by migrations and `tests/invariants/`. That set is machine-readable in
+  `packages/config/unit-test-packages.json`, which the runner, the write guard, the adherence
+  check and the boundary rule all read; changing the set means changing this line AND that file,
+  and nothing else restates it.
 - **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
   never inside `src/`, where the package's own `tsc -b` compiles the test into `dist/` and ships
   it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
