@@ -121,8 +121,10 @@ and never the whole run.
 
 ## 6. Parity — only when drift is possible
 
-Run `qa-parity` ONLY when the diff touches a shared package or both app trees. A
-single-platform change skips it; say so in the report rather than running it for form.
+Run `qa-parity` when the diff touches a shared package, both app trees, or a screen that has a
+twin on the other platform (`M115`, review-only) — a single-platform change to a twinned screen
+is where drift starts. A change to a screen with no twin skips it; say so in the report rather
+than running it for form.
 
 Pass it the feature's web and mobile paths plus every observed value the surface agents
 recorded for the same quantity. A value mismatch is a **blocker** — a platform re-implemented

@@ -40,7 +40,10 @@ FLOW, for any task with a state: which `packages/domain` reducer decides it and 
 `packages/data` hook drives it (Law 11), or "none — the screen holds only its form fields"; a
 flow first met in an app hook is the defect `M80` names. Then the reach: a file list PER LAYER —
 domain, contracts, db, data, i18n and its six generated catalog files per copy change, ui, each
-app, docs — never a count; a guessed reach is how the ceiling is first met at `/ship`. Contract
+app, docs — never a count; a guessed reach is how the ceiling is first met at `/ship`. For a
+screen, the reach names its twin on the other platform and, part by part, where each shared part
+lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a part that would be
+authored in both app trees is split out here (`M115`, review-only). Contract
 before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
 **A task that is really two tasks is split now, not shipped half.** Split at a seam that leaves

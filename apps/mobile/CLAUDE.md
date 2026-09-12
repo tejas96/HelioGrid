@@ -8,7 +8,8 @@ apps/mobile, §3 · what both apps share: `CLAUDE.md` §6, `architecture.md` §3
 
 - Field-first RN app: My Day, leads, quick-add, surveys, visits, notifications, profile, signup,
   invite accept. Screens land per module from the same contract as web; which platform ships a
-  screen first is a plan decision, but the prop contract stays in parity (Law 7).
+  screen first is a plan decision, but the prop contract stays in parity (Law 7). A part both
+  platforms draw is authored once — `.claude/rules/screen-parts.md`, loaded with this folder.
 - NEVER: an expo package, EAS, AsyncStorage for tokens, a `packages/db` import, a web-only
   dependency, or authored domain logic — import it (Law 11).
 

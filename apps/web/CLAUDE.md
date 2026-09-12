@@ -25,8 +25,9 @@ features/<capability>/ <Name>Screen.tsx composes · components/ one per componen
 lib/                   app infrastructure (env.ts)
 ```
 
-Same shape as mobile, different location. A feature is named for the CAPABILITY it owns, matching
-the API module that serves it, so one name spans both sides. `app/` imports a feature ONLY
+Same shape as mobile, different location. A part BOTH platforms draw leaves this tree —
+`.claude/rules/screen-parts.md`, loaded with this folder. A feature is named for the CAPABILITY it owns,
+matching the API module that serves it, so one name spans both sides. `app/` imports a feature ONLY
 through its barrel or a screen barrel one level down — nothing deeper. Two FEATURES sharing
 something means it is not feature-local: it belongs in a package (`architecture.md` §4).
 
