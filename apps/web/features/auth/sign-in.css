@@ -1,37 +1,7 @@
-/* The door — screen-level layout only; component pixels belong to @heliogrid/ui, every value a
-   token var(). Two compositions, one DOM: the phone's single column, and from the door's own
-   breakpoint the export's two fields — identity left, the one task right. The breakpoint is the
-   door's to own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
-   2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. The task measure is the
-   screen's (`SCR-M01-02` decision 14): the door's 420, the signup's 480 — never wider than its
-   track, so the signup's column takes the track between the breakpoint and the width two 480s fit. */
-
-.hg-door {
-  --door-measure: 420px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
-  overflow: hidden;
-  background: var(--canvas);
-}
-
-.hg-door[data-door="signup"] {
-  --door-measure: 480px;
-}
-
-.hg-door-bloom-desktop {
-  display: none;
-}
-
-.hg-door-page {
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--sp-5);
-  padding: var(--sp-6) var(--screen-pad-mobile);
-}
+/* The door — screen-level layout inside the frame @heliogrid/ui draws (`DoorFrame` owns the
+   canvas, the bloom, the two columns and the door's breakpoint): the title block, the form, the
+   road at the foot, the code family's rows and the switch panel. Component pixels belong to the
+   package; every value a token var(). */
 
 /* The door's title block sits sp-8 under the header on the phone (the export's normal frame);
    the code family's sits sp-5 (its column's gap), so only the door adds the difference. */
@@ -39,55 +9,10 @@
   padding-top: var(--sp-3);
 }
 
-.hg-door-wordmark-desktop {
-  display: none;
-}
-
-/* Under the breakpoint the phone arrangement is one column at the task measure, centred — a
-   window between a phone and the two-field composition never shows a 420 column hugging its
-   left edge. Both rows share the cap so the wordmark stays over the column. */
-.hg-door-header,
-.hg-door-body {
-  width: 100%;
-  max-width: var(--door-measure);
-  margin-inline: auto;
-}
-
-.hg-door-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-}
-
-.hg-door-trailing {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-left: auto;
-}
-
-.hg-door-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--sp-6);
-}
-
-.hg-door-identity,
 .hg-door-title {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-}
-
-.hg-door-task {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--sp-5);
-  width: 100%;
-  max-width: var(--door-measure);
 }
 
 .hg-door-form {
@@ -113,57 +38,6 @@
 .hg-door-call {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-}
-
-.hg-door-tinted {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-  padding: var(--sp-4);
-  border-radius: var(--r-card-expressive);
-}
-
-.hg-door-tinted[data-tone="danger"] {
-  background: var(--danger-bg);
-}
-
-.hg-door-tinted[data-tone="warning"] {
-  background: var(--warning-bg);
-}
-
-.hg-door-tinted[data-tone="info"] {
-  background: var(--info-bg);
-}
-
-.hg-door-dwell {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-6);
-  min-height: 100dvh;
-  overflow: hidden;
-  background: var(--canvas);
-}
-
-.hg-door-dwell-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: var(--sp-20);
-  height: var(--sp-20);
-  border-radius: var(--r-pill);
-  background: var(--success-bg);
-  color: var(--success-text);
-}
-
-.hg-door-dwell-words {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: var(--sp-2);
 }
 
@@ -198,52 +72,11 @@
   gap: var(--sp-3);
 }
 
+/* From the frame's breakpoint (`DoorFrame.css`) the identity is its own column, so the door's
+   two phone-only offsets go. */
 @media (min-width: 968px) {
-  .hg-door-bloom-phone {
-    display: none;
-  }
-
-  .hg-door-bloom-desktop {
-    display: block;
-  }
-
-  .hg-door-page {
-    padding: var(--sp-8) var(--screen-pad-desktop);
-  }
-
   .hg-door-intro {
     padding-top: 0;
-  }
-
-  .hg-door-header {
-    max-width: none;
-  }
-
-  .hg-door-wordmark {
-    display: none;
-  }
-
-  .hg-door-wordmark-desktop {
-    display: block;
-  }
-
-  .hg-door-body {
-    max-width: none;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: var(--sp-16);
-    padding-bottom: var(--sp-16);
-  }
-
-  .hg-door-identity {
-    max-width: 560px;
-    justify-self: end;
-    gap: var(--sp-6);
-  }
-
-  .hg-door-task {
-    flex: initial;
   }
 
   .hg-door-signup {

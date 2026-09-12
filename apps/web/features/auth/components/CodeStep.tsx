@@ -1,13 +1,19 @@
-import type { SignInDoor } from '@heliogrid/data';
 import type { SignIn } from '@heliogrid/data/react';
 import { OTP_LENGTH } from '@heliogrid/domain';
 import { SIGN_IN, type SignInLabels, signInWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, OtpInput, PhoneValue, Text, useFormat } from '@heliogrid/ui';
+import {
+  Button,
+  DoorFrame,
+  type DoorTaskMeasure,
+  OtpInput,
+  PhoneValue,
+  Text,
+  TintedBlock,
+  useFormat,
+} from '@heliogrid/ui';
 import type { ReactNode } from 'react';
-import { DoorFrame } from './DoorFrame';
 import { LanguageControl } from './LanguageControl';
-import { TintedBlock } from './TintedBlock';
 
 /**
  * The code family — one frame per outcome, drawn once (`SCR-M01-01`, the `d-code-family` frame)
@@ -17,13 +23,13 @@ import { TintedBlock } from './TintedBlock';
  */
 export function CodeStep({
   signIn,
-  door,
+  taskMeasure,
   lead,
   labels,
   note,
 }: {
   signIn: SignIn;
-  door?: SignInDoor;
+  taskMeasure?: DoorTaskMeasure;
   lead?: ReactNode;
   labels?: SignInLabels;
   note?: string;
@@ -52,7 +58,7 @@ export function CodeStep({
           <LanguageControl />
         </>
       }
-      door={door}
+      taskMeasure={taskMeasure}
       identity={
         <div className="hg-door-title">
           <Text variant="h1">{words.title}</Text>

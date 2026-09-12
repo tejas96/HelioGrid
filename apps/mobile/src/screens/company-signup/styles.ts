@@ -2,9 +2,10 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
 
 /**
- * Company signup's frames at 375, as `SCR-M01-02` draws them over the door's frame
- * (`shared/door-styles.ts`): the step header under the header row, the company step's title,
- * the account surface, the three fields, the loading facts and the known-number steer.
+ * Company signup's frames at 375, as `SCR-M01-02` draws them inside the door's frame
+ * (`DoorFrame`, `@heliogrid/ui`) and its column (`shared/door-styles.ts`): the step header under
+ * the header row, the company step's title, the account surface, the three fields, the loading
+ * facts and the known-number steer.
  */
 export const styles = StyleSheet.create({
   /** The step header: `sp-6` under the header row (the export's lead block). */

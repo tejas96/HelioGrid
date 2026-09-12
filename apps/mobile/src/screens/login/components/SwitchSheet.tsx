@@ -1,10 +1,9 @@
 import type { PendingSwitch } from '@heliogrid/data';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Sheet, useFormat } from '@heliogrid/ui';
+import { Button, Sheet, TintedBlock, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from '../../shared/door-styles';
-import { TintedBlock } from '../../shared/TintedBlock';
 
 /**
  * The one deliberately unrecoverable act in the product (`F4-37`, the carve-out from `F4-21`):

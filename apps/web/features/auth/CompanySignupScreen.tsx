@@ -3,7 +3,7 @@ import { homeOf, signupView } from '@heliogrid/data';
 import { useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
 import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { useFormat } from '@heliogrid/ui';
+import { SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import './sign-in.css';
@@ -13,7 +13,6 @@ import { CompanyStep } from './components/CompanyStep';
 import { KnownNumber } from './components/KnownNumber';
 import { PhoneStep } from './components/PhoneStep';
 import { SignupProgress } from './components/SignupProgress';
-import { SuccessDwell } from './components/SuccessDwell';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 
 /**
@@ -69,7 +68,7 @@ export function CompanySignupScreen() {
     return (
       <CodeStep
         signIn={signIn}
-        door="signup"
+        taskMeasure="steps"
         lead={<SignupProgress current={1} />}
         labels={{ verify: COMPANY_SIGNUP.verifyAndContinue }}
         note={t(COMPANY_SIGNUP.codeMakesTheAccount)}
@@ -79,7 +78,7 @@ export function CompanySignupScreen() {
   return (
     <PhoneStep
       signIn={signIn}
-      door="signup"
+      taskMeasure="steps"
       lead={<SignupProgress current={0} />}
       title={t(COMPANY_SIGNUP.createYourCompany)}
       intro={t(COMPANY_SIGNUP.intro)}
