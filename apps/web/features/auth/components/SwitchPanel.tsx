@@ -1,8 +1,7 @@
 import type { PendingSwitch } from '@heliogrid/data';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Icon, Text, useFormat } from '@heliogrid/ui';
-import { TintedBlock } from './TintedBlock';
+import { Button, Icon, Text, TintedBlock, useFormat } from '@heliogrid/ui';
 
 /**
  * The one deliberately unrecoverable act in the product (`F4-37`): what will be lost is named

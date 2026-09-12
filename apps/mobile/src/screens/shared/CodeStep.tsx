@@ -2,12 +2,11 @@ import type { SignIn } from '@heliogrid/data/react';
 import { OTP_LENGTH } from '@heliogrid/domain';
 import { SIGN_IN, type SignInLabels, signInWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, OtpInput, PhoneValue, Text, useFormat } from '@heliogrid/ui';
+import { Button, OtpInput, PhoneValue, Text, TintedBlock, useFormat } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
-import { DoorFrame } from './DoorFrame';
 import { styles } from './door-styles';
-import { TintedBlock } from './TintedBlock';
+import { InsetDoorFrame } from './InsetDoorFrame';
 
 /**
  * The code family — one frame per outcome, drawn once (`SCR-M01-01`, the `m-*` code states) and
@@ -41,7 +40,7 @@ export function CodeStep({
     labels,
   );
   return (
-    <DoorFrame
+    <InsetDoorFrame
       trailing={
         <Button variant="ghost" size="sm" onClick={() => signIn.press('change-number')}>
           {t(SIGN_IN.changeNumber)}
@@ -122,6 +121,6 @@ export function CodeStep({
           </Text>
         )}
       </View>
-    </DoorFrame>
+    </InsetDoorFrame>
   );
 }

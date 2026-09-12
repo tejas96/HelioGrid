@@ -1,5 +1,5 @@
 {
-  "threshold": 2.38,
+  "threshold": 2.03,
   "reporters": ["consoleFull"],
   "absolute": true,
   "gitignore": true,

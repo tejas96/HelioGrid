@@ -3,12 +3,11 @@ import { doorView, homeOf } from '@heliogrid/data';
 import { useSession, useSignIn } from '@heliogrid/data/react';
 import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { useFormat } from '@heliogrid/ui';
+import { SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import './sign-in.css';
 import { CodeStep } from './components/CodeStep';
 import { PhoneStep } from './components/PhoneStep';
-import { SuccessDwell } from './components/SuccessDwell';
 import { SwitchPanel } from './components/SwitchPanel';
 
 /**

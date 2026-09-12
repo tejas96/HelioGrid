@@ -2,11 +2,10 @@ import { homeOf, signupView } from '@heliogrid/data';
 import { useSession, useSignIn } from '@heliogrid/data/react';
 import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { useFormat } from '@heliogrid/ui';
+import { SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { CodeStep } from '../shared/CodeStep';
 import { PhoneStep } from '../shared/PhoneStep';
-import { SuccessDwell } from '../shared/SuccessDwell';
 import { CompanyStep } from './components/CompanyStep';
 import { KnownNumber } from './components/KnownNumber';
 import { SignupProgress } from './components/SignupProgress';
@@ -68,7 +67,7 @@ export function CompanySignupScreen() {
       title={t(COMPANY_SIGNUP.createYourCompany)}
       intro={t(COMPANY_SIGNUP.intro)}
       note={t(COMPANY_SIGNUP.nothingElse)}
-      door={{
+      road={{
         question: t(COMPANY_SIGNUP.alreadyOnHelioGrid),
         label: t(COMPANY_SIGNUP.signInInstead),
         onPress: () => navigation.navigate('Login'),
