@@ -515,11 +515,12 @@ fi
 # ── 12. A comment states the constraint, never the date it was learned ─────────
 # CLAUDE.md §8: a comment says what breaks if you change this; when and why it changed is the
 # commit's. A date in a comment is a war story, and a story rots the moment the tree moves on.
-# Scanned: every tracked source, script, config and workflow file outside docs/ and generated
-# trees. A quoted date is an example VALUE and passes — `2026-03-12` → `12 Mar 2026` is the
+# Scanned: every tracked source, script, config, manifest, Dockerfile and workflow outside docs/
+# and generated trees — a lint rule's message and an image's build note are comments too, and both
+# carried war stories while the scan read neither. A quoted date is an example VALUE and passes — `2026-03-12` → `12 Mar 2026` is the
 # format rule's own sample, not a story. Not seen: a docstring, a string that reads as a
 # comment, a date written without hyphens.
-dated_comments=$(git ls-files --cached --others --exclude-standard -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' \
+dated_comments=$(git ls-files --cached --others --exclude-standard -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' '*.json' 'Dockerfile' '*/Dockerfile' \
   | grep -zvE '^docs/|/_generated/|/openapi/|/dist/' \
   | xargs -0 grep -HnE '(^[[:space:]]*(//|/?\*|#)|(^|[^:])//|[[:space:]]#).*\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b' 2>/dev/null \
   | grep -vE "[\`\"']20[0-9]{2}-[0-9]{2}-[0-9]{2}[\`\"']" || true)
@@ -540,6 +541,25 @@ constant_tests=$(git ls-files --cached --others --exclude-standard -z -- '*/test
 if [ -n "$constant_tests" ]; then
   printf 'TEST RESTATES A CONSTANT — the subject of an expect is an outcome, never an imported constant (.claude/rules/testing.md):\n%s\n' "$constant_tests"
   echo '  Delete the assertion, or assert on the function that CONSUMES the constant.'
+  fail=1
+fi
+
+# ── 14. A server image runs unprivileged ──────────────────────────────────────
+# A process that runs as root turns one broken dependency into a rewritten application. Both
+# runtime images drop to the base image's `node` after their copies are made, so the application
+# directory is read-only to the process that runs it. Only the FINAL stage matters — a build
+# stage installs packages and must stay root — so the check reads what follows the last FROM.
+unprivileged_images=$(
+  for df in apps/*/Dockerfile; do
+    [ -f "$df" ] || continue
+    final=$(awk 'BEGIN{IGNORECASE=1} /^FROM /{buf=""} {buf=buf"\n"$0} END{print buf}' "$df")
+    printf '%s' "$final" | grep -qiE '^[[:space:]]*USER[[:space:]]+[a-z0-9_-]+' || echo "$df"
+  done
+)
+if [ -n "$unprivileged_images" ]; then
+  printf 'IMAGE RUNS AS ROOT — a server image drops to an unprivileged user before its CMD (M117):\n%s\n' "$unprivileged_images"
+  echo '  Add `USER node` after the copies in the final stage. The copies stay root-owned, which is'
+  echo '  the point: the runtime reads its own code and writes nothing.'
   fail=1
 fi
 
