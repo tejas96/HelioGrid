@@ -748,6 +748,22 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given an action the product cannot complete, when a user attempts it, then it fails at the attempt with a plain-language reason and is never queued, partially applied, or shown as having succeeded (`F8-36`).
 
 ---
+### T-FPLAT-036 · One Temporal identity, read once
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Every workflow the platform runs is authorised by a signed token and a client certificate, and both the API and the worker must present theirs the same way; when each process reads its own credential its own way, a rotation fixed in one is not fixed in the other, and the failure reads as a permissions problem rather than an expired token — at which point the instinct is to widen permissions.
+**PRD rows:** none of its own — it serves every row whose work runs on the worker (the notification deliveries of `F6`, the catalog import of `M01-40`), by making the identity both processes present one thing.
+**Data model:** none.
+**Contract:** none — no route changes. `@heliogrid/env/server` gains the reader both services call: the token file (read once, re-read only when the file changes) and the mTLS material, plus the one cadence at which a connection that cannot ask per request notices a rotation.
+**Depends on:** nothing — ADR-0025 named the two halves of identity; this is where they are read.
+**Out of scope:** the workflow timeouts that belong beside their workflow name in `packages/contracts`; the worker's own tests; the container hardening of both images.
+**Found by:** the architecture review of 2026-09-11 (its `H9`) — the same Bearer strip, the same mtime-and-size cache key and the same TLS assembly written twice, with two refresh models.
+**Verified:** digest 637bfb320387 · 2026-09-12 · api pass (qa-api, driven twice — the second time after the identity key shape became a `Pick` from the schema: both processes boot through the one reader, the worker logging `queue=heliogrid-platform`, `GET /health/ready` answering 200 with the database ok; a token minted under both running processes changes the file and adds no line to either log, and the readiness call still answers 200; the first run additionally pointed an API at a missing token file and it died at the shared reader with `ENOENT` without binding a port) · two limits recorded rather than claimed: the worker's push of a rotated token is silent by design, so that step proves no breakage on rotation and not the push itself — a token old enough to expire is what would prove it, and no local run is that long; and the second run saw the rotation as a changed modification time, which is what the reader's cache key reads, where the first run also compared the file's hash · web/ios/android n/a — no screen reaches this · parity n/a · unit 80 files, 1081 tests pass · `M116` proven red on a file read injected into the API's client and green on the one excluded build-artifact path · the derived identity type proven red both ways: renaming a key in `schema/api.ts` stops `packages/env` compiling, renaming it in `schema/worker.ts` stops the worker's call site
+**DONE WHEN:**
+- Given the API and the worker, when each connects to Temporal, then both read the token and the certificates through one reader in `@heliogrid/env/server` and neither imports a file API of its own. → proof: gate `M116` goes red on an injected credential read in either service · qa-api both processes boot and the worker's log names its queue
+- Given a token rotated while both processes run, when the next call and the next poll happen, then neither process needs a restart and neither logs an unauthorised request. → proof: qa-api rotate the token file under a running worker and a running API, then drive a workflow through the API route that starts it and read the worker log for the outcome
+
+---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** planned

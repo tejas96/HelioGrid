@@ -6,6 +6,9 @@
  * importing this module has no side effect; a consumer that never calls a loader never reads
  * the environment.
  *
+ * Credential FILES are read here too — `./temporal` — for the same reason: a Node-only read
+ * belongs behind a declared server entry, and both services must read an identity one way.
+ *
  * The cache is written with an explicit `if`, not `cache ??= …`. Biome's noAssignInExpressions
  * rejects the terser form and is right to: an assignment hidden inside a return expression
  * reads as side-effect-free when it is exactly the opposite.
@@ -14,6 +17,13 @@ import { parseEnv } from './parse';
 import { type ApiEnv, apiEnvSchema } from './schema/api';
 import { type InvariantsEnv, invariantsEnvSchema } from './schema/invariants';
 import { type WorkerEnv, workerEnvSchema } from './schema/worker';
+
+export type { TemporalIdentityEnv, TemporalTlsOptions } from './temporal';
+export {
+  createIdentityTokenReader,
+  IDENTITY_TOKEN_REFRESH_MS,
+  temporalTlsFrom,
+} from './temporal';
 
 let apiCache: ApiEnv | undefined;
 export function loadApiEnv(): ApiEnv {
