@@ -5,7 +5,8 @@
 ## Design
 
 <!-- The three things as decided (CLAUDE.md §3): the package per new file · the new facts and where
-     each TYPE lives · what proves it. Any owner ruling applied, by Q id. -->
+     each TYPE lives · what proves it. Any owner ruling applied, stated as the rule it became —
+     never by the open-question id it was answered under, which the tree no longer carries. -->
 
 ## Done-when
 

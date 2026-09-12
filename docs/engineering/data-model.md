@@ -1,15 +1,13 @@
-> **Fate:** each entity's rows move into the task that authors it, when that task is split to PR size; then this file is deleted.
+> **Fate:** each entity's rows move into the task that authors it, when that task is split to PR size; then this file is deleted. **A BUILT table is answered by `packages/db/src/schema/`, never here** — the identity, tenancy and settings sections already moved, so one of today's tables has a row below, and the naming here (`<entity>_id`, `_flag`) is design-time, which the schema does not follow.
 
 # HelioGrid — logical data model & ERD
 
 Status: design-time deliverable · derived from `docs/prd/` · **not product truth** — where this
 document and `docs/prd/` disagree, the PRD wins (`CLAUDE.md` §7).
 
-**Logical model only — no SQL, no migrations, no ORM schema.** The model is rebuilt from this
-PRD rather than restored from the retired schema, and it defines the entity shapes M03, M09 and
-M10 never had. Read it with
-[`forward-compat.md`](forward-compat.md), which states what each module's FIRST MIGRATION must
-satisfy; this document states what the entities and relationships ARE. Neither restates the other.
+**Logical model only — no SQL, no migrations, no ORM schema**, for an entity nobody has built yet.
+Read it with [`forward-compat.md`](forward-compat.md), which states what each module's FIRST
+MIGRATION must satisfy; this states what the entities and relationships ARE.
 
 Source of truth: `docs/prd/` (suite of 2026-08; every owner ruling applied; **zero open questions** — the last, the IN messaging window, closed 2026-08-26 by `F1-62`).
 Requirement IDs (`M02-31`, `F5-07`, `BM-22`, `MS10-39`, `OV-xx`, `PS-xx`) cite the PRD rows that

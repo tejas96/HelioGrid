@@ -63,7 +63,7 @@ authoritative doc for that layer; this table is only the index.
 | `packages/env` | The **only** package allowed to read a raw environment source | [packages/env/CLAUDE.md](packages/env/CLAUDE.md) |
 | `packages/i18n` | One Lingui catalog (EN/HI/MR) shared by web + mobile | [packages/i18n/CLAUDE.md](packages/i18n/CLAUDE.md) |
 | `packages/theme` | Tokens, semantic layer and the RN theme object — GENERATED from the live design system, never hand-edited | — |
-| `packages/ui` | The design system, BOTH platforms: 98 components as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
+| `packages/ui` | The design system, BOTH platforms: one folder per component as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
 | `<package>/tests` | Unit tests for the logic layers only — domain, contracts, forms, api, worker (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
