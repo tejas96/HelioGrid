@@ -798,7 +798,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-039 · A gate reports what it actually read
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#72)
 **Why:** A check with nothing to look at reports a pass it never earned: the tree moves, a glob stops matching, and the gate goes quietly green for ever — which is worse than no gate, because the green is believed. Six doc gates could pass on an empty corpus, one advertised a reach it did not have, one scan could not see a comment in a manifest or an image, and no gate at all held what a server image runs as.
 **PRD rows:** none of its own — it serves every row whose proof is a gate, by making a pass mean the gate read something.
 **Data model:** none.
