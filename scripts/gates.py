@@ -49,6 +49,20 @@ def gate(num, name, ok, detail=""):
     results.append((num, name, ok, detail))
 
 
+def scanned(num, name, corpus, floor, ok, detail, empty=""):
+    """A gate over a corpus, which must REFUSE an empty one.
+
+    A check with nothing to look at reports a pass it never earned: the tree moves, the glob
+    stops matching, and the gate goes quietly green for ever. Gate 1 has carried a floor from the
+    start; every other corpus gate now carries one too, so a miscounted corpus fails loudly
+    instead of passing silently.
+    """
+    if corpus < floor:
+        gate(num, name, False, empty or f"CORPUS ROT: {corpus} found, expected at least {floor}")
+        return
+    gate(num, name, ok, detail)
+
+
 # --------------------------------------------------------------------------- inputs
 
 def prd_files(repo):
@@ -330,8 +344,9 @@ def run(repo, verbose):
                 tid = m.group(0)
                 if tid not in defined:
                     refs[tid].append(f"{rel}:{i}")
-    gate(5, "no dangling task id", not refs,
-         f"{len(defined)} tasks defined" if not refs else f"{len(refs)} dangling: " + ", ".join(sorted(refs)[:10]))
+    scanned(5, "no dangling task id", len(defined), 300, not refs,
+            f"{len(defined)} tasks defined" if not refs
+            else f"{len(refs)} dangling: " + ", ".join(sorted(refs)[:10]))
 
     # --- Gate 6 · register screens vs brief files vs DESIGN tasks
     reg = spec(repo, "prd/registers/screens.md")
@@ -345,8 +360,9 @@ def run(repo, verbose):
     brief_set = {re.match(r"(SCR-[A-Z0-9]+-\d{2})", os.path.basename(f)).group(1) for f in briefs}
     missing_brief = sorted(reg_set - brief_set)
     orphan_brief = sorted(brief_set - reg_set)
-    gate(6, "every register screen has a brief file", not missing_brief and not orphan_brief,
-         f"{len(reg_set)} screens, {len(brief_set)} briefs, matched"
+    scanned(6, "every register screen has a brief file", len(reg_set), 100,
+            not missing_brief and not orphan_brief,
+            f"{len(reg_set)} screens, {len(brief_set)} briefs, matched"
          if not missing_brief and not orphan_brief
          else f"missing briefs: {missing_brief} · orphan briefs: {orphan_brief}")
 
@@ -401,8 +417,8 @@ def run(repo, verbose):
         missing = declared - quoted
         if missing:
             incoherent.append(f"{b['file']} {b['id']}: declares but no longer quotes {sorted(missing)}")
-    gate(9, "no half-cleaned task block", not incoherent,
-         f"{len(blocks)} blocks coherent" if not incoherent else "; ".join(incoherent[:6]))
+    scanned(9, "no half-cleaned task block", len(blocks), 300, not incoherent,
+            f"{len(blocks)} blocks coherent" if not incoherent else "; ".join(incoherent[:6]))
 
     # --- Gate 10 · offline machinery is gone from docs/tasks/
     # Deliberately narrow: only phrases that can ONLY mean the deleted sync layer. The studio's
@@ -512,7 +528,7 @@ def run(repo, verbose):
         except (UnicodeDecodeError, FileNotFoundError):
             continue
     gate(26, "no open-question id anywhere in the tree", not q_sites,
-         f"{len(tracked)} tracked files, none cites a Q id" if not q_sites
+         f"{len(tracked)} tracked text files, none cites a Q id — generated trees are not read,\n     and `_generated/tokens/colors.css` still carries one (docs/tasks/deferred.md)" if not q_sites
          else f"{len(q_sites)} sites — state the rule in the row, never the id: " + ", ".join(q_sites[:8])
               + (f" (+{len(q_sites) - 8} more)" if len(q_sites) > 8 else ""))
 
@@ -604,8 +620,9 @@ def run(repo, verbose):
         for line in body[dw:].split("\n"):
             if re.match(r"^\s*-\s", line) and not line.strip().startswith("---") and not proof_re.search(line):
                 ticket_bad.append(f"{b['id']}: done-when line without a proof: {line.strip()[:60]}…")
-    gate(29, "every ticket with a Why is whole, and every done-when line names its proof", not ticket_bad,
-         f"{n_tickets} tickets, all whole" if not ticket_bad
+    scanned(29, "every ticket with a Why is whole, and every done-when line names its proof",
+            n_tickets, 40, not ticket_bad,
+            f"{n_tickets} tickets, all whole" if not ticket_bad
          else f"{len(ticket_bad)}: " + " · ".join(ticket_bad[:6]))
 
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
@@ -669,9 +686,9 @@ def run(repo, verbose):
             dw = re.search(r"\*\*DONE WHEN:\*\*(.*?)(?=\n\*\(|\Z)", blk, re.S)
             cited = set(re.findall(ROW_ID, dw.group(1))) if dw else set()
             uncovered += [f"{rel} {m.group(1)} {r}" for r in sorted(claimed - cited)]
-    gate(21, "every claimed PRD row has an acceptance criterion", not uncovered,
-         f"{n_claims} row-claims, all covered by a DONE WHEN line" if not uncovered
-         else f"{len(uncovered)} uncovered: {uncovered[:6]}")
+    scanned(21, "every claimed PRD row has an acceptance criterion", n_claims, 200, not uncovered,
+            f"{n_claims} row-claims, all covered by a DONE WHEN line" if not uncovered
+            else f"{len(uncovered)} uncovered: {uncovered[:6]}")
 
     # --- Gate 17 · the V1 scope lock is intact
     # V1/V2 is a release axis, orthogonal to P0/P1/P2. Every screen carries exactly one, the two
@@ -815,8 +832,8 @@ def run(repo, verbose):
         # Informational rather than fatal: the clause is real but its absence is a house-style
         # drift, not a missing completion bar. Reported so it cannot spread unnoticed.
         pass
-    gate(20, "every screen task keeps its closing condition", not bad,
-         f"{n_screen} screen tasks, all carry it"
+    scanned(20, "every screen task keeps its closing condition", n_screen, 80, not bad,
+            f"{n_screen} screen tasks, all carry it"
          + (f" · {len(truncated)} omit the colour-literal clause (style drift, not fatal): {sorted(set(x.split()[0] for x in truncated))}" if truncated else "")
          if not bad else " · ".join(bad))
 

@@ -796,6 +796,23 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a test written into a layer outside the corpus, when it is written, then it is refused rather than silently collected. → proof: gate the write guard refuses `packages/db/tests/` and `packages/ui/tests/` while admitting `packages/domain/tests/` and `apps/api/tests/`
 
 ---
+### T-FPLAT-039 · A gate reports what it actually read
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#72)
+**Why:** A check with nothing to look at reports a pass it never earned: the tree moves, a glob stops matching, and the gate goes quietly green for ever — which is worse than no gate, because the green is believed. Six doc gates could pass on an empty corpus, one advertised a reach it did not have, one scan could not see a comment in a manifest or an image, and no gate at all held what a server image runs as.
+**PRD rows:** none of its own — it serves every row whose proof is a gate, by making a pass mean the gate read something.
+**Data model:** none.
+**Contract:** none — no route or schema changes. `scripts/gates.py` gains one `scanned()` helper that refuses a corpus below a floor, and six gates take one; `scripts/check-adherence.sh` reads manifests and Dockerfiles for dated comments and gains check 14, the image's user.
+**Depends on:** nothing. `T-FPLAT-037` made both images unprivileged; this is the gate that keeps them so.
+**Out of scope:** the floating base-image tag and the unscanned registry (`M16` and its own finding); the vocabulary gate's blindness to generated trees, which `docs/tasks/deferred.md` already carries.
+**Found by:** the architecture review of 2026-09-11 (its `M15`, and the guard promised against `M7` when the owner asked what stops a finding returning).
+**Verified:** digest e5486400ee8d · 2026-09-12 · none — no runtime path changed; what changed is what the gates read · gate pass (every floor proven red by emptying its corpus one at a time — six gates, six `CORPUS ROT` refusals, all green again on restore; check 14 proven red twice, once with the image's `USER` removed and once with it moved into a build stage, where it must not count) · unit 80 files, 1081 tests pass · web/ios/android/api n/a · parity n/a
+**DONE WHEN:**
+- Given a gate whose corpus has gone empty, when the gates run, then it fails naming the corpus rather than passing. → proof: gate empty each of the six corpora in turn and read the refusal back
+- Given a server image that does not drop to an unprivileged user, when the adherence check runs, then it fails; and a `USER` in a build stage does not satisfy it. → proof: gate remove the final-stage `USER` and read the failure, then move it into the build stage and read it again
+- Given a comment in a manifest or a Dockerfile that carries a date, when the adherence check runs, then it is caught like any other dated comment. → proof: gate the widened scan names the four build notes that carried one
+
+---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** planned
