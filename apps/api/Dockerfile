@@ -16,4 +16,10 @@ WORKDIR /app
 COPY --from=build /out .
 COPY --from=build /repo/apps/api/dist ./dist
 EXPOSE 8084
+
+# The base image carries an unprivileged `node` (uid 1000). Everything above ran as root and the
+# copies are owned by root, which is what we want: the runtime may READ its own code and write
+# nothing. A container broken into from the network then starts with no way to rewrite the app,
+# install a package, or bind a privileged port.
+USER node
 CMD ["node", "dist/main.js"]

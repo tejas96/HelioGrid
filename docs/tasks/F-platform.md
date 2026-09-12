@@ -750,7 +750,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-036 · One Temporal identity, read once
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#67)
 **Why:** Every workflow the platform runs is authorised by a signed token and a client certificate, and both the API and the worker must present theirs the same way; when each process reads its own credential its own way, a rotation fixed in one is not fixed in the other, and the failure reads as a permissions problem rather than an expired token — at which point the instinct is to widen permissions.
 **PRD rows:** none of its own — it serves every row whose work runs on the worker (the notification deliveries of `F6`, the catalog import of `M01-40`), by making the identity both processes present one thing.
 **Data model:** none.
@@ -762,6 +762,22 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 **DONE WHEN:**
 - Given the API and the worker, when each connects to Temporal, then both read the token and the certificates through one reader in `@heliogrid/env/server` and neither imports a file API of its own. → proof: gate `M116` goes red on an injected credential read in either service · qa-api both processes boot and the worker's log names its queue
 - Given a token rotated while both processes run, when the next call and the next poll happen, then neither process needs a restart and neither logs an unauthorised request. → proof: qa-api rotate the token file under a running worker and a running API, then drive a workflow through the API route that starts it and read the worker log for the outcome
+
+---
+### T-FPLAT-037 · What the server images run as, and what may enter their build context
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** The two images that carry this product to a machine decide what an intruder inherits and what a developer's laptop hands to a registry; a process running as root turns one broken dependency into a rewritten application, and a credential that reaches any image layer has leaked even if a later stage discards it.
+**PRD rows:** none of its own — it serves every row that runs on a server, by making what ships unprivileged and clean.
+**Data model:** none.
+**Contract:** none — no route or schema changes. Both `Dockerfile`s drop to the base image's unprivileged user after their copies, and `.dockerignore` covers the credential shapes that carry no extension plus the local trees no image needs.
+**Depends on:** nothing.
+**Out of scope:** pinning the base image by digest and the floating tags in CI's services; the CI database roles; the registry and its scanning. Each is its own review finding.
+**Found by:** the architecture review of 2026-09-11 (its `M7`).
+**Verified:** digest 0be28a6cd889 · 2026-09-12 · api pass (qa-api, 3 steps: both images build and report `uid=1000(node)`; a write under the application directory is refused in each with `Permission denied` while the api's entrypoint, the worker's entrypoint and the worker's pre-built bundle all stay readable; the three paths exist on the host and none of `.temporal-token`, `HelioGrid-UX` or `.tools` appears in the build stage's own tree) · web/ios/android n/a — no application code changed · parity n/a · unit 80 files, 1081 tests pass · not covered: the base image is still a floating tag, and a registry scan would be the gate this run is not
+**DONE WHEN:**
+- Given either server image, when its process starts, then it runs as an unprivileged user and cannot write to the application directory. → proof: qa-api build both images and, in each, read `id` and attempt a write under the application directory
+- Given a developer's working tree, when an image is built from it, then no credential, design export or downloaded tool reaches the build context. → proof: qa-api list the build stage's own tree in each image and find none of the three
 
 ---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
