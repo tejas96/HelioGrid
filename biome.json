@@ -316,6 +316,28 @@
       }
     },
     {
+      "includes": [
+        "apps/api/src/**",
+        "apps/worker/src/**",
+        "!apps/worker/src/common/temporal/workflow-bundle.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "node:fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use, so a rotation that works for one works for the other. The single exception is the boot assertion that a BUILD artifact exists, and it is excluded by path.",
+                  "fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use. Use 'node:fs' inside @heliogrid/env, never a bare specifier."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
       "includes": ["apps/web/**", "apps/mobile/**", "!apps/mobile/src/screens/**"],
       "linter": {
         "rules": {
