@@ -32,7 +32,8 @@ say "the tree git would commit, laid over it"
   git ls-files -z --cached --others --exclude-standard \
     | while IFS= read -r -d '' f; do [ -e "$f" ] && printf '%s\0' "$f"; done \
     | tar --null -T - -cf - | tar -C "$repo" -xf -
-  git ls-files -z --deleted | while IFS= read -r -d '' f; do rm -f "$repo/$f"; done
+  # Every deletion against HEAD, staged (git rm) and unstaged alike: the clone still holds the file.
+  git diff -z --name-only --diff-filter=D HEAD | while IFS= read -r -d '' f; do rm -f "$repo/$f"; done
 )
 
 say "CI's environment, read from the workflow"

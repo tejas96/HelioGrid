@@ -22,6 +22,9 @@ this file: when the path goes, the row goes.
 | The db-write hook reads the WHOLE Bash command text, heredocs included: a file written by heredoc that mentions `psql` beside a write word is blocked as if it were a query. | Write such files with the Write tool. | the hook parses command position only |
 | Green in `pnpm verify:clean`, red on GitHub: the room is a Mac and CI is ubuntu. A path that differs only by case, a tool that exists here and not there, a line ending. | Read the lane's log for the first Linux-only word; `act` reproduces it in Docker. | `act` runs the quality job locally |
 | A branch switch leaves `dist/` from the other branch: `turbo boundaries` and dependency-cruiser read `dist/`, so `pnpm verify` reports an import the checked-out source never makes. | `pnpm verify:clean` — its room has no `dist/`; or `pnpm turbo build --force` first. | `pnpm verify` is retired for `pnpm verify:clean` |
+| The preview tool refuses a dedicated port as "another chat's dev server" from a stale registry, even when nothing listens on it. | Confirm with `lsof`; start the api or web from the shell in the background with its log in the session scratchpad, and stop it yourself when the run ends. | never |
+| A subagent's browser calls can hang on their first `navigate` or be refused by the session's permission classifier, so `qa-web` returns nothing or every step inconclusive. | Check the session's permission mode before dispatching; while the pane is closed to subagents, the author's own drive is diagnosis recorded in the PR, never the verdict (`M113`). | never |
+| `computer` clicks and typing do not dispatch on a hidden Browser pane or a background tab: the page stays still and reads as "nothing happened". | Front the tab first (`tabs_select`); prefer `form_input` and a scripted click through `javascript_tool`. | never |
 
 ## apps/api
 

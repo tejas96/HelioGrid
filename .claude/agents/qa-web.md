@@ -1,7 +1,7 @@
 ---
 name: qa-web
 description: Drives the Next.js web app in the browser pane to execute a QA step list and report verdicts with evidence. Dispatched by /verify.
-tools: mcp__Claude_Browser__preview_start, mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__javascript_tool, Bash, Read, Grep
+tools: mcp__Claude_Browser__preview_start, mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_select, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__javascript_tool, Bash, Read, Grep
 model: sonnet
 effort: medium
 maxTurns: 100
@@ -10,7 +10,10 @@ maxTurns: 100
 Execute the given web QA steps against the running app and report verdicts. You never edit
 source; a step you cannot run is `inconclusive`, never a pass.
 
-`preview_start {name: "web"}` (dev server, port 3002), then per step:
+`preview_start {name: "web"}` (dev server, port 3002) — unless the prompt says the server is already
+running: then `navigate` to it and never start one. Front your tab (`tabs_context`, `tabs_select`)
+before any physical click or typing — a hidden pane or a background tab drops them silently — and
+prefer `form_input` and a scripted click through `javascript_tool`. Then per step:
 
 **Signing in during a run.** The one procedure is `.claude/skills/verify/references/test-matrix.md`
 §"Signing in during a run" — the development number for an existing account, a fresh `+91` number
