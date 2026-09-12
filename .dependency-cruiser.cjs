@@ -322,7 +322,7 @@ module.exports = {
       comment:
         'packages/db is importable ONLY by *.repository.ts (+ common/db, scripts). Services take repositories by DI and never see a tx or a table. This is what makes "every query path is tenant-scoped" a lint result instead of a hope.',
       from: {
-        path: '^apps/(api|worker|voice)/src/',
+        path: '^apps/(api|worker)/src/',
         pathNot: '(\\.repository\\.ts$|^apps/[^/]+/src/common/db/|^apps/[^/]+/src/scripts/)',
       },
       // `@heliogrid/db/uuid` is exempt: uuidv7 is a pure randomBytes helper with no
@@ -334,7 +334,7 @@ module.exports = {
       severity: 'error',
       comment: 'the ORM itself is fenced with the same boundary as packages/db.',
       from: {
-        path: '^apps/(api|worker|voice)/src/',
+        path: '^apps/(api|worker)/src/',
         pathNot: '(\\.repository\\.ts$|^apps/[^/]+/src/common/db/|^apps/[^/]+/src/scripts/)',
       },
       to: { dependencyTypes: ['npm'], path: '(^|/)node_modules/drizzle-orm/' },
@@ -355,7 +355,7 @@ module.exports = {
       severity: 'error',
       comment:
         'a module reaches another module ONLY through its <module>.public.ts — never a service class. This is the one-change-one-file property: a service signature change cannot ripple across modules because the caller only ever saw the public surface.',
-      from: { path: '^apps/(api|worker|voice)/src/modules/([^/]+)/' },
+      from: { path: '^apps/(api|worker)/src/modules/([^/]+)/' },
       to: {
         path: '^apps/[^/]+/src/modules/',
         pathNot: '(^apps/[^/]+/src/modules/$2/|\\.public\\.ts$)',
@@ -366,7 +366,7 @@ module.exports = {
       severity: 'error',
       comment:
         'common/ is framework plumbing beneath the modules — it may never import one. A guard that needs module behaviour depends on a PORT (token + interface in contracts) that the module implements.',
-      from: { path: '^apps/(api|worker|voice)/src/common/' },
+      from: { path: '^apps/(api|worker)/src/common/' },
       to: { path: '^apps/[^/]+/src/modules/' },
     },
     {

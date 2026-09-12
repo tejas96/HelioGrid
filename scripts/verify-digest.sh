@@ -18,4 +18,7 @@ case "${1:-}" in
     rm -f "$scratch"
     ;;
 esac
-git ls-tree -r "$tree" -- apps packages | grep -v -E '\.md$' | shasum -a 256 | cut -c1-12
+if command -v shasum >/dev/null; then hash_cmd() { shasum -a 256; }
+elif command -v sha256sum >/dev/null; then hash_cmd() { sha256sum; }
+else echo 'verify-digest: needs shasum or sha256sum on PATH' >&2; exit 1; fi
+git ls-tree -r "$tree" -- apps packages | grep -v -E '\.md$' | hash_cmd | cut -c1-12

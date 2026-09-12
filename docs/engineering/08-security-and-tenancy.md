@@ -214,7 +214,7 @@ DPDP Act 2023 + DPDP Rules 2025 — **the IN market's determination**; onboardin
 
 - **pnpm** with committed lockfile; CI installs `--frozen-lockfile` only.
 - **Postinstall scripts disabled** (`pnpm.onlyBuiltDependencies` allowlist — empty until a package proves it needs one); no `curl | bash` anywhere in tooling.
-- **sherif** in `pnpm turbo lint` — version drift across the workspace fails the build.
+- **sherif** in `pnpm lint` — version drift across the workspace fails the build.
 - **dependabot** weekly, security updates auto-PR'd; upgrades land only with green typecheck+lint+test.
 - **dependency-cruiser** boundaries double as anti-exfiltration: `packages/domain` cannot import network/storage modules, so a compromised transitive dep in domain code has no I/O path.
 - New runtime dependencies require justification in the PR body (consistency-over-cleverness rule).

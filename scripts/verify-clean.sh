@@ -89,6 +89,6 @@ cd "$repo"
 } 2>&1 | tee "$log"
 status=${PIPESTATUS[0]}
 say "verdict"
-grep -h "adherence OK\|catalogs OK\|openapi freshness\|Test Files\|Tests \|invariants green\|VACUOUS\|SKIP\|error TS\|FAIL\|ELIFECYCLE" "$log" | grep -v "^.*> " | tail -12
+grep -h "adherence OK\|catalogs OK\|openapi freshness\|Test Files\|Tests \|invariants green\|VACUOUS\|SKIP\|error TS\|FAIL\|ELIFECYCLE" "$log" | grep -v "^.*> " | tail -12 || echo "  (no verdict line matched — read the log)"
 echo "clean room: pnpm $script exited $status — full log: $log"
 exit "$status"
