@@ -1,7 +1,10 @@
 # The production-like local Temporal stack.
 #
-# Every image is pinned BY DIGEST, not by tag. A tag is a moving pointer — `1.30.6` was rebuilt
-# once already — and a spike proven against an image nobody can re-fetch has proven nothing.
+# Every image the STACK UNDER TEST runs is pinned BY DIGEST, not by tag. A tag is a moving
+# pointer — `1.30.6` was rebuilt under us once — and a spike proven against an image nobody can
+# re-fetch has proven nothing. The `jwks` helper below is the exception and stays a tag: it
+# serves one static file to this stack, is not the thing being proven, and nothing about the
+# proof changes if its nginx moves.
 #
 # Its Postgres is the shared `heliogrid-pg-local` container from ../compose.yaml, merged into
 # this project by that file's `include:`.
@@ -55,7 +58,9 @@ services:
       - './config/temporal.yaml:/etc/temporal/config/temporal.yaml:ro'
       - './config/dynamicconfig:/etc/temporal/dynamicconfig:ro'
       - './pki:/etc/temporal/pki:ro'
-    ports: ['7233:7233']
+    # Loopback only, as postgres binds in infra/compose.yaml: a development stack with a JWT
+    # authorizer and a local PKI should not be reachable from the network it happens to sit on.
+    ports: ['127.0.0.1:7233:7233']
     networks:
       default:
         ipv4_address: 172.29.0.10

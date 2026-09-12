@@ -261,7 +261,7 @@ Sources: (Fly metrics/topology context) · [Fly autostop/processes](https://fly.
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| CI | **GitHub Actions**: `quality` lane on ubuntu-24.04 — `pnpm turbo lint` (Biome + dependency-cruiser + sherif) → `typecheck` → `test` (ported domain tests + locked invariants only) → `build`, with Turborepo remote cache | Repo lives on GitHub; Turborepo cache is free/self-hostable (no Nx Cloud credit metering); one YAML surface agents can read and edit | CircleCI/Buildkite (second vendor, no gain) · self-hosted runners (a cost optimisation for later, not launch) |
+| CI | **GitHub Actions**: `quality` lane on ubuntu-24.04 — `pnpm lint` (Biome + dependency-cruiser + sherif) → `typecheck` → `test` (ported domain tests + locked invariants only) → `build`, with Turborepo remote cache | Repo lives on GitHub; Turborepo cache is free/self-hostable (no Nx Cloud credit metering); one YAML surface agents can read and edit | CircleCI/Buildkite (second vendor, no gain) · self-hosted runners (a cost optimisation for later, not launch) |
 | Deploy | `flyctl deploy` per app (api, worker, web) from main — no feature flags, so trunk stays releasable by discipline: small complete slices only | Matches the no-flags directive; incomplete work simply doesn't merge | Preview-env sprawl (not needed at this team size) |
 
 **Deployment images** — one Fly app per service: each app builds its own Dockerfile — `node:22-slim` base,

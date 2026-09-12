@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-# Three repo-hygiene gates that Biome cannot express, done with grep rather than a new
-# linter (owner decision: oxlint was installed for this and REMOVED — it does
-# not implement `no-restricted-syntax`, which was the whole reason to add it).
+# The repo-hygiene gates Biome cannot express, done with grep rather than a new linter (owner
+# decision: oxlint was installed for this and REMOVED — it does not implement
+# `no-restricted-syntax`, which was the whole reason to add it).
 #
-#   1.  unit-test shape         — `*.test.ts` under `<package>/tests/`, logic packages only
-#   3.  no raw hex in UI paths  — every visual value comes from @heliogrid/theme
-#   10. app-declared vocabulary — a union, a lookup or a POLICY NUMBER an app writes itself
-#   10b. a brand obtained by a cast — the one hole in an unspeakable fact (CLAUDE.md §8)
-#   13. a test that restates a constant — `expect(CONSTANT).` proves nothing (.claude/rules/testing.md)
+# Every check is labelled `# ── <n>. <what it holds>` in the body below, and that label is the
+# list: a header that names a handful of them goes stale the moment the next one lands, which is
+# how this one came to say "three" over sixteen. Read the labels, not a summary of them.
 #
 # Numbering is stable; a gap is a check that was retired in place.
 #

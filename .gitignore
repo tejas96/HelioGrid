@@ -49,17 +49,18 @@ test-results/
 __pycache__/
 *.pyc
 
-# Planning-plugin working files — its briefs, specs, plans and subagent scratch, all under
-# ONE root. Plugin-internal process state, not repo documentation: the code and the PR carry
-# what the repo needs to know. The plugin's skills default to docs/superpowers/; CLAUDE.md §8
-# overrides that to here, so this stays out of the documentation tree.
+# Planning-plugin working files, if that plugin is ever enabled — its briefs, specs, plans and
+# subagent scratch, under ONE root. Plugin-internal process state, not repo documentation: the
+# code and the PR carry what the repo needs to know. The plugin is disabled in
+# `.claude/settings.json`, so nothing writes here today; the line stays so that enabling it
+# never drops process scratch into the tree.
 .superpowers/
 
-# QA writes nothing to the tree (owner ruling 2026-08-03): /verify keeps its artifacts in the
+# QA writes nothing to the tree (owner ruling): /verify keeps its artifacts in the
 # session scratchpad and deletes them when the run ends. The verification record lives in the
 # PR body.
 # These entries are legacy guards only — the retired /qa system wrote here, and its leftovers
-# were deleted from this machine on 2026-08-03. Nothing recreates either path; they stay
+# were deleted from this machine. Nothing recreates either path; they stay
 # ignored so a stale checkout elsewhere cannot commit one or make Biome lint generated JSON.
 .qa/
 .playwright-mcp/

@@ -7,17 +7,14 @@
       "outputs": ["dist/**", "*.tsbuildinfo", "**/*.tsbuildinfo", ".next/**", "!.next/cache/**"]
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": []
     },
     "test": {
       "dependsOn": ["^build"],
       "env": ["DATABASE_URL", "DATABASE_ADMIN_URL", "CI"],
       "cache": false
     },
-    "//#lint": {
-      "cache": false
-    },
-    "lint": {},
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
@@ -109,7 +106,7 @@
       },
       "app-worker": {
         "dependencies": {
-          "allow": ["app-worker", "contracts", "domain", "db", "env", "config", "adapters"]
+          "allow": ["app-worker", "contracts", "domain", "db", "env", "config"]
         }
       },
       "app-invariants": {
