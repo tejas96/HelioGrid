@@ -1,15 +1,10 @@
+import { normaliseHexColour } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import {
-  asWordOnPaper,
-  bestTextOn,
-  darkenToPass,
-  normaliseHex,
-  TEXT_FLOOR,
-} from '../../utils/color-contrast';
+import { asWordOnPaper, bestTextOn, readableInk } from '../../utils/color-contrast';
 import { Input } from '../Input/Input.native';
 import type { BrandColorFieldProps } from './BrandColorField.types';
 import { textOnFillVerdict, wordOnPaperVerdict } from './BrandColorField.verdicts';
@@ -71,16 +66,13 @@ export function BrandColorField({
   density = 'expressive',
   style,
 }: NativeBrandColorFieldProps) {
-  const hex = normaliseHex(value);
+  const hex = normaliseHexColour(value);
   const on = hex === null ? null : bestTextOn(hex);
   const word = hex === null ? null : asWordOnPaper(hex);
-  const fix =
-    hex !== null && on !== null && !on.passes && showSuggestion
-      ? darkenToPass(hex, TEXT_FLOOR)
-      : null;
+  const fix = hex !== null && on !== null && !on.passes && showSuggestion ? readableInk(hex) : null;
 
   const set = (next: string) => {
-    const normalised = normaliseHex(next);
+    const normalised = normaliseHexColour(next);
     if (normalised !== null) {
       onChange?.(normalised);
     }
@@ -94,7 +86,7 @@ export function BrandColorField({
         </Text>
         <View accessibilityRole="radiogroup" accessibilityLabel={label} style={styles.swatches}>
           {presets.map((preset) => {
-            const chosen = normaliseHex(preset) === hex;
+            const chosen = normaliseHexColour(preset) === hex;
             return (
               <Pressable
                 key={preset}

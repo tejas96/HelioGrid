@@ -1,30 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  compliantShades,
-  contrastRatio,
-  isHexColour,
-  TEXT_CONTRAST_FLOOR,
-} from '../../src/branding/compliant-shades';
-
-describe('contrastRatio — WCAG 2.x, symmetric', () => {
-  it.each([
-    ['#000000', '#FFFFFF', 21],
-    ['#FFFFFF', '#000000', 21],
-    ['#777777', '#777777', 1],
-    ['#006FFF', '#FFFFFF', 4.45],
-  ])('%s against %s is %d', (a, b, ratio) => {
-    expect(contrastRatio(a, b)).toBeCloseTo(ratio, 1);
-  });
-});
-
-describe('isHexColour — #RGB or #RRGGBB, either case', () => {
-  it.each([['#abc'], ['#ABCDEF'], ['#000000']])('accepts %s', (value) => {
-    expect(isHexColour(value)).toBe(true);
-  });
-  it.each([['abc'], ['#abcd'], ['#GGGGGG'], ['#12345'], ['']])('refuses %o', (value) => {
-    expect(isHexColour(value)).toBe(false);
-  });
-});
+import { compliantShades } from '../../src/branding/compliant-shades';
+import { contrastRatio, TEXT_CONTRAST_FLOOR } from '../../src/branding/contrast';
 
 describe('compliantShades — measured, never refused (F7-07, M01-50)', () => {
   it('returns a readable colour as it is, normalised, and lets white sit on it', () => {

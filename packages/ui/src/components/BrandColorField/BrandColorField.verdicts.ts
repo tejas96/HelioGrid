@@ -1,5 +1,5 @@
 import type { TextOnFill, WordOnPaper } from '../../utils/color-contrast';
-import { MARK_FLOOR, TEXT_FLOOR } from '../../utils/color-contrast';
+import { MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR } from '../../utils/color-contrast';
 import type { BrandVerdict } from './BrandColorField.types';
 
 /**
@@ -15,12 +15,12 @@ export function textOnFillVerdict(on: TextOnFill): BrandVerdict {
   if (on.passes) {
     return {
       kind: 'pass',
-      sentence: `${on.name} text on this colour is ${on.ratio}:1 — clears the ${TEXT_FLOOR}:1 floor, so the proposal header uses ${on.name.toLowerCase()}.`,
+      sentence: `${on.name} text on this colour is ${on.ratio}:1 — clears the ${TEXT_CONTRAST_FLOOR}:1 floor, so the proposal header uses ${on.name.toLowerCase()}.`,
     };
   }
   return {
     kind: 'warn',
-    sentence: `No text colour clears ${TEXT_FLOOR}:1 on this — white reaches ${on.white}:1 and near-black ${on.black}:1. A header band in it would be unreadable on a printed proposal.`,
+    sentence: `No text colour clears ${TEXT_CONTRAST_FLOOR}:1 on this — white reaches ${on.white}:1 and near-black ${on.black}:1. A header band in it would be unreadable on a printed proposal.`,
   };
 }
 
@@ -33,8 +33,8 @@ export function wordOnPaperVerdict(word: WordOnPaper): BrandVerdict {
   }
   const alsoRules = word.passesMark ? ' and rules' : '';
   const floorClause = word.passesMark
-    ? `above the ${MARK_FLOOR}:1 mark floor`
-    : `below even the ${MARK_FLOOR}:1 mark floor, so hairlines in it will not read either`;
+    ? `above the ${MARK_CONTRAST_FLOOR}:1 mark floor`
+    : `below even the ${MARK_CONTRAST_FLOOR}:1 mark floor, so hairlines in it will not read either`;
   return {
     kind: 'info',
     sentence: `As a word on white paper it is only ${word.ratio}:1, so the proposal keeps text near-black and uses this colour as a fill${alsoRules} — ${floorClause}.`,

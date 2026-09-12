@@ -1,6 +1,7 @@
 import {
   type MinorUnits,
   minorUnits,
+  normaliseHexColour,
   type ResolvedPayable,
   reconcileMinorUnits,
   resolvePayable,
@@ -8,7 +9,7 @@ import {
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
-import { asWordOnPaper, bestTextOn, NEAR_BLACK, normaliseHex } from '../../utils/color-contrast';
+import { asWordOnPaper, bestTextOn, NEAR_BLACK } from '../../utils/color-contrast';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
 import type {
@@ -186,7 +187,7 @@ export function resolveDocument(
   }
   const shownTotal = equation !== null ? equation.gross : total;
 
-  const hex = normaliseHex(brandColor) ?? FALLBACK_BRAND;
+  const hex = normaliseHexColour(brandColor) ?? FALLBACK_BRAND;
   const onBand = bestTextOn(hex);
   const word = asWordOnPaper(hex);
   const bandOk = onBand?.passes === true;
@@ -237,6 +238,6 @@ export function resolveDocument(
 
 /** Does this colour force the white-header consequence? A frame's `note` can say so. */
 export function bandFails(brandColor: string): boolean {
-  const on = bestTextOn(normaliseHex(brandColor) ?? FALLBACK_BRAND);
+  const on = bestTextOn(normaliseHexColour(brandColor) ?? FALLBACK_BRAND);
   return on === null || !on.passes;
 }

@@ -2,61 +2,16 @@
  * `F7-07`, `M01-50` — a palette is never rejected. A tenant's brand colour is MEASURED, and what
  * cannot carry words is answered with a shade that can: the same hue darkened until it clears the
  * text floor on paper, which also makes white honest on a fill of it. The design system's
- * `CustomerSurface` and `DocumentPreview` measure the same two questions; this is the server's
- * copy of the answer, so a document and a link page agree. Pure — a colour in, colours out.
+ * `BrandColorField`, `CustomerSurface` and `DocumentPreview` ask the same two questions through
+ * this one walk, so the field's suggestion, a document and a link page agree. Pure — a colour in,
+ * colours out.
  */
-
-/** The WCAG 2.x floor for words (`F7-11`, `N4`): the ratio text needs against what it sits on. */
-export const TEXT_CONTRAST_FLOOR = 4.5;
+import { contrastRatio, TEXT_CONTRAST_FLOOR } from './contrast';
+import { hexToRgb, type Rgb, toHexColour } from './hex-colour';
 
 const WHITE = '#FFFFFF';
-/** The one shape a brand colour takes on the wire and in the store — contracts validates against this same pattern. */
-export const HEX_COLOUR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 /** How far the lightness drops per step, on a 0–1 scale: fine enough that the answer is the nearest passing shade. */
 const LIGHTNESS_STEP = 0.01;
-
-interface Rgb {
-  readonly r: number;
-  readonly g: number;
-  readonly b: number;
-}
-
-/** `#RGB` or `#RRGGBB`, either case — the one shape the contract accepts. */
-export function isHexColour(value: string): boolean {
-  return HEX_COLOUR.test(value);
-}
-
-function toRgb(hex: string): Rgb {
-  if (!isHexColour(hex)) throw new RangeError(`a brand colour is #RRGGBB, not ${hex}`);
-  const digits = hex.slice(1);
-  const full = digits.length === 3 ? [...digits].map((d) => d + d).join('') : digits;
-  return {
-    r: Number.parseInt(full.slice(0, 2), 16),
-    g: Number.parseInt(full.slice(2, 4), 16),
-    b: Number.parseInt(full.slice(4, 6), 16),
-  };
-}
-
-function toHex({ r, g, b }: Rgb): string {
-  const pair = (channel: number) => channel.toString(16).padStart(2, '0');
-  return `#${pair(r)}${pair(g)}${pair(b)}`.toUpperCase();
-}
-
-function relativeLuminance({ r, g, b }: Rgb): number {
-  const linear = (channel: number) => {
-    const c = channel / 255;
-    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
-}
-
-/** WCAG contrast between two colours, 1 to 21; symmetric, so which is the text does not matter. */
-export function contrastRatio(a: string, b: string): number {
-  const la = relativeLuminance(toRgb(a));
-  const lb = relativeLuminance(toRgb(b));
-  const [hi, lo] = la >= lb ? [la, lb] : [lb, la];
-  return (hi + 0.05) / (lo + 0.05);
-}
 
 interface Hsl {
   readonly h: number;
@@ -107,11 +62,11 @@ function readableOnPaper(brand: Rgb): string {
   let shade = brand;
   let { l } = toHsl(brand);
   const { h, s } = toHsl(brand);
-  while (contrastRatio(toHex(shade), WHITE) < TEXT_CONTRAST_FLOOR) {
+  while (contrastRatio(toHexColour(shade), WHITE) < TEXT_CONTRAST_FLOOR) {
     l = Math.max(0, l - LIGHTNESS_STEP);
     shade = fromHsl({ h, s, l });
   }
-  return toHex(shade);
+  return toHexColour(shade);
 }
 
 export interface CompliantShades {
@@ -125,8 +80,8 @@ export interface CompliantShades {
 
 /** The two questions `SCR-M01-18` asks of a brand colour, answered — never a refusal. */
 export function compliantShades(brand: string): CompliantShades {
-  const rgb = toRgb(brand);
-  const normalised = toHex(rgb);
+  const rgb = hexToRgb(brand);
+  const normalised = toHexColour(rgb);
   return {
     brand: normalised,
     ink: readableOnPaper(rgb),

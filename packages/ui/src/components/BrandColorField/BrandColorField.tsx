@@ -1,12 +1,7 @@
+import { normaliseHexColour } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import {
-  asWordOnPaper,
-  bestTextOn,
-  darkenToPass,
-  normaliseHex,
-  TEXT_FLOOR,
-} from '../../utils/color-contrast';
+import { asWordOnPaper, bestTextOn, readableInk } from '../../utils/color-contrast';
 import { Input } from '../Input';
 import type { BrandColorFieldProps } from './BrandColorField.types';
 import { textOnFillVerdict, wordOnPaperVerdict } from './BrandColorField.verdicts';
@@ -44,16 +39,13 @@ export function BrandColorField({
   className,
   style,
 }: WebBrandColorFieldProps) {
-  const hex = normaliseHex(value);
+  const hex = normaliseHexColour(value);
   const on = hex === null ? null : bestTextOn(hex);
   const word = hex === null ? null : asWordOnPaper(hex);
-  const fix =
-    hex !== null && on !== null && !on.passes && showSuggestion
-      ? darkenToPass(hex, TEXT_FLOOR)
-      : null;
+  const fix = hex !== null && on !== null && !on.passes && showSuggestion ? readableInk(hex) : null;
 
   const set = (next: string) => {
-    const normalised = normaliseHex(next);
+    const normalised = normaliseHexColour(next);
     if (normalised !== null) {
       onChange?.(normalised);
     }
@@ -71,7 +63,7 @@ export function BrandColorField({
               key={preset}
               type="button"
               role="radio"
-              aria-checked={normaliseHex(preset) === hex}
+              aria-checked={normaliseHexColour(preset) === hex}
               aria-label={preset}
               disabled={disabled}
               className="hg-brand-color-swatch"

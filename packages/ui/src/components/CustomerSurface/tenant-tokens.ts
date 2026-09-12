@@ -1,24 +1,19 @@
 import {
-  bestTextOn,
-  contrast,
-  darkenToPass,
-  NEAR_BLACK,
-  normaliseHex,
-  PAPER,
-  parseHex,
-  TEXT_FLOOR,
-  toHex,
-  WHITE,
-} from '../../utils/color-contrast';
+  compliantShades,
+  normaliseHexColour,
+  parseHexColour,
+  toHexColour,
+} from '@heliogrid/domain';
+import { bestTextOn, WHITE } from '../../utils/color-contrast';
 import type { TenantTokens } from './CustomerSurface.types';
 
 const mixWhite = (hex: string, pct: number): string => {
-  const c = parseHex(hex);
+  const c = parseHexColour(hex);
   if (!c) {
     return WHITE;
   }
   const k = pct / 100;
-  return toHex({
+  return toHexColour({
     r: c.r + (255 - c.r) * k,
     g: c.g + (255 - c.g) * k,
     b: c.b + (255 - c.b) * k,
@@ -26,12 +21,12 @@ const mixWhite = (hex: string, pct: number): string => {
 };
 
 const darken = (hex: string, pct: number): string => {
-  const c = parseHex(hex);
+  const c = parseHexColour(hex);
   if (!c) {
     return hex;
   }
   const k = 1 - pct / 100;
-  return toHex({ r: c.r * k, g: c.g * k, b: c.b * k });
+  return toHexColour({ r: c.r * k, g: c.g * k, b: c.b * k });
 };
 
 /**
@@ -41,16 +36,13 @@ const darken = (hex: string, pct: number): string => {
  * on paper, which is under the floor, and would put unreadable links on a customer's quote.
  */
 export function tenantTokens(brandColor: string | undefined): TenantTokens | null {
-  const brand = normaliseHex(brandColor);
+  const brand = normaliseHexColour(brandColor);
   if (brand === null) {
     return null;
   }
   const onBrand = bestTextOn(brand);
-  const paperRatio = contrast(brand, PAPER);
-  const ink =
-    paperRatio !== null && paperRatio >= TEXT_FLOOR
-      ? brand
-      : (darkenToPass(brand, TEXT_FLOOR)?.hex ?? NEAR_BLACK);
+  /* Words and fills take domain's shade walk, the one the server derives for the same colour. */
+  const { ink } = compliantShades(brand);
   /* The monogram's fill: the brand colour only if a text colour clears the floor on it. */
   const markPasses = onBrand?.passes === true;
   const markBg = markPasses ? brand : ink;

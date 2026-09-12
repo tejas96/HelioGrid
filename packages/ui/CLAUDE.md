@@ -16,8 +16,9 @@ fix BOTH halves, then delete the row.
 - `src/utils/` — helpers shared across components only. `src/styles.css` — the package stylesheet.
 - **NEVER product logic, policy or money maths.** That is `@heliogrid/domain`. A component takes
   props and renders; it does not know what a lead or a tranche is. **Formatting is product
-  logic**: `src/utils/format.ts` BINDS a market pack to domain's format slice and implements
-  nothing (`M49`).
+  logic**: `src/utils/format.ts` BINDS a market pack to domain's format slice, and
+  `src/utils/color-contrast.ts` binds this system's inks to domain's contrast maths; both
+  implement nothing (`M49`).
 - **NEVER a raw visual value** (that is `@heliogrid/theme`), **user-visible English** (copy
   arrives as a prop from `@heliogrid/i18n` through the consumer), or **navigation chrome** (that
   belongs to the app).
