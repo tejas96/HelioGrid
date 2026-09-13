@@ -815,7 +815,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-040 · No app writes a number that belongs to a layer
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#74)
 **Why:** A number an app writes itself is a number nobody can move: a connection ceiling an operator cannot raise without a deploy, an auth path that three layers must agree on and none owns, a strictness setting the phone copies by hand from a file it could not even reach. Each is fine until the day it has to change, and then it changes in one place and not the others.
 **PRD rows:** none of its own — it serves every row that runs on a server or a phone, by putting each number where it can be moved once.
 **Data model:** none.
