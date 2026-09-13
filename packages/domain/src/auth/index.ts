@@ -1,5 +1,8 @@
 export type { Admission, MembershipStanding, TokenClaims } from './admission';
 export { admit } from './admission';
+export { hasCompany, homeOf } from './company';
+export type { DoorView } from './door-view';
+export { doorView } from './door-view';
 export type { InvitationLife, InvitationStatus } from './invitation-policy';
 export {
   INVITATION_EXPIRY_DAYS,
@@ -66,6 +69,17 @@ export {
   otpRequestDecision,
   otpVerifyDecision,
 } from './otp-policy';
+export type {
+  HeldWorkSummary,
+  KnownAccount,
+  OtpVerifyResult,
+  PendingSwitch,
+  SessionPhase,
+  SessionSnapshot,
+  SessionStatus,
+  SessionUser,
+  SignInDoor,
+} from './session';
 export type { PlatformKind, SessionLife } from './session-policy';
 export {
   API_TOKEN_MINUTES,
@@ -77,3 +91,5 @@ export {
   sessionExpiresAt,
   WEB_SESSION_ROLLING_DAYS,
 } from './session-policy';
+export type { SignupView } from './signup-view';
+export { signupView } from './signup-view';

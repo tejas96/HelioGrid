@@ -1,6 +1,6 @@
 'use client';
-import { homeOf, signupView } from '@heliogrid/data';
 import { useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
+import { homeOf, signupView } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { SuccessDwell, useFormat } from '@heliogrid/ui';

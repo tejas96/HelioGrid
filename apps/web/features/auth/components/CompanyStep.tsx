@@ -1,6 +1,6 @@
 import { createTenantSchema } from '@heliogrid/contracts';
-import type { SessionUser } from '@heliogrid/data';
 import { useCompanySignup } from '@heliogrid/data/react';
+import type { SessionUser } from '@heliogrid/domain';
 import { useZodForm } from '@heliogrid/forms';
 import { COMPANY_SIGNUP, companySignupWords, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';

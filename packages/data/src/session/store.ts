@@ -3,19 +3,17 @@ import {
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
   type OtpVerifyOutcome,
+  type OtpVerifyResult,
+  type SessionSnapshot,
+  type SessionUser,
+  type SignInDoor,
 } from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
 import { ApiError } from '../errors/errors';
 import type { TenantRepository } from '../tenant/repository';
 import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
-import type {
-  OtpVerifyResult,
-  SessionSnapshot,
-  SessionStore,
-  SessionUser,
-  SignInDoor,
-} from './types';
+import type { SessionStore } from './types';
 
 /** The refusals that mean "the code, not the connection" (`M01-04`). */
 /**

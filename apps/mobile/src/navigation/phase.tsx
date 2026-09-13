@@ -1,5 +1,5 @@
-import type { SessionPhase } from '@heliogrid/data';
 import { useSessionPhase } from '@heliogrid/data/react';
+import type { SessionPhase } from '@heliogrid/domain';
 import { createContext, type ReactNode, useContext } from 'react';
 
 /**

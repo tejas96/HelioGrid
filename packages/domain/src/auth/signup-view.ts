@@ -1,6 +1,6 @@
-import type { SignInStep } from '@heliogrid/domain';
 import { hasCompany } from './company';
-import type { SessionSnapshot } from './types';
+import type { SignInStep } from './login-state';
+import type { SessionSnapshot } from './session';
 
 /** The panels company signup can show; both screens render exactly one, chosen here. */
 export type SignupView = 'known' | 'done' | 'company' | 'code' | 'phone';

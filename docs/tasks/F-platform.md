@@ -832,6 +832,27 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
 
 ---
+### T-FPLAT-043 · The session flow moves to its owner, and nine signatures stop being written twice
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Four decisions both platforms make — which panel each door shows, whether a person belongs inside, and where they land — live in `packages/data`, whose own `CLAUDE.md` says business logic belongs to `@heliogrid/domain` and whose layer is proven by DRIVING the client rather than by unit tests. So the flow every screen branches on was the one flow nobody could test at its edges. Beside it, `SessionApi` restates nine `SessionStore` signatures by hand: a tenth method joins one list and not the other, and the screen that needed it fails to compile for a reason no one will read as "somebody forgot the second copy".
+**PRD rows:** none of its own — it serves `M01-08` and `M01-10`, whose orderings these selectors ARE, by putting them where both platforms read one copy.
+**Data model:** none.
+**Contract:** none — no wire shape changes. `packages/contracts` derives `RolePreset`, `UiLanguage` and `OtpChannel` from domain's own tuples (`z.enum(ROLE_PRESETS)`), so the shapes that move keep their exact types when they import the originals instead.
+**Depends on:** nothing.
+**Out of scope:** `SessionStore` and `HeldWork`, which stay in `packages/data` — `architecture.md` §4 step 4 puts a session store and a storage port there, and `SessionStore` takes `CreateTenant`, a wire shape domain may not import; `landingFor` and `LanguageFollowsUser` — the session landing and the language provider written once per app — and the eight `packages/ui` components whose two halves copy a constant. Both are the other two slices of this batch and each takes its own id at its own `/start`, once its files have been read; splitting here was the PR ceiling's call, and the layer order is domain and data first, the design system next, the apps last.
+**Found by:** the architecture review of 2026-09-11 (its `M1`).
+**Ruled by the owner:** **this one ships whole at 32 files**, above `M111`'s 25. The only seam to split at is a temporary re-export from `packages/data` — the exact defect this task removes — and 13 of the 32 files are a single import line each, 13 insertions against 13 deletions in total.
+**Ruled at `/start`:** **no re-export from `packages/data`.** The thirteen app files import the moved facts from `@heliogrid/domain` directly. A re-export would give one fact two import paths and leave the wrong mental model — that the flow is the wire layer's — exactly alive.
+**Verified:** digest 2aa13c2e07e0 · 2026-09-13 · depth REFACTOR, no agent run — every decision that moved is byte-identical and every app file changed one import specifier, so a driven screen would exercise the same function it exercised yesterday (`CLAUDE.md` §8's own rule for a refactor with green gates) · unit 85 files, 1114 tests pass; the three moved selectors are unit-testable for the first time and land at 100% under `packages/domain/src/auth/**`'s existing bar, each seen RED on a real defect — the switch arm removed from the door's order, the signup's company step answering done, and the home taking the first role in the array rather than the ladder's highest rung · gate `pnpm verify:clean` exited 0 with no VACUOUS and no SKIP: `next build` for web and a full Metro bundle of the React Native graph both resolved the moved imports, which is the only place a per-platform resolver can disagree with `tsc`, and 22 of 22 typecheck tasks pass · web/ios/android NOT driven — no screen, no copy, no route and no wire call changed; port 3002 was held by another session throughout, so even a smoke boot of web was unavailable and that is stated rather than rounded to a pass · api n/a — untouched · parity n/a — the two platforms now import ONE copy from its owner, which is the change
+**DONE WHEN:**
+- Given the sign-in door, when a switch is pending, then the switch panel wins over a settled session and over the flow's step. → proof: unit `packages/domain/tests/auth/door-view.test.ts`, seen red with the switch arm removed
+- Given the signup door and a settled person with no company, when the panel is chosen, then it is the company step rather than done (`M01-10`). → proof: unit `packages/domain/tests/auth/signup-view.test.ts`, seen red on a branch that always answers done
+- Given a person holding several presets in any order, when their home is resolved, then it is the highest rung of the ladder. → proof: unit `packages/domain/tests/auth/company.test.ts`, seen red on taking the first role in the array
+- Given a tenth method on the session store, when it is added, then `SessionApi` carries it without a second edit. → proof: gate `SessionApi` is `SessionSnapshot & Omit<SessionStore, 'getSnapshot' | 'subscribe'>` and every consumer typechecks
+- Given both apps, when they are built the way CI builds them, then the moved imports resolve on each platform's own resolver. → proof: gate `pnpm verify:clean` — `next build` for web and the full Metro bundle for React Native
+
+---
 ### T-FPLAT-042 · The worker proves its own idempotency, and CI stops paying three times for one graph
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#77)

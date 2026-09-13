@@ -1,5 +1,5 @@
-import { hasCompany } from '@heliogrid/data';
 import { useSession } from '@heliogrid/data/react';
+import { hasCompany } from '@heliogrid/domain';
 import { useNavigationPhase } from './phase';
 
 /**

@@ -33,7 +33,11 @@ say "the tree git would commit, laid over it"
     | while IFS= read -r -d '' f; do [ -e "$f" ] && printf '%s\0' "$f"; done \
     | tar --null -T - -cf - | tar -C "$repo" -xf -
   # Every deletion against HEAD, staged (git rm) and unstaged alike: the clone still holds the file.
-  git diff -z --name-only --diff-filter=D HEAD | while IFS= read -r -d '' f; do rm -f "$repo/$f"; done
+  # `--no-renames` is load-bearing. A file MOVED to another package is a rename to git, reported
+  # as R and not D, so without it the old copy survived here and the room built a tree that git
+  # would never commit — green locally, and the old file's stale imports red only on GitHub.
+  git diff -z --no-renames --name-only --diff-filter=D HEAD \
+    | while IFS= read -r -d '' f; do rm -f "$repo/$f"; done
 )
 
 say "CI's environment, read from the workflow"
