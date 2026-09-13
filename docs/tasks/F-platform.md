@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-052 · Silence is not evidence
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#87)
 **Why:** Five times in one run, an ABSENCE was read as a pass: `adherence OK` printed over a check that had crashed and never run; a typecheck exited 0 on a file that was outside its own program; a "red" run that changed nothing because its regex matched a shape the formatter had since rewritten; a clean room that stayed green with the fix reverted, because the file chosen to delete was filtered out before the check saw it; and `no brand obtained by a cast` printed over a brand that had never been added to the registry. The last one is the shape that matters most — `M60`'s own gap column had said all along that listing a brand there is part of landing it, and the instruction still did not fire, because nothing made anyone GO AND LOOK at a fixed moment. An unguarded fact and a guarded one look identical from the gate's output.
 **PRD rows:** none of its own — it serves every row every gate stands behind, by refusing to count a gate that abstained as a gate that passed.
 **Data model:** none.
