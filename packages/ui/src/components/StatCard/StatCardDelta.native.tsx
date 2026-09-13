@@ -11,6 +11,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
+import { DELTA_DIR_PATH } from './StatCardDelta.logic';
 
 const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
   good: 'better',
@@ -28,12 +29,6 @@ const DIR_WORD: Record<StatCardDeltaDir, string> = {
   up: 'Up',
   down: 'Down',
   flat: 'No change',
-};
-
-const DIR_PATH: Record<StatCardDeltaDir, string> = {
-  up: 'M7 17 17 7M17 7H9m8 0v8',
-  down: 'M7 7l10 10M17 17H9m8 0V9',
-  flat: 'M5 12h14',
 };
 
 const styles = StyleSheet.create({
@@ -79,7 +74,7 @@ export function StatCardDelta({
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
       <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
         <Path
-          d={DIR_PATH[dir]}
+          d={DELTA_DIR_PATH[dir]}
           stroke={tone.fg}
           strokeWidth={2.5}
           strokeLinecap="round"

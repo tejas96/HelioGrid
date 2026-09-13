@@ -1,39 +1,15 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useEffect } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
+import { BANNER_GLYPH } from './Banner.logic';
 import type { BannerGlyph, BannerProps } from './Banner.types';
 
 interface WebBannerProps extends BannerProps {
   className?: string;
   style?: CSSProperties;
 }
-
-const GLYPH_PATHS: Record<BannerGlyph, ReactNode> = {
-  alert: (
-    <>
-      <path d="M12 9v4M12 17h.01" />
-      <circle cx="12" cy="12" r="9" />
-    </>
-  ),
-  info: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 11v5M12 8h.01" />
-    </>
-  ),
-  rupee: <path d="M7 5h10M7 9h10M15 5c0 4-3.5 4-8 4l8 10" />,
-  review: (
-    <>
-      <path d="M12 3 3 20h18z" />
-      <path d="M12 10v4M12 17h.01" />
-    </>
-  ),
-  spark: (
-    <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />
-  ),
-};
 
 function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
   return (
@@ -49,7 +25,10 @@ function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
       aria-hidden="true"
       className="hg-banner-glyph"
     >
-      {GLYPH_PATHS[name]}
+      {BANNER_GLYPH[name].ringed ? <circle cx="12" cy="12" r="9" /> : null}
+      {BANNER_GLYPH[name].paths.map((d) => (
+        <path key={d} d={d} />
+      ))}
     </svg>
   );
 }

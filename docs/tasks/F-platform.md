@@ -832,6 +832,23 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
 
 ---
+### T-FPLAT-044 · One drawing serves both halves
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#79)
+**Why:** Four components each hold the same outline twice, once per platform half — the verdict ticks, the finding marks, the delta arrows and the banner glyphs. A corrected outline lands on one platform and not the other, and nothing catches it: no gate compares the two halves' geometry, and no screen imports any of these four, so there is not even a surface where the drift would show. The owner's ruling that an icon is DRAWN here rather than imported makes the drawing this package's own fact; a fact written twice is the defect this repository exists to prevent.
+**PRD rows:** none of its own — it serves `F7-19`, one icon family at one stroke weight, by making each glyph one drawing rather than two.
+**Data model:** none.
+**Contract:** none — no prop changes on any of the four; `<Name>.types.ts` is untouched in all of them.
+**Depends on:** nothing.
+**Out of scope:** `ActivityGlyph`, whose halves hold the same outlines in genuinely different encodings — web JSX with circles and rects, native path strings plus four special cases — so sharing its geometry needs a small shape vocabulary rather than a move, and that is a design decision with its own change. The twelve remaining copied constants: the structural ones and `FunnelChart`'s `LOW_CONVERSION`, which is a policy number for `packages/domain`, are the next slice; the ten hardcoded English strings are `M4`'s, which turns them into props and deletes their duplication with them. `DateSet`'s `BREAK = 640` stays blocked on a theme breakpoint token (`docs/tasks/deferred.md`). `FindingList`'s `FINDING_STATUSES` is NOT a duplicate — its halves differ only as `var(--danger-text)` against `theme.colors['danger-text']`, which is the correct per-platform token accessor.
+**Found by:** the architecture review of 2026-09-11 (its `M3`, which named eight components; a brace-balanced scan of every component folder found nineteen copied constants in thirteen files, and two of the review's eight were not duplicates at all).
+**Verified:** digest 5812ebfeba34 · 2026-09-13 · depth REFACTOR, no agent run — and no screen run was POSSIBLE: no app file imports `Banner`, `StatCard`, `FindingList` or `BrandColorField`, so all four are unproven by construction (`M39` says that is stated, never hidden) and this change does not alter that either way · gate the outlines proven unchanged MECHANICALLY rather than by eye — every path `d` and every ring radius pulled out of both halves at `HEAD` and again after, by one extractor over both sides, then set-compared: all four SAME, `Banner` keeping its single ring radius of 9 · gate the duplicate scan run before and after, 19 copied constants in 13 files down to 16 in 11, and `Banner` off the two-encodings list as well · gate `pnpm check:all` and `pnpm verify:clean` both exit 0, no VACUOUS and no SKIP; `ds:contract`'s eight checks pass, so neither half gained a platform-local prop · unit 85 files, 1114 tests — `packages/ui` is not a unit-tested layer (`.claude/rules/testing.md`: the frontend is proven by RUNNING it), so no test was added and none was owed · web/ios/android/api n/a · parity n/a — the two halves now READ one geometry, which is the change
+**DONE WHEN:**
+- Given each of the four components, when both halves draw their glyph, then they read ONE geometry declared once. → proof: gate the scan reports the four constants gone, 19 duplicates down to 16
+- Given the change, when the outlines are compared with the tree before it, then every `d` string and every ring radius is unchanged. → proof: gate every path and radius extracted from both halves at `HEAD` and now, set-compared, all four SAME
+- Given both platforms, when the package typechecks, then each half still draws with its own elements — `<path>`/`<circle>` on web, `react-native-svg` on RN. → proof: gate `pnpm check:all` and the design-system contract check
+
+---
 ### T-FPLAT-043 · The session flow moves to its owner, and nine signatures stop being written twice
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#78)

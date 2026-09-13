@@ -8,18 +8,13 @@ import { Text } from '../../primitives/Text/Text.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import type { Finding, FindingStatus } from './FindingList.types';
 import { FINDING_LABEL, statusOf } from './FindingList.verdict';
+import { FINDING_MARK_PATH } from './FindingListRow.logic';
 
 /** The three statuses in the StatusMark vocabulary. Ready is a pass, not an absence. */
 export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
   blocking: 'danger',
   attention: 'warning',
   ready: 'success',
-};
-
-const MARK_PATH: Record<FindingStatus, string> = {
-  ready: 'M5 13l4 4L19 7',
-  blocking: 'M12 7v7M12 17.5h.01',
-  attention: 'M12 8v5M12 16.5h.01',
 };
 
 /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
@@ -43,7 +38,7 @@ function Mark({ status }: { status: FindingStatus }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Path d={MARK_PATH[status]} />
+        <Path d={FINDING_MARK_PATH[status]} />
       </Svg>
     </View>
   );
