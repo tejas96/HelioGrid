@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-043 · The session flow moves to its owner, and nine signatures stop being written twice
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#78)
 **Why:** Four decisions both platforms make — which panel each door shows, whether a person belongs inside, and where they land — live in `packages/data`, whose own `CLAUDE.md` says business logic belongs to `@heliogrid/domain` and whose layer is proven by DRIVING the client rather than by unit tests. So the flow every screen branches on was the one flow nobody could test at its edges. Beside it, `SessionApi` restates nine `SessionStore` signatures by hand: a tenth method joins one list and not the other, and the screen that needed it fails to compile for a reason no one will read as "somebody forgot the second copy".
 **PRD rows:** none of its own — it serves `M01-08` and `M01-10`, whose orderings these selectors ARE, by putting them where both platforms read one copy.
 **Data model:** none.
