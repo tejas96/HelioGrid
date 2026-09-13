@@ -407,7 +407,7 @@ fi
 # same words: a copy. Three or more, because a pair (`'add' | 'deduct'`) is too often two
 # unrelated concepts that happen to share words. Tests and generated trees are outside it, and
 # a restatement written as an `===` chain rather than a list is not seen.
-vocab_copies=$(python3 - <<'PYCODE'
+if ! vocab_copies=$(python3 - <<'PYCODE'
 import re, subprocess
 tracked = subprocess.run(['git', 'ls-files', '--cached', '--others', '--exclude-standard', 'apps', 'packages'],
                          capture_output=True, text=True).stdout.split('\n')
@@ -431,8 +431,16 @@ for f in others:
         if len(members) >= 3 and members in owned:
             print(f'  {f}:{line}: copies {owned[members]} ({", ".join(sorted(members))})')
 PYCODE
-)
-if [ -n "$vocab_copies" ]; then
+); then
+  # This script runs under `set -uo pipefail` and deliberately NOT `-e`, because it is built on
+  # greps that exit 1 when they find nothing. So a captured command's crash is invisible: the
+  # substitution yields an empty string, and empty is exactly what "no copies found" looks like.
+  # The exit status is therefore read, and a crash FAILS the gate instead of passing it.
+  echo 'CHECK 10d DID NOT RUN — the vocabulary scan exited non-zero (its error is above).'
+  echo '  Its output is captured, so a crash reads exactly like a clean result. A check that'
+  echo '  reports a pass it never earned is worse than no check at all (CLAUDE.md §5).'
+  fail=1
+elif [ -n "$vocab_copies" ]; then
   printf 'A VOCABULARY DECLARED TWICE — the second copy drifts the day the owner changes:\n%s\n' "$vocab_copies"
   echo '  Import the owner'"'"'s type or tuple (contracts for a wire enum, domain for a policy list);'
   echo '  never restate its members (Law 5, CLAUDE.md §8).'

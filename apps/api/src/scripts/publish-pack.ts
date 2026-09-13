@@ -22,7 +22,18 @@ function describe({ current, written }: PublishOutcome): string {
 }
 
 async function main(): Promise<void> {
-  const app = await NestFactory.createApplicationContext(AppModule, { logger: false });
+  /*
+   * `abortOnError: false` is what lets the failure be SEEN. Nest's default is to log a boot
+   * error through its own logger and exit — and `logger: false` sends that log nowhere, so the
+   * command died with an empty stdout AND an empty stderr, telling an operator nothing at all.
+   * Throwing instead hands the error to the handler below, which is the one that redacts the
+   * connection string. The logger stays off for exactly that reason: Nest's own writer does not
+   * redact, and a command's stderr is what an operator pastes into a chat window.
+   */
+  const app = await NestFactory.createApplicationContext(AppModule, {
+    logger: false,
+    abortOnError: false,
+  });
   try {
     const outcome = await app.get(MarketPackService).publish(IN_PACK, new Date().toISOString());
     console.log(describe(outcome));

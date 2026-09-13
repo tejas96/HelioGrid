@@ -39,6 +39,12 @@ say "the tree git would commit, laid over it"
   git diff -z --no-renames --name-only --diff-filter=D HEAD \
     | while IFS= read -r -d '' f; do rm -f "$repo/$f"; done
 )
+# The room's INDEX must describe the ROOM, not the history it was cloned from. Six checks
+# enumerate their corpus with `git ls-files --cached`, and against the clone's index they are
+# handed paths the overlay above just deleted: the vocabulary scan CRASHED on one and the gate
+# still reported OK, and the rest under-scan in silence. Refreshing the index is what makes the
+# room's own answer to "which files are here" true.
+git -C "$repo" add -A
 
 say "CI's environment, read from the workflow"
 ci_env="$(python3 - "$root/.github/workflows/ci.yml" <<'PY'
