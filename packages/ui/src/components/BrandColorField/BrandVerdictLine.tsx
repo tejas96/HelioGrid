@@ -1,10 +1,5 @@
 import type { BrandVerdictKind } from './BrandColorField.types';
-
-const PATH: Record<BrandVerdictKind, string> = {
-  pass: 'M20 6 9 17l-5-5',
-  warn: 'M12 9v4m0 3.5v.01M10.3 3.9 2.7 17a1.6 1.6 0 0 0 1.4 2.4h15.8a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0z',
-  info: 'M12 16v-4m0-3.5v-.01M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z',
-};
+import { VERDICT_PATH } from './BrandVerdictLine.logic';
 
 interface BrandVerdictLineProps {
   kind: BrandVerdictKind;
@@ -30,7 +25,7 @@ export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={PATH[kind]} />
+        <path d={VERDICT_PATH[kind]} />
       </svg>
       <span>{children}</span>
     </p>

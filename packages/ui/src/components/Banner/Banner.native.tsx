@@ -7,6 +7,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
+import { BANNER_GLYPH } from './Banner.logic';
 import type { BannerGlyph, BannerProps, BannerTone } from './Banner.types';
 
 interface NativeBannerProps extends BannerProps {
@@ -28,22 +29,6 @@ const TONES: Record<BannerTone, TonePair> = {
   neutral: { text: theme.colors['text-secondary'], bg: theme.colors['neutral-bg'] },
 };
 
-const GLYPH_PATHS: Record<BannerGlyph, string[]> = {
-  alert: ['M12 9v4M12 17h.01'],
-  info: ['M12 11v5M12 8h.01'],
-  rupee: ['M7 5h10M7 9h10M15 5c0 4-3.5 4-8 4l8 10'],
-  review: ['M12 3 3 20h18z', 'M12 10v4M12 17h.01'],
-  spark: ['M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18'],
-};
-
-const GLYPH_CIRCLE: Record<BannerGlyph, boolean> = {
-  alert: true,
-  info: true,
-  rupee: false,
-  review: false,
-  spark: false,
-};
-
 function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: string }) {
   return (
     <Svg
@@ -56,8 +41,8 @@ function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: 
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {GLYPH_CIRCLE[name] ? <Circle cx={12} cy={12} r={9} /> : null}
-      {GLYPH_PATHS[name].map((d) => (
+      {BANNER_GLYPH[name].ringed ? <Circle cx={12} cy={12} r={9} /> : null}
+      {BANNER_GLYPH[name].paths.map((d) => (
         <Path key={d} d={d} />
       ))}
     </Svg>

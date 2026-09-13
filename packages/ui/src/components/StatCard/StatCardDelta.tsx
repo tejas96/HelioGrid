@@ -8,6 +8,7 @@
 
 import { Text } from '../../primitives/Text';
 import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
+import { DELTA_DIR_PATH } from './StatCardDelta.logic';
 
 /** Sentiment: a tint AND a word. Neutral makes no claim, which is why it is the default. */
 const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
@@ -20,12 +21,6 @@ const DIR_WORD: Record<StatCardDeltaDir, string> = {
   up: 'Up',
   down: 'Down',
   flat: 'No change',
-};
-
-const DIR_PATH: Record<StatCardDeltaDir, string> = {
-  up: 'M7 17 17 7M17 7H9m8 0v8',
-  down: 'M7 7l10 10M17 17H9m8 0V9',
-  flat: 'M5 12h14',
 };
 
 export function StatCardDelta({
@@ -60,7 +55,7 @@ export function StatCardDelta({
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={DIR_PATH[dir]} />
+        <path d={DELTA_DIR_PATH[dir]} />
       </svg>
       {/* NAME_FROM_CONTENT (check h): the arrow is hidden, so DIRECTION is carried in words — and
           those words are CONTENT here where the native half folds the whole chip into one
