@@ -25,7 +25,7 @@ export interface ButtonProps {
   disabledReason?: ReactNode | ActionReasonSpec;
   /** replaces the label with a spinner, keeps width fixed */
   loading?: boolean;
-  /** leading icon node (Lucide, 20px, 1.5 stroke) */
+  /** leading icon node — a glyph this package draws, 20px, 1.5 stroke */
   icon?: ReactNode;
   iconRight?: ReactNode;
   fullWidth?: boolean;

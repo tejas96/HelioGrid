@@ -134,9 +134,12 @@ jobs:
           cache: pnpm
       - uses: actions/cache@v4
         with:
+          # Keyed by JOB as well as commit. A cache key is write-once, so three ubuntu jobs
+          # sharing one meant whichever finished first decided what the other two restored,
+          # and the losers logged a save failure on every run.
           path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-
+          key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
       - run: pnpm install --frozen-lockfile
       # The same pinned build a developer installs with `pnpm tools:oasdiff` (M26): the pin —
       # version and per-archive checksum — is scripts/oasdiff-pin.json, one file for both.
@@ -192,9 +195,12 @@ jobs:
           cache: pnpm
       - uses: actions/cache@v4
         with:
+          # Keyed by JOB as well as commit. A cache key is write-once, so three ubuntu jobs
+          # sharing one meant whichever finished first decided what the other two restored,
+          # and the losers logged a save failure on every run.
           path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-
+          key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo build --filter='@heliogrid/mobile^...'
       - name: Bundle the RN JavaScript (Law 7's only proof that the JS resolves)
@@ -225,13 +231,11 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
-      - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      # No `turbo build`: a DEBUG variant loads its JavaScript from Metro at runtime and bundles
+      # none, so nothing in this job ever opens `dist/` of a workspace package. Autolinking and
+      # codegen read package.json and native sources only. `mobile-js` is where the JS graph is
+      # proven; building it here was eight minutes twice over for an artifact nobody read.
       - name: Assemble debug APK
         working-directory: apps/mobile/android
         run: ./gradlew assembleDebug --no-daemon
@@ -258,13 +262,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
-      - run: pnpm turbo build --filter='@heliogrid/mobile^...'
+      # No `turbo build`, for the same reason as the android lane: a Debug configuration loads
+      # its JavaScript from Metro and `react-native-xcode.sh` bundles nothing.
       - uses: ruby/setup-ruby@v1
         with:
           # 3.1 is the newest Ruby the lock resolves on: apps/mobile/Gemfile.lock was written under

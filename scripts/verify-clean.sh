@@ -6,7 +6,7 @@
 # built and proven there. `.env.local`, `HelioGrid-UX/`, `dist/`, `.turbo/` and `.tools/` do not
 # exist in the room, exactly as on GitHub, so a proof that leans on one goes red HERE.
 #
-#   scripts/verify-clean.sh            the whole proof — what CI runs (pnpm verify:ci)
+#   scripts/verify-clean.sh            the whole proof — CI's quality lane AND its mobile bundle
 #   scripts/verify-clean.sh test:unit  one stage, to reproduce a red lane fast (builds first)
 #
 # Not caught: faults that need Linux itself — path case, a tool ubuntu lacks (landmines.md).
@@ -84,11 +84,21 @@ cd "$repo"
   run pnpm --filter @heliogrid/db migrate
   say "build"
   run pnpm turbo build
+  # ci.yml's mobile-js lane, which calls itself the ONE mechanical proof the React Native
+  # JavaScript resolves: only the bundler walks Metro's module graph, so a broken import path,
+  # a renamed asset or a package-exports change in a dependency passes typecheck and every
+  # other gate here. Skipped for a single stage — that form exists to re-run one red lane fast.
+  case "$script" in
+    verify | verify:ci)
+      say "bundle the RN JavaScript (ci.yml's mobile-js lane)"
+      run pnpm --filter @heliogrid/mobile bundle
+      ;;
+  esac
   say "pnpm $script"
   run pnpm "$script"
 } 2>&1 | tee "$log"
 status=${PIPESTATUS[0]}
 say "verdict"
-grep -h "adherence OK\|catalogs OK\|openapi freshness\|Test Files\|Tests \|invariants green\|VACUOUS\|SKIP\|error TS\|FAIL\|ELIFECYCLE" "$log" | grep -v "^.*> " | tail -12 || echo "  (no verdict line matched — read the log)"
+grep -h "adherence OK\|catalogs OK\|Done writing bundle output\|openapi freshness\|Test Files\|Tests \|invariants green\|VACUOUS\|SKIP\|error TS\|FAIL\|ELIFECYCLE" "$log" | grep -v "^.*> " | tail -12 || echo "  (no verdict line matched — read the log)"
 echo "clean room: pnpm $script exited $status — full log: $log"
 exit "$status"
