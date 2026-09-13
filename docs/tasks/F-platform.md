@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-046 · Five parked bugs, the seam the transport never had, and the rule this change paid for
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#81)
 **Why:** `docs/tasks/deferred.md` says a row there is the NEXT task, never a parked fix. Five of its rows had waited, and two of them cost this repository real time: the worker could not be started in dev mode from a clean checkout, so every verification of it has run the built artifact by hand, and `apps/api`'s `predev` freed port 8084 by name whatever port the run would bind, so starting a second api killed the first — which is exactly how a QA run lost the instance its earlier steps were using. The third is the api's port written in four places. The last two are one defect wearing two faces: the transport could not tell the session store anything, so a refresh that failed left the store `authenticated` while every call 401'd — a screen behind the gate kept rendering for someone the server had already stopped recognising — and, never learning, it posted a doomed refresh behind every later 401 too, five wrong OTP codes costing ten calls.
 **PRD rows:** none of its own — each row it closes names its own.
 **Data model:** none.
