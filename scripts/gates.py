@@ -182,7 +182,7 @@ def norm(s):
 # day a gate was proven to go red on an injected violation, which is the one date that
 # stays true. It is not an instruction file and carries no budget.
 INSTRUCTION_BUDGETS = [
-    ("CLAUDE.md", 215),
+    ("CLAUDE.md", 220),
     ("apps/*/CLAUDE.md", 85),
     ("packages/*/CLAUDE.md", 85),
     ("tests/*/CLAUDE.md", 85),

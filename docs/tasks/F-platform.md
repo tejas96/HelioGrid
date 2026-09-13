@@ -851,6 +851,25 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-052 · Silence is not evidence
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Five times in one run, an ABSENCE was read as a pass: `adherence OK` printed over a check that had crashed and never run; a typecheck exited 0 on a file that was outside its own program; a "red" run that changed nothing because its regex matched a shape the formatter had since rewritten; a clean room that stayed green with the fix reverted, because the file chosen to delete was filtered out before the check saw it; and `no brand obtained by a cast` printed over a brand that had never been added to the registry. The last one is the shape that matters most — `M60`'s own gap column had said all along that listing a brand there is part of landing it, and the instruction still did not fire, because nothing made anyone GO AND LOOK at a fixed moment. An unguarded fact and a guarded one look identical from the gate's output.
+**PRD rows:** none of its own — it serves every row every gate stands behind, by refusing to count a gate that abstained as a gate that passed.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** the narrow holder `M125` names — a check that every `unique symbol` brand declared under `packages/` appears in the cast registry. It covers brands only and a script needs the owner's ruling (`CLAUDE.md` §8), so the row says so and stops there.
+**Found by:** the owner, reading `T-FPLAT-050` and observing that the same class of miss had now happened repeatedly and had each time needed a second prompt from a human to surface.
+**Ruled at `/start`:** **the ceiling moves, no rule is cut.** `CLAUDE.md` was at exactly its 215 budget. Cutting an existing rule to fit a law the owner asked FOR is precisely what the owner's standing ruling forbids — the worry is missed instructions, not size. The budget goes to 220 in `CLAUDE.md` §8 and in the gate that reads it, and the law bought those five lines.
+**Ruled at `/start`:** **one law, cited from three places, never restated.** `CLAUDE.md` §1's existing sentence is pointed at Law 12 rather than rewritten; `/start` §3 and `/verify` §5 each add ONE paragraph that cites the law and says what to DO at that moment. "One fact, one file" — the law lives in `CLAUDE.md` alone.
+**Verified:** digest d01c1e2207b4 · 2026-09-13 · depth GATES — this change touches no runtime file, so the digest is `T-FPLAT-050`'s unchanged, and the only mechanical part of it is the budget · gate the raised budget proven BOTH ways: red at `CLAUDE.md 222 > 220` with a line appended, green at 220 restored — so the ceiling still bites where it was moved to, rather than being switched off · gate `pnpm check:all` and `pnpm verify:clean` both exit 0; 1123 tests · **the law caught a violation in its own implementation, which is the proof that matters here**: `/start`'s new paragraph first named four gates by name — the cast registry, enum-parity, the access map, the tenancy scan — which `CLAUDE.md` §8 forbids outside `mechanisms.md`. It now cites `M60`, `M17`, `M15` and `M12` instead. Gates 24 and 25 could not have caught it: `INSTRUCTION_BUDGETS` does not cover `.claude/skills/`, so the skills are outside every instruction-file gate — stated here rather than left to be discovered · the rest is REVIEW-ONLY by construction and `M125` says so: a law about what a reader must go and check cannot be held by a gate, and the narrow holder that would cover one kind of it — brands — needs the owner's ruling before it is written (`CLAUDE.md` §8) · api/web/ios/android n/a — no runtime file changed · parity n/a
+**DONE WHEN:**
+- Given a fact added to a guarded kind, when the work is planned, then the guard it joins is named before any code is written. → proof: gate `/start` §3 asks for the `mechanisms.md` row each new fact enrols in and the injection that will prove it fires
+- Given a gate reported as green, when the change is verified, then it must say what made it fire. → proof: gate `/verify` §5 item 6 turns a check that scanned none of the change's files, crashed, or has no entry for the new fact into an ABSTAIN rather than a pass
+- Given the law itself, when it is added, then it does not displace an existing rule. → proof: gate `CLAUDE.md` at 220 lines against a budget raised to 220 in both the file and `scripts/gates.py`, seen red at 221
+
+---
 ### T-FPLAT-050 · A cross-tenant query stops compiling
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#86)

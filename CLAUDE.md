@@ -22,7 +22,7 @@ to switch. A recommendation you withheld is a decision made for the owner. Never
 **Verify reality.** **A claim about this repo names the file and line that proves it** — "nothing
 imports X" is a finding only once the grep is shown, and reading a rule is not checking the code.
 A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
-sites, not declarations. **A green gate proves nothing until it has gone red on an injection.**
+sites, not declarations. **A gate proves nothing until it goes red on THIS change** (Law 12).
 
 ## 2. The Laws
 
@@ -42,6 +42,11 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
     declared server entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
+12. **A new fact joins its guard, and silence is never evidence.** Anything your change ADDS to a
+    guarded kind — a brand, enum, token, route, table, error code — is enrolled in its
+    `mechanisms.md` row in the SAME change, and proven RED there. A gate that printed OK, a grep
+    that matched nothing, a registry that never named your fact: each is worth nothing until you
+    have made it FIRE on this change. A kind with no guard is said out loud, never assumed safe.
 
 ## 3. Workflow
 
@@ -188,7 +193,7 @@ Writing rules, not code:
 - **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
   and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
   nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
-- **Budgets are ceilings, not targets.** This file ≤ 215 lines · a package or app
+- **Budgets are ceilings, not targets.** This file ≤ 220 lines · a package or app
   `CLAUDE.md` ≤ 85 · a `.claude/rules/` file ≤ 85. Hitting one means the file has taken on
   something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review

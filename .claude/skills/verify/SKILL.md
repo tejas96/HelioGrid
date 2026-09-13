@@ -118,6 +118,11 @@ and never the whole run.
 4. Spot-check every `blocker` step plus two others against their evidence.
 5. **A spot-check that contradicts the report makes the whole run untrusted** — re-run it, do
    not quietly correct one row.
+6. **A gate's silence is checked, not trusted** (Law 12). For every gate cited as green, say what
+   made it FIRE on this change. A check that scanned none of your files, whose scan crashed, or
+   which has no entry for the fact you added did not pass — it ABSTAINED, and the two read
+   identically. Every fact this change adds to a guarded kind is named here with the
+   `mechanisms.md` row it enrolled in and the injection that proved that row red.
 
 ## 6. Parity — only when drift is possible
 

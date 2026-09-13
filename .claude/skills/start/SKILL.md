@@ -46,6 +46,12 @@ lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a 
 authored in both app trees is split out here (`M115`, review-only). Contract
 before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
+**Name the GUARD each new fact joins, and the injection that will prove it fires** (Law 12). A
+brand enrols with `M60`, an enum with `M17`, a route with `M15`, a table with `M12`. Read
+`mechanisms.md` for the row that guards that KIND and say which row each new fact enrols in — a
+fact whose kind has a row and is not enrolled there is an UNGUARDED fact, and its row will keep
+reporting green over it. A kind with no row is said out loud here, never assumed safe.
+
 **A task that is really two tasks is split now, not shipped half.** Split at a seam that leaves
 each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
 propose the slices in order. A slice that cannot pass its done-when alone is not a slice.
