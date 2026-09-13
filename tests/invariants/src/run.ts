@@ -1,22 +1,26 @@
 import { loadInvariantsEnv } from '@heliogrid/env/server';
+import { runBrandRegistry } from './brand-registry';
 import { runEnumParity } from './enum-parity';
 import { runFormatInvariants } from './format-rendering';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
+import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTenancyInvariants } from './tenancy-rls';
-import { runTenantIdInBody } from './tenant-id-in-body';
+import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
- * schema parity (live), tenant-id-in-body (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static, F2-25).
+ * schema parity (live), tenant-id-on-the-wire (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static,
+ * F2-25), brand-registry (static, M125).
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
 async function main() {
-  runTenantIdInBody(); // static — needs no database, must never be skipped
+  runTenantIdOnTheWire(); // static — needs no database, must never be skipped
   runFormatInvariants(); // static — the format layer needs no database either
   runMatrixMirrorsF2(); // static — the permission matrices equal the PRD, cell for cell
+  runBrandRegistry(REPO_ROOT); // static — every brand is enrolled with the cast check
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {

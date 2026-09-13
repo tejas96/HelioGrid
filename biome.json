@@ -331,7 +331,11 @@
               "options": {
                 "paths": {
                   "node:fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use, so a rotation that works for one works for the other. The single exception is the boot assertion that a BUILD artifact exists, and it is excluded by path.",
-                  "fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use. Use 'node:fs' inside @heliogrid/env, never a bare specifier."
+                  "fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use. Use 'node:fs' inside @heliogrid/env, never a bare specifier.",
+                  "@heliogrid/db": {
+                    "importNames": ["createDb"],
+                    "message": "A repository is given a DOOR, not a pool (M11). Building a second pool with createDb walks around the tenant handle and around the one holder with a shutdown hook, so a command that opens one never exits. Ask for TENANT_DB, REFERENCE_DB or ADMIN_DB. The two places that legitimately open a pool carry a biome-ignore at the call site naming why — it folds in HERE rather than into an override of its own, because an override REPLACES this rule's config for the files it matches and would switch the two bans above off."
+                  }
                 }
               }
             }

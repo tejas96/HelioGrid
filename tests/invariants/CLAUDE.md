@@ -6,7 +6,7 @@ an invariant proves the seam between them.
 ## What lives here / what must never live here
 
 - The locked invariant set: tenancy RLS, RLS armed, tenancy write paths, table tenancy scan,
-  enum parity, schema parity, tenant-id-in-body, format rendering, matrix-mirrors-f2 — one name
+  enum parity, schema parity, tenant-id-on-the-wire, format rendering, matrix-mirrors-f2 — one name
   per file in `src/`, so a file added here without a name added there is visible. **Additions require explicit owner
   approval** — the set is deliberately small so a green run means something.
 - NEVER a unit test. Those live at `<package>/tests/**/*.test.ts` and prove one DECISION at its
@@ -31,7 +31,7 @@ pnpm turbo test                              # the same, through the gate
   and a reset store makes them say it again. Read the output, not the exit code: the summary
   lines name what was exercised, and "OK" over zero rows is what they are written to refuse.
 - **Static invariants run before the `DATABASE_URL` check**, so they never skip.
-  `tenant-id-in-body` is the pattern: anything provable without a database goes above that early
+  `tenant-id-on-the-wire` is the pattern: anything provable without a database goes above that early
   return.
 - Db checks target the EXISTING local container. Never create a container or clone a database.
 - **Injecting a violation into a workspace package proves nothing until you REBUILD it.** This
