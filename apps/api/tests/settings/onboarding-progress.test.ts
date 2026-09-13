@@ -42,8 +42,8 @@ describe.skipIf(skip)('the setup corridor, against a migrated database', () => {
     pools = openPools();
     await seed(pools.admin.db, fixture);
     onboarding = new SettingsOnboardingService(
-      new SettingsOnboardingRepository(pools.runtime.db),
-      new SettingsRepository(pools.runtime.db),
+      new SettingsOnboardingRepository(pools.tenants),
+      new SettingsRepository(pools.tenants),
     );
   });
 

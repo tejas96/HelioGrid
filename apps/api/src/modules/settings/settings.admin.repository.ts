@@ -1,6 +1,7 @@
 import {
   businessProfile,
   type Db,
+  type DbTransaction,
   onboardingProgress,
   tenant,
   trancheTemplate,
@@ -20,7 +21,6 @@ import { recordAuditEntry } from '../audit/audit.public';
 import { settingsAct } from './internal/audit-act';
 
 /** Any transaction, on either pool: the seed rides the one that creates the tenant. */
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 /**
  * What a company has before its owner has touched a setting (`M01-28`, `M01-54`): the setup
@@ -30,7 +30,7 @@ type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
  * and the splits are skipped where a template already exists.
  */
 export async function seedTenantSettings(
-  tx: Tx,
+  tx: DbTransaction,
   input: { readonly tenantId: string; readonly now: number },
 ): Promise<void> {
   const { tenantId } = input;

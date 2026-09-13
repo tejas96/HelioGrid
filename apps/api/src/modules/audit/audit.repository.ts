@@ -1,5 +1,5 @@
 import type { AuditLogEntry, Paginated } from '@heliogrid/contracts';
-import { auditLogEntry, type Db, withTenantTransaction } from '@heliogrid/db';
+import { auditLogEntry, type DbTransaction, type TenantPool } from '@heliogrid/db';
 import type {
   AuditActorKind,
   AuditChangePayload,
@@ -8,10 +8,9 @@ import type {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { count, desc, eq } from 'drizzle-orm';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** Any transaction, on either pool: an entry rides the one that carries its change. */
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 /**
  * One act, as the log will record it (`F2-22`). The caller states the tenant whose log it is —
@@ -37,7 +36,7 @@ export interface AuditEntryToWrite {
  * its change commit together or neither does — and a blocked attempt, which changed nothing,
  * still commits its own record.
  */
-export async function recordAuditEntry(tx: Tx, entry: AuditEntryToWrite): Promise<void> {
+export async function recordAuditEntry(tx: DbTransaction, entry: AuditEntryToWrite): Promise<void> {
   await tx.insert(auditLogEntry).values(entry);
 }
 
@@ -49,13 +48,13 @@ export async function recordAuditEntry(tx: Tx, entry: AuditEntryToWrite): Promis
 @Injectable()
 export class AuditRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async entries(
     tenantId: string,
     page: { limit: number; offset: number },
   ): Promise<Paginated<AuditLogEntry>> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const where = eq(auditLogEntry.tenantId, tenantId);
       const rows = await tx
         .select({

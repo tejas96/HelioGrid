@@ -118,7 +118,7 @@ module appends its own capability rows when its slice begins.
 ### db — schema mirror, migrations, backend client
 Owns: append-only migrations (0001 is the market pack; the identity spine follows it) and the
 Drizzle schema mirror in `src/schema/`, the migrate runner (sha256-locked, advisory-locked),
-the pool factory `createDb` plus RLS plumbing (withTenantTransaction, the runtime-role
+the pool factory `createDb` plus RLS plumbing (the tenant door `tenantPool`, the runtime-role
 assertion, ping), and the uuid subpath.
 The admin/runtime pool PAIR is not here — apps/api constructs it (admin-pool-fenced).
 Allowed deps: config, domain (a jsonb column is typed as domain's envelope, never as the

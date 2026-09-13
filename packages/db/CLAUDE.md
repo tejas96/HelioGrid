@@ -1,20 +1,15 @@
 # @heliogrid/db — append-only, tenant-scoped, fail-closed
 
-> `0001` is the market pack, readable global reference data with no foreign key out; `0002` the
-> identity spine that carries the market key; `0003` the grants that open the role-set write path
-> under it; `0004` the append-only audit log every guarded transition writes to; `0005` the team
-> invite and the presets it carries; `0006` the tenant settings and the setup corridor — nine
-> tables, no settings JSONB. The next is whichever M01 slice lands first — the catalog
-> (`T-M01-027`) or the demo seed (`T-M01-029`): read its Data model block in
-> `docs/tasks/M01-onboarding.md` before authoring it. A number is taken in LANDING order, so a
-> task that lands out of the planned sequence takes the next free one and sweeps the docs.
+> A migration is named for what it does, so `migrations/` IS the list and it is not restated here.
+> Before authoring the next one, read its Data model block in `docs/tasks/`. A number is taken in
+> LANDING order, so a task landing out of sequence takes the next free one and sweeps the docs.
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
 a sequence: run `/migration`.
 
 ## What lives here / what must never live here
 
-- The Drizzle schema, the connection factory and `withTenantTransaction`, the migration runner,
+- The Drizzle schema, the connection factory and the TENANT DOOR, the migration runner,
   and the migrations themselves.
 - **The entities come from the owning task's Data model block** in `docs/tasks/` — what each one
   is, its key fields, its tenancy and the PRD rows behind it. This package holds the PHYSICAL
@@ -29,7 +24,7 @@ a sequence: run `/migration`.
 ```
 migrations/NNNN_<what>.sql  four-digit, zero-padded, one above the highest; NEVER edited
 src/schema/<area>.ts        the Drizzle mirror of what the migrations built
-src/client.ts               connection factory + withTenantTransaction
+src/client.ts               connection factory + the tenant door (`tenantPool`)
 src/migrate.ts              the sha256-locked runner
 src/uuid.ts                 the ./uuid subpath — backend use only
 ```
@@ -63,6 +58,10 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   never as the domain aggregate; the whole is parsed in `domain`, never here.
 - **Tenancy is defence in depth, all three always**: guard (session claims) → repository filter
   (tenantId from context, never from client input) → RLS backstop.
+- **A tenant repository is given a DOOR, not a database** (`M11`): `tenantPool(db)` returns a
+  `TenantPool` with one method and no query of its own, so a read that never names its tenant
+  does not compile. Take the branded `TenantScopedDb` wherever a read must be a tenant's own,
+  and `DbTransaction` where either pool's transaction is legitimate.
 - **Cross-tenant reads return 404, never 403** — never reveal that another tenant's row exists.
 - ids are UUIDv7 generated **app-side** via `$defaultFn`; tables carry no DB-side id default, so a
   raw SQL insert must supply ids.

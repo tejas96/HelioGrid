@@ -38,10 +38,10 @@ curl localhost:8084/health                               # liveness · /health/r
 
 ## Local conventions
 
-- **db and drizzle are legal ONLY in `*.repository.ts`.** Services take repositories by DI and
-  never see a `tx` or a table. **The NAME states the pool, and each name has its own fence**: a
-  plain one is tenant-scoped · `*.admin.repository.ts` crosses tenancy · `*.reference.repository.ts`
-  reads the tables no tenant owns, unpinned. A `src/scripts/` command drives a service, never one.
+- **db and drizzle are legal ONLY in `*.repository.ts`**; a service sees no `tx` or table, and a
+  `src/scripts/` command drives a service, never a repository. **The NAME states the pool**: plain
+  takes `TENANT_DB`, a DOOR with no query of its own (`M11`) · `*.admin.repository.ts` crosses
+  tenancy · `*.reference.repository.ts` reads what no tenant owns — the last two fenced, on raw `Db`.
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - **The audit module is a LEAF and stays one**: other modules' repositories import
   `recordAuditEntry` from it, so a `.public.ts` import in the other direction closes a cycle.

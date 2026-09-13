@@ -1,5 +1,6 @@
 import {
   type Db,
+  type DbTransaction,
   invitation,
   invitationRole,
   membershipRole,
@@ -36,8 +37,6 @@ export type AcceptOutcome =
 
 export type DeclineOutcome = { readonly outcome: 'done' | 'not-found' | 'not-pending' };
 export type ReinviteOutcome = { readonly outcome: 'done' | 'not-found' | 'not-expired' };
-
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 /**
  * The invited person's side, which crosses tenancy by nature — they hold no membership until the
@@ -121,7 +120,7 @@ export class InvitationAdminRepository {
  * invitation's flip, the name and the entry — and the invitation still lands (`M01-13`).
  */
 export async function acceptInvitation(
-  tx: Tx,
+  tx: DbTransaction,
   input: { tokenHash: string; userId: string; now: number },
 ): Promise<AcceptOutcome> {
   const row = await lockedByToken(tx, input.tokenHash);
@@ -191,7 +190,7 @@ export async function acceptInvitation(
 }
 
 /** The row behind a link, locked for the write that follows. */
-async function lockedByToken(tx: Tx, tokenHash: string) {
+async function lockedByToken(tx: DbTransaction, tokenHash: string) {
   const [row] = await tx
     .select({
       id: invitation.id,

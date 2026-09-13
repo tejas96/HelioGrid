@@ -1,8 +1,8 @@
 import {
-  type Db,
+  type TenantPool,
+  type TenantScopedDb,
   trancheTemplate,
   trancheTemplateLine,
-  withTenantTransaction,
 } from '@heliogrid/db';
 import {
   basisPoints,
@@ -14,11 +14,9 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { settingsAct } from './internal/audit-act';
-
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 export type TemplateOutcome =
   | { readonly outcome: 'done'; readonly template: TrancheTemplate }
@@ -32,10 +30,10 @@ export type TemplateOutcome =
 @Injectable()
 export class SettingsTranchesRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async trancheTemplates(tenantId: string): Promise<readonly TrancheTemplate[]> {
-    return withTenantTransaction(this.db, tenantId, (tx) => trancheTemplatesOf(tx, tenantId));
+    return this.db.withTenantTransaction(tenantId, (tx) => trancheTemplatesOf(tx, tenantId));
   }
 
   /**
@@ -47,7 +45,7 @@ export class SettingsTranchesRepository {
     content: TrancheTemplateContent,
     act: Act,
   ): Promise<TrancheTemplate> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const [current] = await tx
         .select({ id: trancheTemplate.id })
@@ -93,7 +91,7 @@ export class SettingsTranchesRepository {
     content: TrancheTemplateContent,
     act: Act,
   ): Promise<TemplateOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const standing = await standingOf(tx, tenantId, id);
       if (standing === null) return { outcome: 'not-found' };
@@ -126,7 +124,7 @@ export class SettingsTranchesRepository {
 
   /** Archived, never deleted; the default stays live until another is made default. */
   async archiveTrancheTemplate(tenantId: string, id: string, act: Act): Promise<TemplateOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const standing = await standingOf(tx, tenantId, id);
       if (standing === null) return { outcome: 'not-found' };
       if (standing.archived) return { outcome: 'archived' };
@@ -154,7 +152,7 @@ export class SettingsTranchesRepository {
     id: string,
     act: Act,
   ): Promise<TemplateOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const standing = await standingOf(tx, tenantId, id);
       if (standing === null) return { outcome: 'not-found' };
@@ -184,7 +182,7 @@ export class SettingsTranchesRepository {
 }
 
 async function standingOf(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   id: string,
 ): Promise<{ archived: boolean; isDefault: boolean } | null> {
@@ -197,7 +195,7 @@ async function standingOf(
 }
 
 async function writeLines(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   templateId: string,
   content: TrancheTemplateContent,
@@ -214,7 +212,11 @@ async function writeLines(
   );
 }
 
-async function templateById(tx: Tx, tenantId: string, id: string): Promise<TrancheTemplate> {
+async function templateById(
+  tx: TenantScopedDb,
+  tenantId: string,
+  id: string,
+): Promise<TrancheTemplate> {
   const [template] = await trancheTemplatesOf(tx, tenantId, id);
   if (!template) throw new Error('the tranche template vanished inside its own transaction');
   return template;
@@ -226,7 +228,7 @@ async function templateById(tx: Tx, tenantId: string, id: string): Promise<Tranc
  * way in, so it reads back as the chain stage it was written as.
  */
 export async function trancheTemplatesOf(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   onlyId?: string,
 ): Promise<readonly TrancheTemplate[]> {

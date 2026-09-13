@@ -53,13 +53,13 @@ export function settingsServicesOf(pools: Pools): {
   templates: SettingsTemplatesService;
 } {
   const settings = new SettingsService(
-    new SettingsRepository(pools.runtime.db),
+    new SettingsRepository(pools.tenants),
     new SettingsAdminRepository(pools.admin.db),
     marketsOf(pools),
   );
   const templates = new SettingsTemplatesService(
-    new SettingsTemplatesRepository(pools.runtime.db),
-    new SettingsTranchesRepository(pools.runtime.db),
+    new SettingsTemplatesRepository(pools.tenants),
+    new SettingsTranchesRepository(pools.tenants),
     settings,
   );
   return { settings, templates };

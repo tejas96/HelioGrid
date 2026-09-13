@@ -85,7 +85,7 @@ describe.skipIf(skip)(
 
     beforeAll(async () => {
       pools = openPools();
-      tenants = new TenantRepository(pools.runtime.db);
+      tenants = new TenantRepository(pools.tenants);
       sessions = new AuthAdminRepository(pools.admin.db);
       await seed(pools.admin.db, fixture);
     });

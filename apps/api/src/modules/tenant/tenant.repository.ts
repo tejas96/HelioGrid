@@ -1,10 +1,10 @@
 import {
-  type Db,
   membershipRole,
+  type TenantPool,
+  type TenantScopedDb,
   tenant,
   tenantMembership,
   userAccount,
-  withTenantTransaction,
 } from '@heliogrid/db';
 import {
   type AuditChangePayload,
@@ -18,7 +18,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { type TenantRow, tenantColumns } from './tenant.admin.repository';
 
@@ -41,8 +41,6 @@ export type TransitionOutcome =
   | { readonly outcome: 'done'; readonly member: MemberRow }
   | { readonly outcome: 'not-found' | 'not-active' | 'last-owner' };
 
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
-
 /** What the change did, and the old → new the log records for it — written either way. */
 interface ChangeOutcome {
   readonly outcome: 'done' | 'last-owner';
@@ -58,10 +56,10 @@ interface ChangeOutcome {
 @Injectable()
 export class TenantRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async me(tenantId: string): Promise<TenantRow | null> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
         .select(tenantColumns())
         .from(tenant)
@@ -76,7 +74,7 @@ export class TenantRepository {
     tenantId: string,
     page: { limit: number; offset: number },
   ): Promise<{ items: MemberRow[]; totalCount: number }> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const where = eq(tenantMembership.tenantId, tenantId);
       const rows = await memberQuery(tx)
         .where(where)
@@ -169,12 +167,12 @@ export class TenantRepository {
     eventType: AuditEventType,
     act: Act,
     change: (
-      tx: Tx,
+      tx: TenantScopedDb,
       othersHold: readonly RolePreset[],
       subjectHolds: readonly RolePreset[],
     ) => Promise<ChangeOutcome>,
   ): Promise<TransitionOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const subjectWhere = and(
         eq(tenantMembership.tenantId, tenantId),
@@ -222,7 +220,7 @@ export class TenantRepository {
 }
 
 /** The roster's columns, joined to the account under its own policy. */
-function memberQuery(tx: Tx) {
+function memberQuery(tx: TenantScopedDb) {
   return tx
     .select({
       membershipId: tenantMembership.id,
@@ -238,7 +236,7 @@ function memberQuery(tx: Tx) {
 
 /** Every preset each row's membership holds, in one read over the membership index. */
 async function withRoles(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   rows: readonly Omit<MemberRow, 'roles'>[],
 ): Promise<MemberRow[]> {

@@ -1,4 +1,5 @@
-import { type Db, membershipRole, session, tenantMembership, userAccount } from '@heliogrid/db';
+import type { Db, DbTransaction } from '@heliogrid/db';
+import { membershipRole, session, tenantMembership, userAccount } from '@heliogrid/db';
 import type {
   AuditEventType,
   MeasurementSystem,
@@ -273,7 +274,7 @@ export class AuthAdminRepository {
    * and there is no tenant to own the entry. The person is both actor and subject.
    */
   private async recordAuthAct(
-    tx: Parameters<Parameters<Db['transaction']>[0]>[0],
+    tx: DbTransaction,
     eventType: AuditEventType,
     userAccountId: string,
     tenantId: string | null,
