@@ -44,6 +44,9 @@ are a closed vocabulary read by `ds:contract`.
 
 ## Local conventions
 
+- **An icon is DRAWN here, never imported from an icon package** (`M118`) — one SVG per glyph,
+  `currentColor`, 1.5px stroke, one drawing serving the web half and the native half.
+  `AppShell/ShellIcons.tsx` is the shape to copy.
 - **A prop belongs to `<Name>.types.ts`, never to a platform half.** A platform-local props
   interface above the shared base is how the halves drift; only prop NAMES are compared today
   (`M35`), so the types file is what you must keep honest.

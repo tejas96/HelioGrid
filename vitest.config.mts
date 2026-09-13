@@ -113,6 +113,10 @@ export default defineConfig({
         'packages/domain/src/tax/**': COMPLETE,
         'packages/domain/src/tenancy/onboarding-steps.ts': COMPLETE,
         'packages/i18n/src/runtime.ts': COMPLETE,
+        /* The worker's ONE decision, and the only file in it a unit test can reach: the
+           bootstrap, the Nest host and the Temporal connection are proven by RUNNING the
+           worker (qa-api boots it), and a bar over them would buy a mocked Temporal. */
+        'apps/worker/src/modules/platform/platform.activities.ts': COMPLETE,
       },
     },
   },

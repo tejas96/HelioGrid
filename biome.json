@@ -54,7 +54,9 @@
               "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
               "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
               "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
-              "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations."
+              "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+              "lucide-react": "Icons are DRAWN in packages/ui \u2014 one SVG per glyph, currentColor, 1.5px stroke \u2014 and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
+              "lucide-react-native": "Icons are DRAWN in packages/ui \u2014 one SVG per glyph, currentColor, 1.5px stroke \u2014 and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy."
             }
           }
         },

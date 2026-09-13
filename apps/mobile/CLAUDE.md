@@ -73,9 +73,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep chang
   grab-bag** — a file named for its layer instead of its job is the same defect as `*-part2`.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`. API failures
   render a shared error component; `ApiErrorText` is owed to `packages/ui`.
-- This app deliberately skips `@heliogrid/config` and extends `@react-native/typescript-config`,
-  hand-mirroring the base strictness flags — a new flag in `tsconfig.base.json` must be copied
-  here by hand or it silently does not apply.
+- This app extends BOTH configs, `@heliogrid/config/tsconfig/base.json` then
+  `@react-native/typescript-config` in that order — a workspace strictness flag arrives on its
+  own, and React Native's own settings win where the two overlap.
 - Firebase is LIVE. Geist and Noto TTFs are bundled; verify Devanagari on BOTH simulators.
 
 ## Done means
