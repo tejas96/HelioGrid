@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-042 · The worker proves its own idempotency, and CI stops paying three times for one graph
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#77)
 **Why:** The worker is the one process whose correctness NOBODY checks: every activity must be idempotent because Temporal retries them, and the single activity that exists proves that by hand in a map that grows for the life of the process. A long-lived worker with an unbounded map is a memory leak that arrives as an OOM kill mid-activity — which is exactly where a side effect is half-applied. Beside it, the local clean-room proof skips the one lane CI calls the only mechanical proof the React Native JavaScript resolves, two CI jobs rebuild a dependency graph they never open, and three jobs write to one cache key so whichever finishes first decides what the other two restore.
 **PRD rows:** none of its own — it serves every row a workflow will ever carry, by proving the retry contract those rows rest on, and every row at all, by making the local proof and CI agree.
 **Data model:** none.
