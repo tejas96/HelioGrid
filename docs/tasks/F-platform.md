@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-044 · One drawing serves both halves
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#79)
 **Why:** Four components each hold the same outline twice, once per platform half — the verdict ticks, the finding marks, the delta arrows and the banner glyphs. A corrected outline lands on one platform and not the other, and nothing catches it: no gate compares the two halves' geometry, and no screen imports any of these four, so there is not even a surface where the drift would show. The owner's ruling that an icon is DRAWN here rather than imported makes the drawing this package's own fact; a fact written twice is the defect this repository exists to prevent.
 **PRD rows:** none of its own — it serves `F7-19`, one icon family at one stroke weight, by making each glyph one drawing rather than two.
 **Data model:** none.
