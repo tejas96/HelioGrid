@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { errorHttpStatusByCode } from '@heliogrid/contracts';
+import { httpStatusFor } from '@heliogrid/contracts';
 import { NestFactory } from '@nestjs/core';
 import type { NextFunction, Request, Response } from 'express';
 import { json, urlencoded } from 'express';
@@ -20,8 +20,8 @@ function isPayloadTooLarge(error: unknown): error is Error {
   };
   return (
     bodyError.type === 'entity.too.large' ||
-    bodyError.status === errorHttpStatusByCode.PAYLOAD_TOO_LARGE ||
-    bodyError.statusCode === errorHttpStatusByCode.PAYLOAD_TOO_LARGE
+    bodyError.status === httpStatusFor('PAYLOAD_TOO_LARGE') ||
+    bodyError.statusCode === httpStatusFor('PAYLOAD_TOO_LARGE')
   );
 }
 
@@ -48,7 +48,7 @@ async function bootstrap() {
     }
     const requestId = String(req.id);
     edgeLogger.warn({ requestId }, 'Rejected oversized request body');
-    res.status(errorHttpStatusByCode.PAYLOAD_TOO_LARGE).json({
+    res.status(httpStatusFor('PAYLOAD_TOO_LARGE')).json({
       error: {
         code: 'PAYLOAD_TOO_LARGE',
         message: 'The request body is too large.',
