@@ -181,12 +181,18 @@ def norm(s):
 # `mechanisms.md` is exempt from the DATE check, and only that check: a date there is the
 # day a gate was proven to go red on an injected violation, which is the one date that
 # stays true. It is not an instruction file and carries no budget.
-INSTRUCTION_BUDGETS = [
+# A budget of None means the file states rules but carries no ceiling.
+INSTRUCTION_FILES = [
     ("CLAUDE.md", 220),
     ("apps/*/CLAUDE.md", 85),
     ("packages/*/CLAUDE.md", 85),
     ("tests/*/CLAUDE.md", 85),
     (".claude/rules/*.md", 85),
+    # A skill is law too: it tells the agent what to DO, so it may no more restate a gate or
+    # carry a war story than a CLAUDE.md may — and one did, describing a hook and a runner
+    # where only a row id belongs. It carries NO ceiling, because the owner dropped that
+    # deliberately: the worry is a missed instruction, never a long file.
+    (".claude/skills/*/SKILL.md", None),
 ]
 DATE_RE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 # An enforcement phrase is a claim that something is HELD. It is allowed only beside the
@@ -209,7 +215,7 @@ TOOL_RE = re.compile(
 def instruction_files(repo):
     """(path, relative path, budget) for every file that states a rule."""
     out = []
-    for pattern, budget in INSTRUCTION_BUDGETS:
+    for pattern, budget in INSTRUCTION_FILES:
         for f in sorted(glob.glob(os.path.join(repo, pattern))):
             out.append((f, os.path.relpath(f, repo), budget))
     return out
@@ -236,6 +242,8 @@ def check_instruction_hygiene(repo):
                 claims.append(f"{rel}:{i}")
             if TOOL_RE.search(line):
                 tools.append(f"{rel}:{i}")
+        if budget is None:
+            continue
         n = len(lines) - (1 if lines and lines[-1] == "" else 0)
         headroom.append((budget - n, f"{rel} {n}/{budget}"))
         if n > budget:

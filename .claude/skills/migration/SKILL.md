@@ -52,8 +52,8 @@ Then move the reviewed SQL into `packages/db/migrations/` as the next number abo
 ls packages/db/migrations/
 ```
 
-A PreToolUse hook refuses an edit to a committed migration, the sha256-locked runner refuses to
-apply one, and CI's append-only guard rejects the PR. Schema law — what every table needs,
+An applied migration is append-only and three separate things refuse to let you edit one
+(`M19`). Schema law — what every table needs,
 tenancy defence in depth, Law 9 scoping — is in `packages/db/CLAUDE.md`, which loads when
 you open a db file.
 

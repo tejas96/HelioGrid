@@ -851,6 +851,24 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-054 · A skill is an instruction file
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** `.claude/skills/` holds law — a skill tells the agent what to DO at the moment it applies — and it sat outside every instruction-file gate. `CLAUDE.md` §8 says a rule cites a mechanism row and never describes the gate itself, and `/migration` had been describing a hook and a runner in place of citing `M19`. The same class of slip was caught by hand in `/start` one task earlier, which is twice in two days that a skill carried something no gate could see. The corpus regrows in three shapes — a dated war story, an unsourced enforcement claim, a named tool — and all three were being watched everywhere except the files the agent reads first.
+**PRD rows:** none of its own — it serves every row the skills stand behind, by holding the skills to the rule the rest of the corpus already obeys.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** a line BUDGET on skills. The owner dropped that deliberately and the reason stands — the worry is a missed instruction, never a long file — so the list gains a `None` budget rather than a number, and `/verify` stays at 188 lines without complaint.
+**Found by:** reading the `T-FPLAT-052` ticket's own admission that `INSTRUCTION_BUDGETS` did not cover the skills, and then looking to see whether anything had already gone wrong there. It had.
+**Ruled at `/start`:** **three gates, not four.** Skills join the dated-story, unsourced-claim and named-tool checks and NOT the ceiling. A budget of `None` says "this file states rules but carries no ceiling" in one word, which is truer than a number nobody intends to enforce. `INSTRUCTION_BUDGETS` is renamed `INSTRUCTION_FILES`, because a list holding an unbudgeted entry should not be called budgets.
+**Verified:** digest 614b2061b912 · 2026-09-13 · depth GATES — no runtime file changed, so the digest is `T-FPLAT-053`'s unchanged, and the change IS the gate · gate the moment skills came into scope, check 25 went red on a real violation nobody had reported — `.claude/skills/migration/SKILL.md:55` described a hook and a sha256-locked runner where `M19` belonged; it cites the row now and the gate is green · gate proven to keep biting: `enforced by vitest` planted in `/verify` is caught by check 24 AND check 25 at the same line, green on removal · gate the ceiling is proven ABSENT for skills, not merely passing — `/verify` stands at 188 lines and no skill appears in the budget check's own report, which is the owner's dropped-budget ruling shown rather than asserted · gate skills were checked against the other two shapes before they were brought in: zero dates and zero unsourced claims, so this change enrolled a clean corpus and the one failure it found is the one it reports · gate `pnpm check:all` and `pnpm verify:clean` both exit 0; 1123 tests · api/web/ios/android n/a — no runtime file changed · parity n/a
+**DONE WHEN:**
+- Given a skill that names a gate instead of citing its row, when the gates run, then it is refused. → proof: gate red on `.claude/skills/migration/SKILL.md:55`, which described a hook and a sha256-locked runner; it now cites `M19`
+- Given a skill that claims something is enforced without naming the row, when the gates run, then it is refused. → proof: gate red on a planted `enforced by vitest` in `/verify`, caught by BOTH the claim and the tool check, green on removal
+- Given a long skill, when the gates run, then no ceiling is imposed on it. → proof: gate `/verify` at 188 lines passes and no skill appears in the budget check's own report
+
+---
 ### T-FPLAT-053 · Four fences the tenancy work left open
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#88)
