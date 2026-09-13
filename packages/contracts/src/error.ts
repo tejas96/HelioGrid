@@ -83,7 +83,18 @@ export const openErrorEnvelopeSchema = errorEnvelope(z.string());
  * 409 CONFLICT (version/optimistic-concurrency) · 422 DOMAIN_RULE_VIOLATION ·
  * 413 PAYLOAD_TOO_LARGE · 429 RATE_LIMITED · 5xx INTERNAL (opaque).
  */
-export const errorHttpStatusByCode: Record<BaseErrorCode, number> = {
+/**
+ * The status each base code answers with. NOT exported, and that is the mechanism (`M121`).
+ *
+ * Several codes share a status — 401 is both `UNAUTHENTICATED` and `NO_CREDENTIAL`, 403 both
+ * `FORBIDDEN` and `ENTITLEMENT_BLOCKED` — so a REVERSE scan of this map returns whichever was
+ * declared first, and re-ordering it silently changes what every framework exception says. It
+ * did: `NO_CREDENTIAL` added above `UNAUTHENTICATED` turned every ordinary 401 in the api into
+ * "you sent nothing", and only a real request showed it. Unexported, there is nothing to scan —
+ * `httpStatusFor` answers the forward question and `genericErrorCodeByStatus` the reverse one,
+ * each explicitly. Biome has no syntax-level rule, so this is held by a TYPE rather than a lint.
+ */
+const HTTP_STATUS_BY_CODE: Record<BaseErrorCode, number> = {
   VALIDATION_FAILED: 400,
   UNAUTHENTICATED: 401,
   NO_CREDENTIAL: 401,
@@ -96,6 +107,11 @@ export const errorHttpStatusByCode: Record<BaseErrorCode, number> = {
   RATE_LIMITED: 429,
   INTERNAL: 500,
 };
+
+/** The status a code answers with. A function, so no caller can scan the map behind it. */
+export function httpStatusFor(code: BaseErrorCode): number {
+  return HTTP_STATUS_BY_CODE[code];
+}
 
 /**
  * The 401 envelope EVERY guarded route declares. One declaration, so a new authentication code

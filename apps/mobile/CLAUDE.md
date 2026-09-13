@@ -25,6 +25,7 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
+src/screens/shared/       parts BOTH doors draw — TEMPORARY, until `T-M01-035` lifts them to ui
 src/navigation/           React Navigation static config
 src/auth/                 native adapters — one folder per capability
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)

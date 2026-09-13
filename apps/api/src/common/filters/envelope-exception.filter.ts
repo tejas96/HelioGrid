@@ -1,8 +1,4 @@
-import {
-  type ErrorDetail,
-  errorHttpStatusByCode,
-  genericErrorCodeByStatus,
-} from '@heliogrid/contracts';
+import { type ErrorDetail, genericErrorCodeByStatus, httpStatusFor } from '@heliogrid/contracts';
 import {
   type ArgumentsHost,
   Catch,
@@ -40,7 +36,7 @@ interface Envelope {
 const SERVER_ERROR_STATUS = 500;
 
 const OPAQUE_INTERNAL: Envelope = {
-  status: errorHttpStatusByCode.INTERNAL,
+  status: httpStatusFor('INTERNAL'),
   code: 'INTERNAL',
   message: 'Something went wrong on our side.',
 };
@@ -90,7 +86,7 @@ function httpExceptionMessage(exception: HttpException): string {
 function envelopeFor(exception: unknown): Envelope {
   if (exception instanceof RequestValidationError) {
     return {
-      status: errorHttpStatusByCode.VALIDATION_FAILED,
+      status: httpStatusFor('VALIDATION_FAILED'),
       code: 'VALIDATION_FAILED',
       message: 'Some fields need attention.',
       details: requestValidationDetails(exception),

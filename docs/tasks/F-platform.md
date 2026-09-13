@@ -832,6 +832,27 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
 
 ---
+### T-FPLAT-048 · A mistake made unrepresentable, and two folders that say what they hold
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#83)
+**Why:** `M121` was written as a review-only row three hours after the mistake it describes broke every 401 in the api — a reverse scan of the status map returning whichever code was declared first. A row nobody watches is a rule the next reader can miss, and the owner's concern is exactly that: the agent must not miss a single instruction. Beside it, two folders are named for a layer rather than what they hold: `apps/web/features/app/` held nothing but the word `app`, and `apps/mobile/src/screens/shared/` was undeclared and unfenced, so a folder already waiting to empty could have become the app's second component tree.
+**PRD rows:** none of its own — it serves every row the api answers, by making a wrong error code impossible rather than discouraged.
+**Data model:** none.
+**Contract:** `packages/contracts/src/error.ts` — the status map becomes PRIVATE and `httpStatusFor(code)` is the door. No wire shape changes; `check:openapi` emits an identical surface.
+**Depends on:** nothing.
+**Out of scope:** the other fourteen NONE rows, read one by one and triaged rather than swept. Four are held by the SKILLS instead and want no gate (`M28`, `M105`, `M111`, `M115`); five genuinely cannot be mechanised and should keep saying so — `M95` is the ABSENCE of a conversion, and `M91`'s path grep was written and rejected at 217 candidates, nearly all legitimate; three are blocked elsewhere (`M50` is `M4`'s branded-text ruling, `M38` would fail on day one over 28 unpaired files, `M122` needs a script and therefore the owner's ruling). The two worth building next are `M42`'s web half, a filename rule, and `M11` — a `TenantScopedDb` handle that makes a cross-tenant query stop compiling, which is the largest safety win left and deserves its own task.
+**Found by:** the architecture review of 2026-09-11 (its `M14`, `L3`), and the ledger's own NONE list.
+**Ruled at `/start`:** **`M14`'s skills budget is dropped, its premise disproved.** The review said `verify/SKILL.md` overlaps its test-matrix by 25%; measured, the two share ZERO identical phrases. A budget would have forced 83 lines of non-duplicated procedure out of the skill that governs verification — loosening the harness to hit a number. Cutting a duplicate is a gain; cutting a rule is a loss, and a line count cannot tell them apart.
+**Ruled at `/start`:** **a TYPE, not a lint rule.** `CLAUDE.md` §8's mechanism order asks for a lint rule before a script, but Biome carries no syntax-level restriction — `noRestrictedImports` bans specifiers, not expressions — so the reverse scan could not be linted. Unexporting the map is a rung HIGHER: the mistake stops being representable rather than being caught.
+**Verified:** digest 31a118b5fd28 · 2026-09-13 · depth REFACTOR plus two new gates, each proven RED · gate the reverse scan that broke every 401 written back into the filter and refused at COMPILE time — `Cannot find name 'errorHttpStatusByCode'` — which is the mistake becoming unrepresentable rather than merely caught · gate `mobile-shared-parts-are-screens-only` red on `navigation/guards.ts` importing a shared part, green when a screen does · gate `check:openapi` emits a byte-identical surface, so unexporting the map changed no wire · gate `pnpm check:all` and `pnpm verify:clean` both exit 0, no VACUOUS and no SKIP; 1123 tests · api NOT re-driven — the six call sites ask the same map through a function and `httpStatusFor('X')` is `errorHttpStatusByCode.X` by construction; the behaviour the wire shows was driven end to end at `T-FPLAT-046` and nothing about it moved · web/ios/android n/a — a folder rename with one importer, and a fence that adds no code · parity n/a
+**Measured, not assumed:** the fifteen NONE rows were read one by one before any was touched, and the review's "25% overlap" in `verify/SKILL.md` was measured at ZERO identical phrases — which is why its skills budget was dropped rather than built.
+**DONE WHEN:**
+- Given the exact reverse scan that broke every 401, when it is written again, then it does not compile. → proof: gate `Cannot find name 'errorHttpStatusByCode'`, seen red by writing that line back into the filter
+- Given every legitimate reader of a code's status, when it asks, then one function answers. → proof: gate six call sites in `apps/api` read `httpStatusFor`, and `check:openapi` emits a byte-identical surface
+- Given a folder named for a layer, when a reader looks for the capability, then the folder is the capability. → proof: gate `apps/web/features/app/` is gone and its one importer follows
+- Given anything but a screen reaching into the phone's shared parts, when boundaries run, then it is refused. → proof: gate `mobile-shared-parts-are-screens-only`, seen red on `navigation/guards.ts` importing a part
+
+---
 ### T-FPLAT-047 · One landing, one language provider, and a publish that cannot race
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#82)

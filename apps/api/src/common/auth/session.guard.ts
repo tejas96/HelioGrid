@@ -1,8 +1,4 @@
-import {
-  errorHttpStatusByCode,
-  SESSION_RESOLVER,
-  type SessionResolver,
-} from '@heliogrid/contracts';
+import { httpStatusFor, SESSION_RESOLVER, type SessionResolver } from '@heliogrid/contracts';
 import { can } from '@heliogrid/domain';
 import {
   type CanActivate,
@@ -72,7 +68,7 @@ export class SessionGuard implements CanActivate {
         throw new ContractException(
           'NO_CREDENTIAL',
           'Sign in to continue.',
-          errorHttpStatusByCode.NO_CREDENTIAL,
+          httpStatusFor('NO_CREDENTIAL'),
         );
       }
       throw new UnauthorizedException('Sign in to continue.');
