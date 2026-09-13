@@ -23,6 +23,9 @@ export interface TenantRow {
  * Owner from the first moment (`M01-01`, `F2-19`) — and the likely-existing-workspace read a
  * signup steers on before it has a tenant to be scoped by (`M01-09`).
  */
+/** What the steer can meaningfully show; a match beyond this changes no decision. */
+const SIMILAR_TENANT_CEILING = 25;
+
 @Injectable()
 export class TenantAdminRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
@@ -82,11 +85,16 @@ export class TenantAdminRepository {
     });
   }
 
-  /** Workspaces with this exact company name and city — the request-to-join steer (`M01-09`). */
+  /**
+   * Workspaces with this exact company name and city — the request-to-join steer (`M01-09`).
+   * Bounded: the steer shows a handful and a common name in a large city could match many, so
+   * the query stops rather than reading every match to render three.
+   */
   async similar(companyName: string, city: string): Promise<TenantRow[]> {
     return this.db
       .select(tenantColumns())
       .from(tenant)
+      .limit(SIMILAR_TENANT_CEILING)
       .where(
         and(
           eq(sql`lower(${tenant.companyName})`, sql`lower(${companyName})`),

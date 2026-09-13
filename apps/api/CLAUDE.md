@@ -19,6 +19,9 @@ src/modules/<m>/    <m>.module|public|controller|service|repository.ts · tokens
 src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
 ```
 
+`internal/` is a privacy boundary, not tidying: what the module's own service uses and nothing
+outside may import. One repository and one service need none; `auth`'s seven files do.
+
 Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).
 `apps/worker` uses the same shape.
 

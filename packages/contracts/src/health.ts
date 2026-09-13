@@ -16,6 +16,19 @@ export type Liveness = z.infer<typeof livenessSchema>;
  * Platform health surface — the first implemented contract; also the liveness probe
  * target for Fly checks.
  */
+/**
+ * What a readiness answer says, and the one place the three check verdicts are written. A server
+ * that retypes them has a second vocabulary that can drift from the wire — the shape callers
+ * validate against — without anything noticing.
+ */
+export const readinessSchema = z.object({
+  status: z.literal('ok'),
+  checks: z.record(z.enum(['ok', 'skipped', 'failed'])),
+});
+
+/** One check's verdict, for a server assembling the map above. */
+export type CheckVerdict = z.infer<typeof readinessSchema>['checks'][string];
+
 export const healthContract = c.router({
   liveness: {
     method: 'GET',
@@ -30,10 +43,7 @@ export const healthContract = c.router({
     path: '/health/ready',
     summary: 'Readiness — dependencies reachable (DB when configured)',
     responses: {
-      200: z.object({
-        status: z.literal('ok'),
-        checks: z.record(z.enum(['ok', 'skipped', 'failed'])),
-      }),
+      200: readinessSchema,
       503: errorEnvelope(baseError('INTERNAL')),
     },
   },
