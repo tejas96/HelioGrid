@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-048 · A mistake made unrepresentable, and two folders that say what they hold
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#83)
 **Why:** `M121` was written as a review-only row three hours after the mistake it describes broke every 401 in the api — a reverse scan of the status map returning whichever code was declared first. A row nobody watches is a rule the next reader can miss, and the owner's concern is exactly that: the agent must not miss a single instruction. Beside it, two folders are named for a layer rather than what they hold: `apps/web/features/app/` held nothing but the word `app`, and `apps/mobile/src/screens/shared/` was undeclared and unfenced, so a folder already waiting to empty could have become the app's second component tree.
 **PRD rows:** none of its own — it serves every row the api answers, by making a wrong error code impossible rather than discouraged.
 **Data model:** none.
