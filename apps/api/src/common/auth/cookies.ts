@@ -33,6 +33,23 @@ export function setTokenCookie(res: Response, token: string, expiresAt: number):
   res.cookie(TOKEN_COOKIE, token, attributes('/', expiresAt));
 }
 
+/**
+ * Did this request carry ANY credential — a bearer, the token cookie, or the session cookie?
+ *
+ * The two are told apart for the CLIENT's sake: a request with a credential that did not work
+ * is worth one refresh (a restarted phone with a lapsed token comes back signed in that way),
+ * and a request carrying nothing has nothing to refresh with. The session cookie is scoped to
+ * the auth prefix, so on a route outside it only the token cookie and the bearer can appear —
+ * which is the lapsed-token case, and answers `true` here exactly as it should.
+ */
+export function carriesCredential(req: Request): boolean {
+  if (bearerOrTokenCookie(req) !== undefined) return true;
+  // `cookieOf`, never `req.cookies`: there is no cookie-parser in this app and that property
+  // does not exist, so reading it answered "no credential" for a request that carried a perfectly
+  // good session cookie — the restarted-phone case, which must keep its refresh.
+  return cookieOf(req, SESSION_COOKIE) !== undefined;
+}
+
 export function clearAuthCookies(res: Response): void {
   res.clearCookie(SESSION_COOKIE, { path: SESSION_COOKIE_PATH });
   res.clearCookie(TOKEN_COOKIE, { path: '/' });

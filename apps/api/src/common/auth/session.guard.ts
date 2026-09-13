@@ -1,4 +1,8 @@
-import { SESSION_RESOLVER, type SessionResolver } from '@heliogrid/contracts';
+import {
+  errorHttpStatusByCode,
+  SESSION_RESOLVER,
+  type SessionResolver,
+} from '@heliogrid/contracts';
 import { can } from '@heliogrid/domain';
 import {
   type CanActivate,
@@ -10,7 +14,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
+import { ContractException } from '../errors/contract-exception';
 import { accessOf, ROUTE_ACCESS, type RouteAccess, routeKey } from './access';
+import { carriesCredential } from './cookies';
 import { attachSession } from './session-context';
 
 /**
@@ -54,7 +60,23 @@ export class SessionGuard implements CanActivate {
     if (access === 'public' || access === 'session-cookie') return true;
 
     const resolved = await this.sessions.resolve(req);
-    if (resolved === null) throw new UnauthorizedException('Sign in to continue.');
+    if (resolved === null) {
+      /*
+       * Both refusals are 401 and both say the same thing to a person. They differ for the
+       * CLIENT: a credential that did not work is worth one refresh, and no credential at all
+       * is worth none — without the distinction every signed-out page load posted a refresh
+       * that could not succeed. `ContractException` because the code is the route's declared
+       * one; a bare Nest exception would carry UNAUTHENTICATED whatever we meant.
+       */
+      if (!carriesCredential(req)) {
+        throw new ContractException(
+          'NO_CREDENTIAL',
+          'Sign in to continue.',
+          errorHttpStatusByCode.NO_CREDENTIAL,
+        );
+      }
+      throw new UnauthorizedException('Sign in to continue.');
+    }
     attachSession(req, resolved);
     if (access === 'session') return true;
 

@@ -17,12 +17,32 @@ export type RequestHeaders =
   | Headers
   | Readonly<Record<string, string | readonly string[] | undefined>>;
 
+/**
+ * What the transport tells the layer above when a refresh cannot save a call. It REPORTS; it
+ * never reaches for the session store, which sits above it and would be a cycle. `createDataLayer`
+ * is the one place the two are joined.
+ *
+ * REQUIRED on every mode that can hold a session, deliberately. Optional, it could be unwired
+ * and everything would still compile — the store would go back to saying `authenticated` while
+ * every call 401'd, and nothing would say so until someone noticed a screen rendering for a
+ * person who had been signed out. A server render has no session to lose and declares no field.
+ */
+export interface SessionSignals {
+  /** A refresh was attempted and failed: whoever held this session no longer has one. */
+  onSessionLost(): void;
+  /** False once the session is known to be gone, so a doomed refresh is not attempted again. */
+  couldHoldSession(): boolean;
+}
+
 type TransportConfig =
-  | { mode: 'browser'; baseUrl: string }
-  | { mode: 'mobile'; storage: TokenStorage; baseUrl: string }
+  | { mode: 'browser'; baseUrl: string; session: SessionSignals }
+  | { mode: 'mobile'; storage: TokenStorage; baseUrl: string; session: SessionSignals }
   | { mode: 'server'; headers: RequestHeaders };
 
 const UNAUTHENTICATED = 401;
+/* The server's word for "you carried no credential at all" — nothing to refresh WITH, so the
+   transport spends nothing. Read from the body, because both refusals are 401 by design. */
+const NO_CREDENTIAL = 'NO_CREDENTIAL';
 const OK = 200;
 /* From the contract, not retyped: the transport skips its one refresh-and-retry for the
    refresh call itself, and it recognises that call by this path. */
@@ -164,10 +184,26 @@ async function sendRequest(
  * The ten-minute API token is renewed from the session cookie (`M01-07`): a 401 on any route
  * but the refresh itself is answered by ONE refresh and ONE retry — the boot check
  * (`GET /auth/session`) included, which is how a restarted phone whose token has lapsed comes
- * back signed in. A refresh that fails leaves the original 401 to the caller, which is how a
- * screen learns the person is signed out. A server render never refreshes: it holds no jar and
- * must not rotate a visitor's cookies.
+ * back signed in. That is why the boot check may NOT simply skip the retry. A server render
+ * never refreshes: it holds no jar and must not rotate a visitor's cookies.
+ *
+ * A refresh that FAILS still hands the original 401 to the caller — but it now also says so.
+ * Without that, the session store stayed `authenticated` while every call 401'd, and a screen
+ * behind the gate kept rendering for someone the server had already stopped recognising. And
+ * once the session is known to be gone, a further 401 gets no refresh at all: a wrong OTP code
+ * answers 401, so five tries used to post five doomed refreshes behind them.
  */
+/**
+ * Did the server say the request carried nothing at all? A refresh renews a credential; with
+ * none to renew it is one round trip that can only 401 again, which is what every signed-out
+ * page load used to pay. The body is read defensively — a shape we do not recognise is treated
+ * as an ordinary refusal, which spends a refresh rather than wrongly withholding one.
+ */
+function carriedNothing(response: Awaited<ReturnType<ApiFetcher>>): boolean {
+  const body = response.body as { error?: { code?: unknown } } | undefined;
+  return body?.error?.code === NO_CREDENTIAL;
+}
+
 async function refreshedOnce(
   config: TransportConfig,
   args: ApiFetcherArgs,
@@ -176,6 +212,9 @@ async function refreshedOnce(
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
   if (new URL(args.path).pathname === `${AUTH_PREFIX}refresh`) return first;
+  if (!config.session.couldHoldSession()) return first;
+  if (carriedNothing(first)) return first;
+  if (config.mode === 'mobile' && (await config.storage.get()) === null) return first;
   const refreshed = await sendRequest(
     config,
     {
@@ -190,7 +229,9 @@ async function refreshedOnce(
     },
     signal,
   );
-  return refreshed.status === OK ? sendRequest(config, args, signal) : first;
+  if (refreshed.status === OK) return sendRequest(config, args, signal);
+  config.session.onSessionLost();
+  return first;
 }
 
 /**

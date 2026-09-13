@@ -17,12 +17,12 @@ reason, and said out loud. A feature or a number no row implies is the owner's: 
 **Propose a better approach when you see one** — with an example in *this* codebase and the cost
 to switch. A recommendation you withheld is a decision made for the owner. Never switch silently.
 
-**Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned;
-mention unrelated dead code, don't delete it.
+**Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned.
 
-**Verify reality.** "Fix the bug" means reproducing it on the real surface, then showing those
-steps pass. Read failures, not exit codes. **A green gate proves nothing until you have seen it go
-red on an injected violation.** Read call sites, not declarations.
+**Verify reality.** **A claim about this repo names the file and line that proves it** — "nothing
+imports X" is a finding only once the grep is shown, and reading a rule is not checking the code.
+A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
+sites, not declarations. **A green gate proves nothing until it has gone red on an injection.**
 
 ## 2. The Laws
 

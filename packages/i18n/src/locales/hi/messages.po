@@ -73,7 +73,7 @@ msgid "Already on HelioGrid?"
 msgstr "पहले से HelioGrid पर हैं?"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:52
+#: src/copy/api-error.ts:57
 msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
 
@@ -435,7 +435,7 @@ msgid "Some fields need attention. Check the form and retry."
 msgstr "कुछ फ़ील्ड्स पर ध्यान देना ज़रूरी है। फ़ॉर्म जाँचकर फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:28
+#: src/copy/api-error.ts:33
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "आपके संपादन के दौरान किसी और ने इसे बदल दिया। रीफ़्रेश करके फिर से कोशिश करें।"
 
@@ -445,7 +445,7 @@ msgid "Something on our side failed"
 msgstr "हमारी ओर से कुछ विफल हुआ"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:36
+#: src/copy/api-error.ts:41
 msgid "Something went wrong on our side. Try again."
 msgstr "हमारी ओर से कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
 
@@ -460,7 +460,7 @@ msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:31
+#: src/copy/api-error.ts:36
 msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
 
@@ -480,7 +480,7 @@ msgid "That code is used up"
 msgstr "वह कोड खर्च हो चुका है"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:65
+#: src/copy/api-error.ts:70
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
 
@@ -500,12 +500,12 @@ msgid "That number already has an account"
 msgstr "इस नंबर का खाता पहले से है"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:27
+#: src/copy/api-error.ts:32
 msgid "That record isn't available."
 msgstr "वह रिकॉर्ड उपलब्ध नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:32
+#: src/copy/api-error.ts:37
 msgid "That request is too large. Reduce it and retry."
 msgstr "यह अनुरोध बहुत बड़ा है। इसे छोटा करके फिर से कोशिश करें।"
 
@@ -530,7 +530,7 @@ msgid "The code we checked was for"
 msgstr "हमने जो कोड जाँचा वह इस नंबर के लिए था"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:59
+#: src/copy/api-error.ts:64
 msgid "The invite could not be sent. Try again in a moment."
 msgstr "आमंत्रण भेजा नहीं जा सका। थोड़ी देर में फिर से कोशिश करें।"
 
@@ -545,7 +545,7 @@ msgid "The SMS network turned it away"
 msgstr "SMS नेटवर्क ने इसे लौटा दिया"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:62
+#: src/copy/api-error.ts:67
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "किस्तों का योग ठीक 100% होना चाहिए। सेव करने से पहले बची हुई राशि रखें।"
 
@@ -570,7 +570,7 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:58
+#: src/copy/api-error.ts:63
 msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
 
@@ -580,7 +580,7 @@ msgid "This is the one thing in HelioGrid that cannot be got back"
 msgstr "HelioGrid में यही एक चीज़ है जो वापस नहीं मिल सकती"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:51
+#: src/copy/api-error.ts:56
 msgid "This number is already on your team."
 msgstr "यह नंबर पहले से आपकी टीम में है।"
 
@@ -600,7 +600,7 @@ msgid "This one is past that, so it will not work even typed correctly. HelioGri
 msgstr "यह उससे आगे निकल चुका है, इसलिए सही टाइप करने पर भी काम नहीं करेगा। यह HelioGrid की सीमा है, आपके नेटवर्क की नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:48
+#: src/copy/api-error.ts:53
 msgid "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 msgstr "यह व्यक्ति कंपनी का एकमात्र EPC Owner है। कंपनी में हमेशा कम से कम एक EPC Owner और टीम का प्रबंधन कर सकने वाला एक व्यक्ति रहना ज़रूरी है।"
 
@@ -625,7 +625,7 @@ msgid "Three things, and you're in. Everything else comes later, inside the prod
 msgstr "तीन बातें, और आप अंदर हैं। बाकी सब बाद में, प्रोडक्ट के अंदर आता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:35
+#: src/copy/api-error.ts:40
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "बहुत अधिक प्रयास हो गए। थोड़ी देर रुककर फिर से कोशिश करें।"
 
@@ -760,12 +760,13 @@ msgid "You can ask for a new code in {seconds} s. The gap is HelioGrid’s, so a
 msgstr "आप {seconds} सेकंड में नया कोड माँग सकते हैं। यह अंतराल HelioGrid का है, ताकि रास्ते में मौजूद संदेश दूसरे संदेश से रद्द न हो।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:23
+#: src/copy/api-error.ts:28
 msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:22
+#: src/copy/api-error.ts:27
 msgid "You're signed out. Sign in to continue."
 msgstr "आप साइन आउट हैं। जारी रखने के लिए साइन इन करें।"
 
@@ -786,12 +787,12 @@ msgid "Your company"
 msgstr "आपकी कंपनी"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:55
+#: src/copy/api-error.ts:60
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "आपकी कंपनी आज के आमंत्रण भेज चुकी है। कल फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:24
+#: src/copy/api-error.ts:29
 msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"
 

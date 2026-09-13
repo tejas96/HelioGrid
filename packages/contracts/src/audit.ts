@@ -8,7 +8,7 @@ import {
   rolePresetSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -74,7 +74,7 @@ export const auditContract = c.router({
       "The tenant's own entries, newest first — their data to export, in every billing state",
     responses: {
       200: paginated(auditLogEntrySchema),
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
       403: errorEnvelope(baseError('FORBIDDEN')),
     },
   },

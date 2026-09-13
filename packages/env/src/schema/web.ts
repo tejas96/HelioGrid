@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { originSchema } from './fragments';
+import { API_PORT_DEFAULT, originSchema } from './fragments';
 
 /**
  * Browser-visible configuration ONLY. Every value here is shipped to the client and is public
@@ -15,7 +15,7 @@ import { originSchema } from './fragments';
  * almost every Next app — not a value this schema could actually drive.
  */
 export const webEnvSchema = z.object({
-  NEXT_PUBLIC_API_URL: originSchema.default('http://localhost:8084'),
+  NEXT_PUBLIC_API_URL: originSchema.default(`http://localhost:${API_PORT_DEFAULT}`),
 });
 
 export type WebEnv = z.infer<typeof webEnvSchema>;

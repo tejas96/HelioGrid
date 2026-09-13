@@ -2,7 +2,7 @@ import { OTP_LENGTH } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { otpChannelSchema, phoneE164Schema, platformKindSchema, uuidSchema } from './common';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { sessionProjectionSchema } from './session';
 
 const c = initContract();
@@ -104,7 +104,7 @@ export const authContract = c.router({
     summary: 'Renew the ten-minute API token while the session is valid',
     responses: {
       200: tokenLifeSchema,
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
     },
   },
   signOut: {
@@ -114,7 +114,7 @@ export const authContract = c.router({
     summary: 'End this device’s session',
     responses: {
       204: c.noBody(),
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
     },
   },
   signOutEverywhere: {
@@ -124,7 +124,7 @@ export const authContract = c.router({
     summary: 'End every device’s session for the actor, within one token life',
     responses: {
       204: c.noBody(),
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
     },
   },
   session: {
@@ -133,7 +133,7 @@ export const authContract = c.router({
     summary: 'The current session as the projection every screen sees',
     responses: {
       200: sessionProjectionSchema,
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
     },
   },
 });
