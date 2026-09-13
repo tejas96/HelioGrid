@@ -851,7 +851,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-049 · The pack read gets its own door
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#84)
 **Why:** The market-pack read has no tenant predicate, and that is correct — the pack is readable global reference data every tenant reads and none owns (`F1-12`). But it asked the TENANT pool's token for it, so the one legitimately unpinned read in the api looks, at its import, exactly like a tenant read that forgot to pin. That also blocks `M11`: a tenant handle cannot be the tenant pool's only door while one consumer still needs that pool raw.
 **PRD rows:** none of its own — it serves `F1-12` by giving a tenant-free read a name.
 **Data model:** none. No migration: a token is a permission, not a table.
