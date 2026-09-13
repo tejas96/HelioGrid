@@ -1,9 +1,7 @@
 {
-  "extends": "@react-native/typescript-config",
+  "extends": ["@heliogrid/config/tsconfig/base.json", "@react-native/typescript-config"],
   "compilerOptions": {
     "types": [],
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": ["**/*.ts", "**/*.tsx"],

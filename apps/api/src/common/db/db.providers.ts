@@ -15,8 +15,10 @@ import { RUNTIME_DB } from './runtime.token';
  */
 @Injectable()
 export class DbPools implements OnApplicationShutdown {
-  readonly runtime = createDb(ENV.DATABASE_URL, { max: 10 });
-  readonly admin = createDb(ENV.DATABASE_ADMIN_URL ?? ENV.DATABASE_URL, { max: 5 });
+  readonly runtime = createDb(ENV.DATABASE_URL, { max: ENV.DB_POOL_MAX });
+  readonly admin = createDb(ENV.DATABASE_ADMIN_URL ?? ENV.DATABASE_URL, {
+    max: ENV.DB_ADMIN_POOL_MAX,
+  });
 
   async onApplicationShutdown(): Promise<void> {
     await Promise.all([this.runtime.client.end(), this.admin.client.end()]);

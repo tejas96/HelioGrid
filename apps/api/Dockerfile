@@ -1,5 +1,5 @@
 # ADR-0018: each app builds its own image — node:22-slim + pnpm deploy pruning.
-FROM node:22-slim AS build
+FROM node:22-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5 AS build
 RUN corepack enable
 WORKDIR /repo
 COPY . .
@@ -10,7 +10,10 @@ RUN pnpm --filter @heliogrid/api... run build
 # inject-workspace-packages=true. Without the flag the image does not build at all.
 RUN pnpm --filter @heliogrid/api --prod --legacy deploy /out
 
-FROM node:22-slim
+# The base is pinned BY DIGEST, as infra/compose.yaml pins postgres: `22-slim` is a moving
+# pointer, and an image nobody can re-fetch cannot be the one that was proven. Move it with
+# `docker pull node:22-slim` and the digest it resolves to, deliberately.
+FROM node:22-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build /out .

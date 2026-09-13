@@ -1,3 +1,4 @@
+import { AUTH_PATH_PREFIX } from '@heliogrid/contracts';
 import type { Request, Response } from 'express';
 import { ENV } from '../../config/env';
 
@@ -9,7 +10,9 @@ import { ENV } from '../../config/env';
 export const SESSION_COOKIE = 'hg_session';
 export const TOKEN_COOKIE = 'hg_token';
 
-const SESSION_COOKIE_PATH = '/auth';
+/* The contract's own prefix: a cookie scoped to a path the routes have left is simply not
+   sent, and the failure looks like an expired session rather than a misplaced cookie. */
+const SESSION_COOKIE_PATH = AUTH_PATH_PREFIX;
 const MS_PER_SECOND = 1_000;
 
 function attributes(path: string, expiresAt: number) {
