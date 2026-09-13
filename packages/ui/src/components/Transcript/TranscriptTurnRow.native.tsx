@@ -10,8 +10,8 @@ import { ActorGlyph } from '../ActorClass/ActorClass.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import { clock } from './Transcript.language';
 import type { TranscriptParty, TranscriptTurn } from './Transcript.types';
+import { PARTY_CLASS } from './TranscriptTurnRow.logic';
 
-const PARTY_CLASS = { agent: 'agent', customer: 'customer' } as const;
 const PARTY_WORD: Record<TranscriptParty, string> = { agent: 'Agent', customer: 'Customer' };
 
 const styles = StyleSheet.create({

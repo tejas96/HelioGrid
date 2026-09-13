@@ -8,9 +8,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { KanbanBoardState } from './Kanban.logic';
-
-const SKELETON_BARS = ['a', 'b', 'c'];
-const SKELETONS = ['a', 'b', 'c', 'd'];
+import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
 
 /** The web half sweeps a gradient keyframe; RN has no CSS loop, so the bar pulses. */
 function Bar({ style }: { style: object }) {
@@ -45,7 +43,7 @@ export function ColumnSkeleton({ width }: { width: number | '100%' }) {
     >
       <Bar style={styles.headBar} />
       <View style={styles.bars}>
-        {SKELETON_BARS.map((k) => (
+        {KANBAN_SKELETON_BARS.map((k) => (
           <Bar key={k} style={styles.cardBar} />
         ))}
       </View>
@@ -144,7 +142,7 @@ export function BoardStateView({
   if (state === 'loading') {
     return (
       <>
-        {(stacked ? SKELETONS.slice(0, 1) : SKELETONS).map((k) => (
+        {(stacked ? KANBAN_SKELETON_COLUMNS.slice(0, 1) : KANBAN_SKELETON_COLUMNS).map((k) => (
           <ColumnSkeleton key={k} width={stacked ? '100%' : columnWidth} />
         ))}
       </>

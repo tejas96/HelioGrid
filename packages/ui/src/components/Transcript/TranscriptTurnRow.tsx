@@ -9,8 +9,8 @@ import { ACTOR_CLASSES, ActorGlyph } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
 import { clock } from './Transcript.language';
 import type { TranscriptParty, TranscriptTurn } from './Transcript.types';
+import { PARTY_CLASS } from './TranscriptTurnRow.logic';
 
-const PARTY_CLASS = { agent: 'agent', customer: 'customer' } as const;
 const PARTY_WORD: Record<TranscriptParty, string> = { agent: 'Agent', customer: 'Customer' };
 
 /** The offset. A real 44px control with `onSeek`; legible text without it. */

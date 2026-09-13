@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
+import { NON_DIGIT } from './PhoneField.logic';
 import type { PhoneFieldDensity, PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface NativePhoneFieldProps extends PhoneFieldProps {
@@ -12,9 +13,6 @@ interface NativePhoneFieldProps extends PhoneFieldProps {
 interface NativePhoneValueProps extends PhoneValueProps {
   style?: StyleProp<ViewStyle>;
 }
-
-/** Everything that is not a digit — a pasted `+91 (98450) 27746` and a typed one must agree. */
-const NON_DIGIT = /\D/g;
 
 const SHELL_HEIGHT: Record<PhoneFieldDensity, number> = { expressive: 52, functional: 40 };
 

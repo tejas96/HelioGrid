@@ -1,8 +1,6 @@
 import { RichTextView } from '../RichText/RichTextView';
 import type { DocumentRichTextValue } from './DocumentPreview.types';
-
-/** The sheet is drawn at its 480px design width, so the terms body sets at 10px there. */
-const TERMS_FONT_SIZE = 10;
+import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
 
 const EMPTY_TEXT = 'No terms are attached to this template yet.';
 

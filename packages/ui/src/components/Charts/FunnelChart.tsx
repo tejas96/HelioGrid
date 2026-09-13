@@ -10,8 +10,6 @@ interface WebFunnelChartProps extends FunnelChartProps {
 }
 
 const INSUFFICIENT = 'A funnel needs at least two stages with recorded values.';
-/** Below this, the carried-forward figure is called out. */
-const LOW_CONVERSION = 40;
 
 interface FunnelStageProps {
   stage: ChartDatum;
@@ -20,10 +18,18 @@ interface FunnelStageProps {
   /** The stage above, or null at the mouth of the funnel. */
   previous: number | null;
   format: (n: number) => string;
+  lowConversionBelow: number;
 }
 
 /** One stage bar, plus the percentage carried forward from the stage above it. */
-function FunnelStage({ stage, index, top, previous, format }: FunnelStageProps) {
+function FunnelStage({
+  stage,
+  index,
+  top,
+  previous,
+  format,
+  lowConversionBelow,
+}: FunnelStageProps) {
   const conversion =
     previous === null || previous === 0 ? null : Math.round(((stage.value || 0) / previous) * 100);
   return (
@@ -45,7 +51,7 @@ function FunnelStage({ stage, index, top, previous, format }: FunnelStageProps) 
       </div>
       {conversion === null ? null : (
         <div className="hg-charts-funnel-conversion">
-          <span data-low={conversion < LOW_CONVERSION ? 'true' : undefined}>
+          <span data-low={conversion < lowConversionBelow ? 'true' : undefined}>
             {conversion}% carried forward
           </span>
         </div>
@@ -55,7 +61,13 @@ function FunnelStage({ stage, index, top, previous, format }: FunnelStageProps) 
 }
 
 /** Pipeline funnel; shows the carried-forward percentage between stages. */
-export function FunnelChart({ stages, format, minPoints = 2, ...frame }: WebFunnelChartProps) {
+export function FunnelChart({
+  stages,
+  format,
+  minPoints = 2,
+  lowConversionBelow,
+  ...frame
+}: WebFunnelChartProps) {
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
   const insufficient = stages.length < minPoints;
@@ -77,6 +89,7 @@ export function FunnelChart({ stages, format, minPoints = 2, ...frame }: WebFunn
             top={top}
             previous={i > 0 ? (stages[i - 1]?.value ?? 0) : null}
             format={fmt}
+            lowConversionBelow={lowConversionBelow}
           />
         ))}
       </div>

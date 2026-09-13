@@ -12,8 +12,6 @@ interface NativeFunnelChartProps extends FunnelChartProps {
 }
 
 const INSUFFICIENT = 'A funnel needs at least two stages with recorded values.';
-/** Below this, the carried-forward figure is called out. */
-const LOW_CONVERSION = 40;
 
 const styles = StyleSheet.create({
   list: { gap: theme.spacing['sp-1'] },
@@ -32,7 +30,13 @@ const styles = StyleSheet.create({
 });
 
 /** Pipeline funnel; shows the carried-forward percentage between stages. */
-export function FunnelChart({ stages, format, minPoints = 2, ...frame }: NativeFunnelChartProps) {
+export function FunnelChart({
+  stages,
+  format,
+  minPoints = 2,
+  lowConversionBelow,
+  ...frame
+}: NativeFunnelChartProps) {
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
   const insufficient = stages.length < minPoints;
@@ -75,7 +79,7 @@ export function FunnelChart({ stages, format, minPoints = 2, ...frame }: NativeF
                 <View style={styles.conversion}>
                   <Text
                     variant="caption"
-                    color={conversion < LOW_CONVERSION ? 'warning' : 'tertiary'}
+                    color={conversion < lowConversionBelow ? 'warning' : 'tertiary'}
                   >
                     {conversion}% carried forward
                   </Text>
