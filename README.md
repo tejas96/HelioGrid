@@ -159,12 +159,17 @@ own port, only a `--port` flag, so this is the standard convention almost every 
 
 ## Ports
 
-| App | Port | Where it's set | Env-overridable? |
-|---|---|---|---|
-| `apps/api` | `8084` | `packages/env/src/schema/api.ts` (`API_PORT`, default `8084`) | Yes — set `API_PORT` in `.env.local` |
-| `apps/web` | `3002` | Literal in `apps/web/package.json` (`next dev/start --port 3002`) | No — edit the script (Next has no port env var) |
-| `apps/mobile` | `8081` (Metro default) | React Native CLI default | Yes — `--port` flag to `react-native start` |
-| Postgres (local dev) | `5544` | `infra/compose.yaml` (`heliogrid-pg-local`) | No — dedicated port, see `infra/README.md` |
+**A port here is dedicated and never reassigned** (`CLAUDE.md` §5): a busy one is a stale service
+to kill, never a reason to move to another. The table says where each is set, for when you are
+chasing one down — not as an invitation to change it.
+
+| App | Port | Where it's set |
+|---|---|---|
+| `apps/api` | `8084` | `packages/env/src/schema/api.ts` (`API_PORT`, default `8084`) |
+| `apps/web` | `3002` | `apps/web/package.json` (`next dev/start --port 3002`) |
+| `apps/mobile` | `8081` | Metro's default, through the React Native CLI |
+| Postgres (local dev) | `5544` | `infra/compose.yaml` (`heliogrid-pg-local`) |
+| Temporal (local dev) | `7233` | `infra/temporal/compose.yaml`, bound to `127.0.0.1` |
 
 `.claude/launch.json` mirrors the api/web ports for this repo's browser-preview tooling — if
 you ever change either port, update that file too.

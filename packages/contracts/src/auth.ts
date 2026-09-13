@@ -60,6 +60,16 @@ export const tokenLifeSchema = z.object({
   tokenExpiresAt: z.string().datetime(),
 });
 
+/**
+ * The prefix every auth route shares, and the one fact three layers must agree on: the routes
+ * below, the refresh cookie's `Path` (a cookie scoped to `/auth` is not sent to a route that
+ * moved), and the transport's one refresh-and-retry, which recognises the refresh call by this
+ * path. Moving the routes without moving those two stops the refresh cookie being sent at all —
+ * a sign-in that survives a reload one day and does not the next. Derived below, so it cannot be
+ * moved here and forgotten there.
+ */
+export const AUTH_PATH_PREFIX = '/auth';
+
 export const authContract = c.router({
   requestOtp: {
     method: 'POST',
@@ -127,3 +137,15 @@ export const authContract = c.router({
     },
   },
 });
+
+/* Every route above sits under the prefix; a route added outside it breaks the cookie and the
+   transport rather than merely reading oddly, so the check is here and not in a review note. */
+for (const [name, route] of Object.entries(authContract)) {
+  if (!('path' in route) || typeof route.path !== 'string') continue;
+  if (!route.path.startsWith(`${AUTH_PATH_PREFIX}/`)) {
+    throw new Error(
+      `auth contract: "${name}" is at ${route.path}, outside ${AUTH_PATH_PREFIX}/ — the refresh ` +
+        'cookie is scoped to that prefix and the transport recognises the refresh call by it.',
+    );
+  }
+}

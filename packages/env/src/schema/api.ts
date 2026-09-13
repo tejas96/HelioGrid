@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import {
   adminDatabaseUrlSchema,
+  adminPoolMaxSchema,
   databaseUrlSchema,
   developmentCodeSchema,
   developmentPhoneSchema,
   filePathSchema,
   nodeEnvSchema,
   originSchema,
+  poolMaxSchema,
   portSchema,
   secretSchema,
   temporalAddressSchema,
@@ -44,6 +46,10 @@ const apiEnvObject = z.object({
    * ROLE — the built-in authorizer cannot separate start-workflow from poll-task-queue;
    * `infra/temporal/README.md` §3 records why and what closing it would take.)
    */
+  /* The runtime and admin pools. See the fragment for why an operator must be able to move these. */
+  DB_POOL_MAX: poolMaxSchema,
+  DB_ADMIN_POOL_MAX: adminPoolMaxSchema,
+
   TEMPORAL_ADDRESS: temporalAddressSchema,
   TEMPORAL_NAMESPACE: temporalNamespaceSchema,
   TEMPORAL_TLS_CA_FILE: filePathSchema,

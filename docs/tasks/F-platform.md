@@ -813,6 +813,23 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a comment in a manifest or a Dockerfile that carries a date, when the adherence check runs, then it is caught like any other dated comment. → proof: gate the widened scan names the four build notes that carried one
 
 ---
+### T-FPLAT-040 · No app writes a number that belongs to a layer
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** A number an app writes itself is a number nobody can move: a connection ceiling an operator cannot raise without a deploy, an auth path that three layers must agree on and none owns, a strictness setting the phone copies by hand from a file it could not even reach. Each is fine until the day it has to change, and then it changes in one place and not the others.
+**PRD rows:** none of its own — it serves every row that runs on a server or a phone, by putting each number where it can be moved once.
+**Data model:** none.
+**Contract:** `packages/contracts/src/auth.ts` exports `AUTH_PATH_PREFIX` and refuses to load if an auth route leaves it — the cookie's `Path` and the transport's refresh-and-retry both key on that prefix, and a route moved without them stops the refresh cookie being sent at all. `packages/env` gains `DB_POOL_MAX` and `DB_ADMIN_POOL_MAX`, the ceiling against Postgres's own `max_connections`.
+**Depends on:** nothing.
+**Out of scope:** the phone's hard-coded api port and the door's `968px` breakpoint, which wants a theme token and therefore a design-system write (`docs/tasks/deferred.md`); the workflow timeouts beside their workflow message.
+**Found by:** the architecture review of 2026-09-11 (its `M6`, `M10`, `M16`, `M2`, `L1`).
+**Verified:** digest eeafaf769cea · 2026-09-12 · none — no user-visible behaviour changed · gate pass (the contract proven to REFUSE an auth route moved out from under its prefix, and to load again on restore; both server images rebuilt from their pinned digest and still reporting `uid=1000(node)`; the phone's effective compiler settings compared before and after, identical but for `verbatimModuleSyntax` moving from unset to the base's explicit `false`, which behaves the same) · unit 80 files, 1081 tests pass · web/ios/android/api not driven — nothing a screen or a route renders changed · parity n/a
+**DONE WHEN:**
+- Given an auth route moved out from under the shared prefix, when the contract loads, then it refuses rather than letting the cookie and the transport drift apart. → proof: gate move `/auth/refresh` to `/v2/auth/refresh` and read the refusal, then restore
+- Given an operator who must raise the connection ceiling, when they set the environment key, then the pools follow without a deploy of new code. → proof: gate `DB_POOL_MAX` and `DB_ADMIN_POOL_MAX` in the schema and documented in `.env.example`, read by the provider that opens the pools
+- Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
+
+---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** planned

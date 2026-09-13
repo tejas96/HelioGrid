@@ -39,6 +39,15 @@ export const secretSchema = z.string().min(32);
 /** Browser origin allowed by CORS and by the auth layer's trusted-origin list. */
 export const originSchema = z.string().url();
 
+/**
+ * How many connections ONE process may hold. Times the machine count, this is the production
+ * ceiling against Postgres's own `max_connections` — a number an operator must be able to move
+ * without a deploy, which is the whole reason it is here and not in the provider that opens the
+ * pool. The defaults are what that provider held.
+ */
+export const poolMaxSchema = z.coerce.number().int().min(1).max(100).default(10);
+export const adminPoolMaxSchema = z.coerce.number().int().min(1).max(100).default(5);
+
 /** Non-secret convenience values may default IN THE SCHEMA — never via `??` at a call site. */
 export const portSchema = z.coerce.number().int().min(1).max(65535).default(8080);
 

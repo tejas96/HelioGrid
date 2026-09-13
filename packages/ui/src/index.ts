@@ -2,11 +2,12 @@
  * @heliogrid/ui — the V2 design system. ONE package, both platforms: Metro resolves the
  * .native.tsx halves ahead of .tsx, web bundlers only ever see .tsx (docs/engineering/17 §2).
  * Every export below is a primitive (docs/engineering/17 §4); components compose them and land in
- * src/components/<Name>/ via the assemble step, which owns the marked block at the bottom.
+ * src/components/<Name>/, one folder each.
  */
 
-// BEGIN COMPONENT EXPORTS — regenerated wholesale by the assemble step; hand edits between
-// the markers are overwritten. The primitives above this block are hand-maintained.
+// BEGIN COMPONENT EXPORTS — kept in alphabetical order by hand, like the primitives above. An
+// earlier plan regenerated this block from the folder list; no such step exists, so a new
+// component is exported HERE, by you, or it is not exported at all.
 export * from './components/Accordion';
 export * from './components/ActionReason';
 export * from './components/ActivityStream';

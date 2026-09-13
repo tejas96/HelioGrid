@@ -12,3 +12,17 @@ updates:
     groups:
       actions:
         patterns: ['*']
+
+  # The base images both server Dockerfiles pin by digest. A digest cannot age out on its own —
+  # a pinned base is only as current as the last person who moved it, which is exactly the kind of
+  # thing nobody remembers to do. npm stays absent for the reason above: a bump there is a
+  # deliberate `pnpm add`, and every manifest pins exact versions.
+  - package-ecosystem: docker
+    directories: ['/apps/api', '/apps/worker']
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      base-images:
+        patterns: ['*']

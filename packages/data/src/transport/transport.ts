@@ -1,4 +1,4 @@
-import { REQUEST_ID_HEADER } from '@heliogrid/contracts';
+import { AUTH_PATH_PREFIX, REQUEST_ID_HEADER } from '@heliogrid/contracts';
 import { type ApiFetcher, type ApiFetcherArgs, tsRestFetchApi } from '@ts-rest/core';
 import { ZodError } from 'zod';
 import type { DataError } from '../errors/errors';
@@ -24,7 +24,9 @@ type TransportConfig =
 
 const UNAUTHENTICATED = 401;
 const OK = 200;
-const AUTH_PATH_PREFIX = '/auth/';
+/* From the contract, not retyped: the transport skips its one refresh-and-retry for the
+   refresh call itself, and it recognises that call by this path. */
+const AUTH_PREFIX = `${AUTH_PATH_PREFIX}/`;
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 
@@ -173,12 +175,12 @@ async function refreshedOnce(
   first: Awaited<ReturnType<ApiFetcher>>,
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
-  if (new URL(args.path).pathname === `${AUTH_PATH_PREFIX}refresh`) return first;
+  if (new URL(args.path).pathname === `${AUTH_PREFIX}refresh`) return first;
   const refreshed = await sendRequest(
     config,
     {
       ...args,
-      path: `${config.baseUrl}${AUTH_PATH_PREFIX}refresh`,
+      path: `${config.baseUrl}${AUTH_PREFIX}refresh`,
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ foreground: true }),
