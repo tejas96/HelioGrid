@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-045 · One constant serves both halves, and a chart stops inventing a threshold
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#80)
 **Why:** Seven components each held the same non-visual constant twice, once per platform half — skeleton row keys, a non-digit pattern, an actor-class map, a document's design-space type size. `packages/ui/CLAUDE.md` says anything both halves share is declared once; a second copy is a place the two can part, and a skeleton or a stripped dial code is never compared side by side, so nobody would notice. Beside them `FunnelChart` invented a number: below 40 per cent carried forward it called a stage out, a product judgement authored in a package that may hold no policy, and a threshold no caller ever chose.
 **PRD rows:** none of its own — it serves `F7-19` and every row a chart renders, by leaving each fact in one place.
 **Data model:** none.
