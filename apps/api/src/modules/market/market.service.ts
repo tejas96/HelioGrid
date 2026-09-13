@@ -79,10 +79,14 @@ export class MarketPackService {
    * Publishes a typed literal as its market's next revision (`F1-11`): revision 1 for a market
    * with none, the next number when the payload differs, nothing when it does not.
    */
+  /**
+   * The decision is domain's `nextEnvelope`; the ordering is the repository's, which holds the
+   * read and the write under one per-market lock. Reading here and writing there would leave two
+   * publishers computing the same revision — the race this shape exists to close.
+   */
   async publish(candidate: MarketPack, publishedAt: string): Promise<PublishOutcome> {
-    const current = await this.packs.currentEnvelope(candidate.market);
-    const written = nextEnvelope(candidate, current, publishedAt);
-    if (written !== null) await this.publisher.publish(written);
-    return { current, written };
+    return this.publisher.publishNext(candidate.market, (current) =>
+      nextEnvelope(candidate, current, publishedAt),
+    );
   }
 }

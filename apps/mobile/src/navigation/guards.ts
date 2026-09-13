@@ -1,5 +1,5 @@
 import { useSession } from '@heliogrid/data/react';
-import { hasCompany } from '@heliogrid/domain';
+import { landingFor } from '@heliogrid/domain';
 import { useNavigationPhase } from './phase';
 
 /**
@@ -14,11 +14,13 @@ export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
 
 /**
- * Inside the App group, WHICH first screen: a person with a company lands on their home, a
- * verified number without one on the company step (`SCR-M01-01` decision 1, `T-M01-002`).
+ * Inside the App group, WHICH first screen. The decision is `landingFor` — the same function
+ * the web's gate reads, so `M01-10`'s rule (a verified number with no company belongs on the
+ * company step, not inside) is answered once rather than twice in two shapes.
  */
-export const useHasTenant = () => hasCompany(useSession().user);
-export const useHasNoTenant = () => !hasCompany(useSession().user);
+const useLanding = () => landingFor(useNavigationPhase(), useSession().user);
+export const useHasTenant = () => useLanding() === 'home';
+export const useHasNoTenant = () => useLanding() === 'company-step';
 
 /*
  * `useIsDevBuild` lived here and gated the Dev group. Removed with the v1

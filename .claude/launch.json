@@ -11,6 +11,15 @@
       "port": 3002
     },
     {
+      "name": "web-built",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti tcp:3002 -sTCP:LISTEN | xargs -r kill -9; pnpm --filter @heliogrid/web build && exec pnpm --filter @heliogrid/web start"
+      ],
+      "port": 3002
+    },
+    {
       "name": "api",
       "runtimeExecutable": "bash",
       "runtimeArgs": [

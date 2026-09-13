@@ -14,6 +14,8 @@ export {
   inviteCapReached,
   inviteLandingPath,
 } from './invitation-policy';
+export type { SessionLanding } from './landing';
+export { landingFor } from './landing';
 export type { FrameKind, LoginFrame } from './login-frame';
 export { frameKindOf, loginFrame } from './login-frame';
 export type {

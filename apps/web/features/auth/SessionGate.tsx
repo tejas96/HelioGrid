@@ -1,9 +1,9 @@
 'use client';
 import { useSession, useSessionPhase } from '@heliogrid/data/react';
-import { hasCompany, type SessionPhase, type SessionUser } from '@heliogrid/domain';
+import { landingFor, type SessionPhase, type SessionUser } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
-import { COMPANY_SIGNUP_ROUTE, HOME_ROUTE, LOGIN_ROUTE } from './constants';
+import { ROUTE_OF } from './constants';
 
 /** What a route group asks of its visitor: `signed-in` means a settled session WITH a company. */
 type Need = 'signed-out' | 'signed-in';
@@ -28,15 +28,16 @@ export function SessionGate({ need, children }: { need: Need; children: ReactNod
   return children;
 }
 
-/** Where a visitor who does not belong here goes; `null` keeps them. */
+/**
+ * Where a visitor who does not belong here goes; `null` keeps them. The landing itself is
+ * `landingFor` — the same function the phone's navigator branches on, so `M01-10`'s rule is
+ * answered once rather than twice in two shapes.
+ */
 function destinationOf(need: Need, phase: SessionPhase, user: SessionUser | null): string | null {
-  if (phase === 'booting') return null;
-  if (need === 'signed-out') return phase === 'signedIn' ? landingOf(user) : null;
-  if (phase !== 'signedIn') return LOGIN_ROUTE;
-  return hasCompany(user) ? null : COMPANY_SIGNUP_ROUTE;
-}
-
-/** A signed-in person lands on their home, or on the company step while they have none. */
-function landingOf(user: SessionUser | null): string {
-  return hasCompany(user) ? HOME_ROUTE : COMPANY_SIGNUP_ROUTE;
+  const landing = landingFor(phase, user);
+  if (landing === 'wait') return null;
+  // A group for signed-OUT visitors keeps anyone still at the door and moves anyone past it.
+  if (need === 'signed-out') return landing === 'door' ? null : ROUTE_OF[landing];
+  // A signed-IN group keeps only a person who belongs inside with a company.
+  return landing === 'home' ? null : ROUTE_OF[landing];
 }
