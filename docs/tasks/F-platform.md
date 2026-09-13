@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-054 · A skill is an instruction file
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#89)
 **Why:** `.claude/skills/` holds law — a skill tells the agent what to DO at the moment it applies — and it sat outside every instruction-file gate. `CLAUDE.md` §8 says a rule cites a mechanism row and never describes the gate itself, and `/migration` had been describing a hook and a runner in place of citing `M19`. The same class of slip was caught by hand in `/start` one task earlier, which is twice in two days that a skill carried something no gate could see. The corpus regrows in three shapes — a dated war story, an unsourced enforcement claim, a named tool — and all three were being watched everywhere except the files the agent reads first.
 **PRD rows:** none of its own — it serves every row the skills stand behind, by holding the skills to the rule the rest of the corpus already obeys.
 **Data model:** none.
