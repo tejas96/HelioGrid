@@ -832,7 +832,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-041 · The api's correctness edges — a bounded read, a precise denial, a redacted error
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#76)
 **Why:** Three small things each send someone the wrong way at the worst moment: a read with no ceiling scales with the table it reads, a deny-by-default guard that cannot find a declaration reports it as an authentication failure and starts a hunt through sessions, and a command that prints a raw error prints the connection string inside it — into the log an operator pastes when asking for help.
 **PRD rows:** none of its own — it serves every row the api answers, by making its failures say what actually happened.
 **Data model:** none.
