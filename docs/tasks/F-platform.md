@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-050 · A cross-tenant query stops compiling
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#86)
 **Why:** `M11` is the largest safety win left. Today a tenant repository is handed the whole database and is *expected* to wrap every read in `withTenantTransaction`, which pins `app.tenant_id`. Nothing stops it skipping that, and a skipped pin is a query that reads every company's rows. Tenancy is held by review and by `M13`'s behavioural invariant — both of which run after the code is written. The handle moves it to the compiler: hand a repository a DOOR rather than a database, and the mistake stops being representable.
 **PRD rows:** none of its own — it serves every tenant-scoped row in the product by making the wrong query fail to build.
 **Data model:** none. No migration: the pin, the pools and the policies are unchanged.
