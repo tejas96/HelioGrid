@@ -20,6 +20,11 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
     id: 'Some fields need attention. Check the form and retry.',
   },
   UNAUTHENTICATED: /*i18n*/ { id: "You're signed out. Sign in to continue." },
+  /* The SAME sentence, deliberately: the two codes differ for the transport — one is worth a
+     token refresh and the other has nothing to refresh with — and not for the person, who is
+     signed out either way. One id means one catalog entry and one translation, not two that
+     must be kept saying the same thing. */
+  NO_CREDENTIAL: /*i18n*/ { id: "You're signed out. Sign in to continue." },
   FORBIDDEN: /*i18n*/ { id: "You don't have access to do that." },
   ENTITLEMENT_BLOCKED: /*i18n*/ {
     id: "Your current plan doesn't include this.",

@@ -5,7 +5,7 @@ import { createHealthRepository, type HealthRepository } from './health/reposito
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
-import { createTransport, type RequestHeaders } from './transport/transport';
+import { createTransport, type RequestHeaders, type SessionSignals } from './transport/transport';
 import { createUserRepository, type UserRepository } from './user/repository';
 
 /** Every repository an app can reach. One entry per contract router. */
@@ -19,8 +19,8 @@ export interface Repositories {
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
-  | { mode: 'browser' }
-  | { mode: 'mobile'; storage: TokenStorage }
+  | { mode: 'browser'; session: SessionSignals }
+  | { mode: 'mobile'; storage: TokenStorage; session: SessionSignals }
   | { mode: 'server'; headers: RequestHeaders }
 );
 
@@ -33,10 +33,15 @@ type RepositoryRegistryConfig = { baseUrl: string } & (
 export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repositories {
   const transport =
     config.mode === 'mobile'
-      ? createTransport({ mode: 'mobile', storage: config.storage, baseUrl: config.baseUrl })
+      ? createTransport({
+          mode: 'mobile',
+          storage: config.storage,
+          baseUrl: config.baseUrl,
+          session: config.session,
+        })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })
-        : createTransport({ mode: 'browser', baseUrl: config.baseUrl });
+        : createTransport({ mode: 'browser', baseUrl: config.baseUrl, session: config.session });
   const api = createApiClient(config.baseUrl, transport);
   return {
     audit: createAuditRepository(api),

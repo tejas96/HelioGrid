@@ -51,6 +51,14 @@ export const adminPoolMaxSchema = z.coerce.number().int().min(1).max(100).defaul
 /** Non-secret convenience values may default IN THE SCHEMA — never via `??` at a call site. */
 export const portSchema = z.coerce.number().int().min(1).max(65535).default(8080);
 
+/**
+ * The port apps/api binds when nothing says otherwise. A FRAGMENT rather than a literal in each
+ * schema: the api's own default, the web's dev origin and the phone's two platform fallbacks are
+ * one fact, and four copies are four places a moved port is half-moved. `CLAUDE.md` §5 fixes the
+ * number itself — ports are dedicated and never reassigned.
+ */
+export const API_PORT_DEFAULT = 8084;
+
 /** Node's conventional lifecycle switch. */
 export const nodeEnvSchema = z.enum(['development', 'test', 'production']).default('development');
 

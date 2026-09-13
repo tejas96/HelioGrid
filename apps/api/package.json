@@ -5,9 +5,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
-    "predev": "kill-port 8084",
+    "predev": "kill-port ${API_PORT:-8084}",
     "dev": "tsx watch --env-file-if-exists=../../.env.local src/main.ts",
-    "prestart": "kill-port 8084",
+    "prestart": "kill-port ${API_PORT:-8084}",
     "start": "node --env-file-if-exists=../../.env.local dist/main.js",
     "pack:publish": "tsx --env-file-if-exists=../../.env.local src/scripts/publish-pack.ts"
   },

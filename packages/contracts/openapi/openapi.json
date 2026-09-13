@@ -193,8 +193,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -895,8 +896,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -964,8 +966,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -1033,8 +1036,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -1203,8 +1207,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -1533,8 +1538,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -2001,8 +2007,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -2210,8 +2217,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -2688,8 +2696,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -4135,8 +4144,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -4273,8 +4283,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -4499,8 +4510,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -4735,8 +4747,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -5100,8 +5113,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -5449,8 +5463,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {
@@ -12179,8 +12194,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "UNAUTHENTICATED"
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
                           ]
                         },
                         "message": {

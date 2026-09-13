@@ -1,7 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { measurementSystemSchema, phoneE164Schema, uuidSchema } from './common';
-import { baseError, errorEnvelope } from './error';
+import { unauthenticatedEnvelope } from './error';
 import { uiLanguageSchema } from './locale';
 
 const c = initContract();
@@ -34,7 +34,7 @@ export const userContract = c.router({
     summary: 'Edit my own profile — name, interface language, units',
     responses: {
       200: userProfileSchema,
-      401: errorEnvelope(baseError('UNAUTHENTICATED')),
+      401: unauthenticatedEnvelope,
     },
   },
 });

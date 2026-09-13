@@ -5,12 +5,18 @@ import type {
   SessionSnapshot,
   SignInDoor,
 } from '@heliogrid/domain';
+import type { SessionSignals } from '../transport/transport';
 
 /**
  * Framework-free session state. It is a STORE, not a plain object: a bare `status` field
  * could never re-render a screen. The React layer reads it through useSyncExternalStore.
  */
 export interface SessionStore {
+  /**
+   * What the TRANSPORT reports into (`SessionSignals`). Store MECHANICS, like `getSnapshot` and
+   * `subscribe`: `SessionApi` drops all three, so no screen can reach them.
+   */
+  readonly signals: SessionSignals;
   getSnapshot(): SessionSnapshot;
   subscribe(listener: () => void): () => void;
   requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpRequestOutcome>;
@@ -49,4 +55,5 @@ export interface SessionStore {
  * members dropped are the store's own subscription mechanics, which a screen never touches —
  * `useSyncExternalStore` consumes them and hands the snapshot down.
  */
-export type SessionApi = SessionSnapshot & Omit<SessionStore, 'getSnapshot' | 'subscribe'>;
+export type SessionApi = SessionSnapshot &
+  Omit<SessionStore, 'getSnapshot' | 'signals' | 'subscribe'>;

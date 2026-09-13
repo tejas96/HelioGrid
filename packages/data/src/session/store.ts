@@ -83,6 +83,27 @@ export function createSessionStore(config: {
     emit({ status: 'anonymous', user: null, switch: null, known: null, restored: false });
 
   /**
+   * What the TRANSPORT reports (`SessionSignals`), joined to this store by `createDataLayer`.
+   *
+   * `onSessionLost` is the wire telling us a refresh could not save a call: whoever held this
+   * session no longer has one. The store must move, or a screen behind the gate keeps rendering
+   * for a person the server has already stopped recognising, every call failing behind it. A
+   * session that is already anonymous needs no second emit — a signed-out visitor's own 401s
+   * would otherwise wake every listener for nothing.
+   *
+   * `couldHoldSession` stops a doomed refresh: while the store is anonymous there is nothing to
+   * renew, and a wrong OTP code answers 401, so five tries used to post five refreshes behind
+   * them. `checking` says yes — a restarted phone with a lapsed token comes back signed in that
+   * way, and that is the case the boot check's retry exists for.
+   */
+  const signals = {
+    onSessionLost: () => {
+      if (snapshot.status !== 'anonymous') signedOut();
+    },
+    couldHoldSession: () => snapshot.status !== 'anonymous',
+  };
+
+  /**
    * Where a verified account goes: behind the switch on a shared device still holding another
    * user's work (`F4-37`); held back at the signup door when it already has a company, so the
    * person chooses (`M01-08`); otherwise straight in.
@@ -121,6 +142,7 @@ export function createSessionStore(config: {
   };
 
   return {
+    signals,
     getSnapshot: () => snapshot,
     subscribe(listener) {
       listeners.add(listener);

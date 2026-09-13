@@ -8,7 +8,7 @@ import {
   roleSetSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { sessionProjectionSchema } from './session';
 
 const c = initContract();
@@ -91,7 +91,7 @@ export const invitationTokenSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
 const invitationParamsSchema = z.object({ id: uuidSchema });
 const landingParamsSchema = z.object({ token: invitationTokenSchema });
 
-const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
+const unauthenticated = unauthenticatedEnvelope;
 const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));

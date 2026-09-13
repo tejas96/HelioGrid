@@ -1,4 +1,8 @@
-import { type ErrorDetail, errorHttpStatusByCode } from '@heliogrid/contracts';
+import {
+  type ErrorDetail,
+  errorHttpStatusByCode,
+  genericErrorCodeByStatus,
+} from '@heliogrid/contracts';
 import {
   type ArgumentsHost,
   Catch,
@@ -105,9 +109,11 @@ function envelopeFor(exception: unknown): Envelope {
       details: exception.details,
     };
   }
-  const code = Object.entries(errorHttpStatusByCode).find(([, value]) => value === status)?.[0];
-  // A status the code→status map does not name is one no contract declares — including the
+  const code = genericErrorCodeByStatus[status];
+  // A status no generic code names is one no framework exception produces — including the
   // 500 ts-rest raises when a handler answers with an undeclared status. Opaque, not guessed.
+  // Read from an EXPLICIT map: several codes share a status, and a reverse lookup over
+  // `errorHttpStatusByCode` returned whichever was declared first.
   if (code === undefined) return OPAQUE_INTERNAL;
   return status >= SERVER_ERROR_STATUS
     ? { status, code, message: OPAQUE_INTERNAL.message }

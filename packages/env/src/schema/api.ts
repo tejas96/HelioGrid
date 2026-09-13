@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  API_PORT_DEFAULT,
   adminDatabaseUrlSchema,
   adminPoolMaxSchema,
   databaseUrlSchema,
@@ -25,7 +26,7 @@ import {
  */
 const apiEnvObject = z.object({
   NODE_ENV: nodeEnvSchema,
-  API_PORT: portSchema.default(8084),
+  API_PORT: portSchema.default(API_PORT_DEFAULT),
 
   DATABASE_URL: databaseUrlSchema,
   DATABASE_ADMIN_URL: adminDatabaseUrlSchema,

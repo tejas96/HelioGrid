@@ -10,7 +10,7 @@ import {
   tenantSegmentSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { uiLanguageSchema } from './locale';
 import { marketCodeSchema } from './market';
 import { sessionProjectionSchema } from './session';
@@ -90,7 +90,7 @@ export const similarTenantSchema = z.object({
   city: citySchema,
 });
 
-const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
+const unauthenticated = unauthenticatedEnvelope;
 const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 
