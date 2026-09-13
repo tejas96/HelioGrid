@@ -14,4 +14,4 @@ export {
   createFormsValidationMessage,
   createI18nRuntime,
 } from '@heliogrid/i18n';
-export { HelioI18nProvider } from '@heliogrid/i18n/react';
+export { LanguageFollowsUser } from '@heliogrid/i18n/react';

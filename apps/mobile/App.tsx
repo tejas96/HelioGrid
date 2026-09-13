@@ -1,16 +1,15 @@
-import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
+import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider, useSession } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import type { I18nRuntime } from '@heliogrid/i18n';
-import type { LocaleChange } from '@heliogrid/i18n/react';
 import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
-import { createFormsValidationMessage, createI18nRuntime, HelioI18nProvider } from './src/i18n';
+import { createFormsValidationMessage, createI18nRuntime, LanguageFollowsUser } from './src/i18n';
 import { AppNavigation } from './src/navigation';
 import { ReactQueryHost } from './src/react-query-host';
 
@@ -47,7 +46,7 @@ export default function App() {
   return (
     <DataProvider layer={dataLayer}>
       <ReactQueryHost />
-      <LanguageFollowsUser runtime={i18nRuntime}>
+      <SessionLanguage runtime={i18nRuntime}>
         {/* The launch market until a tenant's pack is read: the door runs before any tenant
             exists, and its phone field reads the dial code and the number's length from here. */}
         <MarketProvider>
@@ -60,31 +59,30 @@ export default function App() {
             </PortalHost>
           </SafeAreaProvider>
         </MarketProvider>
-      </LanguageFollowsUser>
+      </SessionLanguage>
     </DataProvider>
   );
 }
 
 /**
- * Inside `DataProvider`, because the language the mount follows is the signed-in person's
- * (`F3-02`) and only the session knows who that is. The follow itself is the provider's; this
- * hands a choice the person made here to the one persist path both platforms share (`F3-04`).
+ * The mount follows the signed-in person's language (`F3-02`) and persists a choice made here
+ * (`F3-04`). The FOLLOW itself is `@heliogrid/i18n/react`'s and shared with the web; this holds
+ * only the session read, because `packages/i18n` may not import `packages/data`. The phone has
+ * no document, so it passes no `onDocumentLanguage` — that half is web's alone.
  */
-function LanguageFollowsUser({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
+function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
   const { user, setInterfaceLanguage } = useSession();
-  const onLocaleChange = useCallback(
-    ({ locale, source }: LocaleChange) => {
-      if (source === 'user') void setInterfaceLanguage(locale);
-    },
+  const onChosen = useCallback(
+    (next: UiLanguage) => void setInterfaceLanguage(next),
     [setInterfaceLanguage],
   );
   return (
-    <HelioI18nProvider
+    <LanguageFollowsUser
       runtime={runtime}
       follow={user?.interfaceLanguage ?? null}
-      onLocaleChange={onLocaleChange}
+      onChosen={onChosen}
     >
       {children}
-    </HelioI18nProvider>
+    </LanguageFollowsUser>
   );
 }
