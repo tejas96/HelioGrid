@@ -1,12 +1,12 @@
 import { apiContract } from '@heliogrid/contracts';
 
 /**
- * tenant_id never travels in a request body or query — it derives from the session
+ * tenant_id never travels in a request body, query or path — it derives from the session
  * context server-side (packages/contracts/CLAUDE.md; docs/engineering/08). A contract schema carrying
  * it invites the client to assert its own tenant, the exact spoof RLS exists to stop.
  *
  * Static: walks the ts-rest router tree, unwraps common Zod wrappers, and asserts no
- * object schema under `body` or `query` declares a tenant_id / tenantId key. Runs even
+ * object schema under `body`, `query` or `pathParams` declares a tenant_id / tenantId key. Runs even
  * without DATABASE_URL — nothing here needs a database.
  */
 const BANNED_KEYS = ['tenant_id', 'tenantId'];
@@ -62,7 +62,10 @@ function schemaProblems(schema: ZodLike | undefined, path: string, depth = 0): s
 /** The banned keys one route declares, across its body and query schemas. */
 function routeProblems(node: Record<string, unknown>, prefix: string): string[] {
   const where = `${String(node.method)} ${String(node.path)}`;
-  return (['body', 'query'] as const).flatMap((part) =>
+  // pathParams as well as body and query: `/tenants/:tenantId/…` puts the id on the wire just
+  // as surely as a field does, and a route shaped that way would have walked straight past a
+  // check that read only the two.
+  return (['body', 'query', 'pathParams'] as const).flatMap((part) =>
     schemaProblems(node[part] as ZodLike | undefined, `${prefix}.${part}`).map(
       (at) => `${at} declares tenant identity (${where})`,
     ),
@@ -79,24 +82,25 @@ export function findTenantIdKeys(router: unknown, prefix = 'apiContract'): strin
   );
 }
 
-/** Routes carrying a body or query schema — the population this invariant can actually judge. */
+/** Routes carrying a body, query or pathParams schema — the population this invariant judges. */
 function countJudgeableRoutes(router: unknown): number {
   if (router === null || typeof router !== 'object') return 0;
   const node = router as Record<string, unknown>;
   if (isRoute(node)) {
     return unwrap(node.body as ZodLike | undefined)?.shape ||
-      unwrap(node.query as ZodLike | undefined)?.shape
+      unwrap(node.query as ZodLike | undefined)?.shape ||
+      unwrap(node.pathParams as ZodLike | undefined)?.shape
       ? 1
       : 0;
   }
   return Object.values(node).reduce<number>((sum, child) => sum + countJudgeableRoutes(child), 0);
 }
 
-export function runTenantIdInBody(): void {
+export function runTenantIdOnTheWire(): void {
   const problems = findTenantIdKeys(apiContract);
   if (problems.length > 0) {
     throw new Error(
-      `tenant-id-in-body: tenant identity must come from session context, never the wire:\n  ${problems.join('\n  ')}`,
+      `tenant-id-on-the-wire: tenant identity must come from session context, never the wire:\n  ${problems.join('\n  ')}`,
     );
   }
   const judged = countJudgeableRoutes(apiContract);
@@ -105,11 +109,11 @@ export function runTenantIdInBody(): void {
     // contract there is nothing to compare, so passing means nothing. Real coverage
     // arrives with the first module contract that takes a payload.
     console.warn(
-      'tenant-id-in-body VACUOUS: no contract route declares a body or query schema yet',
+      'tenant-id-on-the-wire VACUOUS: no contract route declares a body, query or path schema yet',
     );
     return;
   }
   console.log(
-    `tenant-id-in-body: no contract body/query declares tenant identity (${judged} routes checked)`,
+    `tenant-id-on-the-wire: no contract body, query or path declares tenant identity (${judged} routes checked)`,
   );
 }

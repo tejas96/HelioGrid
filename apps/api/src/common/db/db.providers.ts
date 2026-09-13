@@ -1,3 +1,4 @@
+// biome-ignore lint/style/noRestrictedImports: this file IS the one holder that opens the pools (M11)
 import { createDb, tenantPool } from '@heliogrid/db';
 import { Injectable, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 import { ENV } from '../../config/env';

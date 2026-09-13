@@ -273,7 +273,7 @@ Extension point: one folder per deployed dependency.
 
 ### tests/invariants — the proof layer
 Owns: executable invariants (tenancy/RLS, table scoping, enum parity, schema parity,
-tenant-id-in-body, format rendering) run by pnpm turbo test; fail-closed under CI, loud-skip
+tenant-id-on-the-wire, format rendering) run by pnpm turbo test; fail-closed under CI, loud-skip
 locally without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven

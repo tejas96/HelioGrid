@@ -1,3 +1,4 @@
+// biome-ignore lint/style/noRestrictedImports: one throwaway connection, no tenant data — see below (M11)
 import { createDb, ping } from '@heliogrid/db';
 import { Injectable } from '@nestjs/common';
 import { ENV } from '../../config/env';

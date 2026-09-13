@@ -4,15 +4,8 @@ import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
-import { actOf, sessionIdOf, sessionOf } from '../../common/auth/session-context';
+import { actOf, sessionIdOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { TenantService } from './tenant.service';
-
-/** The membership the guard admitted; `member` access guarantees it is there. */
-function tenantIdOf(req: Request): string {
-  const membership = sessionOf(req).membership;
-  if (membership === null) throw new NotFoundException('This session has no company.');
-  return membership.tenantId;
-}
 
 @Controller()
 export class TenantController {
