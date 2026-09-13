@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-047 · One landing, one language provider, and a publish that cannot race
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#82)
 **Why:** Both navigators answer the same question — where does this visitor belong — and answered it in two shapes: the web computed a route, the phone a pair of booleans, and `M01-10`'s rule that a verified number with no company belongs on the company step lived in both. Beside it the language provider was written twice, the copies differing only by web's `<html lang>`. And `MarketPackService.publish` read the current revision and inserted the next with no lock, so two publishers computed the same number and the loser died on a primary key instead of seeing that the winner had already published its payload.
 **PRD rows:** none of its own — it serves `M01-10` and `F3-02`/`F3-04` by answering each once, and `F1-11` by making a revision safe to take.
 **Data model:** none. No migration: an advisory lock is taken, not stored.
