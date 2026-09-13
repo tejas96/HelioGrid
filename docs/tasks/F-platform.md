@@ -834,7 +834,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-051 · A failure that says nothing
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#85)
 **Why:** Three places reported success, or reported nothing, while something had actually gone wrong. `check-adherence.sh`'s check 10d captures its scanner's output, so a CRASH yields an empty string and empty is exactly what "no copies found" looks like — the gate printed `adherence OK` with that check never having run. It was hidden because the clean room's git INDEX is the clone's and describes the HISTORY, not the tree the overlay builds: six checks enumerate with `git ls-files --cached` and are handed paths the overlay has just deleted. And `pack:publish` died on a boot error with an empty stdout AND an empty stderr, telling an operator nothing at all. The script already carries this exact lesson in its own words for `SRC_DIRS` — a renamed folder once turned a check into a silent no-op that still printed `adherence OK` — so this is the same trap met a second time in the same file.
 **PRD rows:** none of its own — it serves every row every gate stands behind, by making a check that did not run say so.
 **Data model:** none.
