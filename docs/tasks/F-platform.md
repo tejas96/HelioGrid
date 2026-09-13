@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-053 · Four fences the tenancy work left open
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#88)
 **Why:** `M11` closed the big hole and its gap column named what it did not hold. Four of those are closable now. `M14` walked `body` and `query` only, so a route shaped `/tenants/:tenantId/…` would have put the id on the wire and passed — the one defence against a tenant id arriving from the client had a hole in it. `tenantIdOf` was written TWICE and the copies already differed, one throwing a status its route never declares, and that is the single function deciding which company a request acts as. `createDb` was importable anywhere, so a repository could build its own pool and walk around the door entirely. And `M60`'s cast registry is kept by hand, so a brand declared and never listed there is unguarded while the check prints the same pass either way — `M125` said as much and nothing asserted it.
 **PRD rows:** none of its own — it serves every tenant-scoped row by closing the ways round the door `T-FPLAT-050` built.
 **Data model:** none.
