@@ -1,5 +1,5 @@
-import type { SignInStep } from '@heliogrid/domain';
-import type { SessionSnapshot } from './types';
+import type { SignInStep } from './login-state';
+import type { SessionSnapshot } from './session';
 
 /** The panels the door can show; both screens render exactly one, chosen here. */
 export type DoorView = 'switch' | 'done' | 'code' | 'phone';

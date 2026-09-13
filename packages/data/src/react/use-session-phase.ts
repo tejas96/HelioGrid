@@ -1,4 +1,4 @@
-import type { SessionPhase, SessionStatus } from '../session/types';
+import type { SessionPhase, SessionStatus } from '@heliogrid/domain';
 import { useSession } from './use-session';
 import { useSignInDwell } from './use-sign-in-dwell';
 

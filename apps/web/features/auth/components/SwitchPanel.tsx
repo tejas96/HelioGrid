@@ -1,4 +1,4 @@
-import type { PendingSwitch } from '@heliogrid/data';
+import type { PendingSwitch } from '@heliogrid/domain';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, Icon, Text, TintedBlock, useFormat } from '@heliogrid/ui';

@@ -1,7 +1,6 @@
 'use client';
-import { DONE_DWELL_MS } from '@heliogrid/domain';
+import { DONE_DWELL_MS, type SessionStatus } from '@heliogrid/domain';
 import { useEffect, useRef, useState } from 'react';
-import type { SessionStatus } from '../session/types';
 
 /** The beat after a sign-in: `holding` while "You are in" is read, then `over`; `none` while signed out. */
 export type SignInDwell = 'none' | 'holding' | 'over';

@@ -1,4 +1,4 @@
-import type { KnownAccount } from '@heliogrid/data';
+import type { KnownAccount } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';

@@ -8,9 +8,9 @@ import {
   type LoginState,
   loginFrame,
   loginReducer,
+  type SignInDoor,
 } from '@heliogrid/domain';
 import { useEffect, useMemo, useReducer } from 'react';
-import type { SignInDoor } from '../session/types';
 import { useDataLayer } from './context';
 
 /** The sign-in flow as a screen consumes it: the facts, the frame they add up to, and the presses. */

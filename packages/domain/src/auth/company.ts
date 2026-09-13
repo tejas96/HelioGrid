@@ -1,6 +1,6 @@
-import type { RolePreset } from '@heliogrid/contracts';
-import { homeFor } from '@heliogrid/domain';
-import type { SessionUser } from './types';
+import type { RolePreset } from '../authz/roles';
+import { homeFor } from '../shell/home';
+import type { SessionUser } from './session';
 
 /** A signed-in person belongs inside only with a company; without one they belong on the company step (`M01-10`). */
 export function hasCompany(user: SessionUser | null): boolean {

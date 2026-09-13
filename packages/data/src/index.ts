@@ -27,25 +27,9 @@ export {
 } from './errors/errors';
 export type { HealthRepository } from './health/repository';
 export type { InvitationRepository } from './invitation/repository';
-export { hasCompany, homeOf } from './session/company';
-export type { DoorView } from './session/door-view';
-export { doorView } from './session/door-view';
-export type { HeldWork, HeldWorkSummary } from './session/held-work';
+export type { HeldWork } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
-export type { SignupView } from './session/signup-view';
-export { signupView } from './session/signup-view';
-export type {
-  KnownAccount,
-  OtpVerifyResult,
-  PendingSwitch,
-  SessionApi,
-  SessionPhase,
-  SessionSnapshot,
-  SessionStatus,
-  SessionStore,
-  SessionUser,
-  SignInDoor,
-} from './session/types';
+export type { SessionApi, SessionStore } from './session/types';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';
 export type { UserRepository } from './user/repository';

@@ -1,5 +1,5 @@
-import { doorView, homeOf } from '@heliogrid/data';
 import { useSession, useSignIn } from '@heliogrid/data/react';
+import { doorView, homeOf } from '@heliogrid/domain';
 import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { SuccessDwell, useFormat } from '@heliogrid/ui';

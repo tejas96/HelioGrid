@@ -1,6 +1,6 @@
 'use client';
-import { hasCompany, type SessionPhase, type SessionUser } from '@heliogrid/data';
 import { useSession, useSessionPhase } from '@heliogrid/data/react';
+import { hasCompany, type SessionPhase, type SessionUser } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { COMPANY_SIGNUP_ROUTE, HOME_ROUTE, LOGIN_ROUTE } from './constants';
