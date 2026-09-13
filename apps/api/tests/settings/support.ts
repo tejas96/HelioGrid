@@ -2,7 +2,7 @@ import { auditLogEntry } from '@heliogrid/db';
 import { IN_PACK } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import { MarketPackAdminRepository } from '../../src/modules/market/market.admin.repository';
-import { MarketPackRepository } from '../../src/modules/market/market.repository';
+import { MarketPackReferenceRepository } from '../../src/modules/market/market.reference.repository';
 import { MarketPackService } from '../../src/modules/market/market.service';
 import { SettingsAdminRepository } from '../../src/modules/settings/settings.admin.repository';
 import { SettingsRepository } from '../../src/modules/settings/settings.repository';
@@ -31,7 +31,7 @@ export async function publishIndiaPack(pools: Pools): Promise<void> {
 
 export function marketsOf(pools: Pools): MarketPackService {
   return new MarketPackService(
-    new MarketPackRepository(pools.runtime.db),
+    new MarketPackReferenceRepository(pools.runtime.db),
     new MarketPackAdminRepository(pools.admin.db),
   );
 }

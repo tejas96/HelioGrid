@@ -10,7 +10,7 @@ import {
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackAdminRepository } from './market.admin.repository';
-import { MarketPackRepository } from './market.repository';
+import { MarketPackReferenceRepository } from './market.reference.repository';
 
 /** What one publish did: the envelope it found, and the one it wrote — or null when nothing changed. */
 export interface PublishOutcome {
@@ -26,7 +26,7 @@ export interface PublishOutcome {
 export class MarketPackService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
-    @Inject(MarketPackRepository) private readonly packs: MarketPackRepository,
+    @Inject(MarketPackReferenceRepository) private readonly packs: MarketPackReferenceRepository,
     @Inject(MarketPackAdminRepository) private readonly publisher: MarketPackAdminRepository,
   ) {}
 
