@@ -832,6 +832,42 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
 
 ---
+### T-FPLAT-050 · A cross-tenant query stops compiling
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** `M11` is the largest safety win left. Today a tenant repository is handed the whole database and is *expected* to wrap every read in `withTenantTransaction`, which pins `app.tenant_id`. Nothing stops it skipping that, and a skipped pin is a query that reads every company's rows. Tenancy is held by review and by `M13`'s behavioural invariant — both of which run after the code is written. The handle moves it to the compiler: hand a repository a DOOR rather than a database, and the mistake stops being representable.
+**PRD rows:** none of its own — it serves every tenant-scoped row in the product by making the wrong query fail to build.
+**Data model:** none. No migration: the pin, the pools and the policies are unchanged.
+**Contract:** none — no wire shape moves. `packages/db` gains three TYPES and loses one export: `DbTransaction` (the one name for a transaction, replacing eight hand-copied `Parameters<Parameters<Db['transaction']>[0]>[0]` aliases), `TenantScopedDb` (that type branded with a symbol minted in `client.ts` and exported nowhere), and `TenantPool` (the door: one method, no query of its own). The free `withTenantTransaction(db, …)` leaves the public surface, because a door that can be walked around is not a door.
+**Depends on:** `T-FPLAT-049`, which moves the one consumer that legitimately reads unpinned out of the tenant pool's way.
+**Out of scope:** the ADMIN pool, which crosses tenancy on purpose and keeps a raw handle behind its own fence; the REFERENCE pool, settled at `T-FPLAT-049`.
+**Found by:** `.claude/mechanisms.md`'s `M11` row, the last `NONE` row of the tenancy block, raised by the owner.
+**DONE WHEN:**
+- Given a tenant repository, when it queries without pinning a tenant, then it does not compile. → proof: gate `this.db.select()` in a tenant repository, seen red as `Property 'select' does not exist on type 'TenantPool'`
+- Given a raw transaction, when it is passed where a tenant-scoped one is required, then it does not compile. → proof: gate the brand is minted only inside the door, seen red on an assignment from `DbTransaction`
+- Given the running api and the real database, when every tenant path is driven, then nothing it answers has moved. → proof: qa-api the six database-backed proofs and `tenancy-rls` green against the live postgres, driven not read
+- Given a transaction's type, when a repository needs to name it, then one name answers. → proof: gate no `Parameters<Parameters<Db['transaction']>[0]>[0]` remains outside `packages/db`
+
+---
+### T-FPLAT-049 · The pack read gets its own door
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** The market-pack read has no tenant predicate, and that is correct — the pack is readable global reference data every tenant reads and none owns (`F1-12`). But it asked the TENANT pool's token for it, so the one legitimately unpinned read in the api looks, at its import, exactly like a tenant read that forgot to pin. That also blocks `M11`: a tenant handle cannot be the tenant pool's only door while one consumer still needs that pool raw.
+**PRD rows:** none of its own — it serves `F1-12` by giving a tenant-free read a name.
+**Data model:** none. No migration: a token is a permission, not a table.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** `M11` itself — the `TenantScopedDb` handle and the seven repositories that take it are `T-FPLAT-050`. The two together reach 30 files against `M111`'s 25, and the owner ruled the split at `/start`. The ADMIN pool's token and fence are unchanged and already correct.
+**Found by:** reading `M11`'s row at `/start`, which does not mention that one consumer of the tenant pool cannot pass through a tenant door.
+**Ruled at `/start`:** **a third repository KIND, named, not a second token quietly sharing the first one's name.** `REFERENCE_DB` provides the SAME `pools.runtime` socket as `RUNTIME_DB`; what differs is the permission, and `admin.token.ts` already says in its own words that a token lives alone in its file so the fence can be mechanical. So the fence hangs off a naming convention — `*.reference.repository.ts` — rather than off this module's path, which would encode today's tree and rot (`CLAUDE.md` §8).
+**Ruled at `/start`:** **`M10` is NOT retired by `M11`, and its row said it would be.** `M10` holds that the pin is transaction-local — `set_config`'s third argument `true`. The handle holds WHERE a query runs, never HOW the pin is scoped. Flip that argument to `false` and the tenant sticks to the pooled connection and leaks into whichever request borrows it next; no handle sees that. `M10` stays, and its gap column now says so.
+**Verified:** digest 51995a67c28a · 2026-09-13 · depth DELTA plus one new gate, proven RED · **driven against the REAL database and the real DI container, never a mock** (owner rule) · gate `reference-pool-fenced` red on `tenant.repository.ts` importing the token — `error reference-pool-fenced: apps/api/src/modules/tenant/tenant.repository.ts → apps/api/src/common/db/reference.token.ts` — and green with that one import removed · qa-api the real Nest container booted against the live postgres through `pack:publish`, which resolves `MarketPackService` → `MarketPackReferenceRepository` through the NEW token and reads the pack on the unpinned pool: `IN_PACK: no difference from revision 7; nothing written`. Seen RED with the provider removed and nothing else changed — the boot refuses with `Nest cannot export a provider/module that is not a part of the currently processed module (CommonModule) … Symbol(REFERENCE_DB)`, so the token is load-bearing rather than shadowed by the one it replaced · unit 87 files, 1123 tests; the nine database-backed api proofs (62 tests) driven against the live postgres, and shown to REFUSE rather than skip when the URLs are blanked · gate the db-backed invariants green on real state, no VACUOUS and no SKIP — 21 base tables scanned, isolation behaviourally exercised on eight · gate `pnpm check:all` and `pnpm verify:clean` both exit 0 · web/ios/android n/a — no screen renders differently; the contract and the wire are untouched, and `check:openapi` reports the committed spec still matches · parity n/a · **one gate did NOT run in the clean room and said it had**: `check-adherence.sh` check 10 crashed there on the renamed-away file and still printed `adherence OK` — recorded in `docs/tasks/deferred.md`, and check 10 was separately proven to FIRE locally the same day, red on a copied four-member union and green on its removal, so the green claimed here is measured rather than assumed
+**DONE WHEN:**
+- Given any file that is not a reference repository, when it reaches for the tenant-free pool, then boundaries refuse it. → proof: gate `reference-pool-fenced` seen red on `tenant.repository.ts` importing the token, green with the import removed
+- Given a reader of the api, when they ask which reads run unpinned, then the file names answer. → proof: gate exactly one `*.reference.repository.ts` exists and it is the pack read; `apps/api/CLAUDE.md` states the three kinds
+- Given the running api and the real database, when the pack paths are driven, then they answer as before. → proof: qa-api the pack read and publish driven against the live postgres, and the settings proofs that stand on a published pack
+
+---
 ### T-FPLAT-048 · A mistake made unrepresentable, and two folders that say what they hold
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#83)

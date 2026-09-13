@@ -2,20 +2,24 @@ import { type Db, marketPack, marketPackVersion } from '@heliogrid/db';
 import type { PackEnvelope } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { REFERENCE_DB } from '../../common/db/reference.token';
 
 /**
- * The tenant-side read of the pack tables. No tenant predicate, and that is correct: the pack
- * is readable global reference data — every tenant reads its market's pack and none owns it
- * (`F1-12`), which is why the runtime pool has SELECT here and nothing else.
+ * The read of the pack tables. No tenant predicate, and that is correct: the pack is readable
+ * global reference data — every tenant reads its market's pack and none owns it (`F1-12`),
+ * which is why the RLS-subject role has SELECT here and nothing else.
+ *
+ * It takes the REFERENCE pool rather than the tenant one, and its name says so: an unpinned
+ * read belongs to a repository the fence can see (`common/db/reference.token.ts`), never to
+ * one whose other reads are scoped to a company.
  */
 /** Far above the number of markets we will ever author; a ceiling, never a page size. */
 const MARKET_CODE_CEILING = 500;
 
 @Injectable()
-export class MarketPackRepository {
+export class MarketPackReferenceRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(REFERENCE_DB) private readonly db: Db) {}
 
   /**
    * Every authored market's code — the list a phone's dial code is resolved against. Bounded:

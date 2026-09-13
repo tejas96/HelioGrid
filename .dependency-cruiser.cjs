@@ -351,6 +351,17 @@ module.exports = {
       to: { path: '^apps/[^/]+/src/common/db/admin' },
     },
     {
+      name: 'reference-pool-fenced',
+      severity: 'error',
+      comment:
+        'the REFERENCE pool is the RLS-subject pool with no tenant pinned — correct for the tables no tenant owns (the market pack, F1-12) and for nothing else. Only *.reference.repository.ts and common/db itself may reach it, so an unpinned read is always in a file whose name declares it, never a stray query inside a repository that is otherwise tenant-scoped.',
+      from: {
+        path: '^apps/',
+        pathNot: '(\\.reference\\.repository\\.ts$|^apps/[^/]+/src/common/db/)',
+      },
+      to: { path: '^apps/[^/]+/src/common/db/reference' },
+    },
+    {
       name: 'api-module-boundary',
       severity: 'error',
       comment:
