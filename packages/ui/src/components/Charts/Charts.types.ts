@@ -154,6 +154,13 @@ export interface FunnelChartProps extends Omit<ChartFrameProps, 'children' | 'in
   format?: (n: number) => string;
   /** Default 2 — a funnel needs at least two stages. */
   minPoints?: number;
+  /**
+   * Below this carried-forward percentage a stage is called out. REQUIRED, and deliberately not
+   * defaulted: a funnel that is doing badly is a product judgement, and this package may hold no
+   * policy (`packages/ui/CLAUDE.md`). A component that invents a threshold promises one thing
+   * while its caller means another — the caller passes the number its own module owns.
+   */
+  lowConversionBelow: number;
 }
 
 export interface ChartLegendItem {

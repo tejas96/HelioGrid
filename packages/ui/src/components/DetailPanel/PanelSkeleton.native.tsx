@@ -1,8 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { ShimmerBar } from '../Sheet/SheetSkeleton.native';
-
-const ROWS = ['row-1', 'row-2', 'row-3', 'row-4'] as const;
+import { PANEL_SKELETON_ROWS } from './PanelSkeleton.logic';
 
 interface PanelSkeletonProps {
   /** The status region's accessible name. The reference hardcodes it; no prop carries it. */
@@ -28,7 +27,7 @@ export function PanelSkeleton({ label = 'Loading' }: PanelSkeletonProps) {
         <ShimmerBar width="50%" height={72} />
       </View>
       <ShimmerBar width="40%" height={12} />
-      {ROWS.map((row) => (
+      {PANEL_SKELETON_ROWS.map((row) => (
         <ShimmerBar height={40} key={row} width="100%" />
       ))}
     </View>

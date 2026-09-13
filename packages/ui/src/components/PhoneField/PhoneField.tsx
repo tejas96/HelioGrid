@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
+import { NON_DIGIT } from './PhoneField.logic';
 import type { PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface WebPhoneFieldProps extends PhoneFieldProps {
@@ -13,9 +14,6 @@ interface WebPhoneValueProps extends PhoneValueProps {
   className?: string;
   style?: CSSProperties;
 }
-
-/** Everything that is not a digit — a pasted `+91 (98450) 27746` and a typed one must agree. */
-const NON_DIGIT = /\D/g;
 
 /**
  * A phone number, entered. The dial code is a FIXED PREFIX beside the digits rather than characters

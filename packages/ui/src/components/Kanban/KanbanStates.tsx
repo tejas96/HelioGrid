@@ -1,9 +1,7 @@
 import { Pressable } from '../../primitives/Pressable';
 import { UnavailableNote } from '../UnavailableNote';
 import type { KanbanBoardState } from './Kanban.logic';
-
-const SKELETON_BARS = ['a', 'b', 'c'];
-const SKELETONS = ['a', 'b', 'c', 'd'];
+import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
 
 /**
  * A column-shaped placeholder. Never a value presented as a real one — three empty bars where
@@ -19,7 +17,7 @@ export function ColumnSkeleton({ stacked }: { stacked: boolean }) {
     >
       <div className="hg-kanban-skeleton-bar hg-kanban-skeleton-head" />
       <div className="hg-kanban-skeleton-bars">
-        {SKELETON_BARS.map((k) => (
+        {KANBAN_SKELETON_BARS.map((k) => (
           <div key={k} className="hg-kanban-skeleton-bar hg-kanban-skeleton-card" />
         ))}
       </div>
@@ -116,7 +114,7 @@ export function BoardStateView({
   if (state === 'loading') {
     return (
       <>
-        {(stacked ? SKELETONS.slice(0, 1) : SKELETONS).map((k) => (
+        {(stacked ? KANBAN_SKELETON_COLUMNS.slice(0, 1) : KANBAN_SKELETON_COLUMNS).map((k) => (
           <ColumnSkeleton key={k} stacked={stacked} />
         ))}
       </>

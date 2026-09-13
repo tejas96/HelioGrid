@@ -2,9 +2,7 @@ import { View } from 'react-native';
 import { RichTextView } from '../RichText/RichTextView.native';
 import type { DocumentRichTextValue } from './DocumentPreview.types';
 import { DocumentOverline, DocumentRule, docStyles } from './DocumentSheet.native';
-
-/** The sheet is drawn at its 480dp design width, so the terms body sets at 10dp there. */
-const TERMS_FONT_SIZE = 10;
+import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
 
 const EMPTY_TEXT = 'No terms are attached to this template yet.';
 
