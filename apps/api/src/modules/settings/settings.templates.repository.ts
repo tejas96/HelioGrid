@@ -1,9 +1,4 @@
-import {
-  type Db,
-  proposalTemplateSettings,
-  timelineTemplate,
-  withTenantTransaction,
-} from '@heliogrid/db';
+import { proposalTemplateSettings, type TenantPool, timelineTemplate } from '@heliogrid/db';
 import type {
   ProposalTemplateSettings,
   TimelinePhase,
@@ -12,7 +7,7 @@ import type {
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { settingsAct } from './internal/audit-act';
 
@@ -24,10 +19,10 @@ import { settingsAct } from './internal/audit-act';
 @Injectable()
 export class SettingsTemplatesRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async proposalTemplate(tenantId: string): Promise<ProposalTemplateSettings | null> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
         .select(proposalColumns())
         .from(proposalTemplateSettings)
@@ -42,7 +37,7 @@ export class SettingsTemplatesRepository {
     settings: ProposalTemplateSettings,
     act: Act,
   ): Promise<ProposalTemplateSettings> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const now = new Date(act.now);
       const values = {
         cover: settings.cover,
@@ -71,7 +66,7 @@ export class SettingsTemplatesRepository {
   }
 
   async timelineTemplate(tenantId: string): Promise<TimelineTemplateSettings | null> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
         .select({ phases: timelineTemplate.phases })
         .from(timelineTemplate)
@@ -86,7 +81,7 @@ export class SettingsTemplatesRepository {
     phases: readonly TimelinePhase[],
     act: Act,
   ): Promise<TimelineTemplateSettings> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const now = new Date(act.now);
       const [row] = await tx
         .insert(timelineTemplate)

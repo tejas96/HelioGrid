@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { auditLogEntry, tenantMembership, withTenantTransaction } from '@heliogrid/db';
+import { auditLogEntry, tenantMembership } from '@heliogrid/db';
 import { FOUNDER_ROLE, ROLE_PRESETS, type RolePreset, sessionExpiresAt } from '@heliogrid/domain';
 import { eq, inArray, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -68,9 +68,9 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
 
   beforeAll(async () => {
     pools = openPools();
-    tenants = new TenantRepository(pools.runtime.db);
+    tenants = new TenantRepository(pools.tenants);
     sessions = new AuthAdminRepository(pools.admin.db);
-    log = new AuditRepository(pools.runtime.db);
+    log = new AuditRepository(pools.tenants);
     await seed(pools.admin.db, fixture);
   });
 
@@ -100,7 +100,7 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
   it("joins the caller's transaction — a change that fails after its entry leaves no entry", async () => {
     const before = await countOfEntries();
     await expect(
-      withTenantTransaction(pools.runtime.db, here.tenantId, async (tx) => {
+      pools.tenants.withTenantTransaction(here.tenantId, async (tx) => {
         await recordAuditEntry(tx, staffRead());
         throw new Error('the change failed after its entry was written');
       }),
@@ -184,7 +184,7 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
   });
 
   it('carries a platform-staff actor who holds no membership in the company logged', async () => {
-    await withTenantTransaction(pools.runtime.db, here.tenantId, (tx) =>
+    await pools.tenants.withTenantTransaction(here.tenantId, (tx) =>
       recordAuditEntry(tx, staffRead()),
     );
     const staffEntries = (await log.entries(here.tenantId, WHOLE_LOG)).items.filter(

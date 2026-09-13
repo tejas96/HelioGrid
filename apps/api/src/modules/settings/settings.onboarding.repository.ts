@@ -1,4 +1,4 @@
-import { type Db, onboardingProgress, withTenantTransaction } from '@heliogrid/db';
+import { onboardingProgress, type TenantPool } from '@heliogrid/db';
 import {
   ONBOARDING_STEPS,
   type OnboardingStep,
@@ -7,7 +7,7 @@ import {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** The corridor's row as stored; `resumeStep` is kept in step with the states for the resume read. */
 export interface ProgressRow {
@@ -24,10 +24,10 @@ export interface ProgressRow {
 @Injectable()
 export class SettingsOnboardingRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async progress(tenantId: string): Promise<ProgressRow | null> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
         .select({
           resumeStep: onboardingProgress.resumeStep,
@@ -42,7 +42,7 @@ export class SettingsOnboardingRepository {
   }
 
   async saveProgress(tenantId: string, row: ProgressRow, now: number): Promise<ProgressRow> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const values = { ...row, updatedAt: new Date(now) };
       await tx
         .insert(onboardingProgress)

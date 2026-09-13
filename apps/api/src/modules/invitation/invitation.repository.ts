@@ -1,11 +1,11 @@
 import {
-  type Db,
   invitation,
   invitationRole,
+  type TenantPool,
+  type TenantScopedDb,
   tenant,
   tenantMembership,
   userAccount,
-  withTenantTransaction,
 } from '@heliogrid/db';
 import {
   type InvitationStatus,
@@ -19,7 +19,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, gt, inArray, lte, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 
 export interface InvitationRow {
@@ -62,8 +62,6 @@ export type RevokeOutcome =
   | { readonly outcome: 'done'; readonly invitation: InvitationRow }
   | { readonly outcome: 'not-found' | 'not-pending' };
 
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
-
 /**
  * The tenant side of an invitation, on the runtime pool inside the tenant transaction: the send,
  * the Team list and the revoke. The landing side, which crosses tenancy, is the admin repository
@@ -72,7 +70,7 @@ type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 @Injectable()
 export class InvitationRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   /**
    * The send, in ONE tenant transaction under the tenant lock: the three checks, the rows, the
@@ -85,7 +83,7 @@ export class InvitationRepository {
     act: Act,
     deliver: (facts: SendFacts) => Promise<void>,
   ): Promise<CreateOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       if (await isOnTeam(tx, tenantId, invite.phoneE164)) return { outcome: 'already-member' };
       if (await hasLiveInvite(tx, tenantId, invite.phoneE164, act.now)) {
@@ -126,7 +124,7 @@ export class InvitationRepository {
     page: { limit: number; offset: number },
     now: number,
   ): Promise<{ items: InvitationRow[]; totalCount: number }> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const where = and(eq(invitation.tenantId, tenantId), statusPredicate(filter.status, now));
       const rows = await tx
         .select(invitationColumns())
@@ -145,7 +143,7 @@ export class InvitationRepository {
    * landing and the record stays (`M01-12`). Anything already answered has nothing to withdraw.
    */
   async revoke(tenantId: string, id: string, act: Act): Promise<RevokeOutcome> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
         .update(invitation)
         .set({ status: 'revoked', revokedAt: new Date(act.now) })
@@ -168,7 +166,7 @@ export class InvitationRepository {
 
 /** Why a revoke touched nothing: no such invite in this company, or one already answered. */
 async function refusalFor(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   id: string,
 ): Promise<'not-found' | 'not-pending'> {
@@ -181,7 +179,7 @@ async function refusalFor(
 }
 
 /** A phone that already holds a membership here, in any status: a leaver is not re-invited (`F2-20`). */
-async function isOnTeam(tx: Tx, tenantId: string, phoneE164: string): Promise<boolean> {
+async function isOnTeam(tx: TenantScopedDb, tenantId: string, phoneE164: string): Promise<boolean> {
   const [row] = await tx
     .select({ id: tenantMembership.id })
     .from(tenantMembership)
@@ -193,7 +191,7 @@ async function isOnTeam(tx: Tx, tenantId: string, phoneE164: string): Promise<bo
 
 /** A pending, unexpired invite to this phone; an expired one may be sent again. */
 async function hasLiveInvite(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   phoneE164: string,
   now: number,
@@ -213,7 +211,7 @@ async function hasLiveInvite(
 }
 
 /** Every send in the cap's window, whatever became of it: each cost a message (`M01-04`). */
-async function sentSince(tx: Tx, tenantId: string, since: number): Promise<number> {
+async function sentSince(tx: TenantScopedDb, tenantId: string, since: number): Promise<number> {
   const [row] = await tx
     .select({ n: count() })
     .from(invitation)
@@ -221,7 +219,11 @@ async function sentSince(tx: Tx, tenantId: string, since: number): Promise<numbe
   return row?.n ?? 0;
 }
 
-async function sendFacts(tx: Tx, tenantId: string, inviterUserId: string): Promise<SendFacts> {
+async function sendFacts(
+  tx: TenantScopedDb,
+  tenantId: string,
+  inviterUserId: string,
+): Promise<SendFacts> {
   const [company] = await tx
     .select({ companyName: tenant.companyName, defaultLanguage: tenant.defaultLanguage })
     .from(tenant)
@@ -273,7 +275,7 @@ function inviteAct(
 
 /** Every preset each invitation carries, in one read over the invitation index, in matrix order. */
 async function withRoles(
-  tx: Tx,
+  tx: TenantScopedDb,
   tenantId: string,
   rows: readonly Omit<InvitationRow, 'roles'>[],
 ): Promise<InvitationRow[]> {

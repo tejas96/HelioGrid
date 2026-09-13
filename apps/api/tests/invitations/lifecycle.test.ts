@@ -102,7 +102,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
 
   beforeAll(async () => {
     pools = openPools();
-    tenantSide = new InvitationRepository(pools.runtime.db);
+    tenantSide = new InvitationRepository(pools.tenants);
     landingSide = new InvitationAdminRepository(pools.admin.db);
     await seed(pools.admin.db, fixture);
   });

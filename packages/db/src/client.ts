@@ -53,13 +53,49 @@ export async function assertRuntimeRoleIsNotPrivileged(db: Db): Promise<void> {
   }
 }
 
-export async function withTenantTransaction<T>(
-  db: Db,
-  tenantId: string,
-  fn: (tx: Parameters<Parameters<Db['transaction']>[0]>[0]) => Promise<T>,
-): Promise<T> {
-  return db.transaction(async (tx) => {
-    await tx.execute(sql`select set_config('app.tenant_id', ${tenantId}, true)`);
-    return fn(tx);
-  });
+/**
+ * Any transaction, on either pool. One name, so a repository never re-derives it — eight files
+ * each spelled `Parameters<Parameters<Db['transaction']>[0]>[0]` by hand, which is the second
+ * copy of a shape that CLAUDE.md §8 calls a defect even when every copy is correct.
+ */
+export type DbTransaction = Parameters<Parameters<Db['transaction']>[0]>[0];
+
+/**
+ * The brand, minted here and exported NOWHERE. A type outside this file cannot name this symbol,
+ * so it cannot describe a `TenantScopedDb` structurally: the only way to hold one is to be handed
+ * it, and the only thing that hands one out is `TenantPool.withTenantTransaction` below.
+ */
+declare const tenantScoped: unique symbol;
+
+/**
+ * A transaction that has PINNED `app.tenant_id`. Take this, not `DbTransaction`, wherever a read
+ * must be a tenant's own: the parameter then states the requirement instead of trusting the
+ * caller to have met it, and a transaction from the admin pool no longer fits.
+ */
+export type TenantScopedDb = DbTransaction & { readonly [tenantScoped]: true };
+
+/**
+ * The runtime pool as a tenant repository sees it: it carries NO query of its own. The door to a
+ * tenant's rows is the transaction that pins them, and there is no second door — `this.db.select()`
+ * does not compile, which is the whole point (mechanisms.md M11). Before this, a repository held
+ * the entire database and was merely EXPECTED to wrap each read; a forgotten wrapper read every
+ * company's rows and only review or RLS stood behind it.
+ */
+export interface TenantPool {
+  withTenantTransaction<T>(tenantId: string, run: (db: TenantScopedDb) => Promise<T>): Promise<T>;
+}
+
+/**
+ * The one place a `TenantScopedDb` is made. The cast is the single hole a brand has, and it lives
+ * inside the owning package exactly as CLAUDE.md §8 requires — everywhere else, `as TenantScopedDb`
+ * is a defect.
+ */
+export function tenantPool(db: Db): TenantPool {
+  return {
+    withTenantTransaction: (tenantId, run) =>
+      db.transaction(async (tx) => {
+        await tx.execute(sql`select set_config('app.tenant_id', ${tenantId}, true)`);
+        return run(tx as TenantScopedDb);
+      }),
+  };
 }

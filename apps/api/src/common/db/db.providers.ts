@@ -1,9 +1,9 @@
-import { createDb } from '@heliogrid/db';
+import { createDb, tenantPool } from '@heliogrid/db';
 import { Injectable, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 import { ENV } from '../../config/env';
 import { ADMIN_DB } from './admin.token';
 import { REFERENCE_DB } from './reference.token';
-import { RUNTIME_DB } from './runtime.token';
+import { TENANT_DB } from './tenant.token';
 
 /**
  * The two pools, created once and shared by every module (apps/api/CLAUDE.md tenancy).
@@ -28,13 +28,19 @@ export class DbPools implements OnApplicationShutdown {
 
 export const dbProviders: Provider[] = [
   DbPools,
-  { provide: RUNTIME_DB, useFactory: (pools: DbPools) => pools.runtime.db, inject: [DbPools] },
-  // The same pool as RUNTIME_DB under a second name, because a token is a permission and these
-  // two carry different ones: the tenant path pins a company, the reference path reads the
-  // tables no company owns. One fence each (`common/db/reference.token.ts`).
+  // The DOOR, not the database: what a tenant repository receives has no query of its own, so a
+  // read that never names its tenant fails to compile rather than reading every company's rows.
+  {
+    provide: TENANT_DB,
+    useFactory: (pools: DbPools) => tenantPool(pools.runtime.db),
+    inject: [DbPools],
+  },
+  // The SAME socket the door above wraps, handed over raw, because a token is a permission and
+  // these two carry different ones: the door pins a company, this reads the tables no company
+  // owns and the role's own privileges at boot. Fenced (`common/db/reference.token.ts`).
   { provide: REFERENCE_DB, useFactory: (pools: DbPools) => pools.runtime.db, inject: [DbPools] },
   { provide: ADMIN_DB, useFactory: (pools: DbPools) => pools.admin.db, inject: [DbPools] },
 ];
 
 /** What CommonModule exports: the pool tokens, and never the holder behind them. */
-export const dbProviderTokens = [RUNTIME_DB, REFERENCE_DB, ADMIN_DB];
+export const dbProviderTokens = [TENANT_DB, REFERENCE_DB, ADMIN_DB];

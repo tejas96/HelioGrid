@@ -16,6 +16,7 @@ import {
   tenant,
   tenantHoliday,
   tenantMembership,
+  tenantPool,
   timelineTemplate,
   trancheTemplate,
   trancheTemplateLine,
@@ -156,6 +157,9 @@ export function openPools() {
   return {
     runtime,
     admin,
+    // The DOOR a tenant repository takes. `runtime.db` stays beside it for the two callers that
+    // legitimately read unpinned — the pack reader and a proof asserting over raw state.
+    tenants: tenantPool(runtime.db),
     close: () => Promise.all([runtime.client.end(), admin.client.end()]),
   };
 }

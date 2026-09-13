@@ -51,7 +51,7 @@ describe.skipIf(skip)('the effective settings read, against a migrated database'
 
   beforeAll(async () => {
     pools = openPools();
-    settings = new SettingsRepository(pools.runtime.db);
+    settings = new SettingsRepository(pools.tenants);
     await seed(pools.admin.db, fixture);
     await pools.admin.db.transaction((tx) =>
       seedTenantSettings(tx, { tenantId: seeded.tenantId, now: Date.now() }),

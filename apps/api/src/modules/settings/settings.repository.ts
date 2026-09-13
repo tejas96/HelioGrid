@@ -1,14 +1,14 @@
 import {
   brandingSettings,
   businessProfile,
-  type Db,
   onboardingProgress,
   proposalTemplateSettings,
+  type TenantPool,
+  type TenantScopedDb,
   taxRegistration,
   tenant,
   tenantHoliday,
   timelineTemplate,
-  withTenantTransaction,
 } from '@heliogrid/db';
 import type {
   BrandingSettings,
@@ -21,12 +21,10 @@ import type {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
-import { RUNTIME_DB } from '../../common/db/runtime.token';
+import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { settingsAct } from './internal/audit-act';
 import { trancheTemplatesOf } from './settings.tranches.repository';
-
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 /** The tenant's own row: the signup facts, the two declarations, the locale pair — and its market. */
 export interface TenantRead extends TenantFacts {
@@ -49,15 +47,15 @@ export interface TenantSettingsRead {
 @Injectable()
 export class SettingsRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(RUNTIME_DB) private readonly db: Db) {}
+  constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   /** The tenant's own row, or null where the session's tenant is not visible — a broken guard. */
   async tenant(tenantId: string): Promise<TenantRead | null> {
-    return withTenantTransaction(this.db, tenantId, (tx) => tenantRead(tx, tenantId));
+    return this.db.withTenantTransaction(tenantId, (tx) => tenantRead(tx, tenantId));
   }
 
   async everything(tenantId: string): Promise<TenantSettingsRead | null> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const own = await tenantRead(tx, tenantId);
       if (own === null) return null;
       const [profile] = await tx
@@ -114,7 +112,7 @@ export class SettingsRepository {
     registrations: readonly TaxRegistration[],
     act: Act,
   ): Promise<readonly TaxRegistration[]> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const kept = registrations.map((registration) => registration.registrationType);
       await tx
         .delete(taxRegistration)
@@ -154,7 +152,7 @@ export class SettingsRepository {
     branding: BrandingSettings,
     act: Act,
   ): Promise<BrandingSettings> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const now = new Date(act.now);
       const values = {
         brandColour: branding.brandColour,
@@ -190,7 +188,7 @@ export class SettingsRepository {
     holidays: readonly TenantHoliday[],
     act: Act,
   ): Promise<readonly TenantHoliday[]> {
-    return withTenantTransaction(this.db, tenantId, async (tx) => {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
       const kept = holidays.map((holiday) => holiday.date);
       await tx
         .delete(tenantHoliday)
@@ -217,7 +215,7 @@ export class SettingsRepository {
   }
 }
 
-async function tenantRead(tx: Tx, tenantId: string): Promise<TenantRead | null> {
+async function tenantRead(tx: TenantScopedDb, tenantId: string): Promise<TenantRead | null> {
   const [row] = await tx
     .select({
       companyName: tenant.companyName,
@@ -238,7 +236,10 @@ async function tenantRead(tx: Tx, tenantId: string): Promise<TenantRead | null> 
   };
 }
 
-async function registrationsOf(tx: Tx, tenantId: string): Promise<readonly TaxRegistration[]> {
+async function registrationsOf(
+  tx: TenantScopedDb,
+  tenantId: string,
+): Promise<readonly TaxRegistration[]> {
   return tx
     .select({
       registrationType: taxRegistration.registrationType,
@@ -249,7 +250,7 @@ async function registrationsOf(tx: Tx, tenantId: string): Promise<readonly TaxRe
     .orderBy(asc(taxRegistration.registrationType));
 }
 
-async function holidaysOf(tx: Tx, tenantId: string): Promise<readonly TenantHoliday[]> {
+async function holidaysOf(tx: TenantScopedDb, tenantId: string): Promise<readonly TenantHoliday[]> {
   return tx
     .select({ date: tenantHoliday.date, label: tenantHoliday.label })
     .from(tenantHoliday)
@@ -261,7 +262,7 @@ async function holidaysOf(tx: Tx, tenantId: string): Promise<readonly TenantHoli
  * The profile row a registration change is recorded against. Seeded at creation; a company
  * older than the seed gets its empty row here, on the same transaction as the change.
  */
-async function ensureProfile(tx: Tx, tenantId: string, now: number): Promise<string> {
+async function ensureProfile(tx: TenantScopedDb, tenantId: string, now: number): Promise<string> {
   const [existing] = await tx
     .select({ id: businessProfile.id })
     .from(businessProfile)
