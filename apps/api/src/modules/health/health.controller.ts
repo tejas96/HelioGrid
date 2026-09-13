@@ -1,4 +1,4 @@
-import { healthContract } from '@heliogrid/contracts';
+import { type CheckVerdict, healthContract } from '@heliogrid/contracts';
 import { Controller, HttpStatus, Inject } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import { RouteAccessMap } from '../../common/auth/access';
@@ -29,7 +29,7 @@ export class HealthController {
       readiness: async () => {
         // DATABASE_URL is required by the env schema, so there is no 'skipped' path any
         // more — a boot without it never reaches this handler.
-        const checks: Record<string, 'ok' | 'skipped' | 'failed'> = {
+        const checks: Record<string, CheckVerdict> = {
           database: await this.repo.check(),
         };
         if (checks.database === 'failed') {

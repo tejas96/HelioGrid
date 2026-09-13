@@ -830,6 +830,24 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given the phone app, when it typechecks, then it inherits the workspace strictness rather than copying part of it. → proof: gate the effective compiler settings before and after the change, compared flag by flag
 
 ---
+### T-FPLAT-041 · The api's correctness edges — a bounded read, a precise denial, a redacted error
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Three small things each send someone the wrong way at the worst moment: a read with no ceiling scales with the table it reads, a deny-by-default guard that cannot find a declaration reports it as an authentication failure and starts a hunt through sessions, and a command that prints a raw error prints the connection string inside it — into the log an operator pastes when asking for help.
+**PRD rows:** none of its own — it serves every row the api answers, by making its failures say what actually happened.
+**Data model:** none.
+**Contract:** `packages/contracts/src/health.ts` gains `readinessSchema` and `CheckVerdict`; the readiness route infers them instead of the controller retyping the three verdicts, so the wire shape and the server's own vocabulary cannot part.
+**Depends on:** nothing.
+**Out of scope:** the audit log's offset paging, which the owner ruled stays until the audit screen's brief decides (`docs/tasks/deferred.md`); a BOOT-time route-access check, which Express cannot serve — see `M15`.
+**Found by:** the architecture review of 2026-09-11 (its `M5`, `L5`, `L8`, `L10`).
+**Verified:** digest da3d496789cd · 2026-09-12 · api pass (qa-api, 4 steps against the running Temporal and Postgres: the api boots and readiness answers 200 through the contract's schema with `checks.database` = `ok`, liveness 200 at its real path; both protected routes still answer the ORDINARY refusal rather than the new diagnostic one, which is the check that the declaration lookup still works; the OTP request still resolves a market through the now-bounded read, 200; a malformed and a 400-digit phone both answer 400 `VALIDATION_FAILED` with no stack trace and no connection string) · the new denial proven precise by injecting a `/v2` prefix into the declaration key and reading `This route declares no access for GET /health/ready …` back, then restoring · web/ios/android n/a · parity n/a · unit 81 files, 1089 tests pass, the redaction covered at its edges — the password holding an `@`, two connection strings on one line, and text that merely looks like a URL. The first attempt put that test behind `publish-pack.ts` itself; importing a script boots the application context, and the clean room caught it exiting the test process — the helper is its own module, importing nothing, for that reason
+**DONE WHEN:**
+- Given a route whose declaration cannot be found, when it is called, then the refusal names the key it looked for and both causes, rather than reading as an authentication failure. → proof: qa-api inject a prefix into the declaration key and read the message back
+- Given a route that IS declared, when it is called without a session, then the ordinary refusal is unchanged. → proof: qa-api two protected routes answer `UNAUTHENTICATED` / "Sign in to continue."
+- Given a repository read that has no natural bound, when it runs, then it carries a ceiling and the answer is unchanged. → proof: qa-api the OTP request still resolves its market, 200
+- Given a command that fails against the database, when it prints the failure, then no credential appears in the output. → proof: unit the redaction over three real-shaped strings, connection strings among them
+
+---
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** planned

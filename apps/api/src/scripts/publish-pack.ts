@@ -3,6 +3,7 @@ import { IN_PACK } from '@heliogrid/domain';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { MarketPackService, type PublishOutcome } from '../modules/market/market.public';
+import { redactCredentials } from './redact-credentials';
 
 /**
  * `pnpm --filter @heliogrid/api pack:publish` — publishes the typed India pack as its market's
@@ -30,7 +31,13 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
+main().catch((error: unknown) => {
+  /*
+   * The MESSAGE, redacted — never the error object. A Postgres driver puts the connection string
+   * in its own message, password and all, and a command's stderr is exactly what an operator
+   * pastes into a chat window when asking for help. The stack goes with it: it names this file,
+   * which the message above already says.
+   */
+  console.error(redactCredentials(error instanceof Error ? error.message : String(error)));
   process.exit(1);
 });

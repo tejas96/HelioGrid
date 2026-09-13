@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
-import { accessOf, ROUTE_ACCESS, type RouteAccess } from './access';
+import { accessOf, ROUTE_ACCESS, type RouteAccess, routeKey } from './access';
 import { attachSession } from './session-context';
 
 /**
@@ -35,8 +35,21 @@ export class SessionGuard implements CanActivate {
     );
     const access = accessOf(declared, req);
     if (access === undefined) {
-      // Silence is denial: a route nobody declared is not served, and the log says which.
-      throw new UnauthorizedException('This route declares no access.');
+      /*
+       * Silence is denial: a route nobody declared is not served. The message names the KEY that
+       * was looked up, because there are two ways to land here and they need opposite fixes —
+       * a route that really declares nothing, or a route whose declaration is keyed on the
+       * CONTRACT path while the lookup uses the EXPRESS one. The second reads as an auth failure
+       * and sends the reader to sessions and tokens; the key in the message ends that hunt.
+       */
+      const attempted = routeKey(
+        req.method,
+        (req.route as { path?: string } | undefined)?.path ?? '?',
+      );
+      throw new UnauthorizedException(
+        `This route declares no access for ${attempted}. Either it declares none, or its ` +
+          'declared path and its served path have diverged.',
+      );
     }
     if (access === 'public' || access === 'session-cookie') return true;
 
