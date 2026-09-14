@@ -10,6 +10,7 @@ Exit: 0 all gates pass, 1 otherwise.
 """
 
 import argparse
+import ast
 import glob
 import os
 import re
@@ -104,6 +105,70 @@ def task_blocks(repo):
             tid = head.split("·")[0].strip().strip("`")
             blocks.append({"file": rel, "id": tid, "title": head, "body": part})
     return blocks
+
+
+def build_order_blocks(path):
+    """The block each task FILE sits in, and each task placed apart from its file, read from the
+    block table of docs/build-order.md. A cell `SHELL` → `T-SHELL-006` places that one task and never
+    the whole file; `MS-studio-a/-b/-c` names three files."""
+    by_file, by_task = {}, {}
+    for line in open(path, encoding="utf-8"):
+        row = re.match(r"\|\s*\*\*(\d+)\*\*\s*\|", line)
+        if not row:
+            continue
+        block = int(row.group(1))
+        placed_apart = set(re.findall(r"`([^`]+)`\s*→\s*`T-", line))
+        for token in re.findall(r"`([^`]+)`", line):
+            if token.startswith("T-"):
+                by_task[token] = block
+            elif token not in placed_apart:
+                first, *suffixes = token.split("/")
+                stem = first[: first.rfind("-")]
+                for name in [first] + [stem + suffix for suffix in suffixes]:
+                    by_file[name] = block
+    return by_file, by_task
+
+
+def recorded_cross_block(path):
+    """Every (task, what it waits on) the plan RECORDS as a V1 task waiting on a later block."""
+    pairs = set()
+    for line in open(path, encoding="utf-8"):
+        row = re.match(r"\|\s*`(T-[A-Z0-9]+-\d+)`\s*\|\s*\d+\s*\|\s*`(T-[A-Z0-9]+-\d+)`", line)
+        if row:
+            pairs.add((row.group(1), row.group(2)))
+    return pairs
+
+
+def dependency_loops(tasks, depends_on):
+    """Every loop among `tasks`, each as the ids it passes through. An edge to a task outside
+    `tasks` — shipped, struck — is already satisfied and cannot close a loop."""
+    loops, state, path = [], {}, []
+
+    def visit(task):
+        state[task] = "open"
+        path.append(task)
+        for waits_on in depends_on.get(task, []):
+            if waits_on not in tasks:
+                continue
+            if state.get(waits_on) == "open":
+                loops.append(path[path.index(waits_on):] + [waits_on])
+            elif waits_on not in state:
+                visit(waits_on)
+        path.pop()
+        state[task] = "done"
+
+    for task in sorted(tasks):
+        if task not in state:
+            visit(task)
+    return loops
+
+
+def helper_blocks(path):
+    """The block list next-screen.py carries, read from its source without running it."""
+    for node in ast.parse(open(path, encoding="utf-8").read()).body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "BLOCKS" for t in node.targets):
+            return ast.literal_eval(node.value)
+    return None
 
 
 def strip_amendment(text):
@@ -546,7 +611,10 @@ def run(repo, verbose):
     # only when the checked-out history names the task — the task's own branch, whose flip is its
     # last commit once the PR is open, or main after the merge. screens.md carries the same state
     # per screen. Both ticket shapes: `**Status:** x` in a prose block, `Status: x` in a fenced ticket.
-    status_re = re.compile(r"^\**Status:\**\s*(planned|designed|shipped \(#\d+\))\s*$", re.M)
+    # A fourth state, `struck`, for a task whose rows moved elsewhere: its stub stays in place so its
+    # id is never reused, and it must not read as open work — seven stubs once said `planned`, which
+    # made every count of the remaining work too high. The heading and the status must agree.
+    status_re = re.compile(r"^\**Status:\**\s*(planned|designed|shipped \(#\d+\)|struck)\s*$", re.M)
     design_re = re.compile(r"DESIGN:\**\s*(SCR-[A-Z0-9]+-\d{2})\s*→\s*(\S+)")
     main_ref = "HEAD"
     main_log = subprocess.run(["git", "log", main_ref, "--format=%s"], cwd=repo, capture_output=True, text=True).stdout
@@ -564,6 +632,8 @@ def run(repo, verbose):
             continue
         state = found[0].split(" ")[0]
         tally[state] += 1
+        if (state == "struck") != bool(re.search(r"·\s*STRUCK\b", b["title"])):
+            ledger_bad.append(f"{b['id']}: the heading and the Status disagree about whether it is struck")
         designs = design_re.findall(b["body"])
         pending = [sid for sid, link in designs if link.upper() == "PENDING"]
         if state == "planned" and designs and not pending:
@@ -585,7 +655,7 @@ def run(repo, verbose):
             if s_state == "planned" and s_link.startswith("http"):
                 ledger_bad.append(f"{sid} is planned in screens.md but carries a design link")
     gate(27, "the ledger agrees: Status, DESIGN links, screens.md and main", not ledger_bad,
-         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped, all consistent"
+         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped · {tally['struck']} struck, all consistent"
          if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
 
     # --- Gate 28 · docs/engineering/ only shrinks
@@ -608,7 +678,7 @@ def run(repo, verbose):
                else f"{eng_lines} lines: below the ceiling of {ENGINEERING_LINES} — lower ENGINEERING_LINES to {eng_lines} in this change"))
 
     # --- Gate 29 · a ticket is whole: Why, Data model, Contract, Depends on, Out of scope, a proof per line
-    # docs/tasks/README.md rule 11. A task opts in the moment it carries a Why line — the shape a
+    # docs/tasks/README.md, Task anatomy. A task opts in the moment it carries a Why line — the shape a
     # task takes at /start before it is built — and from then on every part must be present and
     # every DONE WHEN line must name its proof.
     proof_re = re.compile(r"→\s*proof:\s*(unit|invariant|gate|qa-api|qa-web|qa-mobile|qa-parity)\b")
@@ -845,6 +915,115 @@ def run(repo, verbose):
          + (f" · {len(truncated)} omit the colour-literal clause (style drift, not fatal): {sorted(set(x.split()[0] for x in truncated))}" if truncated else "")
          if not bad else " · ".join(bad))
 
+    # --- Gate 30 · the build order is computed, never remembered
+    # docs/build-order.md is the order. Its block table places every task file, and a task is READY
+    # when it is live, V1, sits in the LOWEST block that still has live V1 work, waits on nothing
+    # unshipped, and — for a screen — is designed. Everywhere else the order lives only in each
+    # ticket's `Depends on:` line, and five shapes break it without failing any other gate: a LOOP,
+    # where no task in it can go first; a live task waiting on a STRUCK one, which waits forever; a
+    # V1 task waiting on a V2 one, which never finishes in V1; a V1 task waiting on a LATER block,
+    # which stalls its own block unless the plan records it; and a task file no block places that
+    # cannot prove itself wholly V2 by its screens, which is a module nobody is ever told to build.
+    # next-screen.py carries its own copy of the blocks, so the two must agree or two tools disagree.
+    order_doc = spec(repo, "build-order.md")
+    by_file, by_task = build_order_blocks(order_doc) if os.path.exists(order_doc) else ({}, {})
+    v2_screens = set(v2)
+    state_of, waits_on, kind_of, tier_of, file_of, screens_of = {}, {}, {}, {}, {}, {}
+    # A ticket with no `Depends on:` line has not been through /start yet, and reads as waiting on
+    # nothing. That is silence, not readiness: the order line counts them so it never claims more
+    # than it read. The BLOCK order does not rest on these lines — it comes from each task's file.
+    undeclared = set()
+    for b in blocks:
+        task, body = b["id"], b["body"]
+        found = status_re.findall(body)
+        state_of[task] = found[0].split(" ")[0] if len(found) == 1 else None
+        line = re.search(r"^\**Depends on:\**(.*)$", body, re.M)
+        waits_on[task] = [d for d in re.findall(r"T-[A-Z0-9]+-\d+", line.group(1)) if d != task] if line else []
+        if not line:
+            undeclared.add(task)
+        kind = re.search(r"^\**Type:\**\s*(\w+)", body, re.M)
+        kind_of[task] = kind.group(1) if kind else None
+        tier = re.search(r"\**Tier:\**\s*(P\d)", body)
+        tier_of[task] = tier.group(1) if tier else "P9"
+        file_of[task] = os.path.splitext(os.path.basename(b["file"]))[0]
+        screens_of[task] = [sid for sid, _link in design_re.findall(body)]
+
+    def block_of(task):
+        return by_task.get(task, by_file.get(file_of[task]))
+
+    def is_v2(task):
+        return bool(screens_of[task]) and all(sid in v2_screens for sid in screens_of[task])
+
+    live = {t for t, state in state_of.items() if state in ("planned", "designed")}
+    v1_live = {t for t in live if not is_v2(t) and block_of(t) is not None}
+    order_bad = []
+    if not by_file:
+        order_bad.append("CONFIG ROT: no block table read from docs/build-order.md")
+    for stem in sorted({file_of[t] for t in state_of} - set(by_file)):
+        its_screens = [sid for t in state_of if file_of[t] == stem for sid in screens_of[t]]
+        if not its_screens:
+            order_bad.append(f"{stem}.md sits in no block and has no screen to prove it V2")
+        elif any(sid not in v2_screens for sid in its_screens):
+            order_bad.append(f"{stem}.md sits in no block but carries a V1 screen")
+    for loop in dependency_loops(live, waits_on):
+        order_bad.append("loop: " + " → ".join(loop))
+    later = set()
+    for task in sorted(live):
+        for dep in waits_on[task]:
+            if state_of.get(dep) == "struck":
+                order_bad.append(f"{task} waits on {dep}, which is struck")
+            elif task in v1_live and dep in live and dep not in v1_live:
+                order_bad.append(f"{task} is V1 and waits on {dep}, which is not")
+            elif task in v1_live and dep in v1_live and block_of(dep) > block_of(task):
+                later.add((task, dep))
+    recorded = recorded_cross_block(order_doc) if os.path.exists(order_doc) else set()
+    for task, dep in sorted(later - recorded):
+        order_bad.append(f"{task} (block {block_of(task)}) waits on {dep} (block {block_of(dep)}) — "
+                         "move it, split it, or record it in the plan")
+    for task, dep in sorted(recorded - later):
+        order_bad.append(f"the plan records {task} waiting on {dep}, which is no longer true")
+    helper = helper_blocks(os.path.join(repo, "scripts", "next-screen.py"))
+    plan_modules = defaultdict(set)
+    for stem, block in by_file.items():
+        if block >= 1:
+            plan_modules[block].add(stem.split("-")[0])
+    helper_modules = {int(name.split(" ")[0]): set(modules) for name, modules in helper or []}
+    if helper is None:
+        order_bad.append("next-screen.py carries no BLOCKS list to compare with the plan")
+    elif dict(plan_modules) != helper_modules:
+        order_bad.append("next-screen.py's blocks disagree with docs/build-order.md")
+
+    unblocks = defaultdict(set)
+    for task in live:
+        for dep in waits_on[task]:
+            unblocks[dep].add(task)
+    current = min((block_of(t) for t in v1_live), default=None)
+    # A record only buys time until its block opens: from then the ruling is owed NOW, so the block
+    # cannot start with a task in it that can never finish.
+    for task, dep in sorted(recorded & later):
+        if block_of(task) == current:
+            order_bad.append(f"block {current} is open and {task} still waits on {dep} in block "
+                             f"{block_of(dep)} — the plan's record owes its ruling now")
+    ready = sorted(
+        (t for t in v1_live
+         if block_of(t) == current
+         and all(state_of.get(dep) == "shipped" for dep in waits_on[t] if dep in state_of)
+         and (kind_of[t] != "screen" or state_of[t] == "designed")),
+        key=lambda t: (tier_of[t], -len(unblocks[t]), t))
+    shown = [f"{t} (unblocks {len(unblocks[t])})" if unblocks[t] else t for t in ready[:6]]
+    order_summary = (
+        f"build order: block {current} · {sum(1 for t in v1_live if block_of(t) == current)} open · "
+        f"{len(recorded)} recorded cross-block · ready now: "
+        + (", ".join(shown) + (f" (+{len(ready) - 6} more)" if len(ready) > 6 else "") if ready
+           else "NOTHING — every open task waits on a design or a dependency")
+        + (f" · {sum(1 for t in ready if t in undeclared)} of {len(ready)} declare no dependencies yet, "
+           "so /start writes that line and confirms before building"
+           if any(t in undeclared for t in ready) else "")
+        if current is not None else "build order: no live V1 task left")
+    gate(30, "the build order holds: no loop, nothing stale, every file placed, both copies agree",
+         not order_bad, order_summary if not order_bad
+         else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
+
     check_instruction_hygiene(repo)
 
     # --------------------------------------------------------------------- report
@@ -860,6 +1039,8 @@ def run(repo, verbose):
     failed = [r for r in results if not r[2]]
     print("-" * (width + 34))
     print(f"  rows {len(rows)} · tasks {len(blocks)} · screens {len(reg_set)} · briefs {len(brief_set)}")
+    # Printed on every run, pass or fail: the next task is read off the gates, never from memory.
+    print(f"  {order_summary}")
     print(f"  {'ALL GATES PASS' if not failed else str(len(failed)) + ' GATE(S) FAILED'}")
     return 0 if not failed else 1
 

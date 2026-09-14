@@ -262,7 +262,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-010 · STRUCK 2026-08-07 — the offline vocabulary and the capability boundary registry
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — every row this task carried was deleted 2026-08-07.
 
 **Struck in place by owner decision 2026-08-07**, which removed the offline/sync capability from the product and replaced `docs/prd/foundations/F4-offline-and-sync.md` with `docs/prd/foundations/F4-data-integrity.md`. Everything this task built was the boundary itself — the closed three-term vocabulary, the one-boundary-both-platforms parity rule, the time-not-scope commitment, the ruled offline-capable and online-only sets and their per-capability tables, the design-editing carve-out, the queued proposal-draft rule, and the boundary-governance row with its ruling that attendance and geofence events never joined the offline-capable set. With no connectivity boundary there is nothing to name, classify, police or move by ruling, and `docs/prd/foundations/F4-data-integrity.md` §5 makes losing the connection an ordinary network error. Nothing is built here. **The task id is struck in place and not renumbered**, so `T-FPLAT-011` onward keep their numbers and every existing citation still resolves.
@@ -295,7 +295,7 @@ This file dispositions every requirement row of the suite's six platform foundat
 ---
 ### T-FPLAT-012 · STRUCK 2026-09-04 — the conflict-policy engine
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — all five moved to the modules that consume them.
 
 **Struck in place by owner decision 2026-09-04.** The concurrency law is real and unchanged; what
@@ -318,7 +318,7 @@ read-state line this task used to carry belongs to `T-FPLAT-017` (`F6-07`) and w
 ---
 ### T-FPLAT-013 · STRUCK 2026-09-04 — nothing captured is unrecoverable
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — `F4-21` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The guarantee is unchanged; it lands with the
@@ -332,7 +332,7 @@ module that captures photographs rather than as a block 0 engine (Law 9).
 
 ### T-FPLAT-014 · STRUCK 2026-09-04 — the version-kept notice
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — `F4-25` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The notice belongs where the version is created.
@@ -361,7 +361,7 @@ module that captures photographs rather than as a block 0 engine (Law 9).
 ---
 ### T-FPLAT-034 · STRUCK 2026-09-04 — shared-device user switch
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — `F4-37` moved to its module.
 
 **Struck in place by owner decision 2026-09-04.** The switch happens at sign-in and its screen half
@@ -375,7 +375,7 @@ was already `SCR-M01-01`, so the rule sits with the session engine rather than i
 
 ### T-FPLAT-015 · STRUCK 2026-09-04 — the device-held photograph queue
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — both were already carried elsewhere.
 
 **Struck in place by owner decision 2026-09-04.** This task duplicated work its module already
@@ -391,7 +391,7 @@ by removing it, and the product keeps one device-held queue, specified once, in 
 
 ### T-FPLAT-016 · STRUCK 2026-09-04 — continuity under a billing block
 **Type:** — · **Tier:** —
-**Status:** planned
+**Status:** struck
 **PRD rows:** none — all four were already carried elsewhere.
 
 **Struck in place by owner decision 2026-09-04.** This task restated billing rules its own module
@@ -849,6 +849,29 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a check whose scanner crashes, when the gate runs, then it FAILS naming the check rather than printing a pass. → proof: gate a tracked file removed from disk — `CHECK 10d DID NOT RUN`, exit 1 and no `adherence OK`; the identical trigger exited 0 with `adherence OK` before
 - Given the clean room, when it is asked which files it holds, then the answer describes the room. → proof: gate the room's `git ls-files --cached` probed with a deleted file present — it names the file without the index refresh and not with it
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
+
+---
+### T-FPLAT-055 · The build order is computed, never remembered
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#90)
+**Why:** The owner's order lives in `docs/build-order.md` — blocks 0 to 8, decided with a written reason — yet no gate read it, and the order inside each block lived only in `Depends on:` lines no gate read either. So the next task was picked from memory, and memory was wrong twice in one hour: `T-SHELL-001` was called ready while it waits on `T-SHELL-007`, and "no ordering document exists" was said while `build-order.md` sat in `docs/`. Reading the whole graph mechanically found what no reading by eye had: five dependency LOOPS that no task in them could ever start, eight V1 tasks in block 1 waiting on later blocks, and seven STRUCK stubs still reading `planned`, which inflated block 0 from 24 open tasks to 31. The owner's worry is a missed task; this makes a missed task loud.
+**PRD rows:** none of its own — it serves every row by making the order they are built in something the gates compute.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** writing the `Depends on:` lines 315 of 351 live tickets still lack — each is written by that task's own `/start`, which is now told to; the six rulings the plan now records; folding `next-screen.py`'s copy of the blocks into one reader, which `docs/tasks/deferred.md` carries.
+**Found by:** the owner asking how the implementation order is decided, and a walk of the dependency graph that answered it.
+**Ruled by the owner:** **the order is `docs/build-order.md` as written** — block 0's 24 open foundation tasks, then Shell and onboarding — rather than building each engine just before its first consumer. That second shape was recommended first, before `build-order.md` had been read, and is withdrawn.
+**Ruled at `/start`:** **a navigation link is not a build dependency.** Team, and Catalog Settings, are hubs: the screens that open from them land after them and wire their own entries. The catalog family runs Catalog Settings → Import Wizard → Add Catalog Item, because the add sheet hands off to the wizard's spreadsheet path — the one edge in that family a done-when proof actually drives. Each removed edge is written into its ticket's Out of scope, so no link is lost.
+**Ruled at `/start`:** **two of the eight later-block waits are not dependencies.** Branding Settings' proofs drive its own previews and say the document and link renders are proven at `T-M06-017` and `T-F5-001`. The other six drive a later-block screen inside their own proof, so they are RECORDED in the plan rather than ruled here: each owes a move or a split before block 1 starts, and the gate turns red the moment block 1 opens with any still recorded.
+**Ruled at `/start`:** **`struck` is a fourth ledger state.** The stubs stay so their ids are never reused, but a stub that says `planned` is counted as open work.
+**Ruled at `/start`:** **no `T-FPLAT-028` edge is missing.** Two were claimed missing from `T-M01-015` and `T-M01-031`; both proofs already hand the staleness comparison to `T-FPLAT-028`, and `T-M01-015`'s Out of scope already rules the interim — the count renders as absent until it lands. Nothing was added.
+**DONE WHEN:**
+- Given the build order, when the gates run, then the next ready task is printed whether the run passes or fails. → proof: gate the order line reads `build order: block 0 · 24 open · 6 recorded cross-block · ready now: T-FPLAT-017 (unblocks 4) …`
+- Given a ticket whose readiness rests on silence, when the order line is printed, then it says so. → proof: gate `22 of 24 declare no dependencies yet`, moving to 21 when one ticket declares a line
+- Given a dependency loop, a wait on a struck task, a V1 task waiting on a V2 one, an unrecorded later-block wait, a stale record, an unplaced V1 file, a drifted copy of the blocks or an unreadable plan, when the gates run, then each is refused by name. → proof: gate each injected in turn and read back
+- Given a recorded later-block wait, when its block becomes the open one, then the ruling is owed at once. → proof: gate a recorded wait inside the open block goes red
+- Given a stub whose rows moved elsewhere, when the ledger is read, then it is struck and counts as no open work. → proof: gate the seven stubs read `struck`, and a heading and a status that disagree are refused
 
 ---
 ### T-FPLAT-054 · A skill is an instruction file

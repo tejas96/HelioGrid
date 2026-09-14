@@ -9,6 +9,12 @@ The cheapest token is the one never read. This skill reads the task, not the cor
 
 ## 1. Read only what the task carries
 
+**Which task: the one the build-order line names** (`M126`) — printed on every gate run, in the
+block `docs/build-order.md` puts first. Never a task picked from memory, and never one from a later
+block while an earlier block has open work. A ticket with no `Depends on:` line reads there as
+waiting on nothing, which is silence rather than readiness: write the line in §2 and confirm the
+task is still ready from it before the go.
+
 1. The task's own section of `docs/tasks/<module>.md` — from its `### T-…` heading to the next
    `---`. Its requirement rows are VERBATIM copies of the PRD (`docs/tasks/README.md` rule 1), so
    the PRD is never re-read for them. A row carries its own ruling; there is no register.
