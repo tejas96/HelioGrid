@@ -851,6 +851,24 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-056 · A change commit's CI verdict is read before the flip
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** On every PR the second-to-last commit showed a failed-looking run and the last a green one. It was never the code: CI cancels an in-flight run when a newer push lands on the same PR, and `/ship` told the agent to push the ledger flip "at once", so the run proving each change was cancelled by our own flip — 18 of the last 100 runs. That trains everyone to ignore a red mark on exactly the commit that matters, and a cancelled run can still hold a step that had already failed: one held a secret scan killed mid-step, recorded as a failure, proven clean only by scanning the same commits again. The "at once" existed for a real reason — waiting let the owner merge before the flip landed, which has happened — so the fix has to keep that window shut too.
+**PRD rows:** none of its own — it serves every row CI stands behind, by making the result on the change commit something that is read rather than cancelled.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** a push hook that refuses a push while a run is in flight, which would hold this mechanically and, as a script, needs the owner's ruling; changing CI's cancellation, which the owner declined because it roughly doubles the billable minutes; the queued run a runner outage left on merged PR #80, cancelled only with the owner's yes.
+**Found by:** the owner noticing that every PR's second-to-last commit failed and its last passed.
+**Ruled by the owner:** **`/ship` waits for the change commit's CI, reads it, then flips** — over changing CI to stop cancelling pull-request runs.
+**Ruled at `/start`:** **the PR opens as a DRAFT and is marked ready only when the flip's run is green.** Waiting alone would reopen the window the old "at once" closed; a draft cannot be merged, and marking it ready fires no extra CI run, because the workflow triggers on a pull request being opened or pushed to and not on it becoming ready.
+**DONE WHEN:**
+- Given a change commit's CI run, when `/ship` waits on it, then the wait ends only when that run completes, and ends in failure when the run did not succeed. → proof: gate the §5 wait replayed against real runs — a success exits 0; PR #80's runner-outage failure and PR #90's cancelled run each exit non-zero
+- Given the run lookup, when it resolves the commit, then it uses the full commit id, because a short one finds nothing and nothing is not a pass. → proof: gate the short id `01009e9` returns an empty list where `git rev-parse` of it returns the run
+- Given a PR whose CI is still being read, when the owner looks to merge, then it cannot be merged until it is marked ready. → proof: gate this PR reads `isDraft: true` while its runs are read, and is marked ready only after both are green
+
+---
 ### T-FPLAT-055 · The build order is computed, never remembered
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#90)
