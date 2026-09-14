@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-055 · The build order is computed, never remembered
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#90)
 **Why:** The owner's order lives in `docs/build-order.md` — blocks 0 to 8, decided with a written reason — yet no gate read it, and the order inside each block lived only in `Depends on:` lines no gate read either. So the next task was picked from memory, and memory was wrong twice in one hour: `T-SHELL-001` was called ready while it waits on `T-SHELL-007`, and "no ordering document exists" was said while `build-order.md` sat in `docs/`. Reading the whole graph mechanically found what no reading by eye had: five dependency LOOPS that no task in them could ever start, eight V1 tasks in block 1 waiting on later blocks, and seven STRUCK stubs still reading `planned`, which inflated block 0 from 24 open tasks to 31. The owner's worry is a missed task; this makes a missed task loud.
 **PRD rows:** none of its own — it serves every row by making the order they are built in something the gates compute.
 **Data model:** none.
