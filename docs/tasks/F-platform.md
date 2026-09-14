@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-056 · A change commit's CI verdict is read before the flip
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#91)
 **Why:** On every PR the second-to-last commit showed a failed-looking run and the last a green one. It was never the code: CI cancels an in-flight run when a newer push lands on the same PR, and `/ship` told the agent to push the ledger flip "at once", so the run proving each change was cancelled by our own flip — 18 of the last 100 runs. That trains everyone to ignore a red mark on exactly the commit that matters, and a cancelled run can still hold a step that had already failed: one held a secret scan killed mid-step, recorded as a failure, proven clean only by scanning the same commits again. The "at once" existed for a real reason — waiting let the owner merge before the flip landed, which has happened — so the fix has to keep that window shut too.
 **PRD rows:** none of its own — it serves every row CI stands behind, by making the result on the change commit something that is read rather than cancelled.
 **Data model:** none.
