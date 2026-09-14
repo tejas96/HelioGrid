@@ -142,6 +142,22 @@ Build the consumer after the producer, or stub it deliberately and record the st
 | `M13` dashboards | every module | it reports on their data |
 | every module | `F-core` + `F-platform` | permissions, formats, notifications, honesty |
 
+### Recorded: a V1 task whose proof waits on a later block
+
+Each task below sits in block 1, and one of its done-when proofs drives a screen that only exists in
+a later block — so, as placed, block 1 cannot finish. Each owes a ruling BEFORE block 1 starts: move
+the task to the block its proof needs, or move that proof line to the later task that builds the
+screen. A record here keeps the order honest (`M126`); it does not settle the ruling.
+
+| task | block | waits on | block | the proof step that needs it |
+|---|---|---|---|---|
+| `T-M01-006` | 1 | `T-M02-001` | 3 | door one "lands on the empty Leads screen" |
+| `T-M01-006` | 1 | `T-M02-003` | 3 | the same door — the empty Leads screen itself |
+| `T-M01-016` | 1 | `T-M06-010` | 8 | each path opens "from the builder's picker" |
+| `T-M01-016` | 1 | `T-MS-201` | 7 | each path opens from "the studio's picker", and Enter specs manually on a selected item |
+| `T-M01-019` | 1 | `T-M06-027` | 8 | "generate a proposal: each appears", and the order "the builder's timeline step opens with" |
+| `T-SHELL-002` | 1 | `T-M02-015` | 3 | "search the junk lead's phone", with the lead inbox and every queue omitting it |
+
 ---
 
 ## Verifying

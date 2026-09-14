@@ -15,7 +15,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 ```
 ### T-M02-001 · Quick Add Lead
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
-**Status:** planned                    (planned | designed | shipped (#PR) — the one ledger; screens.md mirrors it per screen)
+**Status:** planned                    (planned | designed | shipped (#PR) | struck — the one ledger; screens.md mirrors it per screen)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
 **DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
@@ -45,7 +45,12 @@ line and any part missing fails the docs gate.
 0. **`Status:` is the ledger.** `planned` until every `DESIGN:` link is filled, `designed` until the
    task ships, `shipped (#PR)` as the task branch's LAST commit once its PR is open — never a PR of
    its own — and a shipped id is named by the branch's own history. `screens.md` carries the same
-   state per screen. Build, tests and QA are proven inside the PR, never tracked as states.
+   state per screen. Build, tests and QA are proven inside the PR, never tracked as states. A task
+   whose rows moved to another task is `struck` — its heading says STRUCK, its stub stays so the id
+   is never reused, and it is never counted as open work.
+   **The ORDER is `docs/build-order.md`**: its blocks place every task file, and the next task is
+   the one the build-order line names on every gate run (`M126`), never one picked from memory. A
+   ticket with no `Depends on:` line reads there as waiting on nothing, so `/start` writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen — a git-ignored folder at the repo root that each machine exports itself),
