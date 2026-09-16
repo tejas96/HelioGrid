@@ -62,4 +62,10 @@ Each carries its F8 provenance tier in the design:
 
 ---
 
+## Redesign owed
+
+The third template is drawn as **33.33 × 3 = 99.99 and fully allocated**, where point 2 makes `met` exact: the lines must sum to 100.00, and 33.33 × 3 shows its 0.01 remainder and stays unsaveable.
+
+*Delete this section when the redesign matches the brief; the register's `Brief reviewed` cell then records the brief's new digest in place of `owed`.*
+
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline` state and a matching online-only sentence in Context of use (`F4-09`). Both are deleted.*

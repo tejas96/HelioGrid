@@ -851,6 +851,30 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-057 · A design names the brief it was reviewed against
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** A screen is designed against its brief, and the brief keeps changing after — a ruling folded in, a requirement re-pulled — while the design stays as drawn. Every gate that reads the design side passed while five of the twenty-three designs showed behaviour their briefs had since changed: Company Signup asked about a known number before the code was sent, Catalog Settings drew a platform price, Add Catalog Item lacked a state ruled after it was drawn, Payment Terms accepted 99.99 as full, and the App Shell's tab read a word the product bans. The gates checked that a brief file EXISTS and that its quotes match the PRD; none compared a brief against the design drawn from it. Building those screens to match their designs pixel for pixel would build what their briefs retired — and for a screen already built, nothing told anyone to look at its code again.
+**PRD rows:** none of its own — it serves every row a screen renders, by making a design that has fallen behind its brief something that is refused rather than built from.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** the five redesigns themselves, which are the design session's work and now head its queue; a design redrawn without its brief changing, which lives in exports outside git and is the design session's own step; the two web screens whose designs live on their phone twins' canvases, which share those twins' reviews rather than carrying their own.
+**Found by:** the owner asking whether design could run in parallel with the build, then pushing back that a green gate is not proof — the repository's own Law 12.
+**Ruled by the owner:** the five stale designs are redesigned first, before any new screen; both the recorded list and this gate were asked for; and a design that changes for a screen already built must bring that screen's code back into question, not leave it assumed.
+**Ruled at `/start`:** **the register holds the review, not the brief.** It is already the design ledger — status and link per screen — so the review is one more column in one file, read by column name so neither `scripts/gates.py` nor `scripts/next-screen.py` breaks on it.
+**Ruled at `/start`:** **the review names a digest of the brief's content, never a date or a commit.** A digest needs no git history, so it holds in the clean room exactly as it does locally, and any edit to the brief moves it.
+**Ruled at `/start`:** **what is wrong with a stale design is written in the brief**, under `## Redesign owed` — the brief is the file the design session pastes, so the designer reads the exact fault. Deleting that note changes the digest, which makes clearing a redesign gated too.
+**Ruled at `/start`:** **a new design's digest is recorded LAST.** `docs/start-here.md` lets the designer write decisions into the brief, and a digest taken before that names a brief that no longer exists — so the design tool names none in advance and gate 31 names it at the end.
+**Ruled at `/start`:** **every one of the twenty-three was verified before its cell was written, not assumed.** Eight briefs had not changed since their designs. Fifteen had: their changes were read word by word — nine replaced a retired question id with the ruling it became, one clarified which values carry no provenance tier on a screen that renders no dates, and five changed what the screen shows, each confirmed inside its exported design. Company Signup's `code ok` was verified in the shared flow: `admit` holds a known number only for an account that has verified, and `signupView` is the one decision both platforms read.
+**DONE WHEN:**
+- Given a designed screen whose brief changes after its design was reviewed, when the gates run, then it is refused until the design is reviewed again. → proof: gate the five briefs that gained a `Redesign owed` note were each refused with their new digest, then accepted as owed
+- Given a design found stale, when the design queue and the build order are read, then it comes first in one and is absent from the other. → proof: gate `next-screen.py` lists the five before any new screen; Team marked owed drops the ready list from 28 to 27
+- Given a screen already built, when its review is recorded, then it names its code's verdict, and a code change names a real task. → proof: gate a built screen with no verdict, and one owed to a task id that does not exist, are each refused
+- Given a screen not yet built or not yet designed, when its cell is written, then it claims no code verdict and no review. → proof: gate an unbuilt screen with `code ok`, and a planned screen with a digest, are each refused
+- Given a new design approved, when it is recorded, then its digest is taken after every brief edit. → proof: gate `docs/start-here.md` records it as Edit 4, last, and `next-screen.py` names no digest in advance
+
+---
 ### T-FPLAT-056 · A change commit's CI verdict is read before the flip
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#91)

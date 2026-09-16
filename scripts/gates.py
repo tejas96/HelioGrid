@@ -12,6 +12,7 @@ Exit: 0 all gates pass, 1 otherwise.
 import argparse
 import ast
 import glob
+import hashlib
 import os
 import re
 import subprocess
@@ -169,6 +170,35 @@ def helper_blocks(path):
         if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "BLOCKS" for t in node.targets):
             return ast.literal_eval(node.value)
     return None
+
+
+def brief_digest(path):
+    """The first 12 hex of a brief's sha256: what a design review names, so a brief that changes
+    after its design was reviewed is told apart from one that did not."""
+    with open(path, "rb") as brief:
+        return hashlib.sha256(brief.read()).hexdigest()[:12]
+
+
+def screen_index(path):
+    """Every row of the register's screen index (section 2), read by COLUMN NAME, so a column added
+    at the end changes no reader. A row too short for its header is kept, marked short."""
+    rows, cols, in_index = [], None, False
+    for line in open(path, encoding="utf-8"):
+        if line.startswith("## "):
+            in_index = line.startswith("## 2.")
+            continue
+        if not in_index:
+            continue
+        if line.startswith("| SCR | Screen |"):
+            cols = {name.strip(): i for i, name in enumerate(line.strip().strip("|").split("|"))}
+            continue
+        if not cols or not re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        row = {name: (cells[i] if i < len(cells) else None) for name, i in cols.items()}
+        row["short"] = len(cells) <= max(cols.values())
+        rows.append(row)
+    return rows
 
 
 def strip_amendment(text):
@@ -915,6 +945,64 @@ def run(repo, verbose):
          + (f" · {len(truncated)} omit the colour-literal clause (style drift, not fatal): {sorted(set(x.split()[0] for x in truncated))}" if truncated else "")
          if not bad else " · ".join(bad))
 
+    # --- Gate 31 · a design names the brief it was reviewed against
+    # A screen is designed against its brief, and the brief goes on changing after — a ruling folded
+    # in, a requirement re-pulled — while the design stays as drawn. Designs showed behaviour their
+    # briefs had since changed while every gate passed, because none compared the two. So the
+    # register's `Brief reviewed` cell names the digest of the brief a designed or shipped screen's
+    # design was last reviewed against, and a brief that changes after it is refused here until the
+    # design is reviewed again. A design found stale reads `owed`: it stays out of the build order
+    # and goes first in the design queue. A SHIPPED screen also names its code's verdict — `code ok`,
+    # or `code owed` and the task that changes it — because a design that moves after a screen is
+    # built leaves that code to be checked, not assumed.
+    review_cell = re.compile(r"^(owed )?([0-9a-f]{12})(?: · code (ok|owed (T-[A-Z0-9]+-\d+)))?$")
+    index_rows = screen_index(reg) if os.path.exists(reg) else []
+    task_ids = {b["id"] for b in blocks}
+    review_bad, owed_screens, n_reviewed = [], [], 0
+    if index_rows and "Brief reviewed" not in index_rows[0]:
+        review_bad.append("CONFIG ROT: the register's screen index has no `Brief reviewed` column")
+    for row in index_rows:
+        sid, status = row.get("SCR"), (row.get("Status") or "").lower()
+        cell = row.get("Brief reviewed")
+        if row["short"] or cell is None:
+            review_bad.append(f"{sid}: its row is shorter than the index header")
+            continue
+        if status == "planned":
+            if cell != "—":
+                review_bad.append(f"{sid} is not designed, so it names no reviewed brief (reads `{cell}`)")
+            continue
+        brief = os.path.join(repo, (row.get("Brief") or "").strip("`"))
+        if not os.path.isfile(brief):
+            review_bad.append(f"{sid}: its brief `{row.get('Brief')}` does not exist")
+            continue
+        now = brief_digest(brief)
+        m = review_cell.match(cell)
+        if not m:
+            review_bad.append(f"{sid} is {status} and records no review of its brief — review the design "
+                              f"against it and record `{now}`" + (" · code ok" if status == "shipped" else ""))
+            continue
+        n_reviewed += 1
+        owed, recorded, code, follow_up = m.group(1), m.group(2), m.group(3), m.group(4)
+        if recorded != now:
+            review_bad.append(f"{sid}'s brief changed since its design was reviewed ({recorded} → {now}) — "
+                              "review the design" + (" AND the built code" if status == "shipped" else "") +
+                              f", then record `{now}`, or `owed {now}` if the design no longer matches")
+        if status == "designed" and code:
+            review_bad.append(f"{sid} is not built yet, so it carries no code verdict")
+        if status == "shipped" and not code:
+            review_bad.append(f"{sid} is built: its cell names the code's verdict too — `code ok` or `code owed T-…`")
+        if follow_up and follow_up not in task_ids:
+            review_bad.append(f"{sid}'s code is owed to {follow_up}, which is no task")
+        if owed:
+            owed_screens.append(sid)
+    design_summary = (f"design review: {n_reviewed} designs reviewed against their briefs · "
+                      + (f"{len(owed_screens)} redesigns owed, first in the design queue: {', '.join(owed_screens)}"
+                         if owed_screens else "none owed"))
+    scanned(31, "every designed screen names the brief its design was reviewed against",
+            len(index_rows), 100, not review_bad,
+            design_summary if not review_bad
+            else f"{len(review_bad)}: " + " · ".join(review_bad[:6]))
+
     # --- Gate 30 · the build order is computed, never remembered
     # docs/build-order.md is the order. Its block table places every task file, and a task is READY
     # when it is live, V1, sits in the LOWEST block that still has live V1 work, waits on nothing
@@ -933,6 +1021,7 @@ def run(repo, verbose):
     # nothing. That is silence, not readiness: the order line counts them so it never claims more
     # than it read. The BLOCK order does not rest on these lines — it comes from each task's file.
     undeclared = set()
+    design_of = {}
     for b in blocks:
         task, body = b["id"], b["body"]
         found = status_re.findall(body)
@@ -947,6 +1036,8 @@ def run(repo, verbose):
         tier_of[task] = tier.group(1) if tier else "P9"
         file_of[task] = os.path.splitext(os.path.basename(b["file"]))[0]
         screens_of[task] = [sid for sid, _link in design_re.findall(body)]
+        shared = re.search(r"^\**Design:\**(.*)$", body, re.M)
+        design_of[task] = set(screens_of[task]) | set(re.findall(r"SCR-[A-Z0-9]+-\d{2}", shared.group(1)) if shared else [])
 
     def block_of(task):
         return by_task.get(task, by_file.get(file_of[task]))
@@ -1008,7 +1099,9 @@ def run(repo, verbose):
         (t for t in v1_live
          if block_of(t) == current
          and all(state_of.get(dep) == "shipped" for dep in waits_on[t] if dep in state_of)
-         and (kind_of[t] != "screen" or state_of[t] == "designed")),
+         and (kind_of[t] != "screen" or state_of[t] == "designed")
+         # a design owed a redesign is not built from: the build would bake in what the brief retired
+         and not design_of[t] & set(owed_screens)),
         key=lambda t: (tier_of[t], -len(unblocks[t]), t))
     shown = [f"{t} (unblocks {len(unblocks[t])})" if unblocks[t] else t for t in ready[:6]]
     order_summary = (
@@ -1041,6 +1134,7 @@ def run(repo, verbose):
     print(f"  rows {len(rows)} · tasks {len(blocks)} · screens {len(reg_set)} · briefs {len(brief_set)}")
     # Printed on every run, pass or fail: the next task is read off the gates, never from memory.
     print(f"  {order_summary}")
+    print(f"  {design_summary}")
     print(f"  {'ALL GATES PASS' if not failed else str(len(failed)) + ' GATE(S) FAILED'}")
     return 0 if not failed else 1
 
