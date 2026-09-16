@@ -83,6 +83,7 @@ for line in open(REG, encoding='utf-8'):
         'brief': get('Brief').strip('`'),
         'v': get('V'),
         'status': get('Status').lower(),
+        'reviewed': get('Brief reviewed'),
         'section': section,
     })
 
@@ -131,6 +132,36 @@ if by_block:
         (f"{name.split(' · ')[0]}:{n}" if i < 90 else f"deferred:{n}")
         for (i, name), n in sorted(by_block.items())))
 
+# --- a design whose brief changed after it was drawn comes before any new screen -----------
+# The register's `Brief reviewed` cell reads `owed <digest>` when a review found the design no longer
+# matching its brief. Those are redesigned first: building from them would build what the brief
+# retired, and scripts/gates.py keeps them out of the build order until they are cleared.
+owed = sorted((r for r in scoped if r['reviewed'].startswith('owed')),
+              key=lambda r: (block_of(r['sid'])[0], reg_line.get(r['sid'], 0)))
+if owed:
+    print(f"\n  ── redesigns owed, before any new screen: {len(owed)}")
+    for r in owed:
+        print(f"    {r['sid']:<14} {r['name'][:42]:<44} {r['status']}")
+    nxt = owed[0]
+    digest = nxt['reviewed'].split(' ')[1]
+    built = nxt['status'] == 'shipped'
+    print(f"""
+  ────────────────────────────────────────────────────────────────────────
+  NEXT: REDESIGN {nxt['sid']} · {nxt['name']}  — its brief changed after it was designed
+
+  1. paste  docs/ux/claude-design-context.md
+  2. paste  {nxt['brief']}   — its "Redesign owed" section says exactly what is wrong
+  3. redesign that, and re-export it to HelioGrid-UX/
+
+  when the design matches the brief:
+     delete the brief's "Redesign owed" section, then run  python3 scripts/gates.py
+     gate 31 names the brief's new digest: write it at {os.path.relpath(REG, ROOT)}:{reg_line.get(nxt['sid'], '?')} in place of 'owed {digest}'""" + ("""
+  it is BUILT: check the built screen against the new design as well —
+     keep "· code ok" only if it still matches; otherwise write "· code owed T-…" and open that task""" if built else "") + """
+  ────────────────────────────────────────────────────────────────────────
+""")
+    sys.exit(0)
+
 if module:
     pending = [r for r in pending if r['sid'].split('-')[1] == module]
     if not pending:
@@ -167,6 +198,8 @@ print(f"""
   when approved, edit these two lines:
      {os.path.relpath(REG, ROOT)}:{reg_line.get(nxt['sid'], '?')}   pending → designed, — → <link>
      {d[0] + ':' + str(d[1]) if d else '(no DESIGN line found)'}   PENDING → <link>
+  then, LAST — after any brief edit — run  python3 scripts/gates.py  and write the digest gate 31
+  names into that register row's Brief reviewed cell, in place of —
   ────────────────────────────────────────────────────────────────────────
 """)
 if len(pending) > len(shown):

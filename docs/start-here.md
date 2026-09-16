@@ -1,6 +1,6 @@
 # Start here — designing the first screen
 
-> ## ▶ Blocks 1–6 are ready. Run `python3 scripts/next-screen.py` — it prints the next screen.
+> ## ▶ Blocks 1–6 are ready. Run `python3 scripts/next-screen.py` — it prints the next screen, and any redesign owed comes before it.
 >
 > A component audit of all 99 briefs against the live design system found **57 gaps**. Rounds 13–17
 > closed **51** of them; the remaining six are the 3D canvas, which waits for the studio port and
@@ -287,6 +287,28 @@ to, so the next screen inherits it. Example: when you reach `SCR-M01-01` (Sign I
 `verified-success-dwell` duration to you — pick one, draw it, and write the value into that state.
 
 An unrecorded decision is how two screens end up disagreeing about the same flow.
+
+### Edit 4 — LAST: which brief the design was reviewed against
+
+Run `python3 scripts/gates.py`. Gate 31 names the brief's digest; write it into the same register row's
+`Brief reviewed` cell, in place of `—`. It goes last because Edit 3 changes the brief, and a digest
+taken before that edit names a brief that no longer exists.
+
+## When a brief changes after its screen was designed
+
+A ruling folds in, a requirement is re-pulled, the brief moves — and the design stays as drawn. Gate 31
+refuses that until someone looks: review the design against the brief as it now reads.
+
+- **Still matches** → write the new digest gate 31 names.
+- **No longer matches** → write `owed <digest>`, and add a `## Redesign owed` section to the brief that
+  says exactly what the design shows and what the brief now requires. `python3 scripts/next-screen.py`
+  then lists it FIRST, before any new screen, and it is kept out of the build order until cleared.
+- **The screen is already BUILT** → its cell also carries the code's verdict: `· code ok` when the built
+  screen matches the brief, or `· code owed T-…` naming the task that changes it. A redesign of a built
+  screen checks the code again before that verdict is kept.
+
+To clear a redesign: redesign, re-export, delete the brief's `## Redesign owed` section, then write the
+digest gate 31 names in place of `owed …`.
 
 ---
 
