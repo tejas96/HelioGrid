@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-057 · A design names the brief it was reviewed against
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#93)
 **Why:** A screen is designed against its brief, and the brief keeps changing after — a ruling folded in, a requirement re-pulled — while the design stays as drawn. Every gate that reads the design side passed while five of the twenty-three designs showed behaviour their briefs had since changed: Company Signup asked about a known number before the code was sent, Catalog Settings drew a platform price, Add Catalog Item lacked a state ruled after it was drawn, Payment Terms accepted 99.99 as full, and the App Shell's tab read a word the product bans. The gates checked that a brief file EXISTS and that its quotes match the PRD; none compared a brief against the design drawn from it. Building those screens to match their designs pixel for pixel would build what their briefs retired — and for a screen already built, nothing told anyone to look at its code again.
 **PRD rows:** none of its own — it serves every row a screen renders, by making a design that has fallen behind its brief something that is refused rather than built from.
 **Data model:** none.
