@@ -853,7 +853,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 ---
 ### T-FPLAT-059 · The suite's one polymorphic pointer gets its own name
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#95)
 **Why:** `T-FPLAT-004` ruled `subject_kind` + `subject_ref` to be ONE union every record naming a subject reads — the audit entry, then `notification`, then `file` — and then authored it inside the audit slice, where it took that slice's name. `notification` is the second reader and lands next (`T-FPLAT-017`). Left alone it would declare a column typed `audit_subject_kind` in a table that has nothing to do with the audit log, which a reader has to un-learn; and the alternative a reader reaches for instead — a second pgEnum holding the same values — is exactly the drift `M17` exists to catch. The move costs less today than it will with every reader added after it.
 **PRD rows:** none of its own — it serves `F2-22` and `F6-02`, the two rows that name the pointer, by making one union stay one union.
 **Design:** none — an engine task with no screen.
