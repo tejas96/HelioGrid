@@ -5,6 +5,7 @@ import {
   OTP_CHANNELS,
   PLATFORM_KINDS,
   ROLE_PRESETS,
+  SUBJECT_KINDS,
   TENANT_SEGMENTS,
 } from '@heliogrid/domain';
 import { z } from 'zod';
@@ -97,6 +98,14 @@ export type MembershipStatus = z.infer<typeof membershipStatusSchema>;
 /** Which platform a session was opened on; the lifetime rules differ (`M01-07`). */
 export const platformKindSchema = z.enum(PLATFORM_KINDS);
 export type PlatformKind = z.infer<typeof platformKindSchema>;
+
+/**
+ * What a record points AT — the kind half of the suite's ONE polymorphic pointer (`F2-22`,
+ * `F6-02`). The audit entry and the notification read this same union, so a subject named on one
+ * wire cannot be a subject the other has never heard of. Mirrored as a pgEnum (`M17`).
+ */
+export const subjectKindSchema = z.enum(SUBJECT_KINDS);
+export type SubjectKind = z.infer<typeof subjectKindSchema>;
 
 /** How a code is delivered: SMS, or the user-initiated voice call (`M01-03`). */
 export const otpChannelSchema = z.enum(OTP_CHANNELS);

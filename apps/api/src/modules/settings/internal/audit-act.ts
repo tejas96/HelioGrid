@@ -1,4 +1,4 @@
-import type { AuditEventType, AuditSubjectKind } from '@heliogrid/domain';
+import type { AuditEventType, SubjectKind } from '@heliogrid/domain';
 import type { Act } from '../../../common/auth/session-context';
 import type { AuditEntryToWrite } from '../../audit/audit.public';
 
@@ -10,7 +10,7 @@ import type { AuditEntryToWrite } from '../../audit/audit.public';
 export function settingsAct(
   eventType: AuditEventType,
   tenantId: string,
-  subject: { readonly kind: AuditSubjectKind; readonly ref: string },
+  subject: { readonly kind: SubjectKind; readonly ref: string },
   act: Act,
 ): AuditEntryToWrite {
   return {

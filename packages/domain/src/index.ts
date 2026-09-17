@@ -28,6 +28,7 @@ export * from './pricing';
 export * from './projects';
 export * from './rails';
 export * from './shell';
+export * from './subject';
 export * from './subsidy';
 export * from './tax';
 export * from './tenancy';

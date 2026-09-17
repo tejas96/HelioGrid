@@ -1,17 +1,12 @@
-import {
-  AUDIT_ACTOR_KINDS,
-  AUDIT_EVENT_TYPES,
-  AUDIT_SUBJECT_KINDS,
-  type AuditChangePayload,
-} from '@heliogrid/domain';
+import { AUDIT_ACTOR_KINDS, AUDIT_EVENT_TYPES, type AuditChangePayload } from '@heliogrid/domain';
 import { boolean, index, jsonb, pgEnum, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { subjectKind } from './subject';
 import { tenant } from './tenant';
 
 /** pgEnums hand-mirror domain's tuples (`M17` proves each pair equal). */
 export const auditEventType = pgEnum('audit_event_type', AUDIT_EVENT_TYPES);
 export const auditActorKind = pgEnum('audit_actor_kind', AUDIT_ACTOR_KINDS);
-export const auditSubjectKind = pgEnum('audit_subject_kind', AUDIT_SUBJECT_KINDS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -44,7 +39,7 @@ export const auditLogEntry = pgTable(
     occurredAt: instant('occurred_at').notNull(),
     /** The act was REFUSED — the blocked guard-rail attempts F2-22's checklist names (`F2-19`). */
     blocked: boolean('blocked').notNull(),
-    subjectKind: auditSubjectKind('subject_kind').notNull(),
+    subjectKind: subjectKind('subject_kind').notNull(),
     subjectRef: uuid('subject_ref').notNull(),
     /** Old → new, as its ENVELOPE; the whole is parsed in `domain`. Null when the event name is the whole change. */
     changePayload: jsonb('change_payload').$type<AuditChangePayload>(),

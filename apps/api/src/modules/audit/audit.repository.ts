@@ -4,7 +4,7 @@ import type {
   AuditActorKind,
   AuditChangePayload,
   AuditEventType,
-  AuditSubjectKind,
+  SubjectKind,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { count, desc, eq } from 'drizzle-orm';
@@ -25,7 +25,7 @@ export interface AuditEntryToWrite {
   readonly occurredAt: Date;
   /** The act was REFUSED and nothing changed (`F2-19`). */
   readonly blocked: boolean;
-  readonly subjectKind: AuditSubjectKind;
+  readonly subjectKind: SubjectKind;
   readonly subjectRef: string;
   readonly changePayload: AuditChangePayload | null;
 }
