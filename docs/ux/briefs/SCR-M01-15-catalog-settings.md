@@ -76,10 +76,5 @@ Each of these is user-visible on this screen and carries its F8 provenance tier 
 
 ---
 
-## Redesign owed
-
-Platform catalog items are drawn **with a price** (a platform module at `15050`, sourced `platform`, marked *Representative data*), where the brief rules that `representative` never denotes a platform price — the platform catalog carries none.
-
-*Delete this section when the redesign matches the brief; the register's `Brief reviewed` cell then records the brief's new digest in place of `owed`.*
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried `Offline / offline-read-only` and `offline-edit-fail-fast` states and a Context-of-use sentence splitting cached reads from online-only edits (`F4-08`, `F4-09`, `F4-18`). All are deleted. `M01-43`'s release self-staling is version staleness, not cache staleness, and is untouched.*

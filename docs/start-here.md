@@ -307,8 +307,29 @@ refuses that until someone looks: review the design against the brief as it now 
   screen matches the brief, or `· code owed T-…` naming the task that changes it. A redesign of a built
   screen checks the code again before that verdict is kept.
 
-To clear a redesign: redesign, re-export, delete the brief's `## Redesign owed` section, then write the
-digest gate 31 names in place of `owed …`.
+### Redoing the screen, step by step
+
+A redesign EDITS the drawing that exists. A second drawing of one screen is the duplicate this
+whole ledger exists to prevent, so nothing here starts a new file.
+
+1. `python3 scripts/next-screen.py` names the screen and the fault.
+2. Open the screen's own file in the design project — the register row's link — with the live design
+   system selected, and stay in it. One session per screen, as for a new one.
+3. Paste `docs/ux/claude-design-context.md`, then the whole brief, then this instruction:
+   *"This is a REDESIGN of an existing screen. Edit the existing `<file>` in place — no new file, no
+   copy, no v2. Keep every artboard, name, state and layout the `Redesign owed` section does not name.
+   Fix only what it describes, at 375 and at 1536, in every state it touches. Then re-run the
+   self-audit. At the end, list every change you made, one line each, in the decisions record."*
+4. Read that list against the export: the fault is gone, and nothing else moved.
+5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — the same export form as
+   every other pair, never a bundled page, and one pair per screen afterwards.
+6. Delete the brief's `## Redesign owed` section, run `python3 scripts/gates.py`, and write the digest
+   it names in place of `owed …`.
+7. A BUILT screen: check the built screen against the redesign too, and keep `· code ok` only if it
+   still matches. Otherwise write `· code owed T-…` and open that task.
+
+A fix one screen needs is usually a fact the corridor shares: when a rule is broken in one design,
+sweep the others for the same break before recording anything.
 
 ---
 

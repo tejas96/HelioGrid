@@ -65,11 +65,6 @@ Each carries its F8 provenance tier in the design:
 
 ---
 
-## Redesign owed
-
-The **`prefilled-from-selection`** state is not drawn: from a picker with a component already selected, the single form opens pre-filled with that item's brand, model and typed specs, and the scheme-certification flags and rate fields open blank.
-
-*Delete this section when the redesign matches the brief; the register's `Brief reviewed` cell then records the brief's new digest in place of `owed`.*
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline / offline-fail-fast` state and a matching online-only sentence in Context of use (`F4-09`). Both are deleted.*
 

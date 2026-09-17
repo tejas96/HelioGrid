@@ -96,10 +96,5 @@ Design the switcher at multiple held presets — the PRD's own worked examples a
 
 ---
 
-## Redesign owed
-
-The exported artboards label the fourth standing destination **"Quotes"** and show **"Quote v2"** as a source, where point 5 reads **Proposals** — `F6-22` bans the word from interface strings.
-
-*Delete this section when the redesign matches the brief; the register's `Brief reviewed` cell then records the brief's new digest in place of `owed`.*
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried the global sync indicator (`F4-22`), an `offline` state and an `all-synced-quiet` state, and its entry/exit pointed at `SCR-SHELL-04` (Sync Center), which no longer exists. All four are deleted, not deprecated. The shell no longer shows connectivity at all; losing the connection is handled by one shared offline screen, not by a state on this or any other surface.*
