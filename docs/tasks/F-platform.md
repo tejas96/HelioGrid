@@ -851,6 +851,23 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-058 · The banned word cannot re-enter the product
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** `F6-22` bans *quote* and *quotation* from identifiers, interface strings and documents in every locale — the search alias is the one exception, and it is a query behaviour only. Nothing in the repository holds that ban: no type, no lint rule, no gate, no `mechanisms.md` row. So the word walked back in unnoticed on both sides of the product — the shipped signup copy tells an owner their company name "goes on every quote and proposal you send", in English and in both generated catalogs, and a shared survey disclosure line opens "This quote is based on a remote survey". Every gate passed on both. A ban the tree cannot enforce is a ban that returns with the next screen, and the word is the product's own vocabulary law: a reader who is told *quote* here and *proposal* on the next screen is being told they are two things.
+**PRD rows:** none of its own — `T-FPLAT-020` realizes `F6-22`'s alias behaviour; this task makes the ban's other half enforceable, so the alias stays the only place the words appear.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** nothing.
+**Out of scope:** the exported designs, which the design session corrected against the same rule and which live outside git; a component's own English (`M50` and `docs/tasks/UI.md` own that, and `T-FPLAT-007` the script-conditional type rule); the alias query itself (`T-FPLAT-020`).
+**Found by:** the five design redesigns — the App Shell's tab read *Quotes*, and a sweep for the same word then found it in nineteen more exported designs and in these two live strings.
+**Settle at /start:** which mechanism holds the ban — a check that scans copy catalogs and source for the two words and their Devanagari spelling is the obvious one, and whether the ban belongs beside the Lingui scan (`M45`) or as its own row is the ruling; a new `mechanisms.md` row is written with the change and proven red on it (Law 12).
+**DONE WHEN:**
+- Given a user-visible string carrying *quote*, *quotation* or *कोटेशन*, when the gates run, then the change is refused and the string is named. → proof: gate the signup copy string before its fix, and an injected literal after it, are each refused
+- Given the two live strings, when signup renders its company-name error and the survey disclosure renders its line, then both read *proposal* in every launch language. → proof: unit the copy catalogs carry no banned word; qa-mobile + qa-web the signup error state on the built screen
+- Given the search box, when someone types "quote" or "quotation", then proposals still return. → proof: unit `T-FPLAT-020`'s alias test is unchanged and still green
+
+---
 ### T-FPLAT-057 · A design names the brief it was reviewed against
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#93)

@@ -59,10 +59,5 @@ Every rendered number carries its F8 provenance tier in the design. This screen 
 
 ---
 
-## Redesign owed
-
-The known-number panel (`m-duplicate-phone`, `d-duplicate-phone`) is drawn on the **number step, before any code is sent**, where point 7 answers a known number **after its code verifies**. The panel keeps its words and both roads; it moves after the code step. The built screen already does this — only the design is behind.
-
-*Delete this section when the redesign matches the brief; the register's `Brief reviewed` cell then records the brief's new digest in place of `owed`.*
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` base state and a "signup is an online act" clause. Both are deleted.*
