@@ -23,6 +23,11 @@ fix BOTH halves, then delete the row.
   arrives as a prop from `@heliogrid/i18n` through the consumer), or **navigation chrome** (that
   belongs to the app).
 - NEVER a DOM API in a `.native.tsx`, or a React Native import in a `.tsx`.
+- **NEVER a hover state in a native half.** A touch screen has no pointer, so the web half's
+  lift or tint has no counterpart here — the pressed state is the touch feedback, and a fact that
+  only appears on hover has not appeared at all (`N1`).
+- **The ask is one component (`F7-46`), never per-screen prose.** Teaching a screen puts behind an
+  information control opens the shared anchored popover; a screen that writes its own is drift.
 
 ## Folder shape — a closed set; never invent a folder
 

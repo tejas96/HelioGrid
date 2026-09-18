@@ -135,6 +135,11 @@ Pass it the feature's web and mobile paths plus every observed value the surface
 recorded for the same quantity. A value mismatch is a **blocker** — a platform re-implemented
 something that was supposed to be imported (Law 11).
 
+**A screen also reports its prose split** (`F7-46`, `M129` review-only): the facts it kept on the
+screen, the teaching it put behind the ask, and the ask driven on BOTH platforms — opened by tap,
+opened by keyboard on the web, closed by Escape and by an outside tap, focus returned. A state that
+only appears on hover is a blocker on the mobile surface, where no hover exists.
+
 ## 7. Triage
 
 - **bug** — inside the task's scope, fix it now; outside, `docs/tasks/deferred.md` and it is the

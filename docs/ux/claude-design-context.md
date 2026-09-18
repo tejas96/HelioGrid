@@ -25,6 +25,36 @@ UX goals: **uncluttered screens, progressive disclosure, easy navigation, access
 screen shows what the user needs for the decision in front of them and reveals the rest as they
 go — never the whole control surface at once (F7-34).
 
+**And that governs PROSE, not only controls (F7-46).** A screen carries the words the decision in
+front of the person needs; every other word waits until they ask for it.
+
+- **Never behind an ask:** money and what will be charged · what paused, what still works and
+  until when · the provenance tier beside every number · an honesty disclosure · an error and what
+  fixes it · a named gap where a value is missing · any consequence that must be read BEFORE the
+  act, at the act.
+- **Behind the ask:** how a feature works · reassurance the screen already implies · the reasoning
+  behind a rule · what the product can accept or read · anything whose absence would not change
+  the decision.
+- **The test:** if not reading it would change what the person does, it stays on the screen. If it
+  only answers curiosity, it goes behind the ask.
+- **The ask is ONE affordance, never invented per screen:** a labelled information control at or
+  above the touch floor, opening an **anchored popover** — the same object at 375 and at 1536,
+  never a sheet on one and a bubble on the other. Tap and keyboard focus open it; hover may open it
+  where the input can hover — a capability, never a width (`F7-29a`) — and is never the only way in
+  (`N1`). Escape, an outside tap and scrolling away close it, and focus returns to the control. It carries a title and **at most three pages**, a
+  page being one to three short sentences; a paged popover states its position and offers Back and
+  Next, and a swipe never replaces those buttons. A fourth page means it is not a popover: put it
+  on the screen, in an expandable section, or on a help surface of its own. **A paged popover
+  carries teaching only** — nothing from the first list is ever reached by pressing Next.
+- **The ask never holds what `F8-07` already forbids an info icon to hold** — a tier, a source
+  label, a staleness state, an honesty caveat — nor a number's derivation, which `MS10-19` keeps
+  readable on touch and by screen readers. Those stay beside the figure, as the tier section below
+  states. The ask is for teaching, and teaching only.
+- **No drawn state depends on hover.** Hover belongs to an input that has a pointer, so a touch
+  screen never sees it; the pressed state is the touch feedback, and a card that only reveals itself
+  on hover has revealed nothing. Draw hover as polish on the wide frame if you like — never as the
+  place a fact lives.
+
 ## Laws every screen obeys (the N-rules of F7-23 — product law)
 
 *F7-23 carries these as a numbered set that is "never renumber, never reword". The numbering and
@@ -323,7 +353,9 @@ is a FAIL. Fix all FAILs in the same session.
    stated here goes unchecked. It includes `N1` through `N10` (`N6b` among them); light-only
    (`F7-04`); the one sheet grammar (`F7-21`); no emoji and no character used as an icon
    (`F7-19`/`F7-42`); the density choice (`F7-17`); progressive disclosure (`F7-34`) — a screen
-   shows what the decision in front of the user needs and reveals the rest as they go; the `REC`
+   shows what the decision in front of the user needs and reveals the rest as they go; **the prose
+   split (`F7-46`) — name the teaching you put behind the ask and the facts you kept on the screen,
+   and no drawn state may depend on hover**; the `REC`
    rule — a recommendation row is drawn as a clearly separable element and your notes say which
    element it is; and the offline-residue rule — if the brief asks for an offline state, a
    staleness banner, a queued marker or a last-synced time, it is residue and you do not draw it.

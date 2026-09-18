@@ -851,6 +851,26 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a command that cannot boot, when an operator runs it, then they are told why. → proof: gate `pack:publish` with a provider removed prints `Nest cannot export a provider/module … Symbol(REFERENCE_DB)` through the redacting handler; the same run printed an empty stdout and an empty stderr before
 
 ---
+### T-FPLAT-061 · The ask — one anchored popover, so a screen carries facts and not lectures
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**Why:** Screens across the onboarding and catalog corridors explain themselves in paragraphs — what the importer can read, why a document's name is the product's to set, that two answers did not save — while the facts an act turns on sit in the same weight of type beside them. `F7-46` rules the split: the decision's own words stay on the screen, teaching waits until the person asks. Nothing in the product can carry that ask today. `Tooltip` opens on hover and keyboard focus and states in its own contract that a touch user will never see it; `Disclosure` is the line that must NOT be hidden; `CoachMark` is a first-run tour with a cap of three. So every screen that needed an ask so far answered it by printing the paragraph, which is the clutter the rule exists to remove — and a second screen inventing its own popover is how one product becomes two.
+**PRD rows:** F7-46 (P0)
+**Design:** none of its own — it is a design-system component every screen composes; the first screens to use it are the M12 billing corridor's, drawn against it.
+**Data model:** none.
+**Contract:** none — `packages/ui/src/components/<Name>/` gains one component with one `<Name>.types.ts` both platforms implement (Law 7), and the words are the caller's, from `packages/i18n` (`M50`).
+**Depends on:** nothing.
+**Out of scope:** rewriting the twenty-four designs already drawn — `F7-46` binds each of them when its screen is BUILT, which is `/start`'s reading and `/verify`'s check; the design system's own copy of the component, which the design session adds so screens can be drawn with it; `Tooltip`'s existing hover behaviour, which stays exactly as it is for a short label on a desktop control.
+**Found by:** the owner, reading the exported onboarding and catalog screens and naming the pattern: the teaching text crowds the decision, and a modern popover on demand is what it wants instead.
+**Settle at /start:** whether the component is new or `Tooltip` grows a tap mode — `Tooltip`'s contract says it is never the only home of a fact, so growing it would make one component mean two things; and where the paging state lives, since a screen holds no policy (Law 11).
+**DONE WHEN:**
+- Given a person on either platform, when they press the information control, then the popover opens anchored to that control, closes on Escape, on an outside tap and on scrolling away, and returns focus to the control. → proof: qa-web + qa-mobile the same component driven on both, with the keyboard path proven on the web half
+- Given a popover of two or three pages, when it is read, then it states its position, offers Back and Next at every page, and a swipe never replaces them. → proof: unit the page model; qa-mobile the swipe and the buttons on one screen
+- Given content that would need a fourth page, when it is authored, then it is refused. → proof: unit the page cap is the component's, not the caller's
+- Given a touch surface, when the component renders, then no state of it depends on hover. → proof: gate `check:adherence` sees no hover state in a `.native.tsx`; qa-parity the two halves offer the same ways in
+- Given a fact the rule keeps on the screen — money, what paused, a tier, a disclosure, an error's fix — when a screen is reviewed, then it is not behind the ask (F7-46). → proof: qa-web + qa-mobile per screen, and `/verify` §6 names the split the screen made
+
+---
 ### T-FPLAT-060 · The flip rides the change commit, and the PR opens ready
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#97)
@@ -1546,6 +1566,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F7-43 | LAW |
 | F7-44 | LAW |
 | F7-45 | LAW |
+| F7-46 | T-FPLAT-061 |
 | F8-01 | T-FPLAT-026 |
 | F8-02 | T-FPLAT-026 |
 | F8-03 | T-FPLAT-026 |
