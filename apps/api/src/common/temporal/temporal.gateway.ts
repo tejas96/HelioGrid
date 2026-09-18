@@ -1,7 +1,8 @@
 import type { WorkflowDefinition } from '@heliogrid/contracts/workflows';
 import { Inject, Injectable } from '@nestjs/common';
-import type { Client, WorkflowHandle } from '@temporalio/client';
+import type { WorkflowHandle } from '@temporalio/client';
 import type { z } from 'zod';
+import type { TemporalConnection } from './temporal.client';
 import { TEMPORAL_CLIENT } from './temporal.tokens';
 
 /**
@@ -19,7 +20,7 @@ import { TEMPORAL_CLIENT } from './temporal.tokens';
 @Injectable()
 export class TemporalGateway {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(TEMPORAL_CLIENT) private readonly client: Client) {}
+  constructor(@Inject(TEMPORAL_CLIENT) private readonly connection: TemporalConnection) {}
 
   /**
    * Starts a workflow, or attaches to the one already running under the same id.
@@ -33,7 +34,8 @@ export class TemporalGateway {
     input: z.infer<D['input']>,
   ): Promise<WorkflowHandle> {
     const parsed = definition.input.parse(input);
-    return this.client.workflow.start(definition.name, {
+    const client = await this.connection.client();
+    return client.workflow.start(definition.name, {
       taskQueue: definition.taskQueue,
       workflowId: definition.workflowId(parsed),
       args: [parsed],
@@ -50,7 +52,8 @@ export class TemporalGateway {
   ): Promise<void> {
     const schema = definition.signals[signal];
     if (!schema) throw new Error(`${definition.name} declares no signal '${signal}'`);
-    await this.client.workflow.getHandle(workflowId).signal(signal, schema.parse(payload));
+    const client = await this.connection.client();
+    await client.workflow.getHandle(workflowId).signal(signal, schema.parse(payload));
   }
 
   /**
@@ -64,7 +67,8 @@ export class TemporalGateway {
   ): Promise<z.infer<D['queries'][K]>> {
     const schema = definition.queries[query];
     if (!schema) throw new Error(`${definition.name} declares no query '${query}'`);
-    return schema.parse(await this.client.workflow.getHandle(workflowId).query(query));
+    const client = await this.connection.client();
+    return schema.parse(await client.workflow.getHandle(workflowId).query(query));
   }
 
   /** Awaits completion. Validated for the same reason a query result is. */
@@ -72,6 +76,7 @@ export class TemporalGateway {
     definition: D,
     workflowId: string,
   ): Promise<z.infer<D['result']>> {
-    return definition.result.parse(await this.client.workflow.getHandle(workflowId).result());
+    const client = await this.connection.client();
+    return definition.result.parse(await client.workflow.getHandle(workflowId).result());
   }
 }

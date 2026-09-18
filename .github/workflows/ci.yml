@@ -95,8 +95,23 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
-      DATABASE_ADMIN_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+      # The lane connects as the roles production connects as (infra/postgres/init/01-roles.sql):
+      # app_runtime is neither superuser nor BYPASSRLS, so row-level security is REAL here and the
+      # api's boot-time precondition passes rather than being skipped; app_admin migrates and seeds.
+      # The container's own superuser is used ONCE, by the step that creates those roles.
+      DATABASE_URL: postgres://app_runtime:app_runtime@localhost:5432/heliogrid_ci
+      DATABASE_ADMIN_URL: postgres://app_admin:app_admin@localhost:5432/heliogrid_ci
+      # The api's boot validates every key; none of these reaches a socket or a file unless a
+      # workflow is started, which no test in this lane does (the channel opens on first use).
+      TEMPORAL_ADDRESS: 127.0.0.1:1
+      TEMPORAL_NAMESPACE: heliogrid
+      TEMPORAL_TLS_CA_FILE: /dev/null
+      TEMPORAL_TLS_CERT_FILE: /dev/null
+      TEMPORAL_TLS_KEY_FILE: /dev/null
+      TEMPORAL_AUTH_TOKEN_FILE: /dev/null
+      # The one number whose code is fixed, so a test signs in through the front door.
+      DEV_OTP_PHONE: "+919999999999"
+      DEV_OTP_CODE: "000000"
       # A CI-only signing secret for the api's token; nothing outside this workflow ever
       # verifies a token signed with it. Declared in turbo.json's `env` list where a task reads it.
       AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
@@ -145,11 +160,17 @@ jobs:
       # version and per-archive checksum — is scripts/oasdiff-pin.json, one file for both.
       - name: Install oasdiff (the breaking-change half of check:openapi — M26)
         run: bash scripts/install-oasdiff.sh
-      - name: Cluster roles (infra/postgres/init/01-roles.sql)
+      - name: Cluster roles and schema grants (infra/postgres/init)
         # Roles are CLUSTER objects and infra owns them; the service container runs no init SQL,
-        # so this is what a local `pnpm infra:up` does on first boot. It must precede migrate:
-        # 0001's GRANT names app_user, and the invariants query every role by name.
-        run: psql "$DATABASE_ADMIN_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/01-roles.sql
+        # so this is what a local `pnpm infra:up` does on first boot — the SAME two files, as the
+        # container's superuser, which nothing after this step uses. It must precede migrate:
+        # 0001's GRANT names app_user, 02 gives app_admin CREATE on public, and the invariants
+        # query every role by name.
+        env:
+          SUPERUSER_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+        run: |
+          psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/01-roles.sql
+          psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/02-databases.sql
       - name: Apply migrations (CI database)
         # Must run before pnpm verify:ci so the invariants have tables to inspect.
         run: pnpm --filter @heliogrid/db migrate

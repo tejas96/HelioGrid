@@ -1,6 +1,8 @@
--- Databases and connect-level privileges. Runs after 01-roles.sql, against heliogrid_dev as the
--- superuser. The entrypoint uses `psql -v ON_ERROR_STOP=1` with no wrapping transaction, so
--- CREATE DATABASE is legal here.
+-- Databases and connect-level privileges. Runs after 01-roles.sql, as the superuser, against the
+-- application database — heliogrid_dev from the container's entrypoint, heliogrid_ci from the CI
+-- lane — which is why the CONNECT grant names :DBNAME, psql's own variable for the database it
+-- is connected to, rather than a literal. The entrypoint uses `psql -v ON_ERROR_STOP=1` with no
+-- wrapping transaction, so CREATE DATABASE is legal here.
 
 -- Temporal's two stores cannot share one database: both hold `schema_version` and
 -- `schema_update_history`, so merging them makes temporal-sql-tool read one store's version and
@@ -13,7 +15,7 @@
 CREATE DATABASE temporal            OWNER temporal;
 CREATE DATABASE temporal_visibility OWNER temporal;
 
-GRANT CONNECT ON DATABASE heliogrid_dev TO app_runtime, app_admin, qa_readonly;
+GRANT CONNECT ON DATABASE :"DBNAME" TO app_runtime, app_admin, qa_readonly;
 
 -- Redundant today: Postgres 15+ revoked CREATE from PUBLIC but not USAGE, so `public`'s ACL
 -- already grants it. Explicit so that a future migration revoking USAGE from PUBLIC does not
