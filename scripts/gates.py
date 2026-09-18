@@ -684,8 +684,34 @@ def run(repo, verbose):
                 ledger_bad.append(f"{sid} is {s_state} in screens.md but carries no design link")
             if s_state == "planned" and s_link.startswith("http"):
                 ledger_bad.append(f"{sid} is planned in screens.md but carries a design link")
-    gate(27, "the ledger agrees: Status, DESIGN links, screens.md and main", not ledger_bad,
-         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped · {tally['struck']} struck, all consistent"
+    # A task block can VANISH — a clobbered conflict resolution, a squash over a stale base — and
+    # every check above is keyed on the block EXISTING, so they all fall silent together: no Status
+    # to read, no id to dangle, nothing to disagree with screens.md. The HISTORY is the one witness
+    # that survives. A commit subject that named a task is proof that task had a block, so every id
+    # the subjects name must still have one. A struck task keeps its stub (README rule 0), so this
+    # asks only that the block exists, never what it says.
+    # And an id can be taken TWICE — two sessions reaching for the same next number — which reads
+    # as one task to every set and dict here, this check included. An id is the ledger's key
+    # (README rule 0: never reused), so a second block under one id is two tasks the tree cannot
+    # tell apart.
+    seen_ids = defaultdict(int)
+    for b in blocks:
+        seen_ids[b["id"]] += 1
+    for tid, n in sorted(seen_ids.items()):
+        if n > 1:
+            ledger_bad.append(f"{tid}: {n} task blocks share this id — an id is never reused (rule 0)")
+
+    block_ids = set(seen_ids)
+    named_by_history = sorted(set(re.findall(r"\bT-[A-Z0-9]+-\d+\b", main_log)))
+    for tid in named_by_history:
+        if tid not in block_ids:
+            ledger_bad.append(
+                f"{tid}: named by {main_ref}'s history, so it HAD a block — and no task file holds "
+                "one now; restore it from the commit that named it")
+
+    gate(27, "the ledger agrees: Status, DESIGN links, screens.md, main, and nothing vanished", not ledger_bad,
+         f"{tally['planned']} planned · {tally['designed']} designed · {tally['shipped']} shipped · {tally['struck']} struck, "
+         f"all consistent · {len(named_by_history)} ids named by history, every one still held"
          if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
 
     # --- Gate 28 · docs/engineering/ only shrinks
