@@ -395,6 +395,11 @@ msgid "Sent just now. SMS is the only channel."
 msgstr "अभी-अभी भेजा गया। SMS ही एकमात्र माध्यम है।"
 
 #. js-lingui-explicit-id
+#: src/copy/authored-content.ts:13
+msgid "Shown in {shown} — not yet written in {requested}."
+msgstr "{shown} में दिखाया गया — अभी {requested} में नहीं लिखा गया।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:9
 msgid "Sign in"
 msgstr "साइन इन करें"

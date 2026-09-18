@@ -4,7 +4,7 @@ import { HttpStatus, type INestApplication } from '@nestjs/common';
 import { createApp } from '../../src/app';
 import { ENV } from '../../src/config/env';
 import { MarketPackService } from '../../src/modules/market/market.public';
-import { skipUnless } from './fixture';
+import { skipUnless } from './preconditions';
 
 /**
  * The api over REAL HTTP, inside a test: the same `createApp()` production listens on, listening

@@ -1,4 +1,4 @@
-import type { PackLabel, PerLanguage } from '../format/languages';
+import type { AuthoredPerLanguage, PackLabel } from '../format/languages';
 import { type RichTextValue, richTextParagraphs } from './rich-text';
 
 /**
@@ -58,7 +58,7 @@ export interface ProposalCover {
  * launch languages, authored here because the effective read serves them to a document from the
  * server. No number lives in them — a validity period or a price is the proposal's own fact.
  */
-export const DEFAULT_TERMS: PerLanguage<RichTextValue> = {
+export const DEFAULT_TERMS: AuthoredPerLanguage<RichTextValue> = {
   en: richTextParagraphs([
     'This proposal is valid until the date stated on it. Prices and taxes are as itemised in it.',
     'Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received.',

@@ -657,8 +657,8 @@ question that records it and does **not** invent a replacement.
 | F3-08 | P0 | policy | policy | T-FPLAT-006 |
 | F3-09 | P0 | policy | policy | T-FPLAT-007 |
 | F3-10 | P0 | policy | policy | T-FPLAT-006 |
-| F3-11 | P0 | policy | policy | T-FPLAT-006 |
-| F3-12 | P0 | policy | policy | T-FPLAT-006 |
+| F3-11 | P0 | policy | policy | T-FPLAT-058 |
+| F3-12 | P0 | policy | policy | T-FPLAT-026 |
 | F3-13 | P0 | policy | policy | T-FPLAT-007 |
 | F3-14 | P0 | policy | policy | T-FPLAT-007 |
 | F3-15 | P0 | engine | engine | T-FPLAT-007 |
