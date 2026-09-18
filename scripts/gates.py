@@ -638,8 +638,8 @@ def run(repo, verbose):
     # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
     # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
     # planned while a DESIGN link is PENDING; designed once every link is filled; shipped (#PR)
-    # only when the checked-out history names the task — the task's own branch, whose flip is its
-    # last commit once the PR is open, or main after the merge. screens.md carries the same state
+    # only when the checked-out history names the task — the CHANGE commit's own subject, which is
+    # where the flip rides (README rule 0), or main after the merge. screens.md carries the same state
     # per screen. Both ticket shapes: `**Status:** x` in a prose block, `Status: x` in a fenced ticket.
     # A fourth state, `struck`, for a task whose rows moved elsewhere: its stub stays in place so its
     # id is never reused, and it must not read as open work — seven stubs once said `planned`, which

@@ -26,6 +26,7 @@ this file: when the path goes, the row goes.
 | The preview tool refuses a dedicated port as "another chat's dev server" from a stale registry, even when nothing listens on it. | Confirm with `lsof`; start the api or web from the shell in the background with its log in the session scratchpad, and stop it yourself when the run ends. | never |
 | A subagent's browser calls can hang on their first `navigate` or be refused by the session's permission classifier, so `qa-web` returns nothing or every step inconclusive. | Check the session's permission mode before dispatching; while the pane is closed to subagents, the author's own drive is diagnosis recorded in the PR, never the verdict (`M113`). | never |
 | `computer` clicks and typing do not dispatch on a hidden Browser pane or a background tab: the page stays still and reads as "nothing happened". | Front the tab first (`tabs_select`); prefer `form_input` and a scripted click through `javascript_tool`. | never |
+| The one local database is SHARED by every branch, so a migration applied for an unmerged PR puts it AHEAD of `main`: the next branch cut from `main` fails the db-backed invariants — enum and schema parity against a shape its own code has never heard of — with nothing wrong in its diff. | Read the failure: a type the branch expects but the database lacks is the other PR's, not this branch's. Merge the migration's PR and rebase; there is no second database to cut. | never |
 
 ## apps/api
 

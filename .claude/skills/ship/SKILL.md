@@ -61,17 +61,26 @@ split (`/start` §3), never shipped half.
 migration or one contract router, the PR body is not printed and the work goes back to `/start`
 §3 to be split — unless the owner has ruled, in chat, that this one task ships whole.
 
-## 4. Commit on a yes
+## 4. Flip the ledger, then commit on a yes
+
+**The flip rides the change commit** (`M106`), so the ledger is right from the commit that makes
+it true and the PR carries no window in which it is wrong. Before anything is shown: read the
+number the next PR will take — the highest issue-or-PR number the repository holds, plus one —
+and write `shipped (#n)` into the task's `Status:` line and into its screens in `screens.md`.
+`M106` reads commit SUBJECTS, and the change commit's subject names the task, so the claim is
+true the moment that commit exists. It reads RED in the seconds between writing the flip and
+making the commit, which is why §1's gates run BEFORE the flip is written and are not re-read
+after it. A flip never gets a commit or a PR of its own (`docs/tasks/README.md` rule 0).
 
 Show the file list, the line count and the commit message, then END THE TURN. The yes is the
 owner's next message, given to exactly what was shown; a go, a green gate, an event or a yes to
 an earlier commit is not it, and a changed file list needs a new yes. On the yes: commit with the
 `Co-Authored-By` trailer, never `--no-verify`, never a QA scratchpad or artifact directory.
 
-## 5. Push, raise the PR as a draft, read its CI, flip the ledger, mark it ready
+## 5. Push, raise the PR, read its one CI run
 
-`git push -u origin <branch>`, then open the PR **as a draft** (`gh pr create --draft`) with a body
-in this order:
+`git push -u origin <branch>`, then open the PR — ready, never a draft, because the ledger it
+carries is already correct and there is no window to hold shut — with a body in this order:
 
 1. **What and why** — one paragraph; the task id is in the title.
 2. **Design** — the three things as decided, and any ruling applied, by row id.
@@ -83,9 +92,14 @@ in this order:
 End with the generated-with line, and print it in chat too — the owner reads it there. Never
 merge, never push to `main`, never force-push.
 
-**Then read the change commit's OWN CI verdict before anything else is pushed** (`M127`,
-review-only). CI cancels an in-flight run when a newer push lands on the same PR, so a flip pushed at
-once cancels the very run that proves the change — and a cancelled run can still hold a step that had
+**Then check the number the flip claimed**, because it was read before the PR existed. If
+`gh pr create` returned a different one, a PR opened in the seconds between, and ONE mechanical
+correction commit fixes the `Status:` line and its screens (`M105`) — the only case this path
+costs a second run.
+
+**Then read the commit's OWN CI verdict, and push nothing to the PR while it runs** (`M127`,
+review-only). CI cancels an in-flight run when a newer push lands on the same PR, so a second push
+cancels the very run that proves the change — and a cancelled run can still hold a step that had
 already failed, reading exactly like the harmless kind. Find the run by the FULL commit id, because a
 short one matches nothing and "no run" is not a pass; then wait on that run:
 
@@ -96,17 +110,11 @@ for try in $(seq 60); do id=$(gh run list --commit "$sha" --json databaseId -q '
 gh run watch "$id" --exit-status
 ```
 
-- **success** → flip the ledger, below.
-- **anything else** → the flip waits. A failed step is read and fixed on this branch, each fix
-  commit with its own yes. A job "not started because it repeatedly failed to be acquired", or a run
+- **success** → report the PR link and the verdict, job by job. The owner merges.
+- **anything else** → a failed step is read and fixed on this branch, each fix commit with its own
+  yes. A job "not started because it repeatedly failed to be acquired", or a run
   that never leaves the queue, is GitHub's runner pool, not the code: re-run it once
   (`gh run rerun "$id"`), and report it if it recurs. No run at all is reported, never read as green.
 
-Then **flip the ledger on this same branch**: the task's `Status:` to `shipped (#n)` and its screens
-in `screens.md`, pushed to the same PR as its last commit. This is the ONE commit that needs no yes
-(`M105`) — it is mechanical, and it carries the number just shown. The DRAFT is what keeps the merge
-window shut while CI is read: a draft cannot be merged, so the owner cannot merge before the flip
-lands and leave the ledger wrong (`M106`). A flip never gets a PR of its own (`docs/tasks/README.md`
-rule 0). Wait on the flip's run the same way, and only when it is green mark the PR ready
-(`gh pr ready <n>`) and report both verdicts. CI runs only on the PR, so the first run is the first
-time the committed tree is checked whole.
+CI runs only on the PR, so this run is the first time the committed tree is checked whole — and
+with the flip already inside it, it is also the only run the task needs.
