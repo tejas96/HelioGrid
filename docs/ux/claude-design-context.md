@@ -73,7 +73,7 @@ order below are exact; each line then states the operative obligation the rule c
 
   **A date follows the MARKET, not the reader.** The pack owns the order, the calendar and the
   month name, so `12 Aug 2026` renders identically in Hindi, Marathi and English — the same class as
-  `BIS`, `ALMM`, `DISCOM` and `kWp`. Two colleagues in one tenant quote a customer the same date.
+  `BIS`, `ALMM`, `DISCOM` and `kWp`. Two colleagues in one tenant give a customer the same date.
 
   **Where the tier renders, because N7 and progressive disclosure (F7-34) otherwise collide.**
   A designer told to tier every number *and* to reveal detail progressively will reach for a
@@ -183,7 +183,7 @@ because #EEF0F3 is the darkest ground this palette's marks survive.
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (F7-22, P0; Law 5 —
 reuse before creation).** Where a screen renders inside the app shell, draw that shell exactly as
 `SCR-SHELL-01` fixed it and never re-derive it: at 375 an arc bar with a **raised centre action**
-and **exactly four** standing destinations — **Home · Leads · Quotes · More**; at 1536 the icon rail
+and **exactly four** standing destinations — **Home · Leads · Proposals · More**; at 1536 the icon rail
 carrying **the same four**, plus `AppHeader`. **Never add a fifth slot.** Settings, account,
 grievance contact and sign-out are reached from **More** and from the avatar menu — a screen that
 gives itself a rail entry has invented a navigation the product does not have, and ninety screens
@@ -233,7 +233,7 @@ states and never checks is a law nobody checks.*
 3. Designed at **realistic volume**, not demo volume: a 200-lead list, a 40-line bill of
    materials, a 221-panel design. Long content scrolls inside its own region.
    **Every data table carries a caption (F7-27, P0)** — the reason is commercial, not stylistic:
-   the bill of materials and the quote are documents a customer may hold, and an anonymous table
+   the bill of materials and the proposal are documents a customer may hold, and an anonymous table
    in one is a defect. The caption names what the table is and, where the table is filtered or
    scoped, what it currently shows.
 4. Survives **language expansion**: the layout must hold in Hindi and Marathi, not only English.
