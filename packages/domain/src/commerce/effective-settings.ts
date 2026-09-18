@@ -1,8 +1,8 @@
 import { type CompliantShades, compliantShades } from '../branding/compliant-shades';
 import { type CalendarDate, holidaysInForce } from '../format/holidays';
 import {
+  type AuthoredPerLanguage,
   type PackLabel,
-  type PerLanguage,
   UI_SOURCE_LOCALE,
   type UiLanguage,
 } from '../format/languages';
@@ -74,7 +74,8 @@ export interface BrandingSettings {
 export interface ProposalTemplateSettings {
   readonly cover: ProposalCover | null;
   readonly sectionsIncluded: readonly ProposalSection[];
-  readonly defaultTerms: PerLanguage<RichTextValue>;
+  /** The tenant's own words, per language — resolved through `authoredIn`, never silently (`F3-10`). */
+  readonly defaultTerms: AuthoredPerLanguage<RichTextValue>;
 }
 
 export interface TimelineTemplateSettings {

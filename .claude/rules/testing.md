@@ -12,8 +12,9 @@ The rule for every unit test in the repo. `CLAUDE.md` §8 points here; `mechanis
 holds each line and how much of it.
 
 - **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker` ·
-  `i18n`'s `runtime.ts` alone (the fallback and the per-reader translator have edges running
-  cannot see; its provider, loaders and polyfills are proven by running). Not
+  `i18n`'s `runtime.ts` and its `copy/` functions (the fallback, the per-reader translator and a
+  function that chooses words from facts all have edges running cannot see; its provider, loaders
+  and polyfills are proven by running, and the coverage bar stays on `runtime.ts` alone). Not
   the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
   client, `db` by migrations and `tests/invariants/`. That set is machine-readable in
   `packages/config/unit-test-packages.json`, which the runner, the write guard, the adherence

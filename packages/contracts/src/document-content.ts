@@ -10,7 +10,9 @@ import { uiLanguageSchema } from './locale';
 /**
  * A value per launch language — English required, the rest optional: `F3-05`'s fallback in the
  * type, exactly domain's `PerLanguage`. The record half is what refuses a language the product
- * has no catalog for.
+ * has no catalog for. One shape serves two laws: a pack label falls back to English silently,
+ * while tenant-authored content — terms, a template — is domain's `AuthoredPerLanguage` and
+ * resolves through `authoredIn`, which names the language shown (`F3-10`).
  */
 export function perLanguage<T extends z.ZodTypeAny>(value: T) {
   return z.object({ en: value }).and(z.record(uiLanguageSchema, value));

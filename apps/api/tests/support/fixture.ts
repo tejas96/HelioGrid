@@ -29,8 +29,10 @@ import {
   type RolePreset,
   sessionExpiresAt,
 } from '@heliogrid/domain';
-import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { eq, inArray } from 'drizzle-orm';
+import { adminUrl, databaseUrl } from './preconditions';
+
+export { adminUrl, databaseUrl, skipUnless, skipWithoutDatabase } from './preconditions';
 
 /**
  * The real-database fixture every `apps/api` proof seeds: two companies, the people in them and
@@ -43,30 +45,6 @@ import { eq, inArray } from 'drizzle-orm';
 
 /** Enough digits to keep one run's phone numbers clear of every other run's. */
 const PHONE_SUFFIX_DIGITS = 8;
-const env = loadInvariantsEnv();
-export const databaseUrl = env.DATABASE_URL ?? env.DATABASE_ADMIN_URL ?? '';
-export const adminUrl = env.DATABASE_ADMIN_URL ?? databaseUrl;
-
-/**
- * Fail CLOSED under CI, as the invariants do: a skipped proof that reports success is worse than
- * no proof. CI migrates the database before these run; a local run gets its `.env.local` from
- * `vitest.config.mts`. Returns whether the suite must skip.
- */
-export function skipWithoutDatabase(proof: string, unproven: string): boolean {
-  return skipUnless(databaseUrl !== '', proof, `no DATABASE_URL/DATABASE_ADMIN_URL. ${unproven}`);
-}
-
-/**
- * The ONE shape a proof's precondition takes: present → run; absent under CI → THROW, because a
- * skipped proof that reports success is worse than no proof; absent locally → skip, loudly.
- * Every precondition goes through here so no suite can invent a quiet third way.
- */
-export function skipUnless(present: boolean, proof: string, unproven: string): boolean {
-  if (present) return false;
-  if (env.CI) throw new Error(`${proof} NOT RUN under CI: ${unproven}`);
-  console.warn(`SKIP ${proof}: ${unproven}`);
-  return true;
-}
 
 export interface Company {
   readonly tenantId: string;
@@ -294,10 +272,12 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
   await db.delete(invitation).where(inArray(invitation.tenantId, companies));
   await db.delete(membershipRole).where(inArray(membershipRole.tenantId, companies));
-  // A session that ADOPTED one of these companies keys the tenant row, so it goes first — the
-  // HTTP harness signs in as a person it never deletes, and only their sessions under the
-  // companies it created are its own to remove.
-  await db.delete(session).where(inArray(session.activeTenantId, companies));
+  // UNBOUND, never deleted: a session another suite opened beside this one may point at a company
+  // this one created (sign-in binds to a held membership); nulling it keeps that session alive.
+  await db
+    .update(session)
+    .set({ activeTenantId: null })
+    .where(inArray(session.activeTenantId, companies));
   if (people.length > 0) await db.delete(session).where(inArray(session.userAccountId, people));
   await db.delete(tenantMembership).where(inArray(tenantMembership.tenantId, companies));
   if (people.length > 0) await db.delete(userAccount).where(inArray(userAccount.id, people));

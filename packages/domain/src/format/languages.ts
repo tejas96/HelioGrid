@@ -35,9 +35,11 @@ export type PerLanguage<T> = Readonly<{ en: T } & Partial<Record<UiLanguage, T>>
 export type PackLabel = PerLanguage<string>;
 
 /**
- * `F3-05` — the one fallback, so no surface writes `value[lang] ?? value.en` for itself. Generic
- * because tenant-authored document text (`F3-10`) and the platform's own defaults take the same
- * shape as a label: a T&C body per language falls back exactly as a stage name does.
+ * `F3-05` — the one SILENT fallback, so no surface writes `value[lang] ?? value.en` for itself.
+ * For a pack label and the platform's own copy, English in place of an unauthored Hindi is the
+ * ruled behaviour and needs no note. It is NOT the door for a tenant's own words: `F3-10` forbids
+ * showing a different language's version as if it were the reader's, so `AuthoredPerLanguage`
+ * resolves through `authoredIn` below, which says which language was shown.
  */
 export function inLanguage<T>(value: PerLanguage<T>, language: UiLanguage): T {
   return value[language] ?? value.en;
@@ -45,4 +47,49 @@ export function inLanguage<T>(value: PerLanguage<T>, language: UiLanguage): T {
 
 export function packLabel(label: PackLabel, language: UiLanguage): string {
   return inLanguage(label, language);
+}
+
+/**
+ * Tenant-authored content per language (`F3-10`) — a template, a knowledge-base entry, document
+ * terms — under a name that says which law applies. The SHAPE is a pack label's, because the store
+ * and the wire are one; the LAW is not: the product never machine-translates it, never fills one
+ * language from another, and never shows a version as a language it is not. It resolves through
+ * `authoredIn`, never `inLanguage`.
+ */
+export type AuthoredPerLanguage<T> = PerLanguage<T>;
+
+/** What a reader gets from authored content: the value, and the truth about its language. */
+export interface AuthoredInLanguage<T> {
+  readonly value: T;
+  /** The language the reader asked for. */
+  readonly requested: UiLanguage;
+  /** The language actually shown — `requested` where the tenant wrote it, else the original. */
+  readonly shownIn: UiLanguage;
+  /** The set's languages with no version yet, in the set's order — the author's gap list. */
+  readonly missing: readonly UiLanguage[];
+}
+
+/** A stored version exists — null is an absent version, never content. */
+function isWritten<T>(version: T | undefined | null): version is NonNullable<T> {
+  return version !== undefined && version !== null;
+}
+
+/**
+ * `F3-10`'s fallback, LABELLED (owner ruling): the reader's language where the tenant wrote it,
+ * otherwise the ORIGINAL — `en`, the version the type requires — with `shownIn` saying so, so the
+ * surface can carry the note beside it. Never a third language: a Hindi version is not shown to a
+ * Marathi reader as if it were Marathi, however close the two sit. `missing` is the same gap seen
+ * from the author's side, so the switcher and the note cannot disagree about what is unwritten.
+ */
+export function authoredIn<T>(
+  content: AuthoredPerLanguage<T>,
+  requested: UiLanguage,
+): AuthoredInLanguage<T> {
+  const written = content[requested];
+  return {
+    value: isWritten(written) ? written : content.en,
+    requested,
+    shownIn: isWritten(written) ? requested : UI_SOURCE_LOCALE,
+    missing: UI_LANGUAGES.filter((language) => !isWritten(content[language])),
+  };
 }

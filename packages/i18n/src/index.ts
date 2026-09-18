@@ -13,6 +13,7 @@
  */
 export type { ApiErrorLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
+export { shownInNote } from './copy/authored-content';
 export type { CompanySignupCopyKey } from './copy/company-signup';
 export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
 export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
