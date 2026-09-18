@@ -52,6 +52,11 @@ lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a 
 authored in both app trees is split out here (`M115`, review-only). Contract
 before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
+**For a SCREEN, name the prose split** (`F7-46`): which words stay on the screen because the act
+turns on them — money, what pauses and until when, a tier, a disclosure, an error's fix — and which
+teaching goes behind the one shared ask. A screen whose design predates that law is brought to it
+here, at build time, rather than redrawn. No state may depend on hover: the phone has none.
+
 **Name the GUARD each new fact joins, and the injection that will prove it fires** (Law 12). A
 brand enrols with `M60`, an enum with `M17`, a route with `M15`, a table with `M12`. Read
 `mechanisms.md` for the row that guards that KIND and say which row each new fact enrols in — a
