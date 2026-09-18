@@ -27,7 +27,9 @@
   },
   "devDependencies": {
     "@heliogrid/config": "workspace:*",
+    "@types/fontkit": "2.0.9",
     "@types/node": "22.20.1",
+    "fontkit": "2.0.4",
     "tsx": "4.23.1",
     "typescript": "5.8.3"
   }
