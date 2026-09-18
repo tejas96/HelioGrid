@@ -62,7 +62,15 @@ for line in open(sys.argv[1]):
     if in_env:
         pair = re.match(r'^      ([A-Z_][A-Z0-9_]*):\s*(.*?)\s*$', line)
         if pair:
-            print(f'{pair.group(1)}={pair.group(2)}')
+            value = pair.group(2)
+            # A YAML scalar wrapped in matching quotes is a STRING whose quotes are syntax, and
+            # GitHub hands the job the bare value. Strip one matching pair, as the runner does,
+            # so a value quoted to stay a string (a leading plus, a run of zeros) reaches the
+            # room whole. chr() rather than a quote character: this heredoc sits inside a
+            # command substitution, and the shell reading it cannot parse a bare quote there.
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in (chr(34), chr(39)):
+                value = value[1:-1]
+            print(f'{pair.group(1)}={value}')
         elif not re.match(r'^      #', line) and line.strip():
             in_env = False
 PY

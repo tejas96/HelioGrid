@@ -13,7 +13,7 @@ Traps: `.claude/landmines.md` · what holds a rule: `mechanisms.md` · deps:
 ## Folder shape — a closed set; never invent a folder
 
 ```
-src/{config,common,modules,scripts}
+src/app.ts · main.ts  createApp() is the ONE boot path; main.ts listens, a test listens on port 0
 src/common/auth/    the guard, the route-access map, the cookies, the session context
 src/modules/<m>/    <m>.module|public|controller|service|repository.ts · tokens.ts · internal/
 src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
@@ -49,7 +49,7 @@ curl localhost:8084/health                               # liveness · /health/r
 - `common/` is framework plumbing two or more modules need. It may never import a module, and
   business behaviour belongs in `packages/domain` instead.
 - **Every non-2xx response is the canonical envelope**, including the body-parser's 413, which
-  `main.ts` answers before Nest sees the request. A route declaring a NON-base error code needs
+  `app.ts` answers before Nest sees the request. A route declaring a NON-base error code needs
   `ContractException`.
 - **A body `details[]` path is the SCHEMA FIELD path** (`phone`, `profile.age` — never
   `body.phone`): clients feed it straight to `applyServerErrors`. A query, header or param path
@@ -63,9 +63,9 @@ curl localhost:8084/health                               # liveness · /health/r
 - The log shape and its redaction live in ONE file, `common/logging.ts`. Add a redaction path
   there, never per-handler.
 - **Workflows are started through `TemporalGateway`**, never a client a service builds. Pass the
-  CONTRACT from `@heliogrid/contracts/workflows`; the gateway derives the id from it. `start()`
-  is idempotent by construction, which is not a licence to dual-write: the durable handoff is an
-  outbox row in the SAME transaction (`forward-compat.md`, orchestration handoff).
+  CONTRACT from `@heliogrid/contracts/workflows`; the gateway derives the id from it. The channel
+  opens on FIRST use, never at boot. `start()` is idempotent by construction, not a licence to
+  dual-write: the durable handoff is an outbox row in the SAME transaction (`forward-compat.md`).
 - **Every controller declares its routes' access with `RouteAccessMap`**, beside `@TsRestHandler`:
   `public`, `session-cookie`, `session`, `member` or `{ capability }`. The map is typed against the
   router, so a route the contract gains fails to compile until it says what it needs, and the

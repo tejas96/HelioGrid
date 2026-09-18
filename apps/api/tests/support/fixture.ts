@@ -260,6 +260,15 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
 export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   const companies = fixture.companies.map((company) => company.tenantId);
   const people = fixture.people.map((person) => person.userId);
+  // An empty list is a legitimate fixture — the HTTP harness tears down the companies it created
+  // and never the person it signed in as — and `inArray` refuses an empty array, so each half
+  // runs only when it has something to remove.
+  if (companies.length === 0 && people.length === 0) return;
+  if (companies.length === 0) {
+    await db.delete(session).where(inArray(session.userAccountId, people));
+    await db.delete(userAccount).where(inArray(userAccount.id, people));
+    return;
+  }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
   for (const setting of [
@@ -278,9 +287,13 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
   await db.delete(invitation).where(inArray(invitation.tenantId, companies));
   await db.delete(membershipRole).where(inArray(membershipRole.tenantId, companies));
-  await db.delete(session).where(inArray(session.userAccountId, people));
+  // A session that ADOPTED one of these companies keys the tenant row, so it goes first — the
+  // HTTP harness signs in as a person it never deletes, and only their sessions under the
+  // companies it created are its own to remove.
+  await db.delete(session).where(inArray(session.activeTenantId, companies));
+  if (people.length > 0) await db.delete(session).where(inArray(session.userAccountId, people));
   await db.delete(tenantMembership).where(inArray(tenantMembership.tenantId, companies));
-  await db.delete(userAccount).where(inArray(userAccount.id, people));
+  if (people.length > 0) await db.delete(userAccount).where(inArray(userAccount.id, people));
   await db.delete(tenant).where(inArray(tenant.id, companies));
 }
 

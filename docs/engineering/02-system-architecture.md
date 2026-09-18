@@ -146,7 +146,7 @@ subscriptions, entitlements, usage), `catalog`, `agent` (voice config/calls/know
 
 ```
 apps/{api,worker}/src/
-  main.ts            bootstrap only
+  main.ts · app.ts   createApp() is the one boot path (api today); main.ts only listens
   app.module.ts
   config/            env.ts — the app's typed view over @heliogrid/env; packages/env is the only raw process.env reader
   common/            common.module.ts · tokens.ts · request-id.ts · logging.ts ·
