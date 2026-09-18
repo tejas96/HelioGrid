@@ -38,25 +38,6 @@ export const AUDIT_ACTOR_KINDS = ['tenant_user', 'platform_staff'] as const;
 export type AuditActorKind = (typeof AUDIT_ACTOR_KINDS)[number];
 
 /**
- * What was acted upon — the kind half of the suite's one polymorphic pointer (`F2-22`, `F6-02`),
- * which `notification` and `file` read when they land. An audit entry records the subject as it
- * WAS and is never re-pointed; only the kinds a landed act can name are listed.
- */
-export const AUDIT_SUBJECT_KINDS = [
-  'user_account',
-  'tenant_membership',
-  'invitation',
-  'business_profile',
-  'branding_settings',
-  'proposal_template_settings',
-  'timeline_template',
-  'tranche_template',
-  /** The tenant itself, for a setting that is a whole list rather than a row — its holidays. */
-  'tenant',
-] as const;
-export type AuditSubjectKind = (typeof AUDIT_SUBJECT_KINDS)[number];
-
-/**
  * The change one entry records, old → new (`F2-22`). One shape exists today — the presets a
  * person held before and after — and a slice whose event changes something else widens this into
  * a union discriminated on the event type. An act that changes nothing beyond what its own name

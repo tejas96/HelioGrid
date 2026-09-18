@@ -1,4 +1,4 @@
-import { AUDIT_ACTOR_KINDS, AUDIT_EVENT_TYPES, AUDIT_SUBJECT_KINDS } from '@heliogrid/domain';
+import { AUDIT_ACTOR_KINDS, AUDIT_EVENT_TYPES, SUBJECT_KINDS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -24,10 +24,6 @@ export type AuditEventType = z.infer<typeof auditEventTypeSchema>;
 /** Who acted — a tenant's own person, or platform staff reading that tenant (`F2-24`). A fixed pair. */
 export const auditActorKindSchema = z.enum(AUDIT_ACTOR_KINDS);
 export type AuditActorKind = z.infer<typeof auditActorKindSchema>;
-
-/** What was acted upon: the kind half of the suite's one polymorphic pointer (`F2-22`, `F6-02`). */
-export const auditSubjectKindSchema = z.enum(AUDIT_SUBJECT_KINDS);
-export type AuditSubjectKind = z.infer<typeof auditSubjectKindSchema>;
 
 /**
  * The change one entry records, old → new (`F2-22`): the presets a person held before and after.
@@ -59,7 +55,7 @@ export const auditLogEntrySchema = z.object({
   /** True when the act was REFUSED (`F2-19`): silence about a blocked act is how lockout disputes become unanswerable. */
   blocked: z.boolean(),
   /** Grows as modules land their subjects (`F6-02`); the same fallback rule as `eventType`. */
-  subjectKind: extensibleEnum(AUDIT_SUBJECT_KINDS),
+  subjectKind: extensibleEnum(SUBJECT_KINDS),
   subjectRef: uuidSchema,
   changePayload: auditChangePayloadSchema,
 });

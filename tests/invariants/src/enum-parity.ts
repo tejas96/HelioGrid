@@ -1,13 +1,13 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
-  auditSubjectKindSchema,
   invitationStatusSchema,
   measurementSystemSchema,
   membershipStatusSchema,
   otpChannelSchema,
   platformKindSchema,
   rolePresetSchema,
+  subjectKindSchema,
   tenantSegmentSchema,
   uiLanguageSchema,
 } from '@heliogrid/contracts';
@@ -43,10 +43,7 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   otp_channel: { options: otpChannelSchema.options, contract: 'otpChannelSchema' },
   audit_event_type: { options: auditEventTypeSchema.options, contract: 'auditEventTypeSchema' },
   audit_actor_kind: { options: auditActorKindSchema.options, contract: 'auditActorKindSchema' },
-  audit_subject_kind: {
-    options: auditSubjectKindSchema.options,
-    contract: 'auditSubjectKindSchema',
-  },
+  subject_kind: { options: subjectKindSchema.options, contract: 'subjectKindSchema' },
   invitation_status: {
     options: invitationStatusSchema.options,
     contract: 'invitationStatusSchema',
