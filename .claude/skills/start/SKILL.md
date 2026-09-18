@@ -67,11 +67,12 @@ reporting green over it. A kind with no row is said out loud here, never assumed
 each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
 propose the slices in order. A slice that cannot pass its done-when alone is not a slice.
 
-**The ceiling (`M111`, review-only).** One task is one PR a reviewer reads in five minutes: at most **25 files
-or 1,500 lines** changed, **one migration**, **one contract router**. A ticket whose reach would
-exceed any of these is split HERE, before the go, at a layer seam in Law 3's order — domain, then
-contract, then schema, then the app — each slice a ticket of its own with its own done-when
-lines. The number is the owner's; the split is not optional and never waits for `/ship`.
+**The size is a signal, never a gate (`M111`, review-only).** Count the reach — files, lines, migrations,
+routers — and say the number. Past **25 files, 1,500 lines, one migration or one contract router**, ask
+ONE question: is this one task or two? Two tasks are split here, at a layer seam in Law 3's order —
+domain, then contract, then schema, then the app — each a ticket with its own done-when lines. One
+complete task ships whole however many files it took, and **nothing is ever removed from a change — a
+test, a guard, a doc, a proof — to land under a count** (owner ruling). Generated files are said apart.
 
 ## 4. Explain, branch, stop
 
@@ -80,6 +81,10 @@ confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is 
 branch starts), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows — and stop for the go.
+
+**The branch exists before the first edit, ticket text included.** `git branch --show-current` is
+read and is not `main` before any file is touched — the ticket's own repairs (§2) are written on the
+branch, never on `main` and carried over. A dirty `main` is the mistake this line exists for.
 
 **A go is never a commit.** It authorises the build on this branch. The yes to a commit is given in
 `/ship` §4, to the file list and message shown there, and nothing earlier stands in for it.
