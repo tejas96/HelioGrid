@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { TemporalConnection } from '../../src/common/temporal/temporal.client';
 import { TEMPORAL_CLIENT } from '../../src/common/temporal/temporal.tokens';
 import { openPools, unseed } from '../support/fixture';
-import { bootHttp, type Http, httpHarnessBlocker } from '../support/http';
+import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 
 /**
  * The api boots and serves reads with NO Temporal reachable (owner ruling, `T-FPLAT-064`): the
@@ -16,10 +16,11 @@ vi.hoisted(() => {
   vi.stubEnv('TEMPORAL_ADDRESS', '127.0.0.1:1');
 });
 
-const blocker = httpHarnessBlocker();
-if (blocker !== null) console.warn(`SKIP LAZY-TEMPORAL BOOT PROOF: ${blocker}.`);
-
-describe.skipIf(blocker !== null)('the api with Temporal unreachable', () => {
+const skip = skipWithoutHarness(
+  'LAZY-TEMPORAL BOOT PROOF',
+  'The api is UNPROVEN to boot without Temporal in this run.',
+);
+describe.skipIf(skip)('the api with Temporal unreachable', () => {
   let http: Http;
   let pools: ReturnType<typeof openPools>;
 

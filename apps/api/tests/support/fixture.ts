@@ -53,11 +53,18 @@ export const adminUrl = env.DATABASE_ADMIN_URL ?? databaseUrl;
  * `vitest.config.mts`. Returns whether the suite must skip.
  */
 export function skipWithoutDatabase(proof: string, unproven: string): boolean {
-  if (databaseUrl !== '') return false;
-  if (env.CI) {
-    throw new Error(`${proof} NOT RUN: DATABASE_URL/DATABASE_ADMIN_URL missing under CI.`);
-  }
-  console.warn(`SKIP ${proof}: no DATABASE_URL/DATABASE_ADMIN_URL. ${unproven}`);
+  return skipUnless(databaseUrl !== '', proof, `no DATABASE_URL/DATABASE_ADMIN_URL. ${unproven}`);
+}
+
+/**
+ * The ONE shape a proof's precondition takes: present → run; absent under CI → THROW, because a
+ * skipped proof that reports success is worse than no proof; absent locally → skip, loudly.
+ * Every precondition goes through here so no suite can invent a quiet third way.
+ */
+export function skipUnless(present: boolean, proof: string, unproven: string): boolean {
+  if (present) return false;
+  if (env.CI) throw new Error(`${proof} NOT RUN under CI: ${unproven}`);
+  console.warn(`SKIP ${proof}: ${unproven}`);
   return true;
 }
 
