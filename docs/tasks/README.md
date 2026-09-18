@@ -43,11 +43,12 @@ line and any part missing fails the docs gate.
 ## Binding rules
 
 0. **`Status:` is the ledger.** `planned` until every `DESIGN:` link is filled, `designed` until the
-   task ships, `shipped (#PR)` as the task branch's LAST commit once its PR is open — never a PR of
-   its own — and a shipped id is named by the branch's own history. `screens.md` carries the same
-   state per screen. Build, tests and QA are proven inside the PR, never tracked as states. A task
-   whose rows moved to another task is `struck` — its heading says STRUCK, its stub stays so the id
-   is never reused, and it is never counted as open work.
+   task ships, `shipped (#PR)` written into the CHANGE commit itself, whose subject names the
+   task — never a commit and never a PR of its own — and a shipped id is named by the branch's
+   own history. `screens.md` carries the same state per screen. Build, tests and QA are proven
+   inside the PR, never tracked as states. A task whose rows moved to another task is `struck` —
+   its heading says STRUCK, its stub stays so the id is never reused, and it is never counted as
+   open work.
    **The ORDER is `docs/build-order.md`**: its blocks place every task file, and the next task is
    the one the build-order line names on every gate run (`M126`), never one picked from memory. A
    ticket with no `Depends on:` line reads there as waiting on nothing, so `/start` writes the line.
