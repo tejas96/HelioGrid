@@ -80,10 +80,12 @@ for a ruling and never fails on the planner's guess.
 **Severity is decided HERE, never by an executor.** Money, tenancy or provenance → `blocker`.
 
 Always-on core regardless of radius: a cross-tenant read returns 404 · money reconciles to
-the currency's minor unit · an unauthenticated request to a protected route is rejected. Until a
-tenant table and an auth guard exist, the first and the third are recorded `inconclusive: seam
-not landed` — never passed, never dropped from the plan — and the money step runs against the
-domain's one computation.
+the currency's minor unit · an unauthenticated request to a protected route is rejected. **Each
+is proven ON THE WIRE by the agent** — a second company's session driving the route — and a unit
+test at the repository does not satisfy it: the route, the guard and the filter are the surface
+a person meets, and the repository is not. Where the wire cannot be driven with data — no route
+writes the row yet — the step is recorded `inconclusive: no emitter`, named in the report as the
+gap it is, and never quietly replaced by the unit test's verdict.
 
 ## 4. Execute
 
@@ -176,7 +178,8 @@ Then emit the `## Verification` section for `/ship`: per-surface verdict counts,
 failure with its observed value, every parity comparison with both values, and any surface
 recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1440
 happy / wrong-code paths; curl 409 returns ALREADY_ONBOARDED", never "verified working". A
-surface that could not run is stated plainly, never omitted so the silence implies a pass.
+surface that could not run is stated plainly, never omitted so the silence implies a pass — and so
+is an always-on core step the wire could not prove, in its own line, with the reason.
 
 ## 10. Stamp the ticket
 

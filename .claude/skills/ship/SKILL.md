@@ -31,6 +31,12 @@ each added or renamed file, name its `architecture.md` §4 step in one line; for
 moved path, grep `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the
 dead pointer. Fix what that finds.
 
+**Then check every edit landed where it was meant to.** Every edited task file, ledger or register
+is diffed against `origin/main` and each hunk is named for the block it sits in, by reading the lines
+either side; a stray blank line, or a hunk in a block this change never meant to touch, is a finding.
+The edit discipline that prevents it — anchor on the block's own heading, edit inside that span,
+re-read after writing — is `.claude/landmines.md`'s first-match row, and lives there once.
+
 **Then break it.** Read the diff as an attacker and as an EPC expert: correctness, edges, failures,
 null/empty/invalid, unexpected flows, regressions, performance, security, tenancy, money rounding,
 provenance, placement, duplication, complexity, design mismatch, hidden assumptions. An issue
@@ -56,10 +62,10 @@ Every done-when line of the task has its proof — a test, the `/verify` run's v
 without one is not done, and the PR body is not printed. A task that turned out to be two is
 split (`/start` §3), never shipped half.
 
-**The ceiling holds here too (`M111`, review-only).** Count the diff — `git diff --stat origin/main` plus
-`git ls-files --others --exclude-standard`. Above **25 files or 1,500 lines**, or more than one
-migration or one contract router, the PR body is not printed and the work goes back to `/start`
-§3 to be split — unless the owner has ruled, in chat, that this one task ships whole.
+**The size is stated, never enforced (`M111`, review-only).** Count the diff — `git diff --stat origin/main` plus
+`git ls-files --others --exclude-standard` — and write the number into the PR body, generated files
+said apart. Past **25 files, 1,500 lines, one migration or one contract router** the only question is
+whether this is one task or two; a complete task ships whole, and nothing is cut from it to fit.
 
 ## 4. Flip the ledger, then commit on a yes
 
