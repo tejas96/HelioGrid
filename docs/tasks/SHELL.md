@@ -168,11 +168,11 @@ Domain types it reads, adds none: the type registry, the grouping class and the 
 
 ### T-SHELL-006 · Billing State Banner & Denial Sheets
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **Why:** An owner whose card failed keeps selling for seven days and is told on every screen exactly what paused and the one tap that fixes it; without it a blocked save is a silent failure and the team assumes the product is broken.
 **PRD rows:** M12-06, M12-21, M12-30, M12-31, M12-39, M12-53
 **BRIEF:** docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md
-**DESIGN:** SCR-SHELL-06 → PENDING
+**DESIGN:** SCR-SHELL-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-06+Billing+State+Banner+-+Mobile.dc.html
 
 **PRD rows (verbatim):**
 
