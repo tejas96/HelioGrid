@@ -57,6 +57,12 @@ export {
   phoneDigitsMismatch,
 } from './phone';
 export {
+  type FamilyCoverage,
+  type ScriptRun,
+  type ScriptStack,
+  splitScriptRuns,
+} from './scripts';
+export {
   IN_UTILITIES,
   operatorsForRegion,
   typicalWait,

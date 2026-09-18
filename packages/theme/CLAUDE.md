@@ -19,7 +19,7 @@ no-raw-values law is `.claude/rules/ui-adherence.md`, which loads with this fold
 
 ```
 src/_generated/   the design system, verbatim — NEVER hand-edit
-src/parse.ts · src/contrast.ts · src/emit-theme.ts     the generator's parts
+src/parse.ts · src/contrast.ts · src/emit-theme.ts · src/font-metrics.ts   the generator's parts
 build.ts          the generator          dist/   emitted, git-ignored, never edited
 ```
 

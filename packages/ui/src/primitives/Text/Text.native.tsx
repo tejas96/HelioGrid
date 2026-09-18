@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
-import type { DimensionValue, StyleProp, TextStyle } from 'react-native';
-import { Text as RNText, StyleSheet } from 'react-native';
+import { Children, isValidElement, type ReactNode } from 'react';
+import type { StyleProp, TextStyle } from 'react-native';
+import { Text as RNText } from 'react-native';
+import { isMono, lineHeightFor, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
 const R = theme.type.roles;
@@ -107,45 +109,32 @@ const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
   end: 'right',
 };
 
-/* Native clips a Text's ink to its own box, where the web lets it spill over the line. The heading
-   roles' line boxes are shorter than the Devanagari fallback's ink line — Kohinoor Devanagari inks
-   1.05 em above the baseline and 0.51 em below it — so हिन्दी and मराठी vowel signs lose their tops.
-   The shortfall is padding at both ends paid back by margin, merged with the consumer's own box so
-   a Text may still carry a margin: the layout box stays the theme's, only the drawn box grows. */
-const DEVANAGARI_INK_LINE_EM = 1.56;
-
-function inkRoom(variant: TextVariant, style: StyleProp<TextStyle>): TextStyle | undefined {
-  const { fontSize, lineHeight } = VARIANT[variant];
-  if (fontSize === undefined || lineHeight === undefined) return undefined;
-  const room = Math.ceil(DEVANAGARI_INK_LINE_EM * fontSize - lineHeight);
-  if (room <= 0) return undefined;
-  const own = StyleSheet.flatten(style) ?? {};
-  const top = roomedEdge(
-    own.marginTop ?? own.marginVertical ?? own.margin,
-    own.paddingTop ?? own.paddingVertical ?? own.padding,
-    room,
-  );
-  const bottom = roomedEdge(
-    own.marginBottom ?? own.marginVertical ?? own.margin,
-    own.paddingBottom ?? own.paddingVertical ?? own.padding,
-    room,
-  );
-  return {
-    ...(top && { marginTop: top.margin, paddingTop: top.padding }),
-    ...(bottom && { marginBottom: bottom.margin, paddingBottom: bottom.padding }),
-  };
-}
-
-/** An 'auto' or percentage edge is the consumer's alone; only a numeric one can pay the room back. */
-function roomedEdge(
-  margin: DimensionValue | undefined,
-  padding: DimensionValue | undefined,
-  room: number,
-) {
-  const numeric = (value: DimensionValue | undefined) =>
-    value === undefined || typeof value === 'number';
-  if (!numeric(margin) || !numeric(padding)) return undefined;
-  return { margin: (margin ?? 0) - room, padding: (padding ?? 0) + room };
+/**
+ * A native `Text` carries ONE family, and the brand face has no Devanagari — so the runs are
+ * resolved explicitly here (`F3-13`) and each is drawn by the family the theme read from the
+ * bundled files. A nested `Text` inherits size, weight and colour, so a run changes the face
+ * and nothing else, and the line reads as one typeface decision (`F3-09`).
+ *
+ * An element child draws its own text and keeps its own box; only words this `Text` holds
+ * directly are split.
+ */
+function drawRuns(children: ReactNode, variant: TextVariant): ReactNode {
+  if (isMono(variant)) return children;
+  return Children.map(children, (child) => {
+    if (isValidElement(child) || (typeof child !== 'string' && typeof child !== 'number')) {
+      return child;
+    }
+    const runs = runsOfString(String(child));
+    return runs.map((run, index) => (
+      <RNText
+        // biome-ignore lint/suspicious/noArrayIndexKey: runs are positional slices of one string
+        key={`${run.family}-${index}`}
+        style={{ fontFamily: run.family }}
+      >
+        {run.text}
+      </RNText>
+    ));
+  });
 }
 
 interface NativeTextProps extends TextProps {
@@ -162,6 +151,11 @@ export function Text({
   live,
   style,
 }: NativeTextProps) {
+  /* Appended only when the scale would clip, and appended LAST so it also outranks a consumer's
+     own line height — a shorter box is what loses the marks. `flattenStyle` copies every key of
+     every object it is given, `undefined` values included, so an entry written unconditionally
+     would erase the variant's line height on every line that needs no raise. */
+  const raised = lineHeightFor(variant, children);
   return (
     <RNText
       style={[
@@ -169,12 +163,12 @@ export function Text({
         { color: COLOR[color] },
         align !== undefined ? { textAlign: ALIGN[align] } : undefined,
         style,
-        inkRoom(variant, style),
+        raised === undefined ? undefined : { lineHeight: raised },
       ]}
       accessibilityLanguage={lang}
       accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
     >
-      {children}
+      {drawRuns(children, variant)}
     </RNText>
   );
 }

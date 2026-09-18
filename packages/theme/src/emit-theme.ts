@@ -4,6 +4,7 @@
  * Follows the v1 emitter: px strings become numbers where RN wants numbers, box-shadows
  * become RN-shaped approximations, unitless line-heights multiply out against font size.
  */
+import type { BundledFace } from './font-metrics';
 import { type ParsedShadow, parseShadow, pxToNumber, type TokenDecl } from './parse';
 
 interface RnShadow {
@@ -97,6 +98,7 @@ interface ThemeInputs {
   declsByFile: Map<string, TokenDecl[]>;
   reducedMotion: TokenDecl[];
   fieldMode: { on: Record<string, string>; off: Record<string, string> };
+  scriptStack: BundledFace[];
 }
 
 function namesFrom(declsByFile: Map<string, TokenDecl[]>, file: string): string[] {
@@ -106,7 +108,7 @@ function namesFrom(declsByFile: Map<string, TokenDecl[]>, file: string): string[
 }
 
 export function buildThemeObject(input: ThemeInputs) {
-  const { resolved, declsByFile, reducedMotion, fieldMode } = input;
+  const { resolved, declsByFile, reducedMotion, fieldMode, scriptStack } = input;
 
   const colors: Record<string, string> = {};
   for (const n of namesFrom(declsByFile, 'colors.css')) colors[n] = resolved.get(n) as string;
@@ -150,6 +152,16 @@ export function buildThemeObject(input: ThemeInputs) {
         sans: resolved.get('font-sans') as string,
         mono: resolved.get('font-mono') as string,
       },
+      /**
+       * The sans stack as DATA (`F3-13`): which bundled family draws which codepoints, in the
+       * stack's priority order, and the ink each one's own share needs. A browser reaches this
+       * answer per character on its own; React Native carries one family per `Text` and reaches
+       * it from here, so the two platforms resolve one line the same way (Law 7).
+       *
+       * Mono is absent deliberately — the figures and identifiers it sets are the
+       * never-translated set (`F3-08`), which is Latin in every language.
+       */
+      scriptStack,
       weights,
       roles: typography,
     },

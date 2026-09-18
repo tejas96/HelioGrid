@@ -292,18 +292,27 @@ they are the specification.
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0)
+**PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-17-proposal-document.md`;
 they are the specification. (The same brief also carries `08-customer-surfaces.md` rows `MS9-*`,
 which belong to another bucket and are dispositioned there; this task owns the M06 rows only.)
 
+`F3-15` moved here at `T-FPLAT-007`'s `/start`: its proof opens a generated document and reads
+its conjuncts, and this is the ticket that renders the first one. The obligation binds every
+generated artifact through the one renderer — drawing sheets and exports as much as this
+document — and the bundled face and its per-script metrics are `T-FPLAT-007`'s, consumed
+here and never re-declared.
+
+- **F3-15** (P0) — **Generated documents shape every script correctly — correct conjuncts, matras and ligatures — because they are commercial documents.** A proposal in a non-Latin script is the same legal and commercial artifact as its English counterpart: broken conjuncts are not acceptable output. The document-rendering capability is chosen and kept on the strength of its script shaping; per the suite's vendor rule, the capability is "a document renderer that shapes the product's scripts correctly", and the v1 reference implementation is the headless-browser renderer with the script face bundled into its runtime. This obligation covers every generated artifact — proposals, drawing sheets, exports — not only the proposal PDF.
+
 **DONE WHEN:**
 - Given a Path B proposal, when its document or customer-facing rendering is produced, then the verbatim indicative line renders on the document in the reading flow at the same visual weight as the figures it qualifies (M06-04; `F8-20`).
 - Given any Path B version, when document or link render, then the verbatim indicative line is present in the reading flow; given a remote-survey-based design, then the basis line renders (M06-51).
 - Given a design with variants, when the customer-facing rendering is produced, then exactly one recommended system shows by default (M06-56).
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
+- Given a generated document in a non-Latin language, when it is produced and opened, then conjuncts, matras and ligatures are shaped correctly throughout (`F3-15`). → proof: qa-api renders this document in `mr` and reads the produced artifact's embedded faces and glyph runs, so a broken conjunct is read rather than eyeballed
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Settle at /start:**
