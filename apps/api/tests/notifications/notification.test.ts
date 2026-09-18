@@ -10,7 +10,7 @@ import {
   recordNotification,
 } from '../../src/modules/notification/notification.repository';
 import { aMembership, aPerson, openPools, seed, unseed } from '../support/fixture';
-import { bootHttp, type Http, httpHarnessBlocker } from '../support/http';
+import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 
 /**
  * The notification routes on the WIRE, against a migrated database (`F6-02`, `F6-06`, `F6-07`,
@@ -46,222 +46,214 @@ async function refusalCode(run: () => Promise<unknown>): Promise<string | undefi
 const NOT_NULL_VIOLATION = '23502';
 const INVALID_ENUM_INPUT = '22P02';
 
-const blocker = httpHarnessBlocker();
-if (blocker !== null) {
-  console.warn(
-    `SKIP NOTIFICATION WIRE PROOF: ${blocker}. The routes are UNPROVEN on the wire in this run.`,
-  );
-}
+const skip = skipWithoutHarness(
+  'NOTIFICATION WIRE PROOF',
+  'The routes are UNPROVEN on the wire in this run.',
+);
 
-describe.skipIf(blocker !== null)(
-  'the notification routes, over HTTP against a migrated database',
-  () => {
-    let pools: ReturnType<typeof openPools>;
-    let http: Http;
-    let here: SessionProjection;
-    let tenantId: string;
-    let userId: string;
-    /** Seeded newest-last: `oldest` < `middle` < `newest` by `emitted_at`. */
-    const ids = { oldest: '', middle: '', newest: '' };
+describe.skipIf(skip)('the notification routes, over HTTP against a migrated database', () => {
+  let pools: ReturnType<typeof openPools>;
+  let http: Http;
+  let here: SessionProjection;
+  let tenantId: string;
+  let userId: string;
+  /** Seeded newest-last: `oldest` < `middle` < `newest` by `emitted_at`. */
+  const ids = { oldest: '', middle: '', newest: '' };
 
-    /** A second person in the SAME company — the one case only the recipient predicate holds. */
-    const colleague = aPerson('Priya Kulkarni');
+  /** A second person in the SAME company — the one case only the recipient predicate holds. */
+  const colleague = aPerson('Priya Kulkarni');
 
-    const sent = (title: string, emittedAt: Date): NotificationToWrite => ({
-      tenantId,
-      recipientUserRef: userId,
-      type: 'proposal_opened',
-      subjectKind: 'tenant',
-      subjectRef: tenantId,
-      title,
-      body: `${title} — body`,
-      language: 'en',
-      emittedAt,
+  const sent = (title: string, emittedAt: Date): NotificationToWrite => ({
+    tenantId,
+    recipientUserRef: userId,
+    type: 'proposal_opened',
+    subjectKind: 'tenant',
+    subjectRef: tenantId,
+    title,
+    body: `${title} — body`,
+    language: 'en',
+    emittedAt,
+  });
+
+  beforeAll(async () => {
+    pools = openPools();
+    http = await bootHttp();
+    await http.signIn();
+    here = await http.createCompany('Notified EPC');
+    tenantId = here.membership?.tenantId as string;
+    userId = here.actor.userId;
+
+    await seed(pools.admin.db, {
+      companies: [],
+      people: [colleague],
+      memberships: [
+        aMembership({ tenantId, companyName: 'Notified EPC' }, colleague, [FOUNDER_ROLE]),
+      ],
     });
+    await pools.admin.db.transaction((tx) =>
+      recordNotification(tx, {
+        ...sent("colleague's own", new Date()),
+        recipientUserRef: colleague.userId,
+      }),
+    );
 
-    beforeAll(async () => {
-      pools = openPools();
-      http = await bootHttp();
-      await http.signIn();
-      here = await http.createCompany('Notified EPC');
-      tenantId = here.membership?.tenantId as string;
-      userId = here.actor.userId;
-
-      await seed(pools.admin.db, {
-        companies: [],
-        people: [colleague],
-        memberships: [
-          aMembership({ tenantId, companyName: 'Notified EPC' }, colleague, [FOUNDER_ROLE]),
-        ],
-      });
+    const now = Date.now();
+    const oldestFirst = ['oldest', 'middle', 'newest'] as const;
+    for (const [index, key] of oldestFirst.entries()) {
+      const secondsAgo = oldestFirst.length - index;
       await pools.admin.db.transaction((tx) =>
-        recordNotification(tx, {
-          ...sent("colleague's own", new Date()),
-          recipientUserRef: colleague.userId,
-        }),
+        recordNotification(tx, sent(key, new Date(now - secondsAgo * A_SECOND_MS))),
       );
+    }
+    const all = await http.call<Paginated<Notification>>(
+      'GET',
+      `/notifications?limit=${WHOLE_INBOX}`,
+    );
+    for (const item of all.body.items) {
+      if (item.title in ids) ids[item.title as keyof typeof ids] = item.id;
+    }
+  });
 
-      const now = Date.now();
-      const oldestFirst = ['oldest', 'middle', 'newest'] as const;
-      for (const [index, key] of oldestFirst.entries()) {
-        const secondsAgo = oldestFirst.length - index;
-        await pools.admin.db.transaction((tx) =>
-          recordNotification(tx, sent(key, new Date(now - secondsAgo * A_SECOND_MS))),
-        );
-      }
-      const all = await http.call<Paginated<Notification>>(
-        'GET',
-        `/notifications?limit=${WHOLE_INBOX}`,
-      );
-      for (const item of all.body.items) {
-        if (item.title in ids) ids[item.title as keyof typeof ids] = item.id;
-      }
+  afterAll(async () => {
+    await unseed(pools.admin.db, {
+      companies: http.createdTenantIds.map((id) => ({ tenantId: id, companyName: '' })),
+      people: [colleague],
+      memberships: [],
     });
+    await http.close();
+    await pools.close();
+  });
 
-    afterAll(async () => {
-      await unseed(pools.admin.db, {
-        companies: http.createdTenantIds.map((id) => ({ tenantId: id, companyName: '' })),
-        people: [colleague],
-        memberships: [],
-      });
-      await http.close();
-      await pools.close();
-    });
+  it("is one person's own — a colleague's record in the same company is neither listed nor markable", async () => {
+    const inbox = await http.call<Paginated<Notification>>(
+      'GET',
+      `/notifications?limit=${WHOLE_INBOX}`,
+    );
+    expect(inbox.body.items.some((item) => item.title === "colleague's own")).toBe(false);
+    expect(inbox.body.totalCount).toBe(SEEDED);
 
-    it("is one person's own — a colleague's record in the same company is neither listed nor markable", async () => {
-      const inbox = await http.call<Paginated<Notification>>(
-        'GET',
-        `/notifications?limit=${WHOLE_INBOX}`,
-      );
-      expect(inbox.body.items.some((item) => item.title === "colleague's own")).toBe(false);
-      expect(inbox.body.totalCount).toBe(SEEDED);
+    const [theirs] = await pools.admin.db
+      .select({ id: notification.id })
+      .from(notification)
+      .where(sql`${notification.recipientUserRef} = ${colleague.userId}`);
+    const marked = await http.call<{ error: { code: string } }>(
+      'POST',
+      `/notifications/${theirs?.id}/read`,
+      {},
+    );
+    expect(marked.status).toBe(httpStatusFor('NOT_FOUND'));
+    expect(marked.body.error.code).toBe('NOT_FOUND');
+  });
 
-      const [theirs] = await pools.admin.db
-        .select({ id: notification.id })
-        .from(notification)
-        .where(sql`${notification.recipientUserRef} = ${colleague.userId}`);
-      const marked = await http.call<{ error: { code: string } }>(
-        'POST',
-        `/notifications/${theirs?.id}/read`,
-        {},
-      );
-      expect(marked.status).toBe(httpStatusFor('NOT_FOUND'));
-      expect(marked.body.error.code).toBe('NOT_FOUND');
-    });
+  it('reads newest first across a page boundary, with no repeat and no gap (F6-06)', async () => {
+    const first = await http.call<Paginated<Notification>>(
+      'GET',
+      `/notifications?limit=${PAGE_OF_TWO}&page=1`,
+    );
+    const second = await http.call<Paginated<Notification>>(
+      'GET',
+      `/notifications?limit=${PAGE_OF_TWO}&page=2`,
+    );
+    expect(first.status).toBe(HttpStatus.OK);
+    expect(second.status).toBe(HttpStatus.OK);
+    expect(first.body.items.map((i) => i.title)).toEqual(['newest', 'middle']);
+    expect(second.body.items.map((i) => i.title)).toEqual(['oldest']);
+    expect(first.body.totalCount).toBe(SEEDED);
+    expect(second.body.totalCount).toBe(SEEDED);
+  });
 
-    it('reads newest first across a page boundary, with no repeat and no gap (F6-06)', async () => {
-      const first = await http.call<Paginated<Notification>>(
-        'GET',
-        `/notifications?limit=${PAGE_OF_TWO}&page=1`,
-      );
-      const second = await http.call<Paginated<Notification>>(
-        'GET',
-        `/notifications?limit=${PAGE_OF_TWO}&page=2`,
-      );
-      expect(first.status).toBe(HttpStatus.OK);
-      expect(second.status).toBe(HttpStatus.OK);
-      expect(first.body.items.map((i) => i.title)).toEqual(['newest', 'middle']);
-      expect(second.body.items.map((i) => i.title)).toEqual(['oldest']);
-      expect(first.body.totalCount).toBe(SEEDED);
-      expect(second.body.totalCount).toBe(SEEDED);
-    });
+  it('counts the unread, and one fewer after a read (F6-06, F6-07)', async () => {
+    const before = await http.call<UnreadCount>('GET', '/notifications/unread-count');
+    expect(before.body).toEqual({ unreadCount: SEEDED });
 
-    it('counts the unread, and one fewer after a read (F6-06, F6-07)', async () => {
-      const before = await http.call<UnreadCount>('GET', '/notifications/unread-count');
-      expect(before.body).toEqual({ unreadCount: SEEDED });
+    const marked = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
+    expect(marked.status).toBe(HttpStatus.OK);
+    expect(marked.body.readAt).not.toBeNull();
 
-      const marked = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
-      expect(marked.status).toBe(HttpStatus.OK);
-      expect(marked.body.readAt).not.toBeNull();
+    const after = await http.call<UnreadCount>('GET', '/notifications/unread-count');
+    expect(after.body).toEqual({ unreadCount: SEEDED - 1 });
+  });
 
-      const after = await http.call<UnreadCount>('GET', '/notifications/unread-count');
-      expect(after.body).toEqual({ unreadCount: SEEDED - 1 });
-    });
+  it('is read up only and set once — reading again returns the first moment (F6-07)', async () => {
+    const first = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
+    const again = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
+    expect(again.status).toBe(HttpStatus.OK);
+    expect(again.body.readAt).toBe(first.body.readAt);
+  });
 
-    it('is read up only and set once — reading again returns the first moment (F6-07)', async () => {
-      const first = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
-      const again = await http.call<Notification>('POST', `/notifications/${ids.newest}/read`, {});
-      expect(again.status).toBe(HttpStatus.OK);
-      expect(again.body.readAt).toBe(first.body.readAt);
-    });
+  it('lands ONE moment when two reads race (F6-07)', async () => {
+    const [left, right] = await Promise.all([
+      http.call<Notification>('POST', `/notifications/${ids.middle}/read`, {}),
+      http.call<Notification>('POST', `/notifications/${ids.middle}/read`, {}),
+    ]);
+    expect(left.status).toBe(HttpStatus.OK);
+    expect(right.status).toBe(HttpStatus.OK);
+    expect(left.body.readAt).not.toBeNull();
+    expect(left.body.readAt).toBe(right.body.readAt);
+    const count = await http.call<UnreadCount>('GET', '/notifications/unread-count');
+    expect(count.body).toEqual({ unreadCount: SEEDED - PAGE_OF_TWO });
+  });
 
-    it('lands ONE moment when two reads race (F6-07)', async () => {
-      const [left, right] = await Promise.all([
-        http.call<Notification>('POST', `/notifications/${ids.middle}/read`, {}),
-        http.call<Notification>('POST', `/notifications/${ids.middle}/read`, {}),
-      ]);
-      expect(left.status).toBe(HttpStatus.OK);
-      expect(right.status).toBe(HttpStatus.OK);
-      expect(left.body.readAt).not.toBeNull();
-      expect(left.body.readAt).toBe(right.body.readAt);
-      const count = await http.call<UnreadCount>('GET', '/notifications/unread-count');
-      expect(count.body).toEqual({ unreadCount: SEEDED - PAGE_OF_TWO });
-    });
+  it('refuses a malformed id before any query runs', async () => {
+    const reply = await http.call<{ error: { code: string; details?: { path: string }[] } }>(
+      'POST',
+      '/notifications/not-a-uuid/read',
+      {},
+    );
+    expect(reply.status).toBe(httpStatusFor('VALIDATION_FAILED'));
+    expect(reply.body.error.code).toBe('VALIDATION_FAILED');
+    expect(reply.body.error.details?.map((d) => d.path)).toContain('id');
+  });
 
-    it('refuses a malformed id before any query runs', async () => {
-      const reply = await http.call<{ error: { code: string; details?: { path: string }[] } }>(
-        'POST',
-        '/notifications/not-a-uuid/read',
-        {},
-      );
-      expect(reply.status).toBe(httpStatusFor('VALIDATION_FAILED'));
-      expect(reply.body.error.code).toBe('VALIDATION_FAILED');
-      expect(reply.body.error.details?.map((d) => d.path)).toContain('id');
-    });
+  it('refuses a caller with no credential (F6-09 is about billing, never about the guard)', async () => {
+    const reply = await http.callAnonymously<{ error: { code: string } }>('GET', '/notifications');
+    expect(reply.status).toBe(httpStatusFor('NO_CREDENTIAL'));
+    expect(reply.body.error.code).toBe('NO_CREDENTIAL');
+  });
 
-    it('refuses a caller with no credential (F6-09 is about billing, never about the guard)', async () => {
-      const reply = await http.callAnonymously<{ error: { code: string } }>(
-        'GET',
-        '/notifications',
-      );
-      expect(reply.status).toBe(httpStatusFor('NO_CREDENTIAL'));
-      expect(reply.body.error.code).toBe('NO_CREDENTIAL');
-    });
+  it("is one company's own — another company's session sees nothing and marks nothing", async () => {
+    // The same person founds a second company; the session now acts under it.
+    const elsewhere = await http.createCompany('Neighbour EPC');
+    expect(elsewhere.membership?.tenantId).not.toBe(tenantId);
 
-    it("is one company's own — another company's session sees nothing and marks nothing", async () => {
-      // The same person founds a second company; the session now acts under it.
-      const elsewhere = await http.createCompany('Neighbour EPC');
-      expect(elsewhere.membership?.tenantId).not.toBe(tenantId);
+    const inbox = await http.call<Paginated<Notification>>('GET', '/notifications');
+    expect(inbox.status).toBe(HttpStatus.OK);
+    expect(inbox.body).toEqual({ items: [], totalCount: 0 });
 
-      const inbox = await http.call<Paginated<Notification>>('GET', '/notifications');
-      expect(inbox.status).toBe(HttpStatus.OK);
-      expect(inbox.body).toEqual({ items: [], totalCount: 0 });
+    const count = await http.call<UnreadCount>('GET', '/notifications/unread-count');
+    expect(count.body).toEqual({ unreadCount: 0 });
 
-      const count = await http.call<UnreadCount>('GET', '/notifications/unread-count');
-      expect(count.body).toEqual({ unreadCount: 0 });
+    // 404, never 403: the other company's record must not be revealed to exist.
+    const marked = await http.call<{ error: { code: string } }>(
+      'POST',
+      `/notifications/${ids.oldest}/read`,
+      {},
+    );
+    expect(marked.status).toBe(httpStatusFor('NOT_FOUND'));
+    expect(marked.body.error.code).toBe('NOT_FOUND');
+  });
 
-      // 404, never 403: the other company's record must not be revealed to exist.
-      const marked = await http.call<{ error: { code: string } }>(
-        'POST',
-        `/notifications/${ids.oldest}/read`,
-        {},
-      );
-      expect(marked.status).toBe(httpStatusFor('NOT_FOUND'));
-      expect(marked.body.error.code).toBe('NOT_FOUND');
-    });
-
-    it('cannot be written without a subject — never a dead announcement (F6-02)', async () => {
-      const refused = await refusalCode(() =>
-        pools.admin.db.execute(
-          sql`insert into ${notification} (id, tenant_id, recipient_user_ref, type, subject_kind,
+  it('cannot be written without a subject — never a dead announcement (F6-02)', async () => {
+    const refused = await refusalCode(() =>
+      pools.admin.db.execute(
+        sql`insert into ${notification} (id, tenant_id, recipient_user_ref, type, subject_kind,
             subject_ref, title, body, language, emitted_at)
             values (gen_random_uuid(), ${tenantId}, ${userId}, 'system', 'tenant',
             null, 'No subject', 'Nothing to open', 'en', now())`,
-        ),
-      );
-      expect(refused).toBe(NOT_NULL_VIOLATION);
-    });
+      ),
+    );
+    expect(refused).toBe(NOT_NULL_VIOLATION);
+  });
 
-    it('cannot be written with a type the registry has never heard of (F6-05)', async () => {
-      const refused = await refusalCode(() =>
-        pools.admin.db.execute(
-          sql`insert into ${notification} (id, tenant_id, recipient_user_ref, type, subject_kind,
+  it('cannot be written with a type the registry has never heard of (F6-05)', async () => {
+    const refused = await refusalCode(() =>
+      pools.admin.db.execute(
+        sql`insert into ${notification} (id, tenant_id, recipient_user_ref, type, subject_kind,
             subject_ref, title, body, language, emitted_at)
             values (gen_random_uuid(), ${tenantId}, ${userId}, 'invoice_overdue',
             'tenant', ${tenantId}, 'Unregistered', 'Nothing registered this', 'en', now())`,
-        ),
-      );
-      expect(refused).toBe(INVALID_ENUM_INPUT);
-    });
-  },
-);
+      ),
+    );
+    expect(refused).toBe(INVALID_ENUM_INPUT);
+  });
+});

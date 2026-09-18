@@ -886,6 +886,24 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 - Given a fact the rule keeps on the screen — money, what paused, a tier, a disclosure, an error's fix — when a screen is reviewed, then it is not behind the ask (F7-46). → proof: qa-web + qa-mobile per screen, and `/verify` §6 names the split the screen made
 
 ---
+### T-FPLAT-065 · A proof's precondition has one shape, and the harness fails closed under CI
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#103)
+**Why:** `T-FPLAT-064` shipped the HTTP harness with a precondition that SKIPPED quietly: absent `DEV_OTP_PHONE` / `DEV_OTP_CODE`, both wire suites reported themselves skipped and the lane stayed green. A future edit to `ci.yml` that lost the key would erase eleven wire proofs without a red mark — the "skipped proof reports success" trap the fixture already refuses for the database, and did not extend to the number. Read from the merged run's own log rather than assumed: the suites ran there, so nothing was lost yet, and this is the hole before it is fallen into.
+**PRD rows:** none of its own — it protects every wire proof any api task will write.
+**Design:** none — test support only; no runtime code.
+**Data model:** none.
+**Contract:** none. `apps/api/tests/support/fixture.ts` gains `skipUnless(present, proof, unproven)` — present runs, absent under CI THROWS, absent locally skips loudly — and `skipWithoutDatabase` becomes one call of it; `apps/api/tests/support/http.ts` replaces `httpHarnessBlocker()` with `skipWithoutHarness(proof, unproven)` through the same door; both suites call it. One shape, so no suite can invent a quiet third way.
+**Depends on:** `T-FPLAT-064` (shipped, #102 — the harness this hardens).
+**Out of scope:** any other precondition a future suite needs — it goes through `skipUnless` when it lands; the lane's keys themselves, which `ci.yml` carries.
+**Verified:** digest 39317bb54b05 · 2026-09-18 · depth NONE — test support only, no runtime path and no surface; the proof is the pair of runs below · unit `apps/api/tests/notifications/notification.test.ts` 10/10 and `apps/api/tests/boot/lazy-temporal.test.ts` 1/1 locally with the number present · **seen red both ways**: with `DEV_PHONE` forced empty and `CI=true`, each suite THROWS `… NOT RUN under CI: no DEV_OTP_PHONE / DEV_OTP_CODE …` and its file fails; the same without `CI` prints `SKIP …` and skips — restored after each · `skipWithoutDatabase` unchanged in behaviour, now one call of the shared shape · qa n/a, parity n/a
+
+**DONE WHEN:**
+- Given the development number absent under CI, when a wire suite starts, then the run FAILS naming the proof rather than skipping. → proof: unit each suite thrown `NOT RUN under CI` with `DEV_PHONE` forced empty and `CI=true`, its file failed; seen green again restored
+- Given the same absence locally, when a wire suite starts, then it skips and says so. → proof: unit `SKIP NOTIFICATION WIRE PROOF …` printed and 10 tests skipped with `DEV_PHONE` forced empty and no `CI`
+- Given every proof precondition in `apps/api/tests`, when read, then each is one call of `skipUnless`. → proof: gate `grep -n "skipUnless\|skipWithout" apps/api/tests/support/*.ts apps/api/tests/**/*.test.ts` shows the two wrappers and their callers, and no `console.warn` + `return true` pair outside `skipUnless`
+
+---
 ### T-FPLAT-064 · The api boots in a test exactly as in production, and CI runs it with RLS on
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#102)
