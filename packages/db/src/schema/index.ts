@@ -2,6 +2,7 @@ import * as audit from './audit';
 import * as identity from './identity';
 import * as invitation from './invitation';
 import * as market from './market';
+import * as notification from './notification';
 import * as settings from './settings';
 import * as subject from './subject';
 import * as tenant from './tenant';
@@ -17,6 +18,7 @@ export const schema = {
   ...identity,
   ...audit,
   ...invitation,
+  ...notification,
   ...settings,
   ...subject,
 };
@@ -25,6 +27,7 @@ export * from './audit';
 export * from './identity';
 export * from './invitation';
 export * from './market';
+export * from './notification';
 export * from './settings';
 export * from './subject';
 export * from './tenant';

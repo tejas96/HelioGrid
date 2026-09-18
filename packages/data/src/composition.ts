@@ -3,6 +3,10 @@ import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
 import { createHealthRepository, type HealthRepository } from './health/repository';
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
+import {
+  createNotificationRepository,
+  type NotificationRepository,
+} from './notification/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import { createTransport, type RequestHeaders, type SessionSignals } from './transport/transport';
@@ -11,6 +15,7 @@ import { createUserRepository, type UserRepository } from './user/repository';
 /** Every repository an app can reach. One entry per contract router. */
 export interface Repositories {
   audit: AuditRepository;
+  notification: NotificationRepository;
   auth: AuthRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
@@ -45,6 +50,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
   const api = createApiClient(config.baseUrl, transport);
   return {
     audit: createAuditRepository(api),
+    notification: createNotificationRepository(api),
     auth: createAuthRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),

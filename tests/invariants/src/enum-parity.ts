@@ -4,6 +4,7 @@ import {
   invitationStatusSchema,
   measurementSystemSchema,
   membershipStatusSchema,
+  notificationTypeSchema,
   otpChannelSchema,
   platformKindSchema,
   rolePresetSchema,
@@ -44,6 +45,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   audit_event_type: { options: auditEventTypeSchema.options, contract: 'auditEventTypeSchema' },
   audit_actor_kind: { options: auditActorKindSchema.options, contract: 'auditActorKindSchema' },
   subject_kind: { options: subjectKindSchema.options, contract: 'subjectKindSchema' },
+  notification_type: {
+    options: notificationTypeSchema.options,
+    contract: 'notificationTypeSchema',
+  },
   invitation_status: {
     options: invitationStatusSchema.options,
     contract: 'invitationStatusSchema',

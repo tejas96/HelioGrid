@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.public';
 import { HealthModule } from './modules/health/health.public';
 import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
+import { NotificationModule } from './modules/notification/notification.public';
 import { SettingsModule } from './modules/settings/settings.public';
 import { TenantModule } from './modules/tenant/tenant.public';
 import { UserModule } from './modules/user/user.public';
@@ -39,6 +40,7 @@ import { UserModule } from './modules/user/user.public';
     UserModule,
     InvitationModule,
     SettingsModule,
+    NotificationModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: SessionGuard }],
 })

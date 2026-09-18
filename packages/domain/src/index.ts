@@ -24,6 +24,7 @@ export * from './commerce';
 export * from './format';
 export * from './market';
 export * from './money';
+export * from './notifications';
 export * from './pricing';
 export * from './projects';
 export * from './rails';

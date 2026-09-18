@@ -4,6 +4,7 @@ import { authContract } from './auth';
 import { healthContract } from './health';
 import { invitationContract } from './invitation';
 import { marketPackContract } from './market';
+import { notificationContract } from './notification';
 import { onboardingContract } from './onboarding';
 import { tenantContract } from './tenant';
 import { tenantSettingsContract } from './tenant-settings';
@@ -29,6 +30,8 @@ export * from './invitation';
 export * from './locale';
 // The market pack read (`T-FCORE-016`): the envelope and the tenant-readable keys, never the book.
 export * from './market';
+// The notification type registry and the record that is the truth (`T-FPLAT-017`).
+export * from './notification';
 // The setup corridor (`T-M01-026`): resume, and the one prompt-point per skipped fact.
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
@@ -56,6 +59,7 @@ export const apiContract = c.router(
     health: healthContract,
     invitation: invitationContract,
     marketPack: marketPackContract,
+    notification: notificationContract,
     onboarding: onboardingContract,
     tenant: tenantContract,
     tenantSettings: tenantSettingsContract,

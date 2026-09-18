@@ -9,6 +9,7 @@ import {
   invitationRole,
   marketPack,
   membershipRole,
+  notification,
   onboardingProgress,
   proposalTemplateSettings,
   session,
@@ -260,6 +261,7 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   const companies = fixture.companies.map((company) => company.tenantId);
   const people = fixture.people.map((person) => person.userId);
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  await db.delete(notification).where(inArray(notification.tenantId, companies));
   for (const setting of [
     trancheTemplateLine,
     trancheTemplate,
