@@ -1,4 +1,4 @@
-import type { ProvenanceTier } from '@heliogrid/contracts';
+import type { ProvenanceStanding as ContractStanding, ProvenanceTier } from '@heliogrid/contracts';
 
 /**
  * The four canonical tiers are `contracts`' (`F8-02`) — this is the design system's name for the
@@ -60,8 +60,12 @@ export interface ResolvedTier {
  *
  * Omit it and nothing renders. Set it — including `"confirmed"` — and the word renders, which is
  * how a ledger shows confirmed and reported money as visibly different things on one screen.
+ *
+ * The four names are `contracts`', derived from domain's `PROVENANCE_STANDINGS` — the same list
+ * the format layer binds to a figure (`F3-24`), so a standing drawn here and a standing carried
+ * with an amount cannot drift apart.
  */
-export type ProvenanceStanding = 'confirmed' | 'provisional' | 'reported' | 'pending';
+export type ProvenanceStanding = ContractStanding;
 
 export type ProvenanceAlign = 'left' | 'right' | 'center';
 

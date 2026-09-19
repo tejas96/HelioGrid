@@ -4,6 +4,8 @@ import {
   MEMBERSHIP_STATUSES,
   OTP_CHANNELS,
   PLATFORM_KINDS,
+  PROVENANCE_STANDINGS,
+  PROVENANCE_TIERS,
   ROLE_PRESETS,
   SUBJECT_KINDS,
   TENANT_SEGMENTS,
@@ -57,9 +59,21 @@ export const percentSchema = z
   .regex(/^\d{1,3}\.\d{2}$/)
   .refine((v) => Number(v) <= 100, 'percent ≤ 100.00');
 
-/** Provenance tier — product law: every user-visible number carries one. */
-export const provenanceTierSchema = z.enum(['measured', 'derived', 'estimated', 'assumed']);
+/**
+ * Provenance tier — product law: every user-visible number carries one (`F8-01`). `PROVENANCE_TIERS`
+ * in domain, derived here, so the format layer that must carry a tier and the surfaces that render
+ * one read one list (`M17`).
+ */
+export const provenanceTierSchema = z.enum(PROVENANCE_TIERS);
 export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
+
+/**
+ * How far a figure can be relied on as FINAL (`F8-12`) — the second axis, orthogonal to the tier.
+ * `PROVENANCE_STANDINGS` in domain, derived here; the design system reads this type rather than
+ * declaring its own list beside it.
+ */
+export const provenanceStandingSchema = z.enum(PROVENANCE_STANDINGS);
+export type ProvenanceStanding = z.infer<typeof provenanceStandingSchema>;
 
 /** Per-USER measurement preference — `MEASUREMENT_SYSTEMS` in domain, derived here, mirrored as a pgEnum (`M17`). */
 export const measurementSystemSchema = z.enum(MEASUREMENT_SYSTEMS);

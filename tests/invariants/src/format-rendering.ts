@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  compactQualified,
   formatCompactMoney,
   formatDate,
   formatLength,
@@ -9,6 +10,9 @@ import {
   formatPhone,
   IN_FORMATS,
   PROCUREMENT_SYSTEM,
+  packOnTenantTime,
+  qualifiers,
+  qualifyMoney,
 } from '@heliogrid/domain';
 import { REPO_ROOT } from './repo-root';
 
@@ -88,7 +92,44 @@ function renderedValues(): Expectation[] {
       actual: formatLength(IN_FORMATS, 4.2, PROCUREMENT_SYSTEM),
       expected: '4.2 m',
     },
+    {
+      /* The market default renders 12 Mar above; a tenant on London time reads the day before.
+         A tenant that set its own zone and is still read on the market's is the silent half of
+         `F3-22` — every date renders, in the right style, one day out. */
+      row: 'F3-22',
+      what: "date on the TENANT's own zone, not the market default",
+      actual: formatDate(packOnTenantTime(IN_FORMATS, 'Europe/London'), '2026-03-11T19:00:00Z'),
+      expected: '11 Mar 2026',
+    },
+    {
+      row: 'F3-24',
+      what: 'a qualified amount renders its figure',
+      actual: qualifyMoney(IN_FORMATS, 452471, { tier: 'measured' }).text,
+      expected: '₹4,52,471',
+    },
   ];
+}
+
+/**
+ * `F3-24` — the format layer carries every honesty obligation WITH the value and never drops one
+ * to fit. Compact notation is the place the row names by name, so the check is the compaction: a
+ * figure that shortens must arrive carrying exactly what the full rendering carried.
+ *
+ * Checked over the rendering rather than over the type, because a type cannot see a `{...amount}`
+ * that rebuilt the object and left a field out.
+ */
+function droppedQualifiers(): string[] {
+  const full = qualifyMoney(IN_FORMATS, 9_200_000, {
+    tier: 'estimated',
+    standing: 'provisional',
+    disclosure: 'Excludes subsidy',
+  });
+  const compact = compactQualified(IN_FORMATS, full);
+  const failures: string[] = [];
+  const lost = qualifiers(full).filter((word) => !qualifiers(compact).includes(word));
+  if (lost.length > 0) failures.push(`compacting dropped ${lost.join(', ')}`);
+  if (compact.text === '') failures.push('compacting rendered no figure at all');
+  return failures;
 }
 
 /**
@@ -158,8 +199,15 @@ export function runFormatInvariants(): void {
     failures.push(`F3-21 non-Latin digits rendered: ${value}`);
   }
 
+  for (const dropped of droppedQualifiers()) {
+    failures.push(`F3-24 a qualifier was lost to fit: ${dropped}`);
+  }
+
   if (failures.length > 0) {
     throw new Error(`FORMAT INVARIANT FAILURE\n  ${failures.join('\n  ')}`);
   }
-  console.log(`format invariants green — ${values.length} rendered values, one implementation`);
+  console.log(
+    `format invariants green — ${values.length} rendered values, one implementation, ` +
+      'no qualifier lost to compaction',
+  );
 }
