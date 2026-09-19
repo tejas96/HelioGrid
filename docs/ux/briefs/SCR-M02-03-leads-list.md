@@ -4,6 +4,30 @@ The main leads list: source badges, monthly-bill sort/filter, dormant filter.
 
 **Module:** M02 · CRM & leads · **Personas:** Sales Executive (own-lead scope), Sales Manager (team scope), EPC Owner (all) · **Context of use:** desk and phone equally — web and mobile carry every capability equally (`F7-30`). Visibility follows `F2.M02.lead-visibility`.
 
+**One job:** find the leads to work next.
+**Order of attention:** 1 the leads in my scope, each with its stage and source · 2 sorting and filtering by monthly bill · 3 the dormant ones.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Each lead — who, where, its stage, its source (`M02-13`) | data · status | one row: name, city, the stage as its ONE status chip, the source as its mark. The owner's name joins the row for a person who sees more than their own leads |
+| Monthly bill, as data (`M02-40`) | data | a value on the row at 375 and a sortable column at 1536, in the tenant's currency. One provenance label heads the column (`F8-07`) |
+| Sort and filter by monthly bill (`M02-40`) | action | in the filter bar: a sort, and a range filter. The active filter shows as a chip that can be cleared |
+| Dormant leads (`M02-52`) | status · action | a `Dormant` filter chip, and a `Dormant` chip on each such row. No sentence about the nightly sweep or the thirty days — that is Help |
+| What the list is showing (`F7-27`) | data | the table's caption: the scope and the filters in force |
+| Add a lead (`M02-06`) | action | the surface's primary act on web; on mobile it is the shell's centre action, so none is drawn here |
+| No leads in scope | teaching | at most two short sentences and ONE act |
+| The list failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** A list of rows under a filter bar; the 200-lead volume scrolls in this one region.
+- **1536.** A table — name, city, stage, owner, source, monthly bill, last activity — with its caption,
+  the filters in a bar above it, and the primary add act in the page header.
+
 ## Entry & exit
 
 Reached from: the main leads surface in navigation — the PRD does not pin a single entry beyond it being the leads surface; not pinned by PRD — designer decides, note the decision. On web the leads surface carries the primary add action that opens Quick Add Lead (SCR-M02-01) in one tap (M02-06). Leads to: Lead Detail (SCR-M02-04) on opening a row; Quick Add Lead (SCR-M02-01) via the primary add action.

@@ -4,6 +4,37 @@ Capture a lead in under 30s with four fields, dedupe checked live on the phone n
 
 **Module:** M02 · CRM & leads · **Personas:** Sales Executive (highest-frequency), Sales Manager, EPC Owner · **Context of use:** mobile-first — capture happens on a call or on a doorstep, phone in hand, often one-handed. Web carries it with full parity (`F7-30`).
 
+**One job:** save a lead in under thirty seconds.
+**Order of attention:** 1 the phone number · 2 the other three fields · 3 save — and, only when the number is already known, the three facts and the three choices.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The thirty-second bar (`M02-01`) is a budget on words too:** this screen has four labels, one
+act and nothing to read.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Name, phone number, city, type (`M02-01`, `M02-05`) | data | four labelled fields on one surface; `type` is a two-way selector already set to the tenant's segment. No helper text under any field |
+| Only the phone number is required (`M02-01`, `M02-03`) | action line | while save cannot be pressed, its ONE line says what unlocks it (`N4`). No "optional" sentence on the other three |
+| A phone-only capture still saves, and its gaps are named on the record (`M02-03`) | — | behaviour, no words here: the named gaps are drawn on the lead, not on this screen |
+| The live duplicate check (`M02-06`) | status | a quiet in-field mark on the phone field while it runs. Never a sentence, and it never holds the save act |
+| A slow check (`M02-66`) | — | behaviour, no words here: the save goes through, and the possible-duplicate flag appears on the two records |
+| A number that cannot be a phone number | error | ONE inline line: the shape expected. The field normalises in silence — no sentence about spaces or prefixes |
+| The number is already in the system (`M02-08`) | data | the dedupe sheet opens OVER the capture: its title is that fact, the existing person's name and city are its object line, and the three facts are label–value rows — owner, stage, last contacted. Never the record's contents |
+| Exactly three choices (`M02-09`, `M02-11`, `M02-12`) | action | three acts, each with ONE line saying what it does: open the existing lead and drop this capture · log this enquiry on the existing lead and tell its owner · create a second lead anyway. Opening the existing lead confirms before it drops what was typed (`N8`). No fourth act, no default |
+| `Create anyway` needs a reason (`M02-12`) | action | choosing it reveals ONE required field; its one line of helper says the reason is recorded on both leads, because that changes what is typed. The confirm's one line says what unlocks it |
+| The existing record is outside the person's scope (`M02-08`) | data · action | the same three facts; the first act becomes a request to the record's owner, and its one line names that owner |
+| The sheet is dismissed (`M02-09`) | — | behaviour, no words: nothing is created, and the capture stays as typed |
+| Saved | status | one confirmation line. It does not explain the gaps |
+| The save failed | error | one line — what failed and `Try again`. Every field keeps what was typed |
+
+## Arrangement
+
+- **375.** One surface: the four fields, the phone first, and the save act pinned at the foot with its
+  one line. The dedupe sheet opens over it and never replaces it. Nothing scrolls on the default frame.
+- **1536.** The capture is an editor, so it is a side panel over the leads surface (`F7-21`); the dedupe
+  result takes the panel's place without losing what was typed.
+
 ## Entry & exit
 
 Reached from: the primary add action on every surface — on mobile the shell's elevated centre action, on web the primary action on the leads surface (M02-06); one tap opens it. Onboarding's first door lands on the empty Lead Inbox (SCR-M02-02, M02-25) whose teaching state points here for the first lead. Leads to: the dedupe sheet opens over the capture (never replacing it) when the typed number matches an existing customer or contact; "Open existing" discards the in-progress capture after confirming and opens the existing lead (SCR-M02-04); "Log enquiry on existing" lands the enquiry on the existing lead and creates nothing new; a successful save creates the lead. Post-save destination is not pinned by PRD — designer decides, note the decision.

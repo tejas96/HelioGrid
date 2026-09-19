@@ -4,6 +4,36 @@ The owner's morning triage: one queue of unassigned/new leads, assign or bin in 
 
 **Module:** M02 · CRM & leads · **Personas:** EPC Owner (the inbox is the owner's screen, not the rep's), Sales Manager (triages and assigns for the team) · **Context of use:** the owner's morning screen — often a phone over breakfast or between site calls; works at both breakpoints with the dense multi-select view web-emphasis.
 
+**One job:** decide each new lead in under three seconds — assign it or bin it.
+**Order of attention:** 1 the next untriaged lead and its two acts · 2 who to give it to, with their load · 3 nothing else — everything else waits for the lead detail.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Three seconds per lead (`M02-24`) means a row is read, never studied:** five facts, two acts,
+no sentence.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Each lead — name, city, source, age, value if known (`M02-24`, `M02-13`) | data · status | one list row: the name; city and age as its second line; the source as its mark; the value, where known, with its tier mark. One provenance label heads the list for the ages (`F8-07`); the value differs, so it keeps its own. A missing name or city is a named gap (`M02-03`), never a blank |
+| The two decisions (`M02-24`) | action | two single-tap acts on every row — assign and mark junk. A swipe may speed them up and is never the only way (`N1`) |
+| A lead unassigned for more than a day (`M02-50`) | status | the age carries the state as a chip. No sentence about escalation |
+| One queue, newest first (`M02-23`) | — | arrangement, no words: no sort control is drawn, and nothing explains why |
+| Who can take it, and their load (`M02-28`) | data | the assign picker: one row per person with two label–value pairs — open leads, overdue. One tap assigns; no confirm. One provenance label heads the list (`F8-07`) |
+| An act in progress, never shown as done (`M02-67`) | status | a light in-row pending mark on that row's act; the row and the list stay operable. Never an overlay, never a spinner wall |
+| An act that failed (`M02-67`) | error | the lead returns to the queue with ONE inline line: the reason, and `Try again` |
+| Someone else assigned it first (`M02-67`) | status | the row shows who holds it, as a chip, then leaves the queue. No dialog |
+| Bulk assign (`M02-29`) | action | selecting rows brings a selection bar: the count and ONE act. A partial failure is a result list — each lead, moved or not, and why — never a paragraph |
+| No leads yet (`M02-25`) | teaching | at most two short sentences — what will appear here, and how the first lead arrives — and ONE act |
+| The inbox failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** A list, its count in the header. Rows at a height the thumb can work, both acts on the
+  row. The assign picker is a sheet.
+- **1536.** The dense form: a table with multi-select, the assign picker open beside the selection so
+  the load figures are in view while rows are chosen (`F7-21`). The 300-lead morning is proven here,
+  in this one region.
+
 ## Entry & exit
 
 Reached from: the owner's navigation — the inbox is the morning entry point; onboarding's first door (`M01-26`) lands on exactly this screen in its empty-teaching state (M02-25); the owner dashboard's "needs you" surface reads the same unassigned set (`modules/M13`). Leads to: Lead Detail (SCR-M02-04) — everything beyond the triage decision waits for the lead detail (M02-24); the assign picker (same picker as lead detail, M02-29); a lead leaves the inbox the moment it is assigned or binned, and nothing else removes it.
