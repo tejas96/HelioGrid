@@ -12,6 +12,7 @@ import {
   poolMaxSchema,
   portSchema,
   secretSchema,
+  serviceAccountJsonBase64Schema,
   temporalAddressSchema,
   temporalNamespaceSchema,
 } from './fragments';
@@ -65,6 +66,12 @@ const apiEnvObject = z.object({
    * number). Both or neither, and refused outright in production: the boot stops, the door never
    * carries a known code. The number must be one the market packs resolve.
    */
+  /**
+   * The FCM credential a push leaves through (`F6-13`). Optional on purpose: absent binds the
+   * development adapter, which writes the push to the log — so a machine with no Firebase
+   * project still runs the whole path, and CI does too.
+   */
+  FCM_SERVICE_ACCOUNT_JSON_BASE64: serviceAccountJsonBase64Schema.optional(),
   DEV_OTP_PHONE: developmentPhoneSchema.optional(),
   DEV_OTP_CODE: developmentCodeSchema.optional(),
 

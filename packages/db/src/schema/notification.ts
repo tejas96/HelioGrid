@@ -1,4 +1,4 @@
-import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES } from '@heliogrid/domain';
+import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES, PUSH_PLATFORMS } from '@heliogrid/domain';
 import {
   boolean,
   index,
@@ -20,6 +20,9 @@ export const notificationType = pgEnum('notification_type', NOTIFICATION_TYPES);
 
 /** The five groups a person mutes push for (`F6-15`), mirrored the same way (`M17`). */
 export const notificationTypeGroup = pgEnum('notification_type_group', NOTIFICATION_TYPE_GROUPS);
+
+/** What a handset runs, so the transport can shape its payload (`M17`). */
+export const pushPlatform = pgEnum('push_platform', PUSH_PLATFORMS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -152,4 +155,39 @@ export const notificationSettings = pgTable(
     quietHoursEnd: time('quiet_hours_end').notNull(),
   },
   (table) => [uniqueIndex('notification_settings_tenant_key').on(table.tenantId)],
+);
+
+/**
+ * A handset a person is pushed on (`F6-06`, `F6-13`).
+ *
+ * GLOBAL, and deliberately: a phone belongs to a PERSON, not a company. Someone holding
+ * memberships in two companies carries one handset, and tenant-scoping this would give them two
+ * rows, two pushes for one notification, and a token whose uniqueness meant nothing. It keys
+ * `user_account` exactly as `session` does.
+ *
+ * UNREACHABLE to `app_user`: no grant, the admin path alone — the same answer `session` gives,
+ * because a row keyed to a person carries no tenant pin to be filtered by.
+ *
+ * `token` is unique product-wide, so a handset signing in again REPLACES its row rather than
+ * adding one. A token the provider calls dead is deleted and never retried (`F6` §F6.2).
+ */
+export const pushDevice = pgTable(
+  'push_device',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    userRef: uuid('user_ref')
+      .notNull()
+      .references(() => userAccount.id),
+    platform: pushPlatform('platform').notNull(),
+    token: text('token').notNull(),
+    registeredAt: instant('registered_at').notNull(),
+    /** For a later slice that retires handsets nobody opens; nothing reads it yet. */
+    lastSeenAt: instant('last_seen_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('push_device_token_key').on(table.token),
+    index('push_device_user_idx').on(table.userRef),
+  ],
 );

@@ -4,6 +4,7 @@
  * the words they carry are `packages/i18n`'s, authored by the slice that first raises each type.
  */
 
+export { pushIsDue } from './delivery';
 export { channelsOwed, mayMute, pushMuted } from './mutes';
 export { marketQuietHours, pushDueAt, type QuietWindow } from './quiet-hours';
 export type { NotificationRegistration } from './registry';
@@ -15,6 +16,7 @@ export type {
   NotificationType,
   NotificationTypeGroup,
   NotificationUrgency,
+  PushPlatform,
 } from './types';
 export {
   NOTIFICATION_CHANNELS,
@@ -23,4 +25,5 @@ export {
   NOTIFICATION_TYPE_GROUPS,
   NOTIFICATION_TYPES,
   NOTIFICATION_URGENCIES,
+  PUSH_PLATFORMS,
 } from './types';

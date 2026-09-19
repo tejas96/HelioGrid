@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  The push capability (F6-13). `development` is the sandbox APNs environment, which is what a
+	  debug build and TestFlight use; a release build to the App Store is re-signed against
+	  `production` by the distribution profile, so this value is correct for every build this
+	  repo produces today.
+
+	  It is INERT until there is a paid Apple Developer Program membership: the capability cannot
+	  be provisioned without one, and a simulator can never obtain an APNs token whatever this
+	  file says. It is here so the iOS half is complete rather than discovered missing later.
+	-->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

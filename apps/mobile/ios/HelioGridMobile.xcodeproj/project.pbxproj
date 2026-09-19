@@ -339,6 +339,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				CODE_SIGN_ENTITLEMENTS = HelioGridMobile/HelioGridMobile.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.heliogrid.app;
 				PRODUCT_NAME = HelioGridMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -368,6 +369,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				CODE_SIGN_ENTITLEMENTS = HelioGridMobile/HelioGridMobile.entitlements;
 				PRODUCT_BUNDLE_IDENTIFIER = com.heliogrid.app;
 				PRODUCT_NAME = HelioGridMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

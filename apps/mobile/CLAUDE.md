@@ -15,7 +15,7 @@ apps/mobile, §3 · what both apps share: `CLAUDE.md` §6, `architecture.md` §3
 
 ## Where files go — a closed set; never invent a folder
 
-`src/` is `{auth, navigation, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
+`src/` is `{auth, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
 A new category is a plan-time call, and it changes this line and `CLAUDE.md` §6 together.
 
 ```
@@ -27,7 +27,7 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   types.ts                when two files here share a type
 src/screens/shared/       parts BOTH doors draw — TEMPORARY, until `T-M01-035` lifts them to ui
 src/navigation/           React Navigation static config
-src/auth/                 native adapters — one folder per capability
+src/auth/ · src/push/     native adapters, one per capability; push isolates Firebase/Notifee
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)
 ```
 

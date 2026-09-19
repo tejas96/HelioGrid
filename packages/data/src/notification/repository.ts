@@ -1,4 +1,10 @@
-import type { Notification, Paginated, PaginationQuery, UnreadCount } from '@heliogrid/contracts';
+import type {
+  Notification,
+  Paginated,
+  PaginationQuery,
+  RegisterDevice,
+  UnreadCount,
+} from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { normalizeClientError, toApiError } from '../errors/errors';
 
@@ -12,6 +18,13 @@ export interface NotificationRepository {
   unreadCount(signal?: AbortSignal): Promise<UnreadCount>;
   /** Up only, and set once (`F6-07`) — a second call returns the record unchanged. */
   markRead(id: string, signal?: AbortSignal): Promise<Notification>;
+  /**
+   * Binds this handset's push token to the signed-in person (`F6-13`). Registering the same
+   * token again replaces the row, so a repeat call on every app start is the intended shape.
+   */
+  registerDevice(device: RegisterDevice, signal?: AbortSignal): Promise<void>;
+  /** On sign-out, or when the person turns push off at the platform. Idempotent. */
+  forgetDevice(token: string, signal?: AbortSignal): Promise<void>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -44,6 +57,28 @@ export function createNotificationRepository(api: ApiClient): NotificationReposi
         });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async registerDevice(device, signal) {
+      try {
+        const res = await api.notification.registerDevice({
+          body: device,
+          fetchOptions: { signal },
+        });
+        if (res.status !== 200) throw toApiError(res);
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async forgetDevice(token, signal) {
+      try {
+        const res = await api.notification.forgetDevice({
+          body: { token },
+          fetchOptions: { signal },
+        });
+        if (res.status !== 200) throw toApiError(res);
       } catch (error) {
         throw normalizeClientError(error);
       }

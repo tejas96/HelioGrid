@@ -5,6 +5,7 @@ import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { rolesOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
+import { NotificationDevicesService } from './notification.devices.service';
 import { NotificationPreferencesService } from './notification.preferences.service';
 import { NotificationService } from './notification.service';
 
@@ -15,6 +16,7 @@ export class NotificationController {
     @Inject(NotificationService) private readonly notifications: NotificationService,
     @Inject(NotificationPreferencesService)
     private readonly preferences: NotificationPreferencesService,
+    @Inject(NotificationDevicesService) private readonly devices: NotificationDevicesService,
   ) {}
 
   @TsRestHandler(notificationContract)
@@ -28,6 +30,10 @@ export class NotificationController {
     // about their presets (`F6-15`), answered inside the route, not a capability that reaches it.
     preferences: 'member',
     setPreference: 'member',
+    // Also `member`: a handset is registered against the person the session names, never one the
+    // request chose, so there is nothing for a capability to gate.
+    registerDevice: 'member',
+    forgetDevice: 'member',
   })
   handler(@Req() req: Request) {
     const recipient = () => sessionOf(req).actor.userId;
@@ -41,6 +47,14 @@ export class NotificationController {
         status: 200,
         body: { unreadCount: await this.notifications.unreadCount(tenantIdOf(req), recipient()) },
       }),
+      registerDevice: async ({ body }) => {
+        await this.devices.register(recipient(), body, new Date());
+        return { status: 200 as const, body: { registered: true as const } };
+      },
+      forgetDevice: async ({ body }) => {
+        await this.devices.forget(body.token);
+        return { status: 200 as const, body: { registered: false as const } };
+      },
       preferences: async () => ({
         status: 200,
         body: {

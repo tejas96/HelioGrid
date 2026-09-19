@@ -1,3 +1,4 @@
+import FirebaseCore
 import UIKit
 import React
 import React_RCTAppDelegate
@@ -14,6 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    // Firebase before React Native, and before anything JS can reach.
+    //
+    // Android auto-initialises from google-services.json through the Gradle plugin; iOS has no
+    // equivalent, so without this every `messaging()` call throws "No Firebase App '[DEFAULT]'"
+    // — which took the whole render tree down and left a blank screen, not a degraded push.
+    FirebaseApp.configure()
+
     let delegate = ReactNativeDelegate()
     let factory = RCTReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()

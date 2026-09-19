@@ -36,6 +36,7 @@ export * from './notification';
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
 export * from './ports/message-delivery';
+export * from './ports/push';
 export * from './ports/session';
 export * from './session';
 // The tenant (`T-M01-025`): signup, the tenant facts, the roster, the request-to-join steer.

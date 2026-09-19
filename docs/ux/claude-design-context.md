@@ -55,6 +55,58 @@ front of the person needs; every other word waits until they ask for it.
   on hover has revealed nothing. Draw hover as polish on the wide frame if you like — never as the
   place a fact lives.
 
+## Composition — the screen's shape, not its skin
+
+Everything else in this file says what a screen must CARRY. This section says how it is arranged,
+because a screen can carry every obligation and still be unreadable — and an unreadable screen
+fails the product's own first UX goal. **Nothing here licenses dropping anything** (contract item
+6): a thing that moves is re-placed, and your notes say where it went.
+
+- **One focal point per REGION, not per screen.** A region has one primary act and one headline
+  figure; everything else in it is subordinate by size, weight or position — never by colour alone
+  (`N6b`). A screen may hold several regions; it may not hold several things all shouting.
+- **Never a card inside a card.** Where a region's children already render as cards, the region
+  goes flat and the cards are the surfaces. Two nested paddings squeeze the content and buy
+  nothing.
+- **Route, don't pack.** Width buys calm, not more content. A thing the person does not need for
+  the decision in front of them is a **row that leads somewhere**, never a panel competing on this
+  screen — and a screen is finished when nothing more can come off it without hiding a decision.
+  **The first screenful answers the screen's one job**; everything else is below it or behind it.
+- **Which way a thing leaves the screen, in order:** needed to decide now → it stays · a record
+  looked up now and then → a row leading to its own screen · something edited or decided → a sheet
+  or side panel (`F7-21`) · teaching → the ask (`F7-46`).
+- **Six cases where routing is WRONG, and the thing stays:** it is used on most visits (rarity
+  earns a link, frequency does not) · it is compared side by side (tiers, variants) · the list is
+  under about five rows · it would lead to an empty destination, where a teaching empty state on
+  this screen is the honest answer · the tenant is in a dead or blocked state, where the money, the
+  state and the way back are never behind anything (`BM-32`) · it is a document surface, which
+  shows everything because it is printed and held.
+- **Group before you list.** Things decided together sit together. Order regions by the order the
+  brief's attention list gives them, and where the brief pins none, decide and write it back.
+- **A card body is at most two short sentences.** Longer is teaching — it goes behind the ask
+  (`F7-46`) or becomes its own region. **The facts `F7-46` keeps on the screen are exempt from
+  this cap**: what paused and until when, an error's fix, a consequence read before acting. Trim
+  the teaching, never the obligation.
+- **Realistic volume is PROVEN in one place, not everywhere.** One region carries the brief's real
+  volume — the 200-lead list, the 40-line bill of materials — and the rest show the few that matter
+  with the rest behind their own destination. A screen where every region is at maximum proves
+  nothing except that it can be crowded.
+- **One banner at a time.** The broadest true fact speaks, and the others stay quiet.
+- **Whitespace is a component.** Width is not a reason to fill width: keep a comfortable reading
+  measure, and let a region end before the screen does.
+- **The 1536 layer is a different ANSWER, never the same answer with more room.** A desktop frame
+  exists where the arrangement changes; if it is the phone's section list with wider rows, it was
+  stretched rather than designed. Use the width for grouping, never for stretching a row.
+- **When one surface carries too much, split it — and name which way you split it:**
+  one region with a selector (sibling lists that answer one question, each keeping its caption,
+  provenance and export) · a sheet or side panel for anything edited or decided (`F7-21`'s one
+  grammar — never a page for an editor) · a modal only for a decision that must be finished or
+  abandoned before anything else continues · **its own screen**, which is allowed but is NOT
+  invented here: name it in your notes, say what it would hold, and stop — a screen needs its own
+  register row and brief.
+- **Board notes are not screen copy.** Explanation about the design lives outside the frame; a
+  frame contains only what the product renders.
+
 ## Laws every screen obeys (the N-rules of F7-23 — product law)
 
 *F7-23 carries these as a numbered set that is "never renumber, never reword". The numbering and
@@ -342,14 +394,19 @@ element it is.
 
 ## The self-audit (run at the end of every session, before the screen is accepted)
 
-Walk **three lists**, in this order. For every entry on every list, answer **PASS or FAIL,
+Walk **four lists**, in this order. For every entry on every list, answer **PASS or FAIL,
 pointing at the specific element that satisfies it**. A claim of PASS without a pointed-at element
 is a FAIL. Fix all FAILs in the same session.
 
 1. **The brief's REQUIREMENTS list, row by row** — the UI half of each row, per item 6's
    annotation exception.
 2. **The completion contract above, item by item** — all eight, items 1–8.
-3. **Everything else this file states** — not a closed list, because the point is that nothing
+3. **Composition, in four answers** — name the focal point of each region; name every region that
+   is flat and why; say what 1536 arranges differently, and where it is honestly the same say so;
+   and name any card body over two sentences — the answer must be none, unless it is a fact
+   `F7-46` keeps on the screen, which you name as such. Where a surface was split, say which of
+   the four forms it took; if it should become its own screen, name it and stop.
+4. **Everything else this file states** — not a closed list, because the point is that nothing
    stated here goes unchecked. It includes `N1` through `N10` (`N6b` among them); light-only
    (`F7-04`); the one sheet grammar (`F7-21`); no emoji and no character used as an icon
    (`F7-19`/`F7-42`); the density choice (`F7-17`); progressive disclosure (`F7-34`) — a screen

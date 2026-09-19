@@ -31,6 +31,10 @@ const GLOBAL_TABLES: Record<string, string> = {
   session:
     'a device session, the refresh grant — unreachable, the admin path alone; the token every ' +
     'call carries is verified, never looked up (T-M01-025)',
+  push_device:
+    'the handsets a person is pushed on \u2014 unreachable, the admin path alone. A phone belongs to a ' +
+    'PERSON, not a company: tenant-scoping it would give someone in two companies two rows for ' +
+    'one handset and two pushes for one notification (T-FPLAT-067)',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 };
 
