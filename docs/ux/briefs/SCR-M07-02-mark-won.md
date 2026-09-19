@@ -4,6 +4,28 @@ Capture final value and expected install date; confirming creates the project at
 
 **Module:** M07 · Sales Execution · **Personas:** Sales Executive (mobile-first, primary closer), Sales Manager (team leads), EPC Owner — `F2.M07.mark-won-lost`, scope follows lead visibility · **Context of use:** the close moment — often on the phone straight after the customer's yes, sometimes at a desk; mark-won touches money — it creates the project's money schedule (M07 §M07.12 behavior detail).
 
+**One job:** close the deal — confirm its final value and when it will be installed.
+**Order of attention:** 1 the final value · 2 the expected install date · 3 confirm.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Two facts and one act (`M07-62`).** The project is created by the confirm; no second step
+exists, so none is described.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The final value (`M07-62`) | data | a money field arriving filled from the accepted proposal version, editable, with its tier mark. A label–value row above it names the version it came from |
+| The expected install date (`M07-62`) | data | a required date field, arriving empty |
+| The customer accepted on the link | data | ONE label–value row: accepted, and when. A recorded fact, so it carries no tier |
+| Confirm (`M07-62`) | action | the sheet's ONE act. Its one line: this creates the project with the proposal's payment schedule. While it cannot be pressed, the line says the date is missing (`N4`) |
+| The project now exists | status | the lead shows won, as its stage chip; one confirmation line offers the project. No paragraph about what was created |
+| The save failed | error | one line at the act — what failed and what to do. The value and the date stay as entered |
+
+## Arrangement
+
+- **375.** A sheet over the lead (`F7-21`): the two fields, the act pinned at the foot with its line.
+- **1536.** A side panel beside the lead, so the accepted proposal stays in view.
+
 ## Entry & exit
 
 Reached from: the lead — Mark won is one of the close surfaces on a lead (M07 §1); a customer Accept on the link notifies the rep, and the rep still marks Won — human confirms, then the project exists (M07-62). Leads to: on confirm the project exists immediately (`modules/M08`'s object) with no re-entry of customer data, and the lead shows won (M07 §M07.12 acceptance). Post-confirm destination is not pinned by PRD — designer decides, note the decision.

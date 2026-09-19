@@ -6,6 +6,40 @@ Periodic decision tool: what-needs-you, cash, pipeline, period, forecast, win/lo
 
 **Module:** M13 · Dashboards & reporting · **Personas:** EPC Owner, Sales Manager · **Context of use:** the owner's step-back surface — periodic (weekly/monthly), not a daily driver. Web-emphasis with full mobile parity (per `docs/prd/modules/M13-dashboards-and-reporting.md` §2); the owner works web for step-back dashboards and reports, mobile for the attention list, triage and approvals (per `docs/prd/02-personas.md` §EPC Owner, Primary surfaces). The Sales Manager uses it balanced: web for step-back views, mobile for the attention list and chasing.
 
+**One job:** see what needs me, and how the money stands — then step back.
+**Order of attention:** 1 what needs me · 2 cash — collected against due, and overdue · 3 the pipeline · 4 this period, the forecast, win and loss · 5 the agent.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The two panels an owner acts on lead (`M13-20`); the rest is context and sits below.** A
+figure carries its qualifier as a mark, never as a sentence.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| What needs you (`M13-15`) | data · status | the first region: one row per item — what it is, its age or its amount, a chip for its category — each leading straight to the thing itself |
+| Cash — collected against due this month, and overdue (`M13-16`) | data | label–value rows, each with `M11`'s qualifiers as marks — how fresh, and confirmed or recorded by hand. The collections ageing is the ageing `M11` publishes, as rows |
+| A money figure that is provisional (`F8-12`) | status | its mark, on the figure |
+| Pipeline — value and count by stage (`M13-14`) | data | one row per stage by its pack label: count and value |
+| This period (`M13-14`) | data | label–value: won this period, last period, and the target where one is set. A part-finished month is labelled so far, never projected as an actual |
+| A target (`M13-17`) | action | where one is set, an inline value that can be edited in place. Where none is set, ONE quiet act to set one — no empty meter, no nag, and nothing else changes |
+| Forecast (`M13-14`) | data | its figure with a fixed projection label that never leaves it, and never in one total with won |
+| Win and loss (`M13-14`) | data | the win rate, and the loss reasons as rows with their counts |
+| One deal skews an average (`M13-18`) | status | a chip on that figure: the median is shown, or the outlier is flagged. A row leads to the deal |
+| Aged projects (`M13-25`) | data | rows: the project, its stage by pack label, its days in the stage |
+| The agent (`M13-14`) | more detail | one compact card, leading to agent performance |
+| The manager's view (`M13-30`) | status | the same screen with a scope chip naming the team, and a row leading to the per-rep view |
+| Provenance (`F8-07`) | honesty label | one label heads each region whose figures share it; an aggregate carries the weakest tier of its members |
+| A new tenant | teaching | each region teaches in ONE line what will appear. Never a blank or broken chart |
+| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title, never above what needs you |
+| The dashboard failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** What needs you and cash fill the first screenful; every other section is a titled region
+  below. The attention list is the region that proves the volume.
+- **1536.** What needs you and cash lead as the two wide panels; pipeline, period, forecast and win-loss
+  form a grid of context beneath them; the agent card sits last.
+
 ## Entry & exit
 
 Reached from: this is the EPC Owner's home screen — role decides the home, so signing in lands here (M13-29, PS-07); the Sales Manager lands on the same screen team-scoped (M13-30, PS-09). Multi-preset holders reach it via the home switcher (`docs/prd/modules/M13-dashboards-and-reporting.md` §M13.2). Leads to: every "what needs you" item deep-links straight to the real lead, proposal, project or payment (M13-15, PS-07); the Agent card links to Agent performance (M13-14); the team's per-rep view is reachable for the Sales Manager, `F2.M07.agent-performance`-gated (M13-30, PS-09); aged projects open the real project record (dashboards read, surface and link — `docs/prd/modules/M13-dashboards-and-reporting.md` §M13.1). The inline target edit happens on this screen itself — there is no separate targets settings screen (M13-17).

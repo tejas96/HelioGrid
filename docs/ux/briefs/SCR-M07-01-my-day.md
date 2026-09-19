@@ -4,6 +4,35 @@ The rep's home: today's work ordered by urgency in fixed blocks.
 
 **Module:** M07 · Sales Execution · **Personas:** Sales Executive (primary — this is their home screen) · **Context of use:** mobile-first (`02-personas.md` §Sales Executive; M07 §2) — opened first thing and between calls, phone in hand, in the field, often one-handed. Ships on iOS and Android from day one alongside web (M07 §2).
 
+**One job:** know who to call next.
+**Order of attention:** 1 what is overdue, and why each item is urgent · 2 today's timed items · 3 what the agent did for me · 4 the rest of the week.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A list of work, not a dashboard (`M07-01`):** no chart, no score, no total — and no sentence
+saying so.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The four blocks in their fixed order (`M07-02`) | data | four titled regions — overdue, today, agent activity, upcoming this week. The order never changes and no control reorders it |
+| Overdue is first, always (`M07-02`) | status | the block's title and its count carry the state, with a mark — never colour alone (`N6b`) |
+| What makes an overdue item urgent (`M07-02`) | data | the row's second line: how late, or how long unopened. A proposal item adds its system size and value, the value with its tier mark |
+| Each item (`M07-01`) | data · action | one row: the person, the item, its time or lateness — and ONE act that starts it in one tap: call, open the proposal, open the visit. The row itself opens the lead |
+| Why an automatic task exists (`M07-06`) | data | the row's line names the rule that created it, in a few words. It is the task's provenance, not Help |
+| What the agent did (`M07-03`) | data · status | its own block, never mixed in: each entry marked as the agent's, the outcome as its chip, leading to the call's result |
+| The agent is on and made no calls | teaching | the block still renders, with its ONE line — silence is visibly silence |
+| Snoozed and dormant leads (`M07-04`) | — | absent, never greyed. Nothing says they are hidden |
+| A block with nothing in it | teaching | ONE encouraging line, the brief's own — never a blank region |
+| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title, seated inside the day and never above overdue |
+| The day failed to load | error | one banner — what failed and what to do. Never a spinner wall |
+
+## Arrangement
+
+- **375.** Its home. The four blocks stacked; overdue fills the first screenful when it has items. A
+  heavy day scrolls inside the page, and this is the screen's volume.
+- **1536.** Overdue and today side by side as the working columns; agent activity and upcoming in a
+  narrower column beside them. Still a list of work — the width is not spent on a chart.
+
 ## Entry & exit
 
 Reached from: app open — My Day **is** the Sales Executive's role-decided home (PS-11; routing itself is `modules/M13`'s, M13-31; this screen supplies the content). Leads to: every row deep-links to its lead, and one tap starts the action — call, open proposal, open visit (M07 §M07.1 behavior detail); agent-activity entries deep-link to the call result on the lead timeline (M07-03); the rep's step-back dashboard ("how am I doing") is a separate, secondary surface (M13-31 — SCR-M13-02). No other entry/exit is pinned by PRD — designer decides, note the decision.

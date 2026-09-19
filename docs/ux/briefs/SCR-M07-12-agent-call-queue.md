@@ -4,6 +4,34 @@ Who is scheduled to be called, when and why; verdicts, versions, cancellations.
 
 **Module:** M07 · Sales Execution · **Personas:** EPC Owner (sees all, cancels anything), Sales Manager (team scope), Sales Executive (own scope; may cancel their own queued entries) — visibility per `F2.M07.see-agent-queue`, cancel per `F2.M07.control-agent-queue` (widened by owner ruling 2026-08-04) · **Context of use:** owner reads it web-first with a mobile daily glance; reps mobile-first in the field.
 
+**One job:** see who the agent will call, when and why — and stop any call that should not happen.
+**Order of attention:** 1 the entries that are blocked, and why · 2 who is next, and when · 3 cancelling one.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A dense row, read on a phone:** every fact is a word, a time or a chip — and the verdict is
+never silent (`M07-30`).
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Who, when and why (`M07-35`) | data | one row: the person; the scheduled time; the trigger that queued the call, in a few words |
+| Attempts against the maximum (`M07-35`) | data | two counts on the row, with their provenance label once for the list |
+| The pre-dial check (`M07-28`) | status · more detail | one chip for the verdict; the row opens to its five checks as label–value rows — consent, registry, do-not-call, quiet flag, window |
+| A blocked entry (`M07-30`) | status | the chip names the reason. A registry-listed row adds ONE line: call this customer yourself |
+| Out of voice allowance (`M07-37`) | status | its own chip on the entry. No amount and no cost is drawn |
+| Queued under an earlier agent version (`M07-36`) | status | a chip naming that version, only where it differs from the current one |
+| A call the customer asked for outside the window (`M07-35`) | data | the row's time carries the words that it was requested |
+| Cancelling (`M07-35`) | action | one act on the row, drawn only for whoever may cancel it. A cancelled entry stays, with its chip and who cancelled it |
+| The agent was switched off with calls queued | status | each entry keeps its row with its chip. Never silently dropped |
+| Nothing is queued | teaching | ONE line — genuine quiet, not a broken screen |
+| The queue failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** A list with a filter chip for the blocked entries; a row opens as a sheet.
+- **1536.** A captioned table (`F7-27`) — who, when, why, attempts, verdict, version — with the opened
+  entry in a side panel (`F7-21`).
+
 ## Entry & exit
 
 Reached from: not pinned by PRD — designer decides, note the decision. The PRD makes this "the one place scheduled automation is visible; nothing dials that was never in it" (§M07.7 behavior detail); a blocked entry notifies the owner (M07-37), though the notification's landing is not pinned. Leads to: a blocked entry's verdict persists on the queue and on the lead (M07-30), and every cancellation is logged to the lead timeline with its actor (M07-35) — the lead record (lead detail) is the natural cross-surface; any further exits are not pinned by PRD — designer decides, note the decision.

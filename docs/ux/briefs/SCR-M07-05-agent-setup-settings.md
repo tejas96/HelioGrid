@@ -4,6 +4,37 @@ Guided pre-filled agent configuration plus runtime settings (on/off, triggers, l
 
 **Module:** M07 · Sales Execution · **Personas:** EPC Owner only (`F2.M01.configure-agent`) · **Context of use:** web emphasis for setup, mobile for the daily glance (M07 §2); a deliberate sit-down configuration task, resumable, never required on day one.
 
+**One job:** make the calling agent sound like this business, without writing a prompt.
+**Order of attention:** 1 is the agent on, and which triggers are live · 2 each guided answer, already filled · 3 hear it · 4 what the law fixes and no edit can change.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Every answer arrives filled (`M07-08`), so the screen asks nothing and explains nothing:** a
+question is a field label, its answer is the field, and its effect is heard, not described.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| On or off, the live triggers, the maximum attempts (`M07-34`) | data · status | the first region: a switch with its state chip, the triggers as a multi-choice, the attempts as a number field |
+| Each guided step (`M07-09`) | data | one field per step, its label the question, its value already filled: name, voice, languages, tone, opening line, what to say when it does not know, when to hand over, when it may call, maximum attempts. No helper text unless it changes what is typed |
+| The opening line (`M07-10`) | data · action | a text field arriving filled with the pack's seed, and ONE act beside it — hear it spoken |
+| Anything else (`M07-08`) | data | one free-text field, last. What is typed is content |
+| Hand-over rules (`M07-11`) | data · action | an editable list: each rule with what the agent says as it hands over; add, edit, remove. The statutory stop rule is a read-only row, and why it cannot be removed is Help |
+| The four hard floors (`M07-10`) | data | where they are shown, they are read-only rows, and why they are fixed is Help. Never a paragraph of law |
+| The agent's languages (`M07-15`) | data | a multi-choice of the six. Nothing explains how they differ from the interface languages |
+| When it may call | more detail | a summary row leading to the calling window (`SCR-M07-06`) |
+| The other agent surfaces (`M01-57`) | more detail | rows that lead: knowledge base, test the agent, change history, number, call routing. A V2 destination is drawn and named as deferred |
+| A save would cross the floor | error | ONE line at the act naming the floor. The save is refused, not warned about |
+| An unfinished setup | status | a chip on the step left unfinished; the screen reopens there |
+| Voice is not available in this market, or on this plan | status | the surface says so in ONE line and draws no control it cannot honour |
+| The save failed | error | one line at the act. Every edit stays |
+
+## Arrangement
+
+- **375.** The on-off region first — the daily glance — then the guided steps as one scrolling form, the
+  floors, then the rows that lead.
+- **1536.** The setup's home: the guided steps on the left, the live preview pinned on the right so an
+  answer is heard beside the field that produced it (`F7-21`).
+
 ## Entry & exit
 
 Reached from: tenant configuration — M01 owns the settings information architecture that lists the agent & voice surfaces (M01-57); this screen is the "Agent setup — guided" entry plus the runtime settings half. Leads to: the sibling surfaces M01-57 names — Calling window (SCR-M07-06), Test the agent (SCR-M07-07), Change history (SCR-M07-08), Business knowledge base (SCR-M07-09), Number provisioning (SCR-M07-17) and inbound call routing / IVR (SCR-M07-16). Publishing rides the versioned-append law (M07-14 — SCR-M07-08's slice). Any further entry/exit is not pinned by PRD — designer decides, note the decision.

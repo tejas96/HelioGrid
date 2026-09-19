@@ -4,6 +4,29 @@ Eight-section structured KB editor in the owner's words with live preview.
 
 **Module:** M07 · Sales Execution · **Personas:** EPC Owner only (`F2.M01.configure-agent` — including every promotion into the KB, R10) · **Context of use:** web emphasis for setup (M07 §2) — a writing task in the owner's own words, revisited as real calls surface gaps.
 
+**One job:** tell the agent what this business says — in the owner's own words.
+**Order of attention:** 1 the eight sections and which still hold seed text · 2 the section being written · 3 how the agent uses it.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The owner's writing is the content of this screen and is never counted or trimmed.** The
+screen's own words are eight section names, a few chips and one act.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The eight sections (`M07-16`) | data · status | eight rows, each with a chip — seed text, or edited — and when it was last changed |
+| A section's content (`M07-16`) | data | a writing surface. What is written is content. Brand and model names stay as written |
+| Two answers that disagree (`M07-19`) | error | on save, one banner naming the two sections; each is a row that leads to its answer. It is flagged before the agent can speak either |
+| The agent using the knowledge (`M07-21`) | action | ONE act — preview — and the agent's reply shown as content |
+| Which language a section's text comes from | status | a chip on the section: its own language, or the primary language it falls back to |
+| The save failed | error | one line at the act. The writing stays |
+
+## Arrangement
+
+- **375.** The eight rows; a section opens as its own writing surface.
+- **1536.** The sections as a list on the left, the chosen one's editor in the centre, the preview on
+  the right (`F7-21`).
+
 ## Entry & exit
 
 Reached from: tenant configuration's agent & voice surface list — M01-57 names "Business knowledge base (structured, eight sections, seeded per market — never an empty page; the unanswered-questions one-tap loop)". The unanswered-questions screen's one-tap answer writes into a named section here (M07-18, SCR-M07-10), and the corrections review queue's owner promotion lands here too (M07-26, SCR-M07-11). Leads to: the KB preview (this screen's slice, M07-21) and Test Agent (SCR-M07-07) to hear the knowledge before it goes live. Not otherwise pinned by PRD — designer decides, note the decision.
