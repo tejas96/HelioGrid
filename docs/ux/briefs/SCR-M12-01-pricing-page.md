@@ -4,6 +4,49 @@ Public per-market tier/price/cap comparison; states all features in every tier.
 
 **Module:** M12 · Platform billing · **Personas:** Prospect (unauthenticated visitor evaluating the product), EPC Owner (evaluating an upgrade — the buyer and only billing administrator, `docs/prd/modules/M12-platform-billing.md` §2) · **Context of use:** public web surface, pre-auth (`docs/prd/04-business-model.md` §2: "the public pricing page"); read on any device — a prospect comparing tools on a phone as readily as an owner at a desk. Copy exists in every launch language; amounts render in the tenant's/market's currency with the market's grouping (`docs/prd/04-business-model.md` §04.1 localization notes).
 
+**One job:** see what each plan costs and how much it lets me do, and start a trial.
+**Order of attention:** 1 the one claim — every feature is in every plan — and the four plans with their prices · 2 how much each plan lets me do · 3 how the price compares, and how to start.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. This is a
+public page and it is still not a manual: its claim is one line, and its proof is the numbers.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Every module is in every plan; a plan sets capacity, never features (`BM-05`) | data | ONE line under the title — the page's single claim, which is also the statement `BM-05` requires the page to make about how others ransom capabilities into higher plans. What "everything" holds is a row that opens in place — never a feature grid with a tick in every cell |
+| Each plan — name, who it is for, price for the chosen cycle | data | one card per plan; ONE positioning line per plan (`BM-14`'s plan-keyed copy) |
+| Billing cycle | action | a two-way selector. Prices exclude tax — said once, in the plans region's caption. No saving is computed or claimed |
+| Every published cap, bundle and overage rate (`BM-07`) | data | each plan's card shows the three limits that differ most, and an `All limits` row opens the full list in place. Comparing at 375 is TWO plans side by side, each chosen by a selector, with a selector for limits, monthly bundles and overage rates — never a four-plan matrix behind a pager |
+| Service terms per plan | data | a `Support` row in each plan's list — plan-keyed screen copy, never a book value (`BM-14`) |
+| A rate the book marks draft | data | a named gap — never a draft figure on a public page, never a zero |
+| Trial caps | data | label–value rows behind a `During the trial` row that opens in place |
+| Start a trial — no plan choice, no card, no mandate (`M12-14`) | action | ONE `Start free trial` act for the whole page, not one per plan: the trial is not tied to a plan. ONE line at the button says how long it runs and that no card is needed (`M12-52` context) |
+| Enterprise is sales-assisted (`BM-14`, `BM-15` context) | action | its card's act is `Talk to sales`, never a checkout |
+| How the price compares (`BM-39`, `BM-44` context) | data | a `Compared with` region: label–value rows, our plan beside the named benchmark at the same capacity, each benchmark figure carrying its own source label and date. No adjectives, no paragraph about anyone |
+| Provenance (`F8-07`) | honesty label | once per region at its head — the price list and its date. A benchmark figure differs, so it carries its own |
+| No price list resolves for the visitor's market | teaching | the page says no prices are published for this market yet, and offers `Talk to sales`; never an empty grid, never another market's prices |
+| The price list failed to load | error | one banner — what failed and what to do. No stale and no invented number |
+
+## Arrangement
+
+- **No shell.** A public page, before sign-in: it carries its own header — the wordmark, the language
+  switch, `Sign in` — and says so on the board.
+- **375.** The title and its one claim · the cycle selector · the four plans as cards · `Compare two
+  plans`, a row that opens the two-plan comparison · `Compared with` · the trial act, pinned at the
+  foot with its one line.
+- **1536.** The four plans side by side. The full four-plan matrix is ONE region with the three-way
+  selector — not three tables stacked down the page. `Compared with` sits beside it. The trial act
+  lives in the page header.
+
+## Sample data — the book's rows, drawn and never invented
+
+The plan names and every price, limit, bundle, rate, trial cap and benchmark on this page are these
+rows' values. A frame that shows a name or a figure these rows do not carry is wrong.
+
+- **BM-11** (P0) — **Four tiers, fixed names: Starter · Growth · Pro · Enterprise.** The names are market-neutral structure and suite-wide vocabulary — every market's price book prices these same four tiers in its own currency (F1-25), every entitlement is keyed to them (M12), every report that segments by plan uses them (M13).
+- **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB. **Service terms are pricing-page copy, not book data (owner ruling 2026-09-07):** the IN positioning — support in-app / in-app + WhatsApp / priority + onboarding call / named contact — is rendered by the pricing page as Tier-keyed screen copy per BM-14; the book carries none of it and no entitlement, invoice or gate reads it, and a second market whose terms differ carries them as pack labels (`F1-22`), never in a locale-keyed catalog. Enterprise adds the BM-15 commercial arrangements. **Benchmarks (recorded per BM-39):** Reslink India INR page (owner-supplied, authoritative — Basic ₹60,000/yr at 50 kW · Pro ₹85,000/yr at 500 kW, 1,000 proposals · Premium ₹1,20,000/yr at 5 MW · Enterprise custom) and ARKA per-org pricing; priced under both at every rung — Starter-yearly 67% under Basic, Growth-yearly 53% under Pro, Pro-yearly 17% under Premium with a voice bundle no competitor has, and Pro's 1,500 proposals/mo beat the benchmark's 1,000.
+
 ## Entry & exit
 
 Reached from: the public web — the PRD names the pricing page as an M12-owned public surface (`docs/prd/04-business-model.md` §2) but does not pin inbound navigation — not pinned by PRD — designer decides, note the decision. Leads to: the trial funnel — the PRD's analytics events for this surface are "pricing-page tier viewed; trial started; trial converted" (`docs/prd/04-business-model.md` §04.1), and signup itself carries no plan choice, card or mandate (M12-14); Enterprise is sales-assisted (BM-14/BM-15 context), so the Enterprise column's action is a sales contact, never self-serve checkout. Exact exit targets beyond these are not pinned by PRD — designer decides, note the decision.
@@ -19,7 +62,7 @@ Reached from: the public web — the PRD names the pricing page as an M12-owned 
 ## States
 
 - **loading** — book data (prices/caps/bundles) not yet resolved for the market.
-- **empty** — no authored market book resolves for the visitor's market; the PRD defines one price/cap source of truth (the market book, BM-09/BM-41 context) but does not pin this page's no-book behavior — not pinned by PRD — designer decides, note the decision.
+- **empty** — no authored market book resolves for the visitor's market; the PRD defines one price/cap source of truth (the market book, BM-09/BM-41 context) but does not pin this page's no-book behavior — decided here: the page says no prices are published for this market yet and offers the sales contact; never an empty grid, never another market's prices.
 - **error** — book data failed to load; honest failure, no stale or invented numbers.
 - **normal** — the four-tier comparison: every cap published and visible per tier (BM-07), with the "every module in every tier / competitors ransom capabilities, we don't" statement the page is required to make (BM-05).
 - **monthly-yearly-toggle** — the page presents both billing cycles; every tier bills monthly or yearly (BM-13 context: yearly = pay for 10 months, get 12; prices exclusive of the market's tax scheme).

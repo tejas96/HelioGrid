@@ -5,9 +5,9 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-001 · Pricing Page
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
-**DESIGN:** SCR-M12-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-01+Pricing+Page+-+Mobile.dc.html
+**DESIGN:** SCR-M12-01 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-01-pricing-page.md`; they are the specification.
 **DONE WHEN:**
 - Given any tier and any module, when a tenant on that tier opens that module, then no capability is absent that a higher tier has (BM-05) — only ceilings, counts and bundle sizes differ.
@@ -18,9 +18,9 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-002 · Billing Home
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
-**DESIGN:** SCR-M12-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-02+Billing+Home+-+Mobile.dc.html
+**DESIGN:** SCR-M12-02 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).

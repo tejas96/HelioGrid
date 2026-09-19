@@ -4,6 +4,39 @@ App-shell state banner, trial countdown chip, dunning banner and typed blocked-m
 
 **Module:** SHELL · **Personas:** EPC Owner (the only person who can act), Sales Manager (sees the dunning banner), all employees (see state banners; acts render only for the Owner — M12 §M12.2 permissions) · **Context of use:** rendered inside the shell on every surface, on both platforms; denial sheets fire wherever a person attempts a blocked mutation, on either platform.
 
+**One job:** know the account's billing state at a glance, and reach the one act that fixes it.
+**Order of attention:** 1 what is wrong, and the one act · 2 what paused, what still works and until when · 3 for the Owner only, the amount.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **This strip
+sits on every screen of the product, so every word in it is paid for on every screen.** What paused,
+what still works and until when are never behind a tap (`M12-31`, `F7-46`), and a pinned bar's budget
+is one line: that is a collision, and §2 settles it — the facts stay and take the ROW form. Name it
+in the self-audit. The strip spends its height on rows, never on sentences.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The state — trial days left, a failed payment and its day in the grace, a cap at 80% or at its ceiling, halted (`M12-53`, `M12-06`, `M12-30`, `M12-39`) | status · data | the strip's ONE title line: the fact with its count or its date |
+| What paused, and what still works until when (`M12-31`, `M12-39`) | data | at most two label–value rows under the title — `Paused`, and `Still works` with its date. At `halted` the always-works set is a four-item list, because it is four items. Never a paragraph, never "account limited" |
+| What resolves it (`M12-31`, `M12-21`) | action | the strip's ONE act; its label IS what resolves it. The day-6 act names the payment method it will charge |
+| The automatic retry, while nothing has paused (`M12-39`) | data | that a retry is coming rides the title line; it is not a sentence of reassurance, and no retry date is invented |
+| The forfeiture disclosure, for a tenant inside a protection horizon (`M12-39`) | fixed disclosure | ONE sentence, drawn whole on every rung, never trimmed, never behind a tap — and not counted against any budget |
+| The trial countdown before D-7 (`M12-53`) | status | a chip with its tier mark and no act — a fact, no pressure |
+| A blocked act (`M12-21`) | data · action | the denial is a sheet at 375 and a centred modal at 1536: its title names what was blocked; two short lists, `Paused` and `Still works`; ONE primary act — reactivate, pick a plan, or upgrade |
+| The amount (Owner only) | data | in the act's label, or one label–value row. For every other employee the strip renders without it |
+| A person who is not the Owner | status | the state and its rows stay; the act's place is taken by ONE line naming whose act it is |
+| Provenance (`F8-07`) | honesty label | one mark for the strip's figures where they share a source; a recorded date carries none |
+| The billing state could not be read | error | one line and `Try again`. No figure at all — not the last known day, not the amount |
+| No billing condition | — | nothing is rendered: no strip, no chip, no teaching |
+
+## Arrangement
+
+- **375.** The strip sits between the top bar and the scrolling content, pinned: the title line, its
+  rows, then the act on its own line. One banner at a time — the broadest true fact speaks.
+- **1536.** The same strip in the content column: title and rows on the left, the act in the strip's
+  action row on the right; the four-item list runs in one wrapping row.
+
 ## Entry & exit
 
 Reached from: not navigated to — the state banner and countdown chip render in the app shell whenever the tenant is in a trial countdown, a post-expiry soft block, `past_due` grace, cap-ladder or halted state (M12-53, M12-06, M12-30, M12-39); a denial sheet fires when any UI mutation is blocked by the billing-state matrix (M12-21). Leads to: the "Reactivate" (or upgrade) path (M12-21); the day-6 one-tap pay link (M12-39); the plan-pick screen at trial expiry (M12-53 — SCR-M12-03); the usage screen carries the cap ladder's own surface (M12-30 — SCR-M12-04). If the PRD does not pin an entry/exit beyond these, it is not pinned by PRD — designer decides, note the decision.
