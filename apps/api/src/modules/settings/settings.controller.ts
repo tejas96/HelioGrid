@@ -26,6 +26,8 @@ export class SettingsController {
     saveBusinessProfile: MANAGE,
     taxRegistrations: MANAGE,
     saveTaxRegistrations: MANAGE,
+    quietHours: MANAGE,
+    saveQuietHours: MANAGE,
     branding: MANAGE,
     saveBranding: MANAGE,
     proposalTemplate: MANAGE,
@@ -64,6 +66,14 @@ export class SettingsController {
           actOf(req),
           sessionOf(req).actor.interfaceLanguage,
         ),
+      }),
+      quietHours: async () => ({
+        status: 200 as const,
+        body: await this.settings.quietHours(tenantIdOf(req)),
+      }),
+      saveQuietHours: async ({ body }) => ({
+        status: 200 as const,
+        body: await this.settings.saveQuietHours(tenantIdOf(req), body),
       }),
       branding: async () => ({ status: 200, body: await this.settings.branding(tenantId()) }),
       saveBranding: async ({ body }) => ({

@@ -5,6 +5,7 @@ import { MarketPackAdminRepository } from '../../src/modules/market/market.admin
 import { MarketPackReferenceRepository } from '../../src/modules/market/market.reference.repository';
 import { MarketPackService } from '../../src/modules/market/market.service';
 import { SettingsAdminRepository } from '../../src/modules/settings/settings.admin.repository';
+import { QuietHoursRepository } from '../../src/modules/settings/settings.quiet-hours.repository';
 import { SettingsRepository } from '../../src/modules/settings/settings.repository';
 import { SettingsService } from '../../src/modules/settings/settings.service';
 import { SettingsTemplatesRepository } from '../../src/modules/settings/settings.templates.repository';
@@ -56,6 +57,7 @@ export function settingsServicesOf(pools: Pools): {
     new SettingsRepository(pools.tenants),
     new SettingsAdminRepository(pools.admin.db),
     marketsOf(pools),
+    new QuietHoursRepository(pools.tenants),
   );
   const templates = new SettingsTemplatesService(
     new SettingsTemplatesRepository(pools.tenants),

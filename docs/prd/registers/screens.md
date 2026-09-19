@@ -836,13 +836,13 @@ Nothing below is renumbered.*
 | F6-07 | P0 | policy | policy | T-FPLAT-017 |
 | F6-08 | P0 | policy | policy | T-FPLAT-017 |
 | F6-09 | P0 | policy | policy | T-FPLAT-017 |
-| F6-10 | P0 | policy | policy | T-FPLAT-018 |
+| F6-10 | P0 | policy | policy | T-FPLAT-066 |
 | F6-11 | P0 | policy | policy | T-FPLAT-018 |
 | F6-12 | P1 | screen | SCR-SHELL-03 | T-SHELL-003 |
-| F6-13 | P0 | policy | policy | T-FPLAT-018 |
+| F6-13 | P0 | policy | policy | T-FPLAT-067 |
 | F6-14 | P1 | policy | policy | T-FPLAT-018 |
 | F6-15 | P2 | mixed | SCR-M01-11 · +non-UI: in-app record always lands; owner billing/compliance push never… | T-FPLAT-018 |
-| F6-16 | P0 | policy | policy | T-FPLAT-018 |
+| F6-16 | P0 | policy | policy | T-FPLAT-066 |
 | F6-17 | P0 | screen | SCR-SHELL-03 | T-SHELL-003 |
 | ~~F6-18~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). Its two surviving halves were rehomed, not lost: the up-only read-state contract to `F6-07`, the never-blocking clause to `F4-27`. Kept as a struck row because this register never deletes rows. It carried `T-FPLAT-019`; the Task cell is normalised to `—` 2026-08-15 so that no struck row claims a build obligation or counts toward §4's tasked total — `T-FPLAT-019` itself is alive (it is the notification centre's data contract, and `F6-19` still carries it).* | — |
 | F6-19 | P2 | mixed | SCR-SHELL-03 · +non-UI: bounded retention horizon; underlying facts persist on record… | T-FPLAT-019, T-SHELL-003 |

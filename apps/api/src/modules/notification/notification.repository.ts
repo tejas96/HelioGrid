@@ -1,6 +1,13 @@
 import type { Notification, Paginated } from '@heliogrid/contracts';
 import { type DbTransaction, notification, type TenantPool } from '@heliogrid/db';
-import type { NotificationType, SubjectKind, UiLanguage } from '@heliogrid/domain';
+import {
+  NOTIFICATION_REGISTRY,
+  type NotificationType,
+  pushDueAt,
+  type QuietWindow,
+  type SubjectKind,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
@@ -22,16 +29,34 @@ export interface NotificationToWrite {
   readonly emittedAt: Date;
 }
 
+/** The tenant's own clock, which decides when a push may sound (`F1-10`, `F6-14`). */
+export interface TenantQuietHours {
+  readonly window: QuietWindow;
+  readonly timezone: string;
+}
+
 /**
  * Writes one record ON THE CALLER'S TRANSACTION, so a notification and the change that earned it
  * commit together or neither does. `push_sent_at` is left null: the record is the truth and push
  * is a later, best-effort act on top of it (`F6-06`), never a condition of the record existing.
+ *
+ * `push_due_at` is set HERE and never moved (`F6-14`). It is the one emit door, so a held push
+ * cannot be a state a caller forgets to set: the type's urgency comes from the registry and the
+ * window from the tenant, and the decision itself is `packages/domain`'s — this binds the two and
+ * computes nothing of its own.
  */
 export async function recordNotification(
   tx: DbTransaction,
   toWrite: NotificationToWrite,
+  quietHours: TenantQuietHours,
 ): Promise<void> {
-  await tx.insert(notification).values(toWrite);
+  const due = pushDueAt(
+    NOTIFICATION_REGISTRY[toWrite.type].urgency,
+    toWrite.emittedAt.getTime(),
+    quietHours.window,
+    quietHours.timezone,
+  );
+  await tx.insert(notification).values({ ...toWrite, pushDueAt: new Date(due) });
 }
 
 /** The columns the wire declares, in one place: a read and a mark-read return the same shape. */

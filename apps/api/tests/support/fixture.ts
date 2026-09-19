@@ -10,6 +10,8 @@ import {
   marketPack,
   membershipRole,
   notification,
+  notificationPreference,
+  notificationSettings,
   onboardingProgress,
   proposalTemplateSettings,
   session,
@@ -256,6 +258,10 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
+  await db
+    .delete(notificationPreference)
+    .where(inArray(notificationPreference.tenantId, companies));
+  await db.delete(notificationSettings).where(inArray(notificationSettings.tenantId, companies));
   for (const setting of [
     trancheTemplateLine,
     trancheTemplate,

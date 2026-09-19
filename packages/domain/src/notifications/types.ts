@@ -56,6 +56,25 @@ export const NOTIFICATION_RECIPIENT_RULES = [
 export type NotificationRecipientRule = (typeof NOTIFICATION_RECIPIENT_RULES)[number];
 
 /**
+ * The five groups a person may mute push for (`F6-15`) and the notification centre filters by
+ * (`F6-17`). `F6` never enumerates them; the raising module is the only grouping it offers, so
+ * these ARE that grouping, named for the work rather than for a module id. One taxonomy, not
+ * two: `F6-12`'s grouping is not a vocabulary at all — records group by type and subject within
+ * a day, and whether a type groups is its urgency.
+ *
+ * A type does not carry its group. The group is derived from what RAISES the type
+ * (`registry.ts`), so the two can never disagree.
+ */
+export const NOTIFICATION_TYPE_GROUPS = [
+  'sales',
+  'delivery',
+  'payments',
+  'team',
+  'billing',
+] as const;
+export type NotificationTypeGroup = (typeof NOTIFICATION_TYPE_GROUPS)[number];
+
+/**
  * What raises a notification — named for the work it does, never for a document id. A type
  * belongs to exactly one of these, and that is the only grouping `F6` itself offers.
  */

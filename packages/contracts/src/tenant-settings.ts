@@ -1,4 +1,4 @@
-import { SETTING_SOURCES } from '@heliogrid/domain';
+import { CLOCK_TIME_PATTERN, SETTING_SOURCES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -58,6 +58,27 @@ export type SettingSource = z.infer<typeof settingSourceSchema>;
 function resolved<T extends z.ZodTypeAny>(value: T) {
   return z.object({ source: settingSourceSchema, value });
 }
+
+/**
+ * A time of day on the tenant's own clock, `HH:MM` and nothing else (`F1-10`).
+ *
+ * The pattern is `packages/domain`'s, imported rather than restated: the wire accepts exactly
+ * what `clockTime()` parses, and one shape spelled twice is one shape that will drift.
+ */
+export const clockTimeSchema = z.string().regex(CLOCK_TIME_PATTERN, 'HH:MM');
+
+/**
+ * The hours a tenant's staff are not pushed (`F6-14`). It may CROSS midnight, which is the
+ * ordinary shape of a night, and equal ends mean the tenant keeps no quiet hours at all.
+ *
+ * Resolved like every other setting: `platform` is the market's default — the hours outside its
+ * lawful calling window — and `tenant` is a window this company set for itself.
+ */
+export const quietHoursSchema = z.object({
+  start: clockTimeSchema,
+  end: clockTimeSchema,
+});
+export type QuietHours = z.infer<typeof quietHoursSchema>;
 
 const localeSchema = z.object({
   defaultLanguage: uiLanguageSchema,
@@ -153,6 +174,19 @@ export const tenantSettingsContract = c.router({
         ]),
       ),
     },
+  },
+  quietHours: {
+    method: 'GET',
+    path: '/settings/quiet-hours',
+    summary: "The hours staff are not pushed — this company's, or the market's default",
+    responses: { 200: resolved(quietHoursSchema), ...guarded },
+  },
+  saveQuietHours: {
+    method: 'PUT',
+    path: '/settings/quiet-hours',
+    body: quietHoursSchema.strict(),
+    summary: 'Set this company’s own quiet window — the record always lands either way',
+    responses: { 200: resolved(quietHoursSchema), ...guarded },
   },
   branding: {
     method: 'GET',

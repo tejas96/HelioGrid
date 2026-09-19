@@ -81,3 +81,4 @@ export {
   type StageLabel,
   stageLabel,
 } from './vocabulary';
+export { localMinutes, nextLocalTime } from './zone';
