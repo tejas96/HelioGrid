@@ -4,6 +4,31 @@ Show the collections account connection state; disconnect or rotate.
 
 **Module:** M11 · **Personas:** EPC Owner only (`F2.M11.connect-gateway` — the same holder set as the credential surface it rides, `M01-60`) · **Context of use:** an occasional administrative act at a desk, web. The credential entry itself is `M01-60`'s surface; this screen shows the connection's **state** — in the same words every surface that depends on it uses (M11 §M11.3 behavior detail: "connecting is a two-screen act at most").
 
+**One job:** see whether the collections account is connected and healthy — and disconnect or rotate it.
+**Order of attention:** 1 the connection's state · 2 what that state means for collecting · 3 disconnect, or rotate.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The product does not claim control it does not have (`M11-23`)** — and it says so in rows at
+the act, not in a paragraph of caveats.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The connection's state | status | the screen's ONE chip, in the same words every surface that depends on it uses |
+| A healthy connection | data | label–value rows: the account, as the credential surface shows it, and when it was last checked — a recorded time, so it carries no tier |
+| The check is failing (`M11-19`) | error | one banner, in place: what failed and what fixes it. Its act leads to the credential surface. There is no "verify later" state that lets it look live |
+| Not connected | teaching | at most two short sentences — collecting runs on manual recording and nothing is blocked — and ONE act, connect, which leads to the credential surface |
+| Disconnecting (`M11-23`) | action | a confirm whose consequences are three label–value rows, not a paragraph: links already sent stay live on the tenant's own account · new links stop being offered · recorded receipts are unchanged. The product never says it can cancel a link |
+| After disconnecting | status | the chip reads not connected, and the same three rows stand as what changed |
+| Rotating | action | an act that leads to the credential surface |
+| No money figure | — | none is drawn, and nothing says so |
+| The screen failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** The state region, then the acts.
+- **1536.** Honestly the same frame in a settings column with more room. Say so on the board.
+
 ## Entry & exit
 
 Reached from: the tenant's settings area alongside the credential surface (`M01-60` — M11 §M11.3 behavior detail), and via the persistent settings nag a failing credential probe raises (`M11-19`). Leads to: not pinned by PRD — designer decides, note the decision. Note: there is no "verify later" state that lets a broken connection look live (M11 §M11.3 behavior detail).

@@ -4,6 +4,32 @@ Finance's money-due home: due, overdue, receipts awaiting, period collections (c
 
 **Module:** M11 (facts, states and figures) · composed by M13 (home composition) · **Personas:** Finance · **Context of use:** web-first desk work — reconciliation, receipts and the period view are dense-screen desk tasks; the overdue list is also consulted on mobile away from the desk (per the Finance persona's primary-surfaces statement in `docs/prd/02-personas.md`).
 
+**One job:** see what money is due and overdue, and what is waiting to be recorded.
+**Order of attention:** 1 what is overdue, then what is due now — by project · 2 receipts waiting to be recorded · 3 this period's collections against what was expected.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **This home reads money and writes none (`M11-52`):** every row leads to the payments screen,
+and no control here records, waives or reverses.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Tranches due now and overdue, by project (`M11-54`, `M13-38`) | data · status | rows grouped by project: the customer and project, the tranche, its amount, the date it fell due. An overdue row carries its chip and its days overdue. Each row leads to that project's payments screen (`SCR-M11-02`) |
+| Receipts waiting to be recorded (`M11-54`) | data · more detail | their count as the region's figure, then rows — amount and project — each leading to the payments screen. No record control is drawn here |
+| The period's collections against expected (`M11-54`) | data | two figures as label–value rows, the period as the region's caption. Collected money is shown as its two parts — confirmed by the account, recorded by hand — because an aggregate that merges them drops the distinction (`M11-42`) |
+| A figure that cannot be reconciled now (`F8-12`) | status | its provisional mark, on the figure. Never a banner paragraph, and never a settled-looking number |
+| Provenance (`F8-07`) | honesty label | one label heads each group of figures that share it |
+| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title and a row leading to its home; it never pushes money due off the first screenful |
+| Nothing published yet | teaching | at most two short sentences. Nothing is fabricated to fill a block |
+| The home failed to load | error | one banner — what failed and what to do. No figure is drawn |
+
+## Arrangement
+
+- **375.** Overdue first, then due now, then receipts waiting, then the period. Tens of rows scroll in
+  the due region, which is this screen's volume.
+- **1536.** Due and overdue as one captioned table grouped by project (`F7-27`); receipts waiting and
+  the period's figures in a side column, in view while the table scrolls.
+
 ## Entry & exit
 
 Reached from: sign-in — this is the home screen the product composes for a person holding the Finance preset (`PS-32`, `M13-38`; M13 §M13.5's acceptance: when the person signs in, their home matches their row). Leads to: the Payments Ledger (SCR-M11-02) — M11 §M11.8's behavior detail pins that the payments screen "is reachable from the project (`M08-35`) and from Finance's own home (`M11-54`); it is the same screen in both places." Other exits: not pinned by PRD — designer decides, note the decision.
