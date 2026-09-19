@@ -4,13 +4,17 @@ import type {
   BusinessProfile,
   EffectiveSettings as EffectiveSettingsWire,
   Holidays,
+  QuietHours,
+  SettingSource,
   TaxRegistrations,
 } from '@heliogrid/contracts';
 import {
   checkTaxRegistration,
+  clockTimeHhmm,
   compliantShades,
   type EffectiveSettings,
   type MarketPack,
+  marketQuietHours,
   packLabel,
   resolveEffectiveSettings,
   type UiLanguage,
@@ -21,6 +25,7 @@ import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackService } from '../market/market.public';
 import { brandingWire, effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
+import { QuietHoursRepository } from './settings.quiet-hours.repository';
 import { SettingsRepository } from './settings.repository';
 
 /**
@@ -37,6 +42,7 @@ export class SettingsService {
     @Inject(SettingsRepository) private readonly scoped: SettingsRepository,
     @Inject(SettingsAdminRepository) private readonly crossTenant: SettingsAdminRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
+    @Inject(QuietHoursRepository) private readonly quiet: QuietHoursRepository,
   ) {}
 
   async effective(tenantId: string): Promise<EffectiveSettingsWire> {
@@ -144,6 +150,39 @@ export class SettingsService {
     });
   }
 
+  /**
+   * The window in force (`F6-14`): this company's own, or the market's — the hours outside its
+   * lawful calling window, which the pack already declares. `platform` says which a reader is
+   * looking at, exactly as every other resolved setting does.
+   */
+  async quietHours(tenantId: string): Promise<{ source: SettingSource; value: QuietHours }> {
+    const stored = await this.quiet.read(tenantId);
+    return this.resolvedWindow(tenantId, stored);
+  }
+
+  /** Never refused: a window may cross midnight, and equal ends mean the tenant keeps none. */
+  async saveQuietHours(
+    tenantId: string,
+    body: QuietHours,
+  ): Promise<{ source: SettingSource; value: QuietHours }> {
+    return this.resolvedWindow(tenantId, await this.quiet.save(tenantId, body));
+  }
+
+  private async resolvedWindow(
+    tenantId: string,
+    stored: { start: string | null; end: string | null },
+  ): Promise<{ source: SettingSource; value: QuietHours }> {
+    if (stored.start !== null && stored.end !== null) {
+      /* The column is `time`, so it reads back with seconds the wire format does not carry. */
+      return { source: 'tenant', value: { start: hhmm(stored.start), end: hhmm(stored.end) } };
+    }
+    const fromMarket = marketQuietHours((await this.packOf(tenantId)).callingRules);
+    return {
+      source: 'platform',
+      value: { start: clockTimeHhmm(fromMarket.start), end: clockTimeHhmm(fromMarket.end) },
+    };
+  }
+
   private async packOf(tenantId: string): Promise<MarketPack> {
     const own = await this.scoped.tenant(tenantId);
     if (own === null) throw notVisible();
@@ -161,4 +200,10 @@ export class SettingsService {
 /** The guard admits a settings route only with a membership, so an invisible tenant is a broken guard, not a status to answer. */
 function notVisible(): Error {
   return new Error('the guard admitted a settings route for a company its session cannot see');
+}
+
+/** A `time` column reads back with seconds; the wire declares `HH:MM` and nothing else. */
+function hhmm(stored: string): string {
+  const [hours, minutes] = stored.split(':');
+  return `${hours}:${minutes}`;
 }

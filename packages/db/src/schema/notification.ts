@@ -1,5 +1,15 @@
-import { NOTIFICATION_TYPES } from '@heliogrid/domain';
-import { index, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES } from '@heliogrid/domain';
+import {
+  boolean,
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  time,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
 import { userAccount } from './identity';
 import { subjectKind } from './subject';
@@ -7,6 +17,9 @@ import { tenant, uiLanguage } from './tenant';
 
 /** pgEnum hand-mirrors domain's tuple (`M17` proves the pair equal). */
 export const notificationType = pgEnum('notification_type', NOTIFICATION_TYPES);
+
+/** The five groups a person mutes push for (`F6-15`), mirrored the same way (`M17`). */
+export const notificationTypeGroup = pgEnum('notification_type_group', NOTIFICATION_TYPE_GROUPS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -55,6 +68,13 @@ export const notification = pgTable(
     readAt: instant('read_at'),
     /** Best-effort: null means no push was sent, never that the record is missing (`F6-06`). */
     pushSentAt: instant('push_sent_at'),
+    /**
+     * When the push becomes owed (`F6-14`) — the emit instant, or the end of the tenant's quiet
+     * window where that held it. Set once at emit and never moved: with `push_sent_at` beside it
+     * a sender asks one question, due and not yet sent, and no row can be in a state the pair
+     * does not describe.
+     */
+    pushDueAt: instant('push_due_at'),
   },
   (table) => [
     /** The inbox, newest first — and the badge, which counts over it where `read_at` is null. */
@@ -64,4 +84,72 @@ export const notification = pgTable(
       table.emittedAt.desc(),
     ),
   ],
+);
+
+/**
+ * One person's push mute for one group (`F6-15`), and nothing else.
+ *
+ * Minimal and honest: there is no per-event snooze and no in-app column, because the record
+ * always lands and is the truth (`F6-06`). A row's ABSENCE is the default — push on — so a
+ * person who has never opened the preferences screen needs no rows at all.
+ *
+ * Tenant-scoped, all four always. `user_ref` keys `user_account` and the pair with this row's
+ * own `tenant_id` IS the membership, bound exactly as `notification.recipient_user_ref` is.
+ * The unique key leads with `tenant_id` (`M12`), so the same person in two companies keeps two
+ * sets of preferences, which is what a per-tenant setting means.
+ *
+ * The rule that some groups may not be muted is POLICY and lives in `packages/domain`; this
+ * table stores what was written, and the read applies the rule again (`F6-15`).
+ */
+export const notificationPreference = pgTable(
+  'notification_preference',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    userRef: uuid('user_ref')
+      .notNull()
+      .references(() => userAccount.id),
+    typeGroup: notificationTypeGroup('type_group').notNull(),
+    /** True when this person has switched push off for the group. Never silences the record. */
+    pushMuted: boolean('push_muted').notNull(),
+  },
+  (table) => [
+    /** One row per person per group, and the read path's only lookup. */
+    uniqueIndex('notification_preference_tenant_user_group_key').on(
+      table.tenantId,
+      table.userRef,
+      table.typeGroup,
+    ),
+  ],
+);
+
+/**
+ * One company's own quiet window (`F6-14`), on its own clock (`F1-10`).
+ *
+ * Its OWN table rather than two columns on `tenant`, because `tenant` is SELECT-only to
+ * `app_user` by design — every tenant-editable setting in this schema lives beside its peers for
+ * the same reason. One row per company, and the row's ABSENCE is the market's default: the hours
+ * outside its lawful calling window, derived in `packages/domain` from the pack, so no number is
+ * stored and a company that never set a window needs no row.
+ *
+ * A window may CROSS midnight, which is the ordinary shape of a night, and equal ends mean the
+ * company keeps no quiet hours at all.
+ */
+export const notificationSettings = pgTable(
+  'notification_settings',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    quietHoursStart: time('quiet_hours_start').notNull(),
+    quietHoursEnd: time('quiet_hours_end').notNull(),
+  },
+  (table) => [uniqueIndex('notification_settings_tenant_key').on(table.tenantId)],
 );

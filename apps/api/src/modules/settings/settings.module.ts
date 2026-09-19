@@ -5,6 +5,7 @@ import { SettingsController } from './settings.controller';
 import { SettingsOnboardingController } from './settings.onboarding.controller';
 import { SettingsOnboardingRepository } from './settings.onboarding.repository';
 import { SettingsOnboardingService } from './settings.onboarding.service';
+import { QuietHoursRepository } from './settings.quiet-hours.repository';
 import { SettingsRepository } from './settings.repository';
 import { SettingsService } from './settings.service';
 import { SettingsTemplatesRepository } from './settings.templates.repository';
@@ -28,6 +29,7 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
     SettingsTranchesRepository,
     SettingsOnboardingRepository,
     SettingsAdminRepository,
+    QuietHoursRepository,
   ],
 })
 export class SettingsModule {}

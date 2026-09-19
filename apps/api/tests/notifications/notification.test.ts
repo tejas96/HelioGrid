@@ -1,7 +1,7 @@
 import type { Notification, Paginated, SessionProjection, UnreadCount } from '@heliogrid/contracts';
 import { httpStatusFor } from '@heliogrid/contracts';
 import { notification } from '@heliogrid/db';
-import { FOUNDER_ROLE } from '@heliogrid/domain';
+import { clockTime, FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -22,6 +22,15 @@ import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
  * That NO role may change any column but `read_at` is NOT proven here: it is a privilege read
  * from the catalog over every RLS-subject role, which `tests/invariants` owns.
  */
+
+/**
+ * The tenant clock every seeded row is written against. A window with no length keeps no quiet
+ * hours (`F6-14`), so seeding here never holds a push and the ordering tests read what they mean.
+ */
+const NO_QUIET_HOURS = {
+  window: { start: clockTime('00:00'), end: clockTime('00:00') },
+  timezone: 'Asia/Kolkata',
+};
 
 /** Far enough apart that "newest first" is unambiguous, and old enough that seeding is in the past. */
 const A_SECOND_MS = 1_000;
@@ -91,10 +100,11 @@ describe.skipIf(skip)('the notification routes, over HTTP against a migrated dat
       ],
     });
     await pools.admin.db.transaction((tx) =>
-      recordNotification(tx, {
-        ...sent("colleague's own", new Date()),
-        recipientUserRef: colleague.userId,
-      }),
+      recordNotification(
+        tx,
+        { ...sent("colleague's own", new Date()), recipientUserRef: colleague.userId },
+        NO_QUIET_HOURS,
+      ),
     );
 
     const now = Date.now();
@@ -102,7 +112,7 @@ describe.skipIf(skip)('the notification routes, over HTTP against a migrated dat
     for (const [index, key] of oldestFirst.entries()) {
       const secondsAgo = oldestFirst.length - index;
       await pools.admin.db.transaction((tx) =>
-        recordNotification(tx, sent(key, new Date(now - secondsAgo * A_SECOND_MS))),
+        recordNotification(tx, sent(key, new Date(now - secondsAgo * A_SECOND_MS)), NO_QUIET_HOURS),
       );
     }
     const all = await http.call<Paginated<Notification>>(

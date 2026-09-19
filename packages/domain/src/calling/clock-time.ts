@@ -16,7 +16,12 @@ declare const CLOCK_TIME: unique symbol;
 
 export type ClockTime = number & { readonly [CLOCK_TIME]: 'clock' };
 
-const HH_MM = /^([01]\d|2[0-3]):([0-5]\d)$/;
+/**
+ * The one spelling of a time of day, product-wide: strictly zero-padded `HH:MM` on a 24-hour
+ * clock. Exported so the WIRE validates against the same pattern this parser accepts — a second
+ * regex beside it would be a second definition of one shape, and the two would drift.
+ */
+export const CLOCK_TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const MINUTES_PER_HOUR = 60;
 
@@ -26,7 +31,7 @@ const MINUTES_PER_HOUR = 60;
  * callers are pack literals, so a throw lands at import time in the first test run.
  */
 export function clockTime(hhmm: string): ClockTime {
-  const match = HH_MM.exec(hhmm);
+  const match = CLOCK_TIME_PATTERN.exec(hhmm);
   const hours = match?.[1];
   const minutes = match?.[2];
   if (hours === undefined || minutes === undefined) {

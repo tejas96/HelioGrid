@@ -1,4 +1,4 @@
-import type { ResolvedSession, SessionProjection } from '@heliogrid/contracts';
+import type { ResolvedSession, RoleSet, SessionProjection } from '@heliogrid/contracts';
 import { UnauthorizedException } from '@nestjs/common';
 import type { Request } from 'express';
 
@@ -33,6 +33,17 @@ export function tenantIdOf(req: Request): string {
   const membership = sessionOf(req).membership;
   if (membership === null) throw new Error('the guard admitted a capability route with no company');
   return membership.tenantId;
+}
+
+/**
+ * The presets this session holds in that company. Same shape as `tenantIdOf` and for the same
+ * reason: the guard admits a `member` route only with a membership, so an absent one is a broken
+ * guard rather than a request to answer, and a handler is left no status to invent.
+ */
+export function rolesOf(req: Request): RoleSet {
+  const membership = sessionOf(req).membership;
+  if (membership === null) throw new Error('the guard admitted a member route with no company');
+  return membership.roles;
 }
 
 /** The session row's id — for a sign-out and for binding a new company to this device. */

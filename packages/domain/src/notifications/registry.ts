@@ -3,6 +3,7 @@ import type {
   NotificationRecipientRule,
   NotificationSource,
   NotificationType,
+  NotificationTypeGroup,
   NotificationUrgency,
 } from './types';
 
@@ -91,3 +92,26 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     urgency: 'standard',
   },
 };
+
+/**
+ * Which group each SOURCE belongs to (`F6-15`), and through it every type that source raises.
+ *
+ * Derived rather than stored per type: a `typeGroup` on each registration would be a second copy
+ * of a fact this one table already carries, and two copies of a correct fact still diverge. The
+ * `Record` is the mechanism — a source with no group fails to compile, so the module that adds
+ * one is made to say where its notifications belong.
+ */
+const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
+  crm: 'sales',
+  proposals: 'sales',
+  sales_execution: 'sales',
+  survey: 'delivery',
+  design: 'delivery',
+  payments: 'payments',
+  platform: 'team',
+};
+
+/** The group a type belongs to, read from what raises it. */
+export function typeGroupOf(type: NotificationType): NotificationTypeGroup {
+  return GROUP_BY_SOURCE[NOTIFICATION_REGISTRY[type].raisedBy];
+}
