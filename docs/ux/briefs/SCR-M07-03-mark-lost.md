@@ -4,6 +4,26 @@ One-tap mandatory reason sheet with the ruled seven-reason set.
 
 **Module:** M07 · Sales Execution · **Personas:** Sales Executive (mobile-first, primary), Sales Manager, EPC Owner — `F2.M07.mark-won-lost`, scope follows lead visibility · **Context of use:** the moment a deal dies — phone in hand, mid-day, between calls; one tap per reason because *"if the product cannot represent that cleanly, reps keep it in their head"* (M07 §M07.12 behavior detail).
 
+**One job:** record why the deal was lost, in one tap.
+**Order of attention:** 1 the seven reasons · 2 the date, only when it is postponed · 3 save.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **One tap per reason (`M07-63`):** the reasons are the screen, and none of them is explained.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The seven reasons (`M07-63`) | action | one single-choice list of seven, each one tap. No description under any reason |
+| Postponed carries a date (`M07-63`) | data | choosing it reveals ONE required date field. Its one line of helper says the lead comes back on that day — it changes what is typed |
+| Not interested suppresses calling for six months (`M07-63`) | — | build-side behaviour. This brief keeps that figure off the sheet, so nothing is drawn for it |
+| Save | action | the sheet's ONE act. While it cannot be pressed, its one line says what is missing (`N4`) |
+| The save failed | error | one line at the act. The chosen reason and date stay |
+
+## Arrangement
+
+- **375.** A sheet over the lead (`F7-21`): the list, the date when it applies, the act at the foot.
+- **1536.** Honestly the same sheet as a side panel. Say so on the board.
+
 ## Entry & exit
 
 Reached from: a lead in any open stage (M07 §M07.12 behavior detail: "Mark lost from a lead in any open stage"). Leads to: the lead shows lost; the act lands on the timeline with actor and reason (M07 §M07.12 behavior detail); the lost-with-reason record feeds the win/loss lists (`modules/M13`'s surfaces). Post-save destination is not pinned by PRD — designer decides, note the decision.

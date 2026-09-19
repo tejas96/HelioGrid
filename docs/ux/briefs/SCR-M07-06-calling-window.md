@@ -4,6 +4,27 @@ Edit calling days, hours and holiday calendar within the statutory floor.
 
 **Module:** M07 · Sales Execution · **Personas:** EPC Owner only (`F2.M01.configure-agent`) · **Context of use:** web emphasis — a settings task inside agent configuration (M07 §2).
 
+**One job:** set when the agent may call — inside what the law allows.
+**Order of attention:** 1 the days and their hours · 2 the boundary the law sets · 3 the holidays.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The floor is drawn as a boundary on the control (`M07-12`), not explained in a sentence.**
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Seven days, each with its hours (`M07-12`) | data | seven rows: the day, a switch, its start and end |
+| The statutory window (`M07-12`) | data | the limit each range control cannot pass, with the pack's hours as the region's one caption line. Why the limit exists is Help |
+| The timezone that governs | data | ONE label–value row |
+| The market's holidays, and the tenant's extra ones | data · action | a list by date: a pack holiday is a read-only row, an added one can be removed. ONE act — add a holiday |
+| A wider window | error | it cannot be set on the control. Where a value still arrives wider, ONE line at the act names the limit |
+| The save failed | error | one line at the act. The edits stay |
+
+## Arrangement
+
+- **375.** The week, then the holidays, the save act at the foot.
+- **1536.** The week and the holiday calendar side by side.
+
 ## Entry & exit
 
 Reached from: tenant configuration's agent & voice surface list — M01-57 names "Calling window (days, hours, holiday calendar — narrower than the floor only)"; it is also the guided setup's "when it may call" step (M07-09, SCR-M07-05). Leads to: saves ride agent-config publishing (versioned-append, M07-14 — SCR-M07-08's slice); the same window control is reused by the IVR editor's business-hours switch (M07-47, SCR-M07-16). Any further entry/exit is not pinned by PRD — designer decides, note the decision.
