@@ -4,6 +4,48 @@ Plan, cycle, payment method, invoices, dunning state and history; the guaranteed
 
 **Module:** M12 · Platform billing · **Personas:** EPC Owner — the only persona that manages billing (plan, cycle, payment method, reactivation, cancellation, `F2.M12.manage-billing`); non-Owner employees may open the screen and see state but never amounts or acts (M12-56 context: "the state is visible, the acts are not; the screen says whose act it is") · **Context of use:** web emphasis for plan/mandate/invoice work; the dunning banner and one-tap pay are fully mobile (`docs/prd/modules/M12-platform-billing.md` §2). This screen must work when the tenant is in a dead state — it is the way back, so it is opened under stress, often from a dunning message on a phone.
 
+**One job:** see what needs me on the bill, what I am on and what I am using — and, from a dead state, get back in one act.
+**Order of attention:** 1 what needs me — a failed payment, a refund window, a scheduled downgrade, or the way back · 2 what I am on · 3 what I am using · 4 the records: payment method, invoices, history.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Route, don't
+pack:** this screen answers three questions and leads to every record; it does not stack the records.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| What needs me — the dunning rung, the refund window, a scheduled downgrade (§M12.10) | status · data · action | the first region, drawn only when something needs the Owner: a row per thing — its chip, the fact as label–value (the amount and the day the grace ends · refund available until a date · the plan and the date it changes) — and the region's ONE primary act |
+| A dead state — `halted`, `expired`, `cancelled` — and the way back (`BM-32`, `M12-08`) | status · data · action | the same region, first on the screen and behind nothing: the state chip, what still works as four short rows, a row saying the data is intact, and ONE primary act, `Reactivate`. Its one line says entitlements return when the payment confirms |
+| What I am on — plan, cycle, price, next bill and its date (`M12-55`) | data · status | label–value rows in a `Your plan` region; the subscription state is its chip; a `Change plan` row leads to `SCR-M12-03` |
+| The plan's published caps and bundles (`M12-55`) | more detail | a `What my plan includes` row that opens the list in place — never a dozen rows standing on this screen |
+| What I am using (§M12.10) | data · more detail | the two meters nearest their caps, as quiet rows, and an `All usage` row leading to `SCR-M12-04` |
+| The payment method and its mandate (`M12-55`) | data · status · action | one label–value row, the method as the gateway names it, with its chip; a secondary `Update` act that hands off to the gateway. Why the product never sees an instrument is Help |
+| Invoices, every one exportable in every state (`M12-46`, `M12-55`) | data · more detail | the three latest as list rows — amount, date, what it was for, its state chip, its PDF — then an `All invoices` row leading to the full list with its filter chips. A list at 375, a table at 1536. The PDF act never goes away with the billing state |
+| The 7-day refund window (`M12-47`) | data | a row in `Needs you`, present only while it is open: that a refund is available, and until when. It is gone afterwards — never a hidden clause, never a standing sentence |
+| Dunning history and subscription history (`M12-55`, §M12.2) | more detail | two rows that lead to their append-only lists — state, when, why |
+| Cancel (`M12-50`) | action | the last, quiet act on the screen. Its reason dialog is a sheet: the reasons as a list, `Skip` always offered because a reason is never a gate, and ONE line — the day service runs to, and that the data is kept |
+| Cancelled, running to its period end (`M12-50`) | status · data · action | the chip, a `Runs until` row, and `Reactivate` |
+| Enterprise (§M12.10) | action | a `Talk to us` row, and nothing self-serve |
+| A person who is not the Owner opens this screen (`M12-56` context) | status | the state chip and ONE line naming whose act it is; no amount and no act is drawn |
+| A fresh trial — no invoices, no mandate yet | teaching | the trial's state and days left in `Your plan`; the invoices region teaches in at most two short sentences |
+| Billing data failed to load | error | one banner — what failed and what to do. This screen is the way back, so retry AND the pay route stay reachable |
+
+## Arrangement
+
+- **375.** `Needs you`, only when something does · `Your plan` · `Usage this cycle` · `Payment
+  method` · `Invoices` · the two history rows · `Cancel subscription`, last and quiet.
+- **1536.** Two columns: what needs me, the plan and the usage on the left; the payment method and the
+  invoices table — more rows in view — on the right. A history opens as a side panel (`F7-21`).
+
+## Sample data — the book's rows, drawn and never invented
+
+The plan names and every price, cap and bundle on this screen are these rows' values. Invoice
+amounts, dates and usage counts are yours to choose; a plan name or a published figure these rows do
+not carry is wrong.
+
+- **BM-11** (P0) — **Four tiers, fixed names: Starter · Growth · Pro · Enterprise.** The names are market-neutral structure and suite-wide vocabulary — every market's price book prices these same four tiers in its own currency (F1-25), every entitlement is keyed to them (M12), every report that segments by plan uses them (M13).
+- **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom.
+
 ## Entry & exit
 
 Reached from: dunning messages, which "deep-link to the billing screen's one action" (`docs/prd/modules/M12-platform-billing.md` §M12.6 behavior detail); the honest state banner and blocked-mutation errors, which carry "a route to reactivate" (BM-32; banner surface is SCR-SHELL-06); and it is available in every billing state without exception (M12-55, BM-32). Leads to: plan selection (SCR-M12-03); the usage screen — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-04); the gateway's hosted checkout for pay/update-method/reactivate (the platform never sees a payment instrument — M12-10 context); the cancel-reason dialog (M12-50); invoice PDFs (M12-55). Reactivation from a dead state "is the same screen with one primary action" (§M12.10 behavior detail).
