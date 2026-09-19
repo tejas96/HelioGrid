@@ -4,9 +4,54 @@ Per-period rollups against bundles with plain overage pricing and ledger deep li
 
 **Module:** M12 · Platform billing · **Personas:** EPC Owner — the usage screen is owner-scoped and informational (M12-36); Finance is listed on the screens register for this screen, but note the PRD's boundary: Finance's money scope is the tenant's customers' money (M11), never the platform bill (`docs/prd/modules/M12-platform-billing.md` §2), and Finance-persona visibility of invoices and usage follows F2's matrices — `docs/prd/04-business-model.md` §2 adds no grants · **Context of use:** web emphasis with full mobile parity per the suite's lockstep law (`docs/prd/04-business-model.md` §2); the owner checks it when a warning fires — often on a phone, mid-day, deciding whether to upgrade.
 
+**One job:** see what this cycle has used against what the plan includes, and know whether anything is about to cost money or pause.
+**Order of attention:** 1 what needs me — a meter at 80%, at its cap or paused, and what happens next and when · 2 every meter and cap against its bundle for this cycle · 3 the detail behind a number, and the way to a bigger plan.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **"No scary
+meters" (`M12-36`) is a rule about form:** a meter near its cap keeps the quiet treatment every
+other meter has, and its chip carries the state — never a red wall, never an alarm banner per meter.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The cycle every count covers, and the day it resets (`M12-34`, `BM-34`) | data | ONE line under the title — the cycle's two dates and the reset date. It is the period label for every counted figure, stated once; the storage gauge differs, so it carries its own `as of` time |
+| What needs me — each meter at 80%, at its cap in grace, or paused (`BM-34`, `M12-30`, `M12-34`) | status · data | the first region, drawn only when a meter qualifies: a row per meter — name, chip (`80% used` · `At the cap` · `Paused`), used of included, and ONE line saying what happens next and when: the grace's last day, what pauses, the reset date |
+| What still works when a meter pauses (`BM-34`) | data | the same ONE line, on the paused meter's row: what paused, until when, and what still works — reading, editing and export never pause; on a trial, the manual alternative |
+| Every capped count and ceiling (`BM-07`, `BM-34`) | data | a `Limits` region, one row per cap: name, used of allowed, a quiet meter. A ceiling that is not a count — the single-design size — is a label–value row with no meter |
+| Every bundle and meter (`BM-27`, `M12-34`, `M12-36`) | data | an `Included each month` region, one row per meter: name, used of included, a quiet meter. A pay-as-you-go meter shows its count and its rate, with no bar to fill |
+| A meter that is tracked and never billed | data · status | its count, and a `Not billed` chip |
+| Overage as it accrues (`M12-35`, `BM-27`) | data | on the meter's own row: units past the bundle, the published rate, the amount so far — label–value pairs. ONE total row ends the region, and its one line says when it bills |
+| Plain overage pricing (`M12-36`) | data | the rate rides on the meter's row; no second rate table on this screen |
+| A V2 meter the book has no rate for | data | the meter's row shows its activity; the rate is a named gap — never a zero, never an invented figure |
+| Tracked seats and the accruing seat-months | data | two label–value rows inside the seats meter |
+| Provenance (`M12-34`, `BM-27`, `F8-07`) | honesty label | once per group, at its head: the used column reads `Actual usage`, the included column and the rates read the price list and its date. The word "measured" never appears |
+| The ledger behind a number (`M12-36`) | more detail | each meter row opens that meter's ledgered events for the cycle — a sheet at 375, a side panel at 1536 (`F7-21`). No register row owns a ledger screen: if the ledger needs more than a sheet holds, NAME the screen in your notes and stop |
+| The way to a bigger plan (`BM-07`) | more detail | a row that leads to `SCR-M12-03`; on a meter that is the signal, the same row sits on that meter |
+| A person who is not the Owner opens this screen (`M12-56` context) | status | no usage figure, no amount and no act is drawn: which meter is at its cap or paused, as its chip, and ONE line naming whose screen this is — the same answer `SCR-M12-02` gives |
+| Nothing used yet | teaching | every cap and bundle still visible at zero; at most two short sentences |
+| The rollup failed | error | one banner — what failed and what to do. No figure is drawn: never a cached, approximate or placeholder number |
+
+## Arrangement
+
+- **375.** The title and its one cycle line · `Needs you`, only when a meter qualifies · `Limits` ·
+  `Included each month`, ending in the overage total when any accrues. Every meter is a list row —
+  name, used of included, a quiet meter — never a table: used-of-included is ONE value.
+- **1536.** The two meter regions become tables with their columns in view — meter · used · included
+  · extra usage · rate — side by side where they fit. `Needs you` and the overage total sit in a side
+  column, in view while the tables scroll. A meter's ledger opens as a side panel.
+
+## Sample data — the book's rows, drawn and never invented
+
+Every cap, bundle size, overage rate and trial cap on this screen is this row's value. Usage counts
+are yours to choose; a plan name, a cap or a rate this row does not carry is wrong. A V2 meter has
+no sellable rate in this row, which is what the `v2-meter-activity-no-rate` state draws.
+
+- **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB.
+
 ## Entry & exit
 
-Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the PRD requires an upgrade path but does not pin the navigation to SCR-M12-03 — designer decides, note the decision.
+Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two.
 
 ## Requirements (verbatim)
 
@@ -35,6 +80,8 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 - **overage-accruing** — usage beyond bundle: accruing overage shown as it happens, in the tenant's currency with its market grouping, at the book's published per-unit rates, billing on the next invoice (M12-35, BM-27).
 - **v2-meter-activity-no-rate** — "the book has no value for a V2 meter slot → the meter exists but cannot be sold; the usage screen shows activity with no rate rather than inventing one" (`docs/prd/modules/M12-platform-billing.md` §M12.5 edge case).
 - **tracked-seats-accruing** — "the usage screen shows current tracked seats and the accruing seat-months beside every other meter" (`docs/prd/modules/M12-platform-billing.md` §M12.5 behavior detail).
+- **trialing** — the caps in force are the book's trial caps (BM-41), enforced through the same gates with the same 80% pre-warning; a paused meter states its manual alternative (M12-52 context).
+- **non-owner-read-only** — a person who is not the Owner arrives, from a cap banner or from Billing Home: which meter is at its cap or paused stays visible, no usage figure or amount renders, and the screen says whose screen it is (M12-56 context; the same rule SCR-M12-02 carries).
 - **cap-reached-grace** — a cap at 100%: banner appeared, the 7-day grace is running; reading, editing existing records and exporting never pause (BM-34, M12-30).
 - **creations-paused** — grace elapsed: new creations of that type pause until upgrade or the next cycle; the reset lands on the tenant's own billing anchor (BM-34, M12-30).
 
