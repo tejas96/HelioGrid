@@ -4,6 +4,33 @@ Lead's designs/variants side by side with recommendation mark; entry to the stud
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer, EPC Owner, Sales Manager, Sales Executive · **Context of use:** lead-scoped and server-backed — opens on any device for any permitted teammate (MS12-10); web primary with full mobile parity (MS12 §2, F7-30); sales personas arrive from the lead on a phone, the designer from either desk or phone. Read access follows per-lead visibility (F2).
 
+**One job:** compare this lead's designs, and open one.
+**Order of attention:** 1 each variant's four figures — size, generation, price, payback — and which one is recommended · 2 finding one — search, filters · 3 new, duplicate, open.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Each variant (`M05-78`, `MS12-12`) | data · status | one card: the pinned-location thumbnail, the name, its status as the ONE chip, and the four figures as label–value rows in the same order on every card, so they compare down the list |
+| The recommended variant | status | its mark on the card. Setting it is not an act of this screen |
+| Provenance (`F8-07`) | honesty label | one label heads each figure that shares a tier across the cards; a figure that differs carries its own mark |
+| Search, filters, sort (`MS12-11`) | action | a search field, status filter chips carrying live counts, a sort control |
+| New design, new variant, duplicate, open (`M05-78`) | action | ONE primary act for the list; open is the card itself; duplicate and delete sit in the card's menu |
+| A design cannot start yet (`M05-21`) | error | the block is rows, never a bare refusal: each missing item by name, who to ask, and the route that resolves it |
+| Deleting (`MS12-14`, `N8`) | action | a confirm stating what is removed and from where, as rows, with `N8`'s words |
+| A design that could not be loaded (`MS12-15`) | error | one banner naming it. It is never hidden |
+| No designs yet (`MS12-15`) | teaching | at most two short sentences and ONE act — the first design |
+| Read scope only | status | every card in full; no mutating act is drawn |
+| Waiting for data (`MS12-27`) | — | skeleton cards. Never a blank screen |
+
+## Arrangement
+
+- **375.** Cards stacked, the four figures in one fixed order on each.
+- **1536.** The variants side by side as columns — this is a comparison, so it stays on the screen —
+  with search and filters in a bar above.
+
 ## Entry & exit
 
 Reached from: the owning lead (the list is LEAD-SCOPED, MS12-10) via its own named route (MS12-27). Leads to: opening a design enters the studio wizard (SCR-MS-03) — opening resumes at the saved step (MS12-13, PRD context); actions New design / duplicate / open / new variant (M05-78); an incomplete survey blocks design start with the block screen listing exact missing items and owners (M05-21). Note: the studio's "save and exit" returns to the LEAD the design belongs to (MS12-05), not to this list. Comparison entry (variant compare, SCR-MS-14) is not pinned to this screen by the rows in this slice — designer decides the affordance, note the decision.

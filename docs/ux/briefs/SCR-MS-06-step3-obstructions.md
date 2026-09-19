@@ -4,6 +4,34 @@ Place and edit 11 typed obstructions on the calibrated roof canvas, with bridgin
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer, EPC Owner · **Context of use:** Design Engineer authors (MS3 §2); read per lead visibility. Web + mobile full parity (F7-30); the S3-4 touch pack applies — no Shift-only or keyboard-only interaction without a visible/touch equivalent. Uses MS1's canvas contract at the project pin with calibration applied; the canvas is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the shell carries the same law, SCR-MS-03). Touch canvas work over real imagery, often on a phone.
 
+**One job:** mark everything on the roof that shades or blocks panels.
+**Order of attention:** 1 the canvas, and Add · 2 the selected object's seven acts · 3 its settings, revealed a stage at a time.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A canvas step is a tool, not a page.** Its words are tool names, ONE hint line, chips on the canvas, and sheets. Copy this brief marks as binding is fixed copy — drawn as written, never paraphrased, never counted. Teaching lives in the header's per-step Help (`MS12-07`), never on the canvas.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The five tools, with undo and redo (`M05-31`, `MS3-07`) | action | a tool rail; Add carries its count |
+| Nothing placed yet (`MS3-16`) | teaching | the brief's own one line |
+| The eleven types (`MS3-12`, `M05-32`) | data · action | a picker of cards: icon, name, default size with its unit. The beta marker is a chip |
+| Placing one (`MS3-13`) | action line | ONE line in the hint bar, and a visible way to cancel (`N1`) |
+| What stands on the canvas (`M05-30`) | data | the roofs as a read-only backdrop, each obstruction to scale with its ID chip, its keep-out ring, north, scale, zoom |
+| The selected object's acts (`M05-34`, `MS3-22`) | action | exactly seven, each an icon with its name. A locked object hides its handles, and a refused act says why in the hint line — never in a hover-only tooltip (`N1`) |
+| Shape, size and rotation (`MS3-25`, `MS3-26`) | data · action | typed values in the display unit. A value below the floor is ONE inline line naming the floor |
+| The settings chain (`M05-35`, `MS3-27`, `MS3-29`, `MS3-30`) | data · action | each switch reveals the next, a stage at a time (`F7-21`): setback, with the brief's one line on what it means; casts shadow; blocks placement; then the bridging card — may bridge, must stay open to sky, clearance with its live calculation as data. The engineer-confirmation warning is fixed copy: drawn whole, never trimmed |
+| Convert to a rooftop platform (`MS3-32`) | action | ONE act. Its one line is the engineer-verification statement — fixed copy. Where it cannot be done, its line says why |
+| Height information (`MS3-33`) | data | read-only label–value rows |
+| Measuring (`MS3-10`) | action | the ruler, as on the roof step |
+
+## Arrangement
+
+- **375.** The canvas full-bleed, the rail at the thumb's edge, the context bar floating clear of the
+  object and its ring, every editor a sheet (`F7-21`).
+- **1536.** The selected object's settings chain lives in a side panel that stays open, so its effect
+  is seen on the canvas as it is changed (`F7-21`).
+
 ## Entry & exit
 
 Reached from: Step 3 of the wizard (SCR-MS-03), after Step 2. Wizard-step gate (flagship note): the shell's **at least one roof** gate admits the user past Step 2 into this step; Step 3 itself has no named leave-gate — steps without gates say so by simply proceeding (MS12-03, shell contract). Leads to: Step 4 — Components (SCR-MS-07); "Open 3D" replaces the step with the scene until closed, state intact (MS3-11; the scene is SCR-MS-09).

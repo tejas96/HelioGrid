@@ -4,6 +4,40 @@ Touch-first roof CAD over the pinned satellite image with AI detection review; h
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer, Sales Executive, Survey Engineer, EPC Owner · **Context of use:** the flagship's core canvas. Design Engineer authors; Sales Executive/Survey Engineer run remote-survey-derived starts (MS2 §2). Web primary; mobile 375 px FULL parity with the S2-1 touch pack — pinch-zoom, two-finger pan, visible snap toggles (F7-30/32). The canvas is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the shell carries the same law, SCR-MS-03). Precision touch work, often one-handed on a phone over real satellite imagery.
 
+**One job:** get every roof outlined to scale — by tracing it, or by accepting what detection found.
+**Order of attention:** 1 the canvas and the tool in hand · 2 the ONE line saying what that tool expects now · 3 the selected roof — its acts and its sheets · 4 reviewing what detection found.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A canvas step is a tool, not a page.** Its words are tool names, ONE hint line, chips on the canvas, and sheets. Copy this brief marks as binding is fixed copy — drawn as written, never paraphrased, never counted. Teaching lives in the header's per-step Help (`MS12-07`), never on the canvas.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The tools (`M05-22`, `MS2-01`) | action | a grouped tool rail; every tool an icon with its name, the active one visibly active. A tool that cannot be used yet says why in the hint line (`N4`) |
+| What the tool expects, and every refusal (`MS2-04`, `MS2-05`, `MS2-10`) | action line | the ONE hint bar this brief pins: a single line, one at a time. Drawing guidance, a too-close point, a locked roof's refusal, a failed finish check — all speak here, in plain words. Never two lines, never a paragraph on the canvas |
+| No roof yet (`MS2-04`) | teaching | the brief's own line, with both paths as two acts |
+| Lengths, areas, zoom, scale, north (`MS2-05`, `MS2-17`, `MS2-11`, `MS1-29`, `MS1-30`) | data | chips and readouts on the canvas, in the person's display unit |
+| Provenance of a roof (`M05-28`, `M05-23`) | honesty label | an AI-detected roof carries its own mark and confidence; where any exist, the brief's line about detector estimates is fixed copy, drawn once |
+| Each roof (`MS2-11`, `MS2-12`) | data · status | a chip: its identity mark, name and live area, with select, lock and delete. A locked roof shows its badge; delete says why it is unavailable |
+| The selected roof's acts (`MS2-18`) | action | one action bar of four: roof type, height and parapet, coordinates, duplicate |
+| Closing the shape (`MS2-07`) | action | the brief's dialog: its title and two acts |
+| Roof type (`MS2-21`, `M05-25`) | action | covering cards, each with its one-line subtext as the option's own data. An unavailable option says why, inline. The tile-on-flat warning is ONE line |
+| Height, pitch, slope direction, setback, parapet (`MS2-27`, `MS2-29`, `MS2-31`, `MS2-32`) | data · action | sliders with typed values and units; the slope picker with its live compass readout and the brief's direction tip as ONE line; per-edge overrides with their badge. Why a parapet side cannot be tapped is on the legend, never hover-only (`N1`) |
+| A detected pitch and direction (`MS2-28`) | status · action | one banner: the suggested values, apply, dismiss. Never applied by itself |
+| Measuring and calibrating (`MS2-34`, `MS2-35`) | data · action | a result pill with its two acts; the calibration dialog shows measured, actual and the live correction as label–value rows. Apply says why when it cannot be pressed |
+| A change would orphan other items (`MS2-36`, `M05-27`) | action | the three-act dialog, the affected items as rows with counts. Never a silent cascade |
+| Detection (`MS2-37`, `MS2-38`, `MS2-39`) | status · action | progress is the brief's three binding lines, one at a time. Results are ghosts with a review pill carrying counts; imagery quality and date as label–value; each dropped shape a row with its reason; ONE act adds the selected. A failure is ONE specific line and the next path. Where a capability is not live its entry is absent, and nothing says so |
+| The survey's photographs (`M05-29`) | more detail | a tray that opens beside the canvas |
+| The keyboard set (`MS2-02`) | help | listed in Help. Every key has a visible equivalent |
+
+## Arrangement
+
+- **375.** The canvas full-bleed; the tool rail at the thumb's edge; the hint bar at the top; roof chips
+  in one strip that scrolls inside itself; the action bar above the rail when a roof is selected;
+  every editor a sheet (`F7-21`).
+- **1536.** The rail on one side, the canvas in the centre, and the roof list with the selected roof's
+  properties as a side panel that stays open (`F7-21`).
+
 ## Entry & exit
 
 Reached from: Step 2 of the wizard (SCR-MS-03), after Step 1. Wizard-step gate (flagship note): the shell's first gate — **setup completeness** — admits the user to this step; this step's own Next gate is **at least one roof** (MS12-03 order, shell contract; M05-05's example copy "Draw at least one roof"). Leads to: Step 3 — Obstructions (SCR-MS-06) once a roof exists; "View in 3D" opens the 3D scene and returns (MS2-01; the scene is SCR-MS-09). Survey photos ride alongside the canvas as reference (M05-29).
