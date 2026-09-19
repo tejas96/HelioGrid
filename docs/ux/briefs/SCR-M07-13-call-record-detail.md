@@ -4,6 +4,31 @@ The full call record reached from the lead timeline or My Day deep-link: outcome
 
 **Module:** M07 · Sales Execution · **Personas:** Sales Executive (mobile-first — reads results on their own leads, corrects the agent's read), Sales Manager (team leads), EPC Owner · **Context of use:** phone in field for reps checking what the agent did overnight; correcting a call's outcome rides lead visibility (`F2.M02.lead-visibility` scope, §M07.5 permissions).
 
+**One job:** see what happened on this call — and correct the agent where it read it wrong.
+**Order of attention:** 1 the outcome, the interest and the one-line summary · 2 the transcript and the recording · 3 the facts of the call.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The transcript is content and is never counted.** The screen's own words are labels and chips.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The outcome and the interest signal (`M07-38`) | status | two chips at the head of the record, each from its fixed set |
+| The one-line summary (`M07-38`) | data | content, as written |
+| The rep's correction wins (`M07-25`) | action · data | ONE act — correct. The corrected values are what shows, and one row leads to the agent's original read |
+| The transcript (`M07-38`) | more detail | opens on a tap, in the call's language, the language as its label. It never holds the summary back while it loads |
+| The recording (`M07-38`) | action · status | a player where one exists. Where the customer declined, or the recording has passed its retention date, a chip says which, and the transcript stays |
+| The facts of the call (`M07-38`) | data | label–value rows: time and duration, language, that the disclosure played, the agent version, and the phone-menu steps where there were any |
+| A dropped call | status | its outcome chip says so. The record is always written |
+| The record cannot be found | error | one banner. Never blank fields |
+
+## Arrangement
+
+- **375.** The chips and the summary first, then the rows, then the transcript and the recording as
+  rows that open.
+- **1536.** The facts and the recording on the left, the transcript open on the right as the region
+  that carries the length.
+
 ## Entry & exit
 
 Reached from: the lead timeline — the call's one-line summary sits **on the lead timeline** with transcript and recording on tap (M07-38) — and My Day's AGENT ACTIVITY block, whose entries deep-link to the call result on the lead timeline (M07-03, SCR-M07-01). Leads to: a rep correction emits a review-queue item for the owner (M07-26's loop, SCR-M07-11); other exits are not pinned by PRD — designer decides, note the decision.

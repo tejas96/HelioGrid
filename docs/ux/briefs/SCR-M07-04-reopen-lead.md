@@ -4,6 +4,25 @@ Bring a lost lead back at its prior funnel stage with the reopen on the timeline
 
 **Module:** M07 · Sales Execution · **Personas:** Sales Executive (mobile-first), Sales Manager, EPC Owner — `F2.M07.mark-won-lost`, scope follows lead visibility · **Context of use:** the customer came back — the rep acts from the lead record, phone or desk; a lightweight single act, not a flow.
 
+**One job:** bring a lost lead back to where it was.
+**Order of attention:** 1 the stage it returns to · 2 reopen.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A single act, not a flow.**
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The stage the lead returns to (`M07-64`) | data | ONE label–value row: the prior stage, by its name |
+| Reopen (`M07-64`) | action | the ONE act. Its one line: the lead returns to that stage |
+| A person reopened it, or it came back by itself (`M07-64`) | data | two different timeline entries: the reopen names its actor; the automatic return names the system and the postponed date. Neither is a sentence on this sheet |
+| The reopen failed | error | one line at the act. The lead stays lost until it succeeds |
+
+## Arrangement
+
+- **375.** A small confirm sheet over the lost lead (`F7-21`).
+- **1536.** Honestly the same, as a dialog beside the lead. Say so on the board.
+
 ## Entry & exit
 
 Reached from: a lost lead (M07-64 — only lost leads can be reopened); postponed losses also come back without this surface, auto-resurfacing on their date (M07-64). Leads to: the lead re-enters at its prior funnel stage and the timeline records the reopen (M07-64; M07 §M07.12 acceptance). Post-reopen destination is not pinned by PRD — designer decides, note the decision.
