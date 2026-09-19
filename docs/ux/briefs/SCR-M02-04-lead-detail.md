@@ -4,6 +4,47 @@ Everything a rep needs before a call: header, timeline, sections, and the Call/M
 
 **Module:** M02 · CRM & leads · **Personas:** Sales Executive (highest-frequency — opens it before dialling, on a call, on a doorstep), Sales Manager, EPC Owner, Survey Engineer and Design Engineer (assigned-scope readers), Sales Rep, Marketing (own captures until triage) · **Context of use:** mobile-first — lead detail, qualification, activity logging, snooze and disqualify happen on a call or on a doorstep, one-handed. Web carries full parity (`F7-30`).
 
+**One job:** know this lead well enough to make the next call, and record what happened.
+**Order of attention:** 1 who this is, where the deal stands, and the five acts · 2 what needs me on this lead — a possible duplicate, a snooze, a draft to resume, a visit, two proposals · 3 the six qualification facts · 4 the timeline · 5 the records — site, designs, proposals, tasks, files, contacts.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Twenty-two rows land here, and the screen is still read in the seconds before a call:** each
+row below is a field, a chip, an act or a row that leads somewhere.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Name, phone, city, value, stage, owner (`M02-32`) | data · status | the header: the name as the title, phone and city as its line, the stage as the ONE status chip, owner and value as label–value. The value carries its tier mark (`F8-23`) |
+| A missing name or city (`M02-03`) | data | a named gap in the value's place, tappable to fill. Never a blank, never a sentence |
+| Call · Message · Log activity · Book visit · Create design (`M02-32`) | action | one action row: `Call` is the primary act, the other four are secondary. No sentence |
+| The customer must not be called (`M02-37`) | status | a chip on the header. What the call act then does is `modules/M07`'s gate; where this screen shows a refusal it is ONE line naming why — never a greyed act with no reason (`N4`) |
+| Snoozed (`M02-51`) | status · action | the chip with its wake date, and ONE act to wake it now |
+| A possible duplicate (`M02-66`) | status · more detail | a chip, and a row naming the other record; the three-choice sheet is `SCR-M02-01`'s, opened on entry |
+| Came from a referral, or referred others (`M02-16`) | data | a `Came from` link on the referred lead; a `Referred` row on the referrer |
+| A proposal draft to resume (`M06-25`) | more detail | a row carrying the draft's progress, leading to the builder |
+| Two proposals on one customer (`M06-58`) | status · action | both proposals drawn, a warning chip on the pair, and a `Withdraw` act on each. Withdrawing is a sheet with its two outcomes as a choice |
+| The six qualification facts (`M02-39`) | data | one region of six single controls, saved as answered. No submit act, no progress count, no nag for the unanswered. Call-captured facts are `assumed`, and one provenance label heads the region for them; a fact with another tier keeps its own mark |
+| Additional contacts, one primary (`M02-34`) | data · status | list rows — name, phone, role as its mark, a `Primary` chip on exactly one. `Add contact` is the region's act; making another contact primary is one act on its row |
+| A contact's consent trail (`M03-34`, `M02-37`) | more detail | one tap from the contact: per channel class, a row with its state chip, its source and its recorded time. For an imported contact the source row is the import declaration — who, when |
+| The timeline (`M02-35`) | data | one stream: each entry its kind, its actor, one line and its time; filter chips by kind. No edit affordance is drawn, and no sentence says the stream is append-only. An entry's text is content, not screen copy |
+| The visit (`M02-46`, `M09-28`, `M02-48`) | data · action | a record row — date, time, surveyor, address. After the visit: arrival, departure, outcome as label–value rows. After a no-show: ONE act, reschedule |
+| Booking a visit (`M02-46`, `M02-47`) | action | a sheet: four inputs and one confirm. The composed message is shown as content. With a connected channel the confirm's one line says it sends; with none, the act copies the message and no delivery is ever claimed |
+| Sending a message (`M02-33`) | action · status | connected: compose and send, and the delivery state is a chip on the timeline entry. Not connected: ready-to-paste text and a copy act — no delivery chip, ever |
+| Disqualifying (`M02-42`) | action | a sheet: the six reasons as one single-choice list. The confirm's one line says a reason unlocks it |
+| Assigning (`M02-28`, `M02-29`) | action | the inbox's picker, unchanged |
+| Site information, designs, proposals, tasks, files (`M02-32`) | more detail | one region each: the owning module's summary of the latest one or two, and a row that leads to the rest. An empty region says what will appear, in ONE line |
+| A freshly captured lead | teaching | the header with its gaps, the capture event on the timeline, and each empty region's one line. No paragraph |
+| An act failed | error | one line at that act — what failed and what to do. Nothing is shown as done until the server says so (`F8-36`) |
+
+## Arrangement
+
+- **375.** The header and its action row · `Needs you`, only when something does — the duplicate, the
+  snooze, the draft, the no-show, the two proposals · the six facts · the timeline's latest few and
+  `All activity` · the record regions as rows that lead. Every editor is a sheet (`F7-21`).
+- **1536.** The header across the top. The timeline is the centre column and the ONE region that proves
+  the volume, with its kind filter in view. Qualification, contacts and the record regions sit to one
+  side, `Needs you` and the visit to the other. Every editor is a side panel (`F7-21`).
+
 ## Entry & exit
 
 Reached from: the Lead Inbox (SCR-M02-02 — everything beyond triage waits for the lead detail, M02-24); the Leads List (SCR-M02-03); the dedupe sheet's "Open existing" (M02-09); the possible-duplicate flag's sheet-on-next-open (M02-66); assignment notifications; the referral "came from" link on either record (M02-16). Leads to: the assign picker (M02-28/M02-29); the book-visit flow that creates the visit `modules/M04` owns (M02-46); Create design into the studio (`modules/M05`); the resumable proposal draft into the proposal builder (M06-25); Customer Merge (SCR-M02-06) from the customer record or the deliberate-duplicate link; Call and Message actions; the consent trail opens one tap from the contact record (M03-34).

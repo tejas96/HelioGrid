@@ -4,6 +4,38 @@ Side-by-side survivor comparison with field-level choices and an irreversible, f
 
 **Module:** M02 · CRM & leads · **Personas:** EPC Owner, Sales Manager (permission `F2.M02.merge-customers`, with M02-63's scope condition) · **Context of use:** web-emphasis for the survivor comparison, one-tap-reachable on mobile from either record (stacked at the mobile breakpoint). Merge completes on the server and is never applied on a device.
 
+**One job:** make two records of one person into one, choosing what survives, knowing it cannot be undone.
+**Order of attention:** 1 which record survives · 2 each field where the two differ · 3 what will move — and the confirm that cannot be taken back.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The confirm is the one place this screen must be read slowly (`M02-63`):** it states what
+moves as ROWS, and what cannot be undone in ONE line.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The two records | data | two value columns at 1536; at 375 each differing field is one row holding both values |
+| The proposed survivor — the record with more history | status · action | a `Survivor` chip on it, and ONE act to change it |
+| Which name, which city, which primary contact (`M02-60`) | action | per differing field, one tap picks the value that survives. Nothing is pre-guessed beyond the proposed survivor |
+| Fields where the two agree | more detail | not drawn one by one: a row carrying their count, which opens |
+| Both records hold a primary contact (`M02-60`) | action | one choice row; exactly one survives as primary |
+| Both records hold a live lead | data | a label–value row: both leads stay open under the survivor. A fact about the deal, stated as data |
+| Why there were two (`M02-12`) | data | a label–value row carrying the recorded reason. The reason's text is content, not screen copy |
+| What will move (`M02-60`, `M02-63`) | data | label–value rows — leads, contacts, proposals, links, activities, tasks, files — each an exact count. One provenance label heads them (`F8-07`) |
+| Money shown in the comparison | data | read-only, with its tier. No edit affordance is drawn |
+| The confirm (`M02-63`, `N8`) | action | a sheet at 375 and a modal at 1536: the move rows again, a row saying what the other record becomes, and ONE line — the product cannot undo this. `N8` asks for the recovery route in words and the PRD names none, so the honest words are what stays true: the other record remains as a pointer, and every old link still opens the survivor (`M02-60`). The same words ride the after-state. It completes only on the explicit act; leaving changes nothing |
+| One record is outside the person's scope (`M02-63`) | status | the merge act is absent, and ONE line in its place says why |
+| A record could not be loaded | error | one banner; the flow does not proceed |
+| The merge failed | error | one banner — what failed. Nothing was applied |
+
+## Arrangement
+
+- **375.** Stacked: the survivor choice, then the differing fields as two-value rows, then the move
+  rows, then the act. The confirm is a sheet.
+- **1536.** The two records side by side with the move totals in a side column, in view while fields
+  are chosen. The confirm is a modal — a decision that must be finished or abandoned before anything
+  else continues.
+
 ## Entry & exit
 
 Reached from: either customer record and from the deliberate-duplicate link M02-12 leaves behind (M02-59) — the case it exists for is the duplicate phone-as-identity cannot catch (same person, two numbers). Leads to: the survivor's record after completion — the survivor's timeline carries the whole merged history in one stream; the loser becomes a tombstone that resolves any old link to the survivor. Abandoning at the confirm leaves both records untouched.

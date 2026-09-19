@@ -4,6 +4,40 @@ Desktop-first bulk import: upload, auto-guess mapping, preview with duplicate co
 
 **Module:** M02 · CRM & leads · **Personas:** EPC Owner, Sales Manager (permission `F2.M02.import-leads`) · **Context of use:** desktop-first — "the owner at a desk" with the old spreadsheet every EPC has; remains usable at the mobile breakpoint per the parity law (`F7-30`).
 
+**One job:** bring the old spreadsheet in without starting a second chase on anyone.
+**Order of attention:** 1 the file · 2 which column is which · 3 the counts — new leads, duplicates, rows that cannot be read — and what happens to the duplicates · 4 progress, then the report.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The counts are the screen.** They are drawn once, as the chips that open their rows — never
+restated in a paragraph, and never repeated in the footer beside a button that already carries its
+number.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The step (`M02-18`) | status | the stepper: the position and the step's name |
+| The file (`M02-18`) | action | the drop surface with its one caption line. What the importer can read is Help |
+| Which column is which (`M02-18`) | data · action | one row per detected column: its header, two sample values, and the guessed field as a control that can be changed |
+| Only the phone column is required (`M02-03`) | action line | while `Continue` cannot be pressed, its ONE line says what unlocks it (`N4`) |
+| Columns that map to nothing | status | a count chip; they are listed in the report. No sentence of warning |
+| The counts before anything is imported (`M02-19`) | data · action | the filter chips ARE the counts — all rows · new leads · duplicates by phone · cannot be read — and each opens the rows behind it. The source's own shape, rows and duplicates by phone, is the region's caption. One provenance label heads the region (`F8-07`) |
+| Two rows in the file share a number | data | counted with the duplicates; each such row names the row it matches |
+| What happens to the duplicates (`M02-20`) | action | ONE choice control over the duplicate set: skip them, the default, or log each as an enquiry on its existing lead. Creating one anyway is per row, from that row's sheet — `SCR-M02-01`'s sheet, with its reason field |
+| Import (`M02-18`) | action | `Back`, and the import act carrying its number. No line beside it — the chips above already say the rest |
+| Progress (`M02-21`) | status | the count done of the total, and ONE line: the person may leave and it keeps running |
+| The connection dropped mid-import | status | ONE line on return: how far it got |
+| The report (`M02-21`) | data | label–value rows — landed, skipped as duplicates, logged as enquiries, rejected, columns not imported — then the rejected rows as a list: the row and its named reason. `Download report`. That landed rows stay is shown by the landed count, not by a sentence |
+| Every row failed (`F8-36`) | error | one banner: no lead was created, and the reasons as the same list |
+| The file cannot be read | error | one banner — what is wrong and what fixes it |
+
+## Arrangement
+
+- **375.** A full-height sheet with the stepper (`F7-21`). On the preview the row list is the volume
+  region and takes the height; the footer holds its two acts and no sentence.
+- **1536.** The desk form, which is this screen's home: mapping as a table with its samples in view;
+  the preview's count chips above a captioned table (`F7-27`); the report as totals beside the rejected
+  rows.
+
 ## Entry & exit
 
 Reached from: the leads surface, by the owner or sales manager holding `F2.M02.import-leads` — the PRD pins the persona and posture ("the owner at a desk"), not a single navigation path; not pinned by PRD — designer decides, note the decision. Leads to: the import report at the end of the four steps; imported leads land unassigned in the Lead Inbox (SCR-M02-02) with source = file import, so triage is unchanged by volume; the import's own record — file name, who ran it, when, and its report — stays on the tenant's import history.
