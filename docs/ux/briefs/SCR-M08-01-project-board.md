@@ -4,6 +4,38 @@ Won deals as stage-columned cards showing days-in-stage, collected-vs-due money 
 
 **Module:** M08 · **Personas:** Project Manager · EPC Owner · Operations · Sales Manager · Sales Executive (read-only on their own won deals) · **Context of use:** the Project Manager's home surface — web/desk for the full board scan; phone on site for stage moves, blocker updates and the single-column view; the Sales Executive opens it mid-call to answer a customer without asking ops.
 
+**One job:** see which won deals are stuck, and move the ones that can move.
+**Order of attention:** 1 the cards that have waited longest, and what each is waiting on · 2 each card's money — collected against due · 3 moving a card, setting a blocker.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Days-in-stage is the board's only metric (`M08-11`), and that is a rule about what is NOT
+drawn:** no percentage, no progress bar, no burndown, no health score, no colour grade — and no
+sentence explaining their absence.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Each card — customer, system size, value, days in the stage, collected against due, the blocker and its party (`M08-10`) | data · status | one card: the customer as its title; size and value as its line; days in the stage as the card's ONE headline figure; collected and due as two figures, never a bar; the blocker as a chip naming the party waited on |
+| The stage columns | data | each column's header is the pack's stage label and its card count |
+| What has waited longest is seen first (`M08-12`) | — | arrangement, no words: oldest first in every column. No "aged" badge, no invented threshold |
+| Provenance (`F8-07`) | honesty label | one label heads the board for the figures that share it. A money figure that cannot be reconciled carries its own provisional mark (`F8-12`) |
+| Moving a stage (`M08-14`) | action | a drag at 1536 and an explicit move act at 375 (`N1`). The confirm's ONE line names the target stage by its pack label. A move backwards uses the same confirm, with no warning paragraph |
+| The next stage is skippable for this project | action | the confirm offers the following stage as its second choice |
+| The move has not reached the server | status | a light pending mark on the card, in place. Never drawn as moved before the server says so |
+| Setting a blocker (`M08-21`) | action | a sheet: the party as a four-way choice of the pack's labels, a reason field, an optional expected-until date. An unknown date reads as a named gap, never as an empty date |
+| Cancelling (`M08-51`, `N8`) | action | a confirm sheet: the mandatory reason, and ONE line — the project stops counting as revenue at once and the product cannot undo it. `N8`'s words are what stays true: the project stays readable in the project list with its state and its reason |
+| A person with read scope only | status | the same cards in full, and no act is drawn — no drag handle, no move, no blocker sheet, no cancel. Nothing is greyed, and no card explains permissions |
+| An empty stage | teaching | ONE line in its column |
+| No won deals yet | teaching | at most two short sentences — what lands here, and where it comes from |
+| Another preset's today-work (`M13-10`) | more detail | a compact block above the board with its own title and a row leading to its home. It never pushes the board off the first screenful |
+| The board failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** One column, chosen by a stage selector, its cards oldest first. A composed block is a row.
+- **1536.** The full board: nine columns that scroll sideways INSIDE the board's own region, each
+  column scrolling its own cards. This is the region that proves the portfolio's volume.
+
 ## Entry & exit
 
 Reached from: it is the M08 module's home, and the Project Manager's home screen *is* this board (PS-21, M13-34); a project lands on it automatically the moment a rep confirms Mark won on a lead (per `docs/prd/modules/M08-projects.md` — creation is invisible, no wizard). Leads to: Project Detail (SCR-M08-02) by opening a card; the Document Checklist (SCR-M08-03) directly from the card (per the PRD, "the checklist is reachable from the card as well as the detail screen"); the set-blocker sheet and the cancel confirm are card actions; a stage move is a card action (drag on desktop, an explicit move on mobile) that opens the confirm with the target stage's pack label. Cancelled projects leave the active board and remain reachable through the project list with their state and reason (per the PRD's M08.9 behavior detail). Other exits: not pinned by PRD — designer decides, note the decision.

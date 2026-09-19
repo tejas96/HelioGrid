@@ -2,7 +2,35 @@
 
 Pack-seeded document rows with pending/uploaded/verified chips, verified count and per-row upload/replace/view/verify actions; reachable from card and detail.
 
-**Module:** M08 · **Personas:** Project Manager · EPC Owner · Operations · Sales Manager · **Context of use:** on site it is the reason the coordinator opened their phone — document and photo capture happens in the field, often with no signal (a basement, a rooftop); dense checklist review also happens on web at a desk. Capture must never lose work; verification is a deliberate desk-side act needing a connection.
+**Module:** M08 · **Personas:** Project Manager · EPC Owner · Operations · Sales Manager · **Context of use:** on site it is the reason the coordinator opened their phone — document and photo capture happens in the field; dense checklist review also happens on web at a desk. Capture must never lose work; verification is a deliberate desk-side act.
+
+**One job:** get every document uploaded, then verified.
+**Order of attention:** 1 how many are verified · 2 the rows still waiting · 3 upload — and, as a separate act, verify.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Uploading is not approving (`M08-31`), and the screen says it with two different controls —
+never with a sentence.**
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| How many rows are verified | data | the screen's ONE headline figure — verified of the row set — with its provenance label |
+| Each row — its pack name, its state, its files (`M08-30`, `M08-31`) | data · status | one list row: the pack's own label; the state as its ONE chip — pending, uploaded, verified; the file count as a mark. A verified row's second line is who verified it and when — a recorded fact, so it carries no tier |
+| What can be done to a row (`M08-31`) | action | ONE primary act per row, by state: upload when pending, mark verified when uploaded, view when verified. Replace and view sit in the row's menu |
+| A row holding more than one file | more detail | the row opens to its files — name, uploaded when, by whom |
+| A row the segment omits (`M08-30`) | — | it is absent, not greyed, and the count follows the real row set. No sentence explains it |
+| Completed rows stay | — | arrangement, no words |
+| Replacing a verified file | action | the replace confirm's ONE line says the row will need verifying again. Both acts then stand on the timeline |
+| Rows still pending | action | a `Pending` filter chip with its count; pack order holds under it |
+| An upload failed | error | the file stays on its row with `Try again`, and nothing is lost. No offline, queued or syncing state is drawn (context file §1) |
+| The checklist failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** The count, then the rows in pack order. The row's act opens the camera or the file picker
+  directly. A file opens in a sheet.
+- **1536.** A captioned table (`F7-27`) — document, state, files, verified by, when, act — with the
+  opened file in a side panel (`F7-21`).
 
 ## Entry & exit
 
