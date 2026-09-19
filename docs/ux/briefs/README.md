@@ -10,32 +10,25 @@ what is done; this folder is its working material.
 1. Open a fresh Claude Design session (the HelioGrid design system already selected).
 2. Paste `docs/ux/claude-design-context.md` — unchanged, every session.
 3. Paste ONE brief from this folder.
-4. Ask for the **mobile (375px) layout first**. Review.
-5. Then: "Now the 1536px desktop layer — a different ARRANGEMENT, never the phone stretched
-   wide. Full parity, nothing dropped in either direction. Say what you grouped differently
-   and why, and where it is honestly the same frame with more room, say that too."
-6. Then: "Now every state listed in the brief — the three base states plus the screen-specific
-   ones."
-7. Then run the self-audit (bottom of the context file): PASS/FAIL per requirement row, with
-   the satisfying element named. Fix every FAIL in the same session.
-8. Record the result in **two** places — both, or the trail breaks:
+4. Send the four messages `docs/start-here.md` carries, word for word: the 375px layout with its
+   word plan, the 1536px layer, every state, then the self-audit with the word inventory first.
+5. Record the result in **two** places — both, or the trail breaks:
    - `docs/prd/registers/screens.md`: the screen's row, `Status` → `designed`, `Design link` → the artifact.
    - `docs/tasks/<module>.md`: that screen's `DESIGN: SCR-… → PENDING` line → the artifact link, and
      the task's `Status:` → `designed` once every link it carries is filled. Gate-checked.
-9. If the brief said **"not pinned by PRD — designer decides"** anywhere and you made the call,
+6. If the brief said **"not pinned by PRD — designer decides"** anywhere and you made the call,
    write the decision back into the brief so the next screen inherits it.
 
-**`docs/start-here.md` at the repo root is the fuller version of this loop**, with the exact messages
-to send and worked before/after examples of both edits. If the two ever disagree, `docs/start-here.md`
-is the one being maintained.
+**`docs/start-here.md` holds the exact messages and both edits.** They are written once, there.
 
 Do not batch screens into one session. A session that has drawn several screens starts
 forgetting the laws.
 
 ## What a brief contains (and what it never contains)
 
-Contains: who uses the screen and where; **the screen's one job and its order of attention**; the
-verbatim requirement rows it must satisfy; the states it needs; entry and exit points; realistic
+Contains: who uses the screen and where; **the screen's one job and its order of attention**;
+**the words on the screen** — every fact it carries, its kind and its form; the verbatim requirement
+rows it must satisfy; the states it needs; entry and exit points; realistic
 data volume; which numbers carry provenance tiers. Never contains: colours, spacing, typography,
 component styling — the design system in Claude Design owns all of that.
 
@@ -47,6 +40,12 @@ screen where nothing is subordinate is the cluttered screen the product's first 
 **One job:** what a person opens this screen to do — one sentence.
 **Order of attention:** 1 … · 2 … · 3 … — what they read first, second, third.
 ```
+
+**Words on this screen.** A table under those two lines: one row per fact the screen carries, its
+kind from the context file's §2 — data, status, action, help, more detail — and the form it takes
+here. It is where a requirement row is sorted BEFORE the session, so the session does not turn the
+row into a sentence. Where the screen shows prices or limits, a `Sample data` section quotes the
+PRD rows that carry them, in the gate-checked quote form, so no session invents a name or a figure.
 
 Write them **before** the design session, for the screen you are about to draw. A brief whose
 screen is already designed is left alone: editing it moves its digest and gate 31 refuses the

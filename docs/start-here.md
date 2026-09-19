@@ -1,52 +1,31 @@
-# Start here — designing the first screen
+# Start here — designing one screen
 
-> ## ▶ Blocks 1–6 are ready. Run `python3 scripts/next-screen.py` — it prints the next screen, and any redesign owed comes before it.
->
-> A component audit of all 99 briefs against the live design system found **57 gaps**. Rounds 13–17
-> closed **51** of them; the remaining six are the 3D canvas, which waits for the studio port and
-> only affects block 7.
->
-> A verification pass on 2026-08-17 re-read all 48 components sent in rounds 13–16 and returned
-> **zero `OPEN`** and **zero that stop a screen being drawn**. Round 17 then corrected the tail it
-> found — including a law that told a screen author to ship the wrong control.
->
-> **There will not be another audit before screen one.** The design system is now checked by three
-> instruments that run inside the project on every load rather than by a workflow that runs when
-> someone asks. The next real test is a screen.
->
-> **56 screens are drawable today** — blocks 1 through 6, which are the shippable product:
-> lead → won → project → payment.
->
-> When a screen finds a gap — and one will — record it in that register and keep drawing. It should
-> be a trickle now, not 57.
+> ## ▶ Run `python3 scripts/next-screen.py` — it prints the next screen, and any redesign owed comes before it.
 
-You have **99 screens** to design for V1; `python3 scripts/next-screen.py` says how many are done
-and which comes next. This file is how you do **one** of them. Then you repeat it until the script
-prints nothing. Nothing else in this repository needs your attention while you do that.
+This file is how you design **one** screen. Then you repeat it until the script prints nothing.
+Nothing else in this repository needs your attention while you do that.
 
-*(The register holds 150. The owner locked V1 to 84 on 2026-08-15 and widened it to 95, then 98, then 99, on 2026-08-16 — the `V` column in
-`docs/prd/registers/screens.md` §2 says which. **You skip every `V2` row.** They are real scope, but
-they are not designed until V1 ships.)*
+The register holds 150 screens; **99 are V1**. The `V` column in `docs/prd/registers/screens.md` §2
+says which. **You skip every `V2` row** — real scope, not designed until V1 ships.
 
 ## The only four files you ever touch
 
 | # | File | What you do with it |
 |---|---|---|
-| 1 | `docs/ux/claude-design-context.md` | **Paste it.** Same file, every session, never edited. |
+| 1 | `docs/ux/claude-design-context.md` | **Paste it.** Same file, every session, never edited in a session. |
 | 2 | `docs/ux/briefs/SCR-….md` | **Paste it.** One per session. This is the screen. |
 | 3 | `docs/prd/registers/screens.md` | **Edit 1 line** when the screen is approved. |
 | 4 | `docs/tasks/<module>.md` | **Edit 1 line** when the screen is approved. |
 
-That's it. Files 1 and 2 go into Claude Design. Files 3 and 4 record that it's done.
-Everything else in this repo is the reasoning behind those briefs — you never open it.
+Files 1 and 2 go into Claude Design. Files 3 and 4 record that it's done. Everything else in this
+repo is the reasoning behind those briefs — you never open it.
 
 ---
 
 ## The order is the V1 build order. `V2` rows are skipped.
 
-**Your next screen is the first one `python3 scripts/next-screen.py` prints.** `SCR-SHELL-01` —
-App Shell & Navigation — came first because everything renders inside it, and it is designed.
-Do not invent a different starting point, however tempting a smaller brief looks.
+**Your next screen is the first one `python3 scripts/next-screen.py` prints.** Do not invent a
+different starting point, however tempting a smaller brief looks.
 
 The eight blocks, in order, with the V1 count in each:
 
@@ -63,284 +42,198 @@ The eight blocks, in order, with the V1 count in each:
                                           99
 ```
 
-Blocks 1 and 2 are the two money paths and they are **not** the same thing. Block 2 (`M12`) is how
-the platform charges an EPC company. Block 5 (`M11`) is how that company collects from a
-homeowner. Different money, different module — don't merge them in your head.
+Block 2 (`M12`) is how the platform charges an EPC company. Block 5 (`M11`) is how that company
+collects from a homeowner. Different money, different module — don't merge them in your head.
 
-Two things about this order are deliberate and worth knowing, so you don't "correct" them:
+Two things about this order are deliberate, so you don't "correct" them:
 
-- **It is not the screens register's section order.** That register lists documents; this lists the build.
-  The studio sits sixth even though it is the primary product, because it already exists as
-  63,527 frontend-only lines in `Solar-App-POC` against an app whose backend is currently a
-  health check. The earlier blocks settle the API, schema and data conventions the port has to
-  conform to. Proposals travel with it — a proposal quotes the BOM a design produces.
-- **Blocks 1–6 are a shippable product on their own**: lead → won → project → payment. The studio
-  lands on top of a system that already works.
+- **It is not the screens register's section order.** That register lists documents; this lists
+  the build. The studio sits seventh even though it is the primary product, because it already
+  exists as a frontend in `Solar-App-POC`, and the earlier blocks settle the API, schema and data
+  conventions the port has to conform to. Proposals travel with it — a proposal quotes the BOM a
+  design produces.
+- **Blocks 1–6 are a shippable product on their own**: lead → won → project → payment.
+  `SCR-SHELL-06` sits with the shell rows in the register, but it renders a tenant's M12 billing
+  state, so it belongs to block 2.
 
-Within a block, work top to bottom down the screens register and **skip every row whose `V` column says
-`V2`**. Following this order never makes you design a screen whose target doesn't exist yet.
-
-The 20 `M01` screens in block 1 are: Sign In · Company Signup · **Onboarding — Language** ·
-**Setup — What You Sell** · Business Profile · **Setup — You're Ready** · Invite Teammate ·
-Invite Landing · First-Run Profile · **Role Explainer** · **Profile & Preferences** · Team ·
-Assign Roles · **Roles Reference** · Catalog Settings · Add Catalog Item · Catalog Import
-Wizard · **Branding Settings** · Proposal Template Settings · Payment Terms Settings.
-
-Four of them are load-bearing in a way the names hide. The **catalog** ones price the bill of
-materials — the studio cannot quote without them. **Branding** puts the company's logo on the
-proposal PDF and the customer link page; skip it and V1 quotes reach homeowners unbranded. And
-**Profile & Preferences** is the only place a user can change their own language after first
-run, set their units, mute a notification, or switch on the **high-contrast field mode** — the
-sanctioned escape hatch for reading a phone in direct sun (`F7-16`), which matters on a roof.
-The six in **bold** were added on 2026-08-16 as the lock widened.
-
----
+Within a block, work top to bottom down the register and skip every row whose `V` column says `V2`
+or whose `Status` is already `designed`.
 
 ## You never choose a brief — the screens register tells you
 
 Every screen has exactly **one** brief, and its filename is a column in the screen's own row in
-`docs/prd/registers/screens.md` §2. So "picking the brief" isn't a decision; it's a lookup.
+`docs/prd/registers/screens.md` §2. `python3 scripts/next-screen.py` prints the screen, the two
+files to paste, and the two `file:line` locations to edit afterwards. It reads the register's
+header row rather than counting columns, so a new column cannot make it lie.
 
-One row, split out:
-
-```
-SCR id       : SCR-SHELL-01
-Screen       : App Shell & Navigation
-Tier         : P0
-Rows         : 8
-Brief        : docs/ux/briefs/SCR-SHELL-01-app-shell.md   ← this is the file you paste
-V            : V1                                    ← V2 rows are skipped entirely
-Status       : planned                               ← this is how you know it's not done
-Design link  : —
-```
-
-### Finding today's screen
-
-```bash
-python3 scripts/next-screen.py
-```
-
-It prints the screen, the two files to paste, and the two `file:line` locations to edit
-afterwards. Run it — do not read the screens register top to bottom instead.
-
-**The register is not in build order.** §2 groups screens by module for auditing; the eight
-blocks above are the order you draw them in, and the two disagree from the very first screen.
-The one that trips people is `SCR-SHELL-06` — it sits with the other shell rows in §2, but it
-renders a tenant's M12 billing state, so it belongs to block 2 and cannot be drawn before M12.
-
-**Doing it by hand:** take the blocks above in order; inside a block, take that module's §2 rows
-in order; skip every row whose `V` is `V2`, and every row whose `Status` is already `designed`.
-A `V2` row is never today's screen — it stays `planned` for the whole of V1, and that is correct,
-not a backlog you are falling behind on.
-
-### Finding the two lines to edit afterwards
-
-Search the repo for the screen's `SCR-` id. It appears in exactly two places that matter:
-
-1. **one row** in `docs/prd/registers/screens.md` — the row you just read
-2. **one `DESIGN:` line** in `docs/tasks/<module>.md` — e.g. `docs/tasks/SHELL.md` for the SHELL screens,
-   `docs/tasks/M06-proposals.md` for the proposal builder
-
-Both get the same link. Ignore any hit inside `docs/tasks/README.md` — that file only *documents* what
-a `DESIGN:` line looks like.
-
-*(`scripts/next-screen.py` prints both locations too, and it reads the header row rather than
-counting columns, so a new column cannot make it lie. The register stays the source of truth for
-what exists and what is done; the script only puts it in build order.)*
-
+---
 
 ## Step 1 — open a Claude Design session
 
 One fresh session per screen. **Never two screens in one session** — a session that has drawn
 several screens starts forgetting the laws.
 
-Make sure the right design system is selected — and read this twice, because the name is ambiguous:
-
 > **There are TWO Claude Design projects called exactly "HelioGrid Design System".**
-> The live one is **`c8aa4326-21bf-453a-8d11-749cc81dee12`**, last written 2026-08-18 — rounds
-> 13 through 17 all landed on it, closing the design-system gap register out.
-> The other, `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, has not been touched since 2026-07-20 and
-> received none of the seventeen rounds of design prompts — no contrast fix, no `--text-inverse`,
-> no `NoConnection` screen, and it still has `OfflineBanner`.
+> The live one is **`c8aa4326-21bf-453a-8d11-749cc81dee12`**. The other,
+> `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, is a different system: it has no contrast fix, no
+> `--text-inverse`, no `NoConnection` screen, and it still has `OfflineBanner`.
 >
 > Tell them apart by date in the picker: the live one is the **more recently updated** of the two.
-> Picking the wrong one does not mean an older copy of the right system — it means a different
-> system, and every screen drawn against it is wrong.
+> Every screen drawn against the wrong one is wrong.
 
 ---
 
 ## Step 2 — the session: one paste, then three follow-ups
 
-> **Where message 1 goes.** On the Claude Design home screen the composer box ("Make UI mockups
-> for…") **is** the session's first message — pressing the orange arrow both creates the session
-> and starts it generating. So there is no "empty session" to paste into first. Everything below
-> goes into that box, then you press the arrow once.
+> **Where message 1 goes.** On the Claude Design home screen the composer box **is** the session's
+> first message — pressing the arrow both creates the session and starts it generating.
 
-**Message 1 — all three of these, in this order, in the composer box:**
+**Message 1 — all three of these, in this order, in the composer box.** Paste the text rather than
+attaching the files, so both documents are actually in the prompt.
 
 1. the whole contents of `docs/ux/claude-design-context.md`, unchanged
-2. the whole contents of the brief named by the screens register — for screen one,
-   `docs/ux/briefs/SCR-SHELL-01-app-shell.md`
-3. this line at the bottom:
+2. the whole contents of the brief the screens register names
+3. this, at the bottom:
 
 > Design the mobile 375px layout for this screen. Just the default state for now — I'll ask for
 > desktop and the other states next.
 >
-> **Compose it, do not just include it.** The context file's Composition section is law here: one
-> focal point per region, never a card inside a card, a card body of at most two short sentences,
-> the brief's real volume proven in ONE region with the rest routed, one banner at a time, and
-> teaching behind the ask rather than printed. Start from the brief's **One job** and **Order of
-> attention** — if the brief carries neither, decide them, say them back to me in one line each,
-> and I will write them into the brief.
+> **Sort the words before you draw.** First print the word plan as a table: every fact this screen
+> must carry, its kind from the context file's §2 — data, status, action, help, more detail — and
+> its form. Where the brief carries a `Words on this screen` section, start from it. No fact is
+> planned as a sentence unless §2's never-behind-a-tap list requires one, and then it is ONE line
+> at the act. A requirement row is met by the design, never by a sentence about it. Copy the brief
+> quotes word for word — a disclosure, a disclaimer, a consent text — is drawn whole and never
+> trimmed. Then draw from that plan, in the same turn.
+>
+> **Compose it, do not just include it.** The context file's §3 is law here: one focal point per
+> region, never a card inside a card, the brief's real volume proven in ONE region with the rest
+> routed, one banner at a time. Start from the brief's **One job** and **Order of attention** — if
+> the brief carries neither, decide them, say them back to me in one line each, and I will write
+> them into the brief.
 >
 > **Draw static frames, not an interactive prototype.** No state machine, no prop editors, no
 > click-through. Every situation this screen has is its own labelled frame I can see beside the
-> others — that is what the brief's frame count means, and it is what an engineer reads as the
-> spec. Use the real components and realistic content; just don't make them stateful. Pin any date
-> or time to a fixed value rather than `new Date()`, so the spec does not change tomorrow.
+> others. Use the real components and realistic content; just don't make them stateful. Pin any
+> date or time to a fixed value rather than `new Date()`, so the spec does not change tomorrow.
 
-Then press the arrow. Look at what comes back. React, and ask for changes until it's right.
-
-*(Paste the text rather than attaching the files. The context file's own first line says "paste
-this file, unchanged", and pasting guarantees both documents are actually in the prompt.)*
+Look at what comes back. **Read the word plan first:** a row whose form is "sentence" and whose
+reason is "it explains…" is Help — push back before looking at the frame.
 
 **Message 2:**
 
 > Now the 1536px desktop layer.
 >
 > **Parity means capability, not layout.** Every capability, state and piece of information
-> reachable at one width must be reachable at the other — but the *arrangement* should be
-> genuinely different, because the constraints are. A 1536px desktop that is the 375px phone
-> stretched wide is wrong; so is a desktop that quietly drops something the phone can do.
+> reachable at one width must be reachable at the other — but the *arrangement* should be genuinely
+> different, because the constraints are. A 1536px desktop that is the 375px phone stretched wide
+> is wrong; so is a desktop that quietly drops something the phone can do.
 >
 > Two things are genuinely different at this width, and you should let them be:
 >
 > 1. **The shell is a different object** (`F7-22`) — an arc bar with a raised centre action on
->    mobile, a sidebar-and-header shell on desktop. Two forms, not one form with a variant.
-> 2. **Desktop has room the phone does not, and using it is the point.** More rows on screen at
->    once, more columns, a persistent side panel where the phone needed an overlay, less deferred
->    behind a tap. Density is a real difference, not a nicety.
+>    mobile, a rail-and-header shell on desktop.
+> 2. **Desktop has room the phone does not.** More rows on screen at once, more columns, a
+>    persistent side panel where the phone needed an overlay, the full comparison where the phone
+>    compared two.
 >
-> **Use the width for GROUPING, never for stretching.** Things decided together sit together; a
-> long list gets a column or a region of its own. Sibling lists that answer one question become
-> one framed region with a selector — one visible at a time, each keeping its caption, its
-> provenance and its export — rather than three tables stacked down the page. If a surface is
-> carrying too much even then, say which way you would split it: a sheet or side panel for
-> anything edited (`F7-21`), a modal only for a decision that must be finished before anything
-> else continues, or its own screen — which you NAME and do not draw, because a screen needs its
-> own register row and brief.
+> **Use the width for GROUPING, never for stretching — and never for more words.** The §2 budgets
+> hold per region. Sibling lists that answer one question become one framed region with a selector
+> rather than three tables stacked down the page. If a surface is carrying too much even then, say
+> which way you would split it: a sheet or side panel for anything edited (`F7-21`), a modal only
+> for a decision that must be finished before anything else continues, or its own screen — which
+> you NAME and do not draw.
 >
 > When you're done, name each place the desktop arrangement genuinely differs, one line of why.
-> Where a section is honestly the same frame with more whitespace, say that too — I want the
-> judgement visible, not just the frames.
+> Where a section is honestly the same frame with more whitespace, say that too.
 
 **Message 3:**
 
-> Now every state listed in the brief — the three base states (loading, empty, error)
-> plus every screen-specific state.
+> Now every state listed in the brief — the three base states (loading, empty, error) plus every
+> screen-specific state.
+>
+> **A state changes the data, the status chip and the one action. It does not add a paragraph.**
+> An error is one banner: what went wrong and what fixes it.
 >
 > Draw each state at **375px**. Then draw at **1536px only the states whose desktop arrangement
-> genuinely differs** from the mobile answer — not the ones that are the same frame with more
-> room. For every state you do *not* draw at desktop, name it and say in one line why the desktop
-> version is the mobile one at width. I want the judgement visible, not the frames.
-
-*(Why it's phrased that way: ten states × two widths is twenty frames, most of them identical
-apart from whitespace. But "mobile only" means nobody ever thinks about the desktop error state.
-Making it name its skips is what keeps this honest — and it is the same instruction on all 99
-screens, so they stay consistent with each other.)*
+> genuinely differs** from the mobile answer. For every state you do *not* draw at desktop, name it
+> and say in one line why the desktop version is the mobile one at width.
 
 **Message 4:**
 
-> Now run the self-audit from the context file. Walk **all three lists**: the brief's requirement
-> rows one by one, the completion contract item by item, and everything else the context file
-> states — the N-rules, light-only, the sheet grammar, no emoji, density, progressive disclosure,
-> the REC rule, the offline-residue rule. For each, answer PASS or FAIL and name the specific
-> element that satisfies it. Where a law has no subject on this screen, say so and say why —
-> that is a PASS with a pointed-at absence, and silence is not. Fix every FAIL in this session.
+> Now run the self-audit from the context file. Walk **all five lists, the word inventory first**:
+> the word inventory with its counts per frame, the brief's requirement rows one by one, the
+> completion contract item by item, composition in four answers, and everything else the context
+> file states. For each, answer PASS or FAIL and name the specific element that satisfies it. A
+> count over its §2 budget is a FAIL. Where a law has no subject on this screen, say so and say
+> why. Fix every FAIL in this session, then print the word inventory again.
 
-**Read the self-audit properly.** If it says PASS without naming an element, that's a FAIL —
-push back. This is the step that does the real work.
-
-*(Message 4 asked for two lists until 2026-08-16. The context file states far more law than its
-completion contract carries — contrast, target size, provenance, light-only, density and the rest
-live in the N-rules — so a two-list audit pasted those laws at the top of every session and then
-never checked them at the end of one. The third list is the fix, and it has to be asked for here
-too, because this message is what actually reaches the session.)*
+**Read the self-audit properly.** A PASS that names no element is a FAIL. A requirement "met" by a
+sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both.
 
 ---
 
-## Step 3 — record it (2 lines, and you're done)
+## Step 3 — record it
 
-Only after you've approved the design.
+Only after you've approved the design. `python3 scripts/next-screen.py` prints the exact
+`file:line` for both edits.
 
-### Edit 1 — `docs/prd/registers/screens.md` (screen one is line 160)
-
-Change `planned` → `designed`, and `—` → your Claude Design link. Leave the `V` column alone:
-
-```
-BEFORE  | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/…` | V1 | planned | — | …
-AFTER   | SCR-SHELL-01 | **App Shell & Navigation** | P0 | 8 | `docs/ux/briefs/…` | V1 | designed | <link> | …
-```
-
-*Don't trust the line number above once you are past the first screen — rows move. `python3
-scripts/next-screen.py` prints the exact `file:line` for both edits, and it reads the header row rather
-than counting columns, so a new column cannot make it lie.*
-
-### Edit 2 — the module's task file (screen one is `docs/tasks/SHELL.md` line 16)
+**Edit 1 — `docs/prd/registers/screens.md`.** Change `planned` → `designed`, and `—` → your Claude
+Design link. Leave the `V` column alone:
 
 ```
-BEFORE  DESIGN: SCR-SHELL-01 → PENDING
-AFTER   DESIGN: SCR-SHELL-01 → <link>
+BEFORE  | SCR-… | **Name** | P0 | 8 | `docs/ux/briefs/…` | V1 | planned | — | …
+AFTER   | SCR-… | **Name** | P0 | 8 | `docs/ux/briefs/…` | V1 | designed | <link> | …
 ```
 
-To find these two lines for any screen, search the repo for the `SCR-` id. It appears in exactly
-one row of the screens register and one `**DESIGN:**` line.
+**Edit 2 — the module's task file.**
 
-### Edit 3 — only if the brief said "designer decides"
+```
+BEFORE  DESIGN: SCR-… → PENDING
+AFTER   DESIGN: SCR-… → <link>
+```
 
-If you made a choice the brief left open, **write it into the brief** in the section it belongs
-to, so the next screen inherits it. Example: when you reach `SCR-M01-01` (Sign In), it leaves the
-`verified-success-dwell` duration to you — pick one, draw it, and write the value into that state.
+Both get the same link. Ignore any hit inside `docs/tasks/README.md` — that file only documents
+what a `DESIGN:` line looks like.
 
-An unrecorded decision is how two screens end up disagreeing about the same flow.
+**Edit 3 — only if the brief said "designer decides".** If you made a choice the brief left open,
+write it into the brief in the section it belongs to, so the next screen inherits it. An unrecorded
+decision is how two screens end up disagreeing about the same flow.
 
-### Edit 4 — LAST: which brief the design was reviewed against
-
-Run `python3 scripts/gates.py`. Gate 31 names the brief's digest; write it into the same register row's
-`Brief reviewed` cell, in place of `—`. It goes last because Edit 3 changes the brief, and a digest
-taken before that edit names a brief that no longer exists.
+**Edit 4 — LAST: which brief the design was reviewed against.** Run `python3 scripts/gates.py`.
+Gate 31 names the brief's digest; write it into the same register row's `Brief reviewed` cell, in
+place of `—`. It goes last because Edit 3 changes the brief.
 
 ## When a brief changes after its screen was designed
 
-A ruling folds in, a requirement is re-pulled, the brief moves — and the design stays as drawn. Gate 31
-refuses that until someone looks: review the design against the brief as it now reads.
+Gate 31 refuses a changed brief until someone reviews the design against the brief as it now reads.
 
 - **Still matches** → write the new digest gate 31 names.
-- **No longer matches** → write `owed <digest>`, and add a `## Redesign owed` section to the brief that
-  says exactly what the design shows and what the brief now requires. `python3 scripts/next-screen.py`
-  then lists it FIRST, before any new screen, and it is kept out of the build order until cleared.
-- **The screen is already BUILT** → its cell also carries the code's verdict: `· code ok` when the built
-  screen matches the brief, or `· code owed T-…` naming the task that changes it. A redesign of a built
-  screen checks the code again before that verdict is kept.
+- **No longer matches** → write `owed <digest>`, and add a `## Redesign owed` section to the brief
+  that says exactly what the design shows and what the brief now requires.
+  `python3 scripts/next-screen.py` then lists it FIRST, and it is kept out of the build order until
+  cleared.
+- **The screen is already BUILT** → its cell also carries the code's verdict: `· code ok` when the
+  built screen matches the brief, or `· code owed T-…` naming the task that changes it.
 
 ### Redoing the screen, step by step
 
-A redesign EDITS the drawing that exists. A second drawing of one screen is the duplicate this
-whole ledger exists to prevent, so nothing here starts a new file.
+A redesign EDITS the drawing that exists. Nothing here starts a new file.
 
 1. `python3 scripts/next-screen.py` names the screen and the fault.
-2. Open the screen's own file in the design project — the register row's link — with the live design
-   system selected, and stay in it. One session per screen, as for a new one.
+2. Open the screen's own file in the design project — the register row's link — with the live
+   design system selected, and stay in it. One session per screen.
 3. Paste `docs/ux/claude-design-context.md`, then the whole brief, then this instruction:
    *"This is a REDESIGN of an existing screen. Edit the existing `<file>` in place — no new file, no
-   copy, no v2. Keep every artboard, name, state and layout the `Redesign owed` section does not name.
-   Fix only what it describes, at 375 and at 1536, in every state it touches. Then re-run the
-   self-audit. At the end, list every change you made, one line each, in the decisions record."*
+   copy, no v2. Keep every artboard, name, state and layout the `Redesign owed` section does not
+   name. Fix only what it describes, at 375 and at 1536, in every state it touches. Then re-run the
+   self-audit, the word inventory first. At the end, list every change you made, one line each, in
+   the decisions record."*
 4. Read that list against the export: the fault is gone, and nothing else moved.
-5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — the same export form as
-   every other pair, never a bundled page, and one pair per screen afterwards.
-6. Delete the brief's `## Redesign owed` section, run `python3 scripts/gates.py`, and write the digest
-   it names in place of `owed …`.
+5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — never a bundled page,
+   and one pair per screen afterwards.
+6. Delete the brief's `## Redesign owed` section, run `python3 scripts/gates.py`, and write the
+   digest it names in place of `owed …`.
 7. A BUILT screen: check the built screen against the redesign too, and keep `· code ok` only if it
    still matches. Otherwise write `· code owed T-…` and open that task.
 
@@ -351,40 +244,24 @@ sweep the others for the same break before recording anything.
 
 ## How you know you're finished
 
-Count the V1 rows in the screens register that still say `planned`:
-
 ```bash
 grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 ```
 
-**99 today. 0 when you're done.** That is your whole progress bar, and it reads the same file
-you're working from.
-
-The `^| SCR-` anchor matters: without it the command also counts every non-V1 planned row too
-(struck rows, V2 rows written as prose elsewhere in the file), and reports 100 — one over the true
-99, not under.
-
-The other 51 rows stay `planned` on purpose — they are V2. A plain `grep -c '| planned |'`
-returns **151** — the 150 screen rows plus the screens register's own documentation of this command —
-and it never reaches zero during V1. Don't use it as your progress bar.
-
-There is no equivalent count on the task side, because `docs/tasks/` has no `V` column — the scope
-lock lives in the screens register only. If you want the task-side view of *everything*, designed or not:
-
-```bash
-grep -rhoE 'DESIGN:?\*{0,2} *SCR-[A-Z0-9]+-[0-9]+ *→ *PENDING' docs/tasks/ --include='*.md' --exclude=README.md | wc -l
-```
-
-That is 150, not 99, and it is the whole product rather than the locked scope.
+**0 when you're done.** The `^| SCR-` anchor matters: without it the command also counts the V2
+rows and the register's own documentation of this command, and never reaches zero during V1.
 
 ---
 
 ## Things that will tempt you, and shouldn't
 
 - **Don't batch screens.** One per session. This is the rule that protects quality.
-- **Don't read the PRD.** The brief already carries every requirement verbatim. If something
-  seems missing from a brief, that's a real bug worth reporting — not a reason to go digging.
+- **Don't read the PRD.** The brief already carries every requirement verbatim. If something seems
+  missing from a brief, that's a real bug worth reporting — not a reason to go digging.
 - **Don't give Claude Design visual direction.** Colours, spacing, type and components are the
   design system's job. Your job is *what the screen must do*.
-- **Don't skip states.** "Loading, empty, error" is where 90% of real product quality
-  lives, and it's the first thing that gets dropped when you're moving fast.
+- **Don't skip states.** "Loading, empty, error" is where most real product quality lives, and it's
+  the first thing that gets dropped when you're moving fast.
+- **Don't accept a paragraph.** A screen that explains itself in sentences has failed the word
+  inventory, however correct every sentence is. The only whole paragraphs are the ones §2 leaves
+  uncounted: fixed copy the PRD gives word for word, and content a person wrote or reads.

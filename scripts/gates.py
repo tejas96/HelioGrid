@@ -916,8 +916,24 @@ def run(repo, verbose):
             "the V1/V2 scope lock": re.search(r"\bV1\b", body) and re.search(r"\bV2\b", body),
             "F7-21 one sheet grammar": "F7-21" in body,
             "F7-27 table captions": "F7-27" in body,
+            "F7-46 a row is met by the design, not by a sentence": "F7-46" in body
+                and "Carrying a row is not printing it" in body,
+            "the word budgets can fail a frame": "a frame over budget FAILS" in body,
+            "the word inventory leads the self-audit": "word inventory" in body,
         }
         missing = [k for k, ok in must.items() if not ok]
+        # The audit runs only as far as the message that asks for it: start-here's message 4 is what
+        # reaches the session, so a list it does not name is a list no session walks.
+        start_here = spec(repo, "start-here.md")
+        asked = open(start_here, encoding="utf-8").read() if os.path.exists(start_here) else ""
+        n_stated = re.search(r"Walk \*\*(\w+) lists\*\*", body)
+        n_asked = re.search(r"Walk \*\*all (\w+) lists", asked)
+        if not (n_stated and n_asked and n_stated.group(1) == n_asked.group(1)):
+            missing.append("start-here's message 4 asks for "
+                           f"{n_asked.group(1) if n_asked else 'no'} audit lists, the context file states "
+                           f"{n_stated.group(1) if n_stated else 'none'}")
+        if "word inventory" not in asked:
+            missing.append("start-here's message 4 never asks for the word inventory")
         # the V1 count it states must match the register
         stated = re.search(r"\*\*(\d+) are V1\*\*|locked \*\*(\d+) of them as V1\*\*", body)
         v1_real = len([1 for line in open(reg, encoding="utf-8")
