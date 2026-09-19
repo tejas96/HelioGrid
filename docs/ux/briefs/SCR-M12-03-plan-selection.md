@@ -7,6 +7,51 @@ Pick tier and cycle; upgrade, downgrade with preview, cycle switch; handoff to h
 **One job:** pick the plan that fits, and know exactly what changes when it starts.
 **Order of attention:** 1 what I am on now · 2 what each plan costs and caps · 3 what happens at the switch — when it starts, what is charged today, what is kept.
 
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| What I am on — plan, cycle, price, next bill and its date | data · status | label–value rows in a `Your plan` region; the subscription state is its chip |
+| What I am on, during a trial or after a lapse | data · status | the same region: the state chip, and the trial's end date or the day the plan lapsed in place of price and next bill — never an empty price row |
+| Each plan — name, price for the chosen cycle, its three limits that differ most | data · status | one card per plan; a chip says `Your plan`, `Upgrade` or `Downgrade` |
+| Enterprise is sales-assisted, never a checkout (`M12-55` context) | action | a row with `Talk to sales` |
+| Billing cycle | action | a two-way selector; the yearly price is the book's own row, and no saving is computed or claimed |
+| What changes between my plan and the chosen one | data | a from–to list in the review sheet; limits that do not change share one line |
+| What I pay today and from the boundary (`M12-48`) | data | label–value rows with the tax line and a total; one tier mark on the group; the prorated amount's working is its `Derivation` disclosure |
+| Entitlements apply at once (`M12-48`) | action line | ONE line at the button — never a paragraph about the boundary |
+| Downgrade — exactly what will be blocked (`M12-49`) | data | the screen's one tinted block, first in the review sheet: a row per blocked thing — its count, what stays readable and exportable, and a route to the list |
+| Downgrade — nothing is over the lower plan's limits (`M12-49`) | data | the same block's place holds ONE row that says so; the preview ran and found nothing, and a missing block would not say that |
+| Downgrade starts at the next cycle, no mid-cycle refund (`M12-49`) | data | a `From <date>` row and a `This cycle · No refund` row |
+| Payment is collected on the gateway's page, at that moment (`M12-54`) | action line · help | one line under the button; the rest waits behind the ask |
+| Trial days do not extend the paid cycle (`M12-54`) | data | a `Paid cycle starts` row in the review sheet, on the trial-expiry entry only |
+| Read and export keep working (`M12-53`, `BM-32`) | help — but data in a dead state | behind the ask for an active tenant; ON the screen, as one line, in `trial-expiry-entry` and after a lapse, where nothing is behind anything |
+| After a lapse the prices are the current book's | data | the plans region's caption names the price list the prices come from |
+| The preview changed since it was opened (`M12-49`) | status · data | one banner naming what changed; the changed rows are marked |
+| A person who is not the Owner opens this screen (`M12-56` context) | status | the state chip and ONE line that names whose act it is; no price, no amount and no act is drawn — the same answer `SCR-M12-02` gives |
+| Checkout failed, nothing half-converted | error | one banner — what failed and what to do; the unchanged `Your plan` region is what shows that nothing moved |
+
+## Arrangement
+
+- **375.** Regions in the order of attention: `Your plan` · the cycle selector · the plans as cards,
+  where the chosen card carries the region's one primary button · the Enterprise row · a
+  `Compare all plans` row. **The review is a sheet (`F7-21`) and it is the consent surface
+  (`M12-49`):** what changes, then what you pay, then one button. **Comparing at 375 is the
+  person's own plan against ONE other plan** chosen by a selector, with a second selector for
+  limits, monthly bundles and overage rates — never a four-plan matrix behind a pager.
+- **1536.** The four plans side by side. The full four-plan matrix is ONE region with the same
+  three-way selector — not three tables stacked down the page. The review is a side panel that
+  stays open and follows the chosen plan.
+
+## Sample data — the book's rows, drawn and never invented
+
+The plan names and every price, limit and bundle on this screen are these rows' values. A frame
+that shows a plan name or a figure these rows do not carry is wrong.
+
+- **BM-11** (P0) — **Four tiers, fixed names: Starter · Growth · Pro · Enterprise.** The names are market-neutral structure and suite-wide vocabulary — every market's price book prices these same four tiers in its own currency (F1-25), every entitlement is keyed to them (M12), every report that segments by plan uses them (M13).
+- **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom.
+
 ## Entry & exit
 
 Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); the trial countdown chip (chip surface is SCR-SHELL-06, shared row M12-53); Billing Home's plan-selection surface (M12-55, SCR-M12-02); soft-block prompts — post-expiry create/edit paths are "blocked with a plan prompt" (M12-53); a return after a lapse — in `halted`/`expired`/`cancelled` the billing screens "are the guaranteed way back" and plan selection is one of them (M12-55). Leads to: the gateway's hosted checkout — "pick tier and cycle → hosted checkout → mandate per the pack's rails → `active` immediately" (M12-54); on downgrade, confirming schedules the change at the cycle boundary and returns to Billing Home's scheduled-downgrade state (M12-49; §M12.8 behavior detail); on checkout failure, "conversion fails honestly (`F8-36`); the trial state is unchanged; nothing half-converts" (§M12.2 edge case) — the tenant lands back here.
@@ -36,6 +81,7 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 - **downgrade-blocked-preview** — usage exceeds the target tier's ceilings: the screen shows exactly what will be blocked before confirming; over-ceiling designs remain readable and exportable forever (M12-49).
 - **preview-recomputed-changed** — "the preview re-computes at confirmation time and again at the boundary; the tenant is told if the picture changed" (§M12.8 edge case, M12-49's honesty).
 - **checkout-handoff** — handing to the gateway's hosted flow; the platform's screens collect nothing sensitive (M12-54; M12-10 context); payment collects at that moment and never before.
+- **non-owner-read-only** — a person who is not the Owner arrives, from the expiry route or from Billing Home: the state is visible, the acts are not, no price or amount renders, and the screen says whose act it is (M12-56 context; the same rule SCR-M12-02 carries).
 - **checkout-failed-honest** — gateway failure at conversion: fails honestly, trial state unchanged, nothing half-converts (§M12.2 edge case; `F8-36` context).
 
 ## Data volume
