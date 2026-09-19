@@ -1,4 +1,4 @@
-import type { ProvenanceTier } from '@heliogrid/contracts';
+import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 /**
  * The system's one surface-state vocabulary — `unavailable` is the fourth state: neutral, stated
@@ -31,15 +31,16 @@ type ProvenanceTierSpec =
   | string
   | { label: string; tone?: ProvenanceTierName; color?: string };
 
-/**
- * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier —
- * a derived figure from a stale version is still derived, and still must not read as final.
- */
-type ProvenanceStanding = 'confirmed' | 'provisional' | 'reported' | 'pending';
-
 /** The full provenance spec a chart may hand to the line under its headline value. */
 interface ProvenanceProps {
   tier?: ProvenanceTierSpec;
+  /**
+   * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier —
+   * a derived figure from a stale version is still derived, and still must not read as final.
+   *
+   * Unlike the tier SPEC above, this one carries no chart-local difference, so it is the owner's
+   * type rather than a copy of it — `contracts`, derived from domain's `PROVENANCE_STANDINGS`.
+   */
   standing?: ProvenanceStanding;
   /** What data it came from — `'Real · PVGIS (SARAH3)'` (M05-54). */
   source?: string;
