@@ -1,5 +1,10 @@
-import { notificationPreference, type TenantPool } from '@heliogrid/db';
-import type { NotificationTypeGroup } from '@heliogrid/domain';
+import {
+  membershipRole,
+  notificationPreference,
+  type TenantPool,
+  tenantMembership,
+} from '@heliogrid/db';
+import type { NotificationTypeGroup, RolePreset } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
@@ -63,6 +68,30 @@ export class NotificationPreferencesRepository {
           ],
           set: { pushMuted },
         });
+    });
+  }
+
+  /**
+   * The presets this person holds in this company.
+   *
+   * The mute rule reads them (`F6-15`): a stored `billing` mute is disregarded for a holder of
+   * the EPC Owner preset, and a sender running without a session has no `rolesOf(req)` to ask.
+   * Tenant-scoped like everything else here — the pair of tenant and user IS the membership.
+   */
+  async presetsOf(tenantId: string, userRef: string): Promise<RolePreset[]> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const rows = await tx
+        .select({ preset: membershipRole.rolePreset })
+        .from(membershipRole)
+        .innerJoin(tenantMembership, eq(tenantMembership.id, membershipRole.membershipId))
+        .where(
+          and(
+            eq(membershipRole.tenantId, tenantId),
+            eq(tenantMembership.tenantId, tenantId),
+            eq(tenantMembership.userAccountId, userRef),
+          ),
+        );
+      return rows.map((row) => row.preset);
     });
   }
 }

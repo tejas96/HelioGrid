@@ -186,6 +186,13 @@ Make sure the right design system is selected — and read this twice, because t
 > Design the mobile 375px layout for this screen. Just the default state for now — I'll ask for
 > desktop and the other states next.
 >
+> **Compose it, do not just include it.** The context file's Composition section is law here: one
+> focal point per region, never a card inside a card, a card body of at most two short sentences,
+> the brief's real volume proven in ONE region with the rest routed, one banner at a time, and
+> teaching behind the ask rather than printed. Start from the brief's **One job** and **Order of
+> attention** — if the brief carries neither, decide them, say them back to me in one line each,
+> and I will write them into the brief.
+>
 > **Draw static frames, not an interactive prototype.** No state machine, no prop editors, no
 > click-through. Every situation this screen has is its own labelled frame I can see beside the
 > others — that is what the brief's frame count means, and it is what an engineer reads as the
@@ -213,6 +220,15 @@ this file, unchanged", and pasting guarantees both documents are actually in the
 > 2. **Desktop has room the phone does not, and using it is the point.** More rows on screen at
 >    once, more columns, a persistent side panel where the phone needed an overlay, less deferred
 >    behind a tap. Density is a real difference, not a nicety.
+>
+> **Use the width for GROUPING, never for stretching.** Things decided together sit together; a
+> long list gets a column or a region of its own. Sibling lists that answer one question become
+> one framed region with a selector — one visible at a time, each keeping its caption, its
+> provenance and its export — rather than three tables stacked down the page. If a surface is
+> carrying too much even then, say which way you would split it: a sheet or side panel for
+> anything edited (`F7-21`), a modal only for a decision that must be finished before anything
+> else continues, or its own screen — which you NAME and do not draw, because a screen needs its
+> own register row and brief.
 >
 > When you're done, name each place the desktop arrangement genuinely differs, one line of why.
 > Where a section is honestly the same frame with more whitespace, say that too — I want the

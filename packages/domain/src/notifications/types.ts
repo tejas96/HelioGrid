@@ -75,6 +75,13 @@ export const NOTIFICATION_TYPE_GROUPS = [
 export type NotificationTypeGroup = (typeof NOTIFICATION_TYPE_GROUPS)[number];
 
 /**
+ * The platforms a push can be addressed to (`F6-13`). Closed: a handset runs one of these, and
+ * the transport needs to know which to shape its payload. Mirrored as a pgEnum (`M17`).
+ */
+export const PUSH_PLATFORMS = ['ios', 'android'] as const;
+export type PushPlatform = (typeof PUSH_PLATFORMS)[number];
+
+/**
  * What raises a notification — named for the work it does, never for a document id. A type
  * belongs to exactly one of these, and that is the only grouping `F6` itself offers.
  */

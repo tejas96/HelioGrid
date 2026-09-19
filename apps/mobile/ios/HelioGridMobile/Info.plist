@@ -63,6 +63,12 @@
 		<string>NotoSansDevanagari-SemiBold.ttf</string>
 		<string>NotoSansDevanagari-Bold.ttf</string>
 	</array>
+	<!-- Lets a data-only push wake the app so a notification can be shown (F6-13). Inert until
+	     there is a paid Apple membership and a device; a simulator obtains no APNs token. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

@@ -1,4 +1,4 @@
-import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES } from '@heliogrid/domain';
+import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES, PUSH_PLATFORMS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -82,6 +82,29 @@ export const notificationPreferencesSchema = z.object({
 });
 
 /**
+ * A handset registering itself for push (`F6-13`).
+ *
+ * The token travels in the BODY and never in a path or query: it is long, it identifies a
+ * device, and `common/logging.ts` redacts structured fields while a raw URL keeps whatever was
+ * in it. Registering the same token twice replaces the row rather than adding one, so a handset
+ * that signs in again does not collect duplicates and a person is not pushed twice.
+ */
+/** Derived from the domain tuple; the migration mirrors the same list as a pgEnum (`M17`). */
+export const pushPlatformSchema = z.enum(PUSH_PLATFORMS);
+export type PushPlatform = z.infer<typeof pushPlatformSchema>;
+
+export const registerDeviceSchema = z
+  .object({
+    platform: pushPlatformSchema,
+    /** Opaque to us — FCM mints it and only FCM reads it. */
+    token: z.string().min(1).max(4096),
+  })
+  .strict();
+export type RegisterDevice = z.infer<typeof registerDeviceSchema>;
+
+export const forgetDeviceSchema = z.object({ token: z.string().min(1).max(4096) }).strict();
+
+/**
  * The reader's own notifications. Every route is `member` access and none is billing-gated:
  * the inbox, the badge and the history are reads, and reads always work (`F6-09`).
  */
@@ -102,6 +125,27 @@ export const notificationContract = c.router({
     summary: "The bell's count — the reader's own unread records",
     responses: {
       200: unreadCountSchema,
+      401: unauthenticatedEnvelope,
+    },
+  },
+  registerDevice: {
+    method: 'POST',
+    path: '/notifications/devices',
+    body: registerDeviceSchema,
+    summary: 'Register this handset for push — the same token twice replaces, never duplicates',
+    responses: {
+      200: z.object({ registered: z.literal(true) }),
+      401: unauthenticatedEnvelope,
+    },
+  },
+  forgetDevice: {
+    method: 'POST',
+    path: '/notifications/devices/forget',
+    body: forgetDeviceSchema,
+    /** Idempotent: forgetting a token that is already gone is a success, not a 404. */
+    summary: 'Stop pushing to this handset — on sign-out, or when the person declines',
+    responses: {
+      200: z.object({ registered: z.literal(false) }),
       401: unauthenticatedEnvelope,
     },
   },

@@ -11,7 +11,9 @@ what is done; this folder is its working material.
 2. Paste `docs/ux/claude-design-context.md` — unchanged, every session.
 3. Paste ONE brief from this folder.
 4. Ask for the **mobile (375px) layout first**. Review.
-5. Then: "Now the 1536px desktop layer — full parity, nothing dropped in either direction."
+5. Then: "Now the 1536px desktop layer — a different ARRANGEMENT, never the phone stretched
+   wide. Full parity, nothing dropped in either direction. Say what you grouped differently
+   and why, and where it is honestly the same frame with more room, say that too."
 6. Then: "Now every state listed in the brief — the three base states plus the screen-specific
    ones."
 7. Then run the self-audit (bottom of the context file): PASS/FAIL per requirement row, with
@@ -32,10 +34,23 @@ forgetting the laws.
 
 ## What a brief contains (and what it never contains)
 
-Contains: who uses the screen and where; the verbatim requirement rows it must satisfy; the
-states it needs; entry and exit points; realistic data volume; which numbers carry provenance
-tiers. Never contains: colours, spacing, typography, component styling — the design system in
-Claude Design owns all of that.
+Contains: who uses the screen and where; **the screen's one job and its order of attention**; the
+verbatim requirement rows it must satisfy; the states it needs; entry and exit points; realistic
+data volume; which numbers carry provenance tiers. Never contains: colours, spacing, typography,
+component styling — the design system in Claude Design owns all of that.
+
+**One job · Order of attention.** Two lines under the header, and the reason they exist is
+composition: a brief that lists only obligations makes every row read as equally important, and a
+screen where nothing is subordinate is the cluttered screen the product's first UX goal forbids.
+
+```
+**One job:** what a person opens this screen to do — one sentence.
+**Order of attention:** 1 … · 2 … · 3 … — what they read first, second, third.
+```
+
+Write them **before** the design session, for the screen you are about to draw. A brief whose
+screen is already designed is left alone: editing it moves its digest and gate 31 refuses the
+design until it is reviewed again, which buys nothing for a screen already drawn.
 
 ## The one thing no gate checks: the States list
 

@@ -36,6 +36,33 @@ export const redisUrlSchema = z.string().url().startsWith('redis');
  */
 export const secretSchema = z.string().min(32);
 
+/**
+ * A Google service account, base64 of the JSON the console downloads. Validated HERE rather than
+ * at the first send: a truncated paste is a boot failure with the key named, not a push that
+ * silently never leaves. Absent is legitimate — the development adapter binds instead and writes
+ * what it would have sent to the log, exactly as the message rail does.
+ */
+export const serviceAccountJsonBase64Schema = z.string().superRefine((value, ctx) => {
+  let account: unknown;
+  try {
+    account = JSON.parse(Buffer.from(value, 'base64').toString('utf8'));
+  } catch {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'not base64 of a JSON document' });
+    return;
+  }
+  const { type, project_id, client_email, private_key } = (account ?? {}) as Record<
+    string,
+    unknown
+  >;
+  if (type !== 'service_account' || !project_id || !client_email || !private_key) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        'decodes, but is not a service account with project_id, client_email and private_key',
+    });
+  }
+});
+
 /** Browser origin allowed by CORS and by the auth layer's trusted-origin list. */
 export const originSchema = z.string().url();
 
