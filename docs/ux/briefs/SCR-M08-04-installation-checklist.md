@@ -4,6 +4,33 @@ Execute the design's derived work order: tick steps in build order, attach photo
 
 **Module:** M08 · **Personas:** Project Manager (the coordinator) · Installation Team Member · EPC Owner · **Context of use:** phone in the field, gloves and one hand, ticking steps as work happens. The coordinator often runs the checklist from their own phone for a crew that never signs in. This surface shows no commercial figure regardless of who is looking at it.
 
+**One job:** work the build steps in order, and prove each one.
+**Order of attention:** 1 the next step to do · 2 how many are done · 3 the evidence, and who did the work.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **Gloves and one hand:** a step is a tick and a name. **No commercial figure is on this surface,
+and nothing says so** — there is no hidden value to explain.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Phases and their steps, in build order (`M08-41`) | data | phases as sections, steps as tick rows: the tick, the step's name, and the materials it needs as its second line — quantity and unit. One provenance label heads each phase's quantities (`F8-07`) |
+| Done of total | data | the screen's ONE headline figure, as two counts — done, of total |
+| Ticking a step (`M08-42`) | action | one tap on a target sized for a gloved hand. A ticked step's second line is who ticked it and when |
+| Who actually did the work (`M08-42`, `F2-07`) | data | ONE optional field on the ticked step, with no helper text. It is there whether or not the crew has accounts |
+| Photo evidence | action | a camera act on the step; its photographs as thumbnails on the step |
+| A step the design could not know about | action · status | `Add a step` ends each phase. A manual step carries its own chip, so the derived sequence stays legible |
+| The design changed after work began | status · more detail | one banner saying so; each changed step carries a chip; every tick and its attribution stays. A row leads to what changed. No paragraph reconciles it |
+| No design to build from | teaching | the design's own empty line |
+| The checklist failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** Its home. The phase in progress is open and the others are closed, each showing its counts.
+  Done-of-total stays in view as the pinned header's one line.
+- **1536.** Phases in a list on the left, the chosen phase's steps on the right, a step's evidence in a
+  side panel (`F7-21`).
+
 ## Entry & exit
 
 Reached from: the Project Detail (SCR-M08-02), and from the Installer Job Home (SCR-M08-05 — today's job leads to its checklist). Leads to: back to the project, which reads the checklist's progress; completing the checklist does not by itself move the stage — a person moves stages. Other exits: not pinned by PRD — designer decides, note the decision.

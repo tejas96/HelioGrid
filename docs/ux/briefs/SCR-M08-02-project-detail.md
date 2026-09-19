@@ -4,6 +4,43 @@ One screen composing stage timeline, design, proposal, payments, documents, bloc
 
 **Module:** M08 · **Personas:** Project Manager · EPC Owner · Operations · Sales Manager · Sales Executive (read-only on their own won deals) · Finance (reads as the money scope requires) · **Context of use:** "one screen the coordinator lives in" — dense reading work on web at a desk; on mobile it is the away-from-desk surface for stage moves, document and photo upload, blocker updates and marking a payment received while on site; the Sales Executive opens it during a customer call and must be able to answer without changing anything.
 
+**One job:** see what is wrong with this project and act on it — and otherwise read where everything stands.
+**Order of attention:** 1 what is wrong — the active blocker, then a due tranche that is unpaid · 2 where the project is — the stage timeline · 3 the records it composes — design, proposal, payments, documents · 4 the activity.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **This screen composes seven objects and copies none (`M08-16`):** each block is a summary and
+a row that leads into the module that owns it.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The active blocker (`M08-21`) | status · data · action | the first region: the party as its chip; the reason, which is content; waiting since, expected until — a named gap when unknown — and the measured wait as label–value rows. ONE act: clear it |
+| A due tranche that is unpaid (`M11-53`, `M08-38`) | data · action | the second region: amount, due date and days overdue as label–value rows, and ONE act — request the payment. With a connected channel its one line says it sends from the tenant's channel, and the delivery state is a chip afterwards. With none, the act copies the composed message and no delivery state is drawn anywhere |
+| The stage timeline | data | the nine stages by their pack labels, the date each was reached, and the current one with its days in the stage — this region's ONE figure |
+| The approved design and the accepted proposal (`M08-16`) | more detail | two read-only summaries, each naming the version in force, each a row leading into its module. Size and value carry their tier |
+| The payments (`M08-16`) | data · more detail | tranche rows — amount, share, a state chip — and a row leading to the payments screen. No control here records money |
+| A money figure that cannot be recomputed (`F8-12`) | status | its provisional mark, on the figure |
+| The documents | data · more detail | the verified count, and a row leading to `SCR-M08-03` |
+| Cleared blockers | more detail | rows, each with its measured wait |
+| An incentive claim rejected or delayed (`M08-27`) | status · data | a chip on the claim's row, its reason as content, and its date |
+| The activity (`M08-17`) | data | the one stream with filter chips by kind. An entry's text is content. No edit affordance is drawn |
+| A block with nothing in it | teaching | ONE line saying so. A block never disappears |
+| No design, or no payment terms | data | ONE plain line in that block. Never a placeholder design, never a fabricated row |
+| An OPEX or PPA project | fixed note | the brief's own line — monthly energy billing is handled outside this platform — drawn once, as written |
+| Hand over | action | a secondary act. While checklist rows are pending its ONE line says how many, and leads to them |
+| Cancelling (`M08-51`, `N8`) | action | `SCR-M08-01`'s confirm, unchanged |
+| A person with read scope only | status | every block in full; no act is drawn, and nothing is greyed |
+| An act failed | error | one line at that act — what failed and what to do |
+
+## Arrangement
+
+- **375.** `What is wrong`, only when something is · the current stage and its days, with a row opening
+  all nine · the composed blocks as rows that lead · the activity's latest few and `All activity`.
+  Every editor is a sheet (`F7-21`).
+- **1536.** Two columns: what is wrong, the stage timeline, payments and documents on the left; the
+  activity stream on the right, as the ONE region that proves the volume. Design and proposal
+  summaries sit side by side. Every editor is a side panel (`F7-21`).
+
 ## Entry & exit
 
 Reached from: opening a card on the Project Board (SCR-M08-01). Leads to: the Document Checklist (SCR-M08-03); the Installation Checklist (SCR-M08-04); the Handover Flow (SCR-M08-06 — the handover action lives on the project detail); the payments screen where money is actually recorded is M11's, and this screen links into it rather than duplicating a control; the design and proposal blocks are read-only summaries with a link into the owning module (M05, M06); the set-blocker sheet and the cancel confirm are detail actions. The screen opens on what is wrong: an active blocker, if there is one, sits above the stage timeline; a due-but-unpaid tranche sits second. Other exits: not pinned by PRD — designer decides, note the decision.

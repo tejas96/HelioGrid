@@ -4,6 +4,32 @@ The Installation Team Member's own surface: today's assigned installation, its c
 
 **Module:** M08 · **Personas:** Installation Team Member · **Context of use:** this persona's home screen — opened on a phone at the start of the day and on site, one-handed; everything it composes obeys the no-commercial-figures surface law. It is deliberately a one-job surface, not a portfolio.
 
+**One job:** know today's job, and start it.
+**Order of attention:** 1 today's installation — where, and what · 2 how to get in — the site's access constraints · 3 the checklist's progress and the photographs expected.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **"And nothing else" (`M08-45`) is this screen's composition law:** one job, no portfolio, no
+figure that is commercial — and no sentence saying any of that.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Today's assigned installation (`M13-36`) | data | the site and its address as the title block; the system as a plain description; the date |
+| The site's access constraints | data | label–value rows as captured on the site record. Their text is content |
+| The checklist's progress | data · action | done of total as two counts, and the screen's ONE primary act — open the checklist (`SCR-M08-04`) |
+| The photographs expected | data · status | captured of expected as two counts; the expected shots as rows, each with its state mark |
+| No commercial figure (`M13-36`) | — | nothing is drawn and nothing is said. It holds for any block composed into this home |
+| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title and a row leading to its home; it obeys the same no-figure law and never buries today's job |
+| No installation today | teaching | at most two short sentences — what will appear here |
+| The job failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** Its home: the job, the way in, the progress with its act, the photographs. One screenful
+  where the content allows.
+- **1536.** Honestly the same frame in a centred column with more room. Say so on the board; nothing
+  is added to fill the width.
+
 ## Entry & exit
 
 Reached from: it is the Installation Team Member's home — the screen the app opens on for this preset (PS-26, M13-36). Leads to: the Installation Checklist (SCR-M08-04) for the assigned job (its checklist with progress). Other entry/exit: not pinned by PRD — designer decides, note the decision.

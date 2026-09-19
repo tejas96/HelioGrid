@@ -4,6 +4,32 @@ Assemble the pack from verified checklist files, share to the customer, link bec
 
 **Module:** M08 · **Personas:** Project Manager · EPC Owner · **Context of use:** the closing act of a project — typically deliberate desk or phone work at the end of delivery; the share needs a connection (it rides the transactional lane, or a manual download-and-send fallback); the referral ask happens in the same sitting, "while the roof is new and the first bill is about to drop".
 
+**One job:** hand the finished project to the customer, in one sitting.
+**Order of attention:** 1 can it be handed over — every row verified, or the rows that block it · 2 the pack exactly as it will be shared · 3 sending it · 4 the referral ask.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **One act with four parts (`M08-46`)** — the person presses once, and ONE line at the act says
+what it sets in motion.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Rows are still pending (`M08-46`) | status · more detail | the flow opens on it: the title names how many documents are pending, the pending rows are a list, each leading to the checklist (`SCR-M08-03`). No send act is drawn |
+| The pack as it will be shared | data | the verified files in pack order — the row's pack label, its files, who verified and when — and the document count with its provenance label |
+| Sending, with a connected channel (`M08-46`) | action · status | the primary act. Its ONE line: the customer's link becomes this pack. The composed message is content. Afterwards the delivery state is a chip |
+| Sending, with no channel connected (`M08-46`) | action | two acts — download the pack, copy the message. No delivery state is drawn anywhere on this path |
+| The project reaches handed over | status | the stage chip on return to the project. No sentence announces it |
+| The referral ask (`M08-47`) | action | the flow's last step: the outcomes as one-tap acts — the customer named someone, or the ask was declined. Naming someone reveals two fields, name and phone |
+| No credit, no balance (`M08-47`) | — | nothing is drawn and nothing is said about rewards |
+| The send failed | error | one line at the act — what failed and what to do. Nothing is shown as sent |
+
+## Arrangement
+
+- **375.** A full-height sheet that moves through its parts in order — check, pack, send, referral
+  (`F7-21`). The pack's file list is the volume region.
+- **1536.** A side panel beside the project: the pack list and the message preview side by side, the
+  act beneath them, the referral ask taking the panel last.
+
 ## Entry & exit
 
 Reached from: the handover action on the Project Detail (SCR-M08-02) — per the PRD, "the handover action lives on the project detail". Leads to: the share itself completes here — with a connected transactional channel the handover message sends from the tenant's own official channel and carries that channel's honest delivery states; with none, the rep downloads the pack and sends the composed message themselves and no delivery is claimed on that path alone (`M08-46`, owner ruling 2026-08-04; `M03-03`); the project reaches `HANDED_OVER`; the customer's link becomes the pack (F5's transition — owned by foundations/F5); the referral ask is the last step of the same flow rather than a separate errand, and any referral it produces is the CRM's referral row (M02's object); then back to the project, which stays readable with everything intact. If any checklist row is pending, the flow is refused with the pending rows named (reading SCR-M08-03's checklist). Other exits: not pinned by PRD — designer decides, note the decision.
