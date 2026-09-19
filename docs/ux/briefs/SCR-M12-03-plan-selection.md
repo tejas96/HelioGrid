@@ -4,6 +4,9 @@ Pick tier and cycle; upgrade, downgrade with preview, cycle switch; handoff to h
 
 **Module:** M12 · Platform billing · **Personas:** EPC Owner — every billing act rides `F2.M12.manage-billing`; only the Owner converts, upgrades, downgrades or switches cycle (`docs/prd/modules/M12-platform-billing.md` §2) · **Context of use:** web emphasis for plan work, fully mobile for the trial-expiry and one-tap-pay moments (`docs/prd/modules/M12-platform-billing.md` §2). The trial-expiry entry happens under time pressure; the downgrade path is a considered desk task reading a usage-derived preview.
 
+**One job:** pick the plan that fits, and know exactly what changes when it starts.
+**Order of attention:** 1 what I am on now · 2 what each plan costs and caps · 3 what happens at the switch — when it starts, what is charged today, what is kept.
+
 ## Entry & exit
 
 Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); the trial countdown chip (chip surface is SCR-SHELL-06, shared row M12-53); Billing Home's plan-selection surface (M12-55, SCR-M12-02); soft-block prompts — post-expiry create/edit paths are "blocked with a plan prompt" (M12-53); a return after a lapse — in `halted`/`expired`/`cancelled` the billing screens "are the guaranteed way back" and plan selection is one of them (M12-55). Leads to: the gateway's hosted checkout — "pick tier and cycle → hosted checkout → mandate per the pack's rails → `active` immediately" (M12-54); on downgrade, confirming schedules the change at the cycle boundary and returns to Billing Home's scheduled-downgrade state (M12-49; §M12.8 behavior detail); on checkout failure, "conversion fails honestly (`F8-36`); the trial state is unchanged; nothing half-converts" (§M12.2 edge case) — the tenant lands back here.
