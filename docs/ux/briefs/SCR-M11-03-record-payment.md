@@ -4,6 +4,34 @@ Record a manual payment with amount, mode, reference, date and receipt photo.
 
 **Module:** M11 · **Personas:** Finance, EPC Owner, Project Manager, Sales Manager (the `F2.M11.record-payments` holder set) · **Context of use:** the act that happens away from a desk — a Project Manager records what arrived from the site, mobile-first, often one-handed with a receipt to photograph; the PRD's own scene is "a person standing in a customer's driveway with no signal" (`M11-39`). Also used at a desk by Finance. Money mutations are online-only: connectivity failure means honest refusal, never a queue.
 
+**One job:** record money that arrived, exactly as it arrived.
+**Order of attention:** 1 the amount · 2 the mode, the reference, the date it was received · 3 the receipt photograph · 4 save.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **A driveway, one hand, maybe no signal (`M11-39`):** five fields, one act, and an honest
+refusal when it cannot be saved.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| What the tranche still owes | data | a label–value row above the form, with its tier mark |
+| The amount (`M11-34`) | data | the first field, arriving filled with what is still owed and always editable. No other field arrives filled |
+| The mode (`M11-35`) | data | a picker of the pack's own display names — a list of any length |
+| The reference, and the date it was received (`M11-34`) | data | two fields, no helper text |
+| The receipt photograph (`M11-37`) | action · status | an optional camera or file act. After the save the file shows as attaching, as a status on the file — the entry already exists, and never the reverse |
+| Who recorded it (`M11-34`) | — | not a field: it is the signed-in person, and it rides the saved entry as its qualifier |
+| Less than what is owed (`M11-36`) | data | as the amount is typed, ONE label–value line restates what will remain |
+| More than what is owed (`M11-36`) | data | ONE label–value line states the surplus against the schedule. The save is not held, and no warning paragraph appears |
+| Zero or a negative amount (`M11-38`) | error | ONE inline line at the field: the amount must be more than zero, and a wrong payment is reversed from the ledger |
+| Save | action | the sheet's ONE act. While it cannot be pressed, its one line says what is missing (`N4`) |
+| It cannot reach the server (`M11-39`) | error | ONE line at the act: not recorded, and nothing is held. `Try again`. Never a tick, never a "saved on this device" |
+
+## Arrangement
+
+- **375.** A sheet (`F7-21`): the fields in the order above, the save act pinned at the foot with its
+  one line.
+- **1536.** A side panel beside the ledger, so the tranche's row stays in view while it is recorded.
+
 ## Entry & exit
 
 Reached from: the tranche row on the payments screen (SCR-M11-02) and from the project's money block (`M08-35`'s surface links here rather than duplicating the control) — M11 §M11.5 behavior detail; it is the *only* place a payment is created — there is no second entry path anywhere in the product. Leads to: not pinned by PRD — designer decides, note the decision (the payment, once accepted by the server, is an entry on the ledger the person came from).

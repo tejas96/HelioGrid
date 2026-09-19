@@ -4,6 +4,45 @@ Work the tranche schedule and money ledger; the one surface where money is writt
 
 **Module:** M11 · **Personas:** Finance (primary — owns money correctness), EPC Owner (everything, all money), Project Manager (records what arrived against the project they run, from the site), Sales Manager (the same, team-scoped), Sales Executive (read-only on their own won deals — enough to chase a customer), Operations (reads collections at portfolio scope) · **Context of use:** desktop carries the full ledger and the period view; mobile carries the two acts that happen away from a desk — record a payment with a receipt photograph, and send or copy a payment link or a request message (M11 §2 surface emphasis as amended by owner ruling 2026-08-06; it read "copy a payment link or a request message" before the ruling). Every money mutation is online-only and is refused rather than held.
 
+**One job:** collect what is due on this project, and keep the record of what arrived true.
+**Order of attention:** 1 the due row and its collect acts · 2 the schedule — each tranche's state, amount and date · 3 the entries under a tranche, each with who or what confirmed it · 4 corrections — reverse, waive — and the earlier schedule.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **This brief's rulings are mostly about what is NEVER drawn.** On the copy path nothing says a
+message was sent. Nothing from the audit log is drawn on either path. A person's claim never looks
+like the account's confirmation.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| Collected against due | data | ONE figure pair at the head of the schedule — the same one every surface shows |
+| The tranche schedule (`M11-52`) | data · status | one row per tranche: its name and share, its amount, its state as the ONE chip, the date it entered that state, its receipt mark. A row opens to its entries |
+| The due row (`M11-52`, `M11-24`) | action | lifted first, and the only row anyone acts on. ONE primary act by path — send the link where a channel is connected, copy it where none is — with copy always present, the request message, and record payment |
+| Sent from the connected channel (`M11-24`) | status | afterwards the channel's own delivery state is a chip on the sent message, exactly as the channel reports it and no further. Nothing from the audit log is drawn — no tick, no sender line, no "sent by" |
+| No channel connected | action | copy the link, copy the request message. NO delivery state, no "copied" or "chased" marker, no counter, no last-copied line — the screen says nothing about whether it was sent |
+| The link cannot be made (`M11-31`, `M11-19`) | status · action | the link acts are absent — never broken, never greyed. ONE line states why, in place, and record payment is one tap away |
+| Paid but not yet confirmed (`M11-28`) | status | a chip with exactly that wording. Never received, never failed, never an empty row |
+| The link no longer matches what is owed (`M11-30`) | status · action | a chip on the old link; the link's amount and the amount owed now as label–value; ONE act — a fresh link |
+| Part received (`M11-36`) | status · data | its chip; received so far and remaining as label–value |
+| More collected than the schedule expects (`M11-36`, `M11-14`) | data | a label–value row naming the surplus against the schedule. Never absorbed into a row |
+| Each entry (`M11-41`, `M11-42`) | data · status | list rows under the tranche: amount, received-on date, mode, reference, its file mark — and its qualifier as the entry's chip: confirmed by the account, or recorded by a named person with the time. The qualifier survives every density |
+| A reversal pair (`M11-46`, `M11-47`) | data | both entries stay in the list: the reversing one with its negative amount, its reason as content, its actor and time, and a pointer to the entry it reverses. Nothing is greyed out or filtered away by default |
+| Reversing an entry (`M11-46`) | action | a dialog showing the entry in full, and a required reason. ONE line: the original stays and a reversing entry is added |
+| Waiving a tranche (`M11-49`) | action · status | a dialog with a required reason. ONE line: a waived tranche is never counted as collected, and waiving cannot be undone (`N8`). Afterwards its chip, and it leaves the due set with its amount still readable |
+| A new accepted version revised the terms (`M11-14`) | data · more detail | the schedule in force; collected against the NEW total as label–value; a row that opens the earlier schedule, read-only |
+| No payment terms (`M11-15`) | teaching | ONE plain line and the honest next act. Never a fabricated row, an even split or a projection |
+| An OPEX or PPA project (`M11-16`) | fixed note | the ruled line — monthly energy billing is handled outside this platform — drawn once, as written |
+| A reader — read scope only | status · action | every row, state, amount, date, receipt and qualifier unchanged. Every act that writes money and every link act is absent. The ONE act a reader holds takes the due row's place: the plain request message — sent where a channel is connected, copied where none is. ONE line names whose acts the absent ones are |
+| Provenance (`F8-07`, `F8-12`) | honesty label | one label heads each column of figures that share it; a figure that cannot be reconciled carries its own provisional mark |
+
+## Arrangement
+
+- **375.** The due row first, its primary act at full width and the others beneath. Then the schedule
+  rows; a tranche opens to its entries. Record payment is a sheet (`SCR-M11-03`).
+- **1536.** The due row lifted above a captioned schedule table (`F7-27`) — tranche, share, amount,
+  state, date, receipt — with a tranche's entries in a side panel (`F7-21`). Reverse and waive are
+  modals: decisions that must be finished or abandoned.
+
 ## Entry & exit
 
 Reached from: the project's money block (`M08-35`'s surface links into it) and from Finance's own home (SCR-M11-01, `M11-54`) — M11 §M11.8's behavior detail: "It is reachable from the project (`M08-35`) and from Finance's own home (`M11-54`); it is the same screen in both places." Every other surface in the product links into it rather than duplicating a control (`M11-52`). Leads to: Record Payment (SCR-M11-03) from the tranche row (M11 §M11.5 behavior detail: the recording sheet "is reachable from the tranche row on the payments screen"); the copy-payment-link and copy-request-message actions complete on this surface, and so does the send of the link and its request message from the tenant's connected transactional channel where one is connected (`M11-24`/`M11-26` as amended by owner ruling 2026-08-06; `M03-03`) — the message leaves the product from here rather than routing the operator anywhere else. The **plain request message on its own** completes here too, for any holder of project visibility including a read-only reader (owner ruling 2026-08-06; `F2.M11.send-request-message` — see the **reader-read-only** state); *this sentence is added by that ruling, which the entry-and-exit line predates.* Other exits: not pinned by PRD — designer decides, note the decision.
