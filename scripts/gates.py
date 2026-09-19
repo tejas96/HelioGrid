@@ -920,6 +920,9 @@ def run(repo, verbose):
                 and "Carrying a row is not printing it" in body,
             "the word budgets can fail a frame": "a frame over budget FAILS" in body,
             "the word inventory leads the self-audit": "word inventory" in body,
+            "a word that leaves the frame is moved, never deleted": "MOVED, never deleted" in body
+                and "An explanation with no home is a FAIL" in body,
+            "one provenance label may serve a region (F8-07)": "One label may serve a region" in body,
         }
         missing = [k for k, ok in must.items() if not ok]
         # The audit runs only as far as the message that asks for it: start-here's message 4 is what

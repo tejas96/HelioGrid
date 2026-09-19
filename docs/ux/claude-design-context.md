@@ -48,6 +48,11 @@ reasoning behind a rule · what the product can accept or read · anything whose
 change the decision. **The test:** if not reading it would change what the person does, it stays on
 the screen. If it only answers curiosity, it goes behind the ask.
 
+**A word that leaves the frame is MOVED, never deleted.** Its home is, in order: a data row, a
+chip or the one line at the act where the decision needs it · the ask · a row that opens in place ·
+a help surface of its own. The budgets decide WHERE a word lives, never WHETHER the person can reach
+it — and your notes name where each one went.
+
 **Carrying a row is not printing it.** A brief's requirement is met by a control, a state, a data
 row, an arrangement — or by behaviour that needs no words at all. A sentence is the last resort,
 and only for a fact on the never-behind-a-tap list. Never print a rule's reasoning. Never explain the
@@ -87,6 +92,8 @@ carries the same sentences.
 - On one 375 frame: at most 40 words in sentences. Labels, values, chips, buttons, captions and
   table cells do not count.
 - One fact appears once per frame — not in the header, again in the card and again at the foot.
+- A provenance label appears once per region where its figures share one tier and one source
+  (`N7`). The same label under each of them is a repeat.
 - A sticky header or footer holds its controls and at most one line. Never a paragraph, never a
   provenance line.
 - Helper text under a field: at most one line, and only when it changes what the person types.
@@ -205,6 +212,11 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     tier. **The tier is a mark — dot and word — on the figure's own row, not a sentence**; how the
     figure was worked out is the `Derivation` disclosure under it. If a layout only works by hiding
     the tier, the layout is what changes.
+  - **One label may serve a region.** Where every figure in a region shares one tier and one
+    source, state them ONCE — in the region's caption, or at the head or foot of the group, inside
+    the region. A figure that differs carries its own mark on its own row, and mixed sources are
+    labelled per figure (`F8-09`). A document a customer may hold — a proposal, the customer link,
+    an export — keeps the label on each figure.
 - **N8** — destructive actions are confirmed AND undoable; undo is thumb-reachable on mobile. Where
   an act genuinely CANNOT be undone by the person who did it — it is already someone else's
   knowledge, or the record is gone — the confirm carries the RECOVERY ROUTE IN WORDS instead, on
@@ -347,7 +359,8 @@ in the same session, then print that list again.
    frame — sentences · words in sentences · provenance lines · lines in each sticky bar · facts
    that appear twice · asks · value columns in any table. Name what you left uncounted and which
    §2 entry allows it, and name every collision between a budget and a must-stay fact with the
-   form you chose. **A count over its §2 budget is a FAIL.** For
+   form you chose. Then list every explanation the brief's rows imply and name where each now
+   lives — the ask, a row that opens, a help surface. **An explanation with no home is a FAIL.** **A count over its §2 budget is a FAIL.** For
    every 1536 frame, print the same counts per region.
 2. **The brief's REQUIREMENTS list, row by row** — the UI half of each row, per item 6. For each
    row, name what meets it: a control, a state, a data row, an arrangement, behaviour with no
