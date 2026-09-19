@@ -4,6 +4,37 @@ The nine-step wizard frame: header, step navigation, Design Health, save, gates.
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer, EPC Owner, Sales Manager (read-only) · **Context of use:** wraps every studio step on web and mobile equally — web primary, mobile full parity (MS12 §2, F7-30); mobile gets a compact step indicator opening a step-list sheet, desktop a step rail (M05-03). The shell is used at a desk or on a phone; accessibility is a gate, not a polish item (MS12 §2). **Shell law the canvas steps inherit:** v1 is light-only — there is no dark theme, no per-user theme switch and no dark variant of any surface, and the studio canvas is light like everything else (`foundations/F7`, `F7-04`, P0); every visual fact comes from `design/ds-source` and no screen restates one (`F7-01`/`F7-03`).
 
+**One job:** move through the nine steps, always knowing where I am, whether my work is saved, and how healthy the design is.
+**Order of attention:** 1 the step, and its state · 2 Next — or the one line that says why not · 3 whether it is saved · 4 Design Health.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The shell is on every studio step, so every word in it is paid for nine times.**
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| The header (`M05-04`, `MS12-05`) | action | back · the step's title · the health chip · units · save · save and exit · help · Next or Done. ONE primary act: Next. Every icon act carries its name |
+| Where I am (`M05-02`, `M05-03`, `MS12-01`) | status | the position and the step's name; each of the nine steps shows its state as a mark and a word — not started, in progress, done, has errors |
+| Next is blocked (`M05-05`, `MS12-03`, `MS12-04`) | action line | ONE plain line naming the reason, in the non-blocking toast this brief pins. Never a paragraph, and never a greyed act with no reason (`N4`) |
+| Saved, or not (`MS12-24`) | status | a save-state chip, always in view. A failed write is one persistent banner with its retry |
+| A stale save is refused (`M05-09`) | error | one banner: what happened, and the ONE act — reload. No merge is offered |
+| Someone else changed this design (`MS12-22`) | error | one banner saying so, and its act |
+| The survey was updated (`M05-13`) | status · more detail | one banner naming the newer version; the differing fields are rows behind `Review`. A marker chip stays until the review clears |
+| Design Health (`M05-06`, `MS12-06`) | status | a chip: the score and its band as a word. A provisional mark while shading recalculates; a neutral placeholder before any score exists |
+| The health sheet (`MS12-09`) | data | per-category rows with their scores; each deduction a label–value row; the change since the last save as rows; the unscored context lines as rows. The provenance footer is fixed copy, drawn once |
+| Help (`MS12-07`) | help | the studio's help surface, one entry per step: what the step does, and tips. Every step's teaching lives here |
+| Read scope only | status | the wizard in full; no mutating act is drawn |
+| A deep link past an unmet gate | status | the person lands on the highest step they may reach, with the blocked-Next line |
+| Waiting for data (`MS12-27`) | — | a skeleton. Never a blank canvas |
+
+## Arrangement
+
+- **375.** A compact header: back, the title, the health chip, the save state and Next stay in view;
+  units, save-and-exit and help may share one menu, every one still reachable (`N1`). The step
+  indicator opens the nine-step sheet.
+- **1536.** The step rail down one side, the full header across the top, the step's own surface filling
+  the rest.
+
 ## Entry & exit
 
 Reached from: opening a design from the Design List (SCR-MS-01) or Design Queue (SCR-MS-02); a design opens at its saved step, and deep links are guarded — guards apply after hydration (MS12-27) and navigation clamps to the highest permitted step when a gate is unmet (gated-deep-link-clamped state). Wizard-step gates (the flagship note): the shell owns the gate order — setup completeness · at least one roof · panel/inverter/capacity · at least one enabled panel · the electrical hard gate — and every blocked Next states its reason (MS12-03, M05-05). Leads to: the nine steps in order (Project setup · Roof · Obstructions · Components · Panel layout · Proposal captures · SLD & drawings · BOM & pricing · Done, M05-02); "save and exit" returns to the LEAD the design belongs to (MS12-05).

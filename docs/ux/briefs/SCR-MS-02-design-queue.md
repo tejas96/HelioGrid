@@ -4,6 +4,28 @@ Design Engineer home; awaiting work with sign-off queue composed in (M05-83).
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer · **Context of use:** the first screen the Design Engineer sees after sign-in — their role-decided home (M13 dashboards family). Primarily a desk surface (the designer authors at a desk), with mobile parity per the platform's parity law (F7-30). One home, never a second front door (PS-18).
 
+**One job:** pick the next design to work on — or the next one to review.
+**Order of attention:** 1 the designs awaiting work, and what blocks each · 2 the sign-off queue, oldest first, where the person holds sign-off · 3 opening one.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2.
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| A design awaiting work (`PS-16`) | data · status | one row: the customer, the design, its state as the ONE chip. It opens the studio |
+| What blocks it (`PS-16`) | data | the named gaps on the row, as marks — never a sentence |
+| The sign-off queue (`M13-33`, `PS-18`) | data | a titled region of its own, oldest first: customer, kWp, designer, waiting time. One provenance label heads it (`F8-07`). A row opens the review |
+| The person does not hold sign-off (`M13-33`) | — | the region is absent, and nothing says so |
+| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title and a row leading to its home |
+| Nothing awaiting work | teaching | at most two short sentences |
+| The queue failed to load | error | one banner — what failed and what to do |
+
+## Arrangement
+
+- **375.** Awaiting work first, then the sign-off region.
+- **1536.** The two queues side by side.
+
 ## Entry & exit
 
 Reached from: sign-in as a Design Engineer — this is the role-decided home. Leads to: an awaiting-work item opens that design's studio (SCR-MS-03); a sign-off-queue item opens the review surface (content contract is `M05-83`'s; the review screen is Sign-off Review, SCR-MS-16). Route back from any studio exit is the owning lead (MS12-05, PRD context), not this home — return here is via normal home navigation, not pinned by PRD — designer decides, note the decision.

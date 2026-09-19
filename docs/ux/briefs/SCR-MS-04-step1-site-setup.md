@@ -4,6 +4,43 @@ Turn a lead into a designable site: project info, market-scoped parameters, conf
 
 **Module:** MS (Design Studio) · **Personas:** Design Engineer, Sales Executive, Survey Engineer, EPC Owner · **Context of use:** Design Engineer is the primary author at a desk; Sales Executive and Survey Engineer may run remote-survey-derived setup (F2.M04.run-remote-survey) — often on a phone. Web primary authoring; mobile 375 px full parity (F7-30); touch behaviors per the S1-5a ruling and F7-32. Read access per lead visibility (F2). The canvas is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the global law sheet `docs/ux/claude-design-context.md` carries it for every session).
 
+**One job:** confirm where the site is, and the few facts the design needs.
+**Order of attention:** 1 the location — search, pin, confirm · 2 the project and market facts, already filled · 3 what the confirmed location tells us — solar data, site intelligence.
+
+## Words on this screen
+
+Every fact below is carried. None is a paragraph. The kinds are the context file's §2. **The brief's hints are of three different kinds, and they are not interchangeable:** a
+source hint is a provenance label and stays; a hint that changes what is typed is one line of
+helper; everything else is Help (`MS12-07`).
+
+| Fact | Kind | Its form here |
+|---|---|---|
+| A pre-filled field and where its value came from (`MS1-01`, `M05-14`) | data · honesty label | the field, and ONE line under it naming the source, in the brief's own form. It is provenance, so it is never dropped and never behind a tap |
+| The tariff's source and its caveat (`MS1-05`) | honesty label | ONE line under the field, the brief's own copy. When the value is typed by hand, the line names that source instead — it never disappears |
+| What the survey does not know (`M05-14`) | data | a named gap in the field's place, with the same prominence as a known value |
+| Average monthly bill (`MS1-06`) | data | an optional field; its one line of helper stays, because it changes what is typed |
+| Utility waits for a region (`MS1-04`) | status | the control's placeholder says so. Never disabled with no reason (`N4`) |
+| A phone or a coordinate that is not valid (`MS1-02`, `MS1-14`) | error | ONE inline line with the brief's friendly correction. Other fields stay usable |
+| Search, or coordinates (`MS1-13`) | action | a two-way selector over one input |
+| Placing the pin (`MS1-16`) | action | the brief's own pill on the map; on touch, tap to place and drag |
+| Confirm location (`MS1-18`) | action | the map region's ONE primary act. While no pin is pending, its one line says so |
+| Change location (`MS1-21`) | action | a secondary act. It destroys nothing, so it warns of nothing |
+| Moving the pin more than 25 m (`MS1-20`, `M05-19`, `N8`) | action | a confirm: what will be cleared, as rows with their counts. Cancel keeps everything. ONE line: it can be undone |
+| Solar data (`M05-17`) | data · status | label–value rows — irradiance, peak sun hours — with the source label in `F8-08`'s fixed copy. Loading, no coverage and unreachable are a chip and ONE plain line each. The fallback always carries its ±10% label |
+| Site intelligence (`M05-18`, `MS1-23`) | data · status | four honest states: a chip and ONE plain line for each that is not ok. When ok: the stats as label–value rows, each absent when it has no value; the provider and imagery-quality marks; the brief's footer as fixed copy. What imagery quality means is Help — never a hover-only tooltip (`N1`) |
+| The map could not load (`MS1-17`) | error | the brief's line and `Retry`. The coordinates path stays open |
+| The imagery tile could not load (`M05-16`) | status | ONE line: a blank canvas, and calibrate by hand. It never blocks |
+| The proposal logo (`MS1-11`, `MS1-12`) | data · action | the tenant's logo, read-only, and ONE act to change it for this project. A refused file is one inline line naming the limit |
+| Ground mount (`MS1-09`) | data | an ordinary option. No badge, no lock, no word about plans |
+| The sanctioned load is exceeded (`M05-20`) | status | ONE warning line naming the actual limit in kW, with the brief's own words. It never blocks |
+| The first-run walkthrough (`MS1-08`) | help | coach marks over the live screen, once, dismissable for good, and reachable again from Help |
+
+## Arrangement
+
+- **375.** The location first — search, the map, confirm — then the form as titled groups already
+  filled, then the solar and site-intelligence cards once a location is confirmed.
+- **1536.** The form on one side, the map large on the other, the two cards beneath the map.
+
 ## Entry & exit
 
 Reached from: step 1 of the studio wizard (SCR-MS-03) — the first step a new design opens on; a resumed design opens at its saved step (shell contract). Wizard-step gate (flagship note): Step 1 is the entry step — no prior gate admits it; its own Next gate is the first in the shell's defined order, **setup completeness** (MS12-03, shell contract). Leads to: Step 2 — Roof (SCR-MS-05), which consumes the confirmed location, calibration and canvas contract (MS1 forward contract).
