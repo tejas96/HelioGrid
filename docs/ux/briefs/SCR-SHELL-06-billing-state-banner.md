@@ -18,7 +18,7 @@ in the self-audit. The strip spends its height on rows, never on sentences.
 | Fact | Kind | Its form here |
 |---|---|---|
 | The state — trial days left, a failed payment and its day in the grace, a cap at 80% or at its ceiling, halted (`M12-53`, `M12-06`, `M12-30`, `M12-39`) | status · data | the strip's ONE title line: the fact with its count or its date |
-| What paused, and what still works until when (`M12-31`, `M12-39`) | data | at most two label–value rows under the title — `Paused`, and `Still works` with its date. At `halted` the always-works set is a four-item list, because it is four items. Never a paragraph, never "account limited" |
+| What paused, and what still works until when (`M12-31`, `M12-39`) | data | at most three short rows under the title — `Paused`, `Still works`, and `Until` with the date in a row of its own, because the deadline is the fact the person acts on. `Paused` and `Still works` are lists, so each gets the full width with its icon and its word leading the line — never a narrow value column beside a label; `Until` is short, so it is one label–value line. At `halted` the always-works set is a four-item list, because it is four items. Never a paragraph, never "account limited" |
 | What resolves it (`M12-31`, `M12-21`) | action | the strip's ONE act; its label IS what resolves it. The day-6 act names the payment method it will charge |
 | The automatic retry, while nothing has paused (`M12-39`) | data | that a retry is coming rides the title line; it is not a sentence of reassurance, and no retry date is invented |
 | The forfeiture disclosure, for a tenant inside a protection horizon (`M12-39`) | fixed disclosure | ONE sentence, drawn whole on every rung, never trimmed, never behind a tap — and not counted against any budget |
@@ -26,7 +26,7 @@ in the self-audit. The strip spends its height on rows, never on sentences.
 | A blocked act (`M12-21`) | data · action | the denial is a sheet at 375 and a centred modal at 1536: its title names what was blocked; two short lists, `Paused` and `Still works`; ONE primary act — reactivate, pick a plan, or upgrade |
 | The amount (Owner only) | data | in the act's label, or one label–value row. For every other employee the strip renders without it |
 | A person who is not the Owner | status | the state and its rows stay; the act's place is taken by ONE line naming whose act it is |
-| Provenance (`F8-07`) | honesty label | one mark for the strip's figures where they share a source; a recorded date carries none |
+| Provenance (`F8-07`) | honesty label | ONE row: the tier as a mark — dot and word — beside the `Derivation` disclosure that opens the origins, which charge and which invoice. Never a line of words in the strip, and no separator left hanging after the mark. A recorded date carries none |
 | The billing state could not be read | error | one line and `Try again`. No figure at all — not the last known day, not the amount |
 | No billing condition | — | nothing is rendered: no strip, no chip, no teaching |
 
@@ -37,9 +37,31 @@ in the self-audit. The strip spends its height on rows, never on sentences.
 - **1536.** The same strip in the content column: title and rows on the left, the act in the strip's
   action row on the right; the four-item list runs in one wrapping row.
 
+## Sample data — the PRD's own rows, drawn and never invented
+
+The first drawing of this screen invented a 30-day trial and a meter called "AI designs" at 40 of 50,
+because this brief carried neither fact. The trial's length, every meter's name and every bundle size
+on this screen are these rows' values; a frame that shows another is wrong. Counts used, dates and the
+invoice are yours to choose.
+
+- **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
+- **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB.
+
+**The person's words (context file §2), on this screen.** A cap's act is `Upgrade plan`. The
+forfeiture disclosure names today's prices, not "the current book". The day a trial ended is a
+recorded date, so it carries no mark.
+
 ## Entry & exit
 
 Reached from: not navigated to — the state banner and countdown chip render in the app shell whenever the tenant is in a trial countdown, a post-expiry soft block, `past_due` grace, cap-ladder or halted state (M12-53, M12-06, M12-30, M12-39); a denial sheet fires when any UI mutation is blocked by the billing-state matrix (M12-21). Leads to: the "Reactivate" (or upgrade) path (M12-21); the day-6 one-tap pay link (M12-39); the plan-pick screen at trial expiry (M12-53 — SCR-M12-03); the usage screen carries the cap ladder's own surface (M12-30 — SCR-M12-04). If the PRD does not pin an entry/exit beyond these, it is not pinned by PRD — designer decides, note the decision.
+
+**Decisions made in design (2026-09-20) — later screens inherit them.**
+
+1. **The slot.** One pinned slot between the top bar and the scrolling content, one banner at a time (`BannerStack mode="single"`). It never scrolls away and is never dismissed: `BM-32` makes the strip the guaranteed way back.
+2. **The strip's form.** One title line; rows of ONE family — a mark, the row's word leading the line, then its values — `Paused`, `Still works`, and a dated row (`Until`, `Account halts`, `Cycle resets`, `New detections pause`); then ONE row with the tier mark and the `Derivation` beside it; then the act. The act sits on its own line at 375 and in the banner's action row at 1536, where the strip caps at 1080.
+3. **Where the act goes.** Every dunning, trial and halted act, and both denials' act, route to `SCR-M12-03` and return to the surface they were pressed from; the day-6 act is that route with the card already chosen. The 80% cap's act is `See usage` and routes to `SCR-M12-04`; at 100% and after the grace the act is `Upgrade plan`.
+4. **A person who is not the Owner.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount is rendered.
+5. **The default frame is `past_due`, day 4 of 7** — the one ordinary rung where something has paused while core selling still works.
 
 ## Requirements (verbatim)
 

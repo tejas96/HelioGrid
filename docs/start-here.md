@@ -114,8 +114,10 @@ attaching the files, so both documents are actually in the prompt.
 >
 > **Draw static frames, not an interactive prototype.** No state machine, no prop editors, no
 > click-through. Every situation this screen has is its own labelled frame I can see beside the
-> others. Use the real components and realistic content; just don't make them stateful. Pin any
-> date or time to a fixed value rather than `new Date()`, so the spec does not change tomorrow.
+> others. Use the real components and realistic content; just don't make them stateful. Sample
+> content is yours to invent; a product fact — a plan, a price, a limit, a length — is the brief's
+> (§2). Pin any date or time to a fixed value rather than `new Date()`, so the spec does not change
+> tomorrow.
 
 Look at what comes back. **Read the word plan first:** a row whose form is "sentence" and whose
 reason is "it explains…" is Help — push back before looking at the frame.
@@ -166,10 +168,26 @@ reason is "it explains…" is Help — push back before looking at the frame.
 > completion contract item by item, composition in four answers, and everything else the context
 > file states. For each, answer PASS or FAIL and name the specific element that satisfies it. A
 > count over its §2 budget is a FAIL. Where a law has no subject on this screen, say so and say
-> why. Fix every FAIL in this session, then print the word inventory again.
+> why. Fix every FAIL in this session, walk the word inventory again, and rewrite the record so it
+> holds only the final walk.
+>
+> Inside the word inventory, print the two short lists: every **product fact** a frame prints with
+> the brief row it came from, and every word on a frame that is the product's language rather than
+> the person's. Last of all, **read the record against the frames as they now stand** — every
+> quoted line, every count — and fix any mismatch before you hand the screen over.
 
 **Read the self-audit properly.** A PASS that names no element is a FAIL. A requirement "met" by a
 sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both.
+
+**When you ask for fixes — any time before the screen is recorded:**
+
+> Fix these, and nothing else: *(your list, one line each)*.
+>
+> Then rewrite the record so it says only what the design is now: one word plan, one inventory,
+> ONE version of every line a frame prints. Do not append a second inventory, and do not keep the
+> old wording of anything you fixed. Before you reply, read the record against the frames: every
+> quoted line and every count equals the frame's. Tell me what you changed in your reply, not in
+> the record.
 
 ---
 
@@ -227,8 +245,9 @@ A redesign EDITS the drawing that exists. Nothing here starts a new file.
    *"This is a REDESIGN of an existing screen. Edit the existing `<file>` in place — no new file, no
    copy, no v2. Keep every artboard, name, state and layout the `Redesign owed` section does not
    name. Fix only what it describes, at 375 and at 1536, in every state it touches. Then re-run the
-   self-audit, the word inventory first. At the end, list every change you made, one line each, in
-   the decisions record."*
+   self-audit, the word inventory first, and rewrite the record so it says only what the design is
+   now — never a second inventory, never the old wording. At the end, list every change you made,
+   one line each, in your reply."*
 4. Read that list against the export: the fault is gone, and nothing else moved.
 5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — never a bundled page,
    and one pair per screen afterwards.

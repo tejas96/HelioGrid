@@ -39,16 +39,25 @@ pack:** this screen answers three questions and leads to every record; it does n
 
 ## Sample data — the book's rows, drawn and never invented
 
-The plan names and every price, cap and bundle on this screen are these rows' values. Invoice
+The plan names, the trial's length and every price, cap and bundle on this screen are these rows'
+values. Invoice
 amounts, dates and usage counts are yours to choose; a plan name or a published figure these rows do
 not carry is wrong.
 
 - **BM-11** (P0) — **Four tiers, fixed names: Starter · Growth · Pro · Enterprise.** The names are market-neutral structure and suite-wide vocabulary — every market's price book prices these same four tiers in its own currency (F1-25), every entitlement is keyed to them (M12), every report that segments by plan uses them (M13).
 - **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom.
+- **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 
 ## Entry & exit
 
 Reached from: dunning messages, which "deep-link to the billing screen's one action" (`docs/prd/modules/M12-platform-billing.md` §M12.6 behavior detail); the honest state banner and blocked-mutation errors, which carry "a route to reactivate" (BM-32; banner surface is SCR-SHELL-06); and it is available in every billing state without exception (M12-55, BM-32). Leads to: plan selection (SCR-M12-03); the usage screen — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-04); the gateway's hosted checkout for pay/update-method/reactivate (the platform never sees a payment instrument — M12-10 context); the cancel-reason dialog (M12-50); invoice PDFs (M12-55). Reactivation from a dead state "is the same screen with one primary action" (§M12.10 behavior detail).
+
+**Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
+
+- **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
+- **Routes.** The strip's act and both denials' act lead to `SCR-M12-03` and return to the surface they were pressed from; the 80% cap's `See usage` leads to `SCR-M12-04`. This screen adds no second route to the same act.
+- **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
+- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
 
 ## Requirements (verbatim)
 

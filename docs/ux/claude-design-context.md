@@ -37,6 +37,15 @@ how it looks, before reading it.
 | **Help** | how it works, and why | the ask (below) | never in the reading flow |
 | **More detail** | what I may want to see | a row that opens in place or leads somewhere | the end of its region |
 
+**A row's form follows the length of its value.** A short value — a number, a date, a name, a
+state — sits on its label's line, inside a reading measure: never a label at one edge of a wide
+region and its value at the other. A long value or a list gets the FULL width: its label leads the
+line, or sits above it as a caption — with the design system's icon where one exists, and always
+with its word (`N6b`, `N1`). **Rows that sit together share ONE form and one left edge** — where a
+group's rows lead with a mark and a word, its short rows do too. **A value never wraps inside a
+narrow column beside its label** — that row is a spec sheet, not a screen, and at 375 it is a FAIL.
+The design system's `FactRows` holds both forms: compose it, never hand-build a row.
+
 **Never behind a tap:** money and what will be charged · what paused, what still works and until
 when · the provenance tier beside every number · an honesty disclosure · an error and what fixes it
 · a named gap where a value is missing · any consequence that must be read BEFORE the act, at the
@@ -60,6 +69,18 @@ product's insides — its passes, engines and boundaries. **A source label the l
 inside:** the database behind an energy figure (`F8-08`), the price list and its date behind a
 price — that is provenance, and it stays. Never say what the product will NOT do unless that changes
 the act — a disclosure the law requires always does. Write from the person's side of the screen.
+
+**The brief speaks the product's language; a frame speaks the person's (`F7-42`).** A requirement
+row says tenant, tier, book, bundle, ladder, rung, dunning, entitlement — a frame never does. It
+says what the person would say: company, plan, price, what is included, what is paused. A plan is
+upgraded, not a bundle. Where you are not sure a word is the person's, it is not.
+
+**Invent the sample, never the product.** A person's name, a town, a count used, a date, an invoice
+number are sample content: yours to choose, and realistic. A PRODUCT fact is not yours — a plan's
+name or price, a limit, a meter's name, a trial's length, a stage, a tax rate, a rule's number. It
+comes from the brief's rows, word for word. Where the brief gives none, do not make one up: name the
+missing fact at the top of your reply, and draw that value as a blank the board labels
+`missing from the brief`.
 
 **A budget never beats a fact.** Where a budget and the never-behind-a-tap list collide, the fact
 stays and its FORM changes — a row, a chip, the one line. Never drop, shorten, paraphrase or hide a
@@ -95,7 +116,7 @@ carries the same sentences.
 - A provenance label appears once per region where its figures share one tier and one source
   (`N7`). The same label under each of them is a repeat.
 - A sticky header or footer holds its controls and at most one line. Never a paragraph, never a
-  provenance line.
+  provenance sentence — where a pinned bar carries a figure, its tier rides as a mark.
 - Helper text under a field: at most one line, and only when it changes what the person types.
 - A value the person cannot change is a read-only row; why it is fixed is Help.
 - At most one ask per region and three on a frame. An information control on every row is the same
@@ -107,8 +128,8 @@ carries the same sentences.
 - A state changes the data, the status chip and the one action. It does not add a paragraph: an
   error is one banner — what went wrong and what fixes it.
 
-**The ask is ONE affordance, never invented per screen:** a labelled information control at or
-above the touch floor, opening an **anchored popover** — the same object at 375 and at 1536, never
+**The ask is ONE affordance, never invented per screen — the design system's `Explainer`:** a
+labelled information control at or above the touch floor, opening an **anchored popover** — the same object at 375 and at 1536, never
 a sheet on one and a bubble on the other. Tap and keyboard focus open it; hover may open it where
 the input can hover — a capability, never a width (`F7-29a`) — and is never the only way in (`N1`).
 Escape, an outside tap and scrolling away close it, and focus returns to the control. It carries a
@@ -198,7 +219,8 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
   rendered as a number; the surface shows what is missing instead.** An identifier is not a number
   and carries no tier: a tax registration, an account number, an invoice number, a phone number, a
   one-time code.
-  - **Dates — was the value *recorded*, or *computed or guessed*?** Recorded → no tier: a payment's
+  - **Dates — was the value *recorded*, or *computed or guessed*?** Recorded → no tier, and nothing
+    on the frame says that it has none: a payment's
     received-on date, a visit's check-in time, an audit timestamp, a booked appointment time, a
     user-set "busy until 17:00". Show when it was recorded. Computed or guessed → tier: a payback
     month, an expected commissioning date, an estimated arrival window.
@@ -210,8 +232,12 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     tooltip, an info icon, a colour difference alone or a footnote (`F7-35`: "honesty is a UI
     pattern, not a disclaimer"). Progressive disclosure governs the rest of the screen, never the
     tier. **The tier is a mark — dot and word — on the figure's own row, not a sentence**; how the
-    figure was worked out is the `Derivation` disclosure under it. If a layout only works by hiding
-    the tier, the layout is what changes.
+    figure was worked out is the `Derivation` disclosure under it. **A source label is a NAME of a
+    few words** — a database (`F8-08`), a price list and its date, a document and its version — and
+    rides beside the mark. A clause that says how a figure was reached — which charge, which
+    invoice, which record — is its working, and opens in the disclosure. No separator is left
+    hanging at the end of a line. If a layout only works by hiding the tier, the layout is what
+    changes.
   - **One label may serve a region.** Where every figure in a region shares one tier and one
     source, state them ONCE — in the region's caption, or at the head or foot of the group, inside
     the region. A figure that differs carries its own mark on its own row, and mixed sources are
@@ -289,6 +315,12 @@ so on the board. Where one screen has more than one life (an onboarding step now
 destination later), the shell appears only on the life that is inside the app, and the board labels
 which life each frame is.
 
+**What a designed screen already drew is REUSED, never redrawn.** The shell is the first case; the
+billing strip and its denial sheet (`SCR-SHELL-06`) are the next. Where this screen shows an object
+another screen owns, open that screen's file in this project, reuse the object as drawn, and name
+the file on the board. A second design of one object is a FAIL — two screens that disagree about
+the same strip cannot both be built.
+
 ## 5 · The completion contract (from `F7-43`)
 
 *`F7-43` states the per-screen Definition of Done as twelve items, and a screen violating any one
@@ -350,18 +382,34 @@ it, and say in your notes which element it is.
 
 Walk **five lists**, in this order. For every entry, answer **PASS or FAIL, pointing at the
 specific element that satisfies it**. A PASS without a pointed-at element is a FAIL. Fix every FAIL
-in the same session, then print that list again.
+in the same session, walk that list again, and keep only the final walk in the record.
+
+**The record — one file, the design as it stands.** Each screen has ONE record beside its board,
+named `<screen id> - decisions and self-audit.md`: the word plan, the decisions and this self-audit.
+It is read when the screen is built, so it says what the design IS, never what it was. After any
+fix, REWRITE every line the fix made wrong, in place — one word plan, one inventory, one set of
+counts, and ONE version of every line a frame prints. Never append a second inventory, never keep a
+fixed FAIL's old wording, never write "was … now …". What you changed goes in your reply to me, not
+in the record. **A record that holds two versions of one line is a FAIL.** Last of all, after every
+walk and every fix, **read the record top to bottom against the frames as they now stand**: every
+line it quotes equals the frame's, every count equals the frame's, and no number appears with two
+values. A mismatch is a FAIL, fixed before you hand the screen over.
 
 1. **The word inventory — first, because it is what fails most.** For every 375 frame, list every
    sentence on the frame: any run of words with a verb that is not a label, a value, a chip, a
    button, a caption or a table cell. For each one, name its kind (§2) and say why it cannot be a
    data row, a status chip, the one line at the act, or behind the ask. Then print the counts per
    frame — sentences · words in sentences · provenance lines · lines in each sticky bar · facts
-   that appear twice · asks · value columns in any table. Name what you left uncounted and which
+   that appear twice · asks · value columns in any table · rows whose value wraps beside its
+   label. Name what you left uncounted and which
    §2 entry allows it, and name every collision between a budget and a must-stay fact with the
    form you chose. Then list every explanation the brief's rows imply and name where each now
    lives — the ask, a row that opens, a help surface. **An explanation with no home is a FAIL.** **A count over its §2 budget is a FAIL.** For
-   every 1536 frame, print the same counts per region.
+   every 1536 frame, print the same counts per region. Then two short lists that catch what a count
+   cannot. **Product facts:** every plan, price, limit, meter name, length, rate or stage a frame
+   prints, each with the brief row it came from — one with no row is a FAIL. **The product's
+   words:** every word on a frame that is the product's language and not the person's (§2) — each
+   is a FAIL.
 2. **The brief's REQUIREMENTS list, row by row** — the UI half of each row, per item 6. For each
    row, name what meets it: a control, a state, a data row, an arrangement, behaviour with no
    words, or a sentence. **A sentence is accepted only for a fact on the never-behind-a-tap list.**
