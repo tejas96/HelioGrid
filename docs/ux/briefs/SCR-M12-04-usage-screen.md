@@ -43,15 +43,24 @@ other meter has, and its chip carries the state — never a red wall, never an a
 
 ## Sample data — the book's rows, drawn and never invented
 
-Every cap, bundle size, overage rate and trial cap on this screen is this row's value. Usage counts
-are yours to choose; a plan name, a cap or a rate this row does not carry is wrong. A V2 meter has
-no sellable rate in this row, which is what the `v2-meter-activity-no-rate` state draws.
+The trial's length and every cap, bundle size, overage rate and trial cap on this screen are these
+rows' values. Usage counts are yours to choose; a plan name, a cap or a rate these rows do not carry
+is wrong. A V2 meter has no sellable rate in `BM-41`, which is what the
+`v2-meter-activity-no-rate` state draws.
 
 - **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB.
+- **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 
 ## Entry & exit
 
 Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two.
+
+**Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
+
+- **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
+- **Arriving from the strip.** The 80% cap strip's act is `See usage` and leads here; at 100% and after the grace the strip's act is `Upgrade plan` and leads to `SCR-M12-03`. The strip's cap frames read `AI detections · 80 of 100` and `100 of 100` on the Growth plan — keep those figures, so the two screens agree.
+- **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
+- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
 
 ## Requirements (verbatim)
 

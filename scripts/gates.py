@@ -908,21 +908,35 @@ def run(repo, verbose):
         gate(19, "design context file is current", False, "docs/ux/claude-design-context.md is missing")
     else:
         body = open(ctx, encoding="utf-8").read()
+        # A rule is matched on its words: re-wrapping a paragraph must never read as losing the rule.
+        flat = " ".join(body.split())
         must = {
-            "three base states": "loading, empty, error" in body or "three base states" in body,
-            "F7-12 status-not-colour": "F7-12" in body,
-            "where the provenance tier renders (F8-07)": "F8-07" in body,
-            "the non-UI annotation convention": "non-UI half, build-side" in body,
+            "three base states": "loading, empty, error" in flat or "three base states" in flat,
+            "F7-12 status-not-colour": "F7-12" in flat,
+            "where the provenance tier renders (F8-07)": "F8-07" in flat,
+            "the non-UI annotation convention": "non-UI half, build-side" in flat,
             "the V1/V2 scope lock": re.search(r"\bV1\b", body) and re.search(r"\bV2\b", body),
-            "F7-21 one sheet grammar": "F7-21" in body,
-            "F7-27 table captions": "F7-27" in body,
-            "F7-46 a row is met by the design, not by a sentence": "F7-46" in body
-                and "Carrying a row is not printing it" in body,
-            "the word budgets can fail a frame": "a frame over budget FAILS" in body,
-            "the word inventory leads the self-audit": "word inventory" in body,
-            "a word that leaves the frame is moved, never deleted": "MOVED, never deleted" in body
-                and "An explanation with no home is a FAIL" in body,
-            "one provenance label may serve a region (F8-07)": "One label may serve a region" in body,
+            "F7-21 one sheet grammar": "F7-21" in flat,
+            "F7-27 table captions": "F7-27" in flat,
+            "F7-46 a row is met by the design, not by a sentence": "F7-46" in flat
+                and "Carrying a row is not printing it" in flat,
+            "the word budgets can fail a frame": "a frame over budget FAILS" in flat,
+            "the word inventory leads the self-audit": "word inventory" in flat,
+            "a word that leaves the frame is moved, never deleted": "MOVED, never deleted" in flat
+                and "An explanation with no home is a FAIL" in flat,
+            "one provenance label may serve a region (F8-07)": "One label may serve a region" in flat,
+            "a row's form follows the length of its value": "A value never wraps inside a narrow column" in flat,
+            "the record states the design as it stands": "one file, the design as it stands" in flat
+                and "A record that holds two versions of one line is a FAIL" in flat,
+            "a frame speaks the person's language (F7-42)": "a frame speaks the person's" in flat,
+            "sample content is invented, a product fact never is": "Invent the sample, never the product" in flat,
+            "the self-audit traces every product fact to its brief row": "**Product facts:**" in flat
+                and "one with no row is a FAIL" in flat,
+            "the self-audit ends by reading the record against the frames":
+                "read the record top to bottom against the frames" in flat,
+            "the ask and the data row each name their ONE component": "`Explainer`" in flat
+                and "`FactRows`" in flat,
+            "what a designed screen drew is reused, never redrawn": "REUSED, never redrawn" in flat,
         }
         missing = [k for k, ok in must.items() if not ok]
         # The audit runs only as far as the message that asks for it: start-here's message 4 is what
@@ -937,6 +951,12 @@ def run(repo, verbose):
                            f"{n_stated.group(1) if n_stated else 'none'}")
         if "word inventory" not in asked:
             missing.append("start-here's message 4 never asks for the word inventory")
+        # "Print it again" is how a record came to hold two inventories: the session is told to rewrite.
+        asked_flat = " ".join(asked.replace("\n>", "\n").split())
+        if "rewrite the record" not in asked_flat:
+            missing.append("start-here never tells a session to rewrite the record after a fix")
+        if "read the record against the frames" not in asked_flat or "product fact" not in asked_flat:
+            missing.append("start-here's message 4 never asks for the product-fact list or the record read")
         # the V1 count it states must match the register
         stated = re.search(r"\*\*(\d+) are V1\*\*|locked \*\*(\d+) of them as V1\*\*", body)
         v1_real = len([1 for line in open(reg, encoding="utf-8")
