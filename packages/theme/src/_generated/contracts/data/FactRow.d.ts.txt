@@ -1,0 +1,130 @@
+import React from "react";
+import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
+import { NamedGapSpec } from "./NamedGap";
+
+/** `pair` — label and value on one line inside a reading measure. `lead` — full width: the mark,
+ *  the row's word leading the line, the value flowing on from it and wrapping under the word. */
+export type FactForm = "pair" | "lead";
+
+/** What a row actually rendered: the pair, the one-line-that-wraps flow, or the stacked list. */
+export type FactShape = "pair" | "flow" | "stack";
+
+export interface FactRowProps {
+  /** The row's word. Sentence case, no trailing colon — the arrangement already says it is a label. */
+  label: React.ReactNode;
+  /** A short value (a number, a date, a name, a state) or a long one. Nodes welcome — a `StatusChip`,
+   *  a `Chip`, a formatted figure. */
+  value?: React.ReactNode;
+  /** A list of values. **Short items are joined on the line with a middle dot** — a two-word item on
+   *  its own line is a bullet list pretending to be data. Items long enough to need a line each
+   *  (an address, document names, a sentence) stack instead; see `stack`. */
+  values?: React.ReactNode[];
+  /** Override the list's shape. `true` gives every item its own line under the word, `false` joins
+   *  them on it. Auto: stacks when any item is a string longer than `longAt`. */
+  stack?: boolean;
+  /** Override the form. `true` forces the full-width form, `false` keeps the pair. Auto: a long
+   *  string value or a stacked list declares itself long; everything else is **measured** — the
+   *  group keeps the pair at any width while every value fits on one line in its own column. */
+  long?: boolean;
+  /** The optional leading mark — a dot, a glyph, a 16–20px badge. Never the only carrier of a fact.
+   *  Where any row in a group has one, every row in that group reserves the column, so the words
+   *  keep one left edge. */
+  mark?: React.ReactNode;
+  /** Law 3's slot: **under the value, in the value's own column** in `pair`; **at the end of the
+   *  line**, inline after the value, in `lead` — where there is no column to be under. */
+  provenance?: ProvenanceTierSpec | ProvenanceProps | React.ReactNode;
+  /** Law 10's slot, rendered **in the value's place**: a named absence, never an em-dash. Mutually
+   *  exclusive with `provenance` — a gap is not a figure, so no tier is true of it; passing both
+   *  drops the tier and warns. */
+  gap?: NamedGapSpec;
+  /** Named in the gap action's accessible label. Defaults to this row's own label. */
+  fieldName?: string;
+  density?: "expressive" | "functional";
+  /** The reading measure in characters for a standalone row's `pair` form. Inside a `FactRows` the
+   *  group owns it. */
+  measure?: number;
+  /** The **floor**, not the switch: a box narrower than this cannot hold a pair at all (default
+   *  240). Everything above it is decided by measuring whether the value fits on one line. A box
+   *  that has not been laid out yet measures 0, which is **not a measurement** and never reaches
+   *  this floor. */
+  leadBelow?: number;
+  /** A string value longer than this declares itself long without being measured. Default 32. */
+  longAt?: number;
+  form?: FactForm | "auto";
+  /** Fires when a **standalone** row's answer changes. In a group, listen on the group. */
+  onFormChange?: (info: { form: FactForm; shape: FactShape; width: number; hasMark: boolean }) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * **One label, one value — the one form for data on a screen.** A `<dt>`/`<dd>` pair in one of two
+ * arrangements, chosen by whether the **value fits**, never by how wide the screen is.
+ *
+ * - **It fits on one line in its own column** → `pair`: label and value on one line, inside a
+ *   reading measure. **This is what a phone gets too.** "Survey date · 14 Mar 2026" belongs on one
+ *   line at 1536 and at 311; a blanket width switch that stacked every row under 360px was wrong
+ *   about the product's main device.
+ * - **It would wrap** → `lead`: the full-width form, which is **one line that wraps** — the mark,
+ *   the row's word leading the line, the value flowing on from it and continuing under the word's
+ *   left edge. `[mark] Paused — Voice calls · AI detections · teammate invites`. Only a list whose
+ *   items are themselves long stacks one per line (`stack`).
+ *
+ * The row is marked `data-fact-form="pair" | "flow" | "stack"`, which is what the specimen card
+ * measures rather than inferring.
+ *
+ * Not `ListRow` (a record in a list, with a lead, a trailing value and a tap target), not
+ * `DataTable` (a grid of records), not `StatCard` (a headline figure), not `CompareGrid` (one
+ * attribute across 2–4 options), not `Derivation` (a number's argument). This is the label-and-value
+ * line those components sit among, which every detail screen used to improvise.
+ */
+export function FactRow(props: FactRowProps): JSX.Element;
+
+export interface FactRowsProps {
+  children?: React.ReactNode;
+  /** Names the set for a screen reader — "Site details". */
+  label?: string;
+  density?: "expressive" | "functional";
+  /** The reading measure in characters for the `pair` form. Never a percentage of the region. */
+  measure?: number;
+  /** The floor, not the switch — default 240, and unreachable by an unmeasured (0-width) box.
+   *  See `FactRowProps.leadBelow`. */
+  leadBelow?: number;
+  longAt?: number;
+  form?: FactForm | "auto";
+  /** Fires when the group's answer changes. `reason` says **why** this form: `fits` (measured, every
+   *  value on one line), `measured` (a value would have wrapped), `declared` (a caller's `long`, or
+   *  a long string, or a stacked list), `floor` (the box is under `leadBelow`), `forced`. */
+  onFormChange?: (info: { form: FactForm; width: number; hasMark: boolean; reason: "fits" | "measured" | "declared" | "floor" | "forced" }) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * A group of fact rows — **one form and one left edge for the whole set**.
+ *
+ * The form is resolved **once**: the group renders as a pair, every value is measured against one
+ * line box, and the **first value that would wrap takes the whole group to `lead`** — because a set
+ * with two arrangements in it reads as two sets. It re-opens the question when its box **first gets a
+ * size**, on every later resize, and when the document's **fonts finish loading** — so a group that
+ * had to stack at 300px is a pair again at 600, and a group first measured in the swap fallback
+ * (wider than the real face, and no resize when the face arrives) is re-measured in the type it is
+ * actually set in. **A width of 0 is "not measured yet" and decides nothing**, so a cold load and a
+ * warm load reach the same form and no caller needs `form="pair"` for short values. The left edge is shared by construction:
+ * the group owns the columns and every row lands on them (`subgrid`). **Where any row leads with a
+ * mark and a word, its short rows do too.**
+ *
+ * Renders a `<dl>` carrying `data-fact-group-form` and `data-fact-reason`; each row is a
+ * `<dt>`/`<dd>` pair. Give it a `label` — a description list with no accessible name is a list of
+ * nothing.
+ */
+export function FactRows(props: FactRowsProps): JSX.Element;
+
+/**
+ * The ground a fact row is rendered on. `Banner` wraps its body in this, so a fact row on a tinted
+ * strip takes the **banner's** ink — label and value both `currentColor`, separated by weight
+ * instead of by colour, which is what keeps them at full contrast on a danger or warning tint.
+ */
+export function FactInk(props: { ink?: "inherit" | "default"; children?: React.ReactNode }): JSX.Element;
+
+/** The declared-long test, callable without rendering: does this row's value ask for the full-width
+ *  form before anything is measured? (A caller's `long`, a long string, or a stacked list.) */
+export function factWantsLead(props: Partial<FactRowProps>, longAt?: number): boolean;

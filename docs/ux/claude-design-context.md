@@ -184,6 +184,23 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
   phone's section list with wider rows, it was stretched rather than designed. Use the width for
   grouping, never for stretching a row — and never for printing more words: the §2 budgets hold per
   region at 1536.
+- **Alignment — nothing is placed by eye.** A frame can obey every rule above and still look thrown
+  together. These are MEASURED in the self-audit, in pixels, never judged by eye:
+  - **One grid per frame.** Every region in a column starts on the same left edge and ends on the
+    same right edge; a card whose edge lines up with nothing is a FAIL. At 1536, name the column
+    grid on the board and let every region span whole columns of it.
+  - **Siblings match.** Cards in one row share one height and one inner structure — title, figure
+    and chip on the same lines. A sibling that needs more leaves the row; it never makes it ragged.
+  - **One value edge per panel.** Where groups of rows stack in one panel, every value starts on
+    ONE left edge and every amount ends on ONE right edge. Two groups with two label widths is a
+    FAIL.
+  - **A control sits with what it changes** — directly above or inside that region, never parked in
+    the free corner of another region's band.
+  - **One alignment per region.** A screen that reads from the left has no centred block in it,
+    the empty state included. Money reads in one face and one alignment across the frame.
+  - **A panel with nothing to show is closed.** No region is parked open and empty; an editor opens
+    on its act at both widths (`F7-21`). A gap larger than the gap between regions needs its reason
+    on the board.
 - **When one surface carries too much, split it — and name which way:** one region with a selector
   (sibling lists that answer one question, each keeping its caption, provenance and export) · a
   sheet or side panel for anything edited or decided (`F7-21` — never a page for an editor) · a
@@ -414,10 +431,13 @@ values. A mismatch is a FAIL, fixed before you hand the screen over.
    row, name what meets it: a control, a state, a data row, an arrangement, behaviour with no
    words, or a sentence. **A sentence is accepted only for a fact on the never-behind-a-tap list.**
 3. **The completion contract, item by item** — all eight.
-4. **Composition, in four answers** — name the focal point of each region; name every region that
+4. **Composition, in five answers** — name the focal point of each region; name every region that
    is flat and why; say what 1536 arranges differently, and where it is honestly the same say so;
-   and where a surface was split, say which of the four forms it took — if it should become its
-   own screen, name it and stop.
+   where a surface was split, say which of the four forms it took — if it should become its own
+   screen, name it and stop; **and print the alignment numbers (§3), measured on the frame:** each
+   region's left and right x, the height of every card in a row of siblings, the x of every value
+   column in a panel, and every region that is open and empty. A number that differs where it
+   should match is a FAIL.
 5. **Everything else this file states** — not a closed list, because nothing stated here goes
    unchecked: `N1` through `N10` (`N6b` among them); light-only (`F7-04`); the one sheet grammar
    (`F7-21`); no emoji and no character used as an icon (`F7-19`/`F7-42`); the density choice

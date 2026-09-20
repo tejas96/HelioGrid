@@ -937,6 +937,8 @@ def run(repo, verbose):
             "the ask and the data row each name their ONE component": "`Explainer`" in flat
                 and "`FactRows`" in flat,
             "what a designed screen drew is reused, never redrawn": "REUSED, never redrawn" in flat,
+            "alignment is measured, never judged by eye": "nothing is placed by eye" in flat
+                and "print the alignment numbers" in flat,
         }
         missing = [k for k, ok in must.items() if not ok]
         # The audit runs only as far as the message that asks for it: start-here's message 4 is what
@@ -955,6 +957,8 @@ def run(repo, verbose):
         asked_flat = " ".join(asked.replace("\n>", "\n").split())
         if "rewrite the record" not in asked_flat:
             missing.append("start-here never tells a session to rewrite the record after a fix")
+        if "measure the alignment" not in asked_flat:
+            missing.append("start-here's desktop message never asks for the alignment to be measured")
         if "read the record against the frames" not in asked_flat or "product fact" not in asked_flat:
             missing.append("start-here's message 4 never asks for the product-fact list or the record read")
         # the V1 count it states must match the register

@@ -39,8 +39,25 @@
      information identifying a control, and the owner chose it with the number in hand: the
      product reads as elevation rather than outline, and F7-16's field mode is the sanctioned
      answer for sunlight — it rings every elevation, so a control at --e2 is ringed there
-     automatically with no per-control token. --control-edge above keeps its own separate job: the
-     field-mode-only reach for a control whose inline box-shadow a stylesheet rule cannot beat. */
+     automatically with no per-control token. An earlier cut of this ruling added a
+     --control-rest-edge token; it is gone, because an edge is not the answer here.
+     --control-edge below keeps its own separate job: the field-mode-only reach for a control
+     whose inline  a stylesheet rule cannot beat.
+
+     AND THE RULING IS APPLIED BY SHAPE, NOT BY COMPONENT NAME (sweep 2026-08-31). The first pass
+     raised the controls that ANSWER to the name — Button, Input, Select, the field family — and left
+     a whole class untouched: every white, control-sized block spelled inline inside some other
+     component. A retry pill is the largest group of them (fourteen "Try again" buttons across
+     Card, Block, StatCard, Timeline, Kanban, DataTable, Charts, MapSurface, Checklist, Image,
+     AudioPlayer, UsageMeter, OperationProgress, PagedDocument, Dropzone), and the rest are
+     one-offs: a transport button, a playback-rate pill, a BannerAction pill, a FindingList jump,
+     a PendingAction pill, a SourceDocument link, a DrawingSheet zoom, a DataTable cell editor.
+     The TEST is the shape: --surface background, 44px or cursor:pointer, floating on --e1.
+     What the test deliberately does NOT catch, because the shape is the same but the meaning is not:
+     a disabled control (a control you cannot press is not one to find), the Banner STATEMENT pill
+     (32px, a sentence, not an act), a Chip with no onClick, a specimen or preview frame (paper, not
+     a control), a listed row (Accordion, ReorderList, Transcript, DataTable's card view) and a
+     skeleton. Those keep --e1. */
   --surface-edge:none; /* @kind shadow */
   --track-edge:none; /* @kind shadow */
 }
