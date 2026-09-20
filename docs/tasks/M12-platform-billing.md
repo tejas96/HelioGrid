@@ -33,9 +33,9 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-003 · Plan Selection & Conversion
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
-**DESIGN:** SCR-M12-03 → PENDING
+**DESIGN:** SCR-M12-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-03+Plan+Selection+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
 **DONE WHEN:**
 - Given an upgrade, when it confirms, then entitlements are live immediately and a one-time prorated invoice exists (M12-48).

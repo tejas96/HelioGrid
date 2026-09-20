@@ -64,6 +64,11 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
 - **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
 
+**Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
+
+- **The person's words for the price list's:** `Included` for a bundle, `Extra charges` for overage, `Biggest design` for the ceiling. A one-of-N choice is a chip strip, directly above what it changes.
+- **The way to a bigger plan is `SCR-M12-03`**, and only that. Honesty label for a price list value: `Published · India price list · 1 Apr 2026`; a usage count keeps `Actual usage`.
+
 ## Requirements (verbatim)
 
 ### docs/prd/04-business-model.md

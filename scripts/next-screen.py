@@ -44,8 +44,19 @@ _BY_SID = {'SCR-SHELL-06': (1, BLOCKS[1][0])}
 _DEFERRED = (98, 'V2 · deferred, not in the V1 build order')
 
 
+# Inside a block, a screen that OWNS a part is drawn before the screens that reuse it — what a designed
+# screen already drew is reused, never redrawn (docs/ux/claude-design-context.md). The plan card and
+# the comparison are SCR-M12-03's and the meter row is SCR-M12-04's; the pricing page and billing
+# home reuse both, so they follow. Every other screen keeps the register's own order.
+_OWNS_FIRST = ['SCR-M12-03', 'SCR-M12-04']
+
+
 def block_of(sid):
     return _BY_SID.get(sid) or _BY_MOD.get(sid.split('-')[1], _DEFERRED)
+
+
+def draw_rank(sid):
+    return _OWNS_FIRST.index(sid) if sid in _OWNS_FIRST else len(_OWNS_FIRST)
 
 args = list(sys.argv[1:])
 module, limit, scope = None, 10, 'V1'
@@ -172,8 +183,8 @@ if not pending:
     print(f"\n  ✓ every {scope} screen is marked designed.\n")
     sys.exit(0)
 
-# build order, then register order inside a block
-pending.sort(key=lambda r: (block_of(r['sid'])[0], reg_line.get(r['sid'], 0)))
+# build order, then a part's owner before the screens that reuse it, then register order
+pending.sort(key=lambda r: (block_of(r['sid'])[0], draw_rank(r['sid']), reg_line.get(r['sid'], 0)))
 
 print()
 shown = pending[:limit]
