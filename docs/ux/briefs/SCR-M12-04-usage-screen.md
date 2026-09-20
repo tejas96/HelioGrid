@@ -82,7 +82,7 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 6. **One named chevron per metered row opens that meter's events** — a sheet at 375, `F7-21`'s side panel at 1536. No ledger screen is invented.
 7. **1536 is two lanes.** The tables — meter · used this cycle · included · rate · charges so far — and a standing column: `This cycle`, `Needs you` where it exists, `Extra charges`, `Bigger plans`. A state with no figure to draw is ONE lane.
 8. **`Bigger plans` leads to `SCR-M12-03`**, the one way to a bigger plan. A person who is not the Owner sees which meter is paused as its chip, no figure, and `ScopeNote` — `Only Mahesh Bhosale (owner) can see this cycle's usage.`
-9. **Still open at recording:** the language proof (contract item 4) — the longest 375 frame in Hindi and in Marathi — is not drawn yet.
+9. **The language proof is drawn on the creations-paused state**, the longest copy in the set, in Hindi and in Marathi at 375: the same cards, the same rows and the same value edge, nothing clipped. Dates, `₹`, `GB`, `kW`, `OTP`, `WhatsApp`, `SMS`, the plan names and the price list's name stay as they are. **The paused meter is built as the English frame draws it** — the quiet grey bar with its status line under it — in every language: on the two language frames that line is absent and the bar is not grey ONLY because the design system's `UsageMeter` prints English-only words (`docs/tasks/deferred.md`).
 
 ## Requirements (verbatim)
 
