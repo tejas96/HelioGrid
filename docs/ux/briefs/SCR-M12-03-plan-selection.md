@@ -69,6 +69,17 @@ Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); th
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
 - **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
 
+**Decisions made in design (2026-09-20) — later screens inherit them.**
+
+1. **The plan card.** A plan's name, its relation chip — `Your plan`, `Upgrade` or `Downgrade` — and its price as a figure. At 375 the card also carries the three limits that differ at every plan: `Biggest design`, `Proposals a month`, `AI detections a month`. At 1536 the four cards sit side by side at one height and the limits live in the comparison one region below. Nothing is pre-picked.
+2. **Enterprise is never a checkout.** A row under the cards at 375 and the fourth card at 1536, with `Talk to sales` as its own act and `Annual contract` as a chip.
+3. **The cycle, and every one-of-N choice, is a chip strip** directly above what it changes — `Monthly · Yearly`; `Limits · Included · Extra charges`. The person's words stand in for the price list's: never "bundle", never "overage".
+4. **The comparison is ONE region at both widths.** At 375 a `Compare all plans` row opens it in place: my plan against ONE other, chosen by a chip strip. At 1536 it is present, all four plans as columns.
+5. **The act sits at the foot of the plans region**, off with its one line until a plan is picked, and opens the review — a sheet at 375, `F7-21`'s side panel at 1536, closed until the act opens it.
+6. **The review reads in three groups** — `What changes` (from → to), `What you pay today` (the part of this cycle, `GST 18%`, `Total today`), `When it starts` — values on one edge, amounts on one right edge, the part-cycle amount's working in its `Derivation`, and ONE line at the button.
+7. **Honesty labels.** `Published · India price list · 1 Apr 2026` serves each region; `Prices exclude GST` is its own element beside it; a computed date keeps its own `Derived` mark.
+8. **Still to draw at build:** the `Paid cycle starts` row (`M12-54`), one more row in `When it starts` when the review opens from the trial-expiry entry.
+
 ## Requirements (verbatim)
 
 ### docs/prd/modules/M12-platform-billing.md

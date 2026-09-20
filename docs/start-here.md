@@ -57,7 +57,9 @@ Two things about this order are deliberate, so you don't "correct" them:
   state, so it belongs to block 2.
 
 Within a block, work top to bottom down the register and skip every row whose `V` column says `V2`
-or whose `Status` is already `designed`.
+or whose `Status` is already `designed` — with one exception the script already applies: a screen
+that OWNS a part is drawn before the screens that reuse it. In billing that is `SCR-M12-03` (the plan
+card and the comparison), then `SCR-M12-04` (the meter row), then `SCR-M12-01` and `SCR-M12-02`.
 
 ## You never choose a brief — the screens register tells you
 
@@ -165,17 +167,21 @@ reason is "it explains…" is Help — push back before looking at the frame.
 > Draw each state at **375px**. Then draw at **1536px only the states whose desktop arrangement
 > genuinely differs** from the mobile answer. For every state you do *not* draw at desktop, name it
 > and say in one line why the desktop version is the mobile one at width.
+>
+> **Then the language proof (contract item 4).** Take the 375 frame with the longest copy and draw
+> it again in Hindi and in Marathi. Measure both: nothing clips, nothing overlaps, no fixed height.
+> A screen without this proof is not finished.
 
 **Message 4:**
 
 > Now run the self-audit from the context file. Walk **all five lists, the word inventory first**:
 > the word inventory with its counts per frame, the brief's requirement rows one by one, the
 > completion contract item by item, composition in five answers — the alignment numbers among
-> them — and everything else the context
-> file states. For each, answer PASS or FAIL and name the specific element that satisfies it. A
-> count over its §2 budget is a FAIL. Where a law has no subject on this screen, say so and say
-> why. Fix every FAIL in this session, walk the word inventory again, and rewrite the record so it
-> holds only the final walk.
+> them — and everything else the context file states. For each, answer PASS or FAIL and name the
+> specific element that satisfies it. A count over its §2 budget is a FAIL. Where a law has no
+> subject on this screen, say so and say why. **Fix every FAIL in this session — a FAIL that is
+> stated and left standing is not a finished screen.** Then walk the word inventory again, and
+> rewrite the record so it holds only the final walk.
 >
 > Inside the word inventory, print the two short lists: every **product fact** a frame prints with
 > the brief row it came from, and every word on a frame that is the product's language rather than

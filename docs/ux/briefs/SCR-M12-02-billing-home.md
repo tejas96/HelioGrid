@@ -61,6 +61,12 @@ Reached from: dunning messages, which "deep-link to the billing screen's one act
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
 - **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
 
+**Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
+
+- **`Your plan` is `SCR-M12-03`'s block:** three pairs — `Plan`, `Price` (the cycle and `+ GST` ride the value), `Next bill` with its own `Derived` mark — and the subscription state as its one chip. During a trial or after a lapse the chip changes and the end date takes the price row's place.
+- **`Change plan` leads to `SCR-M12-03`**, whose back control returns here; a downgrade returns to this screen's scheduled-downgrade state.
+- **Honesty labels:** `Published · India price list · 1 Apr 2026`. A one-of-N choice is a chip strip, directly above what it changes.
+
 ## Requirements (verbatim)
 
 ### docs/prd/04-business-model.md

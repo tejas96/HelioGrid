@@ -957,6 +957,8 @@ def run(repo, verbose):
         asked_flat = " ".join(asked.replace("\n>", "\n").split())
         if "rewrite the record" not in asked_flat:
             missing.append("start-here never tells a session to rewrite the record after a fix")
+        if "in Hindi and in Marathi" not in asked_flat:
+            missing.append("start-here's states message never asks for the language proof (contract item 4)")
         if "measure the alignment" not in asked_flat:
             missing.append("start-here's desktop message never asks for the alignment to be measured")
         if "read the record against the frames" not in asked_flat or "product fact" not in asked_flat:

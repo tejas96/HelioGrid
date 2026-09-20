@@ -56,6 +56,12 @@ not carry is wrong.
 
 Reached from: the public web — the PRD names the pricing page as an M12-owned public surface (`docs/prd/04-business-model.md` §2) but does not pin inbound navigation — not pinned by PRD — designer decides, note the decision. Leads to: the trial funnel — the PRD's analytics events for this surface are "pricing-page tier viewed; trial started; trial converted" (`docs/prd/04-business-model.md` §04.1), and signup itself carries no plan choice, card or mandate (M12-14); Enterprise is sales-assisted (BM-14/BM-15 context), so the Enterprise column's action is a sales contact, never self-serve checkout. Exact exit targets beyond these are not pinned by PRD — designer decides, note the decision.
 
+**Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
+
+- **The plan card and the comparison are `SCR-M12-03`'s.** The same card — name, price as a figure, the three limits `Biggest design`, `Proposals a month`, `AI detections a month` — and the same comparison region: my plan, or here a chosen plan, against ONE other at 375; all four plans as columns at 1536. This page adds what is its own: the positioning line, `All limits`, `Support`, `Compared with`.
+- **The cycle and every one-of-N choice is a chip strip**, directly above what it changes. The person's words: `Included`, `Extra charges` — never "bundle", never "overage".
+- **Honesty labels:** `Published · India price list · 1 Apr 2026`, with `Prices exclude GST` as its own element.
+
 ## Requirements (verbatim)
 
 ### docs/prd/04-business-model.md
