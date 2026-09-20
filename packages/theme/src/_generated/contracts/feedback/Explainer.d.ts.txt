@@ -1,0 +1,92 @@
+import React from "react";
+
+/** Never more than three pages (F7-46). Enforced by slicing, not by the caller's good manners. */
+export const MAX_PAGES: 3;
+
+export interface ExplainerAction {
+  label: string;
+  /** A button. Provide this OR `href`, never both, and never a second action. */
+  onPress?: () => void;
+  /** A link. Renders as a link, not a pill. */
+  href?: string;
+}
+
+export interface ExplainerProps {
+  /** The trigger's accessible name — "About shading loss". Required; there is no fallback, because
+   *  every word in this component is the caller's. */
+  label: string;
+  /** One short line. Optional. */
+  title?: string;
+  /** One node, or an array of 2–3 nodes. 1–3 short sentences each. A fourth page is dropped and
+   *  reported: that content belongs on the screen, in an `Accordion`, or on its own help surface. */
+  pages: React.ReactNode | React.ReactNode[];
+  /** Preferred side. Flips to the opposite side when that side has no room. */
+  placement?: "top" | "bottom" | "left" | "right";
+  /** ONE action at the end — on the last page of a paged explainer. Never two. */
+  action?: ExplainerAction;
+  density?: "expressive" | "functional";
+  /** Fallbacks, not the component's English. Replace them in any non-English locale. */
+  nextLabel?: string;
+  backLabel?: string;
+  /** Default `(page, total) => "1 of 3"`. A prop, like every other word here. */
+  positionLabel?: (page: number, total: number) => string;
+  /** Clamp, flip and cap the width inside this box instead of the viewport — a phone shell, a
+   *  `DetailPanel`, the studio canvas. Own width, never viewport: a 375 shell on a 1536 desktop
+   *  still gets the 280 cap. Ref, element or selector. */
+  within?: React.RefObject<HTMLElement> | HTMLElement | string;
+  /** `auto` (default) opens on hover wherever the pointer can hover — a **capability**, never a
+   *  width (`F7-29a`) — and hover is never the only way in (`N1`). `false` turns it off. */
+  hover?: "auto" | boolean;
+  /** Override the width cap. Still clamped to the box minus its padding. */
+  maxWidth?: number;
+  /** Take the extra hit box back as negative margin, so the 44px target fits a dense row without
+   *  growing it. One of the four legal ways to reach 44 in this system. */
+  inset?: boolean;
+  /** A drawn SVG glyph in place of the default "i". No icon package, no emoji. */
+  glyph?: React.ReactNode;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, meta: { reason: "trigger" | "focus" | "hover" | "hover-out" | "escape" | "outside" | "scroll" }) => void;
+  style?: React.CSSProperties;
+}
+
+/**
+ * A labelled information control (an "i") that opens a small anchored bubble with a pointer arrow —
+ * a modern tooltip's shape, opened by **tap**, so a touch user gets it too. **The same object at 375
+ * and 1536**: never a bottom sheet on the phone and a bubble on desktop.
+ *
+ * It carries **teaching only** — how a feature works, why a rule exists, what the product can read.
+ *
+ * - `Tooltip` opens on hover and says in its own docs it is never the only place a piece of
+ *   information exists, so it cannot hold teaching a touch user needs.
+ * - `Disclosure` is the mandatory honesty line, which must not be hidden behind anything.
+ * - `Derivation` is a **number's** argument — formula, assumption, boundary, exclusion — opened in
+ *   flow under the figure. This one never explains a figure.
+ * - `CoachMark` is a first-run tour the product starts, capped at three and dismissed forever. This
+ *   is opened by the reader, as often as they like.
+ *
+ * **Behaviour.** Opens on tap and on keyboard focus of the trigger; hover opens it where the input
+ * can hover. Closes on Escape, on a tap outside, and on scrolling away. Focus returns to the trigger
+ * on close. **Not modal**: no backdrop, no focus trap, no scroll lock — the bubble sits immediately
+ * after the trigger in the DOM, so it is in reading order and Tab carries on through the page. Paged:
+ * arrow keys move pages, a swipe may too, and Back/Next always remain — a swipe cannot be announced.
+ *
+ * **What it may never hold (F8-07, F7-35, MS10-19 — P0).** A provenance tier, a source label, a
+ * staleness state, an honesty caveat, a number's derivation, money, what paused / what still works /
+ * until when, an error's fix, or any consequence a person must read before acting. `tier`,
+ * `provenance`, `source`, `staleness`, `caveat`, `derivation`, `formula`, `assumption`, `exclusion`,
+ * `amount`, `price`, `error` and `consequence` are **refused props** — there is no slot to put them
+ * in — and a page containing `Provenance`, `Derivation`, `Disclosure`, `MoneySummary`, `StatCard`,
+ * `Banner`, `UnavailableNote`, `ActionReason`, `ComplianceFloor` or their siblings is reported by
+ * name with its real home.
+ */
+export function Explainer(props: ExplainerProps): JSX.Element;
+
+export interface ExplainerViolation {
+  component: string;
+  belongsIn: string;
+}
+
+/** Every page child that belongs somewhere else, by name and with its real home. Reachable from the
+ *  bundle as `Explainer.audit(pages)`; `Explainer.MAX_PAGES` likewise. */
+export function audit(pages: React.ReactNode | React.ReactNode[]): ExplainerViolation[];

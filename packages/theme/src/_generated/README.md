@@ -5,7 +5,13 @@ Pulled **2026-08-19** from Claude Design project `c8aa4326-21bf-453a-8d11-749cc8
 components were changed on both sides: `feedback/Toast`, `feedback/ToastHost`,
 `navigation/SegmentedControl`, `overlays/Modal`. A partial pull is named so the date above is not
 read as covering them. `data/MoneySummary` re-pulled **2026-09-11** after `M06-35`'s ruling
-replaced its floor at zero with the shown negative payable, on both sides.
+replaced its floor at zero with the shown negative payable, on both sides. A partial pull on
+**2026-09-20** brought the design system's two new components — `data/FactRow` and
+`feedback/Explainer`, 97 typings now — with `manifest.json` and `tokens/elevation.css` (comment text
+only). **Held back, on purpose:** `adherence.oxlintrc.json` and `contracts/feedback/Banner.d.ts.txt`.
+The design system gave `Banner` two props, `actionBelow` and `onFormChange`; pulling either file
+turns `ds:contract` red until `packages/ui` ports them, and a port is proven by running both
+platforms. They arrive with that port — `docs/tasks/deferred.md` names it.
 
 Every file in this folder is a byte-verbatim copy of the live design system:
 
@@ -13,7 +19,7 @@ Every file in this folder is a byte-verbatim copy of the live design system:
 - `styles.css` — the DS global stylesheet (an `@import` manifest over `tokens/`)
 - `manifest.json` — the component + prop census, consumed by the `ds:contract` gate
 - `adherence.oxlintrc.json` — per-component prop contracts
-- `contracts/<family>/<Name>.d.ts.txt` — the 95 component typings, pulled verbatim and **never
+- `contracts/<family>/<Name>.d.ts.txt` — the 97 component typings, pulled verbatim and **never
   hand-edited**. These are the design system's own declarations, prop names *and prop types*,
   which is what makes the `ds:contract` gate possible: `adherence.oxlintrc.json` carries names
   only, so it can say a prop is missing but never that a prop was ported with a weaker type. If a

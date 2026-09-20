@@ -980,7 +980,7 @@ recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this rea
 **Status:** planned
 **Why:** Screens across the onboarding and catalog corridors explain themselves in paragraphs — what the importer can read, why a document's name is the product's to set, that two answers did not save — while the facts an act turns on sit in the same weight of type beside them. `F7-46` rules the split: the decision's own words stay on the screen, teaching waits until the person asks. Nothing in the product can carry that ask today. `Tooltip` opens on hover and keyboard focus and states in its own contract that a touch user will never see it; `Disclosure` is the line that must NOT be hidden; `CoachMark` is a first-run tour with a cap of three. So every screen that needed an ask so far answered it by printing the paragraph, which is the clutter the rule exists to remove — and a second screen inventing its own popover is how one product becomes two.
 **PRD rows:** F7-46 (P0)
-**Design:** none of its own — it is a design-system component every screen composes; the first screens to use it are the M12 billing corridor's, drawn against it.
+**Design:** none of its own — it is a design-system component every screen composes; the first screens to use it are the M12 billing corridor's, drawn against it. The design system's copy now exists and settles the first open reading: it is a NEW component, `Explainer` (`HelioGrid-UX/_ds-source/components/feedback/Explainer.jsx`), not a `Tooltip` mode; its typing is mirrored by `T-FPLAT-068`.
 **Data model:** none.
 **Contract:** none — `packages/ui/src/components/<Name>/` gains one component with one `<Name>.types.ts` both platforms implement (Law 7), and the words are the caller's, from `packages/i18n` (`M50`).
 **Depends on:** nothing.
@@ -993,6 +993,24 @@ recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this rea
 - Given content that would need a fourth page, when it is authored, then it is refused. → proof: unit the page cap is the component's, not the caller's
 - Given a touch surface, when the component renders, then no state of it depends on hover. → proof: gate `check:adherence` sees no hover state in a `.native.tsx`; qa-parity the two halves offer the same ways in
 - Given a fact the rule keeps on the screen — money, what paused, a tier, a disclosure, an error's fix — when a screen is reviewed, then it is not behind the ask (F7-46). → proof: qa-web + qa-mobile per screen, and `/verify` §6 names the split the screen made
+
+---
+### T-FPLAT-068 · The design-system mirror carries the ask and the fact row
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#122)
+**Why:** A screen is built against the design system's own typings, and the mirror was two components behind: the billing screens are drawn with the ask and the fact row, and a builder opening the mirror found neither. Without the pull, the contract gate reads a census that no longer matches what the designs use.
+**PRD rows:** none of its own — it keeps current the mirror every UI task builds against.
+**Design:** none — generated data only; no component and no screen.
+**Data model:** none.
+**Contract:** none. `packages/theme/src/_generated/` gains `contracts/data/FactRow.d.ts.txt` and `contracts/feedback/Explainer.d.ts.txt` and takes the design system's current `manifest.json` and `tokens/elevation.css` — byte-verbatim, never hand-edited; its `README.md` names the pull as partial.
+**Depends on:** nothing.
+**Out of scope:** `adherence.oxlintrc.json` and `contracts/feedback/Banner.d.ts.txt` — the design system gave `Banner` two props, `actionBelow` and `onFormChange`, and either file turns the contract gate red until `packages/ui` ports them; they arrive with that port (`docs/tasks/deferred.md`). The ports themselves: `FactRow` (`docs/tasks/deferred.md`) and the ask (`T-FPLAT-061`).
+
+**Verified:** digest 756f1e397572 · 2026-09-20 · depth NONE — four generated design-system data files, no component, screen or route: `manifest.json` has no runtime reader (the generator never reads it for values and the package does not export it), the two `.d.ts.txt` typings are read only by `scripts/ds-contract/`, and `tokens/elevation.css` changed in comment text alone — the built theme's `base.css` and `tokens.css` are identical once comments are removed and no other emitted file differs · theme build green (166 tokens, 29 field-mode overrides, 48 contrast pairs) · `ds:contract` green on this tree and **seen red both ways** — with `adherence.oxlintrc.json` pulled, and with `contracts/feedback/Banner.d.ts.txt` pulled, it fails `(b) DROPPED` on `Banner.actionBelow` and `Banner.onFormChange`; on the two new typings it abstains, because `packages/ui` has no folder for them yet · web, mobile, api, worker: no runnable surface · parity: not run, nothing both platforms render changed
+
+**DONE WHEN:**
+- Given the four pulled files, when the theme is built, then what it emits is unchanged but for comment text. → proof: gate `pnpm --filter @heliogrid/theme build` — `base.css` and `tokens.css` identical once comments are removed, and no other emitted file differs
+- Given the mirror as pulled, when the contract gate runs, then it is green — and with either held-back file pulled it fails on `Banner.actionBelow` and `Banner.onFormChange`. → proof: gate `ds:contract` seen green, and seen RED both ways with a held-back file in place
 
 ---
 ### T-FPLAT-065 · A proof's precondition has one shape, and the harness fails closed under CI

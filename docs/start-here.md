@@ -148,6 +148,11 @@ reason is "it explains…" is Help — push back before looking at the frame.
 >
 > When you're done, name each place the desktop arrangement genuinely differs, one line of why.
 > Where a section is honestly the same frame with more whitespace, say that too.
+>
+> **Then measure the alignment — nothing is placed by eye (§3).** Print, for each 1536 frame: every
+> region's left and right x, the height of every card in a row of siblings, and the x of every value
+> column in a panel. Fix any number that differs where it should match. A side panel with nothing
+> to show is closed, never parked open and empty.
 
 **Message 3:**
 
@@ -165,7 +170,8 @@ reason is "it explains…" is Help — push back before looking at the frame.
 
 > Now run the self-audit from the context file. Walk **all five lists, the word inventory first**:
 > the word inventory with its counts per frame, the brief's requirement rows one by one, the
-> completion contract item by item, composition in four answers, and everything else the context
+> completion contract item by item, composition in five answers — the alignment numbers among
+> them — and everything else the context
 > file states. For each, answer PASS or FAIL and name the specific element that satisfies it. A
 > count over its §2 budget is a FAIL. Where a law has no subject on this screen, say so and say
 > why. Fix every FAIL in this session, walk the word inventory again, and rewrite the record so it
