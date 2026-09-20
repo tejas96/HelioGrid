@@ -47,9 +47,9 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-004 · Usage
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
-**DESIGN:** SCR-M12-04 → PENDING
+**DESIGN:** SCR-M12-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-04+Usage+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
 **DONE WHEN:**
 - Given any usage figure on the usage screen, when compared with what enforcement checks and the invoice bills, then all three come from the same rollup of the same ledger (M12-32, M12-34).

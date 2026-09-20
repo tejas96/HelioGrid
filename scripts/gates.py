@@ -939,6 +939,9 @@ def run(repo, verbose):
             "what a designed screen drew is reused, never redrawn": "REUSED, never redrawn" in flat,
             "alignment is measured, never judged by eye": "nothing is placed by eye" in flat
                 and "print the alignment numbers" in flat,
+            "a region's trust label sits at its foot, never as a key above the figures": "Never a key" in flat
+                and "at its FOOT" in flat,
+            "every value in a card sits on one edge": "sits on ONE edge" in flat,
         }
         missing = [k for k, ok in must.items() if not ok]
         # The audit runs only as far as the message that asks for it: start-here's message 4 is what

@@ -17,7 +17,7 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 | Filtering (`M07-57`) | action | a filter bar over those same fields; an active filter is a chip that can be cleared |
 | What the log is showing (`F7-27`) | data | the table's caption: the period and the filters in force |
 | The transcript and the recording (`M07-57`) | more detail | a row opens them. A recording past its retention date is a chip, and the transcript stays |
-| Provenance (`F8-07`) | honesty label | one label heads the duration column. A recorded time carries no tier |
+| Provenance (`F8-07`) | honesty label | one label at the foot of the table serves the duration figures — never a key above the columns. A recorded time carries no tier |
 | No calls yet | teaching | ONE line — genuine quiet |
 | The log failed to load | error | one banner — what failed and what to do |
 

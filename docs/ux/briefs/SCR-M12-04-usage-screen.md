@@ -18,14 +18,14 @@ other meter has, and its chip carries the state — never a red wall, never an a
 | The cycle every count covers, and the day it resets (`M12-34`, `BM-34`) | data | ONE line under the title — the cycle's two dates and the reset date. It is the period label for every counted figure, stated once; the storage gauge differs, so it carries its own `as of` time |
 | What needs me — each meter at 80%, at its cap in grace, or paused (`BM-34`, `M12-30`, `M12-34`) | status · data | the first region, drawn only when a meter qualifies: a row per meter — name, chip (`80% used` · `At the cap` · `Paused`), used of included, and ONE line saying what happens next and when: the grace's last day, what pauses, the reset date |
 | What still works when a meter pauses (`BM-34`) | data | the same ONE line, on the paused meter's row: what paused, until when, and what still works — reading, editing and export never pause; on a trial, the manual alternative |
-| Every capped count and ceiling (`BM-07`, `BM-34`) | data | a `Limits` region, one row per cap: name, used of allowed, a quiet meter. A ceiling that is not a count — the single-design size — is a label–value row with no meter |
+| Every capped count and ceiling (`BM-07`, `BM-34`) | data | a `Limits` region, one row per cap: name, used of allowed, a quiet meter. A ceiling that is not a count — the single-design size — is a row of the SAME form with no meter: label left, figure right |
 | Every bundle and meter (`BM-27`, `M12-34`, `M12-36`) | data | an `Included each month` region, one row per meter: name, used of included, a quiet meter. A pay-as-you-go meter shows its count and its rate, with no bar to fill |
 | A meter that is tracked and never billed | data · status | its count, and a `Not billed` chip |
-| Overage as it accrues (`M12-35`, `BM-27`) | data | on the meter's own row: units past the bundle, the published rate, the amount so far — label–value pairs. ONE total row ends the region, and its one line says when it bills |
+| Overage as it accrues (`M12-35`, `BM-27`) | data | on the meter's own row, as the meter's ONE note line: the published rate and the amount so far. ONE total row ends the region, and its one line says when it bills |
 | Plain overage pricing (`M12-36`) | data | the rate rides on the meter's row; no second rate table on this screen |
 | A V2 meter the book has no rate for | data | the meter's row shows its activity; the rate is a named gap — never a zero, never an invented figure |
-| Tracked seats and the accruing seat-months | data | two label–value rows inside the seats meter |
-| Provenance (`M12-34`, `BM-27`, `F8-07`) | honesty label | once per group, at its head: the used column reads `Actual usage`, the included column and the rates read the price list and its date. The word "measured" never appears |
+| Tracked seats and the accruing seat-months | data | two rows of the same form inside the seats meter — label left, figure right |
+| Provenance (`M12-34`, `BM-27`, `F8-07`) | honesty label | once per group, at its FOOT, after the figures: `Actual usage` for what was used, and the price list with its date for what is included and for every rate — two short quiet lines at most, in plain words. Never a key above the figures, never a label per column. The word "measured" never appears |
 | The ledger behind a number (`M12-36`) | more detail | each meter row opens that meter's ledgered events for the cycle — a sheet at 375, a side panel at 1536 (`F7-21`). No register row owns a ledger screen: if the ledger needs more than a sheet holds, NAME the screen in your notes and stop |
 | The way to a bigger plan (`BM-07`) | more detail | a row that leads to `SCR-M12-03`; on a meter that is the signal, the same row sits on that meter |
 | A person who is not the Owner opens this screen (`M12-56` context) | status | no usage figure, no amount and no act is drawn: which meter is at its cap or paused, as its chip, and ONE line naming whose screen this is — the same answer `SCR-M12-02` gives |
@@ -40,6 +40,9 @@ other meter has, and its chip carries the state — never a red wall, never an a
 - **1536.** The two meter regions become tables with their columns in view — meter · used · included
   · extra usage · rate — side by side where they fit. `Needs you` and the overage total sit in a side
   column, in view while the tables scroll. A meter's ledger opens as a side panel.
+- **Inside a card, ONE row form.** Every row reads label left, figure right, on one edge; a meter's bar sits
+  under its own row, and a row with no meter looks like the rows that have one. Never a label–value pair
+  packed to the left beside meter rows whose figures sit at the right.
 
 ## Sample data — the book's rows, drawn and never invented
 
@@ -68,6 +71,18 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 
 - **The person's words for the price list's:** `Included` for a bundle, `Extra charges` for overage, `Biggest design` for the ceiling. A one-of-N choice is a chip strip, directly above what it changes.
 - **The way to a bigger plan is `SCR-M12-03`**, and only that. Honesty label for a price list value: `Published · India price list · 1 Apr 2026`; a usage count keeps `Actual usage`.
+
+**Decisions made in design (2026-09-20) — later screens inherit them.**
+
+1. **Two cards, and the meters are rows inside them.** `Limits` and `Included each month`. Every row reads label left, figure right, on ONE edge; a meter's bar sits under its own row, and a row with no meter — `Biggest design · 500 kW`, a sub-fact — looks like the rows that have one.
+2. **One status chip always answers the job.** `Within plan` · `Nearing a limit` · `Past what's included` · `On trial` · `At a limit` · `Paused` — beside the cycle line at 375, on the `This cycle` card at 1536.
+3. **`Needs you` exists only while a meter qualifies.** A row per meter: its name with its own chip, used of included as the figure, and ONE line saying what happens next and when. It is never parked open and empty.
+4. **Extra charges ride the meter's own row** as its one note line — `₹6 a minute · ₹858 so far`, the amount marked `Derived` — and the card ends in `Extra charges` and `Bills on`.
+5. **The trust label is two quiet lines at each card's foot**, after the figures: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`. The storage gauge carries its own `As of` under its figure.
+6. **One named chevron per metered row opens that meter's events** — a sheet at 375, `F7-21`'s side panel at 1536. No ledger screen is invented.
+7. **1536 is two lanes.** The tables — meter · used this cycle · included · rate · charges so far — and a standing column: `This cycle`, `Needs you` where it exists, `Extra charges`, `Bigger plans`. A state with no figure to draw is ONE lane.
+8. **`Bigger plans` leads to `SCR-M12-03`**, the one way to a bigger plan. A person who is not the Owner sees which meter is paused as its chip, no figure, and `ScopeNote` — `Only Mahesh Bhosale (owner) can see this cycle's usage.`
+9. **Still open at recording:** the language proof (contract item 4) — the longest 375 frame in Hindi and in Marathi — is not drawn yet.
 
 ## Requirements (verbatim)
 

@@ -28,7 +28,7 @@ figure carries its qualifier as a mark, never as a sentence.
 | Aged projects (`M13-25`) | data | rows: the project, its stage by pack label, its days in the stage |
 | The agent (`M13-14`) | more detail | one compact card, leading to agent performance |
 | The manager's view (`M13-30`) | status | the same screen with a scope chip naming the team, and a row leading to the per-rep view |
-| Provenance (`F8-07`) | honesty label | one label heads each region whose figures share it; an aggregate carries the weakest tier of its members |
+| Provenance (`F8-07`) | honesty label | one label at the foot of each region serves the figures that share it — never a key above them; an aggregate carries the weakest tier of its members |
 | A new tenant | teaching | each region teaches in ONE line what will appear. Never a blank or broken chart |
 | Another preset's today-work (`M13-10`) | more detail | a compact block with its own title, never above what needs you |
 | The dashboard failed to load | error | one banner — what failed and what to do |

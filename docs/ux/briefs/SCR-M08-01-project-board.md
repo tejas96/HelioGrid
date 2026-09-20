@@ -18,7 +18,7 @@ sentence explaining their absence.
 | Each card — customer, system size, value, days in the stage, collected against due, the blocker and its party (`M08-10`) | data · status | one card: the customer as its title; size and value as its line; days in the stage as the card's ONE headline figure; collected and due as two figures, never a bar; the blocker as a chip naming the party waited on |
 | The stage columns | data | each column's header is the pack's stage label and its card count |
 | What has waited longest is seen first (`M08-12`) | — | arrangement, no words: oldest first in every column. No "aged" badge, no invented threshold |
-| Provenance (`F8-07`) | honesty label | one label heads the board for the figures that share it. A money figure that cannot be reconciled carries its own provisional mark (`F8-12`) |
+| Provenance (`F8-07`) | honesty label | one label at the foot of the board serves the figures that share it — never a key above them. A money figure that cannot be reconciled carries its own provisional mark (`F8-12`) |
 | Moving a stage (`M08-14`) | action | a drag at 1536 and an explicit move act at 375 (`N1`). The confirm's ONE line names the target stage by its pack label. A move backwards uses the same confirm, with no warning paragraph |
 | The next stage is skippable for this project | action | the confirm offers the following stage as its second choice |
 | The move has not reached the server | status | a light pending mark on the card, in place. Never drawn as moved before the server says so |

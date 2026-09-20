@@ -24,7 +24,7 @@ public page and it is still not a manual: its claim is one line, and its proof i
 | Start a trial — no plan choice, no card, no mandate (`M12-14`) | action | ONE `Start free trial` act for the whole page, not one per plan: the trial is not tied to a plan. ONE line at the button says how long it runs and that no card is needed (`M12-52` context) |
 | Enterprise is sales-assisted (`BM-14`, `BM-15` context) | action | its card's act is `Talk to sales`, never a checkout |
 | How the price compares (`BM-39`, `BM-44` context) | data | a `Compared with` region: label–value rows, our plan beside the named benchmark at the same capacity, each benchmark figure carrying its own source label and date. No adjectives, no paragraph about anyone |
-| Provenance (`F8-07`) | honesty label | once per region at its head — the price list and its date. A benchmark figure differs, so it carries its own |
+| Provenance (`F8-07`) | honesty label | once per region, at its foot — `Published` and the price list with its date, one quiet line, never a key above the figures. A benchmark figure differs, so it carries its own |
 | No price list resolves for the visitor's market | teaching | the page says no prices are published for this market yet, and offers `Talk to sales`; never an empty grid, never another market's prices |
 | The price list failed to load | error | one banner — what failed and what to do. No stale and no invented number |
 
