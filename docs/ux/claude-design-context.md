@@ -191,9 +191,11 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     grid on the board and let every region span whole columns of it.
   - **Siblings match.** Cards in one row share one height and one inner structure — title, figure
     and chip on the same lines. A sibling that needs more leaves the row; it never makes it ragged.
-  - **One value edge per panel.** Where groups of rows stack in one panel, every value starts on
-    ONE left edge and every amount ends on ONE right edge. Two groups with two label widths is a
-    FAIL.
+  - **One value edge per card.** Every value in a card or a panel sits on ONE edge — never some
+    values after their labels and others at the right. Where any row carries its figure at the
+    right — a meter, an amount — every row does: label left, figure right, and a row with no meter
+    takes the same form as the rows that have one. Groups stacked in one panel share that edge; two
+    groups with two label widths is a FAIL.
   - **A control sits with what it changes** — directly above or inside that region, never parked in
     the free corner of another region's band.
   - **One alignment per region.** A screen that reads from the left has no centred block in it,
@@ -255,11 +257,16 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     invoice, which record — is its working, and opens in the disclosure. No separator is left
     hanging at the end of a line. If a layout only works by hiding the tier, the layout is what
     changes.
-  - **One label may serve a region.** Where every figure in a region shares one tier and one
-    source, state them ONCE — in the region's caption, or at the head or foot of the group, inside
-    the region. A figure that differs carries its own mark on its own row, and mixed sources are
-    labelled per figure (`F8-09`). A document a customer may hold — a proposal, the customer link,
-    an export — keeps the label on each figure.
+  - **One label may serve a region — at its FOOT.** Where every figure in a region shares one tier
+    and one source, state them ONCE, at the foot of the group, inside the region: the figures come
+    first, the label after, on one quiet line. **Never a key.** A region never opens with a legend
+    that maps its columns, or its kinds of figure, to tiers — no `Used → Actual usage` table above
+    the data. Where a region's readings pair two fixed kinds — a count against its limit, an amount
+    against its total — the foot label names both in plain words, two short lines at most:
+    `Actual usage` · `Limits from the India price list, 1 Apr 2026`. A figure that differs from
+    its region carries its own mark on its own row, and sources that are truly mixed are labelled
+    per figure (`F8-09`). A document a customer may hold — a proposal, the customer link, an
+    export — keeps the label on each figure.
 - **N8** — destructive actions are confirmed AND undoable; undo is thumb-reachable on mobile. Where
   an act genuinely CANNOT be undone by the person who did it — it is already someone else's
   knowledge, or the record is gone — the confirm carries the RECOVERY ROUTE IN WORDS instead, on

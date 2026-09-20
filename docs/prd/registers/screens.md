@@ -373,7 +373,7 @@ a design must never render an internal id as the step indicator.
 | SCR-M12-01 | **Pricing Page** | P0 | 2 | `docs/ux/briefs/SCR-M12-01-pricing-page.md` | V1 | planned | — | — | — |
 | SCR-M12-02 | **Billing Home** | P0 | 6 | `docs/ux/briefs/SCR-M12-02-billing-home.md` | V1 | planned | — | `04-business-model:shell-billing` | — |
 | SCR-M12-03 | **Plan Selection & Conversion** | P0 | 5 | `docs/ux/briefs/SCR-M12-03-plan-selection.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-03+Plan+Selection+-+Mobile.dc.html | — | 2ec9fa770a9f |
-| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | planned | — | `04-business-model:shell-usage-screen` | — |
+| SCR-M12-04 | **Usage** | P0 | 7 | `docs/ux/briefs/SCR-M12-04-usage-screen.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M12-04+Usage+-+Mobile.dc.html | `04-business-model:shell-usage-screen` | cd6de5f0c2ef |
 
 ### M13 · Dashboards & reporting
 

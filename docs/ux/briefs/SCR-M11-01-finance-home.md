@@ -18,7 +18,7 @@ and no control here records, waives or reverses.
 | Receipts waiting to be recorded (`M11-54`) | data · more detail | their count as the region's figure, then rows — amount and project — each leading to the payments screen. No record control is drawn here |
 | The period's collections against expected (`M11-54`) | data | two figures as label–value rows, the period as the region's caption. Collected money is shown as its two parts — confirmed by the account, recorded by hand — because an aggregate that merges them drops the distinction (`M11-42`) |
 | A figure that cannot be reconciled now (`F8-12`) | status | its provisional mark, on the figure. Never a banner paragraph, and never a settled-looking number |
-| Provenance (`F8-07`) | honesty label | one label heads each group of figures that share it |
+| Provenance (`F8-07`) | honesty label | one label at the foot of each group serves the figures that share it — never a key above them |
 | Another preset's today-work (`M13-10`) | more detail | a compact block with its own title and a row leading to its home; it never pushes money due off the first screenful |
 | Nothing published yet | teaching | at most two short sentences. Nothing is fabricated to fill a block |
 | The home failed to load | error | one banner — what failed and what to do. No figure is drawn |

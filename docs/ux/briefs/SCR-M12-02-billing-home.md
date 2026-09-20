@@ -67,6 +67,12 @@ Reached from: dunning messages, which "deep-link to the billing screen's one act
 - **`Change plan` leads to `SCR-M12-03`**, whose back control returns here; a downgrade returns to this screen's scheduled-downgrade state.
 - **Honesty labels:** `Published · India price list · 1 Apr 2026`. A one-of-N choice is a chip strip, directly above what it changes.
 
+**Inherited from `SCR-M12-04` (designed) — reuse, never redraw.**
+
+- **The meter row is `SCR-M12-04`'s:** label left, used of included at the right on one edge, a quiet bar under it, and the state as a chip with its word — `Nearing a limit`, `At a limit`, `Paused`. `Usage this cycle` shows the two meters nearest their limits in exactly that form, and an `All usage` row leads to `SCR-M12-04`.
+- **What needs the person** takes `SCR-M12-04`'s `Needs you` row: the meter's name with its chip, the figure, and ONE line saying what happens next and when.
+- **The trust label** is two quiet lines at the foot of the region: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`.
+
 ## Requirements (verbatim)
 
 ### docs/prd/04-business-model.md

@@ -33,7 +33,7 @@ like the account's confirmation.
 | No payment terms (`M11-15`) | teaching | ONE plain line and the honest next act. Never a fabricated row, an even split or a projection |
 | An OPEX or PPA project (`M11-16`) | fixed note | the ruled line — monthly energy billing is handled outside this platform — drawn once, as written |
 | A reader — read scope only | status · action | every row, state, amount, date, receipt and qualifier unchanged. Every act that writes money and every link act is absent. The ONE act a reader holds takes the due row's place: the plain request message — sent where a channel is connected, copied where none is. ONE line names whose acts the absent ones are |
-| Provenance (`F8-07`, `F8-12`) | honesty label | one label heads each column of figures that share it; a figure that cannot be reconciled carries its own provisional mark |
+| Provenance (`F8-07`, `F8-12`) | honesty label | one label at the foot of the schedule serves the figures that share it — never a legend per column; a figure that cannot be reconciled carries its own provisional mark |
 
 ## Arrangement
 

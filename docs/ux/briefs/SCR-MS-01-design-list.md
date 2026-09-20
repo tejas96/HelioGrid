@@ -15,7 +15,7 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 |---|---|---|
 | Each variant (`M05-78`, `MS12-12`) | data · status | one card: the pinned-location thumbnail, the name, its status as the ONE chip, and the four figures as label–value rows in the same order on every card, so they compare down the list |
 | The recommended variant | status | its mark on the card. Setting it is not an act of this screen |
-| Provenance (`F8-07`) | honesty label | one label heads each figure that shares a tier across the cards; a figure that differs carries its own mark |
+| Provenance (`F8-07`) | honesty label | one label at the foot of the list serves the figures that share a tier across the cards — never a key above them; a figure that differs carries its own mark |
 | Search, filters, sort (`MS12-11`) | action | a search field, status filter chips carrying live counts, a sort control |
 | New design, new variant, duplicate, open (`M05-78`) | action | ONE primary act for the list; open is the card itself; duplicate and delete sit in the card's menu |
 | A design cannot start yet (`M05-21`) | error | the block is rows, never a bare refusal: each missing item by name, who to ask, and the route that resolves it |
