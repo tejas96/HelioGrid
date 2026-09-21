@@ -6,7 +6,7 @@ from the live PRD every run, never from a cached snapshot, so a gate cannot pass
 agreeing with a stale baseline.
 
 Run:  python3 scripts/gates.py [--repo <path>] [-v]   # defaults to this script's own repo
-Exit: 0 all gates pass, 1 otherwise.
+Exit: 0 the bookkeeping holds, 1 otherwise. It checks ids, files, counts and the ledger — never quality.
 """
 
 import argparse
@@ -220,9 +220,6 @@ REMOVAL_RECORD = re.compile(
     r"|\bthis (row|line|item|criterion|state) (was|is) (now )?(removed|deleted|struck)\b", re.I)
 
 
-def is_removal_record(line):
-    return bool(REMOVAL_RECORD.search(line))
-
 
 def record_lines(text):
     """Line numbers (1-indexed) belonging to a dated removal record.
@@ -262,115 +259,6 @@ def cited_rows(text, known_prefixes):
 def norm(s):
     s = re.sub(r"`|\*\*|\*|_", "", s)
     return re.sub(r"\s+", " ", s).strip()
-
-
-# --------------------------------------------------------------------------- gates
-
-# --------------------------------------------------------- instruction hygiene
-
-# The instruction corpus regrows in three ways, and each is a shape a grep can see.
-# Every one of them was measured in the tree before these gates existed: 55 dated war
-# stories, files at five times their budget, and enforcement claims that named a gate
-# which could not fire.
-#
-# `mechanisms.md` is exempt from the DATE check, and only that check: a date there is the
-# day a gate was proven to go red on an injected violation, which is the one date that
-# stays true. It is not an instruction file and carries no budget.
-# A budget of None means the file states rules but carries no ceiling.
-INSTRUCTION_FILES = [
-    ("CLAUDE.md", 220),
-    ("apps/*/CLAUDE.md", 85),
-    ("packages/*/CLAUDE.md", 85),
-    ("tests/*/CLAUDE.md", 85),
-    (".claude/rules/*.md", 85),
-    # A skill is law too: it tells the agent what to DO, so it may no more restate a gate or
-    # carry a war story than a CLAUDE.md may — and one did, describing a hook and a runner
-    # where only a row id belongs. It carries NO ceiling, because the owner dropped that
-    # deliberately: the worry is a missed instruction, never a long file.
-    (".claude/skills/*/SKILL.md", None),
-]
-DATE_RE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
-# An enforcement phrase is a claim that something is HELD. It is allowed only beside the
-# mechanism row that proves it, because a claim with no row is how a rule outlives its gate.
-CLAIM_RE = re.compile(
-    r"held by|hook-enforced|all enforced|enforced by|is enforced|gate-checked|caught by",
-    re.I,
-)
-MECH_ROW_RE = re.compile(r"\bM\d+\b")
-# A tool name in an instruction file is a gate being described where only its row id belongs
-# (CLAUDE.md §8, "name no gate outside mechanisms.md"). `coverage threshold` and not the bare
-# word: a threshold is GST vocabulary in this product.
-TOOL_RE = re.compile(
-    r"vitest|biome|dependency-cruiser|\bcruiser\b|PreToolUse|jscpd|sherif|gates\.py"
-    r"|check-adherence|coverage thresholds?",
-    re.I,
-)
-
-
-def instruction_files(repo):
-    """(path, relative path, budget) for every file that states a rule."""
-    out = []
-    for pattern, budget in INSTRUCTION_FILES:
-        for f in sorted(glob.glob(os.path.join(repo, pattern))):
-            out.append((f, os.path.relpath(f, repo), budget))
-    return out
-
-
-def check_instruction_hygiene(repo):
-    files = instruction_files(repo)
-    if not files:
-        gate(22, "no dated war story in an instruction file", False,
-             "CONFIG ROT: instruction_files() matched nothing")
-        return
-
-    dated, over, claims, tools, headroom = [], [], [], [], []
-    for path, rel, budget in files:
-        lines = open(path, encoding="utf-8").read().split("\n")
-        in_frontmatter = lines[:1] == ["---"]
-        for i, line in enumerate(lines, 1):
-            if in_frontmatter:                      # a rule file's `paths:` block names configs
-                in_frontmatter = not (i > 1 and line == "---")
-                continue
-            if DATE_RE.search(line):
-                dated.append(f"{rel}:{i}")
-            if CLAIM_RE.search(line) and not MECH_ROW_RE.search(line):
-                claims.append(f"{rel}:{i}")
-            if TOOL_RE.search(line):
-                tools.append(f"{rel}:{i}")
-        if budget is None:
-            continue
-        n = len(lines) - (1 if lines and lines[-1] == "" else 0)
-        headroom.append((budget - n, f"{rel} {n}/{budget}"))
-        if n > budget:
-            over.append(f"{rel} {n} > {budget}")
-
-    # The ledger states traps, never when one was found — same rule, different file.
-    ledger = os.path.join(repo, ".claude/landmines.md")
-    if os.path.exists(ledger):
-        for i, line in enumerate(open(ledger, encoding="utf-8"), 1):
-            if DATE_RE.search(line):
-                dated.append(f".claude/landmines.md:{i}")
-
-    gate(22, "no dated war story in an instruction file", not dated,
-         f"{len(files)} files scanned, none dated" if not dated
-         else "a date is a war story — the trap goes to landmines.md, the story to the commit: "
-              + ", ".join(dated[:8]) + (f" (+{len(dated) - 8} more)" if len(dated) > 8 else ""))
-
-    # The pass line shows the files nearest their ceiling: a budget is a ceiling, not a target,
-    # and the trend is only visible if every run prints it.
-    gate(23, "every instruction file within its budget", not over,
-         "nearest the ceiling: " + " · ".join(h for _, h in sorted(headroom)[:4])
-         if not over else "; ".join(over))
-
-    gate(24, "no enforcement claim without its mechanism row", not claims,
-         "no unsourced claim" if not claims
-         else "name the row that proves it (mechanisms.md M<n>), or drop the claim: "
-              + ", ".join(claims[:8]) + (f" (+{len(claims) - 8} more)" if len(claims) > 8 else ""))
-
-    gate(25, "no tool named in an instruction file", not tools,
-         "rules cite row ids only" if not tools
-         else "a gate is described only in its mechanisms.md row; leave the row id behind: "
-              + ", ".join(tools[:8]) + (f" (+{len(tools) - 8} more)" if len(tools) > 8 else ""))
 
 
 def run(repo, verbose):
@@ -434,7 +322,7 @@ def run(repo, verbose):
             if a == b or b.startswith(a) or a.startswith(b):
                 continue
             desync.append(f"{rel}:{i} {rid}")
-    gate(4, "task + brief quotes match live PRD cells", not desync,
+    gate(4, "each quote equals its PRD cell, or is a cut or an extension of it (a cut is NOT checked for what it drops)", not desync,
          f"{checked} quotes checked, all match" if not desync else f"{len(desync)} desynced: " + "; ".join(desync[:8]))
 
     # --- Gate 5 · every task id referenced is defined
@@ -523,60 +411,6 @@ def run(repo, verbose):
     scanned(9, "no half-cleaned task block", len(blocks), 300, not incoherent,
             f"{len(blocks)} blocks coherent" if not incoherent else "; ".join(incoherent[:6]))
 
-    # --- Gate 10 · offline machinery is gone from docs/tasks/
-    # Deliberately narrow: only phrases that can ONLY mean the deleted sync layer. The studio's
-    # own "stale capture" and F1's "pack staleness" are real, live concepts and must not fire.
-    banned = re.compile(
-        # "online-only" is dropped deliberately: in a product that requires a connection the
-        # phrase is redundant, not residue. "online-first" stays banned — it implies a local
-        # fallback that no longer exists.
-        r"\b(offline[- ]capable|offline[- ]first|online[- ]first"
-        r"|durable (?:write )?queue|write queue|queued for upload|upload queue"
-        r"|sync (?:centre|center|engine|state|contract|indicator|layer)"
-        r"|last[- ]synced|last successful sync|synced cache|local[- ]first"
-        r"|cached read|offline (?:state|banner|mode|backlog|set))\b", re.I)
-    # A verbatim requirement bullet mirrors the live PRD cell by law; Gate 4 already enforces
-    # that fidelity. If the wording is wrong it is the PRD's to fix, not the task's — so this
-    # gate reads only task-authored prose.
-    is_quote = re.compile(r"^\s*-\s*\*\*`?" + ROW_ID + r"`?\*\*\s*\(")
-    voc = []
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        recs = record_lines(body)
-        for i, line in enumerate(body.split("\n"), 1):
-            if i in recs or is_quote.match(line):
-                continue
-            m = banned.search(line)
-            if m:
-                voc.append(f"{rel}:{i} [{m.group(0)}]")
-    gate(10, "no offline machinery in docs/tasks/", not voc,
-         "clean" if not voc else f"{len(voc)} lines: " + " · ".join(voc[:6]))
-
-    # --- Gate 11 · the completion contract says THREE base states, not four
-    # N10 was amended by the ruling that removed offline capability: loading, empty, error. A task whose definition of
-    # done still demands four states would have an engineer reject a correct screen.
-    four = re.compile(r"\b(four|4)\s+(base\s+)?states\b|loading,\s*empty,\s*error,?\s*(and\s+)?offline", re.I)
-    # Two live product concepts genuinely have four states and are nothing to do with the
-    # base-state contract: a studio step (M05-03) and the Site Intelligence card (M05-18).
-    domain_four = re.compile(r"M05-03|M05-18|Site Intelligence|not started\s*/\s*in progress\s*/\s*done", re.I)
-    stale = []
-    scope = (sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs +
-             [spec(repo, "ux/briefs/README.md"), spec(repo, "start-here.md")])
-    for f in scope:
-        if not os.path.exists(f):
-            continue
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        recs = record_lines(body)
-        for i, line in enumerate(body.split("\n"), 1):
-            if i in recs or domain_four.search(line):
-                continue
-            if four.search(line):
-                stale.append(f"{rel}:{i}")
-    gate(11, "completion contract says three base states", not stale,
-         "clean" if not stale else f"{len(stale)} lines still say four: " + ", ".join(stale[:8]))
-
     # --- Gate 13 · the PRD does not cite its own deleted rows
     # Gates 2 and 3 police what docs/tasks/ and briefs/ point at. Nothing was policing the PRD's
     # internal cross-references, which is how nine citations survived the offline sweep.
@@ -616,24 +450,7 @@ def run(repo, verbose):
          "clean" if not dangling_r else f"{len(dangling_r)} ids, {n} refs: " +
          "; ".join(f"{k} {v[:2]}" for k, v in sorted(dangling_r.items())[:5]))
 
-    # --- Gate 26 · no open-question id anywhere: a PRD row carries its own ruling, git the history
-    q_re = re.compile(r"\bQ\d+\b(?!\s*(?:FY|20\d\d))")   # "Q1 FY26" is a display string, not a citation
-    text_ext = (".md", ".ts", ".tsx", ".mts", ".css", ".py", ".sh", ".mjs", ".json", ".jsonc", ".yml", ".yaml")
     tracked = subprocess.run(["git", "ls-files"], cwd=repo, capture_output=True, text=True).stdout.split("\n")
-    q_sites = []
-    for rel in tracked:
-        if not rel.endswith(text_ext) or rel == "pnpm-lock.yaml" or "/_generated/" in rel:
-            continue
-        try:
-            for i, line in enumerate(open(os.path.join(repo, rel), encoding="utf-8"), 1):
-                if q_re.search(line):
-                    q_sites.append(f"{rel}:{i}")
-        except (UnicodeDecodeError, FileNotFoundError):
-            continue
-    gate(26, "no open-question id anywhere in the tree", not q_sites,
-         f"{len(tracked)} tracked text files, none cites a Q id — generated trees are not read,\n     and `_generated/tokens/colors.css` still carries one (docs/tasks/deferred.md)" if not q_sites
-         else f"{len(q_sites)} sites — state the rule in the row, never the id: " + ", ".join(q_sites[:8])
-              + (f" (+{len(q_sites) - 8} more)" if len(q_sites) > 8 else ""))
 
     # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
     # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
@@ -714,51 +531,6 @@ def run(repo, verbose):
          f"all consistent · {len(named_by_history)} ids named by history, every one still held"
          if not ledger_bad else f"{len(ledger_bad)}: " + " · ".join(ledger_bad[:6]))
 
-    # --- Gate 28 · docs/engineering/ only shrinks
-    # Every file there carries its fate at its top; the folder dissolves into the package files
-    # and the tasks. The ceiling is the folder's exact line count today: growth fails, and a cut
-    # fails too until the ceiling is lowered in the same change — so it can only fall.
-    ENGINEERING_LINES = 6412
-    eng_files = [f for f in tracked if f.startswith("docs/engineering/")]
-    eng_lines = 0
-    for rel in eng_files:
-        try:
-            eng_lines += sum(1 for _ in open(os.path.join(repo, rel), encoding="utf-8"))
-        except (UnicodeDecodeError, FileNotFoundError):
-            continue
-    gate(28, "docs/engineering/ only shrinks", eng_lines == ENGINEERING_LINES,
-         f"{eng_lines} lines across {len(eng_files)} files, at the ceiling"
-         if eng_lines == ENGINEERING_LINES
-         else (f"{eng_lines} lines: the folder GREW past its ceiling of {ENGINEERING_LINES} — fold, do not add"
-               if eng_lines > ENGINEERING_LINES
-               else f"{eng_lines} lines: below the ceiling of {ENGINEERING_LINES} — lower ENGINEERING_LINES to {eng_lines} in this change"))
-
-    # --- Gate 29 · a ticket is whole: Why, Data model, Contract, Depends on, Out of scope, a proof per line
-    # docs/tasks/README.md, Task anatomy. A task opts in the moment it carries a Why line — the shape a
-    # task takes at /start before it is built — and from then on every part must be present and
-    # every DONE WHEN line must name its proof.
-    proof_re = re.compile(r"→\s*proof:\s*(unit|invariant|gate|qa-api|qa-web|qa-mobile|qa-parity)\b")
-    ticket_bad, n_tickets = [], 0
-    for b in blocks:
-        body = b["body"]
-        if not re.search(r"^\**Why:\**", body, re.M):
-            continue
-        n_tickets += 1
-        for label in ("Data model", "Contract", "Depends on", "Out of scope"):
-            if not re.search(r"^\**" + re.escape(label) + r":\**", body, re.M):
-                ticket_bad.append(f"{b['id']}: no {label} line")
-        dw = body.find("DONE WHEN")
-        if dw < 0:
-            ticket_bad.append(f"{b['id']}: no DONE WHEN block")
-            continue
-        for line in body[dw:].split("\n"):
-            if re.match(r"^\s*-\s", line) and not line.strip().startswith("---") and not proof_re.search(line):
-                ticket_bad.append(f"{b['id']}: done-when line without a proof: {line.strip()[:60]}…")
-    scanned(29, "every ticket with a Why is whole, and every done-when line names its proof",
-            n_tickets, 40, not ticket_bad,
-            f"{n_tickets} tickets, all whole" if not ticket_bad
-         else f"{len(ticket_bad)}: " + " · ".join(ticket_bad[:6]))
-
     # --- Gate 15 · every PRD row dispositioned exactly once, and marked state agrees
     # Three states have to line up, or the register is quietly lying about coverage:
     #   PRD carries the row (live)      -> register carries a plain disposition
@@ -820,7 +592,7 @@ def run(repo, verbose):
             dw = re.search(r"\*\*DONE WHEN:\*\*(.*?)(?=\n\*\(|\Z)", blk, re.S)
             cited = set(re.findall(ROW_ID, dw.group(1))) if dw else set()
             uncovered += [f"{rel} {m.group(1)} {r}" for r in sorted(claimed - cited)]
-    scanned(21, "every claimed PRD row has an acceptance criterion", n_claims, 200, not uncovered,
+    scanned(21, "every claimed PRD row id is cited by a DONE WHEN line (that the line proves it is NOT checked)", n_claims, 200, not uncovered,
             f"{n_claims} row-claims, all covered by a DONE WHEN line" if not uncovered
             else f"{len(uncovered)} uncovered: {uncovered[:6]}")
 
@@ -900,125 +672,6 @@ def run(repo, verbose):
         except Exception as e:
             gate(18, "helper script agrees with the register", False, f"next-screen.py raised: {e}")
 
-    # --- Gate 19 · the pasted design context is current
-    # docs/ux/claude-design-context.md is pasted at the top of every design session, so a stale line
-    # there is inherited by every screen, and nothing else watches it.
-    ctx = spec(repo, "ux/claude-design-context.md")
-    if not os.path.exists(ctx):
-        gate(19, "design context file is current", False, "docs/ux/claude-design-context.md is missing")
-    else:
-        body = open(ctx, encoding="utf-8").read()
-        # A rule is matched on its words: re-wrapping a paragraph must never read as losing the rule.
-        flat = " ".join(body.split())
-        must = {
-            "three base states": "loading, empty, error" in flat or "three base states" in flat,
-            "F7-12 status-not-colour": "F7-12" in flat,
-            "where the provenance tier renders (F8-07)": "F8-07" in flat,
-            "the non-UI annotation convention": "non-UI half, build-side" in flat,
-            "the V1/V2 scope lock": re.search(r"\bV1\b", body) and re.search(r"\bV2\b", body),
-            "F7-21 one sheet grammar": "F7-21" in flat,
-            "F7-27 table captions": "F7-27" in flat,
-            "F7-46 a row is met by the design, not by a sentence": "F7-46" in flat
-                and "Carrying a row is not printing it" in flat,
-            "the word budgets can fail a frame": "a frame over budget FAILS" in flat,
-            "the word inventory leads the self-audit": "word inventory" in flat,
-            "a word that leaves the frame is moved, never deleted": "MOVED, never deleted" in flat
-                and "An explanation with no home is a FAIL" in flat,
-            "one provenance label may serve a region (F8-07)": "One label may serve a region" in flat,
-            "a row's form follows the length of its value": "A value never wraps inside a narrow column" in flat,
-            "the record states the design as it stands": "one file, the design as it stands" in flat
-                and "A record that holds two versions of one line is a FAIL" in flat,
-            "a frame speaks the person's language (F7-42)": "a frame speaks the person's" in flat,
-            "sample content is invented, a product fact never is": "Invent the sample, never the product" in flat,
-            "the self-audit traces every product fact to its brief row": "**Product facts:**" in flat
-                and "one with no row is a FAIL" in flat,
-            "the self-audit ends by reading the record against the frames":
-                "read the record top to bottom against the frames" in flat,
-            "the ask and the data row each name their ONE component": "`Explainer`" in flat
-                and "`FactRows`" in flat,
-            "what a designed screen drew is reused, never redrawn": "REUSED, never redrawn" in flat,
-            "alignment is measured, never judged by eye": "nothing is placed by eye" in flat
-                and "print the alignment numbers" in flat,
-            "a region's trust label sits at its foot, never as a key above the figures": "Never a key" in flat
-                and "at its FOOT" in flat,
-            "every value in a card sits on one edge": "sits on ONE edge" in flat,
-        }
-        missing = [k for k, ok in must.items() if not ok]
-        # The audit runs only as far as the message that asks for it: start-here's message 4 is what
-        # reaches the session, so a list it does not name is a list no session walks.
-        start_here = spec(repo, "start-here.md")
-        asked = open(start_here, encoding="utf-8").read() if os.path.exists(start_here) else ""
-        n_stated = re.search(r"Walk \*\*(\w+) lists\*\*", body)
-        n_asked = re.search(r"Walk \*\*all (\w+) lists", asked)
-        if not (n_stated and n_asked and n_stated.group(1) == n_asked.group(1)):
-            missing.append("start-here's message 4 asks for "
-                           f"{n_asked.group(1) if n_asked else 'no'} audit lists, the context file states "
-                           f"{n_stated.group(1) if n_stated else 'none'}")
-        if "word inventory" not in asked:
-            missing.append("start-here's message 4 never asks for the word inventory")
-        # "Print it again" is how a record came to hold two inventories: the session is told to rewrite.
-        asked_flat = " ".join(asked.replace("\n>", "\n").split())
-        if "rewrite the record" not in asked_flat:
-            missing.append("start-here never tells a session to rewrite the record after a fix")
-        if "in Hindi and in Marathi" not in asked_flat:
-            missing.append("start-here's states message never asks for the language proof (contract item 4)")
-        if "measure the alignment" not in asked_flat:
-            missing.append("start-here's desktop message never asks for the alignment to be measured")
-        if "read the record against the frames" not in asked_flat or "product fact" not in asked_flat:
-            missing.append("start-here's message 4 never asks for the product-fact list or the record read")
-        # the V1 count it states must match the register
-        stated = re.search(r"\*\*(\d+) are V1\*\*|locked \*\*(\d+) of them as V1\*\*", body)
-        v1_real = len([1 for line in open(reg, encoding="utf-8")
-                       if re.match(r"^\|\s*SCR-[A-Z0-9]+-\d{2}\s*\|", line)
-                       and re.search(r"\|\s*V1\s*\|", line)])
-        if stated:
-            n = int(stated.group(1) or stated.group(2))
-            if n != v1_real:
-                missing.append(f"states {n} V1 screens, register has {v1_real}")
-        # Forbidden: the retired four-state contract — but the N10 amendment legitimately says
-        # "this rule named four states", which is the record of the change, not a live claim.
-        recs = record_lines(body)
-        stale_four = [i for i, line in enumerate(body.split("\n"), 1)
-                      if i not in recs and re.search(r"\b(four|4)\s+(base\s+)?states\b", line, re.I)]
-        if stale_four:
-            missing.append(f"still says four base states at line(s) {stale_four[:4]}")
-        gate(19, "design context file is current", not missing,
-             f"carries all {len(must)} required laws; V1 count matches the register"
-             if not missing else "missing/wrong: " + " · ".join(missing))
-
-    # --- Gate 20 · every screen task keeps its closing condition
-    # All four SHELL tasks — including the one behind the first screen of the run — had silently
-    # lost this line, and no gate could see it. It is the completion bar for a screen task, so
-    # losing it means the task can be called done with states or a viewport missing.
-    cond = re.compile(r"^\s*-\s*(three|four)\s+base states\s*\+", re.M | re.I)
-    n_screen, no_cond, four_state, truncated = 0, [], [], []
-    for b in blocks:
-        if not re.search(r"DESIGN:\**\s*SCR-", b["body"]):
-            continue
-        n_screen += 1
-        m = cond.search(b["body"])
-        if not m:
-            no_cond.append(f"{b['file']} {b['id']}")
-            continue
-        line = b["body"][m.start():b["body"].find("\n", m.start())]
-        if m.group(1).lower() == "four":
-            four_state.append(f"{b['file']} {b['id']}")
-        if "colour literals" not in line:
-            truncated.append(f"{b['file']} {b['id']}")
-    bad = []
-    if no_cond:
-        bad.append(f"{len(no_cond)} screen task(s) carry no closing condition: {no_cond[:4]}")
-    if four_state:
-        bad.append(f"{len(four_state)} still say four base states: {four_state[:4]}")
-    if truncated:
-        # Informational rather than fatal: the clause is real but its absence is a house-style
-        # drift, not a missing completion bar. Reported so it cannot spread unnoticed.
-        pass
-    scanned(20, "every screen task keeps its closing condition", n_screen, 80, not bad,
-            f"{n_screen} screen tasks, all carry it"
-         + (f" · {len(truncated)} omit the colour-literal clause (style drift, not fatal): {sorted(set(x.split()[0] for x in truncated))}" if truncated else "")
-         if not bad else " · ".join(bad))
-
     # --- Gate 31 · a design names the brief it was reviewed against
     # A screen is designed against its brief, and the brief goes on changing after — a ruling folded
     # in, a requirement re-pulled — while the design stays as drawn. Designs showed behaviour their
@@ -1072,7 +725,7 @@ def run(repo, verbose):
     design_summary = (f"design review: {n_reviewed} designs reviewed against their briefs · "
                       + (f"{len(owed_screens)} redesigns owed, first in the design queue: {', '.join(owed_screens)}"
                          if owed_screens else "none owed"))
-    scanned(31, "every designed screen names the brief its design was reviewed against",
+    scanned(31, "every designed screen carries its brief's current digest (tripwire: the review itself is not checked)",
             len(index_rows), 100, not review_bad,
             design_summary if not review_bad
             else f"{len(review_bad)}: " + " · ".join(review_bad[:6]))
@@ -1191,7 +844,6 @@ def run(repo, verbose):
          not order_bad, order_summary if not order_bad
          else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
 
-    check_instruction_hygiene(repo)
 
     # --------------------------------------------------------------------- report
     results.sort(key=lambda r: r[0])
@@ -1209,7 +861,7 @@ def run(repo, verbose):
     # Printed on every run, pass or fail: the next task is read off the gates, never from memory.
     print(f"  {order_summary}")
     print(f"  {design_summary}")
-    print(f"  {'ALL GATES PASS' if not failed else str(len(failed)) + ' GATE(S) FAILED'}")
+    print(f"  {'BOOKKEEPING HOLDS — ids, files, counts and the ledger agree. NOT checked here: whether a brief is complete, a design is good, or a record is true' if not failed else str(len(failed)) + ' BOOKKEEPING CHECK(S) FAILED'}")
     return 0 if not failed else 1
 
 

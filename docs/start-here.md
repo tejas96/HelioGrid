@@ -287,8 +287,10 @@ rows and the register's own documentation of this command, and never reaches zer
 ## Things that will tempt you, and shouldn't
 
 - **Don't batch screens.** One per session. This is the rule that protects quality.
-- **Don't read the PRD.** The brief already carries every requirement verbatim. If something seems
-  missing from a brief, that's a real bug worth reporting — not a reason to go digging.
+- **The PRD row is the truth; the brief is its summary.** A brief may quote part of a row. Before a
+  product fact is drawn — a plan, a price, a limit, a rate, fixed copy — read the WHOLE row it
+  cites, and report what the brief cut. A session with no access to the repo names the fact as
+  missing instead.
 - **Don't give Claude Design visual direction.** Colours, spacing, type and components are the
   design system's job. Your job is *what the screen must do*.
 - **Don't skip states.** "Loading, empty, error" is where most real product quality lives, and it's

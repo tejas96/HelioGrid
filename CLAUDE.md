@@ -42,11 +42,13 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
     declared server entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
-12. **A new fact joins its guard, and silence is never evidence.** Anything your change ADDS to a
+12. **A new CODE fact joins its guard, and silence is never evidence.** Anything your change ADDS to a
     guarded kind — a brand, enum, token, route, table, error code — is enrolled in its
     `mechanisms.md` row in the SAME change, and proven RED there. A gate that printed OK, a grep
     that matched nothing, a registry that never named your fact: each is worth nothing until you
     have made it FIRE on this change. A kind with no guard is said out loud, never assumed safe.
+    Prose and design have no guard: a search for words proves the words exist, never that they are
+    true or obeyed. They are held by a reviewer that reads the real thing, and by the owner.
 
 ## 3. Workflow
 
@@ -122,7 +124,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | tree | what it is |
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and the folder only shrinks. Ranked **below** `docs/prd/`. |
+| `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and folds into the package files and the tasks. Ranked **below** `docs/prd/`. |
 | `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and the two ledgers `mechanisms.md` and `landmines.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen, rendering from disk with the bundle in `_ds/`, beside the design system's own source export in `_ds-source/` — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, kept at the repo root and ignored by git (each machine holds its own export). |
 
@@ -187,15 +189,15 @@ Writing rules, not code:
   is the day a gate was proven red, which is the only date that stays true.
 - **One fact, one file.** Cite a rule by its id; never restate it. When a file goes, its stories go
   with it — Law 8's sweep covers the ledgers too.
-- **Name no gate outside `mechanisms.md`** — not the tool, not the config, not the check: an
-  instruction file cites the row id and nothing else — bare for a HELD or PARTIAL row, with the
-  word `review-only` beside it for a NONE row, so a citation is never read as enforcement.
-- **Mechanism before rule: type → lint rule → invariant → script.** A script encodes today's tree
-  and rots; a new one needs an owner ruling saying why no type and no lint rule can hold it. If
-  nothing can hold it, add ONE review-only row to `mechanisms.md` and stop there.
-- **Budgets are ceilings, not targets.** This file ≤ 220 lines · a package or app
-  `CLAUDE.md` ≤ 85 · a `.claude/rules/` file ≤ 85. Hitting one means the file has taken on
-  something that belongs in `mechanisms.md`, `landmines.md` or the tree itself.
+- **Say the instruction plainly.** Write what to do and what to run, in words a new reader can act
+  on without opening a second file. A row id (`M12`) may follow as the pointer to the detail; it
+  never stands in for the instruction.
+- **Mechanism before rule — for CODE: type → lint rule → invariant.** A check earns its place only
+  when a machine decides the fact completely: an id exists, two values are equal, a type holds, a
+  test passes. Its name says that one fact and nothing more. Never a text search that stands in for
+  judgment — whether a brief is complete, a design is good or a rule is obeyed is a reviewer's call.
+- **Short, never cut.** Keep a file small by moving what belongs elsewhere, never by dropping a
+  rule or squeezing it until it is unclear. A missed instruction costs more than a long file.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.
 - **A PR is one complete task.** Every done-when line is met and proven before the PR opens; a

@@ -52,13 +52,12 @@ lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a 
 authored in both app trees is split out here (`M115`, review-only). Contract
 before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
-**For a SCREEN, review the design against the UX law BEFORE writing it** — `docs/ux/claude-design-context.md`
-§2 (words, `F7-46`) and §3 (composition). Name the prose split: which words stay on the screen because the act
-turns on them — money, what pauses and until when, a tier, a disclosure, an error's fix — as data rows, a chip
-or the one line at the act, and which teaching goes behind the one shared ask. Name the focal point of each
-region, any frame over a §2 word budget, any card drawn inside a card, and what the desktop arranges differently. A design drawn
-before those laws is brought to them HERE, at build time, and the differences from the export are
-written into the ticket rather than carried silently. No state may depend on hover: the phone has none.
+**For a SCREEN, dispatch `design-reviewer` BEFORE writing it.** It did not draw the screen: it renders the
+export, looks at the pixels, measures, reads the record and the WHOLE PRD rows behind every product fact, and
+returns blockers and the better design where it sees one. Show the owner its report. A `BLOCKER` is settled
+before code; a `BETTER` the owner accepts is written into the ticket as a difference from the export, never
+carried silently. A design drawn before today's UX law (`docs/ux/claude-design-context.md` §2, §3) is brought
+to it HERE, at build time. No state may depend on hover: the phone has none.
 
 **Name the GUARD each new fact joins, and the injection that will prove it fires** (Law 12). A
 brand enrols with `M60`, an enum with `M17`, a route with `M15`, a table with `M12`. Read
