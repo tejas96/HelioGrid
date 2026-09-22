@@ -80,25 +80,11 @@ Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); th
 7. **Honesty labels.** `Published · India price list · 1 Apr 2026` serves each region; `Prices exclude GST` is its own element beside it; a computed date keeps its own `Derived` mark.
 8. **Still to draw at build:** the `Paid cycle starts` row (`M12-54`), one more row in `When it starts` when the review opens from the trial-expiry entry.
 
-## Redesign owed
-
-**What the design shows.** Each plan is an `OptionCardGroup` card carrying the plan's name, its
-price as a mono row value, and three label–value rows — `Biggest design`, `Proposals a month`,
-`AI detections a month`. At 375 that is about one plan per screenful, and the card reads as a spec
-sheet rather than a price.
-
-**What is now required.** The plan card is the calm-screens proposal's, and `SCR-M12-01` already
-draws it that way: the name; the price as the card's **headline figure** with its period beside it
-in small type (`₹3,999` · `a month`; Enterprise `From ₹24,999` · `a month`); the figure in the design
-system's headline face — sans, tabular — because a mono comma takes a full cell at that size and
-the price reads `₹3 , 999`; and the three limits
-that differ most as **ONE flowing line** in the design system's `lead` form —
-`Limits — 500 kW · 300 proposals a month · 100 detections a month` — with the unit riding with each
-value. Nothing else about the screen changes: the radiogroup, the `Your plan` block, the cycle
-strip, the review sheet and panel, every state and the language proof all stay as drawn.
-
-**Why.** One object, two screens. `SCR-M12-01` and this screen both draw a plan card, and two
-designs of one object cannot both be built. The owner chose the proposal's form (2026-09-20).
+**Decision made in the redesign — later screens inherit it.** The plan card is one object shared with
+`SCR-M12-01`: the name; the price as the card's headline figure in the design system's figure face
+(sans, tabular) with `a month` beside it, Enterprise `From ₹24,999`; the three limits that differ
+most as ONE flowing line — `Limits — 500 kW · 300 proposals a month · 100 detections a month`. A
+money ROW stays mono; a headline figure does not.
 
 ## Requirements (verbatim)
 
