@@ -63,6 +63,20 @@ Reached from: not navigated to — the state banner and countdown chip render in
 4. **A person who is not the Owner.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount is rendered.
 5. **The default frame is `past_due`, day 4 of 7** — the one ordinary rung where something has paused while core selling still works.
 
+## Redesign owed
+
+**What the design shows.** The failed charge is `₹24,600` on invoice `HG-INV-2026-0891`, and the
+halted strip's act reads `Reactivate with one payment of ₹24,600`.
+
+**What is now required.** The one sample story across the billing screens says the charge that
+failed on 11 Sept 2026 is the Growth month — invoice `HG-INV-2026-0902`, ₹3,999 + 18% GST =
+**₹4,718.82** — and `SCR-M12-02` prints that figure with its working. Change the amount and the
+invoice number wherever this board prints them (`AMOUNT`, `INVOICE`, the acts and the disclosure's
+parts). Nothing else on the screen changes.
+
+**Why.** One story, one figure: a reader who sees ₹24,600 on the strip and ₹4,718.82 in the
+billing home's `Needs you` is looking at two products.
+
 ## Requirements (verbatim)
 
 ### docs/prd/modules/M12-platform-billing.md

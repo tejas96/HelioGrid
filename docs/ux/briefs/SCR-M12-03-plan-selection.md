@@ -67,7 +67,7 @@ Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); th
 - **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
 - **Arriving from the strip.** The strip's act and both denials' act lead here, and the person returns to the surface they pressed it from once the act is done.
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
-- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
+- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 is the Growth month — invoice `HG-INV-2026-0902`, ₹3,999 + 18% GST = ₹4,718.82 — the same figure every billing screen prints for that charge (owner ruling).
 
 **Decisions made in design (2026-09-20) — later screens inherit them.**
 

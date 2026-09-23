@@ -65,7 +65,7 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 - **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
 - **Arriving from the strip.** The 80% cap strip's act is `See usage` and leads here; at 100% and after the grace the strip's act is `Upgrade plan` and leads to `SCR-M12-03`. The strip's cap frames read `AI detections · 80 of 100` and `100 of 100` on the Growth plan — keep those figures, so the two screens agree.
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
-- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 · invoice `HG-INV-2026-0891`, ₹24,600.
+- **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 is the Growth month — invoice `HG-INV-2026-0902`, ₹3,999 + 18% GST = ₹4,718.82 — the same figure every billing screen prints for that charge (owner ruling).
 
 **Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
 
