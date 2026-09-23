@@ -15,10 +15,12 @@ no sentence.
 | Fact | Kind | Its form here |
 |---|---|---|
 | Each lead — name, city, source, age, value if known (`M02-24`, `M02-13`) | data · status | one list row: the name; city and age as its second line; the source as its mark; the value, where known, with its tier mark. One provenance label heads the list for the ages (`F8-07`); the value differs, so it keeps its own. A missing name or city is a named gap (`M02-03`), never a blank |
-| The two decisions (`M02-24`) | action | two single-tap acts on every row — assign and mark junk. A swipe may speed them up and is never the only way (`N1`) |
+| The two decisions (`M02-24`) | action | two single-tap acts on every row — assign and mark junk. A swipe may speed them up and is never the only way (`N1`). Junk is not a delete — the lead leaves every queue and is kept (`M02-55`) — so it takes no confirm |
+| A lead leaves the queue (`M02-24`, `M02-55`) | status | ONE toast naming what happened — who it went to, or that it is junk. The junk toast carries `Undo`, which reopens the lead (`M02-55`'s exit), so a mis-tap at three-second speed costs one tap |
 | A lead unassigned for more than a day (`M02-50`) | status | the age carries the state as a chip. No sentence about escalation |
 | One queue, newest first (`M02-23`) | — | arrangement, no words: no sort control is drawn, and nothing explains why |
-| Who can take it, and their load (`M02-28`) | data | the assign picker: one row per person with two label–value pairs — open leads, overdue. One tap assigns; no confirm. One provenance label heads the list (`F8-07`) |
+| Who can take it, and their load (`M02-28`) | data | the assign picker: one row per person with two label–value pairs — open leads, overdue. One tap assigns; no confirm. One provenance label heads the list (`F8-07`). No suggested person, no rule, no auto-assign (`M02-27`). A buried person is shown by their counts, never blocked or warned in words ("the product warns by showing, never by blocking") |
+| Whose leads these are (`F2.M02.lead-visibility`) | — | behaviour, no words: the EPC Owner sees every unassigned lead, a Sales Manager their team's, and the header count is that set's |
 | An act in progress, never shown as done (`M02-67`) | status | a light in-row pending mark on that row's act; the row and the list stay operable. Never an overlay, never a spinner wall |
 | An act that failed (`M02-67`) | error | the lead returns to the queue with ONE inline line: the reason, and `Try again` |
 | Someone else assigned it first (`M02-67`) | status | the row shows who holds it, as a chip, then leaves the queue. No dialog |
@@ -69,6 +71,8 @@ Reached from: the owner's navigation — the inbox is the morning entry point; o
 Design at a bulk-import morning: **300 leads landing at once** in the same newest-first order rule — the inbox does not paginate away the oldest. The three-second-per-lead triage bar must hold at that volume. Assign picker: the full set of people who can hold a lead, each with two counts.
 
 ## Numbers carrying provenance
+
+- **Names and cities are data** and are never translated (`F3-08`); only the queue copy, the age phrasing and the empty state are (`F3-01`). Any value renders through the money implementation with its provenance and provisional state intact (`F3-20`, `F3-24`).
 
 - **Value if known** on an inbox row — a lead's estimated value is a forecast input, never revenue, rendered in the tenant's currency.
 - **Age** per row — derived from capture time on the tenant's timezone (`F3-22`); it is what makes the 24-hour escalation visible.
