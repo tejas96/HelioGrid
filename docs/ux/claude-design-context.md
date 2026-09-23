@@ -330,7 +330,8 @@ page (`--canvas`) → a container that holds controls (`--surface-form`) → a c
 
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (`F7-22`).** At 375
 an arc bar with a **raised centre action** and **exactly four** standing destinations — **Home ·
-Leads · Proposals · More**; at 1536 the icon rail carrying **the same four**, plus `AppHeader`.
+Leads · Proposals · More**; at 1536 the icon rail carrying **the same four**, with the **bell and the account at the rail's foot**, plus
+`AppHeader` holding **only the tenant's name and the one search**.
 **Never add a fifth slot.** Settings, account, grievance contact and sign-out are reached from
 **More** and from the avatar menu. The centre action's *verb* follows the home in force; the four
 destinations never change with the screen. **Most screens carry no shell at all:** anything running
