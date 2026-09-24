@@ -291,7 +291,8 @@ call-back deferred to window · later-card viewed.
 
 **Behavior detail.** Bad imports are how a phone-as-identity model gets poisoned — *"bad imports
 poison the phone-as-identity dedupe model"* (`UXG-01`) — so the wizard's whole design is to make
-the damage visible before it happens. Upload accepts the spreadsheet formats an EPC actually has;
+the damage visible before it happens. Upload accepts the spreadsheet formats an EPC actually has —
+Excel (.xlsx) and CSV, the catalog import's set (M01-41), with no size limit (owner ruling 2026-09-24);
 mapping presents each detected column beside its guessed lead field with the first rows shown as
 sample values, and requires only the phone column to proceed (M02-03's law applies to imported
 rows exactly as to typed ones). The preview is the gate: total rows, rows that will create leads,

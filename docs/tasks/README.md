@@ -17,7 +17,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped (#PR) | struck — the one ledger; screens.md mirrors it per screen)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved; a screen with more than one board lists the others after the main link: `· also: <board> <link>`
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
         POC `*.test.ts`; port the LOGIC it proves into the studio package's own
