@@ -51,7 +51,7 @@ persona independently."*).
 | 3 | **Sales Executive** | v1 `Sales rep` preset | Employees | Mobile-first | My Day | `SRC` |
 | 4 | **Survey Engineer** | v1 `Surveyor` preset | Employees | Mobile capture | Today's site visits | `SRC` |
 | 5 | **Design Engineer** | v1 `Designer` **and** v1 `Engineer` presets | Employees | Desktop-weighted, full mobile parity | Designs awaiting work, with the sign-off queue composed in | `SRC` (×2) |
-| 6 | **Project Manager** | v1 *coordinator / ops*, served by the `Manager` preset | Employees | Web board, mobile for stage moves | Projects by days-in-stage, blockers first | `BRIEF` |
+| 6 | **Project Manager** | v1 *coordinator / ops*, served by the `Manager` preset | Employees | Web board, mobile for stage moves | Projects by days-in-stage, oldest first | `BRIEF` |
 | 7 | **Field Technician** | none — V2 field-workforce scope | Employees | Mobile only | My route today | `BRIEF` |
 | 8 | **Installation Team Member** | v1 *installer / crew* — a persona with **no login in v1** (R16) | Employees | Mobile only | Today's installation | `BRIEF` |
 | 9 | **HR/Admin** | none — V2 HR-lite scope | Employees | Web-first | People today | `BRIEF` |
@@ -501,7 +501,7 @@ preset.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | PS-20 | The **Project Manager** persona owns a won deal from signature to handover: moving it through the stage chain, keeping the document checklist complete, naming blockers with the party responsible, requesting the payment each completed stage makes due, and keeping the customer's progress view honest. | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Users · scope grounded in source at `S8.rule.v1-boundary`, `S8.rule.stage-chain`, `S8.rule.roles` (v1 served this job with the Manager preset) | P0 |
-| PS-21 | The Project Manager's **home screen is their projects ordered by days-in-stage, blockers first** — each card showing customer, size, value, days in the current stage, payment collected against payment due, and the blocker flag with who is being waited on. | `BRIEF` — home for a V2 persona, `docs/prd/owner-brief-2026-08-03.md` §Users · grounded in source at `S8.screen.1`, `S8.rec.2` ("days-in-stage is the only metric that matters on the board"), `S8.rec.3` | P0 |
+| PS-21 | The Project Manager's **home screen is their projects ordered by days-in-stage, oldest first** — a blocker flags a card and never reorders it (owner ruling 2026-09-24) — each card showing customer, size, value, days in the current stage, payment collected against payment due, and the blocker flag with who is being waited on. | `BRIEF` — home for a V2 persona, `docs/prd/owner-brief-2026-08-03.md` §Users · grounded in source at `S8.screen.1`, `S8.rec.2` ("days-in-stage is the only metric that matters on the board"), `S8.rec.3` | P0 |
 
 ### Who they are
 
