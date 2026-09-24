@@ -748,6 +748,9 @@ def run(repo, verbose):
     # nothing. That is silence, not readiness: the order line counts them so it never claims more
     # than it read. The BLOCK order does not rest on these lines — it comes from each task's file.
     undeclared = set()
+    # A ticket the owner parked carries a `**Parked:**` line: it keeps its block and its rows, but it
+    # is never "ready now" — offering it would send /start to a task the owner already said waits.
+    parked = set()
     design_of = {}
     for b in blocks:
         task, body = b["id"], b["body"]
@@ -757,6 +760,8 @@ def run(repo, verbose):
         waits_on[task] = [d for d in re.findall(r"T-[A-Z0-9]+-\d+", line.group(1)) if d != task] if line else []
         if not line:
             undeclared.add(task)
+        if re.search(r"^\*\*Parked:\*\*", body, re.M):
+            parked.add(task)
         kind = re.search(r"^\**Type:\**\s*(\w+)", body, re.M)
         kind_of[task] = kind.group(1) if kind else None
         tier = re.search(r"\**Tier:\**\s*(P\d)", body)
@@ -825,6 +830,7 @@ def run(repo, verbose):
     ready = sorted(
         (t for t in v1_live
          if block_of(t) == current
+         and t not in parked
          and all(state_of.get(dep) == "shipped" for dep in waits_on[t] if dep in state_of)
          and (kind_of[t] != "screen" or state_of[t] == "designed")
          # a design owed a redesign is not built from: the build would bake in what the brief retired
@@ -833,7 +839,7 @@ def run(repo, verbose):
     shown = [f"{t} (unblocks {len(unblocks[t])})" if unblocks[t] else t for t in ready[:6]]
     order_summary = (
         f"build order: block {current} · {sum(1 for t in v1_live if block_of(t) == current)} open · "
-        f"{len(recorded)} recorded cross-block · ready now: "
+        f"{len(recorded)} recorded cross-block · {sum(1 for t in v1_live if t in parked)} parked · ready now: "
         + (", ".join(shown) + (f" (+{len(ready) - 6} more)" if len(ready) > 6 else "") if ready
            else "NOTHING — every open task waits on a design or a dependency")
         + (f" · {sum(1 for t in ready if t in undeclared)} of {len(ready)} declare no dependencies yet, "

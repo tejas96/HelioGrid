@@ -198,6 +198,7 @@ This file dispositions every requirement row of the suite's four core documents 
 ### T-FCORE-009 · Data-rights pack key (pack.data-rights), erasure/anonymisation workflow + the IN DPDP determination
 **Type:** engine · **Tier:** P0
 **Status:** planned
+**Parked:** by owner ruling until the tenant base reaches real paying customers (roughly 10–20) — the *Deferred* note below; the build line never offers it as ready.
 **PRD rows:** F1-23, F1-24, F1-32, F1-54, F1-55, F1-56, F1-57, F1-58, F1-59
 **Requirements (verbatim):**
 
