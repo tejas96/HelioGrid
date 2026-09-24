@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  envelopeOf,
-  nextEnvelope,
-  type PackEnvelope,
-  packFromEnvelope,
-} from '../../src/market/envelope';
+import { envelopeOf, nextEnvelope, type PackEnvelope } from '../../src/market/envelope';
 import { PACK_KEYS } from '../../src/market/keys';
 import { unauthoredKeys } from '../../src/market/launch';
 import { IN_PACK } from '../../src/market/pack';
@@ -52,35 +47,6 @@ describe('envelopeOf — a pack as a row holds it (F1-11, F1-05)', () => {
   it('holds nothing but pack keys — the market and the version are row columns, not payload', () => {
     const foreign = Object.keys(envelope.pack).filter((key) => !PACK_KEYS.some((k) => k === key));
     expect(foreign).toEqual([]);
-  });
-});
-
-describe('packFromEnvelope — the envelope check, then the brands re-minted (F1-05, F1-11)', () => {
-  const envelope = envelopeOf(IN_PACK, PUBLISHED_AT);
-
-  it('reports the same unauthored keys for a stored pack as for the literal', () => {
-    expect(unauthoredKeys(packFromEnvelope(stored(envelope)))).toEqual(unauthoredKeys(IN_PACK));
-  });
-
-  it('gives the India pack back whole after the store reorders and re-parses it', () => {
-    expect(packFromEnvelope(stored(envelope))).toEqual(IN_PACK);
-  });
-
-  it('re-mints the version from the row, so revision 3 reads IN.3 whatever the literal said', () => {
-    expect(packFromEnvelope({ ...envelope, revision: 3 }).version).toBe('IN.3');
-  });
-
-  it('refuses a top-level property that is not a pack key, naming it', () => {
-    const withStranger = { ...envelope, pack: { ...envelope.pack, demoProject: {} } };
-    expect(() => packFromEnvelope(withStranger)).toThrow(/demoProject/);
-  });
-
-  it('refuses a market nobody authored', () => {
-    expect(() => packFromEnvelope({ ...envelope, market: 'XX' })).toThrow(RangeError);
-  });
-
-  it('refuses revision 0 through the version constructor itself', () => {
-    expect(() => packFromEnvelope({ ...envelope, revision: 0 })).toThrow(RangeError);
   });
 });
 

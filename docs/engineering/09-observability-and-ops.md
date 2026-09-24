@@ -281,6 +281,12 @@ cross-border, DPDP-permitted). Plain Postgres end to end — nothing locks in.
   machines roll. Discipline: every migration must be compatible with the previous release's
   code (expand/contract) because old machines serve traffic during the roll. Never edit an
   applied migration (CLAUDE.md law).
+- **Market packs publish in the same `release_command`, right after the migration**
+  (`pnpm --filter @heliogrid/api pack:publish`), so the new code's pack is stored before any new
+  machine serves. A pack shape change follows the same expand/contract discipline: the reader
+  (`parseStoredPack`, `T-FCORE-017`) drops and logs a property it does not declare, so an ADDED
+  field is safe both ways, while a field the running code needs and the row lacks is refused —
+  a field is removed or renamed across two releases, never one.
 - CI (GitHub Actions): green `turbo typecheck+lint+test+build` on `main` → `fly deploy`.
   Rollback = `fly releases` + redeploy the previous image reference. No feature flags — a
   bad merge rolls back, it does not get flagged off (BLUEPRINT directive 8).

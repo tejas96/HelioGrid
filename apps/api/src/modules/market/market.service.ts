@@ -3,11 +3,13 @@ import {
   type MarketPack,
   nextEnvelope,
   type PackEnvelope,
-  packFromEnvelope,
+  payloadOf,
   phoneReach,
+  readStoredPack,
   tenantReadablePayload,
 } from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackAdminRepository } from './market.admin.repository';
 import { MarketPackReferenceRepository } from './market.reference.repository';
@@ -28,7 +30,10 @@ export class MarketPackService {
   constructor(
     @Inject(MarketPackReferenceRepository) private readonly packs: MarketPackReferenceRepository,
     @Inject(MarketPackAdminRepository) private readonly publisher: MarketPackAdminRepository,
-  ) {}
+    @Inject(PinoLogger) private readonly logger: PinoLogger,
+  ) {
+    this.logger.setContext(MarketPackService.name);
+  }
 
   /**
    * Every authored market's current pack, whole, for the server's own use — the market a phone
@@ -40,7 +45,7 @@ export class MarketPackService {
     const envelopes = await Promise.all(codes.map((code) => this.packs.currentEnvelope(code)));
     return envelopes
       .filter((envelope): envelope is PackEnvelope => envelope !== null)
-      .map(packFromEnvelope);
+      .map((envelope) => this.stored(envelope));
   }
 
   /**
@@ -65,14 +70,31 @@ export class MarketPackService {
   async current(marketCode: string): Promise<MarketPackRead | null> {
     const envelope = await this.packs.currentEnvelope(marketCode);
     if (envelope === null) return null;
-    const { version } = packFromEnvelope(envelope);
+    const pack = this.stored(envelope);
     return {
       market: envelope.market,
       revision: envelope.revision,
       publishedAt: envelope.publishedAt,
-      version,
-      ...tenantReadablePayload(envelope.pack),
+      version: pack.version,
+      // The PARSED pack's keys, never the raw row's: what a tenant reads is what was validated.
+      ...tenantReadablePayload(payloadOf(pack)),
     };
+  }
+
+  /**
+   * The stored row, parsed whole (`T-FCORE-017`). A malformed row throws, so the request answers
+   * `INTERNAL`; a property this code does not declare is dropped, never served, and logged, so a
+   * row newer than the code during a rolling release reads — and says what it skipped.
+   */
+  private stored(envelope: PackEnvelope): MarketPack {
+    const { pack, dropped } = readStoredPack(envelope);
+    if (dropped.length > 0) {
+      this.logger.warn(
+        { market: envelope.market, revision: envelope.revision, dropped },
+        'the stored pack carries properties this code does not declare',
+      );
+    }
+    return pack;
   }
 
   /**
