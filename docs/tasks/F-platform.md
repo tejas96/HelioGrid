@@ -640,6 +640,9 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 - **F6-24** (P0) — **Search is never billing-gated.** In every billing state, search works — it is in the soft-block matrix's always-on set. *(Re-pulled verbatim 2026-08-07: the sweep cut this row's offline half — "Search works offline over synced data"; "Offline, the box searches the device's synced cache with the standard staleness indication (`F4-02`)" — which cited a row that no longer exists. The task title lost "offline reads" with it.)*
 - **F6-25** (P1) — **Search finds records, not analytics:** results are records the searcher can open — no computed answers, no cross-record aggregation, no natural-language querying in v1 (§5). Result ranking is plain (exact identifier matches — phone, proposal number — first; then name/city matches); no engagement tuning.
 
+**Depends on:** the lead record — the first `M02` task that authors it, in block 3 (the `M02` tickets do not yet say which one carries the `lead` table; its `/start` names it here) · `T-M02-015` (the junk state `F6-23` searches for). Each later module adds its own search target when its slice begins (Law 9): proposals (`M06`, block 8) for the alias, projects (`M08`), customers and sites, catalog items, people.
+**Ruled at `/start`:** **the owner moved this task to block 3, out of block 0.** In block 0 no searchable table exists — today's schema is identity, tenancy, settings, invitations, notifications, audit and the market pack — so every done-when line would run over empty results and prove nothing, and building the engine ahead of its first target is a contract for a need no slice has yet. Recorded in `docs/build-order.md`'s block table; `T-SHELL-002`, the screen that calls it, is recorded there as waiting on it.
+
 **DONE WHEN:**
 
 - Given a searcher with any scope set, when results render for each entity type, then every result is a record their scopes let them open, and none other (F6-21).
