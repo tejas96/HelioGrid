@@ -215,6 +215,9 @@ This file dispositions every requirement row of the suite's four core documents 
 
 *Deferred:* parked by owner ruling until the tenant base reaches real-customer scale — roughly 10–20 paying customers, where a full privacy build earns its cost; `T-FCORE-010` proceeds next.
 
+**Depends on:** the owner unparking it (the *Deferred* note above) · the customer record (`M02`, block 3), which erasure anonymises · the consent records of the calling module (`M07`, block 6), which `F1-58` exports.
+**Ruled at `/start`:** **the owner kept this task parked and moved it to block 8**, the last V1 block, so the build line stops offering it as ready; it builds when the owner unparks it.
+
 **DONE WHEN:**
 
 - Given a market pack presented for launch, when it is validated, then its `pack.data-rights` key carries the jurisdiction's determination — roles, residency, rights map, breach duties and required consent records (F1-23, with F1-05).
