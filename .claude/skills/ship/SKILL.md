@@ -10,6 +10,13 @@ everything in it is written for a five-minute read. This skill raises the PR; th
 
 ## 1. Gates, once
 
+**Bring the branch level with `main` first.** A task takes hours and `main` moves under it:
+`git fetch origin`, then `git rev-list --count HEAD..origin/main`. Anything above zero is merged in —
+`git merge origin/main`, never a rebase and never a force-push — before any gate runs, so every
+diff against `origin/main` below, the stamp and `verify:clean` all read the tree that will
+actually merge, and the PR never opens `BEHIND`. A merge that changes the runtime digest means the
+stamp is stale and `/verify` runs again; a merge of docs alone leaves it standing.
+
 **The stamp first (`M113`).** The task's section carries `**Verified:** digest …` and
 `scripts/verify-digest.sh` prints the same twelve characters for the working tree; missing or
 stale means `/verify` runs NOW, in full, before any gate. The author's own driving never stands in
