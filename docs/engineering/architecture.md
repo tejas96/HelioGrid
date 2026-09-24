@@ -235,7 +235,8 @@ common/db (fenced by admin-pool-fenced — db provides the factory, this app bui
 pair). Allowed deps: contracts, domain, db, env, config. Platform scope: backend only
 (Node). Belongs: the HTTP edge, its repositories, and `src/scripts/` commands that drive a
 service. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
-boundary tag); raw process.env (env owns it). Extension point: one Nest module per contract router,
+boundary tag); raw process.env (env owns it); a timer or any periodic job — every Fly
+instance would run it, so it lives in apps/worker as a Temporal Schedule. Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
 ### apps/worker — Temporal workflows and activities
@@ -251,7 +252,8 @@ SIGTERM), and one folder per business area under src/modules/<area>/ holding
 worker refuses to boot without it. Held by: workflows-are-deterministic ·
 workflows-take-no-core-modules · temporal-client-fenced · no-bullmq. Allowed deps: contracts, domain,
 db, env, config, adapters. Platform scope: backend only (Node, no HTTP surface). Belongs: work that must
-outlive a request. Never: HTTP handlers (api owns the edge); frontend layers (held by
+outlive a request, and every periodic job — each one a Temporal Schedule, because Temporal
+starts a schedule once for the whole cluster however many machines run. Never: HTTP handlers (api owns the edge); frontend layers (held by
 the `app-worker` Turbo boundary tag — allows contracts/domain/db/env/config/adapters).
 Extension point: one folder per business area under `src/modules/<area>/`, exporting a
 `TemporalWorkerRegistration` that `worker.module.ts` composes — a second area is one line at

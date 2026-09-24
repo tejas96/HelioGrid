@@ -75,6 +75,14 @@ export const NOTIFICATION_TYPE_GROUPS = [
 export type NotificationTypeGroup = (typeof NOTIFICATION_TYPE_GROUPS)[number];
 
 /**
+ * Which read state the centre lists (`F6-17`): everything, or only what is still unread. Read
+ * state moves one way (`F6-07`), so there is no "read only" view to offer — a read item is
+ * simply one the reader has already seen.
+ */
+export const NOTIFICATION_READ_FILTERS = ['all', 'unread'] as const;
+export type NotificationReadFilter = (typeof NOTIFICATION_READ_FILTERS)[number];
+
+/**
  * The platforms a push can be addressed to (`F6-13`). Closed: a handset runs one of these, and
  * the transport needs to know which to shape its payload. Mirrored as a pgEnum (`M17`).
  */
