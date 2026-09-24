@@ -2,7 +2,7 @@
 
 Everything a rep needs before a call: header, timeline, sections, and the Call/Message/Log/Book/Design actions.
 
-**Module:** M02 · CRM & leads · **Personas:** Sales Executive (highest-frequency — opens it before dialling, on a call, on a doorstep), Sales Manager, EPC Owner, Survey Engineer and Design Engineer (assigned-scope readers), Sales Rep, Marketing (own captures until triage) · **Context of use:** mobile-first — lead detail, qualification, activity logging, snooze and disqualify happen on a call or on a doorstep, one-handed. Web carries full parity (`F7-30`).
+**Module:** M02 · CRM & leads · **Personas:** Sales Executive (highest-frequency — opens it before dialling, on a call, on a doorstep), Sales Manager, EPC Owner, Survey Engineer and Design Engineer (assigned-scope readers), Marketing (own captures until triage) · **Context of use:** mobile-first — lead detail, qualification, activity logging, snooze and disqualify happen on a call or on a doorstep, one-handed. Web carries full parity (`F7-30`).
 
 **One job:** know this lead well enough to make the next call, and record what happened.
 **Order of attention:** 1 who this is, where the deal stands, and the five acts · 2 what needs me on this lead — a possible duplicate, a snooze, a draft to resume, a visit, two proposals · 3 the six qualification facts · 4 the timeline · 5 the records — site, designs, proposals, tasks, files, contacts.
@@ -14,11 +14,14 @@ row below is a field, a chip, an act or a row that leads somewhere.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| Name, phone, city, value, stage, owner (`M02-32`) | data · status | the header: the name as the title, phone and city as its line, the stage as the ONE status chip, owner and value as label–value. The value carries its tier mark (`F8-23`) |
+| Name, phone, city, value, stage, owner (`M02-32`) | data · status | the header: the name as the title, phone and city as its line, the stage — one of `M02-41`'s eight words — as the ONE status chip, owner and value as label–value. The value carries its tier mark (`F8-23`) |
+| The language to call in (`M02-37`) | data | the customer's preferred language as one label–value beside owner and value |
+| Acts this person does not hold (`F2.M02.add-edit-leads`, `F2.M02.book-site-visit`, `F2.M02.lead-state-changes`, `F2.M02.assign-leads`) | — | behaviour: an act the person does not hold is absent, never greyed. A Survey or Design Engineer reads this lead in assigned scope and does not capture, assign or close it (§2) |
 | A missing name or city (`M02-03`) | data | a named gap in the value's place, tappable to fill. Never a blank, never a sentence |
 | Call · Message · Log activity · Book visit · Create design (`M02-32`) | action | one action row: `Call` is the primary act, the other four are secondary. No sentence |
 | The customer must not be called (`M02-37`) | status | a chip on the header. What the call act then does is `modules/M07`'s gate; where this screen shows a refusal it is ONE line naming why — never a greyed act with no reason (`N4`) |
-| Snoozed (`M02-51`) | status · action | the chip with its wake date, and ONE act to wake it now |
+| Snoozing (`M02-51`) | action | a first-class act: a sheet with ONE required date. The confirm's one line says the date unlocks it. Never a note in someone's head |
+| Snoozed (`M02-51`) | status · action | the chip reading `Snoozed till …` with its wake date, and ONE act, `Wake up now` |
 | A possible duplicate (`M02-66`) | status · more detail | a chip, and a row naming the other record; the three-choice sheet is `SCR-M02-01`'s, opened on entry |
 | Came from a referral, or referred others (`M02-16`) | data | a `Came from` link on the referred lead; a `Referred` row on the referrer |
 | A proposal draft to resume (`M06-25`) | more detail | a row carrying the draft's progress, leading to the builder |
@@ -103,6 +106,7 @@ Reached from: the Lead Inbox (SCR-M02-02 — everything beyond triage waits for 
 - **book-visit-sheet** — date, time, surveyor, confirmed address; deliberately thin: four inputs, one confirm, one composed message (M02-46, M02-47).
 - **message-compose-fallback** — no connected channel: ready-to-paste text (plus file where a document is involved); no delivery state ever claimed (M02-33).
 - **message-delivery-states** — connected transactional channel: the channel's delivery states shown honestly (M02-33).
+- **snooze-sheet** — the snooze act's sheet: one mandatory wake-up date; the confirm is unavailable until it is set (M02-51).
 - **snoozed-chip** — chip reading "Snoozed till …"; wake is mandatory-dated, "Wake up now" available (M02-51).
 - **timeline-filtered** — the single append-only stream filtered by kind; chronological, never editable (M02-35).
 - **proposal-draft-chip-n-of-11** — "Proposal draft — 7/11" resumable from the lead (M06-25).
@@ -123,6 +127,7 @@ Design at a mature lead: a timeline of **dozens to hundreds of append-only entri
 - **Header value** — the lead's estimated value is a forecast input, never revenue; it renders as a weighted-pipeline input wherever shown (`F8-23`).
 - **Monthly bill** (qualification) — tenant currency (`F1-07`), data not a note, renders through the money implementation (`F3-20`).
 - **Obvious shading** and other call-captured qualification facts — provenance tier `assumed`; never rendered as a measurement (`F8-02`).
+- **Names are data.** Customer and contact names and free-text notes are never translated (`F3-08`); timeline entries render in the reader's language while the record stays language-independent (`F3-06`).
 - **Timeline timestamps and capture times** — capture time preserved for display and audit while server apply order decides ordering (`F4-19`); tenant timezone (`F3-22`).
 - **"Snoozed till …" wake date** — mandatory, wake at 09:00 tenant-local (M02-51).
 - **Visit date and time** — booking facts; arrival/departure times are field-recorded facts from M09 (M09-28).
