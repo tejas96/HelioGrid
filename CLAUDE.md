@@ -70,8 +70,8 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | `/start` | task review and explain, before code |
 | `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
 | hooks · `.claude/rules/` · `pnpm check:all` | implement: the guards, loaded by path or run by hand |
-| `/verify` → `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches |
-| `/ship` → `arch-reviewer` for a structural diff | owner review: gates, review, commit on a yes, push, PR body |
+| `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches, over seeded data |
+| `/ship` → `break-it-reviewer` for every runtime change · `arch-reviewer` for a structural diff | owner review: gates, a second actor's review, commit on a yes, push, PR body |
 
 ## 4. Stop and ask the owner before
 
