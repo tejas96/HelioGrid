@@ -49,10 +49,10 @@ Decided 2026-08-15 after inspecting both codebases.
 
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (16) · `F-platform` (27) |
+| **0** | **Foundations** | 0 | `F-core` (16) · `F-platform` (26 of its 27 — see below) |
 | **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
-| **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) |
+| **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) · `F-platform` → `T-FPLAT-020` |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
@@ -64,6 +64,12 @@ denial sheets — sits with the other shell rows in the screens register, becaus
 It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
 so designing it in block 1 means inventing the states and the destinations `M12` has not defined
 yet. The block-1 count of 23 already excludes it and the block-2 count of 5 already includes it.
+**Global search builds in block 3, not block 0.** `T-FPLAT-020` searches leads, proposals,
+projects, customers, sites, catalog items and people, and in block 0 none of those tables exists:
+every done-when line — scope, the "quote" alias, junk leads, a halted tenant's results — would run
+over empty results and prove nothing. It builds once the lead record lands, with leads as its
+first search target, and each later module adds its own target when its slice begins (Law 9).
+
 `python3 scripts/next-screen.py` is the sequence made executable — run it rather than reading this
 table against the screens register by eye.
 
@@ -157,6 +163,7 @@ screen. A record here keeps the order honest (`M126`); it does not settle the ru
 | `T-M01-016` | 1 | `T-MS-201` | 7 | each path opens from "the studio's picker", and Enter specs manually on a selected item |
 | `T-M01-019` | 1 | `T-M06-027` | 8 | "generate a proposal: each appears", and the order "the builder's timeline step opens with" |
 | `T-SHELL-002` | 1 | `T-M02-015` | 3 | "search the junk lead's phone", with the lead inbox and every queue omitting it |
+| `T-SHELL-002` | 1 | `T-FPLAT-020` | 3 | every search step — the engine it calls builds in block 3, once the lead record lands |
 
 ---
 
