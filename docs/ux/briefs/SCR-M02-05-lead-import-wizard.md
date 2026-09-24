@@ -22,11 +22,13 @@ number.
 | Columns that map to nothing | status | a count chip; they are listed in the report. No sentence of warning |
 | The counts before anything is imported (`M02-19`) | data · action | the filter chips ARE the counts — all rows · new leads · duplicates by phone · cannot be read — and each opens the rows behind it. The source's own shape, rows and duplicates by phone, is the region's caption. One provenance label heads the region (`F8-07`) |
 | Two rows in the file share a number | data | counted with the duplicates; each such row names the row it matches |
-| What happens to the duplicates (`M02-20`) | action | ONE choice control over the duplicate set: skip them, the default, or log each as an enquiry on its existing lead. Creating one anyway is per row, from that row's sheet — `SCR-M02-01`'s sheet, with its reason field |
+| What happens to the duplicates (`M02-20`) | action | ONE choice control over the duplicate set: skip them, the default, or log each as an enquiry on its existing lead. Creating one anyway is per row, from that row's sheet — `SCR-M02-01`'s sheet unchanged, its third choice *Keep both leads* with its reason field (M02 §M02.2) |
+| Who may keep a duplicate (`F2.M02.dedupe-override`) | — | behaviour, no words: the per-row *Keep both leads* is there only for a person who also holds the override; for anyone else it is absent, never greyed |
 | Import (`M02-18`) | action | `Back`, and the import act carrying its number. No line beside it — the chips above already say the rest |
 | Progress (`M02-21`) | status | the count done of the total, and ONE line: the person may leave and it keeps running |
 | The connection dropped mid-import | status | ONE line on return: how far it got |
-| The report (`M02-21`) | data | label–value rows — landed, skipped as duplicates, logged as enquiries, rejected, columns not imported — then the rejected rows as a list: the row and its named reason. `Download report`. That landed rows stay is shown by the landed count, not by a sentence |
+| The report (`M02-21`) | data | headed by the import's own record — the file name, who ran it, when — then label–value rows — landed, skipped as duplicates, logged as enquiries, rejected, columns not imported — then the rejected rows as a list: the row and its named reason. `Download report`. That landed rows stay is shown by the landed count, not by a sentence |
+| Where the landed leads went (M02 §M02.4) | action | they wait unassigned in the inbox with source = file import: ONE act, `Open the inbox`. No sentence |
 | Every row failed (`F8-36`) | error | one banner: no lead was created, and the reasons as the same list |
 | The file cannot be read | error | one banner — what is wrong and what fixes it |
 
@@ -77,6 +79,7 @@ Design at the source's own case: **a file of 400 rows containing 90 duplicates b
 - **Progress figure** while the job runs (M02-21).
 - **Report counts** — how many landed, how many skipped, every rejected row with its reason: honest, exact, no success reported that was not achieved (`F8-36`).
 - Counts render through the shared number implementation (`F3-19`); imported phone numbers are normalised to the pack specification (`F1-21`).
+- **Imported names, cities and free text are data** and are never translated (`F3-08`); wizard copy, the mapping step's field names, the counts' labels and every report reason are (`F3-01`).
 
 ---
 
