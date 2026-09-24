@@ -6,13 +6,14 @@ import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
+import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
  * schema parity (live), tenant-id-on-the-wire (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static,
- * F2-25), brand-registry (static, M125).
+ * F2-25), brand-registry (static, M125), template-keys-mirror-f6 (static, F6-26).
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -21,6 +22,7 @@ async function main() {
   runFormatInvariants(); // static — the format layer needs no database either
   runMatrixMirrorsF2(); // static — the permission matrices equal the PRD, cell for cell
   runBrandRegistry(REPO_ROOT); // static — every brand is enrolled with the cast check
+  runTemplateKeysMirrorF6(); // static — the message-template keys equal F6-26's exhaustive list
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {

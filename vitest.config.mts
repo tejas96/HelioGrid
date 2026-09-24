@@ -104,6 +104,7 @@ export default defineConfig({
         'packages/domain/src/commerce/trial.ts': COMPLETE,
         'packages/domain/src/format/**': COMPLETE,
         'packages/domain/src/market/**': COMPLETE,
+        'packages/domain/src/messaging/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,
         'packages/domain/src/notifications/**': COMPLETE,
         'packages/domain/src/pricing/**': COMPLETE,
