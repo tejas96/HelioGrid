@@ -326,7 +326,7 @@ a design must never render an internal id as the step indicator.
 
 | SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from | Brief reviewed |
 |---|---|---|---|---|---|---|---|---|---|
-| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | planned | — | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` | — |
+| SCR-M08-01 | **Project Board** | P0 | 8 | `docs/ux/briefs/SCR-M08-01-project-board.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-01+Project+Board+v3.dc.html | `02-personas:shell-projects-board`; `M13-dashboards-and-reporting:projects-home`; `M08-projects:shell-portfolio-dashboard` | f730451f3ec5 |
 | SCR-M08-02 | **Project Detail** | P0 | 7 | `docs/ux/briefs/SCR-M08-02-project-detail.md` | V1 | planned | — | `M11-payments-and-collections:shell-project-money-block` | — |
 | SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | planned | — | — | — |
 | SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | planned | — | `F2-roles-and-permissions:installation-checklist` | — |

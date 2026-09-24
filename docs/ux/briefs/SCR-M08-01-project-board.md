@@ -22,7 +22,9 @@ sentence explaining their absence.
 | Provenance (`F8-07`) | honesty label | one label at the foot of the board serves the figures that share it — never a key above them. A money figure that cannot be reconciled carries its own provisional mark (`F8-12`) |
 | Moving a stage (`M08-14`) | action | a drag at 1536 and an explicit move act at 375 (`N1`). The confirm's ONE line names the target stage by its pack label. A move backwards uses the same confirm, with no warning paragraph |
 | What a forward move does (`M08-15`, `M08-36`) | data | two label–value rows in the confirm, read before the act: the tranche that becomes due, by its schedule label and amount (none when the stage has no tranche), and that the customer's progress link will show the new stage. Nothing is sent by the move; asking for the money stays the coordinator's act on the project (`M08-38`). A backward move shows neither row |
-| The next stage is skippable for this project | action | the confirm offers the following stage as its second choice |
+| The next stage is skippable for this project (`F1-35`, `F1-51`) | action | the confirm offers the following stage instead, and moving through the skippable one stays a second choice. In India the one skippable stage is the pack's incentive claim, for commercial and no-incentive projects |
+| The next stage is Handed over (`M08-32`, `M08-46`) | action | the confirm's act starts the handover (SCR-M08-06) instead of moving the card: a project reaches Handed over only through it |
+| The centre action (`F7-22`, `M02-06`) | action | *Add lead* on this home, at 375 on the arc and at 1536 as the head's primary (owner ruling 2026-09-24) |
 | The move has not reached the server | status | a light pending mark on the card, in place. Never drawn as moved before the server says so |
 | Setting a blocker (`M08-20`, `M08-21`) | action | a sheet: the party as a four-way choice of the pack's labels, a reason field, an optional expected-until date. An unknown date reads as a named gap, never as an empty date. Where the party is the utility, the sheet names the utility the site belongs to (`M08-28`), read-only |
 | What the customer sees of a blocker (`M08-24`, `M08-25`, `M08-29`) | action line | ONE line at the sheet's act: the customer's link shows who is waited on and the dates — never the reason typed here |
@@ -36,9 +38,11 @@ sentence explaining their absence.
 
 ## Arrangement
 
-- **375.** One column, chosen by a stage selector, its cards oldest first. A composed block is a row.
-- **1536.** The full board: nine columns that scroll sideways INSIDE the board's own region, each
-  column scrolling its own cards. This is the region that proves the portfolio's volume.
+- **375.** One column, chosen by a stage selector that opens on *All stages*: every project, oldest first, each
+  card naming its stage; picking a stage narrows it. A composed block is a row.
+- **1536.** Every stage at once on one band — its count and its longest wait, *All stages* first — above one
+  ranked list of the chosen view, which scrolls inside its own region and proves the portfolio's volume
+  (owner ruling 2026-09-24). Grouping by party is the Operations home's (`PS-34`), not this screen's.
 
 ## Entry & exit
 
@@ -59,7 +63,7 @@ The ladder itself is a product constant, not tenant configuration (`M13-10`).
 
 ### From docs/prd/modules/M08-projects.md
 
-- **M08-10** (P0) — **The board is won deals as cards, columned by stage.** Each card carries: customer · system size · value · **days in the current stage** · **payment collected against payment due** · the blocker flag with the party being waited on. Desktop shows the full board; **mobile shows one column with a stage filter**. Cards are ordered oldest-first within a column so what has waited longest is what is seen first.
+- **M08-10** (P0) — **The board is won deals as cards, columned by stage.** Each card carries: customer · system size · value · **days in the current stage** · **payment collected against payment due** · the blocker flag with the party being waited on. Desktop shows every stage at once — each with its count and longest wait — above one ranked list of all stages or the chosen stage (owner ruling 2026-09-24); **mobile shows one column with a stage filter**. Cards are ordered oldest-first within a column so what has waited longest is what is seen first.
 - **M08-11** (P0) — **Days-in-stage is the board's metric — the only one.** Not percentage complete, not a burndown, not a progress bar, not a health score. *"Days-in-stage is the only metric that matters on the board … 'this one has been in inspection for 34 days' is the whole insight."* Every other number on a card is a fact (size, value, collected, due), never a computed judgement.
 - **M08-12** (P0) — **Aged cards surface rather than sink.** A project sitting unusually long in one stage rises — to the top of its column, and into the owner's and Operations' views — carrying its days-in-stage and its blocker if it has one. Ageing is **relative**: oldest-first ordering and the days figure itself, with no invented threshold constant anywhere in this module; any notification threshold on top of it is `foundations/F6`'s, and the portfolio aging report is `modules/M13`'s.
 - **M08-14** (P1) — **A stage move is recorded on the timeline with its actor and its timestamp, and it is never silently reversible.** Moving a project backwards is allowed — real installations go backwards — and is recorded as its own event with the same weight as moving forward, so the days-in-stage history stays truthful rather than being rewritten. _(non-UI half, build-side: online-first write; append-only actor-stamped timeline event; backward moves recorded with equal weight, history never rewritten — for awareness, not for drawing)_
@@ -73,6 +77,11 @@ The ladder itself is a product constant, not tenant configuration (`M13-10`).
 - **M08-37** (P0) — **Every project surface that shows money shows collected against due, and never a stale figure.** The board card, the detail screen's payments block and the portfolio views read the same computed values as the payments screen itself — one figure everywhere (`F8-24`) — recomputed before display (`F8-12`). A projection is never shown here as an amount owed (`F8-23`).
 - **M08-39** (P0) — **An unpaid due tranche is visible and chased — and never blocks the customer's progress link.** It surfaces on the board card, on the project, and on the owner's dashboard (`modules/M13`), and the rep is prompted to chase the person. The product rule is absolute and this module states it because this is where the temptation lives: ***"never block the customer's progress link over money — chase the person, do not punish the view."*** No stage, document, link or handover behaviour in this module may be made conditional on payment.
 - **M08-53** (P1) — **Cancellation preserves history: the timeline, documents, checklist and receipts of a cancelled project stay readable.** Money already received is not unwound by the cancellation itself — reversal is `modules/M11`'s append-only mechanism (a reversing entry, never an edit), and the project simply stops counting as revenue from the moment it is cancelled.
+
+### From docs/prd/foundations/F1-global-market-framework.md
+
+- **F1-35** (P0) — The canonical incentive-claim stage **applies in IN**, labelled per F1-51, and is **skippable** for commercial projects and for projects with no incentive.
+- **F1-51** (P0) — **IN stage and blocker labels** for the canonical machines: `utility_inspection` → **"DISCOM inspection"**; `incentive_claimed` → **"Subsidy claimed"**; blocker party `utility` → **"DISCOM"**. Skippable-stage set: `incentive_claimed` (per F1-35). DISCOM names, like brand names, are never translated.
 
 ### From docs/prd/modules/M13-dashboards-and-reporting.md
 
@@ -94,6 +103,8 @@ Screen-specific states from the slice:
 - **mobile-single-column-filter / mobile-single-column (stage filter)** — the board on a phone: one column with a stage filter.
 - **stage-move-confirm** — the move confirm carrying the target stage's pack label.
 - **skippable-stage-offer** — where the pack marks the next stage skippable and this project does not need it, the move offers the following stage instead.
+- **handover-start** — where the following stage is Handed over, the move's act starts the handover (M08-32, M08-46).
+- **cancelled** — after the cancel confirm: the card leaves the board, and one line names it and leads to the project list (N8's after-state).
 - **move-waiting-server** — the move waits visibly until it reaches the server.
 - **set-blocker-sheet** — pick the party (the pack's four labels and nothing else), give the reason, optionally an expected-until.
 - **blocker-flagged / blocker-flag** — the card's blocker flag names the party being waited on.
