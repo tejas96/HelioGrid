@@ -223,8 +223,16 @@ BEFORE  DESIGN: SCR-… → PENDING
 AFTER   DESIGN: SCR-… → <link>
 ```
 
-Both get the same link. Ignore any hit inside `docs/tasks/README.md` — that file only documents
-what a `DESIGN:` line looks like.
+Both get the same link: the screen's main (Mobile) board. **When the screen has more than one board**
+(States, Desktop States, Language …), the task's `DESIGN:` line lists every other board after the main
+link, so whoever builds the screen reaches all of them in one click. The register keeps the one main
+link:
+
+```
+AFTER   DESIGN: SCR-… → <main link> · also: States <link> · Language <link>
+```
+
+Ignore any hit inside `docs/tasks/README.md` — that file only documents what a `DESIGN:` line looks like.
 
 **Edit 3 — only if the brief said "designer decides".** If you made a choice the brief left open,
 write it into the brief in the section it belongs to, so the next screen inherits it. An unrecorded

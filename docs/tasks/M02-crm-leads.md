@@ -64,7 +64,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M02-32 (P0), M02-34 (P0), M02-39 (P0), M02-42 (P0)
-**DESIGN:** SCR-M02-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+Mobile.dc.html
+**DESIGN:** SCR-M02-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+Mobile.dc.html · also: States A https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+States+A.dc.html · States B https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+States+B.dc.html · Desktop States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+Desktop+States.dc.html · Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-04+Lead+Detail+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-04-lead-detail.md`; they are the specification.
 **DONE WHEN:**
 
@@ -79,9 +79,9 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-005 · Lead Import Wizard screen
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M02-18 (P0), M02-19 (P0), M02-20 (P0), M02-21 (P0)
-**DESIGN:** SCR-M02-05 → PENDING
+**DESIGN:** SCR-M02-05 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-05+Lead+Import+Wizard+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-05+Lead+Import+Wizard+-+States.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md`; they are the specification.
 **DONE WHEN:**
 

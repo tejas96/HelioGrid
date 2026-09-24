@@ -379,7 +379,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Status:** designed
 **Why:** The owner browses their market's panels and inverters beside their own SKUs in one list, sets their price and tax on a platform item, hides what they never stock, publishes a named release and keeps every past price-book version readable; without it the studio and the builder resolve against nothing and a rate edit rewrites history.
 **PRD rows:** M01-32 (P0), M01-34 (P0), M01-35 (P0), M01-37 (P0), M01-38 (P0), M01-43 (P0), M01-48 (P0)
-**DESIGN:** SCR-M01-15 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html
+**DESIGN:** SCR-M01-15 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+States.dc.html · Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Language.dc.html
   · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+States.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-15+Catalog+Settings+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-15-catalog-settings.md`; they are the specification.
@@ -402,7 +402,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Status:** designed
 **Why:** A rep mid-proposal adds the panel the supplier just quoted — by typing it, by dropping the datasheet PDF, or through the spreadsheet path — and it is selected in place before the customer notices a pause; without it a missing product means leaving the builder for settings, or waiting on the platform.
 **PRD rows:** M01-36 (P0), M01-39 (P0), M01-40 (P0)
-**DESIGN:** SCR-M01-16 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html
+**DESIGN:** SCR-M01-16 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+States.dc.html · Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Language.dc.html
   · states → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+States.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-16+Add+Catalog+Item+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-16-add-catalog-item.md`; they are the specification.
@@ -421,7 +421,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Status:** designed
 **Why:** The owner drops the supplier's price list in, sees how many rows match the platform book, how many are new and how many need attention, fixes those in the grid and watches the import run with the report kept to reopen; without it hundreds of products are typed one by one.
 **PRD rows:** M01-41 (P0)
-**DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html
+**DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html · also: Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
 **Data model:** none — reads `catalog_import_job` authored by `T-M01-030` (migration 0009) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0007); the uploaded file is the one `file` table's row (no task id yet).
