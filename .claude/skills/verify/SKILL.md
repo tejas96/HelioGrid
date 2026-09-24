@@ -7,8 +7,10 @@ description: Run end-to-end QA after development — derive the blast radius, pl
 
 Green gates prove the code compiles and the boundaries hold. They never prove a screen works.
 
-Everything this run produces lives in the session scratchpad and is DELETED when it finishes.
-The durable record is the `## Verification` section `/ship` puts in the PR.
+Everything this run produces lives in the session scratchpad. The plan and the
+`verdicts-*.jsonl` files stay there until `/ship` has had `break-it-reviewer` read them, and
+`/ship` deletes them; everything else goes when this run ends. The durable record is the
+`## Verification` section `/ship` puts in the PR.
 
 ## 1. Blast radius
 
@@ -83,9 +85,33 @@ Always-on core regardless of radius: a cross-tenant read returns 404 · money re
 the currency's minor unit · an unauthenticated request to a protected route is rejected. **Each
 is proven ON THE WIRE by the agent** — a second company's session driving the route — and a unit
 test at the repository does not satisfy it: the route, the guard and the filter are the surface
-a person meets, and the repository is not. Where the wire cannot be driven with data — no route
-writes the row yet — the step is recorded `inconclusive: no emitter`, named in the report as the
-gap it is, and never quietly replaced by the unit test's verdict.
+a person meets, and the repository is not.
+
+**Seed the data the steps need — at test time only.** A step over an empty list, a zero count or
+two empty companies proves nothing: a filter, a bound or a tenant predicate that was never applied
+reads identically. Where no route writes the row yet, the plan carries a SEED: a one-off command,
+run from `apps/api` and gone when it exits, that calls the module's OWN writer — never SQL by hand,
+never a file added to the repo:
+
+```bash
+pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
+  const { recordNotification } = await import('./src/modules/notification/notification.repository.ts');
+  const { openPools } = await import('./tests/support/fixture.ts');
+  const pools = openPools();
+  await pools.admin.db.transaction((tx) => recordNotification(tx, { /* one row */ }, quietHours));
+  await pools.close();
+})()"
+```
+
+The seed writes into the run's OWN fresh company, found by the id the sign-in step returned, and
+the cross-tenant step seeds BOTH companies so isolation is read over real rows. Only where no
+writer exists at all is a step recorded `inconclusive: no writer`, named in the report as the gap
+it is, and never quietly replaced by the unit test's verdict.
+
+**The plan is reviewed before it runs.** Dispatch `break-it-reviewer` in `plan` mode with the plan
+and the task's section. Every step it calls `vacuous` is rewritten until it can fail, and every
+done-when line it calls `missing` gets a step. The author wrote both the code and the plan; a step
+the author cannot imagine failing is exactly the one this catches.
 
 ## 4. Execute
 
@@ -170,7 +196,8 @@ make a failure disappear.**
 
 ## 9. Clean up, then report
 
-Delete the run's scratchpad files. Stop every process this run started — dev server
+Delete the run's scratchpad files except the plan and the `verdicts-*.jsonl` files, which
+`/ship` hands to `break-it-reviewer` and then deletes. Stop every process this run started — dev server
 (`preview_stop`), Metro, any emulator you booted; leave what was already running. Confirm
 `git status --short` shows nothing from the run.
 
@@ -194,3 +221,8 @@ digest is refused, so a fix after the run re-runs the failed steps and re-stamps
 rows and no runtime change — docs, ci, config — has no stamp and needs none. Never write the line
 by hand, never for a `smoke` run that should have been `full`, and never in place of the agents:
 the author driving the surfaces is not verification.
+
+**The hook reads a line the author writes, so a second actor checks it.** Every count in the stamp
+is copied from the `verdicts-*.jsonl` files, never typed from memory, and those files stay in the
+scratchpad: `/ship` hands them to `break-it-reviewer`, which refuses a stamp whose counts, digest
+or passes do not match what the agents recorded.

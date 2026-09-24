@@ -23,11 +23,18 @@ task is still ready from it before the go.
 3. The design the `DESIGN:` line links, for a screen task. No link means the screen is not
    designed, and a screen builds only after its module's screens are designed and verified.
 4. The worked example the task names, if any, in full — shape is copied from code, not described.
+5. For an engine task that a DESIGNED screen will call, that screen's export and decisions record:
+   a number or a vocabulary the drawing states (a horizon, a list of filter chips) is a fact the
+   engine must serve, and a ticket written before the drawing may disagree with it.
 
 A bug is a task whose rows are the report. Its first proof is the reproduction on the real
 surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
 ## 2. Review the ticket — assume it is wrong until checked
+
+**A question is open only after the docs are searched.** Memory, the hand-off and `deferred.md`
+are pointers, not facts: before calling any ruling open or bringing the owner options, grep
+`docs/engineering/` and `docs/tasks/` for it and name what was found, or that nothing was.
 
 A task is a ticket: Status · Type and Tier · Why · Requirements · Design · Data model · Contract ·
 Depends on · Out of scope · Done-when with one proof per line. A missing part is fixed before the

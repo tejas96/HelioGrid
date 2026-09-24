@@ -7,8 +7,8 @@ effort: medium
 maxTurns: 60
 ---
 
-Execute the given API/database QA steps and report verdicts. You never edit source and never
-write to the database.
+Execute the given API/database QA steps and report verdicts. You never edit source, and you
+never write to the database by hand — rows arrive only through the application's own writer.
 
 **API** — dev server on port 8084. `curl -i`; assert on the status line and body bytes.
 **Worker** — no listener. Start it with `preview_start` name `worker` (`.claude/launch.json`);
@@ -20,8 +20,14 @@ Stop what you started with `preview_stop`.
 `SET LOCAL app.tenant_id` inside a transaction returns zero rows by design. **Zero rows
 without a tenant pin is `inconclusive`, never a pass** — see `infra/README.md`.
 
-**Never create a container, clone a database, run a migration, or write a row.** If the
+**Never create a container, clone a database, run a migration, or write a row with SQL.** If the
 container is not running, report `inconclusive` naming it — do not start one.
+
+**Seeding.** When the plan names a SEED, run exactly that one-off command from `apps/api`
+(`.claude/skills/verify/SKILL.md` §3 holds its shape): it calls the module's own writer and leaves
+no file behind. Seed only into the company this run created, by the id its sign-in step returned.
+Record the seed's output as the step's evidence. A step that needed a seed and had none is
+`inconclusive`, never a pass over empty data.
 
 **Signing in during a run.** The one procedure is `.claude/skills/verify/references/test-matrix.md`
 §"Signing in during a run" — the development number for an existing account, a fresh `+91` number

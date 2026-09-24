@@ -52,6 +52,21 @@ and no more:
 > deleted: `<files>`. Design decisions to check, not re-litigate: `<the three things>`. Gates are
 > green — read, do not run.
 
+**Tier 2, the second actor, for EVERY runtime change.** The author wrote the code, the tests, the
+QA plan and the stamp, and a rule obeyed by the one actor it binds is still that actor's honesty.
+Dispatch `break-it-reviewer` in `diff` mode whenever the tree's runtime digest differs from
+`origin/main`'s. It breaks every new rule in the main folder and runs the test that guards it, so
+it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
+prompt is this and no more:
+
+> Mode `diff`. Task `<T-id>` in `docs/tasks/<module>.md`. Scratch directory `<path>` holds the
+> plan and the `verdicts-*.jsonl` files. New: `<files>`. The rules this change adds and the test
+> the author says guards each: `<rule → test file>`.
+
+A test it reports GREEN with its rule broken is fixed before anything else: it guarded nothing.
+A `stamp` finding means `/verify` runs again. When its answer is clean, delete the plan and the
+verdict files. No PR body is printed while a blocker or major from either reviewer stands.
+
 Fix every blocker and major at the root cause and re-run only the gates the fix touches. One review
 per change; do not re-review the review. A review that costs more than the change is the defect
 this tiering prevents.

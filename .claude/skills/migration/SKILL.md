@@ -20,6 +20,25 @@ other:
 - **`docs/engineering/forward-compat.md`** says what your module's FIRST migration must already
   satisfy so a later module is not forced into a refactor.
 
+**Then answer the design check, in writing, in the task's Data model block — before the first
+column.** A table or a column is cheap to add and never cheap to remove, so each one earns its place:
+
+1. **Is this fact stored already?** Grep `packages/db/src/schema/`. A fact has ONE home; a second
+   copy of a correct value still diverges.
+2. **Can it be derived from what is stored?** Then compute it and do not store it. Store a derived
+   value only for a named query that needs it, or as history that must not move.
+3. **Which query reads it?** Name the query and the index that serves it. No index without a query,
+   no query without an index, and `tenant_id` leads every tenant index.
+4. **How fast does it grow per tenant?** A table that grows without bound states its horizon, its
+   archive or its partition now — never "later".
+5. **Who writes it, and can it change or go?** The grants say exactly that and no more: a column
+   only one act may change gets a column-level `UPDATE` grant (`notification.read_at`), and a table
+   nobody deletes from gets no `DELETE`.
+6. **Can it be empty?** Nullable only where "unknown" or "not yet" is a real state. A closed set is
+   a pgEnum mirrored from the domain tuple (`M17`); an open, pack-validated set is `text`.
+
+A column for a need no row of the task names is refused (Law 9): the slice that needs it adds it.
+
 Then `packages/db/src/schema/*.ts` is the source; the SQL is generated FROM it, not the other way
 round. If you touched a pgEnum, run `/contract-change` in the same slice.
 

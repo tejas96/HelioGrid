@@ -33,7 +33,12 @@ What you look for:
    --name-status origin/main | awk '$1 ~ /^[DR]/ {print $2}'` over the working tree, so
    uncommitted work counts, then grep each path across `.claude/`, `docs/`, `scripts/`,
    `.github/`, config files and `.env.example` (Law 8's sweep).
-8. **Rot-prone content** — a hand-maintained count or "used by today" list, a rule appended beside
+8. **Schema design** — for a diff touching `packages/db`, read each new table and column against
+   `/migration`'s design check (`.claude/skills/migration/SKILL.md` §1) and the answers in the
+   task's Data model block: a fact stored twice, a value stored that could be derived, an index
+   with no query or a query with no index, unbounded growth with no stated horizon, grants wider
+   than the writes, a nullable column with no "unknown" state, a column no task row needs.
+9. **Rot-prone content** — a hand-maintained count or "used by today" list, a rule appended beside
    one that already says it, a mechanism claimed that does not exist. Judge the claim by reading
    it; never by running it.
 
