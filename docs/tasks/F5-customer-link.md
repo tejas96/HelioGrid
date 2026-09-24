@@ -54,6 +54,7 @@ bucket exactly once.
 - (F5-42 and MS9-25 carry no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted in `docs/ux/briefs/SCR-F5-01-link-proposal.md` is the binding criterion, and the two lines above state it.)
 - (`F5-48`'s PRD acceptance line — quoted above — is the **pre-ruling** wording, retained here for traceability: it covers the page-state half only. **That PRD line now carries the automatic-send half itself at `docs/prd/foundations/F5-customer-link.md` §F5.6's acceptance block, annotated to the owner ruling of 2026-08-04 — the gap this note was opened for is closed, and the send line above is now the PRD's own criterion rather than a supplement to it.** The reconciled `F5-48` requirement text quoted in `docs/ux/briefs/SCR-F5-01-link-proposal.md` and `M03-03` remain the binding criteria.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- Given a tenant with a saved brand colour and logo, when its customer-link page renders, then the page carries the tenant's mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the operator application renders nothing tenant-styled (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`, whose engine and save path are built). → proof: qa-web the link page shows the mark and the derived shade for a colour that fails contrast; the operator home for the same tenant shows neither
 
 **Settle at /start:**
 - Question acknowledgement persistence — ruled: every question the link has received is listed on the page in every phase with its acknowledgement state, for the life of the link, and the states are exactly submitted → received with no answered state (§F5.7's edge case has the page show the earlier question as received; the reply is a call the page never claims, `F5-53`; the rows are lead timeline entries and the link is permanent, `F5-22`, so nothing ages out).
@@ -330,6 +331,7 @@ defect set against it.
 - Given any figure on the document, Then it equals the studio's single computed value (MS9-28); the surface presents the specified content and consumes F5's framework for the rest (MS9-29).
 - MS9-22 carries no P0 acceptance line; its requirement text above is the specification (four-preset print order).
 - The engineering core moves as-is with its tests, and the ~1,000 passing POC tests port with the code as the regression net (ruling S12-1); the share ledger records zero automated coverage on these files, so the tests MS9-27 requires (T-F5-011) must cover this document surface too.
+- Given a tenant with a saved brand colour and logo, when its proposal document renders, then the document carries the mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the branding changes no number, label or disclosure (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`). → proof: the rendered document for a colour that fails contrast carries the derived shade and the mark, and its text layer equals the unbranded render's
 
 ---
 
