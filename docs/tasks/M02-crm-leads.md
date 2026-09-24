@@ -48,9 +48,9 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-003 · Leads List screen
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M02-40 (P0)
-**DESIGN:** SCR-M02-03 → PENDING
+**DESIGN:** SCR-M02-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-03+Leads+List+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-03-leads-list.md`; they are the specification.
 **DONE WHEN:**
 
