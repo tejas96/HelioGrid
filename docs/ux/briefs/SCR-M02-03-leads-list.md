@@ -13,20 +13,25 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| Each lead — who, where, its stage, its source (`M02-13`) | data · status | one row: name, city, the stage as its ONE status chip, the source as its mark. The owner's name joins the row for a person who sees more than their own leads |
-| Monthly bill, as data (`M02-40`) | data | a value on the row at 375 and a sortable column at 1536, in the tenant's currency. One provenance label heads the column (`F8-07`) |
+| Each lead — who, where, its stage, its source (`M02-13`) | data · status | one row: name, city, the stage — one of `M02-41`'s eight — as its ONE status chip, the source as its mark. The owner's name joins the row for a person who sees more than their own leads. A missing name or city is a named gap (`M02-03`) |
+| Which leads are on the list (`M02-58`) | — | behaviour, no words: every lead in scope that is in play. Disqualified and lost leads live in their win/loss lists and junk in search only, so none of them is here — not greyed, not counted. A snoozed lead is listed with no snooze mark: its chip lives on lead detail |
+| The order (`M02-23` is the inbox's; none is pinned here) | — | arrangement, no words: newest first by default; the monthly-bill sort is the only other sort |
+| Monthly bill, as data (`M02-40`) | data | a value on the row at 375 and a sortable column at 1536, in the tenant's currency. One provenance label heads the column (`F8-07`). A lead whose bill is not captured yet shows the named gap `No bill yet`, and sorts after every lead with a bill in both directions |
 | Sort and filter by monthly bill (`M02-40`) | action | in the filter bar: a sort, and a range filter. The active filter shows as a chip that can be cleared |
-| Dormant leads (`M02-52`) | status · action | a `Dormant` filter chip, and a `Dormant` chip on each such row. No sentence about the nightly sweep or the thirty days — that is Help |
+| Dormant leads (`M02-52`) | status · action | a `Dormant` filter chip, and a `Dormant` mark beside the stage chip on each such row — the state is orthogonal to the stage (`M02-41`), so the row keeps its stage. No sentence about the nightly sweep or the thirty days — that is Help |
 | What the list is showing (`F7-27`) | data | the table's caption: the scope and the filters in force |
 | Add a lead (`M02-06`) | action | the surface's primary act on web; on mobile it is the shell's centre action, so none is drawn here |
 | No leads in scope | teaching | at most two short sentences and ONE act |
+| A filter that matches nothing | — | ONE line naming the filters in force, and the act that clears them. Not the teaching empty state |
 | The list failed to load | error | one banner — what failed and what to do |
 
 ## Arrangement
 
-- **375.** A list of rows under a filter bar; the 200-lead volume scrolls in this one region.
-- **1536.** A table — name, city, stage, owner, source, monthly bill, last activity — with its caption,
-  the filters in a bar above it, and the primary add act in the page header.
+- **375.** A list of rows under a pinned head — title, count, filter bar; the 200-lead volume scrolls
+  under it in this one region.
+- **1536.** A table — name, city, stage, owner, source, monthly bill — with its caption, under a pinned
+  head holding the filter bar and the position (*1–20 of 200*), its column header sticky, and the
+  primary add act in the page header. No pager is drawn.
 
 ## Entry & exit
 
@@ -56,8 +61,7 @@ Design at a **200-lead list** — an established tenant's working pipeline, with
 ## Numbers carrying provenance
 
 - **Monthly bill** per lead — captured in the tenant's currency (`F1-07`), sortable and filterable as data; renders through the money implementation with the pack's symbol and grouping (`F3-20`, `F1-21`).
-- **Estimated value** where shown on a lead — a forecast input, never revenue.
-- **Dates/ages** shown on rows render through the shared date implementation on the tenant's timezone (`F3-22`).
+- **Names and cities are data** and are never translated (`F3-08`); stage names are a closed set, translated with a fixed canonical identity (`F3-01`, `F3-12`).
 
 ---
 

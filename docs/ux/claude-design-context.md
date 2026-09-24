@@ -191,6 +191,13 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     grid on the board and let every region span whole columns of it.
   - **Siblings match.** Cards in one row share one height and one inner structure — title, figure
     and chip on the same lines. A sibling that needs more leaves the row; it never makes it ragged.
+  - **Stacked rows match too.** Rows in one list share one inner structure — the same facts on the
+    same lines, the acts at one offset from the row's top on every row. Measure every row's height:
+    a row grows only by a line that it alone carries (a pending or an error line).
+  - **A long list keeps its bearings.** A list longer than one screen keeps its head — title, count,
+    filters — pinned, and a table keeps its column header sticky, while the rows scroll under them.
+    At 1536 it says where you are (*1–20 of 200*). A table's columns hold their widths whatever rows
+    are in view, and ticking a row never moves a column.
   - **One value edge per card.** Every value in a card or a panel sits on ONE edge — never some
     values after their labels and others at the right. Where any row carries its figure at the
     right — a meter, an amount — every row does: label left, figure right, and a row with no meter
