@@ -741,7 +741,9 @@ single primary to be chosen. Afterwards, the survivor's timeline carries the who
 history in one stream (M02-35), the tombstone resolves any old link to the survivor, and the
 deliberate-duplicate reason recorded at M02-12 stays visible as the reason the pair existed.
 The comparison covers the customer's own fields — name, city, customer type, preferred language
-and the contacts; every contact of both records survives, and only the primary is chosen. A named
+and the contacts; every contact of both records survives, and only the primary is chosen. One number is
+one contact (M02-02): a contact whose number the survivor already holds joins that contact and keeps
+its role label. A named
 gap (M02-03) never wins over a value by default. Calling-compliance state (M02-37) is never a
 field choice, because a stop is irreversible without the customer's own say-so: the survivor
 carries every stop either record holds — do-not-call, the complaint quiet flag, do-not-disturb —

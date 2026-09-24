@@ -96,9 +96,9 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-006 · Customer Merge screen
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M02-59 (P0), M02-63 (P0)
-**DESIGN:** SCR-M02-06 → PENDING
+**DESIGN:** SCR-M02-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-06+Customer+Merge+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-06+Customer+Merge+-+States.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-06-customer-merge.md`; they are the specification.
 **DONE WHEN:**
 
