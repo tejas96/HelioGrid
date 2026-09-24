@@ -24,9 +24,9 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 ### T-M02-002 · Lead Inbox screen
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M02-23 (P0), M02-24 (P0), M02-25 (P1), M02-28 (P0), M02-29 (P0), M02-67 (P0)
-**DESIGN:** SCR-M02-02 → PENDING
+**DESIGN:** SCR-M02-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-02+Lead+Inbox+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-02-lead-inbox.md`; they are the specification. **Exception — `M02-67`:** the row was added to `docs/prd/modules/M02-crm-and-leads.md` §M02.5 by owner ruling 2026-08-15, restoring the law of `M02-26`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The brief now quotes it in full (verified byte-identical to the live cell), so the brief remains the specification for every row of this task without exception; the quote is repeated here for a reader working from the task file alone. *(This sentence read "does not yet quote it… until the brief owner carries it across" — true at the moment it was written, and false within minutes: the brief and this file were amended in the same 2026-08-15 wave.)*
 
 - **M02-67** (P0) — **Triage actions are completed by the server, and the inbox says so rather than assuming.** Assigning a lead and marking one junk — `M02-24`'s two decisions — reach the server to complete; until it confirms, the row shows the action **in progress, never as done**, and a failure returns the lead to the queue naming the reason (`F8-36`). This is an honesty rule, not a confirmation step: `M02-28`'s one-tap assign stands and no dialog is added, and `M02-24`'s under-three-seconds triage binds this state too — the pending treatment is light and in-row, never a blocking overlay or a spinner wall (`F4-27`). The case it exists for is two people triaging the same lead: the second sees it already assigned rather than overwriting the first.

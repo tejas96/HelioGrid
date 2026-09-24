@@ -198,7 +198,7 @@ grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 | SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from | Brief reviewed |
 |---|---|---|---|---|---|---|---|---|---|
 | SCR-M02-01 | **Quick Add Lead** | P0 | 9 | `docs/ux/briefs/SCR-M02-01-quick-add-lead.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-01+Quick+Add+Lead+-+Mobile.dc.html | — | 24d8edf2aef5 |
-| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | planned | — | — | — |
+| SCR-M02-02 | **Lead Inbox** | P0 | 8 | `docs/ux/briefs/SCR-M02-02-lead-inbox.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M02-02+Lead+Inbox+-+Mobile.dc.html | — | 2743d555f26c |
 | SCR-M02-03 | **Leads List** | P0 | 3 | `docs/ux/briefs/SCR-M02-03-leads-list.md` | V1 | planned | — | — | — |
 | SCR-M02-04 | **Lead Detail** | P0 | 22 | `docs/ux/briefs/SCR-M02-04-lead-detail.md` | V1 | planned | — | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` | — |
 | SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md` | V1 | planned | — | — | — |
