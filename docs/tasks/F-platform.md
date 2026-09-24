@@ -681,18 +681,27 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 ---
 ### T-FPLAT-022 · Tenant branding scope and the contrast re-verification engine
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped (#151)
 **PRD rows:** F7-07
 **Landed ahead of this task, from the architecture review:** the WCAG maths has one owner — `packages/domain/src/branding/` holds the hex shape, `contrastRatio`, both floors and the shade walk, and `packages/ui/src/utils/color-contrast.ts` binds this system's inks to it, so the shade a field offers is the shade this engine will derive. `packages/theme` keeps its own copy of the formula because it imports nothing in the workspace (`M1`), and says so. The coverage scan over the design system's own pairings is `docs/tasks/deferred.md`'s.
 **Verified:** digest e98418d6f05a · 2026-09-12 · smoke (the contrast maths got its one owner; no screen mounts `BrandColorField`, `DocumentPreview` or `CustomerSurface` yet, so nothing user-visible changed) · web pass — the running dev server compiled this tree, `/login` renders "Sign in" at the 420 measure and `/company-signup` "Create your company" at the 480 one, the only console errors being the API refused because none was running (environment) · mobile bundle pass — Metro resolved the tree to a 3.1 MB bundle; ios/android not booted · api/worker n/a · parity n/a — one shared package, no screen · unit 80 files, 1081 tests pass, the branding slice at its 100% coverage floor · design-system contract green · dupes ratchet 2.02, measured 2.01
+**Why:** A tenant's brand colour must dress the proposal and the customer's page without ever making them unreadable, and must never restyle the operator application. Without one engine, each surface would judge contrast its own way and some would refuse a colour the tenant chose.
+**Design:** none — an engine task. The colour field is `SCR-M01-18` (`T-M01-018`); the surfaces it dresses are `F5`'s.
+**Data model:** none of its own — `branding_settings` is `T-M01-026`'s (shipped, #49).
+**Contract:** none of its own — `GET` and `PUT /settings/branding` are `T-M01-026`'s (shipped, #49); the saved answer carries `shades` (`compliantShadesSchema`).
+**Depends on:** nothing open — built by #66 and #49.
+**Out of scope:** the document and link-page renders that carry the branding — `T-F5-012` and `T-F5-001` (block 8), which now carry that proof; the colour field's screen — `T-M01-018`.
+**Ruled at `/start`:** **the owner closed this task as built.** The engine is #66 (`packages/domain/src/branding/`: the hex shape, `contrastRatio`, both floors, `compliantShades`), and the save that never refuses and returns the derived shade is #49 (`apps/api/src/modules/settings/settings.service.ts`, "Never refused (`F7-07`)"). The half of the done-when line that needs a rendered proposal and a link page moved to `T-F5-012` and `T-F5-001`, which build those surfaces in block 8. **"The operator application carries none" has no machine guard:** it holds today — no file under `apps/web/src` or `apps/mobile/src` reads the brand colour or a `--tenant-*` token — and is held by review, as `F5-81` records; no gate is added for it.
+
 **Requirements (verbatim):**
 
 - **F7-07** (P0) — **Tenant branding applies to customer-facing documents and link pages only; the operator application is never restyled per tenant.** A tenant supplies a logo and a primary brand colour that appear on the generated proposal document and the tokenised customer-link pages. There is no tenant stylesheet, no theme upload and no per-tenant palette anywhere in the web or mobile application. When a tenant saves a palette, contrast is **re-verified computationally and the palette is never rejected**: compliant shades are derived from what the tenant chose and previewed live, so a tenant is never told their brand colour is wrong and never allowed to publish an unreadable document.
 
 **DONE WHEN:**
 
-- **Given** a tenant has saved a brand colour and logo, **when** a proposal document and a customer-link page render, **then** both carry that branding and the operator application carries none; and **when** the saved colour would fail contrast, **then** a compliant shade is derived and previewed rather than the palette being refused (`F7-07`).
-
+- **Given** a tenant has saved a brand colour, **when** the colour would fail contrast, **then** a compliant shade is derived and returned with the save rather than the palette being refused (`F7-07`). → proof: api HTTP test `apps/api/tests/settings/settings-writes.test.ts` ("never refuses a brand colour: the answer rides back with the save, derived, not stored"); the shade walk and both floors, unit `packages/domain/tests/branding/` at the branding slice's 100% floor
+- **Given** the operator application, **when** it renders, **then** it carries no tenant branding (`F7-07`). → proof: held by review (`F5-81`); at this `/start` no file under `apps/web/src` or `apps/mobile/src` reads the brand colour, `CustomerSurface` or a `--tenant-*` token
+- The render half — a proposal document and a customer-link page carrying the branding — is a done-when line of `T-F5-012` and `T-F5-001` (block 8), which build those surfaces (`F7-07`).
 ---
 ### T-FPLAT-023 · The design-system adherence build gate
 **Type:** engine · **Tier:** P0
