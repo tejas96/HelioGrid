@@ -18,13 +18,13 @@ moves as ROWS, and what cannot be undone in ONE line.
 | The proposed survivor — the record with more history | status · action | a chip *Kept* on it — the plain word for the PRD's survivor — and ONE act to change it |
 | What is compared (`M02-03`, `M02-34`, `M02-37`) | data | the customer's own fields: name, city, customer type, preferred language, and the contacts. A lead's fields (stage, bill, owner) are not compared: every lead survives as it is |
 | Which name, which city, which primary contact (`M02-60`) | action | per differing field, one tap picks the value that survives. Nothing is pre-guessed beyond the proposed survivor — except that a named gap (*No city yet*, `M02-03`) never wins over a value by default: where the kept record has the gap and the other has a value, the value is selected |
-| Every contact survives (`M02-34`, `M02-60`) | data | a count in the move rows; both numbers stay on the kept record as contacts, so either one matches it afterwards |
+| Every contact survives (`M02-34`, `M02-60`) | data | a count in the move rows; both numbers stay on the kept record as contacts, so either one matches it afterwards. One number is one contact: a contact whose number the kept record already holds joins that contact, and the count says how many (*1 already on Anil's*) |
 | Calling restrictions (`M02-37`) | data | never a choice: a label–value row naming what the kept record will carry — every stop either record holds (do-not-call, the complaint quiet flag, do-not-disturb), and consent only where both records hold it. Drawn only when the two differ |
-| Fields where the two agree | more detail | not drawn one by one: a row carrying their count, which opens |
+| Fields where the two agree | more detail | not drawn one by one: ONE row naming them, which opens (owner ruling 2026-09-24: at most five fields, and their names say more than a count) |
 | Both records hold a primary contact (`M02-60`) | action | one choice row; exactly one survives as primary |
 | Both records hold a live lead | data | a label–value row: both leads stay open under the survivor. A fact about the deal, stated as data |
 | Why there were two (`M02-12`) | data | a label–value row carrying the recorded reason. The reason's text is content, not screen copy |
-| What will move (`M02-60`, `M02-63`) | data | label–value rows — leads, contacts, proposals, links, activities, tasks, files — each an exact count. One provenance label heads them (`F8-07`) |
+| What will move (`M02-60`, `M02-63`) | data | label–value rows — leads, contacts, proposals, links, activities, tasks, files — each an exact count. One provenance label at their foot (`F8-07`, `N7`) |
 | Money shown in the comparison | data | read-only, with its tier. No edit affordance is drawn |
 | The confirm (`M02-63`, `N8`) | action | a sheet at 375 and a modal at 1536: the move rows again, a row saying what the other record becomes, and ONE line — the product cannot undo this. `N8` asks for the recovery route in words and the PRD names none, so the honest words are what stays true: the other record remains as a pointer, and every old link still opens the survivor (`M02-60`). The same words ride the after-state. It completes only on the explicit act; leaving changes nothing |
 | One record is outside the person's scope (`M02-63`) | status | the merge act is absent, and ONE line in its place says why. The hidden record shows only what `M02-08` allows across scope — its owner, stage and last contact — never its name, city or contacts |
@@ -32,7 +32,7 @@ moves as ROWS, and what cannot be undone in ONE line.
 | Merged (`M02-60`, `M02-61`) | status · data | the landing: the kept record's detail (SCR-M02-04) with ONE line — the other record now points here — and the merge as the newest timeline entry: what merged into what, who, when, and each field choice |
 | An old link to the merged record (`M02-60`) | status | opening it lands on the kept record with ONE line naming the merge — never a dead end |
 | A record could not be loaded | error | one banner; the flow does not proceed |
-| The merge failed | error | one banner — what failed. Nothing was applied |
+| The merge failed (`F8-36`) | error | one banner — what failed and why, the server's reason. Nothing was applied |
 
 ## Arrangement
 
