@@ -1,6 +1,7 @@
 import type { Notification, Paginated } from '@heliogrid/contracts';
-import { type DbTransaction, notification, type TenantPool } from '@heliogrid/db';
+import { type DbTransaction, notification, type TenantPool, tenant } from '@heliogrid/db';
 import {
+  centreGroupKey,
   NOTIFICATION_REGISTRY,
   type NotificationType,
   pushDueAt,
@@ -9,7 +10,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNull, lte } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 
 /**
@@ -73,13 +74,38 @@ const wireColumns = {
   pushSentAt: notification.pushSentAt,
 };
 
-type StoredRow = {
-  [K in keyof typeof wireColumns]: K extends 'emittedAt'
-    ? Date
-    : K extends 'readAt' | 'pushSentAt'
-      ? Date | null
-      : Notification[K & keyof Notification];
-};
+type StoredRow = Pick<typeof notification.$inferSelect, keyof typeof wireColumns>;
+
+/**
+ * Which of a person's rows the centre reads (`F6-17`, `F6-19`). `since` is the horizon, so every
+ * centre read stays a bounded range on the `(tenant, recipient, emitted_at)` index; `types` is a
+ * type-group filter already resolved to types, and an empty list matches nothing.
+ */
+export interface CentreView {
+  readonly since: Date;
+  readonly unreadOnly: boolean;
+  readonly types?: readonly NotificationType[];
+}
+
+function centreRows(tenantId: string, recipientUserRef: string, view: CentreView) {
+  return and(
+    eq(notification.tenantId, tenantId),
+    eq(notification.recipientUserRef, recipientUserRef),
+    gte(notification.emittedAt, view.since),
+    view.unreadOnly ? isNull(notification.readAt) : undefined,
+    view.types === undefined ? undefined : inArray(notification.type, [...view.types]),
+  );
+}
+
+/** The tenant's own clock, which decides the calendar day an item groups on (`F1-10`). */
+async function tenantZone(tx: DbTransaction, tenantId: string): Promise<string> {
+  const [row] = await tx
+    .select({ timezone: tenant.timezone })
+    .from(tenant)
+    .where(eq(tenant.id, tenantId));
+  if (row === undefined) throw new Error(`tenant ${tenantId} is not readable in its own scope`);
+  return row.timezone;
+}
 
 /**
  * A person's own notifications, inside their own company (`F6-06`, `F6-09`). The runtime pool
@@ -94,13 +120,11 @@ export class NotificationRepository {
   async inbox(
     tenantId: string,
     recipientUserRef: string,
+    view: CentreView,
     page: { limit: number; offset: number },
   ): Promise<Paginated<Notification>> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const where = and(
-        eq(notification.tenantId, tenantId),
-        eq(notification.recipientUserRef, recipientUserRef),
-      );
+      const where = centreRows(tenantId, recipientUserRef, view);
       const rows = await tx
         .select(wireColumns)
         .from(notification)
@@ -111,24 +135,46 @@ export class NotificationRepository {
         .limit(page.limit)
         .offset(page.offset);
       const [total] = await tx.select({ n: count() }).from(notification).where(where);
-      return { items: rows.map(onTheWire), totalCount: total?.n ?? 0 };
+      const zone = await tenantZone(tx, tenantId);
+      return { items: rows.map((row) => onTheWire(row, zone)), totalCount: total?.n ?? 0 };
     });
   }
 
-  /** The bell's count — unread only, over the same index the inbox reads (`F6-06`). */
-  async unreadCount(tenantId: string, recipientUserRef: string): Promise<number> {
+  /** The bell's count — unread inside the horizon, over the same rows the list reads (`F6-17`). */
+  async unreadCount(tenantId: string, recipientUserRef: string, since: Date): Promise<number> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [total] = await tx
         .select({ n: count() })
         .from(notification)
+        .where(centreRows(tenantId, recipientUserRef, { since, unreadOnly: true }));
+      return total?.n ?? 0;
+    });
+  }
+
+  /**
+   * Marks read every unread row in the view emitted no later than `seenThrough` (`F6-07`), and
+   * answers how many. The bound is what keeps an item that landed after the reader's list
+   * rendered unread; `isNull(readAt)` inside the view is what keeps it up only and set once.
+   */
+  async markAllRead(
+    tenantId: string,
+    recipientUserRef: string,
+    view: CentreView,
+    seenThrough: Date,
+    readAt: Date,
+  ): Promise<number> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const marked = await tx
+        .update(notification)
+        .set({ readAt })
         .where(
           and(
-            eq(notification.tenantId, tenantId),
-            eq(notification.recipientUserRef, recipientUserRef),
-            isNull(notification.readAt),
+            centreRows(tenantId, recipientUserRef, { ...view, unreadOnly: true }),
+            lte(notification.emittedAt, seenThrough),
           ),
-        );
-      return total?.n ?? 0;
+        )
+        .returning({ id: notification.id });
+      return marked.length;
     });
   }
 
@@ -154,19 +200,22 @@ export class NotificationRepository {
         .set({ readAt })
         .where(and(mine, isNull(notification.readAt)))
         .returning(wireColumns);
-      if (updated !== undefined) return onTheWire(updated);
-      const [already] = await tx.select(wireColumns).from(notification).where(mine);
-      return already === undefined ? null : onTheWire(already);
+      const row = updated ?? (await tx.select(wireColumns).from(notification).where(mine)).at(0);
+      return row === undefined ? null : onTheWire(row, await tenantZone(tx, tenantId));
     });
   }
 }
 
-/** Instants cross the wire as ISO strings; the columns hold them as instants. */
-function onTheWire(row: StoredRow): Notification {
+/**
+ * Instants cross the wire as ISO strings; the columns hold them as instants. The group key is the
+ * domain's decision in the tenant's zone (`F6-12`), never the screen's.
+ */
+function onTheWire(row: StoredRow, timeZone: string): Notification {
   return {
     ...row,
     emittedAt: row.emittedAt.toISOString(),
     readAt: row.readAt?.toISOString() ?? null,
     pushSentAt: row.pushSentAt?.toISOString() ?? null,
+    groupKey: centreGroupKey(row.type, row.subjectKind, row.emittedAt.getTime(), timeZone),
   };
 }

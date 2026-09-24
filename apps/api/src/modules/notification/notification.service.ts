@@ -1,11 +1,20 @@
-import type { Notification, Paginated, PaginationQuery } from '@heliogrid/contracts';
+import type {
+  MarkAllRead,
+  Notification,
+  NotificationInboxQuery,
+  Paginated,
+} from '@heliogrid/contracts';
+import { centreHorizonStart, type NotificationTypeGroup, typesInGroups } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { NotificationRepository } from './notification.repository';
+import { type CentreView, NotificationRepository } from './notification.repository';
 
 /**
  * A person's own notifications, read back (`F6-06`). Their records: the inbox and the badge both
  * derive from the same rows, so a push that never arrived changes nothing about what they see,
  * and both answer in every billing state (`F6-09`).
+ *
+ * Every read is bounded by the centre's horizon (`F6-19`), taken at the moment of the request, so
+ * the list, its count and the badge always agree on what the centre holds.
  */
 @Injectable()
 export class NotificationService {
@@ -15,16 +24,17 @@ export class NotificationService {
   async inbox(
     tenantId: string,
     recipientUserRef: string,
-    query: PaginationQuery,
+    query: NotificationInboxQuery,
   ): Promise<Paginated<Notification>> {
-    return this.records.inbox(tenantId, recipientUserRef, {
+    const view = centreView(query.typeGroups, query.readState === 'unread');
+    return this.records.inbox(tenantId, recipientUserRef, view, {
       limit: query.limit,
       offset: (query.page - 1) * query.limit,
     });
   }
 
   async unreadCount(tenantId: string, recipientUserRef: string): Promise<number> {
-    return this.records.unreadCount(tenantId, recipientUserRef);
+    return this.records.unreadCount(tenantId, recipientUserRef, horizonNow());
   }
 
   /**
@@ -39,4 +49,34 @@ export class NotificationService {
   ): Promise<Notification | null> {
     return this.records.markRead(tenantId, recipientUserRef, id, new Date());
   }
+
+  /** Marks read what the reader's list showed, and nothing that landed after it (`F6-07`). */
+  async markAllRead(
+    tenantId: string,
+    recipientUserRef: string,
+    request: MarkAllRead,
+  ): Promise<number> {
+    return this.records.markAllRead(
+      tenantId,
+      recipientUserRef,
+      centreView(request.typeGroups, true),
+      new Date(request.seenThrough),
+      new Date(),
+    );
+  }
+}
+
+function horizonNow(): Date {
+  return new Date(centreHorizonStart(Date.now()));
+}
+
+function centreView(
+  typeGroups: readonly NotificationTypeGroup[] | undefined,
+  unreadOnly: boolean,
+): CentreView {
+  return {
+    since: horizonNow(),
+    unreadOnly,
+    types: typeGroups === undefined ? undefined : typesInGroups(typeGroups),
+  };
 }

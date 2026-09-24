@@ -4,6 +4,12 @@
  * the words they carry are `packages/i18n`'s, authored by the slice that first raises each type.
  */
 
+export {
+  centreGroupKey,
+  centreHorizonStart,
+  NOTIFICATION_CENTRE_HORIZON_DAYS,
+  typesInGroups,
+} from './centre';
 export { pushIsDue } from './delivery';
 export { channelsOwed, mayMute, pushMuted } from './mutes';
 export { marketQuietHours, pushDueAt, type QuietWindow } from './quiet-hours';
@@ -11,6 +17,7 @@ export type { NotificationRegistration } from './registry';
 export { NOTIFICATION_REGISTRY, typeGroupOf } from './registry';
 export type {
   NotificationChannel,
+  NotificationReadFilter,
   NotificationRecipientRule,
   NotificationSource,
   NotificationType,
@@ -20,6 +27,7 @@ export type {
 } from './types';
 export {
   NOTIFICATION_CHANNELS,
+  NOTIFICATION_READ_FILTERS,
   NOTIFICATION_RECIPIENT_RULES,
   NOTIFICATION_SOURCES,
   NOTIFICATION_TYPE_GROUPS,

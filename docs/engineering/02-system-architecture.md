@@ -275,6 +275,8 @@ all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clo
 | `dormant-sweep` | agent-triggers | daily 02:00 | flag dormant leads for the agent queue |
 | `dnd-scrub` | agent-triggers | daily 06:00 | refresh DND registry flags before the 09:00 calling window (ComplianceGate) |
 | `recording-retention` | agent-triggers | daily 03:00 | purge call recordings past 90-day retention |
+| `notification-push-drain` | notifications | set by its task | send the pushes quiet hours held, once their window ends (`F6-14`) |
+| `notification-horizon-purge` | notifications | daily, set by its task | delete notification-centre rows older than its horizon (`F6-19`) |
 | `razorpay-reconcile` | webhooks | every 6 h | poll subscription state vs local; heal missed webhooks |
 | `trial-expiry-sweep` | webhooks | daily 00:30 | expire trials, flip entitlements to soft-block (read+export always work) |
 | `usage-rollup` | webhooks | hourly | roll `usage_events` into period aggregates for metering |
