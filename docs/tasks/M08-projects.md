@@ -10,14 +10,14 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-001 · Project Board
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M08-10 (P0), M08-11 (P0), M08-12 (P0), M08-14 (P1), M08-51 (P0)
-**DESIGN:** SCR-M08-01 → PENDING
+**DESIGN:** SCR-M08-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-01+Project+Board+v3.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-01+Project+Board+-+States.dc.html
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-01-project-board.md`; they are the specification.
 
 **DONE WHEN:**
-- Given the board on a phone, when it renders, then it shows one column with a stage filter; given the same board on desktop, then it shows every column (M08-10).
+- Given the board on a phone, when it renders, then it shows one column with a stage filter; given the same board on desktop, then it shows every stage with its count and longest wait (M08-10).
 - Given two projects in one stage, one there four days and one thirty-four, when the column renders, then the thirty-four-day project is above the four-day one and both show their days figure; and no card anywhere shows a percentage, burndown or completion bar (M08-11, M08-12, M08-13).
 - Given a project in any stage, when it is cancelled, then a reason is mandatory, the state is terminal, and from that moment it is excluded from revenue anywhere it was counted (M08-51).
 - (The PRD states no dedicated acceptance line for M08-14; the row's own text and the timeline law `M08-17` govern it — a stage move is actor-stamped on the append-only timeline, and a backward move is its own event with equal weight.) *(Amended 2026-08-07 by owner ruling: this note read "a stage move is online-first, actor-stamped…"; the offline/sync capability was removed, so there is no connectivity class left for a stage move to belong to.)*
