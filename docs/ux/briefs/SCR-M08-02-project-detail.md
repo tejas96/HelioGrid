@@ -14,22 +14,26 @@ a row that leads into the module that owns it.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| The active blocker (`M08-21`) | status · data · action | the first region: the party as its chip; the reason, which is content; waiting since, expected until — a named gap when unknown — and the measured wait as label–value rows. ONE act: clear it |
+| The active blocker (`M08-21`) | status · data · action | the first region: the party as its chip; the reason, which is content; waiting since, expected until — a named gap when unknown — and the measured wait as label–value rows; for a utility wait, the utility's name (`M08-28`). ONE act: clear it |
+| No active blocker (`M08-21`) | teaching · action | the block's one line (*No blockers — nothing is waiting on anyone*) and ONE act, *Set blocker*, opening `SCR-M08-01`'s sheet unchanged — its line that the customer sees who and when, never the reason |
 | A due tranche that is unpaid (`M11-53`, `M08-38`) | data · action | the second region: amount, due date and days overdue as label–value rows, and ONE act — request the payment. With a connected channel its one line says it sends from the tenant's channel, and the delivery state is a chip afterwards. With none, the act copies the composed message and no delivery state is drawn anywhere |
-| The stage timeline | data | the nine stages by their pack labels, the date each was reached, and the current one with its days in the stage — this region's ONE figure |
+| The stage timeline | data | the nine stages by their pack labels, the date each was reached, and the current one with its days in the stage — this region's ONE figure. A skipped stage stays in the chain, marked skipped (`M08-09`); a stage reached twice after a backward move shows its latest date, both moves being in the activity (`M08-14`) |
+| Moving a stage (`M08-14`, `M08-19`) | action | *Move stage*, opening `SCR-M08-01`'s confirm unchanged: what falls due, the customer's link, the skip offer, and *Start handover* when the next stage is Handed over |
 | The approved design and the accepted proposal (`M08-16`) | more detail | two read-only summaries, each naming the version in force, each a row leading into its module. Size and value carry their tier |
-| The payments (`M08-16`) | data · more detail | tranche rows — amount, share, a state chip — and a row leading to the payments screen. No control here records money |
+| The payments (`M08-16`) | data · more detail | tranche rows — amount, share, a state chip — and a row leading to the payments screen. No control here records money: *Record a payment* is a row into `M11`'s screen, drawn only for holders of `F2.M11.record-payments` (`M08-19`) |
 | A money figure that cannot be recomputed (`F8-12`) | status | its provisional mark, on the figure |
-| The documents | data · more detail | the verified count, and a row leading to `SCR-M08-03` |
+| The documents | data · more detail | the verified count, and a row leading to `SCR-M08-03`, where documents and photos are uploaded (`M08-19`) |
+| The installation checklist | data · more detail | its progress as a count, and a row leading to `SCR-M08-04` |
 | Cleared blockers | more detail | rows, each with its measured wait |
 | An incentive claim rejected or delayed (`M08-27`) | status · data | a chip on the claim's row, its reason as content, and its date |
 | The activity (`M08-17`) | data | the one stream with filter chips by kind. An entry's text is content. No edit affordance is drawn |
 | A block with nothing in it | teaching | ONE line saying so. A block never disappears |
-| No design, or no payment terms | data | ONE plain line in that block. Never a placeholder design, never a fabricated row |
+| No design, or no payment terms | data | ONE plain line in that block. Never a placeholder design, never a fabricated row. With no design, the line leads to the proposal's own indicative labelling (`M06-04`) |
 | An OPEX or PPA project | fixed note | the brief's own line — monthly energy billing is handled outside this platform — drawn once, as written |
 | Hand over | action | a secondary act. While checklist rows are pending its ONE line says how many, and leads to them |
 | Cancelling (`M08-51`, `N8`) | action | `SCR-M08-01`'s confirm, unchanged |
 | A person with read scope only | status | every block in full; no act is drawn, and nothing is greyed |
+| A cancelled project (`M08-51`, `M08-53`) | status · data | a *Cancelled* chip in the header and the reason as a label–value row. Every block stays readable, receipts included; no act is drawn, because the state is terminal |
 | An act failed | error | one line at that act — what failed and what to do |
 
 ## Arrangement
@@ -55,6 +59,11 @@ Reached from: opening a card on the Project Board (SCR-M08-01). Leads to: the Do
 - **M08-27** (P0) — **An incentive claim that is rejected or delayed is surfaced with its reason** — on the project and, through the link, to the customer — *"this is the customer's money and they will ask."* The incentive vocabulary, its eligibility and whether the claim stage applies at all are pack data (`F1-14`, `F1-35`); this module owns only the surfacing of the outcome and the wait.
 - **M08-38** (P0) — **When a tranche falls due the coordinator raises the request in one tap — and it sends from the tenant's connected transactional channel where one exists (owner ruling 2026-08-04).** The message is composed with the project's real figures; with a connected official channel the coordinator's tap sends it under the transactional template class with the channel's honest delivery states (payment links are a named transactional moment); with no channel connected it is ready-to-paste and the person sends it in whatever channel they already use — and on that fallback there is no delivery state anywhere, because the product did not do the sending. _(non-UI half, build-side: sends via tenant's connected transactional channel with honest delivery states; copy-paste fallback shows no delivery state anywhere — for awareness, not for drawing)_
 - **M08-51** (P0) — **A project may be cancelled from any stage, the reason is mandatory, the state is terminal, and revenue stops counting immediately.** *"Reporting must not silently keep counting it as revenue."* Won means signed, and a deal cancelled after Won never quietly persists in a total — the reporting consequence is `modules/M13`'s and the honesty law is `F8-32`'s; the state, the mandatory reason and the immediacy are this module's. _(non-UI half, build-side: terminal state; revenue stops counting immediately across all reporting — for awareness, not for drawing)_
+- **M08-09** (P0) — **What a user reads is the market pack's label for a stage; this module names no stage on screen and hard-codes no wait.** Stage labels, the skippable-stage set and blocker-party labels are pack data (`F1-22`; the India instance is `F1-51`, its skippable rule `F1-35`). A skipped stage is skipped by pack rule or because the project has no such obligation — it is never removed from the chain, and the board still shows the project's true position. **Residential deals may pass through stages in days; they still pass through them.**
+- **M08-14** (P1) — **A stage move is recorded on the timeline with its actor and its timestamp, and it is never silently reversible.** Moving a project backwards is allowed — real installations go backwards — and is recorded as its own event with the same weight as moving forward, so the days-in-stage history stays truthful rather than being rewritten.
+- **M08-18** (P0) — **The Sales Executive reads their own won deals and cannot change them** — *"so they can answer a customer without asking ops."* Read-only means the whole project: stages, blockers, documents and the money summary are visible and none of them is editable by that preset.
+- **M08-19** (P1) — **The screen splits by where the work happens, not by breakpoint.** Web carries the dense reading work — the board, the checklist, the full detail. Mobile carries the away-from-desk acts: stage moves, document and photo upload, blocker updates, and marking a payment received. Neither surface is a reduced version of the other; each carries the whole of what its job needs.
+- **M08-53** (P1) — **Cancellation preserves history: the timeline, documents, checklist and receipts of a cancelled project stay readable.** Money already received is not unwound by the cancellation itself — reversal is `modules/M11`'s append-only mechanism (a reversing entry, never an edit), and the project simply stops counting as revenue from the moment it is cancelled.
 
 ### From docs/prd/modules/M11-payments-and-collections.md
 
@@ -80,6 +89,8 @@ Screen-specific states from the slice:
 - **set-blocker-sheet** — party from the pack's four labels, reason, optional expected-until.
 - **cancel-confirm** — mandatory reason, explicit confirm stating "this project stops counting as revenue immediately", no undo.
 - **overdue-chase-prompt** — an unpaid due tranche impossible to miss, with the prompt to chase the person.
+- **cancelled-project** — after the cancel confirm: the chip and the reason; every block readable, no act (M08-51, M08-53).
+- **stage-move-confirm** — `SCR-M08-01`'s confirm from the detail: what falls due and the customer's link; *Start handover* when the next stage is Handed over.
 - **copy-request-message** — the no-channel fallback: the composed request message ready-to-paste, with no delivery state anywhere.
 
 ## Data volume
