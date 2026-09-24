@@ -1,3 +1,5 @@
+import type { CalendarDate } from './holidays';
+
 /**
  * What a wall clock reads at an instant, in a named zone — the ONE place that asks (`F3-19`,
  * `F3-22`). It lives in the format slice with the rest of the date and time implementation
@@ -7,6 +9,9 @@
  * Pure: the instant arrives as epoch milliseconds and no `Date` is constructed
  * (`packages/domain/CLAUDE.md`).
  */
+
+/** One calendar day on a clock with no daylight shift. A zone's own day is `localDate`'s answer. */
+export const MS_PER_DAY = 24 * 60 * 60 * 1_000;
 
 interface LocalParts {
   readonly year: number;
@@ -35,6 +40,12 @@ function localParts(instant: number, timeZone: string): LocalParts {
     /* `en-GB` under `hour12: false` is an h23 cycle: midnight reads 00, never 24. */
     minutes: read('hour') * 60 + read('minute'),
   };
+}
+
+/** The calendar day that zone's wall clock reads at this instant, as `YYYY-MM-DD`. */
+export function localDate(instant: number, timeZone: string): CalendarDate {
+  const { year, month, day } = localParts(instant, timeZone);
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
 /** Minutes past local midnight at this instant, on that zone's clock. */

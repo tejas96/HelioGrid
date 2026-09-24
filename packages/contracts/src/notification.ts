@@ -1,4 +1,9 @@
-import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES, PUSH_PLATFORMS } from '@heliogrid/domain';
+import {
+  NOTIFICATION_READ_FILTERS,
+  NOTIFICATION_TYPE_GROUPS,
+  NOTIFICATION_TYPES,
+  PUSH_PLATFORMS,
+} from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -45,6 +50,11 @@ export const notificationSchema = z.object({
   readAt: z.string().datetime().nullable(),
   /** Whether a push was sent — best-effort, and never what the inbox depends on (`F6-06`). */
   pushSentAt: z.string().datetime().nullable(),
+  /**
+   * Items with equal keys are drawn as one group; null never groups (`F6-12`). Opaque: the server
+   * decides what groups, and the screen only collects equal keys.
+   */
+  groupKey: z.string().nullable(),
 });
 export type Notification = z.infer<typeof notificationSchema>;
 
@@ -81,6 +91,46 @@ export const notificationPreferencesSchema = z.object({
   preferences: z.array(notificationPreferenceSchema),
 });
 
+/** Everything, or only the unread (`F6-17`). Derived from the domain tuple, never restated. */
+export const notificationReadFilterSchema = z.enum(NOTIFICATION_READ_FILTERS);
+export type NotificationReadFilter = z.infer<typeof notificationReadFilterSchema>;
+
+/**
+ * One or more type groups, comma-separated: `sales,payments`. A comma list and not an array,
+ * because the typed client encodes an array as `typeGroups[0]=…` and Express 5's query parser
+ * does not read that back as an array — the filter would silently match nothing.
+ */
+const oneTypeGroup = NOTIFICATION_TYPE_GROUPS.join('|');
+const typeGroupListSchema = z
+  .string()
+  .regex(new RegExp(`^(${oneTypeGroup})(,(${oneTypeGroup}))*$`))
+  .transform((list) => [
+    ...new Set(list.split(',').map((group) => notificationTypeGroupSchema.parse(group))),
+  ]);
+
+/**
+ * The centre's list (`F6-17`, `F6-19`): newest first, inside the horizon, and filtered.
+ * `totalCount` counts the SAME filters, so "3 of 46 match" is one query's answer.
+ */
+export const notificationInboxQuerySchema = paginationQuerySchema.extend({
+  readState: notificationReadFilterSchema.default('all'),
+  typeGroups: typeGroupListSchema.optional(),
+});
+export type NotificationInboxQuery = z.infer<typeof notificationInboxQuerySchema>;
+
+/**
+ * Mark all read (`F6-07`). `seenThrough` is the newest `emittedAt` the reader's list showed, so a
+ * notification that lands between the render and the tap stays unread. `typeGroups` is the list's
+ * own filter, so the act reaches exactly the list the reader is looking at.
+ */
+export const markAllReadSchema = z
+  .object({
+    seenThrough: z.string().datetime(),
+    typeGroups: typeGroupListSchema.optional(),
+  })
+  .strict();
+export type MarkAllRead = z.infer<typeof markAllReadSchema>;
+
 /**
  * A handset registering itself for push (`F6-13`).
  *
@@ -112,8 +162,9 @@ export const notificationContract = c.router({
   inbox: {
     method: 'GET',
     path: '/notifications',
-    query: paginationQuerySchema,
-    summary: "The reader's own notifications, newest first — in every billing state",
+    query: notificationInboxQuerySchema,
+    summary:
+      "The reader's own notifications inside the centre's horizon, newest first, filtered — in every billing state",
     responses: {
       200: paginated(notificationSchema),
       401: unauthenticatedEnvelope,
@@ -122,7 +173,7 @@ export const notificationContract = c.router({
   unreadCount: {
     method: 'GET',
     path: '/notifications/unread-count',
-    summary: "The bell's count — the reader's own unread records",
+    summary: "The bell's count — the reader's own unread records inside the centre's horizon",
     responses: {
       200: unreadCountSchema,
       401: unauthenticatedEnvelope,
@@ -170,6 +221,17 @@ export const notificationContract = c.router({
       401: unauthenticatedEnvelope,
       /** `F6-15` — the billing group is not the Owner's to mute. */
       403: errorEnvelope(baseError('FORBIDDEN')),
+    },
+  },
+  markAllRead: {
+    method: 'POST',
+    path: '/notifications/read-all',
+    body: markAllReadSchema,
+    summary:
+      'Mark every unread item the reader saw as read — up only, inside the horizon, deleting nothing',
+    responses: {
+      200: z.object({ marked: z.number().int().nonnegative() }),
+      401: unauthenticatedEnvelope,
     },
   },
   markRead: {

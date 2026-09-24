@@ -3310,7 +3310,7 @@
     },
     "/notifications": {
       "get": {
-        "summary": "The reader's own notifications, newest first — in every billing state",
+        "summary": "The reader's own notifications inside the centre's horizon, newest first, filtered — in every billing state",
         "tags": [
           "notification"
         ],
@@ -3332,6 +3332,26 @@
               "default": 1,
               "type": "integer",
               "minimum": 1
+            }
+          },
+          {
+            "name": "readState",
+            "in": "query",
+            "schema": {
+              "default": "all",
+              "type": "string",
+              "enum": [
+                "all",
+                "unread"
+              ]
+            }
+          },
+          {
+            "name": "typeGroups",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^(sales|delivery|payments|team|billing)(,(sales|delivery|payments|team|billing))*$"
             }
           }
         ],
@@ -3411,6 +3431,10 @@
                             "type": "string",
                             "format": "date-time",
                             "nullable": true
+                          },
+                          "groupKey": {
+                            "type": "string",
+                            "nullable": true
                           }
                         },
                         "required": [
@@ -3423,7 +3447,8 @@
                           "language",
                           "emittedAt",
                           "readAt",
-                          "pushSentAt"
+                          "pushSentAt",
+                          "groupKey"
                         ]
                       }
                     },
@@ -3501,7 +3526,7 @@
     },
     "/notifications/unread-count": {
       "get": {
-        "summary": "The bell's count — the reader's own unread records",
+        "summary": "The bell's count — the reader's own unread records inside the centre's horizon",
         "tags": [
           "notification"
         ],
@@ -4112,6 +4137,116 @@
         }
       }
     },
+    "/notifications/read-all": {
+      "post": {
+        "summary": "Mark every unread item the reader saw as read — up only, inside the horizon, deleting nothing",
+        "tags": [
+          "notification"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "seenThrough": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "typeGroups": {
+                    "type": "string",
+                    "pattern": "^(sales|delivery|payments|team|billing)(,(sales|delivery|payments|team|billing))*$"
+                  }
+                },
+                "required": [
+                  "seenThrough"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "marked": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "marked"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/notifications/{id}/read": {
       "post": {
         "summary": "Mark one as read — up only, and only once; reading again changes nothing",
@@ -4212,6 +4347,10 @@
                       "type": "string",
                       "format": "date-time",
                       "nullable": true
+                    },
+                    "groupKey": {
+                      "type": "string",
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -4224,7 +4363,8 @@
                     "language",
                     "emittedAt",
                     "readAt",
-                    "pushSentAt"
+                    "pushSentAt",
+                    "groupKey"
                   ]
                 }
               }

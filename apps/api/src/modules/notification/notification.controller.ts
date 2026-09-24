@@ -26,6 +26,7 @@ export class NotificationController {
     inbox: 'member',
     unreadCount: 'member',
     markRead: 'member',
+    markAllRead: 'member',
     // Also `member`: these are the reader's OWN mutes. Which groups they may mute is a rule
     // about their presets (`F6-15`), answered inside the route, not a capability that reaches it.
     preferences: 'member',
@@ -80,6 +81,10 @@ export class NotificationController {
         }
         return { status: 200 as const, body: written };
       },
+      markAllRead: async ({ body }) => ({
+        status: 200,
+        body: { marked: await this.notifications.markAllRead(tenantIdOf(req), recipient(), body) },
+      }),
       markRead: async ({ params }) => {
         const marked = await this.notifications.markRead(tenantIdOf(req), recipient(), params.id);
         // Someone else's record, or another company's: 404, never 403 — never reveal it exists.
