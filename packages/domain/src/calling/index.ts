@@ -6,7 +6,7 @@
  * The compliance gate itself is `M07`'s and is not here. This package supplies what it enforces.
  */
 export type { ClockTime } from './clock-time';
-export { CLOCK_TIME_PATTERN, clockTime, clockTimeHhmm } from './clock-time';
+export { CLOCK_TIME_PATTERN, clockTime, clockTimeHhmm, clockTimeOfMinutes } from './clock-time';
 export type {
   CallerLineSeries,
   CallingRulesPack,

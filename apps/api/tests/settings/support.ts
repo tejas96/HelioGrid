@@ -1,6 +1,7 @@
 import { auditLogEntry } from '@heliogrid/db';
 import { IN_PACK } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
+import { PinoLogger } from 'nestjs-pino';
 import { MarketPackAdminRepository } from '../../src/modules/market/market.admin.repository';
 import { MarketPackReferenceRepository } from '../../src/modules/market/market.reference.repository';
 import { MarketPackService } from '../../src/modules/market/market.service';
@@ -34,6 +35,7 @@ export function marketsOf(pools: Pools): MarketPackService {
   return new MarketPackService(
     new MarketPackReferenceRepository(pools.runtime.db),
     new MarketPackAdminRepository(pools.admin.db),
+    new PinoLogger({ pinoHttp: { level: 'silent' } }),
   );
 }
 

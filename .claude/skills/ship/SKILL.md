@@ -24,7 +24,9 @@ for the agents' verdicts. A tree whose runtime digest equals `origin/main`'s —
 carries no stamp and needs none.
 
 `pnpm verify:clean` — the proof in CI's room (`M112`): a fresh clone of what git would commit, CI's
-environment, every stage read for its verdict, never for the exit code. If it already ran green
+environment, every stage read for its verdict, never for the exit code. **Run it LAST, after §2's
+reviews are clean**: every fix `break-it-reviewer` forces changes the tree, and a clean run taken
+before it is stale the moment that fix lands. If it already ran green
 on this exact tree in this session (nothing changed since: `git status --short` and
 `git diff --stat` identical), cite that run instead of running again. If the invariants ran
 vacuously, say so — a green run has NOT proven tenancy. Never weaken a gate. Deleted a source

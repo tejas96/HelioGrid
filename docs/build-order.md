@@ -49,7 +49,7 @@ Decided 2026-08-15 after inspecting both codebases.
 
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (16) · `F-platform` (26 of its 27 — see below) |
+| **0** | **Foundations** | 0 | `F-core` (15 of its 16 — see below) · `F-platform` (26 of its 27 — see below) |
 | **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
 | **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) · `F-platform` → `T-FPLAT-020` |
@@ -57,13 +57,19 @@ Decided 2026-08-15 after inspecting both codebases.
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
 | **7** | **3D Design Studio** | 18 | `MS-studio-a/-b/-c` (83) |
-| **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) |
+| **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) · `F-core` → `T-FCORE-009` |
 
 **The `SHELL` task file spans two blocks.** `SCR-SHELL-06` — the billing state banner and its
 denial sheets — sits with the other shell rows in the screens register, because that is where it renders.
 It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
 so designing it in block 1 means inventing the states and the destinations `M12` has not defined
 yet. The block-1 count of 23 already excludes it and the block-2 count of 5 already includes it.
+**The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
+workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
+paying customers (roughly 10–20). It sits in the last V1 block so the build line stops offering it; it
+builds when the owner unparks it, and by then the customer record (block 3) and the calling consent
+records (block 6) its proofs erase and export exist.
+
 **Global search builds in block 3, not block 0.** `T-FPLAT-020` searches leads, proposals,
 projects, customers, sites, catalog items and people, and in block 0 none of those tables exists:
 every done-when line — scope, the "quote" alias, junk leads, a halted tenant's results — would run

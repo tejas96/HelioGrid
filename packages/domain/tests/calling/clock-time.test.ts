@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clockTime, clockTimeHhmm } from '../../src/calling/clock-time';
+import { clockTime, clockTimeHhmm, clockTimeOfMinutes } from '../../src/calling/clock-time';
 
 describe('clockTime — the one door into a policy time of day (F1-36, F1-62)', () => {
   it.each([
@@ -27,5 +27,15 @@ describe('clockTime — the one door into a policy time of day (F1-36, F1-62)', 
 describe('clockTimeHhmm — back to the spelling formatTime renders', () => {
   it.each(['00:00', '09:00', '19:00', '23:59'])('round-trips %s unchanged', (hhmm) => {
     expect(clockTimeHhmm(clockTime(hhmm))).toBe(hhmm);
+  });
+});
+
+describe("clockTimeOfMinutes — the stored form's door (T-FCORE-017)", () => {
+  it.each([0, 540, 1439])('accepts %i minutes past midnight', (minutes) => {
+    expect(clockTimeOfMinutes(minutes)).toBe(minutes);
+  });
+
+  it.each([-1, 1440, 540.5, Number.NaN])('refuses %s', (minutes) => {
+    expect(() => clockTimeOfMinutes(minutes)).toThrow(RangeError);
   });
 });

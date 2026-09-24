@@ -445,6 +445,10 @@ importers:
         version: 5.8.3
 
   packages/domain:
+    dependencies:
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@heliogrid/config':
         specifier: workspace:*

@@ -1,8 +1,8 @@
 /**
  * A time of day on a 24-hour clock, as minutes past midnight — `09:00` is `540`. A market's
  * statutory calling window and its scheduled-send hour are policy numbers (`F1-36`, `F1-62`),
- * so `clockTime()` is the only door in and a consuming gate can neither compose one nor guess
- * one (`M60`).
+ * so `clockTime()` and, for a stored row, `clockTimeOfMinutes()` are the only doors in, and a
+ * consuming gate can neither compose one nor guess one (`M60`).
  *
  * Minutes rather than `"HH:MM"` because every rule that reads one COMPARES it: a floor against
  * a tenant's narrowing, a send slot against a window's close. `packages/ui`'s `TimeField` keeps
@@ -38,6 +38,20 @@ export function clockTime(hhmm: string): ClockTime {
     throw new RangeError(`a clock time is 24-hour HH:MM, not ${String(hhmm)}`);
   }
   return (Number(hours) * MINUTES_PER_HOUR + Number(minutes)) as ClockTime;
+}
+
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
+
+/**
+ * `540` → the clock time `540`: the STORED form's door. A pack row holds a clock time as the
+ * minutes this type is, so a reader re-mints it here rather than spelling it back to `HH:MM`.
+ * A whole number of minutes from midnight up to one minute before the next.
+ */
+export function clockTimeOfMinutes(minutes: number): ClockTime {
+  if (!Number.isInteger(minutes) || minutes < 0 || minutes >= MINUTES_PER_DAY) {
+    throw new RangeError(`a clock time is 0 to 1439 minutes past midnight, not ${String(minutes)}`);
+  }
+  return minutes as ClockTime;
 }
 
 /** `540` → `"09:00"` — the spelling `formatTime` renders and `TimeField` carries. */

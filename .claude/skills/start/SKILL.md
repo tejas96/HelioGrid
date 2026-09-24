@@ -32,6 +32,16 @@ surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
 ## 2. Review the ticket — assume it is wrong until checked
 
+**Check the task can be built and proven NOW, before planning it.** Name two facts with the file
+that proves each: the data it reads or writes exists on `main` (grep `packages/db/src/schema/` and the
+routes), and the code it asks for is not already there (grep for the ticket's own function and file
+names). A task whose data lands in a later block moves there; a task already built is closed as built;
+a ticket marked `**Parked:**` is never started. Each is the owner's ruling, brought with a pick.
+
+**For anything stored and read across releases — a row, a pack, a cached payload, a message shape —
+say how OLD code reads NEW data and NEW code reads OLD data.** A release rolls machine by machine
+(`docs/engineering/09-observability-and-ops.md`), so both happen: settle it at `/start`, never at `/ship`.
+
 **A question is open only after the docs are searched.** Memory, the hand-off and `deferred.md`
 are pointers, not facts: before calling any ruling open or bringing the owner options, grep
 `docs/engineering/` and `docs/tasks/` for it and name what was found, or that nothing was.

@@ -1,5 +1,3 @@
-import { marketCode } from './code';
-import { PACK_KEYS } from './keys';
 import type { MarketPack } from './pack';
 import { canonicalJson, type PackPayload, payloadOf } from './payload';
 import { packVersion, revisionOf } from './version';
@@ -26,25 +24,6 @@ export function envelopeOf(pack: MarketPack, publishedAt: string): PackEnvelope 
     publishedAt,
     pack: payloadOf(pack),
   };
-}
-
-/**
- * The envelope check, and nothing deeper: every top-level property is a `PACK_KEYS` name, the
- * market is an authored one, the revision mints. A key the payload lacks stays absent, so
- * `unauthoredKeys` reports a stored pack exactly as it reports a literal (`F1-05`).
- */
-export function packFromEnvelope(envelope: PackEnvelope): MarketPack {
-  const foreign = Object.keys(envelope.pack).filter(
-    (key) => !PACK_KEYS.some((name) => name === key),
-  );
-  if (foreign.length > 0) {
-    throw new RangeError(`a stored pack holds only the eight pack keys, not ${foreign.join(', ')}`);
-  }
-  const market = marketCode(envelope.market);
-  const version = packVersion(market, envelope.revision);
-  /* Typed code is the only writer, so the interior already has `MarketPack`'s shape. The
-     whole is parsed before any writer that is not typed code exists (`T-FCORE-017`). */
-  return { market, version, ...envelope.pack } as MarketPack;
 }
 
 /**
