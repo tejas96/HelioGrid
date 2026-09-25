@@ -25,6 +25,9 @@ tree_state() {
     | shasum | cut -c1-12
 }
 dir="$(cd "$(dirname "$out")" && pwd)/logs"; mkdir -p "$dir"; log="$dir/$id.log"
+# A log is the evidence its line hashes: writing over one leaves the older line pointing at bytes
+# that are gone, so an id is recorded once per folder.
+[ ! -e "$log" ] || { echo "record-proof: $log exists — give this proof a new id, or record into a fresh folder" >&2; exit 2; }
 tree_before="$(tree_state)"
 start="$(date -u +%FT%TZ)"
 bash -o pipefail -c "cd '$root' && $cmd" >"$log" 2>&1; code=$?

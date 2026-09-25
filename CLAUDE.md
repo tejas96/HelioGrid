@@ -79,7 +79,7 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | `/start` → `fact-checker` · `case-reviewer` · `design-reviewer` for a screen · `harness-auditor` when the task opens its block | task review, the design drawn and broken into numbered claims, both read by a second actor, and explain, before code |
 | `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
 | hooks · `.claude/rules/` · `pnpm check:touched` · `scripts/break-and-run.sh` · `pnpm check:all` | implement: the guards, loaded by path or run by hand; each new test proven red once |
-| `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` | break and review: only the surfaces the change reaches, over seeded data; a proof the author drives is recorded as it runs |
+| `/verify` → `plan-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` | break and review: only the surfaces the change reaches, over seeded data; a proof the author drives is recorded as it runs |
 | `/ship` → `break-it-reviewer` for every runtime change · `arch-reviewer` for a structural diff | owner review: gates, a second actor's review, commit on a yes, push, PR body |
 
 ## 4. Stop and ask the owner before

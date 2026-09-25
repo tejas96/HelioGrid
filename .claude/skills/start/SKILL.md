@@ -173,7 +173,8 @@ and `held` claim named: those are the claims no new proof will show. Then
 confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
 branch starts), confirm the working tree is clean (`git status --short` prints nothing — an
 uncommitted or untracked file would ride into the new branch; its owner commits or removes it
-first), then
+first), delete the proof record of every task already shipped (`.git/heliogrid-harness/<T-id>/`
+where its `Status:` reads `shipped`), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows — and stop for the go.
 

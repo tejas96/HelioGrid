@@ -30,7 +30,7 @@ before it is stale the moment that fix lands. If it already ran green
 on this exact tree in this session (nothing changed since: `git status --short` and
 `git diff --stat` identical), cite that run instead of running again. If the invariants ran
 vacuously, say so — a green run has NOT proven tenancy. Never weaken a gate. Deleted a source
-file? `pnpm turbo build --force` first, then Law 8's sweep.
+file? `pnpm turbo build --force` first; tier 0 below sweeps for its pointers.
 
 ## 2. Review sized to the diff
 
@@ -48,19 +48,18 @@ re-read after writing — is `.claude/landmines.md`'s first-match row, and lives
 rule, skill or ticket that says a fact is held cites the `mechanisms.md` row by id, read for its
 status first — never a gate named in its place (`mechanisms.md`'s own header).
 
-**Then match every fact to its assertion.** Each value, field or rule the ticket's Contract line
-and done-when lines name, and each claim (`C`, `S`, `D`) in the ticket, is listed beside
-the test line or gate that asserts it; a named fact or case with no assertion is a finding fixed
-here, before any agent is paid to find it. A `none` claim the owner saw at `/start` has no
-assertion by design: it goes in the PR body under risks, and a `held` one is listed beside its row.
+**Then check every claim has its proof, before any agent is paid to find one missing.** Each claim
+already names its proof, so this is a lookup, never a re-derivation: a `unit` or `invariant` claim
+has a CURRENT line naming it in `scripts/break-and-run.sh --stale <T-id>`'s list; a `qa-*` claim
+has a `pass` line for its step in `.git/heliogrid-harness/<T-id>/qa/`, a `qa-parity` one in
+`verdicts-parity.jsonl` there; a `recorded` claim its recorder line; a `gate` or `held` claim its
+row, which gate 32 has already checked (`M139`). A `none` claim the owner saw at `/start` has no proof by
+design: it goes in the PR body under risks. A claim with no proof is a finding fixed here.
 
-**Then break it.** Start from the ticket's cases (`C` claims): read each fix in the
-code, never derive the case again. Then hunt what that block missed. Read the diff as an attacker
-and as an EPC expert: correctness, edges, failures, null/empty/invalid, unexpected flows,
-regressions, performance, security, tenancy, money rounding, provenance, placement, duplication, a
-bypassed contract (a hand-written wire type, a raw HTTP call), complexity, design mismatch, hidden
-assumptions. An issue inside the task's scope is fixed now and its area re-reviewed; one outside it
-goes to `docs/tasks/deferred.md` (`CLAUDE.md` §8).
+The attack on the code is the second actor's (tier 2), never the author's own second pass: the
+author already attacked the design at `/start`. A finding from either reviewer inside the task's
+scope is fixed now and its area re-reviewed; one outside it goes to `docs/tasks/deferred.md`
+(`CLAUDE.md` §8).
 
 **Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
 excluded) creates a folder, adds a workspace dependency to a `package.json`, adds the FIRST import of
@@ -79,18 +78,16 @@ this and no more:
 
 **Tier 2, the second actor, for EVERY runtime change.** The author wrote the code, the tests, the
 QA plan and the stamp, and a rule obeyed by the one actor it binds is still that actor's honesty.
-Dispatch `break-it-reviewer` in `diff` mode whenever the tree's runtime digest differs from
-`origin/main`'s. It breaks every new rule in the main folder and runs the test that guards it, so
-it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
+Dispatch `break-it-reviewer` whenever the tree's runtime digest differs from
+`origin/main`'s. It breaks two claims of its own choosing in the main folder, so it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
 prompt is this and no more:
 
-> Mode `diff`. Task `<T-id>` in `docs/tasks/<module>.md`. Scratch directory `<path>` holds the
-> plan and the `verdicts-*.jsonl` files. New: `<files>`. The rules this change adds and the test
-> the author says guards each, every case (`C` claim) among them: `<rule → test file>`.
+> Task `<T-id>` in `docs/tasks/<module>.md`. Its proof record `.git/heliogrid-harness/<T-id>/`
+> holds `proofs.jsonl` and `qa/` (the plan, its review and the verdict files). New: `<files>`.
+> `arch-reviewer`: `<dispatched | not dispatched>`.
 
 A test it reports GREEN with its rule broken is fixed before anything else: it guarded nothing.
-A `stamp` finding means `/verify` runs again. When its answer is clean, delete the plan and the
-verdict files. No PR body is printed while a blocker or major from either reviewer stands.
+A `stamp` finding means `/verify` runs again. No PR body is printed while a blocker or major from either reviewer stands.
 
 Fix every blocker and major at the root cause and re-run only the gates the fix touches. One review
 per change; do not re-review the review. A review that costs more than the change is the defect
@@ -98,10 +95,10 @@ this tiering prevents.
 
 ## 3. Completeness
 
-Every done-when line of the task has its proof — a test, the `/verify` run's verdict or a gate. A line
-without one is not done, and the PR body is not printed. `scripts/break-and-run.sh --stale <T-id>`
-runs here and reads CURRENT for every red proof; its lines go into the PR body's done-when table,
-each claim beside its proof, so the red runs the build recorded reach the owner. A task that turned out to be two is
+`scripts/break-and-run.sh --stale <T-id>` runs again here, because a fix made after tier 0 may have
+staled a proof: a claim without a current proof is not done, and the PR body is not printed. Its
+lines go into the PR body's done-when table, each claim beside its proof, so the red runs the build
+recorded reach the owner. A task that turned out to be two is
 split (`/start` §3), never shipped half.
 
 **The size is stated, never enforced (`M111`, review-only).** Count the diff — `git diff --stat origin/main` plus

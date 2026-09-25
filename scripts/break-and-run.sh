@@ -16,8 +16,9 @@
 # --build rebuilds that package before the baseline, after the break and after the restore, because
 # a test in another package imports the last BUILD, never the source.
 # --task and --claims append the proof to the task's record in .git/heliogrid-harness/<T-id>/, which
-# survives the session and never enters the tree. --stale lists the recorded proofs whose file or
-# test changed since, so a proof is re-run instead of trusted.
+# survives the session and never enters the tree. --stale lists the author's recorded proofs whose
+# file, test or log changed since, so a proof is re-run instead of trusted; a reviewer's proofs are
+# listed as evidence and never make the task stale, since a reviewer's red-when-green IS a finding.
 # Exit 0: proven. 1: a run was not red by name. 2: refused before breaking anything. 3: the tree did
 # not come back. A proof that is not exit 0 proves nothing.
 set -u
@@ -53,7 +54,7 @@ for line in open(os.path.join(rec, "proofs.jsonl")):
 def blob(path):
     return subprocess.run(["git", "hash-object", path], capture_output=True, text=True).stdout.strip() if os.path.exists(path) else "gone"
 bad = 0
-for p in latest.values():
+for p in sorted(latest.values(), key=lambda p: p["actor"] != "author"):
     log = os.path.join(rec, p["log"])
     why = []
     if p["verdict"] != "pass": why.append("its last run FAILED")
@@ -61,9 +62,16 @@ for p in latest.values():
         why.append("its log is missing or altered")
     if blob(p["file"]) != p["file_sha"]: why.append(f"{p['file']} changed")
     if blob(p["test_file"]) != p["test_sha"]: why.append(f"{p['test_file']} changed")
+    if p["actor"] != "author":
+        print(f"{p['id']} {p['claims']} reviewer evidence — {'held' if not why else '; '.join(why)}")
+        continue
     print(f"{p['id']} {p['claims'] or '-'} {'CURRENT' if not why else 'STALE — ' + '; '.join(why)}")
     bad += bool(why)
-print(f"{len(latest)} proofs, {len(latest) - bad} current, {bad} stale")
+authors = sum(p["actor"] == "author" for p in latest.values())
+print(f"{authors} proofs, {authors - bad} current, {bad} stale")
+if not authors:
+    print("no author proof recorded — nothing is current")
+    sys.exit(2)
 sys.exit(1 if bad else 0)
 PY
 fi
