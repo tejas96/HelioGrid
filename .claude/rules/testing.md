@@ -34,12 +34,17 @@ holds each line and how much of it.
   only ever passed may be passing on the wrong thing: an assertion on an error MESSAGE matched the
   query it echoed back and would have passed on our own text forever — the database's verdict code
   was the fact. The red run is named in the ticket's proof beside the test.
-- **One break at a time, through `scripts/break-and-run.sh`.** It saves the file, applies the one
-  break, runs the guarding test, copies the saved file BACK — a restore by reverse edit can land on
-  another occurrence and leave a break behind — and fails unless the tree came back. A second break
-  laid over an unrestored first one proves neither.
-- **A red proof must hold, not happen.** The script passes only when EVERY run went red, so a
-  guard is proven over repeated runs (three at least), never one. A test of a race FORCES its
+- **One break at a time, through `scripts/break-and-run.sh`.** It runs the test once unbroken — a
+  test that already fails proves nothing — then saves the file, applies the one break, runs the
+  guarding test, copies the saved file BACK — a restore by reverse edit can land on another
+  occurrence and leave a break behind — and fails unless the whole tree came back, new untracked
+  files included. A second break laid over an unrestored first one proves neither. `--build <pkg>`
+  rebuilds around the break when the test reads another package's build.
+- **A red proof must hold, not happen.** The script refuses fewer than three runs and passes only
+  when EVERY run went red BY NAME — the test named with `--expect` on a vitest `FAIL` line, or the
+  `--pattern` in the output of a runner that names nothing — so a crash, a missing file or a
+  compile error never counts as red (`M140`). A proof whose test or file changed since is not
+  trusted: `scripts/break-and-run.sh --stale <T-id>` lists it, and it runs again. A test of a race FORCES its
   overlap — it holds a lock both sides need until both are seen waiting
   (`apps/api/tests/support/held-lock.ts`) — because two requests merely fired together mostly run
   one after the other, and a test that hopes they overlap stays green with its lock removed. A

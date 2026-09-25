@@ -60,17 +60,17 @@ says guards it, then break the rule and watch that test fail. A rule you found i
 the list leaves out is a finding in itself — the author did not name a guard for it:
 
 - Work in the MAIN folder, alone, one rule at a time. Before the first break, record
-  `git status --porcelain | shasum` and `git diff | shasum`. Before each break, copy the file to
-  the scratch directory.
+  `git status --porcelain | shasum` and `git diff | shasum`.
 - Break the rule with the smallest edit that makes the code wrong (drop the predicate, flip the
-  bound, remove the check). Run ONLY the test file that guards it: `pnpm exec vitest run <file>`.
+  bound, remove the check), and run ONLY the test file that guards it, through
+  `scripts/break-and-run.sh --actor reviewer --file <src> --test-file <test> --expect '<test title>'
+  -- '<break>' -- 'pnpm exec vitest run <test file>'`. It runs the test unbroken first, saves the
+  file, breaks it, runs it three times at least — one red run of a racy test proves nothing — copies
+  the file back and compares the whole tree (`.claude/rules/testing.md`). Exit 0 is proven; any
+  other exit is not.
 - A package's own tests import its `src/`. A test in ANOTHER package imports the last BUILD: when
-  the rule lives in `packages/<pkg>` and its guard is elsewhere, run
-  `pnpm --filter @heliogrid/<pkg> build` after the break AND after the restore.
-- Restore by copying the saved file back, at once, before the next break.
-- `scripts/break-and-run.sh <file> <runs> -- <break> -- <test>` does the save, the break, the runs
-  and the copy-back in one call, and passes only when every run went red. A test of a race is run
-  three times at least: one red run of a racy test proves nothing (`.claude/rules/testing.md`).
+  the rule lives in `packages/<pkg>` and its guard is elsewhere, add `--build @heliogrid/<pkg>`,
+  which rebuilds before the baseline, after the break and after the restore.
 - At the end, both hashes must equal the ones you recorded. If they do not, STOP, restore every
   saved copy, and report the paths — never `git checkout` a file, which would discard the
   author's uncommitted work.
