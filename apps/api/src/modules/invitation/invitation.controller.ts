@@ -27,9 +27,9 @@ export class InvitationController {
   handler(@Req() req: Request) {
     const res = responseOf(req);
     return tsRestHandler(invitationContract, {
-      create: async ({ body }) => ({
+      create: async ({ body, headers }) => ({
         status: 201,
-        body: await this.invitations.create(tenantIdOf(req), body, actOf(req)),
+        body: await this.invitations.create(tenantIdOf(req), body, headers, actOf(req)),
       }),
       list: async ({ query }) => ({
         status: 200,

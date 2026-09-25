@@ -14,6 +14,8 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
+import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
+import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { settingsAct } from './internal/audit-act';
@@ -38,14 +40,27 @@ export class SettingsTranchesRepository {
 
   /**
    * A new named template, never the default — unless the tenant holds no live default at all,
-   * which only a company older than the seed can be; then the first one it makes is.
+   * which only a company older than the seed can be; then the first one it makes is. A send
+   * retried with its key answers with the template the first send made (`F4-07`).
    */
   async createTrancheTemplate(
     tenantId: string,
     content: TrancheTemplateContent,
     act: Act,
-  ): Promise<TrancheTemplate> {
+    key: CreationKey | null,
+  ): Promise<Keyed<TrancheTemplate>> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      if (key !== null) {
+        await lockCreationKey(tx, key);
+        const [made] = await tx
+          .select({ id: trancheTemplate.id, fingerprint: trancheTemplate.creationFingerprint })
+          .from(trancheTemplate)
+          .where(
+            and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.creationKey, key.key)),
+          )
+          .limit(1);
+        if (made) return replayOf(await templateById(tx, tenantId, made.id), made.fingerprint, key);
+      }
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const [current] = await tx
         .select({ id: trancheTemplate.id })
@@ -67,6 +82,8 @@ export class SettingsTranchesRepository {
           archived: false,
           createdAt: new Date(act.now),
           changedAt: new Date(act.now),
+          creationKey: key?.key,
+          creationFingerprint: key?.fingerprint,
         })
         .returning({ id: trancheTemplate.id });
       if (!row) throw new Error('tranche_template insert returned no row');
@@ -80,7 +97,7 @@ export class SettingsTranchesRepository {
           act,
         ),
       );
-      return templateById(tx, tenantId, row.id);
+      return { outcome: 'created', row: await templateById(tx, tenantId, row.id) };
     });
   }
 
@@ -122,12 +139,21 @@ export class SettingsTranchesRepository {
     });
   }
 
-  /** Archived, never deleted; the default stays live until another is made default. */
+  /**
+   * Archived, never deleted; the default stays live until another is made default. Archiving an
+   * archived template is the same act repeated — a retry — and answers the template, writing
+   * nothing (`F4-07`).
+   */
   async archiveTrancheTemplate(tenantId: string, id: string, act: Act): Promise<TemplateOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      // The tenant lock BEFORE the standing is read, as save and make-default take it: two
+      // archives at once would otherwise both read "live" and both record the act.
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       const standing = await standingOf(tx, tenantId, id);
       if (standing === null) return { outcome: 'not-found' };
-      if (standing.archived) return { outcome: 'archived' };
+      if (standing.archived) {
+        return { outcome: 'done', template: await templateById(tx, tenantId, id) };
+      }
       if (standing.isDefault) return { outcome: 'is-default' };
       await tx
         .update(trancheTemplate)

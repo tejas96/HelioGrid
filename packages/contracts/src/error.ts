@@ -33,6 +33,15 @@ export const baseErrorCodes = [
 ] as const;
 
 export const baseErrorCodeSchema = z.enum(baseErrorCodes);
+
+/**
+ * A retry key that already made a record for a DIFFERENT request — another body, another person
+ * (`F4-07`). Nothing is written. Answered as 422 beside the route's own 422 codes, in an
+ * `extensibleEnum` set: the create routes GAINED this code, and a closed set that grows is a
+ * breaking change to every client built before it (`M26`) — so a reader keeps a fallback, as the
+ * 401 set's readers do. Only a send that carries a key can meet it.
+ */
+export const IDEMPOTENCY_KEY_REUSED = 'IDEMPOTENCY_KEY_REUSED' as const;
 export type BaseErrorCode = z.infer<typeof baseErrorCodeSchema>;
 
 export const errorDetailSchema = z.object({

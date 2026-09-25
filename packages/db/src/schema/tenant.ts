@@ -1,7 +1,17 @@
 import { TENANT_SEGMENTS, UI_LANGUAGES } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
-import { index, numeric, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import {
+  index,
+  numeric,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { creationKeyColumns } from './creation-key';
 import { marketPack } from './market';
 
 /** pgEnums hand-mirror domain's tuples (`M17` proves the two equal). */
@@ -38,8 +48,16 @@ export const tenant = pgTable(
     /** Declared in kWp (`M01-23`); null until the setup step that asks. */
     typicalSystemKwp: numeric('typical_system_kwp', { precision: 8, scale: 2 }),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull(),
+    ...creationKeyColumns(),
   },
   (table) => [
+    /**
+     * A signup retried with its key finds the company it made (`F4-07`). Global, not tenant-led:
+     * no company exists yet when the key is sent (`GLOBAL_UNIQUES`).
+     */
+    uniqueIndex('tenant_creation_key')
+      .on(table.creationKey)
+      .where(sql`${table.creationKey} is not null`),
     /** Likely-existing-workspace detection at signup (`M01-09`). */
     // The M01-09 steer matches case-insensitively, so the index is on the lowered pair.
     index('tenant_company_name_city_idx').on(

@@ -141,4 +141,6 @@ kind of mistake, never the story of the task it happened in.
 |---|---|---|
 | A fact the ticket names with no assertion, left for a reviewer to find | `/ship` §2 "Then match every fact to its assertion" | 1 |
 | A reused browser tab's old console errors read as the current page's | `/verify` §9 "Close each browser tab when its server stops" | 1 |
-| A new guard or recorder proven red only on the breaks its author thought of — a reviewer then found inputs it passed | the reviewer's inputs fixed and added to the row's red record in the same change | 1 |
+| A schema edit by string replacement dropped a doc comment's closing `*/`, turning the next index into comment text; the schema-parity invariant compares tables and columns, not indexes, so nothing went red | the `*/` restored; the drizzle draft's per-table index count read after every schema edit | 1 |
+| A state change written without the lock its sibling state changes take — two at once both read the old state and both recorded the act | the lock taken before the read, as its siblings do, and a forced-overlap test red without it | 1 |
+| A ticket stated facts about existing code — a guard that applies, an audit write, a test layer, a changed token — that a read of the code would have refuted | each corrected in the ticket when the build met it; `/start` §2 names the file that proves each fact | 1 |

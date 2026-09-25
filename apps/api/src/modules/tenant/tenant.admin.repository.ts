@@ -2,7 +2,9 @@ import { type Db, membershipRole, tenant, tenantMembership, userAccount } from '
 import { FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
+import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { ADMIN_DB } from '../../common/db/admin.token';
+import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { seedTenantSettings } from '../settings/settings.public';
 
 export interface TenantRow {
@@ -41,9 +43,25 @@ export class TenantAdminRepository {
     ownerUserId: string;
     ownerName: string;
     now: number;
-  }): Promise<TenantRow> {
+    key: CreationKey | null;
+  }): Promise<Keyed<TenantRow>> {
     const now = new Date(input.now);
+    const { key } = input;
     return this.db.transaction(async (tx) => {
+      // A signup retried with its key answers with the company the first send made (`F4-07`);
+      // the fingerprint binds the signer, so another person's key never reaches this company.
+      if (key !== null) {
+        await lockCreationKey(tx, key);
+        const [made] = await tx
+          .select({ ...tenantColumns(), fingerprint: tenant.creationFingerprint })
+          .from(tenant)
+          .where(eq(tenant.creationKey, key.key))
+          .limit(1);
+        if (made) {
+          const { fingerprint, ...row } = made;
+          return replayOf(row, fingerprint, key);
+        }
+      }
       const [created] = await tx
         .insert(tenant)
         .values({
@@ -54,6 +72,8 @@ export class TenantAdminRepository {
           defaultLanguage: input.defaultLanguage,
           timezone: input.timezone,
           createdAt: now,
+          creationKey: key?.key,
+          creationFingerprint: key?.fingerprint,
         })
         .returning(tenantColumns());
       if (!created) throw new Error('tenant insert returned no row');
@@ -81,7 +101,7 @@ export class TenantAdminRepository {
       // What a company has before its owner touches a setting (`M01-28`): the corridor, the
       // empty profile, the two standard splits — in this transaction, so none is ever missing.
       await seedTenantSettings(tx, { tenantId: created.id, now: input.now });
-      return created;
+      return { outcome: 'created', row: created };
     });
   }
 

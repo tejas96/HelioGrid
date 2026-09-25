@@ -8,13 +8,13 @@ import {
   type NotificationType,
 } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   type NotificationToWrite,
   recordNotification,
 } from '../../src/modules/notification/notification.repository';
-import { openPools, unseed } from '../support/fixture';
+import { openPools } from '../support/fixture';
 import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 
 /**
@@ -125,12 +125,16 @@ describe.skipIf(skip)('the notification centre, over HTTP against a migrated dat
     await http.call('POST', `/notifications/${ids.alreadyRead}/read`, {});
   });
 
+  /**
+   * Clears this suite's own notifications and leaves the COMPANY standing: every HTTP suite signs
+   * in with one development number, whose sign-in may bind to a company this suite made and write
+   * its entry there, so deleting that company races the other suites
+   * (`apps/api/tests/notifications/preferences.test.ts`).
+   */
   afterAll(async () => {
-    await unseed(pools.admin.db, {
-      companies: http.createdTenantIds.map((id) => ({ tenantId: id, companyName: '' })),
-      people: [],
-      memberships: [],
-    });
+    await pools.admin.db
+      .delete(notification)
+      .where(inArray(notification.tenantId, [...http.createdTenantIds]));
     await http.close();
     await pools.close();
   });

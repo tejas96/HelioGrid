@@ -101,6 +101,7 @@ export class TenantRepository {
       membershipId,
       'team.roles_changed',
       act,
+      null,
       async (tx, othersHold, subjectHolds) => {
         // The wire carries a list; the table holds a SET (one row per preset), so a repeated
         // preset is written once rather than tripping the unique key. Both sides of the record
@@ -133,13 +134,18 @@ export class TenantRepository {
     );
   }
 
-  /** Ends a person's access — deactivated, never deleted (`F2-20`) — under the same guard. */
+  /**
+   * Ends a person's access — deactivated, never deleted (`F2-20`) — under the same guard. A person
+   * already deactivated is the same act repeated — a retry — and answers the member, writing
+   * nothing and recording nothing (`F4-07`).
+   */
   async deactivate(tenantId: string, membershipId: string, act: Act): Promise<TransitionOutcome> {
     return this.transition(
       tenantId,
       membershipId,
       'team.member_deactivated',
       act,
+      'deactivated',
       async (tx, othersHold) => {
         // The event name IS the whole change: the person keeps every preset they held, as history.
         if (!keepsControl(othersHold)) return { outcome: 'last-owner', changePayload: null };
@@ -166,6 +172,8 @@ export class TenantRepository {
     membershipId: string,
     eventType: AuditEventType,
     act: Act,
+    /** The standing this act leaves behind: a subject already there is answered, not changed. */
+    settledAs: MembershipStatus | null,
     change: (
       tx: TenantScopedDb,
       othersHold: readonly RolePreset[],
@@ -178,6 +186,11 @@ export class TenantRepository {
         eq(tenantMembership.tenantId, tenantId),
         eq(tenantMembership.id, membershipId),
       );
+      const memberAt = async (): Promise<MemberRow> => {
+        const [member] = await withRoles(tx, tenantId, await memberQuery(tx).where(subjectWhere));
+        if (!member) throw new Error('the membership vanished inside its own transaction');
+        return member;
+      };
       const [subject] = await tx
         .select({ status: tenantMembership.status })
         .from(tenantMembership)
@@ -186,6 +199,7 @@ export class TenantRepository {
       // Neither refusal is one of F2-22's blocked attempts — that list names the last-Owner and
       // last-Manage-team guards — and there is no subject in this company to record either under.
       if (!subject) return { outcome: 'not-found' };
+      if (subject.status === settledAs) return { outcome: 'done', member: await memberAt() };
       if (!acceptsAdministration(subject.status)) return { outcome: 'not-active' };
       const held = await tx
         .select({
@@ -212,9 +226,7 @@ export class TenantRepository {
         changePayload: result.changePayload,
       });
       if (result.outcome === 'last-owner') return { outcome: 'last-owner' };
-      const [member] = await withRoles(tx, tenantId, await memberQuery(tx).where(subjectWhere));
-      if (!member) throw new Error('the membership vanished inside its own transaction');
-      return { outcome: 'done', member };
+      return { outcome: 'done', member: await memberAt() };
     });
   }
 }

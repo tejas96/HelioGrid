@@ -49,15 +49,17 @@ rule, skill or ticket that says a fact is held cites the `mechanisms.md` row by 
 status first — never a gate named in its place (`mechanisms.md`'s own header).
 
 **Then match every fact to its assertion.** Each value, field or rule the ticket's Contract line
-and done-when lines name is listed beside the test line or gate that asserts it; a named fact with
-no assertion is a finding fixed here, before any agent is paid to find it.
+and done-when lines name, and each case under its `**Broken at /start:**` block, is listed beside
+the test line or gate that asserts it; a named fact or case with no assertion is a finding fixed
+here, before any agent is paid to find it.
 
-**Then break it.** Read the diff as an attacker and as an EPC expert: correctness, edges, failures,
-null/empty/invalid, unexpected flows, regressions, performance, security, tenancy, money rounding,
-provenance, placement, duplication, a bypassed contract (a hand-written wire type, a raw HTTP
-call), complexity, design mismatch, hidden assumptions. An issue
-inside the task's scope is fixed now and its area re-reviewed; one outside it goes to
-`docs/tasks/deferred.md` (`CLAUDE.md` §8).
+**Then break it.** Start from the ticket's `**Broken at /start:**` cases: read each fix in the
+code, never derive the case again. Then hunt what that block missed. Read the diff as an attacker
+and as an EPC expert: correctness, edges, failures, null/empty/invalid, unexpected flows,
+regressions, performance, security, tenancy, money rounding, provenance, placement, duplication, a
+bypassed contract (a hand-written wire type, a raw HTTP call), complexity, design mismatch, hidden
+assumptions. An issue inside the task's scope is fixed now and its area re-reviewed; one outside it
+goes to `docs/tasks/deferred.md` (`CLAUDE.md` §8).
 
 **Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
 excluded) creates a folder, adds a workspace dependency to a `package.json`, adds the FIRST import of
@@ -83,7 +85,7 @@ prompt is this and no more:
 
 > Mode `diff`. Task `<T-id>` in `docs/tasks/<module>.md`. Scratch directory `<path>` holds the
 > plan and the `verdicts-*.jsonl` files. New: `<files>`. The rules this change adds and the test
-> the author says guards each: `<rule → test file>`.
+> the author says guards each, every `Broken at /start` case among them: `<rule → test file>`.
 
 A test it reports GREEN with its rule broken is fixed before anything else: it guarded nothing.
 A `stamp` finding means `/verify` runs again. When its answer is clean, delete the plan and the

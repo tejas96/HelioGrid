@@ -24,11 +24,12 @@ export class TenantController {
   handler(@Req() req: Request) {
     const res = responseOf(req);
     return tsRestHandler(tenantContract, {
-      create: async ({ body }) => {
+      create: async ({ body, headers }) => {
         const created = await this.tenants.create(
           sessionOf(req),
           sessionIdOf(req),
           body,
+          headers,
           Date.now(),
         );
         setTokenCookie(res, created.token.token, created.token.expiresAt);

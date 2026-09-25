@@ -7,6 +7,7 @@ import type {
   SessionProjection,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
+import { createCreationKeys } from '../client/creation-key';
 import { normalizeClientError, toApiError } from '../errors/errors';
 
 /**
@@ -28,11 +29,14 @@ export interface InvitationRepository {
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
 export function createInvitationRepository(api: ApiClient): InvitationRepository {
+  const creationKeys = createCreationKeys();
   return {
     async create(input) {
       try {
-        const res = await api.invitation.create({ body: input });
+        const headers = creationKeys.headersFor(input);
+        const res = await api.invitation.create({ body: input, headers });
         if (res.status !== 201) throw toApiError(res);
+        creationKeys.settle();
         return res.body;
       } catch (error) {
         throw normalizeClientError(error);

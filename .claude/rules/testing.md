@@ -34,9 +34,16 @@ holds each line and how much of it.
   only ever passed may be passing on the wrong thing: an assertion on an error MESSAGE matched the
   query it echoed back and would have passed on our own text forever — the database's verdict code
   was the fact. The red run is named in the ticket's proof beside the test.
-- **One break at a time.** Save the file, break it, run the one test, restore it by copying the
-  saved file back, and check the tree is back before the next break. A second break laid over an
-  unrestored first one proves neither.
+- **One break at a time, through `scripts/break-and-run.sh`.** It saves the file, applies the one
+  break, runs the guarding test, copies the saved file BACK — a restore by reverse edit can land on
+  another occurrence and leave a break behind — and fails unless the tree came back. A second break
+  laid over an unrestored first one proves neither.
+- **A red proof must hold, not happen.** The script passes only when EVERY run went red, so a
+  guard is proven over repeated runs (three at least), never one. A test of a race FORCES its
+  overlap — it holds a lock both sides need until both are seen waiting
+  (`apps/api/tests/support/held-lock.ts`) — because two requests merely fired together mostly run
+  one after the other, and a test that hopes they overlap stays green with its lock removed. A
+  break a reviewer names that the author did not is run the same way and written into the ticket.
 - **Coverage lands WITH the slice** (Law 9), per glob, at 100% (`M71`).
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
   against real state; a unit test proves one decision at its edges. Neither substitutes for the

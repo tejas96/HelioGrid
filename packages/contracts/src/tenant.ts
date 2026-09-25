@@ -1,6 +1,8 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
+  createHeadersSchema,
+  extensibleEnum,
   membershipStatusSchema,
   paginated,
   paginationQuerySchema,
@@ -10,7 +12,7 @@ import {
   tenantSegmentSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 import { uiLanguageResponseSchema } from './locale';
 import { marketCodeSchema } from './market';
 import { sessionProjectionSchema } from './session';
@@ -98,12 +100,15 @@ export const tenantContract = c.router({
   create: {
     method: 'POST',
     path: '/tenants',
+    headers: createHeadersSchema,
     body: createTenantSchema,
     summary:
-      'Company signup — the tenant, the owner membership and the owner role in one transaction',
+      'Company signup — the tenant, the owner membership and the owner role in one transaction; the same retry key answers with the same company',
     responses: {
       201: sessionProjectionSchema,
       401: unauthenticated,
+      /** No market is authored for the phone; or the retry key made a company for another request. */
+      422: errorEnvelope(extensibleEnum(['DOMAIN_RULE_VIOLATION', IDEMPOTENCY_KEY_REUSED])),
     },
   },
   me: {

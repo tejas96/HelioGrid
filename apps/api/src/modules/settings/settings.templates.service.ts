@@ -1,8 +1,10 @@
-import type {
-  ProposalTemplate,
-  TimelineTemplate,
-  TrancheTemplate as TrancheTemplateWire,
-  TrancheTemplateWrite,
+import {
+  type CreateHeaders,
+  type ProposalTemplate,
+  type TimelineTemplate,
+  type TrancheTemplate as TrancheTemplateWire,
+  type TrancheTemplateWrite,
+  tenantSettingsContract,
 } from '@heliogrid/contracts';
 import {
   allocationVerdict,
@@ -18,6 +20,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
+import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import {
   perLanguageWire,
@@ -42,6 +45,7 @@ export class SettingsTemplatesService {
     @Inject(SettingsTemplatesRepository) private readonly scoped: SettingsTemplatesRepository,
     @Inject(SettingsTranchesRepository) private readonly tranches: SettingsTranchesRepository,
     @Inject(SettingsService) private readonly settings: SettingsService,
+    @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
 
   async proposalTemplate(tenantId: string): Promise<ProposalTemplate> {
@@ -87,11 +91,13 @@ export class SettingsTemplatesService {
   async createTrancheTemplate(
     tenantId: string,
     body: TrancheTemplateWrite,
+    headers: CreateHeaders,
     act: Act,
   ): Promise<TrancheTemplateWire> {
-    return trancheTemplateWire(
-      await this.tranches.createTrancheTemplate(tenantId, wholeContent(body), act),
-    );
+    const route = tenantSettingsContract.createTrancheTemplate;
+    const key = creationKeyOf(headers, act.actorUserId, route, body);
+    const keyed = await this.tranches.createTrancheTemplate(tenantId, wholeContent(body), act, key);
+    return trancheTemplateWire(this.replies.rowOf(keyed, route, tenantId));
   }
 
   async saveTrancheTemplate(

@@ -6,7 +6,7 @@ import {
   taxRegistrationSchema,
   taxRegistrationsSchema,
 } from './business-profile';
-import { uuidSchema } from './common';
+import { createHeadersSchema, extensibleEnum, uuidSchema } from './common';
 import { labelSchema } from './document-content';
 import {
   brandingSchema,
@@ -16,7 +16,7 @@ import {
   trancheTemplateSchema,
   trancheTemplateWriteSchema,
 } from './document-templates';
-import { baseError, errorEnvelope } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
 import { uiLanguageResponseSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
 
@@ -239,12 +239,13 @@ export const tenantSettingsContract = c.router({
   createTrancheTemplate: {
     method: 'POST',
     path: '/settings/tranche-templates',
+    headers: createHeadersSchema,
     body: trancheTemplateWriteSchema,
     summary: 'Add a named template — refused unless its lines total exactly 100.00',
     responses: {
       201: trancheTemplateSchema,
       ...guarded,
-      422: errorEnvelope(tenantSettingsErrorCodeSchema.extract(['TRANCHES_NOT_WHOLE'])),
+      422: errorEnvelope(extensibleEnum(['TRANCHES_NOT_WHOLE', IDEMPOTENCY_KEY_REUSED])),
     },
   },
   saveTrancheTemplate: {

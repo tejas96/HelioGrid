@@ -1,12 +1,4 @@
-import {
-  invitation,
-  invitationRole,
-  type TenantPool,
-  type TenantScopedDb,
-  tenant,
-  tenantMembership,
-  userAccount,
-} from '@heliogrid/db';
+import { invitation, invitationRole, type TenantPool, type TenantScopedDb } from '@heliogrid/db';
 import {
   type InvitationStatus,
   inMatrixOrder,
@@ -14,13 +6,22 @@ import {
   invitationsSince,
   inviteCapReached,
   type RolePreset,
-  type UiLanguage,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, gt, inArray, lte, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
+import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
+import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
+import {
+  hasLiveInvite,
+  isOnTeam,
+  type SendFacts,
+  sendFacts,
+  sentSince,
+  statusPredicate,
+} from './invitation.send.repository';
 
 export interface InvitationRow {
   readonly id: string;
@@ -42,20 +43,13 @@ export interface InviteToSend {
   readonly tokenHash: string;
 }
 
-/** What the message needs and only the tenant's own rows know. */
-export interface SendFacts {
-  readonly inviterName: string;
-  readonly companyName: string;
-  readonly defaultLanguage: UiLanguage;
-}
-
 /**
  * How a send ended (`M01-12`, `M01-04`): the invite as it now stands, or the one reason nothing
  * was sent — the phone is already on this team, a live invite already went to it, or the day's
  * cap is reached.
  */
 export type CreateOutcome =
-  | { readonly outcome: 'done'; readonly invitation: InvitationRow }
+  | Keyed<InvitationRow>
   | { readonly outcome: 'already-member' | 'already-invited' | 'capped' };
 
 export type RevokeOutcome =
@@ -75,15 +69,23 @@ export class InvitationRepository {
   /**
    * The send, in ONE tenant transaction under the tenant lock: the three checks, the rows, the
    * entry, and the message itself. A carrier that refuses rolls the invite back, so the owner
-   * retries and a link that never arrived counts against nothing.
+   * retries and a link that never arrived counts against nothing. A send retried with its key
+   * answers with the invite the first send made, BEFORE the checks — which would otherwise call
+   * that invite "already invited" — and sends no second message (`F4-07`).
    */
   async create(
     tenantId: string,
     invite: InviteToSend,
     act: Act,
+    key: CreationKey | null,
     deliver: (facts: SendFacts) => Promise<void>,
   ): Promise<CreateOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      if (key !== null) {
+        await lockCreationKey(tx, key);
+        const earlier = await madeWithKey(tx, tenantId, key);
+        if (earlier !== null) return earlier;
+      }
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
       if (await isOnTeam(tx, tenantId, invite.phoneE164)) return { outcome: 'already-member' };
       if (await hasLiveInvite(tx, tenantId, invite.phoneE164, act.now)) {
@@ -103,6 +105,8 @@ export class InvitationRepository {
           status: 'pending',
           sentAt: new Date(act.now),
           expiresAt: new Date(invitationExpiresAt(act.now)),
+          creationKey: key?.key,
+          creationFingerprint: key?.fingerprint,
         })
         .returning(invitationColumns());
       if (!row) throw new Error('invitation insert returned no row');
@@ -113,7 +117,7 @@ export class InvitationRepository {
         .values(roles.map((rolePreset) => ({ tenantId, invitationId: row.id, rolePreset })));
       await recordAuditEntry(tx, inviteAct('team.invite_sent', tenantId, row.id, act));
       await deliver(await sendFacts(tx, tenantId, act.actorUserId));
-      return { outcome: 'done', invitation: { ...row, roles } };
+      return { outcome: 'created', row: { ...row, roles } };
     });
   }
 
@@ -141,6 +145,8 @@ export class InvitationRepository {
   /**
    * Withdraws an invitation the store still holds as pending, run out or not: the link stops
    * landing and the record stays (`M01-12`). Anything already answered has nothing to withdraw.
+   * A revoked one is the same act repeated — a retry — and answers the invite, writing nothing
+   * (`F4-07`).
    */
   async revoke(tenantId: string, id: string, act: Act): Promise<RevokeOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
@@ -155,7 +161,7 @@ export class InvitationRepository {
           ),
         )
         .returning(invitationColumns());
-      if (!row) return { outcome: await refusalFor(tx, tenantId, id) };
+      if (!row) return refusalFor(tx, tenantId, id);
       await recordAuditEntry(tx, inviteAct('team.invite_revoked', tenantId, id, act));
       const [revoked] = await withRoles(tx, tenantId, [row]);
       if (!revoked) throw new Error('the invitation vanished inside its own transaction');
@@ -164,94 +170,43 @@ export class InvitationRepository {
   }
 }
 
-/** Why a revoke touched nothing: no such invite in this company, or one already answered. */
+/**
+ * Why a revoke touched nothing: no such invite in this company, one already revoked — the retry,
+ * answered with the invite — or one already answered by the invitee.
+ */
 async function refusalFor(
   tx: TenantScopedDb,
   tenantId: string,
   id: string,
-): Promise<'not-found' | 'not-pending'> {
+): Promise<RevokeOutcome> {
   const [row] = await tx
-    .select({ id: invitation.id })
+    .select(invitationColumns())
     .from(invitation)
     .where(and(eq(invitation.tenantId, tenantId), eq(invitation.id, id)))
     .limit(1);
-  return row ? 'not-pending' : 'not-found';
+  if (!row) return { outcome: 'not-found' };
+  if (row.status !== 'revoked') return { outcome: 'not-pending' };
+  const [revoked] = await withRoles(tx, tenantId, [row]);
+  if (!revoked) throw new Error('the invitation vanished inside its own transaction');
+  return { outcome: 'done', invitation: revoked };
 }
 
-/** A phone that already holds a membership here, in any status: a leaver is not re-invited (`F2-20`). */
-async function isOnTeam(tx: TenantScopedDb, tenantId: string, phoneE164: string): Promise<boolean> {
-  const [row] = await tx
-    .select({ id: tenantMembership.id })
-    .from(tenantMembership)
-    .innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId))
-    .where(and(eq(tenantMembership.tenantId, tenantId), eq(userAccount.phoneE164, phoneE164)))
-    .limit(1);
-  return row !== undefined;
-}
-
-/** A pending, unexpired invite to this phone; an expired one may be sent again. */
-async function hasLiveInvite(
+/** The invite an earlier send with this key made, read as that send's answer — or none. */
+async function madeWithKey(
   tx: TenantScopedDb,
   tenantId: string,
-  phoneE164: string,
-  now: number,
-): Promise<boolean> {
-  const [row] = await tx
-    .select({ id: invitation.id })
+  key: CreationKey,
+): Promise<Keyed<InvitationRow> | null> {
+  const [made] = await tx
+    .select({ ...invitationColumns(), fingerprint: invitation.creationFingerprint })
     .from(invitation)
-    .where(
-      and(
-        eq(invitation.tenantId, tenantId),
-        eq(invitation.inviteePhoneE164, phoneE164),
-        statusPredicate('pending', now),
-      ),
-    )
+    .where(and(eq(invitation.tenantId, tenantId), eq(invitation.creationKey, key.key)))
     .limit(1);
-  return row !== undefined;
-}
-
-/** Every send in the cap's window, whatever became of it: each cost a message (`M01-04`). */
-async function sentSince(tx: TenantScopedDb, tenantId: string, since: number): Promise<number> {
-  const [row] = await tx
-    .select({ n: count() })
-    .from(invitation)
-    .where(and(eq(invitation.tenantId, tenantId), gt(invitation.sentAt, new Date(since))));
-  return row?.n ?? 0;
-}
-
-async function sendFacts(
-  tx: TenantScopedDb,
-  tenantId: string,
-  inviterUserId: string,
-): Promise<SendFacts> {
-  const [company] = await tx
-    .select({ companyName: tenant.companyName, defaultLanguage: tenant.defaultLanguage })
-    .from(tenant)
-    .where(eq(tenant.id, tenantId))
-    .limit(1);
-  const [inviter] = await tx
-    .select({ name: userAccount.name })
-    .from(userAccount)
-    .where(eq(userAccount.id, inviterUserId))
-    .limit(1);
-  if (!company || !inviter) throw new Error('the company or the inviter vanished inside the send');
-  return { ...company, inviterName: inviter.name ?? '' };
-}
-
-/**
- * The SQL twin of domain's `invitationStatus`, for the listing alone: `expired` is a pending row
- * past its expiry, and the (tenant_id, status, expires_at) index is built for exactly this read.
- * Every write reads the row and asks domain instead.
- */
-function statusPredicate(status: InvitationStatus | undefined, now: number) {
-  if (status === undefined) return undefined;
-  if (status === 'pending') {
-    return and(eq(invitation.status, 'pending'), gt(invitation.expiresAt, new Date(now)));
-  }
-  if (status === 'expired') {
-    return and(eq(invitation.status, 'pending'), lte(invitation.expiresAt, new Date(now)));
-  }
-  return eq(invitation.status, status);
+  if (!made) return null;
+  const { fingerprint, ...row } = made;
+  const [withItsRoles] = await withRoles(tx, tenantId, [row]);
+  if (!withItsRoles) throw new Error('the invitation vanished inside its own transaction');
+  return replayOf(withItsRoles, fingerprint, key);
 }
 
 function inviteAct(

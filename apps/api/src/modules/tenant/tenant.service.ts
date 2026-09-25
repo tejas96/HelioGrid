@@ -1,11 +1,13 @@
-import type {
-  AssignRoles,
-  CreateTenant,
-  Member,
-  Paginated,
-  PaginationQuery,
-  SessionProjection,
-  Tenant,
+import {
+  type AssignRoles,
+  type CreateHeaders,
+  type CreateTenant,
+  type Member,
+  type Paginated,
+  type PaginationQuery,
+  type SessionProjection,
+  type Tenant,
+  tenantContract,
 } from '@heliogrid/contracts';
 import { marketOfPhone, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import {
@@ -16,6 +18,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
+import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
@@ -35,14 +38,18 @@ export class TenantService {
     @Inject(TenantRepository) private readonly scoped: TenantRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(AuthService) private readonly auth: AuthService,
+    @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
 
   async create(
     session: SessionProjection,
     sessionId: string,
     body: CreateTenant,
+    headers: CreateHeaders,
     now: number,
   ): Promise<{ projection: SessionProjection; token: { token: string; expiresAt: number } }> {
+    const route = tenantContract.create;
+    const key = creationKeyOf(headers, session.actor.userId, route, body);
     const pack = marketOfPhone(await this.markets.currentPacks(), session.actor.phoneE164);
     if (pack === null) {
       throw new ContractException(
@@ -51,7 +58,7 @@ export class TenantService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    const created = await this.crossTenant.createWithOwner({
+    const keyed = await this.crossTenant.createWithOwner({
       companyName: body.companyName,
       city: body.city,
       marketCode: pack.market,
@@ -61,7 +68,10 @@ export class TenantService {
       ownerUserId: session.actor.userId,
       ownerName: body.ownerName,
       now,
+      key,
     });
+    // A replay adopts the SAME company again and mints a fresh token: no token is ever stored.
+    const created = this.replies.rowOf(keyed, route, null);
     return this.auth.adoptTenant(sessionId, session.actor.userId, created.id, now);
   }
 

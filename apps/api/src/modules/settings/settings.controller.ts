@@ -101,9 +101,9 @@ export class SettingsController {
         status: 200,
         body: await this.templates.trancheTemplates(tenantId()),
       }),
-      createTrancheTemplate: async ({ body }) => ({
+      createTrancheTemplate: async ({ body, headers }) => ({
         status: 201,
-        body: await this.templates.createTrancheTemplate(tenantId(), body, actOf(req)),
+        body: await this.templates.createTrancheTemplate(tenantId(), body, headers, actOf(req)),
       }),
       saveTrancheTemplate: async ({ params, body }) => ({
         status: 200,

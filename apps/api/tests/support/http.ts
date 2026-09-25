@@ -35,8 +35,16 @@ export interface Reply<T = unknown> {
 export interface Http {
   readonly app: INestApplication;
   readonly baseUrl: string;
-  /** With the jar. `body` is JSON-encoded; a reply body is parsed when it is JSON, else null. */
-  call<T = unknown>(method: string, path: string, body?: unknown): Promise<Reply<T>>;
+  /**
+   * With the jar. `body` is JSON-encoded; a reply body is parsed when it is JSON, else null.
+   * `headers` are sent as given — the retry key a create carries (`F4-07`).
+   */
+  call<T = unknown>(
+    method: string,
+    path: string,
+    body?: unknown,
+    headers?: Record<string, string>,
+  ): Promise<Reply<T>>;
   /** With NO credential at all — what an unauthenticated caller sends. */
   callAnonymously<T = unknown>(method: string, path: string, body?: unknown): Promise<Reply<T>>;
   /** The development number, through the request and verify routes. */
@@ -102,8 +110,9 @@ export async function bootHttp(): Promise<Http> {
     path: string,
     body: unknown,
     withJar: boolean,
+    extra: Record<string, string> = {},
   ): Promise<Reply<T>> => {
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = { ...extra };
     if (body !== undefined) headers['content-type'] = 'application/json';
     if (withJar && jar.size > 0) headers.cookie = cookieHeader();
     // biome-ignore lint/style/noRestrictedGlobals: this harness is the RAW peer the api serves — it proves the guard, the cookies and the envelope, which the typed client exists to hide from a screen; nothing here ships.
@@ -129,7 +138,7 @@ export async function bootHttp(): Promise<Http> {
     app,
     baseUrl,
     createdTenantIds,
-    call: (method, path, body) => send(method, path, body, true),
+    call: (method, path, body, headers) => send(method, path, body, true, headers),
     callAnonymously: (method, path, body) => send(method, path, body, false),
     async signIn() {
       const challenge = expectStatus(

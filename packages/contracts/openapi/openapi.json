@@ -1399,7 +1399,16 @@
         "tags": [
           "invitation"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Body",
           "content": {
@@ -1705,8 +1714,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "DOMAIN_RULE_VIOLATION"
+                          "x-extensible-enum": [
+                            "DOMAIN_RULE_VIOLATION",
+                            "IDEMPOTENCY_KEY_REUSED"
                           ]
                         },
                         "message": {
@@ -5166,11 +5176,20 @@
     },
     "/tenants": {
       "post": {
-        "summary": "Company signup — the tenant, the owner membership and the owner role in one transaction",
+        "summary": "Company signup — the tenant, the owner membership and the owner role in one transaction; the same retry key answers with the same company",
         "tags": [
           "tenant"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Body",
           "content": {
@@ -5323,6 +5342,62 @@
                           "x-extensible-enum": [
                             "UNAUTHENTICATED",
                             "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "DOMAIN_RULE_VIOLATION",
+                            "IDEMPOTENCY_KEY_REUSED"
                           ]
                         },
                         "message": {
@@ -11657,7 +11732,16 @@
         "tags": [
           "tenantSettings"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Body",
           "content": {
@@ -11996,8 +12080,9 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "enum": [
-                            "TRANCHES_NOT_WHOLE"
+                          "x-extensible-enum": [
+                            "TRANCHES_NOT_WHOLE",
+                            "IDEMPOTENCY_KEY_REUSED"
                           ]
                         },
                         "message": {

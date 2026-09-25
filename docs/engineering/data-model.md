@@ -2851,7 +2851,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
 | F4 | Server truth: identifiers and money server-assigned; server apply order, capture time display-only (F4-04, F4-19) | server-assigned ids on all entities; activity (capture_time + apply order), survey_version | yes |
-| F4 | Survey versioned-append + idempotent submissions (F4-07, F4-14, F4-25) | survey → survey_version (immutable chain, version-kept notice) | yes |
+| F4 | Survey versioned-append + idempotent submissions (F4-07, F4-14, F4-25) | survey → survey_version (immutable chain, version-kept notice); `creation_key` + `creation_fingerprint` on every row a create route writes — tenant, invitation, tranche_template (migration 0012, T-FPLAT-011) | yes |
 | F4 | Design optimistic version check, no merge (F4-15) | design (server version basis) | yes |
 | F4 | Lead per-field LWW + mandatory activity entry + stage machine (F4-16) | lead → activity (kind, actor_type, actor_ref, capture_time, server_apply_order, body) — activity defines NO field/old/new columns, so the changed-field triple is carried only inside free-text body; lead → lead_stage_transition covers the stage machine | partial (per-field LWW's changed-field record is unmodeled; audit_log_entry.change_payload carries old→new for audited events only) |
 | F4 | Visit status forward-only (F4-17) | field_visit / survey_visit status | yes |

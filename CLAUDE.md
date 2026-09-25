@@ -76,7 +76,7 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | kit | step |
 |---|---|
 | the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | design: the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
-| `/start` → `break-it-reviewer` harness audit when the task opens its block | task review and explain, before code |
+| `/start` → `break-it-reviewer` harness audit when the task opens its block | task review, the design drawn and broken, and explain, before code |
 | `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
 | hooks · `.claude/rules/` · `pnpm check:all` | implement: the guards, loaded by path or run by hand |
 | `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches, over seeded data |
