@@ -16,11 +16,11 @@ a row that leads into the module that owns it.
 |---|---|---|
 | The active blocker (`M08-21`) | status · data · action | the first region: the party as its chip; the reason, which is content; waiting since, expected until — a named gap when unknown — and the measured wait as label–value rows; for a utility wait, the utility's name (`M08-28`). ONE act: clear it |
 | No active blocker (`M08-21`) | teaching · action | the block's one line (*No blockers — nothing is waiting on anyone*) and ONE act, *Set blocker*, opening `SCR-M08-01`'s sheet unchanged — its line that the customer sees who and when, never the reason |
-| A due tranche that is unpaid (`M11-53`, `M08-38`) | data · action | the second region: amount, due date and days overdue as label–value rows, and ONE act — request the payment. With a connected channel its one line says it sends from the tenant's channel, and the delivery state is a chip afterwards. With none, the act copies the composed message and no delivery state is drawn anywhere |
+| A due tranche that is unpaid (`M11-53`, `M08-38`) | data · action | the second region: amount, due date and days overdue as label–value rows, and ONE act — request the payment. With a connected channel its one line says it sends from the tenant's channel, and the delivery state is a chip afterwards. With none, the act copies the composed message, and no delivery state and no last-request date are drawn anywhere: a copy-paste send is not recorded (`M11-07`) |
 | The stage timeline | data | the nine stages by their pack labels, the date each was reached, and the current one with its days in the stage — this region's ONE figure. A skipped stage stays in the chain, marked skipped (`M08-09`); a stage reached twice after a backward move shows its latest date, both moves being in the activity (`M08-14`) |
 | Moving a stage (`M08-14`, `M08-19`) | action | *Move stage*, opening `SCR-M08-01`'s confirm unchanged: what falls due, the customer's link, the skip offer, and *Start handover* when the next stage is Handed over |
 | The approved design and the accepted proposal (`M08-16`) | more detail | two read-only summaries, each naming the version in force, each a row leading into its module. Size and value carry their tier |
-| The payments (`M08-16`) | data · more detail | tranche rows — amount, share, a state chip — and a row leading to the payments screen. No control here records money: *Record a payment* is a row into `M11`'s screen, drawn only for holders of `F2.M11.record-payments` (`M08-19`) |
+| The payments (`M08-16`) | data · more detail | tranche rows — amount, share, its date where it has one (received-on or due-on), a state chip — and a row leading to the payments screen. No control here records money: *Record a payment* is a row into `M11`'s screen, drawn only for holders of `F2.M11.record-payments` (`M08-19`) |
 | A money figure that cannot be recomputed (`F8-12`) | status | its provisional mark, on the figure |
 | The documents | data · more detail | the verified count, and a row leading to `SCR-M08-03`, where documents and photos are uploaded (`M08-19`) |
 | The installation checklist | data · more detail | its progress as a count, and a row leading to `SCR-M08-04` |
@@ -30,7 +30,7 @@ a row that leads into the module that owns it.
 | A block with nothing in it | teaching | ONE line saying so. A block never disappears |
 | No design, or no payment terms | data | ONE plain line in that block. Never a placeholder design, never a fabricated row. With no design, the line leads to the proposal's own indicative labelling (`M06-04`) |
 | An OPEX or PPA project | fixed note | the brief's own line — monthly energy billing is handled outside this platform — drawn once, as written |
-| Hand over | action | a secondary act. While checklist rows are pending its ONE line says how many, and leads to them |
+| Hand over (`M08-32`, `M08-46`) | action | only when the next stage is Handed over, the Stage region's act becomes *Start handover* (`SCR-M08-06`); while documents are pending its ONE line says how many and leads to `SCR-M08-03`. Mid-chain there is no handover act |
 | Cancelling (`M08-51`, `N8`) | action | `SCR-M08-01`'s confirm, unchanged |
 | A person with read scope only | status | every block in full; no act is drawn, and nothing is greyed |
 | A cancelled project (`M08-51`, `M08-53`) | status · data | a *Cancelled* chip in the header and the reason as a label–value row. Every block stays readable, receipts included; no act is drawn, because the state is terminal |
