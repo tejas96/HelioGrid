@@ -27,9 +27,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-002 · Project Detail
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M08-16 (P0), M08-17 (P0), M08-21 (P0), M08-27 (P0), M08-38 (P0)
-**DESIGN:** SCR-M08-02 → PENDING
+**DESIGN:** SCR-M08-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+States.dc.html · States Desktop https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+States+Desktop.dc.html · Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+Language.dc.html
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-02-project-detail.md`; they are the specification.
 
