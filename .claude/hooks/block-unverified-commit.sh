@@ -1,47 +1,50 @@
 #!/usr/bin/env bash
-# PreToolUse(Bash): a commit of a RUNTIME change waits for /verify's stamp (mechanisms.md M113).
-# The stamp is the ticket's `**Verified:** digest <12 hex> …` line, written by /verify from the
-# runtime tree it drove (scripts/verify-digest.sh). This hook recomputes the digest of the STAGED
-# tree and refuses the commit when no task file carries it. A tree whose runtime digest equals
-# origin/main's — docs, ci, config — needs no stamp. The author's own driving is not a stamp.
-#
-# The index is the truth here, so staging and committing in ONE command is refused: stage in one
-# call, commit in the next, and the hook reads what the commit will write. `-a`/`--all` stages at
-# commit time and is refused for the same reason.
+# git pre-commit and pre-merge-commit, the first step of package.json's `precommit` (mechanisms.md
+# M113): a commit of a RUNTIME change waits for /verify's stamp — the ticket's `**Verified:** digest
+# <12 hex> …` line, written by /verify from the runtime tree it drove (scripts/verify-digest.sh). git
+# runs this with GIT_INDEX_FILE naming the exact index it is about to commit — a pathspec commit, `git
+# -c …`, an absolute path to git, a merge included — so everything below reads what lands:
+#   · the digest and the proofs are judged by the STAGED copies of their scripts, so an unstaged edit
+#     to a script cannot switch this check off — a changed script has to ride the commit, in review;
+#   · the stamp must be in a task file as STAGED, so it rides the commit it vouches for;
+#   · a tree whose runtime digest equals the branch's merge base with origin/main — docs, ci, config,
+#     tests — needs no stamp, nor one equal to origin/main's own tree (main merged in before the
+#     task commits its work).
+# A test does not move the digest, so a test the commit weakens is caught another way: every red
+# proof the bound task's author recorded must read CURRENT against the index (break-and-run.sh
+# --stale --index, M140). On a detached HEAD, every bound task's proofs are read.
 set -euo pipefail
 
-# A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
+# A guard that cannot run fails closed.
 for tool in python3 shasum; do
-  command -v "$tool" >/dev/null || { echo "Blocked: this guard needs $tool on PATH and cannot run without it (M113)." >&2; exit 2; }
+  command -v "$tool" >/dev/null || { echo "Blocked: this commit check needs $tool on PATH and cannot run without it (M113)." >&2; exit 1; }
 done
 
-cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')"
-args="$(printf '%s' "$cmd" | python3 -c '
-import re, sys
-s = sys.stdin.read()
-s = re.sub(r"<<-?\x27?\"?(\w+)\x27?\"?.*?^\1", " ", s, flags=re.S | re.M)  # heredocs
-s = re.sub(r"\"(?:[^\"\\\\]|\\\\.)*\"", " ", s)                            # "..."
-s = re.sub(r"\x27[^\x27]*\x27", " ", s)                                     # '"'"'...'"'"'
-print(s)
-')"
+cd "$(git rev-parse --show-toplevel)"
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+git show :scripts/verify-digest.sh > "$work/verify-digest.sh"
+git show :scripts/break-and-run.sh > "$work/break-and-run.sh"
 
-is_commit() { printf '%s' "$args" | grep -qE '(^|[[:space:];&|(])git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?commit([[:space:]]|$)'; }
-is_add() { printf '%s' "$args" | grep -qE '(^|[[:space:];&|(])git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?add([[:space:]]|$)'; }
-commit_segment() { printf '%s' "$args" | tr ';|&\n' '\n\n\n\n' | grep -E 'git[[:space:]]+(-C[[:space:]]+[^[:space:]]+[[:space:]]+)?commit([[:space:]]|$)' || true; }
-stages_at_commit() { commit_segment | grep -qE '[[:space:]](--all|-[A-Za-z]*a[A-Za-z]*)([[:space:]]|=|$)'; }
-
-is_commit || exit 0
-if is_add || stages_at_commit; then
-  echo "Blocked: stage in one call and commit in the next — never \`git add && git commit\`, never \`-a\`/\`--all\`. The commit hook reads the INDEX for /verify's stamp (M113), and a command that stages at commit time hides what it will write." >&2
-  exit 2
+staged="$(bash "$work/verify-digest.sh" --staged)"
+base="$(bash "$work/verify-digest.sh" --main)"
+tip="$(bash "$work/verify-digest.sh" --tip)"
+if [ "$staged" != "$base" ] && [ "$staged" != "$tip" ] && ! git grep --cached -qE "Verified:.*digest ${staged}" -- 'docs/tasks/*.md'; then
+  echo "Blocked: the runtime tree this commit writes (digest ${staged}) carries no /verify stamp in a staged task file. Run /verify — it drives every surface in the blast radius through the QA agents and stamps the task's ticket with this digest — stage the ticket, then commit. A tree with no runtime change needs no stamp (M113)." >&2
+  exit 1
 fi
 
-root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-cd "$root"
-staged="$(bash scripts/verify-digest.sh --staged)"
-main="$(bash scripts/verify-digest.sh --main)"
-[ "$staged" = "$main" ] && exit 0
-grep -rqE "Verified:.*digest ${staged}" docs/tasks/*.md 2>/dev/null && exit 0
-
-echo "Blocked: the staged runtime tree (digest ${staged}) carries no /verify stamp. Run /verify — it drives every surface in the blast radius through the QA agents and stamps the task's ticket with this digest — then commit. A tree with no runtime change needs no stamp (M113)." >&2
-exit 2
+branch="$(git branch --show-current)"
+records="$(git rev-parse --git-common-dir)/heliogrid-harness"
+for bound in "$records"/*/branch; do
+  [ -f "$bound" ] || continue
+  [ -z "$branch" ] || [ "$(cat "$bound")" = "$branch" ] || continue
+  task="$(basename "$(dirname "$bound")")"
+  if ! report="$(bash "$work/break-and-run.sh" --stale "$task" --index 2>&1)"; then
+    case "$report" in
+      *"no author proof recorded"*|*"no proof recorded"*) ;;
+      *) printf 'Blocked: a red proof task %s recorded is no longer current against what this commit writes — re-run it with scripts/break-and-run.sh (M140):\n%s\n' "$task" "$report" >&2; exit 1 ;;
+    esac
+  fi
+done
+exit 0

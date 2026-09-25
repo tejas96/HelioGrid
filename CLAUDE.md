@@ -61,7 +61,7 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 ## 3. Workflow
 
-**`/start` → build, tests first → `/verify`, which stamps the ticket → `/ship`, which refuses an unstamped runtime tree.** `/start` reads the task's own section and the
+**`/start` → build, tests first → `/verify`, which stamps the ticket → `/ship`, whose commit git's pre-commit refuses without that stamp.** `/start` reads the task's own section and the
 PRD only for what it does not quote, then explains the task in simple words and waits for the go;
 `/ship` sizes the review to the diff, commits on a yes, pushes and raises the PR (owner ruling);
 the owner merges. A screen builds only after its module's screens are designed and verified.

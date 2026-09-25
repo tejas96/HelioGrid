@@ -19,7 +19,7 @@
     "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:dupes && pnpm check:openapi && pnpm check:catalogs && pnpm check:languages && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "verify:ci": "pnpm verify",
     "verify:clean": "bash scripts/verify-clean.sh",
-    "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
+    "precommit": "bash .claude/hooks/block-unverified-commit.sh && pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
     "check:touched": "all=$(git diff --name-only origin/main; git ls-files -o --exclude-standard); [ -n \"$all\" ] || { echo 'check:touched: nothing differs from origin/main'; exit 0; }; f=$(git diff --name-only --diff-filter=d origin/main; git ls-files -o --exclude-standard); { [ -z \"$f\" ] || pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --files-ignore-unknown=true $f; } && pnpm turbo typecheck --filter='...[origin/main]' && t=$(printf '%s\\n' $f | grep -E '\\.(ts|tsx|mts)$' || true) && { if [ -z \"$t\" ]; then echo 'check:touched: no changed .ts file, so no unit test ran here; check:all runs every test'; else pnpm exec vitest related --run --passWithNoTests $t; fi; } && bash scripts/check-adherence.sh && python3 scripts/gates.py",
     "check:adherence": "bash scripts/check-adherence.sh",
     "check:secrets": "bash scripts/check-secrets.sh",
@@ -40,7 +40,8 @@
     "infra:reset": "docker compose -f infra/compose.yaml down -v"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm run precommit"
+    "pre-commit": "pnpm run precommit",
+    "pre-merge-commit": "bash .claude/hooks/block-unverified-commit.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

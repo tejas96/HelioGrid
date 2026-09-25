@@ -11,17 +11,21 @@ everything in it is written for a five-minute read. This skill raises the PR; th
 ## 1. Gates, once
 
 **Bring the branch level with `main` first.** A task takes hours and `main` moves under it:
-`git fetch origin`, then `git rev-list --count HEAD..origin/main`. Anything above zero is merged in —
-`git merge origin/main`, never a rebase and never a force-push — before any gate runs, so every
-diff against `origin/main` below, the stamp and `verify:clean` all read the tree that will
-actually merge, and the PR never opens `BEHIND`. A merge that changes the runtime digest means the
-stamp is stale and `/verify` runs again; a merge of docs alone leaves it standing.
+`git fetch origin`, then `git rev-list --count HEAD..origin/main`. Anything above zero is merged in
+before any gate runs, so every diff against `origin/main` below, the stamp and `verify:clean` all
+read the tree that will actually merge, and the PR never opens `BEHIND`. Never a rebase and never a
+force-push. Merge in three steps, because git's merge hook refuses an unstamped runtime tree:
+1. `git merge --no-commit origin/main`.
+2. `bash scripts/verify-digest.sh --staged` — if it prints the digest the ticket's stamp already
+   carries, or the branch changes no runtime file, go to 3. Otherwise the stamp is stale: `/verify`
+   runs again on the merged tree and restamps the ticket; stage it.
+3. `git commit --no-edit` concludes the merge.
 
 **The stamp first (`M113`).** The task's section carries `**Verified:** digest …` and
 `scripts/verify-digest.sh` prints the same twelve characters for the working tree; missing or
 stale means `/verify` runs NOW, in full, before any gate. The author's own driving never stands in
-for the agents' verdicts. A tree whose runtime digest equals `origin/main`'s — docs, ci, config —
-carries no stamp and needs none.
+for the agents' verdicts. A tree whose runtime digest equals its merge base with `origin/main`, or `origin/main`'s own tree —
+docs, ci, config, tests — carries no stamp and needs none.
 
 `pnpm verify:clean` — the proof in CI's room (`M112`): a fresh clone of what git would commit, CI's
 environment, every stage read for its verdict, never for the exit code. **Run it LAST, after §2's
@@ -78,8 +82,8 @@ this and no more:
 
 **Tier 2, the second actor, for EVERY runtime change.** The author wrote the code, the tests, the
 QA plan and the stamp, and a rule obeyed by the one actor it binds is still that actor's honesty.
-Dispatch `break-it-reviewer` whenever the tree's runtime digest differs from
-`origin/main`'s. It breaks two claims of its own choosing in the main folder, so it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
+Dispatch `break-it-reviewer` whenever anything under `apps/` or `packages/` other than a `.md` file
+differs from `origin/main` — a tests-only change included, since the runtime digest leaves tests out. It breaks two claims of its own choosing in the main folder, so it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
 prompt is this and no more:
 
 > Task `<T-id>` in `docs/tasks/<module>.md`. Its proof record `.git/heliogrid-harness/<T-id>/`

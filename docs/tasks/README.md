@@ -38,7 +38,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 **Schema:** (a task that authors tables) one line per stored fact — a table, a column, an index,
         a grant, a policy: `- **S1** · <the fact> → proof: <proof>`
 **Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
-        tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
+        tree it drove, never by hand; git's pre-commit refuses a runtime change without it (M113)
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
         each line `- **D1** · Given … → proof: <proof>`
 ```

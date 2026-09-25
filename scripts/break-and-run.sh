@@ -7,7 +7,7 @@
 #   scripts/break-and-run.sh --file <path> --test-file <path> (--expect <test title> | --pattern <ere>)
 #     [--runs N] [--build <pnpm filter>] [--task <T-id> --claims <C1,D2>] [--actor author|reviewer]
 #     -- '<break command>' -- '<test command>'
-#   scripts/break-and-run.sh --stale <T-id>
+#   scripts/break-and-run.sh --stale <T-id> [--index]
 #
 # --expect names a vitest test: a run is red only when a FAIL line names --test-file and EXACTLY that
 # title. A crash, a missing file or a compile error fails the run WITHOUT naming the test, so it never
@@ -19,16 +19,19 @@
 # survives the session and never enters the tree. --stale lists the author's recorded proofs whose
 # file, test or log changed since, so a proof is re-run instead of trusted; a reviewer's proofs are
 # listed as evidence and never make the task stale, since a reviewer's red-when-green IS a finding.
+# --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
+# gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
 # Exit 0: proven. 1: a run was not red by name. 2: refused before breaking anything. 3: the tree did
 # not come back. A proof that is not exit 0 proves nothing.
 set -u
 refuse() { echo "break-and-run: $*" >&2; exit 2; }
 root="$(git rev-parse --show-toplevel)" || refuse "not inside the repository"
 record_dir() { echo "$(cd "$root" && cd "$(git rev-parse --git-common-dir)" && pwd)/heliogrid-harness/$1"; }
-file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""
+file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""; index=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --) shift; break ;;
+    --index) index=1; shift ;;
     --file|--test-file|--expect|--pattern|--runs|--build|--task|--claims|--actor|--stale)
       [ $# -ge 2 ] || refuse "$1 needs a value"
       case "$1" in
@@ -44,14 +47,17 @@ done
 if [ -n "$stale" ]; then
   rec="$(record_dir "$stale")"
   [ -s "$rec/proofs.jsonl" ] || { echo "break-and-run: no proof recorded for $stale — nothing is current" >&2; exit 2; }
-  cd "$root" && exec python3 - "$rec" <<'PY'
+  cd "$root" && exec python3 - "$rec" "$index" <<'PY'
 import hashlib, json, os, subprocess, sys
-rec = sys.argv[1]
+rec, from_index = sys.argv[1], sys.argv[2] == "1"
 latest = {}
 for line in open(os.path.join(rec, "proofs.jsonl")):
     p = json.loads(line)
     latest[(p["file"], p["test_file"], p.get("expect") or p.get("pattern"), p["actor"])] = p
 def blob(path):
+    if from_index:
+        found = subprocess.run(["git", "rev-parse", "-q", "--verify", f":{path}"], capture_output=True, text=True).stdout.strip()
+        return found or "gone"
     return subprocess.run(["git", "hash-object", path], capture_output=True, text=True).stdout.strip() if os.path.exists(path) else "gone"
 bad = 0
 for p in sorted(latest.values(), key=lambda p: p["actor"] != "author"):

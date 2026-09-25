@@ -240,14 +240,16 @@ is an always-on core step the wire could not prove, in its own line, with the re
 ## 10. Stamp the ticket
 
 A clean run ends with the stamp, and only a run that happened writes one. `scripts/verify-digest.sh`
-prints the digest of the runtime tree this run drove (`apps/` and `packages/`, `.md` files aside).
+prints the digest of the runtime tree this run drove (`apps/` and `packages/`, `.md` files and
+`tests/` folders aside: a test edited after the run leaves the stamp standing, and the commit check
+refuses it instead when its red proof is no longer current).
 Write one line into the task's section, above `**DONE WHEN:**`, replacing an earlier one:
 
 `**Verified:** digest <12 hex> · <date> · <surface: pass/fail/inconclusive> … · parity <verdict>`
 
-The commit hook reads it (`M113`): a commit whose staged runtime tree carries no stamp with its
-digest is refused, so a fix after the run re-runs the failed steps and re-stamps. Work with no
-rows and no runtime change — docs, ci, config — has no stamp and needs none. Never write the line
+git's pre-commit reads it (`M113`): a commit whose runtime tree carries no stamp with its digest is
+refused, whoever commits and however, so a fix after the run re-runs the failed steps and re-stamps. Work with no
+rows and no runtime change — docs, ci, config, tests — has no stamp and needs none. Never write the line
 by hand, never for a `smoke` run that should have been `full`, and never in place of the agents:
 the author driving the surfaces is not verification.
 
