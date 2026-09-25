@@ -49,11 +49,12 @@ rule, skill or ticket that says a fact is held cites the `mechanisms.md` row by 
 status first — never a gate named in its place (`mechanisms.md`'s own header).
 
 **Then match every fact to its assertion.** Each value, field or rule the ticket's Contract line
-and done-when lines name, and each case under its `**Broken at /start:**` block, is listed beside
+and done-when lines name, and each claim (`C`, `S`, `D`) in the ticket, is listed beside
 the test line or gate that asserts it; a named fact or case with no assertion is a finding fixed
-here, before any agent is paid to find it.
+here, before any agent is paid to find it. A `none` claim the owner saw at `/start` has no
+assertion by design: it goes in the PR body under risks, and a `held` one is listed beside its row.
 
-**Then break it.** Start from the ticket's `**Broken at /start:**` cases: read each fix in the
+**Then break it.** Start from the ticket's cases (`C` claims): read each fix in the
 code, never derive the case again. Then hunt what that block missed. Read the diff as an attacker
 and as an EPC expert: correctness, edges, failures, null/empty/invalid, unexpected flows,
 regressions, performance, security, tenancy, money rounding, provenance, placement, duplication, a
@@ -85,7 +86,7 @@ prompt is this and no more:
 
 > Mode `diff`. Task `<T-id>` in `docs/tasks/<module>.md`. Scratch directory `<path>` holds the
 > plan and the `verdicts-*.jsonl` files. New: `<files>`. The rules this change adds and the test
-> the author says guards each, every `Broken at /start` case among them: `<rule → test file>`.
+> the author says guards each, every case (`C` claim) among them: `<rule → test file>`.
 
 A test it reports GREEN with its rule broken is fixed before anything else: it guarded nothing.
 A `stamp` finding means `/verify` runs again. When its answer is clean, delete the plan and the
@@ -98,7 +99,9 @@ this tiering prevents.
 ## 3. Completeness
 
 Every done-when line of the task has its proof — a test, the `/verify` run's verdict or a gate. A line
-without one is not done, and the PR body is not printed. A task that turned out to be two is
+without one is not done, and the PR body is not printed. `scripts/break-and-run.sh --stale <T-id>`
+runs here and reads CURRENT for every red proof; its lines go into the PR body's done-when table,
+each claim beside its proof, so the red runs the build recorded reach the owner. A task that turned out to be two is
 split (`/start` §3), never shipped half.
 
 **The size is stated, never enforced (`M111`, review-only).** Count the diff — `git diff --stat origin/main` plus

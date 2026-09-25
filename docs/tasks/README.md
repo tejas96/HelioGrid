@@ -31,16 +31,33 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 **Depends on:** task ids and migration numbers that must land first
 **Out of scope:** what this task deliberately leaves to which other task
 **Settle at /start:** the readings the PRD leaves open, each ruled with one reason before the go
-**Broken at /start:** (a task with a runtime path) one line per failure case the design was attacked
-        with — the case → the fix → the test or QA step that fails without the fix (/start §3)
+**Cases:** (a task with a runtime path) one line per failure case the design was attacked with, and
+        one `n/a` line for each of /start §3's nine classes that cannot occur here, with why:
+        `- **C1** · <class> · <the case> → <the fix> → proof: <proof>`
+        `- **n/a** · <class> · <why it cannot occur>`
+**Schema:** (a task that authors tables) one line per stored fact — a table, a column, an index,
+        a grant, a policy: `- **S1** · <the fact> → proof: <proof>`
 **Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
         tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
-        each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
+        each line `- **D1** · Given … → proof: <proof>`
 ```
 
+Every case, schema fact and done-when line is a CLAIM with an id that is never reused in the task.
+A proof is one of: `unit `<test file>` › "<test title>"` · `invariant `<invariant file>` ›
+"<failure text>"` · `qa-api | qa-web | qa-mobile | qa-worker <step>` and `qa-parity <comparison>`,
+where the step or comparison is the one-word id `/verify`'s plan gives it · `recorded <id>` (a
+proof the author drives, through `scripts/record-proof.sh`) · `gate <M-id>` (a gate whose HELD or
+PARTIAL row holds the line, its red proof in the row) · `held <M-id>` (a case an existing HELD or
+PARTIAL row already guards, with no new work) · `none — <reason>` (a case nothing can prove here;
+the owner sees it at /start). `held` and `none` are for cases only; several proofs join with ` + `.
+Gate 32 checks this shape (M139) and never whether a proof is right.
+`**Broken at /start:**` is the retired form of Cases: a shipped ticket may still carry it, and gate
+32 refuses it on any other.
+
 A task takes this whole shape at `/start`, before it is built, and keeps it; `/start` fixes a missing
-part before the go. No gate checks the parts.
+part before the go. No gate checks that every part is present; gate 32 checks only the claims'
+shape.
 
 ## Binding rules
 

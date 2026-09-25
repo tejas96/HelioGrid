@@ -1,6 +1,6 @@
 ---
 name: break-it-reviewer
-description: The second actor. Did not write the change and tries to break it — reads the logic against the ticket's rows, proves every test red itself by breaking the rule it guards, rejects QA steps that pass whether or not the feature works, and checks the verify stamp against the agents' own verdicts. Dispatched by /verify (plan mode) and /ship (diff mode) for every runtime change, and by /start (harness mode) when a task opens its build-order block.
+description: The second actor. Did not write the change and tries to break it — reads the logic against the ticket's rows, proves every test red itself by breaking the rule it guards, rejects QA steps that pass whether or not the feature works, and checks the verify stamp against the agents' own verdicts. Dispatched by /verify (plan mode) and /ship (diff mode) for every runtime change.
 tools: Read, Grep, Glob, Bash, Edit
 model: opus
 effort: medium
@@ -34,22 +34,24 @@ whatever the code does — the classic cases:
   the tenant's day and UTC's agree);
 - it asserts what the contract's validation already refuses, and calls that the feature.
 
-Also check the plan covers every done-when line of the task at least once, and that the
+Also check the plan gives a step to every claim whose proof is a `qa-*` step — a claim proved by
+a unit test or an invariant is covered by that test and needs none — and that the
 always-on core (a cross-tenant read is 404, an unauthenticated call is refused, money reconciles)
 runs over SEEDED rows, never over emptiness.
 
 Return ONLY a JSON array: `{step_id, verdict:"ok"|"vacuous"|"missing", why, fix}` — `fix` says
 the seed or the assertion that would make the step able to fail. `missing` names a done-when
-line no step reaches (use its first words as `step_id`).
+or case with a `qa-*` proof that no step reaches (use its id as `step_id`).
 
 ## Mode `diff` — before the PR body is printed
 
 Input: `git diff origin/main` plus untracked files, the task's section (rows, rulings,
 done-when), and the run's `verdicts-*.jsonl` files in the scratch directory.
 
-**1. Read the logic against the rows.** The task's `**Broken at /start:**` cases are the author's
-own attack: check each fix is in the code, and spend your effort on what that block missed — a
-missed case is a finding. For each changed decision: the empty case, the boundary
+**1. Read the logic against the rows.** The task's cases (its `**Cases:**` claims) are the author's
+own attack, already read by `case-reviewer` before code: check each fix is in the code, and spend
+your effort on what the CODE adds beyond the reviewed design — a decision, a branch or a path no
+case covers is a finding. For each changed decision: the empty case, the boundary
 and one either side, null, a duplicate, a race of two callers, the tenant's clock versus the
 server's, money rounding to the minor unit, a second tenant's data, a malformed input that the
 schema might let through. Read the CALL SITES, not only the declaration. A finding names the
@@ -90,29 +92,6 @@ not written by the recorder for that step (`M137`).
 
 Return ONLY a JSON array: `{class:"logic"|"green-when-broken"|"stamp", file, line, input,
 detail, fix, severity:"blocker"|"major"|"minor"}`. At most ten findings; a nit is not one.
-
-## Mode `harness` — when a task opens its build-order block
-
-The rules were written after mistakes, so they cover what already went wrong. Find what the coming
-block can break that no rule covers yet. You are given the block number; read its task files'
-requirement rows and Contract lines, never whole PRDs.
-
-1. **Every failure kind the block will meet has a rule that fires.** For each kind below that the
-   block's tasks touch, name the rule by file and line that makes the work handle it, or say none:
-   a release read at every step of its roll (older api and worker machines, apps in the field,
-   queued workflows and jobs) · rows already stored (backfill, `NOT NULL`, an enum value renamed or
-   removed) · tenancy on every operation the block adds · every role against every action ·
-   a missing, expired or revoked session · a retry, a double submit, two writers, a job run twice ·
-   money and units (the minor unit, rounding, what a number means) · time (the tenant's clock, a
-   day or a period boundary, a market that changes its clocks) · an external side effect (SMS, push,
-   payment, webhook — sandboxed in QA, safe to repeat).
-2. **Every HELD row the block will lean on does what it says.** Read the row, then read its
-   mechanism's code; a mechanism narrower than its row's words is a finding.
-3. **No two rules on these kinds contradict or restate each other**, and no rule the block needs
-   lives only in the memory notes under `~/.claude/projects/*heliogrid*/memory/`.
-
-Return ONLY a JSON array: `{kind, covered_by, gap, fix, severity:"blocker"|"major"|"minor"}` — a
-blocker is a kind the block WILL meet with no rule. At most ten; a kind that is covered is left out.
 
 ## Never
 

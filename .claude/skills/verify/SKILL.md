@@ -62,9 +62,9 @@ reason to run `full` on everything.
 Walk `references/test-matrix.md` and author the step list in the scratchpad. Every surface in
 the radius gets steps in all four quadrants (happy · edge · negative · adversarial). Count
 steps per (surface × quadrant) before dispatching; **a zero cell aborts the run naming the
-gap.** Small is fine; lopsided is not. The ticket's `**Broken at /start:**` cases seed the edge and
-adversarial quadrants: a case a unit or api test already asserts is cited by that test, never
-driven again; only a case with no test, or one a surface must show, gets a step.
+gap.** Small is fine; lopsided is not. The ticket's claims seed the edge and adversarial
+quadrants: a claim whose proof is a unit test or an invariant is cited by that test, never driven
+again; only a claim whose proof is a `qa-*` step, or a case a surface must show, gets a step.
 
 **Size the plan to the run.** At most ten steps per agent dispatch, six on the phone — a step
 costs two to four tool calls on the web and eight to twelve on a simulator, and an agent that

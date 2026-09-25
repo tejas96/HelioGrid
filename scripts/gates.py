@@ -261,6 +261,131 @@ def norm(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
+# --------------------------------------------------------------------------- claims
+# The failure classes /start §3 walks. A ticket that carries a Cases block answers every one of them,
+# with a case or with an `n/a` line saying why the class cannot occur here.
+CLAIM_CLASSES = ("concurrency", "partial-failure", "retry", "roll", "tenancy", "scale", "input",
+                 "platform", "observability")
+PROOF_RE = re.compile(
+    r'^(?:unit|invariant) `[^`]+` › "[^"]+"$'
+    r'|^qa-(?:api|web|mobile|worker) [A-Za-z0-9._-]+$'
+    r'|^qa-parity [A-Za-z0-9._-]+$'
+    r'|^recorded [A-Za-z0-9._-]+$'
+    r'|^(?:gate|held) M\d+$'
+    r'|^none — \S.*$')
+FIELD_RE = re.compile(r"^\*\*[A-Z][^*\n]*:\*\*")
+RETIRED_RE = re.compile(r"^\*\*Broken at `?/start`?:\*\*", re.M)
+
+
+def claim_items(body, field):
+    """(items, stray lines) under a `**field:**` line up to the next field, or (None, []) with no
+    such line. Every other line inside the block is reported, so a malformed claim cannot be skipped
+    in silence: an item is `- **X** · …`, a continuation is indented text that opens no list."""
+    lines = body.split("\n")
+    heads = [i for i, line in enumerate(lines) if line.startswith(f"**{field}:**")]
+    if not heads:
+        return None, []
+    items, stray = [], []
+    for raw in lines[heads[0] + 1:]:
+        line = raw.rstrip("\r")
+        if FIELD_RE.match(line) or line.startswith("---") or line.startswith("#"):
+            break
+        if not line.strip() or line.startswith("*("):
+            continue
+        if line.startswith("- **"):
+            items.append(line[2:].strip())
+        elif items and line.startswith("  ") and not re.match(r"\s*([-*+]|\d+[.)])\s", line):
+            items[-1] += " " + line.strip()
+        else:
+            stray.append(line.strip()[:48])
+    return items, stray
+
+
+def split_proofs(text):
+    """Several proofs join with ` + `, never inside a quoted title or a `none —` reason."""
+    text = text.strip()
+    if text.startswith("none —"):
+        return [text.rstrip(".")]
+    return [p.strip().rstrip(".") for p in re.split(r' \+ (?=(?:[^"]*"[^"]*")*[^"]*$)', text)]
+
+
+def claim_problems(block, row_status):
+    """Everything wrong with a ticket's claims, or None when the ticket carries none."""
+    body, where = block["body"], f"{block['file']} {block['id']}"
+    status = re.search(r"^\*\*Status:\*\*\s*([^\n]*)", body, re.M)
+    shipped = bool(status and status.group(1).startswith("shipped"))
+    probs = []
+    if RETIRED_RE.search(body) and not shipped:
+        probs.append(f"{where}: `Broken at /start` is the retired form — write a Cases block")
+    cases, stray = claim_items(body, "Cases")
+    if cases is None:
+        if re.search(r"^\*\*Cases", body, re.M) or re.search(r"^- \*\*[CDS]\d+\*\*", body, re.M):
+            probs.append(f"{where}: claims written without a `**Cases:**` line, so none were read")
+        return probs or None
+    seen, cased, na = set(), set(), set()
+
+    def check(item, letter):
+        m = re.match(r"\*\*([CDS][1-9]\d*|n/a)\*\*\s*·\s*(.*)$", item)
+        if not m:
+            probs.append(f"{where}: not a claim line: {item[:48]}")
+            return
+        cid, rest = m.groups()
+        parts = [x.strip() for x in rest.split("·", 1)]
+        if cid == "n/a":
+            if letter != "C":
+                probs.append(f"{where}: an n/a line belongs in Cases only")
+                return
+            na.add(parts[0])
+            if parts[0] not in CLAIM_CLASSES:
+                probs.append(f"{where}: n/a names an unknown class '{parts[0]}'")
+            if len(parts) < 2 or not parts[1]:
+                probs.append(f"{where}: n/a {parts[0]} gives no reason")
+            return
+        if cid[0] != letter:
+            probs.append(f"{where}: {cid} sits in the wrong block")
+            return
+        if cid in seen:
+            probs.append(f"{where}: {cid} is used twice")
+        seen.add(cid)
+        if letter == "C":
+            cased.add(parts[0])
+            if parts[0] not in CLAIM_CLASSES:
+                probs.append(f"{where}: {cid} names an unknown class '{parts[0]}'")
+        if "→ proof:" not in rest:
+            probs.append(f"{where}: {cid} names no proof")
+            return
+        for proof in split_proofs(rest.split("→ proof:", 1)[1]):
+            if not PROOF_RE.match(proof):
+                probs.append(f"{where}: {cid} proof '{proof[:40]}' is not a proof kind")
+                continue
+            kind = proof.split(" ")[0]
+            if letter != "C" and kind in ("none", "held"):
+                probs.append(f"{where}: {cid} — none and held are for cases only")
+            row = re.match(r"(?:gate|held) (M\d+)$", proof)
+            if row and row_status.get(row.group(1)) not in ("HELD", "PARTIAL"):
+                probs.append(f"{where}: {cid} cites {row.group(1)}, which is no HELD or PARTIAL row")
+
+    for label, (items, stray_lines), letter in (("Cases", (cases, stray), "C"),
+                                                ("Schema", claim_items(body, "Schema"), "S"),
+                                                ("DONE WHEN", claim_items(body, "DONE WHEN"), "D")):
+        if items is None:
+            if letter == "D":
+                probs.append(f"{where}: a Cases ticket numbers its DONE WHEN lines D1, D2 …")
+            continue
+        if not items:
+            probs.append(f"{where}: the {label} block holds no claim")
+        probs += [f"{where}: {label} holds a line that is no claim: {x}" for x in stray_lines]
+        for item in items:
+            check(item, letter)
+    missing = [c for c in CLAIM_CLASSES if c not in cased | na]
+    if missing:
+        probs.append(f"{where}: classes not answered: {', '.join(missing)}")
+    both = sorted(cased & na)
+    if both:
+        probs.append(f"{where}: a class is both cased and n/a: {', '.join(both)}")
+    return probs
+
+
 def run(repo, verbose):
     rows = live_rows(repo)
     prefixes = {r.split("-")[0] for r in rows}
@@ -851,6 +976,30 @@ def run(repo, verbose):
          else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
 
 
+    # --- Gate 32 · a ticket's claims are well formed (M139)
+    # The mechanism ledger's statuses are read so a `held` claim can only cite a row that holds.
+    ledger = open(os.path.join(repo, ".claude", "mechanisms.md"), encoding="utf-8").read()
+    row_status = {m.group(1): m.group(2) for m in re.finditer(
+        r"^\| (M\d+) \|[^|\n]*\|[^|\n]*\|\s*\**(HELD|PARTIAL|VACUOUS|NONE)", ledger, re.M)}
+    rows_read = 0 < len(row_status) == len(re.findall(r"^\| M\d+ \|", ledger, re.M))
+    claim_bad, claim_ids = [], []
+    for b in blocks:
+        found = claim_problems(b, row_status)
+        if found is None:
+            continue
+        if claim_items(b["body"], "Cases")[0] is not None:
+            claim_ids.append(b["id"])
+        claim_bad += found
+    claim_tickets = len(claim_ids)
+    claims_summary = ("claims: " + (f"{claim_tickets} tickets carry claims — {', '.join(claim_ids[:12])}"
+                                    if claim_ids else "VACUOUS — no ticket carries a Cases block yet"))
+    gate(32, "a ticket's claims are well formed: ids, proof kinds, every failure class answered (whether a proof is RIGHT is not checked)",
+         not claim_bad and rows_read,
+         (f"{claim_tickets} tickets carry claims" if claim_tickets else "VACUOUS — no ticket carries a Cases block yet")
+         if not claim_bad and rows_read
+         else (f"{len(claim_bad)}: " + " · ".join(claim_bad[:6]) if claim_bad else f"CORPUS ROT: a status was read for {len(row_status)} mechanism rows, not every row"))
+
+
     # --------------------------------------------------------------------- report
     results.sort(key=lambda r: r[0])
     width = max(len(n) for _, n, _, _ in results)
@@ -867,6 +1016,7 @@ def run(repo, verbose):
     # Printed on every run, pass or fail: the next task is read off the gates, never from memory.
     print(f"  {order_summary}")
     print(f"  {design_summary}")
+    print(f"  {claims_summary}")
     print(f"  {'BOOKKEEPING HOLDS — ids, files, counts and the ledger agree. NOT checked here: whether a brief is complete, a design is good, or a record is true' if not failed else str(len(failed)) + ' BOOKKEEPING CHECK(S) FAILED'}")
     return 0 if not failed else 1
 
