@@ -43,7 +43,7 @@ a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; app
 to `verdicts-web.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array, one object per step:
-`{surface:"web", step_id, quadrant, verdict, expected, observed, evidence}` — `observed` is
+`{surface:"web", step_id, claims, verdict, expected, observed, evidence}` — `observed` is
 the exact string you read. No prose outside the array.
 
 Never mark a step passed on a screenshot alone, never skip one silently, and never restart

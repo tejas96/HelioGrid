@@ -9,16 +9,21 @@
 #     -- '<break command>' -- '<test command>'
 #   scripts/break-and-run.sh --stale <T-id> [--index]
 #   scripts/break-and-run.sh --prune
+#   scripts/break-and-run.sh --withdraw <proof id> --task <T-id>
 #
 # --expect names a vitest test: a run is red only when a FAIL line names --test-file and EXACTLY that
 # title. A crash, a missing file or a compile error fails the run WITHOUT naming the test, so it never
-# counts as red. --pattern is for runners that name nothing (the invariants): the ERE must appear in
-# every broken run and NOT on the green one, and nothing checks the command runs --test-file.
+# counts as red. --pattern is for runners that name nothing (the invariants, `tsc` for a type guard):
+# the ERE must appear in every broken run and NOT on the green one, and nothing checks the command runs
+# --test-file. A crash line the pattern itself matches (`error TS2322` for a type guard) is the red,
+# not a crash; any other crash line still spoils the run.
 # --build rebuilds that package before the baseline, after the break and after the restore, because
 # a test in another package imports the last BUILD, never the source.
 # --task and --claims append the proof to the task's record in .git/heliogrid-harness/<T-id>/, which
 # survives the session and never enters the tree. --stale lists the author's recorded proofs whose
-# file, test or log changed since, so a proof is re-run instead of trusted; a reviewer's proofs are
+# file, test or log changed since, so a proof is re-run instead of trusted — for an --expect proof the
+# test file counts as changed only when its own test or the code around every test (imports, helpers,
+# hooks) changed, never when a sibling test did; a reviewer's proofs are
 # listed as evidence and never make the task stale, since a reviewer's red-when-green IS a finding.
 # --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
 # gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
@@ -27,29 +32,50 @@
 # record. A record bound to no branch, or whose branch has no such merge, stays. With no `gh`, or no
 # answer from GitHub, nothing is deleted. git's post-checkout runs it, so a merged task's record goes
 # the first time this machine switches branch after the merge (M141).
+# --withdraw moves a mis-built proof's line to the record's withdrawn.jsonl, so it is never listed
+# again and never edited by hand.
 # Exit 0: proven. 1: a run was not red by name. 2: refused before breaking anything. 3: the tree did
 # not come back. A proof that is not exit 0 proves nothing.
 set -u
 refuse() { echo "break-and-run: $*" >&2; exit 2; }
 root="$(git rev-parse --show-toplevel)" || refuse "not inside the repository"
 record_dir() { echo "$(cd "$root" && cd "$(git rev-parse --git-common-dir)" && pwd)/heliogrid-harness/$1"; }
-file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""; index=0; prune=0
+file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""; withdraw=""; index=0; prune=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --) shift; break ;;
     --index) index=1; shift ;;
     --prune) prune=1; shift ;;
-    --file|--test-file|--expect|--pattern|--runs|--build|--task|--claims|--actor|--stale)
+    --file|--test-file|--expect|--pattern|--runs|--build|--task|--claims|--actor|--stale|--withdraw)
       [ $# -ge 2 ] || refuse "$1 needs a value"
       case "$1" in
         --file) file="$2" ;; --test-file) test_file="$2" ;; --expect) expect="$2" ;;
         --pattern) pattern="$2" ;; --runs) runs="$2" ;; --build) build="$2" ;; --task) task="$2" ;;
-        --claims) claims="$2" ;; --actor) actor="$2" ;; --stale) stale="$2" ;;
+        --claims) claims="$2" ;; --actor) actor="$2" ;; --stale) stale="$2" ;; --withdraw) withdraw="$2" ;;
       esac
       shift 2 ;;
     *) refuse "unknown argument '$1' (the header of this file lists the arguments)" ;;
   esac
 done
+
+if [ -n "$withdraw" ]; then
+  [ -n "$task" ] || refuse "--withdraw needs --task <T-id>"
+  rec="$(record_dir "$task")"
+  [ -s "$rec/proofs.jsonl" ] || refuse "no proof recorded for $task"
+  exec python3 - "$rec" "$withdraw" <<'WITHDRAW'
+import json, os, sys
+rec, pid = sys.argv[1:]
+lines = [l for l in open(os.path.join(rec, "proofs.jsonl")).read().splitlines(keepends=True) if l.strip()]
+out = [l for l in lines if json.loads(l)["id"] == pid]
+if not out:
+    sys.exit(f"break-and-run: no proof {pid} in {rec}/proofs.jsonl")
+if any(json.loads(l)["actor"] != "author" for l in out):
+    sys.exit(f"break-and-run: {pid} is a reviewer's proof — a reviewer's finding is never withdrawn")
+open(os.path.join(rec, "withdrawn.jsonl"), "a").writelines(out)
+open(os.path.join(rec, "proofs.jsonl"), "w").writelines(l for l in lines if l not in out)
+print(f"{pid}: withdrawn ({len(out)} line) to withdrawn.jsonl")
+WITHDRAW
+fi
 
 if [ "$prune" = 1 ]; then
   records="$(dirname "$(record_dir x)")"
@@ -89,14 +115,69 @@ fi
 
 if [ -n "$stale" ]; then
   rec="$(record_dir "$stale")"
-  [ -s "$rec/proofs.jsonl" ] || { echo "break-and-run: no proof recorded for $stale — nothing is current" >&2; exit 2; }
+  [ -s "$rec/proofs.jsonl" ] || [ -s "$rec/withdrawn.jsonl" ] || { echo "break-and-run: no proof recorded for $stale — nothing is current" >&2; exit 2; }
   cd "$root" && exec python3 - "$rec" "$index" <<'PY'
-import hashlib, json, os, subprocess, sys
+import hashlib, json, os, re, subprocess, sys
 rec, from_index = sys.argv[1], sys.argv[2] == "1"
 latest = {}
-for line in open(os.path.join(rec, "proofs.jsonl")):
-    p = json.loads(line)
+def jsonl(name):
+    path = os.path.join(rec, name)
+    return [json.loads(l) for l in open(path) if l.strip()] if os.path.exists(path) else []
+withdrawn = jsonl("withdrawn.jsonl")
+for p in jsonl("proofs.jsonl"):
     latest[(p["file"], p["test_file"], p.get("expect") or p.get("pattern"), p["actor"])] = p
+TEST_START = re.compile(r"^(\s*)(?:it|test)(?:\.\w+)*\(")
+TITLE_ARG = re.compile(r"\(\s*(['\"`])((?:\\.|(?!\1).)*)\1\s*,")
+def names(template, title):
+    """An `it.each` title is a template (`refuses %o`, `$rate`): its placeholders match any text."""
+    if template == title:
+        return True
+    parts = re.split(r"%[sdifjoOp#%]|\$\w+(?:\.\w+)*", template)
+    return len(parts) > 1 and re.fullmatch(".+?".join(map(re.escape, parts)), title) is not None
+def without_other_tests(text, title):
+    """The file with every test block but `title`'s removed: a sibling test's edit leaves it the same,
+    an edit to this test or to shared code (imports, helpers, hooks) changes it. A block runs from a
+    line opening `it(`/`test(` (`.each`, `.skip` … included) to the first line at its own indent that
+    closes it, or to the line before the first line back at its indent or less that closes nothing,
+    which stays shared code. None: no block names the title."""
+    lines, keep, found, i = text.split("\n"), [], False, 0
+    while i < len(lines):
+        m = TEST_START.match(lines[i])
+        if not m:
+            keep.append(lines[i]); i += 1; continue
+        opener, end = len(m.group(1)), i
+        if not re.sub(r"\s*//.*$", "", lines[i]).rstrip().endswith(");"):
+            end += 1
+            while end < len(lines):
+                body = lines[end].lstrip()
+                if body and len(lines[end]) - len(body) <= opener:
+                    if len(lines[end]) - len(body) == opener and body[0] in "})":
+                        break
+                    if not (len(lines[end]) - len(body) == opener and body[0] == "]"):
+                        end -= 1
+                        break
+                end += 1
+        block = lines[i:end + 1]
+        if any(names(t.group(2), title) for t in TITLE_ARG.finditer("\n".join(block))):
+            found = True
+            keep += block
+        i = end + 1
+    return "\n".join(keep) if found else None
+def content(path, sha):
+    got = subprocess.run(["git", "cat-file", "-p", sha], capture_output=True, text=True)
+    return got.stdout if got.returncode == 0 else None
+def test_changed(p):
+    now = blob(p["test_file"])
+    if now == p["test_sha"]:
+        return False
+    if not p.get("expect") or now == "gone":
+        return True
+    old, new = content(p["test_file"], p["test_sha"]), content(p["test_file"], now) if from_index else (
+        open(p["test_file"]).read() if os.path.exists(p["test_file"]) else None)
+    if old is None or new is None:
+        return True
+    a, b = without_other_tests(old, p["expect"]), without_other_tests(new, p["expect"])
+    return a is None or a != b
 def blob(path):
     if from_index:
         found = subprocess.run(["git", "rev-parse", "-q", "--verify", f":{path}"], capture_output=True, text=True).stdout.strip()
@@ -110,14 +191,19 @@ for p in sorted(latest.values(), key=lambda p: p["actor"] != "author"):
     if not os.path.exists(log) or hashlib.sha1(open(log, "rb").read()).hexdigest()[:12] != p["log_sha"]:
         why.append("its log is missing or altered")
     if blob(p["file"]) != p["file_sha"]: why.append(f"{p['file']} changed")
-    if blob(p["test_file"]) != p["test_sha"]: why.append(f"{p['test_file']} changed")
+    if test_changed(p): why.append(f"{p['test_file']} changed{' (its test or shared code)' if p.get('expect') else ''}")
     if p["actor"] != "author":
         print(f"{p['id']} {p['claims']} reviewer evidence — {'held' if not why else '; '.join(why)}")
         continue
     print(f"{p['id']} {p['claims'] or '-'} {'CURRENT' if not why else 'STALE — ' + '; '.join(why)}")
     bad += bool(why)
+for p in withdrawn:
+    print(f"{p['id']} {p['claims']} WITHDRAWN — its claim needs a proof recorded again")
 authors = sum(p["actor"] == "author" for p in latest.values())
-print(f"{authors} proofs, {authors - bad} current, {bad} stale")
+print(f"{authors} proofs, {authors - bad} current, {bad} stale, {len(withdrawn)} withdrawn")
+if not authors and withdrawn:
+    print("every author proof was withdrawn — record the proofs again")
+    sys.exit(1)
 if not authors:
     print("no author proof recorded — nothing is current")
     sys.exit(2)
@@ -185,7 +271,8 @@ for ((i = 1; i <= runs; i++)); do
   run_test "$one"; code=$?
   { echo "=== run $i, broken, exit $code"; cat "$one"; } >>"$log"
   named=$(named_in "$one")
-  crashed=$(grep -Ec -- "$crash" "$one")
+  if [ -n "$pattern" ]; then crashed=$(grep -E -- "$crash" "$one" | grep -Evc -- "$pattern")
+  else crashed=$(grep -Ec -- "$crash" "$one"); fi
   if [ "$code" -ne 0 ] && [ "$named" -gt 0 ] && [ "$crashed" -eq 0 ]; then red=$((red + 1)); echo "run $i: red, by name"
   elif [ "$code" -eq 0 ]; then echo "run $i: GREEN with the rule broken"
   else echo "run $i: failed, but $( [ "$crashed" -gt 0 ] && echo 'by a crash' || echo 'without naming the test') — not red"; fi
@@ -200,7 +287,7 @@ verdict=fail; status=1
 
 if [ -n "$task" ]; then
   (cd "$root" && python3 - "$rec/proofs.jsonl" "$id" "$task" "$claims" "$actor" "$verdict" "$file" \
-    "$(git hash-object "$file")" "$test_file" "$(git hash-object "$test_file")" "$expect" "$pattern" \
+    "$(git hash-object "$file")" "$test_file" "$(git hash-object -w "$test_file")" "$expect" "$pattern" \
     "$brk" "$test_cmd" "$runs" "$red" "$build" "logs/$id.log" "$(shasum "$log" | cut -c1-12)" \
     "$before" "$after" "$(git hash-object scripts/break-and-run.sh)" <<'PY'
 import json, sys, time

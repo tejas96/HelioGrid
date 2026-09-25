@@ -31,7 +31,10 @@ misses table of `.claude/landmines.md`. The same KIND of mistake a second time i
 that change, write the general rule where it fires (`CLAUDE.md`, a skill, `.claude/rules/`) — as a
 type, lint rule or gate wherever one can decide it — and delete its row. Never fix only the instance.
 A lesson is written into the repo, where the work meets it — never kept only in an agent's memory,
-which nothing enforces.
+which nothing enforces. **The harness never only grows:** a change to it (`.claude/`, the gates, the
+scripts behind them) deletes at least as many lines as it adds, and a law written for a second
+sighting replaces text rather than joining it. A harness fault met during a task goes to
+`docs/tasks/deferred.md` and is fixed in its own batched change, never inside the task.
 
 ## 2. The Laws
 
@@ -61,27 +64,31 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 ## 3. Workflow
 
-**`/start` → build, tests first → `/simplify` → `/verify`, which stamps the ticket → `/ship`, whose commit git's pre-commit refuses without that stamp.** `/start` reads the task's own section and the
-PRD only for what it does not quote, then explains the task in simple words and waits for the go;
-`/ship` sizes the review to the diff, commits on a yes, pushes and raises the PR (owner ruling);
-the owner merges. A screen builds only after its module's screens are designed and verified.
+**`/start` → build, tests first → tidy → `/verify`, which stamps the ticket → `/ship`, whose commit git's pre-commit refuses without that stamp.** All the thinking happens at `/start`, once, and is
+written into the ticket — the scope, the impact, the placement, the cases and the WHOLE QA plan — so
+the build executes and `/verify` runs that plan without planning again. `/ship` has a second actor
+review the diff as a PR before anything is pushed, commits on a yes, pushes and raises the PR (owner
+ruling); the owner merges. A screen builds only after its module's screens are designed and verified.
+
+**One fresh session per task, and a budget.** A task run in a long session re-reads the whole old
+chat on every step. `/start` states which agents the task will pay for; a normal task uses three or
+four. Long command output goes to a scratch file and only its verdict lines are read.
 
 Before writing code, say three things: **which package owns each new file** (§6), **which facts are
 new and where their TYPE lives** (§8) — every fact the done-when lines need, beside the row that
-carries it — and **what will prove it works**. A fact no row carries is ruled into the row (§1)
-before a line is written.
+carries it, and the ONE package that owns each (the ticket's Placement) — and **what will prove it
+works**. A fact no row carries is ruled into the row (§1) before a line is written.
 
 The whole kit. Nothing outside this table fires, and a plugin skill fires only when it names one.
 
-| kit | step |
-|---|---|
-| the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | design: the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
-| `/start` → `fact-checker` · `case-reviewer` · `design-reviewer` for a screen · `harness-auditor` when the task opens its block | task review, the design drawn and broken into numbered claims, both read by a second actor, and explain, before code |
-| `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
-| hooks · `.claude/rules/` · `pnpm check:touched` · `scripts/break-and-run.sh` · `pnpm check:all` | implement: the guards, loaded by path or run by hand; each new test proven red once |
-| `/simplify` | implement, once the build is done and before `/verify`: one readability pass over the diff — reuse, names, dead code — so `/verify` drives the code that ships |
-| `/verify` → `plan-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` | break and review: only the surfaces the change reaches, over seeded data; a proof the author drives is recorded as it runs |
-| `/ship` → `break-it-reviewer` for every runtime change · `arch-reviewer` for a structural diff | owner review: gates, a second actor's review, commit on a yes, push, PR body |
+| stage | kit | what it does |
+|---|---|---|
+| design | the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
+| 0–2 `/start` | `case-reviewer` · `design-reviewer` for a screen | clean start and branch · understand, conflicts, scope and impact · placement, cases, the whole QA plan · one second actor reads it · explain, stop for the go |
+| 3 build | `/migration` · `/contract-change` · hooks · `.claude/rules/` · `pnpm check:touched` | tests first; the procedure when schema or the contract changes; the guards, loaded by path or run by hand; a scope change goes back to `/start` |
+| 4 tidy | the author · `pnpm check:all` | one readability pass over the diff — reuse, names, dead code — then every gate once; `/simplify` only when the owner asks |
+| 5 `/verify` | `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` · `scripts/break-and-run.sh` | the ticket's QA plan on the surfaces the change reaches, over seeded data; the break tests last; the stamp |
+| 6 `/ship` | `break-it-reviewer` | the PR review of every code change before push, commit on a yes, push, the PR, its one CI run |
 
 ## 4. Stop and ask the owner before
 
@@ -104,7 +111,7 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
 | `pnpm check:touched` | **While building.** Lint, typecheck and the related unit tests for what differs from `origin/main` (deletions included), plus adherence and the docs gates. Run it after each change. It is a fast subset and never the proof: it says so when no unit test ran, and `pnpm check:all` runs every test. |
 | `pnpm check:all` | Every gate that runs without a database, ONCE when the build is done, before `/verify`. It builds, because typecheck does. It never rewrites a file: run `pnpm lint:fix` first to format. |
-| `pnpm verify:clean` | **The proof, in CI's room.** A fresh clone of what git would commit, CI's environment, then `pnpm verify`: build · lint · boundaries · typecheck · gates · unit tests · invariants. |
+| `pnpm verify:clean` | **CI's room, locally.** A fresh clone of what git would commit, CI's environment, then `pnpm verify`: build · lint · boundaries · typecheck · gates · unit tests · invariants. Run it when the diff deletes or moves a file or changes a `package.json`, a tsconfig or a build config — the faults a warm tree hides — and to reproduce a CI failure; otherwise CI is the clean room. |
 | `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
 | `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
 | `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |
