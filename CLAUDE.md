@@ -24,6 +24,12 @@ imports X" is a finding only once the grep is shown, and reading a rule is not c
 A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
 sites, not declarations. **A gate proves nothing until it goes red on THIS change** (Law 12).
 
+**Every mistake leaves a record; the second one leaves a law.** A mistake found in the work — yours,
+or caught by a reviewer, a gate or the owner — is fixed at once, and `/ship` records it in the
+misses table of `.claude/landmines.md`. The same KIND of mistake a second time is a law break: in
+that change, write the general rule where it fires (`CLAUDE.md`, a skill, `.claude/rules/`) — as a
+type, lint rule or gate wherever one can decide it — and delete its row. Never fix only the instance.
+
 ## 2. The Laws
 
 Stable ids — never reused or renumbered; a gap is a law that was removed.

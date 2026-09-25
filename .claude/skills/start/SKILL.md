@@ -42,6 +42,15 @@ a ticket marked `**Parked:**` is never started. Each is the owner's ruling, brou
 say how OLD code reads NEW data and NEW code reads OLD data.** A release rolls machine by machine
 (`docs/engineering/09-observability-and-ops.md`), so both happen: settle it at `/start`, never at `/ship`.
 
+**Find every conflict before the go, not during the build.** Two searches, each named with what it
+found. (1) Every gate and test stricter than the task's rows: grep `.claude/mechanisms.md`,
+`scripts/` and the tests for the facts the rows govern — a check that refuses what a row allows is
+a conflict brought to the owner NOW. (2) Every use of a type, set or shape the task changes, not only
+the fields named in the ticket: its schema, every record or map keyed by it, every test that writes
+its members out. A conflict either search would have found, first met mid-build, is a `/start` miss.
+Then read the misses table in `.claude/landmines.md`: every row is a mistake already made once,
+and a row that fits this task is checked for now, by name.
+
 **A question is open only after the docs are searched.** Memory, the hand-off and `deferred.md`
 are pointers, not facts: before calling any ruling open or bringing the owner options, grep
 `docs/engineering/` and `docs/tasks/` for it and name what was found, or that nothing was.

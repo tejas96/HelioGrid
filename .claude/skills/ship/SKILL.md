@@ -44,18 +44,31 @@ dead pointer. Fix what that finds.
 is diffed against `origin/main` and each hunk is named for the block it sits in, by reading the lines
 either side; a stray blank line, or a hunk in a block this change never meant to touch, is a finding.
 The edit discipline that prevents it — anchor on the block's own heading, edit inside that span,
-re-read after writing — is `.claude/landmines.md`'s first-match row, and lives there once.
+re-read after writing — is `.claude/landmines.md`'s first-match row, and lives there once. An edited
+rule, skill or ticket that says a fact is held cites the `mechanisms.md` row by id, read for its
+status first — never a gate named in its place (`mechanisms.md`'s own header).
+
+**Then match every fact to its assertion.** Each value, field or rule the ticket's Contract line
+and done-when lines name is listed beside the test line or gate that asserts it; a named fact with
+no assertion is a finding fixed here, before any agent is paid to find it.
 
 **Then break it.** Read the diff as an attacker and as an EPC expert: correctness, edges, failures,
 null/empty/invalid, unexpected flows, regressions, performance, security, tenancy, money rounding,
-provenance, placement, duplication, complexity, design mismatch, hidden assumptions. An issue
+provenance, placement, duplication, a bypassed contract (a hand-written wire type, a raw HTTP
+call), complexity, design mismatch, hidden assumptions. An issue
 inside the task's scope is fixed now and its area re-reviewed; one outside it goes to
 `docs/tasks/deferred.md` (`CLAUDE.md` §8).
 
 **Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
-excluded) creates a folder, spans two or more packages or apps, touches `packages/contracts` or
-`packages/db`, or edits `docs/engineering/architecture.md` or `mechanisms.md`. The prompt is this
-and no more:
+excluded) creates a folder, adds a workspace dependency to a `package.json`, adds the FIRST import of
+a workspace package into a package or app that never imported it (grep the base for
+`from '@heliogrid/<name>'` in that tree), edits `docs/engineering/architecture.md`, or adds or
+changes a file under `apps/web/` or `apps/mobile/` other than config. The app trees are in because
+what the reviewer holds there has no full gate — a flow kept in a screen (`M80` is PARTIAL) and a
+screen part written twice (`M115`, review-only). Outside them it stays off: imports keep to the
+declared edges (`M1`), a schema and its contract agree (`M17`, `M18`), a breaking API change is judged
+before it merges (`M26`), and a new file's place is tier 0's `architecture.md` §4 line. The prompt is
+this and no more:
 
 > Branch `<name>`; diff `origin/main...HEAD` plus uncommitted work. New: `<files>`. Moved or
 > deleted: `<files>`. Design decisions to check, not re-litigate: `<the three things>`. Gates are
@@ -91,6 +104,13 @@ split (`/start` §3), never shipped half.
 said apart. Past **25 files, 1,500 lines, one migration or one contract router** the only question is
 whether this is one task or two; a complete task ships whole, and nothing is cut from it to fit.
 
+**Record the misses (`CLAUDE.md` §1).** List every mistake made in this task — yours, or caught by
+a reviewer, a gate or the owner — each stated as its KIND, not its instance. For each, find its row
+in the misses table of `.claude/landmines.md`. No row: add one, `seen 1`, naming the fix it got in
+this change. A row already there: this is its second sighting and a law break — write the general
+rule where it fires in this change, as a type, lint rule or gate wherever one can decide it, and
+delete the row. The list, even when it is empty, goes into the PR body under Review and risks.
+
 ## 4. Flip the ledger, then commit on a yes
 
 **The flip rides the change commit** (`M106`), so the ledger is right from the commit that makes
@@ -116,8 +136,8 @@ carries is already correct and there is no window to hold shut — with a body i
 2. **Design** — the three things as decided, and any ruling applied, by row id.
 3. **Done-when** — a table: each line of the task, its proof, where the proof is.
 4. **Verification** — the `/verify` section verbatim, including what was not run.
-5. **Review and risks** — the review tier, its findings and their fate; what is deliberately not
-   handled yet.
+5. **Review and risks** — the review tier, its findings and their fate; the misses recorded and any
+   law they became; what is deliberately not handled yet.
 
 End with the generated-with line, and print it in chat too — the owner reads it there. Never
 merge, never push to `main`, never force-push.
