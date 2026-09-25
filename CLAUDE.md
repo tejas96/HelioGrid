@@ -22,13 +22,16 @@ to switch. A recommendation you withheld is a decision made for the owner. Never
 **Verify reality.** **A claim about this repo names the file and line that proves it** — "nothing
 imports X" is a finding only once the grep is shown, and reading a rule is not checking the code.
 A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
-sites, not declarations. **A gate proves nothing until it goes red on THIS change** (Law 12).
+sites, not declarations. **A guard for a fact this change adds proves nothing until it goes red on
+that fact** (Law 12); every other gate must still run, and its output is read, not its exit code.
 
 **Every mistake leaves a record; the second one leaves a law.** A mistake found in the work — yours,
 or caught by a reviewer, a gate or the owner — is fixed at once, and `/ship` records it in the
 misses table of `.claude/landmines.md`. The same KIND of mistake a second time is a law break: in
 that change, write the general rule where it fires (`CLAUDE.md`, a skill, `.claude/rules/`) — as a
 type, lint rule or gate wherever one can decide it — and delete its row. Never fix only the instance.
+A lesson is written into the repo, where the work meets it — never kept only in an agent's memory,
+which nothing enforces.
 
 ## 2. The Laws
 
@@ -60,8 +63,8 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 **`/start` → build, tests first → `/verify`, which stamps the ticket → `/ship`, which refuses an unstamped runtime tree.** `/start` reads the task's own section and the
 PRD only for what it does not quote, then explains the task in simple words and waits for the go;
-`/ship` sizes the review to the diff, commits on a yes, pushes and prints the PR body. The owner
-raises the PR. A screen builds only after its module's screens are designed and verified.
+`/ship` sizes the review to the diff, commits on a yes, pushes and raises the PR (owner ruling);
+the owner merges. A screen builds only after its module's screens are designed and verified.
 
 Before writing code, say three things: **which package owns each new file** (§6), **which facts are
 new and where their TYPE lives** (§8) — every fact the done-when lines need, beside the row that
@@ -73,7 +76,7 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | kit | step |
 |---|---|
 | the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | design: the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
-| `/start` | task review and explain, before code |
+| `/start` → `break-it-reviewer` harness audit when the task opens its block | task review and explain, before code |
 | `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
 | hooks · `.claude/rules/` · `pnpm check:all` | implement: the guards, loaded by path or run by hand |
 | `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches, over seeded data |
@@ -84,12 +87,14 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 - Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
+- A decision that belongs to a LATER module is not an ask and not a blocker: write it into that
+  module's task in `docs/tasks/`, where its `/start` meets it, and carry on.
 - A feature or a number no PRD row implies. A finding BETWEEN readings the PRD supports is not an
   ask: rule it into the row (§1) and continue.
 - **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
-  go, a green gate, an event, or the yes to an earlier commit is never that yes. After it: push,
-  raise the PR, then flip the ledger — the one commit needing no yes, carrying the number just
-  shown. The owner merges. `main` is PR-only; never `--no-verify`, never a force-push.
+  go, a green gate, an event, or the yes to an earlier commit is never that yes. The ledger flip
+  rides that same commit, carrying the number the PR will take (`/ship` §4); after it: push and
+  raise the PR. The owner merges. `main` is PR-only; never `--no-verify`, never a force-push.
 
 ## 5. Commands
 
@@ -158,7 +163,7 @@ Every line, every app, every package. No exceptions for "just this once".
 - **A shared fact is UNSPEAKABLE outside its owner.** If a consumer could simply type the value
   themselves, it will be typed twice: give it a branded type in its owner, so importing is the only
   way to obtain one. Never `as <Brand>` outside that package — the one hole a brand has. Owners:
-  money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies → `contracts` ·
+  money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies → `domain`, derived in `contracts` ·
   visual values → `theme` · queries → `db` · wire calls → `data`.
 - **Zero duplication.** Search before you write. A second copy of a definition, a formula or a
   shape is a defect even when both copies are correct — they will diverge.
@@ -176,6 +181,13 @@ Every line, every app, every package. No exceptions for "just this once".
   every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
+- **A release is safe at every step of its roll, not only at its end.** Machines roll one by one
+  (`docs/engineering/09-observability-and-ops.md`), apps in the field update weeks late, and a
+  workflow or job started before a release runs on after it. So a change to anything stored or
+  sent between runtimes — a row, a column, an enum value, a response, a workflow message, a queued
+  job, a cached payload, a pack — names who reads it and proves both directions: every OLDER reader
+  still running reads the NEW shape, and the new code reads everything the old one wrote. What
+  cannot be read both ways ships in two releases: expand, then contract.
 - **A bug you find is reported at once.** Inside the task's scope it is fixed now and its area
   re-reviewed. Outside it, it goes to `docs/tasks/deferred.md` — the issue, why not now, what it
   depends on, who picks it up — and becomes the next task; never inside the current change, which
@@ -202,7 +214,8 @@ Writing rules, not code:
   when a machine decides the fact completely: an id exists, two values are equal, a type holds, a
   test passes. Its name says that one fact and nothing more. Never a text search that stands in for
   judgment — whether a brief is complete, a design is good or a rule is obeyed is a reviewer's call.
-- **Short, never cut.** Keep a file small by moving what belongs elsewhere, never by dropping a
+- **Short, never cut.** Before deleting a sentence as a duplicate, show it beside the one that stays.
+  Keep a file small by moving what belongs elsewhere, never by dropping a
   rule or squeezing it until it is unclear. A missed instruction costs more than a long file.
 - **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
   only when asked for by name.

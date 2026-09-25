@@ -13,7 +13,7 @@ Ids are stable and never reused. A gap is a row that was retired.
 | **HELD** | The mechanism exists, covers the whole invariant, and fires. |
 | **PARTIAL** | It fires on a subset, or on a shape rather than the property. The gap column says which. |
 | **VACUOUS** | The mechanism is correct and has nothing to inspect yet. It reports this itself. |
-| **NONE** | Review-only today. Nobody is watching. |
+| **NONE** | Review-only today. Nobody is watching. A NONE row's "what would close it" is a suggestion, never a ruling: the owner rules before that seam is built. |
 
 **`red:` is the date the mechanism was last seen to FAIL on a deliberately injected violation.**
 A row with no date has never been proven; its status is read from the code, not from a run. A rule
@@ -67,7 +67,7 @@ row UP this order over widening the script that currently holds it.
 | id | invariant | mechanism of record | status | gap, or what would close it |
 |---|---|---|---|---|
 | M25 | The committed OpenAPI matches the contract | `check:openapi` (rebuild, re-emit, byte compare) | PARTIAL | `.refine()` and `.transform()` are dropped by the generator, so a real narrowing emits an identical spec. |
-| M26 | A breaking API change is judged before it merges | `check:openapi` + `oasdiff` | HELD · red 2026-09-06, red 2026-09-09 on a grown response enum | One pinned build, `scripts/oasdiff-pin.json`, installed by the same script in CI and by `pnpm tools:oasdiff` on a machine; the judge absent or at another version is RED everywhere, never a skip — the pinned build grades a value added to a response enum as an ERROR where an older build graded it a warning, and that older local build once passed what CI refused. Only an unfetched base skips locally; under `CI` it fails closed. A set that grows by design is declared `x-extensible-enum` through `extensibleEnum` and is not judged; a fixed set that grows is the break this row exists for. Judges only what the emitted spec carries, so the M25 gap (a dropped `.refine()`) is invisible here too. |
+| M26 | A breaking change to the API's SHAPE is judged before it merges | `check:openapi` + `oasdiff` | HELD · red 2026-09-06, red 2026-09-09 on a grown response enum | One pinned build, `scripts/oasdiff-pin.json`, installed by the same script in CI and by `pnpm tools:oasdiff` on a machine; the judge absent or at another version is RED everywhere, never a skip — the pinned build grades a value added to a response enum as an ERROR where an older build graded it a warning, and that older local build once passed what CI refused. Only an unfetched base skips locally; under `CI` it fails closed. A set that grows by design is declared `x-extensible-enum` through `extensibleEnum` and is not judged; a fixed set that grows is the break this row exists for. Judges only what the emitted spec carries, so the M25 gap (a dropped `.refine()`) is invisible here too. It sees shape only: a change of meaning in the same shape — a unit, a scale, what a status stands for — passes it, and `/contract-change` §5 puts that judgment on the author. |
 | M27 | Every non-2xx response is the canonical envelope | global exception filter · global response validation | HELD | A route declaring a NON-base error code still needs `ContractException` with that literal, which nothing checks. Closing it: make the status a required constructor argument. |
 | M28 | The contract diff comes before the implementation (Law 3) | — | **NONE** | Review-only. `/contract-change` is the procedure, not a gate. |
 

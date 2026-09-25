@@ -40,6 +40,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep chang
 
 ## Rules
 
+- **Push can never crash the app.** Every call in `src/push/` answers "no" rather than throwing;
+  `FirebaseApp.configure()` runs in `AppDelegate.swift`, never from JavaScript.
+
 - **Interactive primitives come from `@heliogrid/ui`, never `react-native`** — its RN half is the
   `.native.tsx` file in the same component folder. `View`, `ScrollView`, `StyleSheet` and
   `Platform` are layout and stay allowed. Theme values come ONLY from `@heliogrid/theme`.

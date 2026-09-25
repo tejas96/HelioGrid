@@ -46,7 +46,9 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   Add a new numbered file; only an explicit owner ruling overrides this.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index leading
   with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
-  `current_setting('app.tenant_id', true)` · explicit grants. There are no default privileges, so
+  `nullif(current_setting('app.tenant_id', true), '')::uuid` — after a transaction-local
+  `set_config` the setting reads `''`, and a bare `::uuid` throws 22P02 · explicit grants. On a
+  partitioned table every unique key includes the partition key. There are no default privileges, so
   a forgotten grant fails closed. `app_admin` is BYPASSRLS and audited.
 - A global table is unreachable (`GLOBAL_TABLES` — `app_user` cannot touch it: the codes, the
   sessions), ARMED (the same list — RLS enabled and forced with one canonical SELECT policy:

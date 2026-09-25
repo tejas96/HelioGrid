@@ -72,6 +72,10 @@ header row rather than counting columns, so a new column cannot make it lie.
 
 ## Step 1 — open a Claude Design session
 
+A message to the design-SYSTEM project states what a component must do, with a neutral example —
+never a screen's id or copy: that project cannot open the screens project, and a screen named there
+rots in the component's own docs.
+
 One fresh session per screen. **Never two screens in one session** — a session that has drawn
 several screens starts forgetting the laws.
 
@@ -188,6 +192,11 @@ reason is "it explains…" is Help — push back before looking at the frame.
 > the person's. Last of all, **read the record against the frames as they now stand** — every
 > quoted line, every count — and fix any mismatch before you hand the screen over.
 
+**Review once, completely, with pixels.** One pass over the frames at both widths, every state's
+words, the product facts against the brief's rows and the record against the frames — then at most
+ONE fix message. Only a fault that changes what gets built or what a person reads goes back; a
+cosmetic fault in the record is noted, not sent.
+
 **Read the self-audit properly.** A PASS that names no element is a FAIL. A requirement "met" by a
 sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both.
 
@@ -204,6 +213,9 @@ sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both
 ---
 
 ## Step 3 — record it
+
+Before the next screen starts, close every open question this one raised: check each against the
+repo first, and bring the survivors to the owner as two options at most, with a pick.
 
 Only after you've approved the design. `python3 scripts/next-screen.py` prints the exact
 `file:line` for both edits.

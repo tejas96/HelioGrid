@@ -172,6 +172,11 @@ Pass it the feature's web and mobile paths plus every observed value the surface
 recorded for the same quantity. A value mismatch is a **blocker** — a platform re-implemented
 something that was supposed to be imported (Law 11).
 
+**A screen is measured against its export, never judged by eye.** The built screen is compared with
+its `HelioGrid-UX/` frames at 375 and 1536 — computed styles in the browser pane, the simulator at
+375 — and pixel parity is never claimed without that comparison. Where the code must differ from
+the export, the difference is ruled in the ticket and named in the PR.
+
 **A screen also reports its prose split** (`F7-46`, `M129` review-only): the facts it kept on the
 screen, the teaching it put behind the ask, and the ask driven on BOTH platforms — opened by tap,
 opened by keyboard on the web, closed by Escape and by an outside tap, focus returned. A state that
@@ -199,6 +204,8 @@ no round: the gates are its proof. A clean round ends the loop.
 The full re-run in fresh context — the certify pass — is **opt-in**: offer it, run it when the
 owner asks or the change touches money, tenancy or auth. It doubles the cost, and the previous
 system mandated it then skipped it under pressure, which is worse than never promising it.
+
+**When the owner says testing is enough, stop** — and say plainly what was proven and what was not.
 
 **Hard stop after three fix rounds** — escalate rather than grinding. **Never edit the plan to
 make a failure disappear.**

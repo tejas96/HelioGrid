@@ -47,6 +47,10 @@ here. It is where a requirement row is sorted BEFORE the session, so the session
 row into a sentence. Where the screen shows prices or limits, a `Sample data` section quotes the
 PRD rows that carry them, in the gate-checked quote form, so no session invents a name or a figure.
 
+A session obeys the form cell to the letter, so when a drawn screen reads wrong, check the brief
+first — and grep every other brief for the same line and fix each one. A word plan never states a
+fact the brief does not pin.
+
 Write them **before** the design session, for the screen you are about to draw. A brief whose
 screen is already designed is left alone: editing it moves its digest and gate 31 refuses the
 design until it is reviewed again, which buys nothing for a screen already drawn.

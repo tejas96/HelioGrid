@@ -43,7 +43,8 @@ one out. The API must be running for either path.
 - A value exactly at its limit, one below, one above.
 - Max-length strings, especially Devanagari — verify `AppText` run-splitting on mobile.
 - A timer at exactly 0 (the 30s resend countdown) and immediately after.
-- 375px and 1440px on web; smallest and largest supported device on mobile.
+- 375px and 1536px on web — the widths the designs are drawn at; smallest and largest supported
+  device on mobile.
 
 ## Quadrant 3 — negative paths (do designed failures behave?)
 
@@ -136,6 +137,6 @@ Every run includes at least one step for each:
 
 Specifics, not adjectives.
 
-**Good** — "browser 375+1440 happy / wrong-code / send-error paths; iPhone 16 relaunch
+**Good** — "browser 375+1536 happy / wrong-code / send-error paths; iPhone 16 relaunch
 restores session; Pixel 8 fresh user passes; curl 409 returns ALREADY_ONBOARDED".
 **Bad** — "verified working".
