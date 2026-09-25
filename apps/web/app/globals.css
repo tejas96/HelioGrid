@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 /*
+ * v1 is light-only (F7-04). A browser that darkens pages by itself — Chrome's auto-dark, Samsung
+ * Internet — leaves a page alone only when it declares `only light`.
+ */
+:root {
+  color-scheme: only light;
+}
+
+/*
  * Token custom properties (--sp-*, --fs-*, --color-*, etc.) are NOT defined here.
  * They are imported in layout.tsx in load-bearing order:
  *   @heliogrid/theme/tokens.css → @heliogrid/theme/base.css → @heliogrid/ui/styles.css → globals.css

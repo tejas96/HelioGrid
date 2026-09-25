@@ -14,15 +14,21 @@ import type { LogoTileProps, WordmarkProps } from './Wordmark.types';
 const TRACKING = -0.03;
 /** Where Geist Bold's baseline sits in a line box as tall as the size — measured on the web half. */
 const BASELINE = 0.78;
-/** Geist Bold's "Grid" is about 2.2 em wide; the measuring twin corrects it on first layout. */
+/** Geist Bold's runs are about this many em wide; the measuring twins correct them on first layout. */
+const HELIO_WIDTH_EM = 2.6;
 const GRID_WIDTH_EM = 2.2;
+const HELIO = 'Helio';
 const GRID = 'Grid';
 
 interface NativeWordmarkProps extends WordmarkProps {
-  style?: StyleProp<TextStyle>;
+  style?: StyleProp<ViewStyle>;
 }
 interface NativeLogoTileProps extends LogoTileProps {
   style?: StyleProp<ViewStyle>;
+}
+
+function inkOf(tone: WordmarkProps['tone']): string {
+  return tone === 'onDark' ? theme.colors['text-inverse'] : theme.colors['text-primary'];
 }
 
 function baseType(size: number, tone: WordmarkProps['tone']): TextStyle {
@@ -32,58 +38,77 @@ function baseType(size: number, tone: WordmarkProps['tone']): TextStyle {
     fontSize: size,
     lineHeight: size,
     letterSpacing: size * TRACKING,
-    color: tone === 'onDark' ? theme.colors['text-inverse'] : theme.colors['text-primary'],
+    color: inkOf(tone),
   };
+}
+
+/** Laid out, never seen: it measures the run an SVG text must be as wide as. */
+function MeasuringTwin({
+  run,
+  type,
+  onWidth,
+}: {
+  run: string;
+  type: TextStyle;
+  onWidth: (width: number) => void;
+}) {
+  return (
+    <RNText
+      onLayout={(event: LayoutChangeEvent) => onWidth(event.nativeEvent.layout.width)}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      style={[type, styles.twin]}
+    >
+      {run}
+    </RNText>
+  );
 }
 
 /**
  * The identity. "Helio" is type in ink; "Grid" is the same type filled with `--gradient-brand`
  * — real gradient TYPE, as the web half clips it, never a colour per letter. RN cannot clip a
- * gradient to text, so "Grid" is drawn as SVG text filled by `BrandGradientDefs`, sized by an
- * invisible measuring twin so the run is exactly as wide as the type it replaces.
+ * gradient to text, so BOTH runs are SVG text at one `y`: a native `Text` beside SVG text sits on
+ * a different baseline on each platform, which lifted "Grid" on Android and dropped it on iOS.
+ * Invisible measuring twins make each run exactly as wide as the type it stands for.
  */
 export function Wordmark({ size = 22, tone = 'default', style }: NativeWordmarkProps) {
   const base = baseType(size, tone);
   const gradientId = `hg-wordmark-${useId()}`;
+  const [helioWidth, setHelioWidth] = useState(size * HELIO_WIDTH_EM);
   const [gridWidth, setGridWidth] = useState(size * GRID_WIDTH_EM);
-  const measured = (event: LayoutChangeEvent) => setGridWidth(event.nativeEvent.layout.width);
   if (tone === 'mono') {
     return <Text style={[base, style]}>HelioGrid</Text>;
   }
+  const run = {
+    y: size * BASELINE,
+    fontFamily: theme.type.families.sans,
+    fontSize: size,
+    fontWeight: '700' as const,
+    letterSpacing: size * TRACKING,
+  };
   return (
-    <View accessible accessibilityRole="text" accessibilityLabel="HelioGrid" style={styles.row}>
-      <Text style={[base, style]}>Helio</Text>
-      <View style={{ width: gridWidth, height: size }}>
-        <RNText
-          onLayout={measured}
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-          style={[base, styles.twin]}
-        >
+    <View
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel="HelioGrid"
+      style={[{ width: helioWidth + gridWidth, height: size }, style]}
+    >
+      <MeasuringTwin run={HELIO} type={base} onWidth={setHelioWidth} />
+      <MeasuringTwin run={GRID} type={base} onWidth={setGridWidth} />
+      <Svg width={helioWidth + gridWidth} height={size}>
+        <BrandGradientDefs id={gradientId} />
+        <SvgText {...run} x={0} fill={inkOf(tone)}>
+          {HELIO}
+        </SvgText>
+        <SvgText {...run} x={helioWidth} fill={`url(#${gradientId})`}>
           {GRID}
-        </RNText>
-        <Svg width={gridWidth} height={size}>
-          <BrandGradientDefs id={gradientId} />
-          <SvgText
-            x={0}
-            y={size * BASELINE}
-            fontFamily={theme.type.families.sans}
-            fontSize={size}
-            fontWeight="700"
-            letterSpacing={size * TRACKING}
-            fill={`url(#${gradientId})`}
-          >
-            {GRID}
-          </SvgText>
-        </Svg>
-      </View>
+        </SvgText>
+      </Svg>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'flex-end' },
-  /* Laid out, never seen: it measures the run the gradient text must match. */
   twin: { position: 'absolute', left: 0, top: 0, opacity: 0 },
 });
 

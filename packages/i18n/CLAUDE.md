@@ -94,7 +94,10 @@ design token but the sans stack, no component, and no product model beyond the l
    system: its `@font-face` and its family in `--font-sans`, then pull. Here: the variable woff2
    in `packages/theme/assets/fonts/`. On the phone: one static instance per sanctioned weight,
    named `<Family>-<Weight>.ttf`, in `apps/mobile/assets/fonts/`, linked with
-   `npx react-native-asset`. Then look at it on a device — only a device proves the phone links it.
+   `npx react-native-asset` for iOS; on Android the same faces go in
+   `apps/mobile/android/app/src/main/res/font/` as `<family>_<weight>.ttf`, lowercase, beside a
+   `<family>.xml` that maps each weight, and the family is registered in `MainApplication.kt`
+   (`check:languages` names what is missing). Then look at it on a device — only a device proves the phone links it.
 5. **Write the plurals.** Every plural message written in the language carries every category
    `Intl.PluralRules` names for it; a message still in English is a gap, not a failure.
 6. **Money: nothing to do.** `formatMoney` takes the market's pack and never a language (`F3-20`;

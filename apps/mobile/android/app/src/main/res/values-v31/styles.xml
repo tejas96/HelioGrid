@@ -21,6 +21,8 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
         <item name="android:windowBackground">@color/splash_canvas</item>
         <item name="android:windowSplashScreenBackground">@color/splash_canvas</item>
+        <!-- Light-only (F7-04): without this Android may darken a light app on its own (forced dark). -->
+        <item name="android:forceDarkAllowed">false</item>
     </style>
 
 </resources>

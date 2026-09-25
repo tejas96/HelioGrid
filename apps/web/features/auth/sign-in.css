@@ -74,6 +74,7 @@
 
 /* From the frame's breakpoint (`DoorFrame.css`) the identity is its own column, so the door's
    two phone-only offsets go. */
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
   .hg-door-intro {
     padding-top: 0;

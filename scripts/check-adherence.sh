@@ -125,7 +125,9 @@ fi
 # ONE pattern, used by both passes. It was defined twice before, and only the first copy was
 # widened — so rgb()/hsl()/named colours matched the opening grep and were then filtered out
 # again by the closing one, which still said hex. A pattern used twice belongs in a variable.
-COLOUR='#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|lab)\([[:space:]]*[0-9.]|(color|background|background-color|borderColor|shadowColor|tintColor)[[:space:]]*[:=][[:space:]]*["'"'"']?(black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta)\b'
+# A named colour is caught on EVERY colour-bearing property and attribute — any `…color`/`…Color`
+# (`borderTopColor`, `outline-color`), `background`, `fill` and `stroke` — not a hand-picked six.
+COLOUR='#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|lab)\([[:space:]]*[0-9.]|\b([A-Za-z-]*[cC]olor|background|fill|stroke)[[:space:]]*[:=][[:space:]]*["'"'"'{]?[[:space:]]*["'"'"']?(black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta|navy|teal|olive|maroon|lime|aqua|fuchsia|silver|gold|indigo|violet)\b'
 # Block comments are stripped over the WHOLE FILE (perl -0, non-greedy, /s) before matching.
 # A per-line filter cannot see that line 3 of a 5-line /* ... */ is inside a comment, so a
 # reference palette written across several lines produced false positives — and noise is how a
@@ -578,5 +580,121 @@ if [ -n "$build_mode" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant, no `tsc -b`'
+# ── 16. A screen writes no size — every size reaches it through a token (M143) ───
+# ── 17. An accessible label is never empty (M144) ─────────────────────────────
+# ── 18. v1 is light-only, and the seam for a dark set stays open (M145) ───────
+# What each refuses and allows is its row's; the three read the same files, so ONE pass reads and
+# strips each file once and tags each finding with its check number.
+BREAKPOINTS_FILE='packages/theme/src/_generated/tokens/spacing.css'
+[ -e "$BREAKPOINTS_FILE" ] || { printf 'CONFIG ROT: check 16 names "%s", which does not exist.\n' "$BREAKPOINTS_FILE"; fail=1; }
+ui_findings=$(python3 - "$BREAKPOINTS_FILE" $UI_DIRS <<'PY'
+import os, plistlib, re, subprocess, sys
+import xml.etree.ElementTree as ET
+spacing, trees = sys.argv[1], sys.argv[2:]
+screens = tuple(t for t in trees if t.startswith("apps/"))
+breakpoints = {float(v) for v in re.findall(r"--bp-[a-z0-9-]+:\s*([0-9.]+)px", open(spacing).read())}
+KEYS = (r"width|height|size|strokeWidth|hitSlop|gap|rowGap|columnGap|padding\w*|margin\w*|top|left|"
+        r"right|bottom|inset|fontSize|lineHeight|letterSpacing|border\w*Radius|border\w*Width|"
+        r"minWidth|maxWidth|minHeight|maxHeight|flexBasis|translateX|translateY")
+LENGTH = re.compile(r"(?<![\w.#-])(-?\d*\.?\d+)(px|rem|em|pt)\b")
+KEYED = re.compile(r"\b(?:" + KEYS + r")\s*[:=]\s*\{?\s*(-?\d*\.?\d+)(?![\w.%])")
+TAILWIND = re.compile(r"(?<![\w-])-?(?:p[xytblrse]?|m[xytblrse]?|w|h|size|gap(?:-[xy])?|space-[xy]|top|left|right|"
+                      r"bottom|inset(?:-[xy])?|min-[wh]|max-[wh]|rounded(?:-[a-z]+)?|leading|tracking|basis|"
+                      r"translate-[xy]|text)-(?:\[[^\]]+\]|\d+(?:\.\d+)?|px)(?![\w-])")
+CLASS_LINE = re.compile(r"className|class=|clsx|classNames|\bcn\(")
+BLANK = r"(?:\"\s*\"|'\s*'|`\s*`)"
+EMPTY_LABEL = re.compile(r"\b(?:label|aria-label|accessibilityLabel)\s*=\s*(?:" + BLANK + r"|\{\s*" + BLANK + r"\s*\})"
+                         r"|(?:^|[{,])\s*[\"']?(?:label|aria-label|accessibilityLabel)[\"']?\s*:\s*" + BLANK)
+DARK = re.compile(r"prefers-color-scheme|\buseColorScheme\b|\bAppearance\b|\bcolorScheme\b|"
+                  r"color-scheme\s*:[^;}]*\b(?:dark|normal)\b")
+TAILWIND_DARK = re.compile(r"(?<![\w-])dark:[a-z\[]")
+DARK_SCOPE = re.compile(r"\.(?:theme-)?dark\b|\[data-[\w-]+\s*[~|^$*]?=\s*[\"']?dark[\"']?\s*\]")
+SKIP = {"node_modules", "dist", ".next", "ios", "android"}
+def files():
+    for tree in trees:
+        if os.path.isfile(tree):
+            yield tree
+        for root, dirs, names in os.walk(tree):
+            dirs[:] = [d for d in dirs if d not in SKIP]
+            yield from (os.path.join(root, n) for n in names if n.endswith((".css", ".ts", ".tsx", ".mts", ".json")))
+def report(check, path, number, what, line):
+    print(f"{check}\t{path}:{number}: {what} — {line.strip()[:100]}")
+for path in sorted(set(files())):
+    css, script = path.endswith(".css"), path.endswith((".ts", ".tsx", ".mts"))
+    screen, tokens = path.startswith(screens), path.startswith("packages/theme/")
+    text = re.sub(r"/\*.*?\*/", lambda m: "\n" * m.group(0).count("\n"), open(path).read(), flags=re.S)
+    for number, line in enumerate(text.split("\n"), 1):
+        code = re.sub(r"(^|\s)//.*$", "", line) if script else line
+        if not code.strip():
+            continue
+        classes = script and CLASS_LINE.search(code)
+        if screen and (css or script):
+            media = "@media" in code or "matchMedia" in code
+            sizes = [f"{v}{u}" for v, u in LENGTH.findall(code)
+                     if float(v) != 0 and not (media and u == "px" and float(v) in breakpoints)]
+            if script:
+                sizes += [f"{v} on a size key" for v in KEYED.findall(code) if float(v) != 0]
+            if classes:
+                sizes += [m.group(0) for m in TAILWIND.finditer(code)]
+            if sizes:
+                report(16, path, number, ", ".join(sizes), line)
+        if script and not tokens and EMPTY_LABEL.search(code):
+            report(17, path, number, "an empty label", line)
+        if DARK.search(code) or (classes and TAILWIND_DARK.search(code)) or (tokens and not script and DARK_SCOPE.search(code)):
+            report(18, path, number, "a dark mode or colour-scheme API", line)
+if not breakpoints:
+    print(f"16\t{spacing}: no --bp-* token — a breakpoint has nothing to equal")
+root_css = re.sub(r"/\*.*?\*/", "", open("apps/web/app/globals.css").read(), flags=re.S)
+if not re.search(r":root\s*\{[^}]*color-scheme\s*:\s*only\s+light", root_css):
+    print("18\tapps/web/app/globals.css: :root does not declare `color-scheme: only light`")
+plist = "apps/mobile/ios/HelioGridMobile/Info.plist"
+if plistlib.load(open(plist, "rb")).get("UIUserInterfaceStyle") != "Light":
+    print(f"18\t{plist}: UIUserInterfaceStyle is not Light")
+styles = subprocess.run(["git", "ls-files", "apps/mobile/android/app/src/main/res/values*/styles.xml"],
+                        capture_output=True, text=True).stdout.split()
+if not styles:
+    print("18\tapps/mobile/android/app/src/main/res/values*/styles.xml: none tracked — nothing to read")
+for path in styles:
+    for style in ET.parse(path).getroot().iter("style"):
+        if "DayNight" in style.get("parent", ""):
+            print(f"18\t{path}: style {style.get('name')} follows the system (DayNight)")
+        elif style.get("name") == "AppTheme" and "Light" not in style.get("parent", ""):
+            print(f"18\t{path}: style AppTheme's parent {style.get('parent')!r} is not a Light theme")
+        opted_out = any(item.get("name") == "android:forceDarkAllowed" and (item.text or "").strip() == "false"
+                        for item in style.iter("item"))
+        if style.get("name") == "AppTheme" and not opted_out:
+            print(f"18\t{path}: style AppTheme does not set android:forceDarkAllowed to false")
+colors = "packages/theme/src/_generated/tokens/colors.css"
+palette = open(colors).read()
+start = palette.find("Semantic aliases")
+block = re.sub(r"/\*.*?\*/", "", palette[start:palette.find("}", start)], flags=re.S) if start >= 0 else ""
+aliases = re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block)
+if not aliases:
+    print(f"18\t{colors}: no semantic alias block")
+for name, value in aliases:
+    if not value.strip().startswith("var("):
+        print(f"18\t{colors}: alias {name} is `{value.strip()}`, not a var() chain")
+PY
+) || { printf 'CHECKS 16-18 CRASHED — their findings are incomplete; the traceback is above (M143-M145).\n'; fail=1; }
+findings_of() { printf '%s\n' "$ui_findings" | awk -F'\t' -v n="$1" '$1 == n { print $2 }'; }
+screen_sizes=$(findings_of 16)
+if [ -n "$screen_sizes" ]; then
+  printf 'RAW SIZE ON A SCREEN — use a token from @heliogrid/theme (M143):\n%s\n' "$screen_sizes"
+  echo '  Web: var(--sp-*), var(--r-*), var(--fs-*) and the layout tokens. Native: theme.spacing[…] and'
+  echo '  its siblings. A size the design system lacks is added THERE (Claude Design), then pulled.'
+  fail=1
+fi
+empty_labels=$(findings_of 17)
+if [ -n "$empty_labels" ]; then
+  printf 'EMPTY ACCESSIBLE LABEL — a screen reader reads nothing (M144):\n%s\n' "$empty_labels"
+  echo '  Give the control its words from @heliogrid/i18n.'
+  fail=1
+fi
+light_only=$(findings_of 18)
+if [ -n "$light_only" ]; then
+  printf 'NOT LIGHT-ONLY (F7-04, M145):\n%s\n' "$light_only"
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant, no `tsc -b`, no raw size on a screen, no empty label, light-only'
 exit $fail

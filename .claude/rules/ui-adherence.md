@@ -18,12 +18,17 @@ UI is authored, in the package and in both apps.
 
 - **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
   `@heliogrid/theme`, which is GENERATED from the live design system and never hand-transcribed.
-  `color-mix()` over TOKENS is house style; a literal colour in any notation is not.
+  `color-mix()` over TOKENS is house style; a literal colour in any notation is not. On a screen
+  only `0` is written raw; a size or colour the design system lacks is added THERE, in Claude
+  Design, then pulled — never typed into the app (`M40`, `M143`).
 - **Primary actions are near-black.** Accent is focus, links, selection, active tab and control
   fills ONLY — never a button fill. Iridescence is atmosphere, never information. Hierarchy comes
   from luminance and elevation, not borders.
 - **Light-only v1.** Text is never smaller than 12px; the 11px uppercase overline is the one
-  exception.
+  exception. No dark-mode API, no theme switch; the web root declares `color-scheme: only light`
+  and the iOS app pins `UIUserInterfaceStyle` to Light (`M145`).
+- **An icon-only control is an `IconButton`**, whose `label` is required; a `Button` always has
+  words (`M144`).
 
 ## Compose from the primitives, don't re-answer them
 

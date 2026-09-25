@@ -391,6 +391,36 @@ This file dispositions every requirement row of the suite's six platform foundat
 - Given any customer-facing artifact — a document, a link, an export or a spoken figure — when it is produced, then no price in it was computed on a device (`F4-04`, `M06-41`).
 
 ---
+
+### T-FPLAT-071 · The PRD states roles, never design-system values
+**Type:** policy · **Tier:** P0
+**Status:** planned
+**Why:** a PRD that restates a size or a colour keeps a second copy of a design-system value, and the two drift the day the design system changes — then a builder follows the stale copy.
+**PRD rows:** none claimed — this is `F7-03`'s document half, split from `T-FPLAT-023` by the owner (B); `F7-03` stays claimed there.
+**Design:** none — a documents task with no screen.
+**Data model:** none.
+**Contract:** none.
+**Depends on:** `T-FPLAT-023` — the design-system tokens the PRD will name by role.
+**Out of scope:** screens and code — `T-FPLAT-023`.
+**Settle at /start:** about 40 `px` values stand in `docs/prd/`, spaced (`375 px`) or not. Most are not design-system values — the phone width, the studio's drag and snap distances. About 6 are, inside quoted sources: the `2px` focus ring, the `16–24px` photo radius, `1px` borders, the `12px` floor, the `44×44` target. Each is ruled by the owner: replaced by the token's role name, or kept on the gate's reviewed list with its reason. Whether a number is a design-system value is a reviewer's call; the gate refuses only a number no review has seen.
+**Requirements (verbatim):** `F7-03`, as `T-FPLAT-023` quotes it.
+
+**Cases:**
+- **n/a** · concurrency · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · partial-failure · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · retry · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · roll · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · tenancy · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · scale · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · input · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · platform · a documents task with no runtime path — it changes PRD text and a docs gate
+- **n/a** · observability · a documents task with no runtime path — it changes PRD text and a docs gate
+
+**DONE WHEN:**
+
+- **D1** · **Given** a requirement in any PRD in this suite that concerns appearance, **when** a reader looks for the value behind it, **then** the value is found in the token files (`packages/theme/src/_generated/tokens/`), and the PRD states only the role or rule (`F7-01`, `F7-03`) → proof: recorded d1-prd-size
+
+---
 ### T-FPLAT-012 · STRUCK 2026-09-04 — the conflict-policy engine
 **Type:** — · **Tier:** —
 **Status:** struck
@@ -776,19 +806,82 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 ---
 ### T-FPLAT-023 · The design-system adherence build gate
 **Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F7-03, F7-26
+**Status:** shipped (#164)
+**PRD rows:** F7-03 (P0), F7-26 (P0)
+**Why:** an installer's crew reads every screen in sunlight on a phone; a colour or size typed into a screen drifts from the design system, and an unlabelled icon button is silent to a screen reader — each ships green today unless a build step refuses it.
+**Impact:** every screen author gets a build that refuses a typed colour, a typed size, an icon button with no words and a dark theme, and names the file, line and rule — so design drift and silent buttons stop at the author's desk, not in the field. The owner stops checking these by eye in review.
+**Scope:** **In** — `scripts/check-adherence.sh` (check 3 widened to every colour-bearing property; new checks 16 sizes, 17 empty labels, 18 light-only; a crash in 16–18 fails the run) · `packages/theme` (two tokens, `--bp-desktop`, `--form-max`, pulled from the live design system; `_generated/README.md` names the partial pull) · `packages/ui` (`Button.children` required and typed `string`; `AttentionGlyph` drawn on both platforms) · `apps/web` (sign-in and sign-up CSS read the two tokens; `SwitchPanel` uses `AttentionGlyph`; `CodeStep` renders no Button whose words are null; `:root { color-scheme: only light }`) · `apps/mobile` (iOS `UIUserInterfaceStyle = Light`; Android `AppTheme` never forced dark; `CodeStep` renders no Button whose words are null; Android fonts moved to `res/font`, one family XML each, registered by name in `MainApplication.kt` — owner ruling: fixed in this PR, found by `/verify`) · `.claude/mechanisms.md` rows M40, M143–M145 · `.claude/rules/ui-adherence.md` pointers · `packages/ui` `Wordmark.native` draws both runs as SVG text on one baseline · `scripts/check-language-readiness.mjs` refuses a family Android cannot resolve by name (row M135) · the font playbook in `packages/i18n/CLAUDE.md` and `apps/mobile/react-native.config.js`. No domain, contracts, db, data or i18n change; no api. **Out** — the four items under **Out of scope**. **Size** — 36 files (12 of them font files renamed, byte for byte), about +380 / −60 lines. Past the 25-file signal (M111): owner ruled one PR.
 **Requirements (verbatim):**
 
 - **F7-03** (P0) — **No document in this suite, and no screen in the product, restates a design-system value.** Requirements name roles and rules; values stay in the token files. On screens the same law is mechanical: **zero raw colour literals and zero off-scale dimensions** — every visual value reaches a screen through the design system, never by transcription. This is a completion condition, not a style preference (`F7-43`, item 10).
 - **F7-26** (P0) — **Every icon-only control carries an accessible label, and a missing label is a build failure rather than a warning.** The source's escalation is carried deliberately: this is not a lint suggestion, it is a completion condition. An icon-only control without a label is unusable by a screen-reader user and ambiguous to everyone else.
 
+**Placement:**
+
+| fact | owning package (architecture.md §2) | why it owns it | how others reach it |
+|---|---|---|---|
+| `--bp-desktop` (968px), `--form-max` (520px) | `theme` (`tokens/spacing.css`, generated) | a visual value; written to the live design system first, never hand-edited here | `var(--bp-desktop)` / `var(--form-max)` in app CSS; check 16 reads the breakpoint token values from the file (guard M143) |
+| `AttentionGlyph` (web + native) | `ui` (`primitives/Icon/`) | icons are drawn in `packages/ui`, one SVG, both halves (M118) | `import { AttentionGlyph } from '@heliogrid/ui'` (guard M118) |
+| `Button.children` required, typed `string` | `ui` (`Button.types.ts`) | one prop contract for both platforms (Law 7) | `tsc` refuses `<Button icon/>` with no words; icon-only is `IconButton` with its required `label` (guard M144) |
+| light-only switches | each app's own config: `apps/web/app/globals.css`, `apps/mobile/ios/HelioGridMobile/Info.plist`, `apps/mobile/android/app/src/main/res/values*/styles.xml` | platform settings live in the platform shell; no shared package can set them | check 18 reads the three tracked files (guard M145) |
+| Android font families (`Geist`, `Geist Mono`, `Noto Sans Devanagari`) | `apps/mobile` Android shell: `res/font/<family>.xml` + `MainApplication.kt` | Android finds a font by file name; only the platform shell can register a family | the theme's family names, unchanged; `check:languages` refuses a family Android cannot resolve (guard M135) |
+| the refusals | `scripts/check-adherence.sh` checks 3, 16, 17, 18 | the one adherence script `pnpm check:all` and CI run | rows M40, M143, M144, M145; each proven red by the break tests at `/verify` |
+
+**Data model:** none — the task stores nothing.
+**Contract:** none.
+**Depends on:** none (owner named this task) — the token files (`packages/theme/src/_generated/tokens/`) and `packages/ui`'s `IconButton` are on `main`.
+**Out of scope:** the PRD's own sizes (`F7-03`'s document half) — `T-FPLAT-071`, split out by the owner (B): editing PRD rows is the owner's review, and this task stays code; raw sizes INSIDE `packages/ui` (about 2,300 today) — `packages/ui` is the design system's own implementation, copied from its export, so its numbers are the design system's, not a screen restating one (ruling below); the opt-in field mode (`F7-16`) — `T-FPLAT-024`; the `F7-04` row itself is claimed as a law elsewhere in this file — this task only adds its guard.
+**Settle at /start:**
+- **"Screen" means the apps** (`apps/web`, `apps/mobile`) — ruled: `F7-03` says "no screen … restates a design-system value", and the screens are the apps; `packages/ui` is where the design system's values are applied, so the apps are where a transcription can happen.
+- **The two web sizes no token carried** — `968px` (the sign-in and sign-up desktop breakpoint, `apps/web/features/auth/sign-in.css:77`, `company-signup.css:55`) and `520px` (the sign-up form's width, `company-signup.css:35`). Owner ruling: both became design-system tokens, `--bp-desktop` and `--form-max`, written to the live design system and pulled into `packages/theme/src/_generated/tokens/spacing.css`.
+- **Icon-only is decided by TYPE, not by reading JSX** — ruled: screens never render a raw `<button>`, `<a>` or `Pressable`; the design system's icon-only control is `IconButton`, whose `label` is required, so `Button`'s `children` become required too and `<Button icon={…}/>` with no words fails `tsc` — the author reaches for `IconButton`. The design system's own `Button` contract marks `children` optional; `ds:contract` compares prop names only, and a stricter type is the point. An empty literal label is refused by the adherence check. No lint plugin is added.
+- **The app-drawn icon** — `apps/web/features/auth/components/SwitchPanel.tsx:25-37` draws its own SVG (`strokeWidth={1.5}`), which `M118` puts in `packages/ui`: the glyph moves into `packages/ui` and the screen uses it.
+
+**Cases:**
+- **C1** · input · a size ON the scale typed raw into a screen (`padding: 8px` in `apps/web`, `padding: 8` in `apps/mobile`) → refused: the row forbids transcription, not only off-scale values; only `0` is allowed raw → proof: gate M143
+- **C2** · input · a raw size hidden in `calc()`, a shorthand, a negative, or `rem`/`em`/`pt` → refused the same way; `%`, `vw`, `vh` and `fr` are proportions, not design-system values, and pass → proof: gate M143
+- **C3** · input · a size written in a comment (`SignupProgress.tsx:9` says `335px`) → passes: comments are exempt, as check 3 already does for colour → proof: gate M143
+- **C4** · input · a size inside `@media` or a `matchMedia` string, where a token cannot be read → passes only when it equals a breakpoint token's value, read from the token file → proof: gate M143
+- **C5** · platform · `<Button icon={…}/>` with no `children`, or with children that can be `null`, `undefined` or `false` (`{cond && t('x')}`), on either platform → `tsc` fails: `children` is required and typed `string` — the words themselves, so an element child that draws no words (an `Icon`, an empty fragment) fails too — and an icon-only control is an `IconButton` with its required `label`. The narrower type found two such buttons in each platform's `CodeStep` (`words.primary`, `words.resend` are `string | null`); each now renders only when its words exist. An empty-string child (`{''}`) still type-checks; it is named under M144's not-held list → proof: gate M144
+- **C6** · input · a label present but empty or only spaces (`label=""`, `aria-label=" "`, `accessibilityLabel=""`, `label={''}`, and the object form, key quoted or not — `{ label: '' }`, `{ 'aria-label': ' ' }` — handed through a spread or an actions array) in the apps or `packages/ui` → refused by the adherence check → proof: gate M144
+- **C7** · input · an icon-only control built inside `packages/ui` from its own `Pressable` or a raw `<button>` (14 today, all labelled) → not decided by a machine: a new one is read by `/ship`'s reviewer → proof: none — "only child is an icon" cannot be read without resolving imports
+- **C8** · platform · iOS in dark appearance draws the app's system parts — alerts, pickers, the keyboard — dark, because `apps/mobile/ios/HelioGridMobile/Info.plist` has no `UIUserInterfaceStyle` → `UIUserInterfaceStyle = Light`; the gate reads that tracked file (never the ignored `ios/build/`), refuses it without the key, refuses an Android `AppTheme` whose `parent=` is `DayNight` or any theme that is not a Light one (`Theme.AppCompat.NoActionBar` is dark, and draws the system's edit menus and dialogs dark) in any `res/values*/styles.xml` (the attribute, not a comment), and refuses an `AppTheme` that does not set `forceDarkAllowed` to false — without it Android darkens a light app on its own (found by `/verify`: forced dark darkened the sign-in screen) → proof: gate M145 + qa-mobile Q5 + qa-mobile Q8
+- **C9** · roll · an iPhone running an older build keeps following dark mode until it updates → nothing a release can change in an installed binary → proof: none — the fix reaches a phone only through a store update
+- **C10** · input · a design-system re-export that brings a dark value-set anywhere in `packages/theme/src/_generated/` — a `prefers-color-scheme` query, or a dark-scoped selector anywhere in a selector or in `manifest.json`'s theme list (`.dark`, `html.dark`, `.theme-dark`, `[data-theme="dark"]`, `:root[data-mode="dark"]`) — or that flattens an alias or drops the whole alias block → refused: every property in the `Semantic aliases` block of `tokens/colors.css`, read to the block's end with comments stripped, must be a `var()` chain, and the block must hold at least one. Dropping SOME aliases while one remains is not refused (named under M145's not-held list) → proof: gate M145
+- **C11** · input · a named colour on a property check 3 does not list (`borderTopColor: 'red'`, `fill="red"`, `stroke`) → refused: every colour-bearing property and attribute → proof: gate M40
+- **C12** · observability · a refusal says which file, which line and which rule, so the author fixes it without a second run → proof: gate M143
+- **C13** · input · a size a screen carries outside a style sheet — a numeric JSX size attribute or inline style on web (`width={16}`, `style={{ padding: 8 }}`), a nested native size (`shadowOffset`, `transform`), a native size prop (`hitSlop`, `size`, `strokeWidth`), a Tailwind size utility or arbitrary value (`p-2`, `w-[335px]`) → refused the same way → proof: gate M143
+- **C14** · platform · a browser that darkens pages by itself (Chrome's auto-dark, Samsung Internet) renders the web app dark → `:root { color-scheme: only light; }` in `apps/web/app/globals.css`, required by the gate; a `color-scheme` declaring anything else is refused → proof: gate M145 + qa-web Q1
+- **C16** · observability · checks 16–18 crash on an unreadable input (a malformed `styles.xml`, a moved `Info.plist`, a non-UTF-8 file) → the script prints `CHECKS 16-18 CRASHED` and fails; before, a crash left the findings empty and printed `adherence OK` → proof: gate M145
+- **C17** · platform · `AttentionGlyph.native.tsx` has no native consumer yet — only the web `SwitchPanel` draws the glyph → the native half exists because every icon is drawn once for both halves (M118) → proof: none — no native screen renders it; the first native screen that does proves it in its own QA
+- **C18** · platform · Android draws every screen in Roboto: the theme asks for `fontFamily: 'Geist'` with a weight, Android looks the font up by FILE name, and the faces were named `Geist-Bold.ttf` — nothing matched, so it fell back silently (on `main` since the fonts landed; found by `/verify` in this task) → the faces move to `res/font/<family>_<weight>.ttf`, one `<family>.xml` maps each weight, and `MainApplication.kt` registers each family under the theme's name; `check:languages` now refuses a family whose registration (outside a comment, before React Native loads), XML weight or face is missing. The Devanagari family is proven by the gate alone: an unregistered one falls back to Android's own Noto Devanagari, which a screenshot cannot tell apart → proof: gate M135 + qa-mobile Q9
+- **C19** · platform · the wordmark's "Grid" sat off the baseline of "Helio" — about 2 dp high on Android, 1.5 pt low on iOS — because "Helio" was native text and "Grid" SVG text, which each platform places differently → both runs are SVG text at one `y`, each as wide as its measuring twin; the seam between them stays the web's (web 1.0 dp at size 24; measured Android 1.5, iOS 0.7) → proof: qa-mobile Q9 + qa-mobile Q10
+- **C20** · input · `npx react-native-asset`, the playbook's link step, copies the faces back into `android/app/src/main/assets/fonts` under their old names, shipping a second set → `check:languages` refuses any file in that folder → proof: gate M135
+- **C21** · roll · an Android phone on an older build keeps Roboto and the off-baseline wordmark until it updates → nothing a release can change in an installed binary → proof: none — the fix reaches a phone only through a store update
+- **C22** · platform · on Android 7–8.1 (API 24–27) a Medium or SemiBold weight draws the Regular Geist face, because React Native below API 28 picks a registered family's face by style only; Bold still draws Bold, and nothing draws Roboto → proof: none — the fix is a family per weight across 129 native files, logged in `docs/tasks/deferred.md`
+- **C15** · input · the phrase `dark` used as a variant name in code (`IconButton.native.tsx:20`, `dark: { background: … }`) → not a dark theme: the gate matches the dark-mode APIs and Tailwind's `dark:` inside a class name, never the word → proof: gate M145
+- **n/a** · concurrency · a build check holds no shared state; two runs read the same files
+- **n/a** · partial-failure · each check reads files and exits; nothing is written, so nothing is half done
+- **n/a** · retry · a re-run reads the same files and gives the same answer
+- **n/a** · tenancy · no tenant data is read; a tenant's brand colour arrives at runtime as data, never as a literal in a screen
+- **n/a** · scale · the checks read the UI trees once per run, in seconds; the trees grow by files, not by data
+
+**QA plan:**
+- **Q1** · web · landing, C14, D4 · open the sign-in page at 1536×900; read the page root's colour scheme → expect sign-in renders, and the colour scheme reads `light only` (Chrome's spelling of the authored `only light`) · observe computed-style · severity blocker
+- **Q2** · web · D2 · same page; read the two new tokens from the page root → expect `--bp-desktop` = `968px` and `--form-max` = `520px` · observe computed-style · severity major
+- **Q4** · mobile · landing · iPhone simulator in light appearance; install and launch the build that carries the new `Info.plist` → expect the sign-in phone field is on screen · observe ios-tree · severity major
+- **Q5** · mobile · C8, D4 · set the simulator to dark appearance; quit and relaunch the app; long-press the phone field to open the system edit menu (Paste / AutoFill) → expect the edit menu is light with dark text, and the screen stays light · observe screenshot · severity blocker
+- **Q7** · mobile · landing · Android emulator (API 29 or later) in day mode; install the rebuilt app and launch it → expect the sign-in phone field is on screen · observe android-tree · severity major
+- **Q9** · mobile · C18, C19 · Android emulator, sign-in in day mode, the app rebuilt with the new fonts → expect the title "Sign in" measures 74 dp wide ±1 (iOS draws it 74.0 dp in Geist; the Roboto build drew it 69.0 dp); the wordmark's "Helio" and "Grid" letters' bottom edges on the same pixel row ±1 px; the gap between them 1 dp ±1 · observe screenshot · severity major
+- **Q10** · mobile · C19 · iPhone simulator, sign-in in light appearance → expect the wordmark's "Helio" and "Grid" letters' bottom edges on the same pixel row ±1 px, and the gap between them 1 dp ±1 · observe screenshot · severity major
+- **Q8** · mobile · C8, D4 · night mode ON and Android's forced dark override ON (the setting that darkened the app in the earlier round); force-stop and relaunch → expect the app is not darkened: the background is light, as in Q7 · observe screenshot · severity blocker
+
+**Verified:** digest 7485179b63cd · 2026-09-26 · driven on ed874231b3fc; since then only types changed (`Button.children: string`, `AttentionGlyphProps`), proven by `tsc` and its reds — no runtime depth · depth delta (owner pick A: round 0's own step ids W2 = today's Q2 and I1 = today's Q4 passed and stand; the steps first written as Q3 and Q6 were dropped by that pick) · web 1/1 pass (Q1) · ios 2/2 pass (Q5, Q10) · android 3/3 pass (Q7, Q8, Q9) · break tests 25 current · parity not run — the wordmark was measured on both platforms against the web, and the native glyph has no consumer (C17)
 **DONE WHEN:**
 
-- **Given** a requirement in any PRD in this suite that concerns appearance, **when** a reader looks for the value behind it, **then** the value is found in `design/ds-source/`, and the PRD states only the role or rule (`F7-01`, `F7-03`).
-- **Given** any screen in the product, **when** its rendered styles are inspected, **then** no raw colour literal and no off-scale dimension is present (`F7-03`).
-- **Given** an icon-only control, **when** the build runs, **then** a missing accessible label fails the build rather than warning (`F7-26`).
-- **Given** the shipped product, **when** its surfaces and settings are inspected, **then** no dark value-set ships, no per-user theme switch exists and no surface — including the studio canvas and the customer's 3D view — renders a dark variant, while the semantic alias layer remains intact so a dark set could be added later without a redesign (`F7-04`).
+- **D2** · **Given** any screen in the product, **when** its rendered styles are inspected, **then** no raw colour literal and no off-scale dimension is present (`F7-03`) → proof: gate M40 + gate M143 + qa-web Q2
+- **D3** · **Given** an icon-only control, **when** the build runs, **then** a missing accessible label fails the build rather than warning (`F7-26`) → proof: gate M144
+- **D4** · **Given** the shipped product, **when** its surfaces and settings are inspected, **then** no dark value-set ships, no per-user theme switch exists and no surface — including the studio canvas and the customer's 3D view — renders a dark variant, while the semantic alias layer remains intact so a dark set could be added later without a redesign (`F7-04`) → proof: gate M145 + qa-web Q1 + qa-mobile Q5 + qa-mobile Q8
 
 ---
 ### T-FPLAT-024 · Opt-in high-contrast field mode as a per-user capability
