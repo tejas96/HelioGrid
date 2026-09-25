@@ -3,7 +3,7 @@ name: case-reviewer
 description: The second actor on a design, before any code. Reads a ticket's architecture, its claims (cases, schema facts, done-when lines) and the code the task will touch, and finds the failure cases the author missed, the proofs that could not fail, and the faults in the data model. Dispatched by /start for every task with a runtime path, beside fact-checker.
 tools: Read, Grep, Glob, Bash
 model: opus
-effort: high
+effort: medium
 maxTurns: 40
 ---
 
