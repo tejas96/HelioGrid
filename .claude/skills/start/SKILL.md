@@ -1,6 +1,6 @@
 ---
 name: start
-description: Begin a task or a bug fix the controlled way — read only the task's own section, review the ticket as an EPC expert, state the three things, explain it in simple words, create the branch, stop for the go. Use at the start of every piece of work.
+description: Begin a task or a bug fix the controlled way — read only the task's own section, review the ticket as an EPC expert, state the three things, draw the design and try to break it, explain it in simple words, create the branch, stop for the go. Use at the start of every piece of work.
 ---
 
 # `/start <T-id | bug>` — read, review, explain, branch, stop
@@ -96,6 +96,40 @@ lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a 
 authored in both app trees is split out here (`M115`, review-only). Contract
 before code (Law 3): the contract diff, the domain types, the schema plan, then code.
 
+**Draw the design, then break it yourself, before the owner sees a solution.** A solution is shown
+as its ARCHITECTURE: one diagram of the path a request or a job takes through the layers — which
+package does what, where state is stored, which step writes and which reads — beside the reach. A
+task with no runtime path (a doc, a ticket, a gate's text) says so in one line and has no diagram
+and no cases. Then attack it. Walk every class below against THIS design, not the ticket, and
+write each case as input → what happens → the fix. A class that cannot occur here is said in one
+line, with why; none is skipped in silence.
+
+- **Concurrency** — the same request twice at the same moment; two actors on one record.
+- **Partial failure** — the process dies between any two steps; one write commits and the next does
+  not; an outside call times out after it succeeded.
+- **Retry and replay** — the same thing delivered twice, late or out of order; a person who changes
+  the input and sends again.
+- **Stored data and the roll** — §2's rolling-release answer checked again against the design, and
+  every row the old code already wrote.
+- **Security and tenancy** — a secret stored or sent back; a caller who lost access; a read or write
+  that crosses tenants; device input trusted as fact.
+- **Scale** — the cost per request, the growth per day, anything unbounded (a table, a scan, a list,
+  a loop over rows), N+1, and what still holds at a hundred times today's volume.
+- **Input edges** — empty, maximum, malformed, duplicate, other scripts, money rounding at the minor
+  unit, time zones and the tenant clock.
+- **Platforms** — web and mobile, the app killed mid-action, a lost network read as an error.
+- **Seeing it fail** — when this breaks in production, which log line, error code or metric says so.
+
+**The cases live in the ticket, never only in the chat.** Each is one line under
+`**Broken at /start:**` in the task's section: the case → the fix → the test or QA step that will
+fail if the fix is missing. A fix that changes what is built also becomes a done-when line, a ruling
+or an out-of-scope line with its reason. `/ship` matches each case to its assertion as it does every
+done-when line.
+
+The design reaches the owner with no open case: nothing ambiguous and nothing left "to decide at
+build". A hole the owner or the build finds that one of these classes would have found is a
+`/start` miss.
+
 **For a SCREEN, dispatch `design-reviewer` BEFORE writing it.** It did not draw the screen: it renders the
 export, looks at the pixels, measures, reads the record and the WHOLE PRD rows behind every product fact, and
 returns blockers and the better design where it sees one. Show the owner its report. A `BLOCKER` is settled
@@ -122,13 +156,19 @@ test, a guard, a doc, a proof — to land under a count** (owner ruling). Genera
 
 ## 4. Explain, branch, stop
 
-Explain the task to the owner in simple words: what we build, why, and what proves it. Then
+Explain the task to the owner in simple words: what we build, why, and what proves it — with
+§3's architecture diagram and every case it was broken with, each beside its fix. Then
 confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
 branch starts), confirm the working tree is clean (`git status --short` prints nothing — an
 uncommitted or untracked file would ride into the new branch; its owner commits or removes it
 first), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows — and stop for the go.
+
+**A task whose branch already exists is resumed on it, never branched twice.** `/start` run again
+on the same task checks out that branch instead of creating one, and the clean-tree check reads its
+uncommitted files instead: each is shown to the owner, and one that is neither this task's work nor
+carried in by the owner's ruling is committed elsewhere or removed before the go.
 
 **The branch exists before the first edit, ticket text included.** `git branch --show-current` is
 read and is not `main` before any file is touched — the ticket's own repairs (§2) are written on the
@@ -139,5 +179,5 @@ branch, never on `main` and carried over. A dirty `main` is the mistake this lin
 
 ## What this skill never does
 
-Read a whole task file or PRD "for context" · invent a requirement the rows do not state · build
-before the go.
+Read a whole task file or PRD "for context" · invent a requirement the rows do not state · show a
+solution before trying to break it · build before the go.

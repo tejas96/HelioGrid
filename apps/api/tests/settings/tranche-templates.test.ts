@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+import { IDEMPOTENCY_KEY_HEADER, IDEMPOTENCY_KEY_REUSED } from '@heliogrid/contracts';
 import { trancheTemplate } from '@heliogrid/db';
 import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { eq } from 'drizzle-orm';
@@ -27,11 +29,13 @@ import { entriesOf, publishIndiaPack, settingsServicesOf } from './support';
 const here = aCompany('Splits EPC');
 const elsewhere = aCompany('Other Splits EPC');
 const owner = aPerson('Kiran Rao');
+const colleague = aPerson('Meera Iyer');
 const fixture: Fixture = {
   companies: [here, elsewhere],
-  people: [owner],
+  people: [owner, colleague],
   memberships: [
     aMembership(here, owner, [FOUNDER_ROLE]),
+    aMembership(here, colleague, [FOUNDER_ROLE]),
     aMembership(elsewhere, owner, [FOUNDER_ROLE]),
   ],
 };
@@ -95,6 +99,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
       const attempt = templates.createTrancheTemplate(
         here.tenantId,
         { name: { en: 'Uneven' }, lines: split.map((percent, i) => line(`Part ${i}`, percent)) },
+        {},
         by(),
       );
       await expect(attempt).rejects.toBeInstanceOf(ContractException);
@@ -114,6 +119,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
         name: { en: 'Half and half' },
         lines: [line('Now', '50.00'), line('Later', '50.00', 'commissioned')],
       },
+      {},
       by(),
     );
     added = created.id;
@@ -186,6 +192,17 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
         by(),
       ),
     ).rejects.toThrow('That template is not this company’s.');
+  });
+
+  it('refuses a retry key another person sent, and never reads another company’s record by it (F4-07)', async () => {
+    const headers = { [IDEMPOTENCY_KEY_HEADER]: randomUUID() };
+    const body = { name: { en: 'Keyed' }, lines: [line('All', '100.00')] };
+    const made = await templates.createTrancheTemplate(here.tenantId, body, headers, by());
+    const byColleague = { actorUserId: colleague.userId, now: Date.now() };
+    const attempt = templates.createTrancheTemplate(here.tenantId, body, headers, byColleague);
+    await expect(attempt).rejects.toMatchObject({ code: IDEMPOTENCY_KEY_REUSED });
+    const there = await templates.createTrancheTemplate(elsewhere.tenantId, body, headers, by());
+    expect(there.id).not.toBe(made.id);
   });
 
   async function countOf(tenantId: string): Promise<number> {

@@ -2,13 +2,15 @@ import { INVITATION_STATUSES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
+  createHeadersSchema,
+  extensibleEnum,
   paginated,
   paginationQuerySchema,
   phoneE164Schema,
   roleSetSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
+import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelope } from './error';
 import { sessionProjectionSchema } from './session';
 
 const c = initContract();
@@ -100,6 +102,7 @@ export const invitationContract = c.router({
   create: {
     method: 'POST',
     path: '/invitations',
+    headers: createHeadersSchema,
     body: createInvitationSchema,
     summary:
       'Invite a person by name and phone with the presets they will hold — the message goes out on the platform rail',
@@ -109,8 +112,8 @@ export const invitationContract = c.router({
       403: forbidden,
       /** Already on this team, in any status; or a live invite already went to this phone. */
       409: errorEnvelope(invitationErrorCodeSchema.extract(['ALREADY_MEMBER', 'ALREADY_INVITED'])),
-      /** A number no authored market's allowlist covers (`F1-49`). */
-      422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
+      /** A number no authored market's allowlist covers (`F1-49`); or the retry key made an invite for another request. */
+      422: errorEnvelope(extensibleEnum(['DOMAIN_RULE_VIOLATION', IDEMPOTENCY_KEY_REUSED])),
       429: errorEnvelope(invitationErrorCodeSchema.extract(['INVITE_CAP_REACHED'])),
       502: errorEnvelope(invitationErrorCodeSchema.extract(['INVITE_DELIVERY_FAILED'])),
     },

@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerErrorInterceptor } from 'nestjs-pino';
+import { CreationReplies } from './creation-key';
 import { dbProviders, dbProviderTokens } from './db/db.providers';
 import { EnvelopeExceptionFilter } from './filters/envelope-exception.filter';
 
@@ -20,10 +21,12 @@ import { EnvelopeExceptionFilter } from './filters/envelope-exception.filter';
 @Module({
   providers: [
     ...dbProviders,
+    CreationReplies,
     { provide: APP_FILTER, useClass: EnvelopeExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggerErrorInterceptor },
   ],
-  // Repositories across every module inject these; nothing else should.
-  exports: dbProviderTokens,
+  // Repositories across every module inject the pools; nothing else should. The three create
+  // routes answer a retried send through `CreationReplies` (`F4-07`).
+  exports: [...dbProviderTokens, CreationReplies],
 })
 export class CommonModule {}

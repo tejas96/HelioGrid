@@ -43,7 +43,7 @@ describe.skipIf(skip)(
     beforeAll(async () => {
       pools = openPools();
       await seed(pools.admin.db, fixture);
-      const row = await new TenantAdminRepository(pools.admin.db).createWithOwner({
+      const made = await new TenantAdminRepository(pools.admin.db).createWithOwner({
         companyName: 'Fresh EPC',
         city: 'Nashik',
         marketCode: 'IN',
@@ -53,8 +53,10 @@ describe.skipIf(skip)(
         ownerUserId: founder.userId,
         ownerName: founder.name,
         now: Date.now(),
+        key: null,
       });
-      created = { tenantId: row.id, companyName: row.companyName };
+      if (made.outcome === 'key-reused') throw new Error('a signup with no key cannot reuse one');
+      created = { tenantId: made.row.id, companyName: made.row.companyName };
     });
 
     afterAll(async () => {

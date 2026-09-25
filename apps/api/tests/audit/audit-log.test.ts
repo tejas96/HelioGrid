@@ -138,6 +138,13 @@ describe.skipIf(skip)('the append-only audit log, against a migrated database', 
       subjectRef: spareHere.membershipId,
       changePayload: null,
     });
+    // The same act again is a retry: answered as done, and never a second record (`F4-07`).
+    const again = await tenants.deactivate(here.tenantId, spareHere.membershipId, {
+      actorUserId: owner.userId,
+      now: Date.now(),
+    });
+    expect(again.outcome).toBe('done');
+    expect(await entriesOf('team.member_deactivated')).toHaveLength(1);
   });
 
   it('records a sign-in under the company the session acts under', async () => {

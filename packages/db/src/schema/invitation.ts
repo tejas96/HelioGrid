@@ -1,6 +1,8 @@
 import { INVITATION_STATUSES } from '@heliogrid/domain';
+import { sql } from 'drizzle-orm';
 import { index, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { creationKeyColumns } from './creation-key';
 import { rolePreset, userAccount } from './identity';
 import { tenant } from './tenant';
 
@@ -40,8 +42,13 @@ export const invitation = pgTable(
     revokedAt: instant('revoked_at'),
     /** The one-tap ask an expired invite offers; stamped once, so a second tap asks nobody twice. */
     reinviteRequestedAt: instant('reinvite_requested_at'),
+    ...creationKeyColumns(),
   },
   (table) => [
+    /** A send retried with its key finds the invite it made (`F4-07`). */
+    uniqueIndex('invitation_tenant_creation_key')
+      .on(table.tenantId, table.creationKey)
+      .where(sql`${table.creationKey} is not null`),
     uniqueIndex('invitation_token_hash_key').on(table.tokenHash),
     /** The pending and expired listings, and the HR home (`PS-30`). */
     index('invitation_tenant_status_expires_idx').on(table.tenantId, table.status, table.expiresAt),

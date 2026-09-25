@@ -31,6 +31,8 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 **Depends on:** task ids and migration numbers that must land first
 **Out of scope:** what this task deliberately leaves to which other task
 **Settle at /start:** the readings the PRD leaves open, each ruled with one reason before the go
+**Broken at /start:** (a task with a runtime path) one line per failure case the design was attacked
+        with — the case → the fix → the test or QA step that fails without the fix (/start §3)
 **Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
         tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —

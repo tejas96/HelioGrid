@@ -1,7 +1,9 @@
 import {
+  type CreateHeaders,
   type CreateInvitation,
   type Invitation,
   type InvitationLanding,
+  invitationContract,
   type ListInvitationsQuery,
   MESSAGE_DELIVERY,
   type MessageDelivery,
@@ -19,6 +21,7 @@ import {
 } from '@nestjs/common';
 import { hashSecret, randomSecret } from '../../common/auth/secrets';
 import type { Act } from '../../common/auth/session-context';
+import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { ENV } from '../../config/env';
 import { AuthService } from '../auth/auth.public';
@@ -44,14 +47,22 @@ export class InvitationService {
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(MESSAGE_DELIVERY) private readonly delivery: MessageDelivery,
     @Inject(AuthService) private readonly auth: AuthService,
+    @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
 
-  async create(tenantId: string, body: CreateInvitation, act: Act): Promise<Invitation> {
+  async create(
+    tenantId: string,
+    body: CreateInvitation,
+    headers: CreateHeaders,
+    act: Act,
+  ): Promise<Invitation> {
+    const route = invitationContract.create;
+    const key = creationKeyOf(headers, act.actorUserId, route, body);
     const pack = await this.markets.deliverablePack(body.phoneE164);
     const token = randomSecret();
     const link = `${ENV.WEB_ORIGIN}${inviteLandingPath(token)}`;
     const sent = await this.scoped
-      .create(tenantId, { ...body, tokenHash: hashSecret(token) }, act, async (facts) => {
+      .create(tenantId, { ...body, tokenHash: hashSecret(token) }, act, key, async (facts) => {
         const message = platformMessage(pack.callingRules, 'team_invite', facts.defaultLanguage, {
           inviter: facts.inviterName,
           company: facts.companyName,
@@ -74,8 +85,10 @@ export class InvitationService {
         throw error;
       });
     switch (sent.outcome) {
-      case 'done':
-        return toInvitation(sent.invitation, act.now);
+      case 'created':
+      case 'replayed':
+      case 'key-reused':
+        return toInvitation(this.replies.rowOf(sent, route, tenantId), act.now);
       case 'already-member':
         throw new ContractException(
           'ALREADY_MEMBER',

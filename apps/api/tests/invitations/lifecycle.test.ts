@@ -14,8 +14,8 @@ import { InvitationAdminRepository } from '../../src/modules/invitation/invitati
 import {
   type CreateOutcome,
   InvitationRepository,
-  type SendFacts,
 } from '../../src/modules/invitation/invitation.repository';
+import type { SendFacts } from '../../src/modules/invitation/invitation.send.repository';
 import {
   aCompany,
   aMembership,
@@ -142,7 +142,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
 
   it('lets a phone whose earlier invite ran out be invited again', async () => {
     expect((await send(here.tenantId, owner.userId, runOut.phoneE164, [SALES])).outcome).toBe(
-      'done',
+      'created',
     );
   });
 
@@ -154,6 +154,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
         here.tenantId,
         { inviteeName: 'Never Reached', phoneE164: phone, roles: [SALES], tokenHash: randomUUID() },
         { actorUserId: owner.userId, now: NOW },
+        null,
         async () => {
           throw new Error('carrier refused');
         },
@@ -181,15 +182,15 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     expect(all.items.map((row) => row.id)).not.toContain(pendingElsewhere.invitationId);
   });
 
-  it('revokes a pending invite once, with its entry; a second revoke and an answered invite have nothing to withdraw', async () => {
+  it('revokes a pending invite once, with its entry; a second revoke is the retry and answers the invite, recording nothing (F4-07)', async () => {
     const revoked = await tenantSide.revoke(here.tenantId, sentToNewcomer, by(owner.userId));
     expect(revoked.outcome).toBe('done');
     expect(await statusOf(sentToNewcomer)).toBe('revoked');
     const [entry] = await entriesOf(here.tenantId, 'team.invite_revoked');
     expect(entry).toMatchObject({ actorRef: owner.userId, subjectRef: sentToNewcomer });
-    expect((await tenantSide.revoke(here.tenantId, sentToNewcomer, by(owner.userId))).outcome).toBe(
-      'not-pending',
-    );
+    const again = await tenantSide.revoke(here.tenantId, sentToNewcomer, by(owner.userId));
+    expect(again).toMatchObject({ outcome: 'done', invitation: { id: sentToNewcomer } });
+    expect(await entriesOf(here.tenantId, 'team.invite_revoked')).toHaveLength(1);
   });
 
   it.each([
@@ -201,12 +202,16 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     );
   });
 
-  it('declines a live invite once; an answered or run-out one is not open to decline', async () => {
+  it('declines a live invite once; a second decline is the retry; a run-out one is not open to decline, and an answered one is not revoked', async () => {
     const sent = done(await send(here.tenantId, owner.userId, aPhone(), [SALES]));
     const hash = await tokenHashOf(sent.id);
     expect(await landingSide.decline(hash, NOW)).toEqual({ outcome: 'done' });
     expect(await statusOf(sent.id)).toBe('declined');
-    expect(await landingSide.decline(hash, NOW)).toEqual({ outcome: 'not-pending' });
+    expect(await landingSide.decline(hash, NOW + MINUTE)).toEqual({ outcome: 'done' });
+    expect(await declinedAtOf(sent.id)).toEqual(new Date(NOW));
+    expect((await tenantSide.revoke(here.tenantId, sent.id, by(owner.userId))).outcome).toBe(
+      'not-pending',
+    );
     expect(await landingSide.decline(runOut.tokenHash, NOW)).toEqual({ outcome: 'not-pending' });
     expect(await landingSide.decline(randomUUID(), NOW)).toEqual({ outcome: 'not-found' });
   });
@@ -233,6 +238,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
       tenantId,
       { inviteeName: 'New Person', phoneE164, roles, tokenHash: randomUUID() },
       by(actorUserId),
+      null,
       async (facts) => {
         delivered.push(facts);
       },
@@ -244,8 +250,8 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
   }
 
   function done(result: CreateOutcome) {
-    if (result.outcome !== 'done') throw new Error(`expected a send, got ${result.outcome}`);
-    return result.invitation;
+    if (result.outcome !== 'created') throw new Error(`expected a send, got ${result.outcome}`);
+    return result.row;
   }
 
   async function statusOf(invitationId: string): Promise<string> {
@@ -266,9 +272,12 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     return row?.tokenHash ?? '';
   }
 
-  async function reinviteStampOf(invitationId: string): Promise<Date | null> {
+  const declinedAtOf = (id: string) => instantOf(id, invitation.declinedAt);
+  const reinviteStampOf = (id: string) => instantOf(id, invitation.reinviteRequestedAt);
+
+  async function instantOf(invitationId: string, column: typeof invitation.declinedAt) {
     const [row] = await pools.admin.db
-      .select({ at: invitation.reinviteRequestedAt })
+      .select({ at: column })
       .from(invitation)
       .where(eq(invitation.id, invitationId))
       .limit(1);

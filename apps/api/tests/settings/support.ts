@@ -2,6 +2,7 @@ import { auditLogEntry } from '@heliogrid/db';
 import { IN_PACK } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
+import { CreationReplies } from '../../src/common/creation-key';
 import { MarketPackAdminRepository } from '../../src/modules/market/market.admin.repository';
 import { MarketPackReferenceRepository } from '../../src/modules/market/market.reference.repository';
 import { MarketPackService } from '../../src/modules/market/market.service';
@@ -65,6 +66,7 @@ export function settingsServicesOf(pools: Pools): {
     new SettingsTemplatesRepository(pools.tenants),
     new SettingsTranchesRepository(pools.tenants),
     settings,
+    new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
   );
   return { settings, templates };
 }

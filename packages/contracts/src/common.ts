@@ -21,6 +21,16 @@ extendZodWithOpenApi(z);
 export const uuidSchema = z.string().uuid();
 
 /**
+ * The retry key every create route carries (`F4-07`): the same key sent again answers with the
+ * record the first send made, never a second one. OPTIONAL, because an app in the field sends
+ * none until it updates, and a request without one is applied exactly as before. `M138` fails
+ * for a route that answers 201 without it.
+ */
+export const IDEMPOTENCY_KEY_HEADER = 'idempotency-key' as const;
+export const createHeadersSchema = z.object({ [IDEMPOTENCY_KEY_HEADER]: uuidSchema.optional() });
+export type CreateHeaders = z.infer<typeof createHeadersSchema>;
+
+/**
  * A vocabulary that GROWS with the slices (Law 9) — the audit events, later the notification
  * types — as a RESPONSE carries it. A closed `z.enum` here would make every module's new value a
  * breaking change: a client built before it, a mobile app in the field above all, validates the

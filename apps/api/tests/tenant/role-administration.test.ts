@@ -150,17 +150,17 @@ describe.skipIf(skip)(
       expect(await revokedAtOf(deviceElsewhere.sessionId)).toBeNull();
     });
 
-    it.each([
-      {
-        act: 'a role write',
-        run: () => tenants.assignRoles(here.tenantId, spareHere.membershipId, [EARLIER], by()),
-      },
-      {
-        act: 'a second deactivation',
-        run: () => tenants.deactivate(here.tenantId, spareHere.membershipId, by()),
-      },
-    ])('answers not-active to $act on someone already deactivated', async ({ run }) => {
-      expect((await run()).outcome).toBe('not-active');
+    it('answers not-active to a role write on someone already deactivated', async () => {
+      expect(
+        (await tenants.assignRoles(here.tenantId, spareHere.membershipId, [EARLIER], by())).outcome,
+      ).toBe('not-active');
+    });
+
+    it('answers a second deactivation — the retry — with the member, writing nothing (F4-07)', async () => {
+      const before = await versionOf(spareHere.membershipId);
+      const again = done(await tenants.deactivate(here.tenantId, spareHere.membershipId, by()));
+      expect(again).toMatchObject({ membershipId: spareHere.membershipId, status: 'deactivated' });
+      expect(await versionOf(spareHere.membershipId)).toBe(before);
     });
 
     it.each([

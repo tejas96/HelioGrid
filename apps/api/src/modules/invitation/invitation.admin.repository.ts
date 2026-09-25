@@ -85,6 +85,8 @@ export class InvitationAdminRepository {
     return this.db.transaction(async (tx) => {
       const row = await lockedByToken(tx, tokenHash);
       if (!row) return { outcome: 'not-found' };
+      // Declining a declined invite is the same act repeated — a retry — and writes nothing (`F4-07`).
+      if (row.status === 'declined') return { outcome: 'done' };
       if (invitationStatus(lifeOf(row), now) !== 'pending') return { outcome: 'not-pending' };
       await tx
         .update(invitation)

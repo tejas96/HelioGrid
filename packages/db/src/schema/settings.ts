@@ -24,6 +24,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { creationKeyColumns } from './creation-key';
 import { tenant } from './tenant';
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -166,8 +167,13 @@ export const trancheTemplate = pgTable(
     createdAt: instant('created_at').notNull(),
     changedAt: instant('changed_at'),
     archivedAt: instant('archived_at'),
+    ...creationKeyColumns(),
   },
   (table) => [
+    /** An add retried with its key finds the template it made (`F4-07`). */
+    uniqueIndex('tranche_template_tenant_creation_key')
+      .on(table.tenantId, table.creationKey)
+      .where(sql`${table.creationKey} is not null`),
     /** The list and the builder's default read. */
     index('tranche_template_tenant_archived_default_idx').on(
       table.tenantId,

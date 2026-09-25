@@ -47,7 +47,9 @@ line no step reaches (use its first words as `step_id`).
 Input: `git diff origin/main` plus untracked files, the task's section (rows, rulings,
 done-when), and the run's `verdicts-*.jsonl` files in the scratch directory.
 
-**1. Read the logic against the rows.** For each changed decision: the empty case, the boundary
+**1. Read the logic against the rows.** The task's `**Broken at /start:**` cases are the author's
+own attack: check each fix is in the code, and spend your effort on what that block missed — a
+missed case is a finding. For each changed decision: the empty case, the boundary
 and one either side, null, a duplicate, a race of two callers, the tenant's clock versus the
 server's, money rounding to the minor unit, a second tenant's data, a malformed input that the
 schema might let through. Read the CALL SITES, not only the declaration. A finding names the
@@ -66,6 +68,9 @@ the list leaves out is a finding in itself — the author did not name a guard f
   the rule lives in `packages/<pkg>` and its guard is elsewhere, run
   `pnpm --filter @heliogrid/<pkg> build` after the break AND after the restore.
 - Restore by copying the saved file back, at once, before the next break.
+- `scripts/break-and-run.sh <file> <runs> -- <break> -- <test>` does the save, the break, the runs
+  and the copy-back in one call, and passes only when every run went red. A test of a race is run
+  three times at least: one red run of a racy test proves nothing (`.claude/rules/testing.md`).
 - At the end, both hashes must equal the ones you recorded. If they do not, STOP, restore every
   saved copy, and report the paths — never `git checkout` a file, which would discard the
   author's uncommitted work.
