@@ -37,11 +37,10 @@ visible outcome looks right.
 Screenshot only for what vision alone catches — clipping, overlap, truncation, layout
 collapse at 375px, broken Devanagari. `resize_window` for responsive steps.
 
-**Write as you go.** The prompt names the run's scratch directory: after EACH step, append its
-verdict object as one line to `verdicts-web.jsonl` there, then move on — a turn cap then
-loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
-`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
-built so far — never a prose summary in its place.
+**Screen first, then write as you go** — the one procedure is
+`.claude/skills/verify/references/test-matrix.md` §"What each agent can see, and recording a run":
+a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; append each verdict
+to `verdicts-web.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array, one object per step:
 `{surface:"web", step_id, quadrant, verdict, expected, observed, evidence}` — `observed` is

@@ -22,7 +22,7 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 ## Inside `engineering/`
 
 Every file here is dissolving: its first line names its fate, and the folder's line count only
-falls (`M107`). The two agent ledgers moved to `.claude/` — `mechanisms.md` (what holds each rule)
+falls, by review. The two agent ledgers moved to `.claude/` — `mechanisms.md` (what holds each rule)
 and `landmines.md` (live traps). External-account setup notes moved to `infra/ops/`.
 
 | Path | What it is, until its fate lands |
@@ -47,5 +47,4 @@ there, not twenty-two literals. It and `scripts/next-screen.py` read `prd/regist
 `tasks/*.md` and `start-here.md`. `engineering/17-ui-architecture-v2.md` is named by two
 scripts. `engineering/forward-compat.md` and
 `engineering/data-model.md` are both named by the `/migration` skill's first step.
-`.dependency-cruiser.cjs` cites `engineering/03 §3`; `apps/worker/CLAUDE.md` cites
-`engineering/03 §7`; `apps/api/CLAUDE.md` and `apps/worker/CLAUDE.md` cite `engineering/02 §2`.
+`.dependency-cruiser.cjs` cites `engineering/03 §3` and `engineering/02 §2`.

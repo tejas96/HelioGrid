@@ -16,8 +16,8 @@ drive it. **Every coordinate is a device POINT** in the frame `attach` and `laun
 (`captureFailed`): then capture with `xcrun simctl io <udid> screenshot <file>` and shrink it to
 the point frame BEFORE reading it — `sips -z <height> <width> <file>` with the two numbers the
 frame printed — so a pixel you read IS a point you tap, and the image costs a tenth. Never read a
-full-size simulator PNG. No accessibility-tree dump exists on iOS here: a step's words are
-asserted on its one shrunk screenshot.
+full-size simulator PNG. A step's words are asserted on the accessibility tree the tool's `inspect`
+returns; the one shrunk screenshot is for what only vision shows.
 **Android — adb** (no simulator panel exists): `adb devices` to confirm a booted emulator,
 `adb shell input tap X Y` / `input text`, `adb shell uiautomator dump /sdcard/v.xml && adb
 shell cat /sdcard/v.xml` for the view tree, `adb logcat -d` for runtime errors.
@@ -40,8 +40,8 @@ in `apps/mobile/src/env.ts`: the Android emulator reaches the host at `10.0.2.2`
 Run the platforms in sequence within your turn. Per step:
 
 1. Perform the actions.
-2. Read the criterion from the view tree where one exists (Android `uiautomator` XML
-   `text="…"`), else from the step's one shrunk screenshot. **`expected` is a literal string.** A
+2. Read the criterion from the view tree — iOS `inspect`, Android `uiautomator` XML
+   `text="…"` — and from the step's one shrunk screenshot only for what vision alone shows. **`expected` is a literal string.** A
    blank `Loading from …:8081` frame was once reported as a full login screen because the
    criterion was a picture.
 3. **Grep a view tree for the strings the step names — never page a whole tree into context.** A
@@ -58,11 +58,10 @@ never a fail** — wait and re-read. Launch once to pre-warm before the step lis
 legitimately takes ~2× web's wall clock. **RN suspends timers when backgrounded** — a
 countdown step asserts wall-clock behaviour, not interval decrement.
 
-**Write as you go.** The prompt names the run's scratch directory: after EACH step, append its
-verdict object as one line to `verdicts-<platform>.jsonl` there, then move on — a turn cap then
-loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
-`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
-built so far — never a prose summary in its place.
+**Screen first, then write as you go** — the one procedure is
+`.claude/skills/verify/references/test-matrix.md` §"What each agent can see, and recording a run":
+a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; append each verdict
+to `verdicts-<platform>.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array, one object per step per platform:
 `{surface:"ios"|"android", step_id, quadrant, verdict, expected, observed, evidence}`.

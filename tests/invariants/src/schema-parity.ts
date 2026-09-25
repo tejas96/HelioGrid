@@ -1,5 +1,6 @@
 import { schema as dbSchema } from '@heliogrid/db';
-import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
+import { getTableColumns, getTableName, is, SQL, Table } from 'drizzle-orm';
+import { getTableConfig, type PgTable } from 'drizzle-orm/pg-core';
 
 /**
  * Drizzle model ↔ migrated database parity.
@@ -18,6 +19,11 @@ import { getTableColumns, getTableName, is, Table } from 'drizzle-orm';
  * types to Drizzle's type constructors means maintaining a mapping table that would itself
  * drift — and a NAME-level mismatch is the shape this defect actually takes. Partitioned
  * parents are included; their children are not (they inherit their columns).
+ * Indexes too, both ways by name, then the method, key columns in order with each one's direction
+ * and nulls order, uniqueness and whether a predicate exists — not the predicate's text, which
+ * Postgres rewrites. An index that backs a primary key or a unique constraint is the constraint's,
+ * and is left out; an expression is compared as one; an index a failed build left invalid does not
+ * count as built.
  */
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -25,6 +31,82 @@ function assert(cond: unknown, msg: string): asserts cond {
 }
 
 type ColumnRow = { table_name: string; column_name: string; is_nullable: string };
+type IndexRow = {
+  table_name: string;
+  index_name: string;
+  method: string;
+  is_unique: boolean;
+  is_partial: boolean;
+  keys: string[];
+};
+type IndexShape = { method: string; unique: boolean; partial: boolean; columns: string };
+type ModelKey = { name: string; indexConfig?: { order?: string; nulls?: string } };
+
+const EXPRESSION = '(expression)';
+
+/** One key as both sides print it: `sent_at desc nulls last`. The SQL below builds the same text. */
+function keyText(column: string, order: string, nulls: string): string {
+  return `${column} ${order} nulls ${nulls}`;
+}
+
+function modelIndexes(table: string, exported: Table): Map<string, IndexShape> {
+  const shapes = new Map<string, IndexShape>();
+  for (const { config } of getTableConfig(exported as PgTable).indexes) {
+    assert(config.name, `a model index on ${table} has no name — name it as its migration does`);
+    const keys = config.columns.map((c) => {
+      if (is(c, SQL)) return keyText(EXPRESSION, 'asc', 'last');
+      const { name, indexConfig } = c as ModelKey;
+      return keyText(name, indexConfig?.order ?? 'asc', indexConfig?.nulls ?? 'last');
+    });
+    shapes.set(config.name, {
+      method: config.method ?? 'btree',
+      unique: config.unique,
+      partial: config.where !== undefined,
+      columns: keys.join(', '),
+    });
+  }
+  return shapes;
+}
+
+/** What differs between one index as modelled and as built. */
+function indexShapeDisagreements(where: string, want: IndexShape, got: IndexShape): string[] {
+  const found: string[] = [];
+  if (want.method !== got.method) {
+    found.push(`${where} method disagrees — model ${want.method}, database ${got.method}`);
+  }
+  if (want.columns !== got.columns) {
+    found.push(`${where} columns disagree — model (${want.columns}), database (${got.columns})`);
+  }
+  if (want.unique !== got.unique) {
+    found.push(
+      `${where} uniqueness disagrees — model says ${want.unique ? 'unique' : 'not unique'}`,
+    );
+  }
+  if (want.partial !== got.partial) {
+    found.push(
+      `${where} predicate disagrees — model says ${want.partial ? 'partial' : 'whole table'}`,
+    );
+  }
+  return found;
+}
+
+/** One table's indexes, model against database, by name and then by shape. */
+function compareTableIndexes(
+  table: string,
+  model: Map<string, IndexShape>,
+  live: Map<string, IndexShape>,
+  problems: string[],
+): void {
+  for (const [name, want] of model) {
+    const got = live.get(name);
+    if (got) problems.push(...indexShapeDisagreements(`index ${table}.${name}`, want, got));
+    else problems.push(`index ${table}.${name} is in the Drizzle model but not in the database`);
+  }
+  for (const name of live.keys()) {
+    if (!model.has(name))
+      problems.push(`index ${table}.${name} is in the database but not in the Drizzle model`);
+  }
+}
 
 /** One table's worth of the comparison — split out so the caller stays a flat loop. */
 function compareTableColumns(
@@ -71,6 +153,36 @@ export async function runSchemaParity(adminUrl: string) {
       where n.nspname = 'public' and c.relkind in ('r', 'p')
         and not exists (select 1 from pg_inherits i where i.inhrelid = c.oid)`;
 
+    const liveIndexes = await sql<IndexRow[]>`
+      select t.relname as table_name, i.relname as index_name, am.amname as method,
+             ix.indisunique as is_unique, ix.indpred is not null as is_partial,
+             array(select coalesce(a.attname::text, ${EXPRESSION})
+                            || case when k.opt & 1 = 1 then ' desc' else ' asc' end
+                            || case when k.opt & 2 = 2 then ' nulls first' else ' nulls last' end
+                   from unnest(ix.indkey::int2[], ix.indoption::int2[]) with ordinality k(attnum, opt, ord)
+                   left join pg_attribute a on a.attrelid = ix.indrelid and a.attnum = k.attnum
+                   where k.ord <= ix.indnkeyatts
+                   order by k.ord) as keys
+      from pg_index ix
+      join pg_class i on i.oid = ix.indexrelid
+      join pg_am am on am.oid = i.relam
+      join pg_class t on t.oid = ix.indrelid
+      join pg_namespace n on n.oid = t.relnamespace
+      where n.nspname = 'public' and t.relkind in ('r', 'p') and ix.indisvalid
+        and not exists (select 1 from pg_inherits h where h.inhrelid = t.oid)
+        and not exists (select 1 from pg_constraint k where k.conindid = ix.indexrelid)`;
+    const liveIndexesByTable = new Map<string, Map<string, IndexShape>>();
+    for (const r of liveIndexes) {
+      const shapes = liveIndexesByTable.get(r.table_name) ?? new Map<string, IndexShape>();
+      shapes.set(r.index_name, {
+        method: r.method,
+        unique: r.is_unique,
+        partial: r.is_partial,
+        columns: r.keys.join(', '),
+      });
+      liveIndexesByTable.set(r.table_name, shapes);
+    }
+
     const liveByTable = new Map<string, Map<string, boolean>>();
     for (const r of live) {
       const cols = liveByTable.get(r.table_name) ?? new Map<string, boolean>();
@@ -79,6 +191,7 @@ export async function runSchemaParity(adminUrl: string) {
     }
 
     const problems: string[] = [];
+    let indexCount = 0;
     const modelled: Table[] = Object.values(dbSchema).filter((exported) => is(exported, Table));
     for (const exported of modelled) {
       const table = getTableName(exported);
@@ -88,6 +201,9 @@ export async function runSchemaParity(adminUrl: string) {
         continue;
       }
       compareTableColumns(table, exported, liveCols, problems);
+      const model = modelIndexes(table, exported);
+      indexCount += model.size;
+      compareTableIndexes(table, model, liveIndexesByTable.get(table) ?? new Map(), problems);
     }
 
     // Tables the other way: one the migrations built that nothing models — a per-key pack table
@@ -117,8 +233,10 @@ export async function runSchemaParity(adminUrl: string) {
       return;
     }
     console.log(
-      `schema parity OK — ${modelled.length} Drizzle tables match the migrated database ` +
-        '(tables both ways, names + nullability; types are out of scope)',
+      `schema parity OK — ${modelled.length} Drizzle tables and ${indexCount} indexes match the migrated ` +
+        'database (tables and indexes both ways; column names + nullability; index method, key ' +
+        'columns with direction and nulls order, uniqueness, predicate presence; types, operator ' +
+        'classes and predicate text are out of scope)',
     );
   } finally {
     await sql.end();

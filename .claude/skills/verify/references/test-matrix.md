@@ -28,6 +28,28 @@ with curl keep a jar (`-c jar -b jar`). A first-time number has no company: `POS
 minutes and eight per day per number are the real caps — use a fresh number rather than waiting
 one out. The API must be running for either path.
 
+## What each agent can see, and recording a run
+
+The ONE statement of both; each surface agent points here. A step's `observe` names the kind of
+fact that decides it, and only the agent whose row lists that kind may run the step.
+
+| agent | observe kinds it can read | what it cannot see |
+|---|---|---|
+| `qa-web` | `a11y-text` (`read_page`, `find`) · `computed-style` and `dom-value` (`javascript_tool`) · `console` · `network`: a request's method, URL, status, the body it sent and the response body (`read_network_requests`) · `log` (`preview_logs`) · `screenshot`, for what only vision shows | a request's HEADERS — `read_network_requests` does not return them · a database row |
+| `qa-api` (the api and the worker) | `response`: status line, headers and body (`curl -i`), and the request it sent · `db-scalar`: one read-only value as `qa_readonly`, tenant pinned · `log`: the api and worker logs (`preview_logs`) | a rendered page · a write to the database |
+| `qa-mobile` | `ios-tree`: the front app's accessibility tree (the simulator tool's `inspect`) · `screenshot`: one shrunk frame per step, for what only vision shows · `android-tree`: `uiautomator` text · `logcat` · `log` (`preview_logs`) | a request's headers or body · a database row |
+| the author, through `scripts/record-proof.sh` | `recorder`: a command's exit, the expected text present and the rejected text absent in its output | anything the command does not print |
+| `qa-parity` | `code` of both platforms, and the values the surface agents recorded | anything running |
+
+**Recording a run.** The prompt names the task's QA record folder,
+`.git/heliogrid-harness/<T-id>/qa/`. Before the first step, read every step's `observe` against your
+row above — `plan-reviewer` has already refused a step no row can show, so a step you still cannot
+observe is recorded `inconclusive: cannot observe <kind>`, never guessed. After EACH step, append
+its verdict object as one line to `verdicts-<surface>.jsonl` in that folder and move on — a turn cap
+then loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
+`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
+built so far — never a prose summary in its place.
+
 ## Quadrant 1 — happy path (does it do the job?)
 
 - The complete designed flow, start to finish, with valid input and no interference.
@@ -83,13 +105,13 @@ screen". It will confidently guess, and it guesses in the direction of a pass: a
 loading frame has been reported as a fully rendered screen because the step's criterion was a
 picture.
 
-**Every surface but iOS has a machine-readable view tree. Use it as the criterion; on iOS the
-criterion is still a literal string, read from the step's one shrunk screenshot:**
+**Every surface has a machine-readable view tree. Use it as the criterion; the criterion is
+always a literal string:**
 
 | Surface | Read the tree with | Assert |
 |---|---|---|
 | web | `read_page` (accessibility tree) · `javascript_tool` for computed values | exact strings, exact computed values |
-| iOS | no tree exists here — one shrunk screenshot per step (`qa-mobile`) | the step's exact words are on the frame |
+| iOS | the simulator tool's `inspect` — the front app's accessibility tree (`qa-mobile`) | the step's exact words are in the tree |
 | Android | `adb shell uiautomator dump` → XML | `text="…"` attributes match exactly |
 | api | `curl -i` | status line and body bytes |
 | db | read-only `psql -tAc` against `heliogrid-pg-local` | the scalar returned |

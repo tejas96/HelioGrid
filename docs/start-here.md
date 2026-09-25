@@ -254,6 +254,13 @@ decision is how two screens end up disagreeing about the same flow.
 Gate 31 names the brief's digest; write it into the same register row's `Brief reviewed` cell, in
 place of `—`. It goes last because Edit 3 changes the brief.
 
+## Fixing a screen that is already designed
+
+A fix to a screen already drawn is made on its board and record in the Claude Design project —
+never in `HelioGrid-UX/`, which is your own export and is re-exported once, after every design is
+done. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
+must change, the next section applies.
+
 ## When a brief changes after its screen was designed
 
 Gate 31 refuses a changed brief until someone reviews the design against the brief as it now reads.

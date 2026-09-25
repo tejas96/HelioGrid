@@ -3,7 +3,7 @@ name: design-reviewer
 description: Reviews one screen's design as a world-class product designer at build time — renders the export, looks at the pixels, measures, reads the record and the PRD rows, finds pain points and gaps, and proposes the better design. Dispatched by /start for a screen task.
 tools: Bash, Read, Grep, Glob
 model: opus
-effort: high
+effort: medium
 maxTurns: 80
 ---
 

@@ -102,8 +102,8 @@ there are two.
 **Why the studio is sixth, not first.** It is the primary product and it already exists —
 **63,527 working lines** in `/Volumes/works-space/Solar-App-POC`. But:
 
-- it is **frontend-only**, and `/Volumes/works-space/heliogrid`'s backend today is a health check
-  (`apps/api`, 342 lines, one module) with no schema in `packages/db`;
+- it is **frontend-only**, and this repo's backend and schema are built block by block before it
+  (blocks 0–6);
 - it does not meet this repo's standards, and `boundaries`, `check:adherence` and `check:dupes`
   run on every commit;
 - it carries its own defect register at `docs/prd/modules/M05-studio/defect-register.md`.
@@ -195,5 +195,5 @@ that moves the number, never by an edit that nobody notices.
 Design progress is a separate count:
 
 ```bash
-grep -c '| planned |' docs/prd/registers/screens.md
+grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 ```

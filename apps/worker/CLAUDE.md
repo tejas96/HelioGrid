@@ -57,5 +57,5 @@ pnpm infra:up                                              # the local Temporal 
 
 ## Done means
 
-The processor driven against a real queue (or documented scaffold-idle) · typecheck and lint
+The workflow driven through the api route that starts it, against the local Temporal (or documented scaffold-idle) · typecheck and lint
 green · idempotency proven for anything that touches money.

@@ -1,6 +1,6 @@
 ---
 name: arch-reviewer
-description: Reviews a diff for architectural correctness — package ownership, dependency direction, platform boundaries, shared-logic placement, and pointer integrity. Dispatched by /ship, and only for a structural diff.
+description: Reviews a diff for architectural correctness — package ownership, dependency direction, platform boundaries, shared-logic placement and rot-prone content. Dispatched by /ship, and only for a structural diff.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: medium
@@ -29,16 +29,7 @@ What you look for:
    wrapper with no import edge to catch.
 6. **Platform leak** (Law 10) — DOM in a shared package or RN code, RN on the web side, a
    Node-only API outside a server entry, `'use client'` hoisted higher than needed.
-7. **Pointer integrity** — a deleted or moved file that governance still cites: `git diff
-   --name-status origin/main | awk '$1 ~ /^[DR]/ {print $2}'` over the working tree, so
-   uncommitted work counts, then grep each path across `.claude/`, `docs/`, `scripts/`,
-   `.github/`, config files and `.env.example` (Law 8's sweep).
-8. **Schema design** — for a diff touching `packages/db`, read each new table and column against
-   `/migration`'s design check (`.claude/skills/migration/SKILL.md` §1) and the answers in the
-   task's Data model block: a fact stored twice, a value stored that could be derived, an index
-   with no query or a query with no index, unbounded growth with no stated horizon, grants wider
-   than the writes, a nullable column with no "unknown" state, a column no task row needs.
-9. **Rot-prone content** — a hand-maintained count or "used by today" list, a rule appended beside
+7. **Rot-prone content** — a hand-maintained count or "used by today" list, a rule appended beside
    one that already says it, a mechanism claimed that does not exist. Judge the claim by reading
    it; never by running it.
 

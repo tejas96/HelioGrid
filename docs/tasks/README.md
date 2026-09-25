@@ -22,7 +22,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
         POC `*.test.ts`; port the LOGIC it proves into the studio package's own
         `tests/` tree, or into tests/invariants where it is a property of the system.
-        CLAUDE.md §8 fixes the name and the place; check-adherence.sh fails on either.
+        CLAUDE.md §8 fixes the name and the place (M70).
 **DEFECTS:** (studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
 **Why:** one line, in EPC terms — what an installer gains and what breaks without it
 **Data model:** the entity rows this task AUTHORS (a table copied from the data model), with the
@@ -31,16 +31,33 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 **Depends on:** task ids and migration numbers that must land first
 **Out of scope:** what this task deliberately leaves to which other task
 **Settle at /start:** the readings the PRD leaves open, each ruled with one reason before the go
-**Broken at /start:** (a task with a runtime path) one line per failure case the design was attacked
-        with — the case → the fix → the test or QA step that fails without the fix (/start §3)
+**Cases:** (a task with a runtime path) one line per failure case the design was attacked with, and
+        one `n/a` line for each of /start §3's nine classes that cannot occur here, with why:
+        `- **C1** · <class> · <the case> → <the fix> → proof: <proof>`
+        `- **n/a** · <class> · <why it cannot occur>`
+**Schema:** (a task that authors tables) one line per stored fact — a table, a column, an index,
+        a grant, a policy: `- **S1** · <the fact> → proof: <proof>`
 **Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
-        tree it drove, never by hand; the commit hook refuses a runtime change without it (M113)
+        tree it drove, never by hand; git's pre-commit refuses a runtime change without it (M113)
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
-        each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
+        each line `- **D1** · Given … → proof: <proof>`
 ```
 
-A task takes this whole shape at `/start`, before it is built, and keeps it; a task with a `Why:`
-line and any part missing fails the docs gate.
+Every case, schema fact and done-when line is a CLAIM with an id that is never reused in the task.
+A proof is one of: `unit `<test file>` › "<test title>"` · `invariant `<invariant file>` ›
+"<failure text>"` · `qa-api | qa-web | qa-mobile | qa-worker <step>` and `qa-parity <comparison>`,
+where the step or comparison is the one-word id `/verify`'s plan gives it · `recorded <id>` (a
+proof the author drives, through `scripts/record-proof.sh`) · `gate <M-id>` (a gate whose HELD or
+PARTIAL row holds the line, its red proof in the row) · `held <M-id>` (a case an existing HELD or
+PARTIAL row already guards, with no new work) · `none — <reason>` (a case nothing can prove here;
+the owner sees it at /start). `held` and `none` are for cases only; several proofs join with ` + `.
+Gate 32 checks this shape (M139) and never whether a proof is right.
+`**Broken at /start:**` is the retired form of Cases: a shipped ticket may still carry it, and gate
+32 refuses it on any other.
+
+A task takes this whole shape at `/start`, before it is built, and keeps it; `/start` fixes a missing
+part before the go. No gate checks that every part is present; gate 32 checks only the claims'
+shape.
 
 ## Binding rules
 
@@ -56,10 +73,10 @@ line and any part missing fails the docs gate.
    ticket with no `Depends on:` line reads there as waiting on nothing, so `/start` writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
-2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen — a git-ignored folder at the repo root that each machine exports itself),
+2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen, and the design system's source in `_ds-source/` — a git-ignored folder at the repo root that each machine exports itself),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
-   `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
+   `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.

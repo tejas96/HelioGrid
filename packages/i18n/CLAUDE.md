@@ -105,6 +105,7 @@ design token but the sans stack, no component, and no product model beyond the l
 8. **Ship when `pnpm check:languages` is green** (`F3-27`, `M135`). Until then the language never
    reaches `main`, so the picker cannot offer it.
 
+## Done means
 
 `extract` leaves the tree clean · every locale has zero missing messages, or the gap is a
 deliberate English fallback · every language RENDERED on web and both simulators, switching and

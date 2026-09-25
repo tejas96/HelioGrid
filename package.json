@@ -19,7 +19,8 @@
     "verify": "pnpm turbo build && pnpm lint && pnpm boundaries && pnpm turbo typecheck && pnpm check:dupes && pnpm check:openapi && pnpm check:catalogs && pnpm check:languages && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "verify:ci": "pnpm verify",
     "verify:clean": "bash scripts/verify-clean.sh",
-    "precommit": "pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
+    "precommit": "bash .claude/hooks/block-unverified-commit.sh && pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --staged . && pnpm turbo typecheck && pnpm check:adherence && pnpm check:secrets",
+    "check:touched": "all=$(git diff --name-only origin/main; git ls-files -o --exclude-standard); [ -n \"$all\" ] || { echo 'check:touched: nothing differs from origin/main'; exit 0; }; f=$(git diff --name-only --diff-filter=d origin/main; git ls-files -o --exclude-standard); { [ -z \"$f\" ] || pnpm exec biome check --error-on-warnings --no-errors-on-unmatched --files-ignore-unknown=true $f; } && pnpm turbo typecheck --filter='...[origin/main]' && t=$(printf '%s\\n' $f | grep -E '\\.(ts|tsx|mts)$' || true) && { if [ -z \"$t\" ]; then echo 'check:touched: no changed .ts file, so no unit test ran here; check:all runs every test'; else pnpm exec vitest related --run --passWithNoTests $t; fi; } && bash scripts/check-adherence.sh && python3 scripts/gates.py",
     "check:adherence": "bash scripts/check-adherence.sh",
     "check:secrets": "bash scripts/check-secrets.sh",
     "check:catalogs": "c() { find packages/i18n/src/locales -type f -print0 | sort -z | xargs -0 git hash-object; }; before=$(c); pnpm --filter @heliogrid/i18n extract >/dev/null; if [ \"$before\" = \"$(c)\" ]; then echo \"catalogs OK - extraction produced no change\"; else echo \"catalogs STALE - this check re-ran extract, so the tree now holds the fresh catalogs; commit them:\"; git diff --stat packages/i18n/src/locales; exit 1; fi",
@@ -30,7 +31,7 @@
     "check:env": "node scripts/check-env-access.mjs",
     "ds:contract": "node scripts/ds-contract.mjs",
     "check:docs": "python3 scripts/gates.py",
-    "check:all": "pnpm lint:fix && pnpm turbo typecheck && pnpm lint && pnpm boundaries && pnpm check:dupes && pnpm check:openapi && pnpm check:catalogs && pnpm check:languages && pnpm check:docs && pnpm test:unit && pnpm turbo test",
+    "check:all": "pnpm turbo typecheck && pnpm lint && pnpm boundaries && pnpm check:dupes && pnpm check:openapi && pnpm check:catalogs && pnpm check:languages && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "db:migration:new": "pnpm --filter @heliogrid/db migration:new",
     "db:migrate": "pnpm --filter @heliogrid/db migrate",
     "infra:up": "bash -c '[ -f infra/temporal/pki/jwt/jwks.json ] || bash infra/temporal/scripts/make-dev-pki.sh' && docker compose -f infra/compose.yaml up -d && bash infra/temporal/scripts/bootstrap.sh && pnpm infra:token",
@@ -39,7 +40,9 @@
     "infra:reset": "docker compose -f infra/compose.yaml down -v"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm run precommit"
+    "pre-commit": "pnpm run precommit",
+    "pre-merge-commit": "bash .claude/hooks/block-unverified-commit.sh",
+    "post-checkout": "bash scripts/break-and-run.sh --prune"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

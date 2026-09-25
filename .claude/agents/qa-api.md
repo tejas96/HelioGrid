@@ -44,11 +44,10 @@ The checks that matter most here:
 - unauthenticated requests to protected routes are rejected;
 - money reconciles to the currency's minor unit across the tables a step names.
 
-**Write as you go.** The prompt names the run's scratch directory: after EACH step, append its
-verdict object as one line to `verdicts-api.jsonl` there, then move on — a turn cap then
-loses nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
-`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array
-built so far — never a prose summary in its place.
+**Screen first, then write as you go** — the one procedure is
+`.claude/skills/verify/references/test-matrix.md` §"What each agent can see, and recording a run":
+a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; append each verdict
+to `verdicts-api.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array:
 `{surface:"api"|"worker", step_id, quadrant, verdict, expected, observed, evidence}`.

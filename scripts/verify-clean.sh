@@ -8,14 +8,30 @@
 #
 #   scripts/verify-clean.sh            the whole proof — CI's quality lane AND its mobile bundle
 #   scripts/verify-clean.sh test:unit  one stage, to reproduce a red lane fast (builds first)
+#   scripts/verify-clean.sh --sweep    only delete rooms left by stopped runs (every run does it first)
 #
 # Not caught: faults that need Linux itself — path case, a tool ubuntu lacks (landmines.md).
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 script="${1:-verify:ci}"
+
+# A room is 1.5 GB, and a run that is killed never reaches its trap. Each room keeps its run's pid,
+# so a room whose run is gone, or that names none, is deleted before a new one is made (M141).
+for old in "${TMPDIR:-/tmp}"/heliogrid-clean-room.*; do
+  [ -d "$old" ] || continue
+  owner="$(cat "$old/pid" 2>/dev/null || true)"
+  if [ -z "$owner" ] || ! kill -0 "$owner" 2>/dev/null; then
+    rm -rf "$old"
+    echo "clean room: deleted $old, left by a run that stopped"
+  fi
+done
+[ "$script" != --sweep ] || exit 0
+
 room="$(mktemp -d "${TMPDIR:-/tmp}/heliogrid-clean-room.XXXXXX")"
+echo $$ > "$room/pid"
 trap 'rm -rf "$room"' EXIT
+trap 'exit 130' INT TERM HUP
 repo="$room/repo"
 log="${TMPDIR:-/tmp}/heliogrid-verify-clean.log"
 
