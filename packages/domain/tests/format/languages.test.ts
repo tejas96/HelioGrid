@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inLanguage, packLabel } from '../../src/format/languages';
+import { inLanguage, packLabel, uiLanguageOrSource } from '../../src/format/languages';
 import { formatMoney } from '../../src/format/money';
 import { IN_FORMATS } from '../../src/format/pack';
 
@@ -18,6 +18,22 @@ describe('packLabel — the one fallback (F3-05)', () => {
     const body = { en: { blocks: 1 }, mr: { blocks: 2 } };
     expect(inLanguage(body, 'mr')).toEqual({ blocks: 2 });
     expect(inLanguage(body, 'hi')).toEqual({ blocks: 1 });
+  });
+});
+
+describe('uiLanguageOrSource — a language this build does not know (F3-26)', () => {
+  it('keeps a language in the set', () => {
+    expect(uiLanguageOrSource('mr')).toBe('mr');
+    expect(uiLanguageOrSource('en')).toBe('en');
+  });
+
+  it('reads a language a newer server added as the source language, never a crash', () => {
+    expect(uiLanguageOrSource('ta')).toBe('en');
+  });
+
+  it('reads an empty or oddly cased value as the source language — the set is exact', () => {
+    expect(uiLanguageOrSource('')).toBe('en');
+    expect(uiLanguageOrSource('HI')).toBe('en');
   });
 });
 

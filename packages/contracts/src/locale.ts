@@ -1,5 +1,6 @@
 import { UI_LANGUAGES, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import { z } from 'zod';
+import { extensibleEnum } from './common';
 
 /**
  * UI language identity — the wire and validation half of the set.
@@ -26,3 +27,12 @@ export { UI_LANGUAGES, UI_SOURCE_LOCALE };
 
 export const uiLanguageSchema = z.enum(UI_LANGUAGES);
 export type UiLanguage = z.infer<typeof uiLanguageSchema>;
+
+/**
+ * A language as a RESPONSE carries it (`F3-26`). Adding a language is configuration, so a phone
+ * built before it must still read the session, the profile or a notification that names it: the
+ * wire accepts any language a newer server has learned, and the reader resolves one it has no
+ * catalog for with `uiLanguageOrSource`. A request stays `uiLanguageSchema` — the server stores
+ * only a language in its own set.
+ */
+export const uiLanguageResponseSchema = extensibleEnum(UI_LANGUAGES);

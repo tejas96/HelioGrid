@@ -17,7 +17,7 @@ import {
   trancheTemplateWriteSchema,
 } from './document-templates';
 import { baseError, errorEnvelope } from './error';
-import { uiLanguageSchema } from './locale';
+import { uiLanguageResponseSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
 
 const c = initContract();
@@ -81,7 +81,7 @@ export const quietHoursSchema = z.object({
 export type QuietHours = z.infer<typeof quietHoursSchema>;
 
 const localeSchema = z.object({
-  defaultLanguage: uiLanguageSchema,
+  defaultLanguage: uiLanguageResponseSchema,
   /** IANA zone — the pack's default until the tenant sets its own (`F1-10`). */
   timezone: z.string().min(1),
 });

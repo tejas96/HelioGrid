@@ -14,7 +14,7 @@ import {
   uuidSchema,
 } from './common';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
-import { uiLanguageSchema } from './locale';
+import { uiLanguageResponseSchema } from './locale';
 
 const c = initContract();
 
@@ -44,7 +44,7 @@ export const notificationSchema = z.object({
   subjectRef: uuidSchema,
   title: z.string(),
   body: z.string(),
-  language: uiLanguageSchema,
+  language: uiLanguageResponseSchema,
   emittedAt: z.string().datetime(),
   /** Null until it is read. It only ever moves from null, and only once (`F6-07`). */
   readAt: z.string().datetime().nullable(),

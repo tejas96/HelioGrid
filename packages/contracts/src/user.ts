@@ -2,7 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import { measurementSystemSchema, phoneE164Schema, uuidSchema } from './common';
 import { unauthenticatedEnvelope } from './error';
-import { uiLanguageSchema } from './locale';
+import { uiLanguageResponseSchema, uiLanguageSchema } from './locale';
 
 const c = initContract();
 
@@ -11,7 +11,7 @@ export const userProfileSchema = z.object({
   id: uuidSchema,
   phoneE164: phoneE164Schema,
   name: z.string(),
-  interfaceLanguage: uiLanguageSchema,
+  interfaceLanguage: uiLanguageResponseSchema,
   unitPreference: measurementSystemSchema,
 });
 export type UserProfile = z.infer<typeof userProfileSchema>;

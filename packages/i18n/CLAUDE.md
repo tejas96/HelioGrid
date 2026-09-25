@@ -75,7 +75,36 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
   chunk per language, and `catalog-loader.native.ts` imports all three statically.
 - Compiled `messages.ts` files are generated. Never hand-edit them.
 
-## Done means
+## Adding a language — the playbook (`F3-26`)
+
+Configuration, never a product change. Do these steps and nothing else; the diff touches no
+design token but the sans stack, no component, and no product model beyond the list (`F3-28`).
+
+1. **Add the code** to `UI_LANGUAGES` in `packages/domain/src/format/languages.ts`. The build then
+   refuses until each registration exists — every `satisfies Record<UiLanguage, …>` the compiler
+   names (`M48`), `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
+   line in `src/rn/index.ts` (`check:adherence` 9).
+2. **Add the database value** with `/migration`: `ui_language` mirrors the set (`M17`). The
+   migration runs before machines roll; an older build that meets the new language reads English
+   (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the person's stored choice is untouched.
+3. **Translate.** `pnpm --filter @heliogrid/i18n extract` writes the new catalog. A gap falls back
+   to English string by string (`F3-05`) — a partly translated language ships, and
+   `check:adherence` prints its gaps without failing (`M46`).
+4. **Give the script a face** if the stack does not draw it (`F3-13`, `F3-14`). In the design
+   system: its `@font-face` and its family in `--font-sans`, then pull. Here: the variable woff2
+   in `packages/theme/assets/fonts/`. On the phone: one static instance per sanctioned weight,
+   named `<Family>-<Weight>.ttf`, in `apps/mobile/assets/fonts/`, linked with
+   `npx react-native-asset`. Then look at it on a device — only a device proves the phone links it.
+5. **Write the plurals.** Every plural message written in the language carries every category
+   `Intl.PluralRules` names for it; a message still in English is a gap, not a failure.
+6. **Money: nothing to do.** `formatMoney` takes the market's pack and never a language (`F3-20`;
+   `packages/domain/tests/format/languages.test.ts`).
+7. **Check the densest screens** that exist — the BOM, the generated proposal document, the
+   proposal builder, the lead list, the studio panels — rendered in the language at both
+   viewports (`F3-18`). A reviewer judges this; no gate can.
+8. **Ship when `pnpm check:languages` is green** (`F3-27`, `M135`). Until then the language never
+   reaches `main`, so the picker cannot offer it.
+
 
 `extract` leaves the tree clean · every locale has zero missing messages, or the gap is a
 deliberate English fallback · every language RENDERED on web and both simulators, switching and

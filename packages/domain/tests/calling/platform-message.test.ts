@@ -5,13 +5,14 @@ import {
   PLATFORM_MESSAGE_KINDS,
 } from '../../src/calling/pack';
 import { platformMessage } from '../../src/calling/platform-message';
-import { UI_LANGUAGES } from '../../src/format/languages';
+import { inLanguage, type PerLanguage, UI_LANGUAGES } from '../../src/format/languages';
 
-const NEVER_CALL = {
+/** The never-call line as the pack words it; a language it has no words for reads English (`F3-05`). */
+const NEVER_CALL: PerLanguage<string> = {
   en: 'We never call to ask for this code.',
   hi: 'हम यह कोड पूछने के लिए कभी कॉल नहीं करते।',
   mr: 'आम्ही कधीही कॉल करत नाही.',
-} as const;
+};
 
 const VARIABLES = {
   sign_in_code: { code: '482913' },
@@ -41,7 +42,7 @@ describe('platformMessage — every registered template, every language (M01-06,
     (language) => {
       expect(
         platformMessage(IN_CALLING_RULES, 'sign_in_code', language, VARIABLES.sign_in_code),
-      ).toContain(NEVER_CALL[language]);
+      ).toContain(inLanguage(NEVER_CALL, language));
     },
   );
 

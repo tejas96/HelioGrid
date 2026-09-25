@@ -9,6 +9,9 @@
  *
  * Per-USER, not per-tenant (`D25`), and distinct from the tenant's MARKET: a Marathi-reading user
  * in an Indian tenant still reads INR in lakh/crore grouping. Never derive one from the other.
+ *
+ * Adding a language is the playbook in `packages/i18n/CLAUDE.md`, and `pnpm check:languages`
+ * refuses the build until the language is ready (`F3-26`, `F3-27`).
  */
 export const UI_LANGUAGES = ['en', 'hi', 'mr'] as const;
 export type UiLanguage = (typeof UI_LANGUAGES)[number];
@@ -18,6 +21,16 @@ export type UiLanguage = (typeof UI_LANGUAGES)[number];
  * translation because the id IS the English text.
  */
 export const UI_SOURCE_LOCALE = 'en' satisfies UiLanguage;
+
+/**
+ * A language as a response carries it, read by a build that may be older than the server: a
+ * phone in the field meets the language a later release added. It reads the source language —
+ * the one every catalog falls back to (`F3-05`) — and the person's stored choice is untouched,
+ * so the next build that knows the language shows it. Never a refusal of the whole response.
+ */
+export function uiLanguageOrSource(language: string): UiLanguage {
+  return UI_LANGUAGES.find((known) => known === language) ?? UI_SOURCE_LOCALE;
+}
 
 /**
  * One pack-declared label, per language.
