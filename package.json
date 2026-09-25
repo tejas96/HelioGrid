@@ -41,7 +41,8 @@
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm run precommit",
-    "pre-merge-commit": "bash .claude/hooks/block-unverified-commit.sh"
+    "pre-merge-commit": "bash .claude/hooks/block-unverified-commit.sh",
+    "post-checkout": "bash scripts/break-and-run.sh --prune"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

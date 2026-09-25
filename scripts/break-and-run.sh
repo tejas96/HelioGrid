@@ -8,6 +8,7 @@
 #     [--runs N] [--build <pnpm filter>] [--task <T-id> --claims <C1,D2>] [--actor author|reviewer]
 #     -- '<break command>' -- '<test command>'
 #   scripts/break-and-run.sh --stale <T-id> [--index]
+#   scripts/break-and-run.sh --prune
 #
 # --expect names a vitest test: a run is red only when a FAIL line names --test-file and EXACTLY that
 # title. A crash, a missing file or a compile error fails the run WITHOUT naming the test, so it never
@@ -21,17 +22,23 @@
 # listed as evidence and never make the task stale, since a reviewer's red-when-green IS a finding.
 # --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
 # gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
+# --prune deletes each task's record once GitHub reports its branch's pull request MERGED after the
+# record was bound (its `branch` file's time), so a branch name reused later never loses the new
+# record. A record bound to no branch, or whose branch has no such merge, stays. With no `gh`, or no
+# answer from GitHub, nothing is deleted. git's post-checkout runs it, so a merged task's record goes
+# the first time this machine switches branch after the merge (M141).
 # Exit 0: proven. 1: a run was not red by name. 2: refused before breaking anything. 3: the tree did
 # not come back. A proof that is not exit 0 proves nothing.
 set -u
 refuse() { echo "break-and-run: $*" >&2; exit 2; }
 root="$(git rev-parse --show-toplevel)" || refuse "not inside the repository"
 record_dir() { echo "$(cd "$root" && cd "$(git rev-parse --git-common-dir)" && pwd)/heliogrid-harness/$1"; }
-file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""; index=0
+file=""; test_file=""; expect=""; pattern=""; runs=3; build=""; task=""; claims=""; actor="author"; stale=""; index=0; prune=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --) shift; break ;;
     --index) index=1; shift ;;
+    --prune) prune=1; shift ;;
     --file|--test-file|--expect|--pattern|--runs|--build|--task|--claims|--actor|--stale)
       [ $# -ge 2 ] || refuse "$1 needs a value"
       case "$1" in
@@ -43,6 +50,42 @@ while [ $# -gt 0 ]; do
     *) refuse "unknown argument '$1' (the header of this file lists the arguments)" ;;
   esac
 done
+
+if [ "$prune" = 1 ]; then
+  records="$(dirname "$(record_dir x)")"
+  [ -d "$records" ] || exit 0
+  command -v gh >/dev/null || { echo "proof records: none deleted — gh is not on PATH, so no merge can be read (M141)"; exit 0; }
+  cd "$root" && exec python3 - "$records" <<'PRUNE'
+import datetime, json, os, shutil, subprocess, sys
+records = sys.argv[1]
+deleted, kept = [], []
+for name in sorted(os.listdir(records)):
+    rec = os.path.join(records, name)
+    bound = os.path.join(rec, "branch")
+    if not os.path.isfile(bound):
+        kept.append(f"{name} (bound to no branch)")
+        continue
+    branch = open(bound).read().strip()
+    answer = subprocess.run(["gh", "pr", "list", "--head", branch, "--state", "merged", "--json", "number,mergedAt"],
+                            capture_output=True, text=True)
+    if answer.returncode != 0:
+        kept.append(f"{name} (GitHub did not answer)")
+        continue
+    bound_at = os.path.getmtime(bound)
+    merged = [p for p in json.loads(answer.stdout or "[]")
+              if datetime.datetime.fromisoformat(p["mergedAt"].replace("Z", "+00:00")).timestamp() > bound_at]
+    if merged:
+        shutil.rmtree(rec)
+        deleted.append(f"{name} (PR #{merged[0]['number']} merged)")
+    else:
+        kept.append(f"{name} ({branch} has no merge after this record was bound)")
+print(f"proof records: {len(deleted)} deleted, {len(kept)} kept (M141)")
+for line in deleted:
+    print(f"  deleted {line}")
+for line in kept:
+    print(f"  kept {line}")
+PRUNE
+fi
 
 if [ -n "$stale" ]; then
   rec="$(record_dir "$stale")"

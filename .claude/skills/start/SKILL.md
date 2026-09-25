@@ -173,13 +173,14 @@ and `held` claim named: those are the claims no new proof will show. Then
 confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
 branch starts), confirm the working tree is clean (`git status --short` prints nothing — an
 uncommitted or untracked file would ride into the new branch; its owner commits or removes it
-first), delete the proof record of every task already shipped (`.git/heliogrid-harness/<T-id>/`
-where its `Status:` reads `shipped`), then
+first), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows. Bind the task's proof record to the
 branch — `r="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>"; mkdir -p "$r"; git branch
 --show-current > "$r/branch"` — so git's pre-commit knows whose red proofs to check when a test
-changes (`M113`). Then stop for the go.
+changes (`M113`). That checkout also runs git's post-checkout, which deletes the proof record of
+every task whose pull request has merged and prints one `proof records:` line — read it (`M141`).
+Then stop for the go.
 
 **A task whose branch already exists is resumed on it, never branched twice.** `/start` run again
 on the same task checks out that branch instead of creating one, and the clean-tree check reads its
