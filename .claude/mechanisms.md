@@ -35,6 +35,10 @@ A type, then a lint rule, then an invariant, then a script. A script encodes tod
 adding one needs an owner ruling saying why no type and no lint rule can hold it. Prefer moving a
 row UP this order over widening the script that currently holds it.
 
+**A check that moves or narrows keeps every path it fired on.** Before a check leaves a gate, an
+agent or a skill, or its scope shrinks, list each path that fired it — each dispatch condition,
+each file scope — and name where each one fires now. A path with no new holder keeps the old one.
+
 ---
 
 ## Imports and layering
