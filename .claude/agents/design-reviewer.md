@@ -25,7 +25,8 @@ The prompt names the screen id. Then:
 2. **Render it.** The pair lives in `HelioGrid-UX/` (`<id> … .dc.html` + its record). Render with
    headless Chrome from inside that folder (`--headless --virtual-time-budget=25000 --screenshot`),
    crop each `[data-frame]`, and LOOK at every frame at 375 and 1536. A verdict without pixels is
-   not a verdict.
+   not a verdict. Headless Chrome can draw a `FactRows` group in its flowed form where a real
+   browser shows pairs; confirm that one in the browser pane before calling it a fault.
 3. **Measure.** Per frame: page-level sideways scroll; text clipped in its box; a value wrapped
    beside its label; a table row on two lines; a target under 44px; each region's left and right
    x; sibling card heights; the x of every value column. Numbers that differ where they should

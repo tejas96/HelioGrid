@@ -39,6 +39,23 @@ column.** A table or a column is cheap to add and never cheap to remove, so each
 
 A column for a need no row of the task names is refused (Law 9): the slice that needs it adds it.
 
+**Then answer the release check, in writing, beside the design check** (`CLAUDE.md` §8, a release
+is safe at every step of its roll — the migration runs before the first new machine serves):
+
+1. **Which shape is it?** *Additive* — a table, a nullable column, a column with a default, an enum
+   value added: one release. *Expand and contract* — a rename, a type change, `NOT NULL` on rows that
+   exist, a column or an enum value removed: two releases, the old shape kept until nothing reads it.
+   *Data-changing* — existing rows get new values: a backfill, below. *Destructive* — data is lost:
+   the owner's ruling first.
+2. **What happens to the rows already there?** A `NOT NULL` column on a table with rows needs a
+   default or a backfill before the constraint lands. The backfill is written by the application —
+   the database is read-only to you — in batches, safe to re-run, with a query that proves it done.
+3. **An enum value** is added in one release and read open where a response carries it; renaming or
+   removing one takes two releases and a backfill of the rows that hold the old value.
+4. **What lock does each statement take, on how many rows?** An index on a table that can be large is
+   built `CONCURRENTLY`, in a file whose first line is `-- heliogrid:no-transaction`
+   (`packages/db/src/migrate.ts`), every statement in it safe to re-run.
+
 Then `packages/db/src/schema/*.ts` is the source; the SQL is generated FROM it, not the other way
 round. If you touched a pgEnum, run `/contract-change` in the same slice.
 
@@ -51,7 +68,9 @@ model that no migration ever corrected is a second spec, and nothing compares th
 pnpm db:migration:new          # drizzle-kit generate -> packages/db/drizzle-draft/
 ```
 
-`drizzle-draft/` is git-ignored and unreviewed. **It is a draft, not a migration.**
+`drizzle-draft/` is git-ignored and unreviewed. **It is a draft, not a migration.** Its snapshot folder
+is ignored too, so every draft is the WHOLE schema, never a delta: copy out only the statements for
+this change.
 
 ## 3. Review the draft, then move it in
 

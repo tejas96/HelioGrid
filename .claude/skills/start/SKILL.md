@@ -27,6 +27,11 @@ task is still ready from it before the go.
    a number or a vocabulary the drawing states (a horizon, a list of filter chips) is a fact the
    engine must serve, and a ticket written before the drawing may disagree with it.
 
+**A task that opens its block runs the harness audit first.** When no task of the block the
+build-order line names has shipped yet, dispatch `break-it-reviewer` in `harness` mode with the
+block number before the ticket review. Show the owner its findings; a `blocker` is fixed in its
+own `chore/harness` change before this task's branch starts.
+
 A bug is a task whose rows are the report. Its first proof is the reproduction on the real
 surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
@@ -34,13 +39,16 @@ surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
 **Check the task can be built and proven NOW, before planning it.** Name two facts with the file
 that proves each: the data it reads or writes exists on `main` (grep `packages/db/src/schema/` and the
-routes), and the code it asks for is not already there (grep for the ticket's own function and file
-names). A task whose data lands in a later block moves there; a task already built is closed as built;
+routes), and the code it asks for is not already there — grep for the ticket's own function and file
+names AND for its behaviour: the route, the entity, the event, the words a screen shows and the
+domain terms, because code built in an earlier slice often carries another name. A task whose data lands in a later block moves there; a task already built is closed as built;
 a ticket marked `**Parked:**` is never started. Each is the owner's ruling, brought with a pick.
 
-**For anything stored and read across releases — a row, a pack, a cached payload, a message shape —
-say how OLD code reads NEW data and NEW code reads OLD data.** A release rolls machine by machine
-(`docs/engineering/09-observability-and-ops.md`), so both happen: settle it at `/start`, never at `/ship`.
+**Answer `CLAUDE.md` §8's rolling-release rule here, by name, for anything the task stores or sends
+between runtimes:** each older reader still running during the roll — api and worker machines
+mid-roll, the apps in the field, workflows and jobs already queued — and what it does with the new
+shape; and what the new code does with everything the old one wrote. Settle it at `/start`, never
+at `/ship`.
 
 **Find every conflict before the go, not during the build.** Two searches, each named with what it
 found. (1) Every gate and test stricter than the task's rows, and every gate the change itself
@@ -52,6 +60,14 @@ the fields named in the ticket: its schema, every record or map keyed by it, eve
 its members out. A conflict either search would have found, first met mid-build, is a `/start` miss.
 Then read the misses table in `.claude/landmines.md`: every row is a mistake already made once,
 and a row that fits this task is checked for now, by name.
+
+**A credential the task needs is never left as "needs a key".** Generate what can be generated (a
+random secret goes straight into `.env.local`); walk the owner through the provider's console in
+the browser for an external account; give anything not obtainable now a named placeholder in
+`.env.example` and `.env.local` that passes `packages/env`'s schema — and build the whole path.
+
+**A module owns an entity by the scope lock and the rulings, never by which PRD describes it in most
+detail.** Check both before placing a table or a type.
 
 **A question is open only after the docs are searched.** Memory, the hand-off and `deferred.md`
 are pointers, not facts: before calling any ruling open or bringing the owner options, grep
@@ -108,7 +124,9 @@ test, a guard, a doc, a proof — to land under a count** (owner ruling). Genera
 
 Explain the task to the owner in simple words: what we build, why, and what proves it. Then
 confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
-branch starts), then
+branch starts), confirm the working tree is clean (`git status --short` prints nothing — an
+uncommitted or untracked file would ride into the new branch; its owner commits or removes it
+first), then
 `git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
 for a bug, `ci`, `chore` or `docs` for work with no task rows — and stop for the go.
 

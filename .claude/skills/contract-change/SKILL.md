@@ -67,3 +67,7 @@ as under CI (`M26`): an older build grades the same finding a level lower and wo
 CI refuses. A value added to a response enum is error-level: a set that grows by design is
 declared `extensibleEnum` in `common.ts` (the rule in this package's `CLAUDE.md`); anything
 else is a genuine break and needs the owner's ruling, stated in the change, before it merges.
+
+`oasdiff` judges the SHAPE only (`M26`). A change of MEANING in the same shape — a unit or a scale, a
+time zone, what a status, a zero or an empty list stands for — is just as breaking: name it in the
+change, judge it here, and pin the new meaning with a test.
