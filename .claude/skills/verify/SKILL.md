@@ -133,6 +133,14 @@ its turn cap has still recorded every step it ran, and only the steps it never r
 A surface returning nothing, unparseable output, or dying is `inconclusive` — never a pass,
 and never the whole run.
 
+**A proof no agent can drive is recorded as it runs, never afterwards.** A done-when line proven by
+a procedure that edits files — a playbook run on a throwaway tree, a gate broken on purpose — is
+the one step the author drives, because a QA agent never edits source. Whatever the depth, a smoke
+run included, those steps are written into a plan and `break-it-reviewer` reads it in plan mode
+before they run. The author appends each verdict line, `"driver": "author"`, with the observed
+output, the moment the step ends, to `verdicts-<proof>.jsonl`. A line written after the fact, from
+memory, is `inconclusive`.
+
 ## 5. Check the reports before believing them
 
 1. Every `pass` carries an `observed` value and evidence. **A pass without evidence becomes
@@ -198,8 +206,10 @@ make a failure disappear.**
 
 Delete the run's scratchpad files except the plan and the `verdicts-*.jsonl` files, which
 `/ship` hands to `break-it-reviewer` and then deletes. Stop every process this run started — dev server
-(`preview_stop`), Metro, any emulator you booted; leave what was already running. Confirm
-`git status --short` shows nothing from the run.
+(`preview_stop`), Metro, any emulator you booted; leave what was already running. Close each browser
+tab when its server stops: a reused tab's console still holds the errors it logged before, so a read
+there mixes old errors with new ones — read a fresh tab. Wait for a server or a bundle on its own signal — a log line, a status that changes — never
+on a timed loop. Confirm `git status --short` shows nothing from the run.
 
 Then emit the `## Verification` section for `/ship`: per-surface verdict counts, every
 failure with its observed value, every parity comparison with both values, and any surface

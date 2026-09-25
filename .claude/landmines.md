@@ -129,3 +129,17 @@ this file: when the path goes, the row goes.
 | Rewriting a JSON config by parsing and re-dumping it escapes every non-ASCII character and reflows blocks the change never touched: `§` becomes `\u00a7`, `—` becomes `\u2014`, and a one-key addition arrives as sixty changed lines that no reviewer can read. | Edit the file as TEXT, matching the exact surrounding string. Then read the diff — a config edit that touches more lines than you added has rewritten something you did not mean to. | never |
 | A GitHub run labelled `cancelled` can still hold a step that had already FAILED, and a step killed by the cancel is itself recorded as a failure — the label hides both, and both read like the harmless cancellation of a superseded run. `gh run list --commit` also needs the FULL commit id: a short one returns an empty list with exit 0, and `gh pr checks --watch` right after a push can report no checks before the run registers — each is silence, not a pass. | Read the steps inside a cancelled run before calling it harmless; a failed step ending the second the next run starts is the cancel. Resolve `git rev-parse` first, and wait until a run EXISTS for that id before watching it. | never |
 | A job failing with no failed step and "The job was not started because it repeatedly failed to be acquired" is GitHub's runner pool, not the code — and the same outage can leave a duplicate run QUEUED on the commit indefinitely, long after its branch merged. | Re-run once; if it recurs, report it. A run left queued with NO jobs cannot be cancelled at all — `gh run cancel` answers that it is completed and the force-cancel endpoint that it was never queued — so it stays listed as queued until it is DELETED, which removes the record and is the owner's call. It holds no runner and, on a merged branch, blocks no future run. | never |
+
+## Misses — mistakes made in the work, counted
+
+A mistake the agent made once (`CLAUDE.md` §1): what went wrong, the fix it got, how often it has
+happened. `/ship` adds a row, or finds its row. A SECOND sighting is a law break: the general rule is
+written where it fires, in that change, and the row goes — that is its retire-when. A row states the
+kind of mistake, never the story of the task it happened in.
+
+| miss | fix it got | seen |
+|---|---|---|
+| An owner question first met mid-build that a search at `/start` would have found — a gate stricter than the rows, or a use of the changed type beyond the fields the ticket names | `/start` §2 "Find every conflict before the go" | 1 |
+| A verdict line for an author-driven proof written after the fact | `/verify` §4 "A proof no agent can drive is recorded as it runs" | 1 |
+| A fact the ticket names with no assertion, left for a reviewer to find | `/ship` §2 "Then match every fact to its assertion" | 1 |
+| A reused browser tab's old console errors read as the current page's | `/verify` §9 "Close each browser tab when its server stops" | 1 |

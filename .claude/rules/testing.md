@@ -34,6 +34,9 @@ holds each line and how much of it.
   only ever passed may be passing on the wrong thing: an assertion on an error MESSAGE matched the
   query it echoed back and would have passed on our own text forever — the database's verdict code
   was the fact. The red run is named in the ticket's proof beside the test.
+- **One break at a time.** Save the file, break it, run the one test, restore it by copying the
+  saved file back, and check the tree is back before the next break. A second break laid over an
+  unrestored first one proves neither.
 - **Coverage lands WITH the slice** (Law 9), per glob, at 100% (`M71`).
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
   against real state; a unit test proves one decision at its edges. Neither substitutes for the
