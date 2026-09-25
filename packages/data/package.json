@@ -20,8 +20,8 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
-    "typecheck": "tsc -b"
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",

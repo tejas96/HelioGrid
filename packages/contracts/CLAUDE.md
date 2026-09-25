@@ -34,7 +34,7 @@ openapi/openapi.json        emitted, committed, checked by M25 — never hand-ed
 ## Commands
 
 ```
-pnpm --filter @heliogrid/contracts build      # tsc -b (composite)
+pnpm --filter @heliogrid/contracts build      # tsc -p (composite)
 pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER build
 ```
 

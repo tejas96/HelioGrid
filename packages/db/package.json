@@ -16,8 +16,8 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
-    "typecheck": "tsc -b",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "migrate": "tsx src/migrate.ts \"${DATABASE_ADMIN_URL:-$DATABASE_URL}\"",
     "migration:new": "drizzle-kit generate"
   },

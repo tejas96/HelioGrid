@@ -21,7 +21,7 @@ holds each line and how much of it.
   check and the boundary rule all read; changing the set means changing this line AND that file,
   and nothing else restates it.
 - **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
-  never inside `src/`, where the package's own `tsc -b` compiles the test into `dist/` and ships
+  never inside `src/`, where the package's own build compiles the test into `dist/` and ships
   it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
 - **Test the DECISION at its edges** — the boundary and one either side, the empty, the negative,
   the zero, as one `it.each` table per rule. A test that restates the implementation proves

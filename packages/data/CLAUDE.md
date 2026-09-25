@@ -17,7 +17,7 @@ Traps: `.claude/landmines.md` · deps: `architecture.md` §2 data.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/data build | typecheck     # tsc -b (composite; emits dist/)
+pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits dist/)
 ```
 
 ## Local conventions

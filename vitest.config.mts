@@ -21,7 +21,7 @@ const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
  *     negative, the value one below the threshold. It runs against a pure function.
  *
  * Tests live at `<package>/tests/**`, never inside `src/`: a test under `src/` is compiled
- * into the package's own `dist/` by `tsc -b` and ships. `scripts/check-adherence.sh` check 1
+ * into the package's own `dist/` by its build and ships. `scripts/check-adherence.sh` check 1
  * and `.claude/hooks/block-test-files.sh` hold that, plus the `*.test.ts` name and the package
  * list — all three in both places, because a hook and its backstop that disagree are worse
  * than either alone.

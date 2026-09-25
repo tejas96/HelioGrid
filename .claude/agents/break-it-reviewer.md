@@ -75,8 +75,13 @@ A test that stays GREEN with its rule broken is a finding: it guards nothing.
 **3. Check the stamp against the agents' verdicts.** The task's `**Verified:**` line was written
 by the author. Read every `verdicts-*.jsonl` in the scratch directory: the counts in the stamp
 must equal the verdict lines, every `pass` must carry `observed` and evidence, and a step the
-plan-mode review called vacuous must not appear as a `pass`. `bash scripts/verify-digest.sh`
-must print the digest the stamp names. Any mismatch is a blocker.
+plan-mode review called vacuous must not appear as a `pass`. A line with `"driver": "author"` must
+carry `"recorder": "record-proof.sh"`, a `log` named `<id>.log` that exists, and a `log_sha` equal to
+the first twelve characters of that log's `shasum`; every `observed` line must appear in that log, and
+the verdict must follow again from it — the expected pattern present, the reject pattern absent, the
+exit matching `expect_exit`, `tree_before` equal to `tree_after`. A line that fails any of these was
+not written by the recorder for that step (`M137`).
+`bash scripts/verify-digest.sh` must print the digest the stamp names. Any mismatch is a blocker.
 
 Return ONLY a JSON array: `{class:"logic"|"green-when-broken"|"stamp", file, line, input,
 detail, fix, severity:"blocker"|"major"|"minor"}`. At most ten findings; a nit is not one.
