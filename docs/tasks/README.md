@@ -22,7 +22,7 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
         — files to READ AND PORT FROM, never files to create here. 66 PORT entries name a
         POC `*.test.ts`; port the LOGIC it proves into the studio package's own
         `tests/` tree, or into tests/invariants where it is a property of the system.
-        CLAUDE.md §8 fixes the name and the place; check-adherence.sh fails on either.
+        CLAUDE.md §8 fixes the name and the place (M70).
 **DEFECTS:** (studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
 **Why:** one line, in EPC terms — what an installer gains and what breaks without it
 **Data model:** the entity rows this task AUTHORS (a table copied from the data model), with the
@@ -39,8 +39,8 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
         each line ending "→ proof: <unit | invariant | gate | qa-api | qa-web | qa-mobile | qa-parity> <name>"
 ```
 
-A task takes this whole shape at `/start`, before it is built, and keeps it; a task with a `Why:`
-line and any part missing fails the docs gate.
+A task takes this whole shape at `/start`, before it is built, and keeps it; `/start` fixes a missing
+part before the go. No gate checks the parts.
 
 ## Binding rules
 
@@ -56,10 +56,10 @@ line and any part missing fails the docs gate.
    ticket with no `Depends on:` line reads there as waiting on nothing, so `/start` writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
-2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `design/ds-source/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen — a git-ignored folder at the repo root that each machine exports itself),
+2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen, and the design system's source in `_ds-source/` — a git-ignored folder at the repo root that each machine exports itself),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
-   `docs/ux/briefs/**`, *retired: studio inventory***` and `docs/prd/modules/M05-studio/defect-register.md`
+   `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.

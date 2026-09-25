@@ -16,13 +16,13 @@ None — JSON only. Consumers typecheck against these.
 
 ## Local conventions
 
-- `node-package.json` — a composite library package (dist and d.ts emit, project-reference
-  member). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
+- `node-package.json` — a library package: `composite`, dist and d.ts emit. No tsconfig in the repo
+  references another (ADR-0001), which is why a package builds with `tsc -p` (`M136`). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
 - Presets use `${configDir}` so `outDir` and `rootDir` resolve per consumer.
 - Two things the presets do NOT cover: a package with no matching preset extends
   `tsconfig.base.json` directly (there is no browser or react preset), and `apps/mobile`
-  deliberately skips this package for `@react-native/typescript-config` — so a new base strictness
-  flag must be copied there by hand.
+  extends `base.json` here and then `@react-native/typescript-config`, whose settings win where the
+  two overlap (`apps/mobile/CLAUDE.md`).
 
 ## Done means
 

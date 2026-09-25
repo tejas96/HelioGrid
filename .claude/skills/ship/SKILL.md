@@ -118,7 +118,9 @@ delete the row. The list, even when it is empty, goes into the PR body under Rev
 **The flip rides the change commit** (`M106`), so the ledger is right from the commit that makes
 it true and the PR carries no window in which it is wrong. Before anything is shown: read the
 number the next PR will take — the highest issue-or-PR number the repository holds, plus one —
-and write `shipped (#n)` into the task's `Status:` line and into its screens in `screens.md`.
+and write `shipped (#n)` into the task's `Status:` line and into its screens in `screens.md`. A
+screen task's `DESIGN:` line gains its export path in `HelioGrid-UX/` beside the canvas link, in
+the same edit.
 `M106` reads commit SUBJECTS, and the change commit's subject names the task, so the claim is
 true the moment that commit exists. It reads RED in the seconds between writing the flip and
 making the commit, which is why §1's gates run BEFORE the flip is written and are not re-read

@@ -79,7 +79,7 @@ it feeds is a review finding.
 
 ## Done means
 
-375px and 1440px both work · loading, empty and error states all designed (never an offline state)
+375px and 1536px both work · loading, empty and error states all designed (never an offline state)
 · keyboard reachable with visible focus · touch targets ≥44px · no hover-only meaning · Hindi
 renders without clipping · numbers carry provenance · the prop contract is one `<Name>.types.ts`
 both platforms implement (Law 7).

@@ -6,7 +6,8 @@ an invariant proves the seam between them.
 ## What lives here / what must never live here
 
 - The locked invariant set: tenancy RLS, RLS armed, tenancy write paths, table tenancy scan,
-  enum parity, schema parity, tenant-id-on-the-wire, format rendering, matrix-mirrors-f2 — one name
+  enum parity, schema parity, tenant-id-on-the-wire, format rendering, matrix-mirrors-f2, brand
+  registry, template-keys-mirror-f6 — one name
   per file in `src/`, so a file added here without a name added there is visible. **Additions require explicit owner
   approval** — the set is deliberately small so a green run means something.
 - NEVER a unit test. Those live at `<package>/tests/**/*.test.ts` and prove one DECISION at its

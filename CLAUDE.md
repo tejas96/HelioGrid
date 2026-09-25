@@ -76,10 +76,10 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | kit | step |
 |---|---|
 | the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | design: the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
-| `/start` → `break-it-reviewer` harness audit when the task opens its block | task review, the design drawn and broken, and explain, before code |
+| `/start` → `design-reviewer` for a screen · `break-it-reviewer` harness audit when the task opens its block | task review, the design drawn and broken, and explain, before code |
 | `/migration` · `/contract-change` | implement: the procedure when schema or the contract changes |
 | hooks · `.claude/rules/` · `pnpm check:touched` · `scripts/break-and-run.sh` · `pnpm check:all` | implement: the guards, loaded by path or run by hand; each new test proven red once |
-| `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` | break and review: only the surfaces the change reaches, over seeded data |
+| `/verify` → `break-it-reviewer` on the plan · `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` | break and review: only the surfaces the change reaches, over seeded data; a proof the author drives is recorded as it runs |
 | `/ship` → `break-it-reviewer` for every runtime change · `arch-reviewer` for a structural diff | owner review: gates, a second actor's review, commit on a yes, push, PR body |
 
 ## 4. Stop and ask the owner before

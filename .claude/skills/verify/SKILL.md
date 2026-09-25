@@ -223,7 +223,7 @@ on a timed loop. Confirm `git status --short` shows nothing from the run.
 
 Then emit the `## Verification` section for `/ship`: per-surface verdict counts, every
 failure with its observed value, every parity comparison with both values, and any surface
-recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1440
+recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1536
 happy / wrong-code paths; curl 409 returns ALREADY_ONBOARDED", never "verified working". A
 surface that could not run is stated plainly, never omitted so the silence implies a pass — and so
 is an always-on core step the wire could not prove, in its own line, with the reason.

@@ -69,8 +69,8 @@ could compile until it was fixed (2026-09-03). Allowed deps: none.
 Platform scope: all. Belongs: a new compiler preset. Never: a comment — Biome parses these as
 strict JSON, so the reason lives here; runtime code, lint config
 (biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
-extends `tsconfig.base.json` directly; apps/mobile extends `@react-native/typescript-config`
-and hand-mirrors the base strictness flags (`packages/config/CLAUDE.md`).
+extends `tsconfig.base.json` directly; apps/mobile extends this package's `base.json` and then
+`@react-native/typescript-config`, in that order (`apps/mobile/CLAUDE.md`).
 
 ### env — the only raw environment reader
 Owns: env schemas + loaders (server/web/native); the .env.example contract. Allowed deps:
@@ -274,8 +274,7 @@ code, a workspace dependency, or a real credential — `pki/` is gitignored deve
 Extension point: one folder per deployed dependency.
 
 ### tests/invariants — the proof layer
-Owns: executable invariants (tenancy/RLS, table scoping, enum parity, schema parity,
-tenant-id-on-the-wire, format rendering) run by pnpm turbo test; fail-closed under CI, loud-skip
+Owns: executable invariants — the locked set `tests/invariants/CLAUDE.md` names — run by pnpm turbo test; fail-closed under CI, loud-skip
 locally without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven
@@ -285,8 +284,8 @@ proves one DECISION at its edges where an invariant proves a property of the SYS
 real state; anything needing a mock. Extension point: one file per invariant + a run.ts call.
 
 ### `<package>/tests/` — unit tests, beside the package they prove
-Owns: `*.test.ts` for the LOGIC layers only — `packages/domain`, `packages/contracts`,
-`packages/forms`, `apps/api`, `apps/worker` — run by `pnpm test:unit`. Outside `src/`, so the
+Owns: `*.test.ts` for the LOGIC layers only — the set `packages/config/unit-test-packages.json`
+holds (`.claude/rules/testing.md`) — run by `pnpm test:unit`. Outside `src/`, so the
 package's own build never compiles a test into `dist/`. Allowed deps: the package's own `src/`,
 by RELATIVE path — `@heliogrid/<pkg>` resolves to built `dist/` and would test the last build.
 Platform scope: shared. Belongs: the boundary value, the one either side of it, the empty, the
@@ -342,8 +341,7 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 
 ## §4 Placement procedure — run BEFORE writing any new file
 
-Walk top-down; first match wins. Every implementation plan's "Architecture Placement"
-section records the answer per new file.
+Walk top-down; first match wins. `/start` §3 records the answer per new file.
 
 1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts
    (+ /contract-change).
