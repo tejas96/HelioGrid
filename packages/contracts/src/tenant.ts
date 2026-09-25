@@ -11,7 +11,7 @@ import {
   uuidSchema,
 } from './common';
 import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
-import { uiLanguageSchema } from './locale';
+import { uiLanguageResponseSchema } from './locale';
 import { marketCodeSchema } from './market';
 import { sessionProjectionSchema } from './session';
 
@@ -38,7 +38,7 @@ export const tenantSchema = z.object({
   marketCode: marketCodeSchema,
   /** ISO 4217, server-assigned from the market's pack; one per tenant (`F1-07`). */
   currencyCode: z.string().length(3),
-  defaultLanguage: uiLanguageSchema,
+  defaultLanguage: uiLanguageResponseSchema,
   /** IANA zone — the pack's default until the tenant sets its own (`F1-10`). */
   timezone: z.string().min(1),
   segment: tenantSegmentSchema.nullable(),

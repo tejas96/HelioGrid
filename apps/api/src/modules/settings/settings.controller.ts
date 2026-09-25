@@ -1,4 +1,5 @@
 import { tenantSettingsContract } from '@heliogrid/contracts';
+import { uiLanguageOrSource } from '@heliogrid/domain';
 import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
@@ -64,7 +65,7 @@ export class SettingsController {
           tenantId(),
           body,
           actOf(req),
-          sessionOf(req).actor.interfaceLanguage,
+          uiLanguageOrSource(sessionOf(req).actor.interfaceLanguage),
         ),
       }),
       quietHours: async () => ({
