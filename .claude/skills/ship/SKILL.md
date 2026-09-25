@@ -1,165 +1,115 @@
 ---
 name: ship
-description: Close out a task — gates once, a review sized to the diff, the done-when check, a commit on a yes, then push and print the PR body for the owner to raise the PR. Use when implementation and /verify are done.
+description: Close out a task — level with main, gates once, the PR review by a second actor before anything is pushed, the done-when check, the misses and the cost recorded, a commit on the owner's yes, then push, the PR and its one CI run. Use when implementation and /verify are done.
 ---
 
-# `/ship` — gates, review, done-when, commit on a yes, push, print the PR body
+# `/ship` — gates, the PR review, done-when, commit on a yes, push, one CI run
 
-The PR is the one human gate (`CLAUDE.md` §8), so everything before it is mechanical and
-everything in it is written for a five-minute read. This skill raises the PR; the owner merges.
+The PR is the one human gate (`CLAUDE.md` §8), so everything before it is mechanical and everything
+in it is written for a five-minute read. This skill raises the PR; the owner merges.
 
-## 1. Gates, once
+## 1. Level with main, then the gates once
 
-**Bring the branch level with `main` first.** A task takes hours and `main` moves under it:
-`git fetch origin`, then `git rev-list --count HEAD..origin/main`. Anything above zero is merged in
-before any gate runs, so every diff against `origin/main` below, the stamp and `verify:clean` all
-read the tree that will actually merge, and the PR never opens `BEHIND`. Never a rebase and never a
-force-push. Merge in three steps, because git's merge hook refuses an unstamped runtime tree:
+**Merge `main` in first**, so every diff below, the stamp and the gates read the tree that will
+merge and the PR never opens `BEHIND`: `git fetch origin`; if `git rev-list --count HEAD..origin/main`
+is above zero — never a rebase, never a force-push, and in three steps because git's merge hook
+refuses an unstamped runtime tree:
 1. `git merge --no-commit origin/main`.
-2. `bash scripts/verify-digest.sh --staged` — if it prints the digest the ticket's stamp already
-   carries, or the branch changes no runtime file, go to 3. Otherwise the stamp is stale: `/verify`
-   runs again on the merged tree and restamps the ticket; stage it.
-3. `git commit --no-edit` concludes the merge.
+2. `bash scripts/verify-digest.sh --staged` — the digest the ticket's stamp carries, or no runtime
+   file changed on the branch → step 3. Otherwise `/verify` runs again on the merged tree (depth
+   `delta`) and restamps; stage it.
+3. `git commit --no-edit`.
 
-**The stamp first (`M113`).** The task's section carries `**Verified:** digest …` and
-`scripts/verify-digest.sh` prints the same twelve characters for the working tree; missing or
-stale means `/verify` runs NOW, in full, before any gate. The author's own driving never stands in
-for the agents' verdicts. A tree whose runtime digest equals its merge base with `origin/main`, or `origin/main`'s own tree —
-docs, ci, config, tests — carries no stamp and needs none.
+**The stamp (`M113`).** The task's `**Verified:**` digest equals what `scripts/verify-digest.sh`
+prints; missing or stale → `/verify` runs now. Docs, ci, config and tests-only changes carry none.
 
-`pnpm verify:clean` — the proof in CI's room (`M112`): a fresh clone of what git would commit, CI's
-environment, every stage read for its verdict, never for the exit code. **Run it LAST, after §2's
-reviews are clean**: every fix `break-it-reviewer` forces changes the tree, and a clean run taken
-before it is stale the moment that fix lands. If it already ran green
-on this exact tree in this session (nothing changed since: `git status --short` and
-`git diff --stat` identical), cite that run instead of running again. If the invariants ran
-vacuously, say so — a green run has NOT proven tenancy. Never weaken a gate. Deleted a source
-file? `pnpm turbo build --force` first; tier 0 below sweeps for its pointers.
+**The gates.** `pnpm check:all` ran once before `/verify`; if the tree changed since, run it again and
+read its output, not its exit code. `pnpm verify:clean` (`M112`) runs only on its triggers — the diff
+deletes or moves a file, or changes a `package.json`, a tsconfig or a build config — since those are
+the faults a warm tree hides; otherwise CI is the clean room. Run it LAST, after §2's fixes. Deleted
+a source file? `pnpm turbo build --force` first. Never weaken a gate.
 
-## 2. Review sized to the diff
+## 2. The PR review — before anything is pushed
 
-**Tier 0, every change, inline, two commands.** `git diff --name-status origin/main` plus
-`git ls-files --others --exclude-standard` — the working tree, so uncommitted work counts: for
-each added or renamed file, name its `architecture.md` §4 step in one line; for each deleted or
-moved path, grep `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the
-dead pointer. Fix what that finds.
+**Tier 0, inline, every change.** `git diff --name-status origin/main` plus `git ls-files --others
+--exclude-standard`: each added or renamed file named with its `architecture.md` §4 step in one line;
+each deleted or moved path grepped for in `.claude/`, `docs/`, `scripts/`, `.github/`, configs and
+`.env.example` (Law 8). Every edited task file or ledger is diffed hunk by hunk and each hunk named
+for the block it sits in (the first-match trap, `.claude/landmines.md`). A change that deletes or
+moves an INSTRUCTION — a rule, a skill step, an agent's check — lists each one in the PR body as
+KEPT or MERGED (with the file and line that now carries it) or DROPPED (with why); one with no new
+home is not deleted.
 
-**Then check every edit landed where it was meant to.** Every edited task file, ledger or register
-is diffed against `origin/main` and each hunk is named for the block it sits in, by reading the lines
-either side; a stray blank line, or a hunk in a block this change never meant to touch, is a finding.
-The edit discipline that prevents it — anchor on the block's own heading, edit inside that span,
-re-read after writing — is `.claude/landmines.md`'s first-match row, and lives there once. An edited
-rule, skill or ticket that says a fact is held cites the `mechanisms.md` row by id, read for its
-status first — never a gate named in its place (`mechanisms.md`'s own header).
+**Every claim has its proof — a lookup, not a re-derivation.** `unit`/`invariant` → a CURRENT line in
+`scripts/break-and-run.sh --stale <T-id>`, which also lists every WITHDRAWN proof, whose claim needs
+one recorded again; `qa-*` → a `pass` for its step in `.git/heliogrid-harness/<T-id>/qa/verdicts-*.jsonl`;
+`recorded` → its recorder line; `gate`/`held` → its row, which gate 32 checked (`M139`). A `none` the
+owner saw at `/start` goes in the PR body under risks. A claim without a proof is fixed here.
 
-**Then check every claim has its proof, before any agent is paid to find one missing.** Each claim
-already names its proof, so this is a lookup, never a re-derivation: a `unit` or `invariant` claim
-has a CURRENT line naming it in `scripts/break-and-run.sh --stale <T-id>`'s list; a `qa-*` claim
-has a `pass` line for its step in `.git/heliogrid-harness/<T-id>/qa/`, a `qa-parity` one in
-`verdicts-parity.jsonl` there; a `recorded` claim its recorder line; a `gate` or `held` claim its
-row, which gate 32 has already checked (`M139`). A `none` claim the owner saw at `/start` has no proof by
-design: it goes in the PR body under risks. A claim with no proof is a finding fixed here.
+**The second actor: `break-it-reviewer`, for every change to code or to the rules** — anything but
+`.md` under `apps/`, `packages/`, `scripts/` or `.github/` (tests-only included), and anything under
+`.claude/`, any `CLAUDE.md`, or `docs/engineering/architecture.md`. It reads the diff as the PR reviewer: the logic against the claims, every fact against the Placement table and
+`architecture.md`, the proofs (it breaks two its own way), the review hash and the stamp. It edits
+files in the main folder, so it runs ALONE — no build, no QA agent, no edit of yours while it works.
+The prompt is this and no more:
 
-The attack on the code is the second actor's (tier 2), never the author's own second pass: the
-author already attacked the design at `/start`. A finding from either reviewer inside the task's
-scope is fixed now and its area re-reviewed; one outside it goes to `docs/tasks/deferred.md`
-(`CLAUDE.md` §8).
+> Task `<T-id | none — a harness change>` in `docs/tasks/<module>.md`. Proof record
+> `.git/heliogrid-harness/<T-id>/` (`proofs.jsonl`, `review.sha`, `qa/`). New: `<files>`. Deleted or
+> moved: `<files>`.
 
-**Tier 1, the agent, only for a structural diff.** Dispatch `arch-reviewer` when the diff (docs
-excluded) creates a folder, adds a workspace dependency to a `package.json`, adds the FIRST import of
-a workspace package into a package or app that never imported it (grep the base for
-`from '@heliogrid/<name>'` in that tree), edits `docs/engineering/architecture.md`, or adds or
-changes a file under `apps/web/` or `apps/mobile/` other than config. The app trees are in because
-what the reviewer holds there has no full gate — a flow kept in a screen (`M80` is PARTIAL) and a
-screen part written twice (`M115`, review-only). Outside them it stays off: imports keep to the
-declared edges (`M1`), a schema and its contract agree (`M17`, `M18`), a breaking API change is judged
-before it merges (`M26`), and a new file's place is tier 0's `architecture.md` §4 line. The prompt is
-this and no more:
+Its findings are the PR's review comments. Every blocker and major is fixed at the root cause before
+the commit, and only the gates the fix touches re-run; a fix that edits a source file re-runs the red
+proofs that break that file. A test it reports GREEN with its rule broken is fixed first. A
+`review-hash` or `stamp` finding sends the work back to `/start` §5 or `/verify`. One review per
+change; do not review the review. Outside the task's scope → `docs/tasks/deferred.md`.
 
-> Branch `<name>`; diff `origin/main...HEAD` plus uncommitted work. New: `<files>`. Moved or
-> deleted: `<files>`. Design decisions to check, not re-litigate: `<the three things>`. Gates are
-> green — read, do not run.
+## 3. Completeness, misses, cost
 
-**Tier 2, the second actor, for EVERY runtime change.** The author wrote the code, the tests, the
-QA plan and the stamp, and a rule obeyed by the one actor it binds is still that actor's honesty.
-Dispatch `break-it-reviewer` whenever anything under `apps/` or `packages/` other than a `.md` file
-differs from `origin/main` — a tests-only change included, since the runtime digest leaves tests out. It breaks two claims of its own choosing in the main folder, so it runs ALONE — no build, no `verify:clean`, no QA agent and no edit of yours while it works. The
-prompt is this and no more:
+`scripts/break-and-run.sh --stale <T-id>` again — a fix after tier 0 may have staled a proof; a claim
+without a current proof is not done. Its lines go into the done-when table beside their claims.
 
-> Task `<T-id>` in `docs/tasks/<module>.md`. Its proof record `.git/heliogrid-harness/<T-id>/`
-> holds `proofs.jsonl` and `qa/` (the plan, its review and the verdict files). New: `<files>`.
-> `arch-reviewer`: `<dispatched | not dispatched>`.
+**Size is stated, never enforced (`M111`, review-only):** `git diff --cached --shortstat` after
+staging (it counts new files), generated files said apart. Past 25 files, 1,500 lines, one migration
+or one contract router, the only question is one task or two.
 
-A test it reports GREEN with its rule broken is fixed before anything else: it guarded nothing.
-A `stamp` finding means `/verify` runs again. No PR body is printed while a blocker or major from either reviewer stands.
+**The misses (`CLAUDE.md` §1).** Every mistake made in this task — yours, a reviewer's find, a gate's,
+the owner's — as its KIND. No row in `.claude/landmines.md`'s misses table: add one, `seen 1`. A row
+already there: a law break — write the general rule where it fires, as a type, lint rule or gate where
+one can decide it, delete the row, and delete at least as many harness lines as the rule adds. The
+list, even empty, goes in the PR body.
 
-Fix every blocker and major at the root cause and re-run only the gates the fix touches. One review
-per change; do not re-review the review. A review that costs more than the change is the defect
-this tiering prevents.
-
-## 3. Completeness
-
-`scripts/break-and-run.sh --stale <T-id>` runs again here, because a fix made after tier 0 may have
-staled a proof: a claim without a current proof is not done, and the PR body is not printed. Its
-lines go into the PR body's done-when table, each claim beside its proof, so the red runs the build
-recorded reach the owner. A task that turned out to be two is
-split (`/start` §3), never shipped half.
-
-**The size is stated, never enforced (`M111`, review-only).** Count the diff — `git diff --stat origin/main` plus
-`git ls-files --others --exclude-standard` — and write the number into the PR body, generated files
-said apart. Past **25 files, 1,500 lines, one migration or one contract router** the only question is
-whether this is one task or two; a complete task ships whole, and nothing is cut from it to fit.
-
-**Record the misses (`CLAUDE.md` §1).** List every mistake made in this task — yours, or caught by
-a reviewer, a gate or the owner — each stated as its KIND, not its instance. For each, find its row
-in the misses table of `.claude/landmines.md`. No row: add one, `seen 1`, naming the fix it got in
-this change. A row already there: this is its second sighting and a law break — write the general
-rule where it fires in this change, as a type, lint rule or gate wherever one can decide it, and
-delete the row. The list, even when it is empty, goes into the PR body under Review and risks.
+**The cost line**, one line in the PR body: agents dispatched by name, minutes from the go to here,
+fix rounds, and which stage found each bug (`/start` review · build · gates · `/verify` · PR review).
 
 ## 4. Flip the ledger, then commit on a yes
 
-**The flip rides the change commit** (`M106`), so the ledger is right from the commit that makes
-it true and the PR carries no window in which it is wrong. Before anything is shown: read the
-number the next PR will take — the highest issue-or-PR number the repository holds, plus one —
-and write `shipped (#n)` into the task's `Status:` line and into its screens in `screens.md`. A
-screen task's `DESIGN:` line gains its export path in `HelioGrid-UX/` beside the canvas link, in
-the same edit.
-`M106` reads commit SUBJECTS, and the change commit's subject names the task, so the claim is
-true the moment that commit exists. It reads RED in the seconds between writing the flip and
-making the commit, which is why §1's gates run BEFORE the flip is written and are not re-read
-after it. A flip never gets a commit or a PR of its own (`docs/tasks/README.md` rule 0).
+The flip rides the change commit (`M106`): read the number the next PR will take — the highest issue
+or PR number plus one — and write `shipped (#n)` into the task's `Status:` line and its screens in
+`screens.md`; a screen task's `DESIGN:` line gains its `HelioGrid-UX/` export path. §1's gates ran
+before the flip; they are not re-read after it. A flip never gets its own commit or PR.
 
-Show the file list, the line count and the commit message, then END THE TURN. The yes is the
-owner's next message, given to exactly what was shown; a go, a green gate, an event or a yes to
-an earlier commit is not it, and a changed file list needs a new yes. On the yes: commit with the
-`Co-Authored-By` trailer, never `--no-verify`, never a QA scratchpad or artifact directory.
+Show the file list, the line count and the commit message, then END THE TURN. The yes is the owner's
+next message, given to exactly what was shown; a go, a green gate or an earlier yes is not it, and a
+changed file list needs a new yes. On the yes: commit with the `Co-Authored-By` trailer, never
+`--no-verify`, never a QA scratchpad.
 
-## 5. Push, raise the PR, read its one CI run
+## 5. Push, the PR, its one CI run
 
-`git push -u origin <branch>`, then open the PR — ready, never a draft, because the ledger it
-carries is already correct and there is no window to hold shut — with a body in this order:
+`git push -u origin <branch>`, then open the PR — ready, never a draft — with a body in this order:
+1. **What and why** — one paragraph and the impact; the task id is in the title.
+2. **Design** — the three things, the Placement table, any ruling, by row id.
+3. **Done-when** — a table: each claim, its proof, where the proof is. The QA plan is linked in the
+   ticket, not copied.
+4. **Verification** — `/verify`'s section verbatim, including what was not run.
+5. **Review and risks** — break-it's findings and their fate; the misses; the `none` claims; the
+   KEPT/MERGED/DROPPED list when instructions moved; the cost line.
 
-1. **What and why** — one paragraph; the task id is in the title.
-2. **Design** — the three things as decided, and any ruling applied, by row id.
-3. **Done-when** — a table: each line of the task, its proof, where the proof is.
-4. **Verification** — the `/verify` section verbatim, including what was not run.
-5. **Review and risks** — the review tier, its findings and their fate; the misses recorded and any
-   law they became; what is deliberately not handled yet.
+End with the generated-with line, and print the body in chat too. Never merge, never push to `main`,
+never force-push. If `gh pr create` returned a number other than the flip's, ONE mechanical correction
+commit fixes the `Status:` line and its screens (`M105`).
 
-End with the generated-with line, and print it in chat too — the owner reads it there. Never
-merge, never push to `main`, never force-push.
-
-**Then check the number the flip claimed**, because it was read before the PR existed. If
-`gh pr create` returned a different one, a PR opened in the seconds between, and ONE mechanical
-correction commit fixes the `Status:` line and its screens (`M105`) — the only case this path
-costs a second run.
-
-**Then read the commit's OWN CI verdict, and push nothing to the PR while it runs** (`M127`,
-review-only). CI cancels an in-flight run when a newer push lands on the same PR, so a second push
-cancels the very run that proves the change — and a cancelled run can still hold a step that had
-already failed, reading exactly like the harmless kind. Find the run by the FULL commit id, because a
-short one matches nothing and "no run" is not a pass; then wait on that run:
+**Read the commit's OWN CI run, and push nothing while it runs** (`M127`, review-only): a second push
+cancels the run that proves the change. Find it by the FULL commit id:
 
 ```bash
 sha=$(git rev-parse HEAD)
@@ -169,10 +119,7 @@ gh run watch "$id" --exit-status
 ```
 
 - **success** → report the PR link and the verdict, job by job. The owner merges.
-- **anything else** → a failed step is read and fixed on this branch, each fix commit with its own
-  yes. A job "not started because it repeatedly failed to be acquired", or a run
-  that never leaves the queue, is GitHub's runner pool, not the code: re-run it once
-  (`gh run rerun "$id"`), and report it if it recurs. No run at all is reported, never read as green.
-
-CI runs only on the PR, so this run is the first time the committed tree is checked whole — and
-with the flip already inside it, it is also the only run the task needs.
+- **anything else** → read the failed step and fix it on this branch, each fix commit with its own
+  yes. A job "not started because it repeatedly failed to be acquired" is GitHub's runner pool: re-run
+  it once (`gh run rerun "$id"`), and report it if it recurs. No run at all is reported, never read as
+  green.

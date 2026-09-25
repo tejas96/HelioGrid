@@ -1,11 +1,13 @@
 ## What and why
 
-<!-- One paragraph. The task id is in the title. Explicit non-goals here — not a file list. -->
+<!-- One paragraph and the impact — who gains what. The task id is in the title. Explicit non-goals
+     here — not a file list. -->
 
 ## Design
 
 <!-- The three things as decided (CLAUDE.md §3): the package per new file · the new facts and where
-     each TYPE lives · what proves it. Any owner ruling applied, stated as the rule it became —
+     each TYPE lives · what proves it — and the Placement table, each new fact beside the one package
+     that owns it. Any owner ruling applied, stated as the rule it became —
      never by the open-question id it was answered under, which the tree no longer carries. -->
 
 ## Done-when
@@ -22,5 +24,7 @@
 
 ## Review and risks
 
-<!-- The review tier (inline or arch-reviewer), its findings and their fate. What is deliberately not
-     handled yet — omitting it is how reviewers get surprised. -->
+<!-- break-it-reviewer's findings (the PR review before push) and their fate · the misses recorded ·
+     every `none` claim · for a change that moves instructions, each one KEPT / MERGED / DROPPED with
+     where it now lives · the cost line: agents, minutes, fix rounds, the stage that found each bug.
+     What is deliberately not handled yet — omitting it is how reviewers get surprised. -->

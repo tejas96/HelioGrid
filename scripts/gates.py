@@ -268,12 +268,13 @@ CLAIM_CLASSES = ("concurrency", "partial-failure", "retry", "roll", "tenancy", "
                  "platform", "observability")
 PROOF_RE = re.compile(
     r'^(?:unit|invariant) `[^`]+` › "[^"]+"$'
-    r'|^qa-(?:api|web|mobile|worker) [A-Za-z0-9._-]+$'
-    r'|^qa-parity [A-Za-z0-9._-]+$'
+    r'|^qa-(?:api|web|mobile|worker|parity) Q[1-9]\d*$'
     r'|^recorded [A-Za-z0-9._-]+$'
     r'|^(?:gate|held) M\d+$'
     r'|^none — \S.*$')
 FIELD_RE = re.compile(r"^\*\*[A-Z][^*\n]*:\*\*")
+QA_STEP_RE = re.compile(r"\*\*(Q[1-9]\d*)\*\*\s*·\s*(api|web|mobile|worker|parity)\s*·\s*([^·]+?)\s*·\s*\S.*→ expect \S.*· observe \S.*· severity (?:blocker|major|minor)\s*$")
+CASES_NONE_RE = re.compile(r"^\*\*Cases:\*\* none — \S", re.M)
 RETIRED_RE = re.compile(r"^\*\*Broken at `?/start`?:\*\*", re.M)
 
 
@@ -309,6 +310,35 @@ def split_proofs(text):
     return [p.strip().rstrip(".") for p in re.split(r' \+ (?=(?:[^"]*"[^"]*")*[^"]*$)', text)]
 
 
+def qa_plan_problems(where, steps, stray, qa_refs, claim_ids):
+    """The QA plan and the claims point at each other: every `qa-<surface> Q<n>` proof names a step of
+    that surface, and every step names claims that exist, or `landing`."""
+    probs = [f"{where}: QA plan holds a line that is no step: {x}" for x in stray]
+    surface_of = {}
+    for item in steps or []:
+        m = QA_STEP_RE.match(item)
+        if not m:
+            probs.append(f"{where}: not a QA step (Q<n> · surface · claims · action → expect … · observe … · severity …): {item[:48]}")
+            continue
+        qid, surface, claims = m.groups()
+        if qid in surface_of:
+            probs.append(f"{where}: {qid} is used twice")
+        surface_of[qid] = surface
+        named = [x.strip() for x in claims.split(",")]
+        unknown = [x for x in named if x != "landing" and x not in claim_ids]
+        if unknown:
+            probs.append(f"{where}: {qid} names claims that do not exist: {', '.join(unknown)}")
+    if steps is None and qa_refs:
+        probs.append(f"{where}: claims cite qa-* proofs but the ticket has no `**QA plan:**` block")
+        return probs
+    for cid, surface, qid in qa_refs:
+        if qid not in surface_of:
+            probs.append(f"{where}: {cid} cites qa-{surface} {qid}, which is no step of the QA plan")
+        elif surface_of[qid] != surface:
+            probs.append(f"{where}: {cid} cites qa-{surface} {qid}, but {qid} is a {surface_of[qid]} step")
+    return probs
+
+
 def claim_problems(block, row_status):
     """Everything wrong with a ticket's claims, or None when the ticket carries none."""
     body, where = block["body"], f"{block['file']} {block['id']}"
@@ -318,11 +348,15 @@ def claim_problems(block, row_status):
     if RETIRED_RE.search(body) and not shipped:
         probs.append(f"{where}: `Broken at /start` is the retired form — write a Cases block")
     cases, stray = claim_items(body, "Cases")
+    no_runtime = bool(CASES_NONE_RE.search(body))
+    if no_runtime and cases:
+        probs.append(f"{where}: `Cases: none` carries case lines — a task with cases has a runtime path")
     if cases is None:
         if re.search(r"^\*\*Cases", body, re.M) or re.search(r"^- \*\*[CDS]\d+\*\*", body, re.M):
             probs.append(f"{where}: claims written without a `**Cases:**` line, so none were read")
         return probs or None
     seen, cased, na = set(), set(), set()
+    qa_refs = []
 
     def check(item, letter):
         m = re.match(r"\*\*([CDS][1-9]\d*|n/a)\*\*\s*·\s*(.*)$", item)
@@ -359,6 +393,8 @@ def claim_problems(block, row_status):
                 probs.append(f"{where}: {cid} proof '{proof[:40]}' is not a proof kind")
                 continue
             kind = proof.split(" ")[0]
+            if kind.startswith("qa-"):
+                qa_refs.append((cid, kind[3:], proof.split(" ", 1)[1]))
             if letter != "C" and kind in ("none", "held"):
                 probs.append(f"{where}: {cid} — none and held are for cases only")
             row = re.match(r"(?:gate|held) (M\d+)$", proof)
@@ -372,11 +408,17 @@ def claim_problems(block, row_status):
             if letter == "D":
                 probs.append(f"{where}: a Cases ticket numbers its DONE WHEN lines D1, D2 …")
             continue
-        if not items:
+        if not items and not (letter == "C" and no_runtime):
             probs.append(f"{where}: the {label} block holds no claim")
         probs += [f"{where}: {label} holds a line that is no claim: {x}" for x in stray_lines]
         for item in items:
             check(item, letter)
+    steps, qa_stray = claim_items(body, "QA plan")
+    probs += qa_plan_problems(where, steps, qa_stray, qa_refs, seen)
+    if no_runtime and (steps or qa_refs):
+        probs.append(f"{where}: `Cases: none` beside QA steps or qa-* proofs — a task a QA agent drives has a runtime path")
+    if no_runtime:
+        return probs
     missing = [c for c in CLAIM_CLASSES if c not in cased | na]
     if missing:
         probs.append(f"{where}: classes not answered: {', '.join(missing)}")
@@ -993,7 +1035,7 @@ def run(repo, verbose):
     claim_tickets = len(claim_ids)
     claims_summary = ("claims: " + (f"{claim_tickets} tickets carry claims — {', '.join(claim_ids[:12])}"
                                     if claim_ids else "VACUOUS — no ticket carries a Cases block yet"))
-    gate(32, "a ticket's claims are well formed: ids, proof kinds, every failure class answered (whether a proof is RIGHT is not checked)",
+    gate(32, "a ticket's claims are well formed: ids, proof kinds, every failure class answered, QA steps and claims linked (whether a proof is RIGHT is not checked)",
          not claim_bad and rows_read,
          (f"{claim_tickets} tickets carry claims" if claim_tickets else "VACUOUS — no ticket carries a Cases block yet")
          if not claim_bad and rows_read

@@ -1,200 +1,171 @@
 ---
 name: start
-description: Begin a task or a bug fix the controlled way — read only the task's own section, review the ticket as an EPC expert, state the three things, draw the design and try to break it, explain it in simple words, create the branch, stop for the go. Use at the start of every piece of work.
+description: Begin a task or a bug fix the controlled way — a clean start in a fresh session on its own branch, the task understood and its conflicts found, the scope fixed, the design drawn and broken into cases, the whole QA plan written, one second actor's review, a simple explanation with the impact and the diagram, then stop for the go. Use at the start of every piece of work.
 ---
 
-# `/start <T-id | bug>` — read, review, explain, branch, stop
+# `/start <T-id | bug>` — understand, scope, design, plan the QA, review, explain, stop
 
-The cheapest token is the one never read. This skill reads the task, not the corpus.
+All the thinking happens here, once. Everything a later stage — or a later session — needs is
+written into the ticket, so the build executes and `/verify` runs, and neither plans again.
 
-## 1. Read only what the task carries
+## 0. A clean start
 
-**Which task: the one the build-order line names** (`M126`) — printed on every gate run, in the
-block `docs/build-order.md` puts first. Never a task picked from memory, and never one from a later
-block while an earlier block has open work. A ticket with no `Depends on:` line reads there as
-waiting on nothing, which is silence rather than readiness: write the line in §2 and confirm the
-task is still ready from it before the go.
+- **One fresh session per task.** A task continued in a long session re-reads the whole old chat on
+  every step. If this session already did other work, say so and ask the owner to open a new one.
+- **Which task: the one the build-order line names** (`M126`) — printed by `python3 scripts/gates.py`,
+  in the block `docs/build-order.md` puts first — or the one the owner names, recorded in the ticket
+  as theirs. Never from memory; never a later block while an earlier one has open work. A ticket with
+  no `Depends on:` line reads as waiting on nothing, which is silence, not readiness: write the line.
+- **The budget**, said now: which agents this task will pay for and the rough minutes. docs or no
+  runtime → none · backend → `case-reviewer`, `qa-api`, `break-it-reviewer` · one-platform UI →
+  `case-reviewer`, one QA agent, `break-it-reviewer` · a screen on both platforms → add
+  `design-reviewer`, the second QA surface, and `qa-parity` when the screen has a twin.
+- **The branch, before the first edit — ticket text included.** `main` is green (`gh run list
+  --branch main --limit 1`); the tree is clean (`git status --short` prints nothing — another task's
+  file would ride into the branch); then `git fetch origin && git checkout -b <kind>/<t-id>-<slug>
+  origin/main && git branch --unset-upstream` — `feat` for a task, `fix` for a bug, `ci`, `chore` or
+  `docs` for work with no task rows — and bind the proof record:
+  `r="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>"; mkdir -p "$r"; git branch --show-current > "$r/branch"`
+  (`M113`). The checkout runs git's post-checkout, which prints one `proof records:` line — read it
+  (`M141`). A task whose branch exists is resumed on it, never branched twice: its uncommitted files
+  are shown to the owner first. A task found already built in §1 closes and its branch goes.
+- A bug is a task whose rows are the report. Its first proof is the reproduction on the running
+  app, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
 
-1. The task's own section of `docs/tasks/<module>.md` — from its `### T-…` heading to the next
-   `---`. Its requirement rows are VERBATIM copies of the PRD (`docs/tasks/README.md` rule 1), so
-   the PRD is never re-read for them. A row carries its own ruling; there is no register.
-2. The PRD only for what the section does not quote: the owning feature area's **Behavior
-   detail** and **Edge cases** blocks, by heading, never the whole document.
-3. The design the `DESIGN:` line links, for a screen task. No link means the screen is not
-   designed, and a screen builds only after its module's screens are designed and verified.
-4. The worked example the task names, if any, in full — shape is copied from code, not described.
-5. For an engine task that a DESIGNED screen will call, that screen's export and decisions record:
-   a number or a vocabulary the drawing states (a horizon, a list of filter chips) is a fact the
-   engine must serve, and a ticket written before the drawing may disagree with it.
+## 1. Understand — read only what the task carries
 
-**A task that opens its block runs the harness audit first.** When no task of the block the
-build-order line names has shipped yet, dispatch `harness-auditor` with the block number before
-the ticket review. Show the owner its findings; a `blocker` is fixed in its
-own `chore/harness` change before this task's branch starts.
+1. The task's own section of `docs/tasks/<module>.md`, from its `### T-…` heading to the next `---`.
+   Its requirement rows are verbatim PRD copies (`docs/tasks/README.md` rule 1); a row carries its
+   own ruling.
+2. The PRD only for what the section does not quote: the owning feature area's **Behavior detail**
+   and **Edge cases** blocks, by heading.
+3. For a screen, the design the `DESIGN:` line links; no link means not designed, and a screen builds
+   only after its module's screens are designed and verified. For an engine task a DESIGNED screen
+   will call, that screen's export and record: a number or vocabulary the drawing states is a fact
+   the engine must serve.
+4. The worked example the task names, in full — shape is copied from code, not described.
+5. `.claude/landmines.md`: only the sections for the packages the task reaches, and the misses table
+   — each miss that fits this task is checked now, by name.
 
-A bug is a task whose rows are the report. Its first proof is the reproduction on the real
-surface, and the failing test comes before the fix (`CLAUDE.md` §1, §8).
+**Buildable now?** Name two facts, each with the file and line that proves it: the data it reads or
+writes exists on `main` (`packages/db/src/schema/`, the routes), and the code it asks for is not
+already there — grep the ticket's names AND its behaviour (the route, the entity, the event, the
+words a screen shows), because earlier slices often built it under another name. Data in a later
+block → the task moves; already built → closed as built; `**Parked:**` → never started. Each is the
+owner's ruling, brought with a pick.
 
-## 2. Review the ticket — assume it is wrong until checked
+**Conflicts, before the go.** Two searches, each named with what it found: (1) every gate and test
+stricter than the rows, and every gate the change will meet — grep `.claude/mechanisms.md` (by
+`grep -n`, never read whole), `.claude/hooks/`, `scripts/` and the tests for the facts the rows
+govern and the paths the reach touches; (2) every use of each type, set or shape the task changes —
+its schema, every record or map keyed by it, every test that writes its members out. A conflict
+either search would have found, first met mid-build, is a `/start` miss.
 
-**Check the task can be built and proven NOW, before planning it.** Name two facts with the file
-that proves each: the data it reads or writes exists on `main` (grep `packages/db/src/schema/` and the
-routes), and the code it asks for is not already there — grep for the ticket's own function and file
-names AND for its behaviour: the route, the entity, the event, the words a screen shows and the
-domain terms, because code built in an earlier slice often carries another name. A task whose data lands in a later block moves there; a task already built is closed as built;
-a ticket marked `**Parked:**` is never started. Each is the owner's ruling, brought with a pick.
+A question is open only after `docs/engineering/` and `docs/tasks/` are grepped for it; memory, the
+hand-off and `deferred.md` are pointers, not facts. A module owns an entity by the scope lock and
+the rulings, never by which PRD describes it best. A credential is never left as "needs a key":
+generate what can be generated into `.env.local`, walk the owner through a provider console, or give
+it a named placeholder in `.env.example` and `.env.local` that passes `packages/env` — and build the
+whole path.
 
-**Find every conflict before the go, not during the build.** Two searches, each named with what it
-found. (1) Every gate and test stricter than the task's rows, and every gate the change itself
-will meet: grep `.claude/mechanisms.md`, `.claude/hooks/`, `scripts/` and the tests for the facts
-the rows govern AND for the paths the reach touches — a check that refuses what a row allows is a
-conflict brought to the owner NOW, and one the reach will meet (a `packages/` edit needs a ticket
-to carry `/verify`'s stamp, `M113`) is planned for now. (2) Every use of a type, set or shape the task changes, not only
-the fields named in the ticket: its schema, every record or map keyed by it, every test that writes
-its members out. A conflict either search would have found, first met mid-build, is a `/start` miss.
-Then read the misses table in `.claude/landmines.md`: every row is a mistake already made once,
-and a row that fits this task is checked for now, by name.
+Read the ticket as an EPC expert and a senior engineer: missing, unnecessary, unclear or conflicting
+rows; domain facts (kW vs kWp, provenance tiers, money rounding, market rules, tenancy); platform
+parity. Fix the ticket where it is wrong. A choice between readings the PRD supports is ruled into
+the row (`CLAUDE.md` §1); a new feature or number is asked, with a pick.
 
-**A credential the task needs is never left as "needs a key".** Generate what can be generated (a
-random secret goes straight into `.env.local`); walk the owner through the provider's console in
-the browser for an external account; give anything not obtainable now a named placeholder in
-`.env.example` and `.env.local` that passes `packages/env`'s schema — and build the whole path.
+## 2. Scope and impact — decided now, locked by the go
 
-**A module owns an entity by the scope lock and the rulings, never by which PRD describes it in most
-detail.** Check both before placing a table or a type.
+The ticket takes the shape `docs/tasks/README.md` gives. Write:
+- **`**Impact:**`** — who gains what when this ships, and the risk it removes or the number it moves.
+- **`**Scope:**`** — **In**: the behaviours and the layers they touch (domain, contracts, db, data,
+  i18n and its six generated catalogs per copy change, ui, each app, docs) · **Out**: what is left
+  out, with why · **Size**: files and lines. For a screen, In names its twin on the other platform
+  and where each shared part lives (`M115`, review-only).
+- **Size is a signal (`M111`, review-only).** Past 25 files, 1,500 lines, one migration or one
+  contract router, ask ONE question: one task or two? Two are split here, at a layer seam in Law 3's
+  order, each slice complete with its own done-when lines. One task ships whole, and nothing — a
+  test, a guard, a doc, a proof — is ever removed to land under a count.
 
-**A question is open only after the docs are searched.** Memory, the hand-off and `deferred.md`
-are pointers, not facts: before calling any ruling open or bringing the owner options, grep
-`docs/engineering/` and `docs/tasks/` for it and name what was found, or that nothing was.
+## 3. Design, cases and the whole QA plan
 
-A task is a ticket: Status · Type and Tier · Why · Requirements · Design · Data model · Contract ·
-Depends on · Out of scope · Done-when with one proof per line. A missing part is fixed before the
-go. Then read it as an EPC expert and a senior engineer: missing, unnecessary, unclear or
-conflicting rows; dependencies; edge cases; domain facts (kW vs kWp, provenance tiers, money
-rounding, market rules, tenancy); platform parity. Fix the task text where it is wrong, with the
-reason in the commit. A choice between readings the PRD supports is ruled into the row
-(`CLAUDE.md` §1); a new feature or number is asked, with a pick.
+**The three things** (`CLAUDE.md` §3), then the flow: which `packages/domain` reducer decides any
+state and which `packages/data` hook drives it (Law 11), or "none — the screen holds only its form
+fields" (`M80`). Contract before code (Law 3).
 
-## 3. Say the three things, the flow, then the reach
+**`**Placement:**`** — one row per new fact (a type, a vocabulary, a string, a query, a wire shape, a
+policy number): the ONE package `docs/engineering/architecture.md` §2 gives it, why, and how others
+reach it. A vocabulary is authored in `domain` and derived in `contracts`; copy lives in `i18n`; a
+query in `db`; a wire call in `data`; a visual value in `theme`. **Name the guard each new fact joins**
+(Law 12) — a brand `M60`, an enum `M17`, a route `M15`, a table `M12`, found with `grep -n` — and the
+injection that will prove it fires. A kind with no row is said out loud.
 
-`CLAUDE.md` §3: which package owns each new file (`architecture.md` §4); which facts are new and
-where each TYPE lives — every number, name and shape the done-when lines need, beside the row
-that carries it, so nothing is discovered at build time; and what will prove it works. Then the
-FLOW, for any task with a state: which `packages/domain` reducer decides it and which
-`packages/data` hook drives it (Law 11), or "none — the screen holds only its form fields"; a
-flow first met in an app hook is the defect `M80` names. Then the reach: a file list PER LAYER —
-domain, contracts, db, data, i18n and its six generated catalog files per copy change, ui, each
-app, docs — never a count; a guessed reach is how the ceiling is first met at `/ship`. For a
-screen, the reach names its twin on the other platform and, part by part, where each shared part
-lives — `packages/ui`, a shared package, or the app's own `shared/` folder; a part that would be
-authored in both app trees is split out here (`M115`, review-only). Contract
-before code (Law 3): the contract diff, the domain types, the schema plan, then code.
+**Draw the architecture**: one diagram of the path a request or a job takes through the layers —
+which package does what, where state is stored, which step writes and which reads. A task with no
+runtime path says so in one line and writes `**Cases:** none — <why>`.
 
-**Draw the design, then break it yourself, before the owner sees a solution.** A solution is shown
-as its ARCHITECTURE: one diagram of the path a request or a job takes through the layers — which
-package does what, where state is stored, which step writes and which reads — beside the reach. A
-task with no runtime path (a doc, a ticket, a gate's text) says so in one line and has no diagram
-and no cases. Then attack it. Walk every class below against THIS design, not the ticket, and
-write each case as input → what happens → the fix. A class that cannot occur here is said in one
-line, with why; none is skipped in silence.
+**Then break it yourself.** Walk every class against THIS design and write each case into
+`**Cases:**` as input → what happens → the fix → the proof that fails without the fix. A class that
+cannot occur is one short `n/a` line with why; none is skipped in silence.
 
-- **Concurrency** (`concurrency`) — the same request twice at the same moment; two actors on one
-  record; a state change whose sibling state changes take a lock it does not.
-- **Partial failure** (`partial-failure`) — the process dies between any two steps; one write
-  commits and the next does not; an outside call times out after it succeeded.
-- **Retry and replay** (`retry`) — the same thing delivered twice, late or out of order; a person who
-  changes the input and sends again.
-- **Stored data and the roll** (`roll`) — `CLAUDE.md` §8's rolling-release rule, by name, for
-  anything the task stores or sends between runtimes: each older reader still running during the
-  roll — api and worker machines mid-roll, the apps in the field, workflows and jobs already queued —
-  and what it does with the new shape; and what the new code does with every row the old one wrote.
-  Settled here, never at `/ship`.
+- **Concurrency** (`concurrency`) — the same request twice at once; two actors on one record; a
+  state change whose sibling state changes take a lock it does not.
+- **Partial failure** (`partial-failure`) — the process dies between two steps; one write commits and
+  the next does not; an outside call times out after it succeeded.
+- **Retry and replay** (`retry`) — delivered twice, late or out of order; a person who changes the
+  input and sends again.
+- **Stored data and the roll** (`roll`) — `CLAUDE.md` §8's rolling-release rule for anything stored
+  or sent between runtimes: every older reader still running (api and worker mid-roll, apps in the
+  field, queued workflows and jobs) with the new shape, and the new code with every old row.
 - **Security and tenancy** (`tenancy`) — a secret stored or sent back; a caller who lost access; a
-  read or write that crosses tenants; device input trusted as fact.
-- **Scale** (`scale`) — the cost per request, the growth per day, anything unbounded (a table, a
-  scan, a list, a loop over rows), N+1, and what still holds at a hundred times today's volume.
+  read or write across tenants; device input trusted as fact.
+- **Scale** (`scale`) — cost per request, growth per day, anything unbounded, N+1, a hundred times
+  today's volume.
 - **Input edges** (`input`) — empty, maximum, malformed, duplicate, other scripts, money rounding at
   the minor unit, time zones and the tenant clock.
 - **Platforms** (`platform`) — web and mobile, the app killed mid-action, a lost network read as an
   error.
-- **Seeing it fail** (`observability`) — when this breaks in production, which log line, error code
-  or metric says so.
+- **Seeing it fail** (`observability`) — the log line, error code or metric that says so in production.
 
-**The cases live in the ticket, never only in the chat**, as claims in the shape
-`docs/tasks/README.md` gives: each case one `**Cases:**` line with its id, its class, the fix and
-the proof that fails without the fix; each class that cannot occur one `n/a` line with why; each
-stored fact of a schema-bearing task — a table, a column, an index, a grant, a policy — one
-`**Schema:**` line (the `/migration` design check's answers stay in the Data model block); each
-done-when line numbered `D1`, `D2` … with its proof. A fix that changes what is
-built also becomes a done-when line, a ruling or an out-of-scope line with its reason. Gate 32 in
-`python3 scripts/gates.py` checks the shape: before the go it is green and its `claims:` line names
-this task among the tickets it read.
+Each stored fact of a schema-bearing task is one `**Schema:**` line; each done-when line is numbered
+`D1`, `D2` … with its proof. A fix that changes what is built also becomes a done-when line, a ruling
+or an out-of-scope line.
 
-**Then second actors read it before the owner does**, dispatched in ONE message with the task's
-section: `fact-checker`, for every task, returns every statement the ticket makes about existing
-code that the code refutes; `case-reviewer`, for a task with a runtime path, returns the cases the
-list missed, the proofs that could not fail and the faults in the data model. Fold each finding into the ticket; one you reject is shown to the owner
-with its reason.
+**`**QA plan:**` — the whole plan, now.** One step per claim whose proof is `qa-<surface> Q<n>`, plus
+ONE `landing` step per surface in the Scope, in the ticket's shape. Steps are behaviour-level — what
+a person does and sees, the copy from `i18n` — never a selector or a seed. Walk the edge checklist in
+`.claude/skills/verify/references/test-matrix.md` as an attack, not a form: an edge that applies
+becomes a case or a step, and nothing is written for one that does not. The always-on API core
+(cross-tenant 404, no session refused, money reconciles) is in the plan only when `apps/api`,
+`packages/db`, `packages/contracts` or `packages/data` is in the Scope. `expected` is a literal
+comparison; where the rows are silent, the step RECORDS the value for a ruling. Each step's `severity` is
+set here, never by the executor: money, tenancy or provenance → `blocker`. Gate 32 (`python3 scripts/gates.py`) checks the shape and
+that claims and steps point at each other; its `claims:` line names this task before the go.
 
-The design reaches the owner with no open case: nothing ambiguous and nothing left "to decide at
-build". A hole the owner or the build finds that one of these classes would have found is a
-`/start` miss.
+**One second actor reads it: `case-reviewer`**, with the task id — it checks the facts, the
+Placement, the cases, the proofs, the QA steps and the data model. For a SCREEN, also `design-reviewer`
+in the same message: it renders the export, measures, and returns blockers and a better design; a
+`BETTER` the owner accepts goes into the ticket as a difference from the export, and no state may
+depend on hover. Fold each finding into the ticket; one you reject goes to the owner with its reason.
+Then save what was reviewed: `bash scripts/verify-digest.sh --ticket <T-id> > "$r/review.sha"`.
 
-**For a SCREEN, dispatch `design-reviewer` BEFORE writing it.** It did not draw the screen: it renders the
-export, looks at the pixels, measures, reads the record and the WHOLE PRD rows behind every product fact, and
-returns blockers and the better design where it sees one. Show the owner its report. A `BLOCKER` is settled
-before code; a `BETTER` the owner accepts is written into the ticket as a difference from the export, never
-carried silently. A design drawn before today's UX law (`docs/ux/claude-design-context.md` §2, §3) is brought
-to it HERE, at build time. No state may depend on hover: the phone has none.
+## 4. Explain, stop
 
-**Name the GUARD each new fact joins, and the injection that will prove it fires** (Law 12). A
-brand enrols with `M60`, an enum with `M17`, a route with `M15`, a table with `M12`. Find the row
-that guards that KIND with `grep -n` on `.claude/mechanisms.md` — never read the whole ledger — and
-say which row each new fact enrols in — a
-fact whose kind has a row and is not enrolled there is an UNGUARDED fact, and its row will keep
-reporting green over it. A kind with no row is said out loud here, never assumed safe.
+Explain on ONE screen, in simple words, in this order: what we build · the impact · the diagram ·
+scope in and out · each case beside its fix, and every `none` and `held` claim (no new proof will
+show those) · the QA plan as a short table · the budget. Nothing ambiguous, nothing "to decide at
+build". **Stop for the go.** A go authorises the build on this branch; it is never a commit — that
+yes is given in `/ship` to the file list and message shown there.
 
-**A task that is really two tasks is split now, not shipped half.** Split at a seam that leaves
-each slice complete on its own — a done-when list that passes, docs that agree, gates green — and
-propose the slices in order. A slice that cannot pass its done-when alone is not a slice.
+## 5. After the go — the scope holds
 
-**The size is a signal, never a gate (`M111`, review-only).** Count the reach — files, lines, migrations,
-routers — and say the number. Past **25 files, 1,500 lines, one migration or one contract router**, ask
-ONE question: is this one task or two? Two tasks are split here, at a layer seam in Law 3's order —
-domain, then contract, then schema, then the app — each a ticket with its own done-when lines. One
-complete task ships whole however many files it took, and **nothing is ever removed from a change — a
-test, a guard, a doc, a proof — to land under a count** (owner ruling). Generated files are said apart.
-
-## 4. Explain, branch, stop
-
-Explain the task to the owner in simple words: what we build, why, and what proves it — with
-§3's architecture diagram and every case it was broken with, each beside its fix, and every `none`
-and `held` claim named: those are the claims no new proof will show. Then
-confirm `main` is green (`gh run list --branch main --limit 1`; a red `main` is fixed before any
-branch starts), confirm the working tree is clean (`git status --short` prints nothing — an
-uncommitted or untracked file would ride into the new branch; its owner commits or removes it
-first), then
-`git fetch origin && git checkout -b <kind>/<t-id>-<slug> origin/main` — `feat` for a task, `fix`
-for a bug, `ci`, `chore` or `docs` for work with no task rows. Bind the task's proof record to the
-branch — `r="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>"; mkdir -p "$r"; git branch
---show-current > "$r/branch"` — so git's pre-commit knows whose red proofs to check when a test
-changes (`M113`). That checkout also runs git's post-checkout, which deletes the proof record of
-every task whose pull request has merged and prints one `proof records:` line — read it (`M141`).
-Then stop for the go.
-
-**A task whose branch already exists is resumed on it, never branched twice.** `/start` run again
-on the same task checks out that branch instead of creating one, and the clean-tree check reads its
-uncommitted files instead: each is shown to the owner, and one that is neither this task's work nor
-carried in by the owner's ruling is committed elsewhere or removed before the go.
-
-**The branch exists before the first edit, ticket text included.** `git branch --show-current` is
-read and is not `main` before any file is touched — the ticket's own repairs (§2) are written on the
-branch, never on `main` and carried over. A dirty `main` is the mistake this line exists for.
-
-**A go is never a commit.** It authorises the build on this branch. The yes to a commit is given in
-`/ship` §4, to the file list and message shown there, and nothing earlier stands in for it.
+A new behaviour, a new layer, a new table, route or contract, or more than 1.5× the stated size,
+stops the build and goes to the owner. On a yes, the Scope, the cases and the QA plan change in ONE
+edit, and `case-reviewer` reads only that change (`git diff` of the section), then `review.sha` is
+saved again. A new file inside an In layer for In behaviour needs no ask. A design flaw found by
+`/verify` or at review comes back the same way. A harness problem met during the task goes into
+`docs/tasks/deferred.md`, never fixed inside the task.
 
 ## What this skill never does
 
-Read a whole task file or PRD "for context" · invent a requirement the rows do not state · show a
-solution before trying to break it · build before the go.
+Read a whole task file, PRD or ledger "for context" · invent a requirement the rows do not state ·
+show a solution before trying to break it · leave the QA plan for later · build before the go.

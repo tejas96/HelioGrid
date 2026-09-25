@@ -64,7 +64,7 @@ a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; app
 to `verdicts-<platform>.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array, one object per step per platform:
-`{surface:"ios"|"android", step_id, quadrant, verdict, expected, observed, evidence}`.
+`{surface:"ios"|"android", step_id, claims, verdict, expected, observed, evidence}`.
 
 Never boot or install a device the owner has not provisioned — report `inconclusive` naming
 what is missing. Order steps so state flows; relaunch only where a cold start IS the test.

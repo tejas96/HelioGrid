@@ -50,4 +50,4 @@ a step you cannot observe is recorded `inconclusive: cannot observe <kind>`; app
 to `verdicts-api.jsonl` in the folder the prompt names, one line per step.
 
 Return ONLY a JSON array:
-`{surface:"api"|"worker", step_id, quadrant, verdict, expected, observed, evidence}`.
+`{surface:"api"|"worker", step_id, claims, verdict, expected, observed, evidence}`.

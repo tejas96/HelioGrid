@@ -15,8 +15,24 @@
 #   scripts/verify-digest.sh --tip     origin/main's own tree — a commit writing exactly main's
 #                                      runtime tree (merging main before the task commits) is
 #                                      already verified.
+#   scripts/verify-digest.sh --ticket <T-id>
+#                                      the task's own section in docs/tasks/ (its heading to the next
+#                                      `---`), its Verified line left out — what case-reviewer read.
+#                                      /start saves it; a different one at /verify or /ship means the
+#                                      scope, cases or QA plan moved since the review.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
+if command -v shasum >/dev/null; then hash_cmd() { shasum -a 256; }
+elif command -v sha256sum >/dev/null; then hash_cmd() { sha256sum; }
+else echo 'verify-digest: needs shasum or sha256sum on PATH' >&2; exit 1; fi
+if [ "${1:-}" = "--ticket" ]; then
+  id="${2:?verify-digest: --ticket needs a task id}"
+  # A section ends at its `---`, at the next heading, or at the end of its own file.
+  section="$(awk -v id="$id" 'FNR == 1 && on { exit } index($0, "### " id " ") == 1 { on = 1; print; next } on && /^(---|#{2,3} )/ { exit } on' docs/tasks/*.md)"
+  [ -n "$section" ] || { echo "verify-digest: no section headed '### $id ' in docs/tasks/" >&2; exit 1; }
+  printf '%s\n' "$section" | grep -v '^\*\*Verified:\*\*' | hash_cmd | cut -c1-12
+  exit 0
+fi
 case "${1:-}" in
   --staged) tree="$(git write-tree)" ;;
   --main)
@@ -30,8 +46,5 @@ case "${1:-}" in
     rm -f "$scratch"
     ;;
 esac
-if command -v shasum >/dev/null; then hash_cmd() { shasum -a 256; }
-elif command -v sha256sum >/dev/null; then hash_cmd() { sha256sum; }
-else echo 'verify-digest: needs shasum or sha256sum on PATH' >&2; exit 1; fi
 # A package's own tests/ folder is left out, never a folder named tests deeper in served code.
 git ls-tree -r "$tree" -- apps packages | awk -F'\t' '$2 !~ /\.md$/ && $2 !~ /^(apps|packages)\/[^\/]+\/tests\//' | hash_cmd | cut -c1-12

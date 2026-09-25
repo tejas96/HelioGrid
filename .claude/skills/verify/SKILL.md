@@ -1,30 +1,28 @@
 ---
 name: verify
-description: Run end-to-end QA after development — derive the blast radius, plan four quadrants, drive only the affected surfaces via subagents, check parity, triage and loop until clean, then stamp the ticket with the digest of the tree that was driven. Use before calling any work done; /ship refuses an unstamped runtime tree.
+description: Run end-to-end QA after development — the QA plan the ticket already carries, driven by one agent per surface the change reaches, checked for evidence, triaged and fixed in rounds, then the break tests recorded last and the ticket stamped with the digest of the tree that was driven. Use before calling any work done; /ship refuses an unstamped runtime tree.
 ---
 
-# `/verify` — plan here, execute in agents, loop until clean
+# `/verify` — run the ticket's QA plan, check the evidence, stamp
 
-Green gates prove the code compiles and the boundaries hold. They never prove a screen works.
+Green gates prove the code compiles and the boundaries hold. They never prove a screen works. The
+plan was written and reviewed at `/start`; this skill executes it and does not plan again.
 
-Everything this run produces lives in the task's proof record,
-`R="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>/qa"`, which survives a session
-ending and never enters the tree: the plan as `$R/plan.md`, `plan-reviewer`'s answer as
-`$R/plan-review.json`, each agent's `$R/verdicts-<surface>.jsonl`, parity as
-`$R/verdicts-parity.jsonl`, each recorded proof's line and log. A run starts by moving the verdict
-files and logs an earlier run left into `$R/earlier/<UTC time>/`, so the files hold this run alone
-and a count or an id never mixes two runs. Everything else a run makes — a curl jar, a screenshot, a
-tree dump — lives in the session scratchpad and goes when the run ends. The durable record for the
-owner is the `## Verification` section `/ship` puts in the PR.
+Everything a run produces lives in the task's proof record,
+`R="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>/qa"`, which survives the session and
+never enters the tree: the execution detail as `$R/run.md`, each agent's `$R/verdicts-<surface>.jsonl`,
+parity as `$R/verdicts-parity.jsonl`, each recorded proof's line and log. A run first moves an
+earlier run's verdict files and logs into `$R/earlier/<UTC time>/`. Anything else — a curl jar, a
+screenshot — lives in the session scratchpad. Long command output goes to a file there; read its
+verdict lines, never paste it whole.
 
-## 1. Blast radius
+## 1. The plan is the one that was reviewed
 
-`git diff --name-only` plus `--cached` (work here is often uncommitted). **First drop every
-path that cannot change runtime behaviour** — `*.md`, `.claude/**`, `docs/**`, `turbo.json`,
-lint/boundary configs. A `CLAUDE.md` inside `apps/web/` is not a web change; mapping by
-directory alone would boot a browser to verify a comment.
-
-Map what remains, paths → surfaces:
+`bash scripts/verify-digest.sh --ticket <T-id>` must equal `$R/../review.sha`. A difference means the
+Scope, the cases or the QA plan moved after the review: `case-reviewer` reads that change first
+(`/start` §5). Then confirm the surfaces: `git diff --name-only origin/main` plus untracked files,
+paths that cannot change runtime dropped (`*.md`, `.claude/**`, `docs/**`, lint and boundary configs),
+the rest mapped —
 
 | Changed path | Surfaces |
 |---|---|
@@ -32,76 +30,33 @@ Map what remains, paths → surfaces:
 | `apps/mobile/**` | ios, android |
 | `apps/api/**`, `packages/db/**` | api |
 | `apps/worker/**` | worker |
-| `packages/env/**` | web, ios, android, api, worker — the env schema gates every boot |
+| `packages/env/**` | every surface — the env schema gates every boot |
 | `packages/contracts/**` | api + every consuming surface |
-| `packages/data/**` | web, ios, android — it is the ONE data path |
-| `packages/ui/**`, `packages/theme/**` | web AND mobile — one package holds both platforms |
-| `packages/domain/**` | api, worker, web, ios, android — every app reaches it, directly or through `contracts` |
-| `packages/i18n/**`, `packages/forms/**` | web, ios, android |
+| `packages/data/**`, `packages/i18n/**`, `packages/forms/**` | web, ios, android |
+| `packages/ui/**`, `packages/theme/**` | web and mobile |
+| `packages/domain/**` | every surface that imports the changed symbol — grep the consumers |
 
-For a shared-code path, **grep the actual consumers** — the symbol may be imported somewhere
-the table does not predict.
+A surface the diff reaches that the QA plan has no step for is a scope change, not a step added here.
 
-**Only surfaces in the blast radius get an agent.** Backend-only → `qa-api` alone; web →
-`qa-web`; mobile → `qa-mobile`; both platforms → `qa-parity` too. Never a frontend agent for a
-change no frontend can see. A diff touching only docs, plans or governance ends here: report
-"no runnable surface", which is a complete result, not a skip.
+**Depth.** `none` — no runtime path changed: report "no runnable surface", a complete result. `smoke`
+— runtime code changed but no behaviour a person meets (a type, a module no screen reaches yet, a
+config): boot each surface once yourself, read the console, one `curl -i` or the worker log; no
+agents. `delta` — the task already carries a stamp and a fix changed part of its behaviour: the steps
+that behaviour touches plus each surface's `landing`. `full` — the whole QA plan. A refactor with
+gates green has no runtime depth. State the depth and why; a wrong `smoke` is a finding against this
+skill, never a reason to run `full` on everything.
 
-## 2. Depth — the run costs what the change can break
+## 2. Execution detail — `$R/run.md`, not reviewed again
 
-- **none** — no runtime path changed: report "no runnable surface" and stop.
-- **smoke** — runtime code changed but no user-visible behaviour did (a type, a shared module no
-  screen reaches yet, a script, a config): boot each surface in the radius once yourself, read the
-  console and the page tree, one `curl -i`, or the worker's log through its Temporal connection,
-  and record it as smoke. No agents, no quadrants.
-- **delta** — the task already carries a full-run stamp and this change alters part of its
-  behaviour: the agents run only the steps that behaviour touches plus ONE landing path per
-  surface. What the earlier run proved is not run again; its stamp is cited.
-- **full** — NEW behaviour with no earlier stamp: the four quadrants below, one agent per surface.
+For each step: the seed it needs, the sign-in it reuses, and the `wire` calls it may make (method,
+path, status, count, what the body carries). At most ten steps per agent dispatch, six on the phone;
+each surface signs in at most twice; a shared fact is asserted on ONE surface, the other asserting
+only its landing. **Mobile:** the first platform runs every mobile step; the second runs its `landing`
+plus the steps only that platform can fail (forced dark, keyboard, back button, permissions).
 
-A refactor — gates green, no behaviour changed, the diff says how — has no runtime depth: the
-gates are the proof and no agent runs. State the depth and why in the report. A wrong `smoke` is a finding against this skill, never a
-reason to run `full` on everything.
-
-## 3. Plan — four quadrants, no empty cells
-
-Walk `references/test-matrix.md` and author the step list in `$R/plan.md`. Every surface in
-the radius gets steps in all four quadrants (happy · edge · negative · adversarial). Count
-steps per (surface × quadrant) before dispatching; **a zero cell aborts the run naming the
-gap.** Small is fine; lopsided is not. The ticket's claims seed the edge and adversarial
-quadrants: a claim whose proof is a unit test or an invariant is cited by that test, never driven
-again; only a claim whose proof is a `qa-*` step, or a case a surface must show, gets a step.
-
-**Size the plan to the run.** At most ten steps per agent dispatch, six on the phone — a step
-costs two to four tool calls on the web and eight to twelve on a simulator, and an agent that
-hits its turn cap re-reads, re-signs-in and re-does. Each surface
-signs in at most twice in a run (once without a company, once as the owner); the steps are
-ordered so every session is reused, and a shared fact — the beat copy, a frame's words — is
-asserted on ONE surface, the other asserting only its landing.
-
-Each step: `{id, surface, quadrant, claims[], actions[], expected, observe, wire[],
-severity_if_failed}` — `observe` is the fact the agent reads to decide it, one of the kinds
-`references/test-matrix.md` lists for that agent, and `claims` the ids of the claims it proves. `wire` names
-every API call the step may make — method, path, status, count — and what the body carries where
-the step sends data; the executor records every call the step actually made, and a call the plan
-did not name, a call made twice, or a body carrying the wrong data is a finding, not a pass.
-`expected` must be a literal string comparison — if it cannot be written as one, it is not yet a step. It states
-what the task's rows or the brief state; where they are silent, the step RECORDS the observed value
-for a ruling and never fails on the planner's guess.
-
-**Severity is decided HERE, never by an executor.** Money, tenancy or provenance → `blocker`.
-
-Always-on core regardless of radius: a cross-tenant read returns 404 · money reconciles to
-the currency's minor unit · an unauthenticated request to a protected route is rejected. **Each
-is proven ON THE WIRE by the agent** — a second company's session driving the route — and a unit
-test at the repository does not satisfy it: the route, the guard and the filter are the surface
-a person meets, and the repository is not.
-
-**Seed the data the steps need — at test time only.** A step over an empty list, a zero count or
-two empty companies proves nothing: a filter, a bound or a tenant predicate that was never applied
-reads identically. Where no route writes the row yet, the plan carries a SEED: a one-off command,
-run from `apps/api` and gone when it exits, that calls the module's OWN writer — never SQL by hand,
-never a file added to the repo:
+**Seed at test time only.** A step over an empty list, a zero count or two empty companies proves
+nothing. Where no route writes the row yet, the seed is a one-off command run from `apps/api` that
+calls the module's OWN writer — never SQL by hand, never a file added to the repo:
 
 ```bash
 pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
@@ -113,147 +68,89 @@ pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e 
 })()"
 ```
 
-The seed writes into the run's OWN fresh company, found by the id the sign-in step returned, and
-the cross-tenant step seeds BOTH companies so isolation is read over real rows. Only where no
-writer exists at all is a step recorded `inconclusive: no writer`, named in the report as the gap
-it is, and never quietly replaced by the unit test's verdict.
+The seed writes into the run's own fresh company; the cross-tenant step seeds BOTH companies. Where no
+writer exists at all, the step is `inconclusive: no writer`, named in the report.
 
-**The plan is reviewed before it runs.** Dispatch `plan-reviewer` with the plan and the task's
-section, and save its answer as `$R/plan-review.json`. Every step it calls `vacuous` is rewritten
-until it can fail, every step it calls `unobservable` goes to an agent that can see its fact, and
-every claim with a `qa-*` proof it calls `missing` gets a step. The author wrote both the code and the plan; a step
-the author cannot imagine failing is exactly the one this catches.
+## 3. Execute
 
-## 4. Execute
+**The author does not drive the plan** — driving by hand is diagnosis, never proof (`M113`). Dispatch
+one agent per surface — `qa-web`, `qa-mobile`, `qa-api` (which also boots the worker and drives a
+workflow through its route) — in ONE message, each with its own steps from the ticket, `run.md` and
+`$R`. Each appends one verdict line per step to `$R/verdicts-<surface>.jsonl`; read those files, not
+only the final message — a capped agent still recorded what it ran. A surface that returns nothing or
+dies is `inconclusive`, never a pass.
 
-**The author does not drive the plan.** Driving a surface by hand is for diagnosing a failure,
-never for proving a step: a flow driven by the author and then by an agent is the same work
-twice, and only the agent's verdict counts (`M113`).
+**A proof no agent can drive** — a procedure that edits files, a gate broken on purpose — is a
+`recorded` claim: it runs through `scripts/record-proof.sh`, which writes its verdict line to
+`$R/verdicts-recorded.jsonl` from the command's own output (`M137`); the break is set up and restored
+outside the recorded command. A line the recorder did not write is `inconclusive`.
 
-Dispatch one agent per surface in the radius — `qa-web`, `qa-mobile`, `qa-api` — each with
-only its own steps. `qa-api` also takes the worker: it boots it through the preview tool, drives
-a workflow through the API route that starts it, and reads the worker log and the database for
-the outcome. Several surfaces → dispatch in ONE message so they run concurrently; they
-share no state. Order each surface's steps so state flows; relaunch only where a cold start
-IS the test.
+## 4. Check the reports before believing them
 
-Each agent is given `$R` and appends one verdict line per step to `$R/verdicts-<surface>.jsonl`. Read those files, not only the final message: an agent that hit
-its turn cap has still recorded every step it ran, and only the steps it never reached are open.
-
-A surface returning nothing, unparseable output, or dying is `inconclusive` — never a pass,
-and never the whole run.
-
-**A proof no agent can drive is recorded as it runs, never afterwards.** A done-when line proven by
-a procedure that edits files — a playbook run on a throwaway tree, a gate broken on purpose — is
-the one step the author drives, because a QA agent never edits source. Whatever the depth, a smoke
-run included, those steps are written into the plan and `plan-reviewer` reads them before
-they run. Each step runs through `scripts/record-proof.sh`, which runs the command and writes its
-verdict line to `$R/verdicts-recorded.jsonl` from the command's own output (`M137`); the break is set
-up and restored outside the recorded command. A line the recorder did not write — typed, or written
-after the fact — is `inconclusive`.
-
-## 5. Check the reports before believing them
-
-1. Every `pass` carries an `observed` value and evidence. **A pass without evidence becomes
-   `inconclusive`.**
+1. Every `pass` carries an `observed` value and evidence; without, it is `inconclusive`.
 2. Read every failure in full.
-3. **Read every PASS's evidence for a workaround.** A pass whose evidence describes something the
-   executor had to do to reach the expected result — a retry, a second sign-in, a step taken out
-   of plan order, a precondition it created for itself — is a FINDING, not a pass. The step was
-   blind to the very thing the workaround stepped over, and an executor that reached `expected`
-   will report `pass` and say what it did in one line. That line is the defect.
-4. Spot-check every `blocker` step plus two others against their evidence.
-5. **A spot-check that contradicts the report makes the whole run untrusted** — re-run it, do
-   not quietly correct one row.
-6. **A gate's silence is checked, not trusted** (Law 12). For every gate cited as green, say what
-   made it FIRE on this change. A check that scanned none of your files, whose scan crashed, or
-   which has no entry for the fact you added did not pass — it ABSTAINED, and the two read
-   identically. Every fact this change adds to a guarded kind is named here with the
-   `mechanisms.md` row it enrolled in and the injection that proved that row red.
+3. **Read every pass's evidence for a workaround** — a retry, a second sign-in, a step out of order, a
+   precondition the executor made for itself. That is a finding, not a pass.
+4. Spot-check every `blocker` step and two others against their evidence. A spot-check that
+   contradicts the report makes the whole run untrusted: re-run it, never correct one row quietly.
+5. **A gate's silence is checked** (Law 12): for every gate cited green, say what made it FIRE on this
+   change; one that scanned none of your files abstained. Every fact the change adds to a guarded kind
+   is named with its `mechanisms.md` row and the injection that proved it red.
 
-## 6. Parity — only when drift is possible
+## 5. Parity and screens
 
-Run `qa-parity` when the diff touches a shared package, both app trees, or a screen that has a
-twin on the other platform (`M115`, review-only) — a single-platform change to a twinned screen
-is where drift starts. A change to a screen with no twin skips it; say so in the report rather
-than running it for form.
+`qa-parity` runs when the diff touches a shared package, both app trees, or a screen with a twin
+(`M115`, review-only); otherwise say it was skipped and why. Give it both paths and every observed
+value the surface agents recorded for the same quantity, and write its answer to
+`$R/verdicts-parity.jsonl`. A value mismatch is a blocker (Law 11).
 
-Pass it the feature's web and mobile paths plus every observed value the surface agents
-recorded for the same quantity. It cannot write a file: write its answer into
-`$R/verdicts-parity.jsonl`, one line per comparison id, `pass` where it found no drift. A value mismatch is a **blocker** — a platform re-implemented
-something that was supposed to be imported (Law 11).
+A screen is measured against its `HelioGrid-UX/` frames at 375 and 1536 — computed styles in the
+browser, the simulator at 375 — never judged by eye; a difference the code must keep is ruled in the
+ticket. A screen also reports its prose split (`F7-46`, `M129` review-only): the facts kept on screen,
+the teaching behind the ask, the ask opened by tap and by keyboard, closed by Escape and an outside
+tap, focus returned. A state that appears only on hover is a blocker.
 
-**A screen is measured against its export, never judged by eye.** The built screen is compared with
-its `HelioGrid-UX/` frames at 375 and 1536 — computed styles in the browser pane, the simulator at
-375 — and pixel parity is never claimed without that comparison. Where the code must differ from
-the export, the difference is ruled in the ticket and named in the PR.
+## 6. Triage, fix, re-run
 
-**A screen also reports its prose split** (`F7-46`, `M129` review-only): the facts it kept on the
-screen, the teaching it put behind the ask, and the ask driven on BOTH platforms — opened by tap,
-opened by keyboard on the web, closed by Escape and by an outside tap, focus returned. A state that
-only appears on hover is a blocker on the mobile surface, where no hover exists.
+- **bug** — in scope, fix now; outside, `docs/tasks/deferred.md` (`CLAUDE.md` §8).
+- **product-question** — rule it into the row between readings the PRD supports; a new feature or
+  number is the owner's, asked with a pick.
+- **design flaw** — back to `/start` §5: the ticket changes, the change is reviewed.
+- **false-positive** — justified with evidence. **environment** — fix and re-run; not a round.
 
-## 7. Triage
+A failure takes the `severity` its step carries. Present findings with root causes before fixing. The QA agents never edit source. Each round re-runs
+the failed steps plus the `landing` of any surface the fix changed, by **continuing the same agent**
+(`SendMessage`) so it keeps its session and sign-in. A refactor fix needs no round. At most three
+rounds, then escalate. Never edit the plan to make a failure disappear. When the owner says testing is
+enough, stop and say what was and was not proven. A full re-run in fresh context is opt-in: offer it
+when the change touches money, tenancy or auth.
 
-- **bug** — inside the task's scope, fix it now; outside, `docs/tasks/deferred.md` and it is the
-  next task (`CLAUDE.md` §8).
-- **product-question** — a missing business rule or spec ambiguity. Between readings the PRD
-  supports, rule it into the row (`CLAUDE.md` §1); a new feature or number is the owner's — ask
-  with a pick. Does not block a clean run.
-- **false-positive** — justify with evidence. Not waved off.
-- **environment** — emulator down, server down. Fix and re-run; does not consume a round.
+## 7. Break tests — last, once
 
-Present findings with root causes before fixing anything. Fixes are yours, in the normal edit
-flow — the QA agents never edit source.
+The code has stopped changing, so every `unit` and `invariant` claim is proven red now, once, through
+`scripts/break-and-run.sh --task <T-id> --claims <ids> …` (`M140`, `.claude/rules/testing.md`); a type
+guard through `tsc` with `--pattern 'error TS<code>'`. `--stale <T-id>` lists every author proof
+CURRENT before the stamp. A proof built wrong is withdrawn with `--withdraw <id> --task <T-id>`, never
+edited by hand.
 
-## 8. Fix and re-run
+## 8. Clean up, report, stamp
 
-Each round re-runs the failed steps, plus the ONE landing path of any surface whose behaviour
-the fix changed. A fix that is a refactor — gates green, the same decisions in one place — needs
-no round: the gates are its proof. A clean round ends the loop.
+Stop every process this run started (`preview_stop`, Metro, an emulator you booted), close each tab
+when its server stops, and wait on a signal, never a timed loop. `git status --short` shows nothing
+from the run.
 
-The full re-run in fresh context — the certify pass — is **opt-in**: offer it, run it when the
-owner asks or the change touches money, tenancy or auth. It doubles the cost, and the previous
-system mandated it then skipped it under pressure, which is worse than never promising it.
+Emit the `## Verification` section for `/ship`: per-surface counts, every failure with its observed
+value, every parity comparison with both values, every `inconclusive` with its reason, the depth and
+why — specifics, not adjectives ("browser 375+1536 happy / wrong-code paths; curl 409 returns
+ALREADY_ONBOARDED", never "verified working"). A surface that could not run is stated plainly.
 
-**When the owner says testing is enough, stop** — and say plainly what was proven and what was not.
-
-**Hard stop after three fix rounds** — escalate rather than grinding. **Never edit the plan to
-make a failure disappear.**
-
-## 9. Clean up, then report
-
-The plan and the verdict files stay in `$R` until the task ships; nothing there is deleted by
-hand. Stop every process this run started — dev server
-(`preview_stop`), Metro, any emulator you booted; leave what was already running. Close each browser
-tab when its server stops: a reused tab's console still holds the errors it logged before, so a read
-there mixes old errors with new ones — read a fresh tab. Wait for a server or a bundle on its own signal — a log line, a status that changes — never
-on a timed loop. Confirm `git status --short` shows nothing from the run.
-
-Then emit the `## Verification` section for `/ship`: per-surface verdict counts, every
-failure with its observed value, every parity comparison with both values, and any surface
-recorded `inconclusive` with the reason. **Specifics, not adjectives** — "browser 375+1536
-happy / wrong-code paths; curl 409 returns ALREADY_ONBOARDED", never "verified working". A
-surface that could not run is stated plainly, never omitted so the silence implies a pass — and so
-is an always-on core step the wire could not prove, in its own line, with the reason.
-
-## 10. Stamp the ticket
-
-A clean run ends with the stamp, and only a run that happened writes one. `scripts/verify-digest.sh`
-prints the digest of the runtime tree this run drove (`apps/` and `packages/`, `.md` files and
-`tests/` folders aside: a test edited after the run leaves the stamp standing, and the commit check
-refuses it instead when its red proof is no longer current).
-Write one line into the task's section, above `**DONE WHEN:**`, replacing an earlier one:
+A clean run ends with the stamp. `scripts/verify-digest.sh` prints the digest of the runtime tree this
+run drove (`apps/` and `packages/`, `.md` files and `tests/` folders aside). One line above
+`**DONE WHEN:**`, replacing an earlier one:
 
 `**Verified:** digest <12 hex> · <date> · <surface: pass/fail/inconclusive> … · parity <verdict>`
 
-git's pre-commit reads it (`M113`): a commit whose runtime tree carries no stamp with its digest is
-refused, whoever commits and however, so a fix after the run re-runs the failed steps and re-stamps. Work with no
-rows and no runtime change — docs, ci, config, tests — has no stamp and needs none. Never write the line
-by hand, never for a `smoke` run that should have been `full`, and never in place of the agents:
-the author driving the surfaces is not verification.
-
-**The hook reads a line the author writes, so a second actor checks it.** Every count in the stamp
-is copied from the `verdicts-*.jsonl` files, never typed from memory, and those files stay in `$R`,
-where `break-it-reviewer` refuses at `/ship` a stamp whose counts, digest or passes do not match what
-the agents recorded.
+git's pre-commit refuses a runtime commit with no stamp for its digest (`M113`). Every count is copied
+from the verdict files, which stay in `$R`, where `break-it-reviewer` matches them at `/ship`. Never
+write the line for a run that did not happen, for a `smoke` that should have been `full`, or in place
+of the agents. Work with no runtime change needs no stamp.
