@@ -10,13 +10,13 @@
  *   dist/index.ts             package entry re-exporting the theme (compiled the same way)
  *   dist/tokens.json          flat --name → resolved value map of every custom property
  *   dist/contrast.pairs.json  computed WCAG ratios — build FAILS below floor
- *   dist/fonts/*              vendored woff2 (Geist, Geist Mono, Noto Sans Devanagari)
+ *   dist/fonts/*              the vendored woff2 every @font-face in fonts.css names
  *
  * NEVER hand-transcribe values. NEVER read manifest.json for values (the v1 manifest
  * snapshotted 1ms reduced-motion overrides as canonical — the drift this generator prevents).
  */
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { computePairs } from './src/contrast';
 import { buildThemeObject, renderThemeTs } from './src/emit-theme';
@@ -27,7 +27,6 @@ const pkgDir = dirname(fileURLToPath(import.meta.url));
 const genDir = join(pkgDir, 'src', '_generated');
 const tokensDir = join(genDir, 'tokens');
 const distDir = join(pkgDir, 'dist');
-const FONTS = ['Geist[wght].woff2', 'GeistMono[wght].woff2', 'NotoSansDevanagari[wght].woff2'];
 
 /** The 11 pulled files — refuse to emit if the pull is incomplete. */
 const ALL_FILES = [
@@ -74,10 +73,9 @@ function stackFamilies(stack: string): string[] {
   return [...stack.matchAll(/"([^"]+)"/g)].map((m) => m[1] as string);
 }
 
-/** family → its bundled file, read from the @font-face blocks so neither name is typed twice. */
-function bundledFileByFamily(fontFaces: string[]): Map<string, string> {
-  const byFamily = new Map<string, string>();
-  for (const face of fontFaces) {
+/** One [family, bundled file] per @font-face block, so neither name is typed twice. */
+function bundledFaceFiles(fontFaces: string[]): [string, string][] {
+  return fontFaces.map((face) => {
     const family = face.match(/font-family:\s*"([^"]+)"/)?.[1];
     const file = face.match(/url\("\.\.\/assets\/fonts\/([^"]+)"\)/)?.[1];
     if (family === undefined || file === undefined) {
@@ -85,9 +83,13 @@ function bundledFileByFamily(fontFaces: string[]): Map<string, string> {
         `an @font-face block names no family or no bundled url: ${face.slice(0, 80)}`,
       );
     }
-    byFamily.set(family, join(pkgDir, 'assets', 'fonts', file));
-  }
-  return byFamily;
+    return [family, join(pkgDir, 'assets', 'fonts', file)];
+  });
+}
+
+/** family → its bundled file, for the coverage the face's character map answers. */
+function bundledFileByFamily(fontFaces: string[]): Map<string, string> {
+  return new Map(bundledFaceFiles(fontFaces));
 }
 
 function loadGenerated() {
@@ -142,13 +144,13 @@ function assertContrastFloor(resolved: Map<string, string>) {
   return pairs;
 }
 
-function copyFonts() {
+/** Every file the @font-face blocks name — so a new face is a pull and a file, never a code edit. */
+function copyFonts(fontFaces: string[]) {
   mkdirSync(join(distDir, 'fonts'), { recursive: true });
-  for (const f of FONTS) {
-    const src = join(pkgDir, 'assets', 'fonts', f);
+  for (const [, src] of bundledFaceFiles(fontFaces)) {
     const magic = readFileSync(src).subarray(0, 4).toString('latin1');
-    if (magic !== 'wOF2') throw new Error(`${f} is not a woff2 file (magic: ${magic})`);
-    copyFileSync(src, join(distDir, 'fonts', f));
+    if (magic !== 'wOF2') throw new Error(`${basename(src)} is not a woff2 file (magic: ${magic})`);
+    copyFileSync(src, join(distDir, 'fonts', basename(src)));
   }
 }
 
@@ -170,7 +172,7 @@ function main() {
   for (const [name, value] of baseMap) resolved.set(name, resolveValue(value, baseMap));
 
   const pairs = assertContrastFloor(resolved);
-  copyFonts();
+  copyFonts(fontFaces);
 
   /* F3-13/F3-14/F3-17 — the faces answer for themselves: what each covers, the order the stack
      puts them in, the room its ink needs, and whether a sanctioned weight would be synthesized. */

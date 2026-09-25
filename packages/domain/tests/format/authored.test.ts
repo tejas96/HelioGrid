@@ -14,7 +14,7 @@ describe('authoredIn — the labelled fallback for a tenant’s own words (F3-10
       value: terms.hi,
       requested: 'hi',
       shownIn: 'hi',
-      missing: ['mr'],
+      missing: UI_LANGUAGES.filter((language) => language !== 'en' && language !== 'hi'),
     });
   });
 
@@ -35,16 +35,20 @@ describe('authoredIn — the labelled fallback for a tenant’s own words (F3-10
   });
 
   it('names every unwritten language for the author, in the set’s order, and none when all are written', () => {
-    expect(authoredIn({ en: 'x' }, 'en').missing).toEqual(['hi', 'mr']);
-    expect(authoredIn({ en: 'x', mr: 'य' }, 'en').missing).toEqual(['hi']);
-    expect(authoredIn({ en: 'x', hi: 'य', mr: 'य' }, 'en').missing).toEqual([]);
-    expect(UI_LANGUAGES.includes('en')).toBe(true);
+    const everyOther = UI_LANGUAGES.filter((language) => language !== 'en');
+    expect(authoredIn({ en: 'x' }, 'en').missing).toEqual(everyOther);
+    expect(authoredIn({ en: 'x', mr: 'य' }, 'en').missing).toEqual(
+      everyOther.filter((language) => language !== 'mr'),
+    );
+    const everyWritten = Object.fromEntries(UI_LANGUAGES.map((language) => [language, 'य']));
+    expect(authoredIn({ en: 'x', ...everyWritten }, 'en').missing).toEqual([]);
   });
 
   it('treats a stored null as unwritten, not as content', () => {
     const shown = authoredIn({ en: 'x', mr: null as unknown as string }, 'mr');
     expect(shown.shownIn).toBe('en');
-    expect(shown.missing).toEqual(['hi', 'mr']);
+    expect(shown.missing).toContain('mr');
+    expect(shown.missing).not.toContain('en');
   });
 
   it('carries any shape — a document body falls back exactly as a line does', () => {

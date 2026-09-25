@@ -6,7 +6,7 @@ import {
   PROPOSAL_SECTIONS,
   sectionsIncluded,
 } from '../../src/commerce/proposal-template-defaults';
-import { UI_LANGUAGES } from '../../src/format/languages';
+import { authoredIn, UI_LANGUAGES } from '../../src/format/languages';
 
 describe('sectionsIncluded — the tenant’s choice made whole (M01-51, SCR-M01-19)', () => {
   it('keeps the terms in when the tenant left them out: whether they print is not a setting', () => {
@@ -33,13 +33,16 @@ describe('sectionsIncluded — the tenant’s choice made whole (M01-51, SCR-M01
   });
 });
 
-describe('the platform terms (M01-28) — a body in every launch language, no number in it', () => {
-  it.each(UI_LANGUAGES.map((language) => [language]))('carries %s paragraphs', (language) => {
-    const body = DEFAULT_TERMS[language];
-    expect(body?.blocks.length).toBeGreaterThan(0);
-    for (const block of body?.blocks ?? []) {
-      expect(block.type).toBe('p');
-      expect(JSON.stringify(block)).not.toMatch(/\d/);
-    }
-  });
+describe('the platform terms (M01-28) — a body for every reader, no number in it', () => {
+  it.each(UI_LANGUAGES.map((language) => [language]))(
+    'gives a %s reader paragraphs',
+    (language) => {
+      const body = authoredIn(DEFAULT_TERMS, language).value;
+      expect(body.blocks.length).toBeGreaterThan(0);
+      for (const block of body.blocks) {
+        expect(block.type).toBe('p');
+        expect(JSON.stringify(block)).not.toMatch(/\d/);
+      }
+    },
+  );
 });

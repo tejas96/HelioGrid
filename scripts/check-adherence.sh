@@ -259,12 +259,11 @@ if [ -n "$copy" ]; then
   fail=1
 fi
 
-# ── 7. Every extracted message is actually TRANSLATED ───────────────────────
-# The CI i18n guard runs `lingui extract` + `git diff --exit-code`, which proves the catalogs
-# are FRESH. It says nothing about whether anyone translated them: commit a .po with empty
-# `msgstr ""` entries and extract is a no-op on the next run, the diff is clean, `lingui
-# compile` succeeds, and the Hindi/Marathi UI silently renders English. The product line is
-# EN/HI/MR in every document.
+# ── 7. Every translation gap is REPORTED, and never fails the run (M46) ──────
+# `lingui extract` proves the catalogs FRESH and says nothing about whether anyone translated
+# them: an empty `msgstr ""` compiles and renders English. That is legitimate — a missing
+# translation falls back to English string by string, and a partly translated language ships
+# (`F3-05`, `F3-27`) — so the gap is counted per language and printed, for a person to fill.
 #
 # The leading `msgid ""` / `msgstr ""` pair is the PO HEADER, not a message — skipped by
 # requiring a non-empty msgid on the preceding line.
@@ -276,11 +275,8 @@ for po in packages/i18n/src/locales/*/messages.po; do
   [ "$n" -gt 0 ] && untranslated="${untranslated}  ${po}: ${n} untranslated\n"
 done
 if [ -n "$untranslated" ]; then
-  printf 'UNTRANSLATED MESSAGES (docs/prd/foundations/F3-localization.md — EN/HI/MR):\n'
+  printf 'TRANSLATION GAPS — reported, not failing; each renders in English until filled (F3-05, F3-27):\n'
   printf "$untranslated"
-  echo '  `lingui extract` only proves catalogs are FRESH. An empty msgstr survives it, and'
-  echo '  compiles, and renders English to a Hindi or Marathi user.'
-  fail=1
 fi
 
 # ── 8. (retired) Screens compose from @heliogrid/ui ──────────────
@@ -569,5 +565,5 @@ if [ -n "$unprivileged_images" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped + translated, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant'
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant'
 exit $fail

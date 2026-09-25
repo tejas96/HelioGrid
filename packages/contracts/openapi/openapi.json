@@ -586,7 +586,7 @@
                         },
                         "interfaceLanguage": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "en",
                             "hi",
                             "mr"
@@ -1113,7 +1113,7 @@
                         },
                         "interfaceLanguage": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "en",
                             "hi",
                             "mr"
@@ -2602,7 +2602,7 @@
                         },
                         "interfaceLanguage": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "en",
                             "hi",
                             "mr"
@@ -3412,7 +3412,7 @@
                           },
                           "language": {
                             "type": "string",
-                            "enum": [
+                            "x-extensible-enum": [
                               "en",
                               "hi",
                               "mr"
@@ -4328,7 +4328,7 @@
                     },
                     "language": {
                       "type": "string",
-                      "enum": [
+                      "x-extensible-enum": [
                         "en",
                         "hi",
                         "mr"
@@ -5226,7 +5226,7 @@
                         },
                         "interfaceLanguage": {
                           "type": "string",
-                          "enum": [
+                          "x-extensible-enum": [
                             "en",
                             "hi",
                             "mr"
@@ -5407,7 +5407,7 @@
                     },
                     "defaultLanguage": {
                       "type": "string",
-                      "enum": [
+                      "x-extensible-enum": [
                         "en",
                         "hi",
                         "mr"
@@ -6778,7 +6778,7 @@
                             },
                             "defaultLanguage": {
                               "type": "string",
-                              "enum": [
+                              "x-extensible-enum": [
                                 "en",
                                 "hi",
                                 "mr"
@@ -7594,7 +7594,7 @@
                           "properties": {
                             "defaultLanguage": {
                               "type": "string",
-                              "enum": [
+                              "x-extensible-enum": [
                                 "en",
                                 "hi",
                                 "mr"
@@ -13678,7 +13678,7 @@
                     },
                     "interfaceLanguage": {
                       "type": "string",
-                      "enum": [
+                      "x-extensible-enum": [
                         "en",
                         "hi",
                         "mr"

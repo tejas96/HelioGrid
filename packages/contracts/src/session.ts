@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { roleSetSchema, uuidSchema } from './common';
-import { uiLanguageSchema } from './locale';
+import { uiLanguageResponseSchema } from './locale';
 
 /**
  * The HelioGrid session PROJECTION — the shape every guard, repository, screen and contract
@@ -34,7 +34,7 @@ export const actorSchema = z.object({
    * paint after sign-in, so the app never boots in a language the person did not choose. Per
    * USER, never per tenant; written by `PATCH /users/me`.
    */
-  interfaceLanguage: uiLanguageSchema,
+  interfaceLanguage: uiLanguageResponseSchema,
 });
 export type Actor = z.infer<typeof actorSchema>;
 

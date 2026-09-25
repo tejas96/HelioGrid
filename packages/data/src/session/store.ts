@@ -7,6 +7,7 @@ import {
   type SessionSnapshot,
   type SessionUser,
   type SignInDoor,
+  uiLanguageOrSource,
 } from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
 import { ApiError } from '../errors/errors';
@@ -41,7 +42,7 @@ function userOf(projection: SessionProjection): SessionUser {
     id: projection.actor.userId,
     name: projection.actor.displayName,
     phoneE164: projection.actor.phoneE164,
-    interfaceLanguage: projection.actor.interfaceLanguage,
+    interfaceLanguage: uiLanguageOrSource(projection.actor.interfaceLanguage),
     tenant:
       projection.membership === null
         ? null
