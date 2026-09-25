@@ -15,9 +15,10 @@ never with a sentence.**
 | Fact | Kind | Its form here |
 |---|---|---|
 | How many rows are verified | data | the screen's ONE headline figure — verified of the row set — with its provenance label |
-| Each row — its pack name, its state, its files (`M08-30`, `M08-31`) | data · status | one list row: the pack's own label; the state as its ONE chip — pending, uploaded, verified; the file count as a mark. A verified row's second line is who verified it and when — a recorded fact, so it carries no tier |
-| What can be done to a row (`M08-31`) | action | ONE primary act per row, by state: upload when pending, mark verified when uploaded, view when verified. Replace and view sit in the row's menu |
-| A row holding more than one file | more detail | the row opens to its files — name, uploaded when, by whom |
+| Each row — its pack name, its state, its files (`M08-30`, `M08-31`) | data · status | one list row: the pack's own label; the state as its ONE chip — pending, uploaded, verified; the file count as a mark. A filed row's second line is its last act, who and when — verified by, or uploaded by — a recorded fact, so it carries no tier. The row names are the pack's (IN: `F1-52`) |
+| What can be done to a row (`M08-31`) | action | ONE primary act per row, by state: upload when pending, mark verified when uploaded, view when verified. View, add file and replace sit in the row's menu |
+| A row holding more than one file | more detail | the row opens to its files — name, uploaded when, by whom. Upload takes several files at once; add file adds one later, and on a verified row it returns the row to uploaded (`M08-31`) |
+| Who may verify | — | behaviour, no words: the person who uploaded a file may verify it. M08's permissions: "Upload and verify are the same grant by source" |
 | A row the segment omits (`M08-30`) | — | it is absent, not greyed, and the count follows the real row set. No sentence explains it |
 | Completed rows stay | — | arrangement, no words |
 | Replacing a verified file | action | the replace confirm's ONE line says the row will need verifying again. Both acts then stand on the timeline |
@@ -31,9 +32,9 @@ never with a sentence.**
 ## Arrangement
 
 - **375.** The count, then the rows in pack order. The row's act opens the camera or the file picker
-  directly. A file opens in a sheet.
+  directly. A file opens in a sheet: its preview, the row's files, their history, and the row's act at the foot.
 - **1536.** A captioned table (`F7-27`) — document, state, files, verified by, when, act — with the
-  opened file in a side panel (`F7-21`).
+  opened file, its history and the row's act in a side panel (`F7-21`).
 
 ## Entry & exit
 
@@ -44,10 +45,14 @@ Reached from: the project card on the Project Board (SCR-M08-01) as well as the 
 ### From docs/prd/modules/M08-projects.md
 
 - **M08-30** (P0) — **The document checklist is seeded at project creation from the tenant's market pack, and this module defines no row name.** The row set, and which rows a segment omits, are pack data — a commercial project omits the incentive row in the India pack, and a market with no incentive model has no such row at all (`F1-52`, `F1-14`). This module owns seeding, the statuses, the handover rule that reads them, and nothing about what the rows are called. _(non-UI half, build-side: row set seeded once from market pack per segment at creation; module defines no row name — for awareness, not for drawing)_
-- **M08-31** (P0) — **Each row has exactly three states — pending · uploaded · verified — and verification is a separate act from upload, recorded with who verified and when.** Uploading is not approving: the person who attaches the file and the person who confirms it is the right file may differ, and the checklist is only a defence if that distinction is real. _(non-UI half, build-side: verification is a separate audited act recording who and when; upload never sets verified — for awareness, not for drawing)_
+- **M08-31** (P0) — **Each row has exactly three states — pending · uploaded · verified — and verification is a separate act from upload, recorded with who verified and when.** Uploading is not approving: the person who attaches the file and the person who confirms it is the right file may differ, and the checklist is only a defence if that distinction is real. A file added to a verified row returns it to uploaded, as a replacement does (owner ruling 2026-09-25). _(non-UI half, build-side: verification is a separate audited act recording who and when; upload never sets verified — for awareness, not for drawing)_
 - **M08-18** (P0) — **The Sales Executive reads their own won deals and cannot change them** — *"so they can answer a customer without asking ops."* Read-only means the whole project: stages, blockers, documents and the money summary are visible and none of them is editable by that preset.
 - **M08-32** (P0) — **Handover is defined by the checklist: every row past pending, and the pack shared on the customer's link.** That is the definition, and no other surface may redefine it. A project cannot reach `HANDED_OVER` with a pending row.
 - **M08-34** (P0) — **The checklist is a completeness surface, not a stage gate.** No stage move in the chain is blocked by a pending document; only handover reads the checklist as a condition (`M08-32`). Real projects collect paperwork out of order, and a checklist that blocks the board is a checklist people work around.
+
+### From docs/prd/foundations/F1-global-market-framework.md
+
+- **F1-52** (P0) — **IN project document checklist (8 rows):** signed proposal · advance receipt · net-metering application · DISCOM approval · subsidy application & sanction · commissioning certificate · warranty documents · handover pack — **the subsidy row omitted for commercial projects**. Seeding and statuses are M08's mechanics; the row set is this pack's.
 
 ## States
 
