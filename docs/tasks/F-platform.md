@@ -1065,6 +1065,26 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 - Given the mirror as pulled, when the contract gate runs, then it is green — and with either held-back file pulled it fails on `Banner.actionBelow` and `Banner.onFormChange`. → proof: gate `ds:contract` seen green, and seen RED both ways with a held-back file in place
 
 ---
+### T-FPLAT-069 · A package's build and typecheck see the packages it imports
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#155)
+**Why:** Seven packages compiled with `tsc -b`, which judges a project up to date from its own files alone, and the workspace keeps no project references (ADR-0001). So a type change in an imported package was invisible to them: `pnpm turbo typecheck` reported every task green over a real error in `packages/data`, and `contracts`' `dist/` kept the old types after `domain` changed — a local false green, met at `T-FPLAT-009`. CI builds a fresh clone and was not affected.
+**PRD rows:** none of its own — it keeps every task's local typecheck and build honest.
+**Design:** none — build scripts and their guard; no runtime path.
+**Data model:** none.
+**Contract:** none. `build` and `typecheck` in `packages/{db,data,domain,contracts,forms,i18n,env}/package.json` use `tsc -p tsconfig.json` (`--noEmit` for a typecheck), never `tsc -b`; `scripts/check-adherence.sh` check 15 refuses `tsc -b` or `tsc --build` in any package script (`M136`). ADR-0001, `03-tech-stack.md` and the README template say `tsc -p`.
+**Depends on:** nothing.
+**Out of scope:** project references — ADR-0001 removed them because they drift from each package's dependencies; `tsc -p`'s own incremental reuse, which is TypeScript's to get right.
+**Found by:** `T-FPLAT-009`'s gates, recorded in `deferred.md` and `.claude/landmines.md`; both rows go with this task.
+
+**Verified:** digest 89faddbec48c · 2026-09-25 · depth NONE — no runtime path: build scripts, their guard and docs; no surface boots · proof 10/0/0 through `scripts/record-proof.sh`, plan reviewed first by `break-it-reviewer` — P1 a clean `tsc -b` build of `origin/main` and a clean `tsc -p` build of this branch emit the same 1,004 files byte for byte across the seven packages · P2 `data`'s typecheck red at `store.ts(45,5)` on a `domain` retype, no cache cleared · P3a–c `contracts`' `dist/auth.d.ts` counts `"xx"` 0 → 6 → 0 across break and restore, each a forced build · P4a–e check 15 red on `tsc -b`, `tsc --build`, `tsc  -b` and `"typecheck":"tsc -b"`, `adherence OK` clean · P5 `pnpm verify:clean` NOT RUN — stopped by the owner; the PR's CI run is that line's proof · the `tsc -b` control was observed at `/start` and by `break-it-reviewer`, not recorded · parity n/a
+**DONE WHEN:**
+- Given a type change in `domain` that breaks `data`, when `pnpm turbo typecheck` runs with no cache cleared, then `data`'s typecheck fails naming the error. → proof: gate `uiLanguageOrSource` retyped to `string`: `data`'s typecheck red at `store.ts(45,5): error TS2322` under `tsc -p` (recorded P2); the same break read green under `tsc -b` at `/start`; restored.
+- Given a change in `domain` that `contracts` writes into its declarations, when `pnpm turbo build` runs, then `contracts`' `dist/` carries it. → proof: gate `OTP_CHANNELS` grown by `'xx'`: `dist/auth.d.ts` counts 0 → 6 → 0 across break and restore under `tsc -p` (recorded P3); `tsc -b` left it at 0 at `/start`.
+- Given a package script that compiles with `tsc -b` or `tsc --build`, when `check:adherence` runs, then it fails naming the file. → proof: gate `M136`, red on `tsc -b`, `tsc --build`, `tsc  -b` and `"typecheck":"tsc -b"` in `packages/forms/package.json` (recorded P4a–d), `adherence OK` clean (P4e); restored.
+- Given the whole tree, when CI's quality run checks it, then every stage is green. → proof: gate the PR's own CI run (`pnpm verify:ci`); `pnpm verify:clean` was stopped by the owner.
+
+---
 ### T-FPLAT-065 · A proof's precondition has one shape, and the harness fails closed under CI
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#103)

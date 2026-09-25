@@ -14,7 +14,7 @@ Traps: `.claude/landmines.md` · deps: `architecture.md` §2 forms.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/forms build | typecheck    # tsc -b
+pnpm --filter @heliogrid/forms build | typecheck    # tsc -p
 ```
 
 ## Local conventions

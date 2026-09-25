@@ -54,7 +54,7 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
 #   * name  — `*.test.ts`. `*.spec.*` and `__tests__/` are the competing conventions; allowing
 #             any of them means every glob in this repo has to match three shapes and one day
 #             misses half the suite.
-#   * place — `<package>/tests/**`, never inside `src/`. Inside src the package's own `tsc -b`
+#   * place — `<package>/tests/**`, never inside `src/`. Inside src the package's own build
 #             compiles tests into `dist/`, which then ships.
 #   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
 #             driving the real client, `packages/db` by migrations plus tests/invariants/.
@@ -565,5 +565,18 @@ if [ -n "$unprivileged_images" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant'
+# ── 15. A package compiles with `tsc -p`, never `tsc -b` ──────────────────────
+# `tsc -b` decides a project is up to date from its OWN files alone. The workspace keeps no project
+# references (ADR-0001), so a type change in a package it imports leaves it skipping: its typecheck
+# passes over a real error and its `dist/` keeps the old types. `tsc -p` reuses its last run too, but
+# compares every file it reads, another package's `dist/` included (M136).
+build_mode=$(find apps packages tests -name package.json -not -path '*/node_modules/*' -print0 \
+  | xargs -0 grep -nE '"[^"]+"[[:space:]]*:[[:space:]]*"([^"]*[^[:alnum:]_-])?tsc[[:space:]]+(-b|--build)([^[:alnum:]-]|$)' 2>/dev/null)
+if [ -n "$build_mode" ]; then
+  printf 'TSC BUILD MODE — a package script compiles with `tsc -b` (M136):\n%s\n' "$build_mode"
+  echo '  Use `tsc -p tsconfig.json` (with `--noEmit` for a typecheck).'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant, no `tsc -b`'
 exit $fail

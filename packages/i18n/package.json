@@ -22,8 +22,8 @@
   "scripts": {
     "extract": "lingui extract --clean",
     "compile": "lingui compile --typescript",
-    "build": "lingui compile --typescript && tsc -b",
-    "typecheck": "tsc -b && tsc -p tests/tsconfig.json"
+    "build": "lingui compile --typescript && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tests/tsconfig.json"
   },
   "dependencies": {
     "@formatjs/intl-locale": "5.3.10",

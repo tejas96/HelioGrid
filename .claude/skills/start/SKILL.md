@@ -43,9 +43,11 @@ say how OLD code reads NEW data and NEW code reads OLD data.** A release rolls m
 (`docs/engineering/09-observability-and-ops.md`), so both happen: settle it at `/start`, never at `/ship`.
 
 **Find every conflict before the go, not during the build.** Two searches, each named with what it
-found. (1) Every gate and test stricter than the task's rows: grep `.claude/mechanisms.md`,
-`scripts/` and the tests for the facts the rows govern — a check that refuses what a row allows is
-a conflict brought to the owner NOW. (2) Every use of a type, set or shape the task changes, not only
+found. (1) Every gate and test stricter than the task's rows, and every gate the change itself
+will meet: grep `.claude/mechanisms.md`, `.claude/hooks/`, `scripts/` and the tests for the facts
+the rows govern AND for the paths the reach touches — a check that refuses what a row allows is a
+conflict brought to the owner NOW, and one the reach will meet (a `packages/` edit needs a ticket
+to carry `/verify`'s stamp, `M113`) is planned for now. (2) Every use of a type, set or shape the task changes, not only
 the fields named in the ticket: its schema, every record or map keyed by it, every test that writes
 its members out. A conflict either search would have found, first met mid-build, is a `/start` miss.
 Then read the misses table in `.claude/landmines.md`: every row is a mistake already made once,

@@ -16,7 +16,7 @@ derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a pac
   or any app import. No side effects, no I/O, no clock read at module scope.
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global is the
   specific anti-pattern this package exists to prevent.
-- Unit tests live in `tests/`, never in `src/` — `tsc -b` compiles everything under `src/` into
+- Unit tests live in `tests/`, never in `src/` — the build compiles everything under `src/` into
   `dist/`, so a colocated test ships.
 
 ## Commands

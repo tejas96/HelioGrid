@@ -137,9 +137,10 @@ and never the whole run.
 a procedure that edits files — a playbook run on a throwaway tree, a gate broken on purpose — is
 the one step the author drives, because a QA agent never edits source. Whatever the depth, a smoke
 run included, those steps are written into a plan and `break-it-reviewer` reads it in plan mode
-before they run. The author appends each verdict line, `"driver": "author"`, with the observed
-output, the moment the step ends, to `verdicts-<proof>.jsonl`. A line written after the fact, from
-memory, is `inconclusive`.
+before they run. Each step runs through `scripts/record-proof.sh`, which runs the command and writes
+its verdict line to `verdicts-<proof>.jsonl` from the command's own output (`M137`); the break is set
+up and restored outside the recorded command. A line the recorder did not write — typed, or written
+after the fact — is `inconclusive`.
 
 ## 5. Check the reports before believing them
 

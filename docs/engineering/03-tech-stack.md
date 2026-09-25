@@ -36,7 +36,7 @@ flags; the 3D studio is the flagship and is never compromised.
 |---|---|---|---|
 | Package manager | **pnpm** 10.x workspaces | Strict node_modules, fast, standard | npm/yarn (weaker workspace hygiene) |
 | Task runner | **Turborepo** 2.x (≥2.4 for Boundaries) | Truth lives in plain `package.json` + `turbo.json` — deterministic and legible for AI agents; free/self-hostable remote cache | Nx (project.json/executors/inferred graph = magic agents must reverse-engineer; Nx Cloud is credit-metered) · moon (~50k weekly downloads — too thin an ecosystem/training corpus) |
-| Type graph | **TypeScript** 5.8.x, `tsc -b` per package; consumers resolve a workspace package through its built `dist/` (cross-package project references were removed — ADR-0001) | Hard type boundaries between `domain`/`contracts`/`db`/`ui`, held by the build graph rather than by references; `packages/ui` alone ships source and is transpiled by Next and Metro | Single bundler-mode graph (no enforced boundaries) · project references (ordering that Turbo already owns) |
+| Type graph | **TypeScript** 5.8.x, `tsc -p` per package — never `tsc -b`, which skips a package whose imports changed (ADR-0001); consumers resolve a workspace package through its built `dist/` (cross-package project references were removed — ADR-0001) | Hard type boundaries between `domain`/`contracts`/`db`/`ui`, held by the build graph rather than by references; `packages/ui` alone ships source and is transpiled by Next and Metro | Single bundler-mode graph (no enforced boundaries) · project references (ordering that Turbo already owns) |
 
 Sources: [Turborepo Boundaries](https://turborepo.com/docs/reference/boundaries) · [TS monorepo 2026](https://hsb.horse/en/blog/typescript-monorepo-best-practice-2026/).
 

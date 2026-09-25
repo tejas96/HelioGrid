@@ -262,7 +262,7 @@ change showing up" confusion. Read it once.
      "name": "@heliogrid/<name>",
      "version": "0.0.1",
      "private": true,
-     "scripts": { "build": "tsc -b", "typecheck": "tsc -p tsconfig.json --noEmit" },
+     "scripts": { "build": "tsc -p tsconfig.json", "typecheck": "tsc -p tsconfig.json --noEmit" },
      "devDependencies": { "@heliogrid/config": "workspace:*", "typescript": "5.8.3" }
    }
    ```
