@@ -331,7 +331,7 @@ a design must never render an internal id as the step indicator.
 | SCR-M08-03 | **Document Checklist** | P0 | 2 | `docs/ux/briefs/SCR-M08-03-document-checklist.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-03+Document+Checklist+-+Mobile.dc.html | — | dd1d198ad897 |
 | SCR-M08-04 | **Installation Checklist** | P0 | 3 | `docs/ux/briefs/SCR-M08-04-installation-checklist.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-04+Installation+Checklist+-+Mobile.dc.html | `F2-roles-and-permissions:installation-checklist` | 6aee86985cad |
 | SCR-M08-05 | **Installer Job Home** | P0 | 3 | `docs/ux/briefs/SCR-M08-05-installer-job-home.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-05+Installer+Job+Home+-+Mobile.dc.html | `02-personas:shell-todays-installation`; `M13-dashboards-and-reporting:todays-installation` | 4098e3be70bf |
-| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | planned | — | — | — |
+| SCR-M08-06 | **Handover Flow** | P0 | 2 | `docs/ux/briefs/SCR-M08-06-handover-flow.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-06+Handover+Flow+-+Mobile.dc.html | — | e20fcecc6f79 |
 
 ### M09 · Field workforce
 
