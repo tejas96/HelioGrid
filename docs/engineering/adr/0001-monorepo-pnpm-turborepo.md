@@ -24,7 +24,7 @@ HelioGrid is ~4 apps (web, api, worker, mobile) + packages (domain, contracts, d
 - Biome lacks an Nx-style tag-based module-boundary rule — dependency-cruiser is not optional.
 - We forgo Nx's generators and its ~7x speed edge on 50+ package repos; at ~12 packages this is immaterial.
 - Naming trap recorded: **sherif** (QuiiBz, version linter) is what we use — not **Sheriff** (@softarc, ESLint boundary tool).
-- TS project references (cross-package `references` arrays) were removed 2026-08-25: they added no value over Turbo's `^build` ordering, and maintaining them in every tsconfig that added a workspace dependency created constant drift. Composite packages build and typecheck with `tsc -p`, never `tsc -b`: with no references, `tsc -b` judges a package up to date from its own files alone, so a change in a package it imports left its typecheck green over a real error and its `dist/` stale. `tsc -p` still reuses its last run and compares every file it reads (`M136`). Apps typecheck in isolation.
+- TS project references (cross-package `references` arrays) were removed 2026-08-25: they added no value over Turbo's `^build` ordering, and maintaining them in every tsconfig that added a workspace dependency created constant drift. Composite packages build and typecheck with `tsc -p`, never `tsc -b`: with no references, `tsc -b` judges a package up to date from its own files alone, so a change in a package it imports left its typecheck green over a real error and its `dist/` stale. `tsc -p` still reuses its last run and compares every file it reads. Apps typecheck in isolation.
 
 ## Alternatives rejected
 

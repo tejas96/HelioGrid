@@ -1,6 +1,6 @@
 # Tasks — SHELL (app shell & platform surfaces)
 
-Task-id prefix: `T-SHELL-`. One screen task per shell screen — a screen whose reach exceeds the ceiling (`M111`) is split by platform, the DESIGN line staying with the first slice. Rules per `docs/tasks/README.md`:
+Task-id prefix: `T-SHELL-`. One screen task per shell screen — a screen whose reach exceeds the size signal (`/start` §2) is split by platform, the DESIGN line staying with the first slice. Rules per `docs/tasks/README.md`:
 acceptance criteria are copied verbatim from the PRD, never rewritten; `DESIGN: PENDING`
 blocks build, not start. Briefs live in `docs/ux/briefs/`.
 
@@ -9,7 +9,7 @@ blocks build, not start. Briefs live in `docs/ux/briefs/`.
 ### T-SHELL-007 · The shell's data flow — my membership, the coach-mark dismissal, the home choice and why a session ended
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**Why:** Both shells read the same facts — who I am, which company, which home is in force and which presets are composed into it, how many coach marks I have dismissed, the market's grievance contact — and write two of them; without one flow in `packages/data` each platform would fetch and hold them its own way, a dismissal would live in a browser's storage instead of on the membership (`F4-36`), and neither shell screen could be built under the PR ceiling (`M111`).
+**Why:** Both shells read the same facts — who I am, which company, which home is in force and which presets are composed into it, how many coach marks I have dismissed, the market's grievance contact — and write two of them; without one flow in `packages/data` each platform would fetch and hold them its own way, a dismissal would live in a browser's storage instead of on the membership (`F4-36`), and neither shell screen could be built under the size signal (`/start` §2).
 **PRD rows:** M01-16, MS12-19
 **Design:** none — an engine task; the surfaces are `T-SHELL-001` (375) and `T-SHELL-008` (1536).
 **Data model:** none new — reads and writes `tenant_membership.coach_marks_dismissed` (`T-M01-025`, migration 0002; 0–3 by its check constraint), reads `tenant` (`companyName`, `marketCode`) and the current `market_pack_version` (`T-FCORE-016`). No table, no column.
@@ -76,7 +76,7 @@ blocks build, not start. Briefs live in `docs/ux/briefs/`.
 **Why:** The owner, the managers and the studio work the desktop shell at a desk: the same person, company, home, switcher and menu as the phone, in a sidebar-and-header frame; without it every desktop screen would draw its own rail, and the phone and the desktop would drift apart on the one frame both share.
 **PRD rows:** F1-59, F7-22, M01-16, M01-17, M13-10, MS12-19
 **BRIEF:** docs/ux/briefs/SCR-SHELL-01-app-shell.md
-**Design:** the same canvas as `T-SHELL-001`'s DESIGN line, its 1536 artboards — one screen, one register row (`SCR-SHELL-01`), one DESIGN line, kept on the first slice so the ledger stays whole (`M111` split by platform).
+**Design:** the same canvas as `T-SHELL-001`'s DESIGN line, its 1536 artboards — one screen, one register row (`SCR-SHELL-01`), one DESIGN line, kept on the first slice so the ledger stays whole (split by platform at the size signal).
 
 **PRD rows (verbatim):**
 

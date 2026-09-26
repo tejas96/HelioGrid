@@ -178,14 +178,15 @@ Every line, every app, every package. No exceptions for "just this once".
   shape is a defect even when both copies are correct — they will diverge.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this
   codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
-  means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this. When
-  and why we changed it goes in the commit, undated and un-rotting.
+  means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
+  never a date. When and why we changed it goes in the commit, undated and un-rotting.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified.
 - **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
   `*2`/`*-extra`, never for a layer or a document id (`survey.ts`, not `m04.ts`) · no `any`, `!`,
   `==`, or `console.log` in anything SERVED · style outside the component file · no app-declared
-  enum, union, lookup or policy number · `process.env` read only in `packages/env`.
+  enum, union, lookup or policy number · `process.env` read only in `packages/env` · a package
+  compiles and typechecks with `tsc -p`, never `tsc -b`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
   every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or

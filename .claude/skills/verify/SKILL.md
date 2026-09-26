@@ -101,13 +101,13 @@ outside the recorded command. A line the recorder did not write is `inconclusive
 ## 5. Parity and screens
 
 `qa-parity` runs when the diff touches a shared package, both app trees, or a screen with a twin
-(`M115`, review-only); otherwise say it was skipped and why. Give it both paths and every observed
+(review-only); otherwise say it was skipped and why. Give it both paths and every observed
 value the surface agents recorded for the same quantity, and write its answer to
 `$R/verdicts-parity.jsonl`. A value mismatch is a blocker (Law 11).
 
 A screen is measured against its `HelioGrid-UX/` frames at 375 and 1536 — computed styles in the
 browser, the simulator at 375 — never judged by eye; a difference the code must keep is ruled in the
-ticket. A screen also reports its prose split (`F7-46`, `M129` review-only): the facts kept on screen,
+ticket. A screen also reports its prose split (`F7-46`, review-only): the facts kept on screen,
 the teaching behind the ask, the ask opened by tap and by keyboard, closed by Escape and an outside
 tap, focus returned. A state that appears only on hover is a blocker.
 

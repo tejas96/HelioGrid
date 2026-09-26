@@ -14,12 +14,11 @@ holds each line and how much of it.
 - **Unit tests cover the LOGIC layers** — `domain` · `contracts` · `forms` · `api` · `worker` ·
   `i18n`'s `runtime.ts` and its `copy/` functions (the fallback, the per-reader translator and a
   function that chooses words from facts all have edges running cannot see; its provider, loaders
-  and polyfills are proven by running, and the coverage bar stays on `runtime.ts` alone). Not
-  the frontend: `ui`, `web` and `mobile` are proven by running them, `data` by driving the real
-  client, `db` by migrations and `tests/invariants/`. That set is machine-readable in
-  `packages/config/unit-test-packages.json`, which the runner, the write guard, the adherence
-  check and the boundary rule all read; changing the set means changing this line AND that file,
-  and nothing else restates it.
+  and polyfills are proven by running). Not the frontend: `ui`, `web` and `mobile` are proven by
+  running them, `data` by driving the real client, `db` by migrations and `tests/invariants/`. That
+  set is machine-readable in `packages/config/unit-test-packages.json`, which the runner, the
+  adherence check and the boundary rule all read; changing the set means changing this line AND
+  that file, and nothing else restates it.
 - **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
   never inside `src/`, where the package's own build compiles the test into `dist/` and ships
   it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
@@ -52,7 +51,10 @@ holds each line and how much of it.
   (`apps/api/tests/support/held-lock.ts`) — because two requests merely fired together mostly run
   one after the other, and a test that hopes they overlap stays green with its lock removed. A
   break a reviewer names that the author did not is run the same way and written into the ticket.
-- **Coverage lands WITH the slice** (Law 9), per glob, at 100% (`M71`).
+- **Coverage is 100% where a wrong number costs money or leaks data** — under `packages/domain/src/`,
+  `money/**`, `tax/**`, `subsidy/**`, `pricing/**`, `authz/**` and `commerce/tranche-allocation.ts`
+  (`M71`). Everywhere else it is reported, never failing: read `pnpm test:coverage` for the edge you
+  missed.
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
   against real state; a unit test proves one decision at its edges. Neither substitutes for the
   other.

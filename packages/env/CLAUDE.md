@@ -41,8 +41,10 @@ documents them; neither ever holds a real secret.
   has no side effect: a consumer that never calls a loader never reads the environment.
 - One definition per type: `ApiEnv` comes from the schema and is re-exported, never re-declared,
   or the same name would mean two things depending on the import path.
-- Audited exceptions to the repo-wide read ban live in `scripts/check-env-access.mjs`'s `ALLOWED`
-  array, each with its reason. That array is the authority — do not "fix" an entry you find there.
+- Audited exceptions to the repo-wide read ban are the `noProcessEnv` override in `biome.json`,
+  each path named there. That override is the authority — do not "fix" an entry you find there.
+- A dedicated port is written ONCE: `API_PORT_DEFAULT` here is what the api's default, the web's
+  dev origin and the phone's fallbacks read (`CLAUDE.md` §5) — review-only.
 - **This package was NOT merged into `packages/config`** (owner question). Every tag's allowlist
   includes `config` because every package needs the presets, `domain` included — env living there
   would let a pure package read the environment with no gate objecting.

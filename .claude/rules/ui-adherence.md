@@ -55,9 +55,9 @@ how untranslated copy ships.
 
 ## What no static gate can see — each shipped as a real defect past every gate
 
-- **A control never renders smaller than it was designed.** A `width` with a smaller `min-width` in
-  a flex row shrinks silently, and the touch check then measures the floor and passes. Wrap, or set
-  `flex-shrink: 0`.
+- **A control never renders smaller than it was designed.** A `width` or `height` with a smaller
+  `min-width` or `min-height` in a flex row shrinks silently, and the touch check then measures the
+  floor and passes. Wrap, or set `flex-shrink: 0`.
 - **No container is drawn around content that is absent.** An optional icon, badge or slot renders
   its box only when it has something in it.
 - **`white-space: nowrap` and `numberOfLines` belong on NUMBERS, never on caller text.** A number is
@@ -71,7 +71,9 @@ how untranslated copy ships.
 ## Screens are the unguarded surface
 
 Gates check packages; almost nothing checks what a screen writes inline. Assume nothing is
-watching: no inline policy, money maths, enum, copy or colour. A screen renders (Law 11).
+watching: no inline policy, money maths, enum, copy or colour. A screen renders (Law 11), and every
+word it shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `i18n._()` for a string; a
+bare English literal in JSX is a defect no gate sees.
 
 ## Presentation and logic live in different files
 

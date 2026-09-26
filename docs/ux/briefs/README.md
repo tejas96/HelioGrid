@@ -57,9 +57,9 @@ design until it is reviewed again, which buys nothing for a screen already drawn
 
 ## The one thing no gate checks: the States list
 
-Gate 4 holds every verbatim requirement quote in this folder against its PRD cell, and gate 21
-holds every task's acceptance criteria — but **nothing checks that a brief's States list is
-complete**. It cannot be checked: states are a design decomposition, not a projection of the
+Gate 4 holds every verbatim requirement quote in this folder against its PRD cell — but
+**nothing checks that a brief's States list is complete**. It cannot be checked: states are a
+design decomposition, not a projection of the
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
 2026-08-26 and all three fired on 17–43% of correct briefs).
 

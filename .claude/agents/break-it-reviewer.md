@@ -44,7 +44,7 @@ Each new rule's test covers its edges — the limit, one either side, empty, zer
   query outside `db`, logic or a policy number in `contracts` or an app, a wire call outside `data`,
   a visual value outside `theme` — or a new fact the Placement table never named;
 - logic both platforms need, written in one app (Law 11), or a screen part authored in both app
-  trees (`M115`, review-only) — or a flow held in a screen rather than a domain reducer (`M80`);
+  trees (review-only) — or a flow held in a screen rather than a domain reducer (`M80`);
 - a contract bypassed: a hand-written wire type, a hard-coded enum value, a raw HTTP call, a
   non-exhaustive status→visual map;
 - a helper that already exists in `packages/` — grep before accepting a new one;

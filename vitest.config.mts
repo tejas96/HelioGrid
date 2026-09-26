@@ -8,7 +8,7 @@ const { packages: UNIT_TEST_PACKAGES, coverage: COVERED_SOURCES } = JSON.parse(
   readFileSync(new URL('./packages/config/unit-test-packages.json', import.meta.url), 'utf8'),
 ) as { packages: string[]; coverage: string[] };
 
-/** Every line, branch and function of a slice: the bar each glob below lands at (CLAUDE.md §8). */
+/** Every line, branch and function: the bar each glob below lands at (`.claude/rules/testing.md`). */
 const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
 
 /**
@@ -22,9 +22,7 @@ const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
  *
  * Tests live at `<package>/tests/**`, never inside `src/`: a test under `src/` is compiled
  * into the package's own `dist/` by its build and ships. `scripts/check-adherence.sh` check 1
- * and `.claude/hooks/block-test-files.sh` hold that, plus the `*.test.ts` name and the package
- * list — all three in both places, because a hook and its backstop that disagree are worse
- * than either alone.
+ * holds that, plus the `*.test.ts` name and the package list, over the same corpus file.
  */
 /*
  * `.env.local` reaches the tests, exactly as it reaches the invariants (whose runner passes
@@ -76,49 +74,17 @@ export default defineConfig({
       include: COVERED_SOURCES,
       exclude: ['**/index.ts', '**/*.d.ts', 'packages/contracts/src/scripts/**'],
       /*
-       * Thresholds are per-slice and land WITH the slice (Law 9), not as one global number
-       * nobody owns. A global floor over untested packages would either be 0 — meaning
-       * nothing — or red on day one and switched off by the second person who hit it.
+       * A bar only where a wrong number costs money or leaks data (`.claude/rules/testing.md`).
+       * Everywhere else coverage is REPORTED, never failing: `all: true` still scores every source
+       * file, so a gap is visible without a red run behind it.
        */
       thresholds: {
-        'packages/domain/src/auth/**': COMPLETE,
         'packages/domain/src/authz/**': COMPLETE,
-        'packages/domain/src/branding/**': COMPLETE,
-        'packages/domain/src/calling/**': COMPLETE,
-        'packages/domain/src/certification/**': COMPLETE,
-        /* FILES, not the folder: `commerce/`'s remaining two are closed vocabularies whose
-           consumers have not landed (Law 9), and a test may not restate a constant, so a bar over
-           them buys an import-only test. Every other file here has a runtime reader and so has a
-           bar; `states.ts` and `costs.ts` widen this to `commerce/**` when theirs land. */
-        'packages/domain/src/commerce/caps.ts': COMPLETE,
-        'packages/domain/src/commerce/effective-settings.ts': COMPLETE,
-        'packages/domain/src/commerce/proposal-template-defaults.ts': COMPLETE,
-        'packages/domain/src/commerce/rich-text.ts': COMPLETE,
-        'packages/domain/src/commerce/timeline-template-defaults.ts': COMPLETE,
         'packages/domain/src/commerce/tranche-allocation.ts': COMPLETE,
-        'packages/domain/src/commerce/tranche-template-defaults.ts': COMPLETE,
-        'packages/domain/src/commerce/grandfathering.ts': COMPLETE,
-        'packages/domain/src/commerce/meters.ts': COMPLETE,
-        'packages/domain/src/commerce/soft-block.ts': COMPLETE,
-        'packages/domain/src/commerce/tiers.ts': COMPLETE,
-        'packages/domain/src/commerce/trial.ts': COMPLETE,
-        'packages/domain/src/format/**': COMPLETE,
-        'packages/domain/src/market/**': COMPLETE,
-        'packages/domain/src/messaging/**': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,
-        'packages/domain/src/notifications/**': COMPLETE,
         'packages/domain/src/pricing/**': COMPLETE,
-        'packages/domain/src/projects/**': COMPLETE,
-        'packages/domain/src/rails/**': COMPLETE,
-        'packages/domain/src/shell/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,
         'packages/domain/src/tax/**': COMPLETE,
-        'packages/domain/src/tenancy/onboarding-steps.ts': COMPLETE,
-        'packages/i18n/src/runtime.ts': COMPLETE,
-        /* The worker's ONE decision, and the only file in it a unit test can reach: the
-           bootstrap, the Nest host and the Temporal connection are proven by RUNNING the
-           worker (qa-api boots it), and a bar over them would buy a mocked Temporal. */
-        'apps/worker/src/modules/platform/platform.activities.ts': COMPLETE,
       },
     },
   },

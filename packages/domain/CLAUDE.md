@@ -13,7 +13,8 @@ derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a pac
   in; this decides. That is what lets the model be exercised without a server, and what stops a
   permission check quietly becoming a query.
 - NEVER: NestJS, React, React Native, storage, fetch, an env read, `packages/db`, `packages/ui`,
-  or any app import. No side effects, no I/O, no clock read at module scope.
+  any app import, a `node:` import, a timer, `performance` or `crypto`. No side effects, no I/O,
+  no clock read at module scope (`M57`).
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global is the
   specific anti-pattern this package exists to prevent.
 - Unit tests live in `tests/`, never in `src/` — the build compiles everything under `src/` into
@@ -73,6 +74,9 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   payment-mode keys are open-set strings validated against the pack (`F1-09`) — a reader returns
   `null` for an undeclared key and never guesses, because the machines that own them are not
   authored yet (Law 9). A never-translated name (`DISCOM`, `ALMM`, `GSTIN`) carries `en` alone.
+  A TENANT's own words resolve through `authoredIn`, which names the language shown, never
+  through `inLanguage`, whose silent English fallback is a pack label's law (`F3-05`) and not a
+  tenant's (`F3-10`) — review-only.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can

@@ -68,7 +68,7 @@ change; do not review the review. Outside the task's scope → `docs/tasks/defer
 `scripts/break-and-run.sh --stale <T-id>` again — a fix after tier 0 may have staled a proof; a claim
 without a current proof is not done. Its lines go into the done-when table beside their claims.
 
-**Size is stated, never enforced (`M111`, review-only):** `git diff --cached --shortstat` after
+**Size is stated, never enforced:** `git diff --cached --shortstat` after
 staging (it counts new files), generated files said apart. Past 25 files, 1,500 lines, one migration
 or one contract router, the only question is one task or two.
 
@@ -106,9 +106,9 @@ changed file list needs a new yes. On the yes: commit with the `Co-Authored-By` 
 
 End with the generated-with line, and print the body in chat too. Never merge, never push to `main`,
 never force-push. If `gh pr create` returned a number other than the flip's, ONE mechanical correction
-commit fixes the `Status:` line and its screens (`M105`).
+commit fixes the `Status:` line and its screens — the one commit that needs no yes, by owner ruling.
 
-**Read the commit's OWN CI run, and push nothing while it runs** (`M127`, review-only): a second push
+**Read the commit's OWN CI run, and push nothing while it runs** (review-only): a second push
 cancels the run that proves the change. Find it by the FULL commit id:
 
 ```bash

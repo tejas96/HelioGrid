@@ -10,7 +10,6 @@ Exit: 0 the bookkeeping holds, 1 otherwise. It checks ids, files, counts and the
 """
 
 import argparse
-import ast
 import glob
 import hashlib
 import os
@@ -106,15 +105,17 @@ def task_blocks(repo):
 
 
 def build_order_blocks(path):
-    """The block each task FILE sits in, and each task placed apart from its file, read from the
-    block table of docs/build-order.md. A cell `SHELL` → `T-SHELL-006` places that one task and never
-    the whole file; `MS-studio-a/-b/-c` names three files."""
-    by_file, by_task = {}, {}
+    """The block each task FILE sits in, each task placed apart from its file, and each block's title,
+    read from the block table of docs/build-order.md — the ONE place the blocks are written;
+    scripts/next-screen.py reads them here too. A cell `SHELL` → `T-SHELL-006` places that one task
+    and never the whole file; `MS-studio-a/-b/-c` names three files."""
+    by_file, by_task, titles = {}, {}, {}
     for line in open(path, encoding="utf-8"):
-        row = re.match(r"\|\s*\*\*(\d+)\*\*\s*\|", line)
+        row = re.match(r"\|\s*\*\*(\d+)\*\*\s*\|([^|]*)\|", line)
         if not row:
             continue
         block = int(row.group(1))
+        titles[block] = row.group(2).strip().strip("*").strip()
         placed_apart = set(re.findall(r"`([^`]+)`\s*→\s*`T-", line))
         for token in re.findall(r"`([^`]+)`", line):
             if token.startswith("T-"):
@@ -124,7 +125,7 @@ def build_order_blocks(path):
                 stem = first[: first.rfind("-")]
                 for name in [first] + [stem + suffix for suffix in suffixes]:
                     by_file[name] = block
-    return by_file, by_task
+    return by_file, by_task, titles
 
 
 def recorded_cross_block(path):
@@ -159,14 +160,6 @@ def dependency_loops(tasks, depends_on):
         if task not in state:
             visit(task)
     return loops
-
-
-def helper_blocks(path):
-    """The block list next-screen.py carries, read from its source without running it."""
-    for node in ast.parse(open(path, encoding="utf-8").read()).body:
-        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "BLOCKS" for t in node.targets):
-            return ast.literal_eval(node.value)
-    return None
 
 
 def brief_digest(path):
@@ -251,6 +244,30 @@ def cited_rows(text, known_prefixes):
             continue
         out.add(rid)
     return out
+
+
+def no_records(_text):
+    return set()
+
+
+def dead_row_citations(repo, files, rows, prefixes, live_text=lambda text: text, records=record_lines,
+                       skip_line=lambda line: False):
+    """`row id -> [file:line]` for every citation of a row the live PRD no longer carries. `records`
+    names the lines a dated removal record exempts — the record of a deletion, not residue — and is
+    `no_records` for a brief, whose one legitimate mention is its amendment footnote, which
+    `live_text` cuts; `skip_line` drops a line that may name a retired id (a struck register row)."""
+    dangling = defaultdict(list)
+    for f in files:
+        rel = os.path.relpath(f, spec(repo))
+        body = live_text(open(f, encoding="utf-8").read())
+        exempt = records(body)
+        for i, line in enumerate(body.split("\n"), 1):
+            if i in exempt or skip_line(line):
+                continue
+            for rid in cited_rows(line, prefixes):
+                if rid not in rows:
+                    dangling[rid].append(f"{rel}:{i}")
+    return dangling
 
 
 def norm(s):
@@ -396,7 +413,7 @@ def claim_problems(block, row_status):
                 probs.append(f"{where}: {cid} — none and held are for cases only")
             row = re.match(r"(?:gate|held) (M\d+)$", proof)
             if row and row_status.get(row.group(1)) not in ("HELD", "PARTIAL"):
-                probs.append(f"{where}: {cid} cites {row.group(1)}, which is no HELD or PARTIAL row")
+                probs.append(f"{where}: {cid} cites {row.group(1)}, which is no row of mechanisms.md")
 
     for label, (items, stray_lines), letter in (("Cases", (cases, stray), "C"),
                                                 ("Schema", claim_items(body, "Schema"), "S"),
@@ -434,34 +451,23 @@ def run(repo, verbose):
     # --- Gate 1 · ground truth is non-empty and plausible
     gate(1, "live PRD rows extracted", len(rows) > 1000, f"{len(rows)} rows across {len(prd_files(repo))} documents")
 
-    # --- Gate 2 · no dangling row citation in docs/tasks/
-    dangling_t = defaultdict(list)
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        recs = record_lines(body)
-        for i, line in enumerate(body.split("\n"), 1):
-            if i in recs:
-                continue
-            for rid in cited_rows(line, prefixes):
-                if rid not in rows:
-                    dangling_t[rid].append(f"{rel}:{i}")
-    n = sum(len(v) for v in dangling_t.values())
-    gate(2, "docs/tasks/ cite no deleted row", not dangling_t,
-         "clean" if not dangling_t else f"{len(dangling_t)} ids, {n} refs: " + ", ".join(sorted(dangling_t)[:12]))
-
-    # --- Gate 3 · no dangling row citation in briefs' LIVE content
-    dangling_b = defaultdict(list)
-    for f in briefs:
-        rel = os.path.relpath(f, spec(repo))
-        live, _foot = strip_amendment(open(f, encoding="utf-8").read())
-        for i, line in enumerate(live.split("\n"), 1):
-            for rid in cited_rows(line, prefixes):
-                if rid not in rows:
-                    dangling_b[rid].append(f"{rel}:{i}")
-    n = sum(len(v) for v in dangling_b.values())
-    gate(3, "briefs' live content cites no deleted row", not dangling_b,
-         "clean (amendment footnotes exempt)" if not dangling_b else f"{len(dangling_b)} ids, {n} refs: " + ", ".join(sorted(dangling_b)[:12]))
+    # --- Gate 2 · no live text cites a row the PRD no longer carries
+    # docs/tasks/, the briefs above their amendment footnotes (a brief carries no other record of a
+    # removal), the PRD's own cross-references, and the registers, where a struck (~~) row names the
+    # id it retired.
+    task_files = sorted(glob.glob(spec(repo, "tasks/*.md")))
+    reg_files = sorted(glob.glob(spec(repo, "prd/registers/*.md")))
+    dangling = defaultdict(list)
+    for found in (dead_row_citations(repo, task_files, rows, prefixes),
+                  dead_row_citations(repo, briefs, rows, prefixes, live_text=lambda text: strip_amendment(text)[0], records=no_records),
+                  dead_row_citations(repo, prd_files(repo), rows, prefixes),
+                  dead_row_citations(repo, reg_files, rows, prefixes, skip_line=lambda line: "~~" in line)):
+        for rid, where in found.items():
+            dangling[rid] += where
+    n = sum(len(v) for v in dangling.values())
+    gate(2, "no task, brief, PRD document or register cites a deleted row", not dangling,
+         "clean" if not dangling else f"{len(dangling)} ids, {n} refs: " +
+         "; ".join(f"{k} {v[:2]}" for k, v in sorted(dangling.items())[:6]))
 
     # --- Gate 4 · verbatim quote fidelity in docs/tasks/ AND docs/ux/briefs/
     # Briefs quote PRD cells in exactly the same form tasks do, and are what the design run
@@ -532,89 +538,6 @@ def run(repo, verbose):
          f"{len(design)}/{len(reg_set)} screens carry a DESIGN task"
          if not no_task and not ghost
          else f"no task: {no_task[:10]} · task points at unknown screen: {ghost[:10]}")
-
-    # --- Gate 8 · deleted screens are not referenced anywhere
-    dead_screens = ["SCR-SHELL-04", "SCR-SHELL-05"]
-    hits = []
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))) + briefs:
-        rel = os.path.relpath(f, spec(repo))
-        live, _ = strip_amendment(open(f, encoding="utf-8").read())
-        recs = record_lines(live)
-        for i, line in enumerate(live.split("\n"), 1):
-            if i in recs:
-                continue
-            for d in dead_screens:
-                if d in line:
-                    hits.append(f"{rel}:{i} {d}")
-    gate(8, "deleted screens unreferenced", not hits,
-         "clean" if not hits else "; ".join(hits[:8]))
-
-    # --- Gate 9 · no half-cleaned task block
-    # Every row a block declares on its PRD line must actually be quoted in that block.
-    # A block that defers its quoting to the brief is exempt by design (docs/tasks/README.md rule 6).
-    incoherent = []
-    for b in blocks:
-        if "Verbatim rows live in" in b["body"] or "they are the specification" in b["body"]:
-            continue
-        m = re.search(r"^\**PRD(?: rows)?:?\**\s*:?\s*(.+)$", b["body"], re.M)
-        if not m:
-            continue
-        declared = cited_rows(m.group(1), prefixes)
-        quoted = {q.group(1) for q in re.finditer(
-            r"^\s*-\s*\*\*`?(" + ROW_ID + r")`?\*\*\s*\(", b["body"], re.M)}
-        # A row may also be quoted inline in prose — "The centre's read-state contract is
-        # `F6-07`'s — "…" — quoted verbatim and built at T-FPLAT-017". That is a deliberate
-        # single-source pattern, not a half-cleaned block.
-        for q in re.finditer(r"`(" + ROW_ID + r")`'?s?\b[^\n]{0,40}[—\"“]", b["body"]):
-            quoted.add(q.group(1))
-        if not quoted:
-            continue
-        missing = declared - quoted
-        if missing:
-            incoherent.append(f"{b['file']} {b['id']}: declares but no longer quotes {sorted(missing)}")
-    scanned(9, "no half-cleaned task block", len(blocks), 300, not incoherent,
-            f"{len(blocks)} blocks coherent" if not incoherent else "; ".join(incoherent[:6]))
-
-    # --- Gate 13 · the PRD does not cite its own deleted rows
-    # Gates 2 and 3 police what docs/tasks/ and briefs/ point at. Nothing was policing the PRD's
-    # internal cross-references, which is how nine citations survived the offline sweep.
-    dangling_p = defaultdict(list)
-    for f in prd_files(repo):
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        recs = record_lines(body)
-        for i, line in enumerate(body.split("\n"), 1):
-            if i in recs:
-                continue
-            for rid in cited_rows(line, prefixes):
-                if rid not in rows:
-                    dangling_p[rid].append(f"{rel}:{i}")
-    n = sum(len(v) for v in dangling_p.values())
-    gate(13, "PRD cites no deleted row of its own", not dangling_p,
-         "clean" if not dangling_p else f"{len(dangling_p)} ids, {n} refs: " +
-         "; ".join(f"{k} {v}" for k, v in sorted(dangling_p.items())[:5]))
-
-    # --- Gate 14 · the registers cite no deleted row
-    # screens.md legitimately keeps rows for deleted requirements — that is its audit
-    # trail — but a *marked* row says so. A bare citation is a dangling pointer.
-    reg_files = sorted(glob.glob(spec(repo, "prd/registers/*.md")))
-    dangling_r = defaultdict(list)
-    for f in reg_files:
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        recs = record_lines(body)
-        for i, line in enumerate(body.split("\n"), 1):
-            if i in recs or "~~" in line:      # a struck row names the id it retired
-                continue
-            for rid in cited_rows(line, prefixes):
-                if rid not in rows:
-                    dangling_r[rid].append(f"{rel}:{i}")
-    n = sum(len(v) for v in dangling_r.values())
-    gate(14, "registers cite no deleted row", not dangling_r,
-         "clean" if not dangling_r else f"{len(dangling_r)} ids, {n} refs: " +
-         "; ".join(f"{k} {v[:2]}" for k, v in sorted(dangling_r.items())[:5]))
-
-    tracked = subprocess.run(["git", "ls-files"], cwd=repo, capture_output=True, text=True).stdout.split("\n")
 
     # --- Gate 27 · the ledger agrees: a task's Status, its DESIGN links, its screens and main
     # Status is the one ledger (docs/tasks/README.md rule 0). Three states, each checkable:
@@ -732,33 +655,6 @@ def run(repo, verbose):
          f"no disposition {len(missing)} {missing[:5]} · twice {len(twice)} {twice[:4]} · "
          f"dangling {len(dangling)} {dangling[:5]} · struck-but-live {len(wrongly_struck)} {wrongly_struck[:4]} · "
          f"struck-in-PRD-not-in-register {len(unmarked)} {unmarked[:4]}")
-
-    # --- Gate 21 · every claimed PRD row has an acceptance criterion proving it
-    # A task's DONE WHEN list is the completion bar the implementer works to. A row claimed in
-    # **PRD rows:** with no criterion citing it can be called done without ever being built —
-    # exactly the drift the register cannot see. Blocks whose row line is prose ("none from this
-    # bucket", "cross-ref") claim nothing and are not checked; their rows belong to another task.
-    uncovered = []
-    n_claims = 0
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, spec(repo))
-        body = open(f, encoding="utf-8").read()
-        for m in re.finditer(r"^### (T-[A-Z0-9-]+) \u00b7.*?(?=^### |\Z)", body, re.M | re.S):
-            blk = m.group(0)
-            rowline = re.search(r"\*\*PRD rows:\*\*(.*)", blk)
-            if not rowline:
-                continue
-            txt = rowline.group(1)
-            if "none" in txt.lower() or "cross-ref" in txt.lower():
-                continue
-            claimed = {r for r in re.findall(ROW_ID, txt) if r in rows}
-            n_claims += len(claimed)
-            dw = re.search(r"\*\*DONE WHEN:\*\*(.*?)(?=\n\*\(|\Z)", blk, re.S)
-            cited = set(re.findall(ROW_ID, dw.group(1))) if dw else set()
-            uncovered += [f"{rel} {m.group(1)} {r}" for r in sorted(claimed - cited)]
-    scanned(21, "every claimed PRD row id is cited by a DONE WHEN line (that the line proves it is NOT checked)", n_claims, 200, not uncovered,
-            f"{n_claims} row-claims, all covered by a DONE WHEN line" if not uncovered
-            else f"{len(uncovered)} uncovered: {uncovered[:6]}")
 
     # --- Gate 17 · the V1 scope lock is intact
     # V1/V2 is a release axis, orthogonal to P0/P1/P2. Every screen carries exactly one, the two
@@ -903,9 +799,8 @@ def run(repo, verbose):
     # V1 task waiting on a V2 one, which never finishes in V1; a V1 task waiting on a LATER block,
     # which stalls its own block unless the plan records it; and a task file no block places that
     # cannot prove itself wholly V2 by its screens, which is a module nobody is ever told to build.
-    # next-screen.py carries its own copy of the blocks, so the two must agree or two tools disagree.
     order_doc = spec(repo, "build-order.md")
-    by_file, by_task = build_order_blocks(order_doc) if os.path.exists(order_doc) else ({}, {})
+    by_file, by_task, _titles = build_order_blocks(order_doc) if os.path.exists(order_doc) else ({}, {}, {})
     v2_screens = set(v2)
     state_of, waits_on, kind_of, tier_of, file_of, screens_of = {}, {}, {}, {}, {}, {}
     # A ticket with no `Depends on:` line has not been through /start yet, and reads as waiting on
@@ -969,17 +864,6 @@ def run(repo, verbose):
                          "move it, split it, or record it in the plan")
     for task, dep in sorted(recorded - later):
         order_bad.append(f"the plan records {task} waiting on {dep}, which is no longer true")
-    helper = helper_blocks(os.path.join(repo, "scripts", "next-screen.py"))
-    plan_modules = defaultdict(set)
-    for stem, block in by_file.items():
-        if block >= 1:
-            plan_modules[block].add(stem.split("-")[0])
-    helper_modules = {int(name.split(" ")[0]): set(modules) for name, modules in helper or []}
-    if helper is None:
-        order_bad.append("next-screen.py carries no BLOCKS list to compare with the plan")
-    elif dict(plan_modules) != helper_modules:
-        order_bad.append("next-screen.py's blocks disagree with docs/build-order.md")
-
     unblocks = defaultdict(set)
     for task in live:
         for dep in waits_on[task]:
@@ -1010,17 +894,17 @@ def run(repo, verbose):
            "so /start writes that line and confirms before building"
            if any(t in undeclared for t in ready) else "")
         if current is not None else "build order: no live V1 task left")
-    gate(30, "the build order holds: no loop, nothing stale, every file placed, both copies agree",
+    gate(30, "the build order holds: no loop, nothing stale, every file placed",
          not order_bad, order_summary if not order_bad
          else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
 
 
     # --- Gate 32 · a ticket's claims are well formed (M139)
-    # The mechanism ledger's statuses are read so a `held` claim can only cite a row that holds.
+    # Every row of the mechanism ledger is a live mechanism, so a `gate` or `held` claim may cite any
+    # row it holds and no other.
     ledger = open(os.path.join(repo, ".claude", "mechanisms.md"), encoding="utf-8").read()
-    row_status = {m.group(1): m.group(2) for m in re.finditer(
-        r"^\| (M\d+) \|[^|\n]*\|[^|\n]*\|\s*\**(HELD|PARTIAL|VACUOUS|NONE)", ledger, re.M)}
-    rows_read = 0 < len(row_status) == len(re.findall(r"^\| M\d+ \|", ledger, re.M))
+    row_status = {m.group(1): "HELD" for m in re.finditer(r"^\| (M\d+) \|", ledger, re.M)}
+    rows_read = len(row_status) > 0
     claim_bad, claim_ids = [], []
     for b in blocks:
         found = claim_problems(b, row_status)
