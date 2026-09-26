@@ -68,6 +68,7 @@ export {
   qualifiers,
   qualifyMinorUnits,
   qualifyMoney,
+  weakestTier,
 } from './qualified';
 export {
   type FamilyCoverage,

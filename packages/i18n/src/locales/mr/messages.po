@@ -83,6 +83,11 @@ msgid "Answer the call and type what you hear."
 msgstr "कॉल घ्या आणि जे ऐकाल ते टाइप करा."
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:13
+msgid "Assumed"
+msgstr "गृहीत धरलेले"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "पुन्हा कॉल करा"
@@ -143,6 +148,11 @@ msgid "company setup"
 msgstr "कंपनी सेटअप"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:21
+msgid "Confirmed"
+msgstr "पुष्टी झालेले"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:21
 msgid "Create a company"
 msgstr "कंपनी तयार करा"
@@ -168,6 +178,11 @@ msgid "Creating your company"
 msgstr "तुमची कंपनी तयार होत आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:11
+msgid "Derived"
+msgstr "गणनेतून काढलेले"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:19
 msgid "Design Queue"
 msgstr "डिझाइन क्यू"
@@ -186,6 +201,11 @@ msgstr "सर्व {n} अंक भरा."
 #: src/copy/sign-in.ts:24
 msgid "Enter the code"
 msgstr "कोड टाका"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:12
+msgid "Estimated"
+msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:50
@@ -226,6 +246,11 @@ msgstr "कोड पाठवला जाईपर्यंत लॉक आ�
 #: src/copy/sign-in.ts:44
 msgid "Locked."
 msgstr "लॉक आहे."
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:10
+msgid "Measured"
+msgstr "मोजलेले"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:13
@@ -272,6 +297,11 @@ msgstr "फील्ड वापरकर्त्यापर्यंत क�
 #: src/copy/sign-in.ts:101
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "{windowMinutes} मिनिटे आणखी कोड नाहीत"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:24
+msgid "Not yet calculated"
+msgstr "अद्याप गणना झालेली नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:98
@@ -340,6 +370,11 @@ msgid "Project Board"
 msgstr "प्रोजेक्ट बोर्ड"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:22
+msgid "Provisional"
+msgstr "तात्पुरते"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
 msgid "Pune"
 msgstr "पुणे"
@@ -348,6 +383,11 @@ msgstr "पुणे"
 #: src/copy/company-signup.ts:38
 msgid "Rajesh Kulkarni"
 msgstr "राजेश कुलकर्णी"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:23
+msgid "Reported"
+msgstr "कळवलेले"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:37

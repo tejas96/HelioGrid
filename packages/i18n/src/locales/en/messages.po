@@ -83,6 +83,11 @@ msgid "Answer the call and type what you hear."
 msgstr "Answer the call and type what you hear."
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:13
+msgid "Assumed"
+msgstr "Assumed"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "Call again"
@@ -143,6 +148,11 @@ msgid "company setup"
 msgstr "company setup"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:21
+msgid "Confirmed"
+msgstr "Confirmed"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:21
 msgid "Create a company"
 msgstr "Create a company"
@@ -168,6 +178,11 @@ msgid "Creating your company"
 msgstr "Creating your company"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:11
+msgid "Derived"
+msgstr "Derived"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:19
 msgid "Design Queue"
 msgstr "Design Queue"
@@ -186,6 +201,11 @@ msgstr "Enter all {n} digits."
 #: src/copy/sign-in.ts:24
 msgid "Enter the code"
 msgstr "Enter the code"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:12
+msgid "Estimated"
+msgstr "Estimated"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:50
@@ -226,6 +246,11 @@ msgstr "Locked while the code is sent."
 #: src/copy/sign-in.ts:44
 msgid "Locked."
 msgstr "Locked."
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:10
+msgid "Measured"
+msgstr "Measured"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:13
@@ -272,6 +297,11 @@ msgstr "No error code reaches a field user. If it keeps failing, your company ad
 #: src/copy/sign-in.ts:101
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:24
+msgid "Not yet calculated"
+msgstr "Not yet calculated"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:98
@@ -340,6 +370,11 @@ msgid "Project Board"
 msgstr "Project Board"
 
 #. js-lingui-explicit-id
+#: src/copy/provenance.ts:22
+msgid "Provisional"
+msgstr "Provisional"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
 msgid "Pune"
 msgstr "Pune"
@@ -348,6 +383,11 @@ msgstr "Pune"
 #: src/copy/company-signup.ts:38
 msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
+
+#. js-lingui-explicit-id
+#: src/copy/provenance.ts:23
+msgid "Reported"
+msgstr "Reported"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:37

@@ -19,6 +19,7 @@ export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
 export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
 export { companySignupWords } from './copy/company-signup-frames';
 export { homeTitle } from './copy/homes';
+export { standingLabel, tierLabel } from './copy/provenance';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';

@@ -23,6 +23,9 @@ import type { FormatPack } from './pack';
  * The four tiers, product-wide (`F8-01`). A readonly tuple, so `packages/contracts` derives its
  * `z.enum` from this one list rather than restating it — the shape `MEASUREMENT_SYSTEMS` takes.
  *
+ * **The order is policy**: strongest first, weakest last, and `weakestTier` reads it (`F8-04`).
+ * Reordering it changes the tier of every aggregate the product computes.
+ *
  * `packages/domain` cannot import `packages/contracts`, so the format layer that carries a tier
  * has to own the tier's words; the design system's OPEN tier vocabulary (a caller's own phrase,
  * `"Verified datasheet"`) is a separate thing and stays where it is drawn.
@@ -36,6 +39,22 @@ export type ProvenanceTier = (typeof PROVENANCE_TIERS)[number];
  */
 export const PROVENANCE_STANDINGS = ['confirmed', 'provisional', 'reported', 'pending'] as const;
 export type ProvenanceStanding = (typeof PROVENANCE_STANDINGS)[number];
+
+/**
+ * The tier an aggregate carries: the weakest among its members (`F8-04`). `null` when there are no
+ * members or any member's tier is not established — a number whose tier cannot be established is
+ * not rendered as a number (`F8-01`), and taking the weakest of the REST would launder the unknown.
+ */
+export function weakestTier(members: readonly (ProvenanceTier | null)[]): ProvenanceTier | null {
+  let weakest: ProvenanceTier | null = null;
+  for (const tier of members) {
+    if (tier === null) return null;
+    if (weakest === null || PROVENANCE_TIERS.indexOf(tier) > PROVENANCE_TIERS.indexOf(weakest)) {
+      weakest = tier;
+    }
+  }
+  return weakest;
+}
 
 /** What a caller must state about a figure before the layer will render it. */
 export interface Qualifier {
