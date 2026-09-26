@@ -242,6 +242,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 
 **Type:** engine · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-22`):** the roof capture's stamp is the `roofTier` that `basisLineOf` reads — remote `derived`, physical `measured` — and a roof with no stamp reads as not measured; the stamp is proven here, where it is written.
 **PRD rows:** M04-34, M04-35
 **Requirements (verbatim):**
 

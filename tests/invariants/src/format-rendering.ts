@@ -108,6 +108,7 @@ function renderedValues(): Expectation[] {
         tier: 'measured',
         energySource: null,
         freshness: null,
+        projection: null,
       }).text,
       expected: '₹4,52,471',
     },
@@ -129,11 +130,15 @@ function droppedQualifiers(): string[] {
     disclosure: 'Excludes subsidy',
     energySource: null,
     freshness: null,
+    projection: { horizonYears: 25 },
   });
   const compact = compactQualified(IN_FORMATS, full);
   const failures: string[] = [];
   const lost = qualifiers(full).filter((word) => !qualifiers(compact).includes(word));
   if (lost.length > 0) failures.push(`compacting dropped ${lost.join(', ')}`);
+  /* Not in `qualifiers()`, so compared on the value: a rebuilt copy that left it behind would
+     print a projection as money owed (`F8-23`). */
+  if (compact.projection !== full.projection) failures.push('compacting dropped the projection');
   if (compact.text === '') failures.push('compacting rendered no figure at all');
   return failures;
 }

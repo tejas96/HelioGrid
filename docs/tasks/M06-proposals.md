@@ -95,6 +95,7 @@ are the specification.
 ### T-M06-005 · Builder Step 3 — Solar System Setup, battery card and the live payable
 **Type:** screen · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05 → PENDING
 **Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix; `MoneySummary`, `DataTable.totalRow` and `DocumentPreview` run through it, and this screen composes it.
@@ -134,6 +135,7 @@ are the specification.
 ### T-M06-007 · Builder Step 5 — Financial Data
 **Type:** screen · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-23`):** the lifetime horizon is the projection's `horizonYears`, and this step refuses a horizon that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-11 (P0)
 **DESIGN:** SCR-M06-07 → PENDING
 
@@ -292,6 +294,7 @@ they are the specification.
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
 **Type:** screen · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-072`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before.
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
@@ -385,6 +388,7 @@ they are the specification.
 ### T-M06-021 · Path A pre-fill map — what a design fills, and at which provenance tier
 **Type:** engine · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-21`):** every tier this map assigns passes `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — never a second copy of the no-design rule.
 **PRD rows:** M06-03
 
 **Requirements (verbatim):**
@@ -400,6 +404,7 @@ they are the specification.
 ### T-M06-022 · The Generate gate evaluator — one checklist for every speed path
 **Type:** engine · **Tier:** P0
 **Status:** planned
+**Owed by `T-FPLAT-029` (`F8-21`):** Generate is refused while any figure's tier fails `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — a no-design document holding a `derived` or `measured` figure — and the refusal names the figure; the gate never weakens the tier to pass.
 **PRD rows:** M06-20, M06-36, M06-37
 
 **Requirements (verbatim):**

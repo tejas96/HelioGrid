@@ -233,6 +233,11 @@ msgid "If your company already has a workspace and you want your own login insid
 msgstr "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 
 #. js-lingui-explicit-id
+#: src/copy/document-basis.ts:11
+msgid "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
+msgstr "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:22
 msgid "Installer Job Home"
 msgstr "Installer Job Home"
@@ -403,6 +408,11 @@ msgstr "Reported"
 #: src/copy/sign-in.ts:37
 msgid "Resend code"
 msgstr "Resend code"
+
+#. js-lingui-explicit-id
+#: src/copy/document-basis.ts:14
+msgid "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
+msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:33

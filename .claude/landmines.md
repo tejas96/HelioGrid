@@ -158,19 +158,18 @@ kind of mistake, never the story of the task it happened in.
 | A `git add` naming one missing path staged nothing, and `2>/dev/null` hid the error | one path per add, and git's errors are never silenced | 1 |
 | An edit next to a digested ticket section added a blank line, and the review hash moved | insert only the line meant, then compare `verify-digest.sh --ticket` with `review.sha` | 1 |
 | A font present in the phone's folder was taken as a font the platform draws; Android looks faces up by file name and drew Roboto on every screen | `check:languages` checks Android's lookup by name (`M135`), and a device screenshot measures a title's width | 1 |
-| A type-guard proof named the error code of the OLD type after the type was narrowed | read the broken run's own `tsc` line before writing `--pattern` | 1 |
 | A proof cited after the record moved past it — a measure recorded before the last edit; a line cited CURRENT when `--stale` lists only the latest per key | record after the last edit; cite the line `--stale` prints | 1 |
 | A rule written as prose where the script could decide it — "an invariant keeps three runs" | `CLAUDE.md` §8: the floor reads the test command | 1 |
 | A merged instruction weaker than its source — an "or" for an "and"; a reader sent to a home without the clause | show the sentence beside the one that stays; read the pointer as its reader | 1 |
 | A gate run before `pnpm infra:up`, refused connections read as failures | `CLAUDE.md` §5: infra first; read the error text | 1 |
-| A red proof broke the test's input data (a catalog word), not the code its claim is about, so the checker could stop looking and stay green | made-up inputs run through the checker itself, and each proof made again by breaking the code | 1 |
 | A stamp wrote "pass" for surfaces the author booted by hand, with no QA step and no verdict behind them | an author's smoke is worded as what was booted and seen, never as a verdict | 1 |
 | Invisible characters (no-break space, zero-width space, soft hyphen) written literally into a test, where no reader can see them | written as `\u` escapes, checked with a byte grep | 1 |
 | A search for a changed type's readers covered `apps/` and `packages/*/src` and missed a reader under `tests/` | the search runs over the whole repo, `node_modules` and `dist` aside; `tsc` found it at build | 1 |
 | A `/start` ruling read from the requirement row alone contradicted its feature area's Behavior detail — a fallback figure's tier capped where the detail says the tier stays | the ruling taken from the Behavior detail; `case-reviewer` found it | 1 |
 | A check with two branches was proven red on one only — `--expect` refused, `--pattern` and its gate match never fired | each branch made to fire on its own input; `break-it-reviewer` found it | 1 |
-| A command written into an instruction was never run as written, and its obvious reading fails | run the command as the reader will type it before writing it down; `break-it-reviewer` found it | 1 |
 | A type admitted a value its rendering cannot honour — a source of record naming no database | a non-empty tuple, proven with a `@ts-expect-error` | 1 |
 | A ticket kept a signature and a function name the build changed | the Placement, Scope and diagram corrected to the shipped code in the same change (Law 8) | 1 |
 | A first-match edit meant for one ticket's cases landed in an earlier ticket's (the Workspace landmine) | the anchor searched from the task's own heading; gate 32 found it | 1 |
 | A red proof ran from a package folder, so vitest named the test by a package-relative path and no run counted | run from the repo root, where the path is the `--test-file` path | 1 |
+| A new required field made the older `@ts-expect-error` guards fail for the new reason too, so each stopped guarding its own field | every older guard call states the new field, and each guard is made red on its own field alone | 1 |
+| A table over a stated value skipped the zero, so a `!value` that drops a stated `0` stayed green | the zero row added, and the `!value` break run red | 1 |

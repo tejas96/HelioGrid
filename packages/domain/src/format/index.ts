@@ -11,6 +11,13 @@
 export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './checklist';
 export { formatDate, formatMonthYear, formatTime, monthNames, weekdayNames } from './datetime';
 export {
+  BASIS_LINES,
+  type BasisLine,
+  basisLineOf,
+  type DocumentBasis,
+  tierFitsBasis,
+} from './disclosure';
+export {
   ENERGY_DATABASES,
   type EnergyDatabase,
   type EnergySource,
@@ -75,6 +82,13 @@ export {
   type PhoneOptions,
   phoneDigitsMismatch,
 } from './phone';
+export {
+  PROJECTION_ASSUMPTIONS,
+  type ProjectionAssumption,
+  type ProjectionAssumptions,
+  type StatedAssumption,
+  statedAssumptions,
+} from './projection';
 export {
   compactQualified,
   PROVENANCE_STANDINGS,

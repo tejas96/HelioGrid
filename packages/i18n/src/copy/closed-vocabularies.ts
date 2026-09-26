@@ -1,5 +1,6 @@
 import type { UiLanguage } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
+import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
 
@@ -25,6 +26,10 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
       standing: PROVENANCE_STANDING_WORD,
       source: ENERGY_SOURCE_WORD,
     },
+  },
+  {
+    surface: 'document basis',
+    vocabularies: { line: BASIS_LINE_WORD },
   },
 ];
 
