@@ -194,8 +194,11 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
   - **Stacked rows match too.** Rows in one list share one inner structure — the same facts on the
     same lines, the acts at one offset from the row's top on every row. Measure every row's height:
     a row grows only by a line that it alone carries (a pending or an error line).
-  - **A long list keeps its bearings.** A list longer than one screen keeps its head — title, count,
-    filters — pinned, and a table keeps its column header sticky, while the rows scroll under them.
+  - **A long list can be searched and filtered, and keeps its bearings (`F7-47`).** A list longer than
+    one screen carries *Find in this list* — the one global search opened scoped to this list, never a
+    private box — and filter chips of its own states, each with its count. Draw the query-applied and
+    filtered states too. A list that fits one screen carries neither. Its head — title, count,
+    find, filters — stays pinned, and a table keeps its column header sticky, while the rows scroll under them.
     At 1536 it says where you are (*1–20 of 200*). A table's columns hold their widths whatever rows
     are in view, and ticking a row never moves a column.
   - **One value edge per card.** Every value in a card or a panel sits on ONE edge — never some
@@ -336,11 +339,13 @@ page (`--canvas`) → a container that holds controls (`--surface-form`) → a c
   FIELD MODE column for the ghost button.
 
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (`F7-22`).** At 375
-an arc bar with a **raised centre action** and **exactly four** standing destinations — **Home ·
-Leads · Proposals · More**; at 1536 the icon rail carrying **the same four**, with the **bell and the account at the rail's foot**, plus
+an arc bar with a **raised centre action** and the persona's standing destinations — **Home, at most
+two lists the role can read, and More**, exactly as `F7-48`'s table gives them per preset (a Sales
+Executive: Home · Leads · Proposals · More; Finance: Home · Projects · More; an installer: Home ·
+More). Never draw a tab the persona's role cannot read. At 1536 the icon rail carries **the same**, with the **bell and the account at the rail's foot**, plus
 `AppHeader` holding **only the tenant's name and the one search**.
 **Never add a fifth slot.** Settings, account, grievance contact and sign-out are reached from
-**More** and from the avatar menu. The centre action's *verb* follows the home in force; the four
+**More** and from the avatar menu. The centre action's *verb* follows the home in force; the
 destinations never change with the screen. **Most screens carry no shell at all:** anything running
 before roles exist — sign-in, signup, the whole onboarding corridor — has none at either width; say
 so on the board. Where one screen has more than one life (an onboarding step now, a settings
