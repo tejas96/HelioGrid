@@ -14,14 +14,14 @@ and nothing says so** — there is no hidden value to explain.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| Phases and their steps, in build order (`M08-41`, `MS11-28`, `MS11-29`) | data | the seven trade phases as sections, steps as tick rows: the tick, the step's number and name, and the materials it needs as its second line — quantity and unit. The step's detail opens from the row. Phase and step names are the design's own, in the viewer's language. One provenance label heads each phase's quantities (`F8-07`); a quantity whose confidence differs carries its own (`MS11-31`) |
+| Phases and their steps, in build order (`M08-41`, `MS11-28`, `MS11-29`) | data | the seven trade phases as sections, steps as tick rows: the tick, the step's number and name, and the materials it needs as its second line — quantity and unit. The step's detail opens from the row. Phase and step names are the design's own, in the viewer's language. One provenance label sits at the foot of each phase's quantities (`F8-07`, `N7`); a quantity whose confidence differs carries its own (`MS11-31`) |
 | Done of total | data | the screen's ONE headline figure, as two counts — done, of total |
 | Ticking a step (`M08-42`) | action | one tap on a target sized for a gloved hand; a second tap unticks it (`M05-76`: tap toggles done). A ticked step's second line is who ticked it and when |
 | Who actually did the work (`M08-42`, `F2-07`) | data | ONE optional field on the ticked step, with no helper text. It is there whether or not the crew has accounts. What is typed is never translated |
 | Photo evidence | action | a camera act on the step; its photographs as thumbnails on the step |
 | A step the design could not know about | action · status | `Add a step` ends each phase. A manual step carries its own chip, so the derived sequence stays legible |
 | The design changed after work began | status · more detail | one banner saying so; each changed step carries a chip; every tick and its attribution stays. A row leads to what changed. No paragraph reconciles it |
-| What the structure steps are, and are not (`F8-28`) | honesty | ONE line in the head, the studio's own structure disclaimer: a material estimate, not a structural check — an engineer verifies. It never repeats per step |
+| What the structure steps are, and are not (`F8-28`) | honesty | ONE line in the head, the structure disclaimer carrying `F8-28`'s content: a material estimate, not a structural check — an engineer verifies. It never repeats per step |
 | Which design this is (`MS11-33`) | data | the head's line: design version and its engineer sign-off — who and when, a recorded fact with no tier |
 | Every step ticked | status | the headline reads all of them done. The stage does not move: a person moves it (`M08-14`) |
 | A person with read scope only (`F2-12`) | status | every phase, step, photo and attribution can be opened and read; no tick, camera, add-step or done-by act is drawn, and nothing is greyed |
@@ -33,8 +33,8 @@ and nothing says so** — there is no hidden value to explain.
 
 - **375.** Its home. The phase in progress is open and the others are closed, each showing its counts.
   Done-of-total stays in view as the pinned header's one line.
-- **1536.** Phases in a list on the left, the chosen phase's steps on the right, a step's evidence in a
-  side panel (`F7-21`).
+- **1536.** The phases as one strip under the head, each with its count, and the chosen phase's steps as a
+  table under it; a step's evidence in a side panel (`F7-21`) (owner ruling 2026-09-26).
 
 ## Entry & exit
 
