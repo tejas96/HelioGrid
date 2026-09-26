@@ -19,8 +19,10 @@ figure that is commercial — and no sentence saying any of that.
 | The checklist's progress | data · action | done of total as two counts, and the screen's ONE primary act — open the checklist (`SCR-M08-04`) |
 | The design is not signed off yet (`M08-41`) | status | the progress reads that it waits on engineer sign-off, with no count; the act still opens the checklist |
 | The photographs expected (`M08-45`) | data · status | one per checklist step: steps with a photo of all steps, as two counts. The next steps still without a photo as rows, at most three, each leading to its step in the checklist. There is no named shot list |
-| No commercial figure (`M13-36`) | — | nothing is drawn and nothing is said. It holds for any block composed into this home |
-| Another preset's today-work (`M13-10`) | more detail | a compact block with its own title and a row leading to its home; it obeys the same no-figure law and never buries today's job |
+| No commercial figure (`M13-36`) | — | nothing is drawn and nothing is said. It holds wherever this job's today-block is composed into another home |
+| The site's access constraints, their words (`M04-43`) | data | the survey's Access group only — stairs, lift, crane, lane. No other field and no contact's phone number |
+| The raised centre action (`SCR-SHELL-01`) | action | `Add photo`, opening the checklist at the next step still without a photo (owner ruling 2026-09-26). Absent while there is no job or no step |
+| This person's destinations | — | the bar and rail hold Home and More only: this preset holds no leads or proposals grant (F2) |
 | No installation today | teaching | at most two short sentences — what will appear here |
 | The job failed to load | error | one banner — what failed and what to do |
 | Checking in and out of the site | — | not on this screen: check-in is M09's (`F2.M09.check-in-out`), and M09 is V2 |
@@ -39,13 +41,11 @@ Reached from: it is the Installation Team Member's home — the screen the app o
 ## Composed home (M13-10, P0 — this screen is a role home)
 
 This screen is the home of one preset on the precedence ladder, and **a person has exactly one
-home, never two competing front doors**. Where the same person also holds another preset, that
-preset's *today-work* is composed into THIS screen as a block rather than sent to a second home —
-the PRD's own worked example is a rep who is also a surveyor landing on My Day **with today's
-visits shown inside it**. The person can still switch: the shell's switcher (`SCR-SHELL-01`) lists
-the home of every preset they hold. Design the block seams: this screen must be able to host one
-or more foreign today-blocks without the layout breaking or the screen's own purpose being buried.
-The ladder itself is a product constant, not tenant configuration (`M13-10`).
+home, never two competing front doors**. The Installation Team Member is the LAST preset on the
+ladder, so this home never hosts another preset's today-block: a person who also holds any other
+preset lands on that preset's home, and today's installation is composed THERE as a block. The
+person can still switch: the shell's switcher (`SCR-SHELL-01`) lists the home of every preset they
+hold. The ladder itself is a product constant, not tenant configuration (`M13-10`).
 
 ## Requirements (verbatim)
 

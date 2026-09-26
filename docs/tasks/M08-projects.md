@@ -78,9 +78,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-005 · Installer Job Home
 **Type:** screen · **Tier:** P1
-**Status:** planned
+**Status:** designed
 **PRD rows:** M08-45 (P1)
-**DESIGN:** SCR-M08-05 → PENDING
+**DESIGN:** SCR-M08-05 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-05+Installer+Job+Home+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-05+Installer+Job+Home+-+States.dc.html
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-05-installer-job-home.md`; they are the specification.
 
