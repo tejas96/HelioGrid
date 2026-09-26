@@ -369,6 +369,51 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/domain/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "fetch": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md, M57). The app that calls the reducer owns the wire, through packages/data.",
+                  "XMLHttpRequest": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md, M57). The app that calls the reducer owns the wire, through packages/data.",
+                  "setTimeout": "packages/domain is pure — no timer (M57). Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
+                  "setInterval": "packages/domain is pure — no timer (M57). Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
+                  "performance": "packages/domain is pure — no clock (M57). Time enters as a parameter (`now: number`).",
+                  "crypto": "packages/domain is pure — no randomness (M57). An id source is injected by the caller.",
+                  "globalThis": "packages/domain reaches no platform object: `globalThis.fetch` is fetch by another name (M57).",
+                  "window": "packages/domain reaches no platform object: `window.setTimeout` is a timer by another name (M57).",
+                  "self": "packages/domain reaches no platform object: `self.fetch` is fetch by another name (M57).",
+                  "global": "packages/domain reaches no platform object: `global.setTimeout` is a timer by another name (M57)."
+                }
+              }
+            },
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "lucide-react": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
+                  "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy."
+                },
+                "patterns": [
+                  {
+                    "group": ["node:*"],
+                    "message": "packages/domain is isomorphic and pure — no Node-only API (Law 10, M57). The repo-wide import bans are repeated above because an override REPLACES this rule's config for the files it matches."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

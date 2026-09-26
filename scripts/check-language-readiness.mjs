@@ -6,8 +6,8 @@
  *   1. every character its catalog and its endonym draw is covered by a family in the design
  *      system's sans stack — never a system fallback (`F3-13`); the weights are `M133`'s, which
  *      refuses to emit a face that would synthesize one (`F3-14`);
- *   2. the runtime has its plural rules (this is the web half; the phone's polyfill line is
- *      `check:adherence` 9);
+ *   2. the runtime has its plural rules (this is the web half; the phone's polyfill line in
+ *      `packages/i18n/src/rn/index.ts` is added by hand — `docs/tasks/deferred.md`);
  *   3. every plural message written in the language carries every category its rules name — a
  *      message still in English is a translation gap, which the gate does not judge (`F3-05`);
  *   4. every family in the stack ships a static phone face at every sanctioned weight, in the

@@ -17,7 +17,7 @@ None — JSON only. Consumers typecheck against these.
 ## Local conventions
 
 - `node-package.json` — a library package: `composite`, dist and d.ts emit. No tsconfig in the repo
-  references another (ADR-0001), which is why a package builds with `tsc -p` (`M136`). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
+  references another (ADR-0001), which is why a package builds with `tsc -p`, never `tsc -b` (`CLAUDE.md` §8). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
 - Presets use `${configDir}` so `outDir` and `rootDir` resolve per consumer.
 - Two things the presets do NOT cover: a package with no matching preset extends
   `tsconfig.base.json` directly (there is no browser or react preset), and `apps/mobile`

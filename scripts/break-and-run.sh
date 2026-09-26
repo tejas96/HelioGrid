@@ -20,9 +20,11 @@
 # which read the database.
 # --build rebuilds that package around the break: a test in another package imports the last BUILD.
 # --task and --claims append the proof to the task's record in .git/heliogrid-harness/<T-id>/, which
-# survives the session and never enters the tree. --stale lists the author's proofs whose file, log
-# or test changed since (an --expect proof: its own test or the shared code around every test, never
-# a sibling test); a reviewer's proofs are evidence and never stale the task — a red-when-green IS a finding.
+# survives the session and never enters the tree. --stale lists the latest proof per file, test, title,
+# actor AND claim set (order-free) — two proofs of one test for different claims keep their own lines,
+# and a line whose claim set is no longer used is withdrawn — and which are stale: the file, the log or
+# the test changed since (an --expect proof: its own test or the shared code around every test, never a
+# sibling test); a reviewer's proofs are evidence and never stale the task.
 # --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
 # gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
 # --prune deletes each task's record once GitHub reports its branch's pull request MERGED after the
@@ -121,7 +123,7 @@ def jsonl(name):
     return [json.loads(l) for l in open(path) if l.strip()] if os.path.exists(path) else []
 withdrawn = jsonl("withdrawn.jsonl")
 for p in jsonl("proofs.jsonl"):
-    latest[(p["file"], p["test_file"], p.get("expect") or p.get("pattern"), p["actor"])] = p
+    latest[(p["file"], p["test_file"], p.get("expect") or p.get("pattern"), p["actor"], tuple(sorted(p["claims"])))] = p
 TEST_START = re.compile(r"^(\s*)(?:it|test)(?:\.\w+)*\(")
 TITLE_ARG = re.compile(r"\(\s*(['\"`])((?:\\.|(?!\1).)*)\1\s*,")
 def names(template, title):

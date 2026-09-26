@@ -13,7 +13,7 @@ what leaves a screen, what stays, and the two moments the question is asked.
 ## The twin question
 
 A screen task names the screen's twin — the same screen on the other platform, built or not — or
-says it has none (`M115`, review-only). Before a part is written, answer for each part: does the
+says it has none (review-only). Before a part is written, answer for each part: does the
 other platform draw the same thing? If yes, the part is authored ONCE and both screens import it.
 "Not built over there yet" is not a no: the phone's number step and the web's are one door.
 

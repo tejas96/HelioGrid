@@ -22,7 +22,7 @@ run 'biome (format + lint)'   pnpm exec biome check --error-on-warnings --max-di
 run 'dependency-cruiser'      pnpm exec dependency-cruiser --config .dependency-cruiser.cjs apps packages tests
 run 'sherif (dep drift)'      pnpm exec sherif
 run 'repo adherence'          bash scripts/check-adherence.sh
-run 'env centralisation'      node scripts/check-env-access.mjs
+run '.env.example complete'    node scripts/check-env-access.mjs
 # Gate 6 — the only gate that reads MEANING rather than shape: prop contracts vs the design system,
 # false "it belongs to another folder" excuses, and inert React Native accessibility state.
 run 'ds:contract (meaning)'   node scripts/ds-contract.mjs

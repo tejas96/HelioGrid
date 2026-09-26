@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """What do I design next?
 
-Reads the screen register and prints the V1 screens still to design, in build order, with the
-exact brief file to paste and the exact two lines to edit when you're done.
+Reads the screen register and prints the V1 screens still to design, in the build order
+docs/build-order.md sets, with the exact brief file to paste and the exact two lines to edit when
+you're done.
 
     python3 scripts/next-screen.py            # next 10 V1 screens to design
     python3 scripts/next-screen.py SHELL      # only the SHELL module
@@ -20,25 +21,16 @@ import re, sys, os, glob, collections
 # Two dirnames: this script lives in scripts/, so the repo is its parent.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REG = os.path.join(ROOT, 'docs/prd/registers/screens.md')
+PLAN = os.path.join(ROOT, 'docs/build-order.md')
+sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+from gates import build_order_blocks
 
-# Build order, not register order. docs/start-here.md and docs/build-order.md carry the reasoning;
-# the short version is that the studio is ported late, once the earlier blocks have settled
-# the API and schema conventions it has to conform to.
-BLOCKS = [
-    ('1 · Shell + entry & tenant',          ['SHELL', 'M01']),
-    ('2 · Billing & plans',                 ['M12']),
-    ('3 · CRM & leads',                     ['M02']),
-    ('4 · Projects',                        ['M08']),
-    ('5 · Payments & collections',          ['M11']),
-    ('6 · Sales execution, calling core + owner home', ['M07', 'M13']),
-    ('7 · 3D Design Studio',                ['MS']),
-    ('8 · Proposals + customer link',       ['M06', 'F5']),
-]
-_BY_MOD = {m: (i, name) for i, (name, mods) in enumerate(BLOCKS) for m in mods}
-# SHELL-06 is the past-due banner. It is a shell surface but it belongs to the billing block —
-# it exists to show a tenant its M12 state, and designing it apart from M12 would mean guessing
-# what states it has to render.
-_BY_SID = {'SCR-SHELL-06': (1, BLOCKS[1][0])}
+# Build order, not register order: the blocks are read from docs/build-order.md, the ONE place they
+# are written, through the reader scripts/gates.py uses. A task file's module places its screens; a
+# task the plan places apart from its file (`SHELL` → `T-SHELL-006`, the billing banner) places its
+# own screen, so a screen follows the plan without a second list here.
+_BY_FILE, _BY_TASK, _TITLES = build_order_blocks(PLAN)
+_BY_MOD = {stem.split('-')[0]: block for stem, block in _BY_FILE.items()}
 # Modules that are wholly V2 have no place in the V1 build order, and saying "unmapped" implies
 # something is broken. They are simply deferred.
 _DEFERRED = (98, 'V2 · deferred, not in the V1 build order')
@@ -52,7 +44,12 @@ _OWNS_FIRST = ['SCR-M12-03', 'SCR-M12-04']
 
 
 def block_of(sid):
-    return _BY_SID.get(sid) or _BY_MOD.get(sid.split('-')[1], _DEFERRED)
+    block = _BY_TASK.get(task_of.get(sid))
+    if block is None:
+        block = _BY_MOD.get(sid.split('-')[1])
+    if block is None:
+        return _DEFERRED
+    return (block, f"{block} · {_TITLES[block]}")
 
 
 def draw_rank(sid):
@@ -103,17 +100,22 @@ if not cols:
 if 'V' not in cols:
     sys.exit("the register has no `V` column — the V1 scope lock is missing; see docs/build-order.md")
 
-# --- where each screen's DESIGN line lives --------------------------------------------
-design = {}
+# --- where each screen's DESIGN line lives, and which task carries it -----------------
+design, task_of = {}, {}
 for fp in sorted(glob.glob(os.path.join(ROOT, 'docs', 'tasks', '*.md'))):
     # docs/tasks/README.md documents the task anatomy with a worked DESIGN line. Reading it would
     # point a real screen at the documentation instead of at its real task file.
     if os.path.basename(fp).lower() == 'readme.md':
         continue
+    task = None
     for i, line in enumerate(open(fp, encoding='utf-8'), 1):
+        h = re.match(r'^#{2,3}\s+(T-[A-Z0-9]+-\d+)', line)
+        if h:
+            task = h.group(1)
         m = re.search(r'DESIGN:?\*{0,2}\s*(SCR-[A-Z0-9]+-\d+)\s*→', line)
         if m:
             design[m.group(1)] = (os.path.relpath(fp, ROOT), i)
+            task_of[m.group(1)] = task
 
 reg_line = {}
 for i, line in enumerate(open(REG, encoding='utf-8'), 1):

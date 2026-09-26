@@ -83,13 +83,13 @@ design token but the sans stack, no component, and no product model beyond the l
 1. **Add the code** to `UI_LANGUAGES` in `packages/domain/src/format/languages.ts`. The build then
    refuses until each registration exists — every `satisfies Record<UiLanguage, …>` the compiler
    names (`M48`), `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
-   line in `src/rn/index.ts` (`check:adherence` 9).
+   line in `src/rn/index.ts`, which no type holds yet (`docs/tasks/deferred.md`): add it by hand.
 2. **Add the database value** with `/migration`: `ui_language` mirrors the set (`M17`). The
    migration runs before machines roll; an older build that meets the new language reads English
    (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the person's stored choice is untouched.
 3. **Translate.** `pnpm --filter @heliogrid/i18n extract` writes the new catalog. A gap falls back
-   to English string by string (`F3-05`) — a partly translated language ships, and
-   `check:adherence` prints its gaps without failing (`M46`).
+   to English string by string (`F3-05`) — a partly translated language ships; an empty `msgstr`
+   in a `.po` file is the gap to fill, and no gate counts them.
 4. **Give the script a face** if the stack does not draw it (`F3-13`, `F3-14`). In the design
    system: its `@font-face` and its family in `--font-sans`, then pull. Here: the variable woff2
    in `packages/theme/assets/fonts/`. On the phone: one static instance per sanctioned weight,

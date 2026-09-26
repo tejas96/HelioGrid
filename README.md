@@ -222,7 +222,7 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm test` | `turbo run test` — runs `tests/invariants/` against real state |
 | `pnpm test:unit` | vitest over `<package>/tests/**/*.test.ts` — the LOGIC layers only, never the frontend (owner ruling 2026-09-03) |
 | `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
-| `pnpm lint` | `scripts/lint-all.sh` — 6 gates: Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, env centralisation, the design-system contract (`ds:contract`). Runs every gate and reports all failures, not just the first |
+| `pnpm lint` | `scripts/lint-all.sh` — Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, `.env.example` completeness, the design-system contract (`ds:contract`). Runs every gate and reports all failures, not just the first |
 | `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
 | `pnpm check:all` | **Every gate that runs without a database, DURING the work:** `lint:fix`, then typecheck (which builds), `lint`, boundaries, dupes, openapi, catalogs, the doc gates, unit tests, and the invariants — the db-backed ones skip loudly without `DATABASE_URL` |

@@ -76,9 +76,8 @@ extends `tsconfig.base.json` directly; apps/mobile extends this package's `base.
 Owns: env schemas + loaders (server/web/native); the .env.example contract. Allowed deps:
 config. Platform scope: shared (per-runtime entry points). Belongs: every new variable, as
 a schema edit + .env.example line. Never: business logic; a raw process.env read outside the
-audited allowlist — `scripts/check-env-access.mjs`'s ALLOWED array is the authority and
-carries each exception's reason (do not "fix" an entry you find there). Extension point: a
-new loader per new runtime.
+audited allowlist — the `noProcessEnv` override in `biome.json` is the authority (do not "fix"
+an entry you find there). Extension point: a new loader per new runtime.
 
 ### contracts — the wire truth
 Owns: ts-rest routers, request/response Zod schemas, wire enums, the error envelope, the
@@ -366,8 +365,7 @@ Walk top-down; first match wins. `/start` §3 records the answer per new file.
 9. Is it screen composition/rendering for one platform? → that app's screens/features
    tree, composing the layers above. Screens hold rendering, not policy.
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
-    read anywhere else needs an entry in scripts/check-env-access.mjs's audited allowlist
-    (§2 env lists today's three).
+    read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
 11. Is it the agent's own instruction or a gate — a skill, an agent, a hook, a rule, a gate
     script, a CI lane? → `.claude/<skills|agents|hooks|rules>/`, `scripts/`, `.github/workflows/`.
     Closed sets; a new script is admitted only by the ruling `mechanisms.md`'s order demands.

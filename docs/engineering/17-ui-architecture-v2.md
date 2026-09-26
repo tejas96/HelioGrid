@@ -124,7 +124,7 @@ onto the design system's prop enums and for theme swap without re-render. It was
 dependency and its Babel plugin are not repaid while the density-mode switch has no product
 surface. **ADR-0026 records that reversal**, and its two costs: variant wiring is hand-written and
 compared only by prop NAME across halves (`mechanisms.md` `M35`), and "style out of the component
-file" is true on web and false on native (`M42`).
+file" is true on web and false on native (review-only).
 
 ---
 

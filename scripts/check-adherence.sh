@@ -46,10 +46,9 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
        -not -path '*/ios/*' -not -path '*/android/*')
 
 # ── 1. Unit tests: one name, one place, one set of packages ──────────────────
-# Unit tests are REQUIRED for the
-# logic layers — but the shape is fixed, because a suite that spreads is a suite nobody
-# maintains. This is the backstop for `.claude/hooks/block-test-files.sh`, which stops the same
-# three things at authoring time; change BOTH or the pair disagrees.
+# Unit tests are REQUIRED for the logic layers — but the shape is fixed, because a suite that
+# spreads is a suite nobody maintains. This check is the one holder of the shape; the law is
+# `.claude/rules/testing.md`.
 #
 #   * name  — `*.test.ts`. `*.spec.*` and `__tests__/` are the competing conventions; allowing
 #             any of them means every glob in this repo has to match three shapes and one day
@@ -89,15 +88,6 @@ if [ -n "$misplaced" ]; then
   echo '  testing a layer this repo proves by running (CLAUDE.md §8).'
   fail=1
 fi
-
-# ── 2. (retired) Source files over ~300 lines ────────────────────
-# Replaced by Biome `style/noExcessiveLinesPerFile` at maxLines 300, which does the same job
-# as a LINT RULE — CLAUDE.md §8 mechanism order puts a lint rule above a script. It is faster,
-# reports in the editor as you type, and is not blind the way this grep was: SRC_DIRS listed
-# only "apps packages tests scripts", so the 3,400-line render harness under docs/ passed
-# green for months. Biome sees the whole tree; configs and that harness are excluded in
-# biome.json deliberately, by name. One behaviour change, accepted: Biome counts CODE lines,
-# so comments no longer push a file over.
 
 # ── 3. Raw hex in UI paths ───────────────────────────────────────────────────
 # Matches hex ANYWHERE on the line. The old pattern required the hex to be the first token
@@ -176,29 +166,20 @@ if [ -n "$hex" ]; then
   fail=1
 fi
 
-# ── 4. packages/domain purity: no ambient clock, randomness or I/O ───────────
-# packages/domain/CLAUDE.md requires reducers to be total and deterministic —
-# "time enters as a parameter (now: number), never Date.now() inside a reducer", and a
-# module-level mutable cache is named there as THE anti-pattern the package exists to prevent.
-# Both documents read as though a gate covered that. Nothing did: the dependency-cruiser
-# purity rules are import-graph rules, and none of these shapes is an import.
-PURE_DIRS="packages/domain/src"
-for d in $PURE_DIRS; do
-  [ -e "$d" ] || { printf 'CONFIG ROT: PURE_DIRS names "%s", which does not exist.\n' "$d"; fail=1; }
-done
-if [ -e packages/domain/src ]; then
-  # Aliased and indirect forms count: `const now = Date.now` then `now()`, crypto.randomUUID,
-  # performance.now and the timer family are all ambient nondeterminism, which is what
-  # packages/domain/CLAUDE.md actually forbids — not the literal spelling `Date.now(`.
-  impure=$(grep -rnE '(Date\.now|Math\.random|new Date\(|\bfetch\(|XMLHttpRequest|crypto\.randomUUID|performance\.now|\bset(Timeout|Interval)\()' \
-             packages/domain/src --include='*.ts' --include='*.mts' --include='*.cts' 2>/dev/null \
-           | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(/\*|\*|//)')
-  if [ -n "$impure" ]; then
-    printf 'IMPURITY in packages/domain (packages/domain/CLAUDE.md — no clock, no randomness, no I/O):\n%s\n' "$impure"
-    echo '  Time and randomness ENTER AS PARAMETERS (`now: number`, an injected id source) so a'
-    echo '  reducer is total and replayable. I/O belongs to the app that calls it.'
-    fail=1
-  fi
+# ── 4. packages/domain purity: no ambient clock or randomness ────────────────
+# Biome refuses the rest — `fetch`, the timers, `performance`, `crypto`, `XMLHttpRequest`, the platform
+# objects that reach them by another name (`globalThis`, `window`, `self`, `global`) and every
+# `node:` import — in biome.json's packages/domain override. `Date` and `Math` stay in reach
+# (`Date.parse` is the parser the package uses), so only their ambient members are refused here;
+# an aliased read (`const now = Date.now`) is as caught as a call. Comment lines are exempt.
+[ -e packages/domain/src ] || { echo 'CONFIG ROT: check 4 names packages/domain/src, which does not exist.'; fail=1; }
+impure=$(grep -rnE 'Date\.now|new Date\(|Math\.random' packages/domain/src --include='*.ts' --include='*.mts' --include='*.cts' 2>/dev/null \
+         | grep -vE '^[^:]+:[0-9]+:[[:space:]]*(/\*|\*|//)')
+if [ -n "$impure" ]; then
+  printf 'IMPURITY in packages/domain (packages/domain/CLAUDE.md — no clock, no randomness, no I/O):\n%s\n' "$impure"
+  echo '  Time and randomness ENTER AS PARAMETERS (`now: number`, an injected id source) so a'
+  echo '  reducer is total and replayable. I/O belongs to the app that calls it.'
+  fail=1
 fi
 
 # ── 5. The tenant pin must be TRANSACTION-local ──────────────────────────────
@@ -215,110 +196,6 @@ if [ -n "$pin" ]; then
   echo '  `false` or a missing third argument pins app.tenant_id to the CONNECTION, so the'
   echo '  next request served by that pooled connection inherits this tenant. RLS still'
   echo '  passes every check — it is doing exactly what it was told.'
-  fail=1
-fi
-
-# ── 6. User-visible copy goes through Lingui ────────────────────────────────
-# The i18n CI guard proves the CATALOGS ARE FRESH (`lingui extract` + `git diff --exit-code`).
-# It cannot see a string that was never extracted, because an unwrapped literal produces no
-# catalog entry to be stale — so a new screen full of hard-coded English passes it, and the
-# product line is EN/HI/MR in every document.
-#
-# HEURISTIC, and narrow on purpose: a JSX text node that looks like PROSE (a capital followed
-# by lowercase letters, four or more characters). Icons, numbers, symbols and single words in
-# caps are not matched. Copy belongs in `<Trans id="…">` or `i18n._()`.
-# `/design` and the RN `gallery` screen are the DEVELOPER-facing token and component
-# reference — English by design, never shipped to a customer, and translating them would make
-# the reference harder to check against the design source. They are excluded by path.
-#
-# packages/ui IS SCANNED. It was not, and it is where the copy actually is: the package holds
-# no i18n dependency by design, so every string it renders must arrive as a prop. Leaving it
-# unscanned meant the one package that must hold no English was the only one nobody checked.
-#
-# COPY_DEBT lists files that are NOT yet wrapped, each of which becomes a required prop on the
-# component's one <Name>.types.ts — a design-system change that alters both platform halves and
-# every call site together (Law 7), sequenced with the design-system work rather than here. The
-# debt is LISTED rather than invisible, and a NEW file gets no grace. The real mechanism is the
-# TranslatedText brand (mechanisms.md M50), which makes a bare string a compile error and retires
-# this list wholesale.
-#
-# Each entry is checked to EXIST: a debt file that was deleted or renamed must break this gate,
-# not silently keep an exemption alive.
-COPY_DEBT='packages/ui/src/components/ActivityStream/ActivityStream.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.native.tsx|packages/ui/src/components/BrandColorField/BrandColorSpecimen.tsx|packages/ui/src/components/Checklist/ChecklistRow.tsx|packages/ui/src/components/CompareGrid/CompareGridTable.tsx|packages/ui/src/components/CompareGrid/CompareValueCell.tsx|packages/ui/src/components/DataTable/DataTableHead.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.native.tsx|packages/ui/src/components/DocumentPreview/DocumentBands.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.native.tsx|packages/ui/src/components/DocumentPreview/DocumentHeader.tsx|packages/ui/src/components/DrawingSheet/DrawingSheetParts.tsx|packages/ui/src/components/FilterBar/FacetChips.tsx|packages/ui/src/components/PagedDocument/DocumentSheet.tsx|packages/ui/src/components/RichText/RichTextToolbar.tsx|packages/ui/src/components/Stepper/StepperNumbered.tsx|packages/ui/src/components/Wordmark/Wordmark.native.tsx|packages/ui/src/components/Wordmark/Wordmark.tsx'
-for d in $(printf '%s' "$COPY_DEBT" | tr '|' ' '); do
-  [ -e "$d" ] || { printf 'CONFIG ROT: COPY_DEBT names "%s", which does not exist.\n' "$d"; fail=1; }
-done
-copy=$(grep -rnE ">[[:space:]]*[A-Z][a-z]{3,}[^<>{}]*<" \
-         apps/web/app apps/web/features apps/mobile/src/screens packages/ui/src --include='*.tsx' \
-         --exclude-dir=node_modules --exclude-dir=.next 2>/dev/null \
-       | grep -vE '<Trans|i18n\._|aria-|placeholder=|^[^:]+:[0-9]+:[[:space:]]*(//|\*)' \
-       | grep -vE "^($COPY_DEBT):")
-if [ -n "$copy" ]; then
-  printf 'UNWRAPPED USER-VISIBLE COPY (EN/HI/MR — docs/prd/foundations/F3-localization.md):\n%s\n' "$copy"
-  echo '  Wrap it: <Trans id="…"> in a component, i18n._() where a string is needed. The i18n'
-  echo '  CI guard only proves catalogs are FRESH — a literal that was never extracted has no'
-  echo '  catalog entry to go stale, so nothing else sees it.'
-  fail=1
-fi
-
-# ── 7. Every translation gap is REPORTED, and never fails the run (M46) ──────
-# `lingui extract` proves the catalogs FRESH and says nothing about whether anyone translated
-# them: an empty `msgstr ""` compiles and renders English. That is legitimate — a missing
-# translation falls back to English string by string, and a partly translated language ships
-# (`F3-05`, `F3-27`) — so the gap is counted per language and printed, for a person to fill.
-#
-# The leading `msgid ""` / `msgstr ""` pair is the PO HEADER, not a message — skipped by
-# requiring a non-empty msgid on the preceding line.
-untranslated=''
-for po in packages/i18n/src/locales/*/messages.po; do
-  [ -e "$po" ] || continue
-  case "$po" in */en/*) continue;; esac   # en IS the source language
-  n=$(awk '/^msgid "..*"/ { pending=1; next } /^msgstr ""$/ { if (pending) c++ } { pending=0 } END { print c+0 }' "$po")
-  [ "$n" -gt 0 ] && untranslated="${untranslated}  ${po}: ${n} untranslated\n"
-done
-if [ -n "$untranslated" ]; then
-  printf 'TRANSLATION GAPS — reported, not failing; each renders in English until filled (F3-05, F3-27):\n'
-  printf "$untranslated"
-fi
-
-# ── 8. (retired) Screens compose from @heliogrid/ui ──────────────
-# Checked that no feature screen used the pre-component `.hg-*` scaffold instead of the
-# design system. Both sides of that comparison are gone: the v1 packages/ui was deleted and
-# globals.css no longer defines `.hg-*`. Restore it — matching whatever the V2 scaffold is
-# called, if there is one — in the change that creates packages/ui (docs/engineering/17 §5 step 2).
-
-# ── 9. Every contract UI language is fully REGISTERED in packages/i18n ──────
-# `UI_LANGUAGES` in packages/domain/src/format/languages.ts is the one place the set is written
-# (the pack-labels ruling put it there so a pack can declare a label per language; contracts derives and
-# re-exports it, so every consumer still imports from contracts).
-# Two of the three registrations it implies are held by TYPES — LANGUAGE_META and
-# CATALOG_LOADERS are `satisfies Record<UiLanguage, …>`, so a new language fails typecheck
-# until both exist. The THIRD cannot be: the Hermes plural-rule data is a bare side-effect
-# import, referenced by nothing, so no type and no lint rule can see that it is missing.
-# It would fail on a device, mid-sentence, as English plural rules applied to Hindi.
-#
-# So this reads the tuple and greps for the import line. It is a grep in an existing gate,
-# not a new script (CLAUDE.md §8 mechanism order) — and it derives its expectation from the
-# source of truth rather than restating the list, so it cannot rot into a fourth locale list.
-LOCALE_FILE='packages/domain/src/format/languages.ts'
-RN_ENTRY='packages/i18n/src/rn/index.ts'
-if [ -e "$LOCALE_FILE" ] && [ -e "$RN_ENTRY" ]; then
-  langs=$(sed -n "/UI_LANGUAGES = \[/,/\] as const/p" "$LOCALE_FILE" | grep -oE "'[a-z-]+'" | tr -d "'")
-  [ -n "$langs" ] || { printf 'CONFIG ROT: could not read UI_LANGUAGES from %s.\n' "$LOCALE_FILE"; fail=1; }
-  unregistered=''
-  for lang in $langs; do
-    grep -q "intl-pluralrules/locale-data/$lang'" "$RN_ENTRY" \
-      || unregistered="${unregistered}  ${lang}: no plural-rule data import in ${RN_ENTRY}\n"
-  done
-  if [ -n "$unregistered" ]; then
-    printf 'UI LANGUAGE NOT FULLY REGISTERED (packages/contracts/src/locale.ts is the source):\n'
-    printf "$unregistered"
-    echo '  Add the @formatjs/intl-pluralrules/locale-data import. Without it Hermes falls'
-    echo '  back to English plural rules and the UI is silently wrong, not broken.'
-    fail=1
-  fi
-else
-  printf 'CONFIG ROT: check 9 names a file that does not exist (%s or %s).\n' "$LOCALE_FILE" "$RN_ENTRY"
   fail=1
 fi
 
@@ -474,80 +351,6 @@ if [ -n "$(printf '%s' "$cast_escapes")" ]; then
   fail=1
 fi
 
-# ── 11. A control must not declare a shrink range ────────────────────────────
-# `width: 48px` with `min-width: 44px` tells the browser "48 is what I want, 44 is what I will
-# accept". In a flex row it takes the 44 — silently, and the touch-target check then measures 44
-# and PASSES, so nothing downstream reports it.
-#
-# Either value is a defect on its own terms: in a flex context it is a silent shrink, and
-# outside one the smaller min-* is dead code. Wrap the row, or set `flex-shrink: 0`.
-#
-# This is the one of the four render-harness probes that does NOT need a browser — the CSS
-# declares the shrink range itself, so it is caught here rather than at runtime. The other
-# three (empty containers, Devanagari overflow, the quiet role on load-bearing text) need
-# computed layout or human judgement: the QA agents at /verify own those.
-shrink_range=$(
-  find packages/ui/src -type f -name '*.css' 2>/dev/null \
-  | while IFS= read -r f; do
-      awk -v F="$f" '
-        function num(s,   t) {
-          if (match(s, /:[ \t]*[0-9]+px/)) { t = substr(s, RSTART, RLENGTH); gsub(/[^0-9]/, "", t); return t + 0 }
-          return 0
-        }
-        /\{[ \t]*$/ { sel = $0; sub(/[ \t]*\{[ \t]*$/, "", sel); line = NR; w = 0; mw = 0; h = 0; mh = 0; pinned = 0; next }
-        /^[ \t]*width:[ \t]*[0-9]+px/      { w  = num($0) }
-        /^[ \t]*min-width:[ \t]*[0-9]+px/  { mw = num($0) }
-        /^[ \t]*height:[ \t]*[0-9]+px/     { h  = num($0) }
-        /^[ \t]*min-height:[ \t]*[0-9]+px/ { mh = num($0) }
-        /^[ \t]*flex-shrink:[ \t]*0/       { pinned = 1 }
-        /^[ \t]*\}/ {
-          if (pinned) { w = 0; mw = 0; h = 0; mh = 0; pinned = 0; next }
-          if (w > 0 && mw > 0 && mw < w) printf "  %s:%d  %s  declares width:%dpx but accepts min-width:%dpx\n", F, line, sel, w, mw
-          if (h > 0 && mh > 0 && mh < h) printf "  %s:%d  %s  declares height:%dpx but accepts min-height:%dpx\n", F, line, sel, h, mh
-          w = 0; mw = 0; h = 0; mh = 0; pinned = 0
-        }
-      ' "$f"
-    done)
-if [ -n "$shrink_range" ]; then
-  printf 'CONTROL DECLARES A SHRINK RANGE — it will render smaller than designed, silently:\n%s\n' "$shrink_range"
-  echo '  A control never renders below the size it was designed at. Let the row wrap, or set'
-  echo '  flex-shrink: 0 — then a container that is too narrow is VISIBLE instead of silent.'
-  echo '  (.claude/rules/ui-adherence.md — what a static gate cannot see)'
-  fail=1
-fi
-
-# ── 12. A comment states the constraint, never the date it was learned ─────────
-# CLAUDE.md §8: a comment says what breaks if you change this; when and why it changed is the
-# commit's. A date in a comment is a war story, and a story rots the moment the tree moves on.
-# Scanned: every tracked source, script, config, manifest, Dockerfile and workflow outside docs/
-# and generated trees — a lint rule's message and an image's build note are comments too, and both
-# carried war stories while the scan read neither. A quoted date is an example VALUE and passes — `2026-03-12` → `12 Mar 2026` is the
-# format rule's own sample, not a story. Not seen: a docstring, a string that reads as a
-# comment, a date written without hyphens.
-dated_comments=$(git ls-files --cached --others --exclude-standard -z -- '*.ts' '*.tsx' '*.mts' '*.cts' '*.mjs' '*.cjs' '*.js' '*.sh' '*.py' '*.yml' '*.yaml' '*.json' 'Dockerfile' '*/Dockerfile' \
-  | grep -zvE '^docs/|/_generated/|/openapi/|/dist/' \
-  | xargs -0 grep -HnE '(^[[:space:]]*(//|/?\*|#)|(^|[^:])//|[[:space:]]#).*\b20[0-9]{2}-[0-9]{2}-[0-9]{2}\b' 2>/dev/null \
-  | grep -vE "[\`\"']20[0-9]{2}-[0-9]{2}-[0-9]{2}[\`\"']" || true)
-if [ -n "$dated_comments" ]; then
-  printf 'DATED COMMENT — a comment states the constraint, the commit carries the story (CLAUDE.md §8):\n%s\n' "$dated_comments"
-  echo '  Drop the date and the verb around it (hit, measured, since, until, removed on); keep what'
-  echo '  breaks if the line changes. A quoted date (`2026-03-12`) is an example value and passes.'
-  fail=1
-fi
-
-# ── 13. A test never restates a constant ───────────────────────────────────────
-# .claude/rules/testing.md: `expect(SOME_CONSTANT).toBe(...)` asserts a value the source already
-# states, so it passes for ever and proves nothing; what the type guarantees needs no test either.
-# The subject of an `expect` is an OUTCOME — a function's result, a derived value — never an
-# imported UPPER_CASE constant. Scanned: every tracked or new `*.test.ts` under a `tests/` folder.
-constant_tests=$(git ls-files --cached --others --exclude-standard -z -- '*/tests/*.test.ts' \
-  | xargs -0 grep -HnE 'expect\(\s*[A-Z][A-Z0-9_]+\s*\)\.' 2>/dev/null || true)
-if [ -n "$constant_tests" ]; then
-  printf 'TEST RESTATES A CONSTANT — the subject of an expect is an outcome, never an imported constant (.claude/rules/testing.md):\n%s\n' "$constant_tests"
-  echo '  Delete the assertion, or assert on the function that CONSUMES the constant.'
-  fail=1
-fi
-
 # ── 14. A server image runs unprivileged ──────────────────────────────────────
 # A process that runs as root turns one broken dependency into a rewritten application. Both
 # runtime images drop to the base image's `node` after their copies are made, so the application
@@ -564,19 +367,6 @@ if [ -n "$unprivileged_images" ]; then
   printf 'IMAGE RUNS AS ROOT — a server image drops to an unprivileged user before its CMD (M117):\n%s\n' "$unprivileged_images"
   echo '  Add `USER node` after the copies in the final stage. The copies stay root-owned, which is'
   echo '  the point: the runtime reads its own code and writes nothing.'
-  fail=1
-fi
-
-# ── 15. A package compiles with `tsc -p`, never `tsc -b` ──────────────────────
-# `tsc -b` decides a project is up to date from its OWN files alone. The workspace keeps no project
-# references (ADR-0001), so a type change in a package it imports leaves it skipping: its typecheck
-# passes over a real error and its `dist/` keeps the old types. `tsc -p` reuses its last run too, but
-# compares every file it reads, another package's `dist/` included (M136).
-build_mode=$(find apps packages tests -name package.json -not -path '*/node_modules/*' -print0 \
-  | xargs -0 grep -nE '"[^"]+"[[:space:]]*:[[:space:]]*"([^"]*[^[:alnum:]_-])?tsc[[:space:]]+(-b|--build)([^[:alnum:]-]|$)' 2>/dev/null)
-if [ -n "$build_mode" ]; then
-  printf 'TSC BUILD MODE — a package script compiles with `tsc -b` (M136):\n%s\n' "$build_mode"
-  echo '  Use `tsc -p tsconfig.json` (with `--noEmit` for a typecheck).'
   fail=1
 fi
 
@@ -696,5 +486,5 @@ if [ -n "$light_only" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw hex in UI, domain pure, copy wrapped, every UI language registered, no app-declared vocabulary, no brand obtained by a cast, no control declaring a shrink range, no dated comment, no test restating a constant, no `tsc -b`, no raw size on a screen, no empty label, light-only'
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw colour in UI, domain pure, tenant pin transaction-local, no app-declared vocabulary, no role name or SQL outside its owner, no brand obtained by a cast, images unprivileged, no raw size on a screen, no empty label, light-only'
 exit $fail

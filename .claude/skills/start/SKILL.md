@@ -80,8 +80,8 @@ The ticket takes the shape `docs/tasks/README.md` gives. Write:
 - **`**Scope:**`** — **In**: the behaviours and the layers they touch (domain, contracts, db, data,
   i18n and its six generated catalogs per copy change, ui, each app, docs) · **Out**: what is left
   out, with why · **Size**: files and lines. For a screen, In names its twin on the other platform
-  and where each shared part lives (`M115`, review-only).
-- **Size is a signal (`M111`, review-only).** Past 25 files, 1,500 lines, one migration or one
+  and where each shared part lives (review-only).
+- **Size is a signal, never a gate.** Past 25 files, 1,500 lines, one migration or one
   contract router, ask ONE question: one task or two? Two are split here, at a layer seam in Law 3's
   order, each slice complete with its own done-when lines. One task ships whole, and nothing — a
   test, a guard, a doc, a proof — is ever removed to land under a count.
