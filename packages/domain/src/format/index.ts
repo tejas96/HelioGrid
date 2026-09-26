@@ -18,6 +18,16 @@ export {
   energySourceOf,
   inLadderOrder,
 } from './energy-source';
+export {
+  type CurrentInputs,
+  type Freshness,
+  freshnessOf,
+  type InputPins,
+  issueBlockedBy,
+  PINNED_INPUTS,
+  type PinnedInput,
+  UNCHECKED,
+} from './freshness';
 export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
 export type { AuthoredInLanguage, AuthoredPerLanguage } from './languages';
 export {

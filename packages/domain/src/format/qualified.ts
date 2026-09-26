@@ -1,5 +1,6 @@
 import type { MinorUnits } from '../money/minor-units';
 import type { EnergySource } from './energy-source';
+import type { Freshness } from './freshness';
 import { formatCompactMoney, formatMinorUnits, formatMoney, type MoneyOptions } from './money';
 import type { Numberish } from './number';
 import type { FormatPack } from './pack';
@@ -71,6 +72,13 @@ export interface Qualifier {
    * from the fallback as final — the omission `F8-10` exists to stop.
    */
   readonly energySource: EnergySource | null;
+  /**
+   * Whether the figure is still current (`F8-13`), from `freshnessOf`; `null` for a RECORD — a
+   * payment received, an amount a person typed, a shared version's figures — which was never
+   * computed, so nothing was pinned and nothing can go stale. Required, not optional: a proposal
+   * total that left it out would print a stale price as final — the omission `F8-12` forbids.
+   */
+  readonly freshness: Freshness | null;
 }
 
 /**
@@ -91,17 +99,24 @@ export interface QualifiedAmount {
   readonly standing: ProvenanceStanding | null;
   readonly disclosure: string | null;
   readonly energySource: EnergySource | null;
+  readonly freshness: Freshness | null;
 }
 
 /**
- * Money computed from the fallback never reads final (`F8-10`): a standing that would read final —
- * none, or `confirmed` — becomes `provisional`. `pending` and `reported` already read not final.
- * The tier is left alone: the fallback changes what data fed the figure, not how it was produced.
+ * Money that cannot be relied on as final never reads final: money computed from the energy
+ * fallback (`F8-10`), and money whose comparison did not say current — stale, recomputing, or never
+ * compared (`F8-12`). A standing that would read final — none, or `confirmed` — becomes
+ * `provisional`; `pending` and `reported` already read not final. The tier is left alone: neither
+ * changes how the figure was produced.
  */
 function moneyStanding(qualifier: Qualifier): ProvenanceStanding | null {
   const standing = qualifier.standing ?? null;
   const readsFinal = standing === null || standing === 'confirmed';
-  return qualifier.energySource?.kind === 'estimate' && readsFinal ? 'provisional' : standing;
+  const fromFallback = qualifier.energySource?.kind === 'estimate';
+  /* `?? null` for untyped callers, which the type cannot reach. */
+  const freshness = qualifier.freshness ?? null;
+  const notCurrent = freshness !== null && freshness.kind !== 'current';
+  return (fromFallback || notCurrent) && readsFinal ? 'provisional' : standing;
 }
 
 function qualifiedMoney(value: Numberish, text: string, qualifier: Qualifier): QualifiedAmount {
@@ -113,6 +128,7 @@ function qualifiedMoney(value: Numberish, text: string, qualifier: Qualifier): Q
     disclosure: qualifier.disclosure ?? null,
     /* `??` for untyped callers, which the type cannot reach. */
     energySource: qualifier.energySource ?? null,
+    freshness: qualifier.freshness ?? null,
   };
 }
 
@@ -158,7 +174,8 @@ export function compactQualified(pack: FormatPack, amount: QualifiedAmount): Qua
  *
  * The energy source is NOT in it: its label names a database, so it is no single identity word.
  * A surface prints `energySource` through `@heliogrid/i18n`'s `energySourceLabel` beside this
- * list, or it drops an obligation.
+ * list, or it drops an obligation. Nor is `freshness`: a stale figure already reads `provisional`
+ * here, and what moved is printed beside it by the provenance label (`T-FPLAT-072`).
  */
 export function qualifiers(amount: QualifiedAmount): string[] {
   const words: string[] = [amount.tier];

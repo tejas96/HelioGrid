@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IN_MARKET } from '../../src/market/code';
-import { packVersion } from '../../src/market/version';
+import { marketOf, packVersion, revisionOf } from '../../src/market/version';
 
 describe('packVersion — the identity an output pins (F1-11)', () => {
   it.each([
@@ -14,5 +14,13 @@ describe('packVersion — the identity an output pins (F1-11)', () => {
     /* A revision numbers a PUBLISHED data update, so the first one is 1. Anything else is an
        authoring error, thrown where the pack is authored rather than pinned into an output. */
     expect(() => packVersion(IN_MARKET, revision)).toThrow(RangeError);
+  });
+});
+
+describe('marketOf and revisionOf — a version read back into its parts', () => {
+  it('reads the market and the revision a version was minted from', () => {
+    const version = packVersion(IN_MARKET, 12);
+    expect(marketOf(version)).toBe('IN');
+    expect(revisionOf(version)).toBe(12);
   });
 });

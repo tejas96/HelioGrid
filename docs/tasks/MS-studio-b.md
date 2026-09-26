@@ -349,6 +349,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 **Type:** policy · **Tier:** P0
 **Status:** planned
 **PRD rows:** MS7-05, MS7-09
+**Owed by `T-FPLAT-028` (`F8-19`, a law):** a capture pins the design fingerprint it was taken from as `InputPins.design` (`packages/domain`) and is shown stale, naming what moved, whenever `freshnessOf` says it is not current. Its freshness comes from this output's own stored pins, never pins built at the call site.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step7Proposal.tsx` (the capture/cover record path, shared with T-MS-260's surface)
 **DEFECTS:**
 - `CODE.step7-proposal.33/.27/.34` — cover staleness laundered + invisible (S6-2 → MS7-09/10; the `.33` half — promotion laundering the freshness stamp, MS7-09 — is this task's).

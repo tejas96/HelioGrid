@@ -30,3 +30,8 @@ export function packVersion(market: MarketCode, revision: number): PackVersion {
 export function revisionOf(version: PackVersion): number {
   return Number(version.slice(version.lastIndexOf('.') + 1));
 }
+
+/** The market back out of a version: `IN.3` belongs to `IN`. The other half of `revisionOf`. */
+export function marketOf(version: PackVersion): string {
+  return version.slice(0, version.lastIndexOf('.'));
+}
