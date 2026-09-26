@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # One red proof, the only kind that counts (`.claude/rules/testing.md`, mechanisms.md M140): the test
-# passes on the untouched tree, then FAILS BY NAME on every one of three or more runs with the rule
-# broken, and the tree comes back byte for byte. The file is copied back, never undone by a reverse
-# edit, which can land on another occurrence and leave a break behind.
+# passes on the untouched tree, then FAILS BY NAME on every run with the rule broken — three or more
+# under --expect, one or more under --pattern — and the tree comes back byte for byte.
 #
 #   scripts/break-and-run.sh --file <path> --test-file <path> (--expect <test title> | --pattern <ere>)
 #     [--runs N] [--build <pnpm filter>] [--task <T-id> --claims <C1,D2>] [--actor author|reviewer]
@@ -16,22 +15,19 @@
 # counts as red. --pattern is for runners that name nothing (the invariants, `tsc` for a type guard):
 # the ERE must appear in every broken run and NOT on the green one, and nothing checks the command runs
 # --test-file. A crash line the pattern itself matches (`error TS2322` for a type guard) is the red,
-# not a crash; any other crash line still spoils the run.
-# --build rebuilds that package before the baseline, after the break and after the restore, because
-# a test in another package imports the last BUILD, never the source.
+# not a crash; any other crash line still spoils the run. --runs is 3 unless given; --expect refuses
+# fewer (a race red once has not held), --pattern accepts 1 unless the command runs the invariants,
+# which read the database.
+# --build rebuilds that package around the break: a test in another package imports the last BUILD.
 # --task and --claims append the proof to the task's record in .git/heliogrid-harness/<T-id>/, which
-# survives the session and never enters the tree. --stale lists the author's recorded proofs whose
-# file, test or log changed since, so a proof is re-run instead of trusted — for an --expect proof the
-# test file counts as changed only when its own test or the code around every test (imports, helpers,
-# hooks) changed, never when a sibling test did; a reviewer's proofs are
-# listed as evidence and never make the task stale, since a reviewer's red-when-green IS a finding.
+# survives the session and never enters the tree. --stale lists the author's proofs whose file, log
+# or test changed since (an --expect proof: its own test or the shared code around every test, never
+# a sibling test); a reviewer's proofs are evidence and never stale the task — a red-when-green IS a finding.
 # --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
 # gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
 # --prune deletes each task's record once GitHub reports its branch's pull request MERGED after the
-# record was bound (its `branch` file's time), so a branch name reused later never loses the new
-# record. A record bound to no branch, or whose branch has no such merge, stays. With no `gh`, or no
-# answer from GitHub, nothing is deleted. git's post-checkout runs it, so a merged task's record goes
-# the first time this machine switches branch after the merge (M141).
+# record was bound (its `branch` file's time); a record bound to no branch, with no such merge, or
+# with no answer from `gh`, stays. git's post-checkout runs it (M141).
 # --withdraw moves a mis-built proof's line to the record's withdrawn.jsonl, so it is never listed
 # again and never edited by hand.
 # Exit 0: proven. 1: a run was not red by name. 2: refused before breaking anything. 3: the tree did
@@ -213,11 +209,12 @@ fi
 
 [ $# -ge 3 ] && [ "$2" = "--" ] || refuse "usage: … -- '<break command>' -- '<test command>'"
 brk="$1"; test_cmd="$3"
-[[ "$runs" =~ ^[0-9]+$ ]] && [ "$runs" -ge 3 ] || refuse "--runs must be 3 or more: a red proof holds on every run, never on one"
 [ -n "$file" ] && [ -f "$root/$file" ] || refuse "--file must name a file in the repository"
 test_file="${test_file#./}"; file="${file#./}"
 [ -n "$test_file" ] && [ -f "$root/$test_file" ] || refuse "--test-file must name the test file that guards the rule"
 { [ -n "$expect" ] && [ -z "$pattern" ]; } || { [ -z "$expect" ] && [ -n "$pattern" ]; } || refuse "give exactly one of --expect <test title> or --pattern <ere>"
+floor=3; [ -n "$pattern" ] && [[ "$test_cmd" != *invariants* ]] && floor=1
+[[ "$runs" =~ ^[0-9]+$ ]] && [ "$runs" -ge "$floor" ] || refuse "--runs must be $floor or more: a red proof holds on every run$([ "$floor" = 3 ] && echo ', never on one')"
 case "$actor" in author|reviewer) ;; *) refuse "--actor is author or reviewer" ;; esac
 { [ -z "$task" ] && [ -z "$claims" ]; } || { [[ "$task" =~ ^[A-Za-z0-9._-]+$ ]] && [[ "$claims" =~ ^[CDS][0-9]+(,[CDS][0-9]+)*$ ]]; } \
   || refuse "--task <T-id> and --claims <C1,D2> come together, or not at all"

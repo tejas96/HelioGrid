@@ -36,7 +36,10 @@ task's own section and the code its Scope names, nothing wider: never a whole PR
 4. **A proof that could not fail.** Would each claim's proof fail if the fix were missing? A race
    proven by two requests merely fired together, a check over empty data, a test that asserts what
    validation already refuses, a `held` row that does not guard this case, a `none` that some test
-   could in fact prove — each is a finding.
+   could in fact prove — each is a finding. List the forms each claim's words cover in the code under
+   the Scope (inputs, syntaxes, platforms): a form with no proof joined by ` + ` is a finding; one no
+   test can decide goes under its row's "What it does NOT hold" in `mechanisms.md` and, on a done-when
+   line, also becomes a case with `none — <why>`.
 5. **A QA step that would pass on broken code.** For each `**QA plan:**` step: name the wrong
    implementation that would still pass it. Vacuous: it reads an empty list or a zero count, compares
    two empty states, depends on the clock, or asserts what validation already refuses. Unobservable:

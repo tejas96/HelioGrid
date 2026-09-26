@@ -41,8 +41,9 @@ holds each line and how much of it.
   occurrence and leave a break behind — and fails unless the whole tree came back, new untracked
   files included. A second break laid over an unrestored first one proves neither. `--build <pkg>`
   rebuilds around the break when the test reads another package's build.
-- **A red proof must hold, not happen.** The script refuses fewer than three runs and passes only
-  when EVERY run went red BY NAME — the test named with `--expect` on a vitest `FAIL` line, or the
+- **A red proof must hold, not happen.** EVERY run goes red BY NAME — three or more under `--expect`
+  (a race red once has not held), one or more under `--pattern` for a runner that reads only files,
+  three for an invariant, which reads the database — the test named on a vitest `FAIL` line, or the
   `--pattern` in the output of a runner that names nothing — so a crash, a missing file or a
   compile error never counts as red (`M140`). A proof whose test or file changed since is not
   trusted: `scripts/break-and-run.sh --stale <T-id>` lists it, and it runs again. A test of a race FORCES its
