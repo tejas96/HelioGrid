@@ -104,7 +104,11 @@ function renderedValues(): Expectation[] {
     {
       row: 'F3-24',
       what: 'a qualified amount renders its figure',
-      actual: qualifyMoney(IN_FORMATS, 452471, { tier: 'measured', energySource: null }).text,
+      actual: qualifyMoney(IN_FORMATS, 452471, {
+        tier: 'measured',
+        energySource: null,
+        freshness: null,
+      }).text,
       expected: '₹4,52,471',
     },
   ];
@@ -124,6 +128,7 @@ function droppedQualifiers(): string[] {
     standing: 'provisional',
     disclosure: 'Excludes subsidy',
     energySource: null,
+    freshness: null,
   });
   const compact = compactQualified(IN_FORMATS, full);
   const failures: string[] = [];

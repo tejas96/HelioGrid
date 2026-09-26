@@ -326,6 +326,7 @@ here and never re-declared.
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
 **DESIGN:** SCR-M06-18 → PENDING
+**Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-18-proposal-detail.md`;
 they are the specification.
@@ -348,6 +349,7 @@ they are the specification.
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
 **DESIGN:** SCR-M06-19 → PENDING
+**Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-19-proposal-list.md`; they
 are the specification.
@@ -455,6 +457,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-43, M06-44, M06-45
+**Owed by `T-FPLAT-028` (`F8-14`, `F8-15`):** a version pins what it was computed from as `InputPins` (`packages/domain`) — the design fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, and the engine versions — at generation, in its migration; once shared, its figures qualify as a record (`freshness: null`) and keep their standing, and its pins are never updated. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):**
 
