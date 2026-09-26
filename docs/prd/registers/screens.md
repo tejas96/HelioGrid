@@ -361,7 +361,7 @@ a design must never render an internal id as the step indicator.
 
 | SCR | Screen | Tier | Rows | Brief | V | Status | Design link | Merged from | Brief reviewed |
 |---|---|---|---|---|---|---|---|---|---|
-| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | planned | — | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` | — |
+| SCR-M11-01 | **Finance Home (Money Due)** | P0 | 3 | `docs/ux/briefs/SCR-M11-01-finance-home.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M11-01+Finance+Home+-+Mobile.dc.html | `02-personas:shell-money-due`; `M13-dashboards-and-reporting:money-due` | ae812501cdf9 |
 | SCR-M11-02 | **Payments Ledger** | P0 | 15 | `docs/ux/briefs/SCR-M11-02-payments-ledger.md` | V1 | planned | — | `M08-projects:shell-payments-screen` | — |
 | SCR-M11-03 | **Record Payment** | P0 | 7 | `docs/ux/briefs/SCR-M11-03-record-payment.md` | V1 | planned | — | — | — |
 | SCR-M11-04 | **Collections Settings** | P0 | 2 | `docs/ux/briefs/SCR-M11-04-collections-settings.md` | V1 | planned | — | — | — |

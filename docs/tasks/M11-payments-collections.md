@@ -4,9 +4,9 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-001 · Finance Home (Money Due)
 **Type:** screen · **Tier:** P1
-**Status:** planned
+**Status:** designed
 **PRD rows:** M11-54 (P1)
-**DESIGN:** SCR-M11-01 → PENDING
+**DESIGN:** SCR-M11-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M11-01+Finance+Home+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M11-01+Finance+Home+-+States.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-01-finance-home.md`; they are the specification.
 **DONE WHEN:**
 - Given a Finance user, when their home renders, then it shows due, overdue, receipts awaiting recording and the period's collections, each obeying the freshness law (`M11-54`).
