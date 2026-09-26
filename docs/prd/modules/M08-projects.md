@@ -496,7 +496,7 @@ translated. **Analytics events.** `installation_step_ticked` (step, has done-by)
 | M08-49 | **Closing is not deleting.** A handed-over project stays readable with its timeline, its documents, its checklist and its money history intact, and its customer link continues to serve the pack (lifecycle per `foundations/F5`). Nothing about closure removes a record from the product. | `SRC` — `S8.screen.8` ("project closed" — closure as a state, not a deletion); `DOC04.timeline` (append-only — cited); `C.lifecycle.7` (cited — `foundations/F5`) | P1 |
 
 **Behavior detail.** The handover action lives on the project detail. It shows the assembled pack
-— the checklist's verified files, in pack order — with the pending-row block if there is one, the
+— every checklist row's files, each row past pending (uploaded or verified, `M08-32`), in pack order — with the pending-row block if there is one, the
 share action, and the referral ask as the last step of the same flow rather than a separate
 errand somebody remembers later. The referral ask is a prompt with a one-tap outcome: it records
 that the ask was made and captures the referred person if the customer names one there and then;
