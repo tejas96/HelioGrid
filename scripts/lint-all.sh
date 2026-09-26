@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 # Runs every lint-stage gate and reports ALL of them, then exits 1 if any failed.
-#
-# The chain used to be `a && b && c && d && e && f`, so the first failure hid the status of
-# everything after it: one Biome formatting error and you learned nothing about dependency
-# direction, package boundaries, repo hygiene, env centralisation or web↔RN parity. You fix the
-# formatting, re-run, discover the next one, and iterate — which is slow, and worse, it makes
-# "lint failed" read as "one thing is wrong" when five checks never ran.
-#
+# Never an `a && b` chain: the first failure would hide the status of every gate after it.
 # The whole set measures ~5s. There is no budget argument for stopping early.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1

@@ -127,7 +127,8 @@ cannot occur is one short `n/a` line with why; none is skipped in silence.
 - **Seeing it fail** (`observability`) — the log line, error code or metric that says so in production.
 
 Each stored fact of a schema-bearing task is one `**Schema:**` line; each done-when line is numbered
-`D1`, `D2` … with its proof. A fix that changes what is built also becomes a done-when line, a ruling
+`D1`, `D2` … with its proof. A claim, and the test title that proves it, say only what that proof
+decides — never "every pair" where the table checks each against the first. A fix that changes what is built also becomes a done-when line, a ruling
 or an out-of-scope line.
 
 **`**QA plan:**` — the whole plan, now.** One step per claim whose proof is `qa-<surface> Q<n>`, plus

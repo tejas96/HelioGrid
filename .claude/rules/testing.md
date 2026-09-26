@@ -34,7 +34,8 @@ holds each line and how much of it.
   only ever passed may be passing on the wrong thing: an assertion on an error MESSAGE matched the
   query it echoed back and would have passed on our own text forever — the database's verdict code
   was the fact. The red run is recorded against the claim it proves —
-  `scripts/break-and-run.sh --task <T-id> --claims <C1,D2>` — never typed.
+  `scripts/break-and-run.sh --task <T-id> --claims <C1,D2>` — never typed, and refused under a
+  claim whose own proof does not name that test.
 - **One break at a time, through `scripts/break-and-run.sh`.** It runs the test once unbroken — a
   test that already fails proves nothing — then saves the file, applies the one break, runs the
   guarding test, copies the saved file BACK — a restore by reverse edit can land on another

@@ -19,11 +19,8 @@ import subprocess
 import sys
 from collections import defaultdict
 
-# Derived from the script's own location, never a hard-coded absolute path: this file used to
-# name /Volumes/works-space/heliogrid_v2_prd, so after the spec moved into this repo it kept
-# reading — and passing against — the OLD folder. It only surfaced when that folder was deleted
-# and every count dropped to zero. next-screen.py had it right; this matches it.
-# Two dirnames, not one: this script lives in scripts/, so the repo is its parent.
+# The repo is this script's parent's parent, never a hard-coded path: a hard-coded one keeps
+# reading, and passing against, an old copy of the spec after it moves.
 REPO_DEFAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # The spec tree (prd · ux · tasks · start-here) lives under docs/. Every path
@@ -1040,6 +1037,27 @@ def run(repo, verbose):
          (f"{claim_tickets} tickets carry claims" if claim_tickets else "VACUOUS — no ticket carries a Cases block yet")
          if not claim_bad and rows_read
          else (f"{len(claim_bad)}: " + " · ".join(claim_bad[:6]) if claim_bad else f"CORPUS ROT: a status was read for {len(row_status)} mechanism rows, not every row"))
+
+
+    # --- Gate 33 · a Laws row that says a task carries an owed line names a task that does (M147)
+    # Each `;`-clause of an `**Enforced by:**` line that says "owed line" names its carriers; each
+    # carrier holds `**Owed by `<T-id>` (… `<row>` …)`, unless it is itself the task that owes the row.
+    owed = defaultdict(set)
+    for b in blocks:
+        for m in re.finditer(r"\*\*Owed by `(T-[\w-]+)`[^(\n]*\(([^)\n]*)\)", b["body"]):
+            for row in re.findall(r"`([^`]+)`", m.group(2)):
+                owed[row] |= {b["id"], m.group(1)}
+    owed_bad, owed_rows = [], 0
+    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
+        for m in re.finditer(r"^- \*\*([\w-]+)\*\* \(.*\n\s+\*\*Enforced by:\*\*([^\n]*)", open(f, encoding="utf-8").read(), re.M):
+            for clause in (c for c in m.group(2).split(";") if "owed line" in c):
+                owed_rows += 1
+                owed_bad += [f"{m.group(1)} names {t}, which carries no `Owed by` line for it"
+                             for t in re.findall(r"`(T-[\w-]+)`", clause) if t not in owed[m.group(1)]]
+    gate(33, "a Laws row that says a task carries an owed line names a task holding one",
+         not owed_bad and owed_rows > 0,
+         f"{owed_rows} owed-line clauses, every carrier holds its line" if not owed_bad and owed_rows
+         else (f"{len(owed_bad)}: " + " · ".join(owed_bad[:6]) if owed_bad else "VACUOUS — no Laws row cites an owed line"))
 
 
     # --------------------------------------------------------------------- report

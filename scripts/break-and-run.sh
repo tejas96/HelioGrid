@@ -218,6 +218,28 @@ floor=3; [ -n "$pattern" ] && [[ "$test_cmd" != *invariants* ]] && floor=1
 case "$actor" in author|reviewer) ;; *) refuse "--actor is author or reviewer" ;; esac
 { [ -z "$task" ] && [ -z "$claims" ]; } || { [[ "$task" =~ ^[A-Za-z0-9._-]+$ ]] && [[ "$claims" =~ ^[CDS][0-9]+(,[CDS][0-9]+)*$ ]]; } \
   || refuse "--task <T-id> and --claims <C1,D2> come together, or not at all"
+# A proof is filed only under a claim whose own `→ proof:` names it: under --expect, exactly
+# `unit|invariant `<test-file>` › "<title>"`; under --pattern, that test file or a `gate|held M<n>`
+# whose mechanisms.md row names the test file's stem (`check:adherence` names check-adherence.sh).
+[ -z "$task" ] || (cd "$root" && python3 -B - "$task" "$claims" "$test_file" "$expect" <<'CLAIMS') || exit 2
+import os, re, sys
+sys.path.insert(0, "scripts")
+from gates import claim_items, split_proofs, task_blocks
+task, claims, test_file, expect = sys.argv[1:]
+block = next((b for b in task_blocks(".") if b["id"] == task), None) or sys.exit(f"break-and-run: no ticket {task} in docs/tasks/")
+proofs = {m[1]: split_proofs(m[2]) for field in ("Cases", "Schema", "DONE WHEN")
+          for item in claim_items(block["body"], field)[0] or [] if (m := re.match(r"\*\*([CDS]\d+)\*\*.*?→ proof:(.*)$", item))}
+stem = os.path.splitext(os.path.basename(test_file))[0]
+enforcer = {m[1]: m[2].replace(":", "-") for m in re.finditer(r"^\| (M\d+) \|[^|\n]*\|([^|\n]*)\|", open(".claude/mechanisms.md").read(), re.M)}
+def names(proof):
+    if expect:
+        return proof in (f'unit `{test_file}` › "{expect}"', f'invariant `{test_file}` › "{expect}"')
+    gate = re.fullmatch(r"(?:gate|held) (M\d+)", proof)
+    return proof.split(" › ")[0].split(" ", 1)[-1] == f"`{test_file}`" or bool(gate and stem in enforcer.get(gate[1], ""))
+for cid in claims.split(","):
+    if not any(names(p) for p in proofs.get(cid, [])):
+        sys.exit(f"break-and-run: {task} {cid}'s proof ({' + '.join(proofs.get(cid, ['no such claim']))}) does not name this proof — file it under the claims whose own proof names it")
+CLAIMS
 
 crash='Transform failed|SyntaxError|No test files found|error TS[0-9]+|Cannot find module|ERR_MODULE_NOT_FOUND|SKIP invariants'
 # The whole tree: status, the content of every change staged or not, and of every untracked file,
@@ -261,6 +283,8 @@ trap 'restore; rm -f "$saved" "$one"' EXIT
 trap 'restore; exit 130' INT TERM
 (cd "$root" && bash -c "$brk") >>"$log" 2>&1 || { restore; refuse "the break command failed"; }
 cmp -s "$saved" "$root/$file" && { restore; refuse "the break changed nothing in $file"; }
+# The break as the file now reads, so a mangled break is seen before the guard is blamed.
+diff -U0 -L "$file (saved)" -L "$file (broken)" "$saved" "$root/$file" | tee -a "$log"
 built || { restore; refuse "the build of $build failed after the break (log: $log)"; }
 
 red=0
