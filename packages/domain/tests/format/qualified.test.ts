@@ -5,6 +5,7 @@ import {
   qualifiers,
   qualifyMinorUnits,
   qualifyMoney,
+  weakestTier,
 } from '../../src/format/qualified';
 import { minorUnits } from '../../src/money/minor-units';
 
@@ -86,4 +87,32 @@ describe('an unrenderable amount carries no figure and still carries its tier', 
     expect(qualified.text).toBe('');
     expect(qualified.tier).toBe('measured');
   });
+});
+
+/**
+ * `F8-04` — an aggregate is only as strong as its weakest member. The neighbouring pairs carry
+ * LITERAL answers, so a reorder of the tier tuple turns this table red rather than moving with it.
+ */
+describe('weakestTier', () => {
+  it.each([
+    { members: ['measured', 'derived'], weakest: 'derived' },
+    { members: ['derived', 'estimated'], weakest: 'estimated' },
+    { members: ['estimated', 'assumed'], weakest: 'assumed' },
+    { members: ['assumed', 'measured'], weakest: 'assumed' },
+    { members: ['derived', 'derived'], weakest: 'derived' },
+    { members: ['measured'], weakest: 'measured' },
+  ] as const)("an aggregate carries its weakest member's tier (F8-04)", ({ members, weakest }) => {
+    expect(weakestTier(members)).toBe(weakest);
+  });
+
+  it.each([
+    { members: [] },
+    { members: ['measured', null] },
+    { members: [null, 'assumed'] },
+  ] as const)(
+    'an aggregate with no members, or an unknown one, has no tier (F8-01)',
+    ({ members }) => {
+      expect(weakestTier(members)).toBeNull();
+    },
+  );
 });

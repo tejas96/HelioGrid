@@ -165,3 +165,8 @@ kind of mistake, never the story of the task it happened in.
 | A rule written as prose where the script could decide it — "an invariant keeps three runs" | `CLAUDE.md` §8: the floor reads the test command | 1 |
 | A merged instruction weaker than its source — an "or" for an "and"; a reader sent to a home without the clause | show the sentence beside the one that stays; read the pointer as its reader | 1 |
 | A gate run before `pnpm infra:up`, refused connections read as failures | `CLAUDE.md` §5: infra first; read the error text | 1 |
+| A red proof broke the test's input data (a catalog word), not the code its claim is about, so the checker could stop looking and stay green | made-up inputs run through the checker itself, and each proof made again by breaking the code | 1 |
+| A stamp wrote "pass" for surfaces the author booted by hand, with no QA step and no verdict behind them | an author's smoke is worded as what was booted and seen, never as a verdict | 1 |
+| A proof recorded against a claim whose rule its break does not remove — catalog freshness filed under a distinctness claim | withdrawn; a proof carries only the claims its break removes | 1 |
+| Invisible characters (no-break space, zero-width space, soft hyphen) written literally into a test, where no reader can see them | written as `\u` escapes, checked with a byte grep | 1 |
+| A test title claimed more than its table pins — "every pair" where each clash is named against its first member | the title names what the table checks | 1 |
