@@ -72,15 +72,11 @@ only on the case its author imagined is the commonest proof that could not fail:
 - Break the rule with the smallest edit that makes the code wrong (drop the predicate, flip the
   bound, remove the check), and run ONLY the test file that guards it, through
   `scripts/break-and-run.sh --actor reviewer --task <T-id> --claims <id> --file <src> --test-file
-  <test> --expect '<test title>' -- '<break>' -- 'pnpm exec vitest run <test file>'`. It runs the
-  test unbroken first, saves the file, breaks it, runs it three times at least — one red run of a
-  racy test proves nothing — copies the file back and compares the whole tree
-  (`.claude/rules/testing.md`). Exit 0 is proven; any other exit is not. An invariant claim runs
-  the same way with `--pattern '<its failure text>'` and `-- 'pnpm --filter @heliogrid/invariants
-  test'` in place of `--expect` and vitest.
-- A package's own tests import its `src/`. A test in ANOTHER package imports the last BUILD: when
-  the rule lives in `packages/<pkg>` and its guard is elsewhere, add `--build @heliogrid/<pkg>`,
-  which rebuilds before the baseline, after the break and after the restore.
+  <test> --expect '<test title>' -- '<break>' -- 'pnpm exec vitest run <test file>'` (what it does
+  and why three runs: `.claude/rules/testing.md`; exit 0 is proven, any other is not). An invariant
+  claim runs with `--pattern '<its failure text>'` and `-- 'pnpm --filter @heliogrid/invariants
+  test'` in place of `--expect` and vitest; a rule in `packages/<pkg>` whose guard is elsewhere adds
+  `--build @heliogrid/<pkg>`.
 - At the end, both hashes must equal the ones you recorded. If they do not, STOP, restore every
   saved copy, and report the paths — never `git checkout` a file, which would discard the
   author's uncommitted work.

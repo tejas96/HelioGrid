@@ -129,9 +129,9 @@ when the change touches money, tenancy or auth.
 
 The code has stopped changing, so every `unit` and `invariant` claim is proven red now, once, through
 `scripts/break-and-run.sh --task <T-id> --claims <ids> …` (`M140`, `.claude/rules/testing.md`); a type
-guard through `tsc` with `--pattern 'error TS<code>'`. `--stale <T-id>` lists every author proof
-CURRENT before the stamp. A proof built wrong is withdrawn with `--withdraw <id> --task <T-id>`, never
-edited by hand.
+guard through `tsc` with `--pattern 'error TS<code>'`; a gate or `tsc`, which reads only files, with
+`--runs 1`. `--stale <T-id>` lists every author proof CURRENT before the stamp. A proof built wrong is
+withdrawn with `--withdraw <id> --task <T-id>`, never edited by hand.
 
 ## 8. Clean up, report, stamp
 
