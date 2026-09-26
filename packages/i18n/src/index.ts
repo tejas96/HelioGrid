@@ -18,6 +18,7 @@ export type { CompanySignupCopyKey } from './copy/company-signup';
 export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
 export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
 export { companySignupWords } from './copy/company-signup-frames';
+export { BASIS_LINE_WORD } from './copy/document-basis';
 export { energySourceLabel } from './copy/energy-source';
 export { homeTitle } from './copy/homes';
 export { standingLabel, tierLabel } from './copy/provenance';

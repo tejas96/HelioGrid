@@ -50,9 +50,9 @@ written into the ticket, so the build executes and `/verify` runs, and neither p
 **Buildable now?** Name two facts, each with the file and line that proves it: the data it reads or
 writes exists on `main` (`packages/db/src/schema/`, the routes), and the code it asks for is not
 already there — grep the ticket's names AND its behaviour (the route, the entity, the event, the
-words a screen shows), because earlier slices often built it under another name. Data in a later
-block → the task moves; already built → closed as built; `**Parked:**` → never started. Each is the
-owner's ruling, brought with a pick.
+words a screen shows), because earlier slices often built it under another name; a search the ticket
+cites is run exactly as written, its output read. Data in a later block → the task moves; already
+built → closed as built; `**Parked:**` → never started. Each is the owner's ruling, with a pick.
 
 **Conflicts, before the go.** Two searches, each named with what it found: (1) every gate and test
 stricter than the rows, and every gate the change will meet — grep `.claude/mechanisms.md` (by

@@ -22,7 +22,12 @@ import { minorUnits } from '../../src/money/minor-units';
  * label does not, and the screen looks finished.
  */
 
-const MEASURED = { tier: 'measured', energySource: null, freshness: null } as const;
+const MEASURED = {
+  tier: 'measured',
+  energySource: null,
+  freshness: null,
+  projection: null,
+} as const;
 
 describe('a figure cannot be rendered without its tier (F8-01)', () => {
   it('carries the tier it was built with', () => {
@@ -39,6 +44,7 @@ describe('compacting keeps every qualifier the full rendering carried (F3-24)', 
     disclosure: 'Excludes subsidy',
     energySource: null,
     freshness: null,
+    projection: null,
   });
 
   it('compacts the figure and nothing else', () => {
@@ -61,6 +67,7 @@ describe('compacting keeps every qualifier the full rendering carried (F3-24)', 
       tier: 'derived',
       energySource: { kind: 'estimate' },
       freshness: null,
+      projection: null,
     });
     const twice = compactQualified(IN_FORMATS, compactQualified(IN_FORMATS, fromFallback));
     expect(twice.energySource).toEqual({ kind: 'estimate' });
@@ -73,11 +80,13 @@ describe('one figure renders one way for every reader (F8-24)', () => {
       tier: 'derived',
       energySource: null,
       freshness: null,
+      projection: null,
     });
     const again = qualifyMoney(IN_FORMATS, 452471.5, {
       tier: 'derived',
       energySource: null,
       freshness: null,
+      projection: null,
     });
     expect(again).toEqual(once);
   });
@@ -95,6 +104,7 @@ describe('a figure that is not reconciled reads provisional (F8-12)', () => {
       standing: 'provisional',
       energySource: null,
       freshness: null,
+      projection: null,
     });
     expect(qualified.standing).toBe('provisional');
     expect(qualifiers(qualified)).toContain('provisional');
@@ -129,6 +139,7 @@ describe('money computed from energy (F8-10)', () => {
       standing,
       energySource: FALLBACK,
       freshness: null,
+      projection: null,
     });
     expect(payback.standing).toBe(reads);
     expect(payback.tier).toBe(tier);
@@ -138,6 +149,7 @@ describe('money computed from energy (F8-10)', () => {
       standing,
       energySource: FALLBACK,
       freshness: null,
+      projection: null,
     });
     expect(inPaise.standing).toBe(reads);
   });
@@ -148,6 +160,7 @@ describe('money computed from energy (F8-10)', () => {
       standing: 'confirmed',
       energySource: SARAH3,
       freshness: null,
+      projection: null,
     });
     expect(payback.tier).toBe('derived');
     expect(payback.standing).toBe('confirmed');
@@ -156,7 +169,11 @@ describe('money computed from energy (F8-10)', () => {
 
   it('a figure must say what fed it, even when nothing did', () => {
     // @ts-expect-error — `energySource` is required: `null` is said out loud, never left out.
-    const unsaid = qualifyMoney(IN_FORMATS, 452471, { tier: 'derived', freshness: null });
+    const unsaid = qualifyMoney(IN_FORMATS, 452471, {
+      tier: 'derived',
+      freshness: null,
+      projection: null,
+    });
     expect(unsaid.energySource).toBeNull();
   });
 });
@@ -201,6 +218,7 @@ describe('money and its freshness (F8-12)', () => {
         standing,
         energySource: null,
         freshness,
+        projection: null,
       });
       expect(total.standing).toBe(reads);
       expect(total.tier).toBe('derived');
@@ -210,6 +228,7 @@ describe('money and its freshness (F8-12)', () => {
         standing,
         energySource: null,
         freshness,
+        projection: null,
       });
       expect(inPaise.standing).toBe(reads);
     },
@@ -221,6 +240,7 @@ describe('money and its freshness (F8-12)', () => {
       standing: 'confirmed',
       energySource: { kind: 'estimate' },
       freshness: CURRENT,
+      projection: null,
     });
     expect(payback.standing).toBe('provisional');
     expect(payback.energySource).toEqual({ kind: 'estimate' });
@@ -233,6 +253,7 @@ describe('money and its freshness (F8-12)', () => {
       tier: 'derived',
       energySource: null,
       freshness: STALE,
+      projection: null,
     });
     const twice = compactQualified(IN_FORMATS, compactQualified(IN_FORMATS, total));
     expect(twice.freshness).toMatchObject({ kind: 'stale', moved: ['tenantPriceBook'] });
@@ -241,7 +262,11 @@ describe('money and its freshness (F8-12)', () => {
 
   it('a money figure must state its freshness, even when it is a record', () => {
     // @ts-expect-error — `freshness` is required: `null` is said out loud, never left out.
-    const unsaid = qualifyMoney(IN_FORMATS, 452471, { tier: 'derived', energySource: null });
+    const unsaid = qualifyMoney(IN_FORMATS, 452471, {
+      tier: 'derived',
+      energySource: null,
+      projection: null,
+    });
     expect(unsaid.freshness).toBeNull();
   });
 });

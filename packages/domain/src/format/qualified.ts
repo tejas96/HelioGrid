@@ -4,6 +4,7 @@ import type { Freshness } from './freshness';
 import { formatCompactMoney, formatMinorUnits, formatMoney, type MoneyOptions } from './money';
 import type { Numberish } from './number';
 import type { FormatPack } from './pack';
+import type { ProjectionAssumptions } from './projection';
 
 /**
  * The honesty half of the format layer (`F3-24`) — a figure and the obligations it carries,
@@ -59,11 +60,30 @@ export function weakestTier(members: readonly (ProvenanceTier | null)[]): Proven
 }
 
 /** What a caller must state about a figure before the layer will render it. */
-export interface Qualifier {
-  /** Exactly one, always — `F8-01` has no default and no absent case for a quantity. */
-  readonly tier: ProvenanceTier;
+export type Qualifier = FigureQualifier | ProjectionQualifier;
+
+/** A figure that is not a projection: any standing its caller can claim. */
+interface FigureQualifier extends QualifierBase {
   /** Omitted where nothing was claimed; never invented to fill the field. */
   readonly standing?: ProvenanceStanding;
+  /** Said out loud: `null` is not a projection, and leaving it out does not compile. */
+  readonly projection: null;
+}
+
+/**
+ * A projection (`F8-23`) — savings, payback, lifetime value, an EMI — with the assumptions it
+ * rests on. Never `confirmed`: that is the standing of a reconciled figure, money owed, and a
+ * projection is never owed, earned or promised. Refused here rather than rewritten, so the
+ * caller's claim is corrected where it is made.
+ */
+interface ProjectionQualifier extends QualifierBase {
+  readonly standing?: Exclude<ProvenanceStanding, 'confirmed'>;
+  readonly projection: ProjectionAssumptions;
+}
+
+interface QualifierBase {
+  /** Exactly one, always — `F8-01` has no default and no absent case for a quantity. */
+  readonly tier: ProvenanceTier;
   /** The words that must travel with the figure — `"Excludes subsidy"` (`F8-24`). */
   readonly disclosure?: string;
   /**
@@ -100,6 +120,8 @@ export interface QualifiedAmount {
   readonly disclosure: string | null;
   readonly energySource: EnergySource | null;
   readonly freshness: Freshness | null;
+  /** The assumptions a projection rests on (`F8-23`); `null` for a figure that is not one. */
+  readonly projection: ProjectionAssumptions | null;
 }
 
 /**
@@ -129,6 +151,7 @@ function qualifiedMoney(value: Numberish, text: string, qualifier: Qualifier): Q
     /* `??` for untyped callers, which the type cannot reach. */
     energySource: qualifier.energySource ?? null,
     freshness: qualifier.freshness ?? null,
+    projection: qualifier.projection ?? null,
   };
 }
 
@@ -175,7 +198,9 @@ export function compactQualified(pack: FormatPack, amount: QualifiedAmount): Qua
  * The energy source is NOT in it: its label names a database, so it is no single identity word.
  * A surface prints `energySource` through `@heliogrid/i18n`'s `energySourceLabel` beside this
  * list, or it drops an obligation. Nor is `freshness`: a stale figure already reads `provisional`
- * here, and what moved is printed beside it by the provenance label (`T-FPLAT-072`).
+ * here, and what moved is printed beside it by the provenance label (`T-FPLAT-072`). Nor is
+ * `projection`: the word that calls a figure a projection, and each assumption with its value, are
+ * printed beside this list by the same label, or the projection reads as money owed (`F8-23`).
  */
 export function qualifiers(amount: QualifiedAmount): string[] {
   const words: string[] = [amount.tier];
