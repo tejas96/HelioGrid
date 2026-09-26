@@ -988,7 +988,7 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** F8-02 (P0), F8-03 (P0)
-**Split from `T-FPLAT-026` at its `/start` (owner pick, size):** `packages/ui` types a tier as any string (`ProvenanceTierSpec`, `packages/ui/src/components/Provenance/Provenance.types.ts`) and prints the tiers' and standings' English words itself (`Provenance.tiers.ts`), which `F8-03` forbids and `packages/ui/CLAUDE.md` forbids too ("user-visible English"). This task closes the prop to the four tiers and `unmarked`, moves a caller's own words — the catalog's verified-datasheet / tenant-provided / representative (`M01-35`) — to the `source` label, which is the "prose beside the tier" `F8-03` names, takes the words from `T-FPLAT-026`'s `tierLabel` and `standingLabel` through the consumer, and carries the change through `VersionDiff`, `Charts`, `DataTable`, `Kanban` and every component whose props name `ProvenanceTierSpec`. It also owes: removing `ProvenanceTier`'s `withLabel={false}` mode, which shows a sighted reader a coloured dot alone — the colour-only form `F8-07` forbids (`Provenance.tsx:64-75`, `Provenance.native.tsx:106-125`); translating `qualifiers()`' tier and standing through `tierLabel` / `standingLabel` where it is first rendered; and closing the `Provenance` row of `docs/tasks/UI.md` ("a tier word cannot be localised"). `/start` writes the rest of the ticket.
+**Split from `T-FPLAT-026` at its `/start` (owner pick, size):** `packages/ui` types a tier as any string (`ProvenanceTierSpec`, `packages/ui/src/components/Provenance/Provenance.types.ts`) and prints the tiers' and standings' English words itself (`Provenance.tiers.ts`), which `F8-03` forbids and `packages/ui/CLAUDE.md` forbids too ("user-visible English"). This task closes the prop to the four tiers and `unmarked`, moves a caller's own words — the catalog's verified-datasheet / tenant-provided / representative (`M01-35`) — to the `source` label, which is the "prose beside the tier" `F8-03` names, takes the words from `T-FPLAT-026`'s `tierLabel` and `standingLabel` through the consumer, and carries the change through `VersionDiff`, `Charts`, `DataTable`, `Kanban` and every component whose props name `ProvenanceTierSpec`. It also owes: removing `ProvenanceTier`'s `withLabel={false}` mode, which shows a sighted reader a coloured dot alone — the colour-only form `F8-07` forbids (`Provenance.tsx:64-75`, `Provenance.native.tsx:106-125`); translating `qualifiers()`' tier and standing through `tierLabel` / `standingLabel` where it is first rendered; and closing the `Provenance` row of `docs/tasks/UI.md` ("a tier word cannot be localised"). From `T-FPLAT-027`: the label prints an energy figure's source through `energySourceLabel` beside its tier, `qualifiers()` lists the source, and `DataTable`'s one table-level statement never covers rows of two sources (`F8-09`). `/start` writes the rest of the ticket.
 **Depends on:** T-FPLAT-026
 **Requirements (verbatim):**
 
@@ -1001,22 +1001,92 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 ---
 ### T-FPLAT-027 · Energy source labelling and the fallback chain
 **Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F8-08, F8-09, F8-10, F8-11
+**Status:** shipped (#169)
+**PRD rows:** F8-08 (P0), F8-09 (P0), F8-10 (P0)
+**Moved at this `/start`:** `F8-11` states a property of every model's output, and its content — the shading model's limits and the decorative elements' exclusion — is M05's (`M05-94`, printed by the surfaces that show a shading output, and `MS6-32` in `T-MS-206`); it moved to the Laws below with what enforces it, the shape `F8-01` and `F8-05`–`F8-07` took at `T-FPLAT-026`.
+**Why:** a yield built from the ±10% fallback that reads like the source of record is the one lie a customer cannot check, and it gets worse on its way to money — a payback from an estimate that prints as final is a price the installer cannot honour.
+**Impact:** an energy figure's source becomes part of the figure, so a surface cannot print one without the other, and money computed from the fallback reads provisional with the estimate badge by construction instead of by each screen's memory — so `T-MS-101`'s Solar Data card, the proposal and the customer link all read one rule and one set of words in English, Hindi and Marathi.
+**Scope:** **In** — `packages/domain`: `format/energy-source.ts` (the databases the label may name, the source of a figure, the source of a figure computed from several, the fallback's tolerance) and `format/qualified.ts` (every figure states its source, `null` where no irradiance fed it; money from the fallback reads `provisional`; `qualifiers()`' docstring says the source is not in its list until `T-FPLAT-072`), with their unit cases · `packages/i18n`: `copy/energy-source.ts` (the two labels, `energySourceLabel`), the source joining the provenance label's group in `copy/closed-vocabularies.ts`, the six catalogs re-extracted with Hindi and Marathi written, and unit cases · `tests/invariants/src/format-rendering.ts`: its two `qualifyMoney` calls state `energySource: null`, nothing else · `docs/tasks/`: `F8-11` to the Laws; one owed line each in `T-FPLAT-072`, `T-MS-101`, and — for `F8-11` — `T-MS-205`, `T-MS-260` and `T-M06-017`. **Out** — see `**Out of scope:**`. **Size** — 20 files and about 400 lines, a quarter of them catalog lines.
 **Requirements (verbatim):**
 
 - **F8-08** (P0) — **Energy figures carry a source label in addition to their provenance tier, and the label names the database.** The two labels are fixed copy, verbatim: **"Real · PVGIS ({database})"** where the energy source of record supplied the figure, and **"Built-in estimate ±10%"** where the built-in latitude-fit fallback did. The `{database}` slot is filled with the specific database the figure came from, so a reader can tell two source-of-record figures apart. Per the suite's vendor rule, the capability is "the market's energy source of record"; the v1 reference implementation is PVGIS with its documented database ladder, and the label copy above is the required v1 rendering.
 - **F8-09** (P0) — **The source is never switched silently, and the label is per figure.** A figure produced from the fallback is labelled as such wherever it appears, including inside documents already generated; a screen may not label itself once and let mixed-source figures share the header. The provenance line naming the database travels with the figure into the proposal, the customer link and every export.
 - **F8-10** (P0) — **A source fallback never blocks work, and it never stops at the energy figure.** When the source of record is unavailable, the product falls back to the built-in estimate, labels it, and continues — "design is never blocked". The estimate badge rides on the energy output *and* on every financial output computed from it, and money produced from an estimate carries the provisional provenance chain of §F8.3 rather than rendering as final.
-- **F8-11** (P0) — **A model's documented limits travel with the model's outputs.** Where a computed output is produced by a model with known, documented limitations, those limitations are stated where the output is read — at every scale and on every surface, not only in a specification. Decorative scene elements that do not participate in a computation say so plainly rather than implying they were considered. Faster computation never changes what the physics claims.
 
+**Placement:**
+
+| fact | owning package | why it owns it | how others reach it |
+|---|---|---|---|
+| `ENERGY_DATABASES` — `['SARAH3', 'ERA5']`, the names the label prints, in the v1 ladder's order; `EnergyDatabase` | `domain` (`format/energy-source.ts`) | a closed vocabulary (`CLAUDE.md` §8); the ORDER is the order a label names them | `@heliogrid/domain` root · guard: the `format/**` 100% bar (`M71`) · a COPY of it has no guard: `check:adherence` 10d (`M58`) reads sets of three or more, and this one has two — said out loud |
+| `EnergySource` — `{ kind: 'record', databases }`, naming at least one database, or `{ kind: 'estimate' }`; `inLadderOrder(databases)` — each once, in ladder order, the one order every label prints | `domain` (`format/energy-source.ts`) | the source of a figure is policy the format layer carries | `@heliogrid/domain` root · guard: `tsc` — a union, no brand; `databases` is a non-empty tuple, so a record naming nothing does not compile |
+| `energySourceOf(sources)` — the source of a figure computed from several: the fallback if any input came from it, else the source of record naming each database once, in ladder order; `null` when no input drew on irradiance | `domain` (`format/energy-source.ts`) | the `F8-10` rule, pure | root · `M71` |
+| `ESTIMATE_TOLERANCE_PERCENT` — `10` | `domain` (`format/energy-source.ts`) | a policy number (`CLAUDE.md` §8); the label reads it, so no translation can change the tolerance (`F8` §F8.2 localization note) | root · guard: biome `noMagicNumbers` (`M58`) keeps a second literal out of apps; packages have none — said out loud |
+| `Qualifier.energySource` — REQUIRED, `EnergySource` or `null` where no irradiance fed the figure; `QualifiedAmount.energySource`; the fallback rule, `moneyStanding()`, read by both money builders | `domain` (`format/qualified.ts`) | the figure and its obligations are one value (`F3-24`); required, so a payback call site cannot forget it the way an optional field is forgotten | root · `M71` · guard: `tsc` over `packages/domain/tests/tsconfig.json`, where a `@ts-expect-error` on a call without it goes red the moment the field turns optional |
+| the two labels, EN/HI/MR, and `energySourceLabel(translate, source)` | `i18n` (`copy/energy-source.ts`) | user-visible copy | `@heliogrid/i18n` root · guards: catalogs fresh (`M47`), made red by adding the words before `extract`; `M146`, which the source joins as a third vocabulary of the `provenance label` group, made red by giving the Hindi fallback label the Hindi `estimated` tier word |
+
+**Data model:** none — the task stores nothing.
+**Contract:** none — nothing sends a source yet; `EnergySource`'s wire schema derives in `contracts` when its first sender's slice begins (Law 9), `T-MS-101`'s Solar Data card.
+**Depends on:** `T-FPLAT-026` (shipped, #168 — `weakestTier` at `packages/domain/src/format/qualified.ts:48`, and the `provenance label` group at `packages/i18n/src/copy/closed-vocabularies.ts:21`). Nothing of this task exists on `main`: `pvgis`, `energySource`, `Built-in estimate` and `latitude` over `packages/domain/src` and `packages/i18n/src` match nothing; the only hits in the tree are `packages/ui`'s open `source?: string` docstrings (`Provenance.types.ts:75`, `Charts.types.ts:45`, `:72`), prose beside the tier that the design system's half keeps.
+**Out of scope:**
+- **The energy figure's own builder** — its unit (kWh, and MWh or GWh at scale, `M05-94`) and its compact form; `compactQualified` compacts money only. `T-MS-101`, the first energy figure, builds it with the source REQUIRED — owed line written there.
+- **The label on a surface** — the `Provenance` label printing `energySourceLabel` beside the tier, `qualifiers()` listing the source, and `DataTable`'s one table-level statement never covering rows of two sources (`DataTable.types.ts:152`) — `T-FPLAT-072`, owed line written there.
+- **The label inside a stored document, the customer link and every export** — each carries `QualifiedAmount` whole (`F8-24`, `T-FPLAT-029`), and each is its own slice (`F5-05`, `MS9-18`).
+- **Which database answered, the fallback window, and the analytics events** (rendered by source, window entered and exited, a document generated inside one) — the solar-data adapter and the Solar Data card, `T-MS-101`.
+**Settle at /start:**
+- **The slot prints the short database name** — ruled into `F8-08`: `SARAH3`, `ERA5`, as the design system draws it ten times (`"Real · PVGIS (SARAH3)"`, `packages/ui/src/components/Provenance/Provenance.types.ts:75`); the PVGIS response names them `PVGIS-SARAH3` and `PVGIS-ERA5`, and mapping one to the other is the adapter's (`docs/engineering/07-integrations.md` §1).
+- **A figure computed from two databases names both** — ruled into `F8-08` ("so a reader can tell two source-of-record figures apart"): each once, in the ladder's order, so one figure prints one way wherever it is read (`F8-24`) — `Real · PVGIS (SARAH3, ERA5)`. The names are proper names and are never translated; the separator is `, ` in every language.
+- **The fallback changes the source, never the tier** — ruled from §F8.2's Behavior detail: "a simulated figure is `derived` whichever database fed it", and the source label is what tells the reader the irradiance was the ±10% fit. `qualifyMoney` and `qualifyMinorUnits` keep the tier their caller states for either source.
+- **Money from the fallback reads provisional** — ruled into `F8-10`: a standing that reads final — none, or `confirmed` — becomes `provisional`; `pending` and `reported` already read not final and are kept. An energy figure's standing is not touched: `F8-12` is a money law.
+- **The words** — English verbatim from `F8-08`, the tolerance a slot: `Real · PVGIS ({database})`, `Built-in estimate ±{tolerance}%`. Hindi `वास्तविक · PVGIS ({database})`, `अंतर्निर्मित अनुमान ±{tolerance}%`; Marathi `वास्तविक · PVGIS ({database})`, `अंगभूत अंदाज ±{tolerance}%` — PVGIS is a proper name and stays Latin; digits are Latin in every language (`F3-21`).
+
+**Architecture:**
+
+```
+T-MS-101 (later): adapter answers ─▶ EnergySource { record, [ERA5] } or { estimate }
+                                            │
+packages/domain  format/energy-source.ts    ▼
+   energySourceOf(inputs) ──▶ one source for a computed figure (fallback wins)
+packages/domain  format/qualified.ts
+   qualifyMoney(pack, n, { tier, energySource }) ──▶ QualifiedAmount (moneyStanding)
+        estimate ⇒ standing provisional · tier and source kept
+   compactQualified keeps it
+packages/i18n    copy/energy-source.ts
+   energySourceLabel(t, source) ──────▶ "Real · PVGIS (ERA5)" │ "Built-in estimate ±10%"
+                                            │
+T-FPLAT-072 (later): Provenance label prints it beside the tier, per figure
+```
+
+Nothing is stored and nothing is sent: two pure functions and static copy, read in-process.
+
+**Cases:**
+- **C1** · input · a figure computed from a source-of-record input and a fallback input, in either order → the fallback, never the source of record → proof: unit `packages/domain/tests/format/energy-source.test.ts` › "a figure computed from the fallback carries the fallback (F8-10)"
+- **C2** · input · inputs from ERA5 and SARAH3, in any order and repeated → one source of record naming SARAH3 then ERA5, each once, as a LITERAL expected list, so reordering the tuple turns it red → proof: unit `packages/domain/tests/format/energy-source.test.ts` › "a figure computed from two databases names each once, in ladder order (F8-08)"
+- **C3** · input · no input drew on irradiance (a shading fraction, a tariff) → `null`: the figure carries no source marker (§F8.2, the geometric-figure edge case) → proof: unit `packages/domain/tests/format/energy-source.test.ts` › "a figure no irradiance fed carries no source"
+- **C4** · input · money from a fallback figure with no standing or `confirmed` → standing `provisional`, the tier exactly as claimed (`derived` stays `derived`), source kept; `pending` and `reported` are kept → proof: unit `packages/domain/tests/format/qualified.test.ts` › "money from the fallback reads provisional (F8-10)"
+- **C5** · input · money from the source of record → tier and standing exactly as claimed, source kept → proof: unit `packages/domain/tests/format/qualified.test.ts` › "money from the source of record keeps what its caller claimed"
+- **C6** · input · a fallback figure compacted, once or twice → the source is still on it, asserted as the LITERAL `{ kind: 'estimate' }` because `qualifiers()` does not list it yet → proof: unit `packages/domain/tests/format/qualified.test.ts` › "keeps the energy source however many times it is compacted"
+- **C11** · input · a money call site that states no source (a payback written without it) → `tsc` refuses it: the field is required, and `null` must be said out loud → proof: none — a type; the `@ts-expect-error` in `packages/domain/tests/format/qualified.test.ts` fails `pnpm check:all`'s typecheck the moment the field turns optional
+- **C12** · input · a source of record naming no database (`databases: []`) → `tsc` refuses it: the label would print `Real · PVGIS ()` and name nothing → proof: none — a type; the `@ts-expect-error` in `packages/domain/tests/format/energy-source.test.ts` fails the typecheck the moment the tuple admits an empty list
+- **C13** · input · a source gathered out of order or twice (`ERA5, SARAH3, SARAH3`) and printed without passing through `energySourceOf` → the label still prints `SARAH3, ERA5`, each once, because it orders through `inLadderOrder` → proof: unit `packages/i18n/tests/energy-source.test.ts` › "prints each database once, in ladder order, however the source was gathered (F8-24)"
+- **C7** · input · the labels in English → exactly `Real · PVGIS (SARAH3)`, `Real · PVGIS (SARAH3, ERA5)` and `Built-in estimate ±10%`; in Hindi and Marathi the database names and `±10%` appear unchanged, and each language's fallback label rendered with a tolerance of 7 reads `±7%`, so a catalog that hard-codes the number fails → proof: unit `packages/i18n/tests/energy-source.test.ts` › "names the database and the tolerance unchanged in every language (F8-08)"
+- **C8** · input · the Hindi fallback label translated as the Hindi `estimated` tier word → refused: the two share one label, and that Hindi word is the injection that proves the source joined the group. NOT decided: a word shared INSIDE two members (Hindi अनुमान inside the fallback label, beside the tier अनुमानित) — `M146` compares whole labels; English carries the same overlap ("Built-in estimate" beside "Estimated") with the same meaning, and `/ship`'s reviewer reads the Hindi and Marathi → proof: unit `packages/i18n/tests/closed-vocabularies.test.ts` › "every closed vocabulary shows each member in its own words, in every language"
+- **C9** · roll · none today: the one reader outside `packages/domain` is the format invariant (`tests/invariants/src/format-rendering.ts:107` and `:122` — the `/start` grep searched `apps/` and `packages/*/src` and missed `tests/`; `tsc` found it at build), which ships in the same tree as the type and never runs against an older one; its two calls state `energySource: null` and its checks are unchanged, the invariant set being locked. The first stored or sent copy is `T-MS-101`'s → proof: none — nothing stored or sent
+- **C10** · observability · a figure that fell back says so in its own label; the window's log line and events are the adapter's → proof: none — `T-MS-101`
+- **n/a** · concurrency · pure functions and static copy; no shared state
+- **n/a** · partial-failure · nothing is written
+- **n/a** · retry · the same inputs always give the same source and the same words
+- **n/a** · tenancy · no tenant data is read; the labels are the product's, never a tenant setting (`F8-06`)
+- **n/a** · scale · one pass over a figure's inputs; the vocabulary has two members
+- **n/a** · platform · pure data and pure functions in the root entries both apps already load (`packages/i18n/CLAUDE.md`)
+
+**QA plan:** none — no screen, route or job reads a source yet; `T-MS-101` is the first reader and `T-FPLAT-072` the first renderer.
+**Verified:** digest 535aa802a3ff · 2026-09-26 · depth smoke, author-booted, no QA step (the plan is none: no screen, route or job reads `energySourceOf`, `energySourceLabel` or `Qualifier.energySource` yet) · web booted — the dev server on 3002 compiled this tree and `/login` rendered; one console error, `GET :8084/auth/session` refused, the api being out of this change's reach and not started · mobile bundled — Metro on 8081 served the ios and android bundles from this tree, both carrying `inLadderOrder` and the Hindi fallback label · api/worker n/a · parity n/a — no screen · unit 1386 pass in `pnpm check:all`, invariants green · red proofs: 12 CURRENT in `--stale` covering C1–C8, C11–C13 and D1–D4, 8 bad attempts withdrawn; `M47` seen red on the words before `extract` and `M71` scanning both new domain files at 100%, recorded outside the claims
 **DONE WHEN:**
 
-- Given an energy figure produced by the source of record, when it renders on any surface, then it carries "Real · PVGIS ({database})" with the database named (`F8-08`).
-- Given an energy figure produced by the built-in fallback, when it renders on any surface, then it carries "Built-in estimate ±10%" (`F8-08`).
-- Given the source of record is unavailable, when a user creates or opens a design, then the work proceeds, the fallback label appears on the energy figure, and every financial figure computed from it carries the fallback badge and the provisional chain (`F8-10`).
-- Given a document containing energy figures, when it is exported or opened through the customer link, then each figure's source label travels with it unchanged (`F8-09`).
-- Given an output produced by a model with documented limitations, when it is read on any surface or in any export, at any scale, then those limitations are stated where the output is read, and a scene element that does not participate in the computation states plainly that it does not (`F8-11`).
+- **D1** · **Given** an energy figure from the source of record or from the built-in fallback, **when** its source label is read in English, Hindi or Marathi, **then** it reads "Real · PVGIS ({database})" with the database named unchanged, or "Built-in estimate ±10%" (`F8-08`) → proof: unit `packages/i18n/tests/energy-source.test.ts` › "names the database and the tolerance unchanged in every language (F8-08)"
+- **D2** · **Given** a figure computed from inputs of mixed source, **when** its source is taken, **then** it is the fallback whenever any input came from it — never switched silently to the source of record — and it travels on the figure through compacting (`F8-09`) → proof: unit `packages/domain/tests/format/energy-source.test.ts` › "a figure computed from the fallback carries the fallback (F8-10)" + unit `packages/domain/tests/format/qualified.test.ts` › "keeps the energy source however many times it is compacted"
+- **D3** · **Given** money computed from a fallback energy figure, **when** it is qualified, **then** it carries the fallback source and reads `provisional`, its tier unchanged (`F8-10`) → proof: unit `packages/domain/tests/format/qualified.test.ts` › "money from the fallback reads provisional (F8-10)"
+- **D4** · **Given** the source labels, the tier words and the standing words, **when** they are shown on one label in any language, **then** no source label reads as a tier or a standing word (`F3-12`, `M146`) → proof: unit `packages/i18n/tests/closed-vocabularies.test.ts` › "every closed vocabulary shows each member in its own words, in every language"
 
 ---
 ### T-FPLAT-028 · Money never renders stale — version pinning, comparison-derived staleness, provisional rendering, sent-document immutability
@@ -1941,6 +2011,9 @@ These rows state properties of the product that engineering does not build as a 
 - **F8-07** (P0, `docs/prd/foundations/F8-data-honesty.md`) — **Labels are readable, not decorative, and never hover-only.** A tier, a source label, a staleness state or an honesty caveat renders as persistent, legible content beside the number it qualifies — not as a tooltip, not as a hover state, not as a colour difference alone, not as a footnote the reader must seek out. The source states the failure mode it is guarding against directly: the caveat is on the screen, not in a tooltip.
   **Enforced by:** the design system's `Provenance` label once `T-FPLAT-072` removes its one colour-only form (`withLabel={false}`, a dot with the word for assistive tech alone) — until then that mode is the open gap; screen review for the label's place beside its number, as `F7-35` already states.
 
+- **F8-11** (P0, `docs/prd/foundations/F8-data-honesty.md`) — **A model's documented limits travel with the model's outputs.** Where a computed output is produced by a model with known, documented limitations, those limitations are stated where the output is read — at every scale and on every surface, not only in a specification. Decorative scene elements that do not participate in a computation say so plainly rather than implying they were considered. Faster computation never changes what the physics claims.
+  **Enforced by:** the review of each surface that prints a shading output, where the limit text of `M05-94` (itself a law) must sit beside it at every scale — the Step 6 Layout Editor (`T-MS-205`), the Step 7 Proposal sheet (`T-MS-260`) and the Proposal Document (`T-M06-017`), each carrying an owed line; and `MS6-32` in `T-MS-206` — a decorative scene element states it casts no shadow. The model and its limit text are M05's (F8's own source pointer).
+
 ---
 
 ## Realized elsewhere
@@ -2111,7 +2184,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F8-08 | T-FPLAT-027 |
 | F8-09 | T-FPLAT-027 |
 | F8-10 | T-FPLAT-027 |
-| F8-11 | T-FPLAT-027 |
+| F8-11 | LAW |
 | F8-12 | T-FPLAT-028 |
 | F8-13 | T-FPLAT-028 |
 | F8-14 | T-FPLAT-028 |

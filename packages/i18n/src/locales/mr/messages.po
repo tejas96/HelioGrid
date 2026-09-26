@@ -88,6 +88,11 @@ msgid "Assumed"
 msgstr "गृहीत धरलेले"
 
 #. js-lingui-explicit-id
+#: src/copy/energy-source.ts:11
+msgid "Built-in estimate ±{tolerance}%"
+msgstr "अंगभूत अंदाज ±{tolerance}%"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "पुन्हा कॉल करा"
@@ -383,6 +388,11 @@ msgstr "पुणे"
 #: src/copy/company-signup.ts:38
 msgid "Rajesh Kulkarni"
 msgstr "राजेश कुलकर्णी"
+
+#. js-lingui-explicit-id
+#: src/copy/energy-source.ts:10
+msgid "Real · PVGIS ({database})"
+msgstr "वास्तविक · PVGIS ({database})"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:23

@@ -294,6 +294,7 @@ they are the specification.
 **Status:** planned
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
+**Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-17-proposal-document.md`;
 they are the specification. (The same brief also carries `08-customer-surfaces.md` rows `MS9-*`,
