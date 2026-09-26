@@ -1040,6 +1040,8 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 - Given any surface or file carrying structural quantities or a structural model, when it renders or is exported, then the material-estimate-not-structural-check statement travels with it (`F8-28`).
 - Given a design without a recorded sign-off, when any customer-facing surface is requested for it, then nothing is shown to the customer (`F8-29`).
 
+**Carried from SCR-M08-04's design review:** the POC's `STRUCTURE_DISCLAIMER` (`lib/structure.ts`) names only the verification and an Indian standard (IS 875). The ported string must also say it is a material estimate and not a structural check (`F8-28`), and a market-specific standard comes from the market pack, never the string.
+
 ---
 ### T-FPLAT-031 · The correlation-not-attribution reporting contract
 **Type:** engine · **Tier:** P0
