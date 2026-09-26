@@ -17,6 +17,12 @@
   --rail-w:72px;
   --header-h:64px; --topbar-h-mobile:56px; --bottomnav-h:72px;
   --content-max:1440px;
+  /* The width at which a screen switches to its desktop layout. CSS cannot read a custom property
+     inside @media, so a screen writes this value there and the adherence check accepts it only
+     while it equals this token. */
+  --bp-desktop:968px;
+  /* The widest a single-column form grows on a wide screen, so its lines stay readable. */
+  --form-max:520px;
 
   /* Grid gutters */
   --gutter-mobile:16px; --gutter-tablet:20px; --gutter-desktop:24px;

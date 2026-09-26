@@ -154,3 +154,11 @@ kind of mistake, never the story of the task it happened in.
 | Proof recorded against a script that was edited afterwards, so the evidence described an older version | every injection re-run on the final script, each log carrying the script's own hash; `break-and-run.sh` records its hash in every line | 1 |
 | A change's size shown to the owner left out its new files | the size is taken after staging, `git diff --cached --shortstat`, which counts new files | 1 |
 | A proof harness changed its own input before using it — `while read` without `-r` dropped the `\` from a regex — so an honest guard read as not red | the pattern passed raw; read the harness's log before blaming the guard | 1 |
+| A check captured its helper's output with `$(…)` and never read the exit status, so a crash in the helper printed nothing and the check read green | `… ) || { echo CRASHED; fail=1; }` on the capture, proven red with a malformed input | 1 |
+| A guard's claim was written wider than the pattern it matches — "a dark token set" held only a media query; "not DayNight" was read as "light" | each form the claim names gets its own red proof in the same change; a form with none is listed under the row's NOT held | 1 |
+| QA steps were written that pass on the unfixed code, because the fix does not change what they observe | each step states what differs before and after the fix, with the before value measured | 1 |
+| A bare pipe character inside a ledger table cell split the row, and the gate read the row as missing | never a pipe in a cell, escaped or not — the row parser refuses both; reword | 1 |
+| A `git add` naming one missing path staged nothing, and `2>/dev/null` hid the error | one path per add, and git's errors are never silenced | 1 |
+| An edit next to a digested ticket section added a blank line, and the review hash moved | insert only the line meant, then compare `verify-digest.sh --ticket` with `review.sha` | 1 |
+| A font present in the phone's folder was taken as a font the platform draws; Android looks faces up by file name and drew Roboto on every screen | `check:languages` checks Android's lookup by name (`M135`), and a device screenshot measures a title's width | 1 |
+| A type-guard proof named the error code of the OLD type after the type was narrowed | read the broken run's own `tsc` line before writing `--pattern` | 1 |

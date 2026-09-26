@@ -78,7 +78,7 @@ export function CodeStep({
         error={words.codeError ?? undefined}
         autoFocus={frame.codeEnabled}
       />
-      {primary === null ? null : (
+      {primary === null || words.primary === null ? null : (
         <Button
           variant="primary"
           size="lg"
@@ -89,7 +89,7 @@ export function CodeStep({
           {words.primary}
         </Button>
       )}
-      {resend?.kind === 'live' ? (
+      {resend?.kind === 'live' && words.resend !== null ? (
         <div className="hg-door-centred">
           <Button variant="ghost" size="md" onClick={() => signIn.press(resend.press)}>
             {words.resend}

@@ -1,7 +1,7 @@
 import type { PendingSwitch } from '@heliogrid/domain';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Icon, Text, TintedBlock, useFormat } from '@heliogrid/ui';
+import { AttentionGlyph, Button, Icon, Text, TintedBlock, useFormat } from '@heliogrid/ui';
 
 /**
  * The one deliberately unrecoverable act in the product (`F4-37`): what will be lost is named
@@ -23,18 +23,7 @@ export function SwitchPanel({
       <div className="hg-door-switch-head">
         <span className="hg-door-switch-mark">
           <Icon size="md">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 8v5" />
-              <path d="M12 16h.01" />
-            </svg>
+            <AttentionGlyph />
           </Icon>
         </span>
         <Text variant="h3" align="center">

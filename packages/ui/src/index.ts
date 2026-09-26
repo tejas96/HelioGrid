@@ -127,7 +127,7 @@ export { Box, Stack } from './primitives/Box';
 export type { FieldProps } from './primitives/Field';
 export { Field } from './primitives/Field';
 export type { IconProps, IconSize } from './primitives/Icon';
-export { ICON_SIZE, Icon } from './primitives/Icon';
+export { AttentionGlyph, ICON_SIZE, Icon } from './primitives/Icon';
 export type { PortalHostProps, PortalProps } from './primitives/Portal';
 export { Portal, PortalHost } from './primitives/Portal';
 export type { PressableProps } from './primitives/Pressable';

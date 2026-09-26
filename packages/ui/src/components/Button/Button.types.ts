@@ -7,7 +7,12 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 export type ButtonSize = 'lg' | 'md' | 'sm';
 
 export interface ButtonProps {
-  children?: ReactNode;
+  /**
+   * The words on the button — required: a Button with only an `icon` would be an icon-only control
+   * with no accessible name, which `F7-26` makes a build failure. An icon-only control is an
+   * `IconButton`, whose `label` is required.
+   */
+  children: string;
   /** primary = near-black (default, the identity marker); never make it coloured */
   variant?: ButtonVariant;
   size?: ButtonSize;

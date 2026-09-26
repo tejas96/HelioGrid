@@ -8,7 +8,7 @@ read as covering them. `data/MoneySummary` re-pulled **2026-09-11** after `M06-3
 replaced its floor at zero with the shown negative payable, on both sides. A partial pull on
 **2026-09-20** brought the design system's two new components — `data/FactRow` and
 `feedback/Explainer`, 97 typings now — with `manifest.json` and `tokens/elevation.css` (comment text
-only). **Held back, on purpose:** `adherence.oxlintrc.json` and `contracts/feedback/Banner.d.ts.txt`.
+only). A partial pull on **2026-09-25** brought `tokens/spacing.css` with two new tokens, `--bp-desktop` and `--form-max`; `manifest.json`'s token census does not list them until the next full pull, and nothing reads it for values (`src/parse.ts`). **Held back, on purpose:** `adherence.oxlintrc.json` and `contracts/feedback/Banner.d.ts.txt`.
 The design system gave `Banner` two props, `actionBelow` and `onFormChange`; pulling either file
 turns `ds:contract` red until `packages/ui` ports them, and a port is proven by running both
 platforms. They arrive with that port — `docs/tasks/deferred.md` names it.
