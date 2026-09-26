@@ -33,7 +33,8 @@ Assume the implementation is wrong until a step proves otherwise.
   mutation; design changed and quote not recomputed must read provisional, never silently final.
 - **Absurd input** — 0, negatives, 10⁶ kW, emoji names, 40-character Hindi labels, RTL characters,
   SQL-shaped strings, 500 characters of free text, leading or trailing spaces, a phone with the wrong
-  country code.
+  country code. A value read back from storage arrives as `null` or `''`, never only `undefined`.
+- **Compound checks** — each half of an `a && b` guard has a row where that half alone decides.
 - **Lifecycle** — the app backgrounded (RN timers suspend: wall-clock or interval?), rotation, the
   locale switched mid-flow, the session expiring mid-flow, the app killed mid-action.
 - **External side effects** — an SMS, a push, a payment, a webhook: sandboxed in QA, and safe when the

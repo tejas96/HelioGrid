@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -24,9 +24,17 @@ interface Brand {
 }
 
 function sourceFiles(repo: string): string[] {
-  return execFileSync('git', ['ls-files', 'packages'], { cwd: repo, encoding: 'utf8' })
+  return execFileSync(
+    'git',
+    ['ls-files', '--cached', '--others', '--exclude-standard', 'packages'],
+    {
+      cwd: repo,
+      encoding: 'utf8',
+    },
+  )
     .split('\n')
-    .filter((f) => f.endsWith('.ts') && !f.includes('/dist/') && !f.includes('/_generated/'));
+    .filter((f) => f.endsWith('.ts') && !f.includes('/dist/') && !f.includes('/_generated/'))
+    .filter((f) => existsSync(join(repo, f)));
 }
 
 /** Every branded type declared under `packages/`, with the file that mints it. */

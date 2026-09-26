@@ -41,7 +41,8 @@ A surface the diff reaches that the QA plan has no step for is a scope change, n
 **Depth.** `none` — no runtime path changed: report "no runnable surface", a complete result. `smoke`
 — runtime code changed but no behaviour a person meets (a type, a module no screen reaches yet, a
 config): boot each surface once yourself, read the console, one `curl -i` or the worker log; no
-agents. `delta` — the task already carries a stamp and a fix changed part of its behaviour: the steps
+agents. When `git grep` finds no caller of the changed symbols outside their package, the smoke is
+one import of the built package, `node -e "import('./packages/<name>/dist/index.js')"`, and nothing boots. `delta` — the task already carries a stamp and a fix changed part of its behaviour: the steps
 that behaviour touches plus each surface's `landing`. `full` — the whole QA plan. A refactor with
 gates green has no runtime depth. State the depth and why; a wrong `smoke` is a finding against this
 skill, never a reason to run `full` on everything.
