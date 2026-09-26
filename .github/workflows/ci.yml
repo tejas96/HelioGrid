@@ -142,32 +142,39 @@ jobs:
             exit 1
           fi
           echo "migrations append-only: OK"
-      - name: A runtime change carries its /verify stamp (M113)
+      - name: A runtime change on a HIGH-risk task carries its /verify stamp (M113)
         if: github.event_name == 'pull_request'
         shell: bash
         env:
           BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           # git runs no commit hook for a cherry-pick, a revert, a rebase or a fast-forward, so the
-          # stamp git's pre-commit reads is read again here, on the pull request's head as pushed.
+          # stamp and the tier git's pre-commit reads are read again here, on the pull request's head
+          # as pushed. The tier is HIGH by path for the database, the API, a service, a screen and
+          # domain's money and permission rules; else it comes from the task the branch names
+          # (<kind>/<t-id>-<slug>) and its ticket in the head's tree — no task, no Risk line, reads HIGH.
           set -euo pipefail
           git fetch --no-tags --quiet origin "$BASE_REF"
           scratch="$(mktemp -d)"
-          digest_of() { # the runtime digest of one commit's tree
+          in_tree() { # a verify-digest mode read against one commit's tree
             GIT_INDEX_FILE="$scratch/$1.index" git read-tree "$1"
-            GIT_INDEX_FILE="$scratch/$1.index" bash scripts/verify-digest.sh --staged
+            GIT_INDEX_FILE="$scratch/$1.index" bash scripts/verify-digest.sh "${@:2}"
           }
-          head="$(digest_of "$HEAD_SHA")"
-          base="$(digest_of "$(git merge-base "$HEAD_SHA" "origin/$BASE_REF")")"
-          tip="$(digest_of "$(git rev-parse "origin/$BASE_REF")")"
+          base_sha="$(git merge-base "$HEAD_SHA" "origin/$BASE_REF")"
+          head="$(in_tree "$HEAD_SHA" --staged)"
+          base="$(in_tree "$base_sha" --staged)"
+          tip="$(in_tree "$(git rev-parse "origin/$BASE_REF")" --staged)"
           echo "runtime digest: head $head · merge base $base · $BASE_REF $tip"
           if [ "$head" = "$base" ] || [ "$head" = "$tip" ]; then
             echo "no runtime change: no stamp needed"
           elif git grep -qE "Verified:.*digest ${head}" "$HEAD_SHA" -- 'docs/tasks/*.md'; then
             echo "stamped: digest $head"
+          elif [ "$(in_tree "$HEAD_SHA" --risk "$HEAD_REF" "$base_sha")" = LOW ]; then
+            echo "LOW-risk task on $HEAD_REF: no stamp needed"
           else
-            echo "::error::The runtime tree this pull request's head carries (digest $head) has no /verify stamp in a task file. Run /verify on it and commit the stamped ticket (M113)."
+            echo "::error::The runtime tree this pull request's head carries (digest $head) has no /verify stamp in a task file, and $HEAD_REF names no task whose ticket says Risk: LOW. Run /verify on it and commit the stamped ticket (M113)."
             exit 1
           fi
       - uses: pnpm/action-setup@v4

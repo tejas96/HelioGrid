@@ -12,6 +12,9 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
 
 ## Task anatomy
 
+Two risk tiers (`CLAUDE.md` §3), said on the ticket's `Risk:` line. **LOW**: the lines below, target
+under 40. **HIGH**: the same plus the four marked HIGH. No `Risk:` line reads as HIGH.
+
 ```
 ### T-M02-001 · Quick Add Lead
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
@@ -24,54 +27,42 @@ requirement that carries it). The proof lives in `docs/prd/registers/screens.md`
         `tests/` tree, or into tests/invariants where it is a property of the system.
         CLAUDE.md §8 fixes the name and the place (M70).
 **DEFECTS:** (studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
-**Why:** one line, in EPC terms — what an installer gains and what breaks without it
-**Impact:** one or two sentences — who gains what when this ships, and the risk it removes or the number it moves
+**Risk:** LOW — <why>                  (or `HIGH — <why>`; git's pre-commit and CI read it from the task the branch names, M113)
+**Why:** one or two lines, in EPC terms — who gains what, and what breaks without it
 **Scope:** fixed at /start, locked by the go: **In** — the behaviours and the layers they touch ·
         **Out** — what is left out, with why · **Size** — files and lines. A new behaviour, layer,
         table, route or contract, or more than 1.5× the size, goes back to the owner before it is built
 **Placement:** one row per NEW fact (a type, a vocabulary, a string, a query, a wire shape, a policy
-        number): `| fact | owning package (architecture.md §2) | why it owns it | how others reach it |`
-**Data model:** the entity rows this task AUTHORS (a table copied from the data model), with the
+        number): `| fact | owning package (architecture.md §2) | why it owns it | how others reach it |`,
+        naming the guard each fact joins (Law 12)
+**Data model:** (HIGH) the entity rows this task AUTHORS (a table copied from the data model), with the
         migration number and each table's tenancy; or "none — reads <entities> authored by T-…"
-**Contract:** the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
+**Contract:** (HIGH) the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
 **Depends on:** task ids and migration numbers that must land first
-**Out of scope:** what this task deliberately leaves to which other task
-**Settle at /start:** the readings the PRD leaves open, each ruled with one reason before the go
-**Cases:** (a task with a runtime path) one line per failure case the design was attacked with, and
-        one `n/a` line for each of /start §3's nine classes that cannot occur here, with why:
-        `- **C1** · <class> · <the case> → <the fix> → proof: <proof>`
-        `- **n/a** · <class> · <why it cannot occur>`
-        A task with no runtime path writes the one line `**Cases:** none — <why>` instead, and carries
-        no QA plan and no `qa-*` proof.
-**Schema:** (a task that authors tables) one line per stored fact — a table, a column, an index,
-        a grant, a policy: `- **S1** · <the fact> → proof: <proof>`
-**QA plan:** (a task with a runtime path) written at /start, before code, and edited only with
-        the scope: one line per step a QA agent drives, behaviour-level — what a person does and
-        sees, never a selector or a seed (those go in the run's own `run.md`):
-        `- **Q1** · <api|web|mobile|worker|parity> · <claim ids, or landing> · <the action> → expect <literal> · observe <kind> · severity <blocker|major|minor>`
+**Cases:** one line per REAL risk the design was attacked with, nothing for one that cannot occur here:
+        `- **C1** · <risk> → <fix> → <proof>`
+**Used by:** the later tasks that consume what this one lands, in one line — written here, never into their tickets
+**QA plan:** (HIGH) written at /start, before code, and edited only with the scope: the steps a person
+        would notice plus one `landing` per surface, behaviour-level — what a person does and sees,
+        never a selector or a seed (those go in the run's own `run.md`):
+        `- **Q1** · <api|web|mobile|worker|parity> · <case ids, or landing> · <the action> → expect <literal> · observe <kind> · severity <blocker|major|minor>`
         — money, tenancy or provenance is `blocker`; the severity is set here, never by the executor
-**Verified:** digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the runtime
-        tree it drove, never by hand; git's pre-commit refuses a runtime change without it (M113)
+**Verified:** (HIGH) digest <12 hex> · <date> · <per-surface verdicts> — written by /verify from the
+        runtime tree it drove, never by hand; git's pre-commit refuses a HIGH runtime change without it (M113)
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased —
-        each line `- **D1** · Given … → proof: <proof>`
+        each line `- **D1** · Given … → <proof>`
 ```
 
-Every case, schema fact and done-when line is a CLAIM with an id that is never reused in the task.
-A proof is one of: `unit `<test file>` › "<test title>"` · `invariant `<invariant file>` ›
-"<failure text>"` · `qa-api | qa-web | qa-mobile | qa-worker | qa-parity Q<n>`, naming
-the ticket's own QA plan step, whose surface matches · `recorded <id>` (a
-proof the author drives, through `scripts/record-proof.sh`) · `gate <M-id>` (a gate whose HELD or
-PARTIAL row holds the line, its red proof in the row) · `held <M-id>` (a case an existing HELD or
-PARTIAL row already guards, with no new work) · `none — <reason>` (a case nothing can prove here;
-the owner sees it at /start). `held` and `none` are for cases only; several proofs join with ` + `.
-Gate 32 checks this shape — and that every `qa-*` proof names a QA plan step of its surface and
-every step names a claim or `landing` (M139) — and never whether a proof is right.
-`**Broken at /start:**` is the retired form of Cases: a shipped ticket may still carry it, and gate
-32 refuses it on any other.
-
-A task takes this whole shape at `/start`, before it is built, and keeps it; `/start` fixes a missing
-part before the go. No gate checks that every part is present; gate 32 checks only the claims'
-shape.
+A case or done-when line's proof is one of: `<test file> › "<test title>"` · `tsc` — a type refuses
+it, with the `@ts-expect-error` line that shows it · `Q<n>`, a step of the ticket's own QA plan ·
+`recorded <id>`, a proof the author drives through `scripts/record-proof.sh` · `none — <reason>`, a
+case nothing can prove here, which the owner sees at /start. A money, tenancy, permission or safety
+rule, and a gate the task adds or alters, names a test that `scripts/break-and-run.sh` proves red;
+its proof is filed under the line that names the test (`.claude/rules/testing.md`). No gate checks the
+ticket's shape; `/start` fixes a missing part before the go and `break-it-reviewer` reads the tier.
+Tickets written before this shape carry the earlier grammar (`→ proof:`, `**n/a**` lines, `**S<n>**`
+claims, unnumbered done-when lines): `/start` rewrites a ticket into this shape before the go, and a
+shipped ticket stays as history.
 
 ## Binding rules
 

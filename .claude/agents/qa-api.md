@@ -24,7 +24,7 @@ without a tenant pin is `inconclusive`, never a pass** — see `infra/README.md`
 container is not running, report `inconclusive` naming it — do not start one.
 
 **Seeding.** When the plan names a SEED, run exactly that one-off command from `apps/api`
-(`.claude/skills/verify/SKILL.md` §3 holds its shape): it calls the module's own writer and leaves
+(`.claude/skills/verify/SKILL.md` §2 holds its shape): it calls the module's own writer and leaves
 no file behind. Seed only into the company this run created, by the id its sign-in step returned.
 Record the seed's output as the step's evidence. A step that needed a seed and had none is
 `inconclusive`, never a pass over empty data.
