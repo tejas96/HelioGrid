@@ -20,7 +20,8 @@
 # which read the database.
 # --build rebuilds that package around the break: a test in another package imports the last BUILD.
 # --task and --claims append the proof to the task's record in .git/heliogrid-harness/<T-id>/, which
-# survives the session and never enters the tree. --stale lists the latest proof per file, test, title,
+# survives the session and never enters the tree; a claim is a case or done-when line whose text names
+# the test (`.claude/rules/testing.md`). --stale lists the latest proof per file, test, title,
 # actor AND claim set (order-free) — two proofs of one test for different claims keep their own lines,
 # and a line whose claim set is no longer used is withdrawn — and which are stale: the file, the log or
 # the test changed since (an --expect proof: its own test or the shared code around every test, never a
@@ -218,29 +219,30 @@ test_file="${test_file#./}"; file="${file#./}"
 floor=3; [ -n "$pattern" ] && [[ "$test_cmd" != *invariants* ]] && floor=1
 [[ "$runs" =~ ^[0-9]+$ ]] && [ "$runs" -ge "$floor" ] || refuse "--runs must be $floor or more: a red proof holds on every run$([ "$floor" = 3 ] && echo ', never on one')"
 case "$actor" in author|reviewer) ;; *) refuse "--actor is author or reviewer" ;; esac
-{ [ -z "$task" ] && [ -z "$claims" ]; } || { [[ "$task" =~ ^[A-Za-z0-9._-]+$ ]] && [[ "$claims" =~ ^[CDS][0-9]+(,[CDS][0-9]+)*$ ]]; } \
+{ [ -z "$task" ] && [ -z "$claims" ]; } || { [[ "$task" =~ ^[A-Za-z0-9._-]+$ ]] && [[ "$claims" =~ ^[CD][0-9]+(,[CD][0-9]+)*$ ]]; } \
   || refuse "--task <T-id> and --claims <C1,D2> come together, or not at all"
-# A proof is filed only under a claim whose own `→ proof:` names it: under --expect, exactly
-# `unit|invariant `<test-file>` › "<title>"`; under --pattern, that test file or a `gate|held M<n>`
-# whose mechanisms.md row names the test file's stem (`check:adherence` names check-adherence.sh).
+# A proof is filed only under a case or done-when line that names its test: the line `- **C1** · …`
+# (its own indented continuation joined; any other line ends it) carries `<test-file>` and, under
+# --expect, `› "<title>"` right after it — the file and the title as ONE pair, never two substrings.
 [ -z "$task" ] || (cd "$root" && python3 -B - "$task" "$claims" "$test_file" "$expect" <<'CLAIMS') || exit 2
-import os, re, sys
+import re, sys
 sys.path.insert(0, "scripts")
-from gates import claim_items, split_proofs, task_blocks
+from gates import task_blocks
 task, claims, test_file, expect = sys.argv[1:]
 block = next((b for b in task_blocks(".") if b["id"] == task), None) or sys.exit(f"break-and-run: no ticket {task} in docs/tasks/")
-proofs = {m[1]: split_proofs(m[2]) for field in ("Cases", "Schema", "DONE WHEN")
-          for item in claim_items(block["body"], field)[0] or [] if (m := re.match(r"\*\*([CDS]\d+)\*\*.*?→ proof:(.*)$", item))}
-stem = os.path.splitext(os.path.basename(test_file))[0]
-enforcer = {m[1]: m[2].replace(":", "-") for m in re.finditer(r"^\| (M\d+) \|[^|\n]*\|([^|\n]*)\|", open(".claude/mechanisms.md").read(), re.M)}
-def names(proof):
-    if expect:
-        return proof in (f'unit `{test_file}` › "{expect}"', f'invariant `{test_file}` › "{expect}"')
-    gate = re.fullmatch(r"(?:gate|held) (M\d+)", proof)
-    return proof.split(" › ")[0].split(" ", 1)[-1] == f"`{test_file}`" or bool(gate and stem in enforcer.get(gate[1], ""))
+lines, current = {}, None
+for line in block["body"].split("\n"):
+    if m := re.match(r"- \*\*([CD]\d+)\*\*", line):
+        current = m[1]; lines[current] = line
+    elif current and line.startswith("  ") and line.strip():
+        lines[current] += " " + line.strip()
+    else:
+        current = None
+pair = re.escape(test_file) + (r'`? › "' + re.escape(expect) + '"' if expect else "")
 for cid in claims.split(","):
-    if not any(names(p) for p in proofs.get(cid, [])):
-        sys.exit(f"break-and-run: {task} {cid}'s proof ({' + '.join(proofs.get(cid, ['no such claim']))}) does not name this proof — file it under the claims whose own proof names it")
+    line = lines.get(cid, "")
+    if not re.search(pair, line):
+        sys.exit(f"break-and-run: {task} {cid} does not name this test ({line[:80] if line else 'no such case'}) — file the proof under the case or done-when line that names it")
 CLAIMS
 
 crash='Transform failed|SyntaxError|No test files found|error TS[0-9]+|Cannot find module|ERR_MODULE_NOT_FOUND|SKIP invariants'

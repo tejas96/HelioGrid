@@ -138,38 +138,3 @@ this file: when the path goes, the row goes.
 | Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug. The box is now raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a consumer style that shrinks the box further, brings the clip back. | Leave the raised box alone; give the parent room instead. | never |
 | React Native's `flattenStyle` copies EVERY key of every style object it is handed, `undefined` values included — so a later entry written as `{ x: maybeUndefined }` ERASES the `x` the variant beneath it set, silently and on every element that needed no override. The web half has the opposite behaviour, so the bug appears on the phone only. | Append the object conditionally — `cond ? { x } : undefined` — never a key whose value may be undefined. | never |
 | A web `Text` whose inline style is dropped between renders keeps an EMPTY `style=""` attribute: React clears the properties it set and never removes the attribute, so `.hg-text[style]` matches an element with no inline style left. The rendered value is correct; only the attribute lingers, and only after a language switch. | Read the computed value, never the attribute's presence. | React removes an emptied style attribute |
-
-## Misses — mistakes made in the work, counted
-
-A mistake the agent made once (`CLAUDE.md` §1): what went wrong, the fix it got, how often it has
-happened. `/ship` adds a row, or finds its row. A SECOND sighting is a law break: the general rule is
-written where it fires, in that change, and the row goes — that is its retire-when. A row states the
-kind of mistake, never the story of the task it happened in.
-
-| miss | fix it got | seen |
-|---|---|---|
-| A reused browser tab's old console errors read as the current page's | `/verify` §8 "close each tab when its server stops" | 1 |
-| A state change written without the lock its sibling state changes take — two at once both read the old state and both recorded the act | the lock taken before the read, as its siblings do, and a forced-overlap test red without it | 1 |
-| Proof recorded against a script that was edited afterwards, so the evidence described an older version | every injection re-run on the final script, each log carrying the script's own hash; `break-and-run.sh` records its hash in every line | 1 |
-| A change's size shown to the owner left out its new files | the size is taken after staging, `git diff --cached --shortstat`, which counts new files | 1 |
-| A check captured its helper's output with `$(…)` and never read the exit status, so a crash in the helper printed nothing and the check read green | `… ) || { echo CRASHED; fail=1; }` on the capture, proven red with a malformed input | 1 |
-| QA steps were written that pass on the unfixed code, because the fix does not change what they observe | each step states what differs before and after the fix, with the before value measured | 1 |
-| A bare pipe character inside a ledger table cell split the row, and the gate read the row as missing | never a pipe in a cell, escaped or not — the row parser refuses both; reword | 1 |
-| A `git add` naming one missing path staged nothing, and `2>/dev/null` hid the error | one path per add, and git's errors are never silenced | 1 |
-| An edit next to a digested ticket section added a blank line, and the review hash moved | insert only the line meant, then compare `verify-digest.sh --ticket` with `review.sha` | 1 |
-| A font present in the phone's folder was taken as a font the platform draws; Android looks faces up by file name and drew Roboto on every screen | `check:languages` checks Android's lookup by name (`M135`), and a device screenshot measures a title's width | 1 |
-| A proof cited after the record moved past it — a measure recorded before the last edit; a line cited CURRENT when `--stale` lists only the latest per key | record after the last edit; cite the line `--stale` prints | 1 |
-| A rule written as prose where the script could decide it — "an invariant keeps three runs" | `CLAUDE.md` §8: the floor reads the test command | 1 |
-| A merged instruction weaker than its source — an "or" for an "and"; a reader sent to a home without the clause | show the sentence beside the one that stays; read the pointer as its reader | 1 |
-| A gate run before `pnpm infra:up`, refused connections read as failures | `CLAUDE.md` §5: infra first; read the error text | 1 |
-| A stamp wrote "pass" for surfaces the author booted by hand, with no QA step and no verdict behind them | an author's smoke is worded as what was booted and seen, never as a verdict | 1 |
-| Invisible characters (no-break space, zero-width space, soft hyphen) written literally into a test, where no reader can see them | written as `\u` escapes, checked with a byte grep | 1 |
-| A search for a changed type's readers covered `apps/` and `packages/*/src` and missed a reader under `tests/` | the search runs over the whole repo, `node_modules` and `dist` aside; `tsc` found it at build | 1 |
-| A `/start` ruling read from the requirement row alone contradicted its feature area's Behavior detail — a fallback figure's tier capped where the detail says the tier stays | the ruling taken from the Behavior detail; `case-reviewer` found it | 1 |
-| A check with two branches was proven red on one only — `--expect` refused, `--pattern` and its gate match never fired | each branch made to fire on its own input; `break-it-reviewer` found it | 1 |
-| A type admitted a value its rendering cannot honour — a source of record naming no database | a non-empty tuple, proven with a `@ts-expect-error` | 1 |
-| A ticket kept a signature and a function name the build changed | the Placement, Scope and diagram corrected to the shipped code in the same change (Law 8) | 1 |
-| A first-match edit meant for one ticket's cases landed in an earlier ticket's (the Workspace landmine) | the anchor searched from the task's own heading; gate 32 found it | 1 |
-| A red proof ran from a package folder, so vitest named the test by a package-relative path and no run counted | run from the repo root, where the path is the `--test-file` path | 1 |
-| A new required field made the older `@ts-expect-error` guards fail for the new reason too, so each stopped guarding its own field | every older guard call states the new field, and each guard is made red on its own field alone | 1 |
-| A table over a stated value skipped the zero, so a `!value` that drops a stated `0` stayed green | the zero row added, and the `!value` break run red | 1 |

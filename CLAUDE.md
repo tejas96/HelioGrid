@@ -22,18 +22,17 @@ to switch. A recommendation you withheld is a decision made for the owner. Never
 **Verify reality.** **A claim about this repo names the file and line that proves it** — "nothing
 imports X" is a finding only once the grep is shown, and reading a rule is not checking the code.
 A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
-sites, not declarations. **A guard for a fact this change adds proves nothing until it goes red on
-that fact** (Law 12); every other gate must still run, and its output is read, not its exit code.
+sites, not declarations. **A gate this change adds or alters proves nothing until it goes red on
+this change** (Law 12); every other gate must still run, and its output is read, not its exit code.
 
-**Every mistake leaves a record; the second one leaves a law.** A mistake found in the work — yours,
-or caught by a reviewer, a gate or the owner — is fixed at once, and `/ship` records it in the
-misses table of `.claude/landmines.md`. The same KIND of mistake a second time is a law break: in
-that change, write the general rule where it fires (`CLAUDE.md`, a skill, `.claude/rules/`) — as a
-type, lint rule or gate wherever one can decide it — and delete its row. Never fix only the instance.
-A lesson is written into the repo, where the work meets it — never kept only in an agent's memory,
-which nothing enforces. **The harness never only grows:** a change to it (`.claude/`, the gates, the
-scripts behind them) deletes at least as many lines as it adds, and a law written for a second
-sighting replaces text rather than joining it. A harness fault met during a task goes to
+**Every mistake leaves a record.** A mistake found in the work — yours, or caught by a reviewer, a
+gate or the owner — is fixed at once and listed in the PR body by its KIND. One that a rule could have
+prevented goes to `docs/tasks/deferred.md`, and a harness PR writes the general rule where it fires
+(`CLAUDE.md`, a skill, `.claude/rules/`) — as a type, lint rule or gate wherever one can decide it.
+Never fix only the instance. A lesson is written into the repo, where the work meets it — never kept
+only in an agent's memory, which nothing enforces. **The harness earns its size:** a rule, gate or
+agent is added only with the one it replaces or the cost it saves, named in the PR, and a rule written
+for a repeat replaces text rather than joining it. A harness fault met during a task goes to
 `docs/tasks/deferred.md` and is fixed in its own batched change, never inside the task.
 
 ## 2. The Laws
@@ -56,23 +55,33 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
     package before either screen consumes them. Screens render; they don't hold policy.
 12. **A new CODE fact joins its guard, and silence is never evidence.** Anything your change ADDS to a
     guarded kind — a brand, enum, token, route, table, error code — is enrolled in its
-    `mechanisms.md` row in the SAME change, and proven RED there. A gate that printed OK, a grep
-    that matched nothing, a registry that never named your fact: each is worth nothing until you
-    have made it FIRE on this change. A kind with no guard is said out loud, never assumed safe.
+    `mechanisms.md` row in the SAME change. A gate your change ADDS or ALTERS is proven RED in that
+    change: a check that printed OK is worth nothing until you have made it FIRE. An existing gate
+    that never named your fact is read, not re-proven. A kind with no guard is said out loud, never
+    assumed safe.
     Prose and design have no guard: a search for words proves the words exist, never that they are
     true or obeyed. They are held by a reviewer that reads the real thing, and by the owner.
 
 ## 3. Workflow
 
-**`/start` → build, tests first → tidy → `/verify`, which stamps the ticket → `/ship`, whose commit git's pre-commit refuses without that stamp.** All the thinking happens at `/start`, once, and is
-written into the ticket — the scope, the impact, the placement, the cases and the WHOLE QA plan — so
-the build executes and `/verify` runs that plan without planning again. `/ship` has a second actor
-review the diff as a PR before anything is pushed, commits on a yes, pushes and raises the PR (owner
-ruling); the owner merges. A screen builds only after its module's screens are designed and verified.
+**`/start` → build, tests first → tidy → `/verify` (HIGH), which stamps the ticket → `/ship`, whose
+commit git's pre-commit refuses without that stamp on a HIGH task.** All the thinking happens at
+`/start`, once, and is written into the ticket — the tier, the scope, the placement, the cases and,
+for HIGH, the WHOLE QA plan — so the build executes and `/verify` runs that plan without planning
+again. `/ship` has a second actor review the diff as a PR before anything is pushed, commits on a yes,
+pushes and raises the PR (owner ruling); the owner merges. A screen builds only after its module's
+screens are designed and verified.
+
+**Two risk tiers, on the ticket's `Risk:` line.** LOW — pure logic no caller reaches yet, docs,
+config: `break-it-reviewer` at `/ship`, no `/verify`, no stamp. HIGH — the database, the API, money,
+tenancy, permissions, any screen: `case-reviewer` before code, the QA agents at `/verify`,
+`design-reviewer` for a screen. No line reads as HIGH; git's pre-commit and CI read HIGH by path for
+the database, the API and its client, a service, a screen and domain's money and permission rules
+(`M113`), and `break-it-reviewer` checks the rest of the tier was honest.
 
 **One fresh session per task, and a budget.** A task run in a long session re-reads the whole old
-chat on every step. `/start` states which agents the task will pay for; a normal task uses three or
-four. Long command output goes to a scratch file and only its verdict lines are read.
+chat on every step. `/start` states which agents the task will pay for. Long command output goes to a
+scratch file and only its verdict lines are read.
 
 Before writing code, say three things: **which package owns each new file** (§6), **which facts are
 new and where their TYPE lives** (§8) — every fact the done-when lines need, beside the row that
@@ -81,14 +90,14 @@ works**. A fact no row carries is ruled into the row (§1) before a line is writ
 
 The whole kit. Nothing outside this table fires, and a plugin skill fires only when it names one.
 
-| stage | kit | what it does |
-|---|---|---|
-| design | the harness's `design` skill · `docs/start-here.md` · `scripts/next-screen.py` | the brief is the prompt, `start-here.md` opens the session, the script names the next brief |
-| 0–2 `/start` | `case-reviewer` · `design-reviewer` for a screen | clean start and branch · understand, conflicts, scope and impact · placement, cases, the whole QA plan · one second actor reads it · explain, stop for the go |
-| 3 build | `/migration` · `/contract-change` · hooks · `.claude/rules/` · `pnpm check:touched` | tests first; the procedure when schema or the contract changes; the guards, loaded by path or run by hand; a scope change goes back to `/start` |
-| 4 tidy | the author · `pnpm check:all` | one readability pass over the diff — reuse, names, dead code — then every gate once; `/simplify` only when the owner asks |
-| 5 `/verify` | `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` · `scripts/break-and-run.sh` | the ticket's QA plan on the surfaces the change reaches, over seeded data; the break tests last; the stamp |
-| 6 `/ship` | `break-it-reviewer` | the PR review of every code change before push, commit on a yes, push, the PR, its one CI run |
+| stage | kit | LOW | HIGH adds |
+|---|---|---|---|
+| design | `docs/start-here.md` · `scripts/next-screen.py` · Claude Design | — | the script names the next brief; the brief is the prompt; the owner draws the screen in Claude Design and the record is checked against it |
+| 0–2 `/start` | the ticket · `case-reviewer` · `design-reviewer` | clean start and branch · understand, conflicts · the tier, the scope · placement, cases, used-by, done-when · explain, stop for the go | the data model, the contract, the diagram, the whole QA plan · `case-reviewer` reads it, `design-reviewer` for a screen |
+| 3 build | `/migration` · `/contract-change` · hooks · `.claude/rules/` · `pnpm check:touched` | tests first; the procedure when schema or the contract changes; the guards, loaded by path or run by hand; a scope change goes back to `/start` | — |
+| 4 tidy | the author · `pnpm check:all` · `scripts/break-and-run.sh` | one readability pass over the diff — reuse, names, dead code — then every gate once; a red proof for a gate the change adds or alters | — |
+| 5 `/verify` | `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` · `scripts/break-and-run.sh` | not run | the QA plan on the surfaces the change reaches, over seeded data; the red proofs for money, tenancy, permission and safety rules, last; the stamp |
+| 6 `/ship` | `break-it-reviewer` | the PR review of every code change before push — it checks the tier — commit on a yes, push, the PR, its one CI run | the stamp against the verdicts |
 
 ## 4. Stop and ask the owner before
 
