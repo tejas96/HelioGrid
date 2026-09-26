@@ -10,6 +10,14 @@
 
 export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './checklist';
 export { formatDate, formatMonthYear, formatTime, monthNames, weekdayNames } from './datetime';
+export {
+  ENERGY_DATABASES,
+  type EnergyDatabase,
+  type EnergySource,
+  ESTIMATE_TOLERANCE_PERCENT,
+  energySourceOf,
+  inLadderOrder,
+} from './energy-source';
 export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
 export type { AuthoredInLanguage, AuthoredPerLanguage } from './languages';
 export {

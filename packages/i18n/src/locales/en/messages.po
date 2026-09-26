@@ -88,6 +88,11 @@ msgid "Assumed"
 msgstr "Assumed"
 
 #. js-lingui-explicit-id
+#: src/copy/energy-source.ts:11
+msgid "Built-in estimate ±{tolerance}%"
+msgstr "Built-in estimate ±{tolerance}%"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "Call again"
@@ -383,6 +388,11 @@ msgstr "Pune"
 #: src/copy/company-signup.ts:38
 msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
+
+#. js-lingui-explicit-id
+#: src/copy/energy-source.ts:10
+msgid "Real · PVGIS ({database})"
+msgstr "Real · PVGIS ({database})"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:23

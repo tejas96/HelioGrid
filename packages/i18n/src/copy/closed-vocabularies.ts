@@ -1,5 +1,6 @@
 import type { UiLanguage } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
+import { ENERGY_SOURCE_WORD } from './energy-source';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
 
 /**
@@ -19,7 +20,11 @@ export interface ClosedVocabularyGroup {
 export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
   {
     surface: 'provenance label',
-    vocabularies: { tier: PROVENANCE_TIER_WORD, standing: PROVENANCE_STANDING_WORD },
+    vocabularies: {
+      tier: PROVENANCE_TIER_WORD,
+      standing: PROVENANCE_STANDING_WORD,
+      source: ENERGY_SOURCE_WORD,
+    },
   },
 ];
 

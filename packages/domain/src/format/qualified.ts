@@ -1,4 +1,5 @@
 import type { MinorUnits } from '../money/minor-units';
+import type { EnergySource } from './energy-source';
 import { formatCompactMoney, formatMinorUnits, formatMoney, type MoneyOptions } from './money';
 import type { Numberish } from './number';
 import type { FormatPack } from './pack';
@@ -64,6 +65,12 @@ export interface Qualifier {
   readonly standing?: ProvenanceStanding;
   /** The words that must travel with the figure — `"Excludes subsidy"` (`F8-24`). */
   readonly disclosure?: string;
+  /**
+   * The energy data the figure was computed from (`F8-08`), `null` where no irradiance fed it.
+   * Required, not optional: a payback call site that left it out would print a figure computed
+   * from the fallback as final — the omission `F8-10` exists to stop.
+   */
+  readonly energySource: EnergySource | null;
 }
 
 /**
@@ -83,15 +90,29 @@ export interface QualifiedAmount {
   readonly tier: ProvenanceTier;
   readonly standing: ProvenanceStanding | null;
   readonly disclosure: string | null;
+  readonly energySource: EnergySource | null;
 }
 
-function qualified(value: Numberish, text: string, qualifier: Qualifier): QualifiedAmount {
+/**
+ * Money computed from the fallback never reads final (`F8-10`): a standing that would read final —
+ * none, or `confirmed` — becomes `provisional`. `pending` and `reported` already read not final.
+ * The tier is left alone: the fallback changes what data fed the figure, not how it was produced.
+ */
+function moneyStanding(qualifier: Qualifier): ProvenanceStanding | null {
+  const standing = qualifier.standing ?? null;
+  const readsFinal = standing === null || standing === 'confirmed';
+  return qualifier.energySource?.kind === 'estimate' && readsFinal ? 'provisional' : standing;
+}
+
+function qualifiedMoney(value: Numberish, text: string, qualifier: Qualifier): QualifiedAmount {
   return {
     value,
     text,
     tier: qualifier.tier,
-    standing: qualifier.standing ?? null,
+    standing: moneyStanding(qualifier),
     disclosure: qualifier.disclosure ?? null,
+    /* `??` for untyped callers, which the type cannot reach. */
+    energySource: qualifier.energySource ?? null,
   };
 }
 
@@ -102,7 +123,7 @@ export function qualifyMoney(
   qualifier: Qualifier,
   options?: MoneyOptions,
 ): QualifiedAmount {
-  return qualified(amount, formatMoney(pack, amount, options), qualifier);
+  return qualifiedMoney(amount, formatMoney(pack, amount, options), qualifier);
 }
 
 /**
@@ -117,7 +138,7 @@ export function qualifyMinorUnits(
   /* The held value is the MAJOR-unit figure the text shows, so compacting it later reads the
      same number a reader read rather than a paise count a thousand times larger. */
   const major = amount / 10 ** pack.minorUnitDigits;
-  return qualified(major, formatMinorUnits(pack, amount), qualifier);
+  return qualifiedMoney(major, formatMinorUnits(pack, amount), qualifier);
 }
 
 /**
@@ -134,6 +155,10 @@ export function compactQualified(pack: FormatPack, amount: QualifiedAmount): Qua
 /**
  * Every obligation on a figure, as the words a reader must be shown. A surface renders this list
  * whole or renders no figure — there is no subset that is still honest.
+ *
+ * The energy source is NOT in it: its label names a database, so it is no single identity word.
+ * A surface prints `energySource` through `@heliogrid/i18n`'s `energySourceLabel` beside this
+ * list, or it drops an obligation.
  */
 export function qualifiers(amount: QualifiedAmount): string[] {
   const words: string[] = [amount.tier];

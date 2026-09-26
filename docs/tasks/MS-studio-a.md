@@ -28,6 +28,7 @@ file's slice exactly once.
 **Status:** planned
 **PRD rows:** M05-14 (P0), M05-15 (P0), M05-16 (P0), M05-17 (P0), M05-18 (P0), M05-19 (P0), M05-20 (P0), MS1-01 (P0), MS1-02 (P0), MS1-03 (P0), MS1-04 (P0), MS1-05 (P0), MS1-06 (P0), MS1-08 (P1), MS1-09 (P0), MS1-10 (P0), MS1-11 (P0), MS1-12 (P0), MS1-13 (P0), MS1-14 (P0), MS1-15 (P0), MS1-16 (P0), MS1-17 (P0), MS1-18 (P0), MS1-20 (P0), MS1-21 (P0), MS1-22 (P0), MS1-23 (P0)
 **DESIGN:** SCR-MS-04 → PENDING
+**Owed by `T-FPLAT-027`:** the first energy figure is built here, so its builder lands in `packages/domain/src/format/qualified.ts` with `energySource` REQUIRED and its unit ladder (kWh, and MWh or GWh at scale, `M05-94`); the adapter maps PVGIS's `PVGIS-SARAH3` / `PVGIS-ERA5` to `ENERGY_DATABASES`, `EnergySource`'s wire schema derives in `contracts` with the card's route, and the card emits `F8` §F8.2's events — energy figure rendered by source, fallback window entered and exited.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step1Setup.tsx` · `3d_design_studio/src/features/solar-studio/lib/maps.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/maps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
 **DEFECTS:**
 - `CODE.step1-setup.11` — Ground Mount PRO-locked, dead toggle (ruling S1-1: un-gate, every plan → MS1-09).
