@@ -5,6 +5,7 @@ import {
   businessProfile,
   createDb,
   type Db,
+  file,
   invitation,
   invitationRole,
   marketPack,
@@ -257,6 +258,7 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  await db.delete(file).where(inArray(file.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
   await db
     .delete(notificationPreference)

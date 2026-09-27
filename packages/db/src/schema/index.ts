@@ -1,4 +1,5 @@
 import * as audit from './audit';
+import * as file from './file';
 import * as identity from './identity';
 import * as invitation from './invitation';
 import * as market from './market';
@@ -19,11 +20,13 @@ export const schema = {
   ...audit,
   ...invitation,
   ...notification,
+  ...file,
   ...settings,
   ...subject,
 };
 
 export * from './audit';
+export * from './file';
 export * from './identity';
 export * from './invitation';
 export * from './market';

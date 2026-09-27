@@ -1,6 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
+import { fileContract } from './file';
 import { healthContract } from './health';
 import { invitationContract } from './invitation';
 import { marketPackContract } from './market';
@@ -24,6 +25,8 @@ export * from './document-content';
 // The tenant's document defaults: branding, proposal, timeline and payment-term templates.
 export * from './document-templates';
 export * from './error';
+// The one files table (`T-FPLAT-035`): declare, confirm, and a short-lived download link.
+export * from './file';
 export * from './health';
 // The team invite (`T-M01-028`): the send, the Team list, the landing and the one-step accept.
 export * from './invitation';
@@ -38,6 +41,7 @@ export * from './notification';
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
 export * from './ports/message-delivery';
+export * from './ports/object-store';
 export * from './ports/push';
 export * from './ports/session';
 export * from './session';
@@ -59,6 +63,7 @@ export const apiContract = c.router(
   {
     audit: auditContract,
     auth: authContract,
+    file: fileContract,
     health: healthContract,
     invitation: invitationContract,
     marketPack: marketPackContract,

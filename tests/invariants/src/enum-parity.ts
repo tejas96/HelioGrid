@@ -1,6 +1,7 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
+  fileContentTypeSchema,
   invitationStatusSchema,
   measurementSystemSchema,
   membershipStatusSchema,
@@ -63,6 +64,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     options: invitationStatusSchema.options,
     contract: 'invitationStatusSchema',
   },
+  file_content_type: {
+    options: fileContentTypeSchema.options,
+    contract: 'fileContentTypeSchema',
+  },
 };
 
 /**
@@ -71,9 +76,7 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
  * decision ("does this cross the wire?") instead of a silent omission.
  */
 const NO_CONTRACT_YET: Record<string, string> = {
-  file_kind: 'files module not started — no API surface yet',
-  file_subject: 'files module not started',
-  file_status: 'files module not started',
+  storage_provider: "where a file's bytes live is server-internal; it never crosses the wire",
   usage_metric:
     'billing module not started (full metric enum seeded per the forward-compat register)',
   audit_actor_type: 'audit log is server-internal; never crosses the wire',

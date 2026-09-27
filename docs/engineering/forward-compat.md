@@ -21,7 +21,7 @@ market foreign key and the pack carries none out.
 | voice/telephony | ADR-0019 seams honoured by earlier tracks: users carry presence-compatible identity (user_presence keys on users), notifications enum already includes agent_escalation, call_handoffs summaries deep-link into the Track A timeline; Track C's first migration owns ring_groups/routing_policies/call_handoffs/user_presence + call_queue callback fields + `transferred` outcome. |
 | billing | usage_events full metric enum from day 1; entitlement guard is a decorator; proposal/project caps read COUNT over cycle window; read+export exemption in the guard. |
 | crm/leads | consent/dnd/do_not_call/preferred_language on customers from day 1 (ComplianceGate reads them); source incl. inbound_call; snooze/dormant timestamps; multi-contact; merge-ready (survivor re-pointing touches no money tables). |
-| survey | Versioned-append writes; a submission applied twice never produces a second record; photos = files rows w/ Tigris keys. |
+| survey | Versioned-append writes; a submission applied twice never produces a second record; photos = `file` rows with object-store keys (provider + external_id). |
 | design | designs table lands with Track B's survey/design migration (Day 6–7); segments[] + projection persisted; fingerprints + structuralVerification columns; rules injected. Lead detail shows "Create design" disabled until Track D lands (day ~16), then enables — the flow slot exists from Day 6. |
 | proposal/tranches | ONE tranches table = project collection schedule; Path A columns from Day 6; versions immutable; server numbers. |
 | customer_links | Full A–F lifecycle + label + contact_id + otp_required from Day 7 (named links now in scope, used at launch). |

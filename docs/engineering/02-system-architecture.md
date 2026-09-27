@@ -304,27 +304,30 @@ enter only if collaborative design editing ever lands.
 
 ---
 
-## 8. Storage architecture (Tigris, single-region pin `sin`)
+## 8. Storage architecture (one `ObjectStore` port, any S3 vendor)
 
-Tigris is Fly-native and S3-compatible (presigned URLs + multipart verified). No India
-region exists; `sin` is the nearest pin. DPDP Rules 2025 use a negative-list model —
-cross-border storage is permitted by default, and the DB
-holding primary PII stays in `bom`. Migration path to India-region S3-compatible storage
-is a documented adapter swap, not a rewrite.
+The api reaches storage through ONE port, `ObjectStore` (`packages/contracts/src/ports/object-store.ts`),
+whose one adapter speaks the S3 API — the language every vendor the suite has used or will use
+speaks. The vendor is settings (`OBJECT_STORE_*`) plus one `STORAGE_PROVIDERS` value, never code.
+Locally it is RustFS in `pnpm infra:up`. Which vendor production uses — and where it is pinned —
+is the hosting task's (`docs/tasks/deferred.md`); the Tigris `sin` pin this section used to state
+is withdrawn with Fly.
 
 | Bucket | Contents | Access pattern |
 |---|---|---|
-| `heliogrid-photos` | survey photos, roof captures, drone shots | presigned PUT; presigned GET (short TTL) |
-| `heliogrid-documents` | project documents, KYC uploads, engineer sign-off records | api-issued presigned PUT/GET |
-| `heliogrid-pdfs` | rendered proposals/quotes | worker writes; customer-link reads via object-scoped presigned GET |
-| `heliogrid-dem-tiles` | Copernicus GLO-30 DEM tiles (platform-wide, not tenant data) | worker ingest; api/browser presigned GET |
+| files (one per environment) | every tenant file: logos, survey photos, roof captures, project documents, KYC uploads, sign-off records | api-issued presigned PUT (15 min) and GET (5 min) |
+| `heliogrid-pdfs` | rendered proposals/quotes | worker writes; customer-link reads via object-scoped presigned GET — its slice decides |
+| `heliogrid-dem-tiles` | Copernicus GLO-30 DEM tiles (platform-wide, not tenant data) | worker ingest; api/browser presigned GET — its slice decides |
 | `heliogrid-backups` | pgBackRest WAL archive + nightly logical dumps | infra credentials only — api/worker have no access |
 
-Rules: tenant buckets key objects under `{tenant_id}/{entity}/{id}/…`; the api authorises
-+ quota-checks every presign (15 min PUT, 5 min GET); clients upload/download **direct to
-Tigris** — bytes never proxy through the api; every stored object has an owning row in
-Postgres (attachment/document tables) written on upload confirmation, so orphan sweeps are
-a query, not a bucket listing.
+Rules (`T-FPLAT-035`): every stored object has one row in `file`, written when the file is
+DECLARED and readable only once `complete` read the object back and found the declared size,
+SHA-256 and image type. Keys are `{tenant_id}/{file_id}`, both server ids. The upload link signs
+the length and the checksum, so the store refuses other bytes; the S3 presigner cannot sign the
+type, so the api checks the first bytes and every download link forces the row's type as an
+attachment. Clients upload and download **direct to the store** — bytes never proxy through the
+api. No file is larger than 2 MB (`FILE_MAX_BYTES`). The per-tenant quota check on every presign
+and the sweep of never-completed rows are M12's; until they land, pending rows are unbounded.
 
 ---
 
