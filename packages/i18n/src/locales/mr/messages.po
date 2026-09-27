@@ -575,6 +575,11 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "ही विनंती खूप मोठी आहे. ती लहान करून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
+#: src/copy/correlation.ts:12
+msgid "The agent called and the customer responded within {days, plural, one {{days} day} other {{days} days}}. We cannot prove the call caused it."
+msgstr "एजंटने कॉल केला आणि ग्राहकाने {days, plural, one {{days} दिवसात} other {{days} दिवसांत}} प्रतिसाद दिला. हा प्रतिसाद कॉलमुळेच आला हे आम्ही सिद्ध करू शकत नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:90
 msgid "The call did not go through"
 msgstr "कॉल लागला नाही"

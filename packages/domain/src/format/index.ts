@@ -68,6 +68,7 @@ export {
   type NumberOptions,
   parseNumber,
 } from './number';
+export { AGENT_CALL_WINDOW, type ObservationWindow } from './observation-window';
 export type {
   CompactStep,
   FormatPack,

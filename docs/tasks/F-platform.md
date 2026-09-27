@@ -1352,19 +1352,52 @@ Nothing is stored and nothing is sent: pure functions and copy, read in-process.
 ---
 ### T-FPLAT-031 · The correlation-not-attribution reporting contract
 **Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F8-30, F8-31, F8-32
+**Status:** shipped (#183)
+**PRD rows:** F8-30 (P0), F8-31 (P0), F8-32 (P0)
+**Risk:** LOW — pure logic and copy no caller reaches yet: one branded window and its policy number in `packages/domain/src/format/`, one caption in `packages/i18n`, one brand enrolled in `scripts/check-adherence.sh`. No HIGH path (`M113`): no table, no route, no screen, no money maths.
+**Why:** an owner who sees "₹18 lakh pipeline the agent touched" and reads it as "the agent earned ₹18 lakh" stops trusting every other number once they find out. The caption that says "sequence, not cause", and the window it names, are written once, so the agent screen, the dashboards and every export print the same words and no screen can type its own window.
+**Scope:** **In** — `packages/domain`: `format/observation-window.ts` (new — the branded `ObservationWindow` in whole days, and `AGENT_CALL_WINDOW`, the 3 days `F8-30`'s caption states), exported from `format/index.ts` · `scripts/check-adherence.sh`: `ObservationWindow` joins `BRANDS` (`M60`) · `packages/i18n`: `copy/correlation.ts` (new — `AGENT_CALL_CORRELATION`, the `F8-30` caption with the window as a slot, and `agentCallCorrelation(t, window)`), exported from the index, the six catalogs extracted, with `packages/i18n/tests/correlation.test.ts` (new) · docs: this ticket. **Out** — every surface that renders the caption, the projection-vs-achieved total, exports, analytics (below). **Size** — about 11 files, about 200 lines, half of them tests and catalogs; no migration, no contract.
 **Requirements (verbatim):**
 
 - **F8-30** (P0) — **Influence is reported as correlation, and the screen says so.** The rule, verbatim: **"'Deals it touched' is correlation, not attribution — and the screen must say so."** The automated agent's impact block renders with its caption, verbatim: *"The agent called and the customer responded within 3 days. We cannot prove the call caused it."* The product never claims that an automated touch generated a deal or a value of pipeline.
 - **F8-31** (P0) — **The caveat renders beside the number, not behind an interaction.** The correlation statement is persistent on-screen content adjacent to the figure it qualifies — never a tooltip, an info icon, a hover state, or a link to an explanation elsewhere. The source names the failure it is preventing: an owner sees a big number and over-trusts it because the caveat was one interaction away.
 - **F8-32** (P0) — **The law generalises: no surface claims causation where the product observed only sequence.** Any metric that relates an action to an outcome — automated-call impact, campaign influence, a rep's touch, a nudge, a notification — is reported as observed sequence with its window stated, never as credit. Related laws that flow from the same principle and are owned elsewhere: a forecast is a projection and never counted as revenue; won means signed; and an outcome that reverses stops counting immediately rather than quietly persisting in a total.
 
+**Placement:**
+
+| fact | owning package | why it owns it | how others reach it |
+|---|---|---|---|
+| `ObservationWindow` — whole days after an action within which an outcome was observed; branded, minted only in its owner | `domain` (`format/observation-window.ts`) | a policy number (`CLAUDE.md` §8); F8's honesty values live in `format/` beside `qualified.ts` and `sign-off.ts` | `@heliogrid/domain` root · guards: `tsc` (`@ts-expect-error` in the test) · `M60` cast check, `ObservationWindow` added to `BRANDS`, made red by an `as ObservationWindow` in a `packages/ui` file · `M125` brand registry, seen red before `BRANDS` lists it |
+| `AGENT_CALL_WINDOW` — `3` days, the window `F8-30`'s caption states | `domain` (`format/observation-window.ts`) | the policy number the caption and the agent's read model (`T-M07-018`) must agree on | root · the English caption test binds it to the verbatim text |
+| `AGENT_CALL_CORRELATION` — the `F8-30` caption, `{days}` a slot, EN/HI/MR; `agentCallCorrelation(t, window)` | `i18n` (`copy/correlation.ts`) | user-visible copy | `@heliogrid/i18n` root · guard: catalogs fresh (`M47`), read, not re-proven |
+
+**Data model:** none — the correlation set is derived at read over lead, project and call-record states and stores nothing (`docs/engineering/data-model.md:2871`).
+**Contract:** none — nothing sends a correlation figure yet (Law 9).
+**Depends on:** none — the task reads no data, and builds on the format layer already on `main` (`packages/domain/src/format/qualified.ts`) and the catalog runtime (`packages/i18n/src/runtime.ts`). Nothing of this task exists on `main`: `grep -rn -i correlation` over `packages` and `apps` source matches only the request-correlation header (`packages/contracts/src/common.ts:156`), which this task does not touch.
+**Settle at /start:**
+- **The window is a slot, and `3` is the policy number** — ruled into `F8-30`/`F8-32`: `F8-32` requires every such metric to state its window, and §F8.6's localization note says the window renders through the locale's rules "without altering the window itself". So the caption carries `{days}` with a plural, and `AGENT_CALL_WINDOW = 3` fills it; the English with 3 days is `F8-30`'s caption, verbatim.
+- **The window prints in Latin digits in every language** — a plural's `#` goes through `Intl.NumberFormat('mr')`, which prints `३` beside every other number in `3`; the caption uses the plain slot instead. The wider bug is logged in `docs/tasks/deferred.md`.
+- **The caption's words**, EN: `The agent called and the customer responded within 3 days. We cannot prove the call caused it.` · HI: `एजेंट ने कॉल किया और ग्राहक ने 3 दिनों के भीतर जवाब दिया। हम यह साबित नहीं कर सकते कि जवाब कॉल की वजह से आया।` · MR: `एजंटने कॉल केला आणि ग्राहकाने 3 दिवसांत प्रतिसाद दिला. हा प्रतिसाद कॉलमुळेच आला हे आम्ही सिद्ध करू शकत नाही.`
+- **"Projection never in the achieved total" is `T-M13-007`'s** — ruled into `F8-32`, which names it "owned elsewhere": the total is the revenue read-model, and its done-when line already says forecast and won are never summed (`M13-03`). No block-0 code sums a total.
+**Out of scope:**
+- **Rendering the caption beside the figure, never a tooltip (`F8-31`)** — `T-M07-018` (`M07-56`, its done-when line 2) and each influence surface in `M13` (`M13-06`); `packages/ui`'s `Block` already carries a persistent footer caveat (`packages/ui/src/components/Block/Block.types.ts:49`).
+- **Projection vs achieved in one total** — `T-M13-007` (above).
+- **The caveat in exports** — `T-M13-012` (`M13-42`) and `M03-58`.
+- **Campaign and other influence captions** — each module that reports one adds its own caption over an `ObservationWindow` (`M03-53`); no row gives their words yet.
+- **The analytics events** (correlation block rendered, caveat impression) — the surfaces that record them.
+**Cases:**
+- **C1** · the English caption drifts from `F8-30`'s verbatim text → the test holds the English, with `AGENT_CALL_WINDOW`, to the text copied from the PRD, not from the catalog → proof: `packages/i18n/tests/correlation.test.ts` › "prints the agent's caption in English exactly as F8-30 words it"
+- **C2** · a Hindi or Marathi reader gets the English caption → catalogs extracted; each translation must be Devanagari and differ from the other → proof: `packages/i18n/tests/correlation.test.ts` › "prints the agent's caption in Hindi and Marathi (F8-30)"
+- **C3** · a translation writes the number instead of the slot, or prints `३` or `१` through `#`, so the stated window is wrong or mixed with other digits → the test fills windows of 0, 1 and 5 days — each plural branch, and windows the catalog was never written with — and the caption's only digits must be the window's own, in Latin → proof: `packages/i18n/tests/correlation.test.ts` › "states the window it is given, in Latin digits, in every language (F8-32)", proven red with `scripts/break-and-run.sh` by a `#` in Marathi's `one` branch
+- **C4** · a screen types its own window (`3`), so the caption and the agent's read model can disagree → the caption takes only an `ObservationWindow`, minted only in `packages/domain` → proof: `tsc` — `@ts-expect-error` in `packages/i18n/tests/correlation.test.ts` › "takes only a window the domain states (F8-32)"; `scripts/check-adherence.sh` 10b (`M60`) for an `as ObservationWindow` outside `packages/domain`, proven red with `scripts/break-and-run.sh`
+- **C5** · the new brand is not in the cast registry, so `M60` never checks it → `ObservationWindow` joins `BRANDS` → proof: `recorded M125` — invariant `brand-registry` seen red before the line is added
+- none — the roll: nothing is stored or sent. Tenancy, money, N+1, unbounded input: a constant and a string.
+**Used by:** `T-M07-018` (the "deals it touched" block, `AGENT_CALL_WINDOW` for its read and `agentCallCorrelation` beside the figure) · `T-M13-001` and `T-M13-012` (the caption on dashboard and export) · the `M03` campaign surfaces (their own caption over an `ObservationWindow`).
 **DONE WHEN:**
 
-- Given an impact block reporting the automated agent's influence, when it renders, then the verbatim correlation caption of `F8-30` renders with it, as persistent on-screen content adjacent to the figure (`F8-30`, `F8-31`).
-- Given any metric relating an action to an outcome, when it renders, then its observation window is stated and no causal claim is made (`F8-32`).
-- Given a projection and an achieved figure on the same surface, when they render, then the projection is never included in the achieved total (`F8-32`).
+- **D1** · Given an impact block reporting the automated agent's influence, when it renders, then the verbatim correlation caption of `F8-30` renders with it, as persistent on-screen content adjacent to the figure (`F8-30`, `F8-31`). → C1, C2 for the caption; the rendering beside the figure is `T-M07-018`'s (Out)
+- **D2** · Given any metric relating an action to an outcome, when it renders, then its observation window is stated and no causal claim is made (`F8-32`). → C3, C4 for the window; no causal claim — the caption's words, held by review
+- **D3** · Given a projection and an achieved figure on the same surface, when they render, then the projection is never included in the achieved total (`F8-32`). → none — `T-M13-007`'s done-when line 1 (Out)
 
 ---
 ### T-FPLAT-032 · Honest state, usage figures and declared degradation
