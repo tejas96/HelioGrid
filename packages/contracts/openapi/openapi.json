@@ -291,6 +291,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -405,6 +415,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -781,6 +801,16 @@
               }
             }
           },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
           "429": {
             "description": "429",
             "content": {
@@ -939,6 +969,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -1009,6 +1049,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -1076,6 +1126,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -1250,6 +1310,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -1287,6 +1357,16 @@
                     "service",
                     "version"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -1331,6 +1411,16 @@
                     "status",
                     "checks"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -1758,6 +1848,16 @@
               }
             }
           },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
           "429": {
             "description": "429",
             "content": {
@@ -2115,6 +2215,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -2435,6 +2545,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -2565,6 +2685,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -2915,6 +3045,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -3046,6 +3186,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -3183,6 +3333,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -3311,6 +3471,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -3530,6 +3700,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -3613,6 +3793,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -3733,6 +3923,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -3839,6 +4039,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -3950,6 +4160,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -4143,6 +4363,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -4250,6 +4480,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -4490,6 +4730,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -4670,6 +4920,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -4891,6 +5151,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -5170,6 +5440,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -5438,6 +5718,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -5629,6 +5919,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -5856,6 +6156,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -6261,6 +6571,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -6627,6 +6947,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -6754,6 +7084,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -7828,6 +8168,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -8028,6 +8378,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -8314,6 +8674,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -8469,6 +8839,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -8721,6 +9101,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -8879,6 +9269,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -9063,6 +9463,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -9320,6 +9730,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -9688,6 +10108,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -10165,6 +10595,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -10999,6 +11439,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -11196,6 +11646,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -11476,6 +11936,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -11721,6 +12191,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -12120,6 +12600,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -12634,6 +13124,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -12988,6 +13488,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -13348,6 +13858,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -13503,6 +14023,16 @@
                   "required": [
                     "error"
                   ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
                 }
               }
             }
@@ -13699,6 +14229,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -13843,6 +14383,16 @@
                 }
               }
             }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
           }
         }
       }
@@ -13851,6 +14401,70 @@
   "info": {
     "title": "HelioGrid API",
     "version": "0.0.1",
-    "description": "Contract-first surface. Errors follow the canonical envelope { error: { code, message, details?, requestId } }."
+    "description": "Contract-first surface. Errors follow the canonical envelope { error: { code, message, details?, requestId } }. A request whose x-client-version is below the server's minimum is answered 426 on every operation, before the operation runs."
+  },
+  "components": {
+    "schemas": {
+      "ClientUpgradeRequired": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "CLIENT_UPGRADE_REQUIRED"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "requestId": {
+                "type": "string"
+              },
+              "upgrade": {
+                "type": "object",
+                "properties": {
+                  "requiredVersion": {
+                    "type": "string"
+                  },
+                  "storeUrls": {
+                    "type": "object",
+                    "properties": {
+                      "ios": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "android": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "required": [
+                      "ios",
+                      "android"
+                    ]
+                  }
+                },
+                "required": [
+                  "requiredVersion",
+                  "storeUrls"
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "requestId",
+              "upgrade"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
   }
 }

@@ -7,13 +7,16 @@ import type { SessionSignals } from './transport/transport';
 
 export type { Repositories } from './composition';
 
-export interface DataLayerConfig {
+/**
+ * A jar means React Native, and a phone always says which build it is (`F4-36`) — so the two come
+ * together or not at all, and a mobile layer without its version does not compile. Web sends
+ * neither: its session is an HttpOnly cookie the browser attaches, and it deploys with the api.
+ */
+export type DataLayerConfig = {
   baseUrl: string;
-  /** React Native only — web's session is an HttpOnly cookie the browser attaches itself. */
-  storage?: TokenStorage;
   /** What the device holds for its user (`F4-37`); nothing, until a capture feature lands. */
   heldWork?: HeldWork;
-}
+} & ({ storage: TokenStorage; appVersion: string } | { storage?: undefined });
 
 export interface DataLayer {
   repositories: Repositories;
@@ -25,7 +28,8 @@ export interface DataLayer {
  * transport themselves — they supply only what is genuinely platform-specific. Storage IS the
  * platform: a jar means React Native, and the session opens as a mobile one (`M01-07`).
  */
-export function createDataLayer({ baseUrl, storage, heldWork }: DataLayerConfig): DataLayer {
+export function createDataLayer(config: DataLayerConfig): DataLayer {
+  const { baseUrl, storage, heldWork } = config;
   /*
    * The transport is built INSIDE the registry, and the store is built from the registry's
    * repositories — so the two cannot be handed to each other directly. This relay is the knot:
@@ -39,8 +43,14 @@ export function createDataLayer({ baseUrl, storage, heldWork }: DataLayerConfig)
     couldHoldSession: () => session?.signals.couldHoldSession() ?? true,
   };
 
-  const repositories = storage
-    ? createRepositoryRegistry({ baseUrl, mode: 'mobile', storage, session: signals })
+  const repositories = config.storage
+    ? createRepositoryRegistry({
+        baseUrl,
+        mode: 'mobile',
+        storage: config.storage,
+        appVersion: config.appVersion,
+        session: signals,
+      })
     : createRepositoryRegistry({ baseUrl, mode: 'browser', session: signals });
   session = createSessionStore({
     auth: repositories.auth,

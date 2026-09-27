@@ -1974,6 +1974,8 @@ PODS:
     - React-utils (= 0.86.0)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.86.0)
+  - RNDeviceInfo (15.0.2):
+    - React-Core
   - RNFBApp (25.1.0):
     - Firebase/CoreOnly (= 12.15.0)
     - hermes-engine
@@ -2221,6 +2223,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNKeychain (from `../node_modules/react-native-keychain`)
@@ -2396,6 +2399,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeDependencies:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -2498,6 +2503,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 26aed52b05ce768cf39b41d1c020b5bc7a5a7d38
   ReactCommon: 4d01bfb533b93a2103329dfefc74db6a9e272888
   ReactNativeDependencies: 1bde419b968a85b78fcb444a0870d66fcdc9c937
+  RNDeviceInfo: d79872e11c8e9c4de0d65b0ee6e0cee719f37fea
   RNFBApp: ed845aeb52ca478b897c9abe711ebdafbfff24db
   RNFBMessaging: 78ac5bf982c374a7280fac77618055955fe51a41
   RNKeychain: 1b055a0ec36d058cb0a075e965d8c9d335e0c828

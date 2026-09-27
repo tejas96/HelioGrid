@@ -1,4 +1,9 @@
-import { AUTH_PATH_PREFIX, REQUEST_ID_HEADER } from '@heliogrid/contracts';
+import {
+  AUTH_PATH_PREFIX,
+  CLIENT_UPGRADE_REQUIRED_STATUS,
+  CLIENT_VERSION_HEADER,
+  REQUEST_ID_HEADER,
+} from '@heliogrid/contracts';
 import { type ApiFetcher, type ApiFetcherArgs, tsRestFetchApi } from '@ts-rest/core';
 import { ZodError } from 'zod';
 import type { DataError } from '../errors/errors';
@@ -36,7 +41,14 @@ export interface SessionSignals {
 
 type TransportConfig =
   | { mode: 'browser'; baseUrl: string; session: SessionSignals }
-  | { mode: 'mobile'; storage: TokenStorage; baseUrl: string; session: SessionSignals }
+  | {
+      mode: 'mobile';
+      storage: TokenStorage;
+      /** The store version this build shipped as; the api refuses one below its minimum (`F4-36`). */
+      appVersion: string;
+      baseUrl: string;
+      session: SessionSignals;
+    }
   | { mode: 'server'; headers: RequestHeaders };
 
 const UNAUTHENTICATED = 401;
@@ -155,7 +167,10 @@ function openRequestDeadline(callerSignal: AbortSignal | null | undefined): Requ
   };
 }
 
-/** Applies the mobile cookie jar around one fetch; browser and server modes skip it. */
+/**
+ * Applies the mobile cookie jar and the build's version around one fetch; browser and server modes
+ * skip both. Set HERE, not on the caller's headers, so the refresh carries the version too.
+ */
 async function sendRequest(
   config: TransportConfig,
   args: ApiFetcherArgs,
@@ -166,6 +181,7 @@ async function sendRequest(
   if (config.mode === 'mobile') {
     const cookie = await config.storage.get();
     if (cookie) headers.cookie = cookie;
+    headers[CLIENT_VERSION_HEADER] = config.appVersion;
   }
   const result = await tsRestFetchApi({
     ...args,
@@ -236,6 +252,9 @@ async function refreshedOnce(
     signal,
   );
   if (refreshed.status === OK) return sendRequest(config, args, signal);
+  /* A too-old build was not signed out, it was turned away — possibly by a machine that took a
+     raised minimum after the first call was served. That answer, not the 401, is the truth. */
+  if (refreshed.status === CLIENT_UPGRADE_REQUIRED_STATUS) return refreshed;
   config.session.onSessionLost();
   return first;
 }

@@ -47,7 +47,7 @@ where each path it fired on is held now.
 | id | fact | command |
 |---|---|---|
 | M25 | The committed OpenAPI equals what the contract emits; a `.refine()` or `.transform()` is not emitted, so a narrowing there is invisible. | `pnpm check:openapi` |
-| M26 | A breaking change to the API's shape fails against the pinned `oasdiff`; a set that grows by design is `x-extensible-enum`. | `pnpm check:openapi` (`scripts/oasdiff-pin.json`) |
+| M26 | A breaking change to the API's shape fails against the pinned `oasdiff`; a set that grows by design is `x-extensible-enum`. The too-old phone's 426, answered outside every route, is judged too: `emit-openapi.ts` writes it onto every operation. | `pnpm check:openapi` (`scripts/oasdiff-pin.json`) |
 | M27 | Every non-2xx response is the canonical envelope. | the global exception filter and response validation in `apps/api` |
 | M138 | Every route that answers 201 declares the `idempotency-key` header; each create's own lookup is its own wire test. | `pnpm test:unit` (`packages/contracts/tests/create-retry-key.test.ts` · `apps/api/tests/*/retried-*.test.ts`) |
 

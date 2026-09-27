@@ -6,6 +6,7 @@ import type { I18nRuntime } from '@heliogrid/i18n';
 import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
+import { getVersion } from 'react-native-device-info';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
@@ -20,12 +21,15 @@ import { ReactQueryHost } from './src/react-query-host';
  * gate and every route live in `src/navigation/`; this file used to be a
  * 216-line hand-rolled router with a screen defined inline.
  *
- * `storage` is the ONLY platform-specific piece of the data path — everything above it
+ * `storage` and `appVersion` are the ONLY platform-specific pieces of the data path — everything above them
  * (transport, client, repositories, session) is the same code web runs.
  */
 const dataLayer = createDataLayer({
   baseUrl: API_URL,
   storage: keychainStorage,
+  // The store version — Android's versionName, iOS's MARKETING_VERSION — which a person compares
+  // against the one a too-old refusal names (F4-36).
+  appVersion: getVersion(),
 });
 
 export default function App() {

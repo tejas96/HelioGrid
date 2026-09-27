@@ -75,6 +75,17 @@ const apiEnvObject = z.object({
   DEV_OTP_PHONE: developmentPhoneSchema.optional(),
   DEV_OTP_CODE: developmentCodeSchema.optional(),
 
+  /**
+   * The oldest phone build the api still serves, and where each store sells the new one
+   * (`F4-36`). Unset: no minimum, nothing refused. Raising it is a config change and a restart,
+   * never an app release. Its grammar is domain's (`parseClientVersion`), which this package may
+   * not import — so `createApp` owns both boot refusals, a minimum it cannot read and a minimum
+   * without both store links, in one place with one test.
+   */
+  MOBILE_MIN_VERSION: z.string().min(1).optional(),
+  MOBILE_STORE_URL_IOS: z.string().url().optional(),
+  MOBILE_STORE_URL_ANDROID: z.string().url().optional(),
+
   /* Injected by the platform, not by us. */
   FLY_MACHINE_VERSION: z.string().default('0.0.1'),
 });
