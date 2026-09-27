@@ -21,6 +21,7 @@ export * from './branding';
 export * from './calling';
 export * from './certification';
 export * from './commerce';
+export * from './files';
 export * from './format';
 export * from './market';
 export * from './messaging';

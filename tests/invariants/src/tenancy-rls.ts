@@ -5,6 +5,7 @@ import {
   assertPartitionChildrenUngranted,
   assertRlsArmed,
 } from './rls-armed';
+import { assertFileWritePath, seedFiles } from './tenancy-files';
 import { assert, assertSettingsWritePath, expectFail } from './tenancy-write-paths';
 
 /**
@@ -24,6 +25,7 @@ export async function runTenancyInvariants(adminUrl: string) {
   const invitationA = randomUUID();
   const invitationB = randomUUID();
   const templateA = randomUUID();
+  const files = { fileA: randomUUID(), fileB: randomUUID() };
   const templateB = randomUUID();
   const suffix = tenantA.slice(0, 8);
 
@@ -170,6 +172,8 @@ export async function runTenancyInvariants(adminUrl: string) {
       values
       (${templateA}, ${tenantA}, '{"en":"Invariant split A"}'::jsonb, true, false, now()),
       (${templateB}, ${tenantB}, '{"en":"Invariant split B"}'::jsonb, true, false, now())`;
+    // One stored file per tenant (migration 0013), so the leak loop reads real rows.
+    await seedFiles(sql, { tenantA, tenantB, userA, userB, ...files });
 
     assert(
       tenantTables.length >= 2,
@@ -284,6 +288,7 @@ export async function runTenancyInvariants(adminUrl: string) {
     );
 
     await assertSettingsWritePath(sql, { tenantA, tenantB, templateB });
+    await assertFileWritePath(sql, { tenantA, tenantB, userA, userB, ...files });
 
     // The audit log, written on the tenant-scoped path a guarded transition uses (`F2-22`).
     await sql.begin(async (tx) => {
@@ -363,12 +368,13 @@ export async function runTenancyInvariants(adminUrl: string) {
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
         `append-only proven on ${ledgerNames.join(', ')}; ` +
         `isolation behaviourally exercised on tenant, user_account, tenant_membership, ` +
-        `membership_role, invitation, invitation_role, tranche_template, audit_log_entry`,
+        `membership_role, invitation, invitation_role, tranche_template, audit_log_entry, file`,
     );
   } finally {
     // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
     const tenants = [tenantA, tenantB];
     await sql`delete from audit_log_entry where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from file where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tranche_template_line where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tranche_template where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from invitation_role where tenant_id in ${sql(tenants)}`.catch(() => {});

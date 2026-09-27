@@ -72,6 +72,24 @@ const apiEnvObject = z.object({
    * project still runs the whole path, and CI does too.
    */
   FCM_SERVICE_ACCOUNT_JSON_BASE64: serviceAccountJsonBase64Schema.optional(),
+  /**
+   * The object store every file's bytes live in (`T-FPLAT-035`), reached through the S3 API that
+   * every vendor the suite uses speaks — so a vendor move is these values, never code. All or
+   * none: absent in development binds the in-memory store — declares succeed, and no client can
+   * reach the link to upload — and production refuses to boot without one (the file module owns that refusal, since `PROVIDER` is domain's vocabulary).
+   * The endpoint is the address a CLIENT uploads to, so it must be reachable from a browser.
+   */
+  OBJECT_STORE_PROVIDER: z.string().min(1).optional(),
+  OBJECT_STORE_ENDPOINT: z.string().url().optional(),
+  OBJECT_STORE_REGION: z.string().min(1).optional(),
+  OBJECT_STORE_BUCKET: z.string().min(1).optional(),
+  OBJECT_STORE_ACCESS_KEY_ID: z.string().min(1).optional(),
+  OBJECT_STORE_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+  /** Bucket in the path (`host/bucket/key`) rather than the host name; RustFS and Oracle need it. */
+  OBJECT_STORE_FORCE_PATH_STYLE: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((value) => value === 'true'),
   DEV_OTP_PHONE: developmentPhoneSchema.optional(),
   DEV_OTP_CODE: developmentCodeSchema.optional(),
 
@@ -91,6 +109,22 @@ const apiEnvObject = z.object({
 });
 
 export const apiEnvSchema = apiEnvObject.superRefine((env, ctx) => {
+  const store = [
+    env.OBJECT_STORE_PROVIDER,
+    env.OBJECT_STORE_ENDPOINT,
+    env.OBJECT_STORE_REGION,
+    env.OBJECT_STORE_BUCKET,
+    env.OBJECT_STORE_ACCESS_KEY_ID,
+    env.OBJECT_STORE_SECRET_ACCESS_KEY,
+  ].filter((v) => v !== undefined).length;
+  if (store > 0 && store < 6) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['OBJECT_STORE_PROVIDER'],
+      message:
+        'The OBJECT_STORE_ provider, endpoint, region, bucket and both keys are set together, or not at all.',
+    });
+  }
   const declared = [env.DEV_OTP_PHONE, env.DEV_OTP_CODE].filter((v) => v !== undefined).length;
   if (declared === 1) {
     ctx.addIssue({

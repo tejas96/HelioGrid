@@ -59,6 +59,11 @@ root and it fills them for you:
 sed -i '' "s|/ABSOLUTE/PATH/TO|$PWD|g" .env.local   # GNU sed: drop the ''
 ```
 
+**One object store** (`T-FPLAT-035`). `heliogrid-object-store-local` is RustFS on loopback port
+`9000`, speaking the S3 API the api's one storage adapter speaks; `object-store-bucket` creates the
+`heliogrid-files-local` bucket and exits. `.env.example`'s `OBJECT_STORE_*` block holds the matching
+local values. Without them the api keeps files in memory and no client can upload one.
+
 Redis is not started. `REDIS_URL` is declared in `.env.example` but no service reads it
 (`packages/env/src/schema/api.ts` does not list it) — Law 9, it returns with its module.
 

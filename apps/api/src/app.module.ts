@@ -8,6 +8,7 @@ import { pinoHttpOptions } from './common/logging';
 import { TemporalModule } from './common/temporal/temporal.module';
 import { AuditModule } from './modules/audit/audit.public';
 import { AuthModule } from './modules/auth/auth.public';
+import { FileModule } from './modules/file/file.public';
 import { HealthModule } from './modules/health/health.public';
 import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
@@ -41,6 +42,7 @@ import { UserModule } from './modules/user/user.public';
     InvitationModule,
     SettingsModule,
     NotificationModule,
+    FileModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: SessionGuard }],
 })
