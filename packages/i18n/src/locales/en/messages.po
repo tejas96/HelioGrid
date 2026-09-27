@@ -59,8 +59,8 @@ msgstr "A code works for {codeMinutes} minutes."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:79
-msgid "A company name is needed — it goes on every quote and proposal you send."
-msgstr "A company name is needed — it goes on every quote and proposal you send."
+msgid "A company name is needed — it goes on every proposal you send."
+msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:136

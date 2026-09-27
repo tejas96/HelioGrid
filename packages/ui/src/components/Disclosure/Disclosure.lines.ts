@@ -17,12 +17,12 @@ export const DISCLOSURE_LINES: Record<RuledDisclosureKind, DisclosureLine> = {
   },
   'remote-survey': {
     lead: 'Surveyed remotely',
-    line: 'This quote is based on a remote survey — satellite imagery and the photographs you sent — and not on a visit to the roof.',
+    line: 'This proposal is based on a remote survey — satellite imagery and the photographs you sent — and not on a visit to the roof.',
     subject: 'the remote-survey basis',
   },
   structure: {
     lead: 'Not a structural certification',
-    line: 'Structure and mounting are quoted on typical roof conditions. This is not a structural certification, and a structural engineer must sign off on the roof before installation.',
+    line: 'Structure and mounting are priced on typical roof conditions. This is not a structural certification, and a structural engineer must sign off on the roof before installation.',
     subject: 'the structure disclaimer',
   },
   staleness: {
