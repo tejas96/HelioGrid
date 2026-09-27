@@ -11,8 +11,8 @@
  * (`UI_LANGUAGES` / `UiLanguage`), and restating it here would be the second list this
  * package exists to prevent.
  */
-export type { ApiErrorLike } from './copy/api-error';
-export { apiErrorMessageId, apiErrorRef } from './copy/api-error';
+export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
+export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { shownInNote } from './copy/authored-content';
 export type { CompanySignupCopyKey } from './copy/company-signup';
 export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';

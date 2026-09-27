@@ -176,7 +176,13 @@ async function sendRequest(
       signal,
     },
   });
-  if (config.mode === 'mobile') await absorbRotation(result.headers, config.storage);
+  if (config.mode === 'mobile') {
+    /* The server has answered, and may have committed: a jar that cannot be written is not "no
+       connection", and saying so would name a false reason (`F8-36`). */
+    await absorbRotation(result.headers, config.storage).catch(() => {
+      throw new InvalidResponseError();
+    });
+  }
   return result;
 }
 
@@ -263,6 +269,8 @@ export function createTransport(config: TransportConfig): ApiFetcher {
       // surfaces here as a raw ZodError. It is a bad response, not a bad network: pass it
       // through untouched and let normalizeClientError strip the Zod internals.
       if (error instanceof ZodError) throw error;
+      // Already classified where it happened, after the answer arrived.
+      if (error instanceof InvalidResponseError) throw error;
       throw deadline.classify(error);
     } finally {
       deadline.release();

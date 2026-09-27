@@ -4,6 +4,7 @@ import type {
   TenantErrorCode,
   TenantSettingsErrorCode,
 } from '@heliogrid/contracts';
+import type { TransportFailure } from '@heliogrid/domain';
 
 /**
  * The ONE definition of base error-code copy (foundation-dx spec §3.2), swept by the
@@ -72,6 +73,26 @@ const ROUTE_COPY: Record<
   },
 };
 
+/**
+ * `F8-36` — the words for an attempt the server gave no readable answer to. None of these can know
+ * whether a write landed, so each says to check before trying again and none says it failed. The
+ * same sentences fit a read, where the "if you were saving" clause asks nothing.
+ */
+const TRANSPORT_COPY: Record<TransportFailure, { id: string }> = {
+  no_connection: /*i18n*/ {
+    id: 'HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again.',
+  },
+  no_answer: /*i18n*/ {
+    id: 'HelioGrid did not answer in time. If you were saving, check whether it saved before trying again.',
+  },
+  unreadable_answer: /*i18n*/ {
+    id: "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again.",
+  },
+  cancelled: /*i18n*/ {
+    id: 'This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again.',
+  },
+};
+
 export interface ApiErrorLike {
   code: string;
   message: string;
@@ -91,4 +112,23 @@ export function apiErrorRef(error: ApiErrorLike): string | undefined {
   return error.code === 'INTERNAL' && error.requestId !== undefined
     ? `Ref: ${error.requestId}`
     : undefined;
+}
+
+/** A failed attempt as `@heliogrid/data`'s `DataError` describes it. */
+export interface AttemptFailureLike {
+  /** Set only by the client; `null` when the server answered with its own envelope. */
+  failure: TransportFailure | null;
+  /** The server's code — only an answer from the server carries one. */
+  code?: string;
+}
+
+/**
+ * `F8-36` — the catalog id for any failed attempt: the failure's words when the server gave no
+ * readable answer, else the server code's. Choosing by `failure` rather than by `code` is what keeps
+ * a server code that happens to be spelled like a failure on the server's side.
+ * Undefined → render `error.message`, as for `apiErrorMessageId`.
+ */
+export function attemptFailureMessageId(error: AttemptFailureLike): string | undefined {
+  if (error.failure !== null) return TRANSPORT_COPY[error.failure].id;
+  return error.code === undefined ? undefined : apiErrorMessageId(error.code);
 }
