@@ -108,6 +108,14 @@ export {
   type ScriptStack,
   splitScriptRuns,
 } from './scripts';
+export {
+  mayReachCustomer,
+  SIGN_OFF_DECISIONS,
+  type SignOff,
+  type SignOffDecision,
+  type SignOffRecord,
+  signOffOf,
+} from './sign-off';
 export { packOnTenantTime } from './tenant-pack';
 export {
   IN_UTILITIES,

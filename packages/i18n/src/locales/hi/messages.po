@@ -640,6 +640,11 @@ msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
 
 #. js-lingui-explicit-id
+#: src/copy/structure-disclaimer.ts:9
+msgid "This is a material estimate and a visual model, not a structural check. An engineer must verify the structure."
+msgstr "यह सामग्री का अनुमान और एक दृश्य मॉडल है, संरचनात्मक जाँच नहीं। संरचना की पुष्टि किसी इंजीनियर को करनी होगी।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:135
 msgid "This is the one thing in HelioGrid that cannot be got back"
 msgstr "HelioGrid में यही एक चीज़ है जो वापस नहीं मिल सकती"
