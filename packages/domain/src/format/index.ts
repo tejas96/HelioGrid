@@ -118,6 +118,7 @@ export {
   signOffOf,
 } from './sign-off';
 export { packOnTenantTime } from './tenant-pack';
+export { TRANSPORT_FAILURES, type TransportFailure } from './transport-failure';
 export {
   IN_UTILITIES,
   operatorsForRegion,

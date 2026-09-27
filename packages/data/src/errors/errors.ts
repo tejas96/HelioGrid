@@ -1,4 +1,5 @@
 import { type ErrorDetail, openErrorEnvelopeSchema } from '@heliogrid/contracts';
+import type { TransportFailure } from '@heliogrid/domain';
 import { ResponseValidationError, UnknownStatusError } from '@ts-rest/core';
 import { ZodError } from 'zod';
 
@@ -10,11 +11,17 @@ interface EnvelopeFields {
   requestId?: string;
 }
 
-/** Stable base for failures crossing the data-layer boundary. */
+/**
+ * Stable base for failures crossing the data-layer boundary. `failure` is `null` only when the
+ * server described the refusal itself; otherwise it names why no readable answer came (`F8-36`),
+ * and the screen words it with `attemptFailureMessageId` — never as "failed", because none of
+ * these knows whether a write landed.
+ */
 export class DataError extends Error {
   constructor(
     message: string,
     readonly retryable: boolean,
+    readonly failure: TransportFailure | null,
   ) {
     super(message);
     this.name = 'DataError';
@@ -26,15 +33,15 @@ export class ApiError extends DataError {
   readonly status: number;
   /**
    * UPPER_SNAKE envelope code ('VALIDATION_FAILED', route-specific literals…).
-   * 'UNKNOWN' when the body was not the envelope (e.g. a proxy's HTML error page) —
-   * apiErrorContent then falls back to `message`, never to wrong copy.
+   * 'UNKNOWN' when the body was not the envelope (e.g. a proxy's HTML error page) — `failure` is
+   * then `unreadable_answer`, whose words the screen shows instead of a code nobody wrote.
    */
   readonly code: string;
   readonly details?: readonly ApiErrorDetail[];
   readonly requestId?: string;
 
   constructor(status: number, message: string, envelope?: EnvelopeFields) {
-    super(message, status >= 500 && status <= 599);
+    super(message, status >= 500 && status <= 599, envelope ? null : 'unreadable_answer');
     this.name = 'ApiError';
     this.status = status;
     this.code = envelope?.code ?? 'UNKNOWN';
@@ -45,28 +52,28 @@ export class ApiError extends DataError {
 
 export class NetworkError extends DataError {
   constructor() {
-    super('The network request failed.', true);
+    super('The network request failed.', true, 'no_connection');
     this.name = 'NetworkError';
   }
 }
 
 export class RequestTimeoutError extends DataError {
   constructor() {
-    super('The network request timed out.', true);
+    super('The network request timed out.', true, 'no_answer');
     this.name = 'RequestTimeoutError';
   }
 }
 
 export class RequestCancelledError extends DataError {
   constructor() {
-    super('The request was cancelled.', false);
+    super('The request was cancelled.', false, 'cancelled');
     this.name = 'RequestCancelledError';
   }
 }
 
 export class InvalidResponseError extends DataError {
   constructor() {
-    super('The server returned an invalid response.', false);
+    super('The server returned an invalid response.', false, 'unreadable_answer');
     this.name = 'InvalidResponseError';
   }
 }
@@ -82,7 +89,7 @@ export class UnauthorizedError extends ApiError {
 /**
  * Parse with the contract's OWN schema so no caller hand-declares the envelope shape.
  * The human-safe copy is on the thrown ApiError; code/details/requestId ride along for
- * apiErrorContent (i18n) and applyServerErrors (forms).
+ * attemptFailureMessageId (i18n) and applyServerErrors (forms).
  */
 export function toApiError(res: { status: number; body: unknown }): ApiError {
   const parsed = openErrorEnvelopeSchema.safeParse(res.body);

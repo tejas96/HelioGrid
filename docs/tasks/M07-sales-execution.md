@@ -390,6 +390,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **DONE WHEN:**
 - Given an outbound call that encounters an automated menu, when the rail lacks the traversal capability, then the record shows the step was skipped and the call is flagged for human follow-up — and where the rail declares it, the record shows "navigated an IVR (N steps)" with markers (M07-49).
 - Given any telephony feature, when its adapter lacks the declared capability, then the defined degradation path runs and the record says so — no behaviour anywhere branches on a vendor's name (M07-54).
+- Given an automated step whose required capability is unavailable, when the step is reached, then it degrades on its declared path, the record shows what did not happen, and a human is notified (`F8-35`).
 
 ## Laws (enforced through screens and review, no standalone build)
 

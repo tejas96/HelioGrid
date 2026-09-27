@@ -40,6 +40,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **DONE WHEN:**
 - Given an upgrade, when it confirms, then entitlements are live immediately and a one-time prorated invoice exists (M12-48).
 - Given a downgrade where usage exceeds the target ceilings, when the owner confirms, then the preview showed exactly what will block, and after the boundary the over-ceiling designs still read and export (M12-49).
+- Given a restricting action a tenant can choose, when confirmation is requested, then exactly what will be blocked is shown before the confirmation (`F8-34`).
 - Given trial expiry, when it lands, then the state is `expired`, the plan-pick screen is the path forward, and read + export + links keep working (M12-53).
 - Given conversion, when checkout confirms, then the subscription exists at the gateway, the mandate rides the pack's rail, and entitlements are active immediately (M12-54).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -54,6 +55,8 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **DONE WHEN:**
 - Given any usage figure on the usage screen, when compared with what enforcement checks and the invoice bills, then all three come from the same rollup of the same ledger (M12-32, M12-34).
 - Given a bundle at 80%, when the usage screen renders, then the pre-warning is present, and no §M12.4 gate for that meter has fired yet (M12-34).
+- Given the tenant-visible usage view, when it renders a metered figure, then that figure equals the rollup used for enforcement and invoicing for the same period, and the period and provenance are labelled with it (`F8-33`).
+- Given a bundle that is 80% consumed, when the tenant opens the usage view before any gate fires, then the screen already says so (`F8-33`).
 - Given overage accruing, when the next invoice issues, then its add-on lines equal the ledgered overage at the book's published rates (M12-35).
 - (M12-36 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — the screen is owner-scoped and informational, per-period rollups against bundles with plain overage pricing and deep links to ledger detail, "no scary meters".)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -166,6 +169,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 - Given any state in the matrix and any capability row, when M12's enforcement is audited row by row, then no ✓ has become a block and no block has widened (M12-21, M12-22).
 - Given each gate in the enforcement-point table, when its fire point and denial are tested, then they match the table exactly and no other enforcement point exists (M12-23).
 - Given a cap reaching 80%, when the usage screen renders, then the pre-warning is present before any gate has fired (M12-30, M12-34).
+- Given any billing, entitlement or account-state message, when it renders, then it names what has changed, what still works, and no consequence that will not occur (`F8-34`).
 - (M12-31 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — every pause message states exactly what paused and what still works, specifically, never a generic "account limited". Its message content is exercised by M12-39's line under T-M12-011, "day 4's message names the paused set exactly", and by SCR-SHELL-06's rendering half in `docs/tasks/SHELL.md`.)
 **Settle at /start:**
 - The storage gate reads the latest `storage_gauge_snapshot` — the figure the usage screen shows — and nothing sums bytes between snapshots (M12-23, M12-33, M12-34) — ruled: the 10% headroom above the ceiling is the allowance for a day's uploads between nightly snapshots (M12-33 forbids a counter and M12-34 requires the gate and the screen to read the same figure; a tenant can overshoot by at most one day's uploads, which the headroom exists to absorb).
