@@ -59,8 +59,8 @@ msgstr "एक कोड {codeMinutes} मिनट तक काम करत�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:79
-msgid "A company name is needed — it goes on every quote and proposal you send."
-msgstr "कंपनी का नाम ज़रूरी है — यह आपके हर कोटेशन और प्रस्ताव पर जाता है।"
+msgid "A company name is needed — it goes on every proposal you send."
+msgstr "कंपनी का नाम ज़रूरी है — यह आपके हर प्रस्ताव पर जाता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:136

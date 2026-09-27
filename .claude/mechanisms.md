@@ -73,6 +73,7 @@ where each path it fired on is held now.
 | M47 | The catalogs are freshly extracted. | `pnpm check:catalogs` |
 | M48 | Every UI language is registered: `LANGUAGE_META` and the catalog loaders are `satisfies Record<UiLanguage, …>`; the phone's plural data is not yet (`docs/tasks/deferred.md`). | `pnpm turbo typecheck` |
 | M146 | A closed vocabulary's translated words never merge two members into one word, across every vocabulary one surface shows together (`F3-12`). | `pnpm test:unit` (`packages/i18n/tests/closed-vocabularies.test.ts`) |
+| M147 | The commercial document is a Proposal in every language (`F3-11`): no served source line outside a comment, no catalog line and no file that names the app on a phone carries *quote*, *quotation* or *quoting* in any case or inside an identifier, or their Devanagari spellings. No exemption yet: `T-FPLAT-020` adds the search alias (`F6-22`) by path. | `pnpm check:adherence` 19 |
 | M135 | A language in the set is ready (`F3-27`): every character covered by the sans stack, plural rules present with every category, a static phone face per sanctioned weight in both bundles, Android resolving each family by name. Reads the BUILT packages. | `pnpm check:languages` |
 | M49 | One format implementation (`new Intl.*` only), and a compacted amount keeps its disclosure (`F3-24`). | `pnpm turbo test` (invariant `format-rendering`) |
 

@@ -77,7 +77,7 @@ export type CompanySignupCopyKey = keyof typeof COMPANY_SIGNUP;
  */
 export const COMPANY_FIELD_NEEDED: Record<keyof CreateTenant, MessageRef> = {
   companyName: /*i18n*/ {
-    id: 'A company name is needed — it goes on every quote and proposal you send.',
+    id: 'A company name is needed — it goes on every proposal you send.',
   },
   ownerName: /*i18n*/ { id: "Your name is needed — you become this company's first EPC owner." },
   city: /*i18n*/ { id: 'A city is needed — it is where your company is based.' },

@@ -486,5 +486,83 @@ if [ -n "$light_only" ]; then
   fail=1
 fi
 
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw colour in UI, domain pure, tenant pin transaction-local, no app-declared vocabulary, no role name or SQL outside its owner, no brand obtained by a cast, images unprivileged, no raw size on a screen, no empty label, light-only'
+# ── 19. The commercial document is a Proposal, in every language (F3-11, M147) ──
+# "quote" and "quotation" are banned from interface strings and identifiers in every language, in
+# every form — a gate cannot tell the noun from the verb, and "quoted" on a document still calls it
+# a quote. No `\b`: the word inside `quoteTotal` is the same word. `quota` is a different word and
+# passes. The Devanagari spellings are the same two words transliterated; a native synonym is the
+# translator's call at authoring (F3-11), because one like दरपत्रक also means a price list.
+# Read: every served source tree, the migrations (hand-written SQL names functions, policies and
+# views), the three .po catalogs, and the files outside a tree that name the app to a person (the
+# phone's display name on both platforms, the web config). Comments are not interface strings,
+# and cite rows ("M06-13 quotes the sentence"), so each is blanked TO ITS OWN NEWLINES — deleting
+# it would shift every later line and the gate would name the wrong one. A code line that starts
+# with `#` (a private field) or `*` is still code; `#` is a comment only in a catalog. The compiled
+# catalogs (`locales/*/messages.ts`) are derived from the .po files (M47) and would only name each
+# hit twice; they are skipped by that exact path.
+# No exemption exists yet: the search alias (F6-22) is added here by exact path by T-FPLAT-020.
+BANNED_WORD='quot(e|ation|ing)|कोटेश|क्वोट|क्वॉट'
+WORD_DIRS="apps/api/src apps/worker/src apps/mobile/src apps/mobile/App.tsx apps/web/app apps/web/features apps/web/lib $(ls -d packages/*/src) packages/db/migrations"
+WORD_FILES='apps/mobile/app.json apps/mobile/ios/HelioGridMobile/Info.plist apps/mobile/android/app/src/main/res/values/strings.xml apps/web/next.config.ts'
+for d in $WORD_DIRS $WORD_FILES; do
+  [ -e "$d" ] || { printf 'CONFIG ROT: check 19 names "%s", which does not exist.\n' "$d"; fail=1; }
+done
+# Code comments are found by the TypeScript parser, never by a pattern: only a parser can tell a
+# regex (`return /\/*$/.test(p)`) from a division or a comment, and every guess at that left a shape
+# where `/*` inside a literal blanked the code after it.
+BLANK_CODE_COMMENTS='const ts = require("typescript"); const fs = require("fs");
+const banned = new RegExp(process.argv[1], "i");
+for (const file of fs.readFileSync(0, "utf8").split("\n").filter(Boolean)) {
+  const text = fs.readFileSync(file, "utf8");
+  const kind = /\.(tsx|jsx|js|mjs|cjs)$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+  const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, false, kind);
+  const comments = new Map();
+  const note = (ranges) => (ranges || []).forEach((r) => comments.set(r.pos, r.end));
+  const visit = (node) => {
+    if (node.kind !== ts.SyntaxKind.JsxText) note(ts.getLeadingCommentRanges(text, node.pos));
+    note(ts.getTrailingCommentRanges(text, node.end));
+    node.getChildren(source).forEach(visit);
+  };
+  visit(source);
+  let kept = "", at = 0;
+  for (const [pos, end] of [...comments].sort((x, y) => x[0] - y[0])) {
+    if (pos < at) continue;
+    kept += text.slice(at, pos) + text.slice(pos, end).replace(/[^\n]/g, "");
+    at = end;
+  }
+  kept += text.slice(at);
+  kept.split("\n").forEach((line, i) => { if (banned.test(line)) console.log(`${file}:${i + 1}:${line}`); });
+}'
+# shellcheck disable=SC2016  # perl code, expanded by perl
+BLANK_OTHER_COMMENTS='my $f = $ARGV[0]; local $/; my $s = <>;
+my $blank = sub { (my $c = shift) =~ s/[^\n]//g; $c };
+if    ($f =~ /\.po$/)                { $s =~ s/^#[^\n]*//mg }
+elsif ($f =~ /\.(xml|plist|html)$/)  { $s =~ s{<!--.*?-->}{$blank->($&)}gse }
+elsif ($f =~ /\.sql$/)               { $s =~ s{(\x27(?:\x27\x27|[^\x27])*\x27)|(--[^\n]*|/\*.*?\*/)}{defined $1 ? $1 : $blank->($2)}gse }
+elsif ($f =~ /\.css$/)               { $s =~ s{/\*.*?\*/}{$blank->($&)}gse }
+print $s;'
+CODE_FILE='\.(ts|tsx|mts|cts|js|jsx|mjs|cjs)$'
+word_files=$(grep -rliE "$BANNED_WORD" $WORD_DIRS $WORD_FILES --include='*.ts' --include='*.tsx' \
+               --include='*.mts' --include='*.cts' --include='*.js' --include='*.jsx' --include='*.mjs' \
+               --include='*.cjs' --include='*.json' --include='*.css' --include='*.po' --include='*.sql' \
+               --include='*.html' --include='*.xml' --include='*.plist' \
+               --exclude-dir='_generated' --exclude-dir='node_modules' --exclude-dir='dist' --exclude-dir='.next' 2>/dev/null \
+             | grep -vE '^packages/i18n/src/locales/[^/]+/messages\.ts$')
+code_files=$(printf '%s\n' "$word_files" | grep -E "$CODE_FILE")
+banned=$(
+  if [ -n "$code_files" ]; then
+    printf '%s\n' "$code_files" | node -e "$BLANK_CODE_COMMENTS" "$BANNED_WORD" \
+      || echo 'check 19: the comment scan CRASHED — its findings are incomplete; the error is above'
+  fi
+  printf '%s\n' "$word_files" | grep -vE "$CODE_FILE" | grep . | while IFS= read -r f; do
+    { perl -e "$BLANK_OTHER_COMMENTS" "$f" || echo "0:UNREAD — check 19 could not read this file"; } \
+      | grep -niE "$BANNED_WORD|^0:UNREAD" | sed "s|^|$f:|"
+  done)
+if [ -n "$banned" ]; then
+  printf 'BANNED WORD — the commercial document is a Proposal, in every language (F3-11, M147):\n%s\n' "$banned"
+  echo '  Say "proposal" (प्रस्ताव). The words are allowed only as the search query alias (F6-22).'
+  fail=1
+fi
+
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw colour in UI, domain pure, tenant pin transaction-local, no app-declared vocabulary, no role name or SQL outside its owner, no brand obtained by a cast, images unprivileged, no raw size on a screen, no empty label, light-only, no banned word'
 exit $fail

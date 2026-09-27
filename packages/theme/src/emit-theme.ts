@@ -89,7 +89,7 @@ function ms(resolved: Map<string, string>, name: string): number {
 /** First quoted family in a font stack — "Geist","Inter",… → Geist. */
 function primaryFamily(stack: string): string {
   const m = stack.match(/^"([^"]+)"/);
-  if (!m) throw new Error(`font stack has no quoted primary family: ${stack}`);
+  if (!m) throw new Error(`font stack names no primary family: ${stack}`);
   return m[1] as string;
 }
 
