@@ -16,6 +16,8 @@ export * from './audit';
 export * from './auth';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
+// The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
+export * from './client-version';
 export * from './common';
 // Content shapes a customer document is made of: per-language values, rich text.
 export * from './document-content';

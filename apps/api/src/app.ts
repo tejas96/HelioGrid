@@ -6,6 +6,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { json, urlencoded } from 'express';
 import { Logger, PinoLogger } from 'nestjs-pino';
 import { AppModule } from './app.module';
+import { readMinimumClientVersion, refuseClientsBelow } from './common/client-version';
 import { assertTenancyPrecondition } from './common/db/tenancy-precondition';
 import { assignRequestId, REQUEST_ID_HEADER } from './common/request-id';
 import { ENV } from './config/env';
@@ -28,8 +29,8 @@ function isPayloadTooLarge(error: unknown): error is Error {
 
 /**
  * The application, wired exactly as production serves it and NOT yet listening: the request id,
- * CORS, the body limits and the oversized-body answer, the shutdown hooks, and the boot-time
- * tenancy precondition. `main.ts` calls this and listens on the configured port; a test calls
+ * CORS, the too-old phone's refusal, the body limits and the oversized-body answer, the shutdown
+ * hooks, and the boot-time tenancy precondition. `main.ts` calls this and listens on the configured port; a test calls
  * this and listens on port 0 — so what a test drives IS the app a person meets, with nothing
  * registered in one caller that the other never sees (Law 5: one fact, two callers).
  */
@@ -47,6 +48,9 @@ export async function createApp(): Promise<INestApplication> {
     credentials: true,
     exposedHeaders: [REQUEST_ID_HEADER],
   });
+  // Before the body parsers: a too-old phone is answered before its body is judged (F4-36).
+  const minimumClientVersion = readMinimumClientVersion(ENV);
+  if (minimumClientVersion !== null) app.use(refuseClientsBelow(minimumClientVersion, edgeLogger));
   app.use(json({ limit: BODY_LIMIT_BYTES }));
   app.use(urlencoded({ extended: true, limit: BODY_LIMIT_BYTES }));
   app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {

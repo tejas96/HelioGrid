@@ -25,7 +25,7 @@ export interface Repositories {
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
   | { mode: 'browser'; session: SessionSignals }
-  | { mode: 'mobile'; storage: TokenStorage; session: SessionSignals }
+  | { mode: 'mobile'; storage: TokenStorage; appVersion: string; session: SessionSignals }
   | { mode: 'server'; headers: RequestHeaders }
 );
 
@@ -41,6 +41,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
       ? createTransport({
           mode: 'mobile',
           storage: config.storage,
+          appVersion: config.appVersion,
           baseUrl: config.baseUrl,
           session: config.session,
         })
