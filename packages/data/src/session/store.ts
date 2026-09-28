@@ -68,6 +68,7 @@ export function createSessionStore(config: {
     switch: null,
     known: null,
     restored: false,
+    chosenHome: null,
   };
   let challengeId: string | null = null;
   let wrongTries = 0;
@@ -79,9 +80,16 @@ export function createSessionStore(config: {
   };
 
   const signedIn = (user: SessionUser, restored = false) =>
-    emit({ status: 'authenticated', user, switch: null, known: null, restored });
+    emit({ status: 'authenticated', user, switch: null, known: null, restored, chosenHome: null });
   const signedOut = () =>
-    emit({ status: 'anonymous', user: null, switch: null, known: null, restored: false });
+    emit({
+      status: 'anonymous',
+      user: null,
+      switch: null,
+      known: null,
+      restored: false,
+      chosenHome: null,
+    });
 
   /**
    * What the TRANSPORT reports (`SessionSignals`), joined to this store by `createDataLayer`.
@@ -120,11 +128,19 @@ export function createSessionStore(config: {
         switch: { previousUserId: previous.id, heldWork, next },
         known: null,
         restored: false,
+        chosenHome: null,
       });
       return;
     }
     if (door === 'signup' && next.tenant !== null) {
-      emit({ status: 'anonymous', user: null, switch: null, known: { next }, restored: false });
+      emit({
+        status: 'anonymous',
+        user: null,
+        switch: null,
+        known: { next },
+        restored: false,
+        chosenHome: null,
+      });
       return;
     }
     signedIn(next);
@@ -215,6 +231,9 @@ export function createSessionStore(config: {
       } catch {
         return false;
       }
+    },
+    chooseHome(preset) {
+      if (snapshot.status === 'authenticated') emit({ ...snapshot, chosenHome: preset });
     },
     async signOutEverywhere() {
       await config.auth.signOutEverywhere().catch(() => undefined);

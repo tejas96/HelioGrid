@@ -199,6 +199,7 @@ This file dispositions every requirement row of the suite's four core documents 
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **Parked:** by owner ruling until the tenant base reaches real paying customers (roughly 10–20) — the *Deferred* note below; the build line never offers it as ready.
+**Also lands:** the `dataRights` field on `packages/data`'s `useShell()` and the pack read behind it — `T-SHELL-007` left both out while the key has no type.
 **PRD rows:** F1-23, F1-24, F1-32, F1-54, F1-55, F1-56, F1-57, F1-58, F1-59
 **Requirements (verbatim):**
 

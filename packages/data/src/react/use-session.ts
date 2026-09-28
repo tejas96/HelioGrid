@@ -28,6 +28,7 @@ export function useSession(): SessionApi {
       leaveKnownAccount: session.leaveKnownAccount,
       createCompany: session.createCompany,
       signOut: session.signOut,
+      chooseHome: session.chooseHome,
       signOutEverywhere: session.signOutEverywhere,
       setInterfaceLanguage: session.setInterfaceLanguage,
     }),

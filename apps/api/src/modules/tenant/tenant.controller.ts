@@ -16,6 +16,8 @@ export class TenantController {
   @RouteAccessMap(tenantContract, {
     create: 'session',
     me: 'member',
+    myMembership: 'member',
+    updateMyMembership: 'member',
     members: 'member',
     similar: 'session',
     assignRoles: { capability: 'onboarding.manage_team' },
@@ -40,6 +42,18 @@ export class TenantController {
         if (body === null) throw new NotFoundException('This company no longer exists.');
         return { status: 200, body };
       },
+      myMembership: async () => ({
+        status: 200,
+        body: await this.tenants.myMembership(tenantIdOf(req), sessionOf(req).actor.userId),
+      }),
+      updateMyMembership: async ({ body }) => ({
+        status: 200,
+        body: await this.tenants.updateMyMembership(
+          tenantIdOf(req),
+          sessionOf(req).actor.userId,
+          body,
+        ),
+      }),
       members: async ({ query }) => ({
         status: 200,
         body: await this.tenants.members(tenantIdOf(req), query),

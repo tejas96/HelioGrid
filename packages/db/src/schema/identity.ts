@@ -1,4 +1,5 @@
 import {
+  FIRST_RUN_COACH_MARKS,
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
   OTP_CHANNELS,
@@ -144,7 +145,10 @@ export const tenantMembership = pgTable(
     ),
     /** An account's memberships, read on the admin path when a session is resolved. */
     index('tenant_membership_user_account_idx').on(table.userAccountId),
-    check('tenant_membership_coach_marks_range', sql`${table.coachMarksDismissed} between 0 and 3`),
+    check(
+      'tenant_membership_coach_marks_range',
+      sql`${table.coachMarksDismissed} between 0 and ${sql.raw(String(FIRST_RUN_COACH_MARKS))}`,
+    ),
   ],
 );
 

@@ -3,6 +3,7 @@ import {
   type CreateHeaders,
   type CreateTenant,
   type Member,
+  type MyMembership,
   type Paginated,
   type PaginationQuery,
   type SessionProjection,
@@ -23,6 +24,7 @@ import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
+import { MyMembershipRepository } from './tenant.my-membership.repository';
 import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
 
 /**
@@ -36,6 +38,7 @@ export class TenantService {
   constructor(
     @Inject(TenantAdminRepository) private readonly crossTenant: TenantAdminRepository,
     @Inject(TenantRepository) private readonly scoped: TenantRepository,
+    @Inject(MyMembershipRepository) private readonly mine: MyMembershipRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(AuthService) private readonly auth: AuthService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
@@ -78,6 +81,34 @@ export class TenantService {
   async me(tenantId: string): Promise<Tenant | null> {
     const row = await this.scoped.me(tenantId);
     return row === null ? null : toTenant(row);
+  }
+
+  /** My own membership's first-run count (`M01-16`). */
+  async myMembership(tenantId: string, userId: string): Promise<MyMembership> {
+    const count = await this.mine.coachMarksPassed(tenantId, userId);
+    if (count === null) throw new NotFoundException('You are not on this team.');
+    return { coachMarksDismissed: count };
+  }
+
+  /** Raises my first-run count; a count below the stored one is refused, never applied. */
+  async updateMyMembership(
+    tenantId: string,
+    userId: string,
+    body: MyMembership,
+  ): Promise<MyMembership> {
+    const written = await this.mine.passCoachMarks(tenantId, userId, body.coachMarksDismissed);
+    switch (written.outcome) {
+      case 'done':
+        return { coachMarksDismissed: written.count };
+      case 'not-found':
+        throw new NotFoundException('You are not on this team.');
+      case 'lower':
+        throw new ContractException(
+          'DOMAIN_RULE_VIOLATION',
+          `You have already passed ${written.count} of the first-run tips; a passed tip stays passed.`,
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+    }
   }
 
   async members(tenantId: string, query: PaginationQuery): Promise<Paginated<Member>> {

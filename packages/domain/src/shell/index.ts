@@ -1,7 +1,7 @@
 /**
  * The app shell's own facts (`docs/tasks/SHELL.md`): which home is in force and which presets'
  * work is composed inside it, what the arc bar's raised centre does and which lists sit beside
- * it, per preset, whether a phone's version meets the server's minimum, and how the ask (`F7-46`)
+ * it, per preset, how many first-run coach marks there are, whether a phone's version meets the server's minimum, and how the ask (`F7-46`)
  * pages. Pure tables and pure derivations — the words are `packages/i18n`'s.
  */
 
@@ -9,6 +9,7 @@ export type { CentreVerb } from './centre-verb';
 export { CENTRE_VERB_REQUIRES, CENTRE_VERBS, centreVerbFor } from './centre-verb';
 export type { ClientVersion, StorePlatform } from './client-version';
 export { isBelowMinimum, parseClientVersion, STORE_PLATFORMS } from './client-version';
+export { FIRST_RUN_COACH_MARKS } from './coach-marks';
 export type {
   ExplainerMove,
   ExplainerPagerWords,
