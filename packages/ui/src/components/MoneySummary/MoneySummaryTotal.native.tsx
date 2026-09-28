@@ -53,7 +53,7 @@ export function MoneySummaryTotal({
   variant,
   smallVariant,
 }: {
-  /** The arithmetic, already resolved by `resolvePayable` — the one money path. */
+  /** The server's resolved equation — the one money path (`F4-04`). */
   money: ResolvedMoney;
   payableLabel: string;
   provenance?: MoneySummaryProps['provenance'];

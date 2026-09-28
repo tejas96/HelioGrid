@@ -11,10 +11,10 @@ import { bandFails, resolveDocument } from './document-model';
 /** Per-instance geometry and the gated brand colours ride into DocumentPreview.css. */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebDocumentPreviewProps extends DocumentPreviewProps {
+type WebDocumentPreviewProps = DocumentPreviewProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 function sheetVars(
   doc: ReturnType<typeof resolveDocument>,

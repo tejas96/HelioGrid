@@ -1,4 +1,3 @@
-import { resolvePayable } from '@heliogrid/domain';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -7,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
    spellings to the same module, so this is the same import, correctly typed. */
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
-import type { MoneySummaryProps, MoneySummarySpec } from './MoneySummary.types';
+import type { MoneySummaryProps } from './MoneySummary.types';
 import { MoneySummaryRow } from './MoneySummaryRow.native';
 import { MoneySummaryTotal } from './MoneySummaryTotal.native';
 
@@ -27,17 +26,15 @@ const SMALL: Record<'screen' | 'document', TextVariant> = {
 
 /**
  * **What the forty lines add up to** — the itemised equation, a payable at or below zero shown
- * with a warning (`M06-35`), and a failed reconciliation printing no price at all. Same arithmetic
- * as the web half: both call `@heliogrid/domain`'s `resolvePayable`, so the block and
- * `DataTable.totalRow` can never disagree.
+ * with a warning (`M06-35`), and a failed reconciliation printing no price at all. Both halves
+ * print the one equation the server resolved (`F4-04`), so they can never disagree.
  *
  * Print has no native equivalent, so the web half's `data-keep-together` attributes are absent
  * here; everything else — the words, the order and the rules — is identical. Same decomposition
  * too: one member of the equation is `MoneySummaryRow`, the total is `MoneySummaryTotal`.
  */
 export function MoneySummary({
-  lines = [],
-  reconcile,
+  equation,
   payableLabel = 'Payable',
   overline = 'Money summary',
   surface = 'screen',
@@ -46,7 +43,6 @@ export function MoneySummary({
   density = 'expressive',
   style,
 }: NativeMoneySummaryProps) {
-  const m = resolvePayable({ lines, reconcile });
   const line = LINE[surface];
   const small = SMALL[surface];
 
@@ -67,7 +63,7 @@ export function MoneySummary({
         </Text>
       ) : null}
       <View>
-        {m.lines.map((l) => (
+        {equation.lines.map((l) => (
           <MoneySummaryRow
             key={l.key || l.label}
             line={l}
@@ -79,7 +75,7 @@ export function MoneySummary({
       </View>
 
       <MoneySummaryTotal
-        money={m}
+        money={equation}
         payableLabel={payableLabel}
         provenance={provenance}
         note={note}
@@ -89,11 +85,6 @@ export function MoneySummary({
     </View>
   );
 }
-
-/** The same test as a boolean, for a send path: may this document state a price? */
-MoneySummary.stands = (spec: MoneySummarySpec = {}) => resolvePayable(spec).payableStandsUp;
-/** The resolved arithmetic, for a caller that needs the numbers as well as the rendering. */
-MoneySummary.resolve = (spec: MoneySummarySpec = {}) => resolvePayable(spec);
 
 const styles = StyleSheet.create({
   overline: { marginBottom: 6 },

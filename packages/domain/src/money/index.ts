@@ -3,22 +3,19 @@
  * unit, a rate is whole basis points, and money rounds only where this slice rounds it.
  */
 export {
-  applyRate,
   type BasisPoints,
   basisPoints,
   basisPointsToPercent,
   percentToBasisPoints,
   type Share,
 } from './basis-points';
-export {
-  type EquationSign,
-  type PayableLine,
-  type PayableReconcileSpec,
-  type PayableReconciliation,
-  type PayableSpec,
-  type ResolvedPayable,
-  type ResolvedPayableLine,
-  reconcileMinorUnits,
-  resolvePayable,
+export type {
+  EquationSign,
+  PayableLine,
+  PayableReconcileSpec,
+  PayableReconciliation,
+  PayableSpec,
+  ResolvedPayable,
+  ResolvedPayableLine,
 } from './equation';
-export { amountForQuantity, type MinorUnits, minorUnits, sumMinorUnits } from './minor-units';
+export { type MinorUnits, minorUnits } from './minor-units';

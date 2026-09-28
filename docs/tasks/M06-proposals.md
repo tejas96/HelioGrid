@@ -98,7 +98,7 @@ are the specification.
 **Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
 **DESIGN:** SCR-M06-05 → PENDING
-**Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix; `MoneySummary`, `DataTable.totalRow` and `DocumentPreview` run through it, and this screen composes it.
+**Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix, and onto `@heliogrid/domain/server` by `T-FPLAT-070` (`F4-04`: no device computes a money figure). The server runs it on every change and returns the equation; `MoneySummary` (`equation`), `DataTable.totalRow` (`reconcile`) and `DocumentPreview` (`total`, `payable`) print what it returned, and this screen composes them.
 
 **Requirements (verbatim):** Verbatim rows live in
 `docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md`; they are the specification.

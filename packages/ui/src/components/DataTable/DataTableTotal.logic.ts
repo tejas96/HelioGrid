@@ -1,4 +1,4 @@
-import { minorUnits, reconcileMinorUnits } from '@heliogrid/domain';
+import { minorUnits } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
 import type { DataTableTotalRow } from './DataTable.types';
@@ -38,26 +38,25 @@ function totalScope(
 /**
  * **Whether the two figures agree, and the sentence that says so.**
  *
- * The comparison is `@heliogrid/domain`'s `reconcileMinorUnits` — the same one `MoneySummary`
- * runs — over whole minor units, so the two figures agree only when they are equal and no
- * surface can call a gap "reconciles" that another calls a defect.
+ * The comparison is the server's (`F4-04`): it ran `reconcileMinorUnits` over whole minor units,
+ * the same one behind `MoneySummary`'s equation, so the two figures agree only when they are equal
+ * and no surface can call a gap "reconciles" that another calls a defect. This prints its verdict.
  *
  * A disagreement is stated in the market pack's own money (`SCR-M06-14`): an unsymbolled
  * locale-default number is not the figure a reader is reconciling against.
  *
- * The spec is the domain's `PayableReconcileSpec`, whose `label` and `amount` are **required** —
- * a reconciliation with neither is not a reconciliation, and the fallback words a local copy needed
- * ("The other figure") only existed to paper over a shape the shared type never allowed.
+ * The verdict is the domain's `PayableReconciliation`, whose `label` and `amount` are
+ * **required** — a reconciliation with neither is not a reconciliation.
  */
 function reconcileNotes(
   totalRow: DataTableTotalRow,
   format: MarketFormat,
 ): Pick<TotalModel, 'defectNote' | 'agreeNote'> {
   const reconcile = totalRow.reconcile;
-  if (reconcile === undefined || totalRow.amount === undefined) {
+  if (reconcile === undefined) {
     return { defectNote: null, agreeNote: null };
   }
-  const { delta, agrees } = reconcileMinorUnits(reconcile.amount, totalRow.amount);
+  const { delta, agrees } = reconcile;
   if (agrees) {
     return { defectNote: null, agreeNote: `Reconciles with ${reconcile.label.toLowerCase()}.` };
   }
@@ -90,6 +89,9 @@ export function buildTotal(
   return {
     scope: totalScope(totalRow, rowCount, page, pageSize, renderedRows),
     valueFor: (column) => {
+      if (totalRow.reconcile?.column === column.key) {
+        return format.amount(totalRow.reconcile.target);
+      }
       const value = totalRow.values?.[column.key];
       return typeof value === 'number' ? format.money(value) : value;
     },

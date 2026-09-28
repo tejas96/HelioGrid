@@ -1,4 +1,4 @@
-import type { MinorUnits, PayableReconcileSpec } from '@heliogrid/domain';
+import type { PayableReconciliation } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
@@ -23,23 +23,30 @@ export interface DataTableForm {
   stacked: boolean;
 }
 
+/** The server's reconciliation, and the column whose total it judged. */
+export interface DataTableReconcile extends PayableReconciliation {
+  /**
+   * The column that prints the judged total. It prints the verdict's `target`, never a `values`
+   * entry, so the figure a reader sees under "Reconciles" is the figure the server compared.
+   */
+  column: string;
+}
+
 export interface DataTableTotalRow {
   /** The row's own name — "Bill of materials total", "Tranches". */
   label: string;
   /** By column key. A number is formatted by the market pack; a node is rendered as given. */
   values?: Record<string, ReactNode | number>;
-  /** The sum this row states, in whole minor units — required for `reconcile` to mean anything. */
-  amount?: MinorUnits;
   /**
-   * The other figure this must equal (`SCR-M06-14`). A disagreement renders as a defect.
+   * The SERVER's verdict on the other figure this must equal (`SCR-M06-14`). A disagreement
+   * renders as a defect.
    *
-   * **It is `@heliogrid/domain`'s `PayableReconcileSpec`**, the same one `MoneySummary` takes,
-   * not a second declaration of it: the comparison is the domain's `reconcileMinorUnits` — the
-   * one every surface runs — so a gap this table calls a defect is a gap that block calls a
-   * defect too. A local copy that made `label` and `amount` optional let a caller write a
-   * reconciliation with neither, and dropped `against` entirely.
+   * **It is `@heliogrid/domain`'s `PayableReconciliation`** plus the column it judged, the same one `MoneySummary`'s
+   * equation carries: the server ran `reconcileMinorUnits` (`F4-04` — no device computes a money
+   * figure, the gap included), so a gap this table calls a defect is a gap that block calls a
+   * defect too.
    */
-  reconcile?: PayableReconcileSpec;
+  reconcile?: DataTableReconcile;
   /** Overrides the automatic "all 40 lines" scope line under the label. */
   scope?: ReactNode;
   /** The total's own tier or standing. Rendered under the row, both forms. */

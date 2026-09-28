@@ -1,11 +1,4 @@
-import {
-  type MinorUnits,
-  minorUnits,
-  normaliseHexColour,
-  type ResolvedPayable,
-  reconcileMinorUnits,
-  resolvePayable,
-} from '@heliogrid/domain';
+import { type MinorUnits, minorUnits, normaliseHexColour } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
@@ -13,12 +6,14 @@ import { asWordOnPaper, bestTextOn, NEAR_BLACK } from '../../utils/color-contras
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
 import type {
+  DocumentFigures,
   DocumentLetterhead,
-  DocumentLineItem,
+  DocumentMoney,
   DocumentPart,
   DocumentPreviewProps,
   DocumentSection,
   DocumentSectionInput,
+  DocumentSubsidy,
 } from './DocumentPreview.types';
 import { A4_RATIO, DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 
@@ -84,45 +79,76 @@ function letterheadSpec(value: DocumentLetterhead | ReactNode): DocumentLetterhe
   return value as DocumentLetterhead;
 }
 
-function equationFor(
-  lineItems: readonly DocumentLineItem[],
-  subsidyAmount: MinorUnits | undefined,
-  subsidyLabel: string,
-): ResolvedPayable | null {
-  const worded = lineItems.some(([, amount]) => typeof amount === 'string');
-  if (lineItems.length === 0 || worded) {
-    return null;
-  }
-  return resolvePayable({
-    lines: [
-      ...lineItems.flatMap(([label, amount], index) =>
-        typeof amount === 'string' ? [] : [{ key: `l${index}`, label, amount }],
-      ),
-      ...(subsidyAmount
-        ? [{ key: 'subsidy', kind: 'deduct' as const, label: subsidyLabel, amount: subsidyAmount }]
-        : []),
-    ],
-  });
+/* The sample a settings screen previews its letterhead on. Its total and payable are STATED
+   beside its lines, like any server's figures — the part sums nothing (`F4-04`). */
+const SAMPLE_MONEY: DocumentFigures & DocumentSubsidy = {
+  lineItems: [
+    ['Mono PERC modules 545 W × 16', minorUnits(26_160_000)],
+    ['String inverter 8 kW', minorUnits(6_840_000)],
+    ['Mounting structure & BOS', minorUnits(7_420_000)],
+    ['Installation & commissioning', minorUnits(4_827_100)],
+  ],
+  total: minorUnits(45_247_100),
+  subsidyAmount: minorUnits(7_800_000),
+  payable: minorUnits(37_447_100),
+};
+
+/* The sample's identity travels with the sample's figures and never beside real ones: a real
+   document missing a tax number prints none rather than a made-up one (`F4-04` — no device assigns
+   a business identifier). */
+interface DocumentIdentity {
+  companyName: string;
+  taxId: string;
+  address: string;
+  phone: string;
+  customerName: string;
+  customerMeta: string;
+  docNumber: string;
+  docDate: string | undefined;
+}
+const SAMPLE_IDENTITY: DocumentIdentity = {
+  companyName: 'Suryodaya Solar Pvt Ltd',
+  taxId: '27AABCS1429P1ZQ',
+  address: 'Shop 14, Laxmi Complex, Baner Road, Pune 411045',
+  phone: '+91 98200 41123',
+  customerName: 'Rajesh Kumar',
+  customerMeta: 'Kothrud, Pune · 8.4 kWp rooftop',
+  docNumber: 'PRO-2026-0418',
+  docDate: '2026-08-16',
+};
+const NO_IDENTITY: DocumentIdentity = {
+  companyName: '',
+  taxId: '',
+  address: '',
+  phone: '',
+  customerName: '',
+  customerMeta: '',
+  docNumber: '',
+  docDate: undefined,
+};
+
+/** The caller's figures, or — when it passed none — the whole sample, never a part of it. */
+function moneyOf(money: DocumentMoney): DocumentFigures & Partial<DocumentSubsidy> {
+  return money.lineItems === undefined ? SAMPLE_MONEY : money;
 }
 
 function subsidySentence(
   subsidyNote: string | undefined,
-  equation: ResolvedPayable | null,
-  subsidyAmount: MinorUnits | undefined,
+  money: Partial<DocumentSubsidy>,
   subsidyLabel: string,
-  money: MarketFormat['amount'],
+  format: MarketFormat['amount'],
 ): string | null {
   if (subsidyNote !== undefined) {
     return subsidyNote;
   }
-  if (equation === null || !subsidyAmount) {
+  if (money.subsidyAmount === undefined || money.payable === undefined) {
     return null;
   }
-  return `Less ${subsidyLabel} ${money(subsidyAmount)} · payable ${money(equation.payable)}`;
+  return `Less ${subsidyLabel} ${format(money.subsidyAmount)} · payable ${format(money.payable)}`;
 }
 
 /**
- * Every default, every derived figure and every contrast verdict, resolved once for both
+ * Every default, every figure it is handed and every contrast verdict, resolved once for both
  * platform halves. Neither half re-answers any of it, so they cannot disagree — which is the
  * same reason the contrast maths is a shared module rather than a local opinion.
  *
@@ -134,30 +160,23 @@ export function resolveDocument(
   props: DocumentPreviewProps,
   format: MarketFormat = IN_FORMAT,
 ): ResolvedDocument {
+  const sample = props.lineItems === undefined ? SAMPLE_IDENTITY : NO_IDENTITY;
   const {
     brandColor = FALLBACK_BRAND,
-    companyName = 'Suryodaya Solar Pvt Ltd',
+    companyName = sample.companyName,
     logoSrc,
     logoLabel = 'tenant logo',
-    taxId = '27AABCS1429P1ZQ',
+    taxId = sample.taxId,
     taxIdLabel,
-    address = 'Shop 14, Laxmi Complex, Baner Road, Pune 411045',
-    phone = '+91 98200 41123',
+    address = sample.address,
+    phone = sample.phone,
     letterhead,
-    customerName = 'Rajesh Kumar',
-    customerMeta = 'Kothrud, Pune · 8.4 kWp rooftop',
+    customerName = sample.customerName,
+    customerMeta = sample.customerMeta,
     docTitle = 'Solar proposal',
-    docNumber = 'PRO-2026-0418',
-    docDate = '2026-08-16',
+    docNumber = sample.docNumber,
+    docDate = sample.docDate,
     parts = ['cover', 'items'],
-    lineItems = [
-      ['Mono PERC modules 545 W × 16', minorUnits(26_160_000)],
-      ['String inverter 8 kW', minorUnits(6_840_000)],
-      ['Mounting structure & BOS', minorUnits(7_420_000)],
-      ['Installation & commissioning', minorUnits(4_827_100)],
-    ],
-    total,
-    subsidyAmount = minorUnits(7_800_000),
     subsidyLabel = 'PM Surya Ghar subsidy',
     subsidyNote,
     sections = [],
@@ -175,17 +194,7 @@ export function resolveDocument(
   const amountText = (value: MinorUnits | string): string =>
     typeof value === 'string' ? value : format.amount(value);
 
-  const equation = equationFor(lineItems, subsidyAmount, subsidyLabel);
-  if (
-    equation !== null &&
-    typeof total === 'number' &&
-    !reconcileMinorUnits(total, equation.gross).agrees
-  ) {
-    console.warn(
-      `DocumentPreview: total={${total}} disagrees with the line items, which sum to ${equation.gross}. A disagreement is a defect (SCR-M06-14) — printing the sum of the lines.`,
-    );
-  }
-  const shownTotal = equation !== null ? equation.gross : total;
+  const money = moneyOf(props);
 
   const hex = normaliseHexColour(brandColor) ?? FALLBACK_BRAND;
   const onBand = bestTextOn(hex);
@@ -204,14 +213,14 @@ export function resolveDocument(
     customerMeta,
     docTitle,
     docNumber,
-    docDateText: format.date(docDate),
+    docDateText: docDate === undefined ? '' : format.date(docDate),
     parts,
-    lineItems: lineItems.map(([description, amount]) => ({
+    lineItems: money.lineItems.map(([description, amount]) => ({
       description,
       amountText: amountText(amount),
     })),
-    totalText: shownTotal === undefined ? '' : amountText(shownTotal),
-    subsidyLine: subsidySentence(subsidyNote, equation, subsidyAmount, subsidyLabel, format.amount),
+    totalText: amountText(money.total),
+    subsidyLine: subsidySentence(subsidyNote, money, subsidyLabel, format.amount),
     sections: normaliseSections(sections),
     sectionsTitle,
     tranches: tranches.map((tranche) => ({
