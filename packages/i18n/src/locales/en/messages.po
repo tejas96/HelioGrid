@@ -28,6 +28,11 @@ msgid "{n}-digit code"
 msgstr "{n}-digit code"
 
 #. js-lingui-explicit-id
+#: src/copy/explainer.ts:8
+msgid "{page} of {total}"
+msgstr "{page} of {total}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:102
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{perWindow} codes in {windowMinutes} minutes is the limit"
@@ -86,6 +91,11 @@ msgstr "Answer the call and type what you hear."
 #: src/copy/provenance.ts:13
 msgid "Assumed"
 msgstr "Assumed"
+
+#. js-lingui-explicit-id
+#: src/copy/explainer.ts:7
+msgid "Back"
+msgstr "Back"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
@@ -297,6 +307,11 @@ msgstr "My Visits Today"
 #: src/copy/sign-in.ts:19
 msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
+
+#. js-lingui-explicit-id
+#: src/copy/explainer.ts:6
+msgid "Next"
+msgstr "Next"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:42

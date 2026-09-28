@@ -28,6 +28,11 @@ msgid "{n}-digit code"
 msgstr "{n} अंकी कोड"
 
 #. js-lingui-explicit-id
+#: src/copy/explainer.ts:8
+msgid "{page} of {total}"
+msgstr "{total} पैकी {page}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:102
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{windowMinutes} मिनिटांत {perWindow} कोड ही मर्यादा आहे"
@@ -86,6 +91,11 @@ msgstr "कॉल घ्या आणि जे ऐकाल ते टाइप
 #: src/copy/provenance.ts:13
 msgid "Assumed"
 msgstr "गृहीत धरलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/explainer.ts:7
+msgid "Back"
+msgstr "मागे"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
@@ -297,6 +307,11 @@ msgstr "आजच्या माझ्या भेटी"
 #: src/copy/sign-in.ts:19
 msgid "New company on HelioGrid?"
 msgstr "HelioGrid वर नवीन कंपनी?"
+
+#. js-lingui-explicit-id
+#: src/copy/explainer.ts:6
+msgid "Next"
+msgstr "पुढे"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:42

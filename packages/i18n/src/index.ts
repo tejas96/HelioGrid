@@ -21,6 +21,7 @@ export { companySignupWords } from './copy/company-signup-frames';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
 export { BASIS_LINE_WORD } from './copy/document-basis';
 export { energySourceLabel } from './copy/energy-source';
+export { explainerPagerWords } from './copy/explainer';
 export { homeTitle } from './copy/homes';
 export { standingLabel, tierLabel } from './copy/provenance';
 export type { SignInCopyKey } from './copy/sign-in';
