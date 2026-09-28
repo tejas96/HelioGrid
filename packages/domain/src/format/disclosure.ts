@@ -7,12 +7,20 @@ import type { ProvenanceTier } from './qualified';
  */
 
 /**
- * The two basis lines; a document carries at most one. `indicative` is `F8-20`'s line for a
- * document with no design; `imageryBasis` is `F8-22`'s for a design whose roof nobody measured on
- * site.
+ * The two basis lines; a document carries at most one. `indicative-basis` is `F8-20`'s line for a
+ * document with no design; `remote-survey` is `F8-22`'s for a design whose roof nobody measured on
+ * site. The names are the design system's `Disclosure` kinds, so a document passes `basisLineOf`'s
+ * answer straight to the component.
  */
-export const BASIS_LINES = ['indicative', 'imageryBasis'] as const;
+export const BASIS_LINES = ['indicative-basis', 'remote-survey'] as const;
 export type BasisLine = (typeof BASIS_LINES)[number];
+
+/**
+ * Every line whose words are ruled rather than a caller's, in document order: the basis first,
+ * because it qualifies everything after it. The words are `@heliogrid/i18n`'s.
+ */
+export const RULED_DISCLOSURES = [...BASIS_LINES, 'structure', 'staleness'] as const;
+export type RuledDisclosure = (typeof RULED_DISCLOSURES)[number];
 
 /** The two facts a document's basis is read from (`M06-51`). */
 export interface DocumentBasis {
@@ -29,8 +37,8 @@ export interface DocumentBasis {
  * survey (`F8-22`).
  */
 export function basisLineOf(basis: DocumentBasis): BasisLine | null {
-  if (!basis.designed) return 'indicative';
-  return basis.roofTier === 'measured' ? null : 'imageryBasis';
+  if (!basis.designed) return 'indicative-basis';
+  return basis.roofTier === 'measured' ? null : 'remote-survey';
 }
 
 /**

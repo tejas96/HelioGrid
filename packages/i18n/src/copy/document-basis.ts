@@ -8,10 +8,10 @@ import type { MessageRef } from '../runtime';
  * Which line a document carries is `basisLineOf`'s, in `@heliogrid/domain`.
  */
 export const BASIS_LINE_WORD: Record<BasisLine, MessageRef> = {
-  indicative: /*i18n*/ {
+  'indicative-basis': /*i18n*/ {
     id: 'Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures.',
   },
-  imageryBasis: /*i18n*/ {
+  'remote-survey': /*i18n*/ {
     id: 'Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access.',
   },
 };

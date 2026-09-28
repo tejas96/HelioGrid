@@ -1,4 +1,5 @@
 import type { ProvenanceStanding as ContractStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { EnergySource, Freshness, FreshnessWarning } from '@heliogrid/domain';
 
 /**
  * A mark colour, named as a DS colour token rather than as a CSS colour string — the web half
@@ -51,12 +52,15 @@ export type ProvenanceStanding = ContractStanding;
 
 /**
  * The words a label prints, in the reader's language. The consumer builds them from
- * `@heliogrid/i18n`'s `tierLabel` / `standingLabel` and mounts them once with
- * `ProvenanceWordsProvider`; this package holds no word of its own (`F3-12`).
+ * `@heliogrid/i18n`'s `tierLabel`, `standingLabel`, `energySourceLabel` and `freshnessLabel`, and
+ * mounts them once with `ProvenanceWordsProvider`; this package holds no word of its own (`F3-12`).
  */
 export interface ProvenanceWords {
   tier: (tier: ProvenanceTier) => string;
   standing: (standing: ProvenanceStanding) => string;
+  energySource: (source: EnergySource) => string;
+  /** Never handed `current`, which prints nothing. */
+  freshness: (warning: FreshnessWarning) => string;
 }
 
 export type ProvenanceAlign = 'left' | 'right' | 'center';
@@ -65,9 +69,16 @@ export interface ProvenanceProps {
   tier?: ProvenanceTierSpec;
   standing?: ProvenanceStanding;
   /**
-   * What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`) —
-   * and any word a caller needs beside the tier (`F8-03`).
+   * Whether the figure is still current (`F8-18`), as `QualifiedAmount` carries it — `null` for a
+   * record. Every state but `current` prints its word, and a stale one names what moved.
    */
+  freshness?: Freshness | null;
+  /**
+   * The energy data the figure was computed from (`F8-08`), as `QualifiedAmount` carries it —
+   * printed `"Real · PVGIS (SARAH3)"` or `"Built-in estimate ±10%"` in the reader's language.
+   */
+  energySource?: EnergySource | null;
+  /** Any word a caller needs beside the tier (`F8-03`) — the catalog's *verified datasheet*. */
   source?: string;
   /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
   projection?: string;

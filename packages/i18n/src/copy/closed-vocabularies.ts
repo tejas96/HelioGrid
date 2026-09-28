@@ -1,7 +1,9 @@
 import type { UiLanguage } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
+import { DISCLOSURE_LEAD_WORD } from './disclosure';
 import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
+import { FRESHNESS_WORD, PACK_KEY_WORD, PINNED_INPUT_WORD } from './freshness';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
 
 /**
@@ -25,7 +27,14 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
       tier: PROVENANCE_TIER_WORD,
       standing: PROVENANCE_STANDING_WORD,
       source: ENERGY_SOURCE_WORD,
+      freshness: FRESHNESS_WORD,
+      movedInput: PINNED_INPUT_WORD,
+      movedPackKey: PACK_KEY_WORD,
     },
+  },
+  {
+    surface: 'disclosure set',
+    vocabularies: { lead: DISCLOSURE_LEAD_WORD },
   },
   {
     surface: 'document basis',

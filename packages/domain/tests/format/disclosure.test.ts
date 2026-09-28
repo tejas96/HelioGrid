@@ -17,18 +17,18 @@ describe('basisLineOf', () => {
   ] as const)(
     'a document without a design carries the indicative line, whatever survey exists (F8-20)',
     ({ roofTier }) => {
-      expect(basisLineOf({ designed: false, roofTier })).toBe('indicative');
+      expect(basisLineOf({ designed: false, roofTier })).toBe('indicative-basis');
     },
   );
 
   it.each([
-    { roofTier: 'derived', line: 'imageryBasis' },
-    { roofTier: 'estimated', line: 'imageryBasis' },
-    { roofTier: 'assumed', line: 'imageryBasis' },
-    { roofTier: null, line: 'imageryBasis' },
+    { roofTier: 'derived', line: 'remote-survey' },
+    { roofTier: 'estimated', line: 'remote-survey' },
+    { roofTier: 'assumed', line: 'remote-survey' },
+    { roofTier: null, line: 'remote-survey' },
     { roofTier: 'measured', line: null },
   ] as const)(
-    'a design on a roof not measured on site carries the imagery line (F8-22)',
+    'a design on a roof not measured on site carries the remote-survey line (F8-22)',
     ({ roofTier, line }) => {
       expect(basisLineOf({ designed: true, roofTier })).toBe(line);
     },

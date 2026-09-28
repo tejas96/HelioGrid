@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement, useContext, useEffect, useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { PrintScopeContext } from '../../utils/print-scope';
-import { DISCLOSURE_ORDER, DISCLOSURE_TEXT, ruledLine } from './Disclosure.lines';
+import { DISCLOSURE_ORDER } from './Disclosure.lines';
 import type {
   DisclosureInput,
   DisclosureKind,
@@ -10,6 +10,7 @@ import type {
   DisclosureSetProps,
   DisclosureSpec,
 } from './Disclosure.types';
+import { useDisclosureText } from './Disclosure.words';
 
 /* The .d.ts types `as` as `keyof JSX.IntrinsicElements`; the whole intrinsic union is not
    representable as one props type, so this is the block-level subset a document paragraph can
@@ -64,14 +65,7 @@ export function Disclosure({
     return () => scope.unregister(id);
   }, [scope, suppressed, id, kind, text, detail, surface]);
 
-  const ruled = ruledLine(kind);
-  if (ruled && text !== undefined) {
-    console.warn(
-      `Disclosure: \`text\` is ignored for kind="${kind}". The line is verbatim and owned by the component (M06-04 / SCR-M06-17). Put your particulars in \`detail\`, or use kind="custom" for a market pack's own required line.`,
-    );
-  }
-  const line = ruled ? ruled.line : text;
-  const lead = ruled ? ruled.lead : null;
+  const { lead, line } = useDisclosureText(kind, text);
 
   if (line === undefined) {
     console.warn('Disclosure: kind="custom" needs `text`. Nothing rendered.');
@@ -178,4 +172,3 @@ export function renderDisclosure(
 
 Disclosure.Set = DisclosureSet;
 Disclosure.render = renderDisclosure;
-Disclosure.TEXT = DISCLOSURE_TEXT;

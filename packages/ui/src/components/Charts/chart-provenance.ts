@@ -1,13 +1,21 @@
 import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
-import { STANDING_MARK, TIER_MARK, tierOf } from '../Provenance/Provenance.tiers';
+import type { EnergySource, Freshness } from '@heliogrid/domain';
+import {
+  FRESHNESS_MARK,
+  freshnessWarning,
+  STANDING_MARK,
+  TIER_MARK,
+  tierOf,
+} from '../Provenance/Provenance.tiers';
 import type { ProvenanceWords } from '../Provenance/Provenance.types';
 import type { ChartFrameProps } from './Charts.types';
 
 /**
  * The provenance line under a chart's headline value (`F8-01` / `F8-07`): **the word is the
  * carrier, the dot is the second channel.** Never a tooltip, never a hover, never colour alone.
- * Parts render in the order `standing · tier · source · projection · note` — standing leads,
- * because "this is not final" outranks "this is how it was worked out".
+ * Parts render in the order `standing · freshness · tier · energy source · source · projection ·
+ * note`, the label's — standing and freshness lead, because "this is not final" outranks "this is
+ * how it was worked out".
  *
  * The marks are `components/Provenance`'s and the words are the consumer's (`ProvenanceWords`), so
  * a chart and a label cannot disagree about a tier. This module resolves the spec to token NAMES
@@ -27,15 +35,17 @@ export interface ProvenancePart {
   id: string;
   label: string;
   dot?: ProvenanceDot;
-  /** Standing takes its own word colour; every other part inherits `--text-tertiary`. */
+  /** Standing and freshness take their own word colour; every other part inherits `--text-tertiary`. */
   colorKey?: ProvenanceColorKey;
-  /** Standing is the one part set in medium weight. */
+  /** Standing and freshness are the parts set in medium weight. */
   strong?: boolean;
 }
 
 export interface ProvenanceFacts {
   tier?: Exclude<ChartFrameProps['provenance'], object>;
   standing?: ProvenanceStanding;
+  freshness?: Freshness | null;
+  energySource?: EnergySource | null;
   source?: string;
   projection?: string;
   note?: string;
@@ -66,6 +76,8 @@ export function chartProvenanceFacts(input: FrameProvenanceInput): ProvenanceFac
     return {
       tier: field(provenance, 'tier'),
       standing: field(provenance, 'standing') ?? standing,
+      freshness: field(provenance, 'freshness'),
+      energySource: field(provenance, 'energySource'),
       source: field(provenance, 'source') ?? source,
       projection: field(provenance, 'projection') ?? projection,
       note: field(provenance, 'note') ?? note,
@@ -96,9 +108,22 @@ export function provenanceParts(
       strong: true,
     });
   }
+  const warning = freshnessWarning(facts.freshness);
+  if (warning !== null) {
+    parts.push({
+      id: 'freshness',
+      label: words.freshness(warning),
+      dot: { colorKey: FRESHNESS_MARK.mark },
+      colorKey: FRESHNESS_MARK.color,
+      strong: true,
+    });
+  }
   const tier = tierOf(facts.tier);
   if (tier !== null) {
     parts.push({ id: 'tier', label: words.tier(tier), dot: { colorKey: TIER_MARK[tier] } });
+  }
+  if (facts.energySource !== undefined && facts.energySource !== null) {
+    parts.push({ id: 'energySource', label: words.energySource(facts.energySource) });
   }
   if (facts.source !== undefined && facts.source !== '') {
     parts.push({ id: 'source', label: facts.source });

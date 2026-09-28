@@ -103,6 +103,11 @@ msgid "Built-in estimate ±{tolerance}%"
 msgstr "अंगभूत अंदाज ±{tolerance}%"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:27
+msgid "calculation method"
+msgstr "गणना पद्धत"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "पुन्हा कॉल करा"
@@ -113,9 +118,24 @@ msgid "Call me with the code"
 msgstr "कोडसह मला कॉल करा"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:33
+msgid "calling rules"
+msgstr "कॉलिंग नियम"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:15
 msgid "Campaigns"
 msgstr "कॅम्पेन"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:25
+msgid "catalog"
+msgstr "कॅटलॉग"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:35
+msgid "certification schemes"
+msgstr "प्रमाणन योजना"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:21
@@ -193,9 +213,19 @@ msgid "Creating your company"
 msgstr "तुमची कंपनी तयार होत आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:37
+msgid "data rights"
+msgstr "डेटा हक्क"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:11
 msgid "Derived"
 msgstr "गणनेतून काढलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:24
+msgid "design"
+msgstr "डिझाइन"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:19
@@ -258,6 +288,11 @@ msgid "If your company already has a workspace and you want your own login insid
 msgstr "तुमच्या कंपनीचे वर्कस्पेस आधीच असेल आणि तुम्हाला त्यात तुमचे स्वतःचे लॉगिन हवे असेल, तर त्याच्या मालकाला तुम्हाला आमंत्रित करायला सांगा — म्हणजे एक कंपनी, एक वर्कस्पेस राहते."
 
 #. js-lingui-explicit-id
+#: src/copy/disclosure.ts:26
+msgid "Indicative"
+msgstr "सूचक"
+
+#. js-lingui-explicit-id
 #: src/copy/document-basis.ts:11
 msgid "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 msgstr "सूचक प्रस्ताव. वीजनिर्मिती आणि बचतीचा अंदाज सिस्टमच्या आकारावरून आणि ठिकाणावरून केला आहे. साइट सर्व्हे आणि सावली विश्लेषणातून अंतिम आकडे निश्चित होतील."
@@ -281,6 +316,11 @@ msgstr "कोड पाठवला जाईपर्यंत लॉक आ�
 #: src/copy/sign-in.ts:44
 msgid "Locked."
 msgstr "लॉक आहे."
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:38
+msgid "market prices"
+msgstr "बाजारभाव"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:10
@@ -339,6 +379,16 @@ msgid "No more codes for {windowMinutes} minutes"
 msgstr "{windowMinutes} मिनिटे आणखी कोड नाहीत"
 
 #. js-lingui-explicit-id
+#: src/copy/disclosure.ts:28
+msgid "Not a structural certification"
+msgstr "संरचनात्मक प्रमाणपत्र नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:16
+msgid "Not checked"
+msgstr "तपासले नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:24
 msgid "Not yet calculated"
 msgstr "अद्याप गणना झालेली नाही"
@@ -379,6 +429,11 @@ msgid "Nothing was created, so trying again cannot make two companies. Your numb
 msgstr "काहीही तयार झाले नाही, त्यामुळे पुन्हा प्रयत्न केल्याने दोन कंपन्या होऊ शकत नाहीत. तुमचा नंबर अजूनही तपासलेला आहे आणि तुमचे तीन तपशील अजूनही इथेच आहेत."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:36
+msgid "number formats"
+msgstr "संख्या स्वरूप"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:52
 msgid "Only some phones fill this in. On the rest it is typed, and nothing else about the step changes."
 msgstr "फक्त काही फोन हे आपोआप भरतात. बाकीच्यांवर ते टाइप केले जाते, आणि या पायरीत बाकी काही बदलत नाही."
@@ -387,6 +442,11 @@ msgstr "फक्त काही फोन हे आपोआप भरता�
 #: src/copy/homes.ts:13
 msgid "Operations Home"
 msgstr "ऑपरेशन्स होम"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:14
+msgid "Out of date: {changes} changed"
+msgstr "कालबाह्य: {changes} बदलले"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:11
@@ -400,9 +460,24 @@ msgid "Paste the whole code if that is easier — it fills every box."
 msgstr "सोपे वाटले तर पूर्ण कोड पेस्ट करा — तो प्रत्येक चौकट भरतो."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:34
+msgid "payment methods"
+msgstr "पेमेंट पद्धती"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:17
 msgid "People Today"
 msgstr "आजचे लोक"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:26
+msgid "price book"
+msgstr "किंमत यादी"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:29
+msgid "Prices and subsidy move"
+msgstr "किंमती आणि अनुदान बदलतात"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:14
@@ -428,6 +503,11 @@ msgstr "राजेश कुलकर्णी"
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "वास्तविक · PVGIS ({database})"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:15
+msgid "Recalculating"
+msgstr "पुन्हा गणना होत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:23
@@ -545,6 +625,16 @@ msgid "Something went wrong on our side. Try again."
 msgstr "आमच्याकडून काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:32
+msgid "subsidy rules"
+msgstr "अनुदान नियम"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:27
+msgid "Surveyed remotely"
+msgstr "दूरून सर्व्हे केलेले"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:36
 msgid "Suryodaya Solar Solutions"
 msgstr "सूर्योदय सोलर सोल्युशन्स"
@@ -553,6 +643,11 @@ msgstr "सूर्योदय सोलर सोल्युशन्स"
 #: src/copy/sign-in.ts:129
 msgid "Taking you to {destination}"
 msgstr "तुम्हाला {destination} कडे नेत आहोत"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:31
+msgid "tax rates"
+msgstr "कर दर"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:37
@@ -638,6 +733,11 @@ msgstr "आमंत्रण पाठवता आले नाही. थो�
 #: src/copy/sign-in.ts:91
 msgid "The phone network turned it away"
 msgstr "फोन नेटवर्कने तो परत पाठवला"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:10
+msgid "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
+msgstr "या दस्तऐवजातील किंमती आणि अनुदान जारी केल्याच्या तारखेला लागू होते. दोन्ही बदलतात, म्हणून पैसे भरण्यापूर्वी त्यांची खात्री करा."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:88

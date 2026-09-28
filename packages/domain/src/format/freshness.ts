@@ -77,6 +77,9 @@ declare const FRESHNESS: unique symbol;
  */
 export type Freshness = FreshnessState & { readonly [FRESHNESS]: 'freshness' };
 
+/** A freshness a reader must be told about — every state but `current`, which prints nothing. */
+export type FreshnessWarning = Exclude<Freshness, { readonly kind: 'current' }>;
+
 function minted(state: FreshnessState): Freshness {
   return state as Freshness;
 }

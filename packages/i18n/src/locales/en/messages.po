@@ -103,6 +103,11 @@ msgid "Built-in estimate ±{tolerance}%"
 msgstr "Built-in estimate ±{tolerance}%"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:27
+msgid "calculation method"
+msgstr "calculation method"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:35
 msgid "Call again"
 msgstr "Call again"
@@ -113,9 +118,24 @@ msgid "Call me with the code"
 msgstr "Call me with the code"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:33
+msgid "calling rules"
+msgstr "calling rules"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:15
 msgid "Campaigns"
 msgstr "Campaigns"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:25
+msgid "catalog"
+msgstr "catalog"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:35
+msgid "certification schemes"
+msgstr "certification schemes"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:21
@@ -193,9 +213,19 @@ msgid "Creating your company"
 msgstr "Creating your company"
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:37
+msgid "data rights"
+msgstr "data rights"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:11
 msgid "Derived"
 msgstr "Derived"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:24
+msgid "design"
+msgstr "design"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:19
@@ -258,6 +288,11 @@ msgid "If your company already has a workspace and you want your own login insid
 msgstr "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 
 #. js-lingui-explicit-id
+#: src/copy/disclosure.ts:26
+msgid "Indicative"
+msgstr "Indicative"
+
+#. js-lingui-explicit-id
 #: src/copy/document-basis.ts:11
 msgid "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 msgstr "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
@@ -281,6 +316,11 @@ msgstr "Locked while the code is sent."
 #: src/copy/sign-in.ts:44
 msgid "Locked."
 msgstr "Locked."
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:38
+msgid "market prices"
+msgstr "market prices"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:10
@@ -339,6 +379,16 @@ msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
 
 #. js-lingui-explicit-id
+#: src/copy/disclosure.ts:28
+msgid "Not a structural certification"
+msgstr "Not a structural certification"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:16
+msgid "Not checked"
+msgstr "Not checked"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:24
 msgid "Not yet calculated"
 msgstr "Not yet calculated"
@@ -379,6 +429,11 @@ msgid "Nothing was created, so trying again cannot make two companies. Your numb
 msgstr "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:36
+msgid "number formats"
+msgstr "number formats"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:52
 msgid "Only some phones fill this in. On the rest it is typed, and nothing else about the step changes."
 msgstr "Only some phones fill this in. On the rest it is typed, and nothing else about the step changes."
@@ -387,6 +442,11 @@ msgstr "Only some phones fill this in. On the rest it is typed, and nothing else
 #: src/copy/homes.ts:13
 msgid "Operations Home"
 msgstr "Operations Home"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:14
+msgid "Out of date: {changes} changed"
+msgstr "Out of date: {changes} changed"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:11
@@ -400,9 +460,24 @@ msgid "Paste the whole code if that is easier — it fills every box."
 msgstr "Paste the whole code if that is easier — it fills every box."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:34
+msgid "payment methods"
+msgstr "payment methods"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:17
 msgid "People Today"
 msgstr "People Today"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:26
+msgid "price book"
+msgstr "price book"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:29
+msgid "Prices and subsidy move"
+msgstr "Prices and subsidy move"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:14
@@ -428,6 +503,11 @@ msgstr "Rajesh Kulkarni"
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:15
+msgid "Recalculating"
+msgstr "Recalculating"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:23
@@ -545,6 +625,16 @@ msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
+#: src/copy/freshness.ts:32
+msgid "subsidy rules"
+msgstr "subsidy rules"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:27
+msgid "Surveyed remotely"
+msgstr "Surveyed remotely"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:36
 msgid "Suryodaya Solar Solutions"
 msgstr "Suryodaya Solar Solutions"
@@ -553,6 +643,11 @@ msgstr "Suryodaya Solar Solutions"
 #: src/copy/sign-in.ts:129
 msgid "Taking you to {destination}"
 msgstr "Taking you to {destination}"
+
+#. js-lingui-explicit-id
+#: src/copy/freshness.ts:31
+msgid "tax rates"
+msgstr "tax rates"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:37
@@ -638,6 +733,11 @@ msgstr "The invite could not be sent. Try again in a moment."
 #: src/copy/sign-in.ts:91
 msgid "The phone network turned it away"
 msgstr "The phone network turned it away"
+
+#. js-lingui-explicit-id
+#: src/copy/disclosure.ts:10
+msgid "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
+msgstr "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:88

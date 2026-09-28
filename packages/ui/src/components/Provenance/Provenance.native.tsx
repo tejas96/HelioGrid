@@ -9,6 +9,8 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import {
+  FRESHNESS_MARK,
+  freshnessWarning,
   isProvenanceEmpty,
   provenanceStep,
   STANDING_MARK,
@@ -119,6 +121,8 @@ export function ProvenanceTier({ tier, size = 12, style }: NativeProvenanceTierP
 export function Provenance({
   tier,
   standing,
+  freshness,
+  energySource,
   source,
   projection,
   note,
@@ -147,6 +151,24 @@ export function Provenance({
       ),
     });
   }
+  const warning = freshnessWarning(freshness);
+  if (warning) {
+    parts.push({
+      id: 'freshness',
+      node: (
+        <View style={styles.part}>
+          <Dot token={FRESHNESS_MARK.mark} />
+          <Text
+            variant="caption"
+            color={WORD_COLOR[FRESHNESS_MARK.color] ?? 'tertiary'}
+            style={SIZE[step]}
+          >
+            {words.freshness(warning)}
+          </Text>
+        </View>
+      ),
+    });
+  }
   if (t) {
     parts.push({
       id: 'tier',
@@ -161,6 +183,7 @@ export function Provenance({
     });
   }
   for (const [id, prose] of [
+    ['energySource', energySource ? words.energySource(energySource) : undefined],
     ['source', source],
     ['projection', projection],
     ['note', note],

@@ -1,4 +1,4 @@
-import { tierOf } from '../Provenance/Provenance.tiers';
+import { freshnessWarning, tierOf } from '../Provenance/Provenance.tiers';
 import type { ProvenanceProps } from '../Provenance/Provenance.types';
 import type { DataTableProvenanceSpec } from './DataTable.types';
 
@@ -27,8 +27,10 @@ export function asProvenanceSpec(
  *
  * - `none` — its tier is the table-wide statement's, and it carries nothing else. It does not
  *   repeat it.
- * - `inline` — it says more than a tier (a standing, a source, a projection), so the whole
- *   statement renders inline. A column that differs always states its own.
+ * - `inline` — it says more than a tier (a standing, a freshness warning, an energy source, a
+ *   source, a projection), so the whole statement renders inline. A column that differs always
+ *   states its own — so the table's one statement never stands in for a column of another source
+ *   (`F8-09`).
  * - `tier` — the tier alone, as a visible word.
  */
 export type ColumnTierMode = 'none' | 'inline' | 'tier';
@@ -41,8 +43,14 @@ export function columnTierMode(
     return 'none';
   }
   /* More than a tier is never suppressed: the table-wide statement cannot be standing in for a
-     source or a projection it does not carry. */
-  const detailed = Boolean(spec.standing || spec.source || spec.projection);
+     source, a freshness warning or a projection it does not carry. */
+  const detailed = Boolean(
+    spec.standing ||
+      freshnessWarning(spec.freshness) ||
+      spec.energySource ||
+      spec.source ||
+      spec.projection,
+  );
   /* The tier's identity, never its word: two tiers must not merge because a language gave them
      one word (`F3-12`). */
   const tier = tierOf(spec.tier);
