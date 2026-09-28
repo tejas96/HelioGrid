@@ -1,0 +1,195 @@
+/* Explainer — the ask (F7-46). A labelled "i" that opens a small anchored bubble by TAP, the same
+   object at 375 and 1536. Not modal: no backdrop, no focus trap, no scroll lock.
+
+   The bubble is SURFACE, not near-black — the one place it parts from Tooltip's language: it holds
+   a real action and a pager, and every contrast figure in the system is measured on white.
+
+   The design system's own measures: the 12px arrow square, the 208/192 minimum widths, the 28/24
+   visual circle inside the 44px target, 13px pager and link type, 14px pill type. The spacing scale
+   has no 6, 10 or 14 step, so those gaps are the DS source's literals. */
+
+.hg-explainer {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.hg-explainer .hg-explainer-trigger {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  box-shadow: var(--control-edge);
+  transition:
+    background var(--dur-micro) var(--ease-standard),
+    color var(--dur-micro) var(--ease-standard);
+}
+
+.hg-explainer .hg-explainer-trigger[aria-expanded="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* `inset` takes the hit box back as negative margin: (44 - visual) / 2 on every side. */
+.hg-explainer[data-inset="true"] .hg-explainer-trigger {
+  margin: -8px;
+}
+
+.hg-explainer[data-inset="true"][data-density="functional"] .hg-explainer-trigger {
+  margin: -10px;
+}
+
+.hg-explainer-bubble {
+  position: absolute;
+  z-index: 70;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 280px;
+  min-width: 208px;
+  left: 0;
+  top: 100%;
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--e5);
+  outline: none;
+  text-align: left;
+  font-family: var(--font-sans);
+  visibility: hidden;
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter);
+}
+
+.hg-explainer-bubble[data-placed="true"] {
+  visibility: visible;
+}
+
+.hg-explainer[data-density="functional"] .hg-explainer-bubble {
+  min-width: 192px;
+  padding: 14px;
+  border-radius: var(--rf-lg);
+}
+
+.hg-explainer-arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--surface);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.hg-explainer-arrow[data-side="bottom"] {
+  top: -5px;
+}
+
+.hg-explainer-arrow[data-side="top"] {
+  bottom: -5px;
+}
+
+.hg-explainer-arrow[data-side="right"] {
+  left: -5px;
+}
+
+.hg-explainer-arrow[data-side="left"] {
+  right: -5px;
+}
+
+.hg-explainer-title {
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.hg-explainer[data-density="functional"] .hg-explainer-title {
+  font-size: 14px;
+}
+
+.hg-explainer-body {
+  font-size: var(--fs-body-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.hg-explainer-title + .hg-explainer-body {
+  margin-top: 6px;
+}
+
+.hg-explainer-action {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-explainer-action[data-link="true"] {
+  margin-top: var(--sp-2);
+}
+
+/* The link is the 44px rectangle; its words stay a 13px link and the extra comes back as negative
+   margin, so the bubble does not grow by 24px to gain a target. */
+.hg-explainer-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: -6px 0;
+  color: var(--link);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.hg-explainer-pager {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-explainer-position {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--text-tertiary);
+}
+
+.hg-explainer-pager-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hg-explainer .hg-explainer-pill {
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.hg-explainer .hg-explainer-pill-filled {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+.hg-explainer .hg-explainer-pill-ghost {
+  padding: 0 14px;
+  color: var(--text-secondary);
+  box-shadow: var(--control-edge);
+}
+
+.hg-explainer .hg-explainer-pill-off {
+  background: var(--canvas-sunken);
+  color: var(--text-disabled);
+  cursor: default;
+}

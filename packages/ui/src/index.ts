@@ -46,6 +46,7 @@ export * from './components/DrawingSheet';
 export * from './components/Dropzone';
 export * from './components/EditorSurface';
 export * from './components/EmptyState';
+export * from './components/Explainer';
 export * from './components/FieldModeToggle';
 export * from './components/FieldOverride';
 export * from './components/FilterBar';

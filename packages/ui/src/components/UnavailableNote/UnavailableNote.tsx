@@ -91,7 +91,10 @@ function UnavailableNoteBase({
 }
 
 /** The `.states` / `.isBlockedState` statics the DS attaches to the component. */
+/* `displayName` because the function is named `UnavailableNoteBase`, and `Explainer` refuses this
+   component in its pages by name. */
 export const UnavailableNote = Object.assign(UnavailableNoteBase, {
+  displayName: 'UnavailableNote',
   states: SURFACE_STATES,
   isBlockedState,
 });
