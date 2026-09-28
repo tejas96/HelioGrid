@@ -27,15 +27,41 @@ requirement register; this file only says what order to take them in and why.
 `scripts/gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
-**234 of the 394 tasks have no design dependency at all.**
+**234 of the 394 tasks are backend tasks: none carries a drawing of its own, and each still waits for
+the drawings of the screens it serves.**
 
-| | tasks | can start |
+| | tasks | waits on |
 |---|---|---|
-| Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 154 | when their screen is approved |
-| Engine · policy · integration · port tasks | 234 — eight of them the struck F-platform stubs, which only name where their rows went | **today** |
+| Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 154 | their turn, and their screen drawn |
+| Engine · policy · integration · port tasks | 234 — eight of them the struck F-platform stubs, which only name where their rows went | their turn, and the never-drawn screens they serve in their block |
 
-Per `docs/tasks/README.md` rule 3, `DESIGN: PENDING` **blocks build, not start**. So engineering is
-not waiting on the design run.
+## One order, walked one step at a time
+
+Every task is built in ONE fixed order, and `python3 scripts/gates.py` prints its next step on every
+run (`M126`). The order is walked, never chosen:
+
+1. the blocks below, lowest first;
+2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
+   apart from its file;
+3. inside a file, its backend tasks first, then its screens — each group in the order the file writes
+   it, which for the screens is the user's journey (`M01`: sign-in → signup → language → … → team →
+   roles → catalog → branding);
+4. a task's `Depends on:` pulls a task of its own block ahead of it; a later-block wait is recorded
+   below instead.
+
+The step is the first open V1 task on that walk:
+
+| the task | the step printed |
+|---|---|
+| ready | `build <task>` — `/start` takes it |
+| a screen not drawn, or its drawing owed a redesign | `owner draws <SCR>` from its brief — `python3 scripts/next-screen.py` prints how — then `/start` takes it |
+| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redesign owed does not hold it — that drawing exists, and it stops the screen task instead |
+| carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
+| waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
+| carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
+
+So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. The line also prints `design ahead:` —
+the next screen to draw on the same walk — so the owner draws while the build runs.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -89,8 +115,8 @@ and its assumptions in the words the drawn proposal document (`SCR-M06-17`) give
 drawn in block 8. The design system's own renderer closes with it, so the boards drawn on free words
 are redrawn once.
 
-`python3 scripts/next-screen.py` is the sequence made executable — run it rather than reading this
-table against the screens register by eye.
+`python3 scripts/next-screen.py` walks the same order for the screens still to draw — run it rather
+than reading this table against the screens register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
@@ -136,8 +162,8 @@ most EPCs operate today with a spreadsheet. The studio lands on top of a system 
 works.
 
 **39 of the studio's 83 tasks are typed `port`, not `screen` or `engine`.** Per ruling `S12-1`
-they move with their tests and the defect register is the change list. Those can start earlier
-than block 7 if you have the people — they depend on the POC, not on this suite.
+they move with their tests and the defect register is the change list. They build at their turn in
+block 7, like every other task.
 
 ---
 

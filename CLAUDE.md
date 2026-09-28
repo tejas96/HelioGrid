@@ -69,8 +69,12 @@ commit git's pre-commit refuses without that stamp on a HIGH task.** All the thi
 `/start`, once, and is written into the ticket — the tier, the scope, the placement, the cases and,
 for HIGH, the WHOLE QA plan — so the build executes and `/verify` runs that plan without planning
 again. `/ship` has a second actor review the diff as a PR before anything is pushed, commits on a yes,
-pushes and raises the PR (owner ruling); the owner merges. A screen builds only after its module's
-screens are designed and verified.
+pushes and raises the PR (owner ruling); the owner merges. **The work follows ONE order: the NEXT
+step the build-order line prints** (`M126`) — build a task, the owner draws a screen at its turn, or
+the owner clears a blocker. Inside a module it is design → backend → UI: the screens a backend serves
+are drawn before it is built, and it is built before those screens. An undrawn screen is drawn at its
+turn, never skipped for work that is ready; a blocker is the next step until it is cleared, moved or
+parked with a recorded reason.
 
 **Two risk tiers, on the ticket's `Risk:` line.** LOW — pure logic no caller reaches yet, docs,
 config: `break-it-reviewer` at `/ship`, no `/verify`, no stamp. HIGH — the database, the API, money,

@@ -25,7 +25,9 @@ repo is the reasoning behind those briefs — you never open it.
 ## The order is the V1 build order. `V2` rows are skipped.
 
 **Your next screen is the first one `python3 scripts/next-screen.py` prints.** Do not invent a
-different starting point, however tempting a smaller brief looks.
+different starting point, however tempting a smaller brief looks. It is the same screen the build
+line of `python3 scripts/gates.py` names — as `NEXT: owner draws …` when the build has reached it,
+or as `design ahead:` while the build is still on earlier work.
 
 The eight blocks, in order, with the V1 count in each:
 
@@ -56,10 +58,12 @@ Two things about this order are deliberate, so you don't "correct" them:
   `SCR-SHELL-06` sits with the shell rows in the register, but it renders a tenant's M12 billing
   state, so it belongs to block 2.
 
-Within a block, work top to bottom down the register and skip every row whose `V` column says `V2`
-or whose `Status` is already `designed` — with one exception the script already applies: a screen
-that OWNS a part is drawn before the screens that reuse it. In billing that is `SCR-M12-03` (the plan
-card and the comparison), then `SCR-M12-04` (the meter row), then `SCR-M12-01` and `SCR-M12-02`.
+Within a block, the script follows the build's own walk — each task file's screens in the order they
+are written, a task's dependency pulled ahead of it. The build line asks for a module's screens when
+it reaches the module's first backend task, because the backend serves what the drawings show. It
+skips every row whose `V` column says `V2` or whose `Status` is already `designed`. A screen that
+reuses a part another screen draws should come after that screen on the walk; nothing checks this, so
+when it does not, move the drawing screen's task ahead in its task file before drawing either.
 
 ## You never choose a brief — the screens register tells you
 
@@ -268,8 +272,8 @@ Gate 31 refuses a changed brief until someone reviews the design against the bri
 - **Still matches** → write the new digest gate 31 names.
 - **No longer matches** → write `owed <digest>`, and add a `## Redesign owed` section to the brief
   that says exactly what the design shows and what the brief now requires.
-  `python3 scripts/next-screen.py` then lists it FIRST, and it is kept out of the build order until
-  cleared.
+  `python3 scripts/next-screen.py` then lists it, the build line stops at its task, and it is
+  redrawn at that turn.
 - **The screen is already BUILT** → its cell also carries the code's verdict: `· code ok` when the
   built screen matches the brief, or `· code owed T-…` naming the task that changes it.
 

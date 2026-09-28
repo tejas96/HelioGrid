@@ -138,11 +138,12 @@ def task_blocks(repo):
 
 
 def build_order_blocks(path):
-    """The block each task FILE sits in, each task placed apart from its file, and each block's title,
-    read from the block table of docs/build-order.md — the ONE place the blocks are written;
+    """The block each task FILE sits in, each task placed apart from its file, each block's title, and
+    each block's cells — its files and its placed-apart tasks in the order its row writes them — read
+    from the block table of docs/build-order.md, the ONE place the blocks are written;
     scripts/next-screen.py reads them here too. A cell `SHELL` → `T-SHELL-006` places that one task
     and never the whole file; `MS-studio-a/-b/-c` names three files."""
-    by_file, by_task, titles = {}, {}, {}
+    by_file, by_task, titles, cells = {}, {}, {}, defaultdict(list)
     for line in open(path, encoding="utf-8"):
         row = re.match(r"\|\s*\*\*(\d+)\*\*\s*\|([^|]*)\|", line)
         if not row:
@@ -153,12 +154,66 @@ def build_order_blocks(path):
         for token in re.findall(r"`([^`]+)`", line):
             if token.startswith("T-"):
                 by_task[token] = block
+                cells[block].append(token)
             elif token not in placed_apart:
                 first, *suffixes = token.split("/")
                 stem = first[: first.rfind("-")]
                 for name in [first] + [stem + suffix for suffix in suffixes]:
                     by_file[name] = block
-    return by_file, by_task, titles
+                    cells[block].append(name)
+    return by_file, by_task, titles, cells
+
+
+def declared_waits(task, body):
+    """The tasks a ticket's `Depends on:` line names, or None when the ticket has no such line."""
+    line = re.search(r"^\**Depends on:\**(.*)$", body, re.M)
+    return [d for d in re.findall(r"T-[A-Z0-9]+-\d+", line.group(1)) if d != task] if line else None
+
+
+def task_kind(body):
+    """A ticket's `Type:` — screen, engine, policy, integration or port — or None when it has none."""
+    kind = re.search(r"^\**Type:\**\s*(\w+)", body, re.M)
+    return kind.group(1) if kind else None
+
+
+def is_parked(body):
+    """A ticket the owner parked carries a `**Parked:**` line: it keeps its block and its rows, and the
+    build line steps over it."""
+    return bool(re.search(r"^\*\*Parked:\*\*", body, re.M))
+
+
+def build_sequence(order_doc, blocks):
+    """Every placed task in the ONE order the work follows (M126): block by block, each block's cells
+    in the order its row writes them; inside a task file its backend tasks first, then its screens —
+    a screen is built on a backend that already stands — each in the order the file writes them, the
+    user's journey; and a task's `Depends on:` pulling a task of its own block ahead of it. A parked
+    task pulls nothing ahead: what it waits on keeps its own turn. The build line and the design queue
+    both walk this list, so what is drawn next is what is built next."""
+    by_file, by_task, _titles, cells = build_order_blocks(order_doc)
+    stem_of = {b["id"]: os.path.splitext(os.path.basename(b["file"]))[0] for b in blocks}
+    block_of = {t: by_task.get(t, by_file.get(stem)) for t, stem in stem_of.items()}
+    written = defaultdict(list)
+    for b in sorted(blocks, key=lambda b: task_kind(b["body"]) == "screen"):
+        if b["id"] not in by_task:
+            written[stem_of[b["id"]]].append(b["id"])
+    waits = {b["id"]: [] if is_parked(b["body"]) else declared_waits(b["id"], b["body"]) or [] for b in blocks}
+    order, seen = [], set()
+
+    def place(task):
+        if task in seen:
+            return
+        seen.add(task)
+        for dep in waits[task]:
+            if dep in block_of and block_of[dep] == block_of[task]:
+                place(dep)
+        order.append(task)
+
+    for block in sorted(cells):
+        for cell in cells[block]:
+            for task in [cell] if cell in by_task else written.get(cell, []):
+                if task in waits:
+                    place(task)
+    return order
 
 
 def recorded_cross_block(path):
@@ -621,10 +676,10 @@ def run(repo, verbose):
     # briefs had since changed while every gate passed, because none compared the two. So the
     # register's `Brief reviewed` cell names the digest of the brief a designed or shipped screen's
     # design was last reviewed against, and a brief that changes after it is refused here until the
-    # design is reviewed again. A design found stale reads `owed`: it stays out of the build order
-    # and goes first in the design queue. A SHIPPED screen also names its code's verdict — `code ok`,
-    # or `code owed` and the task that changes it — because a design that moves after a screen is
-    # built leaves that code to be checked, not assumed.
+    # design is reviewed again. A design found stale reads `owed`: the build line stops at its task,
+    # and the design queue redraws it at that turn. A SHIPPED screen also names its code's verdict —
+    # `code ok`, or `code owed` and the task that changes it — because a design that moves after a
+    # screen is built leaves that code to be checked, not assumed.
     review_cell = re.compile(r"^(owed )?([0-9a-f]{12})(?: · code (ok|owed (T-[A-Z0-9]+-\d+)))?$")
     index_rows = screen_index(reg) if os.path.exists(reg) else []
     task_ids = {b["id"] for b in blocks}
@@ -666,7 +721,7 @@ def run(repo, verbose):
         if owed:
             owed_screens.append(sid)
     design_summary = (f"design review: {n_reviewed} designs reviewed against their briefs · "
-                      + (f"{len(owed_screens)} redesigns owed, first in the design queue: {', '.join(owed_screens)}"
+                      + (f"{len(owed_screens)} redesigns owed, each redrawn at its turn: {', '.join(owed_screens)}"
                          if owed_screens else "none owed"))
     scanned(31, "every designed screen carries its brief's current digest (tripwire: the review itself is not checked)",
             len(index_rows), 100, not review_bad,
@@ -674,44 +729,53 @@ def run(repo, verbose):
             else f"{len(review_bad)}: " + " · ".join(review_bad[:6]))
 
     # --- Gate 30 · the build order is computed, never remembered
-    # docs/build-order.md is the order. Its block table places every task file, and a task is READY
-    # when it is live, V1, sits in the LOWEST block that still has live V1 work, waits on nothing
-    # unshipped, and — for a screen — is designed. Everywhere else the order lives only in each
-    # ticket's `Depends on:` line, and five shapes break it without failing any other gate: a LOOP,
-    # where no task in it can go first; a live task waiting on a STRUCK one, which waits forever; a
-    # V1 task waiting on a V2 one, which never finishes in V1; a V1 task waiting on a LATER block,
-    # which stalls its own block unless the plan records it; and a task file no block places that
-    # cannot prove itself wholly V2 by its screens, which is a module nobody is ever told to build.
+    # docs/build-order.md is the order, and build_sequence() walks it: blocks, then each block's cells,
+    # then each file's tasks as written, a task's same-block `Depends on:` pulled ahead of it. The
+    # NEXT STEP is the first live V1 task on that walk that is not parked — ONE step, never a menu, so
+    # a screen whose drawing is missing is drawn at its turn instead of skipped for work that is
+    # ready. Everywhere else the order lives only in each ticket's `Depends on:` line, and five shapes
+    # break it without failing any other gate: a LOOP, where no task in it can go first; a live task
+    # waiting on a STRUCK one, which waits forever; a V1 task waiting on a V2 one, which never finishes
+    # in V1; a V1 task waiting on a LATER block, which stalls its own block unless the plan records it;
+    # and a task file no block places that cannot prove itself wholly V2 by its screens, which is a
+    # module nobody is ever told to build.
     order_doc = spec(repo, "build-order.md")
-    by_file, by_task, _titles = build_order_blocks(order_doc) if os.path.exists(order_doc) else ({}, {}, {})
+    by_file, by_task, _titles, _cells = build_order_blocks(order_doc) if os.path.exists(order_doc) else ({}, {}, {}, {})
     v2_screens = set(v2)
-    state_of, waits_on, kind_of, tier_of, file_of, screens_of = {}, {}, {}, {}, {}, {}
+    state_of, waits_on, kind_of, file_of, screens_of = {}, {}, {}, {}, {}
     # A ticket with no `Depends on:` line has not been through /start yet, and reads as waiting on
-    # nothing. That is silence, not readiness: the order line counts them so it never claims more
-    # than it read. The BLOCK order does not rest on these lines — it comes from each task's file.
+    # nothing. That is silence, not readiness: the next step says so, and /start writes the line
+    # before the task is built. The BLOCK order does not rest on these lines — it comes from each
+    # task's file.
     undeclared = set()
-    # A ticket the owner parked carries a `**Parked:**` line: it keeps its block and its rows, but it
-    # is never "ready now" — offering it would send /start to a task the owner already said waits.
-    parked = set()
-    design_of = {}
+    # The walk steps over a parked ticket. A ticket carrying a `**Blocked:**` line waits on something
+    # only the owner can clear — a ruling, an account — and the walk STOPS there: the next step is the
+    # owner clearing it.
+    parked, blocked_by, design_line = set(), {}, {}
     for b in blocks:
         task, body = b["id"], b["body"]
         found = status_re.findall(body)
         state_of[task] = found[0].split(" ")[0] if len(found) == 1 else None
-        line = re.search(r"^\**Depends on:\**(.*)$", body, re.M)
-        waits_on[task] = [d for d in re.findall(r"T-[A-Z0-9]+-\d+", line.group(1)) if d != task] if line else []
-        if not line:
+        declared = declared_waits(task, body)
+        waits_on[task] = declared or []
+        if declared is None:
             undeclared.add(task)
-        if re.search(r"^\*\*Parked:\*\*", body, re.M):
+        if is_parked(body):
             parked.add(task)
-        kind = re.search(r"^\**Type:\**\s*(\w+)", body, re.M)
-        kind_of[task] = kind.group(1) if kind else None
-        tier = re.search(r"\**Tier:\**\s*(P\d)", body)
-        tier_of[task] = tier.group(1) if tier else "P9"
+        blocked = re.search(r"^\*\*Blocked:\*\*\s*(.+)$", body, re.M)
+        if blocked:
+            blocked_by[task] = blocked.group(1).strip()
+        kind_of[task] = task_kind(body)
         file_of[task] = os.path.splitext(os.path.basename(b["file"]))[0]
         screens_of[task] = [sid for sid, _link in design_re.findall(body)]
         shared = re.search(r"^\**Design:\**(.*)$", body, re.M)
-        design_of[task] = set(screens_of[task]) | set(re.findall(r"SCR-[A-Z0-9]+-\d{2}", shared.group(1)) if shared else [])
+        design_line[task] = shared.group(1) if shared else ""
+    # A screen drawn on another task's canvas names that task, or its screen, on its `Design:` line. An
+    # engine's `Design:` line names the screens that consume it, so only a screen reads a task id there.
+    design_of = {t: set(screens_of[t]) | set(re.findall(r"SCR-[A-Z0-9]+-\d{2}", line))
+                 | ({sid for other in re.findall(r"T-[A-Z0-9]+-\d+", line) for sid in screens_of.get(other, [])}
+                    if kind_of[t] == "screen" else set())
+                 for t, line in design_line.items()}
 
     def block_of(task):
         return by_task.get(task, by_file.get(file_of[task]))
@@ -724,6 +788,8 @@ def run(repo, verbose):
     order_bad = []
     if not by_file:
         order_bad.append("CONFIG ROT: no block table read from docs/build-order.md")
+    for task in sorted(set(by_task) - set(state_of)):
+        order_bad.append(f"the block table places {task}, which no task file holds")
     for stem in sorted({file_of[t] for t in state_of} - set(by_file)):
         its_screens = [sid for t in state_of if file_of[t] == stem for sid in screens_of[t]]
         if not its_screens:
@@ -747,36 +813,63 @@ def run(repo, verbose):
                          "move it, split it, or record it in the plan")
     for task, dep in sorted(recorded - later):
         order_bad.append(f"the plan records {task} waiting on {dep}, which is no longer true")
-    unblocks = defaultdict(set)
-    for task in live:
-        for dep in waits_on[task]:
-            unblocks[dep].add(task)
-    current = min((block_of(t) for t in v1_live), default=None)
+    for task in sorted(t for t in v1_live if kind_of[t] == "screen" and not design_of[t]):
+        order_bad.append(f"{task} is a screen and names no screen — give it a DESIGN line, or a Design "
+                         "line naming the canvas it is drawn on")
+    sequence = build_sequence(order_doc, blocks) if by_file else []
+    walk = [t for t in sequence if t in v1_live and t not in parked]
+    turn = {t: i for i, t in enumerate(sequence)}
+    carrier = {sid: t for t in walk for sid in screens_of[t]}
+    # The open block is the walk's: a block whose only open work is parked is stepped over.
+    current = block_of(walk[0]) if walk else None
     # A record only buys time until its block opens: from then the ruling is owed NOW, so the block
     # cannot start with a task in it that can never finish.
     for task, dep in sorted(recorded & later):
         if block_of(task) == current:
             order_bad.append(f"block {current} is open and {task} still waits on {dep} in block "
                              f"{block_of(dep)} — the plan's record owes its ruling now")
-    ready = sorted(
-        (t for t in v1_live
-         if block_of(t) == current
-         and t not in parked
-         and all(state_of.get(dep) == "shipped" for dep in waits_on[t] if dep in state_of)
-         and (kind_of[t] != "screen" or state_of[t] == "designed")
-         # a design owed a redesign is not built from: the build would bake in what the brief retired
-         and not design_of[t] & set(owed_screens)),
-        key=lambda t: (tier_of[t], -len(unblocks[t]), t))
-    shown = [f"{t} (unblocks {len(unblocks[t])})" if unblocks[t] else t for t in ready[:6]]
+
+    def not_drawn(sid):
+        return screen_state.get(sid, ("planned",))[0] == "planned"
+
+    def undrawn(task):
+        """The screens this task waits on a drawing for, in the walk's order: a redesign owed; for a
+        screen, its own drawing; for a backend task, every screen never drawn that it serves in its own
+        block — the screens of its file, and any screen whose `Depends on:` names it — because a
+        drawing states facts the backend serves (design → backend → UI). A redesign owed does not
+        hold a backend: the drawing exists, the brief it is built from is current, and the redesign
+        stops the screen task that draws it."""
+        found = {s for s in design_of[task] if s in owed_screens or (kind_of[task] == "screen" and not_drawn(s))}
+        if kind_of[task] != "screen":
+            found |= {s for s, t in carrier.items() if not_drawn(s) and block_of(t) == block_of(task)
+                      and (task in waits_on[t] or file_of[t] == file_of[task])}
+        return sorted(found, key=lambda s: (turn.get(carrier.get(s), len(turn)), s))
+
+    def next_step(task):
+        unmet = [d for d in waits_on[task] if state_of.get(d) in ("planned", "designed")]
+        if task in blocked_by:
+            return f"owner clears {task}'s blocker — {blocked_by[task]}"
+        if unmet:
+            why = " · ".join(f"{d} is parked" if d in parked else f"{d} sits in block {block_of(d)}, after it"
+                             for d in unmet)
+            return (f"owner clears {task}'s blocker — {why}; unpark or move what it waits on, or move or "
+                    "park this task with a recorded reason")
+        if undrawn(task):
+            return (f"owner draws {', '.join(undrawn(task))} for {task} from "
+                    + ("its brief" if kind_of[task] == "screen" else "their briefs, before its backend is built")
+                    + " (python3 scripts/next-screen.py prints the steps), then /start takes it")
+        return f"build {task} — /start {task}" + (
+            " (it declares no dependencies yet: /start writes that line and confirms before building)"
+            if task in undeclared else "")
+
+    step = walk[0] if walk else None
+    ahead = next((t for t in walk[1:] if set(undrawn(t)) - set(undrawn(step))), None)
     order_summary = (
         f"build order: block {current} · {sum(1 for t in v1_live if block_of(t) == current)} open · "
-        f"{len(recorded)} recorded cross-block · {sum(1 for t in v1_live if t in parked)} parked · ready now: "
-        + (", ".join(shown) + (f" (+{len(ready) - 6} more)" if len(ready) > 6 else "") if ready
-           else "NOTHING — every open task waits on a design or a dependency")
-        + (f" · {sum(1 for t in ready if t in undeclared)} of {len(ready)} declare no dependencies yet, "
-           "so /start writes that line and confirms before building"
-           if any(t in undeclared for t in ready) else "")
-        if current is not None else "build order: no live V1 task left")
+        f"{len(recorded)} recorded cross-block · {len(parked & v1_live)} parked · NEXT: {next_step(step)}"
+        + (f" · design ahead: {', '.join(s for s in undrawn(ahead) if s not in undrawn(step))} ({ahead})" if ahead else "")
+        if step is not None
+        else "build order: nothing left to walk" + (f" — {len(parked & v1_live)} V1 task(s) parked" if parked & v1_live else ""))
     gate(30, "the build order holds: no loop, nothing stale, every file placed",
          not order_bad, order_summary if not order_bad
          else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
