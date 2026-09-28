@@ -48,7 +48,10 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits d
   never a hand-wired `useInfiniteQuery`.
 - **`session/store.ts` is the one session store, both platforms.** It starts `checking`, asks
   the server who the cookies belong to, and never sees a credential: the transport carries the
-  cookies and renews the ten-minute token once on a 401. A shared device changing hands consults
+  cookies and renews the ten-minute token once on a 401. Only a 401 from the refresh ends a
+  session, with the reason its code names (`ACCESS_REMOVED` or a plain sign-out). A sign-in, a
+  sign-out, a failed boot check and a loss move the snapshot through domain's `sessionAfter`, which
+  the store only calls. A shared device changing hands consults
   `HeldWork` (`F4-37`) before the new user's data loads; `NO_HELD_WORK` is V1's answer.
 
 ## Done means

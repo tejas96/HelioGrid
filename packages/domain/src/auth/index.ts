@@ -1,5 +1,5 @@
-export type { Admission, MembershipStanding, TokenClaims } from './admission';
-export { admit } from './admission';
+export type { Admission, MembershipStanding, RefreshVerdict, TokenClaims } from './admission';
+export { admit, refreshVerdict } from './admission';
 export { hasCompany, homeOf } from './company';
 export type { DoorView } from './door-view';
 export { doorView } from './door-view';
@@ -72,10 +72,12 @@ export {
   otpVerifyDecision,
 } from './otp-policy';
 export type {
+  EndedAccess,
   HeldWorkSummary,
   KnownAccount,
   OtpVerifyResult,
   PendingSwitch,
+  SessionLoss,
   SessionPhase,
   SessionSnapshot,
   SessionStatus,
@@ -93,5 +95,7 @@ export {
   sessionExpiresAt,
   WEB_SESSION_ROLLING_DAYS,
 } from './session-policy';
+export type { SessionEvent } from './session-transitions';
+export { CHECKING, canRenew, SIGNED_OUT, sessionAfter } from './session-transitions';
 export type { SignupView } from './signup-view';
 export { signupView } from './signup-view';

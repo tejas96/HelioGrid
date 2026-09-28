@@ -1,8 +1,14 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { otpChannelSchema, phoneE164Schema, platformKindSchema, uuidSchema } from './common';
-import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
+import {
+  extensibleEnum,
+  otpChannelSchema,
+  phoneE164Schema,
+  platformKindSchema,
+  uuidSchema,
+} from './common';
+import { AUTHENTICATION_CODES, baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
 import { sessionProjectionSchema } from './session';
 
 const c = initContract();
@@ -55,6 +61,18 @@ export const refreshSchema = z.object({
   foreground: z.boolean(),
 });
 
+/**
+ * The refresh's own refusal when the session acted for a company whose membership was DEACTIVATED
+ * (`M01` edge `S1.wrong.4`). Every other refusal — signed out, signed out everywhere, expired,
+ * unknown — stays `UNAUTHENTICATED`, so a device says "your access was removed" only when it was.
+ * A route code, not a base code: the api throws it through `ContractException`. The set stays
+ * extensible, so a phone built before it reads it as any other 401 from the refresh — a loss.
+ */
+export const ACCESS_REMOVED = 'ACCESS_REMOVED' as const;
+export const refreshRefusalEnvelope = errorEnvelope(
+  extensibleEnum([...AUTHENTICATION_CODES, ACCESS_REMOVED]),
+);
+
 export const tokenLifeSchema = z.object({
   /** When the API token set alongside this response stops being accepted. */
   tokenExpiresAt: z.string().datetime(),
@@ -104,7 +122,7 @@ export const authContract = c.router({
     summary: 'Renew the ten-minute API token while the session is valid',
     responses: {
       200: tokenLifeSchema,
-      401: unauthenticatedEnvelope,
+      401: refreshRefusalEnvelope,
     },
   },
   signOut: {

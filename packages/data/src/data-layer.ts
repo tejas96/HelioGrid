@@ -39,7 +39,7 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
    */
   let session: SessionStore | null = null;
   const signals: SessionSignals = {
-    onSessionLost: () => session?.signals.onSessionLost(),
+    onSessionLost: (loss) => session?.signals.onSessionLost(loss),
     couldHoldSession: () => session?.signals.couldHoldSession() ?? true,
   };
 

@@ -1,6 +1,6 @@
-import { authContract } from '@heliogrid/contracts';
+import { ACCESS_REMOVED, authContract } from '@heliogrid/contracts';
 import { UI_LANGUAGES, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/domain';
-import { Controller, Inject, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, HttpStatus, Inject, Req, UnauthorizedException } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
@@ -13,6 +13,7 @@ import {
   setTokenCookie,
 } from '../../common/auth/cookies';
 import { sessionIdOf, sessionOf } from '../../common/auth/session-context';
+import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from './auth.service';
 import { OtpService } from './internal/otp.service';
 
@@ -65,16 +66,25 @@ export class AuthController {
       },
       refresh: async ({ body }) => {
         const secret = cookieOf(req, SESSION_COOKIE);
-        const minted =
+        const refreshed =
           secret === undefined
-            ? null
+            ? ({ verdict: 'signed-out' } as const)
             : await this.auth.refresh(secret, body.foreground, Date.now());
-        if (minted === null) {
+        if (refreshed.verdict !== 'renew') {
           clearAuthCookies(res);
-          throw new UnauthorizedException('Sign in again.');
+          if (refreshed.verdict === 'signed-out') throw new UnauthorizedException('Sign in again.');
+          // A route code, not a base one: a bare Nest 401 would carry UNAUTHENTICATED.
+          throw new ContractException(
+            ACCESS_REMOVED,
+            'Your access was removed.',
+            HttpStatus.UNAUTHORIZED,
+          );
         }
-        setTokenCookie(res, minted.token, minted.expiresAt);
-        return { status: 200, body: { tokenExpiresAt: new Date(minted.expiresAt).toISOString() } };
+        setTokenCookie(res, refreshed.token, refreshed.expiresAt);
+        return {
+          status: 200,
+          body: { tokenExpiresAt: new Date(refreshed.expiresAt).toISOString() },
+        };
       },
       signOut: async () => {
         await this.auth.signOut(sessionIdOf(req), Date.now());

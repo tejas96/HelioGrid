@@ -1,9 +1,10 @@
 import {
+  ACCESS_REMOVED,
   AUTH_PATH_PREFIX,
-  CLIENT_UPGRADE_REQUIRED_STATUS,
   CLIENT_VERSION_HEADER,
   REQUEST_ID_HEADER,
 } from '@heliogrid/contracts';
+import type { SessionLoss } from '@heliogrid/domain';
 import { type ApiFetcher, type ApiFetcherArgs, tsRestFetchApi } from '@ts-rest/core';
 import { ZodError } from 'zod';
 import type { DataError } from '../errors/errors';
@@ -33,8 +34,8 @@ export type RequestHeaders =
  * person who had been signed out. A server render has no session to lose and declares no field.
  */
 export interface SessionSignals {
-  /** A refresh was attempted and failed: whoever held this session no longer has one. */
-  onSessionLost(): void;
+  /** The refresh was REFUSED (401): whoever held this session no longer has one, and why. */
+  onSessionLost(loss: SessionLoss): void;
   /** False once the session is known to be gone, so a doomed refresh is not attempted again. */
   couldHoldSession(): boolean;
 }
@@ -202,6 +203,33 @@ async function sendRequest(
   return result;
 }
 
+/** The refusal's code, read defensively: a shape we do not recognise has none. */
+function codeOf(response: Awaited<ReturnType<ApiFetcher>>): unknown {
+  return (response.body as { error?: { code?: unknown } } | undefined)?.error?.code;
+}
+
+/**
+ * Is this 401 worth a refresh? A call that carried NOTHING usually is not — a refresh renews a
+ * credential, and with none it can only 401 again, which is what every signed-out page load used
+ * to pay. The exception is the browser mid-session: it keeps the session cookie for `/auth` alone
+ * and the token cookie dies with the token, so after ten minutes every call OUTSIDE `/auth`
+ * carries nothing while the refresh would still carry the session. Under `/auth` (the boot check)
+ * the session cookie is sent when there is one, so there nothing means nothing.
+ */
+function worthRefreshing(
+  config: TransportConfig,
+  pathname: string,
+  first: Awaited<ReturnType<ApiFetcher>>,
+): boolean {
+  if (codeOf(first) !== NO_CREDENTIAL) return true;
+  return config.mode === 'browser' && !pathname.startsWith(AUTH_PREFIX);
+}
+
+/** Only the server knows a company removed this person; any other refusal is a plain sign-out. */
+function lossOf(refused: Awaited<ReturnType<ApiFetcher>>): SessionLoss {
+  return codeOf(refused) === ACCESS_REMOVED ? 'access-removed' : 'signed-out';
+}
+
 /**
  * The ten-minute API token is renewed from the session cookie (`M01-07`): a 401 on any route
  * but the refresh itself is answered by ONE refresh and ONE retry — the boot check
@@ -209,23 +237,11 @@ async function sendRequest(
  * back signed in. That is why the boot check may NOT simply skip the retry. A server render
  * never refreshes: it holds no jar and must not rotate a visitor's cookies.
  *
- * A refresh that FAILS still hands the original 401 to the caller — but it now also says so.
- * Without that, the session store stayed `authenticated` while every call 401'd, and a screen
- * behind the gate kept rendering for someone the server had already stopped recognising. And
- * once the session is known to be gone, a further 401 gets no refresh at all: a wrong OTP code
- * answers 401, so five tries used to post five doomed refreshes behind them.
+ * A refresh the server REFUSES still hands the original 401 to the caller — and reports the loss
+ * with the reason the server named, or the store would stay `authenticated` while every call
+ * 401'd. Once the session cannot be held (`canRenew`), a further 401 gets no refresh at all: a
+ * wrong OTP code answers 401, so five tries used to post five doomed refreshes behind them.
  */
-/**
- * Did the server say the request carried nothing at all? A refresh renews a credential; with
- * none to renew it is one round trip that can only 401 again, which is what every signed-out
- * page load used to pay. The body is read defensively — a shape we do not recognise is treated
- * as an ordinary refusal, which spends a refresh rather than wrongly withholding one.
- */
-function carriedNothing(response: Awaited<ReturnType<ApiFetcher>>): boolean {
-  const body = response.body as { error?: { code?: unknown } } | undefined;
-  return body?.error?.code === NO_CREDENTIAL;
-}
-
 async function refreshedOnce(
   config: TransportConfig,
   args: ApiFetcherArgs,
@@ -233,9 +249,10 @@ async function refreshedOnce(
   first: Awaited<ReturnType<ApiFetcher>>,
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   if (config.mode === 'server' || first.status !== UNAUTHENTICATED) return first;
-  if (new URL(args.path).pathname === `${AUTH_PREFIX}refresh`) return first;
+  const { pathname } = new URL(args.path);
+  if (pathname === `${AUTH_PREFIX}refresh`) return first;
   if (!config.session.couldHoldSession()) return first;
-  if (carriedNothing(first)) return first;
+  if (!worthRefreshing(config, pathname, first)) return first;
   if (config.mode === 'mobile' && (await config.storage.get()) === null) return first;
   const refreshed = await sendRequest(
     config,
@@ -252,10 +269,11 @@ async function refreshedOnce(
     signal,
   );
   if (refreshed.status === OK) return sendRequest(config, args, signal);
-  /* A too-old build was not signed out, it was turned away — possibly by a machine that took a
-     raised minimum after the first call was served. That answer, not the 401, is the truth. */
-  if (refreshed.status === CLIENT_UPGRADE_REQUIRED_STATUS) return refreshed;
-  config.session.onSessionLost();
+  /* Only a REFUSAL ends a session. A 5xx during a deploy, a 429, a too-old build turned away by a
+     machine that took a raised minimum: each is the truth about this call, handed back as the
+     refresh's own answer, and the person stays signed in. */
+  if (refreshed.status !== UNAUTHENTICATED) return refreshed;
+  config.session.onSessionLost(lossOf(refreshed));
   return first;
 }
 

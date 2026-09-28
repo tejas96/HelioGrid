@@ -928,7 +928,8 @@
                           "type": "string",
                           "x-extensible-enum": [
                             "UNAUTHENTICATED",
-                            "NO_CREDENTIAL"
+                            "NO_CREDENTIAL",
+                            "ACCESS_REMOVED"
                           ]
                         },
                         "message": {
