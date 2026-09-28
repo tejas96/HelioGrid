@@ -128,6 +128,7 @@ studio lands on top of a system that already works.
   sun. Only `F3-03` is P0 and the other three are P1/P1/P2, so this was a judgement rather than a
   defect — the owner took it because the product is sold to people who work on roofs. It also
   closes the last two V1 briefs that pinned an exit at a V2 screen (`SCR-M01-03`, `SCR-M01-10`).
+  `F7-16` was struck in place 2026-09-28 by owner ruling, so three rows land there now.
 - **`M12-01`…`M12-04` + `SHELL-06`** — self-serve billing from day one: a public pricing page,
   billing home, plan selection into hosted checkout, usage against bundles, and the banner that
   shows a tenant its billing state. 26 requirement rows, the heaviest of the additions. This is
@@ -178,7 +179,7 @@ grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
 | SCR-M01-08 | **Invite Landing** | P0 | 1 | `docs/ux/briefs/SCR-M01-08-invite-landing.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-08+Invite+Landing+-+Mobile.dc.html | — | bdf105143d2b |
 | SCR-M01-09 | **First-Run Profile** | P0 | 1 | `docs/ux/briefs/SCR-M01-09-first-run-profile.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-09+First-Run+Profile+-+Mobile.dc.html | — | 7f165364d906 |
 | SCR-M01-10 | **Role Explainer** | P1 | 1 | `docs/ux/briefs/SCR-M01-10-role-explainer.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-10+Role+Explainer+-+Mobile.dc.html | — | f9c1c49fa1a4 |
-| SCR-M01-11 | **Profile & Preferences** | P0 | 4 | `docs/ux/briefs/SCR-M01-11-profile-preferences.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html | `F7-design-language:shell-app-settings`; `F6-notifications-and-search:notification-preferences` | eac9cd301ab4 |
+| SCR-M01-11 | **Profile & Preferences** | P0 | 3 | `docs/ux/briefs/SCR-M01-11-profile-preferences.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-11+Profile+and+Preferences+-+Mobile.dc.html | `F7-design-language:shell-app-settings`; `F6-notifications-and-search:notification-preferences` | owed 476317f81fd9 |
 | SCR-M01-12 | **Team** | P0 | 3 | `docs/ux/briefs/SCR-M01-12-team.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-12+Team+-+Mobile.dc.html | `F2-roles-and-permissions:team` | 170e1d1387c7 |
 | SCR-M01-13 | **Assign Roles** | P0 | 1 | `docs/ux/briefs/SCR-M01-13-assign-roles.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-13+Assign+Roles+-+Mobile.dc.html | — | 76213e8f5a8e |
 | SCR-M01-14 | **Roles Reference** | P0 | 1 | `docs/ux/briefs/SCR-M01-14-roles-reference.md` | V1 | designed | https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-14+Roles+Reference+-+Mobile.dc.html | — | c87812f821ec |
@@ -393,9 +394,9 @@ task id(s) in `docs/tasks/` (backfilled by the generator once tasks exist).
 
 **Struck rows.** A requirement deleted from the PRD is **marked, never removed** — this register's
 value is that every row is accounted for exactly once, forever, so a row for something that no
-longer exists still has to be findable. The convention, applied to all 43 struck rows (18 marked in
+longer exists still has to be findable. The convention, applied to all 44 struck rows (18 marked in
 the 2026-08-07 sweep, 25 restored 2026-08-15 under `foundations/F4-data-integrity.md` after they had
-been dropped from this register outright): the id in
+been dropped from this register outright, and `F7-16` struck in place 2026-09-28): the id in
 `~~strikethrough~~`, Tier `—`, Type `**excluded**`, the Where cell replaced by a dated note saying
 when and by whose ruling the row went and where its surviving law now lives (or that it is a named
 non-goal), and Task `—` — a struck row claims no build obligation and counts toward no total in §1
@@ -874,7 +875,7 @@ Nothing below is renumbered.*
 | F7-13 | P0 | policy | policy | LAW |
 | F7-14 | P0 | policy | policy | LAW |
 | F7-15 | P0 | policy | policy | LAW |
-| F7-16 | P1 | mixed | SCR-M01-11 · +non-UI: sanctioned exception to no-borders law; per-user preference, never a… | T-FPLAT-024 |
+| ~~F7-16~~ | — | **excluded** | *The high-contrast field mode — a per-user switch for reading a phone in direct sun, and the one condition under which `F7-15`'s no-borders law yielded — **struck in place 2026-09-28 by owner ruling and not renumbered**: V1 ships without it, field workers manage sunlight without it, and the base colours are being redesigned. `F7-15` keeps one exception, the drop zone. `SCR-M01-11` keeps its other three rows; `T-FPLAT-024`, which was to build it, is struck. The design system's field-mode tokens leave with the colour redesign (`docs/tasks/deferred.md`).* | — |
 | F7-17 | P0 | policy | policy | LAW |
 | F7-18 | P0 | policy | policy | LAW |
 | F7-19 | P0 | policy | policy | LAW |

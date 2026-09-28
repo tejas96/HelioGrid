@@ -32,7 +32,7 @@ the architecture keeps its extension points, but nothing V2 is designed or built
 | | tasks | can start |
 |---|---|---|
 | Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 154 | when their screen is approved |
-| Engine · policy · integration · port tasks | 234 — seven of them the struck F-platform stubs, which only name where their rows went | **today** |
+| Engine · policy · integration · port tasks | 234 — eight of them the struck F-platform stubs, which only name where their rows went | **today** |
 
 Per `docs/tasks/README.md` rule 3, `DESIGN: PENDING` **blocks build, not start**. So engineering is
 not waiting on the design run.
@@ -50,20 +50,20 @@ Decided 2026-08-15 after inspecting both codebases.
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
 | **0** | **Foundations** | 0 | `F-core` (15 of its 16 — see below) · `F-platform` (25 of its 28 — see below) |
-| **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
+| **1** | **Shell + entry & tenant** | 22 | `SHELL` (2 of its 4 — see below) · `M01-onboarding` (27) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
-| **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
+| **3** | **CRM & leads** | 7 | `M02-crm-leads` (17) · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
 | **7** | **3D Design Studio** | 18 | `MS-studio-a/-b/-c` (83) |
 | **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` |
 
-**The `SHELL` task file spans two blocks.** `SCR-SHELL-06` — the billing state banner and its
+**The `SHELL` task file spans three blocks.** `SCR-SHELL-06` — the billing state banner and its
 denial sheets — sits with the other shell rows in the screens register, because that is where it renders.
 It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
 so designing it in block 1 means inventing the states and the destinations `M12` has not defined
-yet. The block-1 count of 23 already excludes it and the block-2 count of 5 already includes it.
+yet. The block-1 count of 22 already excludes it and the block-2 count of 5 already includes it.
 **The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
 workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
 paying customers (roughly 10–20). It sits in the last V1 block so the build line stops offering it; it
@@ -74,7 +74,9 @@ records (block 6) its proofs erase and export exist.
 projects, customers, sites, catalog items and people, and in block 0 none of those tables exists:
 every done-when line — scope, the "quote" alias, junk leads, a halted tenant's results — would run
 over empty results and prove nothing. It builds once the lead record lands, with leads as its
-first search target, and each later module adds its own target when its slice begins (Law 9).
+first search target, and each later module adds its own target when its slice begins (Law 9). The
+search screen, `T-SHELL-002`, builds beside it in block 3: every step of its proof searches records
+that block lands, the junk lead above all, so in block 1 it could not finish.
 
 **Recipient resolution builds in block 3, not block 0.** `T-FPLAT-066` turns a recipient rule —
 "the record's owner", "the assignee" — into people, and in block 0 no record has an owner: the only
@@ -174,13 +176,6 @@ task that builds what it needs. A record here keeps the order honest (`M126`); i
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
-| `T-M01-006` | 1 | `T-M02-001` | 3 | door one "lands on the empty Leads screen" |
-| `T-M01-006` | 1 | `T-M02-003` | 3 | the same door — the empty Leads screen itself |
-| `T-M01-016` | 1 | `T-M06-010` | 8 | each path opens "from the builder's picker" |
-| `T-M01-016` | 1 | `T-MS-201` | 7 | each path opens from "the studio's picker", and Enter specs manually on a selected item |
-| `T-M01-019` | 1 | `T-M06-027` | 8 | "generate a proposal: each appears", and the order "the builder's timeline step opens with" |
-| `T-SHELL-002` | 1 | `T-M02-015` | 3 | "search the junk lead's phone", with the lead inbox and every queue omitting it |
-| `T-SHELL-002` | 1 | `T-FPLAT-020` | 3 | every search step — the engine it calls builds in block 3, once the lead record lands |
 | `T-FPLAT-066` | 3 | `T-MS-117` | 7 | the design's author gets `design_survey_superseded`, resolved through F2 scope — and, with no single task to name, the `F6-10` check of the matrix against every module's §4 contract, which only the last V1 block can walk |
 
 ---

@@ -100,8 +100,8 @@ first and the desktop view is the expansion, not the original (`F7-30`, `OV-09`)
 is the field: the personas who spend their working day inside the product on a phone — Survey
 Engineer, Field Technician, Installation Team Member, Sales Executive — are also the personas
 most likely to be standing on a roof in sunlight with one hand free, which is why the touch
-contract (`F7-29`), the reachability rules inside it, and the high-contrast field mode
-(`F7-16`) are product requirements rather than polish. The design system's own framing agrees:
+contract (`F7-29`) and the reachability rules inside it are product requirements rather than
+polish. The design system's own framing agrees:
 its stated users are *"mostly on mid-range Android phones, often on a roof with poor signal"*,
 and it declares both mobile and desktop first-class.
 
@@ -169,10 +169,9 @@ Owner in the `modules/M01` matrix rows of F2.
 
 - *The readme and the tokens disagree.* Ruled by `F7-02`; three live instances named. Nothing is
   patched in `design/`.
-- *A screen needs a colour the system does not have.* It does not get one. The escape hatches are
-  the two the source sanctions — the dashed drop zone and the high-contrast field mode
-  (`F7-15`, `F7-16`) — and a genuinely missing role is a design-system change requested against
-  `design/ds-source`, never a local literal.
+- *A screen needs a colour the system does not have.* It does not get one. The one escape hatch
+  is the dashed drop zone (`F7-15`), and a genuinely missing role is a design-system change
+  requested against `design/ds-source`, never a local literal.
 - *A tenant uploads a brand colour that fails contrast on a white document.* `F7-07`: derived
   compliant shade, previewed live, never a rejection dialog.
 - *A tenant asks to theme the operator app.* Declined by `F7-07` and recorded as a non-goal (§5).
@@ -312,8 +311,8 @@ proves it is `F7-41` and `F7-43` item 7.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| F7-15 | **There are no structural borders: hierarchy comes from luminance and soft shadow.** Surfaces separate because they are brighter than the canvas behind them and carry a soft, wide, low-opacity shadow — not because a line has been drawn around them. The source states the governing rule as *"Hierarchy comes from luminance and softness, never from lines."* Exactly **two** exceptions exist: the dashed drop zone of a file upload, and the opt-in high-contrast field mode of `F7-16`. **A control is made findable by RAISING it, never by outlining it (owner ruling 2026-08-28).** A control takes `--surface` at `--e2`, and whatever holds it steps **down** to `--canvas-sunken`, so the control is brighter than its container and reads as elevation — which is this row's own luminance half doing the work it was written for. A white control on a **white** card has no luminance left to spend, and that is the case the ruling exists to prevent: **darken the container, never draw an edge.** **The cost is on the record, measured:** `--surface` on `--canvas-sunken` is **1.14:1**, below WCAG's 3:1 floor for information that identifies a control. The owner chose elevation over an outline with that number in hand, and `F7-16`'s field mode is the sanctioned answer for sunlight — it rings every elevation, so a control at `--e2` is ringed there automatically. Depth is blur and desaturation, never dimming. | `SRC` — `DOC10.no-borders` (docs/10: "No structural […] borders anywhere; hierarchy comes from luminance + soft shadow. Exceptions: dashed file-upload drop zones, and an opt-in HIGH-CONTRAST FIELD MODE"); `design/ds-source/readme.md` "the one governing rule" | P0 |
-| F7-16 | **A high-contrast field mode exists as a sanctioned, opt-in escape hatch for working in sunlight.** It is a product-visible capability, not a styling variant: a user working outdoors can turn it on and get a legible interface on a phone screen in direct sun, and turning it on is the one condition under which the no-borders law of `F7-15` yields. It is opt-in and per user; it is not a theme, not a tenant setting, and not the light/dark switch that `F7-04` excludes. | `SRC` — `DOC10.no-borders` (the named exception) and the ledger's own note: "Field mode is a product-visible capability" · surface context: the field personas of §2 and `design/ds-source/readme.md`'s "often on a roof with poor signal" framing | P1 |
+| F7-15 | **There are no structural borders: hierarchy comes from luminance and soft shadow.** Surfaces separate because they are brighter than the canvas behind them and carry a soft, wide, low-opacity shadow — not because a line has been drawn around them. The source states the governing rule as *"Hierarchy comes from luminance and softness, never from lines."* Exactly **one** exception exists: the dashed drop zone of a file upload. **A control is made findable by RAISING it, never by outlining it (owner ruling 2026-08-28).** A control takes `--surface` at `--e2`, and whatever holds it steps **down** to `--canvas-sunken`, so the control is brighter than its container and reads as elevation — which is this row's own luminance half doing the work it was written for. A white control on a **white** card has no luminance left to spend, and that is the case the ruling exists to prevent: **darken the container, never draw an edge.** **The cost is on the record, measured:** `--surface` on `--canvas-sunken` is **1.14:1**, below WCAG's 3:1 floor for information that identifies a control. The owner chose elevation over an outline with that number in hand. Depth is blur and desaturation, never dimming. | `SRC` — `DOC10.no-borders` (docs/10: "No structural […] borders anywhere; hierarchy comes from luminance + soft shadow. Exceptions: dashed file-upload drop zones, and an opt-in HIGH-CONTRAST FIELD MODE" — the field-mode exception struck with `F7-16` by owner ruling 2026-09-28); `design/ds-source/readme.md` "the one governing rule" | P0 |
+| F7-16 | **STRUCK 2026-09-28 by owner ruling — the product has no field mode.** It read *"a high-contrast field mode exists as a sanctioned, opt-in escape hatch for working in sunlight"*: a per-user switch that darkened text and ringed every surface, the one condition under which `F7-15`'s no-borders law yielded. The owner removed it: V1 ships without it, field workers manage sunlight without it, and the base colours are being redesigned. `F7-15` now has one exception, the drop zone. The row is **struck in place and not renumbered**, so every other `F7` id keeps its citations. | `SRC` — struck by owner ruling 2026-09-28, which removed field mode | — |
 | F7-17 | **Two density modes exist and the choice is made by surface, not by breakpoint.** *Expressive* serves mobile, onboarding, authentication, dashboards, empty states and marketing surfaces; *Functional* serves data tables, long forms, kanban boards, inventory and reporting views, settings and administration. **Colour, type and every rule in this document are identical in both** — only spacing and radius change, and the functional mode remains borderless, keeps its pill controls and keeps the near-black primary action unchanged. The default is expressive on mobile and functional on desktop data screens; the correct density for the surface is a completion condition (`F7-43`, item 9). | `SRC` — `DOC10.density` (docs/10: "Two densities… same colours, type and rules; only spacing and radius change"); `design/ds-source/readme.md` §"Two density modes" | P0 |
 | F7-18 | **Overlays blur the layer behind and fade it toward white — never a dark scrim.** When a sheet, modal, popover or menu opens, the content behind it recedes by blurring and lightening, so the user keeps their sense of where they are. No surface in the product darkens the page to focus attention. | `SRC` — `DOC10.overlay-scrim` (docs/10: "Overlays blur the layer behind and fade it toward white — never a dark scrim"); `UXG-24` ("Blur-toward-white overlays per brand law", where "brand law" is post-overlay `design/ds-source`) | P0 |
 | F7-19 | **One icon family, outlined, at one stroke weight, never mixed within a context.** Filled variants exist for exactly one purpose — the active item in the mobile navigation — and filled and outlined icons never appear together in the same context. **No icon font, no emoji, and no unicode character used as an icon**, anywhere in the product, including in content the product generates. Brand and AI affordances use the gradient object of `F7-06` rather than an outlined icon. Every icon-only control additionally carries the accessible label of `F7-26`. | `SRC` — `DOC10.iconography` (docs/10, whole row); `DOC10.content-voice` ("no emoji"); the family and stroke weight are design-system values (`design/ds-source/readme.md` §Iconography) | P0 |
@@ -323,11 +322,8 @@ proves it is `F7-41` and `F7-43` item 7.
 
 **Behavior detail.** `F7-15` is the rule that makes the product look like itself, and it is also
 the rule most often broken by accident: a border is the reflex fix for "these two things look too
-similar". The correct fix is elevation and luminance, and the correct escape hatch when the
-environment defeats them — bright sun on a phone — is `F7-16`, which is a *stated capability*
-rather than a designer's discretion. Naming field mode as a requirement matters because it is the
-only sanctioned way a screen in this product may show lines, and because the field personas of §2
-are the ones who need it.
+similar". The correct fix is elevation and luminance, and the only sanctioned line in the product
+is the dashed edge of a file-upload drop zone.
 
 `F7-17`'s framing is deliberately "by surface, not by breakpoint". A dense data table on a phone
 is still a dense data table; a dashboard on a desktop is still expressive. Tying density to
@@ -343,16 +339,13 @@ the centre action is the product's highest-frequency act and a role-adaptive ver
 persona's most common act under their thumb; what did **not** survive is its original colour, which
 `D3`'s supersession voided.
 
-**Permissions.** No capability row. `F7-16` is a per-user preference like language
-(`F3-02`) and requires no grant. `F7-22`'s role-adaptive verb reads from the presets of `F2-01`;
+**Permissions.** No capability row. `F7-22`'s role-adaptive verb reads from the presets of `F2-01`;
 it grants nothing and never exposes an action the person's presets do not permit.
 
 **Edge cases & what-goes-wrong.**
 
 - *Two adjacent surfaces are hard to tell apart.* Elevation and luminance, never a line
   (`F7-15`).
-- *A user cannot read the screen in direct sunlight.* Field mode (`F7-16`) — and it must be
-  reachable without leaving what they are doing.
 - *A sheet opens over a canvas and the user loses their place.* `F7-18`: blur toward white keeps
   the context visible; a dark scrim would erase it.
 - *An icon set is extended for one screen and mixes filled with outlined.* Refused by `F7-19`.
@@ -367,9 +360,7 @@ it grants nothing and never exposes an action the person's presets do not permit
 **Acceptance criteria.**
 
 - **Given** any screen, **when** its structure is inspected, **then** no structural border is
-  present except a file-upload drop zone or a surface in field mode (`F7-15`).
-- **Given** a user in direct sunlight, **when** they enable field mode, **then** the interface
-  becomes legible and the change is per user and reversible (`F7-16`).
+  present except a file-upload drop zone (`F7-15`).
 - **Given** a data table and a dashboard, **when** both are viewed on the same device, **then**
   the table renders functional and the dashboard expressive, with identical colour, type and rules
   and different spacing and radius only (`F7-17`).
@@ -390,9 +381,7 @@ most expansion-sensitive strings in the product. `F7-21`'s sheets carry translat
 untranslated tenant and customer data, which is the ordinary mixed-script case `F3-09` declares
 normal and requires as a test case.
 
-**Analytics events.** Field-mode enable/disable (`F7-16`) is worth counting, because sustained
-use would be evidence that the base contrast is failing the field; the event is defined here and
-emitted by whichever surface hosts the preference (`modules/M01`).
+**Analytics events.** None of its own.
 
 ### F7.4 — The interaction and accessibility contract
 
@@ -675,7 +664,7 @@ it must be run against.
 | `foundations/F6-notifications-and-search.md` | `F7-42`'s voice rules for notification copy and `F7-12`'s status treatment wherever a notification carries a state. |
 | `foundations/F3-localization.md` | `F7-14` — the type-system side of `F3-13`, `F3-14`, `F3-16` and `F3-17`; and `F7-41`/`F7-43` item 7 — the render check `F3-18` states from the language side. |
 | `foundations/F8-data-honesty.md` | `F7-35` and `F7-23` (N7): the visual grammar its laws are rendered in, and the rule that a label is never dropped for want of room. |
-| `modules/M01-onboarding-and-tenant-config.md` | `F7-07`'s branding constraints for the settings surface it owns, and `F7-16`'s field-mode preference. |
+| `modules/M01-onboarding-and-tenant-config.md` | `F7-07`'s branding constraints for the settings surface it owns. |
 
 **What F7 expects.**
 

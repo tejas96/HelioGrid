@@ -56,7 +56,7 @@ file's slice exactly once.
 
 **Settle at /start:**
 - Step-1 customer name, phone and address — ruled: design-local fields, prefilled once from the lead by T-MS-372's new-design factory and never written back (M05-15 and MS1-01 make every field editable on the design, M02 stays the customer record's only writer, and a divergent value is the design's own client detail, the way M06-48 gives a proposal its own).
-- The first-run walkthrough's dismissal — pick: a device-held flag, the same class as the field mode of T-M01-011's profile screen, with no column anywhere (MS1-08 asks for shown-once and dismissable, and no row asks the dismissal to follow the user across devices; cost if wrong: one boolean on `user_account` through T-M01-025's owner).
+- The first-run walkthrough's dismissal — pick: a device-held flag, with no column anywhere (MS1-08 asks for shown-once and dismissable, and no row asks the dismissal to follow the user across devices; cost if wrong: one boolean on `user_account` through T-M01-025's owner).
 
 ---
 
