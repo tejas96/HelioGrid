@@ -19,6 +19,13 @@ derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a pac
   specific anti-pattern this package exists to prevent.
 - Unit tests live in `tests/`, never in `src/` — the build compiles everything under `src/` into
   `dist/`, so a colocated test ships.
+- **Two entries: the index every device bundles, and `./server` (`src/server.ts`) for `apps/api` and
+  `apps/worker` alone** (`F4-04`: no device computes a money figure — `M148`). A function that works
+  out a NEW money figure goes on `./server` only, even one that returns just a verdict about it
+  (`clearsCogsFloor`), and so does a business-identifier formatter when one is written. Its TYPES
+  stay on the index, because a screen renders what the server sent. Minting the brand, reading a
+  figure out of a pack and labelling a figure one is handed compute nothing and stay on the index,
+  each named with its reason on the guard's reviewed list.
 
 ## Commands
 
@@ -81,7 +88,8 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
   only agree. `tax/breakdown.ts` is the one tax computation and `subsidy/amount.ts` the one incentive
-  computation: a module that needs either calls it and never multiplies a rate itself.
+  computation: a module that needs either calls it and never multiplies a rate itself. All of
+  these compute, so all of them are on `./server`.
 
 ## Done means
 

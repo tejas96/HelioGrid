@@ -266,6 +266,15 @@ module.exports = {
       to: { path: '^@heliogrid/db|^packages/db/' },
     },
     {
+      name: 'devices-never-compute-money',
+      severity: 'error',
+      comment:
+        'F4-04: every money figure is computed on the server. The computations live on @heliogrid/domain/server, and no package a phone or a browser bundles may import it — the two apps and every shared package they carry, WHOLE: data/server is what a Next server component in apps/web imports, so a server half of a shared package is still a device path. apps/api and apps/worker are the only callers. Listing every device package rather than following imports matters: packages resolve through dist/, which is never followed, so a transitive rule would not see a shared package reaching the entry.',
+      from: { path: '^(apps/(web|mobile)|packages/(ui|forms|i18n|theme|contracts|data|env))/' },
+      // Same two-form match as `web-no-db`: the bare specifier before a build, the dist path after.
+      to: { path: '^@heliogrid/domain/server|^packages/domain/(src|dist)/server\\.' },
+    },
+    {
       name: 'no-raw-http-clients',
       severity: 'error',
       comment:

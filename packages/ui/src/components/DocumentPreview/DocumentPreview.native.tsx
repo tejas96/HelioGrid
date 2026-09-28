@@ -15,9 +15,9 @@ import { docStyles } from './DocumentSheet.native';
 import { DocumentTermsBand } from './DocumentTerms.native';
 import { bandFails, resolveDocument } from './document-model';
 
-interface NativeDocumentPreviewProps extends DocumentPreviewProps {
+type NativeDocumentPreviewProps = DocumentPreviewProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * The customer-facing document, drawn with the tenant's brand — the subject a settings screen's

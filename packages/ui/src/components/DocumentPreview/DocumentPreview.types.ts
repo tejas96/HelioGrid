@@ -71,7 +71,7 @@ export type DocumentRichTextValue = RichTextValue;
 /** `a4` keeps the sheet's proportion. `content` hugs the bands drawn — a one-band preview. */
 export type DocumentFit = 'a4' | 'content';
 
-export interface DocumentPreviewProps {
+export interface DocumentPreviewBase {
   /** The tenant's primary brand colour, "#RRGGBB". */
   brandColor?: string;
   companyName?: string;
@@ -106,23 +106,8 @@ export interface DocumentPreviewProps {
    * line items — a schedule pretending to be a price list.
    */
   parts?: DocumentPart[];
-  /**
-   * `[description, amount]` pairs. An amount is **whole minor units** (`MinorUnits`), printed to
-   * the minor unit by the active market pack (`F1-07` / `F3-20`); a string passes through
-   * untouched for a caller that owns the text.
-   */
-  lineItems?: DocumentLineItem[];
-  /**
-   * **An assertion, not the printed figure.** The total printed is the **sum of `lineItems`**.
-   * Pass this only to have it reconciled: a disagreement warns and the computed sum is what
-   * prints (`SCR-M06-14` — a disagreement is a defect, not a display difference). Omit it in
-   * normal use.
-   */
-  total?: MinorUnits | string;
-  /** Deducted under the total; the payable in the subsidy line is **computed**, never stated. */
-  subsidyAmount?: MinorUnits;
   subsidyLabel?: string;
-  /** Overrides the whole generated subsidy sentence — including its computed payable. */
+  /** Overrides the whole generated subsidy sentence — including the payable it states. */
   subsidyNote?: string;
   /** `SCR-M01-19`'s included-sections list. `included: false` entries are left out. */
   sections?: DocumentSectionInput[];
@@ -141,3 +126,38 @@ export interface DocumentPreviewProps {
   /** Set to "" to drop the caption — do that inside a `PreviewFrame`, which carries its own. */
   caption?: string;
 }
+
+/**
+ * **The figures a document prints — every one the server's** (`F4-04`, `M06-41`: no device
+ * computes a price it prints). Nothing here is summed: the total and the payable are stated.
+ */
+export interface DocumentFigures {
+  /**
+   * `[description, amount]` pairs. An amount is **whole minor units** (`MinorUnits`), printed to
+   * the minor unit by the active market pack (`F1-07` / `F3-20`); a string passes through
+   * untouched for a caller that owns the text.
+   */
+  lineItems: DocumentLineItem[];
+  /** The total as the server computed it — printed as given, never a sum of `lineItems`. */
+  total: MinorUnits | string;
+}
+
+/** A subsidy deducted under the total, with the payable the server computed after it. */
+export interface DocumentSubsidy {
+  subsidyAmount: MinorUnits;
+  payable: MinorUnits;
+}
+
+type Absent<T> = { [K in keyof T]?: undefined };
+
+/**
+ * **All the figures, or none.** None draws the sample document — a settings screen previewing its
+ * letterhead. Real lines come with their total, and a subsidy with its payable, so a real document
+ * can never print a sample figure beside its own.
+ */
+export type DocumentMoney =
+  | (Absent<DocumentFigures> & Absent<DocumentSubsidy>)
+  | (DocumentFigures & Absent<DocumentSubsidy>)
+  | (DocumentFigures & DocumentSubsidy);
+
+export type DocumentPreviewProps = DocumentPreviewBase & DocumentMoney;

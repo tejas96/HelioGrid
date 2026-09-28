@@ -1,7 +1,6 @@
-import { resolvePayable } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import type { MoneySummaryProps, MoneySummarySpec } from './MoneySummary.types';
+import type { MoneySummaryProps } from './MoneySummary.types';
 import { MoneySummaryRow } from './MoneySummaryRow';
 import { MoneySummaryTotal } from './MoneySummaryTotal';
 
@@ -12,12 +11,12 @@ interface WebMoneySummaryProps extends MoneySummaryProps {
 
 /**
  * **What the forty lines add up to.** `M06-35` (P0) / `SCR-M06-05`: cost + battery − incentive −
- * discount = payable, RECOMPUTING ON EVERY CHANGE — an ITEMISED EQUATION, not a single stat.
+ * discount = payable, recomputed BY THE SERVER on every change — an ITEMISED EQUATION, not a single stat.
  *
  * **A payable at or below zero is shown, with a warning** (`M06-35`: the negative figure, never
  * hidden; the block is Generate's). **A failed reconciliation prints no price** (`SCR-M06-14`: a
  * disagreement is a defect, not a display difference), and neither does an unresolved line — no
- * figure without a resolved value. The arithmetic is `@heliogrid/domain`'s, in whole minor units.
+ * figure without a resolved value. The arithmetic is the server's (`F4-04`); this block prints it.
  *
  * It survives a page break: `data-keep-together` pairs with `tokens/print.css`.
  *
@@ -25,8 +24,7 @@ interface WebMoneySummaryProps extends MoneySummaryProps {
  * or the reason they do not add up to a price — is `MoneySummaryTotal`.
  */
 export function MoneySummary({
-  lines = [],
-  reconcile,
+  equation,
   payableLabel = 'Payable',
   overline = 'Money summary',
   surface = 'screen',
@@ -36,8 +34,6 @@ export function MoneySummary({
   className,
   style,
 }: WebMoneySummaryProps) {
-  const m = resolvePayable({ lines, reconcile });
-
   return (
     <section
       data-keep-together=""
@@ -49,13 +45,13 @@ export function MoneySummary({
     >
       {overline ? <p className="hg-money-summary-overline">{overline}</p> : null}
       <div>
-        {m.lines.map((l) => (
+        {equation.lines.map((l) => (
           <MoneySummaryRow key={l.key || l.label} line={l} />
         ))}
       </div>
 
       <MoneySummaryTotal
-        money={m}
+        money={equation}
         payableLabel={payableLabel}
         provenance={provenance}
         note={note}
@@ -63,8 +59,3 @@ export function MoneySummary({
     </section>
   );
 }
-
-/** The same test as a boolean, for a send path: may this document state a price? */
-MoneySummary.stands = (spec: MoneySummarySpec = {}) => resolvePayable(spec).payableStandsUp;
-/** The resolved arithmetic, for a caller that needs the numbers as well as the rendering. */
-MoneySummary.resolve = (spec: MoneySummarySpec = {}) => resolvePayable(spec);
