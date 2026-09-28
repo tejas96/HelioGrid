@@ -2,6 +2,7 @@ import type {
   AssignRoles,
   CreateTenant,
   Member,
+  MyMembership,
   Paginated,
   PaginationQuery,
   SessionProjection,
@@ -22,6 +23,10 @@ export interface TenantRepository {
   create(input: CreateTenant): Promise<SessionProjection>;
   me(signal?: AbortSignal): Promise<Tenant>;
   members(query: PaginationQuery, signal?: AbortSignal): Promise<Paginated<Member>>;
+  /** My own membership's first-run coach-mark count (`M01-16`). */
+  myMembership(signal?: AbortSignal): Promise<MyMembership>;
+  /** Raises that count; refused with `DOMAIN_RULE_VIOLATION` below the stored one. */
+  updateMyMembership(body: MyMembership): Promise<MyMembership>;
   similar(companyName: string, city: string, signal?: AbortSignal): Promise<SimilarTenant[]>;
   /** The whole set a person will hold, old → new; refused with `LAST_OWNER` when it would remove the last EPC Owner. */
   assignRoles(membershipId: string, roles: AssignRoles['roles']): Promise<Member>;
@@ -47,6 +52,24 @@ export function createTenantRepository(api: ApiClient): TenantRepository {
     async me(signal) {
       try {
         const res = await api.tenant.me({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async myMembership(signal) {
+      try {
+        const res = await api.tenant.myMembership({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async updateMyMembership(body) {
+      try {
+        const res = await api.tenant.updateMyMembership({ body });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

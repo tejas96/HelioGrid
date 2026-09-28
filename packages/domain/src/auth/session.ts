@@ -82,6 +82,11 @@ export interface SessionSnapshot {
    * in — which is what a resumed signup greets (`M01-10`). False once a code verifies here.
    */
   restored: boolean;
+  /**
+   * The home the person switched to for THIS session (`M13-09`), or null for the ladder's. Held in
+   * memory only and gone with the session, so the next sign-in lands on the ladder's home again.
+   */
+  chosenHome: RolePreset | null;
 }
 
 /**

@@ -1,5 +1,7 @@
+import { FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
+
 /** Never more than three marks on one screen (M01-16). The cap is enforced, not advisory. */
-export const MAX_STEPS = 3;
+export const MAX_STEPS = FIRST_RUN_COACH_MARKS;
 
 /**
  * What a mark points at. Platform-neutral: the web half accepts a ref, an element or a CSS

@@ -1,3 +1,4 @@
+import { FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -62,6 +63,20 @@ export const memberSchema = z.object({
 export type Member = z.infer<typeof memberSchema>;
 
 /**
+ * The caller's OWN membership, as the shell reads and writes it (`M01-16`). No id travels: the row
+ * is the session's company and person. Roles are not repeated here — the session projection
+ * carries them — and the status is `active` for every caller a member route admits.
+ *
+ * `coachMarksDismissed` counts the first-run marks PASSED: moving past mark `k` writes `k`,
+ * dismissing or finishing the run writes the maximum. A count below the stored one is refused —
+ * a mark once passed is never shown again.
+ */
+export const myMembershipSchema = z.object({
+  coachMarksDismissed: z.number().int().min(0).max(FIRST_RUN_COACH_MARKS),
+});
+export type MyMembership = z.infer<typeof myMembershipSchema>;
+
+/**
  * The presets a person will hold after the write — the whole set, old → new (`M01-20`), never a
  * delta. At least one (`roleSetSchema`, F2-21).
  */
@@ -119,6 +134,33 @@ export const tenantContract = c.router({
       200: tenantSchema,
       401: unauthenticated,
       404: notFound,
+    },
+  },
+  myMembership: {
+    method: 'GET',
+    path: '/tenants/me/membership',
+    summary:
+      'My own membership in the company the session acts under — the shell’s first-run count',
+    responses: {
+      200: myMembershipSchema,
+      401: unauthenticated,
+      /** A session with no company yet (`M01-10`). */
+      403: forbidden,
+      404: notFound,
+    },
+  },
+  updateMyMembership: {
+    method: 'PATCH',
+    path: '/tenants/me/membership',
+    body: myMembershipSchema,
+    summary: 'Record the first-run coach marks I have passed — refused below the stored count',
+    responses: {
+      200: myMembershipSchema,
+      401: unauthenticated,
+      403: forbidden,
+      404: notFound,
+      /** The count is below the one already stored: a mark once passed stays passed. */
+      422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
     },
   },
   members: {

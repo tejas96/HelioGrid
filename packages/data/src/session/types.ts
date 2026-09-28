@@ -2,6 +2,7 @@ import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts'
 import type {
   OtpRequestOutcome,
   OtpVerifyResult,
+  RolePreset,
   SessionSnapshot,
   SignInDoor,
 } from '@heliogrid/domain';
@@ -38,6 +39,12 @@ export interface SessionStore {
    */
   createCompany(input: CreateTenant): Promise<void>;
   signOut(): Promise<void>;
+  /**
+   * The person switched home for this session (`M13-09`). Memory only — a sign-out's snapshot
+   * carries none — and a preset no longer held falls back to the ladder where it is read
+   * (`composedHome`), never here.
+   */
+  chooseHome(preset: RolePreset): void;
   signOutEverywhere(): Promise<void>;
   /**
    * The person chose a language (`F3-04`): the snapshot moves at once and the choice is
