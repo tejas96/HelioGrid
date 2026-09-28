@@ -6,5 +6,5 @@
   align-items: center;
   justify-content: center;
   min-height: 100dvh;
-  background-color: var(--canvas);
+  background-color: var(--surface);
 }

@@ -1,33 +1,22 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { NumberDraftState } from './NumberField.state';
 
 const styles = StyleSheet.create({
-  /* The focus ring is an OUTER ring so it can sit ON TOP of the inset danger ring instead of
-     replacing it — two channels, never one slot. It is always drawn, transparent at rest, so
-     focusing the field cannot shift the layout. */
-  ring: {
-    borderWidth: 2,
-    borderColor: 'transparent',
-    borderRadius: theme.radius['r-input-expressive'] + 2,
-  },
-  ringFocus: { borderColor: theme.colors.accent },
+  /* The well and its edge ring are FieldBox's; the padding gives up the edge's width so the
+     figure sits where it did. */
   box: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 48,
     minHeight: 44,
-    paddingHorizontal: 14,
-    borderRadius: theme.radius['r-input-expressive'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
+    paddingHorizontal: 14 - FIELD_BOX_EDGE,
   },
-  boxFunctional: { height: 40, borderRadius: theme.radius['r-input-functional'] },
+  boxFunctional: { height: 40 },
   boxSteppers: { paddingHorizontal: 0 },
-  boxDisabled: { backgroundColor: theme.colors['canvas-sunken'] },
-  boxDanger: { borderWidth: 1.5, borderColor: theme.colors.danger },
   input: {
     flex: 1,
     minWidth: 0,
@@ -49,7 +38,7 @@ export interface NumberFieldBoxProps {
   steppers: boolean;
   density: 'expressive' | 'functional';
   disabled: boolean;
-  /** Refusal or error — the inset danger ring, which the focus ring is drawn ON TOP of. */
+  /** Refusal or error — the danger edge; while focused the edge is the focus ring instead. */
   danger: boolean;
   label?: string;
   unit?: string;
@@ -70,58 +59,55 @@ export function NumberFieldBox({
   const name = label ?? 'value';
   const ink = disabled ? 'disabled' : 'secondary';
   return (
-    <View style={[styles.ring, draft.focus ? styles.ringFocus : null]}>
-      <View
-        style={[
-          styles.box,
-          density === 'functional' ? styles.boxFunctional : null,
-          steppers ? styles.boxSteppers : null,
-          disabled ? styles.boxDisabled : null,
-          danger ? styles.boxDanger : null,
-        ]}
-      >
-        {steppers ? (
-          <Pressable
-            style={styles.step}
-            disabled={disabled}
-            accessibilityLabel={`Decrease ${name}`}
-            onPress={() => draft.nudge(-1)}
-          >
-            <Text variant="body" color={ink}>
-              −
-            </Text>
-          </Pressable>
-        ) : null}
-        <TextInput
-          style={[styles.input, steppers ? styles.inputSteppers : null]}
-          keyboardType="decimal-pad"
-          value={draft.draft}
-          editable={!disabled}
-          accessibilityLabel={label}
-          accessibilityState={{ disabled }}
-          onChangeText={draft.setDraft}
-          onFocus={draft.onFocus}
-          onBlur={draft.onBlur}
-          onSubmitEditing={draft.commit}
-        />
-        {unit !== undefined && !currency ? (
-          <Text variant="body-sm" color="secondary" style={styles.unit}>
-            {unit}
+    <View
+      style={[
+        styles.box,
+        density === 'functional' ? styles.boxFunctional : null,
+        steppers ? styles.boxSteppers : null,
+        fieldBox({ focused: draft.focus, tone: danger ? 'error' : 'none', disabled, density }),
+      ]}
+    >
+      {steppers ? (
+        <Pressable
+          style={styles.step}
+          disabled={disabled}
+          accessibilityLabel={`Decrease ${name}`}
+          onPress={() => draft.nudge(-1)}
+        >
+          <Text variant="body" color={ink}>
+            −
           </Text>
-        ) : null}
-        {steppers ? (
-          <Pressable
-            style={styles.step}
-            disabled={disabled}
-            accessibilityLabel={`Increase ${name}`}
-            onPress={() => draft.nudge(1)}
-          >
-            <Text variant="body" color={ink}>
-              +
-            </Text>
-          </Pressable>
-        ) : null}
-      </View>
+        </Pressable>
+      ) : null}
+      <TextInput
+        style={[styles.input, steppers ? styles.inputSteppers : null, fieldBoxText(disabled)]}
+        keyboardType="decimal-pad"
+        value={draft.draft}
+        editable={!disabled}
+        accessibilityLabel={label}
+        accessibilityState={{ disabled }}
+        onChangeText={draft.setDraft}
+        onFocus={draft.onFocus}
+        onBlur={draft.onBlur}
+        onSubmitEditing={draft.commit}
+      />
+      {unit !== undefined && !currency ? (
+        <Text variant="body-sm" color="secondary" style={styles.unit}>
+          {unit}
+        </Text>
+      ) : null}
+      {steppers ? (
+        <Pressable
+          style={styles.step}
+          disabled={disabled}
+          accessibilityLabel={`Increase ${name}`}
+          onPress={() => draft.nudge(1)}
+        >
+          <Text variant="body" color={ink}>
+            +
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

@@ -20,10 +20,11 @@ interface VariantVisual {
 /* Primary is near-black. The accent is never a button fill. */
 const VARIANT: Record<ButtonVariant, VariantVisual> = {
   primary: { background: theme.colors['action-primary'], color: theme.colors['text-inverse'] },
+  /* The opposite of what holds it (`F7-15`): the well on the page or a sheet, never a white pill
+     on white; inside a tile it turns white (`T-FPLAT-076`). */
   secondary: {
-    background: theme.colors.surface,
+    background: theme.colors['bg-well'],
     color: theme.colors['text-primary'],
-    elevation: theme.elevation.e2,
   },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
@@ -51,7 +52,8 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   fullWidth: { alignSelf: 'stretch' },
-  disabled: { backgroundColor: theme.colors['canvas-sunken'] },
+  // Lighter than the well, which an enabled secondary and every field rest on — see the web half.
+  disabled: { backgroundColor: theme.colors['surface-form'] },
   label: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',

@@ -24,37 +24,14 @@
   height: 56px;
   min-width: 44px;
   text-align: center;
-  border: none;
   outline: none;
-  border-radius: var(--r-input-expressive);
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
+  /* The well, its radius and its rings are the FieldBox primitive's. */
   font-family: var(--font-mono);
   font-size: 22px;
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   caret-color: var(--accent);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
-}
-
-.hg-otp-box:disabled {
-  background: var(--canvas-sunken);
-}
-
-.hg-otp-box:focus {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-/* The danger ring survives focus — an unverified code is still unverified while you retype it. */
-.hg-otp-box[data-error="true"],
-.hg-otp-box[data-error="true"]:focus {
-  box-shadow: 0 0 0 2px var(--danger);
 }
 
 .hg-otp-message {

@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import { renderOverride } from '../FieldOverride';
 import { renderAttribution } from '../ValueSource';
 import { useCommitDraft } from './commit-draft';
@@ -13,7 +14,7 @@ interface WebInputProps extends InputProps {
 }
 
 /**
- * Borderless input. No border at rest — e1 shadow. Focus = 2px accent ring, no border appears.
+ * Borderless input: a well (`FieldBox`) that takes the system focus ring and an inset verdict ring.
  *
  * Opt-in commit-once mode (MS12-26 / MS3-26): with `commitOnBlur`, the field keeps a local draft and
  * calls `onCommit` ONCE on blur or Enter — never per keystroke. Empty never commits; the field
@@ -52,7 +53,7 @@ export function Input({
     onCommit,
   );
 
-  const ring = error !== undefined ? 'error' : success === true ? 'success' : undefined;
+  const tone = error !== undefined ? 'error' : success === true ? 'success' : 'none';
   /* FieldOverride owns the marker/superseded-value/reset line and ValueSource owns the layer line.
      Resolving the override first is also the mutual-exclusion test: whatever it returns is what
      occupies the slot, and attribution only speaks when the slot is empty. */
@@ -93,9 +94,7 @@ export function Input({
       <div
         className="hg-input-shell"
         data-density={density}
-        data-ring={ring}
-        data-focus={focus ? 'true' : undefined}
-        data-disabled={disabled ? 'true' : undefined}
+        {...fieldBox({ focused: focus, tone, disabled, density })}
       >
         {leading}
         <input

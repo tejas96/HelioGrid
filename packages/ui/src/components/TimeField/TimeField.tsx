@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider/market-context';
 import type { TimeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage';
@@ -78,10 +79,13 @@ export function TimeField({
       ) : null}
       <div
         className="hg-time-field-box"
-        data-danger={danger}
         data-density={density}
-        data-disabled={disabled}
-        data-focus={entry.focus}
+        {...fieldBox({
+          focused: entry.focus,
+          tone: danger ? 'error' : 'none',
+          disabled,
+          density,
+        })}
       >
         <svg
           className="hg-time-field-glyph"

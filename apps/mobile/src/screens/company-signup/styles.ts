@@ -18,32 +18,26 @@ export const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-5'],
     gap: theme.spacing['sp-2'],
   },
-  /** The verified number's surface: `sp-4 sp-5` inside, `e1`, the chip at the right. */
+  /**
+   * The verified number as a fact on the page, the chip at the right — no surface (`F7-49`): a grey
+   * tile would make it look like the fields below it, and a white card vanishes on the white page.
+   */
   accountCard: {
     marginTop: theme.spacing['sp-5'],
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
-    paddingVertical: theme.spacing['sp-4'],
-    paddingHorizontal: theme.spacing['sp-5'],
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-card-expressive'],
-    ...theme.elevation.e1,
   },
   /** A tinted block under the title, in the account surface's place. */
   block: { marginTop: theme.spacing['sp-5'] },
   resumeLine: { marginTop: theme.spacing['sp-4'] },
   fields: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-6'] },
   fieldsAfterBlock: { paddingTop: theme.spacing['sp-5'] },
-  /** The three values as facts while they are written: one surface, `sp-4` between rows. */
+  /** The three values as facts while they are written, on the page with no surface (`F7-49`). */
   facts: {
     marginTop: theme.spacing['sp-6'],
     gap: theme.spacing['sp-4'],
-    padding: theme.spacing['sp-5'],
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-card-expressive'],
-    ...theme.elevation.e1,
   },
   fact: { gap: theme.spacing['sp-1'] },
   caption: { marginTop: theme.spacing['sp-5'] },

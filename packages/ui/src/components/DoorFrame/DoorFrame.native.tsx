@@ -15,7 +15,7 @@ interface NativeDoorFrameProps extends DoorFrameProps {
 }
 
 /**
- * The canvas, the bloom and the header row every door frame shares, at 375 as `SCR-M01-01` and
+ * The page, the bloom and the header row every door frame shares, at 375 as `SCR-M01-01` and
  * `SCR-M01-02` draw it: the bloom behind the top of the column, `sp-6` above and below, the
  * market's mobile screen padding at the sides. One column, so `identity` is drawn above the task
  * and `taskMeasure` names nothing here. `footer` stays under the scrolling column. The safe-area
@@ -47,7 +47,8 @@ export function DoorFrame({ trailing, identity, footer, children, style }: Nativ
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: theme.colors.canvas },
+  // The page is `surface` (`F7-15`, `F7-49`): the fields on it are wells, darker than it.
+  root: { flex: 1, backgroundColor: theme.colors.surface },
   /** The layers over the bloom paint nothing, so the wash shows through the column. */
   fill: { flex: 1 },
   scroll: { flexGrow: 1 },

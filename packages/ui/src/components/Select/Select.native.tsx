@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -83,14 +84,13 @@ function SelectTrigger({
       style={[
         styles.trigger,
         density === 'functional' ? styles.triggerFunctional : undefined,
-        disabled ? styles.triggerDisabled : undefined,
-        errored ? styles.triggerError : undefined,
-        open ? styles.triggerOpen : undefined,
+        fieldBox({ focused: open, tone: errored ? 'error' : 'none', disabled, density }),
       ]}
     >
       <Text
         variant="body"
-        color={current === undefined ? 'tertiary' : 'primary'}
+        // Text in a well is secondary or stronger; a disabled value stays readable.
+        color={current === undefined || disabled ? 'secondary' : 'primary'}
         style={styles.value}
       >
         {current === undefined ? placeholder : current.label}
@@ -228,28 +228,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-4'] - 2,
-    borderRadius: theme.radius['r-input-expressive'],
-    borderWidth: 2,
-    borderColor: 'transparent',
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
+    // The well and its edge are FieldBox's; the padding gives up the edge's width.
+    paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   },
   triggerFunctional: {
     height: 40,
-    paddingHorizontal: theme.spacing['sp-3'] - 2,
-    borderRadius: theme.radius['r-input-functional'],
-  },
-  triggerDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-  },
-  /* An error is the caller's verdict and only the caller clears it — but it must not stand in
-     front of the open ring, so the open state wins the outer edge. */
-  triggerError: {
-    borderColor: theme.colors.danger,
-  },
-  triggerOpen: {
-    borderColor: theme.colors.accent,
+    paddingHorizontal: theme.spacing['sp-3'] - FIELD_BOX_EDGE,
   },
   value: {
     flexShrink: 1,

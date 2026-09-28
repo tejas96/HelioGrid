@@ -2,6 +2,12 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
+import {
+  FIELD_BOX_EDGE,
+  FIELD_BOX_PLACEHOLDER,
+  fieldBox,
+  fieldBoxText,
+} from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -18,9 +24,9 @@ interface NativeTimeFieldProps extends TimeFieldProps {
  * Time of day, 24-hour. Commit-once — blur or submit, never per keystroke. A time outside
  * `min`/`max` is REFUSED and the refusal names the window; it is never clamped.
  *
- * RN has no `box-shadow`, so web's two-ring stack is two boxes: an outer view holding the accent
- * focus ring (with the surface-coloured gap web draws) and the box itself holding the inset danger
- * edge. Focus rides ON TOP of danger, which is the whole point of the ordering.
+ * The box is a well (`FieldBox`) whose ring sits on its own edge: RN has no `box-shadow`, so the
+ * one edge is the focus colour while the caret is in and the danger colour otherwise, and the
+ * refusal's words under the field carry the error either way.
  * `aria-describedby` has no RN counterpart, so `describedBy` is accepted and unused here — a
  * ringed half in a `TimeRangeField` relies on the pair's own sentence being read in order.
  * There is no Escape key on a phone, so the draft reverts when focus leaves without a legal time.
@@ -67,43 +73,45 @@ export function TimeField({
           {label}
         </Text>
       ) : null}
-      <View style={[styles.ring, entry.focus ? styles.ringFocus : undefined]}>
-        <View
-          style={[
-            styles.box,
-            density === 'functional' ? styles.boxFunctional : undefined,
-            disabled ? styles.boxDisabled : undefined,
-            danger ? styles.boxDanger : undefined,
-          ]}
+      <View
+        style={[
+          styles.box,
+          density === 'functional' ? styles.boxFunctional : undefined,
+          fieldBox({
+            focused: entry.focus,
+            tone: danger ? 'error' : 'none',
+            disabled,
+            density,
+          }),
+        ]}
+      >
+        <Svg
+          width={18}
+          height={18}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={theme.colors['text-tertiary']}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <Svg
-            width={18}
-            height={18}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={theme.colors['text-tertiary']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <Circle cx={12} cy={12} r={9} />
-            <Path d="M12 7.5V12l3 2" />
-          </Svg>
-          <TextInput
-            style={[styles.input, disabled ? styles.inputDisabled : undefined]}
-            value={entry.draft}
-            editable={!disabled}
-            placeholder={shape}
-            placeholderTextColor={theme.colors['text-tertiary']}
-            accessibilityLabel={label}
-            autoCorrect={false}
-            autoCapitalize="none"
-            onChangeText={entry.setDraft}
-            onFocus={entry.focusOn}
-            onBlur={entry.blur}
-            onSubmitEditing={entry.submit}
-          />
-        </View>
+          <Circle cx={12} cy={12} r={9} />
+          <Path d="M12 7.5V12l3 2" />
+        </Svg>
+        <TextInput
+          style={[styles.input, fieldBoxText(disabled)]}
+          value={entry.draft}
+          editable={!disabled}
+          placeholder={shape}
+          placeholderTextColor={FIELD_BOX_PLACEHOLDER}
+          accessibilityLabel={label}
+          autoCorrect={false}
+          autoCapitalize="none"
+          onChangeText={entry.setDraft}
+          onFocus={entry.focusOn}
+          onBlur={entry.blur}
+          onSubmitEditing={entry.submit}
+        />
       </View>
       {presets.length > 0 ? (
         <View style={styles.presets}>
@@ -135,8 +143,6 @@ export function TimeField({
   );
 }
 
-const FOCUS_RING = 2;
-const DANGER_RING = 1.5;
 const PAD_X = 14;
 
 const styles = StyleSheet.create({
@@ -147,38 +153,17 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '500',
   },
-  ring: {
-    borderWidth: FOCUS_RING,
-    borderColor: 'transparent',
-    borderRadius: theme.radius['r-input-expressive'] + FOCUS_RING * 2,
-    padding: FOCUS_RING,
-  },
-  ringFocus: {
-    borderColor: theme.colors.accent,
-    backgroundColor: theme.colors.surface,
-  },
+  // The well and its edge are FieldBox's; the padding gives up the edge's width.
   box: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     height: 48,
     minHeight: 44,
-    paddingHorizontal: PAD_X - DANGER_RING,
-    borderRadius: theme.radius['r-input-expressive'],
-    borderWidth: DANGER_RING,
-    borderColor: 'transparent',
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
+    paddingHorizontal: PAD_X - FIELD_BOX_EDGE,
   },
   boxFunctional: {
     height: 40,
-    borderRadius: theme.radius['r-input-functional'],
-  },
-  boxDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-  },
-  boxDanger: {
-    borderColor: theme.colors.danger,
   },
   input: {
     flex: 1,
@@ -190,9 +175,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
     color: theme.colors['text-primary'],
-  },
-  inputDisabled: {
-    color: theme.colors['text-disabled'],
   },
   presets: {
     flexDirection: 'row',

@@ -1,6 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import {
+  FIELD_BOX_EDGE,
+  FIELD_BOX_PLACEHOLDER,
+  fieldBox,
+  fieldBoxText,
+} from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
@@ -32,22 +38,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     minHeight: 44, // the product's touch floor
-    paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-input-expressive'],
-    ...theme.elevation.e2,
-  },
-  // Density changes the size, never the ground — a control is `surface` at e2 in both.
-  shellFunctional: { borderRadius: theme.radius['r-input-functional'] },
-  /* RN cannot draw an inset ring, so the semantic ring is a 1.5px border of the same colour and
-     the same 1.5px width — the one place this half spells a border, and only where web insets one. */
-  ringError: { borderWidth: 1.5, borderColor: theme.colors.danger },
-  ringSuccess: { borderWidth: 1.5, borderColor: theme.colors.success },
-  ringFocus: { borderWidth: 2, borderColor: theme.colors.accent },
-  shellDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-    shadowOpacity: 0,
-    elevation: 0,
+    // The well's edge is always drawn, so the padding gives up its width and the text sits where it did.
+    paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   },
   control: {
     flex: 1,
@@ -59,18 +51,7 @@ const styles = StyleSheet.create({
     color: theme.colors['text-primary'],
   },
   controlMono: { fontFamily: theme.type.families.mono },
-  controlDisabled: { color: theme.colors['text-disabled'] },
 });
-
-function ringStyle(focus: boolean, error?: string, success?: boolean): ViewStyle | undefined {
-  if (focus) {
-    return styles.ringFocus;
-  }
-  if (error !== undefined) {
-    return styles.ringError;
-  }
-  return success === true ? styles.ringSuccess : undefined;
-}
 
 /**
  * Same contract and same commit-once mechanics as the web half. Escape has no touch counterpart, so
@@ -125,8 +106,9 @@ export function Input({
   const controlStyle: StyleProp<TextStyle> = [
     styles.control,
     mono ? styles.controlMono : undefined,
-    disabled ? styles.controlDisabled : undefined,
+    fieldBoxText(disabled),
   ];
+  const tone = error !== undefined ? 'error' : success === true ? 'success' : 'none';
 
   return (
     <View style={[styles.column, style]}>
@@ -139,9 +121,7 @@ export function Input({
         style={[
           styles.shell,
           { height: SHELL_HEIGHT[density] },
-          density === 'functional' ? styles.shellFunctional : undefined,
-          ringStyle(focus, error, success),
-          disabled ? styles.shellDisabled : undefined,
+          fieldBox({ focused: focus, tone, disabled, density }),
         ]}
       >
         {leading}
@@ -151,7 +131,7 @@ export function Input({
           keyboardType={KEYBOARD[type]}
           secureTextEntry={type === 'password'}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors['text-tertiary']}
+          placeholderTextColor={FIELD_BOX_PLACEHOLDER}
           value={commitOnBlur ? draft : (value ?? '')}
           onChangeText={handleChangeText}
           onFocus={() => setFocus(true)}

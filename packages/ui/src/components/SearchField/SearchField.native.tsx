@@ -3,6 +3,12 @@ import { useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
+import {
+  FIELD_BOX_EDGE,
+  FIELD_BOX_PLACEHOLDER,
+  fieldBox,
+  fieldBoxText,
+} from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { SearchFieldProps } from './SearchField.types';
 
@@ -11,12 +17,8 @@ interface NativeSearchFieldProps extends SearchFieldProps {
 }
 
 /**
- * Borderless search input with a leading magnifier. e1 at rest, a 2px accent ring on focus,
- * never a border.
- *
- * Web draws the focus ring with `box-shadow`, which RN has no equivalent for, so the ring is a
- * 2px border that is ALWAYS present and merely transparent at rest — the box never reflows when
- * focus arrives, which is what the shadow ring buys on web.
+ * Borderless search input with a leading magnifier: a well (`FieldBox`), whose ring sits on its
+ * own edge on the phone and is always laid out, so the box never reflows when focus arrives.
  */
 export function SearchField({
   value,
@@ -35,8 +37,7 @@ export function SearchField({
       style={[
         styles.box,
         density === 'functional' ? styles.boxFunctional : undefined,
-        disabled ? styles.boxDisabled : undefined,
-        focus ? styles.boxFocus : undefined,
+        fieldBox({ focused: focus, disabled, density }),
         style,
       ]}
     >
@@ -55,11 +56,11 @@ export function SearchField({
         <Path d="m20 20-3.5-3.5" />
       </Svg>
       <TextInput
-        style={[styles.input, disabled ? styles.inputDisabled : undefined]}
+        style={[styles.input, fieldBoxText(disabled)]}
         value={value}
         editable={!disabled}
         placeholder={placeholder}
-        placeholderTextColor={theme.colors['text-tertiary']}
+        placeholderTextColor={FIELD_BOX_PLACEHOLDER}
         accessibilityLabel={ariaLabel ?? placeholder}
         onChangeText={(next) => onChange?.(next)}
         onFocus={() => setFocus(true)}
@@ -89,21 +90,14 @@ export function SearchField({
   );
 }
 
-const RING = 2;
-
 const box: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   gap: 10,
   height: 44,
   minHeight: 44,
-  /* 14 of padding less the always-present 2 of ring, so the inner box matches web exactly. */
-  paddingHorizontal: 14 - RING,
-  backgroundColor: theme.colors.surface,
-  borderRadius: theme.radius['r-input-expressive'],
-  borderWidth: RING,
-  borderColor: 'transparent',
-  ...theme.elevation.e2,
+  /* 14 of padding less the always-present edge, so the inner box matches web exactly. */
+  paddingHorizontal: 14 - FIELD_BOX_EDGE,
 };
 
 const input: TextStyle = {
@@ -120,18 +114,8 @@ const styles = StyleSheet.create({
   box,
   boxFunctional: {
     height: 40,
-    borderRadius: theme.radius['r-input-functional'],
-  },
-  boxDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-  },
-  boxFocus: {
-    borderColor: theme.colors.accent,
   },
   input,
-  inputDisabled: {
-    color: theme.colors['text-disabled'],
-  },
   clear: {
     /* The 44dp target, with the extra width taken back so the row geometry is unchanged. */
     width: 44,

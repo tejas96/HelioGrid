@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import type { SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox';
 import { handleSelectKey } from './select-keys';
@@ -104,9 +105,13 @@ export function Select({
         }
         aria-label={label === undefined ? ariaLabel : undefined}
         data-density={density}
-        data-error={error !== undefined}
-        data-open={open}
         data-placeholder={current === undefined}
+        {...fieldBox({
+          focused: open,
+          tone: error === undefined ? 'none' : 'error',
+          disabled,
+          density,
+        })}
       >
         <span className="hg-select-value">
           {current === undefined ? placeholder : current.label}

@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: '100%',
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: theme.colors.surface,
     ...theme.elevation.e5,
   },
   right: { right: 0 },

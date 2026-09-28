@@ -1,4 +1,4 @@
-/* The door's frame — the chrome both doors share (`SCR-M01-01`, `SCR-M01-02`): the canvas, the
+/* The door's frame — the chrome both doors share (`SCR-M01-01`, `SCR-M01-02`): the page, the
    bloom, the header row, and from the door's own breakpoint the export's two fields — identity
    left, the one task right; under it, the phone's single column. The breakpoint is the door's to
    own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
@@ -14,7 +14,8 @@
   flex-direction: column;
   min-height: 100dvh;
   overflow: hidden;
-  background: var(--canvas);
+  /* The page is --surface (F7-15, F7-49): the fields on it are wells, darker than it. */
+  background: var(--surface);
 }
 
 .hg-door[data-measure="steps"] {

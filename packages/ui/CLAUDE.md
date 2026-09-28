@@ -10,8 +10,10 @@ fix BOTH halves, then delete the row.
 
 ## What lives here / what must never live here
 
-- `src/primitives/` — the atoms everything else is built from: `Box`, `Field`, `Icon`, `Portal`,
-  `Pressable`, `StatusMark`, `Surface`, `Text`.
+- `src/primitives/` — the atoms everything else is built from: `Box`, `Field`, `FieldBox`, `Icon`,
+  `Portal`, `Pressable`, `StatusMark`, `Surface`, `Text`. **Every field draws its box through
+  `FieldBox`** — the well, the radius and the rings are decided there once (`F7-15`, `F7-24`); a
+  field that paints its own background, shadow or ring is drift.
 - `src/components/<Name>/` — one folder per component, both platforms inside it.
 - `src/utils/` — helpers shared across components only. `src/styles.css` — the package stylesheet.
 - **NEVER product logic, policy or money maths.** That is `@heliogrid/domain`. A component takes

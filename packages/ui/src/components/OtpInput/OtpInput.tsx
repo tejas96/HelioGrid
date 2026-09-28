@@ -2,8 +2,9 @@
 // code screen exists to receive a code and has nothing else on it to focus.
 
 import type { CSSProperties, KeyboardEvent } from 'react';
-import { useId, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import type { OtpInputProps } from './OtpInput.types';
 
 interface WebOtpInputProps extends OtpInputProps {
@@ -30,6 +31,9 @@ export function OtpInput({
   style,
 }: WebOtpInputProps) {
   const refs = useRef<Array<HTMLInputElement | null>>([]);
+  /* Which cell holds the caret. The ring follows it from state, never from :focus, so FieldBox
+     decides the ring the same way for every field. */
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const autoId = useId();
   const slots = Array.from({ length }, (_, i) => ({
     key: `${autoId}-${i}`,
@@ -93,14 +97,23 @@ export function OtpInput({
             autoComplete="one-time-code"
             aria-label={`Digit ${slot.index + 1}`}
             aria-invalid={error !== undefined ? true : undefined}
-            data-error={error !== undefined}
+            {...fieldBox({
+              focused: focusedIndex === slot.index,
+              tone: error === undefined ? 'none' : 'error',
+              disabled,
+              density: 'expressive',
+            })}
             maxLength={length}
             disabled={disabled}
             autoFocus={autoFocus && slot.index === 0}
             value={slot.char}
             onChange={(e) => onCharChange(slot.index, e.target.value)}
             onKeyDown={(e) => onKey(slot.index, e)}
-            onFocus={(e) => e.target.select()}
+            onFocus={(e) => {
+              setFocusedIndex(slot.index);
+              e.target.select();
+            }}
+            onBlur={() => setFocusedIndex(null)}
           />
         ))}
       </div>

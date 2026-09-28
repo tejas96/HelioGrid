@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
+import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -43,22 +44,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-input-expressive'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
+    // The well and its edge are FieldBox's; the padding gives up the edge's width.
+    paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   },
   triggerFunctional: {
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-input-functional'],
-  },
-  /* RN cannot draw a ring; the open and error states take a 2px border of the same colour. */
-  triggerOpen: { borderWidth: 2, borderColor: theme.colors.accent },
-  triggerError: { borderWidth: 2, borderColor: theme.colors.danger },
-  triggerDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-    shadowOpacity: 0,
-    elevation: 0,
+    paddingHorizontal: theme.spacing['sp-3'] - FIELD_BOX_EDGE,
   },
   value: { flex: 1, minWidth: 0 },
   note: { marginTop: theme.spacing['sp-1'], marginHorizontal: theme.spacing['sp-0-5'] },
@@ -110,13 +100,17 @@ export function DatePicker({
         style={[
           styles.trigger,
           density === 'functional' ? styles.triggerFunctional : undefined,
-          open ? styles.triggerOpen : undefined,
-          error === undefined ? undefined : styles.triggerError,
-          disabled ? styles.triggerDisabled : undefined,
+          fieldBox({
+            focused: open,
+            tone: error === undefined ? 'none' : 'error',
+            disabled,
+            density,
+          }),
         ]}
       >
         <View style={styles.value}>
-          <Text color={text === '' ? 'tertiary' : 'primary'}>
+          {/* Text in a well is secondary or stronger; a disabled value stays readable. */}
+          <Text color={text === '' || disabled ? 'secondary' : 'primary'}>
             {text === '' ? placeholder : text}
           </Text>
         </View>

@@ -1,4 +1,5 @@
-/* Textarea — the Input's multi-line sibling. No border at rest (e1), 2px accent ring on focus.
+/* Textarea — the Input's multi-line sibling: a well, whose ground, radius and rings are the
+   FieldBox primitive's.
    The character counter only appears once `maxLength` is set, and it turns warning before it turns
    danger, so a rep writing a site note is warned before the field stops accepting text. */
 
@@ -16,48 +17,15 @@
   resize: vertical;
   min-height: 88px;
   padding: var(--sp-3) var(--sp-4);
-  border: none;
   outline: none;
-  border-radius: var(--r-input-expressive);
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--text-primary);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-textarea-input[data-density="functional"] {
   padding: 10px var(--sp-3);
-  border-radius: var(--r-input-functional);
-}
-
-.hg-textarea-input:disabled {
-  background: var(--canvas-sunken);
-}
-
-.hg-textarea-input:focus {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-/* Both rings when both are true: an error nobody but the caller clears must not delete the focus
-   ring on a screen the gate jumped you to. Danger inside, accent outside. */
-.hg-textarea-input[data-error="true"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    var(--e2);
-}
-
-.hg-textarea-input[data-error="true"]:focus {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    0 0 0 2px var(--accent);
 }
 
 /* Attribution sits UNDER the field and ABOVE helper/error, so a validation message appearing

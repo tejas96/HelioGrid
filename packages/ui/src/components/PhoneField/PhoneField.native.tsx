@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
 import { NON_DIGIT } from './PhoneField.logic';
@@ -25,21 +26,8 @@ const styles = StyleSheet.create({
     minHeight: 44,
     // Pinned: the declared height is the height, so a tall form cannot squash the field to 44.
     flexShrink: 0,
-    paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-input-expressive'],
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  shellFunctional: { borderRadius: theme.radius['r-input-functional'] },
-  /* RN cannot draw an inset ring, so the refusal is a 1.5px border of the same colour and width —
-     the one place this half spells a border, and only where the web half insets one. */
-  shellError: { borderWidth: 1.5, borderColor: theme.colors.danger },
-  shellFocus: { borderWidth: 2, borderColor: theme.colors.accent },
-  shellDisabled: {
-    backgroundColor: theme.colors['canvas-sunken'],
-    shadowOpacity: 0,
-    elevation: 0,
+    // The well's edge is always drawn, so the padding gives up its width and the digits sit where they did.
+    paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   },
   /* The code is part of the number, so it is read at the number's weight rather than dimmed to
      furniture — a +91 nobody can read is a number nobody can check. */
@@ -57,7 +45,6 @@ const styles = StyleSheet.create({
     fontSize: theme.type.roles.body.fontSize,
     color: theme.colors['text-primary'],
   },
-  inputDisabled: { color: theme.colors['text-disabled'] },
   valueNumber: {
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles.body.fontSize,
@@ -110,10 +97,12 @@ export function PhoneField({
         style={[
           styles.shell,
           { height: SHELL_HEIGHT[density] },
-          density === 'functional' ? styles.shellFunctional : undefined,
-          error === undefined ? undefined : styles.shellError,
-          focus ? styles.shellFocus : undefined,
-          disabled ? styles.shellDisabled : undefined,
+          fieldBox({
+            focused: focus,
+            tone: error === undefined ? 'none' : 'error',
+            disabled,
+            density,
+          }),
         ]}
       >
         <Text style={styles.dial}>{dialCode}</Text>
@@ -128,7 +117,7 @@ export function PhoneField({
           onChangeText={commit}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          style={[styles.input, disabled ? styles.inputDisabled : undefined]}
+          style={[styles.input, fieldBoxText(disabled)]}
         />
       </View>
       {message === undefined ? null : (

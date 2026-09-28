@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-3'],
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: theme.colors.surface,
     zIndex: 1,
   },
   /* 10 has no spacing token — it is the reference's own functional top padding. */

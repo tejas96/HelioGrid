@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import { renderAttribution } from '../ValueSource';
 import type { TextareaProps } from './Textarea.types';
 
@@ -18,7 +19,7 @@ function countLevel(length: number, maxLength: number): 'full' | 'near' | 'ok' {
 }
 
 /**
- * Multi-line field. No border at rest (e1); 2px accent ring on focus.
+ * Multi-line field: a well (`FieldBox`) that takes the system focus ring and an inset verdict ring.
  *
  * It hosts `attribution` for the same reason `Input` does — "this section's wording falls back to
  * Hindi" is which-layer-supplied-this, not free prose in `helper`. Slot: UNDER the field, in the
@@ -41,6 +42,7 @@ export function Textarea({
   style,
 }: WebTextareaProps) {
   const autoId = useId();
+  const [focused, setFocused] = useState(false);
   const length = (value ?? '').length;
   const hasCounter = maxLength !== undefined;
   const level = maxLength === undefined ? 'ok' : countLevel(length, maxLength);
@@ -58,7 +60,7 @@ export function Textarea({
       <textarea
         className="hg-textarea-input"
         data-density={density}
-        data-error={error !== undefined}
+        {...fieldBox({ focused, tone: error === undefined ? 'none' : 'error', disabled, density })}
         id={autoId}
         name={name}
         value={value}
@@ -68,6 +70,8 @@ export function Textarea({
         maxLength={maxLength}
         aria-invalid={error !== undefined ? true : undefined}
         onChange={(event) => onChange?.(event.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       {attributionNode === null ? null : (
         <div className="hg-textarea-attribution">{attributionNode}</div>
