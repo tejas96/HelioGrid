@@ -198,7 +198,7 @@ export function compactQualified(pack: FormatPack, amount: QualifiedAmount): Qua
  * The energy source is NOT in it: its label names a database, so it is no single identity word.
  * A surface prints `energySource` through `@heliogrid/i18n`'s `energySourceLabel` beside this
  * list, or it drops an obligation. Nor is `freshness`: a stale figure already reads `provisional`
- * here, and what moved is printed beside it by the provenance label (`T-FPLAT-072`). Nor is
+ * here, and what moved is printed beside it by the provenance label (`T-FPLAT-073`). Nor is
  * `projection`: the word that calls a figure a projection, and each assumption with its value, are
  * printed beside this list by the same label, or the projection reads as money owed (`F8-23`).
  */

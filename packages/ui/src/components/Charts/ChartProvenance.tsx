@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { useProvenanceWords } from '../Provenance/Provenance.words';
 import type { ProvenanceFacts } from './chart-provenance';
 import { provenanceParts } from './chart-provenance';
 
@@ -11,7 +12,7 @@ interface ChartProvenanceProps {
  * the second, non-colour channel; removing it would lose a cue, never the meaning.
  */
 export function ChartProvenance({ facts }: ChartProvenanceProps) {
-  const parts = provenanceParts(facts);
+  const parts = provenanceParts(facts, useProvenanceWords());
   if (parts.length === 0) {
     return null;
   }
@@ -34,11 +35,6 @@ export function ChartProvenance({ facts }: ChartProvenanceProps) {
                 aria-hidden="true"
                 className="hg-charts-prov-dot"
                 data-color={part.dot.colorKey}
-                style={
-                  part.dot.customColor === undefined
-                    ? undefined
-                    : { background: part.dot.customColor }
-                }
               />
             )}
             {part.label}

@@ -1,21 +1,17 @@
 import React from "react";
 
-/**
- * The four canonical tiers. **Not a closed set** — any string is a valid tier, because three
- * surfaces need vocabularies these names don't contain and one screen forbids "measured" outright.
- */
+/** The four tiers (`F8-02`). */
 export type ProvenanceTierName = "measured" | "derived" | "estimated" | "assumed";
 
 /**
- * A tier. Either a canonical name, any free word (`"Verified datasheet"`), an object that borrows a
- * canonical mark colour, or the reserved `"unmarked"` — which renders nothing and *records that the
- * absence is deliberate* (`M05-52`), as distinct from having forgotten.
+ * A tier: one of the four, or the reserved `"unmarked"` — which renders nothing and *records that
+ * the absence is deliberate* (`M05-52`), as distinct from having forgotten.
+ *
+ * **Closed** (`F8-03`: no screen invents a fifth tier). A surface's own word — the catalog's
+ * *verified datasheet* (`M01-35`), a usage count's *actual usage* (`M12-34`) — is prose beside the
+ * tier, so it goes in `source`.
  */
-export type ProvenanceTierSpec =
-  | ProvenanceTierName
-  | "unmarked"
-  | string
-  | { label: string; tone?: ProvenanceTierName; color?: string };
+export type ProvenanceTierSpec = ProvenanceTierName | "unmarked";
 
 /**
  * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier — a
@@ -34,7 +30,10 @@ export type ProvenanceStanding = "confirmed" | "provisional" | "reported" | "pen
 export interface ProvenanceProps {
   tier?: ProvenanceTierSpec;
   standing?: ProvenanceStanding;
-  /** What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`). */
+  /**
+   * What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`) —
+   * and any word a surface needs beside the tier (`F8-03`).
+   */
   source?: string;
   /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
   projection?: string;
@@ -66,14 +65,14 @@ export namespace Provenance {
   function isEmpty(spec?: ProvenanceProps): boolean;
 }
 
-/** The tier alone. `withLabel` now defaults to **true**: the visible word is the default. */
+/** The tier alone — always its visible word, never a dot alone (`F8-07`). */
 export function ProvenanceTier(props: {
-  tier?: ProvenanceTierSpec; withLabel?: boolean; size?: number; style?: React.CSSProperties;
+  tier?: ProvenanceTierSpec; size?: number; style?: React.CSSProperties;
 }): JSX.Element | null;
 
-/** Canonical tier labels and mark colours. Extend by passing your own strings, not by editing this. */
+/** The four tiers' mark colours and the words this design system draws them with. */
 export const PROVENANCE_TIERS: Record<ProvenanceTierName, { label: string; color: string }>;
 export const PROVENANCE_STANDINGS: Record<ProvenanceStanding, { label: string; color: string; mark: string }>;
 
-/** Resolves any accepted tier spelling to `{label,color}`, or null for a deliberate absence. */
+/** Resolves a tier to `{label,color}`, or null for a deliberate absence. */
 export function resolveTier(tier?: ProvenanceTierSpec): { label: string; color: string } | null;

@@ -1,7 +1,5 @@
-import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { useFormat } from '../MarketProvider';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip.native';
 import { BandedCard } from './BandedCard.native';
@@ -11,11 +9,6 @@ import { BandedLine } from './BandedLine.native';
 
 interface NativeBandedFigureProps extends BandedFigureProps {
   style?: StyleProp<ViewStyle>;
-}
-
-/** Narrows the declared union onto `renderProvenance`'s parameter — Provenance owns the tier. */
-function provenanceSlot(spec: BandedFigureProps['provenance']): ReactNode {
-  return renderProvenance(spec as ProvenanceProps | ReactNode, { size: 12 });
 }
 
 /**
@@ -69,7 +62,7 @@ export function BandedFigure({
       move={move}
       bound={bound}
       note={note}
-      provenance={provenanceSlot(provenance)}
+      provenance={renderProvenance(provenance, { size: 12 })}
       accessibilityLabel={accessibilityLabel}
       big={variant === 'box'}
       style={style}

@@ -57,9 +57,9 @@ export interface StatCardProps {
   band?: BandSpec | string | ReactNode;
   /**
    * **Where a tier goes on a headline number.** Renders directly under the value, above the delta
-   * and above `children`. A spec object, a bare tier string, or a ready `<Provenance>` node.
+   * and above `children`. A spec object or a bare tier.
    */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   /** Makes the whole card a button — the tappable preview counts on SCR-M02-05 / SCR-M01-17. */
   onClick?: () => void;
   ariaLabel?: string;

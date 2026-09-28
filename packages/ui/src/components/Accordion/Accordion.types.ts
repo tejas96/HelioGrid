@@ -39,7 +39,7 @@ export interface AccordionItem {
    * The tier for a figure this section header summarises (`F8-01` / `F8-07`) — beside the meta, which
    * is where the figure already is. Keeps tiers out of `meta` as free text.
    */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   content: ReactNode;
 }
 

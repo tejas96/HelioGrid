@@ -1,4 +1,6 @@
-import { type ProvenanceTier, provenanceTierSchema } from '@heliogrid/contracts';
+import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import { STANDING_MARK, TIER_MARK, tierOf } from '../Provenance/Provenance.tiers';
+import type { ProvenanceWords } from '../Provenance/Provenance.types';
 import type { ChartFrameProps } from './Charts.types';
 
 /**
@@ -7,44 +9,18 @@ import type { ChartFrameProps } from './Charts.types';
  * Parts render in the order `standing · tier · source · projection · note` — standing leads,
  * because "this is not final" outranks "this is how it was worked out".
  *
- * This module resolves the spec to token NAMES only; each platform half turns a name into
- * `var(--name)` or `theme.colors[name]`.
- *
- * The tables below DUPLICATE `components/Provenance`'s `PROVENANCE_TIERS` / `PROVENANCE_STANDINGS`
- * and its `resolveTier`, and that is duplication, not a boundary — this folder imports from
- * `../UnavailableNote` already, and nothing stops it importing from `../Provenance` too. What does
- * stop a straight swap is one field: `resolveTier` there returns a DS colour **token name**, while
- * `customColor` here is a caller's literal CSS/RN colour, which is what the design system contract
- * (`color?: string`) and `data/Provenance.jsx` (`background: color`) both specify for Charts.
- * Collapsing the two means deciding which of those two meanings `tier.color` has and changing the
- * renderer to match — a real change, tracked in the port notes, not a mechanical import.
+ * The marks are `components/Provenance`'s and the words are the consumer's (`ProvenanceWords`), so
+ * a chart and a label cannot disagree about a tier. This module resolves the spec to token NAMES
+ * only; each platform half turns a name into `var(--name)` or `theme.colors[name]`.
  */
 
-type TierName = ProvenanceTier;
-
-interface TierObject {
-  label: string;
-  tone?: TierName;
-  color?: string;
-}
-
-type TierSpec = TierName | 'unmarked' | string | TierObject;
-
-type Standing = NonNullable<ChartFrameProps['standing']>;
-
-/** Every token name the provenance line is allowed to reach for. */
+/** Every token name the provenance line reaches for — exactly the marks `Provenance` uses. */
 export type ProvenanceColorKey =
-  | 'success'
-  | 'success-text'
-  | 'info-text'
-  | 'warning-text'
-  | 'text-tertiary'
-  | 'mark-subtle';
+  | (typeof TIER_MARK)[ProvenanceTier]
+  | (typeof STANDING_MARK)[ProvenanceStanding][keyof (typeof STANDING_MARK)[ProvenanceStanding]];
 
 export interface ProvenanceDot {
   colorKey: ProvenanceColorKey;
-  /** A caller-supplied tier colour, which the DS allows to be any CSS/RN colour string. */
-  customColor?: string;
 }
 
 export interface ProvenancePart {
@@ -57,60 +33,9 @@ export interface ProvenancePart {
   strong?: boolean;
 }
 
-const TIERS: Record<TierName, { label: string; color: ProvenanceColorKey }> = {
-  measured: { label: 'Measured', color: 'success-text' },
-  derived: { label: 'Derived', color: 'info-text' },
-  estimated: { label: 'Estimated', color: 'warning-text' },
-  assumed: { label: 'Assumed', color: 'text-tertiary' },
-};
-
-const STANDINGS: Record<
-  Standing,
-  { label: string; color: ProvenanceColorKey; mark: ProvenanceColorKey }
-> = {
-  confirmed: { label: 'Confirmed', color: 'success-text', mark: 'success' },
-  provisional: { label: 'Provisional', color: 'warning-text', mark: 'warning-text' },
-  reported: { label: 'Reported', color: 'warning-text', mark: 'warning-text' },
-  pending: { label: 'Not yet calculated', color: 'text-tertiary', mark: 'mark-subtle' },
-};
-
-/* A canonical-looking KEY ("verified-datasheet") is title-cased; anything already written as
-   words ("Tenant-provided") is printed VERBATIM. An open vocabulary that rewrites the caller's
-   word is not open. */
-const KEY_LIKE = /^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$/;
-
-function toLabel(raw: string): string {
-  return KEY_LIKE.test(raw)
-    ? raw.replace(/[-_]/g, ' ').replace(/^\w/, (c) => c.toUpperCase())
-    : raw;
-}
-
-/** The owner's schema decides — this file never spells the four words itself. */
-function isTierName(value: string): value is TierName {
-  return provenanceTierSchema.safeParse(value).success;
-}
-
-/** Resolves any accepted tier spelling to a label plus a mark colour — or null for a deliberate absence. */
-export function resolveTier(tier?: TierSpec): { label: string; dot: ProvenanceDot } | null {
-  if (tier === undefined || tier === '' || tier === 'unmarked') {
-    return null;
-  }
-  if (typeof tier === 'object') {
-    const base = tier.tone === undefined ? undefined : TIERS[tier.tone];
-    return {
-      label: tier.label === '' ? (base?.label ?? '') : tier.label,
-      dot: { colorKey: base?.color ?? 'text-tertiary', customColor: tier.color },
-    };
-  }
-  if (isTierName(tier)) {
-    return { label: TIERS[tier].label, dot: { colorKey: TIERS[tier].color } };
-  }
-  return { label: toLabel(tier), dot: { colorKey: 'text-tertiary' } };
-}
-
 export interface ProvenanceFacts {
-  tier?: TierSpec;
-  standing?: Standing;
+  tier?: Exclude<ChartFrameProps['provenance'], object>;
+  standing?: ProvenanceStanding;
   source?: string;
   projection?: string;
   note?: string;
@@ -153,24 +78,27 @@ export function chartProvenanceFacts(input: FrameProvenanceInput): ProvenanceFac
 }
 
 /** The line's parts, in order. Empty means the line renders nothing at all. */
-export function provenanceParts(facts: ProvenanceFacts | null): ProvenancePart[] {
+export function provenanceParts(
+  facts: ProvenanceFacts | null,
+  words: ProvenanceWords,
+): ProvenancePart[] {
   if (facts === null) {
     return [];
   }
   const parts: ProvenancePart[] = [];
-  const standing = facts.standing === undefined ? undefined : STANDINGS[facts.standing];
-  if (standing !== undefined) {
+  if (facts.standing !== undefined) {
+    const standing = STANDING_MARK[facts.standing];
     parts.push({
       id: 'standing',
-      label: standing.label,
+      label: words.standing(facts.standing),
       dot: { colorKey: standing.mark },
       colorKey: standing.color,
       strong: true,
     });
   }
-  const tier = resolveTier(facts.tier);
+  const tier = tierOf(facts.tier);
   if (tier !== null) {
-    parts.push({ id: 'tier', label: tier.label, dot: tier.dot });
+    parts.push({ id: 'tier', label: words.tier(tier), dot: { colorKey: TIER_MARK[tier] } });
   }
   if (facts.source !== undefined && facts.source !== '') {
     parts.push({ id: 'source', label: facts.source });

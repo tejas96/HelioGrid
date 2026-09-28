@@ -1,9 +1,7 @@
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useFormat } from '../MarketProvider';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import type { BlockProps } from './Block.types';
 import { blockCount } from './Block.types';
@@ -65,7 +63,7 @@ export function Block({
   style,
 }: NativeBlockProps) {
   const market = useFormat();
-  const prov = renderProvenance(provenance as ProvenanceProps | ReactNode, { size: 12 });
+  const prov = renderProvenance(provenance, { size: 12 });
   const shownCount = blockCount(count, countMax, (n) =>
     market.number(n, { maximumFractionDigits: 0 }),
   );

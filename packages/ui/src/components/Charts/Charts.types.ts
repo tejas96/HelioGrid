@@ -8,28 +8,14 @@ import type { ReactNode } from 'react';
  */
 import type { SurfaceState } from '../UnavailableNote';
 
-/** The four canonical provenance tiers are `contracts`' (`F8-02`). **Not a closed set** here — any string is a valid tier. */
-type ProvenanceTierName = ProvenanceTier;
-
 /**
- * A tier. Either a canonical name, any free word (`'Verified datasheet'`), an object that
- * borrows a canonical mark colour, or the reserved `'unmarked'` — which renders nothing and
- * *records that the absence is deliberate*, as distinct from having forgotten.
+ * A tier: one of `contracts`' four (`F8-02`), or `'unmarked'` — which renders nothing and records
+ * that the absence is deliberate. Closed, as `components/Provenance`'s is (`F8-03`).
  *
- * NOT the same type as `components/Provenance`'s `ProvenanceTierSpec`, and the difference is
- * `color`. The design system contract types it `color?: string` — a CSS colour value, painted
- * straight onto the dot (`data/Provenance.jsx`: `background: color`), which is what
- * `chart-provenance.ts` carries through as `customColor`. `components/Provenance` deliberately
- * NARROWED that field to a DS colour **token name** so no raw colour can enter through a caller's
- * tier object. Importing it here would both reject `color: '#1F5FA9'` (legal under the contract)
- * and paint `color: 'success-text'` as a literal CSS colour, which renders no dot at all. Merging
- * the two is a real change to Charts' provenance renderer, not an import — see the port notes.
+ * Declared here rather than imported: a chart draws its own provenance line (`ChartProvenance`),
+ * and `pnpm ds:contract` (c) reads an imported `Provenance` spec as owing `renderProvenance`.
  */
-type ProvenanceTierSpec =
-  | ProvenanceTierName
-  | 'unmarked'
-  | string
-  | { label: string; tone?: ProvenanceTierName; color?: string };
+type ProvenanceTierSpec = ProvenanceTier | 'unmarked';
 
 /** The full provenance spec a chart may hand to the line under its headline value. */
 interface ProvenanceProps {
@@ -37,12 +23,9 @@ interface ProvenanceProps {
   /**
    * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier —
    * a derived figure from a stale version is still derived, and still must not read as final.
-   *
-   * Unlike the tier SPEC above, this one carries no chart-local difference, so it is the owner's
-   * type rather than a copy of it — `contracts`, derived from domain's `PROVENANCE_STANDINGS`.
    */
   standing?: ProvenanceStanding;
-  /** What data it came from — `'Real · PVGIS (SARAH3)'` (M05-54). */
+  /** What data it came from — `'Real · PVGIS (SARAH3)'` (M05-54) — and any word beside the tier. */
   source?: string;
   /** The assumptions a multi-year figure rides on (F8-23 / F5-37). */
   projection?: string;

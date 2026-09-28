@@ -51,8 +51,8 @@ export interface UsageMeterProps {
   period?: string;
   /**
    * Provenance tier for the number (N7 / F8-01) — rendered as a visible word beside the period.
-   * **Open vocabulary**: M12-34 reserves "measured" for engineering and survey data and forbids it
-   * on this screen, so pass this screen's own word — `"Actual usage"`.
+   * One of the four (`F8-03`). M12-34 forbids the word "measured" on the usage screen, and this
+   * component has no slot yet for that screen's own word (`docs/tasks/UI.md`).
    */
   provenance?: ProvenanceTierSpec;
   /** How far the figure can be relied on as final. See `Provenance`. */

@@ -4,11 +4,11 @@ import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 /**
- * **What a `provenance` prop accepts**, here as everywhere: the full spec object, a bare tier
- * string, or a ready node. `renderProvenance` resolves all three — which is why nothing in this
- * folder renders a `provenance` value directly.
+ * **What a `provenance` prop accepts**, here as everywhere: the full spec object or a bare tier.
+ * `renderProvenance` resolves both — which is why nothing in this folder renders a `provenance`
+ * value directly.
  */
-export type CompareProvenanceSpec = ProvenanceProps | ProvenanceTierSpec | ReactNode;
+export type CompareProvenanceSpec = ProvenanceProps | ProvenanceTierSpec;
 
 export interface CompareOption {
   key: string;

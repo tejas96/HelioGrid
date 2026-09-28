@@ -5,7 +5,6 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { MarketFormat } from '../../utils/format';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import { ActivityGlyph } from './ActivityGlyph.native';
 import { asDate, hhmm, isValidDate, kindOf } from './ActivityStream.kinds';
@@ -121,9 +120,7 @@ export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps)
           <View style={styles.marks}>{renderMarks(entry.marks)}</View>
         ) : null}
         {entry.provenance !== undefined ? (
-          <View style={styles.tier}>
-            {renderProvenance(entry.provenance as ProvenanceProps | ReactNode, { size: 12 })}
-          </View>
+          <View style={styles.tier}>{renderProvenance(entry.provenance, { size: 12 })}</View>
         ) : null}
         {entry.content !== undefined ? <View style={styles.content}>{entry.content}</View> : null}
         {entry.action !== undefined ? <View style={styles.action}>{entry.action}</View> : null}

@@ -49,7 +49,7 @@ export interface BlockProps {
   /** Footer-right content: an honest caveat, a source note, a timestamp. */
   footer?: ReactNode;
   /** Provenance for the block's figures, rendered in the footer. */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   state?: BlockState;
   /** The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". */
   emptyMessage?: string;

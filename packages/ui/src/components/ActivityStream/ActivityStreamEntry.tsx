@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import { ActivityGlyph } from './ActivityGlyph';
 import { asDate, hhmm, isValidDate, kindOf } from './ActivityStream.kinds';
@@ -49,9 +48,7 @@ export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps)
           <div className="hg-stream-marks">{renderMarks(entry.marks)}</div>
         ) : null}
         {entry.provenance !== undefined ? (
-          <div className="hg-stream-tier">
-            {renderProvenance(entry.provenance as ProvenanceProps | ReactNode, { size: 12 })}
-          </div>
+          <div className="hg-stream-tier">{renderProvenance(entry.provenance, { size: 12 })}</div>
         ) : null}
         {entry.content !== undefined ? (
           <div className="hg-stream-content">{entry.content}</div>

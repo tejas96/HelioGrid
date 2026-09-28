@@ -8,8 +8,8 @@ import type { DataTableColumn } from './DataTableColumn.types';
 export type { DataTableColumn };
 
 /**
- * **A provenance statement, as a caller may write it**: a bare tier (`"derived"`), a tier object,
- * or the full spec with a standing, a source or a projection. `renderProvenance` resolves either
+ * **A provenance statement, as a caller may write it**: a bare tier (`"derived"`) or the full
+ * spec with a standing, a source or a projection. `renderProvenance` resolves either
  * shape — nothing in this folder hands a plain object to React as a child.
  */
 export type DataTableProvenanceSpec = ProvenanceProps | ProvenanceTierSpec;
