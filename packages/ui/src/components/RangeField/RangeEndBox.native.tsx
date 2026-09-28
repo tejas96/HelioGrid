@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { commitEnd } from './RangeField.logic';
 
@@ -23,15 +24,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-1'],
     height: 44,
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-input-functional'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
+    // The well and its edge are FieldBox's; the padding gives up the edge's width.
+    paddingHorizontal: theme.spacing['sp-3'] - FIELD_BOX_EDGE,
   },
-  boxDisabled: { backgroundColor: theme.colors['canvas-sunken'] },
-  // Focus ADDS a ring; it does not un-raise the control (rest stays e2).
-  boxFocus: { borderWidth: 2, borderColor: theme.colors.accent },
   input: {
     flex: 1,
     minWidth: 0,
@@ -82,11 +77,9 @@ export function RangeEndBox({
       <Text variant="caption" color="tertiary">
         {label}
       </Text>
-      <View
-        style={[styles.box, disabled ? styles.boxDisabled : null, focus ? styles.boxFocus : null]}
-      >
+      <View style={[styles.box, fieldBox({ focused: focus, disabled, density: 'functional' })]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, fieldBoxText(disabled)]}
           keyboardType="decimal-pad"
           value={draft}
           editable={!disabled}
@@ -99,8 +92,9 @@ export function RangeEndBox({
           }}
           onSubmitEditing={commit}
         />
+        {/* Text inside a well is secondary or stronger (`F7-15`): tertiary on the well is 4.48:1. */}
         {unit !== undefined ? (
-          <Text variant="caption" color="tertiary">
+          <Text variant="caption" color="secondary">
             {unit}
           </Text>
         ) : null}

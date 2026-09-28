@@ -1,6 +1,5 @@
-/* Input — --surface at --e2 at rest (raised, not outlined), a 2px accent focus ring, and an inset
-   1.5px semantic ring for error/success. The semantic ring stays 1.5px: a refusal is a line on
-   purpose, and it should be louder than the lift.
+/* Input — a well (the FieldBox primitive owns the ground, the radius and every ring); this file
+   owns the size and the layout only.
 
    The control stretches to the shell's full height rather than sitting as a centred 21px line:
    the field LOOKS 44–52px tall and the tap has to land anywhere inside it. */
@@ -25,52 +24,15 @@
   gap: var(--sp-2);
   min-height: 44px; /* the product's touch floor */
   padding: 0 var(--sp-4);
-  background: var(--surface);
-  border-radius: var(--r-input-expressive);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-input-shell[data-density="expressive"] {
   height: 52px;
 }
 
-/* DENSITY CHANGES THE SIZE, NEVER THE GROUND — a control is --surface at --e2 in both. On a
-   --surface-form container, --surface-alt measures 1.03:1 against --surface's 1.07:1, which is the
-   "looks like normal text" defect the ladder exists to prevent. */
+/* Density changes the size, never the ground — the well is the same in both. */
 .hg-input-shell[data-density="functional"] {
   height: var(--sp-10);
-  border-radius: var(--r-input-functional);
-}
-
-.hg-input-shell[data-ring="error"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    var(--e2);
-}
-
-.hg-input-shell[data-ring="success"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--success),
-    var(--e2);
-}
-
-/* Focus wins over every ring, and it is a RING — no border ever appears. */
-.hg-input-shell[data-focus="true"] {
-  box-shadow:
-    var(--e2),
-    0 0 0 2px var(--surface),
-    0 0 0 4px var(--accent);
-}
-
-.hg-input-shell[data-disabled="true"] {
-  background: var(--canvas-sunken);
-  box-shadow: none;
 }
 
 .hg-input-control {
@@ -89,14 +51,6 @@
 /* IDs, readings, coordinates, invoice numbers. */
 .hg-input-control[data-mono="true"] {
   font-family: var(--font-mono);
-}
-
-.hg-input-control:disabled {
-  color: var(--text-disabled);
-}
-
-.hg-input-control::placeholder {
-  color: var(--text-tertiary);
 }
 
 .hg-input-error,

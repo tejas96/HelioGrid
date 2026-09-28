@@ -1,7 +1,8 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
 import type { CSSProperties } from 'react';
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
 import { NON_DIGIT } from './PhoneField.logic';
 import type { PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
@@ -42,6 +43,7 @@ export function PhoneField({
   const messageId = `${fieldId}-message`;
   const { dialCode } = mkt.pack.phone;
   const code = dialCode.replace(NON_DIGIT, '');
+  const [focused, setFocused] = useState(false);
 
   /* The box shows the NATIONAL number, grouped; the caller holds E.164. Splitting here rather than
      in the caller is what stops two screens grouping one number two ways. */
@@ -64,8 +66,7 @@ export function PhoneField({
       <div
         className="hg-phone-field-shell"
         data-density={density}
-        data-disabled={disabled ? 'true' : undefined}
-        data-error={error === undefined ? undefined : 'true'}
+        {...fieldBox({ focused, tone: error === undefined ? 'none' : 'error', disabled, density })}
       >
         {/* aria-hidden: the code is spoken as part of the field's value, not as a second thing. */}
         <span className="hg-phone-field-dial" aria-hidden="true">
@@ -83,6 +84,8 @@ export function PhoneField({
           aria-invalid={error === undefined ? undefined : true}
           aria-describedby={message === undefined ? undefined : messageId}
           onChange={(e) => commit(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
         />
       </div>
       {message === undefined ? null : (

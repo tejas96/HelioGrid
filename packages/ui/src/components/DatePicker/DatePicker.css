@@ -1,8 +1,8 @@
 /* DatePicker — the borderless field and the e4 popover that holds the Calendar.
 
    Below its own width the popover anchors full-width under the field, so it works the same on a
-   375px phone; the native half renders the calendar inline for that reason. The trigger is
-   borderless like every other field: --e1 at rest, a 2px ring open, a 2px danger ring on error. */
+   375px phone; the native half renders the calendar inline for that reason. The trigger is a well
+   like every other field: the FieldBox primitive draws its ground and its rings. */
 
 .hg-date-picker {
   position: relative;
@@ -26,43 +26,21 @@
   justify-content: space-between;
   gap: var(--sp-3);
   padding: 0 var(--sp-4);
-  border: none;
-  border-radius: var(--r-input-expressive);
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
+  /* The well, its radius and its rings are the FieldBox primitive's; open counts as focused. */
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-date-picker-trigger[data-density="functional"] {
   padding: 0 var(--sp-3);
-  border-radius: var(--r-input-functional);
 }
 
+/* Text in a well is --text-secondary or stronger: tertiary on the well is under the floor. */
 .hg-date-picker-trigger[data-empty="true"] {
-  color: var(--text-tertiary);
-}
-
-.hg-date-picker-trigger[data-open="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-.hg-date-picker-trigger[data-error="true"] {
-  box-shadow: 0 0 0 2px var(--danger);
-}
-
-.hg-date-picker-trigger:disabled {
-  background: var(--canvas-sunken);
-  cursor: not-allowed;
+  color: var(--text-secondary);
 }
 
 .hg-date-picker-trigger:focus-visible {

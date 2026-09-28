@@ -135,8 +135,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     paddingHorizontal: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
+    // A control on a `surface` overlay is the opposite of its ground (`F7-15`): the well.
+    backgroundColor: theme.colors['bg-well'],
   },
 });

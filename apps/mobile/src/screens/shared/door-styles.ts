@@ -8,8 +8,8 @@ import { StyleSheet } from 'react-native';
  * and company signup.
  */
 export const styles = StyleSheet.create({
-  /** The inset behind the frame: the canvas, so the status-bar and home-indicator bands match the frame's ground. */
-  inset: { flex: 1, backgroundColor: theme.colors.canvas },
+  /** The inset behind the frame: the page, so the status-bar and home-indicator bands match the frame's ground. */
+  inset: { flex: 1, backgroundColor: theme.colors.surface },
   titleBlock: {
     gap: theme.spacing['sp-2'],
     paddingTop: theme.spacing['sp-8'],

@@ -17,16 +17,13 @@
   gap: var(--sp-5);
 }
 
-/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on one surface. */
+/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on the page, with
+   no surface (F7-49) — a grey tile would read as a field, a white card vanishes on the white page. */
 .hg-signup-account {
   display: flex;
   align-items: center;
   gap: var(--sp-4);
   align-self: flex-start;
-  padding: var(--sp-4) var(--sp-5);
-  background: var(--surface);
-  border-radius: var(--r-card-expressive);
-  box-shadow: var(--e1);
 }
 
 /* A finding about the person, in the identity half at the export's measure. */
@@ -35,15 +32,11 @@
   max-width: var(--form-max);
 }
 
-/* The three values as facts while they are written: one surface, sp-4 between rows. */
+/* The three values as facts while they are written, on the page with no surface (F7-49). */
 .hg-signup-facts {
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
-  padding: var(--sp-5);
-  background: var(--surface);
-  border-radius: var(--r-card-expressive);
-  box-shadow: var(--e1);
 }
 
 .hg-signup-fact {

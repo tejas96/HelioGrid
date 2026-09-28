@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.canvas,
+    // The page is `surface` (`F7-15`, `F7-49`).
+    backgroundColor: theme.colors.surface,
   },
 });

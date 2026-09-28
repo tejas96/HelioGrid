@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { TextInput as RNTextInput, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { OtpInputProps } from './OtpInput.types';
 
@@ -17,19 +18,12 @@ const styles = StyleSheet.create({
     height: 56,
     minWidth: 44,
     textAlign: 'center',
-    borderRadius: theme.radius['r-input-expressive'],
-    backgroundColor: theme.colors.surface,
     fontFamily: theme.type.families.mono,
     fontSize: 22,
     fontWeight: '700',
     color: theme.colors['text-primary'],
     padding: 0,
-    ...theme.elevation.e2,
   },
-  boxDisabled: { backgroundColor: theme.colors['canvas-sunken'] },
-  /* RN has no box-shadow ring: focus and error rings are borders of the same weight. */
-  boxFocus: { borderWidth: 2, borderColor: theme.colors.accent, shadowOpacity: 0, elevation: 0 },
-  boxError: { borderWidth: 2, borderColor: theme.colors.danger, shadowOpacity: 0, elevation: 0 },
   message: { marginTop: theme.spacing['sp-2'], marginHorizontal: 2 },
 });
 
@@ -113,9 +107,13 @@ export function OtpInput({
             }}
             style={[
               styles.box,
-              disabled ? styles.boxDisabled : null,
-              focused === slot.index && error === undefined ? styles.boxFocus : null,
-              error !== undefined ? styles.boxError : null,
+              fieldBox({
+                focused: focused === slot.index,
+                tone: error === undefined ? 'none' : 'error',
+                disabled,
+                density: 'expressive',
+              }),
+              fieldBoxText(disabled),
             ]}
             keyboardType="number-pad"
             textContentType="oneTimeCode"

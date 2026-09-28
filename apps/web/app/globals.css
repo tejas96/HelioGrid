@@ -9,6 +9,16 @@
 }
 
 /*
+ * The page is --surface (F7-15, F7-49): fields and tiles are the darker wells on it. The design
+ * system's base still paints body --canvas until its half lands (docs/tasks/UI.md), so the root
+ * is painted here, where an overscroll bounce shows it.
+ */
+html,
+body {
+  background: var(--surface);
+}
+
+/*
  * Token custom properties (--sp-*, --fs-*, --color-*, etc.) are NOT defined here.
  * They are imported in layout.tsx in load-bearing order:
  *   @heliogrid/theme/tokens.css → @heliogrid/theme/base.css → @heliogrid/ui/styles.css → globals.css

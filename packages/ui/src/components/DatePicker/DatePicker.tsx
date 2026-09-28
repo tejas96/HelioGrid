@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar';
 import { asRange, asSet, parse } from './calendar-grid';
@@ -92,9 +93,13 @@ export function DatePicker({
         type="button"
         className="hg-date-picker-trigger"
         data-density={density}
-        data-error={error === undefined ? undefined : 'true'}
-        data-open={open ? 'true' : undefined}
         data-empty={text === '' ? 'true' : undefined}
+        {...fieldBox({
+          focused: open,
+          tone: error === undefined ? 'none' : 'error',
+          disabled,
+          density,
+        })}
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="dialog"

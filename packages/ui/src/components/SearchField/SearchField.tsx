@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import type { SearchFieldProps } from './SearchField.types';
 
 interface WebSearchFieldProps extends SearchFieldProps {
@@ -9,8 +10,8 @@ interface WebSearchFieldProps extends SearchFieldProps {
 }
 
 /**
- * Borderless search input with a leading magnifier. e1 at rest, 2px accent ring on focus,
- * never a border. 44px tall so it clears the touch-target floor on a phone. It is the first
+ * Borderless search input with a leading magnifier: a well (`FieldBox`) with the system focus
+ * ring, never a border. 44px tall so it clears the touch-target floor on a phone. It is the first
  * control on every records screen: leads, projects, payments, call log.
  */
 export function SearchField({
@@ -30,8 +31,7 @@ export function SearchField({
     <div
       className={classNames('hg-search-field', className)}
       data-density={density}
-      data-disabled={disabled}
-      data-focus={focus}
+      {...fieldBox({ focused: focus, disabled, density })}
       style={style}
     >
       <svg

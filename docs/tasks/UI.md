@@ -14,6 +14,19 @@ wait until something else opens the same file. `Sheet.jsx`: `aria-labelledby` mu
 and `Modal` on both sides are done). `FilterPanel.jsx`: forward `modal` to its `EditorSurface`, or
 the side-panel form keeps a backdrop over the list it is filtering.
 
+**Owed to the design system by the "Open page" layout (`T-FPLAT-075`), repo side done** — the repo
+led because the design system could not be edited at the time; until these land, a `ds:pull` or a
+drawn screen brings the raised white field back. The token layer: `--bg-page` and `body` become
+`--surface`, and the raised-control ruling in `tokens/colors.css` and `tokens/elevation.css` (the
+text `tokens.css:230-262` carries) reverses to `F7-15`'s well. Every field's `.jsx` — `Input`,
+`PhoneField`, `OtpInput`, `NumberField`, `Select`, `TimeField`, `DatePicker`, `Textarea`,
+`SearchField`, `RangeField`'s end boxes — draws the well (`--bg-well`, no shadow), the one focus
+ring (a `--surface` gap then `--accent`; on the phone the ring on the edge), the inset danger ring
+alongside focus, a disabled well of `--surface-form`, and `--text-secondary` placeholders. The
+secondary `Button` and the overlay retry pill take the well. `Sheet`, `Modal` and `DetailPanel` hold
+their content on `--surface`. `DoorFrame` paints `--surface`. The signup's verified number and its
+facts block sit on the page with no surface (`SCR-M01-02`).
+
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |

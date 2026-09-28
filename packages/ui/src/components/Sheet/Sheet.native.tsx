@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     maxHeight: '92%',
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: theme.colors.surface,
     ...theme.elevation.e5,
   },
   panelExpressive: {
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
   },
   /* The web half fades the footer in with a luminance gradient. RN has no CSS gradient, and a
      divider line is the one thing this family may not draw — so the footer takes the same
-     --surface-form as the body and only padding separates them. */
+     --surface as the body and only padding separates them. */
   footer: {
     flexShrink: 0,
     paddingTop: theme.spacing['sp-3'],
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: theme.colors.surface,
   },
   footerExpressive: {
     paddingHorizontal: theme.spacing['sp-5'],

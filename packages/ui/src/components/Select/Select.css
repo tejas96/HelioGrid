@@ -26,54 +26,23 @@
   justify-content: space-between;
   gap: var(--sp-3);
   padding: 0 var(--sp-4);
-  border: none;
-  border-radius: var(--r-input-expressive);
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
+  /* The well, its radius and its rings are the FieldBox primitive's; open counts as focused, and
+     keyboard focus takes the system outline every button carries. */
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   text-align: left;
   color: var(--text-primary);
   cursor: pointer;
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-select-trigger[data-density="functional"] {
   height: 40px;
   padding: 0 var(--sp-3);
-  border-radius: var(--r-input-functional);
 }
 
+/* Text in a well is --text-secondary or stronger: tertiary on the well is under the floor. */
 .hg-select-trigger[data-placeholder="true"] {
-  color: var(--text-tertiary);
-}
-
-.hg-select-trigger:disabled {
-  background: var(--canvas-sunken);
-  cursor: not-allowed;
-}
-
-.hg-select-trigger[data-open="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-/* An error is the caller's verdict and only the caller clears it, so it cannot be allowed to stand
-   in FRONT of the open/focus ring — both rings, danger inside, accent outside. */
-.hg-select-trigger[data-error="true"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    var(--e2);
-}
-
-.hg-select-trigger[data-error="true"][data-open="true"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    0 0 0 2px var(--accent);
+  color: var(--text-secondary);
 }
 
 .hg-select-value {

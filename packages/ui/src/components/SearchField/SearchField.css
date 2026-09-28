@@ -1,4 +1,4 @@
-/* SearchField — borderless search input. e1 at rest, 2px accent ring on focus, NEVER a border.
+/* SearchField — a well (the FieldBox primitive owns its ground, radius and rings), NEVER a border.
    44px tall so it clears the touch-target floor on a phone; functional density drops the box to
    40px but the min-height keeps the target at 44. */
 
@@ -9,31 +9,14 @@
   height: 44px;
   min-height: 44px;
   padding: 0 14px;
-  background: var(--surface);
-  border-radius: var(--r-input-expressive);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-search-field[data-density="functional"] {
   height: 40px;
-  border-radius: var(--r-input-functional);
 }
 
-.hg-search-field[data-disabled="true"] {
-  background: var(--canvas-sunken);
-}
-
-/* The ring is the focus state of the INPUT, not of the box — the clear button carries its own
-   focus ring from .hg-pressable, exactly as the reference does. */
-.hg-search-field[data-focus="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
-}
+/* The ring is the focus state of the INPUT, not of the box — the box is `focused` from the
+   input's own focus, and the clear button carries its own focus ring. */
 
 .hg-search-field-glyph {
   color: var(--text-tertiary);

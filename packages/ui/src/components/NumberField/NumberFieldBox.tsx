@@ -1,4 +1,5 @@
 import type { KeyboardEvent } from 'react';
+import { fieldBox } from '../../primitives/FieldBox';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import type { NumberDraftState } from './NumberField.state';
@@ -72,9 +73,12 @@ export function NumberFieldBox({
       className="hg-number-field-box"
       data-density={density}
       data-steppers={steppers}
-      data-disabled={disabled}
-      data-focus={draft.focus}
-      data-danger={danger}
+      {...fieldBox({
+        focused: draft.focus,
+        tone: danger ? 'error' : 'none',
+        disabled,
+        density,
+      })}
     >
       {steppers ? (
         <Pressable

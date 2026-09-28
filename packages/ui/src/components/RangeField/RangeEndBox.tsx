@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react';
+import { fieldBox } from '../../primitives/FieldBox';
 import { commitEnd } from './RangeField.logic';
 
 export interface RangeEndBoxProps {
@@ -47,7 +48,10 @@ export function RangeEndBox({
       <label className="hg-range-end-label" htmlFor={id}>
         {label}
       </label>
-      <span className="hg-range-end-box" data-disabled={disabled} data-focus={focus}>
+      <span
+        className="hg-range-end-box"
+        {...fieldBox({ focused: focus, disabled, density: 'functional' })}
+      >
         <input
           id={id}
           className="hg-range-end-input"

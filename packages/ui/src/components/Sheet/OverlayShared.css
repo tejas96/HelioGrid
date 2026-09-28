@@ -124,9 +124,10 @@
   padding: 0 var(--sp-5);
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* Try again is a CONTROL, so it stays --surface and is RAISED on the overlay that holds it. */
-  box-shadow: var(--e2);
+  /* Try again is a CONTROL on a --surface overlay, so it is the opposite of its ground (F7-15):
+     the well, darker than the overlay, never a white pill on white. */
+  background: var(--bg-well);
+  box-shadow: none;
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   font-weight: var(--fw-medium);

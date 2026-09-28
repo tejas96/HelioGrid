@@ -1,5 +1,5 @@
 /* PhoneField — the dial code is a fixed prefix beside the digits, never characters inside them.
-   The shell is a control, so it is RAISED: --surface at --e2, no line anywhere. */
+   The shell is a well: the FieldBox primitive owns its ground, radius and rings. */
 
 .hg-phone-field {
   display: flex;
@@ -21,11 +21,6 @@
   gap: var(--sp-2);
   min-height: 44px; /* the product's touch floor */
   padding: 0 var(--sp-4);
-  background: var(--surface);
-  border-radius: var(--r-input-expressive);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-phone-field-shell[data-density="expressive"] {
@@ -34,27 +29,6 @@
 
 .hg-phone-field-shell[data-density="functional"] {
   height: var(--sp-10);
-  border-radius: var(--r-input-functional);
-}
-
-.hg-phone-field-shell[data-error="true"] {
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    var(--e2);
-}
-
-/* Focus wins over the refusal ring and ADDS to the lift — it never replaces it, or a focused field
-   would sit lower than an unfocused one. */
-.hg-phone-field-shell:focus-within {
-  box-shadow:
-    var(--e2),
-    0 0 0 2px var(--surface),
-    0 0 0 4px var(--accent);
-}
-
-.hg-phone-field-shell[data-disabled="true"] {
-  background: var(--canvas-sunken);
-  box-shadow: none;
 }
 
 /* THE CODE IS PART OF THE NUMBER, so it is read at the number's weight rather than dimmed to
@@ -78,10 +52,6 @@
   font-size: var(--fs-body);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
-}
-
-.hg-phone-field-input:disabled {
-  color: var(--text-disabled);
 }
 
 .hg-phone-field-message {
