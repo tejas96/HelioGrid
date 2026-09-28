@@ -432,32 +432,32 @@ apps/api · apps/worker ── compute ──▶ @heliogrid/domain/server  resol
 
 ### T-FPLAT-071 · The PRD states roles, never design-system values
 **Type:** policy · **Tier:** P0
-**Status:** planned
-**Why:** a PRD that restates a size or a colour keeps a second copy of a design-system value, and the two drift the day the design system changes — then a builder follows the stale copy.
+**Status:** shipped (#191)
 **PRD rows:** none claimed — this is `F7-03`'s document half, split from `T-FPLAT-023` by the owner (B); `F7-03` stays claimed there.
 **Design:** none — a documents task with no screen.
-**Data model:** none.
-**Contract:** none.
-**Depends on:** `T-FPLAT-023` — the design-system tokens the PRD will name by role.
-**Out of scope:** screens and code — `T-FPLAT-023`.
-**Settle at /start:** about 40 `px` values stand in `docs/prd/`, spaced (`375 px`) or not. Most are not design-system values — the phone width, the studio's drag and snap distances. About 6 are, inside quoted sources: the `2px` focus ring, the `16–24px` photo radius, `1px` borders, the `12px` floor, the `44×44` target. Each is ruled by the owner: replaced by the token's role name, or kept on the gate's reviewed list with its reason. Whether a number is a design-system value is a reviewer's call; the gate refuses only a number no review has seen.
-**Requirements (verbatim):** `F7-03`, as `T-FPLAT-023` quotes it.
-
+**Risk:** LOW — it changes PRD text and adds one docs gate to `scripts/gates.py`; no runtime path, no database, no API, no screen (`CLAUDE.md` §3).
+**Why:** a PRD that restates a size or a colour keeps a second copy of a design-system value, and the two drift the day the design system changes — then a builder follows the stale copy.
+**Scope:** **In** — `docs/prd/foundations/F7-design-language.md`: three source quotes lose the value a token holds, each replaced in square brackets (`F7-15` "1px" → `[…]`; `F7-20` "16–24px" → `[--r-md–--r-lg]`; `F7-24` "2px … 2px" → `[…]` twice — field mode draws a 3px ring, so the quote's 2px is already wrong there) · `scripts/gates.py`: gate 32 — every size (`px`, `dp`, `sp`, `pt`, `rem`, `em`, any letter case, spaced or not, ranges and `W×H` included) and every colour literal (hex of 3, 4, 6 or 8 digits; `rgb(`, `hsl(`, `oklch(` and the other CSS colour functions) in `docs/prd/**` must sit on the gate's reviewed list, whose entries name file, value, exact count and reason; `375px` and `1536px` (the viewports `OV-09`, `F7-30`, `F7-43` fix) pass in every file · `.claude/mechanisms.md` row M149 · `docs/tasks/deferred.md` one row (the dead path below). **Out** — `docs/ux/briefs/` and `docs/tasks/`: not the PRD suite `F7-03` names, and a brief edit stales its design review (M128) · the dead path `design/ds-source/`, named 24 times across `docs/prd/` (21 in F7, `F7-01`'s own row text included) — the folder does not exist; the token files live at `packages/theme/src/_generated/tokens/`. Fixing it rewrites row text that tasks and briefs quote (gates 4 and 31), so it is its own task: `deferred.md` row · a unitless size (`N2`'s `≥44×44`) — see C7. **Size** — 4 files, about +70 / −4 lines.
+**Settle at /start — ruled (owner, at the go):**
+- **The PRD's sizes, 41 today, sorted.** 34 are not design-system values and go on the list with their reason: the viewports (`375 px` ×24, `1536px` ×1), the studio's gesture distances (`3 px` drag ×2, snap `10 px`, `8 px`, close `14 px`, hide `30 px` — `02-step2-roof.md`, `01-step1-site-setup.md`, the register's mirror), the logo preview limit (`70×200 px`), the POC's `~9px` handles (a defect `F7-29` names), and `5 dp` (decimal places, not a length). 7 are design-system shaped. **4 go** — the three quotes in In (`2px` twice); each value lives in the token files (`radius.css`, `base.css`, `field-mode.css`), and the row's requirement cell already names the role. **3 stay** — `12px` ×3: in `F7-10`'s quote, in `F7-23`'s cell and in its verbatim block: the floor is a RULE (a minimum), no token file holds it (`--fs-caption` is a size on the scale, not the floor), and `F7-23` carries N1–N10 "never reword"; `F7-03` lets a requirement state a rule.
+- **D1's path** — the row says the value is found in `design/ds-source/`; read as the token files at `packages/theme/src/_generated/tokens/` until the deferred row fixes the path.
+**Placement:**
+| fact | owning package (architecture.md §2) | why it owns it | how others reach it |
+|---|---|---|---|
+| the reviewed list of PRD sizes | `scripts/gates.py` (gate 32) | the one docs-gate script `pnpm check:all` and CI run over `docs/` | read by gate 32 only; guard M149, new, proven red here |
+**Data model:** none. **Contract:** none.
+**Depends on:** `T-FPLAT-023` (shipped #164) — the tokens the PRD names by role.
 **Cases:**
-- **n/a** · concurrency · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · partial-failure · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · retry · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · roll · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · tenancy · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · scale · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · input · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · platform · a documents task with no runtime path — it changes PRD text and a docs gate
-- **n/a** · observability · a documents task with no runtime path — it changes PRD text and a docs gate
-
+- **C1** · input · a new size or colour typed into any PRD file → gate 32 refuses it, naming file, line and value → `recorded` `python3 scripts/gates.py` gate 32 red on an injected `padding 12px` in `modules/M06-proposals.md` and an injected `#1A73E8` in `foundations/F7-design-language.md`
+- **C2** · input · a reviewed value typed a second time in its file (a new requirement repeating `12px`) passes as "seen" → the list holds an exact count per file → `recorded` `python3 scripts/gates.py` gate 32 red on a second `12px` in F7
+- **C3** · input · a size removed from the PRD leaves a pardon on the list that a later, unreviewed use would spend → the count is exact both ways: a count above the file's is refused as stale → `recorded` `python3 scripts/gates.py` gate 32 red on the snap distance `10 px` deleted from `02-step2-roof.md` (a viewport is allowed everywhere and never counted, so only a listed value can go stale)
+- **C4** · input · spellings — `375 px` / `375px`, `16–24px`, `70×200 px`, `1.5rem`, `5 dp`, `12PX`, `14sp`, `#FFF` → matched in any letter case and normalised before the list is read → `recorded` `python3 scripts/gates.py` gate 32 red on an injected `1.5 rem`, and on `#FFF` beside `12PX` (found by `break-it-reviewer`: the first pattern missed short hex, upper case and `sp`)
+- **C5** · observability · the pattern or the glob rots and the gate prints PASS over nothing → the scan carries a floor (`scanned()`, 30 sizes) → `recorded` `python3 scripts/gates.py` gate 32 red, `CORPUS ROT`, with the glob pointed at an empty folder
+- **C6** · input · `ms`, `%` and ratios (`3:1`, `1.14:1`) → not matched: a latency, a share and a WCAG threshold are not design-system values → none — the regex's own units; a reviewer reads a new one
+- **C7** · input · a unitless size (`≥44×44`), one written in words, or a named colour (`red`) → not matched: a bare `N×M` is also every obstruction in metres (`1.2×1.5`, `M05-design-studio.md:349`), and a colour's name is an ordinary word in prose → none — named on M149's not-held list; a reviewer's call
+**Used by:** every later PRD edit — gate 32 meets it at `pnpm check:all`.
 **DONE WHEN:**
-
-- **D1** · **Given** a requirement in any PRD in this suite that concerns appearance, **when** a reader looks for the value behind it, **then** the value is found in the token files (`packages/theme/src/_generated/tokens/`), and the PRD states only the role or rule (`F7-01`, `F7-03`) → proof: recorded d1-prd-size
-
+- **D1** · **Given** a requirement in any PRD in this suite that concerns appearance, **when** a reader looks for the value behind it, **then** the value is found in `design/ds-source/`, and the PRD states only the role or rule (`F7-01`, `F7-03`). → `python3 scripts/gates.py` gate 32 green over `docs/prd/`, every design-system-shaped value gone or on the list with its rule; `recorded` red per C1–C5 (path ruled above)
 ---
 ### T-FPLAT-012 · STRUCK 2026-09-04 — the conflict-policy engine
 **Type:** — · **Tier:** —

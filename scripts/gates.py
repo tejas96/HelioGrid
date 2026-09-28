@@ -85,6 +85,39 @@ def live_rows(repo):
     return rows
 
 
+# M149 · every size and colour the PRD names was reviewed (`F7-03`): a design-system value belongs in
+# the token files, and the PRD names its role. A value reviewed as NOT one (a viewport, a gesture
+# distance) is listed by file, with its exact count, so a new use or a stale pardon is refused.
+PRD_VALUE_RE = re.compile(
+    r"(?<![\w.#-])\d+(?:\.\d+)?(?:[–-]\d+(?:\.\d+)?)?(?:×\d+(?:\.\d+)?)?\s?(?:px|dp|sp|pt|rem|em)\b"
+    r"|(?<![\w&])#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(",
+    re.IGNORECASE)
+PRD_VIEWPORTS = {"375px", "1536px"}   # the product's mobile and desktop widths (OV-09, F7-30, F7-43)
+PRD_REVIEWED_VALUES = {
+    ("foundations/F7-design-language.md", "12px"): (3, "N3's type floor: a rule, and no token holds it"),
+    ("foundations/F7-design-language.md", "9px"): (1, "the POC's handle size, a defect F7-29 replaces"),
+    ("modules/M05-studio/01-step1-site-setup.md", "3px"): (1, "the drag threshold, a gesture distance"),
+    ("modules/M05-studio/01-step1-site-setup.md", "5dp"): (1, "five decimal places, not a length"),
+    ("modules/M05-studio/01-step1-site-setup.md", "70×200px"): (1, "the logo preview's validation bound"),
+    ("modules/M05-studio/02-step2-roof.md", "10px"): (1, "the object-snap distance"),
+    ("modules/M05-studio/02-step2-roof.md", "8px"): (1, "the first-vertex alignment distance"),
+    ("modules/M05-studio/02-step2-roof.md", "14px"): (1, "the close-shape distance"),
+    ("modules/M05-studio/02-step2-roof.md", "30px"): (1, "the length chip's hide threshold"),
+    ("registers/screens.md", "3px"): (1, "the register's mirror of the drag threshold"),
+}
+
+
+def prd_values(repo):
+    """(file, value) -> [line numbers] for every size and colour literal in docs/prd/, registers included."""
+    found = defaultdict(list)
+    for f in sorted(glob.glob(spec(repo, "prd/**/*.md"), recursive=True)):
+        rel = os.path.relpath(f, spec(repo, "prd"))
+        for i, line in enumerate(open(f, encoding="utf-8"), 1):
+            for m in PRD_VALUE_RE.finditer(line):
+                found[(rel, re.sub(r"\s", "", m.group(0)).lower())].append(i)
+    return found
+
+
 def task_blocks(repo):
     """list of dicts: file, id, title, body."""
     blocks = []
@@ -327,6 +360,23 @@ def run(repo, verbose):
             desync.append(f"{rel}:{i} {rid}")
     gate(4, "each quote equals its PRD cell, or is a cut or an extension of it (a cut is NOT checked for what it drops)", not desync,
          f"{checked} quotes checked, all match" if not desync else f"{len(desync)} desynced: " + "; ".join(desync[:8]))
+
+    # --- Gate 32 · the PRD names roles, never design-system values (M149)
+    values = prd_values(repo)
+    unseen, stale = [], []
+    for (rel, value), lines in sorted(values.items()):
+        if value in PRD_VIEWPORTS:
+            continue
+        reviewed = PRD_REVIEWED_VALUES.get((rel, value), (0, ""))[0]
+        if len(lines) > reviewed:
+            unseen.append(f"{rel}:{','.join(map(str, lines))} {value}")
+    for (rel, value), (count, _reason) in sorted(PRD_REVIEWED_VALUES.items()):
+        if len(values.get((rel, value), [])) < count:
+            stale.append(f"{rel} {value} listed ×{count}, found ×{len(values.get((rel, value), []))}")
+    scanned(32, "the PRD names no size or colour no review has seen", sum(map(len, values.values())), 30,
+            not unseen and not stale,
+            f"{sum(map(len, values.values()))} values, all reviewed" if not unseen and not stale
+            else " · ".join([f"unreviewed {u}" for u in unseen[:8]] + [f"stale {x}" for x in stale[:8]]))
 
     # --- Gate 5 · every task id referenced is defined
     defined = {b["id"] for b in blocks}
