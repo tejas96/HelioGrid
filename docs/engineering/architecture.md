@@ -114,7 +114,7 @@ rendering; a session, a tenant or a request (the API resolves those and passes r
 TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/api` and `apps/worker`
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
 when one is written. No package a device bundles imports `./server` (`M148`).
-Extension point: one folder per module slice (authz/, auth/, branding/, tenancy/, calling/, certification/, commerce/, format/, market/, messaging/, money/, pricing/, projects/, rails/, shell/, subsidy/, tax/ today); each
+Extension point: one folder per module slice (authz/, auth/, branding/, tenancy/, calling/, catalog/, certification/, commerce/, format/, market/, messaging/, money/, pricing/, projects/, rails/, shell/, subsidy/, tax/ today); each
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client

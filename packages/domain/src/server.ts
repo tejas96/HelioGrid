@@ -11,6 +11,7 @@
  * formatter, a reducer, anything a screen needs.
  */
 
+export { resolveCatalogItem } from './catalog/resolve';
 export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export { amountForQuantity, sumMinorUnits } from './money/minor-units';

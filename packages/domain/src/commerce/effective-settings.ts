@@ -36,8 +36,9 @@ import { STANDARD_TRANCHE_TEMPLATES } from './tranche-template-defaults';
 export const SETTING_SOURCES = ['tenant', 'platform'] as const;
 export type SettingSource = (typeof SETTING_SOURCES)[number];
 
-export interface Resolved<T> {
-  readonly source: SettingSource;
+/** A value in force and what supplied it — a setting's source unless a caller names another set. */
+export interface Resolved<T, S extends string = SettingSource> {
+  readonly source: S;
   readonly value: T;
 }
 

@@ -18,6 +18,13 @@
  */
 export type CalendarDate = string;
 
+const CALENDAR_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Whether a day is written `YYYY-MM-DD`: the one form whose text order is its date order. */
+export function isCalendarDate(value: string): boolean {
+  return CALENDAR_DATE.test(value);
+}
+
 /**
  * The days in force for a tenant (`F1-17`, `M01-59`). The tenant's list is ADDED to the market's
  * and never subtracted from it: extra holidays narrow calling availability, which is the one
