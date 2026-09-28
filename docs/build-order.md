@@ -49,10 +49,10 @@ Decided 2026-08-15 after inspecting both codebases.
 
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (15 of its 16 — see below) · `F-platform` (26 of its 27 — see below) |
+| **0** | **Foundations** | 0 | `F-core` (15 of its 16 — see below) · `F-platform` (25 of its 27 — see below) |
 | **1** | **Shell + entry & tenant** | 23 | `SHELL` (3 of its 4 — see below) · `M01-onboarding` (27) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
-| **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) · `F-platform` → `T-FPLAT-020` |
+| **3** | **CRM & leads** | 6 | `M02-crm-leads` (17) · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
@@ -75,6 +75,12 @@ projects, customers, sites, catalog items and people, and in block 0 none of tho
 every done-when line — scope, the "quote" alias, junk leads, a halted tenant's results — would run
 over empty results and prove nothing. It builds once the lead record lands, with leads as its
 first search target, and each later module adds its own target when its slice begins (Law 9).
+
+**Recipient resolution builds in block 3, not block 0.** `T-FPLAT-066` turns a recipient rule —
+"the record's owner", "the assignee" — into people, and in block 0 no record has an owner: the only
+subject kinds are users, invitations and tenant settings. It builds once the lead record lands, before
+`T-M02-011` notifies a lead's new owner, so the resolution is written once and every later module
+reuses it. Two of its proofs still wait on later blocks and are recorded below.
 
 `python3 scripts/next-screen.py` is the sequence made executable — run it rather than reading this
 table against the screens register by eye.
@@ -156,10 +162,10 @@ Build the consumer after the producer, or stub it deliberately and record the st
 
 ### Recorded: a V1 task whose proof waits on a later block
 
-Each task below sits in block 1, and one of its done-when proofs drives a screen that only exists in
-a later block — so, as placed, block 1 cannot finish. Each owes a ruling BEFORE block 1 starts: move
-the task to the block its proof needs, or move that proof line to the later task that builds the
-screen. A record here keeps the order honest (`M126`); it does not settle the ruling.
+Each task below sits in one block, and one of its done-when proofs needs a screen or a record that
+only exists in a later block — so, as placed, its block cannot finish. Each owes a ruling BEFORE its
+own block starts: move the task to the block its proof needs, or move that proof line to the later
+task that builds what it needs. A record here keeps the order honest (`M126`); it does not settle the ruling.
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
@@ -170,6 +176,7 @@ screen. A record here keeps the order honest (`M126`); it does not settle the ru
 | `T-M01-019` | 1 | `T-M06-027` | 8 | "generate a proposal: each appears", and the order "the builder's timeline step opens with" |
 | `T-SHELL-002` | 1 | `T-M02-015` | 3 | "search the junk lead's phone", with the lead inbox and every queue omitting it |
 | `T-SHELL-002` | 1 | `T-FPLAT-020` | 3 | every search step — the engine it calls builds in block 3, once the lead record lands |
+| `T-FPLAT-066` | 3 | `T-MS-117` | 7 | the design's author gets `design_survey_superseded`, resolved through F2 scope — and, with no single task to name, the `F6-10` check of the matrix against every module's §4 contract, which only the last V1 block can walk |
 
 ---
 

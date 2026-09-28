@@ -682,9 +682,8 @@ The two preset-shaped rules, `epc_owner` and `capability_holders`, resolve again
 could be written today; they wait here so that resolution is authored ONCE, against all four
 rules, rather than half now and half beside the first record (Law 11).
 
-**Depends on:** the first module slice that lands a record a notification points at — its subject
-kind, its owner and its assignee. `T-FPLAT-017` (shipped, #100) carries the registry and the four
-recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
+**Depends on:** `T-MS-117` for the M05 done-when line, recorded in `docs/build-order.md` as a proof that waits on block 7; the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's `/start` names; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
+**Block:** 3, by owner ruling at its own `/start` — built before `T-M02-011` notifies a lead's new owner, so resolution is written once.
 
 **Requirements (verbatim):**
 
