@@ -7,13 +7,16 @@
    THE WORD IS THE DEFAULT EVERYWHERE. The dot survives only as the second, non-colour channel
    N6 asks for: it never carries the meaning alone, and removing it would lose nothing but a cue.
 
-   Renders `standing · tier · source · projection` in that order — standing leads, because
-   "this is not final" outranks "this is how it was worked out". */
+   Renders `standing · freshness · tier · energy source · source · projection · note` in that
+   order — standing and freshness lead, because "this is not final" outranks "this is how it was
+   worked out". */
 
 import type { CSSProperties, ReactNode } from 'react';
 import { Fragment } from 'react';
 import { classNames } from '../../primitives/class-names';
 import {
+  FRESHNESS_MARK,
+  freshnessWarning,
   isProvenanceEmpty,
   provenanceStep,
   STANDING_MARK,
@@ -65,6 +68,8 @@ export function ProvenanceTier({ tier, size = 12, className, style }: WebProvena
 export function Provenance({
   tier,
   standing,
+  freshness,
+  energySource,
   source,
   projection,
   note,
@@ -91,6 +96,18 @@ export function Provenance({
       ),
     });
   }
+  const warning = freshnessWarning(freshness);
+  if (warning) {
+    parts.push({
+      id: 'freshness',
+      node: (
+        <span className="hg-provenance-standing" data-token={FRESHNESS_MARK.color}>
+          <Dot token={FRESHNESS_MARK.mark} />
+          {words.freshness(warning)}
+        </span>
+      ),
+    });
+  }
   if (t) {
     parts.push({
       id: 'tier',
@@ -103,6 +120,7 @@ export function Provenance({
     });
   }
   for (const [id, prose] of [
+    ['energySource', energySource ? words.energySource(energySource) : undefined],
     ['source', source],
     ['projection', projection],
     ['note', note],

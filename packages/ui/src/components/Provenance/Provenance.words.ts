@@ -17,7 +17,7 @@ export function useProvenanceWords(): ProvenanceWords {
   const words = useContext(ProvenanceWordsContext);
   if (words === null) {
     throw new Error(
-      'A provenance label rendered outside ProvenanceWordsProvider — mount it with the words from @heliogrid/i18n (tierLabel, standingLabel).',
+      'A provenance label rendered outside ProvenanceWordsProvider — mount it with the words from @heliogrid/i18n (tierLabel, standingLabel, energySourceLabel, freshnessLabel).',
     );
   }
   return words;

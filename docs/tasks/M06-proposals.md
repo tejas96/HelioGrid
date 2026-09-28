@@ -294,7 +294,7 @@ they are the specification.
 ### T-M06-017 · Proposal Document — the rendered commercial document and its honesty obligations
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before.
+**Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before; and on `T-FPLAT-074`, whose label prints a projection with its assumptions.
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17 → PENDING
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.

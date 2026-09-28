@@ -8,6 +8,7 @@
    which is distinguishable from having forgotten. */
 
 import type { ProvenanceTier } from '@heliogrid/contracts';
+import type { Freshness, FreshnessWarning } from '@heliogrid/domain';
 import type {
   ProvenanceMarkToken,
   ProvenanceProps,
@@ -34,6 +35,16 @@ export const STANDING_MARK = {
   { color: ProvenanceMarkToken; mark: ProvenanceMarkToken }
 >;
 
+/** A figure that is not current reads like one that is not final: the provisional marks. */
+export const FRESHNESS_MARK = STANDING_MARK.provisional;
+
+/** The warning a figure's freshness carries, or null — a current figure and a record print none. */
+export function freshnessWarning(freshness?: Freshness | null): FreshnessWarning | null {
+  return freshness === undefined || freshness === null || freshness.kind === 'current'
+    ? null
+    : freshness;
+}
+
 /** The tier a spec names, or null for a deliberate absence. */
 export function tierOf(tier?: ProvenanceTierSpec): ProvenanceTier | null {
   return tier === undefined || tier === 'unmarked' ? null : tier;
@@ -41,7 +52,15 @@ export function tierOf(tier?: ProvenanceTierSpec): ProvenanceTier | null {
 
 /** True when a spec would render NOTHING — lets a host skip the slot without guessing. */
 export function isProvenanceEmpty(p: ProvenanceProps = {}): boolean {
-  return !tierOf(p.tier) && !p.standing && !p.source && !p.projection && !p.note;
+  return (
+    !tierOf(p.tier) &&
+    !p.standing &&
+    !freshnessWarning(p.freshness) &&
+    !p.energySource &&
+    !p.source &&
+    !p.projection &&
+    !p.note
+  );
 }
 
 /** The clamped type step. The contract is 12 or 13; never below 12 — the type floor. */

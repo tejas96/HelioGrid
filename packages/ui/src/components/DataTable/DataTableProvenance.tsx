@@ -10,7 +10,8 @@ import { asProvenanceSpec, columnTierMode } from './DataTableProvenance.logic';
  * **A column whose tier matches the table-wide `provenance` renders nothing.** That is the only
  * legitimate compression of `F8-07`: the fact is still on screen, stated once above the table
  * instead of eight times across its headers. A column that says more than a tier — a standing, a
- * source, a projection — is never suppressed, and renders the whole statement inline.
+ * freshness warning, an energy source, a source, a projection — is never suppressed, and renders
+ * the whole statement inline.
  */
 export function ColumnTier<Row>({
   column,

@@ -4,7 +4,7 @@ import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { DISCLOSURE_ORDER, DISCLOSURE_TEXT, ruledLine } from './Disclosure.lines';
+import { DISCLOSURE_ORDER } from './Disclosure.lines';
 import type {
   DisclosureInput,
   DisclosureKind,
@@ -12,6 +12,7 @@ import type {
   DisclosureSetProps,
   DisclosureSpec,
 } from './Disclosure.types';
+import { useDisclosureText } from './Disclosure.words';
 
 interface NativeDisclosureProps extends DisclosureProps {
   style?: StyleProp<TextStyle>;
@@ -42,14 +43,7 @@ export function Disclosure({
   surface = 'screen',
   style,
 }: NativeDisclosureProps) {
-  const ruled = ruledLine(kind);
-  if (ruled && text !== undefined) {
-    console.warn(
-      `Disclosure: \`text\` is ignored for kind="${kind}". The line is verbatim and owned by the component (M06-04 / SCR-M06-17). Put your particulars in \`detail\`, or use kind="custom" for a market pack's own required line.`,
-    );
-  }
-  const line = ruled ? ruled.line : text;
-  const lead = ruled ? ruled.lead : null;
+  const { lead, line } = useDisclosureText(kind, text);
 
   if (line === undefined) {
     console.warn('Disclosure: kind="custom" needs `text`. Nothing rendered.');
@@ -149,7 +143,6 @@ export function renderDisclosure(
 
 Disclosure.Set = DisclosureSet;
 Disclosure.render = renderDisclosure;
-Disclosure.TEXT = DISCLOSURE_TEXT;
 
 const styles = StyleSheet.create({
   body: {

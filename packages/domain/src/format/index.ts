@@ -15,6 +15,8 @@ export {
   type BasisLine,
   basisLineOf,
   type DocumentBasis,
+  RULED_DISCLOSURES,
+  type RuledDisclosure,
   tierFitsBasis,
 } from './disclosure';
 export {
@@ -28,6 +30,7 @@ export {
 export {
   type CurrentInputs,
   type Freshness,
+  type FreshnessWarning,
   freshnessOf,
   type InputPins,
   issueBlockedBy,

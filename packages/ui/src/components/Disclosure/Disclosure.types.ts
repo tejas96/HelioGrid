@@ -1,19 +1,16 @@
+import type { RuledDisclosure } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
 /**
- * The four ruled kinds. Each owns its wording; `custom` is the only one whose `text` is read.
+ * The four ruled kinds — `domain`'s `RULED_DISCLOSURES` — and `custom`, the only one whose `text`
+ * is read.
  *
- * - `indicative-basis` — `M06-04` (P0) / `SCR-M06-17`, the Path B line on every document.
- * - `remote-survey` — the basis line when nobody stood on the roof.
- * - `structure` — `MS9-17`, wherever structure or mounting is quoted.
+ * - `indicative-basis` — `F8-20` / `M06-04`, the Path B line on every document.
+ * - `remote-survey` — `F8-22`, the basis line when nobody stood on the roof.
+ * - `structure` — `F8-28` / `MS9-17`, wherever structure or mounting is quoted.
  * - `staleness` — `MS9-16`, and the one that prints even inside a print-suppressed region.
  */
-export type DisclosureKind =
-  | 'indicative-basis'
-  | 'remote-survey'
-  | 'structure'
-  | 'staleness'
-  | 'custom';
+export type DisclosureKind = RuledDisclosure | 'custom';
 
 /**
  * **The mandatory honesty line, in the reading flow, at the weight of the figures it qualifies.**
@@ -22,8 +19,9 @@ export type DisclosureKind =
  * so no caller has to remember not to close it — the difference between this and `Banner`, where
  * `dismissible` is opt-in and `NEVER_DISMISSIBLE` is a guard that `disclaimer` was never on.
  *
- * **The words are the component's.** "Verbatim" is only true if one place owns the line, so `text`
- * is ignored (with a console warning) for the four ruled kinds and particulars go in `detail`.
+ * **The words are `@heliogrid/i18n`'s**, mounted through `DisclosureWordsProvider`. "Verbatim" is
+ * only true if one place owns the line, so `text` is ignored (with a console warning) for the four
+ * ruled kinds and particulars go in `detail`.
  */
 export interface DisclosureSpec {
   kind: DisclosureKind;
@@ -55,11 +53,16 @@ export interface DisclosureSetProps {
   gap?: number;
 }
 
-/** One ruled line: the 700 lead clause, the verbatim sentence, and what the line is about. */
-export interface DisclosureLine {
-  lead: string;
-  line: string;
-  subject: string;
+/**
+ * The words a disclosure prints, in the reader's language. The consumer builds them from
+ * `@heliogrid/i18n`'s `disclosureLead` / `disclosureLine` and mounts them once with
+ * `DisclosureWordsProvider`; this package holds no line of its own (`F3-12`).
+ */
+export interface DisclosureWords {
+  /** The 700 lead clause. */
+  lead: (kind: RuledDisclosure) => string;
+  /** The verbatim sentence. */
+  line: (kind: RuledDisclosure) => string;
 }
 
 /** What every `disclosure` / `disclaimer` host prop runs through. */

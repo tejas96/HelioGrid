@@ -1,4 +1,5 @@
 import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { EnergySource, Freshness } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 /**
  * The system's one surface-state vocabulary — `unavailable` is the fourth state: neutral, stated
@@ -25,7 +26,11 @@ interface ProvenanceProps {
    * a derived figure from a stale version is still derived, and still must not read as final.
    */
   standing?: ProvenanceStanding;
-  /** What data it came from — `'Real · PVGIS (SARAH3)'` (M05-54) — and any word beside the tier. */
+  /** Whether the figure is still current (`F8-18`), as `QualifiedAmount` carries it. */
+  freshness?: Freshness | null;
+  /** The energy data the figure was computed from (`F8-08`), as `QualifiedAmount` carries it. */
+  energySource?: EnergySource | null;
+  /** Any word a caller needs beside the tier (`F8-03`). */
   source?: string;
   /** The assumptions a multi-year figure rides on (F8-23 / F5-37). */
   projection?: string;

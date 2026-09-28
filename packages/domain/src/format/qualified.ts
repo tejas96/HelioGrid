@@ -200,7 +200,8 @@ export function compactQualified(pack: FormatPack, amount: QualifiedAmount): Qua
  * list, or it drops an obligation. Nor is `freshness`: a stale figure already reads `provisional`
  * here, and what moved is printed beside it by the provenance label (`T-FPLAT-073`). Nor is
  * `projection`: the word that calls a figure a projection, and each assumption with its value, are
- * printed beside this list by the same label, or the projection reads as money owed (`F8-23`).
+ * printed beside this list by the same label (`T-FPLAT-074`), or the projection reads as money owed
+ * (`F8-23`).
  */
 export function qualifiers(amount: QualifiedAmount): string[] {
   const words: string[] = [amount.tier];
