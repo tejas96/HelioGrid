@@ -998,7 +998,7 @@ Nothing below is renumbered.*
 | M01-42 | P0 | policy | policy | T-M01-027 |
 | M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release… | T-M01-015 |
 | M01-44 | P0 | policy | policy | T-M01-027 |
-| M01-45 | P1 | policy | policy | T-M01-027 |
+| M01-45 | P1 | policy | policy | T-M01-037 |
 | M01-46 | P0 | policy | policy | LAW |
 | ~~M01-47~~ | — | **excluded** | *Row deleted 2026-08-07 with the offline/sync capability (owner ruling). It held the catalog and price book read-only on the device; with no on-device store the rule has no subject, and a read cache is a non-goal by name (`foundations/F4-data-integrity.md` §5 · Non-goals, bullet 1 — "The product does not read from a cache"). No live row replaces it and none is needed: the catalog is read from the server like every other read, and its own laws (`M01-46`, `M01-48`) are untouched. `docs/tasks/M01-onboarding.md` records the same removal under `T-M01-027`, which is alive.* | — |
 | M01-48 | P0 | mixed | SCR-M01-15 · +non-UI: immutable price-book versions, exactly one active, default margin… | T-M01-015, T-M01-031 |

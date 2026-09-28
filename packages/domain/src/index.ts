@@ -19,6 +19,7 @@ export * from './auth';
 export * from './authz';
 export * from './branding';
 export * from './calling';
+export * from './catalog';
 export * from './certification';
 export * from './commerce';
 export * from './files';
