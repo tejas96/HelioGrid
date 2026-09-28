@@ -13,9 +13,12 @@ that shape here, before the go.
 ## 0. A clean start
 
 - **One fresh session per task.** If this one already did other work, say so and ask for a new one.
-- **Which task: the build-order line** (`M126`, printed by `python3 scripts/gates.py`), or the one the
-  owner names, recorded in the ticket as theirs. Never from memory; never a later block while an
-  earlier one has open work. A ticket with no `Depends on:` line reads as waiting on nothing: write it.
+- **Which task: the build-order line's NEXT step** (`M126`, printed by `python3 scripts/gates.py`), or
+  the one the owner names, recorded in the ticket as theirs. Never from memory; never a task further
+  along the order because it is ready. When NEXT is the owner's — a screen to draw, a blocker to clear
+  — say so and stop: that is the step, and `/start` takes the task once it is done. A ticket with no
+  `Depends on:` line reads as waiting on nothing: write it, then run the gates again, since the line
+  can pull another task ahead.
 - **The branch, before the first edit — ticket text included.** `main` green (`gh run list --branch
   main --limit 1`), the tree clean (`git status --short`), then `git fetch origin && git checkout -b
   <kind>/<t-id>-<slug> origin/main && git branch --unset-upstream` — `feat`, `fix`, or `ci` / `chore` /
@@ -33,8 +36,8 @@ that shape here, before the go.
    verbatim PRD copies and carry their own rulings.
 2. The PRD only for what the section does not quote: the feature area's **Behavior detail** and
    **Edge cases**, by heading — a ruling read from the row alone has contradicted them before.
-3. For a screen, the design the `DESIGN:` line links; none means not designed, and a screen builds
-   only after its module's screens are designed and verified. For an engine a designed screen will
+3. For a screen, the design the `DESIGN:` line links; none means not drawn, and the build line names
+   the drawing as the step before this task. For an engine a designed screen will
    call, that screen's export: a number or vocabulary the drawing states is a fact the engine serves.
 4. The worked example the task names, in full — shape is copied from code.
 5. `.claude/landmines.md`, the sections for the packages the task reaches.
@@ -42,7 +45,9 @@ that shape here, before the go.
 **Buildable now?** Two facts, each with the file and line that proves it: the data it reads or writes
 exists on `main`, and the code it asks for is not already there — grep the names AND the behaviour
 (the route, the entity, the words a screen shows). Data in a later block → the task moves; already
-built → closed as built; `**Parked:**` → never started. Each is the owner's ruling, with a pick.
+built → closed as built; `**Parked:**` → never started; something only the owner can clear — a ruling,
+an account → a `**Blocked:**` line naming it, and the build line stops there until it is cleared. Each
+is the owner's ruling, with a pick.
 
 **Conflicts, before the go — two searches, each named with what it found:** (1) every gate and test
 stricter than the rows and every gate the change will meet — `grep -n` over `.claude/mechanisms.md`,

@@ -23,24 +23,21 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REG = os.path.join(ROOT, 'docs/prd/registers/screens.md')
 PLAN = os.path.join(ROOT, 'docs/build-order.md')
 sys.path.insert(0, os.path.join(ROOT, 'scripts'))
-from gates import build_order_blocks
+from gates import build_order_blocks, build_sequence, is_parked, task_blocks
 
-# Build order, not register order: the blocks are read from docs/build-order.md, the ONE place they
-# are written, through the reader scripts/gates.py uses. A task file's module places its screens; a
-# task the plan places apart from its file (`SHELL` → `T-SHELL-006`, the billing banner) places its
-# own screen, so a screen follows the plan without a second list here.
-_BY_FILE, _BY_TASK, _TITLES = build_order_blocks(PLAN)
+# Build order, not register order: a screen is drawn at the turn its task takes on the ONE walk
+# scripts/gates.py's build line takes (build_sequence), so what is drawn next is what is built next.
+# The blocks label the list; a task the plan places apart from its file (`SHELL` → `T-SHELL-006`, the
+# billing banner) places its own screen, so a screen follows the plan without a second list here.
+_BY_FILE, _BY_TASK, _TITLES, _ = build_order_blocks(PLAN)
+_TASKS = task_blocks(ROOT)
+_TURN = {task: i for i, task in enumerate(build_sequence(PLAN, _TASKS))}
+# The build line steps over a parked task, so its screens are not drawn ahead of their unparking.
+_PARKED = {b['id'] for b in _TASKS if is_parked(b['body'])}
 _BY_MOD = {stem.split('-')[0]: block for stem, block in _BY_FILE.items()}
 # Modules that are wholly V2 have no place in the V1 build order, and saying "unmapped" implies
 # something is broken. They are simply deferred.
 _DEFERRED = (98, 'V2 · deferred, not in the V1 build order')
-
-
-# Inside a block, a screen that OWNS a part is drawn before the screens that reuse it — what a designed
-# screen already drew is reused, never redrawn (docs/ux/claude-design-context.md). The plan card and
-# the comparison are SCR-M12-03's and the meter row is SCR-M12-04's; the pricing page and billing
-# home reuse both, so they follow. Every other screen keeps the register's own order.
-_OWNS_FIRST = ['SCR-M12-03', 'SCR-M12-04']
 
 
 def block_of(sid):
@@ -52,8 +49,8 @@ def block_of(sid):
     return (block, f"{block} · {_TITLES[block]}")
 
 
-def draw_rank(sid):
-    return _OWNS_FIRST.index(sid) if sid in _OWNS_FIRST else len(_OWNS_FIRST)
+def turn_of(sid):
+    return (block_of(sid)[0], _TURN.get(task_of.get(sid), len(_TURN)))
 
 args = list(sys.argv[1:])
 module, limit, scope = None, 10, 'V1'
@@ -145,16 +142,22 @@ if by_block:
         (f"{name.split(' · ')[0]}:{n}" if i < 90 else f"deferred:{n}")
         for (i, name), n in sorted(by_block.items())))
 
-# --- a design whose brief changed after it was drawn comes before any new screen -----------
+# --- the queue: a parked task's screens wait for it to be unparked ---------------------------------
+pending = [r for r in pending if task_of.get(r['sid']) not in _PARKED]
+
+# --- a design whose brief changed after it was drawn is redrawn at its turn ----------------------
 # The register's `Brief reviewed` cell reads `owed <digest>` when a review found the design no longer
-# matching its brief. Those are redesigned first: building from them would build what the brief
-# retired, and scripts/gates.py keeps them out of the build order until they are cleared.
-owed = sorted((r for r in scoped if r['reviewed'].startswith('owed')),
-              key=lambda r: (block_of(r['sid'])[0], reg_line.get(r['sid'], 0)))
+# matching its brief. Building from it would build what the brief retired, so scripts/gates.py's build
+# line stops at its task until it is redrawn — and the queue takes it at that same turn on the walk,
+# ahead of any new screen whose turn comes later.
+owed = sorted((r for r in scoped if r['reviewed'].startswith('owed') and task_of.get(r['sid']) not in _PARKED),
+              key=lambda r: turn_of(r['sid']))
+first_new = min((turn_of(r['sid']) for r in pending), default=None)
 if owed:
-    print(f"\n  ── redesigns owed, before any new screen: {len(owed)}")
+    print(f"\n  ── redesigns owed: {len(owed)}")
     for r in owed:
         print(f"    {r['sid']:<14} {r['name'][:42]:<44} {r['status']}")
+if owed and not module and (first_new is None or turn_of(owed[0]['sid']) <= first_new):
     nxt = owed[0]
     digest = nxt['reviewed'].split(' ')[1]
     built = nxt['status'] == 'shipped'
@@ -185,8 +188,7 @@ if not pending:
     print(f"\n  ✓ every {scope} screen is marked designed.\n")
     sys.exit(0)
 
-# build order, then a part's owner before the screens that reuse it, then register order
-pending.sort(key=lambda r: (block_of(r['sid'])[0], draw_rank(r['sid']), reg_line.get(r['sid'], 0)))
+pending.sort(key=lambda r: turn_of(r['sid']))
 
 print()
 shown = pending[:limit]

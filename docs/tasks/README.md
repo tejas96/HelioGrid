@@ -39,6 +39,8 @@ under 40. **HIGH**: the same plus the four marked HIGH. No `Risk:` line reads as
         migration number and each table's tenancy; or "none — reads <entities> authored by T-…"
 **Contract:** (HIGH) the routes and schemas it adds or changes, under a named packages/contracts file; or "none"
 **Depends on:** task ids and migration numbers that must land first
+**Blocked:** (only while true) what only the owner can clear — a ruling, an account; the build line stops here
+**Parked:** (only while true) the owner's reason; the build line steps over it
 **Cases:** one line per REAL risk the design was attacked with, nothing for one that cannot occur here:
         `- **C1** · <risk> → <fix> → <proof>`
 **Used by:** the later tasks that consume what this one lands, in one line — written here, never into their tickets
@@ -73,9 +75,13 @@ shipped ticket stays as history.
    inside the PR, never tracked as states. A task whose rows moved to another task is `struck` —
    its heading says STRUCK, its stub stays so the id is never reused, and it is never counted as
    open work.
-   **The ORDER is `docs/build-order.md`**: its blocks place every task file, and the next task is
-   the one the build-order line names on every gate run (`M126`), never one picked from memory. A
-   ticket with no `Depends on:` line reads there as waiting on nothing, so `/start` writes the line.
+   **The ORDER is `docs/build-order.md`**: its blocks place every task file, each file's backend tasks
+   go before its screens, each in the order they are written, a backend waits for the drawings of the
+   screens it serves, and a `Depends on:` pulls a task of the same block ahead. The next
+   step is the ONE the build-order line names on every gate run (`M126`) — build a task, the owner
+   draws a screen at its turn, or the owner clears a `**Blocked:**` line — never one picked from
+   memory and never a later task because it is ready. A ticket with no `Depends on:` line reads there
+   as waiting on nothing, so `/start` writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, `HelioGrid-UX/**` (the exported artboards and decisions records, one pair per screen, and the design system's source in `_ds-source/` — a git-ignored folder at the repo root that each machine exports itself),
@@ -85,9 +91,9 @@ shipped ticket stays as history.
    (studio tasks), and `3d_design_studio/**` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **`DESIGN: PENDING` blocks build, not start.** Engine/policy/integration/port tasks have no
-   design dependency and can start immediately. A screen task may be scaffolded but its UI is
-   not "done" until the link is filled and matched.
+3. **`DESIGN: PENDING` blocks the task at its turn.** The build line names the drawing as the
+   step, the owner draws it, then `/start` takes the task. Engine/policy/integration/port tasks wait
+   on no drawing, only on their turn. A screen's UI is not "done" until it matches the design.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with
    its tests; UI is rebuilt to the new design; the defect register is the change list.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
