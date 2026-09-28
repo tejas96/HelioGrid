@@ -3,7 +3,7 @@ name: start
 description: Begin a task or a bug fix the controlled way — a clean start in a fresh session on its own branch, the task understood and its conflicts found, the risk tier and the scope fixed, the design broken into cases, and for a HIGH task the data model, the contract, the diagram, the whole QA plan and one second actor's review — then a simple explanation and a stop for the go. Use at the start of every piece of work.
 ---
 
-# `/start <T-id | bug>` — understand, tier, scope, cases, (HIGH: plan and review), explain, stop
+# `/start [T-id | bug]` — understand, tier, scope, cases, (HIGH: plan and review), explain, stop
 
 All the thinking happens here, once, and goes into the ticket in the shape `docs/tasks/README.md`
 gives, so the build executes and `/verify` runs without planning again. A ticket still in the earlier
@@ -13,12 +13,18 @@ that shape here, before the go.
 ## 0. A clean start
 
 - **One fresh session per task.** If this one already did other work, say so and ask for a new one.
-- **Which task: the build-order line's NEXT step** (`M126`, printed by `python3 scripts/gates.py`), or
-  the one the owner names, recorded in the ticket as theirs. Never from memory; never a task further
-  along the order because it is ready. When NEXT is the owner's — a screen to draw, a blocker to clear
-  — say so and stop: that is the step, and `/start` takes the task once it is done. A ticket with no
-  `Depends on:` line reads as waiting on nothing: write it, then run the gates again, since the line
-  can pull another task ahead.
+- **Which task: the build-order line's NEXT step** (`M126`), or the one the owner names, recorded in
+  the ticket as theirs. Never from memory; never a task further along the order because it is ready.
+  With no task named, read NEXT off `main`, never off the branch this folder happens to be on: on a
+  clean tree (`git status --short` empty), `git fetch origin && git checkout --detach origin/main &&
+  python3 scripts/gates.py`. A dirty tree is shown to the owner first, and NEXT is never read off the
+  branch it sits on. When NEXT is the owner's — a screen to draw, a blocker to clear — say so
+  and stop: that is the step, and `/start` takes the task once it is done. A ticket with no `Depends
+  on:` line reads as waiting on nothing: write it on the task's branch, then run the gates again,
+  since the line can pull another task ahead. If NEXT now names another task, start that one
+  instead: rename the branch for it (`git branch -m <kind>/<t-id>-<slug>`), MOVE the proof record to
+  the new id (`mv` its folder, then write the new branch name into its `branch` file) so no record is
+  left bound to a branch that is gone, and the line already written rides in that task's change.
 - **The branch, before the first edit — ticket text included.** `main` green (`gh run list --branch
   main --limit 1`), the tree clean (`git status --short`), then `git fetch origin && git checkout -b
   <kind>/<t-id>-<slug> origin/main && git branch --unset-upstream` — `feat`, `fix`, or `ci` / `chore` /
