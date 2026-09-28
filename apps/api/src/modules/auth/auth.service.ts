@@ -1,8 +1,9 @@
 import type { SessionProjection } from '@heliogrid/contracts';
 import {
-  isSessionLive,
   type PlatformKind,
+  type RefreshVerdict,
   refreshedExpiry,
+  refreshVerdict,
   sessionExpiresAt,
   type UiLanguage,
 } from '@heliogrid/domain';
@@ -13,6 +14,11 @@ import { type AccountRow, AuthAdminRepository } from './internal/auth.admin.repo
 import { OtpService } from './internal/otp.service';
 import { claimsOf, lifeOf, projectionOf } from './internal/session.projection';
 import { TokenService } from './internal/token.service';
+
+/** What a refresh answers: a new token, or why this session cannot renew (`M01-07`, `S1.wrong.4`). */
+export type Refreshed =
+  | { readonly verdict: 'renew'; readonly token: string; readonly expiresAt: number }
+  | { readonly verdict: Exclude<RefreshVerdict, 'renew'> };
 
 /** What opening a session hands the controller: the projection, and the two credentials to set. */
 export interface OpenedSession {
@@ -58,23 +64,26 @@ export class AuthService {
     return this.openSession(account, platform, now);
   }
 
-  /** A new token from the session cookie, while the session lives (`M01-07`). */
-  async refresh(
-    sessionSecret: string,
-    foreground: boolean,
-    now: number,
-  ): Promise<{ token: string; expiresAt: number } | null> {
+  /**
+   * A new token from the session cookie, while the session lives (`M01-07`) — or why not. The
+   * membership is read BEFORE the session is touched: a removal is named even when the
+   * deactivation's sweep never revoked this session, which is what keeps `D1` true if it failed.
+   */
+  async refresh(sessionSecret: string, foreground: boolean, now: number): Promise<Refreshed> {
     const row = await this.store.sessionByTokenHash(hashSecret(sessionSecret));
-    if (!row || !isSessionLive(lifeOf(row), now)) return null;
-    await this.store.touchSession(row.id, {
-      expiresAt: refreshedExpiry(row.platformKind, now, foreground),
-      lastForegroundActivityAt: foreground ? now : null,
-    });
+    if (!row) return { verdict: 'signed-out' };
     const membership =
       row.activeTenantId === null
         ? null
         : await this.store.membership(row.userAccountId, row.activeTenantId);
-    return this.tokens.mint(claimsOf(row.userAccountId, row.id, membership), now);
+    const verdict = refreshVerdict(lifeOf(row), membership, now);
+    if (verdict !== 'renew') return { verdict };
+    await this.store.touchSession(row.id, {
+      expiresAt: refreshedExpiry(row.platformKind, now, foreground),
+      lastForegroundActivityAt: foreground ? now : null,
+    });
+    const minted = await this.tokens.mint(claimsOf(row.userAccountId, row.id, membership), now);
+    return { verdict, ...minted };
   }
 
   async signOut(sessionId: string, now: number): Promise<void> {

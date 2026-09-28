@@ -1,17 +1,23 @@
 import type { PlatformKind, SessionProjection } from '@heliogrid/contracts';
 import {
+  CHECKING,
+  canRenew,
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
   type OtpVerifyOutcome,
   type OtpVerifyResult,
+  type SessionEvent,
   type SessionSnapshot,
   type SessionUser,
+  SIGNED_OUT,
   type SignInDoor,
+  sessionAfter,
   uiLanguageOrSource,
 } from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
 import { ApiError } from '../errors/errors';
 import type { TenantRepository } from '../tenant/repository';
+import type { SessionSignals } from '../transport/transport';
 import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
 import type { SessionStore } from './types';
@@ -62,14 +68,7 @@ export function createSessionStore(config: {
   platform: PlatformKind;
   heldWork: HeldWork;
 }): SessionStore {
-  let snapshot: SessionSnapshot = {
-    status: 'checking',
-    user: null,
-    switch: null,
-    known: null,
-    restored: false,
-    chosenHome: null,
-  };
+  let snapshot: SessionSnapshot = CHECKING;
   let challengeId: string | null = null;
   let wrongTries = 0;
   const listeners = new Set<() => void>();
@@ -79,37 +78,25 @@ export function createSessionStore(config: {
     for (const listener of listeners) listener();
   };
 
+  /** Every move is domain's `sessionAfter`; one that changes nothing wakes no listener. */
+  const apply = (event: SessionEvent) => {
+    const next = sessionAfter(snapshot, event);
+    if (next !== snapshot) emit(next);
+  };
   const signedIn = (user: SessionUser, restored = false) =>
-    emit({ status: 'authenticated', user, switch: null, known: null, restored, chosenHome: null });
-  const signedOut = () =>
-    emit({
-      status: 'anonymous',
-      user: null,
-      switch: null,
-      known: null,
-      restored: false,
-      chosenHome: null,
-    });
+    apply({ kind: 'signed-in', user, restored });
+  const signedOut = () => apply({ kind: 'signed-out' });
 
   /**
    * What the TRANSPORT reports (`SessionSignals`), joined to this store by `createDataLayer`.
-   *
-   * `onSessionLost` is the wire telling us a refresh could not save a call: whoever held this
-   * session no longer has one. The store must move, or a screen behind the gate keeps rendering
-   * for a person the server has already stopped recognising, every call failing behind it. A
-   * session that is already anonymous needs no second emit — a signed-out visitor's own 401s
-   * would otherwise wake every listener for nothing.
-   *
-   * `couldHoldSession` stops a doomed refresh: while the store is anonymous there is nothing to
-   * renew, and a wrong OTP code answers 401, so five tries used to post five refreshes behind
-   * them. `checking` says yes — a restarted phone with a lapsed token comes back signed in that
-   * way, and that is the case the boot check's retry exists for.
+   * `onSessionLost` is the server refusing a refresh, with its reason: the store must move, or a
+   * screen behind the gate keeps rendering for a person the server no longer recognises. Where
+   * it moves — the door, carrying the reason for a removal — and whether a refused call is worth a
+   * refresh at all are domain's (`sessionAfter`, `canRenew`).
    */
-  const signals = {
-    onSessionLost: () => {
-      if (snapshot.status !== 'anonymous') signedOut();
-    },
-    couldHoldSession: () => snapshot.status !== 'anonymous',
+  const signals: SessionSignals = {
+    onSessionLost: (loss) => apply({ kind: 'lost', loss }),
+    couldHoldSession: () => canRenew(snapshot),
   };
 
   /**
@@ -122,25 +109,11 @@ export function createSessionStore(config: {
     const heldWork =
       previous !== null && previous.id !== next.id ? await config.heldWork.summary() : null;
     if (previous !== null && heldWork !== null) {
-      emit({
-        status: 'anonymous',
-        user: null,
-        switch: { previousUserId: previous.id, heldWork, next },
-        known: null,
-        restored: false,
-        chosenHome: null,
-      });
+      emit({ ...SIGNED_OUT, switch: { previousUserId: previous.id, heldWork, next } });
       return;
     }
     if (door === 'signup' && next.tenant !== null) {
-      emit({
-        status: 'anonymous',
-        user: null,
-        switch: null,
-        known: { next },
-        restored: false,
-        chosenHome: null,
-      });
+      emit({ ...SIGNED_OUT, known: { next } });
       return;
     }
     signedIn(next);
@@ -155,7 +128,7 @@ export function createSessionStore(config: {
     config.auth
       .session()
       .then((projection) => signedIn(userOf(projection), true))
-      .catch(() => signedOut());
+      .catch(() => apply({ kind: 'boot-failed' }));
   };
 
   return {

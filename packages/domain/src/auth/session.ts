@@ -72,6 +72,23 @@ export interface KnownAccount {
   readonly next: SessionUser;
 }
 
+/**
+ * Why the server stopped a session this device held (`M01-07`). The SERVER names it — only it
+ * knows a membership was deactivated — so a device never guesses: `access-removed` only when the
+ * company removed this person (`S1.wrong.4`), `signed-out` for everything else (their own sign-out,
+ * "sign out everywhere", another tab, an expiry).
+ */
+export type SessionLoss = 'access-removed' | 'signed-out';
+
+/**
+ * The company removed this person's access while the device held the session (`S1.wrong.4`). The
+ * snapshot is at the door with this set, until the person signs in again or signs out. `tenantId`
+ * is null when the removal was found by the boot check, before the device knew who was signed in.
+ */
+export interface EndedAccess {
+  readonly tenantId: string | null;
+}
+
 export interface SessionSnapshot {
   status: SessionStatus;
   user: SessionUser | null;
@@ -87,6 +104,8 @@ export interface SessionSnapshot {
    * memory only and gone with the session, so the next sign-in lands on the ladder's home again.
    */
   chosenHome: RolePreset | null;
+  /** Set, on an `anonymous` snapshot, when the server removed this person's access. */
+  ended: EndedAccess | null;
 }
 
 /**

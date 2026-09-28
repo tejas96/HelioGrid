@@ -26,14 +26,12 @@ import {
   trancheTemplateLine,
   userAccount,
 } from '@heliogrid/db';
-import {
-  type InvitationStatus,
-  invitationExpiresAt,
-  type RolePreset,
-  sessionExpiresAt,
-} from '@heliogrid/domain';
+import { type InvitationStatus, invitationExpiresAt, type RolePreset } from '@heliogrid/domain';
 import { eq, inArray } from 'drizzle-orm';
+import { type Device, seedDevices } from './devices';
 import { adminUrl, databaseUrl } from './preconditions';
+
+export { aDevice, type Device } from './devices';
 
 export { adminUrl, databaseUrl, skipUnless, skipWithoutDatabase } from './preconditions';
 
@@ -68,12 +66,6 @@ export interface Membership {
   readonly roles: readonly RolePreset[];
 }
 
-export interface Device {
-  readonly sessionId: string;
-  readonly of: Person;
-  readonly under: Company;
-}
-
 /** A team invite as the store holds it; `expiresAt` follows the policy unless a proof needs it run out. */
 export interface Invite {
   readonly invitationId: string;
@@ -104,11 +96,6 @@ export const aMembership = (
   held: Person,
   roles: readonly RolePreset[],
 ): Membership => ({ membershipId: randomUUID(), of, held, roles });
-export const aDevice = (of: Person, under: Company): Device => ({
-  sessionId: randomUUID(),
-  of,
-  under,
-});
 export const anInvite = (
   of: Company,
   by: Person,
@@ -204,21 +191,7 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
     })),
   );
   if (roles.length > 0) await db.insert(membershipRole).values(roles);
-  if (fixture.devices?.length) {
-    await db.insert(session).values(
-      fixture.devices.map((device) => ({
-        id: device.sessionId,
-        userAccountId: device.of.userId,
-        tokenHash: randomUUID(),
-        platformKind: 'mobile' as const,
-        activeTenantId: device.under.tenantId,
-        // The real policy, so a seeded device lives exactly as long as a signed-in one does.
-        expiresAt: new Date(sessionExpiresAt('mobile', now.getTime())),
-        lastForegroundActivityAt: now,
-        createdAt: now,
-      })),
-    );
-  }
+  if (fixture.devices?.length) await seedDevices(db, fixture.devices, now);
   if (fixture.invites?.length) {
     await db.insert(invitation).values(
       fixture.invites.map((invite) => ({

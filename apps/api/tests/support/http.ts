@@ -45,8 +45,16 @@ export interface Http {
     body?: unknown,
     headers?: Record<string, string>,
   ): Promise<Reply<T>>;
-  /** With NO credential at all — what an unauthenticated caller sends. */
-  callAnonymously<T = unknown>(method: string, path: string, body?: unknown): Promise<Reply<T>>;
+  /**
+   * Without the jar — what an unauthenticated caller sends, or, with `headers`, a caller holding
+   * only the credential given there (a seeded device's session cookie).
+   */
+  callAnonymously<T = unknown>(
+    method: string,
+    path: string,
+    body?: unknown,
+    headers?: Record<string, string>,
+  ): Promise<Reply<T>>;
   /** The development number, through the request and verify routes. */
   signIn(): Promise<SessionProjection>;
   /** `POST /tenants`; the session now acts under the company it just created. */
@@ -139,7 +147,7 @@ export async function bootHttp(): Promise<Http> {
     baseUrl,
     createdTenantIds,
     call: (method, path, body, headers) => send(method, path, body, true, headers),
-    callAnonymously: (method, path, body) => send(method, path, body, false),
+    callAnonymously: (method, path, body, headers) => send(method, path, body, false, headers),
     async signIn() {
       const challenge = expectStatus(
         'otp request',
