@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
@@ -32,9 +31,9 @@ export interface SliderProps {
   /**
    * Provenance for the value, directly under the track and above the hint.
    *
-   * A full props object, a bare tier (canonical name, free word, or tier object) or a ready node —
-   * all three go through `renderProvenance`, which resolves the first two into `Provenance` at the
-   * 12px type floor. `"unmarked"` renders nothing and records that the absence is deliberate.
+   * A full props object or a bare tier — both go through `renderProvenance`, which resolves them
+   * into `Provenance` at the 12px type floor. `"unmarked"` renders nothing and records that the
+   * absence is deliberate.
    */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
 }

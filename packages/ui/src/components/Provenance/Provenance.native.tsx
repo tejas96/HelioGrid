@@ -4,16 +4,16 @@
 
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import {
   isProvenanceEmpty,
-  PROVENANCE_STANDINGS,
   provenanceStep,
-  resolveTier,
+  STANDING_MARK,
+  TIER_MARK,
+  tierOf,
 } from './Provenance.tiers';
 import type {
   ProvenanceAlign,
@@ -22,6 +22,7 @@ import type {
   ProvenanceTierProps,
   ProvenanceTierSpec,
 } from './Provenance.types';
+import { useProvenanceWords } from './Provenance.words';
 
 /* Mark tokens → theme colours. --warning is not a mark in this system (it clears 3:1 on no
    background), so a warning mark lands on --warning-text, exactly as the web half maps it. */
@@ -98,32 +99,19 @@ function Dot({ token }: { token: ProvenanceMarkToken }) {
 }
 
 /** The tier on its own — word first, dot as the second channel. */
-export function ProvenanceTier({
-  tier,
-  withLabel = true,
-  size = 12,
-  style,
-}: NativeProvenanceTierProps) {
-  const t = resolveTier(tier);
+export function ProvenanceTier({ tier, size = 12, style }: NativeProvenanceTierProps) {
+  const words = useProvenanceWords();
+  const t = tierOf(tier);
   if (!t) {
     return null;
   }
   const step = provenanceStep(size);
-  /* `withLabel={false}` keeps the word for assistive tech — the visible carrier is the dot, but
-     the meaning is never colour alone. RN has no clip-rect, so the label rides the container's
-     accessibilityLabel instead of a visually-hidden node. */
   return (
-    <View
-      style={[styles.part, style]}
-      accessible
-      accessibilityLabel={withLabel ? undefined : t.label}
-    >
-      <Dot token={t.color} />
-      {withLabel ? (
-        <Text variant="caption" color="tertiary" style={SIZE[step]}>
-          {t.label}
-        </Text>
-      ) : null}
+    <View style={[styles.part, style]}>
+      <Dot token={TIER_MARK[t]} />
+      <Text variant="caption" color="tertiary" style={SIZE[step]}>
+        {words.tier(t)}
+      </Text>
     </View>
   );
 }
@@ -139,20 +127,21 @@ export function Provenance({
   inline = false,
   style,
 }: NativeProvenanceProps) {
-  const t = resolveTier(tier);
-  const st = standing ? PROVENANCE_STANDINGS[standing] : null;
+  const words = useProvenanceWords();
+  const t = tierOf(tier);
   const step = provenanceStep(size);
   const parts: { id: string; node: ReactNode }[] = [];
 
   /* Standing leads: "this is not final" outranks "this is how it was worked out". */
-  if (st) {
+  if (standing) {
+    const st = STANDING_MARK[standing];
     parts.push({
       id: 'standing',
       node: (
         <View style={styles.part}>
           <Dot token={st.mark} />
           <Text variant="caption" color={WORD_COLOR[st.color] ?? 'tertiary'} style={SIZE[step]}>
-            {st.label}
+            {words.standing(standing)}
           </Text>
         </View>
       ),
@@ -163,25 +152,25 @@ export function Provenance({
       id: 'tier',
       node: (
         <View style={styles.part}>
-          <Dot token={t.color} />
+          <Dot token={TIER_MARK[t]} />
           <Text variant="caption" color="tertiary" style={SIZE[step]}>
-            {t.label}
+            {words.tier(t)}
           </Text>
         </View>
       ),
     });
   }
-  for (const [id, words] of [
+  for (const [id, prose] of [
     ['source', source],
     ['projection', projection],
     ['note', note],
   ] as const) {
-    if (words) {
+    if (prose) {
       parts.push({
         id,
         node: (
           <Text variant="caption" color="tertiary" style={SIZE[step]}>
-            {words}
+            {prose}
           </Text>
         ),
       });
@@ -225,30 +214,20 @@ export function Provenance({
 /** True when a spec would render NOTHING — lets a host skip the slot without guessing. */
 Provenance.isEmpty = isProvenanceEmpty;
 
-/** Accepts either a spec object or a ready node, so every host can offer ONE `provenance` prop. */
+/**
+ * Accepts a spec object or a bare tier, so every host can offer ONE `provenance` prop. Never a
+ * ready node: a caller's element could print a fifth tier past the closed set (`F8-03`).
+ */
 export function renderProvenance(
-  spec?: ProvenanceProps | ProvenanceTierSpec | ReactNode,
+  spec?: ProvenanceProps | ProvenanceTierSpec | null,
   extra: Partial<ProvenanceProps> = {},
 ): ReactNode {
   if (!spec) {
     return null;
   }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    /* THE SAME GUARD THE OBJECT PATH ALREADY HAS. Without it `renderProvenance("unmarked")` hands
-       back an element that renders nothing, and every host then draws its slot around the void —
-       which is exactly the value whose documented job is to record a deliberate absence. */
-    const asProps: ProvenanceProps = { tier: spec, ...extra };
-    return isProvenanceEmpty(asProps) ? null : <Provenance {...asProps} />;
-  }
-  if (typeof spec !== 'object') {
-    return null;
-  }
-  const props = spec as ProvenanceProps;
-  if (isProvenanceEmpty(props)) {
-    return null;
-  }
-  return <Provenance {...props} {...extra} />;
+  /* A bare tier goes through the same emptiness guard as a spec: `renderProvenance("unmarked")`
+     must hand back null, or every host draws its slot around the deliberate absence. */
+  const props: ProvenanceProps = typeof spec === 'string' ? { tier: spec } : spec;
+  const merged = { ...props, ...extra };
+  return isProvenanceEmpty(merged) ? null : <Provenance {...merged} />;
 }

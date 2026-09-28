@@ -1,6 +1,5 @@
-import { isValidElement } from 'react';
-import { resolveTier } from '../Provenance/Provenance.tiers';
-import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance/Provenance.types';
+import { tierOf } from '../Provenance/Provenance.tiers';
+import type { ProvenanceProps } from '../Provenance/Provenance.types';
 import type { DataTableProvenanceSpec } from './DataTable.types';
 
 /* THE TIER IS A WORD IN THE HEADER, not a dot with a tooltip (F8-07). A column repeats it only
@@ -12,19 +11,15 @@ import type { DataTableProvenanceSpec } from './DataTable.types';
 
 /**
  * **A provenance statement, in the one shape the rules are written against.** A spec object stays
- * a spec; anything else — a tier name, a caller's own word — becomes a bare `{tier}`. An element a
- * caller pre-rendered is not a spec and carries no comparable tier, so it resolves to none.
+ * a spec; a bare tier becomes `{tier}`.
  */
 export function asProvenanceSpec(
   provenance: DataTableProvenanceSpec | null | undefined,
 ): ProvenanceProps | null {
-  if (provenance === null || provenance === undefined || provenance === '') {
+  if (provenance === null || provenance === undefined) {
     return null;
   }
-  if (typeof provenance === 'object') {
-    return isValidElement(provenance) ? null : (provenance as ProvenanceProps);
-  }
-  return { tier: provenance as ProvenanceTierSpec };
+  return typeof provenance === 'object' ? provenance : { tier: provenance };
 }
 
 /**
@@ -48,10 +43,10 @@ export function columnTierMode(
   /* More than a tier is never suppressed: the table-wide statement cannot be standing in for a
      source or a projection it does not carry. */
   const detailed = Boolean(spec.standing || spec.source || spec.projection);
-  const tier = resolveTier(spec.tier);
-  const tableTier = tableSpec === null ? null : resolveTier(tableSpec.tier);
-  const sameAsTable =
-    !detailed && tier !== null && tableTier !== null && tier.label === tableTier.label;
+  /* The tier's identity, never its word: two tiers must not merge because a language gave them
+     one word (`F3-12`). */
+  const tier = tierOf(spec.tier);
+  const sameAsTable = !detailed && tier !== null && tier === tierOf(tableSpec?.tier);
   if (sameAsTable) {
     return 'none';
   }

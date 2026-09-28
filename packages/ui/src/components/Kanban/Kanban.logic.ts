@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { ProvenanceProps } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote';
 import type { KanbanCardItem, KanbanColumn } from './Kanban.types';
@@ -17,25 +15,15 @@ export function resolveBoardState(state: SurfaceState, total: number): SurfaceSt
 }
 
 /**
- * A card may say its tier as a bare word, a full spec, or a ready node; `standing` folds into the
- * spec so a provisional figure needs no object. Same merge `Charts` does for its headline.
- *
- * ONE NARROWING THE UNTYPED SOURCE COULD NOT MAKE: a tier OBJECT (`{label, tone?, color?}`) is a
- * TIER, not a props bag, so it is folded into `tier` rather than spread as props — spreading it
- * would hand `Provenance` a `label` prop it does not have and the tier's word would vanish.
+ * A card may say its tier as a bare tier or a full spec; `standing` folds into the spec so a
+ * provisional figure needs no object. Same merge `Charts` does for its headline.
  */
-export function kanbanProvenance(item: KanbanCardItem): ProvenanceProps | ReactNode {
+export function kanbanProvenance(item: KanbanCardItem): ProvenanceProps | null {
   const p = item.provenance;
   const standing = item.standing;
-  if (p === undefined || p === null) return standing !== undefined ? { standing } : null;
-  /* A ready node carries its own rendering; the declared contract does not admit one, and it is
-     guarded rather than spread so a caller outside TypeScript still gets what it passed. */
-  if (isValidElement(p)) return p;
-  if (typeof p === 'object') {
-    if ('label' in p) return standing !== undefined ? { standing, tier: p } : { tier: p };
-    return { standing, ...p };
-  }
-  return standing !== undefined ? { standing, tier: p } : p;
+  if (p === undefined) return standing !== undefined ? { standing } : null;
+  if (typeof p === 'object') return { standing, ...p };
+  return { standing, tier: p };
 }
 
 /** How many cards the whole board holds — `0` is the board's own empty state. */

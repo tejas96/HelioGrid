@@ -4,15 +4,12 @@
    than an omission — an eleven-step field set where the reader cannot tell "same" from "not shown"
    is not a diff of the field set.
 
-   TIERS ARE COMPARED RESOLVED, NOT COERCED. `ProvenanceTierSpec` is a string OR an object, and
-   `String({tone:'derived'})` is "[object Object]" for every object alive — so an object-tier upgrade
-   compared equal to itself, the row was classified `unchanged`, folded behind the collapse, and the
-   `estimated → derived` pair never rendered: the exact silent tier change F8-05 and SCR-M06-18 exist
-   to prevent. `resolveTier` is Provenance's own resolver and returns `{label,color}`, which is what a
-   reader actually sees. */
+   TIERS ARE COMPARED BY IDENTITY, NEVER BY WORD. A row whose tier moved and whose value held is
+   exactly the tier change F8-05 and SCR-M06-18 exist to show; comparing the printed words would
+   hide it wherever a language gave two tiers one word. `unmarked` and no tier both mean none. */
 
 import type { ReactNode } from 'react';
-import { resolveTier } from '../Provenance/Provenance.tiers';
+import { tierOf } from '../Provenance/Provenance.tiers';
 import type { ProvenanceTierSpec } from '../Provenance/Provenance.types';
 import type { DiffRow, DiffState, VersionDiffMode, VersionSide } from './VersionDiff.types';
 
@@ -25,12 +22,7 @@ export function sameValue(a: ReactNode, b: ReactNode): boolean {
 }
 
 export function sameTier(a?: ProvenanceTierSpec, b?: ProvenanceTierSpec): boolean {
-  const ra = resolveTier(a);
-  const rb = resolveTier(b);
-  if (!ra || !rb) {
-    return !ra && !rb;
-  }
-  return ra.label === rb.label && ra.color === rb.color;
+  return tierOf(a) === tierOf(b);
 }
 
 /** The state of one row, when the caller hasn't stated it. Absence on either side is its own answer. */

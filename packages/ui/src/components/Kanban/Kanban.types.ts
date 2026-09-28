@@ -12,8 +12,8 @@ export interface KanbanCardItem {
   /** Right-aligned mono value, e.g. ₹5,12,000. */
   value?: string;
   /**
-   * **The tier on this card's figure** (`F8-01` / `F8-07`) — a bare tier word, a full spec or a
-   * ready node, rendered as persistent words on their own line under the meta/value row.
+   * **The tier on this card's figure** (`F8-01` / `F8-07`) — a bare tier or a full spec,
+   * rendered as persistent words on their own line under the meta/value row.
    *
    * A board card is a record carrying money, and the board is not an exception to the tier rule:
    * this is the same slot `DataTable`'s row and stacked record card fill. Before it existed the

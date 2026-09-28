@@ -1,8 +1,7 @@
-import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderMarks } from '../ChipGroup';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
 import { accordionStateWord, markedState } from './Accordion.types';
@@ -48,9 +47,7 @@ function HeaderFacts({ item }: { item: AccordionItem }) {
       {item.total !== undefined && item.total !== null ? (
         <span className="hg-accordion-total">{item.total}</span>
       ) : null}
-      <span className="hg-accordion-tier">
-        {renderProvenance(item.provenance as ProvenanceProps | ReactNode, { size: 12 })}
-      </span>
+      <span className="hg-accordion-tier">{renderProvenance(item.provenance, { size: 12 })}</span>
     </>
   );
 }

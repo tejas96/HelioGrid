@@ -1,11 +1,9 @@
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { renderMarks } from '../ChipGroup';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import type { AccordionItem, AccordionItemState, AccordionProps } from './Accordion.types';
 import { accordionStateWord, markedState } from './Accordion.types';
@@ -116,7 +114,7 @@ function HeaderFacts({ item, quiet }: { item: AccordionItem; quiet: string }) {
           {item.total}
         </Text>
       ) : null}
-      {renderProvenance(item.provenance as ProvenanceProps | ReactNode, { size: 12 })}
+      {renderProvenance(item.provenance, { size: 12 })}
     </>
   );
 }

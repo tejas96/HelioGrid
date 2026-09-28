@@ -64,7 +64,7 @@ export function Slider({
   const percent = fillPercent(value, min, max);
   const shown = formatValue(value, unit, format);
   const named = label ?? 'value';
-  /* A props object, a tier spec or a ready node — `Provenance`'s own resolver decides, at the
+  /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
      12px type floor. `"unmarked"` comes back null and the slot collapses. */
   const provenanceNode = renderProvenance(provenance, { size: 12 });
 

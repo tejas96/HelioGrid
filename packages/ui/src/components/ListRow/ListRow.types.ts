@@ -32,7 +32,7 @@ export interface ListRowProps {
    * of the text column, under the subtitle** — the row's number usually sits in `trailing`, and a
    * tier wedged in there competes with the action. Never fold it into `subtitle`.
    */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   /**
    * **An act on this row is in flight** (`M02-67`, `F8-36`) — rendered by `PendingAction` as the
    * row's last line, under everything the row says about its values. It never dims the row and

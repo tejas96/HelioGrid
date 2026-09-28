@@ -85,7 +85,7 @@ export interface NumberFieldProps {
    * The provenance of a pre-filled value (MS1-01) — "from survey, 12 Mar", or the estimated tier on
    * SCR-M01-16's engine-extracted specifications. Renders directly under the field, above the hint.
    */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   /**
    * A person replaced a derived default (`M05-72`, `MS10-13`, `M05-65`). One treatment, rendered by
    * `FieldOverride`: the marker, the superseded value and the reset, in that order, **directly under

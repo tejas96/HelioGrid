@@ -1,7 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip';
 import type { BandedFigureProps } from './BandedFigure.types';
@@ -11,15 +10,6 @@ import { BandedLine } from './BandedLine';
 interface WebBandedFigureProps extends BandedFigureProps {
   className?: string;
   style?: CSSProperties;
-}
-
-/**
- * The slot goes straight to the one renderer, as the DS reference does. `ProvenanceTierSpec`'s
- * object arm is wider than `renderProvenance`'s declared parameter, so it is narrowed here rather
- * than being re-spelled — Provenance owns what a tier renders as.
- */
-function provenanceSlot(spec: BandedFigureProps['provenance']): ReactNode {
-  return renderProvenance(spec as ProvenanceProps | ReactNode, { size: 12 });
 }
 
 function RemedyGlyph() {
@@ -113,7 +103,7 @@ export function BandedFigure({
           <span>{move}</span>
         </p>
       ) : null}
-      {provenanceSlot(provenance)}
+      {renderProvenance(provenance, { size: 12 })}
       {note !== undefined ? <p className="hg-banded-note">{note}</p> : null}
       {children}
     </section>

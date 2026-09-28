@@ -9,7 +9,7 @@ import { CompareValueCell } from './CompareValueCell';
  * owns the tier's word, its mark and the standing that outranks it — so it goes through
  * `renderProvenance`, and the slot disappears when the spec would render nothing.
  */
-function AttributeProvenance({ spec }: { spec: CompareProvenanceSpec }) {
+function AttributeProvenance({ spec }: { spec?: CompareProvenanceSpec }) {
   const node = renderProvenance(spec, { size: 12 });
   if (node === null) return null;
   return <span className="hg-compare-provenance">{node}</span>;

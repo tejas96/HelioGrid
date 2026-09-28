@@ -1,17 +1,9 @@
 import type { ProvenanceStanding as ContractStanding, ProvenanceTier } from '@heliogrid/contracts';
 
 /**
- * The four canonical tiers are `contracts`' (`F8-02`) — this is the design system's name for the
- * same set, never a second list. **Not a closed set** here — any string is a valid tier, because
- * three surfaces need vocabularies these names don't contain and one screen forbids "measured"
- * outright.
- */
-export type ProvenanceTierName = ProvenanceTier;
-
-/**
  * A mark colour, named as a DS colour token rather than as a CSS colour string — the web half
  * resolves it to `var(--<token>)`, the native half to `theme.colors[<token>]`. One vocabulary,
- * both platforms, and no raw colour can enter through a caller's tier object.
+ * both platforms, and no raw colour can enter through a caller's tier.
  */
 export type ProvenanceMarkToken =
   | 'success'
@@ -29,25 +21,15 @@ export type ProvenanceMarkToken =
   | 'text-secondary'
   | 'mark-subtle';
 
-/** The object form of a tier: a caller's own word, optionally borrowing a canonical mark colour. */
-export interface ProvenanceTierObject {
-  label: string;
-  tone?: ProvenanceTierName;
-  color?: ProvenanceMarkToken;
-}
-
 /**
- * A tier. Either a canonical name, any free word (`"Verified datasheet"`), an object that borrows a
- * canonical mark colour, or the reserved `"unmarked"` — which renders nothing and *records that the
- * absence is deliberate* (`M05-52`), as distinct from having forgotten.
+ * A tier: one of `contracts`' four (`F8-02`), or `"unmarked"` — which renders nothing and *records
+ * that the absence is deliberate* (`M05-52`), as distinct from having forgotten.
+ *
+ * **CLOSED** (`F8-03`: no screen invents a fifth tier). A caller's own word — the catalog's
+ * *verified datasheet* (`M01-35`), a usage screen's *actual usage* — is prose beside the tier, so it
+ * goes in `source`.
  */
-export type ProvenanceTierSpec = ProvenanceTierName | 'unmarked' | string | ProvenanceTierObject;
-
-/** What `resolveTier` hands back: the word a reader sees and the token its mark takes. */
-export interface ResolvedTier {
-  label: string;
-  color: ProvenanceMarkToken;
-}
+export type ProvenanceTierSpec = ProvenanceTier | 'unmarked';
 
 /**
  * The second axis: how far a figure can be relied on as **final**. Orthogonal to the tier — a
@@ -67,12 +49,25 @@ export interface ResolvedTier {
  */
 export type ProvenanceStanding = ContractStanding;
 
+/**
+ * The words a label prints, in the reader's language. The consumer builds them from
+ * `@heliogrid/i18n`'s `tierLabel` / `standingLabel` and mounts them once with
+ * `ProvenanceWordsProvider`; this package holds no word of its own (`F3-12`).
+ */
+export interface ProvenanceWords {
+  tier: (tier: ProvenanceTier) => string;
+  standing: (standing: ProvenanceStanding) => string;
+}
+
 export type ProvenanceAlign = 'left' | 'right' | 'center';
 
 export interface ProvenanceProps {
   tier?: ProvenanceTierSpec;
   standing?: ProvenanceStanding;
-  /** What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`). */
+  /**
+   * What data it came from — `"Real · PVGIS (SARAH3)"`, `"Built-in estimate ±10%"` (`M05-54`) —
+   * and any word a caller needs beside the tier (`F8-03`).
+   */
   source?: string;
   /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
   projection?: string;
@@ -83,10 +78,9 @@ export interface ProvenanceProps {
   inline?: boolean;
 }
 
-/** The tier alone. `withLabel` defaults to **true**: the visible word is the default. */
+/** The tier alone — always its visible word, never a dot alone (`F8-07`). */
 export interface ProvenanceTierProps {
   tier?: ProvenanceTierSpec;
-  withLabel?: boolean;
   /** 12 (default) or 13. Never below 12 — the type floor. */
   size?: number;
 }

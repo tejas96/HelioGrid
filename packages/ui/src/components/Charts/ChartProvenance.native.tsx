@@ -1,6 +1,7 @@
 import type { ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useProvenanceWords } from '../Provenance/Provenance.words';
 import { PROVENANCE_MARK, PROVENANCE_TEXT } from './ChartTokens.native';
 import type { ProvenanceFacts } from './chart-provenance';
 import { provenanceParts } from './chart-provenance';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
  * the second, non-colour channel; removing it would lose a cue, never the meaning.
  */
 export function ChartProvenance({ facts }: ChartProvenanceProps) {
-  const parts = provenanceParts(facts);
+  const parts = provenanceParts(facts, useProvenanceWords());
   if (parts.length === 0) {
     return null;
   }
@@ -40,9 +41,7 @@ export function ChartProvenance({ facts }: ChartProvenanceProps) {
             <View
               style={[
                 styles.dot,
-                {
-                  backgroundColor: part.dot.customColor ?? PROVENANCE_MARK[part.dot.colorKey],
-                } satisfies ViewStyle,
+                { backgroundColor: PROVENANCE_MARK[part.dot.colorKey] } satisfies ViewStyle,
               ]}
             />
           )}

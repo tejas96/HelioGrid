@@ -1,7 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
-import type { ProvenanceProps } from '../Provenance';
 import { renderProvenance } from '../Provenance';
 import type { BlockProps } from './Block.types';
 import { blockCount } from './Block.types';
@@ -42,7 +41,7 @@ export function Block({
   style,
 }: WebBlockProps) {
   const market = useFormat();
-  const prov = renderProvenance(provenance as ProvenanceProps | ReactNode, { size: 12 });
+  const prov = renderProvenance(provenance, { size: 12 });
   const shownCount = blockCount(count, countMax, (n) =>
     market.number(n, { maximumFractionDigits: 0 }),
   );

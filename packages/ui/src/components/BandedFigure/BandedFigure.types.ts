@@ -43,7 +43,7 @@ export interface BandedFigureProps {
    * `box` — `M05-64`'s prominent compliance box, *"the figure an electrical inspector checks"*.
    */
   variant?: 'line' | 'card' | 'box';
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   note?: ReactNode;
   compact?: boolean;
   money?: boolean;

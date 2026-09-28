@@ -31,7 +31,7 @@ export interface ActivityEntry {
   /** Facts that are true at the same time, rendered by `MarkRow` (never merged into one badge). */
   marks?: ReactNode | ReactNode[];
   /** A tier for a figure inside the entry — a payment amount, a generation estimate. */
-  provenance?: ProvenanceProps | ProvenanceTierSpec | ReactNode;
+  provenance?: ProvenanceProps | ProvenanceTierSpec;
   /** A node under the entry: a photo strip, a `StatCard` pair, a document row. */
   content?: ReactNode;
   /** Real controls belonging to this entry — "Collect", "Open proposal", "Retry the call". */
