@@ -511,6 +511,8 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 - Given untouched tenant settings, when a proposal is built, then platform-seeded defaults carry every templated step and no settings visit is required (M06-49; `M01-28` consumed).
 - Given step 9 with T&C added, when "Save as template" is used, then the tenant's template set gains it and the page estimate reflects the content (M06-15; `M01-51`).
 - Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
+- Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: qa-web + qa-mobile save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in all three languages — the proof `T-M01-019` hands here, because its block has no builder
+- (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: qa-web + qa-mobile a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
 
 ---
 

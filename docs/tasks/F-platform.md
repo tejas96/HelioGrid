@@ -967,17 +967,35 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 - **D4** · **Given** the shipped product, **when** its surfaces and settings are inspected, **then** no dark value-set ships, no per-user theme switch exists and no surface — including the studio canvas and the customer's 3D view — renders a dark variant, while the semantic alias layer remains intact so a dark set could be added later without a redesign (`F7-04`) → proof: gate M145 + qa-web Q1 + qa-mobile Q5 + qa-mobile Q8
 
 ---
-### T-FPLAT-024 · Opt-in high-contrast field mode as a per-user capability
-**Type:** engine · **Tier:** P1
-**Status:** planned
-**PRD rows:** F7-16
-**Requirements (verbatim):**
+### T-FPLAT-024 · STRUCK 2026-09-28 — opt-in high-contrast field mode
+**Type:** — · **Tier:** —
+**Status:** struck
+**PRD rows:** none — `F7-16` was struck in place 2026-09-28.
+**Risk:** LOW — it deletes one `packages/ui` component that no app, screen or test imports, and edits PRD, task and brief text; no database, API, route or screen changes (`CLAUDE.md` §3).
+**Depends on:** nothing.
+**Scope:** **In** — the removal below, and, by owner ruling in the same change, the four block-1 rulings the plan owed once block 0 closed: `T-M01-006`, `T-M01-016` and `T-M01-019` hand the proof steps that need later screens to the tasks that build those screens (`T-M02-003`, `T-M06-010`, `T-MS-201`, `T-M06-027`), and `T-SHELL-002` moves to block 3 beside `T-FPLAT-020` · **Out** — the design system's half, which arrives through `ds:pull` (`docs/tasks/deferred.md`) · **Size** — about 19 files.
 
-- **F7-16** (P1) — **A high-contrast field mode exists as a sanctioned, opt-in escape hatch for working in sunlight.** It is a product-visible capability, not a styling variant: a user working outdoors can turn it on and get a legible interface on a phone screen in direct sun, and turning it on is the one condition under which the no-borders law of `F7-15` yields. It is opt-in and per user; it is not a theme, not a tenant setting, and not the light/dark switch that `F7-04` excludes.
+**Struck in place by owner decision 2026-09-28.** The product has no field mode. V1 ships without it,
+field workers manage sunlight without it, and the base colours are being redesigned, so a contrast
+mode built on today's colours would be built twice. The change that struck it removed the PRD row
+(`F7-16`, struck in place and not renumbered; `F7-15` now names one exception, the file-upload drop
+zone), the `FieldModeToggle` component from `packages/ui` with its two export lines, and field mode
+from `T-M01-011` and its brief `SCR-M01-11`.
+
+**Left for the colour redesign**, because it arrives through `ds:pull` and is never hand-edited here:
+the design system's field-mode and edge tokens, the component styles that read them, the field-mode
+parsing in `packages/theme`, and the switch on the drawn `SCR-M01-11`. `docs/tasks/deferred.md` carries it.
+
+**Cases:**
+- **C1** · something still imports the deleted component and a build breaks → no import outside its own folder (grep over `apps/`, `packages/`, `tests/`, `scripts/`) → `pnpm check:all`, which builds and typechecks every package
+- **C2** · a live row, task or brief still asks for field mode → strike in place with a dated record and remove every live mention → `python3 scripts/gates.py` checks 4 and 15
+- **C3** · a design-system contract with no component fails a `ds-contract` check → `pnpm check:all` runs them → none — read in the gate output
+- **C4** · a proof step handed to a later task is not proven there, so it is dropped rather than moved → each handed step is read against the receiving ticket's done-when, and the two `T-M06-027` lacked are written there → none — a reviewer's read; `scripts/gates.py` check 30 proves only the placement
 
 **DONE WHEN:**
-
-- **Given** a user in direct sunlight, **when** they enable field mode, **then** the interface becomes legible and the change is per user and reversible (`F7-16`).
+- **D1** · Given the PRD, the tasks and the briefs, when they are read, then no live row, task or screen state asks for field mode → `python3 scripts/gates.py` checks 4 and 15
+- **D3** · Given block 1 open, when the build order is read, then no block-1 task waits on a later block → `python3 scripts/gates.py` check 30
+- **D2** · Given `@heliogrid/ui`, when it is built for web and native, then it ships no field-mode component → `pnpm check:all`
 
 ---
 ### T-FPLAT-025 · Role-adaptive shell centre-verb resolution
@@ -2509,8 +2527,8 @@ These rows state properties of the product that engineering does not build as a 
 - **F7-14** (P0, `docs/prd/foundations/F7-design-language.md`) — **The type system carries every script the product's languages need, at every sanctioned weight, with per-script line height, and every component absorbs text expansion.** Localization places four standing obligations on the visual system and F7 accepts them as its own: a matched script face bundled with the product rather than an operating-system fallback; that face present at **every** weight in `F7-08`'s sanctioned set with no synthesis; the type scale keeping its sizes while **line heights take a per-script adjustment**; and components — buttons, chips, table headers, step titles — sized to their content so that a substantially longer translation wraps or truncates with the full text still reachable, never overflowing and never clipping an amount or a unit. **The face is chosen (owner ruling 2026-08-04): Noto Sans Devanagari (OFL, free)** for the launch non-Latin script, with the design phase confirming weights and the pairing against the brand face; the obligations above bind it in full.
   **Enforced by:** `T-FPLAT-007`, which builds the bundled faces, the weights and the per-script line height, plus per-screen review for expansion.
 
-- **F7-15** (P0, `docs/prd/foundations/F7-design-language.md`) — **There are no structural borders: hierarchy comes from luminance and soft shadow.** Surfaces separate because they are brighter than the canvas behind them and carry a soft, wide, low-opacity shadow — not because a line has been drawn around them. The source states the governing rule as *"Hierarchy comes from luminance and softness, never from lines."* Exactly **two** exceptions exist: the dashed drop zone of a file upload, and the opt-in high-contrast field mode of `F7-16`. **A control is made findable by RAISING it, never by outlining it (owner ruling 2026-08-28).** A control takes `--surface` at `--e2`, and whatever holds it steps **down** to `--canvas-sunken`, so the control is brighter than its container and reads as elevation — which is this row's own luminance half doing the work it was written for. A white control on a **white** card has no luminance left to spend, and that is the case the ruling exists to prevent: **darken the container, never draw an edge.** **The cost is on the record, measured:** `--surface` on `--canvas-sunken` is **1.14:1**, below WCAG's 3:1 floor for information that identifies a control. The owner chose elevation over an outline with that number in hand, and `F7-16`'s field mode is the sanctioned answer for sunlight — it rings every elevation, so a control at `--e2` is ringed there automatically. Depth is blur and desaturation, never dimming.
-  **Enforced by:** per-screen review; the single sanctioned exception is the field mode built by `T-FPLAT-024`, and the file-upload drop zone.
+- **F7-15** (P0, `docs/prd/foundations/F7-design-language.md`) — **There are no structural borders: hierarchy comes from luminance and soft shadow.** Surfaces separate because they are brighter than the canvas behind them and carry a soft, wide, low-opacity shadow — not because a line has been drawn around them. The source states the governing rule as *"Hierarchy comes from luminance and softness, never from lines."* Exactly **one** exception exists: the dashed drop zone of a file upload. **A control is made findable by RAISING it, never by outlining it (owner ruling 2026-08-28).** A control takes `--surface` at `--e2`, and whatever holds it steps **down** to `--canvas-sunken`, so the control is brighter than its container and reads as elevation — which is this row's own luminance half doing the work it was written for. A white control on a **white** card has no luminance left to spend, and that is the case the ruling exists to prevent: **darken the container, never draw an edge.** **The cost is on the record, measured:** `--surface` on `--canvas-sunken` is **1.14:1**, below WCAG's 3:1 floor for information that identifies a control. The owner chose elevation over an outline with that number in hand. Depth is blur and desaturation, never dimming.
+  **Enforced by:** per-screen review; the single sanctioned exception is the file-upload drop zone.
 
 - **F7-17** (P0, `docs/prd/foundations/F7-design-language.md`) — **Two density modes exist and the choice is made by surface, not by breakpoint.** *Expressive* serves mobile, onboarding, authentication, dashboards, empty states and marketing surfaces; *Functional* serves data tables, long forms, kanban boards, inventory and reporting views, settings and administration. **Colour, type and every rule in this document are identical in both** — only spacing and radius change, and the functional mode remains borderless, keeps its pill controls and keeps the near-black primary action unchanged. The default is expressive on mobile and functional on desktop data screens; the correct density for the surface is a completion condition (`F7-43`, item 9).
   **Enforced by:** per-screen review against the surface's declared density (`F7-43` item 9).
@@ -2750,7 +2768,6 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F7-13 | LAW |
 | F7-14 | LAW |
 | F7-15 | LAW |
-| F7-16 | T-FPLAT-024 |
 | F7-17 | LAW |
 | F7-18 | LAW |
 | F7-19 | LAW |

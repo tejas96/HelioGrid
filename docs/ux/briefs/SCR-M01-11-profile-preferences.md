@@ -19,20 +19,14 @@ Reached from: More → Profile (mobile) and the sidebar (desktop) — per F3-03'
 
 - **F6-15** (P2) — **Per-user notification preferences are minimal and honest:** a user may mute push per type-group (never the in-app record, never audit-relevant billing/compliance events for the Owner); no per-event snooze theatre. The record always lands (F6-06). _(non-UI half, build-side: in-app record always lands; owner billing/compliance push never mutable — for awareness, not for drawing)_
 
-### From `docs/prd/foundations/F7-design-language.md`
-
-- **F7-16** (P1) — **A high-contrast field mode exists as a sanctioned, opt-in escape hatch for working in sunlight.** It is a product-visible capability, not a styling variant: a user working outdoors can turn it on and get a legible interface on a phone screen in direct sun, and turning it on is the one condition under which the no-borders law of `F7-15` yields. It is opt-in and per user; it is not a theme, not a tenant setting, and not the light/dark switch that `F7-04` excludes. _(non-UI half, build-side: sanctioned exception to no-borders law; per-user preference, never a tenant setting or theme — for awareness, not for drawing)_
-
 ## States
 
 Base: **loading** · **empty** · **error**.
 
 Screen-specific:
 
-- **normal** / **default** — language picker (each language in its own script and name — F3-03), measurement-unit preference beside it (F3-23), notification push mutes per type-group (F6-15), field-mode toggle (F7-16).
+- **normal** / **default** — language picker (each language in its own script and name — F3-03), measurement-unit preference beside it (F3-23), notification push mutes per type-group (F6-15).
 - **language-switched-rerender** — changing language re-renders the whole application immediately, no reload, no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice; the slice names this state).
-- **field-mode-off** — the default; the standard design language holds.
-- **field-mode-on** — the opt-in high-contrast field mode active: legible on a phone screen in direct sun; the one condition under which the no-borders law yields (F7-16). Per user and reversible (F7 §edge list).
 - **type-group-muted** — a push type-group muted by the user; the in-app record still always lands (F6-15).
 - **protected-types-locked** — audit-relevant billing/compliance events for the Owner are never mutable; the control shows they cannot be muted (F6-15).
 
@@ -42,17 +36,17 @@ Screen-specific:
    no Done, no Save, no confirmation. The routes off it are the shell's. A preferences screen whose
    changes are already live has nothing for a forward act to do.
 2. **Every preference applies as it is touched.** `SCR-M01-03` recorded this for language; it extends
-   to the unit, the field mode and the push groups. A screen that batched a language change would
+   to the unit and the push groups. A screen that batched a language change would
    have to redraw itself in the new language to prove the save took *and* still owe a Save button.
 3. **A switch reads as capability, not as mute** — it is *on* when push is on, so muting turns
    something off. *"Mute leads"* switched *on* to stop something is a double negative on a control a
    thumb hits without reading.
-4. **Field mode sits beside language and measurements, not in a section of its own.** All three are
-   per-user facts about how the product renders to this person; a section headed *Appearance* is an
+4. **Language and measurements sit together, not in a section of their own.** Both are per-user
+   facts about how the product renders to this person; a section headed *Appearance* is an
    invitation to the light/dark switch `F7-04` forbids.
-5. **Field mode is live in `loading` and in `error`** — it is set on the device, not in the
-   preferences record, so it is the one control never waiting and never lost.
-6. **`empty` is a language set holding only the language already in use.** The other three
+5. *(Struck with field mode — see the amendment below. The number stays so decisions 6 and 7 keep
+   their citations.)*
+6. **`empty` is a language set holding only the language already in use.** The other two
    preferences cannot be empty by construction, and *nothing arrived* is `error`, not empty.
 7. **Sign-out and the name field are not here.** The shell fixes sign-out to More; name and photo are
    edited on `SCR-M01-09` where they were first set. Two homes for one field is how they drift.
@@ -72,3 +66,5 @@ None — this screen shows no user-visible money, business quantity or business 
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` base state. It is deleted.*
+
+*Amended 2026-09-28 by owner decision: field mode was removed from the product (`F7-16` struck in place). This screen previously carried a field-mode toggle, the `field-mode-off` and `field-mode-on` states, and decision 5. They are deleted. The drawn design still shows the switch, so it is owed a redraw.*
