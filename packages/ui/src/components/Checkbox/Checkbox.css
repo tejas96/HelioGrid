@@ -1,5 +1,5 @@
-/* Checkbox — 20px box, 6px radius. Unchecked = --surface + e1, checked = accent fill + a white
-   tick. The visible box is 20px and the TARGET is 44: two rectangles, the FilterBar rule. The
+/* Checkbox — 20px box, 6px radius. Unchecked = the control fill, flat; checked = accent fill + a
+   white tick; disabled = Ground's disabled fill. The visible box is 20px and the TARGET is 44: two rectangles, the FilterBar rule. The
    <label> is the hit box, because the real control is the visually hidden input. */
 
 .hg-checkbox {
@@ -29,13 +29,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
+  /* A CONTROL IS THE OPPOSITE OF WHAT HOLDS IT (F7-15): the well on the page or a sheet, white
+     inside a tile (primitives/Ground). Found by luminance, never by an edge. */
+  background: var(--hg-control-fill);
+  box-shadow: none;
   color: var(--text-inverse);
   transition: background var(--dur-micro) var(--ease-standard);
 }
@@ -45,8 +42,9 @@
   box-shadow: none;
 }
 
+/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
 .hg-checkbox[data-disabled="true"] .hg-checkbox-box {
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill-disabled);
   box-shadow: none;
   color: var(--text-disabled);
 }

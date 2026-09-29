@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
 
-/** Density changes the SIZE only — both grounds are `--surface` at `--e2`.
+/** Density changes the SIZE only — the well is the same in both.
  *  expressive = 52px, functional = 40px. */
 export type InputDensity = 'expressive' | 'functional';
 
@@ -24,8 +24,12 @@ export interface InputProps {
   density?: InputDensity;
   /** error message — inset 1.5px danger ring + text below */
   error?: string;
-  /** success = inset 1.5px success ring, no message */
-  success?: boolean;
+  /**
+   * The confirming words — drawn under the field with the success mark, never as a ring: a
+   * success ring differs from the error ring by hue alone (`F7-12`). Replaces the helper, as an
+   * error does; an error wins.
+   */
+  success?: string;
   helper?: string;
   disabled?: boolean;
   /** monospace value (IDs, kWh, coordinates, invoice numbers) */

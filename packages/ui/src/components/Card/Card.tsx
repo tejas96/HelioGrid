@@ -14,8 +14,9 @@ interface WebIconCircleProps extends IconCircleProps {
 }
 
 /**
- * Floating white card. No border — e2 at rest, e3 + a -1px lift on hover, the accent ring when
- * selected. Ships loading / empty / error / unavailable, like every other surface (law 1).
+ * The tile (`F7-49`): one record, grey on the white page, no shadow — a control inside it turns
+ * white. A grey ring on hover, the accent ring when selected. Ships loading / empty / error /
+ * unavailable, like every other surface (law 1).
  */
 export function Card({
   children,

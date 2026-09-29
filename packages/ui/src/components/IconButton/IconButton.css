@@ -4,7 +4,8 @@
    The ghost variant reads --control-edge rather than hardcoding `none`: an inline none beats field
    mode's blanket rule, which would leave the lowest-contrast control in the system without an edge
    in sunlight. --control-edge is `none` in the base scope, and stays so: a boxed control is made
-   findable by raising it at --e2, never by outlining it, and a text button is not one. */
+   findable by its fill — the opposite of what holds it (F7-15) — never by outlining it, and a
+   text button is not one. */
 
 .hg-icon-button {
   min-width: 44px;
@@ -27,10 +28,10 @@
 }
 
 .hg-icon-button[data-variant="surface"] {
-  background: var(--surface);
+  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white in a tile. */
+  background: var(--hg-control-fill);
   color: var(--text-primary);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  box-shadow: none;
 }
 
 .hg-icon-button[data-variant="dark"] {
@@ -46,8 +47,8 @@
 }
 
 .hg-icon-button[data-variant="surface"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  /* Rest is --e2 now, so hover must clear it — a lift to the SAME step is no lift. */
-  box-shadow: var(--e3);
+  /* Rest is flat, so hover lifts it one step. */
+  box-shadow: var(--e2);
 }
 
 .hg-icon-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
@@ -58,9 +59,10 @@
   transform: scale(0.94);
 }
 
+/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
 .hg-icon-button:disabled,
 .hg-icon-button[aria-disabled="true"] {
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill-disabled);
   color: var(--text-disabled);
   box-shadow: none;
   cursor: not-allowed;

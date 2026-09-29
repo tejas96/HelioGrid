@@ -1,6 +1,10 @@
 /* Stepper — four states per step, five arrangements. State is never carried by colour alone
    (F7-12): each has its own GLYPH and WORD. Reachability is the flow's decision; the default is
-   free — a component that gates by inheritance makes a policy call no row asked for. */
+   free — a component that gates by inheritance makes a policy call no row asked for.
+
+   Every body a step draws — a marker not yet done, the indicator pill, the track, the dots and the
+   lines — takes the control fill, the opposite of what holds it (F7-15): the well on the page,
+   white inside a tile. Never an outline ring. */
 .hg-stepper-marker {
   border-radius: var(--r-pill);
   display: grid;
@@ -10,7 +14,7 @@
   font-size: var(--fs-caption);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
-  background: var(--surface);
+  background: var(--hg-control-fill);
 }
 .hg-stepper-marker[data-state="done"] {
   background: var(--success);
@@ -25,8 +29,8 @@
   box-shadow: 0 0 0 5px var(--accent-subtle);
 }
 .hg-stepper-marker[data-state="not-started"] {
-  color: var(--text-tertiary);
-  box-shadow: inset 0 0 0 2px var(--canvas-sunken);
+  /* Text inside a well is --text-secondary or stronger (F7-15). */
+  color: var(--text-secondary);
 }
 .hg-stepper-list,
 .hg-stepper-numbered {
@@ -52,7 +56,7 @@
 .hg-stepper-connector,
 .hg-stepper-line {
   border-radius: 2px;
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill);
 }
 .hg-stepper-connector[data-done="true"],
 .hg-stepper-line[data-done="true"] {
@@ -143,10 +147,9 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  background: var(--surface);
+  background: var(--hg-control-fill);
   border-radius: var(--r-pill);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  box-shadow: none;
   padding: var(--sp-1);
 }
 .hg-stepper-nav {
@@ -222,7 +225,7 @@
   margin-top: 10px;
   height: 6px;
   border-radius: var(--r-pill);
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill);
   overflow: hidden;
 }
 .hg-stepper-fill {
@@ -240,7 +243,7 @@
   width: 6px;
   height: 6px;
   border-radius: var(--r-pill);
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill);
   transition:
     width var(--dur-standard) var(--ease-standard),
     background var(--dur-standard) var(--ease-standard);

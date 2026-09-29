@@ -152,9 +152,9 @@ export function BoardStateView({
 }
 
 const styles = StyleSheet.create({
+  /* On the page, as the column it stands in for. */
   skeleton: {
     flexShrink: 0,
-    backgroundColor: theme.colors['canvas-sunken'],
     borderRadius: theme.radius['r-card-functional'],
     padding: 10,
   },

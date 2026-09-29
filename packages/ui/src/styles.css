@@ -3,6 +3,8 @@
    (and base.css) themselves, once, at the app root. This file assumes they exist. */
 
 /* ── primitives (hand-maintained) ──────────────────────────────────────────── */
+/* Ground first: every component below reads the fill a control takes from what holds it. */
+@import "./primitives/Ground/Ground.css";
 @import "./primitives/Box/Box.css";
 @import "./primitives/Box/Stack.css";
 @import "./primitives/Text/Text.css";

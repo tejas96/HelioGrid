@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
@@ -12,7 +13,8 @@ interface NativeButtonProps extends ButtonProps {
 }
 
 interface VariantVisual {
-  background: string;
+  /** Absent: the variant takes the control fill of what holds it. */
+  background?: string;
   color: string;
   elevation?: ViewStyle;
 }
@@ -21,11 +23,8 @@ interface VariantVisual {
 const VARIANT: Record<ButtonVariant, VariantVisual> = {
   primary: { background: theme.colors['action-primary'], color: theme.colors['text-inverse'] },
   /* The opposite of what holds it (`F7-15`): the well on the page or a sheet, never a white pill
-     on white; inside a tile it turns white (`T-FPLAT-076`). */
-  secondary: {
-    background: theme.colors['bg-well'],
-    color: theme.colors['text-primary'],
-  },
+     on white; white inside a tile. */
+  secondary: { color: theme.colors['text-primary'] },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
   destructive: { background: theme.colors['danger-text'], color: theme.colors['text-inverse'] },
@@ -52,8 +51,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   fullWidth: { alignSelf: 'stretch' },
-  // Lighter than the well, which an enabled secondary and every field rest on — see the web half.
-  disabled: { backgroundColor: theme.colors['surface-form'] },
   label: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',
@@ -87,6 +84,7 @@ export function Button({
   style,
 }: NativeButtonProps) {
   const visual = VARIANT[variant];
+  const { controlFill, controlFillDisabled } = useGround();
   /* Same resolver as the web half — a string, an `ActionReasonSpec` or a ready node all land on
      ActionReason, and a spec with no sentence resolves to nothing and states nothing. */
   const reason = renderActionReason(disabledReason);
@@ -103,10 +101,11 @@ export function Button({
       style={[
         styles.pill,
         SIZE[size],
-        { backgroundColor: visual.background },
+        { backgroundColor: visual.background ?? controlFill },
         disabled ? undefined : visual.elevation,
         // A ghost has no ground, and being unavailable does not give it one — see the web half.
-        disabled && variant !== 'ghost' ? styles.disabled : undefined,
+        // Lighter than the well, which an enabled secondary and every field rest on — see the web half.
+        disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,
         fullWidth ? styles.fullWidth : undefined,
         style,
       ]}

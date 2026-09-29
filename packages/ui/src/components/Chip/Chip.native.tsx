@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -23,9 +24,10 @@ const DOT_COLOR: Record<ChipTone, string> = {
 };
 
 /* [0] sets the WORDS, so it is the -text partner. --accent stays plain: it measures 4.65:1 on
-   --accent-subtle and clears the floor unaided. */
-const BADGE: Record<ChipTone, { color: string; background: string }> = {
-  neutral: { color: theme.colors['neutral-text'], background: theme.colors['neutral-bg'] },
+   --accent-subtle and clears the floor unaided. Neutral has no tint to carry it — `neutral-bg` on
+   a tile is ~1.01:1 — so it has no background here and takes the control fill. */
+const BADGE: Record<ChipTone, { color: string; background?: string }> = {
+  neutral: { color: theme.colors['neutral-text'] },
   success: { color: theme.colors['success-text'], background: theme.colors['success-bg'] },
   warning: { color: theme.colors['warning-text'], background: theme.colors['warning-bg'] },
   danger: { color: theme.colors['danger-text'], background: theme.colors['danger-bg'] },
@@ -42,9 +44,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  chipRest: { backgroundColor: theme.colors.surface, ...theme.elevation.e1 },
-  /* One pill, two jobs — a control is raised, a label is not. The lift follows `onClick`. */
-  chipPressable: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
   chipActive: { backgroundColor: theme.colors['action-primary'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
   target: { flexShrink: 0 },
@@ -83,14 +82,12 @@ export function Chip({
   density = 'expressive',
   style,
 }: NativeChipProps) {
-  const raised = onClick !== undefined;
+  /* The opposite of what holds it (`F7-15`), flat whether it is a label or pressable. */
+  const { controlFill } = useGround();
   const pill = (
     <View
       style={[
-        pillStyle(
-          density,
-          active ? styles.chipActive : raised ? styles.chipPressable : styles.chipRest,
-        ),
+        pillStyle(density, active ? styles.chipActive : { backgroundColor: controlFill }),
         style,
       ]}
     >
@@ -133,8 +130,9 @@ export function Badge({
   style,
 }: NativeBadgeProps) {
   const pair = BADGE[tone];
+  const { controlFill } = useGround();
   return (
-    <View style={[pillStyle(density, { backgroundColor: pair.background }), style]}>
+    <View style={[pillStyle(density, { backgroundColor: pair.background ?? controlFill }), style]}>
       <Text
         variant={density === 'expressive' ? 'body-sm' : 'caption'}
         style={[medium, { color: pair.color }]}

@@ -1,12 +1,12 @@
-/* Card — the floating white surface. No border: it separates by luminance and a soft shadow.
-   e2 at rest, e3 + a 1px lift on hover when interactive, and the accent ring when selected. */
+/* Card — the tile (F7-49): one record, --canvas-sunken on the white page, no shadow and no border.
+   It is a TILE ground (primitives/Ground/Ground.css), so a control inside it turns white. Flat at
+   rest, so hover and selected show by a ring alone: --mark-subtle under the pointer, --accent when
+   selected. Nothing depends on hover — a touch screen has none. */
 
 .hg-card {
-  background: var(--surface);
-  transition:
-    box-shadow var(--dur-standard) var(--ease-standard),
-    transform var(--dur-standard) var(--ease-standard);
-  box-shadow: var(--e2);
+  background: var(--canvas-sunken);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
+  box-shadow: none;
   cursor: default;
 }
 
@@ -25,17 +25,13 @@
 }
 
 .hg-card[data-interactive="true"]:hover {
-  box-shadow: var(--e3);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px var(--mark-subtle);
 }
 
-/* Selected wins over hover — the ring is the state, the lift is only the pointer. */
+/* Selected wins over hover — the accent ring is the state, the grey ring only the pointer. */
 .hg-card[data-selected="true"],
 .hg-card[data-selected="true"]:hover {
-  box-shadow:
-    var(--e2),
-    0 0 0 2px var(--accent);
-  transform: none;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .hg-card:focus-visible {
@@ -55,11 +51,12 @@
   display: block;
   height: 12px;
   border-radius: var(--rf-md);
+  /* Drawn in --surface: a --canvas bar is the tile's own grey and would not show. */
   background: linear-gradient(
     90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
+    var(--surface) 25%,
+    var(--surface-form) 50%,
+    var(--surface) 75%
   );
   background-size: 320px 100%;
   animation: hg-sheet-shimmer 1.4s linear infinite;
@@ -128,6 +125,6 @@
   align-items: center;
   justify-content: center;
   color: var(--hg-icon-circle-color);
-  /* --surface IS the white card this circle sits on; the tint is 6% of the colour over it. */
-  background: color-mix(in srgb, var(--hg-icon-circle-color) 6%, var(--surface));
+  /* 6% of the colour over the ground that holds the circle — the tile's grey, or the white page. */
+  background: color-mix(in srgb, var(--hg-icon-circle-color) 6%, var(--hg-ground));
 }

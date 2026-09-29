@@ -55,14 +55,16 @@
   place-items: center;
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* A control is the opposite of what holds it (F7-15): the well on the page, white in a tile. */
+  background: var(--hg-control-fill);
+  box-shadow: none;
   color: var(--text-primary);
   cursor: pointer;
 }
 
+/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
 .hg-slider-step:disabled {
+  background: var(--hg-control-fill-disabled);
   color: var(--text-disabled);
   cursor: not-allowed;
 }
@@ -92,7 +94,8 @@
 .hg-slider-rail {
   left: 0;
   right: 0;
-  background: var(--canvas-sunken);
+  /* The track is the control's body: the control fill, the well on the page and white in a tile. */
+  background: var(--hg-control-fill);
   box-shadow: var(--track-edge);
 }
 
@@ -144,7 +147,8 @@
   height: 22px;
   margin-top: -8px;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* The knob is the opposite of the track it rides: the ground. */
+  background: var(--hg-ground);
   box-shadow:
     var(--e3),
     0 0 0 1.5px var(--accent) inset;
@@ -156,7 +160,8 @@
   height: 22px;
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* The knob is the opposite of the track it rides: the ground. */
+  background: var(--hg-ground);
   box-shadow:
     var(--e3),
     0 0 0 1.5px var(--accent) inset;

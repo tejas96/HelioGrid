@@ -52,9 +52,6 @@ function edgeColor(focused: boolean, tone: FieldBoxTone): string {
   if (tone === 'error') {
     return theme.colors.danger;
   }
-  if (tone === 'success') {
-    return theme.colors.success;
-  }
   // The well's own ground shows through, disabled or not — a coloured rest edge would outline it.
   return 'transparent';
 }

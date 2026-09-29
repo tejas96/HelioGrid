@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
@@ -47,6 +48,8 @@ export function SegmentedControl({
     items.findIndex((option) => option.value === value),
   );
   const [trackWidth, setTrackWidth] = useState(0);
+  /* The track takes the control fill; the active pill, the opposite of the track, the ground. */
+  const { ground, controlFill } = useGround();
   const slide = useRef(new Animated.Value(0)).current;
   const segmentWidth = items.length > 0 ? Math.max(0, trackWidth - PAD * 2) / items.length : 0;
   const reasoned = items.filter((option) => option.disabled === true && hasReason(option));
@@ -75,10 +78,17 @@ export function SegmentedControl({
       <View
         accessibilityRole={isField ? 'radiogroup' : undefined}
         onLayout={onLayout}
-        style={[styles.track, error !== undefined ? styles.trackError : undefined]}
+        style={[
+          styles.track,
+          { backgroundColor: controlFill },
+          error !== undefined ? styles.trackError : undefined,
+        ]}
       >
         <Animated.View
-          style={[styles.indicator, { width: segmentWidth, transform: [{ translateX: slide }] }]}
+          style={[
+            styles.indicator,
+            { width: segmentWidth, backgroundColor: ground, transform: [{ translateX: slide }] },
+          ]}
         />
         {items.map((option) => (
           <Segment
@@ -146,7 +156,7 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
 }
 
 /**
- * Off-ness is a GLYPH, not a colour step — no colour clears 4.5:1 on `--canvas-sunken` while
+ * Off-ness is a GLYPH, not a colour step — no colour clears 4.5:1 on the page's well track while
  * still reading as "off", and the label stays `--text-secondary`.
  */
 function OffGlyph() {
@@ -184,7 +194,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: theme.radius['r-pill'],
     padding: PAD,
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   trackError: {
     borderWidth: 1.5,
@@ -197,7 +206,6 @@ const styles = StyleSheet.create({
     bottom: PAD,
     left: 0,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   },
   /* The 44dp target around the 32dp pill: the extra 12dp is taken back as negative margin, so the

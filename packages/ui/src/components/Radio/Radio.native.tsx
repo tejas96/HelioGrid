@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { RadioProps } from './Radio.types';
@@ -26,19 +27,13 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
   /* RN has no inset box-shadow: the checked 2px accent ring is a border of the same weight. */
   boxChecked: {
     borderWidth: 2,
     borderColor: theme.colors.accent,
-    shadowOpacity: 0,
-    elevation: 0,
   },
   boxDisabled: {
-    shadowOpacity: 0,
-    elevation: 0,
     borderWidth: 0,
   },
   dot: {
@@ -68,6 +63,8 @@ export function Radio({
   disabled = false,
   style,
 }: NativeRadioProps) {
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
+  const { controlFill, controlFillDisabled } = useGround();
   return (
     <Pressable
       accessibilityRole="radio"
@@ -80,8 +77,10 @@ export function Radio({
       <View
         style={[
           styles.box,
+          { backgroundColor: controlFill },
           checked ? styles.boxChecked : null,
-          disabled ? styles.boxDisabled : null,
+          // Lighter than the well, which is every enabled control's fill — see the web half.
+          disabled ? [styles.boxDisabled, { backgroundColor: controlFillDisabled }] : null,
         ]}
       >
         {checked ? <View style={[styles.dot, disabled ? styles.dotDisabled : null]} /> : null}

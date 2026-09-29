@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { resolveSteps, stepLabel } from './resolve-steps';
 import type { StepperProps } from './Stepper.types';
@@ -29,6 +30,8 @@ export function Stepper({
 }: NativeStepperProps) {
   const total = steps.length;
   const index = Math.max(0, Math.min(total - 1, current));
+  /* The track and the dots are the control fill, the opposite of what holds them (`F7-15`). */
+  const { controlFill } = useGround();
   const percent = total > 1 ? ((index + 1) / total) * 100 : 100;
   const at = steps[index];
   const stepName = at === undefined ? '' : stepLabel(at);
@@ -86,7 +89,7 @@ export function Stepper({
           </Text>
         </View>
         <View
-          style={styles.track}
+          style={[styles.track, { backgroundColor: controlFill }]}
           accessibilityRole="progressbar"
           accessibilityLabel={label ?? 'Progress'}
           accessibilityValue={{ min: 1, max: total, now: index + 1 }}
@@ -114,6 +117,7 @@ export function Stepper({
             key={stepLabel(step)}
             style={[
               styles.dot,
+              { backgroundColor: controlFill },
               position <= index ? styles.dotFilled : undefined,
               position === index ? styles.dotCurrent : undefined,
             ]}
@@ -157,7 +161,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
     overflow: 'hidden',
   },
   fill: {
@@ -174,7 +177,6 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   dotFilled: {
     backgroundColor: theme.colors.accent,

@@ -1,0 +1,40 @@
+/* Ground — what holds a control, and the fill a control takes on it (F7-15, F7-49). A control is
+   the opposite of what holds it: the well's grey on the white page, white inside the grey tile.
+   Two custom properties, inherited through the DOM, so a control reads its fill from whatever
+   holds it and is never told.
+
+   --hg-ground                  the colour behind a control: what a knob on a track, or a tint,
+                                sits over.
+   --hg-control-fill            the fill a control takes here.
+   --hg-control-fill-disabled   the fill a disabled control takes, the same on every ground.
+
+   These two lists are the ONE record of which surface is which ground. A ground is keyed on its
+   component's own class, never on an attribute a component must remember to set. A float is a
+   page ground: no web float renders through a portal, so a sheet or a menu opened inside a tile
+   would otherwise inherit the tile's ground and draw its controls white on white. */
+
+:root,
+.hg-surface[data-background="surface"],
+.hg-surface[data-background="surface-alt"],
+.hg-sheet,
+.hg-modal,
+.hg-detail-panel,
+.hg-menu-list,
+.hg-coach-mark,
+.hg-explainer-bubble {
+  --hg-ground: var(--surface);
+  --hg-control-fill: var(--bg-well);
+}
+
+.hg-card,
+.hg-surface[data-background="canvas"],
+.hg-surface[data-background="canvas-sunken"] {
+  --hg-ground: var(--canvas-sunken);
+  --hg-control-fill: var(--surface);
+}
+
+/* LIGHTER than the well on the page, a step under white in a tile — about 1.07:1 either way, and no
+   token lies between, so the label and the mark carry the state (F7-11). */
+:root {
+  --hg-control-fill-disabled: var(--surface-form);
+}

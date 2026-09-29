@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import type { IconButtonProps, IconButtonVariant } from './IconButton.types';
@@ -11,12 +12,13 @@ interface NativeIconButtonProps extends IconButtonProps {
 }
 
 interface VariantVisual {
-  background: string;
-  elevation?: ViewStyle;
+  /** Absent: the variant takes the control fill of what holds it. */
+  background?: string;
 }
 
 const VARIANT: Record<IconButtonVariant, VariantVisual> = {
-  surface: { background: theme.colors.surface, elevation: theme.elevation.e2 },
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile; flat. */
+  surface: {},
   dark: { background: theme.colors['action-primary'] },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent' },
@@ -24,7 +26,6 @@ const VARIANT: Record<IconButtonVariant, VariantVisual> = {
 
 const styles = StyleSheet.create({
   circle: { alignItems: 'center', justifyContent: 'center' },
-  disabled: { backgroundColor: theme.colors['canvas-sunken'] },
   column: { alignItems: 'flex-start', gap: theme.spacing['sp-1'] },
 });
 
@@ -44,6 +45,7 @@ export function IconButton({
   style,
 }: NativeIconButtonProps) {
   const visual = VARIANT[variant];
+  const { controlFill, controlFillDisabled } = useGround();
   const reason = renderActionReason(disabledReason);
   const stated = disabled && reason !== null;
 
@@ -54,9 +56,13 @@ export function IconButton({
       onPress={onClick}
       style={[
         styles.circle,
-        { width: size, height: size, borderRadius: size / 2, backgroundColor: visual.background },
-        disabled ? undefined : visual.elevation,
-        disabled ? styles.disabled : undefined,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: visual.background ?? controlFill,
+        },
+        disabled ? { backgroundColor: controlFillDisabled } : undefined,
         style,
       ]}
     >

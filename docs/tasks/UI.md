@@ -27,6 +27,19 @@ secondary `Button` and the overlay retry pill take the well. `Sheet`, `Modal` an
 their content on `--surface`. `DoorFrame` paints `--surface`. The signup's verified number and its
 facts block sit on the page with no surface (`SCR-M01-02`).
 
+**Owed to the design system by the ground and the tile (`T-FPLAT-076`), repo side done.** Every
+control is the opposite of what holds it: a `--canvas-sunken` fill on the page or a sheet,
+`--surface` inside a tile, flat, and `--surface-form` when disabled — `Checkbox`, `Radio`, `Chip`
+(static and pressable alike) and the neutral `Badge`, `IconButton`'s surface variant,
+`LanguageSwitcher`'s pill, `EmptyState`'s disc, `TimeField`'s presets, `Slider`'s steps,
+`Stepper`'s markers and indicator, the secondary `Button`. A track takes that fill (`Switch`,
+`Slider`, `SegmentedControl`, `Stepper`'s track, dots and lines) and the knob on it the ground
+(white on the page, `--canvas-sunken` in a tile). A step not yet reached is a filled disc with its
+number in `--text-secondary`, no ring. `Card` is the tile: `--canvas-sunken`, no shadow, hover a
+2px `--mark-subtle` ring, selected a 2px `--accent` ring; `IconCircle` mixes over what holds it;
+the shimmer is drawn in `--surface`. `Kanban`'s columns have no fill. `Input`'s `success` is the
+confirming words under the field with the success mark, never a ring.
+
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |
@@ -51,7 +64,7 @@ facts block sit on the page with no surface (`SCR-M01-02`).
 | `DataTable` | A `wrap` column is a stacked-card treatment with **no table-form meaning** — in the table the flag does nothing and `width` alone governs. The prop reads as a cross-form promise and keeps half of it. | `SCR-M01-15` |
 | `Avatar` · `PhotoField` | **Initials are computed from the name, and Devanagari has no initials.** The first character of two words in `प्रिया देशमुख` is two conjunct clusters reading as a syllable, not a monogram. Wants a caller-supplied monogram or a per-script rule. | `SCR-M01-12` |
 | `DataTable` | Its loading state **drops the header row**. `Person · Roles · Status · Last active` are words the app knows before any record arrives, and the one thing a table can say that a card cannot. `TableSkeleton` takes only `stacked`, so it cannot draw them. | `SCR-M01-12` |
-| `Chip` | **A docs fix, not an elevation one.** `Chip.css` is already right and argued — a static label is `--e1` and a pressable chip `--e2`, because raising both would make every decorative chip read as pressable. What is wrong is that the docs name `Chip` first for a label a record HAS, where the tinted `Badge` is the instrument that reads on a white `RecordCard`. | `SCR-M01-12` |
+| `Chip` | **A docs fix.** A static and a pressable chip are both flat on the control fill (`T-FPLAT-076`), so nothing but the pressed state tells them apart. The docs still name `Chip` first for a label a record HAS, where the tinted `Badge` is the instrument for it. | `SCR-M01-12` |
 | `RecordCard` | `meta` is mono + tabular-nums, and one legitimate entry on it is not a number — `NamedGap` sets its own face there, which works and is undocumented. | `SCR-M01-12` |
 | — | **Nothing says "you will not see this".** `ScopeNote` covers an act somebody else holds and `ComplianceFloor` an act nobody holds; a VISIBILITY limit — *your list is yours, the pipeline is the owner's view* — has no component, and `UnavailableNote` speaks only for the surface it is on. Hand-drawn, which is how two screens explain one scope two ways. | `SCR-M01-10` |
 | `ScopeNote` | Documented as belonging to an action row, but its sentence is exactly right for a card that DESCRIBES permissions. Either the doctrine widens or an explainer variant exists. | `SCR-M01-10` |

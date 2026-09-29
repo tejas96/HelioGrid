@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ResolvedStep } from './resolve-steps';
@@ -29,6 +30,8 @@ export function StepperNumberedItem({
   total,
 }: StepperNumberedItemProps) {
   const word = stateWord(step);
+  /* The line is the control fill, the opposite of what holds it (`F7-15`). */
+  const { controlFill } = useGround();
   return (
     <View style={[styles.item, last ? styles.itemLast : undefined]}>
       {/* 44dp target around the 28dp marker, the extra taken back as negative margin so the rail's
@@ -45,7 +48,8 @@ export function StepperNumberedItem({
         <View style={styles.name}>
           <Text
             variant="body-sm"
-            color={step.state === 'not-started' ? 'tertiary' : 'primary'}
+            /* A step not yet reached is read, not quiet (`N4`) — the web half's secondary. */
+            color={step.state === 'not-started' ? 'secondary' : 'primary'}
             style={active ? styles.nameActive : styles.nameWords}
           >
             {step.label}
@@ -62,7 +66,13 @@ export function StepperNumberedItem({
           ) : null}
         </View>
         {last ? null : (
-          <View style={[styles.line, step.state === 'done' ? styles.lineDone : undefined]} />
+          <View
+            style={[
+              styles.line,
+              { backgroundColor: controlFill },
+              step.state === 'done' ? styles.lineDone : undefined,
+            ]}
+          />
         )}
       </View>
     </View>
@@ -120,7 +130,6 @@ const styles = StyleSheet.create({
     height: 2,
     borderRadius: 2,
     marginRight: theme.spacing['sp-2'],
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   lineDone: {
     backgroundColor: theme.colors.success,

@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { LanguageStateGlyph } from './LanguageStateGlyph.native';
@@ -18,11 +19,8 @@ const styles = StyleSheet.create({
     height: PILL,
     paddingHorizontal: 13,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
-  pillActive: { backgroundColor: theme.colors.accent, shadowOpacity: 0, elevation: 0 },
+  pillActive: { backgroundColor: theme.colors.accent },
   label: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles['body-sm'].fontSize,
@@ -57,6 +55,8 @@ export function LanguagePill({
   showCounts,
   onPress,
 }: LanguagePillProps) {
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
+  const { controlFill } = useGround();
   const fraction =
     showCounts && total !== null && lang.written !== undefined ? `${lang.written}/${total}` : null;
   return (
@@ -71,11 +71,18 @@ export function LanguagePill({
       onPress={() => onPress(lang.code)}
       style={styles.target}
     >
-      <View style={[styles.pill, active ? styles.pillActive : undefined]}>
+      <View
+        style={[
+          styles.pill,
+          { backgroundColor: controlFill },
+          active ? styles.pillActive : undefined,
+        ]}
+      >
         <LanguageStateGlyph state={stateOf(lang, total)} active={active} />
         <RNText style={[styles.label, active ? styles.onAccent : undefined]}>{lang.label}</RNText>
         {lang.primary === true ? (
-          <Text variant="caption" color={active ? 'inverse' : 'tertiary'}>
+          /* Text inside a well is secondary or stronger (`F7-15`) — see the web half. */
+          <Text variant="caption" color={active ? 'inverse' : 'secondary'}>
             primary
           </Text>
         ) : null}

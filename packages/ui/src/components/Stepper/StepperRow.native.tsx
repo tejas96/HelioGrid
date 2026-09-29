@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ResolvedStep } from './resolve-steps';
@@ -28,11 +29,17 @@ export function StepperRow({
   const clickable = onStepClick !== undefined && step.reachable;
   const word = stateWord(step);
   const active = index === current;
+  /* The connector is the control fill, the opposite of what holds it (`F7-15`). */
+  const { controlFill } = useGround();
   return (
     <View style={styles.item}>
       {connector && index < total - 1 ? (
         <View
-          style={[styles.connector, step.state === 'done' ? styles.connectorDone : undefined]}
+          style={[
+            styles.connector,
+            { backgroundColor: controlFill },
+            step.state === 'done' ? styles.connectorDone : undefined,
+          ]}
         />
       ) : null}
       <Pressable
@@ -45,7 +52,8 @@ export function StepperRow({
         <View style={styles.body}>
           <Text
             variant="body-sm"
-            color={step.state === 'not-started' ? 'tertiary' : 'primary'}
+            /* A step not yet reached is read, not quiet (`N4`) — the web half's secondary. */
+            color={step.state === 'not-started' ? 'secondary' : 'primary'}
             style={active ? styles.nameActive : styles.name}
           >
             {step.label}
@@ -91,7 +99,6 @@ const styles = StyleSheet.create({
     bottom: -6,
     width: 2,
     borderRadius: 2,
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   connectorDone: {
     backgroundColor: theme.colors.success,

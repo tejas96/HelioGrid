@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { SwitchProps } from './Switch.types';
@@ -13,7 +14,8 @@ interface NativeSwitchProps extends SwitchProps {
 const THUMB_TRAVEL = 20;
 
 /**
- * 52x32 switch, spring thumb. Track `--canvas-sunken` when off, `--accent` when on.
+ * 52x32 switch, spring thumb. The track takes the control fill when off, `--accent` when on; the
+ * thumb is the opposite of its track — the ground, white on the accent.
  *
  * Web's hit box is a `<label>` wrapping a visually hidden `<input role="switch">`; RN has no
  * hidden-input construction, so the whole row is one Pressable (which owns the 44dp floor). The
@@ -32,6 +34,8 @@ export function Switch({
 }: NativeSwitchProps) {
   const offset = useRef(new Animated.Value(checked ? THUMB_TRAVEL : 0)).current;
   const hasError = error !== undefined && error !== null && error !== false;
+  const { ground, controlFill, controlFillDisabled } = useGround();
+  const on = checked && !disabled;
 
   useEffect(() => {
     Animated.timing(offset, {
@@ -58,13 +62,15 @@ export function Switch({
       <View
         style={[
           styles.track,
-          checked && !disabled ? styles.trackOn : undefined,
+          { backgroundColor: disabled ? controlFillDisabled : controlFill },
+          on ? styles.trackOn : undefined,
           hasError ? styles.trackError : undefined,
         ]}
       >
         <Animated.View
           style={[
             styles.thumb,
+            { backgroundColor: knobColor(on, disabled, ground) },
             disabled ? styles.thumbDisabled : undefined,
             { transform: [{ translateX: offset }] },
           ]}
@@ -93,6 +99,15 @@ export function Switch({
   );
 }
 
+/**
+ * The knob is the opposite of its track: white on the accent, the ground on the control fill, and
+ * `--text-disabled` on the disabled fill, where the ground would hide which way it is set.
+ */
+function knobColor(on: boolean, disabled: boolean, ground: string): string {
+  if (disabled) return theme.colors['text-disabled'];
+  return on ? theme.colors.surface : ground;
+}
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -106,7 +121,6 @@ const styles = StyleSheet.create({
     width: 52,
     height: 32,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   trackOn: {
     backgroundColor: theme.colors.accent,
@@ -122,7 +136,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   } /* The track flattens when disabled and the knob must too, or a dead switch keeps a raised
      white knob floating in a sunken groove. */,

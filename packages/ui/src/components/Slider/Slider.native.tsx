@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
@@ -22,8 +23,16 @@ interface StepButtonProps {
 
 /** A 44dp minus/plus either side of the track — the Pressable primitive owns that floor. */
 function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
+  /* The opposite of what holds it (`F7-15`); lighter than the well at its limit — see the web half. */
+  const { controlFill, controlFillDisabled } = useGround();
+  const fill = disabled ? controlFillDisabled : controlFill;
   return (
-    <Pressable accessibilityLabel={label} disabled={disabled} onPress={onPress} style={styles.step}>
+    <Pressable
+      accessibilityLabel={label}
+      disabled={disabled}
+      onPress={onPress}
+      style={[styles.step, { backgroundColor: fill }]}
+    >
       <Svg
         width={16}
         height={16}
@@ -157,9 +166,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
   underTrack: {
     marginTop: theme.spacing['sp-2'],

@@ -8,6 +8,7 @@ import {
   fieldBox,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -52,6 +53,9 @@ export function TimeField({
   style,
 }: NativeTimeFieldProps) {
   const format = useFormat();
+  /* A preset is the opposite of what holds it (`F7-15`); lighter than the well when disabled. */
+  const { controlFill, controlFillDisabled } = useGround();
+  const presetFill = disabled ? controlFillDisabled : controlFill;
   const shape = timeShape(placeholder, format);
   const entry = useTimeEntry({
     format,
@@ -124,7 +128,11 @@ export function TimeField({
                 accessibilityLabel={preset.label}
                 disabled={disabled}
                 onPress={() => entry.pick(preset.value)}
-                style={[styles.preset, active ? styles.presetActive : undefined]}
+                style={[
+                  styles.preset,
+                  { backgroundColor: presetFill },
+                  active ? styles.presetActive : undefined,
+                ]}
               >
                 <Text
                   variant="body-sm"
@@ -186,14 +194,9 @@ const styles = StyleSheet.create({
     minWidth: 44,
     paddingHorizontal: PAD_X,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
-  /* The active pill drops its elevation, the way the web half drops to box-shadow: none. */
   presetActive: {
     backgroundColor: theme.colors.accent,
-    shadowOpacity: 0,
-    elevation: 0,
   },
   presetWords: {
     fontWeight: '500',

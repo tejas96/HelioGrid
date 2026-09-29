@@ -2,9 +2,12 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { StatusMark } from '../../primitives/StatusMark';
 import { renderOverride } from '../FieldOverride';
 import { renderAttribution } from '../ValueSource';
 import { useCommitDraft } from './commit-draft';
+import type { InputNote as Note } from './Input.logic';
+import { inputNote } from './Input.logic';
 import type { InputProps } from './Input.types';
 
 interface WebInputProps extends InputProps {
@@ -53,7 +56,8 @@ export function Input({
     onCommit,
   );
 
-  const tone = error !== undefined ? 'error' : success === true ? 'success' : 'none';
+  const note = inputNote({ error, success, helper });
+  const tone = note?.kind === 'error' ? 'error' : 'none';
   /* FieldOverride owns the marker/superseded-value/reset line and ValueSource owns the layer line.
      Resolving the override first is also the mutual-exclusion test: whatever it returns is what
      occupies the slot, and attribution only speaks when the slot is empty. */
@@ -116,18 +120,21 @@ export function Input({
       {overrideNode}
       {/* Attribution is the un-overridden case and never renders beside the override line. */}
       {overrideNode === null ? renderAttribution(attribution, { fieldName: label }) : null}
-      <InputNote error={error} helper={helper} />
+      <InputNote note={note} />
     </div>
   );
 }
 
-/** The line under the field. An error replaces the helper — never both, never a tint alone. */
-function InputNote({ error, helper }: { error?: string; helper?: string }) {
-  if (error !== undefined) {
-    return <span className="hg-input-error">{error}</span>;
+/** The line under the field (`inputNote`). Success is words with the success mark, never a ring. */
+function InputNote({ note }: { note: Note | null }) {
+  if (note === null) {
+    return null;
   }
-  if (helper !== undefined) {
-    return <span className="hg-input-helper">{helper}</span>;
+  if (note.kind === 'error') {
+    return <span className="hg-input-error">{note.text}</span>;
   }
-  return null;
+  if (note.kind === 'success') {
+    return <StatusMark className="hg-input-success" tone="success" label={note.text} />;
+  }
+  return <span className="hg-input-helper">{note.text}</span>;
 }

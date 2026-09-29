@@ -5,9 +5,9 @@ export interface CardProps {
   children?: ReactNode;
   /** expressive = 24px radius / 24px pad; functional = 12px / 16px */
   density?: 'expressive' | 'functional';
-  /** enables hover lift + pointer */
+  /** enables the hover ring + pointer */
   interactive?: boolean;
-  /** 2px accent focus ring */
+  /** 2px accent ring */
   selected?: boolean;
   /**
    * **The card has states**, because law 1 ("states are part of done") applies to the surface every
@@ -34,7 +34,7 @@ export interface CardProps {
 
 export interface IconCircleProps {
   children?: ReactNode;
-  /** semantic or brand colour; container fills a 6% tint of it */
+  /** semantic or brand colour; the circle fills a 6% tint of it over the ground that holds it */
   color?: string;
   size?: number;
 }
