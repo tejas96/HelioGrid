@@ -1,4 +1,5 @@
-/* Kanban — sunken grey columns holding floating functional cards, StatusChip column headers,
+/* Kanban — columns on the page, each a heading and its cards: a card is a grey tile, so a column
+   is no surface of its own (F7-49 — a surface never holds another). StatusChip column headers,
    count (or n/limit) on the right. Functional density only.
 
    THE PHONE FORM IS ONE COLUMN WITH A STAGE FILTER, AND IT USED TO BE NINE COLUMNS STACKED.
@@ -49,7 +50,7 @@
 .hg-kanban-column {
   width: var(--hg-kanban-column-w);
   flex-shrink: 0;
-  background: var(--canvas-sunken);
+  background: transparent;
   border-radius: var(--r-card-functional);
   padding: 10px;
   transition: background var(--dur-standard) var(--ease-standard);
@@ -248,7 +249,7 @@
 .hg-kanban-skeleton {
   width: var(--hg-kanban-column-w);
   flex-shrink: 0;
-  background: var(--canvas-sunken);
+  background: transparent;
   border-radius: var(--r-card-functional);
   padding: 10px;
 }

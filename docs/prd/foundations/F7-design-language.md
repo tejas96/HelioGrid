@@ -361,6 +361,8 @@ it grants nothing and never exposes an action the person's presets do not permit
 
 - **Given** any screen, **when** its structure is inspected, **then** no structural border is
   present except a file-upload drop zone (`F7-15`).
+- **Given** a control that is not a field, **when** it renders on the page or in a sheet, **then**
+  it takes the well's ground, and inside a tile it takes `--surface` (`F7-15`).
 - **Given** a data table and a dashboard, **when** both are viewed on the same device, **then**
   the table renders functional and the dashboard expressive, with identical colour, type and rules
   and different spacing and radius only (`F7-17`).
@@ -646,6 +648,9 @@ established.
 - **Given** a registered UX gap, **when** its screen ships, **then** it is wired into its flow with
   all three states at both viewports, and its register row is marked closed rather than removed
   (`F7-45`).
+- **Given** any screen, **when** its surfaces are inspected, **then** no surface holds another, a
+  list item is one tile with no shadow, a tile holds one record and never a field, and its parts
+  are separated by space, never by a line (`F7-49`).
 
 **Localization notes.** `F7-42`'s voice rules apply per language, not only in the source language:
 a translated button is still a verb, and a translated error still states the fix. Item 7 of

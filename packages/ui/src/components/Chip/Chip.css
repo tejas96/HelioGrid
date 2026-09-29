@@ -45,17 +45,12 @@
 /* ── Chip ─────────────────────────────────────────────────────────────────── */
 
 .hg-chip {
-  background: var(--surface);
+  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white inside a tile.
+     Flat whether it is a label or pressable — a label a record HAS is the tinted Badge. */
+  background: var(--hg-control-fill);
   color: var(--text-primary);
-  box-shadow: var(--e1);
+  box-shadow: none;
   transition: background var(--dur-standard) var(--ease-standard);
-}
-
-/* ONE PILL, TWO JOBS. `.hg-chip` is a static label AND the visible body of a pressable chip, so the
-   lift hangs off the pressable wrapper rather than the pill: a control is raised, a label is not
-  . Raising both would make every decorative chip read as pressable. */
-.hg-chip-target .hg-chip {
-  box-shadow: var(--e2);
 }
 
 .hg-chip[data-active="true"] {
@@ -111,9 +106,11 @@
 
 /* ── Badge — the -text partner sets the words, the -bg sets the tint ──────── */
 
+/* Neutral has no tint to carry it: --neutral-bg on a tile is ~1.01:1, so it takes the control
+   fill and reads white inside a tile, the well on the page. */
 .hg-badge[data-tone="neutral"] {
   color: var(--neutral-text);
-  background: var(--neutral-bg);
+  background: var(--hg-control-fill);
 }
 .hg-badge[data-tone="success"] {
   color: var(--success-text);

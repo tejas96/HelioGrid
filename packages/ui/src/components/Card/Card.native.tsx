@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -17,7 +18,8 @@ interface NativeIconCircleProps extends IconCircleProps {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.surface,
+    /* The tile (`F7-49`): grey on the white page, no shadow. */
+    backgroundColor: theme.colors['canvas-sunken'],
     /* The web ring is a box-shadow; RN has none, so the ring is a border that is always present
        and only changes colour — the frame must not move between selected and unselected. */
     borderWidth: 2,
@@ -37,7 +39,10 @@ const styles = StyleSheet.create({
   circle: { alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
 });
 
-/** Floating white card. Ships loading / empty / error / unavailable, like every surface (law 1). */
+/**
+ * The tile (`F7-49`): one record, grey on the white page, no shadow; a control inside it turns
+ * white. Ships loading / empty / error / unavailable, like every surface (law 1).
+ */
 export function Card({
   children,
   density = 'expressive',
@@ -56,27 +61,28 @@ export function Card({
   style,
 }: NativeCardProps) {
   const body = (
-    <CardBody
-      state={state}
-      emptyTitle={emptyTitle}
-      emptyMessage={emptyMessage}
-      emptyAction={emptyAction}
-      errorTitle={errorTitle}
-      errorMessage={errorMessage}
-      onRetry={onRetry}
-      unavailableTitle={unavailableTitle}
-      unavailableMessage={unavailableMessage}
-    >
-      {children}
-    </CardBody>
+    <GroundProvider ground="tile">
+      <CardBody
+        state={state}
+        emptyTitle={emptyTitle}
+        emptyMessage={emptyMessage}
+        emptyAction={emptyAction}
+        errorTitle={errorTitle}
+        errorMessage={errorMessage}
+        onRetry={onRetry}
+        unavailableTitle={unavailableTitle}
+        unavailableMessage={unavailableMessage}
+      >
+        {children}
+      </CardBody>
+    </GroundProvider>
   );
 
   const frame: StyleProp<ViewStyle> = [
     styles.card,
     density === 'functional' ? styles.functional : styles.expressive,
     selected ? styles.selected : null,
-    /* Hover has no touch equivalent; e2 at rest, and Pressable owns the pressed feedback. */
-    theme.elevation.e2,
+    /* Hover has no touch equivalent; Pressable owns the pressed feedback. */
     style,
   ];
 
@@ -90,22 +96,30 @@ export function Card({
   return <View style={frame}>{body}</View>;
 }
 
-/** Mixes a 6% tint of `color` over white — the web half's `color-mix(in srgb, c 6%, white)`. */
-function tint6(color: string): string {
-  const hex = /^#([0-9a-f]{6})$/i.exec(color.trim());
-  const packed = hex?.[1];
-  if (packed === undefined) return theme.colors.surface;
+/** A `#rrggbb` theme value as its three channels, or `undefined` for anything else. */
+function channels(color: string): [number, number, number] | undefined {
+  const packed = /^#([0-9a-f]{6})$/i.exec(color.trim())?.[1];
+  if (packed === undefined) return undefined;
   const value = Number.parseInt(packed, 16);
-  const mix = (channel: number) => Math.round(channel * 0.06 + 255 * 0.94);
-  const r = mix((value >> 16) & 255);
-  const g = mix((value >> 8) & 255);
-  const b = mix(value & 255);
-  return `rgb(${r},${g},${b})`;
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
 }
 
 /**
- * Signature circular icon container — a soft 6% tint of a semantic/brand colour. `color` must be
- * a resolved theme value on native (there are no CSS custom properties to dereference).
+ * Mixes a 6% tint of `color` over `ground` — the web half's
+ * `color-mix(in srgb, c 6%, var(--hg-ground))`.
+ */
+function tint6(color: string, ground: string): string {
+  const tint = channels(color);
+  const under = channels(ground);
+  if (tint === undefined || under === undefined) return ground;
+  const mix = (channel: number, beneath: number) => Math.round(channel * 0.06 + beneath * 0.94);
+  return `rgb(${mix(tint[0], under[0])},${mix(tint[1], under[1])},${mix(tint[2], under[2])})`;
+}
+
+/**
+ * Signature circular icon container — a soft 6% tint of a semantic/brand colour over the ground
+ * that holds it. `color` must be a resolved theme value on native (there are no CSS custom
+ * properties to dereference).
  */
 export function IconCircle({
   children,
@@ -113,11 +127,12 @@ export function IconCircle({
   size = 40,
   style,
 }: NativeIconCircleProps) {
+  const { ground } = useGround();
   const shape: ViewStyle = {
     width: size,
     height: size,
     borderRadius: size / 2,
-    backgroundColor: tint6(color),
+    backgroundColor: tint6(color, ground),
   };
   return <View style={[styles.circle, shape, style]}>{children}</View>;
 }

@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   shimmer: {
     height: 12,
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    /* Drawn in --surface: the card is a grey tile, and a grey bar on it would not show. */
+    backgroundColor: theme.colors.surface,
   },
   message: { alignItems: 'flex-start', gap: 10 },
   messageText: {

@@ -75,10 +75,10 @@
   height: 34px;
   padding: 0 13px;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white in a tile. */
+  background: var(--hg-control-fill);
   color: var(--text-secondary);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  box-shadow: none;
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   letter-spacing: var(--tr-button);
@@ -130,10 +130,12 @@
   color: var(--text-inverse);
 }
 
+/* Text inside a well is --text-secondary or stronger (F7-15): tertiary on the well is under the
+   floor. The glyph is a mark, not text, and keeps its own colour. */
 .hg-language-switcher-primary {
   font-size: var(--fs-caption);
   font-weight: var(--fw-regular);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-language-switcher-pill[data-active="true"] .hg-language-switcher-primary {
@@ -148,7 +150,7 @@
 }
 
 .hg-language-switcher-fraction[data-state="empty"] {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-language-switcher-pill[data-active="true"] .hg-language-switcher-fraction {

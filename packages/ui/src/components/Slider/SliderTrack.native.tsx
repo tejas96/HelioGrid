@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { clampToRange } from './slider-math';
 
 const THUMB = 22;
@@ -47,6 +48,8 @@ export function SliderTrack({
 }: SliderTrackProps) {
   const [width, setWidth] = useState(0);
   const lastRef = useRef(value);
+  /* The rail is the control fill; the knob, the opposite of the rail, is the ground (`F7-15`). */
+  const { ground, controlFill } = useGround();
 
   const touch = (event: GestureResponderEvent) => {
     if (width <= 0) {
@@ -77,12 +80,16 @@ export function SliderTrack({
       onResponderMove={touch}
       onResponderRelease={() => onCommit(lastRef.current)}
     >
-      <View style={styles.rail} />
+      <View style={[styles.rail, { backgroundColor: controlFill }]} />
       <View
         style={[styles.fill, { width: `${percent}%` }, disabled ? styles.fillDisabled : undefined]}
       />
       <View
-        style={[styles.thumb, { left: `${percent}%` }, disabled ? styles.thumbDisabled : undefined]}
+        style={[
+          styles.thumb,
+          { left: `${percent}%`, backgroundColor: ground },
+          disabled ? styles.thumbDisabled : undefined,
+        ]}
       />
     </View>
   );
@@ -103,7 +110,6 @@ const styles = StyleSheet.create({
     top: 19,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
   },
   fill: {
     position: 'absolute',
@@ -123,7 +129,6 @@ const styles = StyleSheet.create({
     height: THUMB,
     marginLeft: -THUMB / 2,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
     borderWidth: 1.5,
     borderColor: theme.colors.accent,
     ...theme.elevation.e3,

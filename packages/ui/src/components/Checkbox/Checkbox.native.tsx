@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -30,11 +31,8 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-sm'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
   boxChecked: { backgroundColor: theme.colors.accent },
-  boxDisabled: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
 });
 
 /**
@@ -56,6 +54,8 @@ export function Checkbox({
   style,
 }: NativeCheckboxProps) {
   const tick = disabled ? theme.colors['text-disabled'] : theme.colors['text-inverse'];
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
+  const { controlFill, controlFillDisabled } = useGround();
   return (
     <Pressable
       accessibilityRole="checkbox"
@@ -69,8 +69,10 @@ export function Checkbox({
       <View
         style={[
           styles.box,
+          { backgroundColor: controlFill },
           checked ? styles.boxChecked : undefined,
-          disabled ? styles.boxDisabled : undefined,
+          // Lighter than the well, which is every enabled control's fill — see the web half.
+          disabled ? { backgroundColor: controlFillDisabled } : undefined,
         ]}
       >
         {checked ? (

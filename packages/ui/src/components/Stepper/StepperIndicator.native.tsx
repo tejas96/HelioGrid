@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ResolvedStep } from './resolve-steps';
@@ -56,8 +57,10 @@ export function StepperIndicator({
   const next = resolved[index + 1];
   const nextReachable = next?.reachable === true;
   const errors = resolved.filter((entry) => entry.state === 'errors').length;
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile; flat. */
+  const { controlFill } = useGround();
   return (
-    <View style={[styles.bar, style]}>
+    <View style={[styles.bar, { backgroundColor: controlFill }, style]}>
       <NavButton
         direction={-1}
         disabled={index === 0 || onStepClick === undefined}
@@ -115,11 +118,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-1'],
-    backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-pill'],
     padding: theme.spacing['sp-1'],
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
   nav: {
     width: 44,

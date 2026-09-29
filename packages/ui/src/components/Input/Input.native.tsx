@@ -7,10 +7,12 @@ import {
   fieldBox,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
+import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
 import { useCommitDraft } from './commit-draft';
+import { inputNote } from './Input.logic';
 import type { InputDensity, InputProps, InputType } from './Input.types';
 
 interface NativeInputProps extends InputProps {
@@ -108,7 +110,8 @@ export function Input({
     mono ? styles.controlMono : undefined,
     fieldBoxText(disabled),
   ];
-  const tone = error !== undefined ? 'error' : success === true ? 'success' : 'none';
+  const note = inputNote({ error, success, helper });
+  const tone = note?.kind === 'error' ? 'error' : 'none';
 
   return (
     <View style={[styles.column, style]}>
@@ -143,13 +146,16 @@ export function Input({
       </View>
       {overrideNode}
       {overrideNode === null ? renderAttribution(attribution, { fieldName: label }) : null}
-      {error !== undefined ? (
+      {/* The line under the field (`inputNote`) — success is words with its mark, never a ring. */}
+      {note?.kind === 'error' ? (
         <Text variant="caption" color="danger">
-          {error}
+          {note.text}
         </Text>
-      ) : helper !== undefined ? (
+      ) : note?.kind === 'success' ? (
+        <StatusMark tone="success" label={note.text} />
+      ) : note?.kind === 'helper' ? (
         <Text variant="caption" color="tertiary">
-          {helper}
+          {note.text}
         </Text>
       ) : null}
     </View>

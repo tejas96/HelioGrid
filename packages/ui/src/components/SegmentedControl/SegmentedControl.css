@@ -1,7 +1,8 @@
-/* SegmentedControl — pill container on --canvas-sunken, active is a white pill (e2) that
-   springs between positions.
+/* SegmentedControl — the track takes the control fill (the well on the page, white in a tile);
+   the active pill is the opposite of the track, the ground, at e2, and springs between positions.
+   On the page that is a grey track and a white pill.
 
-   THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. --canvas-sunken is not
+   THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. The well is not
    one of the two backgrounds colors.css certifies text tokens on, and --text-tertiary lands at
    4.48 there — under the floor — so the count takes --text-secondary. A disabled segment's
    label is information too, so it keeps --text-secondary rather than --text-disabled (1.44 on
@@ -20,7 +21,7 @@
   gap: 0;
   border-radius: var(--r-pill);
   padding: var(--sp-1);
-  background: var(--canvas-sunken);
+  background: var(--hg-control-fill);
 }
 
 .hg-segmented-control-pill[data-error="true"] {
@@ -39,7 +40,7 @@
   );
   width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
   border-radius: var(--r-pill);
-  background: var(--surface);
+  background: var(--hg-ground);
   box-shadow: var(--e2);
   transition: left var(--dur-emphasised) var(--ease-spring);
 }

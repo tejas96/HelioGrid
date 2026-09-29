@@ -71,10 +71,11 @@
   padding: 0 14px;
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* A preset is a control, not a field: the opposite of what holds it (F7-15), told from the
+     field's well by its pill shape. */
+  background: var(--hg-control-fill);
   color: var(--text-secondary);
-  /* A preset is a control, not a field: raised at --e2 beside the field's well. */
-  box-shadow: var(--e2);
+  box-shadow: none;
   font-family: var(--font-sans);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
@@ -89,6 +90,12 @@
 
 .hg-time-field-preset:disabled {
   cursor: not-allowed;
+}
+
+/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. The
+   chosen preset keeps its accent, so its white words stay readable. */
+.hg-time-field-preset:disabled:not([data-active="true"]) {
+  background: var(--hg-control-fill-disabled);
 }
 
 .hg-time-field-preset:focus-visible {

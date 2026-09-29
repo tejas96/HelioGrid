@@ -5,8 +5,11 @@
  */
 export type FieldBoxDensity = 'expressive' | 'functional';
 
-/** The field's verdict on its value. `success` goes when `T-FPLAT-076` replaces the ring. */
-export type FieldBoxTone = 'none' | 'error' | 'success';
+/**
+ * The field's verdict on its value. Only an error rings: a success ring would differ from the
+ * error's by hue alone (`F7-12`), so a field states success in words under it.
+ */
+export type FieldBoxTone = 'none' | 'error';
 
 export interface FieldBoxState {
   /**

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import type { EmptyStateProps } from './EmptyState.types';
@@ -18,12 +19,14 @@ export function EmptyState({
   glow = true,
   style,
 }: NativeEmptyStateProps) {
+  /* The icon well is the opposite of what holds it (`F7-15`) — see the web half. */
+  const { controlFill } = useGround();
   return (
     <View style={[styles.root, style]}>
       <View style={styles.art}>
         {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
-        {icon ? <View style={styles.icon}>{icon}</View> : null}
+        {icon ? <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View> : null}
       </View>
       <Text variant="h3" align="center" style={styles.title}>
         {title}
@@ -59,8 +62,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
   title: {
     color: theme.colors['text-primary'],

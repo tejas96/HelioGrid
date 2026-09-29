@@ -42,8 +42,8 @@ export function KanbanColumnBlock({
             {column.label}
           </Text>
         )}
-        {/* text-tertiary measures 4.48 on canvas-sunken, under the floor, and the phone form makes
-            this column the primary reading of that pair — so words here take text-secondary. */}
+        {/* The phone form makes this column the primary reading of the count, so it is
+            load-bearing and takes text-secondary, never tertiary (N4). */}
         <Text variant="caption" color={overLimit ? 'warning' : 'secondary'}>
           {columnCountLabel(items.length, column.limit)}
         </Text>
@@ -73,9 +73,9 @@ export function KanbanColumnBlock({
 }
 
 const styles = StyleSheet.create({
+  /* No fill: a card is a grey tile, so the column is a heading and its cards on the page (`F7-49`). */
   column: {
     flexShrink: 0,
-    backgroundColor: theme.colors['canvas-sunken'],
     borderRadius: theme.radius['r-card-functional'],
     padding: 10,
   },

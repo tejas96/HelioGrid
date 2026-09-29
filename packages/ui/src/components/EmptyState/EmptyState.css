@@ -2,8 +2,8 @@
    headline, an encouraging description and one primary action. Never leave a screen blank.
 
    The bloom is --glow-brand: iridescence as atmosphere, never as information. The icon well
-   is a --surface disc at --e2, so the art reads as a card floating on the page rather than a
-   drawn badge. The 180px bloom and the 72px well are off the 4px scale on purpose — they are
+   takes the control fill, flat — the well on the page, white in a tile — the opposite of what
+   holds it (F7-15), as every round control on the page is. The 180px bloom and the 72px well are off the 4px scale on purpose — they are
    art dimensions, not layout, and the scale has no step for either. */
 
 .hg-empty-state {
@@ -40,8 +40,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
-  box-shadow: var(--e2);
+  background: var(--hg-control-fill);
+  box-shadow: none;
   color: var(--text-tertiary);
 }
 

@@ -39,13 +39,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
-  /* A CONTROL IS RAISED, NOT OUTLINED, and whatever holds it steps DOWN so it can be
-  . --surface at --e2 on a --canvas-sunken container: the control is
-   brighter than the thing it sits on, which is F7-15's luminance half doing the work, no line
-   anywhere. A white control on a WHITE card has no luminance left to spend — darken the container,
-   never draw an edge. Field mode rings every elevation, so this is covered there automatically. */
-  box-shadow: var(--e2);
+  /* A CONTROL IS THE OPPOSITE OF WHAT HOLDS IT (F7-15): the well on the page or a sheet, white
+     inside a tile (primitives/Ground). Found by luminance, never by an edge. */
+  background: var(--hg-control-fill);
+  box-shadow: none;
   transition: box-shadow var(--dur-micro) var(--ease-standard);
 }
 
@@ -53,7 +50,9 @@
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
+/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
 .hg-radio-box[data-disabled="true"] {
+  background: var(--hg-control-fill-disabled);
   box-shadow: none;
 }
 

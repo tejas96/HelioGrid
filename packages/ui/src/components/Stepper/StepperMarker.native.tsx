@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ResolvedStep } from './resolve-steps';
 
@@ -12,12 +13,14 @@ interface NativeStepperMarkerProps {
 
 /**
  * The step's glyph. Each state has its own — a tick, an exclamation, a number in an accent ring,
- * a hollow number — so a step's state is never carried by colour alone (F7-12).
+ * a plain number — so a step's state is never carried by colour alone (F7-12). A step not yet done
+ * is a disc in the control fill, the opposite of what holds it (`F7-15`), never an outline ring.
  *
  * The in-progress ring is web's `box-shadow: 0 0 0 5px`; RN's `outline*` props are the one
  * equivalent that adds no layout, which the rail's connector geometry depends on.
  */
 export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerProps) {
+  const { controlFill } = useGround();
   const shape = { width: size, height: size, minWidth: size, borderRadius: size / 2 };
   if (step.state === 'done' || step.state === 'errors') {
     const done = step.state === 'done';
@@ -54,8 +57,16 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
   }
   const running = step.state === 'in-progress';
   return (
-    <View style={[styles.marker, shape, running ? styles.running : styles.notStarted]}>
-      <Text variant="caption" color={running ? 'accent' : 'tertiary'} style={styles.number}>
+    <View
+      style={[
+        styles.marker,
+        shape,
+        { backgroundColor: controlFill },
+        running ? styles.running : null,
+      ]}
+    >
+      {/* Text inside a well is secondary or stronger (`F7-15`). */}
+      <Text variant="caption" color={running ? 'accent' : 'secondary'} style={styles.number}>
         {String(index + 1)}
       </Text>
     </View>
@@ -67,7 +78,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    backgroundColor: theme.colors.surface,
   },
   done: {
     backgroundColor: theme.colors.success,
@@ -79,10 +89,6 @@ const styles = StyleSheet.create({
     outlineWidth: 5,
     outlineColor: theme.colors['accent-subtle'],
     outlineStyle: 'solid',
-  },
-  notStarted: {
-    borderWidth: 2,
-    borderColor: theme.colors['canvas-sunken'],
   },
   number: {
     fontWeight: '700',

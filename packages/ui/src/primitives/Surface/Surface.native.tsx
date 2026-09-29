@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
+import { GroundProvider } from '../Ground/Ground.native';
+import type { Ground } from '../Ground/Ground.types';
 import type {
   Density,
   Elevation,
@@ -44,11 +46,19 @@ const BACKGROUND: Record<SurfaceBackground, string> = {
   'canvas-sunken': theme.colors['canvas-sunken'],
 };
 
+/** The ground each background IS, so a control inside takes the opposite (`F7-15`). */
+const GROUND: Record<SurfaceBackground, Ground> = {
+  surface: 'page',
+  'surface-alt': 'page',
+  canvas: 'tile',
+  'canvas-sunken': 'tile',
+};
+
 interface NativeSurfaceProps extends SurfaceProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Elevation, density-resolved radius and background — all values from the theme. */
+/** Elevation, density-resolved radius and background — all values from the theme — and the ground it is. */
 export function Surface({
   children,
   elevation = 'e0',
@@ -61,5 +71,9 @@ export function Surface({
     backgroundColor: BACKGROUND[background],
     ...(radius !== undefined ? { borderRadius: RADIUS[density][radius] } : {}),
   };
-  return <View style={[shape, ELEVATION[elevation], style]}>{children}</View>;
+  return (
+    <View style={[shape, ELEVATION[elevation], style]}>
+      <GroundProvider ground={GROUND[background]}>{children}</GroundProvider>
+    </View>
+  );
 }

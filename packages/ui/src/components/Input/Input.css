@@ -67,3 +67,8 @@
 .hg-input-helper {
   color: var(--text-tertiary);
 }
+
+/* The success words sit at their own width under the field, not stretched across the column. */
+.hg-input-success {
+  align-self: flex-start;
+}
