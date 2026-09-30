@@ -37,7 +37,36 @@
       "Bash(gh pr list *)",
       "Bash(gh run list *)",
       "Bash(git checkout -b *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(curl -i http://localhost:8084/*)",
+      "Bash(docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -qtAc *)",
+      "Bash(idb ui describe-all --udid *)",
+      "Bash(xcrun simctl io * screenshot *)",
+      "Bash(xcrun simctl keychain * reset)",
+      "Bash(xcrun simctl list devices *)",
+      "Bash(sips -z *)",
+      "Bash(adb devices)",
+      "Bash(adb -s * shell input *)",
+      "Bash(adb -s * shell uiautomator dump *)",
+      "Bash(adb -s * shell cat /sdcard/*)",
+      "Bash(adb -s * logcat -d*)",
+      "Bash(adb -s * exec-out screencap *)",
+      "Bash(bash scripts/verify-digest.sh *)",
+      "Bash(bash scripts/record-proof.sh *)",
+      "Bash(lsof -nP -iTCP:3002 -iTCP:8084 -iTCP:8081 -sTCP:LISTEN -t)",
+      "Bash(pgrep -f *)",
+      "Bash(perl -e 'sleep shift' *)",
+      "Bash(date -u +%FT%TZ)"
+    ],
+    "deny": [
+      "Bash(curl * -o*)",
+      "Bash(curl * --output*)",
+      "Bash(curl * -O*)",
+      "Bash(curl * --remote-name*)",
+      "Bash(curl * -T*)",
+      "Bash(curl * --upload-file*)",
+      "Bash(curl * -K*)",
+      "Bash(curl * --config*)"
     ]
   },
   "hooks": {

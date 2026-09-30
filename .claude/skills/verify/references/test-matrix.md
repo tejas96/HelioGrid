@@ -58,8 +58,9 @@ a returning account.
 
 **A new account** — no SMS is sent locally. Request a code for ANY fresh `+91` ten-digit number —
 `POST /auth/otp/request` with `{"phoneE164": "+919845027746", "channel": "sms"}` — and read the code
-from the API's log: the line `Message for +91… via sms: … code is 123456` (`preview_logs` on the api
-server with search `via sms`, else its stdout or the log file the run names). Verify with
+from the API's log: the line `Message for +91… via sms: … code is 123456` — `grep 'via sms'` in
+`$(git rev-parse --git-common-dir)/heliogrid-harness/api.log`, which the `api` and `api-built` servers
+write afresh at each start, or `preview_logs` with the server id the dispatch names. Verify with
 `POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}`. The API sets two HttpOnly
 cookies, `hg_session` (path `/auth`, the refresh grant) and `hg_token` (the ten-minute API token);
 with curl keep a jar (`-c jar -b jar`). A first-time number has no company: `POST /tenants` with
@@ -67,26 +68,57 @@ with curl keep a jar (`-c jar -b jar`). A first-time number has no company: `POS
 minutes and eight per day per number are the real caps — use a fresh number rather than waiting one
 out. The API must be running for either path.
 
-## What each agent can see, and recording a run
+## What each agent can see and do, and recording a run
 
-A step's `observe` names the kind of fact that decides it; only the agent whose row lists that kind
-may run the step.
+A step's `observe` names the kind of fact that decides it, and its action is something an agent can
+DO: only the agent whose row lists both may run the step. An action no row can drive — the network
+dropped, the app killed mid-action, two devices at once, until a command for it is named here — is a
+case proven another way or `none`, never a QA step.
 
-| agent | observe kinds it can read | what it cannot see |
-|---|---|---|
-| `qa-web` | `a11y-text` (`read_page`, `find`) · `computed-style` and `dom-value` (`javascript_tool`) · `console` · `network`: a request's method, URL, status, the body it sent and the response body (`read_network_requests`) · `log` (`preview_logs`) · `screenshot`, for what only vision shows | a request's HEADERS · a database row |
-| `qa-api` (the api and the worker) | `response`: status line, headers and body (`curl -i`), and the request it sent · `db-scalar`: one read-only value as `qa_readonly`, tenant pinned · `log`: the api and worker logs (`preview_logs`) | a rendered page · a write to the database |
-| `qa-mobile` | `ios-tree`: the front app's accessibility tree (the simulator tool's `inspect`) · `screenshot`: one shrunk frame per step · `android-tree`: `uiautomator` text · `logcat` · `log` (`preview_logs`) | a request's headers or body · a database row |
-| the author, through `scripts/record-proof.sh` | `recorder`: a command's exit, the expected text present and the rejected text absent in its output | anything the command does not print |
-| `qa-parity` | `code` of both platforms, and the values the surface agents recorded | anything running |
+| agent | observe kinds it can read (SEE) | actions it can take (DRIVE) | it cannot |
+|---|---|---|---|
+| `qa-web` | `a11y-text` (`read_page`, `find`) · `computed-style` and `dom-value` (`javascript_tool`) · `console` · `network`: a request's method, URL, status, the body it sent and the response body (`read_network_requests`) · `log` (the api log file) · `screenshot`, for what only vision shows | open a route, click, type, fill a form, key presses, resize to 375 or 1536, a `fetch` from the page (the sign-out) | see a request's HEADERS or a database row · drop the network · open a second browser |
+| `qa-api` (the api and the worker) | `response`: status line, headers and body (`curl -i`), and the request it sent · `db-scalar`: one read-only value as `qa_readonly`, tenant pinned · `log`: the api log file and the worker's (`preview_logs`) | any request with any body, header or cookie (`curl`) · the seed command a step names (`/verify` §2) | see a rendered page · write a row by hand · start a workflow the api does not start |
+| `qa-mobile` | `ios-tree`: `idb ui describe-all --udid <udid>`, piped to `grep` for the step's words · `android-tree`: `uiautomator` text · `screenshot`: one shrunk frame per step · `logcat` · `log` (the api log file) | tap, swipe, type, the hardware buttons, a deep link (the simulator tool; `adb shell input` on Android) · a cold relaunch · the iOS sign-out (`xcrun simctl keychain <udid> reset`) | see a request's headers or body, or a database row · drop the network |
+| the author, through `scripts/record-proof.sh` | `recorder`: a command's exit, the expected text present and the rejected text absent in its output | any one command, with a time cap | anything the command does not print |
+| `qa-parity` | `code` of both platforms (`Read`, `Grep`), and the values the surface agents recorded | nothing runs | anything running |
 
-**Recording a run.** The prompt names the task's QA record folder, `.git/heliogrid-harness/<T-id>/qa/`,
-and the ticket's steps with their execution detail from `run.md`. Before the first step, read every
-step's `observe` against your row: `case-reviewer` already refused a step no row can show, so one you
-still cannot observe is recorded `inconclusive: cannot observe <kind>`, never guessed. After EACH step,
-append its verdict object as one line to `verdicts-<surface>.jsonl` and move on — a turn cap then loses
-nothing. Batch independent requests in one Bash call. Plain `sleep` is blocked: wait with
-`python3 -c "import time; time.sleep(N)"`. When the budget runs low, stop and return the array built so
+**Recording a run.** The prompt names the task's QA record folder, `.git/heliogrid-harness/<T-id>/qa/`
+(`$R`), the round, the tree, and the ticket's steps with their execution detail from `run.md`. Before
+the first step, read every step's `observe` and action against your row: `case-reviewer` already
+refused a step no row can see or drive, so one you still cannot is recorded `inconclusive: cannot
+observe <kind>` (or `cannot drive <action>`), never guessed. After EACH step, append ONE line to your
+own file, `$R/verdicts-<surface>.jsonl` — no two agents write one file — and move on; a turn cap then
+loses nothing. Write it with the one form `.claude/settings.json` lets a background agent run without a
+prompt; the quoted heredoc takes any character, an apostrophe included, and a line that is not one JSON
+object is refused before anything is written:
+
+```bash
+bash scripts/verify-digest.sh --append "$R/verdicts-<surface>.jsonl" <<'LINE'
+{"step_id": "Q1", …}
+LINE
+```
+
+The line, and nothing but it, in this shape (every agent and the recorder
+cite it):
+
+```
+{"step_id": "Q<n>" | "P<n>", "surface": "api" | "worker" | "web" | "ios" | "android" | "parity",
+ "claims": ["<the step's case ids, landing or core>"], "round": <the dispatch's round>,
+ "stage": "verify" | "ship", "tree": "<the dispatch's tree id>", "at": "<UTC time, 2026-10-01T09:14:03Z>",
+ "verdict": "pass" | "fail" | "inconclusive" (a step) · "clean" | "finding" | "inconclusive" (a probe),
+ "expected": "<the step's literal>", "observed": <the exact value read>,
+ "evidence": ["<a path under $R/evidence/>" or "<text: the matched tree excerpt, the computed values>"],
+ "driver": "agent"}
+```
+
+A probe line adds `"target"` (the route or screen it aimed at), and a finding outside the task's
+scope adds `"deferred"` (words of the `docs/tasks/deferred.md` row it wrote). `at` is read from the
+clock (`date -u +%FT%TZ`) when the line is written. The step ids and claims are the plan's own, never
+a sub-step (`Q3/FilterBar`, `Q10a`): several checks inside one step are one line, each value in
+`observed`. `scripts/verify-digest.sh --verdicts <T-id>` refuses any other shape (`M151`). Batch
+independent requests in one Bash call. Plain `sleep` is blocked: wait with
+`perl -e 'sleep shift' N`. When the budget runs low, stop and return the array built so
 far — never a prose summary in its place.
 
 ## A step decides on text, never on pixels
@@ -98,13 +130,16 @@ and the criterion is always a literal string:
 | Surface | Read with | Assert |
 |---|---|---|
 | web | `read_page` · `javascript_tool` for computed values | exact strings, exact computed values |
-| iOS | the simulator tool's `inspect` | the step's exact words are in the tree |
+| iOS | `idb ui describe-all --udid <udid> \| grep -o '<words>'` | the step's exact words are in the tree |
 | Android | `adb shell uiautomator dump` | `text="…"` attributes match exactly |
 | api | `curl -i` | status line and body bytes |
 | db | read-only `psql -tAc` against `heliogrid-pg-local` | the scalar returned |
 
 "Renders correctly" is not a criterion; `text="Welcome back"` present and `text="Loading from"` absent
-is. Screenshots are evidence for a person, mandatory on failure, never the verdict. Vision is right
+is. Screenshots are evidence for a person, never the verdict: a phone's failure keeps its screenshot
+as a file under `$R/evidence/` (`xcrun simctl io`, `adb exec-out screencap`); the web's screenshot
+tool returns an image, not a file, so web evidence is text — the tree excerpt and the computed values,
+and a vision step writes what it saw in words. Vision is right
 only for what only vision catches — clipping, overlap, truncation, broken Devanagari run-splitting,
 layout collapse at 375 — and those steps say so.
 
@@ -117,6 +152,7 @@ them.
 
 ## Evidence
 
-Specifics, not adjectives. **Good** — "browser 375+1536 happy / wrong-code / send-error paths; iPhone
+Evidence files go to `$R/evidence/`, inside `.git`, so they outlive the session that took them; a
+session scratchpad is gone before `/ship` reads them. Specifics, not adjectives. **Good** — "browser 375+1536 happy / wrong-code / send-error paths; iPhone
 16 relaunch restores session; Pixel 8 fresh user passes; curl 409 returns ALREADY_ONBOARDED".
 **Bad** — "verified working".

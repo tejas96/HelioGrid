@@ -43,6 +43,11 @@ DO $$ BEGIN
     CREATE ROLE qa_readonly LOGIN PASSWORD 'qa_readonly' IN ROLE app_user;
   END IF;
 END $$;
+-- The membership also hands qa_readonly app_user's write grants, so every session it opens starts
+-- read-only. A session can turn this off (`BEGIN READ WRITE`, `SET transaction_read_only`), so it is
+-- one guard of two: the agent hook refuses the write words it knows, those included — a word list,
+-- never a parser of SQL — and qa-api's prompt forbids them.
+ALTER ROLE qa_readonly SET default_transaction_read_only = on;
 
 -- Temporal's own owner. Name and password match infra/temporal/config/temporal.yaml, which is
 -- why that file needs no edit.

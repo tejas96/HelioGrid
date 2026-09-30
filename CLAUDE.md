@@ -80,8 +80,8 @@ parked with a recorded reason.
 config: `break-it-reviewer` at `/ship`, no `/verify`, no stamp. HIGH — the database, the API, money,
 tenancy, permissions, any screen: `case-reviewer` before code, the QA agents at `/verify`,
 `design-reviewer` for a screen. No line reads as HIGH; git's pre-commit and CI read HIGH by path for
-the database, the API and its client, a service, a screen and domain's money and permission rules
-(`M113`), and `break-it-reviewer` checks the rest of the tier was honest.
+the database, the API and its client, a service, a screen, domain's money and permission rules,
+and the env, copy, component, theme and form packages (`M113`), and `break-it-reviewer` checks the rest of the tier was honest.
 
 **One fresh session per task, and a budget.** A task run in a long session re-reads the whole old
 chat on every step. `/start` states which agents the task will pay for. Long command output goes to a

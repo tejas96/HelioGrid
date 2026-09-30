@@ -40,15 +40,32 @@ task's own section and the code its Scope names, nothing wider: never a whole PR
 5. **A QA step that would pass on broken code.** For each `**QA plan:**` step: name the wrong
    implementation that would still pass it, and what differs before and after the fix. Vacuous: it
    reads an empty list or a zero count, compares two empty states, depends on the clock, or asserts
-   what validation already refuses. Unobservable: its `observe` is not a kind its agent can see
-   (test-matrix §"What each agent can see"). Missing: a case proven by `Q<n>` with no such step, or a
-   surface in the Scope with no `landing` step.
+   what validation already refuses. Unobservable or undrivable: its `observe` is not a kind its agent
+   can SEE, or its action is not one its agent can DRIVE (test-matrix §"What each agent can see and
+   do"). Missing: a case proven by `Q<n>` with no such step, or a surface
+   `scripts/verify-digest.sh --surfaces --paths <the Scope's layers>` prints with no `landing` step.
 6. **A fault in the data model** (a task that authors tables): the Data model block against
    `packages/db/src/schema/` — a fact stored twice, a value stored that could be derived, a query
    with no index or an index with no query, growth with no stated horizon, grants wider than the
    writes, a nullable column with no "unknown" state, a column no row needs.
+7. **Walk one real run.** Reading the text finds wrong text; it misses what goes wrong when the thing
+   RUNS. For anything the ticket makes run — a server, a job, a workflow, a script, a hook, a QA
+   round — trace one concrete run end to end and answer each question with a file and line, or name
+   it as a finding:
+   1. **Start** — who starts each process, server, device or job, and in what order.
+   2. **Together** — what runs at the same time, and what it shares (accounts, rows, ports, files).
+   3. **Waits** — what can block it: a permission prompt, a lock, a network call, a first-use dialog.
+   4. **Failure** — each step hangs, crashes or is refused: what happens next.
+   5. **Bounds** — every retry and loop has a cap a machine counts, and a stop that asks the owner.
+   6. **Lifetime** — where each record lives, and who deletes it and when (a session scratchpad, a
+      pruned record, an unreferenced git object).
+   7. **Close** — who stops each thing, and which command proves nothing is left.
+   8. **Result** — where the result is written, and who reads it.
+   9. **Exact or judgement** — a script decides only what a machine answers the same way every time;
+      judgement is a written rule for a reviewer.
+   10. **Repeats** — no check runs twice, and no actor re-does another's check.
 
-Return ONLY a JSON array: `{check:"fact"|"placement"|"case"|"proof"|"qa-step"|"data-model",
+Return ONLY a JSON array: `{check:"fact"|"placement"|"case"|"proof"|"qa-step"|"data-model"|"run",
 claim_id, finding, evidence, fix, severity:"blocker"|"major"|"minor"}` — `claim_id` is the case,
 step or Placement row concerned, or `new`; `evidence` is the file and line that decides it. At most
 fifteen; a nit is not one. A finding you did not verify by reading the ticket and the code is not a
