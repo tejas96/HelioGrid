@@ -122,19 +122,6 @@
   color: var(--text-tertiary);
 }
 
-.hg-image-retry {
-  margin-top: var(--sp-0-5);
-  padding: 0 var(--sp-4);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-}
-
 /* ── loading and present ──────────────────────────────────────────────────── */
 
 /* The skeleton sits UNDER the image and is revealed by its opacity, so the box is never empty. */

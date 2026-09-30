@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { CardProps } from './Card.types';
 
@@ -47,6 +47,7 @@ export function CardBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: Required<Pick<CardProps, 'state' | 'emptyMessage' | 'errorTitle' | 'errorMessage'>> &
@@ -56,6 +57,7 @@ export function CardBody({
     | 'emptyTitle'
     | 'emptyAction'
     | 'onRetry'
+    | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'
   >) {
@@ -74,13 +76,7 @@ export function CardBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={
-          onRetry !== undefined ? (
-            <Pressable className="hg-card-retry" onPress={onRetry}>
-              Try again
-            </Pressable>
-          ) : null
-        }
+        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
       />
     );
   }

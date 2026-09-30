@@ -1,5 +1,5 @@
-/* SourceDocument's chrome (web): the paging/fit controls, the state panel, and the plain button
-   that opens the real file.
+/* SourceDocument's chrome (web): the paging/fit controls, the state panel, and the act that opens
+   the real file.
 
    The fit controls (fit width / fit whole page) say which one is in force, and they say it through
    the primitive: `accessibilityState.selected` is `aria-pressed` here and
@@ -8,6 +8,7 @@
 
 import type { ReactNode } from 'react';
 import { Pressable } from '../../primitives/Pressable';
+import { Button } from '../Button/Button';
 
 export function Chrome({ children }: { children: ReactNode }) {
   return <span className="hg-source-doc-chrome">{children}</span>;
@@ -51,20 +52,26 @@ export function IconBtn({
   );
 }
 
-/** A preview is never the only way to see a file, so this renders as a link when there is a URL. */
-export function PlainButton({
+/**
+ * A preview is never the only way to see a file, so this is a LINK when there is a URL — new tab,
+ * copy-link and middle-click keep working, which a `Button` cannot give. It wears `Button`'s own
+ * secondary `md` rule, so no copy of the pill exists.
+ */
+export function OpenOriginal({
   children,
   onClick,
   href,
 }: {
-  children: ReactNode;
+  children: string;
   onClick?: () => void;
   href?: string;
 }) {
   if (href) {
     return (
       <a
-        className="hg-source-doc-plain"
+        className="hg-button"
+        data-variant="secondary"
+        data-size="md"
         href={href}
         target="_blank"
         rel="noreferrer"
@@ -75,9 +82,9 @@ export function PlainButton({
     );
   }
   return (
-    <button type="button" className="hg-source-doc-plain" onClick={onClick}>
+    <Button variant="secondary" size="md" onClick={onClick}>
       {children}
-    </button>
+    </Button>
   );
 }
 

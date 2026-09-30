@@ -1,3 +1,4 @@
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import { AudioGlyph } from './AudioGlyph';
 import type { AudioPlayerProps, AudioUnavailableReason } from './AudioPlayer.types';
@@ -8,19 +9,16 @@ import { TranscriptDoor } from './AudioTransport';
 export function AudioError({
   errorMessage,
   onRetry,
+  retryLabel,
   onOpenTranscript,
   transcriptLabel,
 }: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'onRetry' | 'onOpenTranscript'>) {
+  Pick<AudioPlayerProps, 'onRetry' | 'retryLabel' | 'onOpenTranscript'>) {
   return (
     <div className="hg-audio-panel" data-tone="error">
       <p className="hg-audio-panel-error-text">{errorMessage}</p>
       <div className="hg-audio-panel-actions">
-        {onRetry !== undefined ? (
-          <button type="button" className="hg-audio-text-action" onClick={onRetry}>
-            Try again
-          </button>
-        ) : null}
+        <RetryButton onRetry={onRetry} label={retryLabel} />
         {onOpenTranscript !== undefined ? (
           <TranscriptDoor label={transcriptLabel} onPress={onOpenTranscript} />
         ) : null}

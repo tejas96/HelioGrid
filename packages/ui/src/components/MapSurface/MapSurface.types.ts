@@ -125,6 +125,8 @@ export interface MapSurfaceProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   controls?: boolean;
   /** Fallbacks, used only when `zoom` is not supplied. Prefer the level. */
   onZoomIn?: () => void;

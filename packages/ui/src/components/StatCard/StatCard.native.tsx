@@ -13,6 +13,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderBand } from '../BandedFigure/BandChip.native';
@@ -68,6 +69,7 @@ export function StatCard({
   emptyMessage = 'No figure for this period yet.',
   errorMessage = "Couldn't read this figure. Try again — nothing here is a stale number.",
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not measured here',
   unavailableMessage,
   style,
@@ -89,22 +91,27 @@ export function StatCard({
   if (state !== 'ready') {
     return (
       <View style={[styles.card, style]}>
-        {overline}
-        <StatCardStates
-          state={state}
-          label={label}
-          emptyMessage={emptyMessage}
-          errorMessage={errorMessage}
-          onRetry={onRetry}
-          unavailableTitle={unavailableTitle}
-          unavailableMessage={unavailableMessage}
-        />
+        <GroundProvider ground="page">
+          {overline}
+          <StatCardStates
+            state={state}
+            label={label}
+            emptyMessage={emptyMessage}
+            errorMessage={errorMessage}
+            onRetry={onRetry}
+            retryLabel={retryLabel}
+            unavailableTitle={unavailableTitle}
+            unavailableMessage={unavailableMessage}
+          />
+        </GroundProvider>
       </View>
     );
   }
 
+  /* The card is white and holds controls, so they take the page's fill until T-FPLAT-078 makes it
+     a tile. */
   const body = (
-    <>
+    <GroundProvider ground="page">
       {overline}
       {/* An absent figure is named in the value's own footprint — never a dash, never a zero. */}
       {gapNode ? (
@@ -132,7 +139,7 @@ export function StatCard({
         suppressed={Boolean(gapNode)}
       />
       {children}
-    </>
+    </GroundProvider>
   );
 
   if (onClick) {

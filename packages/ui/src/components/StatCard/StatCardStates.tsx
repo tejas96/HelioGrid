@@ -2,7 +2,7 @@
    presented as a real one is the exact failure F8-01 exists to prevent. `loading` puts a shimmer in
    the value's own footprint, so nothing reflows when the figure lands. */
 
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote';
 
@@ -16,6 +16,7 @@ export function StatCardStates({
   emptyMessage,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: {
@@ -24,6 +25,7 @@ export function StatCardStates({
   emptyMessage: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage?: string;
 }) {
@@ -39,11 +41,7 @@ export function StatCardStates({
     return (
       <div className="hg-stat-card-error">
         <p className="hg-stat-card-error-body">{errorMessage}</p>
-        {onRetry ? (
-          <Pressable className="hg-stat-card-retry" onPress={onRetry}>
-            Try again
-          </Pressable>
-        ) : null}
+        <RetryButton onRetry={onRetry} label={retryLabel} />
       </div>
     );
   }

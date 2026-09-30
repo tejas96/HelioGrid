@@ -74,6 +74,8 @@ export interface ChartFrameProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   children?: ReactNode;
 }
 

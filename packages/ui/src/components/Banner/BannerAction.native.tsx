@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { BannerActionProps } from './Banner.types';
@@ -18,9 +19,11 @@ interface NativeBannerActionProps extends BannerActionProps {
  * negative margin is the 6px per side the target borrows back.
  */
 export function BannerAction({ children, onClick, style }: NativeBannerActionProps) {
+  /* The opposite of what holds it (`F7-15`): the banner's tint is a tile ground, so white. */
+  const { controlFill } = useGround();
   return (
     <Pressable onPress={onClick} style={styles.target}>
-      <View style={[styles.pill, style]}>
+      <View style={[styles.pill, { backgroundColor: controlFill }, style]}>
         <Text variant="body-sm" style={styles.words}>
           {children}
         </Text>
@@ -42,9 +45,6 @@ const styles = StyleSheet.create({
     height: 32,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
   words: {
     fontWeight: '500',

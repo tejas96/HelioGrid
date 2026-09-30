@@ -29,10 +29,10 @@
   align-items: center;
 }
 
-/* The 2px ring is drawn in --surface so overlapping circles stay separable. */
+/* The 2px ring is cut in the ground behind the group so overlapping circles stay separable. */
 .hg-avatar-group-item {
   border-radius: var(--r-pill);
-  box-shadow: 0 0 0 2px var(--surface);
+  box-shadow: 0 0 0 2px var(--hg-ground);
   margin-left: var(--hg-avatar-overlap);
 }
 
@@ -45,7 +45,7 @@
   height: var(--hg-avatar-size);
   margin-left: var(--hg-avatar-overlap);
   border-radius: var(--r-pill);
-  box-shadow: 0 0 0 2px var(--surface);
+  box-shadow: 0 0 0 2px var(--hg-ground);
   background: var(--canvas-sunken);
   color: var(--text-secondary);
   display: inline-flex;

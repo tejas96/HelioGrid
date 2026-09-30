@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { BlockProps } from './Block.types';
 
 const type = theme.type.roles;
@@ -29,20 +29,6 @@ const styles = StyleSheet.create({
   warning: { color: theme.colors['warning-text'] },
   title: { fontWeight: '700', color: theme.colors['text-primary'] },
   loading: { gap: 10 },
-  retry: {
-    minHeight: 44,
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  retryText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
 });
 
 /** The web half animates a gradient sweep; RN has no CSS gradient loop, so it pulses opacity. */
@@ -96,7 +82,13 @@ export type BlockBodyProps = Required<
 > &
   Pick<
     BlockProps,
-    'children' | 'title' | 'emptyTitle' | 'emptyAction' | 'onRetry' | 'unavailableMessage'
+    | 'children'
+    | 'title'
+    | 'emptyTitle'
+    | 'emptyAction'
+    | 'onRetry'
+    | 'retryLabel'
+    | 'unavailableMessage'
   >;
 
 /** The body is the only part that moves between states; the header and the frame stay put. */
@@ -110,6 +102,7 @@ export function BlockBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: BlockBodyProps) {
@@ -136,13 +129,7 @@ export function BlockBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={
-          onRetry !== undefined ? (
-            <Pressable style={styles.retry} onPress={onRetry}>
-              <Text style={styles.retryText}>Try again</Text>
-            </Pressable>
-          ) : null
-        }
+        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
       />
     );
   }

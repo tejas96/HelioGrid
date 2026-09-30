@@ -51,9 +51,7 @@
   font-weight: var(--fw-medium);
   letter-spacing: -0.01em;
   white-space: nowrap;
-  transition:
-    background var(--dur-standard) var(--ease-standard),
-    box-shadow var(--dur-standard) var(--ease-standard);
+  transition: background var(--dur-standard) var(--ease-standard);
 }
 
 /* Scope — active is the near-black pill, matching the primary-action marker. */
@@ -69,20 +67,18 @@
   color: var(--text-inverse);
 }
 
-/* Stage and facet chips — active is accent fill; the rest separate by shadow, not outlines. */
+/* Stage and facet chips — active is accent fill; the rest take the control fill. */
 .hg-filter-pill[data-pill="chip"] {
   height: var(--hg-filter-h-chip);
   padding: 0 14px;
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* The opposite of what holds it (F7-15), flat. */
+  background: var(--hg-control-fill);
   font-size: var(--fs-body-sm);
 }
 
 .hg-filter-pill[data-pill="chip"][data-active="true"] {
   background: var(--accent);
   color: var(--text-inverse);
-  box-shadow: none;
 }
 
 /* A ticked facet chip gives the tick its room back on the leading edge. */
@@ -106,9 +102,7 @@
   height: var(--hg-filter-h-filters);
   padding: 0 14px;
   gap: var(--sp-2);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  background: var(--hg-control-fill);
   color: var(--text-primary);
   font-size: var(--fs-body);
 }

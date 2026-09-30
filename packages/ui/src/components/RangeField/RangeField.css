@@ -105,7 +105,7 @@
   border-radius: 50%;
   background: radial-gradient(
     circle at center,
-    var(--surface) 0 9.5px,
+    var(--hg-ground) 0 9.5px,
     var(--accent) 9.5px 11px,
     transparent 11px
   );
@@ -122,7 +122,7 @@
   border-radius: 50%;
   background: radial-gradient(
     circle at center,
-    var(--surface) 0 9.5px,
+    var(--hg-ground) 0 9.5px,
     var(--accent) 9.5px 11px,
     transparent 11px
   );

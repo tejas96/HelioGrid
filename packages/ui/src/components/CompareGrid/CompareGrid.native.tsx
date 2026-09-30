@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, type ScrollView, StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { visibleRange } from './CompareGrid.logic';
@@ -10,6 +11,8 @@ import { CompareGridFooter } from './CompareGridFooter.native';
 import { CompareGridStatePanel } from './CompareGridStatePanel.native';
 import { CompareGridTable } from './CompareGridTable.native';
 
+/* The shell is white and holds controls, so its controls take the page's fill until T-FPLAT-078
+   makes it a tile. */
 const styles = StyleSheet.create({
   shell: {
     backgroundColor: theme.colors.surface,
@@ -58,6 +61,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   errorTitle = "Couldn't load the comparison",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not comparable here',
   unavailableMessage,
   density = 'expressive',
@@ -119,60 +123,67 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   if (state !== 'ready' || options.length === 0 || attributes.length === 0) {
     return (
       <View style={shell}>
-        {captionNode}
-        <CompareGridStatePanel
-          state={state}
-          emptyTitle={emptyTitle}
-          emptyMessage={emptyMessage}
-          errorTitle={errorTitle}
-          errorMessage={errorMessage}
-          onRetry={onRetry}
-          unavailableTitle={unavailableTitle}
-          unavailableMessage={unavailableMessage}
-        />
+        <GroundProvider ground="page">
+          {captionNode}
+          <CompareGridStatePanel
+            state={state}
+            emptyTitle={emptyTitle}
+            emptyMessage={emptyMessage}
+            errorTitle={errorTitle}
+            errorMessage={errorMessage}
+            onRetry={onRetry}
+            retryLabel={retryLabel}
+            unavailableTitle={unavailableTitle}
+            unavailableMessage={unavailableMessage}
+          />
+        </GroundProvider>
       </View>
     );
   }
 
   return (
     <View style={shell}>
-      {captionNode}
-      <Animated.ScrollView
-        ref={scroller}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        snapToInterval={columnWidth}
-        decelerationRate="fast"
-        accessibilityLabel={`Compare ${options.length} options`}
-        onLayout={onLayout}
-        onScroll={onScroll}
-      >
-        <CompareGridTable
-          attributes={attributes}
-          options={options}
-          selectedKey={selectedKey}
-          onSelect={onSelect}
-          selectLabel={selectLabel}
-          selectedLabel={selectedLabel}
-          currentLabel={currentLabel}
-          density={density}
-          columnWidth={columnWidth}
-          labelWidth={labelWidth}
-          scrollX={scrollX}
+      <GroundProvider ground="page">
+        {captionNode}
+        <Animated.ScrollView
+          ref={scroller}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          snapToInterval={columnWidth}
+          decelerationRate="fast"
+          accessibilityLabel={`Compare ${options.length} options`}
+          onLayout={onLayout}
+          onScroll={onScroll}
+        >
+          <CompareGridTable
+            attributes={attributes}
+            options={options}
+            selectedKey={selectedKey}
+            onSelect={onSelect}
+            selectLabel={selectLabel}
+            selectedLabel={selectedLabel}
+            currentLabel={currentLabel}
+            density={density}
+            columnWidth={columnWidth}
+            labelWidth={labelWidth}
+            scrollX={scrollX}
+          />
+        </Animated.ScrollView>
+
+        <CompareGridFooter
+          scrollable={scrollable}
+          first={range.first}
+          last={range.last}
+          count={options.length}
+          note={note}
+          onStep={nudge}
         />
-      </Animated.ScrollView>
 
-      <CompareGridFooter
-        scrollable={scrollable}
-        first={range.first}
-        last={range.last}
-        count={options.length}
-        note={note}
-        onStep={nudge}
-      />
-
-      {provenanceFoot === null ? null : <View style={styles.provenanceFoot}>{provenanceFoot}</View>}
+        {provenanceFoot === null ? null : (
+          <View style={styles.provenanceFoot}>{provenanceFoot}</View>
+        )}
+      </GroundProvider>
     </View>
   );
 }

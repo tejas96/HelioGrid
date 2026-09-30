@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { PageGeometry } from './PagedDocument.types';
 import { PrintScope } from './PrintScope';
@@ -104,12 +104,14 @@ export function DocMessage({
   title,
   message,
   onRetry,
+  retryLabel,
   style,
 }: {
   geometry: PageGeometry;
   title: string;
   message?: string;
   onRetry?: () => void;
+  retryLabel?: string;
   style?: CSSProperties;
 }) {
   return (
@@ -117,10 +119,10 @@ export function DocMessage({
       <div className="hg-paged-document-card" style={{ width: geometry.width }}>
         <p className="hg-paged-document-card-title">{title}</p>
         {message && <p className="hg-paged-document-card-body">{message}</p>}
-        {onRetry && (
-          <Pressable className="hg-paged-document-retry" onPress={onRetry}>
-            Try again
-          </Pressable>
+        {onRetry !== undefined && retryLabel !== undefined && (
+          <div className="hg-paged-document-card-action">
+            <RetryButton onRetry={onRetry} label={retryLabel} />
+          </div>
         )}
       </div>
     </div>

@@ -37,6 +37,8 @@ export interface AudioPlayerProps {
   /** `error`'s sentence — the fetch failed, which is not the same as there being no recording. */
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   /**
    * The transcript survives in every state — always give it somewhere to point, and what it points
    * at is `Transcript`, in an `EditorSurface` (`SCR-M07-13` / `SCR-M07-19`).

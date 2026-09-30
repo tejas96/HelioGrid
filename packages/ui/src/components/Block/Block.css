@@ -171,19 +171,6 @@
   color: var(--warning-text);
 }
 
-.hg-block-retry {
-  min-height: 44px;
-  padding: 0 18px;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-}
-
 /* ── footer ──────────────────────────────────────────────────────────────────── */
 
 .hg-block-foot {

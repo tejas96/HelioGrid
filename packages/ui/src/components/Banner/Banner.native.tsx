@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
@@ -121,11 +122,13 @@ export function Banner({
   if (variant === 'pill') {
     return (
       <View {...a11y} style={[styles.pill, { backgroundColor: pair.bg }, style]}>
-        {icon ?? <Glyph name={meta.icon} size={16} color={pair.text} />}
-        <Text variant="body-sm" style={[styles.pillWords, { color: pair.text }]}>
-          {title ?? children}
-        </Text>
-        {action}
+        <GroundProvider ground="tile">
+          {icon ?? <Glyph name={meta.icon} size={16} color={pair.text} />}
+          <Text variant="body-sm" style={[styles.pillWords, { color: pair.text }]}>
+            {title ?? children}
+          </Text>
+          {action}
+        </GroundProvider>
       </View>
     );
   }
@@ -140,23 +143,26 @@ export function Banner({
         style,
       ]}
     >
-      <View style={styles.glyph}>
-        {icon ?? <Glyph name={meta.icon} size={17} color={pair.text} />}
-      </View>
-      <View style={styles.content}>
-        {title === undefined ? null : (
-          <Text variant="body-sm" style={[styles.title, { color: pair.text }]}>
-            {title}
-          </Text>
-        )}
-        {children === undefined || children === null ? null : (
-          <Body title={title} tone={pair.text}>
-            {children}
-          </Body>
-        )}
-      </View>
-      {action === undefined ? null : <View style={styles.actionSlot}>{action}</View>}
-      {canDismiss ? <Dismiss tone={pair.text} onDismiss={onDismiss} /> : null}
+      {/* The tint is a tile ground: a control inside it takes the white fill (`F7-15`). */}
+      <GroundProvider ground="tile">
+        <View style={styles.glyph}>
+          {icon ?? <Glyph name={meta.icon} size={17} color={pair.text} />}
+        </View>
+        <View style={styles.content}>
+          {title === undefined ? null : (
+            <Text variant="body-sm" style={[styles.title, { color: pair.text }]}>
+              {title}
+            </Text>
+          )}
+          {children === undefined || children === null ? null : (
+            <Body title={title} tone={pair.text}>
+              {children}
+            </Body>
+          )}
+        </View>
+        {action === undefined ? null : <View style={styles.actionSlot}>{action}</View>}
+        {canDismiss ? <Dismiss tone={pair.text} onDismiss={onDismiss} /> : null}
+      </GroundProvider>
     </View>
   );
 }
@@ -214,7 +220,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 14,
     borderRadius: theme.radius['r-pill'],
-    ...theme.elevation.e1,
   },
   pillWords: {
     fontWeight: '500',

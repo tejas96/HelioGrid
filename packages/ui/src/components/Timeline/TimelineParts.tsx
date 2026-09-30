@@ -3,11 +3,11 @@
 
    Status is never colour alone: each state carries its own glyph inside the node — a tick for
    `done`, a filled dot for `current`, a bang for `blocked`, a cross for `failed` — and `upcoming`
-   is hollow, which is its own shape. */
+   is an empty disc, which is its own shape. */
 
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import type { TimelineStatus } from './Timeline.types';
 
 /** The node. `size` is the DS's own node ladder (28 page / 20 compact); it lives in Timeline.css. */
@@ -101,6 +101,7 @@ export function TimelineMessage({
   title,
   message,
   onRetry,
+  retryLabel,
   className,
   style,
 }: {
@@ -108,6 +109,7 @@ export function TimelineMessage({
   title: string;
   message?: string;
   onRetry?: () => void;
+  retryLabel?: string;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -140,11 +142,7 @@ export function TimelineMessage({
       </span>
       <div className="hg-timeline-message-title">{title}</div>
       {message ? <div className="hg-timeline-message-body">{message}</div> : null}
-      {onRetry ? (
-        <Pressable className="hg-timeline-retry" onPress={onRetry}>
-          Try again
-        </Pressable>
-      ) : null}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </div>
   );
 }

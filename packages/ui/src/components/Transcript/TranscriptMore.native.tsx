@@ -4,7 +4,7 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { TranscriptPlainButton } from './TranscriptChrome.native';
+import { Button } from '../Button/Button.native';
 
 const styles = StyleSheet.create({
   more: { flexDirection: 'row', marginTop: theme.spacing['sp-3'] },
@@ -26,9 +26,11 @@ export function TranscriptMore({
 }: TranscriptMoreProps) {
   return (
     <View style={styles.more}>
-      <TranscriptPlainButton
+      <Button
+        variant="secondary"
+        size="md"
         disabled={loadingMore}
-        onPress={() => {
+        onClick={() => {
           if (remaining > 0) {
             onReveal();
           } else {
@@ -41,7 +43,7 @@ export function TranscriptMore({
           : remaining > 0
             ? `Show the rest of the call · ${remaining} more`
             : 'Show more of the call'}
-      </TranscriptPlainButton>
+      </Button>
     </View>
   );
 }

@@ -34,6 +34,8 @@ export interface DetailPanelProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   /** `empty` means none **yet** — the words invite, and `emptyAction` makes the first one. */
   emptyTitle?: string;
   emptyMessage?: string;

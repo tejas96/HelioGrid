@@ -48,6 +48,7 @@ export function UsageMeter({
   loadingNote = "Not resolved yet — this period's rollup is still being read.",
   errorMessage = "Couldn't read this period's usage. Nothing is shown until it resolves, because this screen only ever shows the billed figures.",
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not metered on this plan',
   unavailableMessage,
   density = 'expressive',
@@ -65,6 +66,7 @@ export function UsageMeter({
         period={period}
         errorMessage={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
       />
     );
   }

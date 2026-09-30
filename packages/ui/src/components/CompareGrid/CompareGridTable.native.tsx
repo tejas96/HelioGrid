@@ -1,5 +1,6 @@
 import type { Animated as RNAnimated } from 'react-native';
 import { Animated, View } from 'react-native';
+import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
@@ -111,32 +112,60 @@ export function CompareGridTable<Opt extends CompareOption>({
         <View style={compareStyles.row}>
           <Animated.View style={[compareStyles.pin, box.pin, pinTransform]} />
           {options.map((option) => (
-            <View key={option.key} style={[box.cell, compareStyles.plain]}>
-              {/* **The option in force says so.** The web half sets `aria-pressed` here
-                  (`CompareGridTable.tsx:104`); the primitive's `accessibilityState.selected` is
-                  the one declaration behind both, and without it the chosen option read as an
-                  ordinary button and the choice was tint alone — `F7-12`. */}
-              <Pressable
-                accessibilityState={{ selected: isSelected(option) }}
-                onPress={() => onSelect(option.key)}
-                accessibilityLabel={`${isSelected(option) ? selectedLabel : selectLabel}: ${option.name}`}
-                style={[
-                  compareStyles.choose,
-                  isSelected(option) ? compareStyles.chooseSelected : null,
-                ]}
-              >
-                <Text
-                  variant="body"
-                  color={isSelected(option) ? 'accent' : 'inverse'}
-                  style={{ fontWeight: '500' }}
-                >
-                  {isSelected(option) ? selectedLabel : selectLabel}
-                </Text>
-              </Pressable>
+            <View key={option.key} style={[box.cell, cellGround(isSelected(option), false)]}>
+              {isSelected(option) ? (
+                /* The selected column's tint holds its choice as a tile does — see `Ground.css`. */
+                <GroundProvider ground="tile">
+                  <ChooseButton option={option} chosen label={selectedLabel} onSelect={onSelect} />
+                </GroundProvider>
+              ) : (
+                <ChooseButton
+                  option={option}
+                  chosen={false}
+                  label={selectLabel}
+                  onSelect={onSelect}
+                />
+              )}
             </View>
           ))}
         </View>
       )}
     </View>
+  );
+}
+
+/**
+ * **The option in force says so.** The web half sets `aria-pressed` (`CompareGridTable.tsx`); the
+ * primitive's `accessibilityState.selected` is the one declaration behind both, and without it the
+ * chosen option read as an ordinary button and the choice was tint alone — `F7-12`. Chosen, it is a
+ * control part: the opposite of what holds it (`F7-15`), flat.
+ */
+function ChooseButton<Opt extends CompareOption>({
+  option,
+  chosen,
+  label,
+  onSelect,
+}: {
+  option: Opt;
+  chosen: boolean;
+  label: string;
+  onSelect: (key: string) => void;
+}) {
+  const { controlFill } = useGround();
+  return (
+    <Pressable
+      accessibilityState={{ selected: chosen }}
+      onPress={() => onSelect(option.key)}
+      accessibilityLabel={`${label}: ${option.name}`}
+      style={[
+        compareStyles.choose,
+        chosen ? compareStyles.chooseSelected : null,
+        chosen ? { backgroundColor: controlFill } : null,
+      ]}
+    >
+      <Text variant="body" color={chosen ? 'accent' : 'inverse'} style={{ fontWeight: '500' }}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }

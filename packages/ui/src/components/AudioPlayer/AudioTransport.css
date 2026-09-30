@@ -22,10 +22,10 @@
   border: none;
   border-radius: var(--r-pill);
   cursor: pointer;
-  background: var(--surface);
+  /* A control is the opposite of what holds it (F7-15): the well on the page, white in a tile. */
+  background: var(--hg-control-fill);
   color: var(--text-primary);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  box-shadow: none;
   transition:
     transform var(--dur-micro) var(--ease-standard),
     background var(--dur-micro) var(--ease-standard),
@@ -60,11 +60,11 @@
   height: 56px;
   background: var(--action-primary);
   color: var(--text-inverse);
-  box-shadow: var(--e2);
 }
 
+/* Rest is flat, so hover lifts it one step. */
 .hg-audio-round[data-kind="primary"]:hover {
-  box-shadow: var(--e3);
+  box-shadow: var(--e2);
   transform: translateY(-1px);
 }
 
@@ -185,7 +185,8 @@
   height: 18px;
   margin-top: -7px;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* The knob is the opposite of the track it rides: the ground. */
+  background: var(--hg-ground);
   box-shadow:
     var(--e3),
     0 0 0 1.5px var(--accent) inset;
@@ -196,7 +197,8 @@
   height: 18px;
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
+  /* The knob is the opposite of the track it rides: the ground. */
+  background: var(--hg-ground);
   box-shadow:
     var(--e3),
     0 0 0 1.5px var(--accent) inset;
@@ -219,15 +221,11 @@
 }
 
 .hg-audio-range:disabled::-webkit-slider-thumb {
-  box-shadow:
-    var(--e1),
-    0 0 0 1.5px var(--text-disabled) inset;
+  box-shadow: 0 0 0 1.5px var(--text-disabled) inset;
 }
 
 .hg-audio-range:disabled::-moz-range-thumb {
-  box-shadow:
-    var(--e1),
-    0 0 0 1.5px var(--text-disabled) inset;
+  box-shadow: 0 0 0 1.5px var(--text-disabled) inset;
 }
 
 .hg-audio-speed {
@@ -237,9 +235,8 @@
   padding: 0 var(--sp-3);
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* A control is the opposite of what holds it (F7-15): the well on the page, white in a tile. */
+  background: var(--hg-control-fill);
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
@@ -250,7 +247,6 @@
 
 .hg-audio-speed[data-changed="true"] {
   background: var(--accent-subtle);
-  box-shadow: none;
   color: var(--accent);
 }
 

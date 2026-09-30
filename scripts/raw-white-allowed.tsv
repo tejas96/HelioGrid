@@ -1,0 +1,183 @@
+# The files that may name the raw white — `--surface` in any spelling (check 20 in
+# scripts/check-adherence.sh, M150). Everywhere else a control part reads `Ground`
+# (`--hg-control-fill`, `--hg-ground`, `useGround()`), and a Try again is `RetryButton`.
+# One line each: <path><TAB><reason>. The list only shrinks: a file that stops naming the white
+# fails the check until its line goes. The reasons:
+#   ground              the ground itself, and `Surface`, which sets it
+#   page-ground         an app's page or door: the page is white
+#   panel               a sheet, a modal, a detail panel: a page ground over the page
+#   float               a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
+#   over-media          a chip, a thumbnail or a control drawn over a photograph or a map
+#   paper               a document, a drawing sheet, a QR code's quiet zone, a brand specimen
+#   full-screen-ground  a screen that is its own page
+#   on-accent           a knob or a mark on the accent or the dark fill
+#   illustration        a drawn mark
+#   measure             a contrast measurement against the paper
+#   field               `FieldBox`'s focus gap: a field never sits in a tile
+#   shimmer             `Card`'s loading bars, drawn white on the grey tile
+#   deferred            owed by a row in docs/tasks/deferred.md
+#   owed-T-SHELL        the shell's parts, moved by T-SHELL-001 and T-SHELL-008
+#   owed-T-FPLAT-078    a container F7-49 turns into a tile or a heading, moved by T-FPLAT-078
+
+# ground
+packages/ui/src/primitives/Ground/Ground.css	ground
+packages/ui/src/primitives/Ground/Ground.native.tsx	ground
+packages/ui/src/primitives/Surface/Surface.css	ground
+packages/ui/src/primitives/Surface/Surface.native.tsx	ground
+
+# page-ground
+apps/mobile/src/screens/shared/door-styles.ts	page-ground
+apps/mobile/src/screens/shared/styles.ts	page-ground
+apps/web/app/globals.css	page-ground
+apps/web/features/home/HomeScreen.css	page-ground
+
+# panel
+packages/ui/src/components/DetailPanel/DetailPanel.css	panel
+packages/ui/src/components/DetailPanel/DetailPanel.native.tsx	panel
+packages/ui/src/components/DetailPanel/PanelHeader.native.tsx	panel
+packages/ui/src/components/Modal/Modal.css	panel
+packages/ui/src/components/Modal/Modal.native.tsx	panel
+packages/ui/src/components/Sheet/Sheet.css	panel
+packages/ui/src/components/Sheet/Sheet.native.tsx	panel
+packages/ui/src/components/Sheet/SheetHeader.native.tsx	panel
+
+# float
+packages/ui/src/components/CoachMark/CoachMark.css	float
+packages/ui/src/components/CoachMark/CoachMark.native.tsx	float
+packages/ui/src/components/CoachMark/CoachMarkParts.native.tsx	float
+packages/ui/src/components/DatePicker/Calendar.css	float
+packages/ui/src/components/DatePicker/Calendar.native.tsx	float
+packages/ui/src/components/DatePicker/CalendarChrome.native.tsx	float
+packages/ui/src/components/DatePicker/DatePicker.css	float
+packages/ui/src/components/Explainer/Explainer.css	float
+packages/ui/src/components/Explainer/ExplainerBubble.native.tsx	float
+packages/ui/src/components/Explainer/ExplainerParts.native.tsx	float
+packages/ui/src/components/JobTray/JobTray.css	float
+packages/ui/src/components/JobTray/JobTray.native.tsx	float
+packages/ui/src/components/Menu/Menu.css	float
+packages/ui/src/components/Menu/Menu.native.tsx	float
+packages/ui/src/components/Select/Select.css	float
+packages/ui/src/components/Select/Select.native.tsx	float
+packages/ui/src/components/Toast/Toast.css	float
+packages/ui/src/components/Toast/Toast.native.tsx	float
+
+# over-media
+packages/ui/src/components/Dropzone/Dropzone.css	over-media
+packages/ui/src/components/Dropzone/DropzoneThumbs.native.tsx	over-media
+packages/ui/src/components/Image/Image.css	over-media
+packages/ui/src/components/Image/Image.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapContent.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapControls.css	over-media
+packages/ui/src/components/MapSurface/MapControls.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapFrame.css	over-media
+packages/ui/src/components/MapSurface/MapLocationPin.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapMarkerDot.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapMarkers.css	over-media
+packages/ui/src/components/MapSurface/MapTokens.native.tsx	over-media
+packages/ui/src/components/MapSurface/MapTokens.ts	over-media
+
+# paper
+packages/ui/src/components/BrandColorField/BrandColorField.css	paper
+packages/ui/src/components/BrandColorField/BrandColorSpecimen.native.tsx	paper
+packages/ui/src/components/DocumentPreview/DocumentHeader.native.tsx	paper
+packages/ui/src/components/DocumentPreview/DocumentPreview.css	paper
+packages/ui/src/components/DocumentPreview/DocumentSheet.css	paper
+packages/ui/src/components/DocumentPreview/DocumentSheet.native.tsx	paper
+packages/ui/src/components/DrawingSheet/DrawingSheet.css	paper
+packages/ui/src/components/PagedDocument/PagedDocument.css	paper
+packages/ui/src/components/QRCode/QRCode.css	paper
+packages/ui/src/components/QRCode/QRCode.native.tsx	paper
+
+# full-screen-ground
+packages/ui/src/components/DoorFrame/DoorFrame.css	full-screen-ground
+packages/ui/src/components/DoorFrame/DoorFrame.native.tsx	full-screen-ground
+packages/ui/src/components/NoConnection/NoConnection.css	full-screen-ground
+packages/ui/src/components/PreviewFrame/PreviewFrame.css	full-screen-ground
+packages/ui/src/components/PreviewFrame/PreviewFrame.native.tsx	full-screen-ground
+
+# on-accent
+packages/ui/src/components/AllocationMeter/AllocationMeter.native.tsx	on-accent
+packages/ui/src/components/AppRail/Fab.native.tsx	on-accent
+packages/ui/src/components/Button/Button.css	on-accent
+packages/ui/src/components/Checklist/ChecklistRow.native.tsx	on-accent
+packages/ui/src/components/Chip/Chip.css	on-accent
+packages/ui/src/components/Chip/Chip.native.tsx	on-accent
+packages/ui/src/components/FindingList/FindingListRow.native.tsx	on-accent
+packages/ui/src/components/LanguageSwitcher/LanguageSwitcher.css	on-accent
+packages/ui/src/components/Stepper/StepperMarker.native.tsx	on-accent
+packages/ui/src/components/Switch/Switch.css	on-accent
+packages/ui/src/components/Switch/Switch.native.tsx	on-accent
+
+# illustration
+packages/ui/src/components/BrandBloom/BrandBloom.native.tsx	illustration
+packages/ui/src/components/NoConnection/SunCloudMark.native.tsx	illustration
+
+# measure
+packages/ui/src/utils/color-contrast.ts	measure
+
+# field
+packages/ui/src/primitives/FieldBox/FieldBox.css	field
+
+# shimmer
+packages/ui/src/components/Card/Card.css	shimmer
+packages/ui/src/components/Card/CardBody.native.tsx	shimmer
+
+# deferred
+packages/ui/src/components/RichText/RichText.css	deferred
+packages/ui/src/components/RichText/RichText.native.tsx	deferred
+
+# owed-T-SHELL
+packages/ui/src/components/AppRail/AppRail.css	owed-T-SHELL
+packages/ui/src/components/AppRail/AppRail.native.tsx	owed-T-SHELL
+packages/ui/src/components/AppRail/BottomNav.native.tsx	owed-T-SHELL
+packages/ui/src/components/AppRail/BottomNav.tsx	owed-T-SHELL
+packages/ui/src/components/AppShell/AppHeader.native.tsx	owed-T-SHELL
+packages/ui/src/components/AppShell/AppShell.css	owed-T-SHELL
+packages/ui/src/components/AppShell/CountBadge.native.tsx	owed-T-SHELL
+packages/ui/src/components/AppShell/MobileTopBar.native.tsx	owed-T-SHELL
+
+# owed-T-FPLAT-078
+packages/ui/src/components/Accordion/Accordion.css	owed-T-FPLAT-078
+packages/ui/src/components/Accordion/Accordion.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/ActivityStream/ActivityStream.css	owed-T-FPLAT-078
+packages/ui/src/components/BandedFigure/BandedCard.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/BandedFigure/BandedFigure.css	owed-T-FPLAT-078
+packages/ui/src/components/Block/Block.css	owed-T-FPLAT-078
+packages/ui/src/components/Block/Block.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/Checklist/Checklist.css	owed-T-FPLAT-078
+packages/ui/src/components/Checklist/Checklist.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/CompareGrid/CompareGrid.css	owed-T-FPLAT-078
+packages/ui/src/components/CompareGrid/CompareGrid.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/CompareGrid/CompareGridStyles.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTable.css	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTable.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableBodyRow.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableCell.css	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableCell.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableChrome.css	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableChrome.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableFeedback.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableHead.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableTotal.css	owed-T-FPLAT-078
+packages/ui/src/components/DataTable/DataTableTotal.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/DateSet/DateSet.css	owed-T-FPLAT-078
+packages/ui/src/components/DateSet/DateSetRow.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/FindingList/FindingList.css	owed-T-FPLAT-078
+packages/ui/src/components/FindingList/FindingList.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/Kanban/Kanban.css	owed-T-FPLAT-078
+packages/ui/src/components/Kanban/KanbanStates.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/NextAction/NextAction.css	owed-T-FPLAT-078
+packages/ui/src/components/NextAction/NextAction.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/OptionCardGroup/OptionCard.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/OptionCardGroup/OptionCardGroup.css	owed-T-FPLAT-078
+packages/ui/src/components/ReorderList/ReorderList.css	owed-T-FPLAT-078
+packages/ui/src/components/ReorderList/ReorderRow.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/SourceDocument/SourceDocument.css	owed-T-FPLAT-078
+packages/ui/src/components/SourceDocument/SourceDocument.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/SourceDocument/SourceDocumentChrome.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/StatCard/StatCard.css	owed-T-FPLAT-078
+packages/ui/src/components/StatCard/StatCard.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/TenantHeader/TenantHeader.css	owed-T-FPLAT-078
+packages/ui/src/components/TenantHeader/TenantHeader.native.tsx	owed-T-FPLAT-078
+packages/ui/src/components/Transcript/Transcript.css	owed-T-FPLAT-078
+packages/ui/src/components/Transcript/TranscriptTurnRow.native.tsx	owed-T-FPLAT-078

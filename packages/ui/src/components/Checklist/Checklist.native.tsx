@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -10,6 +11,8 @@ import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow.native';
 import { ChecklistStateBody } from './ChecklistState.native';
 
+/* The shell is white and holds controls, so its controls take the page's fill until T-FPLAT-078
+   makes it a tile. */
 const styles = StyleSheet.create({
   shell: {
     flexDirection: 'column',
@@ -61,6 +64,7 @@ export function Checklist({
   errorTitle = "Couldn't load the checklist",
   errorMessage = 'Tap Try again — no tick is lost while this fails.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No checklist for this job',
   unavailableMessage,
   note,
@@ -71,21 +75,24 @@ export function Checklist({
   if (state !== 'ready') {
     return (
       <View style={[styles.shell, style]}>
-        {label === undefined ? null : (
-          <Text variant="overline" color="tertiary">
-            {label}
-          </Text>
-        )}
-        <ChecklistStateBody
-          state={state}
-          emptyTitle={emptyTitle}
-          emptyMessage={emptyMessage}
-          errorTitle={errorTitle}
-          errorMessage={errorMessage}
-          onRetry={onRetry}
-          unavailableTitle={unavailableTitle}
-          unavailableMessage={unavailableMessage}
-        />
+        <GroundProvider ground="page">
+          {label === undefined ? null : (
+            <Text variant="overline" color="tertiary">
+              {label}
+            </Text>
+          )}
+          <ChecklistStateBody
+            state={state}
+            emptyTitle={emptyTitle}
+            emptyMessage={emptyMessage}
+            errorTitle={errorTitle}
+            errorMessage={errorMessage}
+            onRetry={onRetry}
+            retryLabel={retryLabel}
+            unavailableTitle={unavailableTitle}
+            unavailableMessage={unavailableMessage}
+          />
+        </GroundProvider>
       </View>
     );
   }
@@ -99,62 +106,64 @@ export function Checklist({
       accessibilityLabel={typeof label === 'string' ? label : 'Checklist'}
       style={[styles.shell, style]}
     >
-      <View style={styles.head}>
-        {label === undefined ? null : (
-          <Text variant="overline" color="tertiary">
-            {label}
-          </Text>
-        )}
-        {/* The count in words, then its meaning. A percentage alone says how far, never what. */}
-        <Text variant="h4" style={countWordsStyle}>
-          {countWords ?? `${model.done} of ${model.list.length} ${noun} done`}
-        </Text>
-        <ProgressBar value={model.percent} />
-        {progressNote === undefined ? null : (
-          <Text variant="caption" color="tertiary">
-            {progressNote}
-          </Text>
-        )}
-      </View>
-
-      {model.groups.map((group) => (
-        <View key={group.key} style={styles.group}>
-          {group.key === NO_PHASE ? null : (
-            <View style={styles.phase}>
-              <Text variant="overline" color="tertiary">
-                {group.heading}
-              </Text>
-              <Text variant="caption" color="tertiary">
-                {`${group.doneCount} of ${group.items.length}`}
-              </Text>
-            </View>
-          )}
-          {group.key === NO_PHASE || group.note === undefined ? null : (
-            <Text variant="caption" color="tertiary">
-              {group.note}
+      <GroundProvider ground="page">
+        <View style={styles.head}>
+          {label === undefined ? null : (
+            <Text variant="overline" color="tertiary">
+              {label}
             </Text>
           )}
-          {/* One `<ul>` per group on the web half, so one `list` per group here. */}
-          <View role="list" style={styles.rows}>
-            {group.items.map((item) => (
-              /* The counted number is unique across the whole list, so it keys every group. */
-              <ChecklistRow
-                key={item.id ?? `${group.key}-${String(model.numberFor(item))}`}
-                item={item}
-                number={model.numberFor(item)}
-                onToggle={onToggle}
-                surface={surface}
-              />
-            ))}
-          </View>
+          {/* The count in words, then its meaning. A percentage alone says how far, never what. */}
+          <Text variant="h4" style={countWordsStyle}>
+            {countWords ?? `${model.done} of ${model.list.length} ${noun} done`}
+          </Text>
+          <ProgressBar value={model.percent} />
+          {progressNote === undefined ? null : (
+            <Text variant="caption" color="tertiary">
+              {progressNote}
+            </Text>
+          )}
         </View>
-      ))}
 
-      {note === undefined ? null : (
-        <Text variant="caption" color="tertiary">
-          {note}
-        </Text>
-      )}
+        {model.groups.map((group) => (
+          <View key={group.key} style={styles.group}>
+            {group.key === NO_PHASE ? null : (
+              <View style={styles.phase}>
+                <Text variant="overline" color="tertiary">
+                  {group.heading}
+                </Text>
+                <Text variant="caption" color="tertiary">
+                  {`${group.doneCount} of ${group.items.length}`}
+                </Text>
+              </View>
+            )}
+            {group.key === NO_PHASE || group.note === undefined ? null : (
+              <Text variant="caption" color="tertiary">
+                {group.note}
+              </Text>
+            )}
+            {/* One `<ul>` per group on the web half, so one `list` per group here. */}
+            <View role="list" style={styles.rows}>
+              {group.items.map((item) => (
+                /* The counted number is unique across the whole list, so it keys every group. */
+                <ChecklistRow
+                  key={item.id ?? `${group.key}-${String(model.numberFor(item))}`}
+                  item={item}
+                  number={model.numberFor(item)}
+                  onToggle={onToggle}
+                  surface={surface}
+                />
+              ))}
+            </View>
+          </View>
+        ))}
+
+        {note === undefined ? null : (
+          <Text variant="caption" color="tertiary">
+            {note}
+          </Text>
+        )}
+      </GroundProvider>
     </View>
   );
 }

@@ -184,8 +184,9 @@ tr[data-zebra="true"] > .hg-compare-pin {
   color: var(--neutral-text);
 }
 
+/* A control part: the opposite of what holds it (F7-15, primitives/Ground), flat. */
 .hg-compare-pill[data-kind="selected"] {
-  background: var(--surface);
+  background: var(--hg-control-fill);
   color: var(--accent);
 }
 
@@ -248,8 +249,9 @@ tr[data-zebra="true"] > .hg-compare-cell:not([data-selected="true"]) {
   cursor: pointer;
 }
 
+/* The chosen option: the control fill, flat, found by its accent ring and words. */
 .hg-compare-choose[data-selected="true"] {
-  background: var(--surface);
+  background: var(--hg-control-fill);
   color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent);
 }

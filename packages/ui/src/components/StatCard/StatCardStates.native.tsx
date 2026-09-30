@@ -5,8 +5,8 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 
@@ -16,14 +16,8 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-md'],
     backgroundColor: theme.colors['canvas-sunken'],
   },
-  error: { marginTop: 10, alignItems: 'flex-start', gap: 10 },
+  error: { marginTop: 10, alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   errorBody: { color: theme.colors['warning-text'] },
-  retry: {
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-  },
-  retryWord: { fontWeight: '500' },
   block: { marginTop: 10 },
 });
 
@@ -33,6 +27,7 @@ export function StatCardStates({
   emptyMessage,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: {
@@ -41,6 +36,7 @@ export function StatCardStates({
   emptyMessage: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage?: string;
 }) {
@@ -66,13 +62,7 @@ export function StatCardStates({
         <Text variant="body-sm" style={styles.errorBody}>
           {errorMessage}
         </Text>
-        {onRetry ? (
-          <Pressable onPress={onRetry} style={styles.retry}>
-            <Text variant="body-sm" style={styles.retryWord}>
-              Try again
-            </Text>
-          </Pressable>
-        ) : null}
+        <RetryButton onRetry={onRetry} label={retryLabel} />
       </View>
     );
   }

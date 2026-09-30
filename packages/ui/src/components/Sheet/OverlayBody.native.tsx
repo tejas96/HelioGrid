@@ -14,6 +14,7 @@ interface OverlayBodyProps {
   errorMessage?: string;
   errorTitle?: string;
   onRetry?: () => void;
+  retryLabel?: string;
   /** The surface's own `loading` shape — a sheet's bars are not a panel's. */
   skeleton: ReactNode;
   state: SurfaceState;
@@ -41,6 +42,7 @@ export function OverlayBody({
   errorMessage,
   errorTitle,
   onRetry,
+  retryLabel,
   skeleton,
   state,
   unavailableStyle,
@@ -54,7 +56,13 @@ export function OverlayBody({
   }
   if (state === 'error') {
     return (
-      <OverlayError message={errorMessage} onRetry={onRetry} title={errorTitle} variant={variant} />
+      <OverlayError
+        message={errorMessage}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+        title={errorTitle}
+        variant={variant}
+      />
     );
   }
   /* No retry and no warning tint: the absence is stated, not styled as a fault. */

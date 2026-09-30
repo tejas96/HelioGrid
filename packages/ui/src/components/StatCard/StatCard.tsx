@@ -50,6 +50,7 @@ export function StatCard({
   emptyMessage = 'No figure for this period yet.',
   errorMessage = "Couldn't read this figure. Try again — nothing here is a stale number.",
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not measured here',
   unavailableMessage,
   className,
@@ -76,6 +77,7 @@ export function StatCard({
           emptyMessage={emptyMessage}
           errorMessage={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />

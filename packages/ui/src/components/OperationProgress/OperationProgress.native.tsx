@@ -51,7 +51,7 @@ export function OperationProgress({
   cancelLabel,
   cancelNote,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   destination,
   gradient = false,
   size = 'block',
@@ -64,10 +64,12 @@ export function OperationProgress({
   const counted = countWords(count, unit, number);
   const step = stepWords(stageIndex, stageTotal);
   const showActions =
-    cancel !== null || destination !== undefined || (state === 'failed' && onRetry !== undefined);
+    cancel !== null ||
+    destination !== undefined ||
+    (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
 
   return (
-    <View style={[styles.shell, size === 'inline' ? styles.shellInline : null, style]}>
+    <View style={[styles.shell, style]}>
       <OperationHead
         label={label}
         pct={pct}
@@ -108,6 +110,5 @@ export function OperationProgress({
 const tertiary: TextStyle = { color: theme.colors['text-tertiary'] };
 
 const styles = StyleSheet.create({
-  shell: { flexDirection: 'column', gap: 10 },
-  shellInline: { gap: theme.spacing['sp-2'] },
+  shell: { flexDirection: 'column', gap: theme.spacing['sp-2'] },
 });

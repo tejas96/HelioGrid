@@ -7,10 +7,12 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
-import { TRANSCRIPT_GAP, TranscriptPlainButton } from './TranscriptChrome.native';
+import { TRANSCRIPT_GAP } from './TranscriptChrome.native';
 
 const styles = StyleSheet.create({
   skeletonBar: {
@@ -19,7 +21,7 @@ const styles = StyleSheet.create({
   },
   error: {
     alignItems: 'flex-start',
-    gap: theme.spacing['sp-3'],
+    gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
     backgroundColor: theme.colors['warning-bg'],
@@ -42,6 +44,7 @@ interface TranscriptPlaceholderProps {
   emptyDescription: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage: string;
 }
@@ -54,6 +57,7 @@ export function TranscriptPlaceholder({
   emptyDescription,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: TranscriptPlaceholderProps) {
@@ -81,9 +85,10 @@ export function TranscriptPlaceholder({
         <Text variant="body-sm" style={styles.errorBody}>
           {errorMessage}
         </Text>
-        {onRetry ? (
-          <TranscriptPlainButton onPress={onRetry}>Try again</TranscriptPlainButton>
-        ) : null}
+        {/* A tinted panel holds its retry as a tile does — see `Ground.css`. */}
+        <GroundProvider ground="tile">
+          <RetryButton onRetry={onRetry} label={retryLabel} />
+        </GroundProvider>
       </View>
     );
   }

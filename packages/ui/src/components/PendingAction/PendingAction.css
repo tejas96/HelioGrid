@@ -62,23 +62,3 @@
   align-items: center;
   gap: var(--sp-2);
 }
-
-/* The 44px floor comes from Pressable; this is the pill profile on top of it. 14px of inline
-   padding sits between --sp-3 and --sp-4 and has no token of its own. */
-.hg-pending-action-pill.hg-pressable {
-  padding: 0 14px;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-}
-
-.hg-pending-action-pill-ghost.hg-pressable {
-  background: transparent;
-  box-shadow: var(--control-edge);
-  color: var(--text-secondary);
-}

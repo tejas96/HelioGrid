@@ -55,7 +55,7 @@ export function Image({
   missingLabel,
   missingDetail,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   onClick,
   lazy = false,
   density = 'expressive',

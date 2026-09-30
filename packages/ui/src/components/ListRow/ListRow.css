@@ -18,9 +18,7 @@
   background: transparent;
   border-radius: var(--r-md);
   box-shadow: var(--surface-edge);
-  transition:
-    box-shadow var(--dur-standard) var(--ease-standard),
-    background var(--dur-standard) var(--ease-standard);
+  transition: background var(--dur-standard) var(--ease-standard);
 }
 
 .hg-list-row[data-density="functional"] {
@@ -29,9 +27,9 @@
   border-radius: var(--rf-md);
 }
 
+/* The opposite of what holds it (F7-15), flat — hover never lifts a row. */
 .hg-list-row:hover {
-  background: var(--surface);
-  box-shadow: var(--e2);
+  background: var(--hg-control-fill);
 }
 
 .hg-list-row[data-clickable="true"] {

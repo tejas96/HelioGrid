@@ -14,7 +14,6 @@ export interface ChartNote {
 /* Copy the reference implementation fixes in the component rather than on a prop. Anything a
    caller can change is a prop on ChartFrameProps and is defaulted at the destructure. */
 export const CHART_INSUFFICIENT_TITLE = 'Not enough data';
-export const CHART_RETRY_LABEL = 'Try again';
 export const CHART_LOADING_LABEL = 'Loading chart';
 /* ChartFrame's unavailable copy, handed to `<UnavailableNote variant="region">`. The design
    system's `charts/Charts.d.ts.txt` contract declares NO prop for it — its JSX takes an

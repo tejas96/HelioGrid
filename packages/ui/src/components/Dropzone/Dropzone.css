@@ -188,9 +188,8 @@
   padding: 0 var(--sp-4);
   border: none;
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* The opposite of what holds it (F7-15), flat. */
+  background: var(--hg-control-fill);
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
@@ -204,8 +203,7 @@
 .hg-dropzone-retry:disabled {
   color: var(--text-disabled);
   cursor: not-allowed;
-  /* A control that cannot be pressed is not one to find — it drops back off the ladder. */
-  box-shadow: var(--e1);
+  background: var(--hg-control-fill-disabled);
 }
 
 .hg-dropzone-retry-spinner {

@@ -12,6 +12,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ReadAlongside } from './ReadAlongside.native';
 import {
@@ -43,6 +44,7 @@ export function SourceDocument({
   onOpenOriginal,
   openLabel = 'Open original',
   onRetry,
+  retryLabel,
   unsupportedTitle = 'No preview for this file kind',
   unsupportedMessage = 'Open the original to read it.',
   failedTitle = "Couldn't load this document",
@@ -72,54 +74,58 @@ export function SourceDocument({
       accessibilityLabel={label || `${name} — source document`}
       style={[styles.root, density === 'functional' ? styles.functional : null, style]}
     >
-      <SourceDocumentHeader
-        name={name}
-        meta={meta}
-        resolved={resolved}
-        pageNumber={reading.page}
-        count={pages.length}
-        fit={reading.fit}
-        onPage={reading.setPage}
-        onFit={reading.setFit}
-        originalUrl={originalUrl}
-        onOpenOriginal={onOpenOriginal}
-        openLabel={openLabel}
-      />
-      <ScrollView
-        style={[styles.body, { height: bodyH }]}
-        contentContainerStyle={[
-          styles.bodyContent,
-          reading.fit === 'page' ? styles.bodyContentPage : null,
-        ]}
-      >
-        <SourceDocumentBody
-          resolved={resolved}
+      {/* A page ground until T-FPLAT-078 makes this white container a tile or a heading. */}
+      <GroundProvider ground="page">
+        <SourceDocumentHeader
           name={name}
-          page={cur}
+          meta={meta}
+          resolved={resolved}
           pageNumber={reading.page}
           count={pages.length}
-          aspect={pageAspect(cur)}
-          bodyHeight={bodyH}
           fit={reading.fit}
+          onPage={reading.setPage}
+          onFit={reading.setFit}
           originalUrl={originalUrl}
           onOpenOriginal={onOpenOriginal}
           openLabel={openLabel}
-          onRetry={onRetry}
-          unsupportedTitle={unsupportedTitle}
-          unsupportedMessage={unsupportedMessage}
-          failedTitle={failedTitle}
-          failedMessage={failedMessage}
-          emptyTitle={emptyTitle}
-          emptyMessage={emptyMessage}
         />
-      </ScrollView>
-      {cur?.label && resolved === 'ready' ? (
-        <View style={styles.footer}>
-          <Text variant="caption" color="tertiary">
-            {cur.label}
-          </Text>
-        </View>
-      ) : null}
+        <ScrollView
+          style={[styles.body, { height: bodyH }]}
+          contentContainerStyle={[
+            styles.bodyContent,
+            reading.fit === 'page' ? styles.bodyContentPage : null,
+          ]}
+        >
+          <SourceDocumentBody
+            resolved={resolved}
+            name={name}
+            page={cur}
+            pageNumber={reading.page}
+            count={pages.length}
+            aspect={pageAspect(cur)}
+            bodyHeight={bodyH}
+            fit={reading.fit}
+            originalUrl={originalUrl}
+            onOpenOriginal={onOpenOriginal}
+            openLabel={openLabel}
+            onRetry={onRetry}
+            retryLabel={retryLabel}
+            unsupportedTitle={unsupportedTitle}
+            unsupportedMessage={unsupportedMessage}
+            failedTitle={failedTitle}
+            failedMessage={failedMessage}
+            emptyTitle={emptyTitle}
+            emptyMessage={emptyMessage}
+          />
+        </ScrollView>
+        {cur?.label && resolved === 'ready' ? (
+          <View style={styles.footer}>
+            <Text variant="caption" color="tertiary">
+              {cur.label}
+            </Text>
+          </View>
+        ) : null}
+      </GroundProvider>
     </View>
   );
 }

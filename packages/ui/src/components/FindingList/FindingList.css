@@ -172,24 +172,11 @@
   margin-top: var(--sp-0-5);
 }
 
-.hg-finding-jump,
 .hg-finding-fix {
-  gap: 7px;
   padding: 0 var(--sp-4);
   border-radius: var(--r-pill);
-  font-size: var(--fs-button);
-  font-weight: var(--fw-medium);
-}
-
-.hg-finding-jump {
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  color: var(--text-primary);
-}
-
-.hg-finding-fix {
   background: var(--accent-subtle);
-  color: var(--accent);
+  font-size: var(--fs-button);
   font-weight: var(--fw-bold);
+  color: var(--accent);
 }

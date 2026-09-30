@@ -38,7 +38,7 @@ export function OperationProgress({
   cancelLabel,
   cancelNote,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   destination,
   gradient = false,
   size = 'block',
@@ -52,7 +52,9 @@ export function OperationProgress({
   const counted = countWords(count, unit, number);
   const step = stepWords(stageIndex, stageTotal);
   const showActions =
-    cancel !== null || destination !== undefined || (state === 'failed' && onRetry !== undefined);
+    cancel !== null ||
+    destination !== undefined ||
+    (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
 
   return (
     <div data-size={size} className={classNames('hg-operation-progress', className)} style={style}>

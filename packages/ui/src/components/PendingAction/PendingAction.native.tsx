@@ -4,8 +4,9 @@ import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { IndeterminateRail } from './IndeterminateRail.native';
 import type { PendingActionProps, PendingActionSpec } from './PendingAction.types';
 
@@ -57,7 +58,7 @@ export function PendingAction({
   reason,
   slowNote,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   onDismiss,
   dismissLabel = 'Dismiss',
   size = 12,
@@ -65,6 +66,7 @@ export function PendingAction({
   style,
 }: NativePendingActionProps) {
   const returned = state === 'returned';
+  const retrying = onRetry !== undefined && retryLabel !== undefined;
   const words = returned ? reason : label;
   if (words === undefined || words === null || words === false || words === '') {
     return null;
@@ -94,22 +96,13 @@ export function PendingAction({
           ? renderWords(slowNote, { ...line, color: theme.colors['text-tertiary'] })
           : null}
       </View>
-      {returned && (onRetry !== undefined || onDismiss !== undefined) ? (
+      {returned && (retrying || onDismiss !== undefined) ? (
         <View style={styles.actions}>
-          {onRetry !== undefined ? (
-            <Pressable style={styles.pill} onPress={onRetry}>
-              <Text variant="body-sm" style={pillLabel}>
-                {retryLabel}
-              </Text>
-            </Pressable>
-          ) : null}
-          {/* Ghost profile: transparent, --text-secondary — the DS's field-mode-safe dismiss. */}
+          <RetryButton onRetry={onRetry} label={retryLabel} />
           {onDismiss !== undefined ? (
-            <Pressable style={[styles.pill, styles.pillGhost]} onPress={onDismiss}>
-              <Text variant="body-sm" color="secondary" style={pillGhostLabel}>
-                {dismissLabel}
-              </Text>
-            </Pressable>
+            <Button variant="ghost" size="md" onClick={onDismiss}>
+              {dismissLabel}
+            </Button>
           ) : null}
         </View>
       ) : null}
@@ -151,9 +144,6 @@ export function renderPending(
   return <PendingAction {...spec} {...extra} />;
 }
 
-const pillLabel: TextStyle = { fontWeight: '500' };
-const pillGhostLabel: TextStyle = { fontWeight: '500' };
-
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -166,18 +156,4 @@ const styles = StyleSheet.create({
   glyph: { flexShrink: 0, marginTop: theme.spacing['sp-0-5'] },
   words: { minWidth: 0, flexShrink: 1, flexGrow: 1 },
   actions: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
-  /* Pressable owns the 44px floor; this is the pill profile on top of it. 14 sits between --sp-3
-     and --sp-4 and has no token of its own. */
-  pill: {
-    paddingHorizontal: 14,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  pillGhost: {
-    backgroundColor: 'transparent',
-    shadowOpacity: 0,
-    elevation: 0,
-  },
 });

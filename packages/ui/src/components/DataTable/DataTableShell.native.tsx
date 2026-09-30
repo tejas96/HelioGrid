@@ -58,6 +58,7 @@ export function TableStates<Row>({
     errorTitle = "Couldn't load these records",
     errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
     onRetry,
+    retryLabel,
     unavailableTitle = 'Not available here',
     unavailableMessage,
   } = table;
@@ -68,7 +69,13 @@ export function TableStates<Row>({
         <TableSkeleton stacked={stacked} rowH={spec.rowH} edge={spec.edge} />
       ) : null}
       {state === 'error' ? (
-        <TableMessage tone="warning" title={errorTitle} message={errorMessage} onRetry={onRetry} />
+        <TableMessage
+          tone="warning"
+          title={errorTitle}
+          message={errorMessage}
+          onRetry={onRetry}
+          retryLabel={retryLabel}
+        />
       ) : null}
       {state === 'unavailable' ? (
         <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />

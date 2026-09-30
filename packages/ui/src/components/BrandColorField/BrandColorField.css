@@ -44,7 +44,7 @@
 
 .hg-brand-color-swatch[aria-checked="true"] {
   box-shadow:
-    0 0 0 2px var(--surface),
+    0 0 0 2px var(--hg-ground),
     0 0 0 4px var(--accent),
     var(--e2);
 }

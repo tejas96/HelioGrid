@@ -1,5 +1,6 @@
 /* Timeline's node, skeleton and message (native). Status is never colour alone: each state carries
-   its own glyph inside the node, and `upcoming` is hollow, which is its own shape.
+   its own glyph inside the node, and `upcoming` is an empty disc, which is its own shape. A node
+   not yet done takes the control fill, the opposite of what holds it (`F7-15`), never an outline.
 
    Two web-only things are mapped rather than dropped:
    · the `0 0 0 5px` ring on the current node becomes an absolutely-positioned View behind it, so
@@ -10,8 +11,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { TimelineStatus } from './Timeline.types';
 
 export const NODE_SIZE = { page: 28, compact: 20 } as const;
@@ -23,9 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
   },
-  hollow: { borderWidth: 2, borderColor: theme.colors['canvas-sunken'] },
   core: { borderRadius: theme.radius['r-pill'], backgroundColor: theme.colors.accent },
   skeleton: { gap: 22 },
   skeletonRow: { flexDirection: 'row', columnGap: theme.spacing['sp-4'] },
@@ -56,22 +56,16 @@ const styles = StyleSheet.create({
   },
   messageTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
   messageBody: { maxWidth: 300 },
-  retry: {
-    marginTop: 10,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-  },
-  retryWord: { fontWeight: '500' },
 });
 
+/* Current and upcoming take the control fill, read from `Ground` where the node renders. */
 const NODE_FILL: Record<TimelineStatus, string | undefined> = {
   done: theme.colors.success,
   /* A warning MARK takes --warning-text; --warning itself clears no contrast floor. */
   blocked: theme.colors['warning-text'],
   failed: theme.colors.danger,
-  current: theme.colors.surface,
-  upcoming: theme.colors.surface,
+  current: undefined,
+  upcoming: undefined,
 };
 
 export function TimelineNode({
@@ -85,6 +79,7 @@ export function TimelineNode({
   const inner = compact ? 11 : 15;
   const ring = compact ? 4 : 5;
   const tick = theme.colors['text-inverse'];
+  const { controlFill } = useGround();
   return (
     <View style={[styles.nodeWrap, { width: size, height: size }]}>
       {status === 'current' ? (
@@ -102,8 +97,7 @@ export function TimelineNode({
       <View
         style={[
           styles.node,
-          { width: size, height: size, backgroundColor: NODE_FILL[status] },
-          status === 'upcoming' ? styles.hollow : null,
+          { width: size, height: size, backgroundColor: NODE_FILL[status] ?? controlFill },
         ]}
       >
         {status === 'done' ? (
@@ -172,11 +166,13 @@ export function TimelineMessage({
   title,
   message,
   onRetry,
+  retryLabel,
 }: {
   tone?: 'warning';
   title: string;
   message?: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }) {
   const warning = tone === 'warning';
   return (
@@ -214,13 +210,7 @@ export function TimelineMessage({
           {message}
         </Text>
       ) : null}
-      {onRetry ? (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body" style={styles.retryWord}>
-            Try again
-          </Text>
-        </Pressable>
-      ) : null}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </View>
   );
 }

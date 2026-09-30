@@ -2,9 +2,9 @@
    connected but transcribed nothing. The header stays above every one of them; only this body
    below it changes. */
 
+import { RetryButton } from '../Button/RetryButton';
 import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote';
-import { TranscriptPlainButton } from './TranscriptChrome';
 
 interface TranscriptPlaceholderProps {
   state: SurfaceState;
@@ -14,6 +14,7 @@ interface TranscriptPlaceholderProps {
   emptyDescription: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage: string;
 }
@@ -26,6 +27,7 @@ export function TranscriptPlaceholder({
   emptyDescription,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: TranscriptPlaceholderProps) {
@@ -53,9 +55,7 @@ export function TranscriptPlaceholder({
     return (
       <div className="hg-transcript-error" data-density={density}>
         <p className="hg-transcript-error-body">{errorMessage}</p>
-        {onRetry ? (
-          <TranscriptPlainButton onPress={onRetry}>Try again</TranscriptPlainButton>
-        ) : null}
+        <RetryButton onRetry={onRetry} label={retryLabel} />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { type HeldRetry, heldFailureWords, heldSentence, useHeldFlush } from './dropzone-held';
@@ -32,9 +33,6 @@ const styles = StyleSheet.create({
     minHeight: 44,
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
 });
 
@@ -71,6 +69,8 @@ export function DropzoneHeld({
   const { failure, flushing, run } = useHeldFlush(onRetry, retryTimeout);
   const failureWords = heldFailureWords(failure, { failedMessage, timeoutMessage });
   const waiting = flushing || busy;
+  /* The opposite of what holds it (`F7-15`), flat; a retry out of reach takes the disabled fill. */
+  const { controlFill, controlFillDisabled } = useGround();
 
   return (
     <View accessibilityLiveRegion="polite" style={styles.block}>
@@ -96,7 +96,11 @@ export function DropzoneHeld({
            the name from it exactly as the web `<button>` composes its own from `retryLabel` — one
            wording, one place. Stating it again would freeze the name and, on a target that later
            grows a second line, silently drop it. */
-        <Pressable disabled={waiting} onPress={run} style={styles.retry}>
+        <Pressable
+          disabled={waiting}
+          onPress={run}
+          style={[styles.retry, { backgroundColor: waiting ? controlFillDisabled : controlFill }]}
+        >
           {/* The label stays. A spinner beside it, never instead of it. */}
           {flushing ? <ActivityIndicator color={theme.colors.accent} size="small" /> : null}
           <Text variant="body-sm" color={waiting ? 'disabled' : 'primary'}>

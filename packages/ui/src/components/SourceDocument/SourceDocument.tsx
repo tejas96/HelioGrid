@@ -43,6 +43,7 @@ export function SourceDocument({
   onOpenOriginal,
   openLabel = 'Open original',
   onRetry,
+  retryLabel,
   unsupportedTitle = 'No preview for this file kind',
   unsupportedMessage = 'Open the original to read it.',
   failedTitle = "Couldn't load this document",
@@ -94,6 +95,7 @@ export function SourceDocument({
           onOpenOriginal={onOpenOriginal}
           openLabel={openLabel}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           unsupportedTitle={unsupportedTitle}
           unsupportedMessage={unsupportedMessage}
           failedTitle={failedTitle}

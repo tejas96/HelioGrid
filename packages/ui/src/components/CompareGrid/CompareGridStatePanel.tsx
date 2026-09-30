@@ -9,6 +9,7 @@ export interface CompareGridStatePanelProps {
   errorTitle: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage?: string;
 }
@@ -27,13 +28,20 @@ export function CompareGridStatePanel({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: CompareGridStatePanelProps) {
   if (state === 'loading') return <CompareSkeleton />;
   if (state === 'error') {
     return (
-      <CompareMessage tone="warning" title={errorTitle} message={errorMessage} onRetry={onRetry} />
+      <CompareMessage
+        tone="warning"
+        title={errorTitle}
+        message={errorMessage}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+      />
     );
   }
   if (state === 'unavailable') {

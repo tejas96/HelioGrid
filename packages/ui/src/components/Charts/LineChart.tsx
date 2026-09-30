@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { ChartFrame } from './ChartFrame';
 import type { LineChartProps } from './Charts.types';
-import { CHART_GRIDLINE_VAR, CHART_SURFACE_VAR, chartVar } from './ChartTokens';
+import { CHART_GRIDLINE_VAR, CHART_GROUND_VAR, chartVar } from './ChartTokens';
 import { chartTicks } from './chart-palette';
 import { lineGeometry, longestSeries, toLineSeries } from './chart-series';
 import { useChartWidth } from './use-chart-width';
@@ -82,7 +82,7 @@ export function LineChart({
                       cx={geo.x(set.points.length - 1, set.points.length)}
                       cy={geo.y(last.y)}
                       r={4}
-                      fill={CHART_SURFACE_VAR}
+                      fill={CHART_GROUND_VAR}
                       stroke={stroke}
                       strokeWidth="2"
                       vectorEffect="non-scaling-stroke"

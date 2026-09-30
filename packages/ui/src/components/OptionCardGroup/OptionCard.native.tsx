@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -141,43 +142,53 @@ export function OptionCard({
       accessibilityState={{ checked, disabled: off }}
       style={cardStyle(density, selected, off)}
     >
-      <View style={dotStyle(selected, off)}>
-        {selected ? (
-          <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
-        ) : null}
-      </View>
-      <View style={styles.body}>
-        <View style={styles.head}>
-          <View style={styles.titles}>
-            <Text variant="body" color={ink} lang={option.lang} style={styles.title}>
-              {option.title}
-            </Text>
-            {/* A word in its own neutral pill — never the accent, which selection owns. */}
-            {option.current === true ? (
-              <StatusMark tone="neutral" mark={false} label={option.currentLabel ?? currentLabel} />
+      {/* A card is white, so its controls take the page's fill until T-FPLAT-078 settles its
+          ground. */}
+      <GroundProvider ground="page">
+        <View style={dotStyle(selected, off)}>
+          {selected ? (
+            <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
+          ) : null}
+        </View>
+        <View style={styles.body}>
+          <View style={styles.head}>
+            <View style={styles.titles}>
+              <Text variant="body" color={ink} lang={option.lang} style={styles.title}>
+                {option.title}
+              </Text>
+              {/* A word in its own neutral pill — never the accent, which selection owns. */}
+              {option.current === true ? (
+                <StatusMark
+                  tone="neutral"
+                  mark={false}
+                  label={option.currentLabel ?? currentLabel}
+                />
+              ) : null}
+              {option.marks}
+            </View>
+            {option.price !== undefined ? (
+              <Text variant="body-sm" color={ink} style={styles.price}>
+                {option.price}
+              </Text>
             ) : null}
-            {option.marks}
           </View>
-          {option.price !== undefined ? (
-            <Text variant="body-sm" color={ink} style={styles.price}>
-              {option.price}
+          {option.description !== undefined ? (
+            <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
+              {option.description}
+            </Text>
+          ) : null}
+          {reason === null ? null : <View style={styles.reason}>{reason}</View>}
+          {option.content !== undefined ? (
+            <View style={styles.content}>{option.content}</View>
+          ) : null}
+          {option.meta !== undefined ? (
+            <Text variant="overline" color="tertiary" style={styles.meta}>
+              {option.meta}
             </Text>
           ) : null}
         </View>
-        {option.description !== undefined ? (
-          <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
-            {option.description}
-          </Text>
-        ) : null}
-        {reason === null ? null : <View style={styles.reason}>{reason}</View>}
-        {option.content !== undefined ? <View style={styles.content}>{option.content}</View> : null}
-        {option.meta !== undefined ? (
-          <Text variant="overline" color="tertiary" style={styles.meta}>
-            {option.meta}
-          </Text>
-        ) : null}
-      </View>
-      {option.icon !== undefined ? <View style={styles.icon}>{option.icon}</View> : null}
+        {option.icon !== undefined ? <View style={styles.icon}>{option.icon}</View> : null}
+      </GroundProvider>
     </Pressable>
   );
 }

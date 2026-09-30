@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -33,11 +34,10 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
   },
   /* RN has no inset shadow, so the resting box's `inset 0 0 0 1.5px --mark-subtle` ring is a
-     real border of the same weight and colour. The outer e1 shadow rides on top unchanged. */
-  boxResting: { borderWidth: 1.5, borderColor: theme.colors['mark-subtle'], ...theme.elevation.e1 },
+     real border of the same weight and colour. */
+  boxResting: { borderWidth: 1.5, borderColor: theme.colors['mark-subtle'] },
   boxDone: { backgroundColor: theme.colors.success },
   boxWaiting: { opacity: 0.55 },
   body: { flex: 1, minWidth: 0, flexDirection: 'column', gap: 5 },
@@ -56,10 +56,13 @@ function TickBox({
   printable?: boolean;
 }) {
   const filled = done && printable !== true;
+  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
+  const { controlFill } = useGround();
   return (
     <View
       style={[
         styles.box,
+        { backgroundColor: controlFill },
         filled ? styles.boxDone : styles.boxResting,
         waiting === true ? styles.boxWaiting : null,
       ]}

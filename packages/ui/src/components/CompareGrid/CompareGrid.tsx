@@ -54,6 +54,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   errorTitle = "Couldn't load the comparison",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not comparable here',
   unavailableMessage,
   density = 'expressive',
@@ -135,6 +136,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />

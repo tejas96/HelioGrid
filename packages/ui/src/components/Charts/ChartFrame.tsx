@@ -41,6 +41,7 @@ export function ChartFrame({
   errorTitle = CHART_ERROR_TITLE,
   errorMessage = CHART_ERROR_MESSAGE,
   onRetry,
+  retryLabel,
   children,
   className,
   style,
@@ -72,7 +73,13 @@ export function ChartFrame({
         </figcaption>
       ) : null}
 
-      <ChartFrameBody state={state} height={height} note={stateNote} onRetry={onRetry}>
+      <ChartFrameBody
+        state={state}
+        height={height}
+        note={stateNote}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+      >
         {children}
       </ChartFrameBody>
 

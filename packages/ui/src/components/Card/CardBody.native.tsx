@@ -3,9 +3,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-/* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
-   which tsc's bundler resolution reads as the WEB half even in the native project. */
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { CardProps } from './Card.types';
 
@@ -17,7 +15,7 @@ const styles = StyleSheet.create({
     /* Drawn in --surface: the card is a grey tile, and a grey bar on it would not show. */
     backgroundColor: theme.colors.surface,
   },
-  message: { alignItems: 'flex-start', gap: 10 },
+  message: { alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   messageText: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles['body-sm'].fontSize,
@@ -26,20 +24,6 @@ const styles = StyleSheet.create({
   },
   messageWarning: { color: theme.colors['warning-text'] },
   messageTitle: { fontWeight: '700', color: theme.colors['text-primary'] },
-  retry: {
-    minHeight: 44,
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  retryText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
 });
 
 /** The web half animates a gradient sweep; RN has no CSS gradient loop, so it pulses opacity. */
@@ -108,6 +92,7 @@ export function CardBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: Required<Pick<CardProps, 'state' | 'emptyMessage' | 'errorTitle' | 'errorMessage'>> &
@@ -117,6 +102,7 @@ export function CardBody({
     | 'emptyTitle'
     | 'emptyAction'
     | 'onRetry'
+    | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'
   >) {
@@ -144,13 +130,7 @@ export function CardBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={
-          onRetry !== undefined ? (
-            <Pressable style={styles.retry} onPress={onRetry}>
-              <Text style={styles.retryText}>Try again</Text>
-            </Pressable>
-          ) : null
-        }
+        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
       />
     );
   }

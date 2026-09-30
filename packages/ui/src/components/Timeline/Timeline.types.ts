@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { SurfaceState } from '../UnavailableNote';
 
-/** Done = filled success tick, current = accent dot in a soft ring, upcoming = hollow. */
+/** Done = filled success tick, current = accent dot in a soft ring, upcoming = an empty disc. */
 export type TimelineStatus = 'done' | 'current' | 'upcoming' | 'blocked' | 'failed';
 
 export type TimelineVariant = 'page' | 'compact';
@@ -37,6 +37,8 @@ export interface TimelineProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   /** `unavailable`: there is no sequence here to draw. Neutral, and no retry. */
   unavailableTitle?: string;
   unavailableMessage?: string;

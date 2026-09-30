@@ -58,6 +58,7 @@ export interface OperationProgressProps {
   /** Overrides the generated sentence naming what the cancel stops. Never removes it. */
   cancelNote?: ReactNode;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /**
    * **Where the finished thing is** — a real control, not a word: "Open the failure report",

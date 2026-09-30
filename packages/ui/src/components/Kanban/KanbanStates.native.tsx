@@ -4,8 +4,9 @@ import { Animated, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { KanbanBoardState } from './Kanban.logic';
 import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
@@ -56,45 +57,44 @@ interface BoardMessageProps {
   title: string;
   message?: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /** The board's own empty and error surfaces. `unavailable` is `UnavailableNote`'s, never this. */
-export function BoardMessage({ tone, title, message, onRetry }: BoardMessageProps) {
+export function BoardMessage({ tone, title, message, onRetry, retryLabel }: BoardMessageProps) {
   const warning = tone === 'warning';
   const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
     <View style={styles.message}>
-      <View style={[styles.mark, warning ? styles.markWarning : null]}>
-        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-          {warning ? (
-            <>
-              <Path d="M12 9v4M12 17h.01" stroke={ink} strokeWidth={1.5} strokeLinecap="round" />
-              <Circle cx={12} cy={12} r={9} stroke={ink} strokeWidth={1.5} />
-            </>
-          ) : (
-            <>
-              <Rect x={3} y={4} width={5} height={16} rx={1.5} stroke={ink} strokeWidth={1.5} />
-              <Rect x={10} y={4} width={5} height={10} rx={1.5} stroke={ink} strokeWidth={1.5} />
-              <Rect x={17} y={4} width={4} height={7} rx={1.5} stroke={ink} strokeWidth={1.5} />
-            </>
-          )}
-        </Svg>
-      </View>
-      <Text variant="h4" align="center">
-        {title}
-      </Text>
-      {message ? (
-        <Text variant="body-sm" color="secondary" align="center" style={styles.messageText}>
-          {message}
+      {/* The box is white and holds the retry, so the retry takes the page's fill until
+          T-FPLAT-078 makes it a tile. */}
+      <GroundProvider ground="page">
+        <View style={[styles.mark, warning ? styles.markWarning : null]}>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+            {warning ? (
+              <>
+                <Path d="M12 9v4M12 17h.01" stroke={ink} strokeWidth={1.5} strokeLinecap="round" />
+                <Circle cx={12} cy={12} r={9} stroke={ink} strokeWidth={1.5} />
+              </>
+            ) : (
+              <>
+                <Rect x={3} y={4} width={5} height={16} rx={1.5} stroke={ink} strokeWidth={1.5} />
+                <Rect x={10} y={4} width={5} height={10} rx={1.5} stroke={ink} strokeWidth={1.5} />
+                <Rect x={17} y={4} width={4} height={7} rx={1.5} stroke={ink} strokeWidth={1.5} />
+              </>
+            )}
+          </Svg>
+        </View>
+        <Text variant="h4" align="center">
+          {title}
         </Text>
-      ) : null}
-      {onRetry ? (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body" style={styles.retryWords}>
-            Try again
+        {message ? (
+          <Text variant="body-sm" color="secondary" align="center" style={styles.messageText}>
+            {message}
           </Text>
-        </Pressable>
-      ) : null}
+        ) : null}
+        <RetryButton onRetry={onRetry} label={retryLabel} />
+      </GroundProvider>
     </View>
   );
 }
@@ -106,6 +106,7 @@ export interface BoardStateViewProps {
   errorTitle: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage?: string;
   emptyTitle: string;
@@ -124,6 +125,7 @@ export function BoardStateView({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
   emptyTitle,
@@ -131,7 +133,13 @@ export function BoardStateView({
 }: BoardStateViewProps) {
   if (state === 'error') {
     return (
-      <BoardMessage tone="warning" title={errorTitle} message={errorMessage} onRetry={onRetry} />
+      <BoardMessage
+        tone="warning"
+        title={errorTitle}
+        message={errorMessage}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+      />
     );
   }
   if (state === 'unavailable') {
@@ -188,13 +196,4 @@ const styles = StyleSheet.create({
   },
   markWarning: { backgroundColor: theme.colors['warning-bg'] },
   messageText: { maxWidth: 320 },
-  retry: {
-    marginTop: 10,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  retryWords: { fontWeight: '500' },
 });

@@ -143,30 +143,7 @@
   margin-top: 10px;
 }
 
-.hg-stream-button {
-  margin-top: 10px;
-  min-height: 44px;
-  padding: 0 var(--sp-5);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-}
-
 .hg-stream-more {
   display: flex;
   justify-content: center;
-}
-
-.hg-stream-more .hg-stream-button {
-  margin-top: 0;
-}
-
-.hg-stream-button[data-busy="true"] {
-  opacity: 0.6;
-  cursor: default;
 }

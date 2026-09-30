@@ -238,16 +238,14 @@
   width: 44px;
   height: 44px;
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* The opposite of what holds it (F7-15), flat. */
+  background: var(--hg-control-fill);
   color: var(--text-primary);
 }
 
-/* Both zoom buttons disable at the ends of the scale, and a control that cannot be pressed is not
-   one to find — it drops back off the ladder. */
+/* Both zoom buttons disable at the ends of the scale. */
 .hg-drawing-sheet-zoom-button:disabled {
-  box-shadow: var(--e1);
+  background: var(--hg-control-fill-disabled);
 }
 
 .hg-drawing-sheet-zoom-value {

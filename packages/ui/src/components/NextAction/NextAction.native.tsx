@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
    spellings to the same module, so this is the same import, correctly typed. */
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
@@ -101,8 +102,9 @@ export function RecordCard({
   const ini = initials || recordInitials(name);
   const pend = renderPending(pending);
 
+  /* The card is white, so its controls take the page's fill until T-FPLAT-078 settles its ground. */
   const body: ReactNode = (
-    <>
+    <GroundProvider ground="page">
       <View style={styles.avatar} importantForAccessibility="no-hide-descendants">
         {/* RN has no color-mix: the 10% tint is the tone itself, at a tenth of its opacity. */}
         <View style={[styles.avatarTint, { backgroundColor: avatarTone }]} />
@@ -143,7 +145,7 @@ export function RecordCard({
         {pend ? <View style={styles.action}>{pend}</View> : null}
         {action ? <View style={[styles.action, styles.actionRow]}>{action}</View> : null}
       </View>
-    </>
+    </GroundProvider>
   );
 
   const frame = [

@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 
 /** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
 export type OverlayStateVariant = 'sheet' | 'panel';
@@ -21,7 +21,7 @@ interface OverlayErrorProps {
   message?: string;
   onRetry?: () => void;
   variant: OverlayStateVariant;
-  /** The retry's words. The reference hardcodes them; no prop on the contract carries them. */
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
 }
 
@@ -54,13 +54,7 @@ export function OverlayEmpty({ title, message, action, variant }: OverlayEmptyPr
  * retry — because trying again may work. `unavailable` is the state that gets neither, and it
  * renders through `UnavailableNote` instead.
  */
-export function OverlayError({
-  title,
-  message,
-  onRetry,
-  variant,
-  retryLabel = 'Try again',
-}: OverlayErrorProps) {
+export function OverlayError({ title, message, onRetry, variant, retryLabel }: OverlayErrorProps) {
   return (
     <View style={[styles.state, variant === 'panel' ? styles.panelPad : styles.sheetPad]}>
       <View style={styles.mark}>
@@ -86,23 +80,13 @@ export function OverlayError({
           {message}
         </Text>
       )}
-      {onRetry === undefined ? null : (
-        /* NAME_FROM_CONTENT (check h), and no `accessibilityLabel`: the `<Text>` child IS this
-           target's name, exactly as the web half's `<button>{retryLabel}</button>` is named by its
-           own words. An explicit label here was a second copy of the same string — one that
-           OVERRIDES the child rather than adding anything, so the two halves would have drifted
-           the moment the words were changed in one place. */
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text style={retryText}>{retryLabel}</Text>
-        </Pressable>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </View>
   );
 }
 
 /* 16px and -0.01em of it in points — neither has a type token, and both come from the reference. */
 const titleStyle: TextStyle = { fontSize: 16, fontWeight: '700', letterSpacing: -0.16 };
-const retryText: TextStyle = { fontWeight: '500' };
 
 const styles = StyleSheet.create({
   state: {
@@ -129,13 +113,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: theme.colors['warning-bg'],
     marginBottom: theme.spacing['sp-1'],
-  },
-  retry: {
-    marginTop: theme.spacing['sp-2'],
-    minHeight: 44,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    // A control on a `surface` overlay is the opposite of its ground (`F7-15`): the well.
-    backgroundColor: theme.colors['bg-well'],
   },
 });

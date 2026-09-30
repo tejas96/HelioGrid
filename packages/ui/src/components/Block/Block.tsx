@@ -28,6 +28,7 @@ export function Block({
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not available',
   unavailableMessage,
   badge,
@@ -73,6 +74,7 @@ export function Block({
         errorTitle={errorTitle}
         errorMessage={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       >

@@ -18,8 +18,7 @@ interface WebFilterChipsProps extends FilterChipsProps {
 type Focusable = { focus: () => void };
 
 /**
- * Stage chips. Active = accent fill; the rest are white pills that separate by shadow. Roving
- * tabindex: one stop in the tab order, arrow keys move between chips.
+ * Stage chips. Active = accent fill; the rest take the control fill, flat. Roving tabindex: one stop in the tab order, arrow keys move between chips.
  *
  * **One-of-N by construction**: `role="tablist"` + `aria-selected`, and its arrow keys change the
  * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension

@@ -87,6 +87,8 @@ export interface EditorSurfaceProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   emptyTitle?: string;
   emptyMessage?: string;
   emptyAction?: ReactNode;

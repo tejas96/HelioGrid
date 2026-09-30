@@ -5,6 +5,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { Button } from '../Button/Button.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import type { Finding, FindingStatus } from './FindingList.types';
 import { FINDING_LABEL, statusOf } from './FindingList.verdict';
@@ -47,7 +48,7 @@ function Mark({ status }: { status: FindingStatus }) {
 interface FindingListRowProps {
   finding: Finding;
   onJump?: (finding: Finding) => void;
-  jumpLabel?: string;
+  jumpLabel: string;
 }
 
 /** One finding: the mark, the check, its meaning in plain language, and the act that fixes it. */
@@ -86,23 +87,27 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
         {jump === undefined && finding.fix === undefined ? null : (
           <View style={styles.acts}>
             {jump === undefined ? null : (
-              <Pressable onPress={jump} style={styles.jump}>
-                <Text variant="body" style={styles.actWords}>
-                  {jumpWords}
-                </Text>
-                <Svg
-                  width={15}
-                  height={15}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke={theme.colors['text-primary']}
-                  strokeWidth={1.8}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <Path d="M5 12h13M13 6l6 6-6 6" />
-                </Svg>
-              </Pressable>
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={jump}
+                iconRight={
+                  <Svg
+                    width={15}
+                    height={15}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={theme.colors['text-primary']}
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <Path d="M5 12h13M13 6l6 6-6 6" />
+                  </Svg>
+                }
+              >
+                {jumpWords}
+              </Button>
             )}
             {/* MS6-27's "Auto-string now". Optional by design: most findings have no such act. */}
             {finding.fix === undefined ? null : (
@@ -154,22 +159,10 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     marginTop: theme.spacing['sp-0-5'],
   },
-  jump: {
-    flexDirection: 'row',
-    gap: 7,
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
   fix: {
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors['accent-subtle'],
-  },
-  actWords: {
-    fontWeight: '500',
   },
   fixWords: {
     fontWeight: '700',

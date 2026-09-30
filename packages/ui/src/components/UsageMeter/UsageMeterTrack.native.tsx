@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import type { UsageFill, UsageScale } from './usage-meter-model';
 
 const FILL: Record<UsageFill, string> = {
@@ -32,6 +33,8 @@ export function UsageMeterTrack({
   value,
   limit,
 }: NativeUsageMeterTrackProps) {
+  /* The tick and the overage edge are cut-outs: the ground showing through the track. */
+  const { ground } = useGround();
   return (
     <View
       accessibilityRole="progressbar"
@@ -40,9 +43,11 @@ export function UsageMeterTrack({
       style={[styles.track, { height }]}
     >
       <View style={{ width: `${scale.usedPct}%`, backgroundColor: FILL[scale.fill] }} />
-      {scale.overPct > 0 ? <View style={[styles.over, { width: `${scale.overPct}%` }]} /> : null}
+      {scale.overPct > 0 ? (
+        <View style={[styles.over, { width: `${scale.overPct}%`, borderLeftColor: ground }]} />
+      ) : null}
       {scale.threshold > 0 && scale.threshold < 100 ? (
-        <View style={[styles.tick, { left: `${scale.threshold}%` }]} />
+        <View style={[styles.tick, { left: `${scale.threshold}%`, backgroundColor: ground }]} />
       ) : null}
       {scale.overPct > 0 && scale.limitMark < 100 ? (
         <View style={[styles.bundleMark, { left: `${scale.limitMark}%` }]} />
@@ -64,14 +69,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.info,
     opacity: 0.55,
     borderLeftWidth: 2,
-    borderLeftColor: theme.colors.surface,
   },
   tick: {
     position: 'absolute',
     top: -1,
     bottom: -1,
     width: 2,
-    backgroundColor: theme.colors.surface,
     opacity: 0.9,
   },
   bundleMark: {

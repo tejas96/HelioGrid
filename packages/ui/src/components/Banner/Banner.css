@@ -116,7 +116,6 @@
   font-family: var(--font-sans);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
-  box-shadow: var(--e1);
 }
 
 /* ── BannerAction: 44px target, 32px pill ───────────────────────────────────── */
@@ -126,7 +125,7 @@
   padding: 0 var(--sp-0-5);
   flex-shrink: 0;
   /* The rectangle is invisible on purpose: field mode's blanket control rule would otherwise ring
-     44px of empty air. The visible edge belongs to the pill, which carries --e1. */
+     44px of empty air. The visible edge belongs to the pill. */
   box-shadow: none;
   background: transparent;
 }
@@ -137,9 +136,8 @@
   height: 32px;
   padding: 0 var(--sp-3);
   border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
+  /* The opposite of what holds it (F7-15): the banner's tint is a tile ground, so white. */
+  background: var(--hg-control-fill);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   color: var(--text-primary);

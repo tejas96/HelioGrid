@@ -71,6 +71,8 @@ export interface KanbanProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   columnWidth?: number;
   /**
    * Own-width px below which the board becomes **one column with a stage filter** — `M08-10` (P0)

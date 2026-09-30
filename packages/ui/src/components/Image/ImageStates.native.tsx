@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { Image as RNImage, StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { ImageState } from './Image.logic';
 import { isCompact, missingSpec, showsMissingLabel } from './Image.logic';
 import type { ImageMissingReason, ImageProps } from './Image.types';
@@ -16,7 +17,7 @@ export interface ImageMissingProps {
   missingLabel?: string;
   missingDetail?: string;
   onRetry?: () => void;
-  retryLabel: string;
+  retryLabel?: string;
 }
 
 /**
@@ -72,12 +73,11 @@ export function ImageMissing({
           {detail}
         </Text>
       ) : null}
-      {!compact && reason === 'unavailable' && onRetry ? (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body-sm" style={styles.retryWords}>
-            {retryLabel}
-          </Text>
-        </Pressable>
+      {!compact && reason === 'unavailable' ? (
+        /* A tinted panel holds its retry as a tile does — see `Ground.css`. */
+        <GroundProvider ground="tile">
+          <RetryButton onRetry={onRetry} label={retryLabel} />
+        </GroundProvider>
       ) : null}
     </View>
   );
@@ -133,13 +133,4 @@ const styles = StyleSheet.create({
   missingMark: { alignItems: 'center', gap: theme.spacing['sp-2'] },
   missingLabel: { fontWeight: '700', letterSpacing: -0.13 },
   missingDetail: { maxWidth: 260 },
-  retry: {
-    marginTop: theme.spacing['sp-0-5'],
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  retryWords: { fontWeight: '500' },
 });

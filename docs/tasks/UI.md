@@ -40,6 +40,20 @@ number in `--text-secondary`, no ring. `Card` is the tile: `--canvas-sunken`, no
 the shimmer is drawn in `--surface`. `Kanban`'s columns have no fill. `Input`'s `success` is the
 confirming words under the field with the success mark, never a ring.
 
+**Owed to the design system by the parts inside a component (`T-FPLAT-077`), repo side done.**
+Every component's Try again is the secondary `Button` at `md`, `--sp-2` under its message, its
+words the caller's and never an English default; the other text action pills are that `Button`
+too (`OperationProgress`'s cancel, `PendingAction`'s dismiss — its ghost the ghost `Button` —
+`FindingList`'s jump, `ActivityStream`'s load-more and clear, `AudioPlayer`'s transcript door,
+`Transcript`'s show-more, `SourceDocument`'s Open original). The parts no shared component draws take
+the control fill, flat — `Banner`'s action, `Dropzone`'s flush, `FilterBar`'s pills, `AudioPlayer`'s
+round and speed buttons, `DrawingSheet`'s zoom, `CompareGrid`'s selected pill and chosen cell,
+`Checklist`'s tick box, `Timeline`'s current and upcoming nodes, `ListRow`'s hover — and a thumb or a
+cut-out ring takes the ground (`AudioPlayer`, `RangeField`, `Avatar`, `BrandColorField`'s swatch,
+the meters' ticks, `LineChart`'s end dot). A tinted panel that holds a control is a tile: `Banner`,
+`SourceDocument`'s message, `Image`'s missing panel, `AudioPlayer`'s and `Transcript`'s error
+panels, `CompareGrid`'s selected column.
+
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |
@@ -95,7 +109,6 @@ confirming words under the field with the success mark, never a ring.
 | `Chip` | **`tone` colours only the dot**, so a warning chip is a warning *mark* on a white pill — measured: `--surface` at `--e1`, near-black words, one 6px `--warning-text` dot, while `--warning-bg` exists as a token and goes unused. `F7-11` asks for the word first and the tint second. | `SCR-M01-20` |
 | `PagedDocument` | **A tranche band names itself in a `<p>`, so its table is anonymous to a screen reader.** Measured on all eight bands: a `<table>` with no `<caption>`, no `aria-label` and no `role`, its name in a paragraph immediately above. `F7-27` asks a customer-facing table to carry its own name. | `SCR-M01-20` |
 | `Modal` · `Sheet` | **`labelId` is web-only in practice.** Both take it on the shared type and only the web half reads it; the native halves carry `accessibilityViewIsModal` and no name, so a native icon-header dialog is still unnamed — the defect the prop was added to close. An unread optional prop typechecks, so Law 7 does NOT catch this. Route it through `accessibilityLabel`, or state the platform reason on the type. | `arch review 2026-09-02` |
-| `StatCard` · `Timeline` | **Their retry controls were raised to `--e2` on web and left flat on native.** `F7-15`'s raise-not-outline rule applies across both platforms and the overlay family did both halves; these two did not. | `arch review 2026-09-02` |
 | `PhoneField` | **The native half composes its accessible name in code** — `` `${label}, ${phone(value)}` `` — while the web half names the input from a `<label>` and puts the number in a separate sr-only span. Two announcements from one component, no platform reason recorded, and the join runs against the composed-sentence law (owner ruling 2026-08-31): a composed sentence is a whole translated sentence with slots, never a concatenation. | `arch review 2026-09-02` |
 | `PhoneField` · `PhotoField` | **No design-system contract mirror**, so both sit outside `ds:contract` — the only gate comparing repo props against the design system. `ds:contract` skips a component with no contract file, silently. | `arch review 2026-09-02` |
 | — | No `Skeleton` component, and no duration token for the stated 1.4 s shimmer (nearest is `--dur-ambient`, 500 ms). | `SCR-M01-03` |

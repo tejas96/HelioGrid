@@ -240,7 +240,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   padding: var(--sp-4);
   border-radius: var(--r-md);
   background: var(--warning-bg);
@@ -285,14 +285,4 @@
 .hg-transcript-more {
   display: flex;
   margin-top: var(--sp-3);
-}
-
-.hg-pressable.hg-transcript-plain {
-  padding-inline: 18px;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  box-shadow: var(--e2);
-  font-size: 14px;
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
 }

@@ -53,6 +53,7 @@ export function Sheet({
   errorTitle = "Couldn't load this",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
   emptyAction = null,
@@ -135,6 +136,7 @@ export function Sheet({
             errorMessage={errorMessage}
             errorTitle={errorTitle}
             onRetry={onRetry}
+            retryLabel={retryLabel}
             skeleton={<SheetSkeleton density={density} />}
             state={state}
             unavailableAction={unavailableAction}

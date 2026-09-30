@@ -5,6 +5,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { renderComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
@@ -119,50 +120,54 @@ export function ReorderRow({
         stack ? styles.rowStack : null,
       ]}
     >
-      {/* The position is a fact a sighted reader gets from the order and a screen-reader user
-          does not, so it is stated once per row rather than only on move — AND IT CARRIES ITS
-          DENOMINATOR. "1" alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so
-          the digit is drawn and the whole sentence is this node's accessible name, which is the
-          same split the web half makes with `.hg-reorder-sr`. */}
-      <View
-        accessible
-        accessibilityLabel={positionLabel(index, total)}
-        style={[styles.position, stack ? styles.positionStack : null]}
-      >
-        <Text variant="caption" color="tertiary" style={styles.positionDigit}>
-          {`${index + 1}`}
-        </Text>
-      </View>
-      <View style={styles.body}>
-        {body}
-        {/* The floor's declared slot: its own line under the row's body. */}
-        {renderComplianceFloor(lock)}
-      </View>
-      <View style={[styles.controls, stack ? styles.controlsStack : null]}>
-        <ReorderControl
-          kind="up"
-          disabled={index === 0}
-          onPress={() => onMove('up')}
-          controlRef={(node) => registerControl('up', node, index !== 0)}
-          label={moveLabel(name, 'up', index, total)}
-        />
-        <ReorderControl
-          kind="down"
-          disabled={index === total - 1}
-          onPress={() => onMove('down')}
-          controlRef={(node) => registerControl('down', node, index !== total - 1)}
-          label={moveLabel(name, 'down', index, total)}
-        />
-        {deletable ? (
+      {/* A row is white, so its controls take the page's fill until T-FPLAT-078 settles its
+          ground. */}
+      <GroundProvider ground="page">
+        {/* The position is a fact a sighted reader gets from the order and a screen-reader user
+            does not, so it is stated once per row rather than only on move — AND IT CARRIES ITS
+            DENOMINATOR. "1" alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so
+            the digit is drawn and the whole sentence is this node's accessible name, which is the
+            same split the web half makes with `.hg-reorder-sr`. */}
+        <View
+          accessible
+          accessibilityLabel={positionLabel(index, total)}
+          style={[styles.position, stack ? styles.positionStack : null]}
+        >
+          <Text variant="caption" color="tertiary" style={styles.positionDigit}>
+            {`${index + 1}`}
+          </Text>
+        </View>
+        <View style={styles.body}>
+          {body}
+          {/* The floor's declared slot: its own line under the row's body. */}
+          {renderComplianceFloor(lock)}
+        </View>
+        <View style={[styles.controls, stack ? styles.controlsStack : null]}>
           <ReorderControl
-            kind="delete"
-            tone="danger"
-            onPress={onDelete}
-            controlRef={(node) => registerControl('delete', node, true)}
-            label={deleteLabel(name, index, total)}
+            kind="up"
+            disabled={index === 0}
+            onPress={() => onMove('up')}
+            controlRef={(node) => registerControl('up', node, index !== 0)}
+            label={moveLabel(name, 'up', index, total)}
           />
-        ) : null}
-      </View>
+          <ReorderControl
+            kind="down"
+            disabled={index === total - 1}
+            onPress={() => onMove('down')}
+            controlRef={(node) => registerControl('down', node, index !== total - 1)}
+            label={moveLabel(name, 'down', index, total)}
+          />
+          {deletable ? (
+            <ReorderControl
+              kind="delete"
+              tone="danger"
+              onPress={onDelete}
+              controlRef={(node) => registerControl('delete', node, true)}
+              label={deleteLabel(name, index, total)}
+            />
+          ) : null}
+        </View>
+      </GroundProvider>
     </Animated.View>
   );
 }
