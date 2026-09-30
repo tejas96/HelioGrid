@@ -3,7 +3,7 @@
    THE ADJACENCY RULE: the tier renders in the component's own `provenance` slot — directly under
    the value, above the delta and above `children`. Never in `children`.
 
-   The web half's hover lift has no touch equivalent; the Pressable primitive's pressed state is
+   The web half's hover ring has no touch equivalent; the Pressable primitive's pressed state is
    what a finger gets instead, and it already owns the 44px floor (which a whole card clears many
    times over).
 
@@ -13,7 +13,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderBand } from '../BandedFigure/BandChip.native';
@@ -26,12 +26,11 @@ import { StatCardDelta } from './StatCardDelta.native';
 import { StatCardStates } from './StatCardStates.native';
 
 const styles = StyleSheet.create({
+  /* The tile's look is `tileSurface` (`F7-49`), spread first in every frame. */
   card: {
-    backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-card-expressive'],
     padding: theme.spacing['sp-6'],
     overflow: 'hidden',
-    ...theme.elevation.e2,
   },
   button: { alignItems: 'stretch', justifyContent: 'flex-start', width: '100%' },
   valueRow: {
@@ -90,8 +89,8 @@ export function StatCard({
   /* Every non-ready state returns here, and none of them prints a figure. */
   if (state !== 'ready') {
     return (
-      <View style={[styles.card, style]}>
-        <GroundProvider ground="page">
+      <View style={[tileSurface, styles.card, style]}>
+        <GroundProvider ground="tile">
           {overline}
           <StatCardStates
             state={state}
@@ -108,10 +107,9 @@ export function StatCard({
     );
   }
 
-  /* The card is white and holds controls, so they take the page's fill until T-FPLAT-078 makes it
-     a tile. */
+  /* The card is a tile, so a control inside it turns white. */
   const body = (
-    <GroundProvider ground="page">
+    <GroundProvider ground="tile">
       {overline}
       {/* An absent figure is named in the value's own footprint — never a dash, never a zero. */}
       {gapNode ? (
@@ -147,11 +145,11 @@ export function StatCard({
       <Pressable
         onPress={onClick}
         accessibilityLabel={ariaLabel}
-        style={[styles.card, styles.button, style]}
+        style={[tileSurface, styles.card, styles.button, style]}
       >
         {body}
       </Pressable>
     );
   }
-  return <View style={[styles.card, style]}>{body}</View>;
+  return <View style={[tileSurface, styles.card, style]}>{body}</View>;
 }

@@ -8,11 +8,18 @@
    --hg-control-fill            the fill a control takes here.
    --hg-control-fill-disabled   the fill a disabled control takes, the same on every ground.
 
-   These two lists are the ONE record of which surface is which ground. A ground is keyed on its
-   component's own class, never on an attribute a component must remember to set. A float is a
-   page ground: no web float renders through a portal, so a sheet or a menu opened inside a tile
-   would otherwise inherit the tile's ground and draw its controls white on white. */
+   These lists are the ONE record of which surface is which ground, and the tiles' list is the ONE
+   place a tile's look is drawn: a tile keeps only its own radius, padding and rings, so changing
+   what a tile looks like is this file and `Ground.native.tsx`'s `tileSurface`, never twenty
+   components. A ground is keyed on its component's own class, never on an attribute a component
+   must remember to set only for this file — at most one condition it already renders for its own
+   state or content (an off option, a stacked record that holds an editor). A tile's selector stays
+   at one class and one condition and never names a state: the tile's own state rules — selected,
+   played, flagged — tie it or beat it, and win by loading later. A float is a page ground: no web float renders through a portal, so a
+   sheet or a menu opened inside a tile would otherwise inherit the tile's ground and draw its
+   controls white on white. */
 
+/* The page — and a sheet, a modal, a menu over it: white, so a control takes the well. */
 :root,
 .hg-surface[data-background="surface"],
 .hg-surface[data-background="surface-alt"],
@@ -22,32 +29,46 @@
 .hg-menu-list,
 .hg-coach-mark,
 .hg-explainer-bubble,
-/* The white containers `F7-49` turns into tiles or headings (T-FPLAT-078). Until then each is a
-   page, so a control inside one reads the page's fill even when the container sits in a tile. */
-.hg-block:not([data-flat="true"]),
-.hg-checklist,
-.hg-dt,
-.hg-compare,
-.hg-kanban-message,
-.hg-stat-card,
+/* `PagedDocument`'s cards are paper standing where a sheet would, on the grey desk its screen sets
+   it on; a tile there would vanish, and without this entry their retry would read the desk. */
 .hg-paged-document-card,
-.hg-source-doc,
-.hg-finding-list,
-.hg-record-card,
-.hg-accordion-item,
-.hg-banded[data-variant="card"],
-.hg-reorder-row,
-.hg-date-set-row,
-.hg-option-card {
+.hg-paged-document-unavailable {
   --hg-ground: var(--surface);
   --hg-control-fill: var(--bg-well);
 }
 
+/* The tiles (F7-49): one record, or one item of a list — grey on the white page, no shadow, and a
+   tile ground, so a control inside turns white. The ONE place a tile is drawn, in one list, so a
+   tile's fill and its ground cannot part. Loaded before every component, so a tile's own state rule — an off
+   option, a played turn — still wins over this fill at rest. */
 .hg-card,
+.hg-stat-card,
+/* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
+.hg-pressable.hg-stat-card-button,
+.hg-record-card,
+.hg-banded[data-variant="card"],
+.hg-banded[data-variant="box"],
+.hg-kanban-message,
+.hg-checklist-row:not(.hg-checklist-row--document),
+.hg-finding-row,
+.hg-reorder-row,
+.hg-date-set-row,
+.hg-option-card:not([data-off="true"]),
+.hg-transcript-bubble,
+.hg-dt-total-block,
+.hg-dt-card:not([data-editable="true"]) {
+  background: var(--canvas-sunken);
+  box-shadow: none;
+  --hg-ground: var(--canvas-sunken);
+  --hg-control-fill: var(--surface);
+}
+
+/* The tile grounds that are not tiles: each draws its own fill. */
+/* A grey `Surface` is a tile ground but draws its own fill. */
 .hg-surface[data-background="canvas"],
 .hg-surface[data-background="canvas-sunken"],
 /* A tinted panel holds its controls as a tile does: the well on a tint is about 1.01:1 on the
-   neutral one and muddy on the others, and white reads on every tone. */
+   neutral one and muddy on the others, and white reads on every tone. It keeps its own tint. */
 .hg-banner,
 .hg-banner-pill,
 .hg-source-doc-message,
@@ -55,7 +76,12 @@
 .hg-audio-panel,
 .hg-transcript-error,
 .hg-compare-option-head[data-selected="true"],
-.hg-compare-cell[data-selected="true"] {
+.hg-compare-cell[data-selected="true"],
+/* A stacked record that holds an editor lies on the page (F7-49), but its flag, resolved or selected
+   tint holds its buttons as any tint does; the editor keeps `FieldBox`'s well. */
+.hg-dt-card[data-issue="true"],
+.hg-dt-card[data-fixed="true"],
+.hg-dt-card[data-selected="true"] {
   --hg-ground: var(--canvas-sunken);
   --hg-control-fill: var(--surface);
 }

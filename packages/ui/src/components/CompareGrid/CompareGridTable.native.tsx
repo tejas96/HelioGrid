@@ -58,12 +58,15 @@ export function CompareGridTable<Opt extends CompareOption>({
   const best = bestPerAttribute(attributes, options);
   const isSelected = (option: Opt) => selectedKey !== undefined && option.key === selectedKey;
   const box = cellBoxes(density, labelWidth, columnWidth);
+  const { ground } = useGround();
   const pinTransform = { transform: [{ translateX: scrollX }] };
 
   return (
     <View style={compareStyles.table}>
       <View style={compareStyles.row}>
-        <Animated.View style={[compareStyles.pin, box.pin, pinTransform]} />
+        <Animated.View
+          style={[compareStyles.pin, box.pin, cellGround(false, false, ground), pinTransform]}
+        />
         {options.map((option) => (
           <CompareOptionHead
             key={option.key}
@@ -81,7 +84,7 @@ export function CompareGridTable<Opt extends CompareOption>({
         return (
           <View key={attribute.key} style={compareStyles.row}>
             <Animated.View
-              style={[compareStyles.pin, box.pin, cellGround(false, zebra), pinTransform]}
+              style={[compareStyles.pin, box.pin, cellGround(false, zebra, ground), pinTransform]}
             >
               <Text variant="caption" color="secondary" style={{ fontWeight: '500' }}>
                 {attribute.label}
@@ -110,9 +113,14 @@ export function CompareGridTable<Opt extends CompareOption>({
 
       {onSelect === undefined ? null : (
         <View style={compareStyles.row}>
-          <Animated.View style={[compareStyles.pin, box.pin, pinTransform]} />
+          <Animated.View
+            style={[compareStyles.pin, box.pin, cellGround(false, false, ground), pinTransform]}
+          />
           {options.map((option) => (
-            <View key={option.key} style={[box.cell, cellGround(isSelected(option), false)]}>
+            <View
+              key={option.key}
+              style={[box.cell, cellGround(isSelected(option), false, ground)]}
+            >
               {isSelected(option) ? (
                 /* The selected column's tint holds its choice as a tile does — see `Ground.css`. */
                 <GroundProvider ground="tile">

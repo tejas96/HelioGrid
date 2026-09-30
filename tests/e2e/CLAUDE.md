@@ -10,6 +10,9 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
   transform refuses a value imported beside a component.
+- `components/<Name>.story.tsx` — a wrapper a spec mounts when a prop is a function the component
+  calls while it renders: a function handed to `mount` answers from the test process as a promise,
+  so the story binds it in the browser. Never a spec itself (`testMatch` is `*.spec.tsx`).
 - `mobile/<screen>.yaml` — one Maestro flow per phone screen, run in order by `mobile/run.sh`;
   `mobile/steps/` holds a step two flows share and is not a screen.
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own

@@ -13,7 +13,10 @@ interface WebBlockProps extends BlockProps {
   style?: CSSProperties;
 }
 
-/** The section frame — header, body, footer, and a `state`. The header stays put through them all. */
+/**
+ * The section — header, body, footer, and a `state`, a heading on the page (`F7-49`). The header
+ * stays put through them all.
+ */
 export function Block({
   overline,
   title,
@@ -36,7 +39,6 @@ export function Block({
   countMax,
   countLabel,
   density = 'expressive',
-  flat = false,
   children,
   className,
   style,
@@ -52,7 +54,6 @@ export function Block({
       aria-label={title}
       className={classNames('hg-block', className)}
       data-density={density}
-      data-flat={flat ? 'true' : undefined}
       style={style}
     >
       <BlockHeader

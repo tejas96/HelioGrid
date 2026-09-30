@@ -14,10 +14,9 @@
 #   illustration        a drawn mark
 #   measure             a contrast measurement against the paper
 #   field               `FieldBox`'s focus gap: a field never sits in a tile
-#   shimmer             `Card`'s loading bars, drawn white on the grey tile
+#   shimmer             a loading bar's shimmer: `Card`'s on the grey tile, `Kanban`'s on the page
 #   deferred            owed by a row in docs/tasks/deferred.md
 #   owed-T-SHELL        the shell's parts, moved by T-SHELL-001 and T-SHELL-008
-#   owed-T-FPLAT-078    a container F7-49 turns into a tile or a heading, moved by T-FPLAT-078
 
 # ground
 packages/ui/src/primitives/Ground/Ground.css	ground
@@ -104,6 +103,8 @@ packages/ui/src/components/Chip/Chip.css	on-accent
 packages/ui/src/components/Chip/Chip.native.tsx	on-accent
 packages/ui/src/components/FindingList/FindingListRow.native.tsx	on-accent
 packages/ui/src/components/LanguageSwitcher/LanguageSwitcher.css	on-accent
+packages/ui/src/components/OptionCardGroup/OptionCard.native.tsx	on-accent
+packages/ui/src/components/OptionCardGroup/OptionCardGroup.css	on-accent
 packages/ui/src/components/Stepper/StepperMarker.native.tsx	on-accent
 packages/ui/src/components/Switch/Switch.css	on-accent
 packages/ui/src/components/Switch/Switch.native.tsx	on-accent
@@ -121,6 +122,9 @@ packages/ui/src/primitives/FieldBox/FieldBox.css	field
 # shimmer
 packages/ui/src/components/Card/Card.css	shimmer
 packages/ui/src/components/Card/CardBody.native.tsx	shimmer
+packages/ui/src/components/Kanban/Kanban.css	shimmer
+packages/ui/src/components/StatCard/StatCard.css	shimmer
+packages/ui/src/components/StatCard/StatCardStates.native.tsx	shimmer
 
 # deferred
 packages/ui/src/components/RichText/RichText.css	deferred
@@ -136,48 +140,3 @@ packages/ui/src/components/AppShell/AppShell.css	owed-T-SHELL
 packages/ui/src/components/AppShell/CountBadge.native.tsx	owed-T-SHELL
 packages/ui/src/components/AppShell/MobileTopBar.native.tsx	owed-T-SHELL
 
-# owed-T-FPLAT-078
-packages/ui/src/components/Accordion/Accordion.css	owed-T-FPLAT-078
-packages/ui/src/components/Accordion/Accordion.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/ActivityStream/ActivityStream.css	owed-T-FPLAT-078
-packages/ui/src/components/BandedFigure/BandedCard.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/BandedFigure/BandedFigure.css	owed-T-FPLAT-078
-packages/ui/src/components/Block/Block.css	owed-T-FPLAT-078
-packages/ui/src/components/Block/Block.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/Checklist/Checklist.css	owed-T-FPLAT-078
-packages/ui/src/components/Checklist/Checklist.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/CompareGrid/CompareGrid.css	owed-T-FPLAT-078
-packages/ui/src/components/CompareGrid/CompareGrid.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/CompareGrid/CompareGridStyles.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTable.css	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTable.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableBodyRow.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableCell.css	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableCell.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableChrome.css	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableChrome.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableFeedback.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableHead.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableTotal.css	owed-T-FPLAT-078
-packages/ui/src/components/DataTable/DataTableTotal.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/DateSet/DateSet.css	owed-T-FPLAT-078
-packages/ui/src/components/DateSet/DateSetRow.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/FindingList/FindingList.css	owed-T-FPLAT-078
-packages/ui/src/components/FindingList/FindingList.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/Kanban/Kanban.css	owed-T-FPLAT-078
-packages/ui/src/components/Kanban/KanbanStates.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/NextAction/NextAction.css	owed-T-FPLAT-078
-packages/ui/src/components/NextAction/NextAction.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/OptionCardGroup/OptionCard.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/OptionCardGroup/OptionCardGroup.css	owed-T-FPLAT-078
-packages/ui/src/components/ReorderList/ReorderList.css	owed-T-FPLAT-078
-packages/ui/src/components/ReorderList/ReorderRow.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/SourceDocument/SourceDocument.css	owed-T-FPLAT-078
-packages/ui/src/components/SourceDocument/SourceDocument.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/SourceDocument/SourceDocumentChrome.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/StatCard/StatCard.css	owed-T-FPLAT-078
-packages/ui/src/components/StatCard/StatCard.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/TenantHeader/TenantHeader.css	owed-T-FPLAT-078
-packages/ui/src/components/TenantHeader/TenantHeader.native.tsx	owed-T-FPLAT-078
-packages/ui/src/components/Transcript/Transcript.css	owed-T-FPLAT-078
-packages/ui/src/components/Transcript/TranscriptTurnRow.native.tsx	owed-T-FPLAT-078

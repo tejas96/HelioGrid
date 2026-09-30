@@ -5,7 +5,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { renderComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     minWidth: 0,
-    ...theme.elevation.e1,
   },
   rowStack: { alignItems: 'flex-start' },
   position: { flexShrink: 0, width: 22 },
@@ -56,7 +55,7 @@ interface ReorderRowProps {
   stack: boolean;
   density: ReorderListDensity;
   flashing: boolean;
-  /** Fired when the flash has finished, so the list can put the row back to `surface`. */
+  /** Fired when the flash has finished, so the list can put the row back to the tile's grey. */
   onFlashEnd: () => void;
   onMove: (dir: MoveDirection) => void;
   onDelete: () => void;
@@ -91,7 +90,8 @@ function useFlashFade(flashing: boolean, onFlashEnd: () => void) {
   }, [flashing, value, onFlashEnd]);
   return value.interpolate({
     inputRange: [0, 1],
-    outputRange: [theme.colors.surface, theme.colors['accent-subtle']],
+    /* From the tile's own grey, so a change to `tileSurface` moves the row at rest with it. */
+    outputRange: [tileSurface.backgroundColor, theme.colors['accent-subtle']],
   });
 }
 
@@ -113,16 +113,17 @@ export function ReorderRow({
   const pads = REORDER_PADS[density];
   const backgroundColor = useFlashFade(flashing, onFlashEnd);
   return (
+    /* A row is one tile (`F7-49`): `tileSurface` draws its flat rest, and the flash animates its
+       fill from the tile's grey — the web half's `.hg-reorder-row` on `Ground.css`'s tiles list. */
     <Animated.View
       style={[
+        tileSurface,
         styles.row,
         { padding: pads.padding, borderRadius: pads.radius, backgroundColor },
         stack ? styles.rowStack : null,
       ]}
     >
-      {/* A row is white, so its controls take the page's fill until T-FPLAT-078 settles its
-          ground. */}
-      <GroundProvider ground="page">
+      <GroundProvider ground="tile">
         {/* The position is a fact a sighted reader gets from the order and a screen-reader user
             does not, so it is stated once per row rather than only on move — AND IT CARRIES ITS
             DENOMINATOR. "1" alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so

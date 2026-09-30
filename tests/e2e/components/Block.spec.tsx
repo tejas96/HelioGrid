@@ -24,3 +24,11 @@ test('an errored block with blank words for its retry draws no retry', async ({ 
 
   await expect(block.getByRole('button')).toHaveCount(0);
 });
+
+test('a block is a heading on the page — no fill, no shadow', async ({ mount }) => {
+  const block = await mount(<Block title={tryAgain}>{tryAgain}</Block>);
+
+  await expect(block).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(block).toHaveCSS('box-shadow', 'none');
+  await expect(block).toHaveCSS('border-radius', '0px');
+});

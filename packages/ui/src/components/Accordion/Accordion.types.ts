@@ -3,11 +3,10 @@ import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
 /**
  * The same vocabulary `Stepper` uses one component over (`M05-03`): the state is a word, not a colour.
- * `errors` shows "N to fix" from `errorCount`, sets `aria-invalid` on the header, tints the section,
- * and **opens the section** — a system that refuses a save must not then hide which of eight sections
- * to fix (`M07-19`). A tinted section steps its quiet lines (`meta`, the chevron) up to
- * `--text-secondary`, because `--text-tertiary` measures 4.48 on `--danger-bg`: a state tint never
- * costs the reader a word.
+ * `errors` shows "N to fix" from `errorCount`, sets `aria-invalid` on the header, marks the state
+ * word and its dot in the danger tone, and **opens the section** — a system that refuses a save must
+ * not then hide which of eight sections to fix (`M07-19`). The section takes no tint: it is a heading
+ * on the page, and its body may hold a field (`F7-49`).
  */
 export type AccordionItemState = 'default' | 'done' | 'empty' | 'errors';
 
@@ -57,11 +56,6 @@ export interface AccordionProps {
 
 /** The three states that carry a word and a mark. `default` carries neither unless asked to. */
 export type AccordionMarkedState = Exclude<AccordionItemState, 'default'>;
-
-/** True for the one state whose tint becomes a third background under the quiet lines. */
-export function isTinted(state: AccordionItemState | undefined): boolean {
-  return state === 'errors';
-}
 
 /**
  * The word the header prints. `stateLabel` always wins, so a screen with its own section vocabulary

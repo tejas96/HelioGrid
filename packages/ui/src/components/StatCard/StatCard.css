@@ -3,33 +3,32 @@
    and above `children`.
 
    Direction is the arrow; sentiment is the tint AND the word after it (F7-12). `neutral` is the
-   default tint and makes no claim at all. */
+   default tint and makes no claim at all.
+
+   A stat card is a tile (F7-49): its fill, no shadow and its ground are drawn by the tiles' list
+   (primitives/Ground/Ground.css), so a control inside it turns white. */
 
 .hg-stat-card {
-  background: var(--surface);
   border-radius: var(--r-card-expressive);
   padding: var(--sp-6);
-  box-shadow: var(--e2);
   position: relative;
   overflow: hidden;
   font-family: var(--font-sans);
 }
 
 /* The tappable card. It is a Pressable, so the 44px floor and the focus ring are the primitive's;
-   only the block layout and the hover lift are here — a :hover rule rather than two JS handlers. */
+   only the block layout and `Card`'s hover ring are here — flat at rest, so the pointer shows by
+   a ring alone, a :hover rule rather than two JS handlers. */
 .hg-pressable.hg-stat-card-button {
   display: block;
   width: 100%;
   text-align: start;
   border-radius: var(--r-card-expressive);
-  transition:
-    box-shadow var(--dur-standard) var(--ease-standard),
-    transform var(--dur-standard) var(--ease-standard);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-pressable.hg-stat-card-button:hover:not(:disabled) {
-  box-shadow: var(--e3);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px var(--mark-subtle);
 }
 
 .hg-stat-card-overline {
@@ -123,11 +122,12 @@
 .hg-stat-card-shimmer {
   display: block;
   border-radius: var(--rf-md);
+  /* Drawn in --surface, as `Card`'s: a --canvas bar is the tile's own grey and would not show. */
   background: linear-gradient(
     90deg,
-    var(--canvas) 25%,
-    var(--canvas-sunken) 50%,
-    var(--canvas) 75%
+    var(--surface) 25%,
+    var(--surface-form) 50%,
+    var(--surface) 75%
   );
   background-size: 320px 100%;
   animation: hg-sheet-shimmer 1.4s linear infinite;

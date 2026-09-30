@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
@@ -17,22 +18,17 @@ import type { DataTableColumn } from './DataTableColumn.types';
 const styles = StyleSheet.create({
   stack: { flexDirection: 'column', gap: 6, minWidth: 0 },
   right: { alignItems: 'flex-end' },
+  /* An inline cell editor is a field: its well, radius and edge are `fieldBox`'s. The padding
+     gives back the edge, so the text sits where the web half's does. */
   editor: {
     width: '100%',
     height: MIN_TOUCH_TARGET,
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-input-functional'],
-    backgroundColor: theme.colors.surface,
+    paddingHorizontal: theme.spacing['sp-3'] - FIELD_BOX_EDGE,
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.body.fontSize,
     color: theme.colors['text-primary'],
-    // An inline cell editor is a control — `surface` at e2.
-    ...theme.elevation.e2,
   },
   editorMono: { fontFamily: theme.type.families.mono },
-  /* RN has no focus/danger box-shadow ring, so the state rides on a real border of the same
-     weight — the same two channels the web half draws with `box-shadow: 0 0 0 2px`. */
-  editorIssue: { borderWidth: 2, borderColor: theme.colors.danger },
 });
 
 /**
@@ -113,7 +109,7 @@ function CellEditor<Row>({
         column.mono === true || column.numeric === true || column.editor === 'number'
           ? styles.editorMono
           : null,
-        issue === null ? null : styles.editorIssue,
+        fieldBox({ focused, tone: issue === null ? 'none' : 'error', density: 'functional' }),
       ]}
     />
   );

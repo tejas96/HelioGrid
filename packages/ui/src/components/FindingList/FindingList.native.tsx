@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -104,70 +103,69 @@ export function FindingList(props: NativeFindingListProps) {
        finding's "Fix in …" and inline fix — the whole point of the gate — into one element. So the
        dead label goes and the reader walks the heading, the count and the findings. */
     <View style={[styles.root, density === 'functional' ? styles.padFn : styles.padEx, style]}>
-      {/* A page ground until T-FPLAT-078 makes this white container a tile or a heading. */}
-      <GroundProvider ground="page">
-        <View style={styles.head}>
-          <Text variant="h3" style={styles.heading}>
-            {heading}
-          </Text>
-          {verdict ? (
-            <StatusMark tone={FINDING_TONE[summary.status]} label={FINDING_LABEL[summary.status]} />
-          ) : null}
+      {/* A heading on the page (`F7-49`): no fill, no shadow, no ground of its own. Each finding
+          is the tile. */}
+      <View style={styles.head}>
+        <Text variant="h3" style={styles.heading}>
+          {heading}
+        </Text>
+        {verdict ? (
+          <StatusMark tone={FINDING_TONE[summary.status]} label={FINDING_LABEL[summary.status]} />
+        ) : null}
+      </View>
+
+      {/* A polite live region is RN's `role="status"`: the count is re-read when the gate re-runs. */}
+      <View accessibilityLiveRegion="polite">
+        <Text variant="body-sm" color="secondary">
+          {countSentence(summary, passMessage)}
+        </Text>
+      </View>
+
+      {mainList.length > 0 ? (
+        <View style={styles.items}>
+          {mainList.map((entry) => (
+            <FindingListRow
+              key={entry.key}
+              finding={entry.finding}
+              onJump={onJump}
+              jumpLabel={jumpLabel}
+            />
+          ))}
         </View>
+      ) : null}
 
-        {/* A polite live region is RN's `role="status"`: the count is re-read when the gate re-runs. */}
-        <View accessibilityLiveRegion="polite">
-          <Text variant="body-sm" color="secondary">
-            {countSentence(summary, passMessage)}
+      {/* The web half's `aria-expanded`, declared once through the primitive as
+          `accessibilityState.expanded` — a collapse that cannot say whether it is open is not
+          reachable, and the 44dp floor comes with the primitive rather than a second number. */}
+      {ready.length > 0 && readyMode === 'collapsed' ? (
+        <Pressable
+          accessibilityState={{ expanded: readyOpen }}
+          onPress={() => setReadyOpen((open) => !open)}
+          style={styles.readyToggle}
+        >
+          <Text variant="body" color="secondary" style={styles.readyToggleWords}>
+            {readyToggleWords(ready.length, readyOpen)}
           </Text>
+        </Pressable>
+      ) : null}
+      {tailList.length > 0 && showReady ? (
+        <View style={styles.items}>
+          {tailList.map((entry) => (
+            <FindingListRow
+              key={entry.key}
+              finding={entry.finding}
+              onJump={onJump}
+              jumpLabel={jumpLabel}
+            />
+          ))}
         </View>
+      ) : null}
 
-        {mainList.length > 0 ? (
-          <View>
-            {mainList.map((entry) => (
-              <FindingListRow
-                key={entry.key}
-                finding={entry.finding}
-                onJump={onJump}
-                jumpLabel={jumpLabel}
-              />
-            ))}
-          </View>
-        ) : null}
-
-        {/* The web half's `aria-expanded`, declared once through the primitive as
-            `accessibilityState.expanded` — a collapse that cannot say whether it is open is not
-            reachable, and the 44dp floor comes with the primitive rather than a second number. */}
-        {ready.length > 0 && readyMode === 'collapsed' ? (
-          <Pressable
-            accessibilityState={{ expanded: readyOpen }}
-            onPress={() => setReadyOpen((open) => !open)}
-            style={styles.readyToggle}
-          >
-            <Text variant="body" color="secondary" style={styles.readyToggleWords}>
-              {readyToggleWords(ready.length, readyOpen)}
-            </Text>
-          </Pressable>
-        ) : null}
-        {tailList.length > 0 && showReady ? (
-          <View>
-            {tailList.map((entry) => (
-              <FindingListRow
-                key={entry.key}
-                finding={entry.finding}
-                onJump={onJump}
-                jumpLabel={jumpLabel}
-              />
-            ))}
-          </View>
-        ) : null}
-
-        {note === undefined ? null : (
-          <Text variant="caption" color="tertiary">
-            {note}
-          </Text>
-        )}
-      </GroundProvider>
+      {note === undefined ? null : (
+        <Text variant="caption" color="tertiary">
+          {note}
+        </Text>
+      )}
     </View>
   );
 }
@@ -178,10 +176,10 @@ FindingList.statuses = FINDING_STATUSES;
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-card-expressive'],
     gap: 10,
-    ...theme.elevation.e2,
+  },
+  items: {
+    gap: theme.spacing['sp-2'],
   },
   padEx: {
     padding: theme.spacing['sp-6'],

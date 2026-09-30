@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors['surface-alt'],
   },
   skeletonZebra: { backgroundColor: theme.colors['surface-alt'] },
-  skeletonPlain: { backgroundColor: theme.colors.surface },
   bar: {
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['rf-md'],
@@ -65,6 +65,7 @@ export function TableSkeleton({
   rowH?: number;
   edge?: number;
 }) {
+  const { ground } = useGround();
   const wideRow = { height: rowH, paddingHorizontal: edge };
   return (
     /* Web's skeleton is `role="status"`. RN has no `status`, and `progressbar` would report a
@@ -84,7 +85,7 @@ export function TableSkeleton({
           style={[
             styles.skeletonRow,
             stacked ? styles.skeletonCard : wideRow,
-            stacked || index % 2 === 1 ? styles.skeletonZebra : styles.skeletonPlain,
+            stacked || index % 2 === 1 ? styles.skeletonZebra : { backgroundColor: ground },
           ]}
         >
           <View style={[styles.bar, { width: '28%' }]} />

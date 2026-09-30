@@ -1,12 +1,11 @@
-/* Card — the tile (F7-49): one record, --canvas-sunken on the white page, no shadow and no border.
-   It is a TILE ground (primitives/Ground/Ground.css), so a control inside it turns white. Flat at
+/* Card — the tile (F7-49): one record, grey on the white page, no shadow and no border. Its fill
+   and its ground are drawn by the tiles' list (primitives/Ground/Ground.css), so a control inside
+   it turns white. Flat at
    rest, so hover and selected show by a ring alone: --mark-subtle under the pointer, --accent when
    selected. Nothing depends on hover — a touch screen has none. */
 
 .hg-card {
-  background: var(--canvas-sunken);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
-  box-shadow: none;
   cursor: default;
 }
 

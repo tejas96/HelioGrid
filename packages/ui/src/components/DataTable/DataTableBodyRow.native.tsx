@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -20,7 +21,6 @@ import { needsRoom, resolveRow } from './DataTableRow.logic';
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   zebra: { backgroundColor: theme.colors['surface-alt'] },
-  plain: { backgroundColor: theme.colors.surface },
   issue: { backgroundColor: theme.colors['warning-bg'] },
   fixed: { backgroundColor: theme.colors['success-bg'] },
   selected: { backgroundColor: theme.colors['accent-subtle'] },
@@ -36,11 +36,12 @@ const styles = StyleSheet.create({
 
 /**
  * **The row's ground.** Selection wins over the issue tint, which wins over zebra — the same order
- * the web half's stylesheet holds.
+ * the web half's stylesheet holds. A plain row is not a tile — it holds fields — so it paints the
+ * ground that holds the table.
  */
-function rowTintStyle(state: RowState): StyleProp<ViewStyle> {
+function rowTintStyle(state: RowState, ground: string): StyleProp<ViewStyle> {
   return [
-    state.zebra ? styles.zebra : styles.plain,
+    state.zebra ? styles.zebra : { backgroundColor: ground },
     state.issue !== null ? styles.issue : state.flagged ? styles.fixed : null,
     state.isSelected ? styles.selected : null,
   ];
@@ -181,6 +182,7 @@ export function DataTableBodyRow<Row>({
   table,
 }: NativeBodyRowProps<Row>) {
   const { onRowClick } = table;
+  const { ground } = useGround();
   const state = resolveRow(table, rowKey, row, index, selected);
   const pending = renderPending(state.pending);
   const standing = renderProvenance(state.standing, { size: 12 });
@@ -213,7 +215,11 @@ export function DataTableBodyRow<Row>({
        the 44dp floor and the semantics get lost together: `Pressable` already announces `button`
        (its documented default, the `<tr onClick>` the web half is) and takes the wait through
        `accessibilityState`, so nothing here has to spell a role out. */
-    <View role="row" accessibilityState={{ busy: state.waiting }} style={rowTintStyle(state)}>
+    <View
+      role="row"
+      accessibilityState={{ busy: state.waiting }}
+      style={rowTintStyle(state, ground)}
+    >
       {onRowClick === undefined ? (
         cells
       ) : (

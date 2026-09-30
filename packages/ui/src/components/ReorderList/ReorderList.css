@@ -68,13 +68,13 @@
 
 /* ── one row ───────────────────────────────────────────────────────────────── */
 
+/* A row is one tile (F7-49): its grey and its flat rest are drawn by Ground.css's tiles list, and
+   the flash below wins over that grey because this sheet loads after it. */
 .hg-reorder-row {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
-  background: var(--surface);
-  box-shadow: var(--e1);
   transition: background var(--dur-emphasised) var(--ease-standard);
 }
 
@@ -92,7 +92,8 @@
   border-radius: var(--r-card-functional);
 }
 
-/* The moved row flashes once, so the eye can follow what the announcement just said. */
+/* The moved row flashes once from the tile's grey, so the eye can follow what the announcement
+   just said. */
 .hg-reorder-row[data-flash="true"] {
   background: var(--accent-subtle);
 }

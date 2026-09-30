@@ -577,7 +577,7 @@ fi
 # colour it is the ink on a dark fill. Unseen, at this grain: a white reached through a local name, and
 # a new white part added to a file already listed — `break-it-reviewer` reads those in the diff.
 WHITE_LIST='scripts/raw-white-allowed.tsv'
-WHITE_REASONS=' ground panel float over-media paper full-screen-ground page-ground on-accent illustration measure field shimmer owed-T-FPLAT-078 owed-T-SHELL deferred '
+WHITE_REASONS=' ground panel float over-media paper full-screen-ground page-ground on-accent illustration measure field shimmer owed-T-SHELL deferred '
 WHITE='var\(--surface(-card)?\)|(background(-color)?|fill|stroke|box-shadow|border(-[a-z]+)*|outline(-color)?) *:[^;]*var\(--text-inverse\)|theme\.colors\.surface([^A-Za-z0-9_]|$)|theme\.colors\[.surface(-card)?.\]|(backgroundColor|border[A-Za-z]*Color|shadowColor|fill|stroke)[^,;]*theme\.colors\[.text-inverse.\]|(backgroundColor|boxShadow|border[A-Za-z]*|outline[A-Za-z]*|fill|stroke)[^,;]*var\(--text-inverse\)'
 [ -e "$WHITE_LIST" ] || { printf 'CONFIG ROT: check 20 names "%s", which does not exist.\n' "$WHITE_LIST"; fail=1; }
 white_files=$(grep -rlE "$WHITE" $UI_DIRS --include='*.ts' --include='*.tsx' --include='*.css' \

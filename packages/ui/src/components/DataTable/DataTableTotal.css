@@ -8,7 +8,7 @@
   font-size: var(--hg-dt-cell-font);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
-  background: var(--surface);
+  background: var(--hg-ground);
   vertical-align: baseline;
   white-space: nowrap;
 }
@@ -54,7 +54,7 @@
 
 .hg-dt-total-notes {
   padding: 0 var(--hg-dt-edge) 14px;
-  background: var(--surface);
+  background: var(--hg-ground);
 }
 
 .hg-dt-total-defect {
@@ -77,14 +77,13 @@
   padding: var(--sp-1) var(--sp-4) var(--sp-4);
 }
 
+/* A tile: its fill and its shadow are `Ground.css`'s. */
 .hg-dt-total-block {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 14px var(--sp-4);
   border-radius: var(--r-md);
-  background: var(--surface);
-  box-shadow: var(--e1);
 }
 
 .hg-dt-total-block-head {

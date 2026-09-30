@@ -94,8 +94,9 @@
 
 /* ── the card and the inspector's box ────────────────────────────────────────── */
 
+/* Both are tiles (F7-49): their fill, no shadow and their ground are drawn by the tiles' list
+   (primitives/Ground/Ground.css), so a control inside turns white. */
 .hg-banded {
-  background: var(--surface);
   border-radius: var(--r-card-expressive);
   display: flex;
   flex-direction: column;
@@ -106,13 +107,11 @@
 
 .hg-banded[data-variant="card"] {
   padding: 22px;
-  box-shadow: var(--e2);
   gap: 9px;
 }
 
 .hg-banded[data-variant="box"] {
   padding: 26px;
-  box-shadow: var(--e3);
   gap: var(--sp-3);
 }
 

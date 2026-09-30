@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
+import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -28,21 +29,13 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
   cardFunctional: { padding: 14, borderRadius: theme.radius['r-card-functional'] },
   /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight. */
-  cardSelected: {
-    backgroundColor: theme.colors['accent-subtle'],
-    borderWidth: 2,
-    borderColor: theme.colors.accent,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  /* Sunken AND flat — it went sunken and kept e2, so an unavailable option still read as the
-     brightest, most pressable thing in the list. */
-  cardOff: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
+  cardSelected: { borderWidth: 2, borderColor: theme.colors.accent },
+  /* Not a tile: it lies on the page with no fill, and its reason line says why. A selected off
+     option shows its selection by the dot alone, as on the web. */
+  cardOff: { borderWidth: 0 },
   dot: {
     width: 20,
     height: 20,
@@ -51,13 +44,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
     borderWidth: 1.5,
     borderColor: theme.colors['text-disabled'],
-  } /* The white fill measured 1.14:1 on an off card — weaker than its own ring at 1.44:1, so it
-     was never what you read, and it made the dot the brightest thing on a dead card. */,
-  dotOff: { backgroundColor: theme.colors['canvas-sunken'] },
-
+  },
   dotSelected: { backgroundColor: theme.colors.accent, borderWidth: 0 },
   dotFill: { width: 7, height: 7, borderRadius: theme.radius['r-pill'] },
   body: { flex: 1, minWidth: 0 },
@@ -83,13 +72,15 @@ const styles = StyleSheet.create({
   icon: { flexShrink: 0 },
 });
 
-/** Selection is the 2px accent border plus the filled dot; off is the sunken fill. */
+/** An available option is a tile, selected by the 2px accent border plus the filled dot; an off
+    option is not a tile and lies on the page. */
 function cardStyle(
   density: 'expressive' | 'functional',
   selected: boolean,
   off: boolean,
 ): StyleProp<ViewStyle> {
   return [
+    off ? null : tileSurface,
     styles.card,
     density === 'functional' ? styles.cardFunctional : null,
     selected ? styles.cardSelected : null,
@@ -97,11 +88,27 @@ function cardStyle(
   ];
 }
 
-/** The dot's fill. A selected dot keeps the accent whether or not the card is off — selection is a
-    fact, not an affordance. An unselected dot on an off card sinks into it. */
-function dotStyle(selected: boolean, off: boolean): StyleProp<ViewStyle> {
-  if (selected) return [styles.dot, styles.dotSelected];
-  return off ? [styles.dot, styles.dotOff] : styles.dot;
+/** A selected dot keeps the accent whether or not the option is off — selection is a fact, not an
+    affordance. An unselected dot takes the control fill; on an off option it is its ring over the
+    ground, since a fill is what makes a dot read as pressable. Read inside the card's ground. */
+function Dot({ selected, off }: { selected: boolean; off: boolean }) {
+  const ground = useGround();
+  if (selected) {
+    return (
+      <View style={[styles.dot, styles.dotSelected]}>
+        {/* White on the accent — a mark on the accent, the same on every ground. */}
+        <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.dot, { backgroundColor: off ? ground.ground : ground.controlFill }]} />
+  );
+}
+
+/** An available option is a tile ground; an off option reads the ground that holds it. */
+function OptionGround({ off, children }: { off: boolean; children: ReactNode }) {
+  return off ? children : <GroundProvider ground="tile">{children}</GroundProvider>;
 }
 
 /** One card. The card IS the radio, so `content` is static by contract. */
@@ -142,14 +149,8 @@ export function OptionCard({
       accessibilityState={{ checked, disabled: off }}
       style={cardStyle(density, selected, off)}
     >
-      {/* A card is white, so its controls take the page's fill until T-FPLAT-078 settles its
-          ground. */}
-      <GroundProvider ground="page">
-        <View style={dotStyle(selected, off)}>
-          {selected ? (
-            <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
-          ) : null}
-        </View>
+      <OptionGround off={off}>
+        <Dot selected={selected} off={off} />
         <View style={styles.body}>
           <View style={styles.head}>
             <View style={styles.titles}>
@@ -188,7 +189,7 @@ export function OptionCard({
           ) : null}
         </View>
         {option.icon !== undefined ? <View style={styles.icon}>{option.icon}</View> : null}
-      </GroundProvider>
+      </OptionGround>
     </Pressable>
   );
 }

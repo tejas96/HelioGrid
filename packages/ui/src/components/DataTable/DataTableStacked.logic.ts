@@ -38,6 +38,18 @@ export function resolveStackedColumns<Row>(columns: DataTableColumn<Row>[]): Sta
 }
 
 /**
+ * **Whether a card holds an editor**, so whether it is a tile. A tile never holds a field (`F7-49`):
+ * a record with a cell to edit lies on the page as the grid's rows do, and every other record is a
+ * tile. Only the columns the card shows count — a `hideStacked` editor is not on the card.
+ */
+export function holdsEditor<Row>(slots: StackedColumns<Row>, table: DataTableProps<Row>): boolean {
+  if (table.onCellCommit === undefined) return false;
+  return [slots.primary, slots.secondary, slots.trailing, ...slots.rest].some(
+    (column) => column?.editable === true,
+  );
+}
+
+/**
  * **Which parts of the card take taps back.** The whole-card target is a sibling under the content
  * and the content itself is inert, so a slot re-enables taps only when what sits in it is operable
  * in its own right — a live cell, or a `wrap` column whose chips carry their own targets.

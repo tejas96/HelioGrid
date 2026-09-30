@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
+import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { MarketFormat } from '../../utils/format';
 import { useFormat } from '../MarketProvider/market-context';
@@ -62,24 +63,29 @@ export function CompareValueCell<Opt extends CompareOption>({
      the web half: a value that arrives as a number is monospaced whether or not the row said so. */
   const mono = attribute.mono === true || attribute.numeric === true || typeof raw === 'number';
   const gap = gapOf(attribute);
-  return (
-    <View style={[box, compareStyles.cell, cellGround(selected, zebra)]}>
-      <View style={compareStyles.valueRow}>
-        {/* AN ABSENT VALUE IS A NAMED GAP, NOT AN EM-DASH — `NamedGap` is the system's one
+  const { ground } = useGround();
+  const row = (
+    <View style={compareStyles.valueRow}>
+      {/* AN ABSENT VALUE IS A NAMED GAP, NOT AN EM-DASH — `NamedGap` is the system's one
             renderer of that sentence, and it is a View, so it stands beside the words rather
             than inside them. */}
-        {isAbsent(raw) ? (
-          <NamedGap scale="cell" gap={gap.gap} align={gap.align} />
-        ) : (
-          <Text
-            variant={mono ? 'mono' : 'body-sm'}
-            style={attribute.strong === true ? strongFigureStyle : figureStyle}
-          >
-            {valueWords(attribute, raw, format)}
-          </Text>
-        )}
-        {best ? <Best /> : null}
-      </View>
+      {isAbsent(raw) ? (
+        <NamedGap scale="cell" gap={gap.gap} align={gap.align} />
+      ) : (
+        <Text
+          variant={mono ? 'mono' : 'body-sm'}
+          style={attribute.strong === true ? strongFigureStyle : figureStyle}
+        >
+          {valueWords(attribute, raw, format)}
+        </Text>
+      )}
+      {best ? <Best /> : null}
+    </View>
+  );
+  return (
+    <View style={[box, compareStyles.cell, cellGround(selected, zebra, ground)]}>
+      {/* The selected column's tint holds what sits in it as a tile does — see `Ground.css`. */}
+      {selected ? <GroundProvider ground="tile">{row}</GroundProvider> : row}
     </View>
   );
 }

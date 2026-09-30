@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
+import type { ViewStyle } from 'react-native';
 import type { Ground } from './Ground.types';
 
 /** What a control reads from what holds it — the web half's two custom properties. */
@@ -40,3 +41,14 @@ export function GroundProvider({ ground, children }: { ground: Ground; children?
 export function useGround(): GroundColors {
   return COLORS[useContext(GroundContext)];
 }
+
+/**
+ * The tile's look at rest (`F7-49`) — grey on the white page, no shadow — the web half's tiles
+ * list. The ONE place a phone tile is drawn: a tile spreads it first and keeps only its own radius,
+ * padding and rings, and wraps its content in `GroundProvider ground="tile"`.
+ */
+export const tileSurface = {
+  backgroundColor: theme.colors['canvas-sunken'],
+  shadowOpacity: 0,
+  elevation: 0,
+} satisfies ViewStyle;

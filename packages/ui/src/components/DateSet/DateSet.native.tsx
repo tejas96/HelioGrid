@@ -130,8 +130,8 @@ export function DateSet({
       onLayout={onLayout}
       style={[styles.section, style]}
     >
-      <View style={[styles.layout, wide ? styles.layoutWide : undefined]}>
-        <View style={[styles.grid, wide ? styles.gridWide : undefined]}>
+      <View style={[styles.layout, wide ? styles.layoutWide : null]}>
+        <View style={[styles.grid, wide ? styles.gridWide : null]}>
           <Calendar
             mode="set"
             value={dates}
@@ -160,7 +160,7 @@ export function DateSet({
             </View>
           )}
         </View>
-        <View style={wide ? styles.listWide : undefined}>
+        <View style={wide ? styles.listWide : null}>
           <DateSetList
             entries={sorted}
             mkt={mkt}

@@ -28,9 +28,6 @@
   --hg-dt-act-w: 108px;
 
   position: relative;
-  background: var(--surface);
-  border-radius: var(--r-card-functional);
-  box-shadow: var(--e2);
   overflow: hidden;
   font-family: var(--font-sans);
 }
@@ -102,7 +99,7 @@
   letter-spacing: var(--tr-overline);
   text-transform: uppercase;
   color: var(--text-tertiary);
-  background: var(--surface);
+  background: var(--hg-ground);
   text-align: left;
   position: sticky;
   top: 0;
@@ -183,7 +180,7 @@
 
 .hg-dt-row,
 .hg-dt-row-line {
-  background: var(--surface);
+  background: var(--hg-ground);
   transition: background var(--dur-micro) var(--ease-standard);
 }
 

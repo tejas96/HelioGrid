@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -15,13 +15,23 @@ import type { ChecklistItem, ChecklistProps } from './Checklist.types';
 const BOX = 22;
 const BOX_RADIUS = 7;
 
+/* A step is one tile (`F7-49`): `tileSurface` draws its grey and its flat rest, and it keeps only
+   its radius and padding — the web half's `.hg-checklist-row` on `Ground.css`'s tiles list. */
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: theme.spacing['sp-1'], alignItems: 'flex-start' },
+  row: {
+    flexDirection: 'row',
+    gap: theme.spacing['sp-1'],
+    alignItems: 'flex-start',
+    paddingLeft: theme.spacing['sp-1'],
+    paddingRight: theme.spacing['sp-3'],
+    borderRadius: theme.radius['r-card-functional'],
+  },
   rowDocument: {
     flexDirection: 'row',
     gap: theme.spacing['sp-3'],
     alignItems: 'flex-start',
-    paddingVertical: theme.spacing['sp-3'],
+    padding: theme.spacing['sp-3'],
+    borderRadius: theme.radius['r-card-functional'],
   },
   /* The 44dp floor and the centring belong to the Pressable primitive; only the row-level fact
      that this column never shrinks is this component's to say. */
@@ -56,7 +66,7 @@ function TickBox({
   printable?: boolean;
 }) {
   const filled = done && printable !== true;
-  /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
+  /* The opposite of what holds it (`F7-15`): white inside the step's tile. */
   const { controlFill } = useGround();
   return (
     <View
@@ -168,6 +178,7 @@ export function ChecklistRow({
 
   if (surface === 'document') {
     return (
+      /* Paper, not a tile: a printed checklist's rows lie on the sheet (`Ground.css`). */
       <View role="listitem" style={styles.rowDocument}>
         <TickBox done={done} printable />
         <Body item={item} number={number} />
@@ -177,21 +188,23 @@ export function ChecklistRow({
 
   return (
     /* The web half's row is an `<li>` in the group's `<ul>`, so the native row is a `listitem`. */
-    <View role="listitem" style={styles.row}>
-      {/* The primitive carries the role AND the checked state, so this control says what it is
-          without dropping to RN's own Pressable — and the 44dp floor comes with it. */}
-      <Pressable
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: done, busy: waiting }}
-        accessibilityLabel={`${typeof item.title === 'string' ? item.title : ''}${done ? ', done' : ', not done'}`}
-        onPress={() => onToggle?.(item, !done)}
-        style={styles.toggle}
-      >
-        <TickBox done={done} waiting={waiting} />
-      </Pressable>
-      <View style={styles.rowBody}>
-        <Body item={item} number={number} />
-      </View>
+    <View role="listitem" style={[tileSurface, styles.row]}>
+      <GroundProvider ground="tile">
+        {/* The primitive carries the role AND the checked state, so this control says what it is
+            without dropping to RN's own Pressable — and the 44dp floor comes with it. */}
+        <Pressable
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: done, busy: waiting }}
+          accessibilityLabel={`${typeof item.title === 'string' ? item.title : ''}${done ? ', done' : ', not done'}`}
+          onPress={() => onToggle?.(item, !done)}
+          style={styles.toggle}
+        >
+          <TickBox done={done} waiting={waiting} />
+        </Pressable>
+        <View style={styles.rowBody}>
+          <Body item={item} number={number} />
+        </View>
+      </GroundProvider>
     </View>
   );
 }

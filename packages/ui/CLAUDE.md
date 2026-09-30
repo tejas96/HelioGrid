@@ -17,7 +17,11 @@ fix BOTH halves, then delete the row.
   fill from `Ground`** — the opposite of what holds it: `var(--hg-control-fill)` on the web,
   `useGround()` on the phone. A surface that holds controls joins `Ground.css`'s page or tile list
   and, on the phone, wraps its content in `GroundProvider`; a control that paints `--surface` or
-  the well itself is drift.
+  the well itself is drift. **A tile is drawn only by `Ground`** (`F7-49`): its class joins
+  `Ground.css`'s tiles list, which paints its fill and its shadow; on the phone it spreads
+  `tileSurface` and wraps `GroundProvider ground="tile"`. A tile keeps only its radius, padding
+  and ring states; one that paints its own grey is drift. A section is a heading on the page —
+  no fill, no shadow; what must stay opaque over scrolling paints `var(--hg-ground)`.
 - `src/components/<Name>/` — one folder per component, both platforms inside it.
 - `src/utils/` — helpers shared across components only. `src/styles.css` — the package stylesheet.
 - **NEVER product logic, policy or money maths.** That is `@heliogrid/domain`. A component takes

@@ -11,22 +11,19 @@
    stacks, because one variant at a time is not a comparison.
 
    Column widths arrive as --hg-compare-col / --hg-compare-label from the props. Values off the 4px
-   scale (10, 14, 18, 48) are the design system's own; no token carries them. */
+   scale (10, 14, 18, 48) are the design system's own; no token carries them.
+
+   It is a heading on the page (F7-49): no frame of its own. Every cell stays opaque, since the
+   pinned column slides over the rest, so it paints --hg-ground — the ground that holds the grid,
+   never the white by name. */
 
 .hg-compare {
   --hg-compare-touch: 44px;
   --hg-compare-pill-h: 20px;
   --hg-compare-selected: var(--accent-subtle);
 
-  background: var(--surface);
-  border-radius: var(--r-card-expressive);
-  box-shadow: var(--e2);
   overflow: hidden;
   font-family: var(--font-sans);
-}
-
-.hg-compare[data-density="functional"] {
-  border-radius: var(--r-card-functional);
 }
 
 .hg-compare-caption {
@@ -91,7 +88,7 @@
   text-align: left;
   vertical-align: top;
   box-sizing: border-box;
-  background: var(--surface);
+  background: var(--hg-ground);
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
@@ -104,7 +101,7 @@ tr[data-zebra="true"] > .hg-compare-pin {
 .hg-compare-pin--head,
 .hg-compare-pin--foot {
   padding-top: var(--sp-4);
-  background: var(--surface);
+  background: var(--hg-ground);
 }
 
 .hg-compare-label {
@@ -134,7 +131,7 @@ tr[data-zebra="true"] > .hg-compare-pin {
   text-align: left;
   vertical-align: top;
   scroll-snap-align: start;
-  background: var(--surface);
+  background: var(--hg-ground);
   box-sizing: border-box;
 }
 
@@ -198,7 +195,7 @@ tr[data-zebra="true"] > .hg-compare-pin {
   padding: 14px var(--sp-4);
   vertical-align: top;
   box-sizing: border-box;
-  background: var(--surface);
+  background: var(--hg-ground);
   font-size: var(--fs-body);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
@@ -257,7 +254,7 @@ tr[data-zebra="true"] > .hg-compare-cell:not([data-selected="true"]) {
 }
 
 .hg-compare-cell--choose {
-  background: var(--surface);
+  background: var(--hg-ground);
 }
 
 /* Functional density last: the compact padding must win over the three base rules above,

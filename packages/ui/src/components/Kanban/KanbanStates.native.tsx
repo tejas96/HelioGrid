@@ -4,7 +4,7 @@ import { Animated, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
@@ -65,10 +65,9 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
   const warning = tone === 'warning';
   const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
-    <View style={styles.message}>
-      {/* The box is white and holds the retry, so the retry takes the page's fill until
-          T-FPLAT-078 makes it a tile. */}
-      <GroundProvider ground="page">
+    <View style={[tileSurface, styles.message]}>
+      {/* The message is a tile, so its retry turns white. */}
+      <GroundProvider ground="tile">
         <View style={[styles.mark, warning ? styles.markWarning : null]}>
           <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
             {warning ? (
@@ -176,14 +175,13 @@ const styles = StyleSheet.create({
   },
   bars: { gap: theme.spacing['sp-2'] },
   cardBar: { height: 62 },
+  /* The tile's look is `tileSurface` (`F7-49`), spread first in the frame. */
   message: {
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     paddingVertical: 56,
     paddingHorizontal: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-card-functional'],
-    ...theme.elevation.e2,
   },
   mark: {
     width: theme.spacing['sp-12'],
