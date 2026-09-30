@@ -5,7 +5,11 @@
    an absolutely-positioned button sits UNDER the content, the content sits above it with
    pointer-events:none, re-enabled on the three slots that can hold controls (chip, marks, action).
    As a role="button" wrapper a real "Call" button there was invalid nesting, unreachable as a
-   separate control, and one tap fired both. */
+   separate control, and one tap fired both.
+
+   A record card is a tile (F7-49): its fill, no shadow and its ground are drawn by the tiles' list
+   (primitives/Ground/Ground.css), so a control inside it turns white. Flat at rest, so the pointer
+   shows by `Card`'s ring alone. */
 
 .hg-next-action {
   display: inline-flex;
@@ -82,12 +86,8 @@
   align-items: flex-start;
   min-height: 44px;
   padding: var(--sp-4);
-  background: var(--surface);
   border-radius: var(--r-card-expressive);
-  box-shadow: var(--e2);
-  transition:
-    box-shadow var(--dur-standard) var(--ease-standard),
-    transform var(--dur-standard) var(--ease-standard);
+  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-record-card[data-density="functional"] {
@@ -103,8 +103,7 @@
 
 .hg-record-card[data-clickable="true"]:hover,
 .hg-record-card[data-clickable="true"]:focus-within {
-  box-shadow: var(--e3);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 2px var(--mark-subtle);
 }
 
 /* The row itself. A SIBLING of the content, so anything in a slot can be a real control. */

@@ -191,6 +191,8 @@
 
 /* ── board-level states ───────────────────────────────────────────────────── */
 
+/* The board's message is a tile (F7-49): its fill, no shadow and its ground are drawn by the
+   tiles' list (primitives/Ground/Ground.css), so its retry turns white. */
 .hg-kanban-message {
   display: flex;
   flex-direction: column;
@@ -198,9 +200,7 @@
   text-align: center;
   gap: var(--sp-2);
   padding: 56px var(--sp-6);
-  background: var(--surface);
   border-radius: var(--r-card-functional);
-  box-shadow: var(--e2);
 }
 
 .hg-kanban-message-mark {
@@ -251,6 +251,8 @@
   gap: var(--sp-2);
 }
 
+/* The loading bars lie on the page, as the columns they stand in for: the shimmer sweeps white
+   through --canvas. */
 .hg-kanban-skeleton-bar {
   border-radius: var(--rf-lg);
   background: linear-gradient(90deg, var(--canvas) 25%, var(--surface) 50%, var(--canvas) 75%);

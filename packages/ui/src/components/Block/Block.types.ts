@@ -63,7 +63,11 @@ export interface BlockProps {
   unavailableTitle?: string;
   unavailableMessage?: string;
   density?: 'expressive' | 'functional';
-  /** Drops the surface and shadow — for a block already sitting inside a card or a sheet. */
+  /**
+   * Changes nothing: a block is always a heading on the page (`F7-49`), with no surface or shadow
+   * to drop. Declared because the design system's contract declares it, and removing a declared
+   * prop fails `ds:contract`.
+   */
   flat?: boolean;
   children?: ReactNode;
 }

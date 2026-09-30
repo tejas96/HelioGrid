@@ -19,9 +19,9 @@ holds each line and how much of it.
   set is machine-readable in `packages/config/unit-test-packages.json`, which the runner, the
   adherence check and the boundary rule all read; changing the set means changing this line AND
   that file, and nothing else restates it.
-- **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*`, never `__tests__/`,
-  never inside `src/`, where the package's own build compiles the test into `dist/` and ships
-  it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
+- **One name, one place: `<package>/tests/**/*.test.ts`** — never `*.spec.*` (the regression
+  suite's name, below), never `__tests__/`, never inside `src/`, where the package's own build
+  compiles the test into `dist/` and ships it. A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the last BUILD.
 - **Test the DECISION at its edges** — the boundary and one either side, the empty, the negative,
   the zero, as one `it.each` table per rule. A test that restates the implementation proves
   nothing. Never test a type, a constant or a re-export: an `expect` whose subject is an imported
@@ -60,6 +60,11 @@ holds each line and how much of it.
   `money/**`, `tax/**`, `subsidy/**`, `pricing/**`, `authz/**` and `commerce/tranche-allocation.ts`
   (`M71`). Everywhere else it is reported, never failing: read `pnpm test:coverage` for the edge you
   missed.
+- **The regression suite, `tests/e2e/`, proves a shipped flow keeps working** — every web route and
+  phone screen driven as a person drives it (`M152`), and the `packages/ui` web halves mounted with
+  the app's stylesheets. It never replaces the QA agents, which prove what a change makes new, nor
+  `tests/invariants/`. Its specs are `web/*.spec.ts` and `components/*.spec.tsx` there, where
+  their runners read them, and nowhere else (`M70`).
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
   against real state; a unit test proves one decision at its edges. Neither substitutes for the
   other.

@@ -52,7 +52,9 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
 #
 #   * name  — `*.test.ts`. `*.spec.*` and `__tests__/` are the competing conventions; allowing
 #             any of them means every glob in this repo has to match three shapes and one day
-#             misses half the suite.
+#             misses half the suite. The one exception is the regression suite's Playwright specs,
+#             exactly where its two runners read them — `tests/e2e/web/*.spec.ts` and
+#             `tests/e2e/components/*.spec.tsx` — so a spec anywhere else can never sit unrun.
 #   * place — `<package>/tests/**`, never inside `src/`. Inside src the package's own build
 #             compiles tests into `dist/`, which then ships.
 #   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
@@ -62,7 +64,8 @@ UNIT_TEST_PACKAGES=$(python3 -c 'import json;print(" ".join(json.load(open("pack
 [ -n "$UNIT_TEST_PACKAGES" ] || { echo 'check-adherence: packages/config/unit-test-packages.json names no package'; exit 1; }
 
 bad_name=$(
-  find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" 2>/dev/null
+  find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" \
+    -not -path 'tests/e2e/web/*.spec.ts' -not -path 'tests/e2e/components/*.spec.tsx' 2>/dev/null
   find $SRC_DIRS -type d \( -name '__tests__' -o -name '__mocks__' \) "${PRUNE[@]}" 2>/dev/null
   find . -maxdepth 1 \( -type f -name '*.spec.*' \
                      -o -type d \( -name '__tests__' -o -name '__mocks__' \) \) 2>/dev/null
@@ -574,7 +577,7 @@ fi
 # colour it is the ink on a dark fill. Unseen, at this grain: a white reached through a local name, and
 # a new white part added to a file already listed — `break-it-reviewer` reads those in the diff.
 WHITE_LIST='scripts/raw-white-allowed.tsv'
-WHITE_REASONS=' ground panel float over-media paper full-screen-ground page-ground on-accent illustration measure field shimmer owed-T-FPLAT-078 owed-T-SHELL deferred '
+WHITE_REASONS=' ground panel float over-media paper full-screen-ground page-ground on-accent illustration measure field shimmer owed-T-SHELL deferred '
 WHITE='var\(--surface(-card)?\)|(background(-color)?|fill|stroke|box-shadow|border(-[a-z]+)*|outline(-color)?) *:[^;]*var\(--text-inverse\)|theme\.colors\.surface([^A-Za-z0-9_]|$)|theme\.colors\[.surface(-card)?.\]|(backgroundColor|border[A-Za-z]*Color|shadowColor|fill|stroke)[^,;]*theme\.colors\[.text-inverse.\]|(backgroundColor|boxShadow|border[A-Za-z]*|outline[A-Za-z]*|fill|stroke)[^,;]*var\(--text-inverse\)'
 [ -e "$WHITE_LIST" ] || { printf 'CONFIG ROT: check 20 names "%s", which does not exist.\n' "$WHITE_LIST"; fail=1; }
 white_files=$(grep -rlE "$WHITE" $UI_DIRS --include='*.ts' --include='*.tsx' --include='*.css' \

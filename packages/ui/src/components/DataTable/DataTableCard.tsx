@@ -10,7 +10,7 @@ import { RowNote } from './DataTableChrome';
 import type { RowState } from './DataTableRow.logic';
 import { resolveRow } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
-import { isTappable, rowNameOf } from './DataTableStacked.logic';
+import { holdsEditor, isTappable, rowNameOf } from './DataTableStacked.logic';
 
 /**
  * **How the card is drawn** — the same ground the grid row carries, as the stylesheet's own
@@ -112,6 +112,9 @@ export function DataTableCard<Row>({
       <div
         className="hg-dt-card"
         {...cardStateAttrs(state)}
+        /* `Ground.css` draws a card with no editor as a tile; one holding an editor lies on the
+           page, so its field keeps the well. */
+        data-editable={holdsEditor(slots, table) ? 'true' : undefined}
         /* THE CARD ITSELF CARRIES THE WAIT, clickable or not — never its press target. The native
            half spells the same two on its `role="listitem"` View: `accessibilityState.busy` for
            the act in flight, and the issue tint for the broken record. */

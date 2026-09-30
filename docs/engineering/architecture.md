@@ -14,7 +14,7 @@ concern. Anything describing unbuilt design carries a STATUS banner.
 
 Layers, top to bottom — imports point strictly downward:
 
-    apps (web · mobile · api · worker)  +  tests/invariants
+    apps (web · mobile · api · worker)  +  tests/invariants  +  tests/e2e
       ↓
     feature-facing packages: data · forms · i18n · ui
       ↓
@@ -284,6 +284,16 @@ mechanically against the live schema or contracts. Never: a UNIT test — one li
 `<package>/tests/**/*.test.ts` beside the package it proves (owner ruling 2026-09-03), and
 proves one DECISION at its edges where an invariant proves a property of the SYSTEM against
 real state; anything needing a mock. Extension point: one file per invariant + a run.ts call.
+
+### tests/e2e — the regression suite
+Owns: the shipped flows, driven as a person drives them — `web/<route>.spec.ts` (Playwright, against
+the built api and web), `components/<Name>.spec.tsx` (Playwright component tests of the real
+`packages/ui` web halves, mounted with the app's stylesheets) and `mobile/<screen>.yaml` (Maestro, on
+the simulator and the emulator). Allowed deps: contracts, domain, i18n, theme, ui, config — the words a
+spec expects come from `i18n` and the colours from `theme`, never typed. Platform scope: a Node runner
+and the devices. Belongs: one flow per web route and per phone screen (`M152`). Never: a unit test, a
+mock of anything this repo owns, a server or a device started by a spec itself outside the runner's
+own `webServer`. Extension point: a spec or a flow per new route or screen, named for it.
 
 ### `<package>/tests/` — unit tests, beside the package they prove
 Owns: `*.test.ts` for the LOGIC layers only — the set `packages/config/unit-test-packages.json`

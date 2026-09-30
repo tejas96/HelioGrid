@@ -22,6 +22,8 @@ const styles = StyleSheet.create({
   mark: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'], minWidth: 0 },
   monogram: { alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   text: { flexDirection: 'column', minWidth: 0, flexShrink: 1 },
+  /* A heading on the page (`F7-49`): no fill, no shadow, no radius, and no ground of its own — its
+     actions read the page's. */
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -30,8 +32,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: theme.spacing['sp-4'],
     paddingHorizontal: theme.spacing['sp-5'],
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-lg'],
   },
   headerCentered: { justifyContent: 'center' },
   lockup: {
@@ -191,14 +191,7 @@ export function TenantHeader({
   style,
 }: NativeTenantHeaderProps) {
   return (
-    <View
-      style={[
-        styles.header,
-        align === 'center' ? styles.headerCentered : undefined,
-        theme.elevation.e1,
-        style,
-      ]}
-    >
+    <View style={[styles.header, align === 'center' ? styles.headerCentered : null, style]}>
       <View style={styles.lockup}>
         <TenantMark logo={logo} name={name} size={size} showName={false} />
         <View style={styles.text}>

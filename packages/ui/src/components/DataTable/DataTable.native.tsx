@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { showsMessage, sortRows } from './DataTable.logic';
@@ -13,15 +12,10 @@ import { TableCaption, TableStates } from './DataTableShell.native';
 import { DataTableStacked } from './DataTableStacked.native';
 import { useTableSelection, useTableSort } from './use-table-state';
 
-/* The shell is white and holds controls, so its controls take the page's fill until T-FPLAT-078
-   makes it a tile. */
+/* The table is a heading on the page (`F7-49`): no fill, no shadow, no radius — its rows hold
+   fields, so none of it is a tile, and it reads whatever ground holds it. */
 const styles = StyleSheet.create({
-  shell: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-card-functional'],
-    overflow: 'hidden',
-    ...theme.elevation.e2,
-  },
+  shell: { overflow: 'hidden' },
   band: { paddingTop: 14, paddingHorizontal: theme.spacing['sp-4'] },
   summary: { paddingVertical: 14, paddingHorizontal: theme.spacing['sp-4'] },
 });
@@ -108,77 +102,73 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
   if (showsMessage(state, rows.length)) {
     return (
       <View onLayout={onLayout} style={[styles.shell, style]}>
-        <GroundProvider ground="page">
-          <TableCaption caption={caption} continued={continued} />
-          <TableStates table={props} stacked={stacked} density={density} />
-        </GroundProvider>
+        <TableCaption caption={caption} continued={continued} />
+        <TableStates table={props} stacked={stacked} density={density} />
       </View>
     );
   }
 
   return (
     <View onLayout={onLayout} style={[styles.shell, style]}>
-      <GroundProvider ground="page">
-        <TableCaption caption={caption} continued={continued} />
+      <TableCaption caption={caption} continued={continued} />
 
-        {selectable && selection.length > 0 ? (
-          <SelectionBar
-            count={selection.length}
-            actions={bulkActions}
-            onClear={() => setSelection([])}
-          />
-        ) : null}
+      {selectable && selection.length > 0 ? (
+        <SelectionBar
+          count={selection.length}
+          actions={bulkActions}
+          onClear={() => setSelection([])}
+        />
+      ) : null}
 
-        {tableProvenance === null ? null : <View style={styles.band}>{tableProvenance}</View>}
+      {tableProvenance === null ? null : <View style={styles.band}>{tableProvenance}</View>}
 
-        {/* M01-41's summary line. The words are the caller's: only they know what the rows are. */}
-        {summary === undefined ? null : (
-          <View style={styles.summary}>
-            <Text variant="body-sm" color="secondary">
-              {summary}
-            </Text>
-          </View>
-        )}
+      {/* M01-41's summary line. The words are the caller's: only they know what the rows are. */}
+      {summary === undefined ? null : (
+        <View style={styles.summary}>
+          <Text variant="body-sm" color="secondary">
+            {summary}
+          </Text>
+        </View>
+      )}
 
-        {stacked ? (
-          <DataTableStacked
-            rows={sorted}
-            rowKey={rowKey}
-            selectable={selectable}
-            selected={selection}
-            onToggleRow={toggleRow}
-            labelledBy={labelledBy}
-            table={props}
-            pageSize={pageSize}
-          />
-        ) : (
-          <DataTableGrid
-            rows={sorted}
-            rowKey={rowKey}
-            selectable={selectable}
-            selected={selection}
-            onToggleRow={toggleRow}
-            onToggleAll={toggleAll}
-            allSelected={allSelected}
-            sortable={sortable}
-            sort={activeSort}
-            onSort={setSort}
-            labelledBy={labelledBy}
-            table={props}
-            pageSize={pageSize}
-            density={density}
-          />
-        )}
+      {stacked ? (
+        <DataTableStacked
+          rows={sorted}
+          rowKey={rowKey}
+          selectable={selectable}
+          selected={selection}
+          onToggleRow={toggleRow}
+          labelledBy={labelledBy}
+          table={props}
+          pageSize={pageSize}
+        />
+      ) : (
+        <DataTableGrid
+          rows={sorted}
+          rowKey={rowKey}
+          selectable={selectable}
+          selected={selection}
+          onToggleRow={toggleRow}
+          onToggleAll={toggleAll}
+          allSelected={allSelected}
+          sortable={sortable}
+          sort={activeSort}
+          onSort={setSort}
+          labelledBy={labelledBy}
+          table={props}
+          pageSize={pageSize}
+          density={density}
+        />
+      )}
 
-        {typeof page === 'number' ? (
-          <Pagination
-            page={page}
-            pageSize={pageSize}
-            rowCount={rowCount ?? rows.length}
-            onPageChange={onPageChange}
-          />
-        ) : null}
-      </GroundProvider>
+      {typeof page === 'number' ? (
+        <Pagination
+          page={page}
+          pageSize={pageSize}
+          rowCount={rowCount ?? rows.length}
+          onPageChange={onPageChange}
+        />
+      ) : null}
     </View>
   );
 }

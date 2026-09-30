@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -14,6 +14,8 @@ import { ValueSource } from '../ValueSource/ValueSource.native';
 import type { DateSetEntry } from './DateSet.types';
 import { floorFor } from './date-set-floor';
 
+/* A row is one tile (`F7-49`): `tileSurface` draws its grey and its flat rest — the web half's
+   `.hg-date-set-row` on `Ground.css`'s tiles list — and the refusal's tint replaces the grey. */
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
@@ -21,15 +23,9 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e1,
   },
   rowFunctional: { borderRadius: theme.radius['r-card-functional'] },
-  rowBlocked: {
-    backgroundColor: theme.colors['warning-bg'],
-    shadowOpacity: 0,
-    elevation: 0,
-  },
+  rowBlocked: { backgroundColor: theme.colors['warning-bg'] },
   body: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
   head: {
     flexDirection: 'row',
@@ -79,14 +75,13 @@ export function DateSetRow({
     <View
       role="listitem"
       style={[
+        tileSurface,
         styles.row,
-        density === 'functional' ? styles.rowFunctional : undefined,
-        blocked ? styles.rowBlocked : undefined,
+        density === 'functional' ? styles.rowFunctional : null,
+        blocked ? styles.rowBlocked : null,
       ]}
     >
-      {/* A row is white, so its controls take the page's fill until T-FPLAT-078 settles its
-          ground. */}
-      <GroundProvider ground="page">
+      <GroundProvider ground="tile">
         <View style={styles.body}>
           <View style={styles.head}>
             <RNText style={styles.date}>{mkt.date(d)}</RNText>

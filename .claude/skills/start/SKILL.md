@@ -103,7 +103,8 @@ will be proven red (`.claude/rules/testing.md`), and a test title says only what
 
 **`**Used by:**`** — the later tasks that consume what this lands, one line here, never an edit to
 their tickets. **`**DONE WHEN:**`** — the rows' own Given/When/Then, verbatim, each with its proof. A
-fix that changes what is built also becomes a done-when line, a ruling or an Out line.
+fix that changes what is built also becomes a done-when line, a ruling or an Out line. A task that
+adds a web route or a phone screen adds its regression flow as a done-when line (`M152`).
 
 ## 4. HIGH adds: data model, contract, diagram, the whole QA plan, one second actor
 

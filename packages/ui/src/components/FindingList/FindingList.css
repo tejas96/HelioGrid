@@ -10,12 +10,13 @@
    The status word beside each check is the StatusMark primitive with `mark={false}`: the row's own
    circle already carries the non-colour channel, so the pill keeps the words and drops the glyph.
 
+   The list is a heading on the page and each finding one tile (F7-49): the frame has no fill, no
+   shadow and no radius, the findings stand apart by space, and a finding's grey and flat rest are
+   drawn by Ground.css's tiles list, so its controls turn white.
+
    The 14/19/22px values are the DS source's own; the scales have no step for them. */
 
 .hg-finding-list {
-  background: var(--surface);
-  border-radius: var(--r-card-expressive);
-  box-shadow: var(--e2);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -68,6 +69,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: var(--sp-2);
 }
 
 /* The ready fold. A real control, never a hover affordance — and it never reaches a finding that
@@ -97,7 +99,8 @@
 .hg-finding-row {
   display: flex;
   gap: var(--sp-3);
-  padding: 14px 0;
+  padding: 14px var(--sp-4);
+  border-radius: var(--r-card-functional);
   align-items: flex-start;
 }
 
@@ -115,7 +118,7 @@
 .hg-finding-mark[data-status="blocking"] {
   background: var(--danger);
 }
-/* The warning MARK takes --warning-text: plain --warning measures 2.17:1 on white. */
+/* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
 .hg-finding-mark[data-status="attention"] {
   background: var(--warning-text);
 }

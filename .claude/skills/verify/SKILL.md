@@ -93,6 +93,12 @@ owns every server and device.** Prepare once, before round 1, while the owner is
    agent's first step, and open the browser tab once.
 4. Save `git status --short > $R/status-at-dispatch`, and take the round's tree:
    `bash scripts/verify-digest.sh --tree`.
+5. When the change reaches a phone, run the phone suite ONCE per device, one after the other —
+   `bash tests/e2e/mobile/run.sh <udid>`, then `<serial>`; two at once lose keys — and, when it
+   changes a `packages/ui` component,
+   only this task's own component specs — `pnpm --filter @heliogrid/e2e test:ct <its spec files>` —
+   each through `scripts/record-proof.sh`. The web suite and the whole component suite run in CI
+   (`e2e-web`) and never here; no agent re-drives a flow the suite drives.
 
 **Dispatch** one agent per surface — `qa-api`, `qa-web`, `qa-mobile` for iOS and `qa-mobile` for
 Android — in ONE message, in the background. Each prompt names its steps, `run.md`, `$R`, the round,

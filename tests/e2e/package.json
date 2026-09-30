@@ -1,0 +1,29 @@
+{
+  "name": "@heliogrid/e2e",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The regression suite — every shipped web route and phone screen keeps a flow that runs on every change (architecture.md §2 tests/e2e)",
+  "type": "module",
+  "scripts": {
+    "test:web": "playwright test -c playwright.config.ts",
+    "test:ct": "playwright test -c playwright-ct.config.ts",
+    "test:mobile": "bash mobile/run.sh",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@heliogrid/config": "workspace:*",
+    "@heliogrid/contracts": "workspace:*",
+    "@heliogrid/domain": "workspace:*",
+    "@heliogrid/i18n": "workspace:*",
+    "@heliogrid/theme": "workspace:*",
+    "@heliogrid/ui": "workspace:*",
+    "@playwright/experimental-ct-react": "1.62.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "typescript": "5.8.3"
+  }
+}

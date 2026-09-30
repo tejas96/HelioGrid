@@ -51,9 +51,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.surface,
-    // NOT a control — a <View> glyph badge. Nothing presses it.
-    ...theme.elevation.e1,
+    // A glyph in its tone on the panel, NOT a control: nothing presses it, so no disc, no shadow.
   },
   messageTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
   messageBody: { maxWidth: 300 },

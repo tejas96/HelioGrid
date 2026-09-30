@@ -40,6 +40,15 @@ ROW_RE = re.compile(r"\b(" + ROW_ID + r")\b")
 TASK_ID_RE = re.compile(r"\bT-([A-Z0-9]+)-(\d{3})\b")
 SCREEN_ID_RE = re.compile(r"\bSCR-([A-Z0-9]+)-(\d{2})\b")
 
+# The phone screens gate 33 holds without a Maestro flow, each with its reason. The gate fails a held
+# screen that is gone or has its flow, so the list empties as flows land; ADDING a screen here is a
+# harness change, which review holds (M152).
+PHONE_SCREENS_HELD = {
+    # Reached only by pressing Create company, and that press inside a Maestro flow never reaches the
+    # api on iOS, while the same tap on a still screen does — qa-mobile drives it (T-FPLAT-079, R9).
+    "home": "qa-mobile",
+}
+
 results = []
 
 
@@ -884,6 +893,33 @@ def run(repo, verbose):
          not order_bad, order_summary if not order_bad
          else f"{len(order_bad)}: " + " · ".join(order_bad[:6]))
 
+
+    # --- Gate 33 · every web route and every phone screen has its regression flow (M152)
+    # By file NAME only — a spec's text is never searched for a route, which a comment could fake;
+    # whether the flow really drives its screen is the reviewer's. A route is the folder of a `page`
+    # file at any depth: its `(group)` folders are not in the URL, the rest join with `-`, and `/` is
+    # `root`. A phone screen is the folder of a *Screen.tsx at any depth under screens/, joined the same.
+    def flow_name(file, under, drop_groups):
+        parts = os.path.relpath(os.path.dirname(file), os.path.join(repo, under)).split(os.sep)
+        return "-".join(s for s in parts if s != "." and not (drop_groups and s.startswith("("))) or "root"
+    routes = [flow_name(f, "apps/web/app", True)
+              for f in glob.glob(os.path.join(repo, "apps/web/app/**/page.*"), recursive=True)
+              if f.rsplit(".", 1)[1] in ("tsx", "ts", "jsx", "js")]
+    screens = [flow_name(f, "apps/mobile/src/screens", False)
+               for f in glob.glob(os.path.join(repo, "apps/mobile/src/screens/**/*Screen.tsx"), recursive=True)]
+    no_flow = sorted({f"tests/e2e/web/{r}.spec.ts" for r in routes}
+                     | {f"tests/e2e/mobile/{s}.yaml" for s in screens if s not in PHONE_SCREENS_HELD})
+    no_flow = [f for f in no_flow if not os.path.exists(os.path.join(repo, f))]
+    # A held screen that is gone, or that has its flow now, fails too — so the list empties as flows land.
+    stale_hold = [s for s in PHONE_SCREENS_HELD
+                  if s not in screens or os.path.exists(os.path.join(repo, f"tests/e2e/mobile/{s}.yaml"))]
+    scanned(33, "every web route and phone screen has its regression flow", min(len(routes), len(screens)), 1,
+            not no_flow and not stale_hold,
+            f"{len(set(routes))} routes, {len(set(screens))} screens, each with its flow but "
+            f"{len(PHONE_SCREENS_HELD)} held" if not no_flow and not stale_hold
+            else " · ".join([f"{len(no_flow)} missing: " + ", ".join(no_flow[:8])] * bool(no_flow)
+                            + [f"held but no longer needs it: {s}" for s in stale_hold]),
+            empty=f"CORPUS ROT: {len(routes)} web routes and {len(screens)} phone screens found, expected at least one of each")
 
     # --------------------------------------------------------------------- report
     results.sort(key=lambda r: r[0])

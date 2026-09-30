@@ -30,35 +30,22 @@
   text-align: right;
 }
 
+/* An inline cell editor is a field: its well, radius and rings are FieldBox's. */
 .hg-dt-editor {
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
   height: var(--hg-dt-touch);
   padding: 0 var(--sp-3);
-  border: none;
   outline: none;
-  border-radius: var(--r-input-functional);
-  background: var(--surface);
-  /* An inline cell editor is a control — --surface at --e2. */
-  box-shadow: var(--e2);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
 .hg-dt-editor[data-mono="true"] {
   font-family: var(--font-mono);
-}
-
-.hg-dt-editor:focus {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-.hg-dt-editor[data-issue="true"] {
-  box-shadow: 0 0 0 2px var(--danger);
 }
 
 .hg-dt-cell-shell[data-numeric="true"] .hg-dt-editor {

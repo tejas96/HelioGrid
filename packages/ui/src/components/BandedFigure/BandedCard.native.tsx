@@ -3,21 +3,21 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { BandChip } from './BandChip.native';
 import type { BandSpec, BandToneStyle } from './BandedFigure.types';
 
 const type = theme.type.roles;
 
 const styles = StyleSheet.create({
+  /* Both variants are tiles: their look is `tileSurface` (`F7-49`), spread first in the frame. */
   card: {
-    backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-card-expressive'],
     overflow: 'hidden',
     position: 'relative',
   },
-  cardPad: { padding: 22, gap: 9, ...theme.elevation.e2 },
-  boxPad: { padding: 26, gap: theme.spacing['sp-3'], ...theme.elevation.e3 },
+  cardPad: { padding: 22, gap: 9 },
+  boxPad: { padding: 26, gap: theme.spacing['sp-3'] },
   /* The inspector's box reads as one instrument: a tint band down its leading edge is the only
      non-word channel it adds, and the word still carries the verdict. */
   edge: { position: 'absolute', top: 0, bottom: 0, left: 0, width: 5 },
@@ -124,8 +124,12 @@ export function BandedCard({
     color: tone.fg,
   };
   return (
-    <View accessible accessibilityLabel={accessibilityLabel} style={[styles.card, size.pad, style]}>
-      <CardGround big={big}>
+    <View
+      accessible
+      accessibilityLabel={accessibilityLabel}
+      style={[tileSurface, styles.card, size.pad, style]}
+    >
+      <GroundProvider ground="tile">
         {big ? <View style={[styles.edge, { backgroundColor: tone.mark }]} /> : null}
         <Text style={[styles.overline, { fontSize: size.overline }]}>{label}</Text>
         <View style={styles.figureRow}>
@@ -148,13 +152,7 @@ export function BandedCard({
         {provenance}
         {note !== undefined ? <Text style={styles.note}>{note}</Text> : null}
         {children}
-      </CardGround>
+      </GroundProvider>
     </View>
   );
-}
-
-/* The card is white, so its controls take the page's fill until T-FPLAT-078 settles its ground.
-   The inspector's box keeps reading what holds it. */
-function CardGround({ big, children }: { big: boolean; children: ReactNode }) {
-  return big ? children : <GroundProvider ground="page">{children}</GroundProvider>;
 }

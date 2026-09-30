@@ -69,14 +69,15 @@
   gap: var(--sp-2);
 }
 
+/* A row is one tile (F7-49): its grey and its flat rest are drawn by Ground.css's tiles list, and
+   the refusal's tint below wins over that grey because this sheet loads after it. The calendar is
+   not a row: it stays on the page. */
 .hg-date-set-row {
   display: flex;
   align-items: flex-start;
   gap: var(--sp-2);
   padding: var(--sp-3);
   border-radius: var(--r-md);
-  background: var(--surface);
-  box-shadow: var(--e1);
   transition: background var(--dur-emphasised) var(--ease-standard);
 }
 
@@ -87,7 +88,6 @@
 /* The row the refusal is about tints while it answers — the words carry the state, not the tint. */
 .hg-date-set-row[data-blocked="true"] {
   background: var(--warning-bg);
-  box-shadow: none;
 }
 
 .hg-date-set-row-body {

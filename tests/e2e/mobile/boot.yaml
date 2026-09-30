@@ -1,0 +1,9 @@
+# Boot: a fresh install opens, hands off from the boot screen, and a signed-out person meets the door.
+appId: com.heliogrid.app
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- extendedWaitUntil:
+    visible: ${SIGN_IN_TITLE}
+    timeout: 60000

@@ -8,12 +8,12 @@ export const compareStyles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'stretch' },
   /* THE FIXED THING. RN has no `position: sticky`, so the pinned cell rides a translateX equal to
      the scroll offset — the same result, and it keeps the ONE-TABLE structure the alignment law
-     depends on (a row is still a row, so no value can drift between variants). */
-  pin: { zIndex: 2, backgroundColor: theme.colors.surface },
+     depends on (a row is still a row, so no value can drift between variants). Its ground is
+     `cellGround`'s, so it stays opaque over the cells sliding under it. */
+  pin: { zIndex: 2 },
   cell: { justifyContent: 'flex-start' },
   zebra: { backgroundColor: theme.colors['surface-alt'] },
   selected: { backgroundColor: theme.colors['accent-subtle'] },
-  plain: { backgroundColor: theme.colors.surface },
   /* 4dp under the label's unit line — the DS's own sub-step, no token carries it. */
   provenance: { marginTop: theme.spacing['sp-1'] },
   optionStack: { gap: 6, minWidth: 0 },
@@ -54,10 +54,16 @@ export type Density = NonNullable<CompareGridProps['density']>;
 /**
  * **Which ground a cell stands on.** Selection outranks the row's zebra, everywhere — one rule in
  * one place, so the pinned label, the value cells and the option heads cannot disagree about it.
+ * A plain cell paints `ground`, from `useGround()`: the grid is a heading on the page, so it reads
+ * whatever holds it, never the white by name.
  */
-export function cellGround(selected: boolean, zebra: boolean): StyleProp<ViewStyle> {
+export function cellGround(
+  selected: boolean,
+  zebra: boolean,
+  ground: string,
+): StyleProp<ViewStyle> {
   if (selected) return compareStyles.selected;
-  return zebra ? compareStyles.zebra : compareStyles.plain;
+  return zebra ? compareStyles.zebra : { backgroundColor: ground };
 }
 
 /** The fixed-width box a cell occupies at this density — the source of the structural alignment. */

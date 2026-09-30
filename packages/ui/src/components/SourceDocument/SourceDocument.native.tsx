@@ -12,7 +12,6 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ReadAlongside } from './ReadAlongside.native';
 import {
@@ -72,60 +71,61 @@ export function SourceDocument({
     <View
       role="region"
       accessibilityLabel={label || `${name} — source document`}
-      style={[styles.root, density === 'functional' ? styles.functional : null, style]}
+      style={[styles.root, style]}
     >
-      {/* A page ground until T-FPLAT-078 makes this white container a tile or a heading. */}
-      <GroundProvider ground="page">
-        <SourceDocumentHeader
-          name={name}
-          meta={meta}
+      <SourceDocumentHeader
+        name={name}
+        meta={meta}
+        resolved={resolved}
+        pageNumber={reading.page}
+        count={pages.length}
+        fit={reading.fit}
+        onPage={reading.setPage}
+        onFit={reading.setFit}
+        originalUrl={originalUrl}
+        onOpenOriginal={onOpenOriginal}
+        openLabel={openLabel}
+      />
+      <ScrollView
+        style={[
+          styles.body,
+          density === 'functional' ? styles.bodyFunctional : null,
+          { height: bodyH },
+        ]}
+        contentContainerStyle={[
+          styles.bodyContent,
+          reading.fit === 'page' ? styles.bodyContentPage : null,
+        ]}
+      >
+        <SourceDocumentBody
           resolved={resolved}
+          name={name}
+          page={cur}
           pageNumber={reading.page}
           count={pages.length}
+          aspect={pageAspect(cur)}
+          bodyHeight={bodyH}
           fit={reading.fit}
-          onPage={reading.setPage}
-          onFit={reading.setFit}
           originalUrl={originalUrl}
           onOpenOriginal={onOpenOriginal}
           openLabel={openLabel}
+          onRetry={onRetry}
+          retryLabel={retryLabel}
+          unsupportedTitle={unsupportedTitle}
+          unsupportedMessage={unsupportedMessage}
+          failedTitle={failedTitle}
+          failedMessage={failedMessage}
+          emptyTitle={emptyTitle}
+          emptyMessage={emptyMessage}
         />
-        <ScrollView
-          style={[styles.body, { height: bodyH }]}
-          contentContainerStyle={[
-            styles.bodyContent,
-            reading.fit === 'page' ? styles.bodyContentPage : null,
-          ]}
-        >
-          <SourceDocumentBody
-            resolved={resolved}
-            name={name}
-            page={cur}
-            pageNumber={reading.page}
-            count={pages.length}
-            aspect={pageAspect(cur)}
-            bodyHeight={bodyH}
-            fit={reading.fit}
-            originalUrl={originalUrl}
-            onOpenOriginal={onOpenOriginal}
-            openLabel={openLabel}
-            onRetry={onRetry}
-            retryLabel={retryLabel}
-            unsupportedTitle={unsupportedTitle}
-            unsupportedMessage={unsupportedMessage}
-            failedTitle={failedTitle}
-            failedMessage={failedMessage}
-            emptyTitle={emptyTitle}
-            emptyMessage={emptyMessage}
-          />
-        </ScrollView>
-        {cur?.label && resolved === 'ready' ? (
-          <View style={styles.footer}>
-            <Text variant="caption" color="tertiary">
-              {cur.label}
-            </Text>
-          </View>
-        ) : null}
-      </GroundProvider>
+      </ScrollView>
+      {cur?.label && resolved === 'ready' ? (
+        <View style={styles.footer}>
+          <Text variant="caption" color="tertiary">
+            {cur.label}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -133,15 +133,11 @@ export function SourceDocument({
 SourceDocument.Alongside = ReadAlongside;
 
 const styles = StyleSheet.create({
-  root: {
-    minWidth: 0,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-md'],
-    overflow: 'hidden',
-    ...theme.elevation.e2,
-  },
-  functional: { borderRadius: theme.radius['r-card-functional'] },
-  body: { backgroundColor: theme.colors['canvas-sunken'] },
+  /* A viewer, not a record: a heading on the page (`F7-49`), with no fill or shadow of its own.
+     Its reading area is the sunken desk the document lies on, and carries the density's radius. */
+  root: { minWidth: 0, overflow: 'hidden' },
+  body: { backgroundColor: theme.colors['canvas-sunken'], borderRadius: theme.radius['r-md'] },
+  bodyFunctional: { borderRadius: theme.radius['r-card-functional'] },
   bodyContent: {
     padding: theme.spacing['sp-3'],
     alignItems: 'center',

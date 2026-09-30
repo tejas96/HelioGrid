@@ -41,9 +41,10 @@ apps/mobile/.bundle/config
 *.xcuserdata
 *.xcworkspace/xcuserdata/
 
-# Playwright / test artifacts
+# Playwright / test artifacts — the component suite's build lands in playwright/.cache/
 playwright-report/
 test-results/
+tests/e2e/playwright/.cache/
 
 # Python bytecode. scripts/ gained it when gates.py and next-screen.py moved there.
 __pycache__/
