@@ -1,5 +1,6 @@
 import { createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
+import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany, expectNoSidewaysScroll } from '../support/door';
 import { freshMobile } from '../support/phone';
 
@@ -16,4 +17,5 @@ test('with a company, home opens and stays within the viewport', async ({ page }
 
   await expect(page.getByRole('main')).toBeVisible();
   await expectNoSidewaysScroll(page);
+  await expectNoSeriousViolations(page);
 });

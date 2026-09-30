@@ -44,7 +44,9 @@ is `xcrun simctl keychain <udid> reset`, then a cold relaunch; nothing else is a
 plus the API log file for a new one. Sign in only with the account the prompt gives you. The device
 reaches the api through `API_URL` in `apps/mobile/src/env.ts` — the Android emulator at `10.0.2.2`.
 
-Per step:
+Per step — the api log marked before it and read after it with your platform, since a server
+error fails the step even when the screen looks right (`test-matrix.md` §"A server error fails the
+step"):
 
 1. Perform the actions.
 2. Read the criterion from the view tree — iOS `idb ui describe-all`, Android `uiautomator` XML
@@ -55,6 +57,12 @@ Per step:
    full tree includes every off-screen element and blew a previous run past its timeout.
 4. Capture evidence: the matched words, plus logcat or simulator log excerpts for error steps; a
    screenshot kept as evidence is saved under `$R/evidence/`, never the session scratchpad.
+
+5. A `landing` step also checks that every tappable element carries a label (`F7-26`): on iOS, no
+   `Button` in `idb ui describe-all` with an empty `AXLabel`; on Android, no `clickable="true"` node
+   in the `uiautomator` dump with both `text` and `content-desc` empty. Each one found goes into
+   `observed` by its frame and fails the step.
+6. A step that turns airplane mode on turns it off before it ends, whatever its verdict.
 
 **One screenshot per step**, taken when the step's expected frame should be on screen; never a
 polling loop of frames. A step whose expected frame is not reached after four screenshots is
@@ -70,6 +78,10 @@ countdown step asserts wall-clock behaviour, not interval decrement.
 a step you cannot observe or drive is recorded `inconclusive`, naming what; append each verdict
 to `verdicts-<platform>.jsonl` in the folder the prompt names, one line per step, in the line shape
 that section gives (`surface: "ios"` or `"android"`, the round, stage and tree the prompt names).
+
+**Then probe.** The steps are the floor, not the ceiling: after the last step, run the probes
+`.claude/skills/verify/references/test-matrix.md` §"Probes" sets — how many, aimed where, picked how,
+one `P<n>` line each.
 
 Return ONLY a JSON array of the lines you wrote. Order steps so state flows; relaunch only where a
 cold start IS the test.

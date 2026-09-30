@@ -56,6 +56,8 @@ The checks that matter most here:
   non-base error code is where the wire and the typecheck have disagreed before;
 - cross-tenant access returns **404, never 403** (403 leaks that the row exists);
 - unauthenticated requests to protected routes are rejected;
+- every role against every action on the changed routes, and the auth cookies' flags — the
+  always-on API core in `test-matrix.md` names both;
 - money reconciles to the currency's minor unit across the tables a step names.
 
 **Screen first, then write as you go** — the one procedure is
@@ -63,5 +65,9 @@ The checks that matter most here:
 a step you cannot observe or drive is recorded `inconclusive`, naming what; append each verdict
 to `verdicts-api.jsonl` in the folder the prompt names, one line per step, in the line shape that
 section gives (`surface: "api"` or `"worker"`, the round, stage and tree the prompt names).
+
+**Then probe.** The steps are the floor, not the ceiling: after the last step, run the probes
+`.claude/skills/verify/references/test-matrix.md` §"Probes" sets — how many, aimed where, picked how,
+one `P<n>` line each.
 
 Return ONLY a JSON array of the lines you wrote.

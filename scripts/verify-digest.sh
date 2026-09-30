@@ -29,6 +29,13 @@
 #   scripts/verify-digest.sh --verdicts <T-id> [--dir <qa folder>] [--staged]
 #                                      the task's QA record against its ticket's QA plan; exit 0 prints
 #                                      the `counts:` text the stamp copies, exit 1 names every refusal.
+#   scripts/verify-digest.sh --api-errors [<mark>] [<surface>]
+#                                      the api log's server errors: `mark: <lines>@<log id>`, and with a mark
+#                                      every line past it answered 5xx or logged at error level or above —
+#                                      with a surface (web, ios, android, api), its own requests and those it
+#                                      cannot place; a mark from a restarted log reads from the first line.
+#                                      Exit 1 when it prints one, 2 on a bad argument. A QA agent marks
+#                                      before a step and reads after.
 #   scripts/verify-digest.sh --append <.git/heliogrid-harness/<T-id>/qa/verdicts-<surface>.jsonl> <<'LINE'
 #                                      how a QA agent writes its line: one JSON object on stdin, appended
 #                                      as one line to a verdict file under the harness and nowhere else.
@@ -66,6 +73,8 @@ case "${1:-}" in
     [ "$high" -eq 0 ] || { echo HIGH; exit 0; }
     checker tier "${2:-}"; exit 0 ;;
   --tree) worktree_tree; exit 0 ;;
+  --api-errors)
+    checker api-errors "$(git rev-parse --git-common-dir)/heliogrid-harness/api.log" "${2:-}" "${3:-}"; exit $? ;;
   --append)
     case "${2:-}" in
       *..*) echo "verify-digest: --append refuses a path with '..'" >&2; exit 2 ;;
@@ -204,6 +213,20 @@ def web_routes(files):
 def screens(files):
     return {m[1] for f in files if (m := re.match(r"apps/mobile/src/screens/([^/]+)/[^/]*Screen\.tsx$", f))}
 
+def dispatch_times(run):
+    """Each surface's dispatch times from run.md (`/verify` §3), so a surface that wrote one line does
+    not read 0 min. Only the printed `wall:` reads them — never a refusal, and never the commit check,
+    which runs quiet — and a time that is no real time is skipped."""
+    times = {}
+    text = open(run, encoding="utf-8").read() if os.path.isfile(run) else ""
+    for s, at in re.findall(r"\bdispatched (\w+) (\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ)", text):
+        try:
+            datetime.datetime.fromisoformat(at[:-1])
+        except ValueError:
+            continue
+        times.setdefault(s, []).append(at)
+    return times
+
 def cmd_verdicts(task, folder, staged, now, quiet=False):
     global STAGED
     STAGED = staged
@@ -335,6 +358,7 @@ def cmd_verdicts(task, folder, staged, now, quiet=False):
         top = max((v["round"] for _, v in good if v["stage"] == stage), default=0)
         if top > caps[stage]:
             problems.append(f"/{stage} reached round {top}, past its cap of {caps[stage]} — a `**Rounds:** {stage} <n> — owner, <reason>` line raises it")
+    dispatched = {} if quiet else dispatch_times(os.path.join(folder, "run.md"))
     counts, walls = [], []
     for s in EVERY + ["parity", "recorded"]:
         last = [st[-1][1]["verdict"] for (k, sf), st in by_step.items() if sf == s and not str(k).startswith("P")]
@@ -344,8 +368,9 @@ def cmd_verdicts(task, folder, staged, now, quiet=False):
         if probes:
             counts.append(f"{s} probes {probes.count('clean')} clean / {probes.count('finding')} finding")
         ats = sorted(v["at"] for _, v in good if v["surface"] == s)
-        if ats:
-            span = datetime.datetime.fromisoformat(ats[-1][:-1]) - datetime.datetime.fromisoformat(ats[0][:-1])
+        if ats and not quiet:
+            start = min([ats[0]] + dispatched.get(s, []))
+            span = datetime.datetime.fromisoformat(ats[-1][:-1]) - datetime.datetime.fromisoformat(start[:-1])
             walls.append(f"{s} {round(span.total_seconds() / 60)} min")
     for p in problems:
         print(f"REFUSED: {p}")
@@ -379,6 +404,75 @@ def author_faults(v, folder):
     return faults
 
 SHIPPED = re.compile(r"^\**Status:\**\s*shipped \(#\d+\)", re.M)
+
+WEB_ORIGIN = "http://localhost:3002"
+
+def client_of(line):
+    """Which surface sent the request a log line answers; None when the line names no request or
+    no client this knows, so it counts against every surface rather than hiding from all."""
+    headers = (line.get("req") or {}).get("headers") or {}
+    agent = headers.get("user-agent", "")
+    if headers.get("origin") == WEB_ORIGIN:
+        return "web"
+    if agent.startswith("curl/"):
+        return "api"
+    if "okhttp" in agent:
+        return "android"
+    if "CFNetwork" in agent or "Darwin" in agent:
+        return "ios"
+    return None
+
+CLIENTS = ("web", "ios", "android", "api")
+
+def log_identity(lines):
+    """The api process that wrote the log: its first JSON line's pid and time. The launch command
+    empties the file at every start, so a mark from another process means the log restarted, even
+    when the new log has already grown past the mark's line count."""
+    for raw in lines:
+        try:
+            line = json.loads(raw)
+        except ValueError:
+            continue
+        if isinstance(line, dict) and "pid" in line and "time" in line:
+            return f"{line['pid']}.{line['time']}"
+    return "none"
+
+def cmd_api_errors(log, mark, surface):
+    if surface and surface not in CLIENTS:
+        print(f"verify-digest: --api-errors reads one of {', '.join(CLIENTS)}, never {surface!r}", file=sys.stderr)
+        return 2
+    marked = re.fullmatch(r"(\d+)@([\w.]+)", mark) if mark else None
+    if mark and not marked:
+        print(f"verify-digest: a mark is what the previous call printed, `<lines>@<log id>`, never {mark!r}", file=sys.stderr)
+        return 2
+    if not os.path.isfile(log):
+        print(f"verify-digest: no api log at {log} — the `api` or `api-built` server writes it", file=sys.stderr)
+        return 2
+    lines = open(log, encoding="utf-8", errors="replace").read().splitlines()
+    identity = log_identity(lines)
+    since = int(marked[1]) if marked else len(lines)
+    if marked and (marked[2] != identity or since > len(lines)):
+        print(f"the log restarted since mark {mark} — read from its first line")
+        since = 0
+    found = 0
+    for raw in lines[since:]:
+        try:
+            line = json.loads(raw)
+        except ValueError:
+            continue
+        if not isinstance(line, dict):
+            continue
+        status = (line.get("res") or {}).get("statusCode") or 0
+        if status < 500 and line.get("level", 0) < 50:
+            continue
+        client = client_of(line)
+        if surface and client not in (surface, None):
+            continue
+        req = line.get("req") or {}
+        print(f"api error: {client or 'unplaced'} {req.get('method', '-')} {req.get('url', '-')} {status or '-'} {line.get('msg', '')}")
+        found += 1
+    print(f"mark: {len(lines)}@{identity}")
+    return 1 if found else 0
 
 def shipped_since(base):
     """The staged tasks this change ships: shipped now, and not shipped in the tickets at `base`. A
@@ -430,6 +524,8 @@ def cmd_stamped(branch, digest, records, now, harness, base):
 
 if mode == "surfaces":
     cmd_surfaces([a for a in args if a])
+elif mode == "api-errors":
+    sys.exit(cmd_api_errors(*args))
 elif mode == "tier":
     cmd_tier(args[0])
 elif mode == "verdicts":
