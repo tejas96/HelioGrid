@@ -15,6 +15,8 @@
 #     (scripts/verify-digest.sh --risk);
 #   · a HIGH task's stamp stands only on its QA record: the record passes the checker against the
 #     staged ticket and tree, and the stamp carries the record's own counts (--stamped --records, M151);
+#     a stamp in the section of ANOTHER task this change ships — its PR merged into this branch — is
+#     held by the digest alone, since that PR's own commit held its record;
 #   · a tree whose runtime digest equals the branch's merge base with origin/main — docs, ci, config,
 #     tests — needs no stamp, nor one equal to origin/main's own tree (main merged in before the
 #     task commits its work).

@@ -33,9 +33,11 @@
 #                                      how a QA agent writes its line: one JSON object on stdin, appended
 #                                      as one line to a verdict file under the harness and nowhere else.
 #   scripts/verify-digest.sh --stamped <branch> <digest> [--records]
-#                                      the STAGED ticket of the task the branch names carries a
-#                                      `**Verified:**` line for <digest> in its own section; --records
-#                                      also runs --verdicts --staged and holds the line to its counts.
+#                                      a STAGED ticket carries a `**Verified:**` line for <digest> in its
+#                                      own section — the task the branch names, or a task this change
+#                                      ships (its Status turns shipped since the merge base); --records
+#                                      also runs --verdicts --staged on the branch's own task and holds
+#                                      the line to its counts.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 cd "$(git rev-parse --show-toplevel)"
@@ -91,7 +93,7 @@ open(sys.argv[1], "a").write(json.dumps(v, ensure_ascii=False) + "\n")' "$2" \
     checker verdicts "$id" "$dir" "$staged" "$now"; exit $? ;;
   --stamped)
     checker stamped "${2:?--stamped needs a branch}" "${3:?--stamped needs a digest}" "${4:-}" "$(git write-tree)" \
-      "$(git rev-parse --git-common-dir)/heliogrid-harness"; exit $? ;;
+      "$(git rev-parse --git-common-dir)/heliogrid-harness" "$(merge_base)"; exit $? ;;
   --staged) tree="$(git write-tree)" ;;
   --main) tree="$(git rev-parse "$(merge_base)^{tree}")" ;;
   --tip) tree="$(git rev-parse --verify -q 'origin/main^{tree}' || git rev-parse 'main^{tree}')" ;;
@@ -376,18 +378,40 @@ def author_faults(v, folder):
         faults.append(f"its log says {'inconclusive' if timed_out else 'pass' if ok else 'fail'}, the line says {v['verdict']}")
     return faults
 
-def cmd_stamped(branch, digest, records, now, harness):
+SHIPPED = re.compile(r"^\**Status:\**\s*shipped \(#\d+\)", re.M)
+
+def shipped_since(base):
+    """The staged tasks this change ships: shipped now, and not shipped in the tickets at `base`. A
+    task shipped by an earlier change is never one of them, so its old stamp stands on nothing here."""
+    before = set()
+    for f in git("ls-tree", "--name-only", base, "docs/tasks/").stdout.split():
+        for part in re.split(r"\n#{2,3} ", git("show", f"{base}:{f}").stdout)[1:]:
+            m = re.match(r"(T-[A-Z0-9]+-\d{3})", part)
+            if m and SHIPPED.search(part):
+                before.add(m[1])
+    return [b for b in task_blocks(".", True) if b["id"] not in before and SHIPPED.search(b["body"])]
+
+def cmd_stamped(branch, digest, records, now, harness, base):
     task = task_of(branch)
     block = block_of(task, True) if task else None
     if not block:
         print(f"no stamp: {branch or 'this HEAD'} names no task with a single staged ticket")
         return 1
-    stamp = next((l for l in block["body"].split("\n") if re.match(rf"^\*\*Verified:\*\* digest {digest}\b", l)), None)
-    if not stamp:
-        print(f"no stamp: {task}'s own section carries no `**Verified:** digest {digest}` line")
+    # One pull request may ship more than one task (another task's PR merged into this branch): the
+    # stamp stands in the section of whichever task it verified, the branch's own or one shipped here.
+    others = [b for b in shipped_since(base) if b["id"] != task]
+    found = [(b, l) for b in [block, *others] for l in b["body"].split("\n")
+             if re.match(rf"^\*\*Verified:\*\* digest {digest}\b", l)]
+    if not found:
+        shipped = ", ".join(b["id"] for b in others)
+        print(f"no stamp: {task}'s own section carries no `**Verified:** digest {digest}` line"
+              + (f", nor does the section of a task this change ships ({shipped})" if shipped else ""))
         return 1
-    if records != "--records":
-        print(f"stamped: digest {digest} in {task}")
+    stamped, stamp = found[0][0]["id"], found[0][1]
+    if records != "--records" or stamped != task:
+        # A task shipped here by its own merged pull request had its record held by that PR's own
+        # commit, and its record is deleted once that PR merged (M141): the digest is what holds it now.
+        print(f"stamped: digest {digest} in {stamped}")
         return 0
     import io, contextlib
     out = io.StringIO()

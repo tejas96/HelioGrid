@@ -158,7 +158,8 @@ jobs:
           # stamp and the tier git's pre-commit reads are read again here, on the pull request's head
           # as pushed. The tier is HIGH by path (M113); else it comes from the task the branch names
           # (<kind>/<t-id>-<slug>) and its ticket in the head's tree — no task, no Risk line, reads HIGH.
-          # The stamp must sit in that task's own section. The QA record lives in the author's .git,
+          # The stamp must sit in the section of that task or of a task this pull request ships (its
+          # Status turns shipped here). The QA record lives in the author's .git,
           # never here, so the record and its counts are held by git's pre-commit alone (M151).
           set -euo pipefail
           git fetch --no-tags --quiet origin "$BASE_REF"
@@ -179,7 +180,7 @@ jobs:
           elif in_tree "$HEAD_SHA" --stamped "$HEAD_REF" "$head"; then
             :
           else
-            echo "::error::The runtime tree this pull request's head carries (digest $head) has no /verify stamp in the section of the task $HEAD_REF names, and that ticket does not say Risk: LOW. Run /verify on it and commit the stamped ticket (M113)."
+            echo "::error::The runtime tree this pull request's head carries (digest $head) is HIGH-risk — by a path it changes, or by the ticket of the task $HEAD_REF names — and no /verify stamp for it sits in the section of that task or of a task this pull request ships. Run /verify on it and commit the stamped ticket (M113)."
             exit 1
           fi
       - uses: pnpm/action-setup@v4
