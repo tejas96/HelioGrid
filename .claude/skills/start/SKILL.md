@@ -121,8 +121,15 @@ drives reads `landing · suite <spec file>` and needs no agent. Every step's act
 DO and its `observe` one it can SEE (test-matrix §"What each agent can see and do"). Walk `.claude/skills/verify/references/test-matrix.md`'s edge checklist as an
 attack. The always-on API core (cross-tenant 404, no session refused, money reconciles) is in the plan
 when `apps/api`, `packages/db`, `packages/contracts` or `packages/data` is in the Scope. `expected` is
-a literal; where the rows are silent, the step RECORDS the value for a ruling. `severity` is set here:
-money, tenancy or provenance → `blocker`.
+a literal; where the rows are silent, the step RECORDS the value for a ruling. `severity` is set
+here: money, tenancy or provenance → `blocker`. A screen adds one `layout` step per platform and
+width — web at 375 and at 1536; `ios` and `android` on the device at its own width — measuring
+`design-reviewer.md`'s measure list against the export: `expect no measured difference beyond the
+ticket's ruled ones`, the measured values in `observed`, `observe computed-style` on the web and the
+tree's element frames on a phone, `severity major`. A phone compares heights, padding, gaps and
+sizes, never an x position: the device is not 375 wide. Its action renders, in Hindi and Marathi,
+the three longest labels the reviewer named. The reviewer's `MEASURE` findings go into the ticket as
+differences from the export, built to the design system.
 
 **One second actor: `case-reviewer`**, with the task id. For a SCREEN, also `design-reviewer` in the
 same message: it renders the export, measures, and returns blockers and a better design; a `BETTER`

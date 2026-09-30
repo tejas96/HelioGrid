@@ -47,10 +47,11 @@ under 40. **HIGH**: the same plus the four marked HIGH. No `Risk:` line reads as
 **QA plan:** (HIGH) written at /start, before code, and edited only with the scope: the steps a person
         would notice plus one `landing` per surface, behaviour-level — what a person does and sees,
         never a selector or a seed (those go in the run's own `run.md`):
-        `- **Q1** · <api|worker|web|ios|android|parity> · <case ids, or landing> · <the action> → expect <literal> · observe <kind> · severity <blocker|major|minor>`
+        `- **Q1** · <api|worker|web|ios|android|parity> · <case ids, landing, or layout> · <the action> → expect <literal> · observe <kind> · severity <blocker|major|minor>`
         — one platform per step; only a `landing` may name `mobile`, meaning ios and android; a landing
         the regression suite drives reads `- **Q<n>** · <surface> · landing · suite <spec file>`;
-        money, tenancy or provenance is `blocker`; the severity is set here, never by the executor
+        a screen's `layout` step is `/start` §4's; money, tenancy or provenance is `blocker`; the
+        severity is set here, never by the executor
 **Rounds:** (only when the owner raises a cap) `verify <n> · ship <n> — owner, <reason>` — `/verify`
         stops at round 3 and `/ship` at two delta rounds without it; only the owner writes it (M151)
 **Verified:** (HIGH) digest <12 hex> · <date> · <the checker's counts> — written by /verify from the
