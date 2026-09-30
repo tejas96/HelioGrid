@@ -25,7 +25,8 @@
 # actor AND claim set (order-free) — two proofs of one test for different claims keep their own lines,
 # and a line whose claim set is no longer used is withdrawn — and which are stale: the file, the log or
 # the test changed since (an --expect proof: its own test or the shared code around every test, never a
-# sibling test); a reviewer's proofs are evidence and never stale the task.
+# sibling test), or any file of the package src/ folder the broken file sits in — a rule reads more
+# than its own file; a reviewer's proofs are evidence and never stale the task.
 # --index judges the files as the INDEX holds them — what a commit writes — a file not in it reading
 # gone, so git's pre-commit sees a test the commit weakens even when the disk copy was put back.
 # --prune deletes each task's record once GitHub reports its branch's pull request MERGED after the
@@ -86,6 +87,8 @@ records = sys.argv[1]
 deleted, kept = [], []
 for name in sorted(os.listdir(records)):
     rec = os.path.join(records, name)
+    if not os.path.isdir(rec):  # the api's log (.claude/launch.json) sits beside the records
+        continue
     bound = os.path.join(rec, "branch")
     if not os.path.isfile(bound):
         kept.append(f"{name} (bound to no branch)")
@@ -116,7 +119,7 @@ if [ -n "$stale" ]; then
   rec="$(record_dir "$stale")"
   [ -s "$rec/proofs.jsonl" ] || [ -s "$rec/withdrawn.jsonl" ] || { echo "break-and-run: no proof recorded for $stale — nothing is current" >&2; exit 2; }
   cd "$root" && exec python3 - "$rec" "$index" <<'PY'
-import hashlib, json, os, re, subprocess, sys
+import hashlib, json, os, re, shutil, subprocess, sys, tempfile
 rec, from_index = sys.argv[1], sys.argv[2] == "1"
 latest = {}
 def jsonl(name):
@@ -177,6 +180,22 @@ def test_changed(p):
         return True
     a, b = without_other_tests(old, p["expect"]), without_other_tests(new, p["expect"])
     return a is None or a != b
+def src_tree(path):
+    """The tree of the package src/ folder `path` sits in, as the index or the working tree holds it;
+    None for a file outside one, "gone" when the folder is."""
+    m = re.match(r"((?:apps|packages)/[^/]+/src)/", path)
+    if not m:
+        return None
+    env = dict(os.environ)
+    if not from_index:
+        scratch = tempfile.NamedTemporaryFile(delete=False).name
+        shutil.copy(subprocess.run(["git", "rev-parse", "--git-path", "index"], capture_output=True, text=True).stdout.strip(), scratch)
+        env["GIT_INDEX_FILE"] = scratch
+        subprocess.run(["git", "add", "-A", "--", m[1]], env=env, capture_output=True)
+    got = subprocess.run(["git", "write-tree", f"--prefix={m[1]}/"], env=env, capture_output=True, text=True)
+    if not from_index:
+        os.unlink(scratch)
+    return got.stdout.strip() if got.returncode == 0 else "gone"
 def blob(path):
     if from_index:
         found = subprocess.run(["git", "rev-parse", "-q", "--verify", f":{path}"], capture_output=True, text=True).stdout.strip()
@@ -190,6 +209,9 @@ for p in sorted(latest.values(), key=lambda p: p["actor"] != "author"):
     if not os.path.exists(log) or hashlib.sha1(open(log, "rb").read()).hexdigest()[:12] != p["log_sha"]:
         why.append("its log is missing or altered")
     if blob(p["file"]) != p["file_sha"]: why.append(f"{p['file']} changed")
+    folder = src_tree(p["file"])
+    if folder and folder != p.get("src_tree"):
+        why.append(f"{p['file'].split('/src/')[0]}/src/ changed" if p.get("src_tree") else "recorded before a proof held its package's src/ — record it again")
     if test_changed(p): why.append(f"{p['test_file']} changed{' (its test or shared code)' if p.get('expect') else ''}")
     if p["actor"] != "author":
         print(f"{p['id']} {p['claims']} reviewer evidence — {'held' if not why else '; '.join(why)}")
@@ -273,6 +295,14 @@ named_in() {
 }
 
 before="$(tree_state)"
+# The package src/ folder the broken file sits in, as the tree holds it before the break: the proof
+# is stale once any file there changes (--stale), since a rule reads more than its own file.
+src_folder="$(sed -nE 's#^((apps|packages)/[^/]+/src)/.*#\1#p' <<<"$file")"; src_tree=""
+if [ -n "$src_folder" ]; then
+  scratch_index="$(mktemp)"; cp "$(cd "$root" && git rev-parse --git-path index)" "$scratch_index"
+  src_tree="$(cd "$root" && GIT_INDEX_FILE="$scratch_index" git add -A -- "$src_folder" && GIT_INDEX_FILE="$scratch_index" git write-tree --prefix="$src_folder/")"
+  rm -f "$scratch_index"
+fi
 built || refuse "the build of $build failed before anything was broken (log: $log)"
 one="$(mktemp)"
 echo "=== baseline, unbroken" >>"$log"
@@ -314,15 +344,15 @@ if [ -n "$task" ]; then
   (cd "$root" && python3 - "$rec/proofs.jsonl" "$id" "$task" "$claims" "$actor" "$verdict" "$file" \
     "$(git hash-object "$file")" "$test_file" "$(git hash-object -w "$test_file")" "$expect" "$pattern" \
     "$brk" "$test_cmd" "$runs" "$red" "$build" "logs/$id.log" "$(shasum "$log" | cut -c1-12)" \
-    "$before" "$after" "$(git hash-object scripts/break-and-run.sh)" <<'PY'
+    "$before" "$after" "$(git hash-object scripts/break-and-run.sh)" "$src_tree" <<'PY'
 import json, sys, time
 (out, i, task, claims, actor, verdict, f, fsha, t, tsha, expect, pattern, brk, test, runs, red, build,
- log, lsha, tb, ta, ssha) = sys.argv[1:]
+ log, lsha, tb, ta, ssha, src) = sys.argv[1:]
 line = {"id": i, "kind": "red", "task": task, "claims": claims.split(","), "actor": actor,
         "writer": "break-and-run.sh", "verdict": verdict, "file": f, "file_sha": fsha, "test_file": t,
         "test_sha": tsha, "expect": expect, "pattern": pattern, "break": brk, "test": test,
         "runs": int(runs), "red_runs": int(red), "baseline": "green", "build": build, "log": log,
-        "log_sha": lsha, "tree_before": tb, "tree_after": ta, "script_sha": ssha,
+        "log_sha": lsha, "tree_before": tb, "tree_after": ta, "script_sha": ssha, "src_tree": src,
         "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 open(out, "a").write(json.dumps(line, ensure_ascii=False) + "\n")
 PY

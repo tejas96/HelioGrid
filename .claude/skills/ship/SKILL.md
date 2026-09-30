@@ -14,7 +14,7 @@ in it is written for a five-minute read. This skill raises the PR; the owner mer
 zero — never a rebase, never a force-push — in three steps, because git's merge hook refuses an
 unstamped HIGH runtime tree: `git merge --no-commit origin/main`; `bash scripts/verify-digest.sh
 --staged` equals the ticket's stamp, or the task is LOW, or no runtime file changed on the branch —
-else `/verify` runs again at depth `delta` and restamps, staged; `git commit --no-edit`.
+else `/verify` runs again at depth `delta`, stage `ship`, and restamps, staged; `git commit --no-edit`.
 
 **The stamp (`M113`), HIGH only.** The ticket's `**Verified:**` digest equals what
 `scripts/verify-digest.sh` prints; missing or stale → `/verify` now. LOW, docs, ci, config and
@@ -38,8 +38,9 @@ line that now carries it) or DROPPED (with why); one with no new home is not del
 **Every case and done-when line has its proof — a lookup, not a re-derivation.** A test name → the
 test passes, and for a money, tenancy, permission or safety rule, or a gate this change adds or alters,
 a CURRENT line in `scripts/break-and-run.sh --stale <T-id>` (a WITHDRAWN proof needs one recorded
-again); `Q<n>` → a `pass` in `.git/heliogrid-harness/<T-id>/qa/verdicts-*.jsonl`; `recorded` → its
-recorder line; `none` → the PR body, under risks. A claim without a proof is fixed here.
+again); `Q<n>` → `bash scripts/verify-digest.sh --verdicts <T-id>` passes, so its last line is a current
+`pass` (`M151`); `recorded` → its recorder line; `none` → the PR body, under risks. A claim without a
+proof is fixed here.
 
 **The second actor: `break-it-reviewer`, for every change to code or to the rules** — anything but
 `.md` under `apps/`, `packages/`, `scripts/` or `.github/` (tests-only included), anything under
@@ -56,7 +57,11 @@ Its findings are the PR's review comments. Every blocker and major is fixed at t
 the commit; only the gates the fix touches re-run, and a fix to a source file re-runs the red proofs
 that break it. A test reported GREEN with its rule broken is fixed first. A `tier` finding sends the
 task back to `/start` §2 as HIGH — `case-reviewer` and `/verify` included; a `stamp` finding to
-`/verify`. One review per change. Outside the task's scope → `docs/tasks/deferred.md`.
+`/verify`. **A runtime fix after the stamp** moves the digest, so git's pre-commit refuses the old
+stamp: run `/verify` at depth `delta`, stage `ship`, on the steps the checker then reports stale, and
+stamp again. `/ship` allows two such rounds — the merge of `main` and one review fix; a third needs the
+owner's `**Rounds:** ship <n> — owner, <reason>` line, and the checker holds the cap. One review per
+change. Outside the task's scope → `docs/tasks/deferred.md`.
 
 ## 3. Completeness, mistakes, cost
 

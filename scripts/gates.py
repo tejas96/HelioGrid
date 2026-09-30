@@ -118,20 +118,30 @@ def prd_values(repo):
     return found
 
 
-def task_blocks(repo):
-    """list of dicts: file, id, title, body."""
+def task_blocks(repo, staged=False):
+    """list of dicts: file, id, title, body — the ONE ticket parser (`/start` §1: a task runs from its
+    heading to its `---` or the next heading). staged: each ticket as the INDEX holds it (git's
+    GIT_INDEX_FILE honoured), so git's pre-commit and CI judge what the commit writes."""
+    if staged:
+        listed = subprocess.run(["git", "-C", repo, "ls-files", "--", f"{SPEC_DIR}/tasks/*.md"],
+                                capture_output=True, text=True, check=True).stdout.split()
+        files = [(os.path.relpath(f, SPEC_DIR), lambda f=f: subprocess.run(
+            ["git", "-C", repo, "show", f":{f}"], capture_output=True, text=True, check=True).stdout)
+                 for f in sorted(listed)]
+    else:
+        files = [(os.path.relpath(f, spec(repo)), lambda f=f: open(f, encoding="utf-8").read())
+                 for f in sorted(glob.glob(spec(repo, "tasks/*.md")))]
     blocks = []
-    for f in sorted(glob.glob(spec(repo, "tasks/*.md"))):
-        rel = os.path.relpath(f, spec(repo))
+    for rel, read in files:
         if rel.endswith("README.md"):
             continue
-        txt = open(f, encoding="utf-8").read()
         # Split on EVERY level-2/3 heading, keep only task headings: a block ends where the next
         # heading starts, so a trailing "## Laws" section is never read as the last task's body.
-        for part in re.split(r"\n#{2,3} ", txt)[1:]:
+        for part in re.split(r"\n#{2,3} ", read())[1:]:
             head = part.split("\n")[0].strip()
             if not head.startswith("T-"):
                 continue
+            part = re.split(r"^---", part, maxsplit=1, flags=re.M)[0]
             tid = head.split("·")[0].strip().strip("`")
             blocks.append({"file": rel, "id": tid, "title": head, "body": part})
     return blocks

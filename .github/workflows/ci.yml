@@ -152,9 +152,10 @@ jobs:
         run: |
           # git runs no commit hook for a cherry-pick, a revert, a rebase or a fast-forward, so the
           # stamp and the tier git's pre-commit reads are read again here, on the pull request's head
-          # as pushed. The tier is HIGH by path for the database, the API, a service, a screen and
-          # domain's money and permission rules; else it comes from the task the branch names
+          # as pushed. The tier is HIGH by path (M113); else it comes from the task the branch names
           # (<kind>/<t-id>-<slug>) and its ticket in the head's tree — no task, no Risk line, reads HIGH.
+          # The stamp must sit in that task's own section. The QA record lives in the author's .git,
+          # never here, so the record and its counts are held by git's pre-commit alone (M151).
           set -euo pipefail
           git fetch --no-tags --quiet origin "$BASE_REF"
           scratch="$(mktemp -d)"
@@ -169,12 +170,12 @@ jobs:
           echo "runtime digest: head $head · merge base $base · $BASE_REF $tip"
           if [ "$head" = "$base" ] || [ "$head" = "$tip" ]; then
             echo "no runtime change: no stamp needed"
-          elif git grep -qE "Verified:.*digest ${head}" "$HEAD_SHA" -- 'docs/tasks/*.md'; then
-            echo "stamped: digest $head"
           elif [ "$(in_tree "$HEAD_SHA" --risk "$HEAD_REF" "$base_sha")" = LOW ]; then
             echo "LOW-risk task on $HEAD_REF: no stamp needed"
+          elif in_tree "$HEAD_SHA" --stamped "$HEAD_REF" "$head"; then
+            :
           else
-            echo "::error::The runtime tree this pull request's head carries (digest $head) has no /verify stamp in a task file, and $HEAD_REF names no task whose ticket says Risk: LOW. Run /verify on it and commit the stamped ticket (M113)."
+            echo "::error::The runtime tree this pull request's head carries (digest $head) has no /verify stamp in the section of the task $HEAD_REF names, and that ticket does not say Risk: LOW. Run /verify on it and commit the stamped ticket (M113)."
             exit 1
           fi
       - uses: pnpm/action-setup@v4

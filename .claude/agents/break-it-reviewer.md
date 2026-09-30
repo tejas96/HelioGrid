@@ -55,6 +55,11 @@ Each new rule's test covers its edges — the limit, one either side, empty, zer
   already, a mechanism claimed that does not exist, a removed instruction with no new home.
 A finding names the package or file the code belongs in.
 
+**2b. Walk one real run.** For anything the diff makes run — a server, a job, a workflow, a script, a
+hook, a QA round — answer the ten questions of `.claude/agents/case-reviewer.md` check 7 over the
+DIFF, each with a file and line: start, together, waits, failure, bounds, lifetime, close, result,
+exact or judgement, repeats. An unanswered one is a finding (`class: "logic"`).
+
 **3. Check the recorded proofs, then prove two rules red yourself, your own way.** Where the task
 recorded proofs, run `scripts/break-and-run.sh --stale <T-id>`: every case or done-when line naming a
 test of a money, tenancy, permission or safety rule, and every gate the change adds or alters, has a
@@ -89,20 +94,15 @@ in the diff that no case names is a finding in itself — the author named no gu
 `**Risk:**` line is the author's claim; `CLAUDE.md` §3 defines the tiers. `LOW` is honest only when
 every changed runtime file is docs, config, or logic that nothing outside its package calls yet —
 run `git grep` for each new or changed export's callers and quote the empty result. The hook already
-reads HIGH by path for the database, the API and its client, a service, a screen and domain's money
-and permission rules (`M113`); you judge what it cannot — a `packages/ui`, `packages/i18n`,
-`packages/forms` or `packages/domain` change that a built screen or route already reaches is HIGH. A
-false `LOW` is a blocker (`class: "tier"`): the task skipped `case-reviewer` and `/verify` on it. No
-Risk line reads as HIGH. For a HIGH task the `**Verified:**` line was written by the
-author: read every `verdicts-*.jsonl` in `.git/heliogrid-harness/<T-id>/qa/` — the counts in the
-stamp must equal the verdict lines, every `pass` must carry `observed` and evidence, and a step the
-ticket's QA plan does not hold must not appear at all. A line with `"driver": "author"` must carry
-`"recorder": "record-proof.sh"`, a `log` named `<id>.log` that exists, and a `log_sha` equal to the
-first twelve characters of that log's `shasum`; every `observed` line must appear in that log, and
-the verdict must follow again from it — the expected pattern present, the reject pattern absent, the
-exit matching `expect_exit`, `tree_before` equal to `tree_after`. A line that fails any of these was
-not written by the recorder for that step (`M137`). The files are the current run's — an earlier
-run's sit under `qa/earlier/`. Any mismatch is a blocker.
+reads HIGH by path for every path `M113` lists; you judge what it cannot — a `packages/domain` change,
+or any other, that a built screen or route already reaches is HIGH. A false `LOW` is a blocker
+(`class: "tier"`): the task skipped `case-reviewer` and `/verify` on it. No Risk line reads as HIGH.
+For a HIGH task, run `bash scripts/verify-digest.sh --verdicts <T-id>` once: it checks every line's
+shape, the plan's own ids, the last verdicts, staleness, the round caps and every author line against
+its log (`M151`), and prints the counts the stamp must carry. Any `REFUSED` line is a blocker. You
+read what no machine decides: a `pass` whose evidence does not show its `expected`, a workaround inside
+a pass, and each `run.md` target against the diff. The files are the current run's — an earlier run's
+sit under `qa/earlier/`.
 
 Return ONLY a JSON array, one item per PR comment: `{class:"logic"|"architecture"|"green-when-broken"|"tier"|"stamp",
 file, line, input, detail, fix, severity:"blocker"|"major"|"minor"}`. At most twelve findings; a nit

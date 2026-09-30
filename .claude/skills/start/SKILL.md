@@ -112,8 +112,12 @@ a request or a job takes through the layers — which package does what, where s
 step writes and which reads.
 
 **`**QA plan:**` — the whole plan, now**: the steps a person would notice plus ONE `landing` per
-surface in the Scope, behaviour-level — what a person does and sees, the copy from `i18n`, never a
-selector or a seed. Walk `.claude/skills/verify/references/test-matrix.md`'s edge checklist as an
+surface the Scope reaches — `bash scripts/verify-digest.sh --surfaces --paths <each layer the Scope
+names>` prints them, the same table `/verify` §1 reads over the diff — behaviour-level: what a person
+does and sees, the copy from `i18n`, never a selector or a seed. A step names ONE platform, `ios` or
+`android`; only a `landing` may say `mobile`, meaning both. A landing the regression suite already
+drives reads `landing · suite <spec file>` and needs no agent. Every step's action is one its agent can
+DO and its `observe` one it can SEE (test-matrix §"What each agent can see and do"). Walk `.claude/skills/verify/references/test-matrix.md`'s edge checklist as an
 attack. The always-on API core (cross-tenant 404, no session refused, money reconciles) is in the plan
 when `apps/api`, `packages/db`, `packages/contracts` or `packages/data` is in the Scope. `expected` is
 a literal; where the rows are silent, the step RECORDS the value for a ruling. `severity` is set here:

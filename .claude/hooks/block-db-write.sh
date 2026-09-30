@@ -29,9 +29,11 @@ if ! printf '%s' "$cmd" | grep -qE "(${position}|${wrapper}|${shell_string})${cl
   exit 0
 fi
 
-# SQL verbs for psql; push and migrate for drizzle-kit, which write the schema past the
-# sha-locked runner.
-if printf '%s' "$cmd" | grep -qiE '\b(insert|update|delete|drop|truncate|alter|create|grant|revoke|push|migrate)\b'; then
+# SQL verbs for psql, and the words that open a write another way (MERGE, COPY, a CALL or DO block,
+# a READ WRITE transaction, a switched role, the read-only setting turned off); push and migrate for
+# drizzle-kit, which write the schema past the sha-locked runner. A word list, never a parser of SQL:
+# it over-blocks a read that names one of these words, which is the safe side.
+if printf '%s' "$cmd" | grep -qiE '\b(insert|update|delete|drop|truncate|alter|create|grant|revoke|merge|copy|call|do|push|migrate)\b|read[[:space:]]+write|transaction_read_only|session_authorization|set[[:space:]]+role|lo_(import|export)'; then
   echo "Blocked: agents do not write to the database. Schema -> 'pnpm db:migration:new', review the draft, then 'pnpm db:migrate'. Data -> go through the application." >&2
   exit 2
 fi

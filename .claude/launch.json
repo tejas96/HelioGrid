@@ -6,7 +6,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:3002 -sTCP:LISTEN | xargs -r kill -9; exec pnpm --filter @heliogrid/web dev"
+        "lsof -ti tcp:3002 -sTCP:LISTEN | xargs -r kill -9; WATCHPACK_POLLING=true exec pnpm --filter @heliogrid/web dev"
       ],
       "port": 3002
     },
@@ -24,7 +24,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; pnpm infra:token && exec pnpm --filter @heliogrid/api dev"
+        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; log=\"$(git rev-parse --git-common-dir)/heliogrid-harness/api.log\"; mkdir -p \"${log%/*}\"; : > \"$log\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api dev"
       ],
       "port": 8084
     },
@@ -33,7 +33,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
+        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; log=\"$(git rev-parse --git-common-dir)/heliogrid-harness/api.log\"; mkdir -p \"${log%/*}\"; : > \"$log\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
       ],
       "port": 8084
     },
