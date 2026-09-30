@@ -90,7 +90,8 @@ owns every server and device.** Prepare once, before round 1, while the owner is
    note each server id. The api writes its log to `$(git rev-parse --git-common-dir)/heliogrid-harness/api.log`.
 3. Boot and install each device `run.md` names: the simulator (`xcrun simctl boot <udid>`, then the
    simulator tool's `attach`, which asks for access on a device's first use) and the Pixel emulator
-   with its window, never `-no-window`. Open the app once on each, so both bundles are warm before an
+   with its window, never `-no-window`, writing its density into `run.md`
+   (`adb -s <serial> shell wm density`). Open the app once on each, so both bundles are warm before an
    agent's first step, and open the browser tab once.
 4. Save `git status --short > $R/status-at-dispatch`, and take the round's tree:
    `bash scripts/verify-digest.sh --tree`.
@@ -143,11 +144,16 @@ the final tree, and again only when the checker reports its line stale. Give it 
 observed value the surface agents recorded for the same quantity; it appends its own lines to
 `$R/verdicts-parity.jsonl`, one per plan step. A value mismatch is a blocker (Law 11).
 
-A screen is measured against its `HelioGrid-UX/` frames at 375 and 1536 — computed styles in the
-browser, the simulator at 375 — never judged by eye; a difference the code must keep is ruled in the
-ticket. A screen also reports its prose split (`F7-46`, review-only): the facts kept on screen, the
-teaching behind the ask, the ask opened by tap and by keyboard, closed by Escape and an outside tap,
-focus returned. A state that appears only on hover is a blocker.
+A screen is measured against its `HelioGrid-UX/` frames with `design-reviewer.md`'s measure list,
+never judged by eye: computed styles in the browser at 375 and 1536; on a phone, at the device's own
+width, the iOS tree's element frames in points and the `uiautomator` bounds divided by the density
+`run.md` names (dp) — heights, padding, gaps and sizes compared, never an x position — and the
+device's own safe-area insets (`F7-50`). A screen with a twin records the same parts' sizes on every
+platform, CSS px, pt and dp read as one unit, and `qa-parity` compares them: the two may be arranged
+differently (`F7-31`), but one part keeps one height, padding and gap. A difference the code must
+keep is ruled in the ticket. A screen also reports its prose split (`F7-46`, review-only): the facts
+kept on screen, the teaching behind the ask, the ask opened by tap and by keyboard, closed by Escape
+and an outside tap, focus returned. A state that appears only on hover is a blocker.
 
 ## 6. Triage, fix, re-run — capped
 

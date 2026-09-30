@@ -27,10 +27,30 @@ The prompt names the screen id. Then:
    crop each `[data-frame]`, and LOOK at every frame at 375 and 1536. A verdict without pixels is
    not a verdict. Headless Chrome can draw a `FactRows` group in its flowed form where a real
    browser shows pairs; confirm that one in the browser pane before calling it a fault.
-3. **Measure.** Per frame: page-level sideways scroll; text clipped in its box; a value wrapped
-   beside its label; a table row on two lines; a target under 44px; each region's left and right
-   x; sibling card heights; the x of every value column. Numbers that differ where they should
-   match are findings.
+3. **Measure — the measure list.** `/start` §4 and `/verify` §5 measure the built screen with this
+   same list, cited by that name. Per frame, in pixels from the render, never by eye; numbers that
+   differ where they should match are findings:
+   - **Fit** — page-level sideways scroll; text clipped in its box; a value wrapped beside its
+     label; a table row on two lines; a target under 44px.
+   - **Edges** — each region's left and right x; the x of every value column; sibling card heights.
+   - **Gaps** — the space between regions, and between siblings in one list or row: equal siblings
+     have equal gaps, and every gap is a step of the design system's spacing scale.
+   - **Rows** — in one row, the vertical centres of its icon, text and chip agree within 1px, and
+     text beside text shares a baseline.
+   - **Type** — the distinct font sizes and weights the frame uses, each one a role of the type
+     scale; a size no role names, or more sizes than the frame's roles, is a finding.
+   - **Icons** — one size per context and one stroke weight (`F7-19`); an icon beside text is centred
+     on that text.
+   - **Phone** — at 375, nothing drawn under the frame's status bar and camera and nothing
+     interactive in its home-indicator band (`F7-50`); a field that opens the keyboard still visible
+     above it. The render has no device insets: judge the bars the frame draws; the device's own
+     insets are `/verify`'s.
+   - **Other screens** — every shared part (a card, a row, a top bar, a field) against the same part
+     on one screen already drawn in `HelioGrid-UX/`: the same heights, padding and gaps. A part that
+     looks different on two screens is a finding against one of them — name which.
+   - **Languages** — a frame in Hindi or Marathi, where the export has one: nothing clipped or
+     wrapped that the English frame keeps on one line. Where it has none, `not checked`, naming the
+     three longest labels, which `/start` §4 writes into the screen's `layout` steps.
 4. **Read the record against the frames.** Every line and count the record quotes equals the
    frame's. A PASS the author wrote is a claim, not evidence.
 5. **Walk it as the user.** What is the one job? Does the first screenful answer it? Where would a
@@ -44,6 +64,9 @@ The prompt names the screen id. Then:
 **Report** — short, ranked, most harmful first:
 
 - `BLOCKER` — wrong or missing product fact, a broken frame, a law of `docs/ux/claude-design-context.md` broken.
+- `MEASURE` — a measured difference from the measure list: a gap off the spacing scale, two
+  siblings unequal, a size no role names. `/start` §4 writes each into the ticket as a difference
+  from the export, built to the design system; it needs no acceptance, and the owner sees it at the go.
 - `BETTER` — it works, and this would make it clearly better; say how.
 - `FINE` — what you checked and found sound, one line each, so silence is never read as a pass.
 
