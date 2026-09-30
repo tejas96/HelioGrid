@@ -20,6 +20,11 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
   reads another's data or the developer's, and no count or empty state is asserted.
 - Never a retry: a flake is a bug and is fixed.
+- Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
+  landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
+- The web's network dropped or a request aborted is driven here and nowhere else —
+  `page.context().setOffline(true)`, `page.route(<path>, (route) => route.abort())` (`F8-36`); a QA
+  agent cannot drop the browser pane's network.
 
 ## Commands
 

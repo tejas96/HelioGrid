@@ -37,7 +37,8 @@ against this skill, never a reason to run `full` on everything.
 ## 2. Execution detail — `$R/run.md`, exact, not reviewed again
 
 Per step: the seed it needs, the sign-in it reuses, the `wire` calls it may make (method, path,
-status, count, body). At most ten steps per dispatch, six on the phone; each surface signs in at most
+status, count, body). Per surface: the routes or screens the change reaches — the probes' targets
+(`references/test-matrix.md` §"Probes") — and the depth, which sets how many. At most ten steps per dispatch, six on the phone; each surface signs in at most
 twice; a shared fact is asserted on ONE surface, the other asserting only its landing.
 
 **Each surface its own account and its own company.** A sign-out ends every session of that person
@@ -101,7 +102,8 @@ owns every server and device.** Prepare once, before round 1, while the owner is
    (`e2e-web`) and never here; no agent re-drives a flow the suite drives.
 
 **Dispatch** one agent per surface — `qa-api`, `qa-web`, `qa-mobile` for iOS and `qa-mobile` for
-Android — in ONE message, in the background. Each prompt names its steps, `run.md`, `$R`, the round,
+Android — in ONE message, in the background, and write one `dispatched <surface> <UTC time>` line per
+agent into `$R/run.md` (`date -u +%FT%TZ`): the checker's `wall:` runs from it (`M151`). Each prompt names its steps, `run.md`, `$R`, the round,
 the stage (`verify`), the tree, every server id, its device (udid or serial), its own account, and says
 **"servers and devices are up; never start, boot or stop one."** Tell the owner the run is
 watch-only: a click in the pane, the simulator or the emulator lands inside an agent's step; if they
@@ -180,8 +182,9 @@ lists every author proof CURRENT before the stamp — a proof goes stale when an
 
 Whoever started a thing stops it. Every agent has returned or been stopped, and every `Monitor` is
 stopped. `preview_stop` each server, closing its tab — a reused tab's old console errors read as the
-current page's. Shut each device the run booted: `xcrun simctl shutdown <udid>`, `adb -s <serial> emu
-kill`. Then prove it, each command printing nothing: `lsof -nP -iTCP:3002 -iTCP:8084 -iTCP:8081 -sTCP:LISTEN -t` (listeners only: the browser pane keeps client connections open) ·
+current page's. Turn the network back on for each Android device the run used, whatever a step left —
+`adb -s <serial> shell cmd connectivity airplane-mode disable` — then shut each device the run booted:
+`xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`. Then prove it, each command printing nothing: `lsof -nP -iTCP:3002 -iTCP:8084 -iTCP:8081 -sTCP:LISTEN -t` (listeners only: the browser pane keeps client connections open) ·
 `pgrep -f '@heliogrid/worker'` · `xcrun simctl list devices booted | grep -F <each udid the run
 booted>` · `adb devices | grep emulator` · `git status --short | diff - $R/status-at-dispatch`; and
 `bash scripts/verify-digest.sh --tree` prints the last round's tree.

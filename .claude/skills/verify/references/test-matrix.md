@@ -14,7 +14,7 @@ Assume the implementation is wrong until a step proves otherwise.
 
 - **The job itself** — the whole designed flow with valid input; every success state renders (the
   confirmation, the populated list, the receipt); the primary number is right and carries its
-  provenance tier; EN, then HI without clipping (allow 20–30% expansion).
+  provenance tier; EN, then HI and MR without clipping (allow 20–30% expansion).
 - **Volume and bounds** — zero rows, one row, realistic volume (200 leads, a 40-line BOM, 50 members);
   first page, last page, the exact page boundary; a value at its limit, one below, one above;
   max-length strings, Devanagari above all (`AppText` run-splitting on mobile); a timer at exactly 0
@@ -43,9 +43,40 @@ Assume the implementation is wrong until a step proves otherwise.
   every locale.
 
 **The always-on API core** — a cross-tenant read is 404 · an unauthenticated call to a protected
-route is 401 · money reconciles — is in the plan when `apps/api`, `packages/db`, `packages/contracts`
-or `packages/data` is in the Scope, proven ON THE WIRE over seeded rows, never by a unit test at the
-repository.
+route is 401 · money reconciles · every role against every action on the changed routes, a role
+without the capability refused (deny by default) · the two auth cookies carry the flags
+`apps/api/src/common/auth/cookies.ts` sets (`HttpOnly`, `SameSite=Lax`, `Secure` only in production,
+`hg_session` on path `/auth`, `hg_token` on `/`), read there, never from memory — is in the plan when
+`apps/api`, `packages/db`, `packages/contracts` or `packages/data` is in the Scope, proven ON THE WIRE
+over seeded rows, never by a unit test at the repository.
+
+## Probes — the steps are the floor, not the ceiling
+
+After its last step, each surface agent probes the change: at most **8** probes on a `full` run and
+**3** on a `delta` round, each aimed at a route or screen `run.md` names as changed on its surface.
+A probe is picked from the edge checklist above — a double tap, back then resubmit, bad and absurd
+input, the longest Devanagari the field takes, the language switched mid-flow, an expired session, a
+role without the capability, the network dropped where a row below drives it — and tries to break
+what the step list did not ask about. Each writes ONE `P<n>` line (`P1`, `P2`, …) with its `target`:
+`clean`, or `finding` with the observed value; a finding is triaged as a failure (`/verify` §6), and
+one outside the task's scope carries the `deferred.md` row it wrote. A probe spends no code cap the
+plan counted and writes only into the surface's own company.
+
+## A server error fails the step
+
+The api writes one JSON line per request to its log. `qa-web` and `qa-mobile` mark it before each step
+and read it after:
+
+```bash
+bash scripts/verify-digest.sh --api-errors                           # before: prints mark: <lines>@<log id>
+bash scripts/verify-digest.sh --api-errors <mark> <web|ios|android>  # after: the mark as printed
+```
+
+The second prints every request past the mark that answered 5xx or logged an error — method, path,
+status, message and the client — for your own surface and for any line it cannot place. A printed line
+fails the step, even when the screen looks right; its line goes into `observed`. `the log restarted`
+means the api restarted mid-step: say so in `observed`. Exit 2 is a wrong argument — the surface is
+one of the three words, the mark exactly as printed — never a clean read.
 
 ## Signing in during a run
 
@@ -71,15 +102,17 @@ out. The API must be running for either path.
 ## What each agent can see and do, and recording a run
 
 A step's `observe` names the kind of fact that decides it, and its action is something an agent can
-DO: only the agent whose row lists both may run the step. An action no row can drive — the network
-dropped, the app killed mid-action, two devices at once, until a command for it is named here — is a
-case proven another way or `none`, never a QA step.
+DO: only the agent whose row lists both may run the step. An action no row can drive — the iPhone's
+network dropped, two browsers or two phones in one step, until a command for it is named here — is a
+case proven another way or `none`, never a QA step. The web's network dropped or a request aborted is
+the author's: a spec in `tests/e2e/web/` (`page.context().setOffline(true)`,
+`page.route(<path>, (route) => route.abort())`), run through `scripts/record-proof.sh`.
 
 | agent | observe kinds it can read (SEE) | actions it can take (DRIVE) | it cannot |
 |---|---|---|---|
-| `qa-web` | `a11y-text` (`read_page`, `find`) · `computed-style` and `dom-value` (`javascript_tool`) · `console` · `network`: a request's method, URL, status, the body it sent and the response body (`read_network_requests`) · `log` (the api log file) · `screenshot`, for what only vision shows | open a route, click, type, fill a form, key presses, resize to 375 or 1536, a `fetch` from the page (the sign-out) | see a request's HEADERS or a database row · drop the network · open a second browser |
+| `qa-web` | `a11y-text` (`read_page`, `find`) · `computed-style` and `dom-value` (`javascript_tool`) · `console` · `network`: a request's method, URL, status, the body it sent and the response body (`read_network_requests`) · `log` (the api log file) · `screenshot`, for what only vision shows | open a route, click, type, fill a form, key presses, resize to 375 or 1536, a `fetch` from the page (the sign-out) | see a request's HEADERS or a database row · drop the network (the author's spec does) · open a second browser |
 | `qa-api` (the api and the worker) | `response`: status line, headers and body (`curl -i`), and the request it sent · `db-scalar`: one read-only value as `qa_readonly`, tenant pinned · `log`: the api log file and the worker's (`preview_logs`) | any request with any body, header or cookie (`curl`) · the seed command a step names (`/verify` §2) | see a rendered page · write a row by hand · start a workflow the api does not start |
-| `qa-mobile` | `ios-tree`: `idb ui describe-all --udid <udid>`, piped to `grep` for the step's words · `android-tree`: `uiautomator` text · `screenshot`: one shrunk frame per step · `logcat` · `log` (the api log file) | tap, swipe, type, the hardware buttons, a deep link (the simulator tool; `adb shell input` on Android) · a cold relaunch · the iOS sign-out (`xcrun simctl keychain <udid> reset`) | see a request's headers or body, or a database row · drop the network |
+| `qa-mobile` | `ios-tree`: `idb ui describe-all --udid <udid>`, piped to `grep` for the step's words · `android-tree`: `uiautomator` text · `screenshot`: one shrunk frame per step · `logcat` · `log` (the api log file) | tap, swipe, type, the hardware buttons, a deep link (the simulator tool; `adb shell input` on Android) · a cold relaunch · the iOS sign-out (`xcrun simctl keychain <udid> reset`) · Android's network off and on (`adb -s <serial> shell cmd connectivity airplane-mode enable`, then `disable` in the same step) · the app killed mid-action (`xcrun simctl terminate <udid> com.heliogrid.app`, `adb -s <serial> shell am force-stop com.heliogrid.app`) | see a request's headers or body, or a database row · drop the iPhone's network |
 | the author, through `scripts/record-proof.sh` | `recorder`: a command's exit, the expected text present and the rejected text absent in its output | any one command, with a time cap | anything the command does not print |
 | `qa-parity` | `code` of both platforms (`Read`, `Grep`), and the values the surface agents recorded | nothing runs | anything running |
 

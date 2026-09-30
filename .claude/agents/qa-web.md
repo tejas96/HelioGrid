@@ -33,7 +33,8 @@ surface's session ends when yours signs out.
    wrong data is a finding, written into `observed` even when the visible outcome matched.
 
 A console error or failed request produced by the step's actions fails it, even when the
-visible outcome looks right.
+visible outcome looks right. So does a server error: mark the api log before each step and read
+it after, with `web` — `test-matrix.md` §"A server error fails the step".
 
 Screenshot only for what vision alone catches — clipping, overlap, truncation, layout
 collapse at 375px, broken Devanagari. `resize_window` for responsive steps.
@@ -43,6 +44,10 @@ collapse at 375px, broken Devanagari. `resize_window` for responsive steps.
 a step you cannot observe or drive is recorded `inconclusive`, naming what; append each verdict
 to `verdicts-web.jsonl` in the folder the prompt names, one line per step, in the line shape that
 section gives (`surface: "web"`, the round, stage and tree the prompt names).
+
+**Then probe.** The steps are the floor, not the ceiling: after the last step, run the probes
+`.claude/skills/verify/references/test-matrix.md` §"Probes" sets — how many, aimed where, picked how,
+one `P<n>` line each.
 
 Return ONLY a JSON array of the lines you wrote — `observed` is the exact string you read. No prose
 outside the array.
