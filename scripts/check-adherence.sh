@@ -52,7 +52,9 @@ PRUNE=(-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/.next/*
 #
 #   * name  — `*.test.ts`. `*.spec.*` and `__tests__/` are the competing conventions; allowing
 #             any of them means every glob in this repo has to match three shapes and one day
-#             misses half the suite.
+#             misses half the suite. The one exception is the regression suite's Playwright specs,
+#             exactly where its two runners read them — `tests/e2e/web/*.spec.ts` and
+#             `tests/e2e/components/*.spec.tsx` — so a spec anywhere else can never sit unrun.
 #   * place — `<package>/tests/**`, never inside `src/`. Inside src the package's own build
 #             compiles tests into `dist/`, which then ships.
 #   * scope — the logic packages only. Frontend is proven by running it, `packages/data` by
@@ -62,7 +64,8 @@ UNIT_TEST_PACKAGES=$(python3 -c 'import json;print(" ".join(json.load(open("pack
 [ -n "$UNIT_TEST_PACKAGES" ] || { echo 'check-adherence: packages/config/unit-test-packages.json names no package'; exit 1; }
 
 bad_name=$(
-  find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" 2>/dev/null
+  find $SRC_DIRS -type f -name '*.spec.*' "${PRUNE[@]}" \
+    -not -path 'tests/e2e/web/*.spec.ts' -not -path 'tests/e2e/components/*.spec.tsx' 2>/dev/null
   find $SRC_DIRS -type d \( -name '__tests__' -o -name '__mocks__' \) "${PRUNE[@]}" 2>/dev/null
   find . -maxdepth 1 \( -type f -name '*.spec.*' \
                      -o -type d \( -name '__tests__' -o -name '__mocks__' \) \) 2>/dev/null

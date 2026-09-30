@@ -29,6 +29,7 @@ jobs:
       mobile_js: ${{ steps.lanes.outputs.mobile_js }}
       android: ${{ steps.lanes.outputs.android }}
       ios: ${{ steps.lanes.outputs.ios }}
+      e2e_web: ${{ steps.lanes.outputs.e2e_web }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,6 +75,9 @@ jobs:
           # package.json (autolinking) or the lockfile (a native dependency's version).
           lane android '^(apps/mobile/(android/|package\.json$|app\.json$|react-native\.config\.js$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
           lane ios '^(apps/mobile/(ios/|package\.json$|app\.json$|react-native\.config\.js$|Gemfile$|Gemfile\.lock$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
+          # The web regression suite: what the web and the api serve, every package either imports,
+          # the suite itself, and the files that shape the build.
+          lane e2e_web '^(apps/(web|api)/|packages/|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
 
   quality:
     name: quality
@@ -237,6 +241,86 @@ jobs:
         with:
           name: openapi
           path: packages/contracts/openapi/openapi.json
+
+  # The regression suite's web half (tests/e2e): every shipped route driven in a real browser
+  # against the BUILT api and web, then the component suite. Playwright's webServer starts both
+  # servers and this job starts none, so one api holds 8084. The phone half runs in /verify — CI
+  # has no simulator. retries: 0; a failure uploads its traces and the api's log to replay it.
+  e2e-web:
+    name: e2e-web
+    needs: changes
+    if: needs.changes.outputs.e2e_web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        # The same pinned image the quality lane runs.
+        image: postgres:16@sha256:33f923b05f64ca54ac4401c01126a6b92afe839a0aa0a52bc5aeb5cc958e5f20
+        env:
+          POSTGRES_USER: heliogrid
+          POSTGRES_PASSWORD: heliogrid
+          POSTGRES_DB: heliogrid_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U heliogrid"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # What the api's boot validates, as the quality lane sets it; the development message
+      # delivery writes each sign-in code to the api's log, where the suite reads it.
+      DATABASE_URL: postgres://app_runtime:app_runtime@localhost:5432/heliogrid_ci
+      DATABASE_ADMIN_URL: postgres://app_admin:app_admin@localhost:5432/heliogrid_ci
+      TEMPORAL_ADDRESS: 127.0.0.1:1
+      TEMPORAL_NAMESPACE: heliogrid
+      TEMPORAL_TLS_CA_FILE: /dev/null
+      TEMPORAL_TLS_CERT_FILE: /dev/null
+      TEMPORAL_TLS_KEY_FILE: /dev/null
+      TEMPORAL_AUTH_TOKEN_FILE: /dev/null
+      DEV_OTP_PHONE: "+919999999999"
+      DEV_OTP_CODE: "000000"
+      AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
+      - run: pnpm install --frozen-lockfile
+      - name: Cluster roles and schema grants (infra/postgres/init)
+        env:
+          SUPERUSER_URL: postgres://heliogrid:heliogrid@localhost:5432/heliogrid_ci
+        run: |
+          psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/01-roles.sql
+          psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/02-databases.sql
+      - name: Apply migrations (CI database)
+        run: pnpm --filter @heliogrid/db migrate
+      - name: Build the api, the web and what the suite imports
+        run: pnpm turbo build --filter=@heliogrid/api --filter=@heliogrid/web --filter='@heliogrid/e2e^...'
+      - name: Install Chromium
+        run: pnpm --filter @heliogrid/e2e exec playwright install --with-deps chromium
+      - name: Web flows (tests/e2e/web)
+        run: pnpm --filter @heliogrid/e2e test:web
+      - name: Component tests (tests/e2e/components)
+        if: success() || failure()
+        run: pnpm --filter @heliogrid/e2e test:ct
+      - name: Keep the traces and the api's log of a failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-web-traces
+          path: |
+            tests/e2e/test-results/
+            tests/e2e/playwright-report/
+            .git/heliogrid-harness/api.log
+          include-hidden-files: true
+          retention-days: 14
 
   mobile-js:
     name: mobile-js

@@ -1,0 +1,28 @@
+# Company signup's last step: a verified number with no company is asked for three details, and fills them.
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${YOUR_COMPANY}
+    timeout: 15000
+# Each empty field shows its example words, and is tapped by them: a label and its field share their
+# name. Return closes the keyboard after each answer — while it is up, the form spends the next tap
+# on closing it, and that tap never reaches the next field.
+- tapOn: ${COMPANY_NAME_EXAMPLE}
+- waitForAnimationToEnd
+- inputText: ${COMPANY}
+- pressKey: Enter
+- tapOn: ${YOUR_NAME_EXAMPLE}
+- waitForAnimationToEnd
+- inputText: ${OWNER}
+- pressKey: Enter
+- scrollUntilVisible:
+    element: ${CITY_EXAMPLE}
+- tapOn: ${CITY_EXAMPLE}
+- waitForAnimationToEnd
+- inputText: ${CITY_EXAMPLE}
+- pressKey: Enter
+# The form stops here, filled: pressing Create company inside a Maestro flow never reaches the api on
+# iOS, while the same tap on a still screen does, so creating the company and the home it opens are
+# driven by qa-mobile (T-FPLAT-079, R9; gate 33's one held screen).
+- scrollUntilVisible:
+    element: ${CREATE_COMPANY}

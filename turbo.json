@@ -114,6 +114,11 @@
           "allow": ["app-invariants", "contracts", "domain", "db", "env", "config"]
         }
       },
+      "app-e2e": {
+        "dependencies": {
+          "allow": ["app-e2e", "contracts", "domain", "i18n", "theme", "ui", "config"]
+        }
+      },
       "env": {
         "dependencies": {
           "allow": ["env", "config"]

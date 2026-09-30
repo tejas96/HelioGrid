@@ -1,0 +1,25 @@
+# Enters the code `run.sh` read from the api log and verifies it. Not a screen: a step two flows share.
+# Maestro types faster than the boxes move focus, and a key typed in one go — a paste included — can
+# be lost, so each box is tapped and given its own digit. The boxes are named after the code's label
+# on both platforms.
+appId: com.heliogrid.app
+---
+- evalScript: ${output.box = 0}
+- repeat:
+    times: ${CODE.length}
+    commands:
+      - tapOn: "${CODE_LABEL}.*${output.box + 1}"
+      - waitForAnimationToEnd
+      - inputText: ${CODE[output.box]}
+      - evalScript: ${output.box = output.box + 1}
+- tapOn: ${VERIFY_AND_SIGN_IN}
+# Signing in asks the system for notification permission, and the system's own prompt covers the
+# next screen until it is answered; it is refused, as a person keeping their privacy would. The
+# words are the operating system's, not HelioGrid's.
+- extendedWaitUntil:
+    visible: "Don.t [Aa]llow"
+    timeout: 10000
+    optional: true
+- tapOn:
+    text: "Don.t [Aa]llow"
+    optional: true

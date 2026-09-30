@@ -1,0 +1,16 @@
+# The door: a new number asks for its code and the code step opens. `run.sh` then reads the code
+# the api sent and enters it with steps/enter-code.yaml — Maestro cannot read a file mid-flow.
+appId: com.heliogrid.app
+---
+# A field is the SECOND element its label's words name: the label comes first, the field after it,
+# and iOS may append `, <value>` to a field's name.
+- tapOn:
+    text: "${MOBILE_NUMBER}(, .*)?"
+    index: 1
+# A key typed before the keyboard is up is lost, so the tap settles first.
+- waitForAnimationToEnd
+- inputText: ${PHONE}
+- tapOn: ${SEND_CODE}
+- extendedWaitUntil:
+    visible: ${ENTER_THE_CODE}
+    timeout: 15000

@@ -1424,6 +1424,75 @@ No brand, route, table, error code or contract enum is added.
 - `F7-49`'s containers → `T-FPLAT-078`
 
 ---
+### T-FPLAT-079 · The regression suite — every shipped web route and phone screen keeps a flow that runs on every change
+**Type:** engine · **Tier:** P0
+**Status:** shipped (#204)
+**Why:** No end-to-end test exists (no Playwright, Maestro or Detox anywhere; CI runs none), so a change that breaks a shipped screen is caught only if a QA agent happens to drive it again, at a price in tokens, or by a person. `F7-43` item 12 (no orphan screens), item 1 (no horizontal scroll at both viewports) and `F3-18` (rendered in a non-Latin launch language) are checked today by eye, once, and never again after the screen ships.
+**PRD rows:** F7-43 (P0), F3-18 (P0)
+**Design:** none — no screen.
+**Chosen by the owner** as the next task (the QA harness plan's PR B, after PR A #203), ahead of `T-FPLAT-078`, which is then tested with this task's component tests.
+**Risk:** LOW — no served file changes: a new test package under `tests/`, one CI job, one gate, one adherence exemption and harness docs. The lockfile moves the runtime digest, and no path the change touches is HIGH by path (`scripts/verify-digest.sh:56`); ruled LOW by the owner (plan V1).
+**Scope:** **In** —
+- **(1) `tests/e2e` = `@heliogrid/e2e`**, a workspace package (`pnpm-workspace.yaml` already matches `tests/*`) with its own `CLAUDE.md`, `turbo.json` tag `app-e2e` (allowed: `ui`, `theme`, `i18n`, `contracts`, `domain`, `config`), `playwright.config.ts` (web) and `playwright-ct.config.ts` (components). Dependencies through `pnpm add -D` only: `@playwright/test` and `@playwright/experimental-ct-react`, the CT package pinned exact (R12).
+- **(2) web flows**, `web/<route>.spec.ts`, each at 375 and 1536: `root.spec.ts` (`/` → `/home`, signed out → the door), `login.spec.ts` (a wrong code shows its error; a new number's code signs in and is taken to set up its company; the door switches EN → HI → MR, each language's words read from `packages/i18n`), `company-signup.spec.ts` (a new number through the three steps lands on home), `home.spec.ts` (signed out → the door; with a company, home opens); no horizontal scroll on any of them. Playwright's `webServer` starts the BUILT api and web and is the one starter (R1); the api's output goes to `.git/heliogrid-harness/api.log`, the file the `api` launch config already writes, and a helper reads the newest `via sms` line for its own number.
+- **(3) component tests**, `components/<Name>.spec.tsx`, mounting the real `@heliogrid/ui` index with the app's stylesheets in `apps/web/app/layout.tsx`'s order: `Card` and `Block` in their error state (the internal `RetryButton` they render: a `button` named by the given words, `onRetry` called, no button without words, its fill the ground's) and `Button` `secondary` `md` (44px tall). These three mount FIRST; one that will not mount stops the task (R8).
+- **(4) phone flows**, `mobile/<screen>.yaml` for `boot`, `login` and `company-signup` (to the filled form), `mobile/steps/enter-code.yaml`, `support/mobile-cli.ts` (the words from `packages/i18n`, a fresh number, the code from the api log) and `mobile/run.sh` (about 40 lines): Maestro cannot read a file mid-flow, so it runs the request-code half, reads the code, and runs the rest with `-e CODE=…`; one device per call (Ruled below). The phone's `home` is held by gate 33 (Ruled below).
+- **(5) CI:** job `e2e-web`, gated by a new `changes` lane (web, api and every package they import, `tests/e2e`, the root files, `ci.yml`); postgres, roles and migrate as `quality` does; builds, installs Chromium, runs the web and component suites; `retries: 0`, traces kept on failure and uploaded as an artifact (R5).
+- **(6) the coverage gate** — `scripts/gates.py` gate 33, by file NAME only: every `apps/web/app/**/page.{tsx,ts,jsx,js}` has `tests/e2e/web/<route>.spec.ts` (route groups `(…)` dropped, the rest joined by `-`, `/` → `root`), and every `apps/mobile/src/screens/**/` folder holding a `*Screen.tsx` has `tests/e2e/mobile/<name>.yaml`, joined the same (`shared/` holds none) (W10), except a screen on its held list — a held screen that is gone or has its flow fails the gate; adding one is review's · `.claude/mechanisms.md` row `M152`.
+- **(7) check 1 of `scripts/check-adherence.sh`** lets `tests/e2e/web/*.spec.ts` and `tests/e2e/components/*.spec.tsx` exist — exactly where the two runners read — and no other `*.spec.*` · its `mechanisms.md` row `M70`.
+- **(8) docs:** `tests/e2e/CLAUDE.md` · `CLAUDE.md` §5 (the component tests' port `3100`) · `docs/tasks/deferred.md` (two rows found here) · `.claude/rules/testing.md` (the e2e layer proves shipped flows keep working; it never replaces the QA agents or `tests/invariants/`) · `docs/engineering/architecture.md` §1 and a §2 block for `tests/e2e` · `.gitignore` `playwright/.cache/` (V15) · `.claude/skills/verify/SKILL.md` §3 (the mobile suite once per `/verify`, and only this task's own component specs, through `scripts/record-proof.sh`; the web suite and the full component suite in CI only) · `.claude/skills/start/SKILL.md` §3 (a route or screen task adds its flow as a done-when line; gate 33 holds it).
+
+**Out** — sign out returns to the door: no sign-out exists on either platform yet (`git grep -niE "signout|sign out" -- apps` is empty), so its flow joins the task that adds it · the phone's company creation and `home` → `qa-mobile` (Ruled below) · probes, built-mode QA, the api-log error check, Marathi in the QA matrix and accessibility (`axe`) → PR C · the release mobile builds → PR C · making `e2e-web` a required check → the owner, in GitHub's branch settings (W3) · the mobile suite in CI → never (D2: CI has no simulator) · `T-FPLAT-078`'s own component specs → that task.
+**Size** — about 40 files, about 1,300 lines; no migration, no contract, no served file. The lockfile's `next` entry names `@playwright/test` as the optional peer it now finds in the workspace; no package `apps/web` installs changes.
+**Placement:**
+
+| fact | owner | why | how others reach it | guard |
+|---|---|---|---|---|
+| the shipped flows as specs and Maestro flows | `tests/e2e` (new, `architecture.md` §2 block written here) | a flow crosses web, api and the database; no package owns it, and `tests/invariants` proves system properties, not flows | `pnpm --filter @heliogrid/e2e test`, `test:ct`, `test:mobile`; CI job `e2e-web` | gate 33 (`M152`); `turbo boundaries` (`app-e2e`) |
+| the code's length a spec types and reads | `packages/domain` (exists: `OTP_LENGTH`) | a policy number is `domain`'s | `support/api-log.ts`, `door.ts` and `mobile-cli.ts` import it | none new |
+| the words a spec expects | `packages/i18n` (exists: `SIGN_IN`, `COMPANY_SIGNUP`, `createTranslator`) | copy is unspeakable outside `i18n` (`CLAUDE.md` §8) | the spec imports them | none new — a typed English literal is `break-it-reviewer`'s to refuse |
+| a colour a component test expects | `packages/theme` (exists: `tokens.css`) | a visual value is `theme`'s | the spec resolves the token in the page and compares | none new — said out loud |
+| a new number's code | the api log (`message-delivery.development.ts:34`, `.git/heliogrid-harness/api.log`) | the one place a development code appears | `tests/e2e/support` reads it | none — C2 |
+| route → spec and screen → flow names | `scripts/gates.py` gate 33 | an exact fact a machine decides | `pnpm check:docs` | `M152`, proven red |
+
+**Data model:** none. **Contract:** none.
+**Depends on:** T-FPLAT-077 (shipped, #202 — the `RetryButton`, `Card` and `Block` the component tests mount)
+**Ruled at `/start`:**
+- **`RetryButton` is mounted through `Card` and `Block`**, its two real callers: it is internal (`packages/ui/src/components/Button/index.ts` exports only `Button`), a deep import breaks the index rule, and exporting it would change `packages/ui`, which is HIGH by path. `Button` is the third mount.
+- **Every web flow signs in with its own fresh `+91` number**, never the development number: that number's session binds to whichever company it holds (`landmines.md`, apps/api), and its wrong-code count is the developer's own. So no spec depends on what the database already holds (R11).
+- **The specs keep Playwright's `*.spec.ts` name** (plan B6, W10): check 1 exempts `tests/e2e/` alone, so a unit test still has one name.
+- **A new number signs in to company setup, not home** (found at build): the web's gate sends a person with no company to `/company-signup` (`apps/web/features/auth/SessionGate.tsx`, `landingFor`), so `login.spec.ts` expects that, and a spec needing a company creates one first (`support/door.ts` `createCompany`).
+- **The phone's `home` is held by gate 33** (owner, option 1, after two capped tries): pressing *Create company* inside a Maestro flow on the iOS simulator never reaches the api, while the same tap on a still screen does; `company-signup.yaml` stops at the filled form, the gate names `home` on its held list with that reason, and `deferred.md` carries the fix. The split itself holds: the code is read from the log and entered on both phones.
+- **The configs read no environment**: `forbidOnly` is always on and a running server is always reused — CI's ports are free, so CI starts both — since `process.env` is `packages/env`'s alone and a reader there would make this task HIGH.
+- **The phones run one after the other** (owner, option 1, after three runs with both at once each lost a phone's first keys): `run.sh` takes one device, so the unstable way cannot be run.
+- **Maestro's analytics are off** in `run.sh` (`MAESTRO_CLI_NO_ANALYTICS`), and the system's notification prompt after sign-in is refused, as a person keeping their privacy would.
+
+**Cases:**
+- **C1** · a spec passes or fails on another spec's or a developer's data in the one shared database → its own fresh number and its own company; no count and no empty-state assertion → `recorded` — `tests/e2e/playwright.config.ts` green twice running on the same database
+- **C2** · the helper reads another number's code, or an older one → it takes the newest `via sms` line for its own number, written after its own request → `recorded` — `tests/e2e/support/api-log.ts`, the suite green with its workers in parallel
+- **C3** · two apis on 8084 (R1) → `webServer` is the one starter, and a server already listening is reused, never started twice; a reused api that writes no log is named as the fault (`support/api-log.ts`) → owed on the PR's `e2e-web` run — its log shows one api start
+- **C4** · a flake is retried away (R5) → `retries: 0`, the trace uploaded on failure → `retries: 0` in both configs; none — the upload runs only on a red CI run, and forcing one pushes a broken commit into the PR, so its first real failure proves it
+- **C5** · a spec that tests nothing stays green → one flow broken on purpose (the web door's *Send code* button given another key's words in `apps/web/features/auth/components/PhoneStep.tsx`; changing the catalog would change the spec's words too) and seen to fail → `recorded` — `tests/e2e/web/login.spec.ts`
+- **C6** · a component test measures a copy, or the component without the app's CSS → it mounts the `@heliogrid/ui` index with `layout.tsx`'s three stylesheets in their order → `Card.spec.tsx`, `Block.spec.tsx`, `Button.spec.tsx`; one that will not mount stops the task (R8)
+- **C7** · a new route or screen ships with no flow (D9) — a nested one, or a `page.ts` — or the held list keeps a screen that is gone or has its flow → gate 33 → `recorded M152` — `scripts/gates.py`, red with a web spec removed, with a phone flow removed, with `login` and a missing screen held, and on a fixture tree whose nested route and screen are joined by `-` (red with the join broken; firing with both flows missing)
+- **C8** · check 1's exemption lets `*.spec.*` in anywhere, or lets a spec sit where no runner reads it → it names the two runner folders alone → `recorded M70` — `scripts/check-adherence.sh`, red with a `*.spec.ts` under `packages/` and under `tests/e2e/support/`
+- **C9** · a run dirties the tree (`playwright/.cache`, reports, traces) → `.gitignore` → `recorded` — `git status --short` empty after a CT run
+- **C10** · a Hindi or Marathi door breaks and nobody looks again (`F3-18`) → `login.spec.ts` switches EN → HI → MR and finds each language's own words at 375 with no horizontal scroll → `login.spec.ts`
+- **C11** · the Maestro split (request, read the log, enter) does not hold (R9) → it holds on both phones; the step it could not take — pressing *Create company* — stays with `qa-mobile` (Ruled above) → `recorded` — `tests/e2e/mobile/run.sh`
+- **C12** · iOS and Android together are unstable → they are: under two phones' load a field loses the first keys typed, on either phone, in three runs; so `/verify` runs one device after the other (owner, option 1; the plan's own fallback) → `recorded` — `tests/e2e/mobile/run.sh`, once per device
+- **C14** · Maestro types faster than a phone field takes keys, so a number or a code arrives short → the flow waits for the tap to settle before typing, gives each code box its own digit, and closes the keyboard with Return before the next tap → C11's run
+- **C13** · a docs-only PR pays for the job, or its failure does not block a merge (W3) → the `changes` lane; the owner makes `e2e-web` required → the owner, at `/ship`
+- none — money, tenancy and permissions: no served code changes, and every spec acts only as its own new person.
+- none — the roll: nothing stored or sent changes shape.
+
+**Used by:** `T-FPLAT-078` tests its containers with `components/*.spec.tsx` · every later route or screen task adds its flow as a done-when line (gate 33) · PR C adds `axe` and the offline drives to the suite.
+**DONE WHEN:**
+- **D1** · **Given** any screen proposed as complete, **when** it is checked against the twelve items, **then** all twelve pass, and a single failure means the screen is not done (`F7-43`). → this task makes items 1 (no horizontal scroll at 375 and 1536) and 12 (wired into its flow) re-checked on every change for the four shipped web routes and three of the four phone screens (`home` held): the web specs and the phone flows above · gate 33 keeps every future screen in the suite; the other ten items stay with review
+- **D2** · Given any screen presented as done, when its completion record is inspected, then it has been rendered and checked in a non-Latin launch language (`F3-18`). → `login.spec.ts` (EN → HI → MR on the door); the phone flows render in the device language only — the other screens' non-Latin check stays with review
+- **D3** · `pnpm --filter @heliogrid/e2e test:web` and `test:ct` green locally on built servers → `recorded`; `e2e-web` green on the PR → owed on the PR's run
+- **D4** · the Maestro flows pass on the iPhone simulator and the Android emulator, one after the other → `recorded` — `tests/e2e/mobile/run.sh`
+
+---
 ### T-FPLAT-078 · Open page — the containers become tiles or page headings
 **Type:** engine · **Tier:** P0
 **Status:** planned
