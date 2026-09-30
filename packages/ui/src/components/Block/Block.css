@@ -1,13 +1,13 @@
-/* Block — the section frame the composed screens are assembled from: header, body, footer, state.
-   An empty block SAYS SO AND STAYS: one quiet sentence inside its own frame, never EmptyState's
-   full-region treatment, because the screen around it is full and the block still belongs there. */
+/* Block — the section the composed screens are assembled from: header, body, footer, state. A
+   section is a heading on the page (F7-49): no fill, no shadow, no radius, so its controls read the
+   page's ground and a tile inside it is the only surface. An empty block SAYS SO AND STAYS: one
+   quiet sentence in its place, never EmptyState's full-region treatment, because the screen around
+   it is full and the block still belongs there. */
 
 .hg-block {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background: var(--surface);
-  box-shadow: var(--e2);
   font-family: var(--font-sans);
   min-width: 0;
 }
@@ -15,19 +15,11 @@
 .hg-block[data-density="expressive"] {
   gap: var(--sp-4);
   padding: var(--sp-6);
-  border-radius: var(--r-card-expressive);
 }
 
 .hg-block[data-density="functional"] {
   gap: var(--sp-3);
   padding: var(--sp-4);
-  border-radius: var(--r-card-functional);
-}
-
-.hg-block[data-flat="true"] {
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
 }
 
 /* ── header ──────────────────────────────────────────────────────────────────── */

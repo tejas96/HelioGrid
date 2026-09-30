@@ -10,7 +10,8 @@ export interface ReorderListProps<T = unknown> {
   keyOf?: (item: T, index: number) => string | number;
   /** The row's name. Said in every announcement and every button label. */
   labelOf?: (item: T, index: number) => string;
-  /** The row body — the caller's fields. Anything focusable inside stays reachable. */
+  /** The row body — the record's own content, never a field: a row is a tile (`F7-49`), and a
+   *  field is edited in a sheet. Anything focusable inside stays reachable. */
   renderItem?: (item: T, index: number) => ReactNode;
   /** `(key, fromIndex, toIndex)` — **an index**, unlike `Kanban.onMove`, because the index is the value. */
   onMove?: (key: string | number, fromIndex: number, toIndex: number) => void;

@@ -54,6 +54,21 @@ the meters' ticks, `LineChart`'s end dot). A tinted panel that holds a control i
 `SourceDocument`'s message, `Image`'s missing panel, `AudioPlayer`'s and `Transcript`'s error
 panels, `CompareGrid`'s selected column.
 
+**Owed to the design system by the containers (`T-FPLAT-078`), repo side done.** A surface never
+holds another (`F7-49`). A TILE — `--canvas-sunken`, no shadow, a hover or selected state a ring as
+`Card`'s — is `StatCard`, `NextAction`'s record card, `BandedFigure`'s card and box, `Kanban`'s
+board message, and each item of `Checklist`, `FindingList`, `ReorderList`, `DateSet`,
+`OptionCardGroup` (selected: the accent ring on the grey, no `--accent-subtle`; an off option lies on
+the page with no fill), `Transcript` (both parties; the played turn `--accent-subtle`) and
+`DataTable`'s total block and stacked record without an editor. A HEADING on the page — no fill, no
+shadow, no radius — is `Block`, `Accordion` (an item in errors: no tint, its head says so),
+`Checklist`'s and `FindingList`'s frames, `TenantHeader`, `SourceDocument` (its reading area the
+sunken desk; its message mark a glyph with no disc) and `DataTable` and `CompareGrid`, whose sticky
+parts paint what holds them; `DataTable`'s cell editor is a well. `Block`'s `flat` prop is dead —
+every block is flat — and leaves its contract; `SourceDocument`'s density rounds its reading area,
+its one surface; `Accordion`'s contract stops saying an errored section is tinted. A printed checklist's rows
+are paper, not tiles. `PagedDocument`'s cards stay paper.
+
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |

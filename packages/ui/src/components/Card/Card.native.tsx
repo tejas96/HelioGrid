@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -18,10 +18,9 @@ interface NativeIconCircleProps extends IconCircleProps {
 
 const styles = StyleSheet.create({
   card: {
-    /* The tile (`F7-49`): grey on the white page, no shadow. */
-    backgroundColor: theme.colors['canvas-sunken'],
-    /* The web ring is a box-shadow; RN has none, so the ring is a border that is always present
-       and only changes colour — the frame must not move between selected and unselected. */
+    /* The tile's look is `tileSurface` (`F7-49`). The web ring is a box-shadow; RN has none, so
+       the ring is a border that is always present and only changes colour — the frame must not
+       move between selected and unselected. */
     borderWidth: 2,
     borderColor: 'transparent',
   },
@@ -81,6 +80,7 @@ export function Card({
   );
 
   const frame: StyleProp<ViewStyle> = [
+    tileSurface,
     styles.card,
     density === 'functional' ? styles.functional : styles.expressive,
     selected ? styles.selected : null,

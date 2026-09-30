@@ -113,7 +113,7 @@ export function StatCard({
 
   /* Tappable preview counts (SCR-M02-05 / SCR-M01-17): the whole card is the target, so it clears
      44×44 many times over, and it is a real button rather than a div with a click handler. The
-     web half's hover lift is a CSS :hover rule rather than the source's two JS handlers.
+     web half's hover ring is a CSS :hover rule rather than the source's two JS handlers.
 
      The card IS the button here, so the caller's `style` frames the button exactly as it frames
      the div on the other two branches — the source spreads it into one shell, not into three. */

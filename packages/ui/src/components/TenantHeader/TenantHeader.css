@@ -70,6 +70,8 @@
   color: var(--text-tertiary);
 }
 
+/* A heading on the page (F7-49): no fill, no shadow, no radius, so its actions read the page's
+   ground. */
 .hg-tenant-header {
   display: flex;
   align-items: center;
@@ -77,9 +79,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   padding: var(--sp-4) var(--sp-5);
-  background: var(--surface);
-  box-shadow: var(--e1);
-  border-radius: var(--r-lg);
   font-family: var(--font-sans);
 }
 

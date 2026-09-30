@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
@@ -25,16 +24,6 @@ const STATE_INK: Record<Exclude<AccordionItemState, 'default'>, { fg: string; ma
 
 const styles = StyleSheet.create({
   list: { gap: theme.spacing['sp-2'] },
-  item: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius['r-md'],
-    overflow: 'hidden',
-    ...theme.elevation.e1,
-  },
-  itemFunctional: { borderRadius: theme.radius['r-card-functional'] },
-  /* A tinted section is a THIRD background: text-tertiary measures 4.48 on danger-bg, under the
-     floor, so every quiet line on a tinted section steps up to text-secondary. */
-  itemErrors: { backgroundColor: theme.colors['danger-bg'] },
   head: { flexDirection: 'row', alignItems: 'center', minWidth: 0 },
   toggle: {
     flex: 1,
@@ -149,49 +138,39 @@ export function Accordion({
     <View style={[styles.list, style]}>
       {items.map((item) => {
         const isOpen = openList.includes(item.key);
-        const errored = item.state === 'errors';
         // A state word is primary information (`N4`), never the quiet role — see the web half.
         const quiet = theme.colors['text-secondary'];
         return (
-          <View
-            key={item.key}
-            style={[
-              styles.item,
-              density === 'functional' ? styles.itemFunctional : null,
-              errored ? styles.itemErrors : null,
-            ]}
-          >
-            {/* An item is white, so its controls take the page's fill until T-FPLAT-078 settles
-                its ground. */}
-            <GroundProvider ground="page">
-              <View style={styles.head}>
-                {/* The header's expanded state goes through the primitive — one declaration, the
-                    web half's `aria-expanded` and this half's `accessibilityState.expanded` — so
-                    the 44px floor and the pressed treatment come with it. */}
-                <Pressable
-                  accessibilityState={{ expanded: isOpen }}
-                  onPress={() => toggle(item.key)}
-                  style={[
-                    styles.toggle,
-                    { padding: pad, paddingRight: item.action !== undefined ? 8 : pad },
-                  ]}
-                >
-                  <Chevron open={isOpen} color={quiet} />
-                  <View style={styles.titleWrap}>
-                    <Text style={styles.title}>{item.title}</Text>
-                    {renderMarks(item.marks)}
-                  </View>
-                  <HeaderFacts item={item} quiet={quiet} />
-                </Pressable>
-                {/* A sibling of the toggle, never inside it. */}
-                {item.action !== undefined ? (
-                  <View style={[styles.action, { paddingRight: pad }]}>{item.action}</View>
-                ) : null}
-              </View>
-              {isOpen ? (
-                <View style={{ paddingHorizontal: pad, paddingBottom: pad }}>{item.content}</View>
+          /* A heading and its body on the page (`F7-49`): no fill, no ground of its own. An item
+             in errors has no tint; its state word and dot carry the danger. */
+          <View key={item.key}>
+            <View style={styles.head}>
+              {/* The header's expanded state goes through the primitive — one declaration, the
+                  web half's `aria-expanded` and this half's `accessibilityState.expanded` — so
+                  the 44px floor and the pressed treatment come with it. */}
+              <Pressable
+                accessibilityState={{ expanded: isOpen }}
+                onPress={() => toggle(item.key)}
+                style={[
+                  styles.toggle,
+                  { padding: pad, paddingRight: item.action !== undefined ? 8 : pad },
+                ]}
+              >
+                <Chevron open={isOpen} color={quiet} />
+                <View style={styles.titleWrap}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  {renderMarks(item.marks)}
+                </View>
+                <HeaderFacts item={item} quiet={quiet} />
+              </Pressable>
+              {/* A sibling of the toggle, never inside it. */}
+              {item.action !== undefined ? (
+                <View style={[styles.action, { paddingRight: pad }]}>{item.action}</View>
               ) : null}
-            </GroundProvider>
+            </View>
+            {isOpen ? (
+              <View style={{ paddingHorizontal: pad, paddingBottom: pad }}>{item.content}</View>
+            ) : null}
           </View>
         );
       })}

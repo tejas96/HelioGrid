@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import { fieldBox } from '../../primitives/FieldBox';
 import { renderOverride } from '../FieldOverride/FieldOverride';
 import { renderGap } from '../NamedGap';
 import { renderProvenance } from '../Provenance';
@@ -80,7 +81,7 @@ function CellEditor<Row>({
       value={draft}
       aria-label={column.label}
       aria-invalid={issue === null ? undefined : true}
-      data-issue={issue === null ? undefined : 'true'}
+      {...fieldBox({ focused, tone: issue === null ? 'none' : 'error', density: 'functional' })}
       data-mono={
         column.mono === true || column.numeric === true || column.editor === 'number'
           ? 'true'

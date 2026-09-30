@@ -28,8 +28,9 @@ export function CompareOptionHead<Opt extends CompareOption>({
   currentLabel,
   box,
 }: OptionHeadProps<Opt>) {
+  const { ground } = useGround();
   return (
-    <View style={[box, cellGround(selected, false)]}>
+    <View style={[box, cellGround(selected, false, ground)]}>
       <View style={compareStyles.optionStack}>
         <Text variant="body" style={{ fontWeight: '700', letterSpacing: -0.15 }}>
           {option.name}

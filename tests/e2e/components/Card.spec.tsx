@@ -27,3 +27,10 @@ test('an errored card with no words for its retry draws no retry', async ({ moun
 
   await expect(card.getByRole('button')).toHaveCount(0);
 });
+
+test('a card is a grey tile with no shadow', async ({ mount, page }) => {
+  const card = await mount(<Card>{tryAgain}</Card>);
+
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(card).toHaveCSS('box-shadow', 'none');
+});

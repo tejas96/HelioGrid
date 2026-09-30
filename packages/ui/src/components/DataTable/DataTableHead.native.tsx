@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -16,7 +17,6 @@ import { ColumnTier } from './DataTableProvenance.native';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  head: { backgroundColor: theme.colors.surface },
   headCell: { flexDirection: 'row', alignItems: 'center', gap: 6 },
 });
 
@@ -127,12 +127,13 @@ export function DataTableHead<Row>({
 }) {
   const spec = DENSITY[density];
   const gutter = { paddingHorizontal: spec.gutter };
+  const { ground } = useGround();
 
   return (
     <View
       style={[
         styles.row,
-        styles.head,
+        { backgroundColor: ground },
         { minHeight: spec.headH, paddingHorizontal: spec.edge - spec.gutter },
       ]}
     >

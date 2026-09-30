@@ -1,7 +1,7 @@
 /* StatCard's four unresolved states (native). None of them prints a figure.
 
-   The shimmer keyframe has no RN equivalent, so `loading` keeps the same footprint in
-   --canvas-sunken: nothing reflows when the figure lands, which is what the shimmer was for. */
+   The shimmer keyframe has no RN equivalent, so `loading` keeps the same footprint in still bars:
+   nothing reflows when the figure lands, which is what the shimmer was for. */
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   loading: { marginTop: 10, gap: theme.spacing['sp-2'] },
   shimmer: {
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    /* Drawn in --surface, as `Card`'s: a grey bar on the grey tile would not show. */
+    backgroundColor: theme.colors.surface,
   },
   error: { marginTop: 10, alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   errorBody: { color: theme.colors['warning-text'] },

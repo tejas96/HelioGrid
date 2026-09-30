@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
@@ -51,7 +52,11 @@ interface FindingListRowProps {
   jumpLabel: string;
 }
 
-/** One finding: the mark, the check, its meaning in plain language, and the act that fixes it. */
+/**
+ * One finding: the mark, the check, its meaning in plain language, and the act that fixes it. A
+ * finding is one tile (`F7-49`) — the web half's `.hg-finding-row` on `Ground.css`'s tiles list —
+ * so its controls turn white.
+ */
 export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowProps) {
   const status = statusOf(finding);
   const jump = finding.onJump ?? (onJump === undefined ? undefined : () => onJump(finding));
@@ -59,67 +64,69 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
     finding.jumpLabel ?? (finding.step === undefined ? jumpLabel : `Fix in ${finding.step}`);
   const pending = renderPending(finding.pending, { size: 12 });
   return (
-    <View style={styles.row}>
-      <Mark status={status} />
-      <View style={styles.body}>
-        <View style={styles.head}>
-          <Text variant="body" style={styles.title}>
-            {finding.title}
-          </Text>
-          <StatusMark
-            tone={FINDING_TONE[status]}
-            label={finding.statusLabel ?? FINDING_LABEL[status]}
-            mark={false}
-          />
-        </View>
-        {/* M05-58: the meaning in plain language, always — a check name is not a sentence. */}
-        {finding.meaning === undefined ? null : (
-          <Text variant="body-sm" color="secondary">
-            {finding.meaning}
-          </Text>
-        )}
-        {finding.family === undefined ? null : (
-          <Text variant="caption" color="tertiary">
-            {finding.family}
-          </Text>
-        )}
-        {pending}
-        {jump === undefined && finding.fix === undefined ? null : (
-          <View style={styles.acts}>
-            {jump === undefined ? null : (
-              <Button
-                variant="secondary"
-                size="md"
-                onClick={jump}
-                iconRight={
-                  <Svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={theme.colors['text-primary']}
-                    strokeWidth={1.8}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <Path d="M5 12h13M13 6l6 6-6 6" />
-                  </Svg>
-                }
-              >
-                {jumpWords}
-              </Button>
-            )}
-            {/* MS6-27's "Auto-string now". Optional by design: most findings have no such act. */}
-            {finding.fix === undefined ? null : (
-              <Pressable onPress={finding.fix.onFix} style={styles.fix}>
-                <Text variant="body" style={styles.fixWords}>
-                  {finding.fix.label}
-                </Text>
-              </Pressable>
-            )}
+    <View style={[tileSurface, styles.row]}>
+      <GroundProvider ground="tile">
+        <Mark status={status} />
+        <View style={styles.body}>
+          <View style={styles.head}>
+            <Text variant="body" style={styles.title}>
+              {finding.title}
+            </Text>
+            <StatusMark
+              tone={FINDING_TONE[status]}
+              label={finding.statusLabel ?? FINDING_LABEL[status]}
+              mark={false}
+            />
           </View>
-        )}
-      </View>
+          {/* M05-58: the meaning in plain language, always — a check name is not a sentence. */}
+          {finding.meaning === undefined ? null : (
+            <Text variant="body-sm" color="secondary">
+              {finding.meaning}
+            </Text>
+          )}
+          {finding.family === undefined ? null : (
+            <Text variant="caption" color="tertiary">
+              {finding.family}
+            </Text>
+          )}
+          {pending}
+          {jump === undefined && finding.fix === undefined ? null : (
+            <View style={styles.acts}>
+              {jump === undefined ? null : (
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={jump}
+                  iconRight={
+                    <Svg
+                      width={15}
+                      height={15}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke={theme.colors['text-primary']}
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <Path d="M5 12h13M13 6l6 6-6 6" />
+                    </Svg>
+                  }
+                >
+                  {jumpWords}
+                </Button>
+              )}
+              {/* MS6-27's "Auto-string now". Optional by design: most findings have no such act. */}
+              {finding.fix === undefined ? null : (
+                <Pressable onPress={finding.fix.onFix} style={styles.fix}>
+                  <Text variant="body" style={styles.fixWords}>
+                    {finding.fix.label}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+          )}
+        </View>
+      </GroundProvider>
     </View>
   );
 }
@@ -129,6 +136,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: theme.spacing['sp-3'],
     paddingVertical: 14,
+    paddingHorizontal: theme.spacing['sp-4'],
+    borderRadius: theme.radius['r-card-functional'],
     alignItems: 'flex-start',
   },
   mark: {

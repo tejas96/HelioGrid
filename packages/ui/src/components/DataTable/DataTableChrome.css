@@ -68,7 +68,7 @@
   justify-content: space-between;
   gap: var(--sp-3);
   padding: 10px var(--sp-4) 10px var(--sp-6);
-  background: var(--surface);
+  background: var(--hg-ground);
 }
 
 .hg-dt-pagination-readout {
@@ -121,7 +121,7 @@
   gap: var(--sp-5);
   height: var(--hg-dt-row-h);
   padding: 0 var(--hg-dt-edge);
-  background: var(--surface);
+  background: var(--hg-ground);
 }
 
 .hg-dt-skeleton-row:nth-child(even) {

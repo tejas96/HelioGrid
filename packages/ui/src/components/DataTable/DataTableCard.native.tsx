@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -18,13 +19,10 @@ import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
 import { resolveRow } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
-import { rowNameOf } from './DataTableStacked.logic';
+import { holdsEditor, rowNameOf } from './DataTableStacked.logic';
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
-  },
+  card: { borderRadius: theme.radius['r-md'] },
   /* The card's inset rides on the node BELOW the ground, so a clickable card's target covers the
      whole card and not just its content box — the web half's target is `inset: 0`. */
   pad: { padding: theme.spacing['sp-4'] },
@@ -59,9 +57,14 @@ const styles = StyleSheet.create({
   select: { paddingTop: 2 },
 });
 
-/** **The card's ground** — the same order the grid row holds: selection, then issue, then resolved. */
-function cardTintStyle(state: RowState): StyleProp<ViewStyle> {
+/**
+ * **The card's ground** — the same order the grid row holds: selection, then issue, then resolved.
+ * A record with no editor is a tile; one holding an editor lies on the page, since a tile never
+ * holds a field (`F7-49`).
+ */
+function cardTintStyle(state: RowState, editable: boolean): StyleProp<ViewStyle> {
   return [
+    editable ? null : tileSurface,
     styles.card,
     state.issue !== null ? styles.issue : state.flagged ? styles.fixed : null,
     state.isSelected ? styles.selected : null,
@@ -202,6 +205,9 @@ export function DataTableCard<Row>({
   const { onRowClick } = table;
   const state = resolveRow(table, rowKey, row, index, selected);
   const name = rowNameOf(row, slots.primary, table.rowLabel);
+  const editable = holdsEditor(slots, table);
+  /* A tint holds its buttons as a tile does, an editor's card included — see `Ground.css`. */
+  const tinted = state.issue !== null || state.flagged || state.isSelected;
   /* Gated on the RENDERED node, not on the prop: a `rowProvenance` that returns null for this
      record must not leave an empty standing box under its name. */
   const standing = renderProvenance(state.standing, { size: 12 });
@@ -219,6 +225,20 @@ export function DataTableCard<Row>({
     />
   );
 
+  const content =
+    onRowClick === undefined ? (
+      <View style={styles.pad}>{body}</View>
+    ) : (
+      <RNPressable
+        accessibilityRole="button"
+        accessibilityLabel={name}
+        onPress={() => onRowClick(row)}
+        style={styles.pad}
+      >
+        {body}
+      </RNPressable>
+    );
+
   return (
     /* THE CARD ITSELF CARRIES THE WAIT, clickable or not — the web half's `aria-busy` is on the
        card, never on its press target. And the state needs a node to sit on: a bare `View` is not
@@ -227,19 +247,12 @@ export function DataTableCard<Row>({
        tick, the live cells, the row note and the 44dp actions into a single element; `listitem` is
        the `<li>` this View already is, inside the `accessibilityRole="list"` the stacked form
        carries. */
-    <View role="listitem" accessibilityState={{ busy: state.waiting }} style={cardTintStyle(state)}>
-      {onRowClick === undefined ? (
-        <View style={styles.pad}>{body}</View>
-      ) : (
-        <RNPressable
-          accessibilityRole="button"
-          accessibilityLabel={name}
-          onPress={() => onRowClick(row)}
-          style={styles.pad}
-        >
-          {body}
-        </RNPressable>
-      )}
+    <View
+      role="listitem"
+      accessibilityState={{ busy: state.waiting }}
+      style={cardTintStyle(state, editable)}
+    >
+      {editable && !tinted ? content : <GroundProvider ground="tile">{content}</GroundProvider>}
     </View>
   );
 }

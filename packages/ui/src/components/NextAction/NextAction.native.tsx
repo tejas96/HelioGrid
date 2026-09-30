@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
    spellings to the same module, so this is the same import, correctly typed. */
-import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
@@ -80,7 +80,7 @@ export function NextAction({
  * Platform mapping: the web half's absolutely-positioned sibling button exists because an HTML
  * control may not nest inside a `role="button"`. React Native has no such rule — a nested
  * Pressable in `action` swallows its own touch — so the card IS the Pressable here, and a control
- * in a slot still fires only itself. The raised hover/focus state has no touch equivalent; the
+ * in a slot still fires only itself. The web half's hover/focus ring has no touch equivalent; the
  * Pressable primitive's pressed state is the feedback.
  */
 export function RecordCard({
@@ -102,9 +102,9 @@ export function RecordCard({
   const ini = initials || recordInitials(name);
   const pend = renderPending(pending);
 
-  /* The card is white, so its controls take the page's fill until T-FPLAT-078 settles its ground. */
+  /* The card is a tile, so a control inside it turns white. */
   const body: ReactNode = (
-    <GroundProvider ground="page">
+    <GroundProvider ground="tile">
       <View style={styles.avatar} importantForAccessibility="no-hide-descendants">
         {/* RN has no color-mix: the 10% tint is the tone itself, at a tenth of its opacity. */}
         <View style={[styles.avatarTint, { backgroundColor: avatarTone }]} />
@@ -149,6 +149,7 @@ export function RecordCard({
   );
 
   const frame = [
+    tileSurface,
     styles.card,
     density === 'functional' ? styles.functional : styles.expressive,
     muted ? styles.muted : null,
@@ -185,6 +186,7 @@ const styles = StyleSheet.create({
   dot: { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
   indent: { paddingLeft: 14 },
 
+  /* The tile's look is `tileSurface` (`F7-49`), spread first in the frame. */
   card: {
     position: 'relative',
     flexDirection: 'row',
@@ -192,8 +194,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: theme.spacing['sp-3'],
     minHeight: 44,
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
   },
   expressive: {
     padding: theme.spacing['sp-4'],

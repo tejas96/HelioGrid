@@ -44,11 +44,13 @@
   gap: 0;
 }
 
+/* Sticky, so it stays opaque over the entries scrolling under it: it paints the ground that holds
+   the stream — the page's white, or a tile's grey — never a colour of its own. */
 .hg-stream-day {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--surface);
+  background: var(--hg-ground);
   padding: 6px 0 10px;
   font-size: var(--fs-overline);
   font-weight: var(--fw-bold);

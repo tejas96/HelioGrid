@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingLeft: theme.spacing['sp-6'],
     paddingRight: theme.spacing['sp-4'],
-    backgroundColor: theme.colors.surface,
   },
   step: {
     width: MIN_TOUCH_TARGET,
@@ -110,6 +110,7 @@ export function Pagination({
   rowCount: number;
   onPageChange?: (page: number) => void;
 }) {
+  const { ground } = useGround();
   const from = rowCount === 0 ? 0 : page * pageSize + 1;
   const to = Math.min(rowCount, (page + 1) * pageSize);
   const last = Math.max(0, Math.ceil(rowCount / pageSize) - 1);
@@ -134,7 +135,7 @@ export function Pagination({
     </Pressable>
   );
   return (
-    <View style={styles.pager}>
+    <View style={[styles.pager, { backgroundColor: ground }]}>
       <Text variant="body-sm" color="secondary">
         {`${from}–${to} of ${rowCount}`}
       </Text>

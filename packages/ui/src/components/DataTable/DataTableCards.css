@@ -21,11 +21,13 @@
   gap: 10px;
 }
 
+/* A record with no editor is a tile, drawn by `Ground.css`; one holding an editor
+   (`data-editable`) lies on the page, since a tile never holds a field (F7-49). The state fills
+   below stay one class and one condition, loaded after the tile rule, so they win over it. */
 .hg-dt-card {
   position: relative;
   padding: var(--sp-4);
   border-radius: var(--r-md);
-  background: var(--surface-alt);
 }
 
 .hg-dt-card[data-issue="true"] {

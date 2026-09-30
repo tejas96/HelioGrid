@@ -2,9 +2,10 @@
    recording (M07-38), so nothing here depends on the audio being present: with the recording purged
    the offsets stay as legible text and the document is complete.
 
-   The agent's turn sits on --surface with the card's own e1; the customer's on --canvas-sunken. The
-   turn being played takes --accent-subtle, which is the one place the accent carries state here —
-   and the offset beside it turns accent and bold, so "playing" is never colour alone. */
+   Every turn is a tile (F7-49), drawn by Ground.css's tiles list, whichever party spoke it: the
+   speaker line tells the two apart, in words and a glyph, never a fill. The turn being played takes
+   --accent-subtle, which is the one place the accent carries state here — and the offset beside it
+   turns accent and bold, so "playing" is never colour alone. */
 
 .hg-transcript {
   font-family: var(--font-sans);
@@ -137,7 +138,6 @@
   flex: 1;
   min-width: 0;
   border-radius: var(--r-md);
-  background: var(--surface);
   transition: background var(--dur-standard) var(--ease-standard);
 }
 
@@ -149,17 +149,8 @@
   border-radius: var(--r-card-functional);
 }
 
-.hg-transcript-bubble[data-party="agent"] {
-  box-shadow: var(--e1);
-}
-
-.hg-transcript-bubble[data-party="customer"] {
-  background: var(--canvas-sunken);
-}
-
 .hg-transcript-bubble[data-current="true"] {
   background: var(--accent-subtle);
-  box-shadow: none;
 }
 
 .hg-transcript-speaker {
